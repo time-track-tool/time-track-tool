@@ -438,6 +438,7 @@
        filtered_props python: [p for p in props
                                if not p.lnkattr or not '.' in p.lnkname];
        multi_props    python: [p for p in filtered_props if p.multiselect];
+       sort_props     python: [p for p in props if p.sortable ()];
        nomulti_props  python: [p for p in filtered_props
                                if not p.multiselect and (p.key or not p.lnkattr)]
       "
@@ -467,7 +468,7 @@
       Sortierung:<select name=":sort"
                       onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- keine -</option>
-         <option tal:repeat="prop props"
+         <option tal:repeat="prop sort_props"
                  tal:attributes="selected python:prop.name==request.sort[1];
                                  value    python:prop.name"
                  tal:content="python:prop.label"
@@ -480,7 +481,7 @@
      - Gruppierung:<select name=":group"
                         onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- keine -</option>
-         <option tal:repeat="prop props"
+         <option tal:repeat="prop sort_props"
                  tal:attributes="selected python:prop.name==request.group[1];
                                  value    python:prop.name"
                  tal:content="python:prop.label"
