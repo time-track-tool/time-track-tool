@@ -1,0 +1,85 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+
+ <title metal:fill-slot="head_title">
+  <span tal:condition="context/id"
+        tal:replace="string:Product: ${context/id} by ${context/creator}"></span>
+  <span tal:condition="not:context/id"
+        tal:replace="string:Create New Product"></span>
+ </title>
+
+ <tal:block metal:fill-slot="content">
+<td>
+ <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
+ You are not allowed to view this page.
+ </span>
+ <form method="POST"
+       onSubmit="return submit_once()"
+       name="itemSynopsis"
+       enctype="multipart/form-data"
+       tal:condition="context/is_edit_ok"
+       tal:attributes="action context/designator">
+
+  <input type="hidden" name="@template" value="item">
+  <input type="hidden" name="@required" value="name">
+
+  <table class="form" border="0">
+   <tr>
+    <th class="required">Name</th>
+    <td colspan="3"
+        tal:content="structure python:context.name.field (size=60)"></td>
+   </tr>
+
+   <tr>
+    <th>Description</th>
+    <td colspan="3"
+        tal:content="structure python:context.description.field (size=60)"></td>
+   </tr>
+
+   <tr>
+    <th>Responsible</th>
+    <td colspan="3"
+        tal:content="structure context/responsible/menu"></td>
+   </tr>
+
+   <tr>
+    <th>Certifiable</th>
+    <td colspan="3"
+        tal:content="structure context/certifiable/field"></td>
+   </tr>
+
+   <tr>
+    <th>Nosy List</th>
+    <td colspan="3">
+     <span tal:replace="structure context/nosy/field" />
+     <span tal:replace="structure python:db.user.classhelp
+                                             ( 'username,firstname,lastname'
+                                             , property='nosy'
+                                             , width='600')" /><br>
+    </td>
+   </tr>
+
+   <tr tal:condition="context/is_edit_ok">
+    <th></th>
+    <td colspan="3">
+     <tal:block tal:replace="structure context/submit"/>
+     <input tal:condition="context/id"
+            type="button" value="Show History"
+            tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
+    </td>
+   </tr>
+  </table>
+  <p tal:condition="context/id" tal:content="structure string:Created on
+    <b>${context/creation}</b> by <b>${context/creator}</b>, last
+    changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
+ </form>
+
+ <table class="form" tal:condition="not:context/id">
+ <tr>
+  <td>Note:&nbsp;</td>
+  <th class="required">highlighted</th>
+  <td>&nbsp;fields are required.</td>
+ </tr>
+ </table>
+</td>
+</tal:block>
+</tal:block>

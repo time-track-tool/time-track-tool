@@ -90,6 +90,11 @@ def open (name = None):
         , planned               = Date      ()
         , reached               = Date      ()
         , order                 = Number    ()
+        , release               = Link      ("release") # the release this
+                                        # milestone belongs to - needed for
+                                        # reactors updating the releases
+                                        # "status" field,  which represents
+                                        # the last reached milestone.
         )
 
     work_package_status = Class \
@@ -347,17 +352,26 @@ def open (name = None):
         # instaces. the presence of some document types can be checked by an
         # auditor, all documents and their corresponding types are displayed
         # on the web page.
+        , status                = Link      ("milestone") # just to show
+                                                          # something i the
+                                                          # pop-up, gets set
+                                                          # to the last
+                                                          # reached milestone
         , documents             = Multilink ("document")
         , features              = Multilink ("feature")
         , planned_fixes         = Multilink ("defect")
         , bugs                  = Multilink ("defect")
         , milestones            = Multilink ("milestone") # Note: they get
                                         # added automatically on creation of
-                                        # a new release (by the reactor -
+                                        # a new release (by the auditor -
                                         # XXX: what if creation fails, or
                                         # there is some error during creation
                                         # of the multilink properties ??? -
-                                        # how to clean up ???).
+                                        # how to clean up ???) -> as it's
+                                        # done by the auditor, if creation
+                                        # fails, the auditor fails and
+                                        # despite of (maybe) some milestones
+                                        # nothing harmful will be done.
         )
 
     feature = TTT_Issue_Class \
@@ -503,7 +517,7 @@ def open (name = None):
                                         # are also setting the "closed" date
                                         # for this, we can also set the
                                         # "closer" here.
-        , feature               = Link      ("feature") # if known
+        , part_of_feature       = Link      ("feature") # if known
         )
 
 ## XXX: acc to AGO/RSC/MPH there should be no legacy "issue" class - if

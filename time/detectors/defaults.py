@@ -46,6 +46,13 @@ def default_defect_status (db, cl, nodeid, new_values) :
         new_values ["status"] = "assigned"
 # end def default_defect_status
 
+def default_defect_responsible (db, cl, nodeid, new_values) :
+    """set responsible to product.responsible
+    """
+    if not new_values.has_key ("responsible") :
+        prod_resp = db.product.get (new_values ["product"], "responsible")
+        new_values ["responsible"] = prod_resp
+# end def default_defect_responsible
 
 def init (db) :
     db.document.audit            ("create", default_responsible)
@@ -56,7 +63,7 @@ def init (db) :
     db.implementation_task.audit ("create", default_responsible)
     db.documentation_task.audit  ("create", default_responsible)
     db.testcase.audit            ("create", default_responsible)
-    db.defect.audit              ("create", default_responsible)
+    db.defect.audit              ("create", default_defect_responsible)
     db.defect.audit              ("create", default_defect_status)
 # end def init
 

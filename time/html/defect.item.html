@@ -21,19 +21,28 @@
      <td tal:content="structure context/version/field"></td>
     </tr>
     <tr>
+     <th class="required">Found in Release</th>
+     <td>
+      <span tal:condition="not:context/id"
+            tal:content="structure context/found_in_release/menu"/>
+      <span tal:condition="context/id">
+       <a tal:attributes="href context/found_in_release/designator"
+          tal:content="context/found_in_release/title"></a>
+       <input type="hidden" name="found_in_release"
+              tal:attributes="value context/found_in_release/id">
+       </span>
+     </td>
+     <th></th>
+     <td></td>
+    </tr>
+    <tr>
      <th class="required">Severity</th>
      <td tal:content="structure context/severity/menu"></td>
      <th></th>
      <td></td>
     </tr>
     <tr>
-     <th class="required">Found in Release</th>
-     <td tal:content="structure context/found_in_release/menu"></td>
-     <th></th>
-     <td></td>
-    </tr>
-    <tr>
-     <th>Cert ?</th>
+     <th>Cert</th>
      <td tal:condition="not:context/id"
          tal:content="structure context/cert/field"></td>
      <td tal:condition="context/id"
@@ -76,12 +85,20 @@
      <th></th>
      <td></td>
     </tr>
-    <tr>
+    <tr tal:condition="context/id">
      <th>Part of Release</th>
      <td tal:content="structure context/part_of_release/menu"></td>
      <th>Part of Feature</th>
-     <td tal:content="structure context/feature/menu"></td>
+     <td tal:content="structure context/part_of_feature/menu"></td>
     </tr>
+
+    <tr>
+     <th>Est. Effort</th>
+     <td tal:content="structure context/estimated_effort/field"></td>
+     <th>Fixed until</th>
+     <td tal:content="structure context/fixed_until/field"></td>
+    </tr>
+
     <tr tal:condition="context/id">
      <th>Superseder</th>
      <td colspan="3">
@@ -97,7 +114,7 @@
      <td colspan="3"
          tal:content="structure context/fixed_in/field"></td>
     </tr>
-    <tr tal:condition="python: context.cert.plain() == 'Yes'">
+    <tr tal:condition="python:context.id and context.cert.plain() == 'Yes'">
      <th>Files affected</th>
      <td colspan="3">
       <textarea tal:content="request/form/files_affected/value | default"

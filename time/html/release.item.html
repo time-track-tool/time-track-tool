@@ -13,17 +13,32 @@
     <tr tal:condition="context/id">
      <th>Milestones</th>
      <td>
-      <table>
+      <table class="milestones">
        <tr>
-        <th>&nbsp; </th>
-        <th>planned</th>
-        <th>reached</th>
+        <th class="header">Milestone</th>
+        <th class="header">&nbsp;planned&nbsp;</th>
+        <th class="header">&nbsp;reached&nbsp;</th>
+        <th class="header">&nbsp;delta</th>
        </tr>
        <tr tal:repeat="m context/milestones">
         <th tal:content="m/name"
             tal:attributes="title m/description"></th>
-        <td tal:content="m/planned/plain"></td>
-        <td tal:content="structure m/reached/field"></td>
+        <td tal:content="python:m.planned.pretty ('%d-%b-%y')"></td>
+        <td>
+         <span tal:condition="m/reached/_value"
+               tal:content="python:m.reached.pretty ('%d-%b-%y')"/>
+         <span tal:condition="not:m/reached/_value">
+             <input type="checkbox"
+                    tal:attributes="name string:${m/designator}@reached;
+                                    value m/reached/now">
+         </span>
+        </td>
+        <tal:block tal:condition="m/reached/_value">
+        <td tal:define="diff python:str(utils.rough_date_diff (m.reached._value, m.planned._value))"
+            tal:attributes="class python:['delta_minus', 'delta_plus'][diff[0]=='+']"
+            tal:content="diff">
+        </td>
+        </tal:block>
        </tr>
       </table>
      </td>
@@ -81,8 +96,8 @@
     <tr tal:condition="context/planned_fixes">
      <th>Planned Fixes</th>
      <td><span tal:repeat="f context/planned_fixes">
-         <a tal:attributes="href string:feature${f/id}"
-            tal:content="string:[feature${f/id}] ${f/title}"></a><br>
+         <a tal:attributes="href f/designator"
+            tal:content="f/title"></a><br>
          </span>
      </td>
     </tr>
@@ -90,8 +105,8 @@
     <tr tal:condition="context/bugs">
      <th>Bugs</th>
      <td><span tal:repeat="f context/bugs">
-         <a tal:attributes="href string:feature${f/id}"
-            tal:content="string:[feature${f/id}] ${f/title}"></a><br>
+         <a tal:attributes="href f/designator"
+            tal:content="f/title"></a><br>
          </span>
      </td>
     </tr>

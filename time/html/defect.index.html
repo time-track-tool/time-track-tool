@@ -3,23 +3,46 @@
 
 <tal:block metal:fill-slot="content">
  <tal:block tal:define="batch request/batch;
-                        props python:( ('Id'         , 'id')
-                                     , ('Title'      , 'title')
-                                     , ('Responsible', 'responsible', 'user', 'username')
-                                     , ('Status'     , 'status', 'defect_status', 'name')
-                                     , ('Superseder' , 'superseder', 'defect', 'title')
-                                     , ('Part of Release', 'part_of_release', 'release', 'name')
-                                     , ('Nosy List'  , 'nosy', 'user', 'username')
-                                     );
+                        props python:
+    (
+      ('Id'              , 'id'              , ''                  , ''        , 'V')
+    , ('Title'           , 'title'           , ''                  , ''        , 'T')
+    , ('Responsible'     , 'responsible'     , 'user'              , 'username', 'L')
+
+    , ('Product'         , 'product'         , 'product'           , 'name'    , 'L')
+    , ('Version'         , 'version'         , ''                  , ''        , 'V')
+
+    , ('Status'          , 'status'          , 'defect_status'     , 'name'    , 'L')
+    , ('Severity'        , 'severity'        , 'severity'          , 'name'    , 'L')
+    , ('Cert'            , 'cert'            , ''                  , ''        , 'V')
+
+    , ('Found in Release', 'found_in_release', 'release'           , 'title'   , 'L')
+    , ('Part of Release' , 'part_of_release' , 'release'           , 'title'   , 'L')
+    , ('Part of Feature' , 'part_of_feature' , 'feature'           , 'title'   , 'L')
+
+    , ('Estimated Effort', 'estimated_effort', ''                  , ''        , 'V')
+    , ('Fixed until'     , 'fixed_until'     , ''                  , ''        , 'V')
+    , ('Fixed in'        , 'fixed_in'        , ''                  , ''        , 'V')
+
+    , ('Superseder'      , 'superseder'      , 'defect'            , 'title'   , 'L')
+
+    , ('Closed'          , 'closed'          , ''                  , ''        , 'V')
+    , ('Closer'          , 'closer'          , 'user'              , 'username', 'L')
+
+    , ('Nosy List'       , 'nosy'            , 'user'              , 'username', 'M')
+    );
                         multi python:( 'responsible'
+                                     , 'product'
                                      , 'status'
+                                     , 'severity'
+                                     , 'closer'
                                      , 'nosy'
                                      )"
             tal:condition="context/is_view_ok">
 
-  <tal:block metal:use-macro="templates/page/macros/ttt_search_display"></tal:block>
-
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+
   <tal:block metal:fill-slot="query_title">Query Defect Reports</tal:block>
   </tal:block>
  </tal:block>

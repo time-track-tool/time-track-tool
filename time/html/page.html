@@ -207,12 +207,12 @@
                tal:repeat="q queries"
                tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
                tal:content="structure string:&nbsp;&nbsp;${q/name}"
-               >&nbsp; &nbsp; Global Queries</option>
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klass})"
+               >  Global Queries</option>
+       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klass, 'id':[q.id for q in request.user.queries]})"
                tal:repeat="q queries"
                tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
                tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
-               >&nbsp; &nbsp; My Queries</option>
+               >    Private Queries</option>
 </tal:block>
 
 
@@ -615,32 +615,63 @@
        </td>
       </tr>
    </tal:block>
-     </table>
-    </td>
-   </tr>
-
-
-   <tr>
-    <td>
-     <table border="0" class="form">
       <tr>
-       <th>Search full text:</th>
-       <td colspan="5"><input name=":search_text"
-                              onChange="this.form.elements[':startwith'].value='0'"
-                              tal:attributes="value request/form/:search_text/value | nothing">
+       <th style="text-align:right;">Search full text:</th>
+       <td><input type="text"
+                  size="40"
+                  name=":search_text"
+                  onChange="this.form.elements[':startwith'].value='0'"
+                  tal:attributes="value request/form/:search_text/value | nothing">
        (Searches also in messages)</td>
       </tr>
 <!-- submit button -->
       <tr>
-       <th>Store this query as:</th>
+       <th></th>
+       <td>
+        <input type="submit"
+               value="Update view & don't store this query">
+       </td>
+      </tr>
+      <tr>
+      <th style="text-align:right;">This query's name:</th>
        <td>
         <input type="text"
-               name="@queryname"
+               name="_queryname"
                tal:attributes="value request/form/@queryname/value | default">
+        <input type="hidden" name="@queryname">
+        <span tal:condition="request/form/queryid/value | nothing">
+         <a tal:attributes="href string:query${request/form/queryid/value};"
+          >(edit this query)</a>
+         <input type="hidden" name="queryid"
+                tal:attributes="value request/form/queryid/value">
+<!--
+         <b>Private for me:</b>
+         <select tal:condition="request/form/queryid/value | nothing"
+                tal:attributes="name string:query${request/form/queryid/value}@private_for"
+                tal:define="uid request/user/id;
+                            qid request/form/queryid/value;
+                            qry python:db.query.getItem (qid)">
+         <option tal:attributes="selected python:qry.private_for == uid;
+                                 value uid">yes</option>
+         <option tal:attributes="selected python:qry.private_for == None"
+                 value="-1">no</option>
+         </select>
+         <b>Delete this query</b>
+         <input type="checkbox"
+                tal:attributes="name string:${request/user/designator}@remove@queries;
+                                value request/form/queryid/value;">
+-->
+        </span>
+       </td>
+      </tr>
+<!-- submit button -->
+      <tr>
+       <th></th>
+       <td>
         <input type="submit"
-               value="Update View / Store">
-        <a tal:condition="request/form/queryid/value | nothing"
-           tal:attributes="href string:query${request/form/queryid/value}">Edit this query</a>
+               value="Update view & store this query"
+               onclick="document.forms ['query'].elements ['@queryname'].value =
+                        document.forms ['query'].elements ['_queryname'].value;">
        </td>
       </tr>
      </table>

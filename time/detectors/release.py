@@ -31,41 +31,75 @@
 #--
 #
 
-from roundup import roundupdb, hyperdb
+from roundup import roundupdb, hyperdb, date
 from roundup.exceptions import Reject
 
 def add_milestones (db, cl, nodeid, new_values) :
     milestones = \
-        [ ("M0"  , "Release Planning has started")
-        , ("M50" , "Release Planning ready for start of Design")
-        , ("M100", "Release Planning completed, Feature Freeze")
-        , ("M150", "Design ready for start of Implementation")
-        , ("M200", "Desgin completed")
-        , ("M250", "Implementation ready for start of Integration Test")
-        , ("M300", "Implementation completed")
-        , ("M310", "TC Spec & TC Implementation completed")
-        , ("M350", "Integration Test ready for start of Test by Services; "
-                   "Alpha Release")
-        , ("M400", "Integration Test completed; Beta Release")
-        , ("M500", "Test by Services completed; Production Release")
-        , ("M600", "Shipment completed")
+        [ ("M0"  , "+     0d", "Release Planning has started")
+        , ("M50" , "+ 1m 20d", "Release Planning ready for start of Design")
+        , ("M100", "+ 2m 15d", "Release Planning completed, Feature Freeze")
+        , ("M150", "+ 3m"    , "Design ready for start of Implementation")
+        , ("M200", "+ 3m 20d", "Desgin completed")
+        , ("M250", "+ 4m 20d", "Implementation ready for start of "
+                               "Integration Test")
+        , ("M300", "+ 6m 20d", "Implementation completed")
+        , ("M310", "+ 7m"    , "TC Spec & TC Implementation completed")
+        , ("M350", "+ 7m 15d", "Integration Test ready for start of Test by "
+                               "Services; Alpha Release")
+        , ("M400", "+ 8m 15d", "Integration Test completed; Beta Release")
+        , ("M500", "+ 9m 10d", "Test by Services completed; Production Release")
+        , ("M600", "+10m"    , "Shipment completed")
         ]
     order  = 1
     ms_ids = []
-    for name, desc in milestones :
+    today  = date.Date (".").pretty (format="%Y-%m-%d")
+    today  = date.Date (today) # to start today at 00:00 and not somewhere in
+                               # the day
+    for name, interval, desc in milestones :
+        planned = today + date.Interval (interval)
         ms = db.milestone.create ( name        = name
                                  , description = desc
                                  , order       = order
+                                 , planned     = planned
+                                 , release     = nodeid
                                  )
         ms_ids.append (ms)
         order += 1
-    ms_ids.sort ()
     new_values ["milestones"] = ms_ids
-    print new_values
+    # set status to M0
+    new_values ["status"] = ms_ids [0]
 # end def add_milestones
 
+def update_milestones (db, cl, nodeid, old_values) :
+    """update the 'release' property of the attached milestones
+    """
+    mss = cl.get (nodeid, "milestones")
+    print mss
+    for ms in mss :
+        db.milestone.set (ms, release = nodeid)
+# end def update_milestones
+
+def update_release_status (db, cl, nodeid, old_values) :
+    """link the release's status field to the last reached milestone.
+    """
+    release_id = cl.get         (nodeid, "release")
+    milestones = db.release.get (release_id, "milestones")
+    milestones.reverse ()
+    last = milestones.pop (0)
+    for ms in milestones :
+        reached = cl.get (ms, "reached")
+        if reached :
+            last = ms
+        else :
+            break
+    db.release.set (release_id, status = last)
+# end def update_release_status
+
 def init (db) :
-    db.release.audit ("create", add_milestones)
+    db.release.audit   ("create", add_milestones)
+    db.release.react   ("create", update_milestones)
+    db.milestone.react ("set"   , update_release_status)
 # end def init
 
 ### __END__ release

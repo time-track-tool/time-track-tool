@@ -53,15 +53,8 @@ def create_defaults (db, cl, nodeid, new_values) :
 # end def create_defaults
 
 def add_feature_to_release (db, cl, nodeid, old_values) :
-    try :
-        old_release = old_values ["release"]
-    except (KeyError, TypeError) :
-        old_release = None
-
-    try :
-        new_release = cl.get (nodeid, "release")
-    except IndexError : # no new release
-        new_release = None
+    old_release = old_values.get ("release", None)
+    new_release = cl.get         (nodeid, "release")
 
     if old_release != new_release :
         if old_release :
@@ -156,7 +149,6 @@ def suspend_workpackages (db, cl, nodeid, old_values) :
 def init (db) :
     db.feature.audit             ("create", create_defaults         )
     db.feature.react             ("set"   , add_feature_to_release  )
-    db.feature.react             ("create", add_feature_to_release  )
     db.feature.react             ("set"   , set_composed_ofs_feature)
     db.feature.react             ("set"   , suspend_workpackages    )
     db.implementation_task.react ("set"   , update_status           )
