@@ -63,14 +63,103 @@ class Client(client.Client):
     '''
     pass
 
+class SearchAttribute :
+    """
+        util:  instance of TemplatingUtils
+        name:  name of the attribute of the item to be displayed in the
+               search.
+        label: label of the field in html.
+        lnkcls, lnkattr: applies to Link and Multilink properties
+        only and give the class to which the link points and the
+        attribute to display for this class.
+
+        SearchAttribute items will come from the index page for
+        a class (an entry in "props" for the search_display macro).
+    """
+    def __init__ \
+        ( self
+        , util
+        , prop
+        , label       = None
+        , lnkcls      = None
+        , lnkattr     = None
+        , multiselect = None
+        , is_label    = None
+        , editable    = None
+        ) :
+        self.util        = util
+        self.prop        = prop
+        self.classname   = prop._classname
+        self.klass       = prop._db.getclass (self.classname)
+        self.name        = prop._name
+        self.label       = label
+        self.lnkname     = None
+        self.lnkattr     = lnkattr
+        self.multiselect = multiselect
+        self.is_label    = is_label
+        self.editable    = editable
+        self.key         = None
+        if hasattr (prop._prop, 'classname') :
+            self.lnkname = prop._prop.classname
+            self.lnkcls  = prop._db.getclass (self.lnkname)
+            self.key     = self.lnkcls.getkey ()
+        if not self.label :
+            self.label   = self.util.pretty (self.name)
+        if self.lnkname and not self.lnkattr :
+            self.lnkattr = self.lnkcls.labelprop ()
+        if (   self.is_label is None
+           and (  self.name == 'id'
+               or self.klass.labelprop () == self.classname
+               )
+           ) :
+            self.is_label = 1
+    # end def __init__
+
+    def listingprop (self, item) :
+        hprop = item [self.name]
+        if self.editable :
+            return \
+                "<span style='white-space:nowrap'>" + hprop.field () + "</span>"
+        if self.is_label :
+            return self.util.formatlink (hprop, hprop, self.classname, item.id)
+        elif self.lnkattr :
+            if isinstance (hprop, MultilinkHTMLProperty) : 
+                return ", ".join \
+                    ([ self.util.formatlink
+                           ( self.util.deref (hprop [i], self.lnkattr)
+                           , hprop [i]
+                           , self.lnkname
+                           , hprop._value [i]
+                           )
+                       for i in range (len (hprop))
+                    ])
+            else :
+                return self.util.formatlink \
+                    ( self.util.deref (hprop, self.lnkattr)
+                    , hprop
+                    , self.lnkname
+                    , hprop._value
+                    )
+        return str (hprop)
+
+# end class SearchAttribute
+
 class TemplatingUtils:
     ''' Methods implemented on this class will be available to HTML templates
         through the 'utils' variable.
     '''
 
+    SearchAttribute = SearchAttribute
+
     def sorted_properties (self, db, context) :
         props = db [context._classname].properties ()
         props.sort (propsort)
+        return props
+
+    def properties_dict (self, db, context) :
+        props = {}
+        for prop in db [context._classname].properties () :
+            props [prop._name] = prop
         return props
 
     def pretty (self, name) :
@@ -93,8 +182,8 @@ class TemplatingUtils:
         """
             render a property of an item as a link to this item. We get
             the property, the item, the name of the item and its id
-            already pre-computed (although we could get everything from
-            the item).
+            already pre-computed (although we could get most from the
+            item).
         """
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.linkclass (item), name, id, hprop)
@@ -108,43 +197,6 @@ class TemplatingUtils:
         for i in prop.split ('.') :
             item = item [i]
         return item
-
-    def listingprop (self, item, prop, labelprop, classname, edit = False) :
-        """
-            The "prop" attribute is a tuple consisting of at least 2 and
-            at most 4 fields. The 0th item of the tuple is the label of
-            the field in html. The 1st item is the name of the attribute
-            of the item. The 3rd and 4th field apply to Link and
-            Multilink properties only and give the name of the class to
-            which the link points and the attribute to display for this
-            class. The prop attribute will come from the index page for
-            a class (an entry in "props" for the search_display macro).
-        """
-        f     = prop [1]
-        hprop = item [f]
-        l     = len (prop)
-        if edit :
-            return \
-                "<span style='white-space:nowrap'>" + hprop.field () + "</span>"
-        if f == labelprop or f == 'id' :
-            return self.formatlink (hprop, hprop, classname, item.id)
-        elif l > 2 :
-            cln  = prop [2]
-            attr = prop [3]
-            if isinstance (hprop, MultilinkHTMLProperty) : 
-                return ", ".join \
-                    ([ self.formatlink
-                           ( self.deref (hprop [i], attr)
-                           , hprop [i]
-                           , cln
-                           , hprop._value [i]
-                           )
-                       for i in range (len (hprop))
-                    ])
-            else :
-                return self.formatlink \
-                    (self.deref (hprop, attr), hprop, cln, hprop._value)
-        return hprop.plain ()
 
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
