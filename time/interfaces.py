@@ -20,13 +20,14 @@
 #
 #++
 # Name
-#    release
+#    interfaces
 #
 # Purpose
-#    Detectors for the 'release' class
+#    Define utlilities used by roundup
 #
 # Revision Dates
-#    11-Oct-2004 (MPH) Creation
+#    11-Oct-2004 (MPH) Creation - from default tracker's interfaces.py
+#     2-Nov-2004 (MPH) Added `calendar`
 #    ««revision-date»»···
 #--
 #
@@ -42,6 +43,7 @@ class Client(client.Client):
         with any specific extensions
     '''
     pass
+# end class Client
 
 class TemplatingUtils:
     ''' Methods implemented on this class will be available to HTML templates
@@ -199,11 +201,14 @@ class TemplatingUtils:
         res.append ("""</table>""")
         return "\n".join (res)
     # end def html_calendar
+# end class TemplatingUtils
 
 class MailGW(mailgw.MailGW):
     ''' derives basic mail gateway implementation from the standard module,
         with any specific extensions
     '''
     pass
+# end class MailGW
 
+### __END__ task
 # vim: set filetype=python ts=4 sw=4 et si

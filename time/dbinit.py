@@ -25,6 +25,7 @@
 #                      - added `defects` multilink to `feature` (was missing)
 #                      - cleanup of unused classes
 #     4-Nov-2004 (MPH) Effort: `Interval` -> `Number`
+#     8-Nov-2004 (MPH) Cleanup, removed `accepted-but-defects` from `document_status`
 #    ««revision-date»»···
 #--
 #
@@ -237,14 +238,6 @@ def open (name = None):
         )
     position.setkey ("position")
 
-    # XXX: needs to get clarified with OIT - regarding the LDAP Tree they are
-    #      building up right now ...
-    #      Acc to the meeting from 1.7.04 they have some properties already
-    #      in ldap,  but dont care about a db backend right now, maybe some
-    #      day the ldap info will be created out of roundup.
-    #      RSC: has the current ldap spec, and will investigate further
-    #      properties needed here in roundup
-    #
     # Note: roles is a comma-separated string of Role names
     user = Class \
         ( db
@@ -342,18 +335,6 @@ def open (name = None):
         , type                  = Link      ("document_type")
         )
 
-    ### XXX: "Software" Container is a singleton and was eliminated, instead
-    ###      of this one or more global queries will be created to hold all
-    ###      the information found in the "Software" container.
-    ###      Namely these queries would filter :
-    ###        * all release containers
-    ###        * all defects not connected to a release == known defects
-    ###        * all features not connected to a release == new features.
-    ###
-    ###      Further filtering capabilities can be implemented as needed.
-    ###      This information solely is of importance for SW Head and/or
-    ###      Teamleaders.
-
     release = TTT_Issue_Class \
         ( db
         , "release"
@@ -369,31 +350,23 @@ def open (name = None):
         , milestones            = Multilink ("milestone") # Note: they get
                                         # added automatically on creation of
                                         # a new release (by the auditor -
-                                        # XXX: what if creation fails, or
-                                        # there is some error during creation
-                                        # of the multilink properties ??? -
-                                        # how to clean up ???) -> as it's
-                                        # done by the auditor, if creation
-                                        # fails, the auditor fails and
-                                        # despite of (maybe) some milestones
-                                        # nothing harmful will be done.
         )
 
     feature = TTT_Issue_Class \
         ( db
         , "feature"
         , stakeholder           = String    () # some freeform text
-        # XXX: "status" is simplified to be only one of "raised",
-        #      "suspended", "open" and "completed", all other *.accepted
-        #      states can be computed directly from the status of the
-        #      attached issues.
-        #      There is now a seperate flag "test_ok" which covers the state
-        #      of the testcases, and gets set automatically by a detector
-        #      when the "test_ok" flag of some attached "testcase" changes.
-        #      Changes to the "testcase"s "test_ok" are only allowed by the
-        #      iv&v team, and are set manually at begin and later on this
-        #      should be automatically, based on the success of a given
-        #      testcase (identified by the issue no.).
+        # note: "status" is simplified to be only one of "raised",
+        #       "suspended", "open" and "completed", all other *.accepted
+        #       states can be computed directly from the status of the
+        #       attached issues.
+        #       There is now a seperate flag "test_ok" which covers the state
+        #       of the testcases, and gets set automatically by a detector
+        #       when the "test_ok" flag of some attached "testcase" changes.
+        #       Changes to the "testcase"s "test_ok" are only allowed by the
+        #       iv&v team, and are set manually at begin and later on this
+        #       should be automatically, based on the success of a given
+        #       testcase (identified by the issue no.).
         , status                = Link      ("feature_status")
         , test_ok               = Boolean   () # gets set automatically by a
                                                # detector depending on the
@@ -479,45 +452,6 @@ def open (name = None):
         , belongs_to_task       = Link      ("task")    # if known
         )
 
-## XXX: acc to AGO/RSC/MPH there should be no legacy "issue" class - if
-##      somebody wants something with this tracker, we define and implement
-##      what he/she needs.
-##
-##     # XXX: should we provide a legacy issue class ???
-##     #      needs also the companion classes (keyword, status, category,
-##     #      kind and area)
-##     issue = TTT_Issue_Class \
-##         ( db, "issue"
-##         # , responsible          = Link      ("user")
-##         # , stakeholder          = String    () # unformatted
-##         , keywords             = Multilink ("keyword")
-##         , priority             = Number    ()
-##         , effective_prio       = Number    ()
-##         , status               = Link      ("status")
-##         , closed               = Date      ()
-##         , release              = String    ()
-##         , fixed_in             = String    () # was Release-Note in gnats
-##         , files_affected       = String    ()
-##         # , needs_files_affected = Boolean   ()
-##         , category             = Link      ("category")
-##         , kind                 = Link      ("kind")
-##         , area                 = Link      ("area")
-##         , depends              = Multilink ("issue")
-##         , needs                = Multilink ("issue")
-##         , effort               = String    ()
-##         # , accumulated_effort   = String    () # `(c, t, o)`
-##         , deadline             = Date      ()
-##         , earliest_start       = Date      ()
-##         , planned_begin        = Date      ()
-##         , planned_end          = Date      ()
-##         , cur_est_begin        = Date      () # current estimate
-##         , cur_est_end          = Date      () # current estimate
-##         , candidates           = Multilink ("user")
-##         , composed_of          = Multilink ("issue") # should be read only
-##         , part_of              = Link      ("issue") # should set composed_of
-##         )
-
-# XXX: to be defined
     #
     # SECURITY SETTINGS
     #
@@ -601,15 +535,6 @@ def open (name = None):
         p = db.security.getPermission   ("Nosy", klass)
         db.security.addPermissionToRole ("Nosy", p)
 
-##     for cl in 'issue', 'file', 'msg', 'query':
-##         p = db.security.getPermission('View', cl)
-##         db.security.addPermissionToRole('User', p)
-##         p = db.security.getPermission('Edit', cl)
-##         db.security.addPermissionToRole('User', p)
-##     for cl in 'priority', 'status':
-##         p = db.security.getPermission('View', cl)
-##         db.security.addPermissionToRole('User', p)
-
     # and give the regular users access to the web and email interface
     p = db.security.getPermission('Web Access')
     db.security.addPermissionToRole('User', p)
@@ -620,28 +545,11 @@ def open (name = None):
     p = db.security.getPermission('View', 'user')
     db.security.addPermissionToRole('Anonymous', p)
 
-##     # Assign the appropriate permissions to the anonymous user's Anonymous
-##     # Role. Choices here are:
-##     # - Allow anonymous users to register through the web
-##     p = db.security.getPermission('Web Registration')
-##     db.security.addPermissionToRole('Anonymous', p)
-##     # - Allow anonymous (new) users to register through the email gateway
-##     p = db.security.getPermission('Email Registration')
-##     db.security.addPermissionToRole('Anonymous', p)
-##     # - Allow anonymous users access to view issues (which implies being
-##     #   able to view all linked information too
-##     for cl in 'issue', 'file', 'msg', 'priority', 'status':
-##         p = db.security.getPermission('View', cl)
-##         db.security.addPermissionToRole('Anonymous', p)
-##     # - Allow anonymous users access to edit the "issue" class of data
-##     #   Note: this also grants access to create related information like
-##     #         files and messages etc that are linked to issues
-##     #p = db.security.getPermission('Edit', 'issue')
-##     #db.security.addPermissionToRole('Anonymous', p)
 
     # oh, g'wan, let anonymous access the web interface too
-    p = db.security.getPermission('Web Access')
-    db.security.addPermissionToRole('Anonymous', p)
+    # XXX: really ???
+#    p = db.security.getPermission('Web Access')
+#    db.security.addPermissionToRole('Anonymous', p)
 
     import detectors
     detectors.init(db)
@@ -682,7 +590,7 @@ def init(adminpw):
               , "It is reviewed and found to be correct.")
             , ("5", "accepted-but-defects", "acbd", ("accepted", )
               , "It is accepted, but has defects reported.")
-            , ("6", "suspended"           , "susp", ("issued",)
+            , ("6", "suspended"           , "susp", ("issued", )
               , "We plan to do it later.")
             , ("7", "closed-obsolete"     , "obso", ()
               , "We agreed to not do it anymore")
@@ -705,18 +613,12 @@ def init(adminpw):
     # order, name, abbr, transitions, description
     docs = [ ("1", "issued"              , "issu", ("started", )
              , "Waiting to get started")
-           , ("2", "started"             , "star", ("available", "suspended")
+           , ("2", "started"             , "star", ("available")
              , "Someone is working on it.")
-           , ("3", "available"           , "avai", ("accepted", "suspended")
+           , ("3", "available"           , "avai", ("accepted")
              , "It is ready for review.")
-           , ("4", "accepted"            , "acce", ("accepted-but-defects", )
-             , "It is reviewed and found to be correct.")
-           , ("5", "accepted-but-defects", "acbd", ("accepted", )
-             , "It is accepted, but has defects reported.")
-##            , ("6", "suspended"           , "susp", ("issued",)
-##              , "We plan to do it later.")
-##            , ("7", "closed-obsolete"     , "obso", ()
-##              , "We agreed to not do it anymore")
+           , ("4", "accepted"            , "acce", ()
+              , "It is reviewed and found to be correct.")
            ]
 
     document_status = db.getclass ("document_status")
@@ -781,20 +683,6 @@ def init(adminpw):
     ai = db.getclass ("action_item_status")
     for order, name, desc in ais :
         ai.create (name = name, description = desc, order = order)
-
-##     feature_status = db.getclass ("feature_status")
-##     # XXX: need the order to be 01, 02, 03, 04 to get sorted properly ???
-##     feature_status.create (name = "raised"                 , order = "1")
-##     feature_status.create (name = "SRD accepted"           , order = "2")
-##     feature_status.create (name = "SDD accepted"           , order = "3")
-##     feature_status.create (name = "Testcases accepted"     , order = "4")
-##     feature_status.create (name = "Implementation accepted", order = "5")
-##     feature_status.create (name = "Testc. & Impl. accepted", order = "6")
-##     feature_status.create (name = "Integrationtest OK"     , order = "7")
-##     feature_status.create (name = "Integrationtest FAILED" , order = "8")
-##     feature_status.create (name = "completed"              , order = "9")
-##     feature_status.create (name = "suspended"              , order = "10")
-##     feature_status.create (name = "rejected"               , order = "11")
 
     # defect_status:
     # order, name, abbreviation, cert, description, cert_trans, trans
@@ -936,9 +824,9 @@ def init(adminpw):
                 , roles    = "Anonymous"
                 )
 
-    # create TTTech users:
-    # XXX: we should import this from somewhere ;-)
-    # but it should reside here - or not ???
+##     # create TTTech users:
+##     # XXX: we should import this from somewhere ;-)
+##     # but it should reside here - or not ???
 ##     user.create ( username = "priesch"
 ##                 , password = password.Password ("")
 ##                 , address  = "priesch@tttech.com"
@@ -951,32 +839,32 @@ def init(adminpw):
 ##                 , roles    = "Admin, User, Nosy"
 ##                 )
 
-    # products:
-    # name, responsible, description, nosy
-    ps = [ ("TTPPlan"     , "priesch", "desc", [])
-         , ("TTPCalibrate", "pr"     , "desc", [])
-         # XXX: add products here
-         ]
-    product = db.getclass ("product")
-    for name, resp, desc, nosy in ps :
-        nosy_ids = [user.lookup (u) for u in nosy]
-        product.create ( name        = name
-                       , responsible = resp
-                       , nosy        = nosy_ids
-                       , description = desc
-                       )
+##     # products:
+##     # name, responsible, description, nosy
+##     ps = [ ("TTPPlan"     , "priesch", "desc", [])
+##          , ("TTPCalibrate", "pr"     , "desc", [])
+##          # XXX: add products here
+##          ]
+##     product = db.getclass ("product")
+##     for name, resp, desc, nosy in ps :
+##         nosy_ids = [user.lookup (u) for u in nosy]
+##         product.create ( name        = name
+##                        , responsible = resp
+##                        , nosy        = nosy_ids
+##                        , description = desc
+##                        )
 
-    # meetings
-    # title, responsible, nosy
-    meetings = \
-        [ ("Tools-Meeting", "admin", ["priesch", ])
-        , ("SAFT-Meeting",  "pr"   , ["priesch", ])
-        # XXX: add other meetings
-        ]
-    meeting = db.getclass ("meeting")
-    for title, resp, nosy in meetings :
-        nosy_ids = [user.lookup (u) for u in nosy]
-        meeting.create (title = title, responsible = resp,  nosy = nosy_ids)
+##     # meetings
+##     # title, responsible, nosy
+##     meetings = \
+##         [ ("Tools-Meeting", "admin", ["priesch", ])
+##         , ("SAFT-Meeting",  "pr"   , ["priesch", ])
+##         # XXX: add other meetings
+##         ]
+##     meeting = db.getclass ("meeting")
+##     for title, resp, nosy in meetings :
+##         nosy_ids = [user.lookup (u) for u in nosy]
+##         meeting.create (title = title, responsible = resp,  nosy = nosy_ids)
 
     # add any additional database create steps here - but only if you
     # haven't initialised the database with the admin "initialise" command

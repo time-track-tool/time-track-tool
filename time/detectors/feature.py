@@ -28,6 +28,7 @@
 # Revision Dates
 #    23-Jul-2004 (MPH) Creation
 #     5-Oct-2004 (MPH) Added `set_composed_ofs_feature`
+#     8-Nov-2004 (MPH) Moved `task` related to `task.py`, major cleanup
 #    ««revision-date»»···
 #--
 #
@@ -35,17 +36,22 @@
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
 
-def create_defaults (db, cl, nodeid, new_values) :
-    if not new_values.has_key ("status") :
-        new_values ["status"] = "raised"
-# end def create_defaults
+def is_feature_completed (db, cl, nodeid, new_values) :
+    """auditor on feature.set
 
-def add_feature_to_release (db, cl, nodeid, oldvalues) :
+    does not allow any changes when the feture is in state `completed`
+    """
+    completed = db.feature_status.lookup ("completed")
+    if cl.get (nodeid, "status") == completed :
+        raise Reject, "You are not allowed to change a 'completed' feature"
+# end def is_feature_completed
+
+def add_feature_to_release (db, cl, nodeid, old_values) :
     """reactor on feature.set:
 
     update links to and from releases
     """
-    old_release = oldvalues.get  ("release", None)
+    old_release = old_values.get ("release", None)
     new_release = cl.get         (nodeid, "release")
 
     if old_release != new_release :
@@ -61,91 +67,13 @@ def add_feature_to_release (db, cl, nodeid, oldvalues) :
             db.release.set (new_release, features = fs)
 # end def add_feature_to_release
 
-def update_features_status (db, cl, nodeid, oldvalues) :
-    """reactor on task.set:
-
-    set the features status according to the linked tasks's status.
-
-    - when only one task is in status `started`, set the feature's
-      status to `open`
-    - when all tasks are in status 'accepted', set the feature's
-      status to `completed`
-    """
-    old_status = oldvalues ["status"]
-    new_status = cl.get (nodeid, "status")
-    if old_status != new_status :
-        # status changed, we should investigate further
-        t_id_started = db.task_status.lookup    ("started")
-        f_id_open    = db.feature_status.lookup ("open")
-        f_id         = cl.get (nodeid, "feature") # new value, because it could
-                                                  # also have changed !
-        f_id_status  = db.feature.get (f_id, "status")
-        if new_status == t_id_started and f_id_status != f_id_open :
-            # status changed to status, we can safely set the feature's
-            # status to `open` if not already done so.
-            db.feature.set (f_id, status = f_id_open)
-        else :
-            # we need to iterate over all tasks of the feature, to
-            # find out if we can close the feature now
-            t_id_accepted = db.task_status.lookup ("accepted")
-            can_close     = True
-            tasks         = db.feature.get (f_id, "tasks")
-            for task in tasks :
-                if db.task.get (task, "status") != t_id_accepted :
-                    can_close = False
-                    break
-            if can_close :
-                f_id_completed = db.feature_status.lookup ("completed")
-                db.feature.set (f_id, status = f_id_completed)
-# end def update_features_status
-
-def update_features_test_ok (db, cl, nodeid, oldvalues) :
-    """reactor of task.set:
-    if this task is of kind `testcase` we should propagate the `test_ok`
-    value to the feature.
-    """
-    k_id_testcase = db.task_kind.lookup ("testcase")
-    s_id_accepted = db.task_status.lookup ("accepted")
-    if cl.get (nodeid, "kind")   == k_id_testcase and \
-       cl.get (nodeid, "status") == s_id_accepted :
-        f_id      = cl.get (nodeid, "feature")
-        f_test_ok = db.feature.get (f_id, "test_ok")
-        # if our `test_ok` is False, we can safely set the feature's test_ok
-        # to False, if it's not already
-        my_test_ok = cl.get (nodeid, "test_ok")
-        if not my_test_ok and f_test_ok == True :
-            # safe to set feature's test_ok to False
-            db.feature.set (f_id, test_ok = False)
-        elif my_test_ok :
-            # my test is ok, check if there are other testcases attached to
-            # this feature which have a `test_ok` which is False. If we find
-            # none, we can safely set the feature's test_ok to True.
-            all_testcases = \
-                db.task.filter ( None
-                               , { "feature" : f_id
-                                 , "kind"    : k_id_testcase
-                                 }
-                               )
-            closed_ok_testcases = \
-                db.task.filter ( None
-                               , { "feature" : f_id
-                                 , "kind"    : k_id_testcase
-                                 , "status"  : s_id_accepted
-                                 , "test_ok" : True
-                                 }
-                               )
-            if len (all_testcases) == len (closed_ok_testcases) :
-                # all testcases are `accepted` and the test has passed
-                db.feature.set (f_id, test_ok = True)
-# end def update_features_test_ok
-
-def suspend_tasks_and_defects (db, cl, nodeid, oldvalues) :
+def suspend_tasks_and_defects (db, cl, nodeid, old_values) :
     """reactor on feature.set:
 
     if the feature's state changed to `suspended` or `rejected` all it's
     task's and defect's status should also change to `suspended`
     """
-    old_status = oldvalues ["status"]
+    old_status = old_values ["status"]
     new_status = cl.get (nodeid, "status")
     suspend_ids = ( db.feature_status.lookup ("suspended")
                   , db.feature_status.lookup ("rejected")
@@ -166,25 +94,12 @@ def suspend_tasks_and_defects (db, cl, nodeid, oldvalues) :
                     db.defect.set (defect, status = d_id_suspended)
 # end def suspend_workpackages
 
-def add_task (db, cl, nodeid, newvalues) :
-    """auditor for task.create:
-
-    checks if both task.kind and task.title are set"""
-    title = newvalues.get ("title")
-    kind  = newvalues.get ("kind" )
-
-    if not title :
-        raise Reject, "Required task property title not supplied"
-    if not kind :
-        raise Reject, "Required task property kind not supplied"
-# end def add_task
-
-def backlink_task (db, cl, nodeid, oldvalues) :
+def backlink_task (db, cl, nodeid, old_values) :
     """reactor feature.set
 
     sets the `feature` backlink in the newly created task.
     """
-    old_tasks = oldvalues.get ("tasks", [])
+    old_tasks = old_values.get ("tasks", [])
     new_tasks = cl.get (nodeid, "tasks")
     new_task = [t for t in new_tasks if t not in old_tasks]
     if new_task :
@@ -193,7 +108,7 @@ def backlink_task (db, cl, nodeid, oldvalues) :
         db.task.set (new_task_id, feature = feature_id)
 # end def backlink_task
 
-def move_defects (db, cl, nodeid, oldvalues) :
+def move_defects (db, cl, nodeid, old_values) :
     """reactor on feature.set
 
     move the feature's defects from the release to the 'new' release when the
@@ -204,7 +119,7 @@ def move_defects (db, cl, nodeid, oldvalues) :
     note: this code could be merged in the `add_feature_to_release` function
           but for clarity it's a seperate function.
     """
-    old_release = oldvalues.get ("release", None)
+    old_release = old_values.get ("release", None)
     new_release = cl.get        (nodeid, "release")
 
     if new_release != old_release :
@@ -233,20 +148,16 @@ def move_defects (db, cl, nodeid, oldvalues) :
 # end def move_defects
 
 def init (db) :
-    db.feature.audit             ("create", create_defaults          )
+#    db.feature.audit             ("set"   , is_feature_completed     )
     db.feature.react             ("set"   , add_feature_to_release   )
     db.feature.react             ("set"   , move_defects             )
     db.feature.react             ("set"   , suspend_tasks_and_defects)
     db.feature.react             ("set"   , backlink_task            )
-    db.task.react                ("set"   , update_features_status   )
-    db.task.react                ("set"   , update_features_test_ok  )
-    db.task.audit                ("create", add_task                 )
 # end def init
 
 # TODO: feature.audit:
-#       - disable adding new stuff when the feature is in state 'completed'
-#         (at least)
-#       - you cant start when it's not connected to a release ??
+#       - you cant start when it's not connected to a release ???
+#       - can a feature be "completed", when it has pending defects ???
 ### __END__ feature
 
 

@@ -27,8 +27,8 @@
 #
 # Revision Dates
 #    22-Jul-2004 (MPH) Creation
-#    5-Oct-2004 (MPH) Added implementation_task.create and
-#                     documentation_task.create and testcase.create
+#     5-Oct-2004 (MPH) Added implementation_task.create and
+#                      documentation_task.create and testcase.create
 #    ««revision-date»»···
 #--
 #
@@ -73,32 +73,56 @@ def default_defect_nosy (db, cl, nodeid, new_values) :
     product   = new_values.get ("product"        )
     prod_nosy = db.product.get (product  , "nosy")
     creator   = new_values.get ("creator"        )
-    print "blaa"
-    print nosy, prod_nosy, creator, new_values ["responsible"]
     nosy      = union ( nosy
                       , prod_nosy
                       , [ creator
                         , new_values ["responsible"]
                         ]
                       )
-    print nosy
-    # XXX: why is the next neccesary ???
-    if None in nosy :
-        nosy.remove (None)
+    nosy = filter (None, nosy) # filter out possible `None` entries
     new_values ["nosy"] = nosy
 # end def default_defect_nosy
 
+def default_feature_status (db, cl, nodeid, new_values) :
+    if not new_values.has_key ("status") :
+        new_values ["status"] = "raised"
+# end def default_feature_status
+
+def default_task_status (db, cl, nodeid, new_values) :
+    if not new_values.has_key ("status") :
+        new_values ["status"] = "issued"
+# end def default_task_status
+
+def default_document_title (db, cl, nodeid, new_values) :
+    if not new_values.has_key ("status") :
+        new_values ["status"] = "issued"
+    if not new_values.has_key ("title") :
+        # if type specified
+        if new_values.has_key ("type") :
+            desc = db.document_type.get (new_values ["type"], "description")
+            new_values ["title"] = desc
+        else :
+            new_values ["title"] = "Automatically generated"
+# end def default_document_title
+
+def default_action_item_status (db, cl, nodeid, new_values) :
+    if not new_values.has_key ("status") :
+        new_values ["status"] = "open"
+# end def default_action_item_status
+
 def init (db) :
-    db.document.audit            ("create", default_responsible)
-    db.release.audit             ("create", default_responsible)
-    db.action_item.audit         ("create", default_responsible)
-    db.feature.audit             ("create", default_responsible)
-    db.task.audit                ("create", default_responsible)
-    db.defect.audit              ("create", default_defect_responsible)
-    db.defect.audit              ("create", default_defect_status)
-    db.defect.audit              ("create", default_defect_nosy)
+    db.action_item.audit ("create", default_responsible       )
+    db.document.audit    ("create", default_responsible       )
+    db.release.audit     ("create", default_responsible       )
+    db.feature.audit     ("create", default_responsible       )
+    db.task.audit        ("create", default_responsible       )
+    db.defect.audit      ("create", default_defect_responsible)
+    db.action_item.audit ("create", default_action_item_status)
+    db.feature.audit     ("create", default_feature_status    )
+    db.task.audit        ("create", default_task_status       )
+    db.defect.audit      ("create", default_defect_status     )
+    db.defect.audit      ("create", default_defect_nosy       )
+    db.document.audit    ("create", default_document_title    )
 # end def init
 
 ### __END__ defaults
-
-

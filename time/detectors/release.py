@@ -28,6 +28,7 @@
 # Revision Dates
 #    22-Jul-2004 (MPH) Creation
 #     4-Nov-2004 (MPH) Changed Milestones
+#     8-Nov-2004 (MPH) Cleanup
 #    ««revision-date»»···
 #--
 #
@@ -36,6 +37,13 @@ from roundup import roundupdb, hyperdb, date
 from roundup.exceptions import Reject
 
 def add_milestones (db, cl, nodeid, new_values) :
+    """auditor on release.create
+
+    XXX: not sure if this should be in an auditor ???
+
+    - creates the milestones and attaches them to the newly created release.
+    - set release's `status` to M000
+    """
     milestones = \
         [ ("M000", "+     0d", "Release Planning has started")
         , ("M100", "+ 2m 15d", "Release Planning completed, Feature Freeze")
@@ -72,16 +80,19 @@ def add_milestones (db, cl, nodeid, new_values) :
 # end def add_milestones
 
 def update_milestones (db, cl, nodeid, old_values) :
-    """update the 'release' property of the attached milestones
+    """reactor on release.create
+
+    set the 'release' property of the attached milestones
     """
     mss = cl.get (nodeid, "milestones")
-    print mss
     for ms in mss :
         db.milestone.set (ms, release = nodeid)
 # end def update_milestones
 
 def update_release_status (db, cl, nodeid, old_values) :
-    """link the release's status field to the last reached milestone.
+    """reactor on release.set
+
+    link the release's status field to the last reached milestone.
     """
     release_id = cl.get         (nodeid, "release")
     milestones = db.release.get (release_id, "milestones")
@@ -96,12 +107,13 @@ def update_release_status (db, cl, nodeid, old_values) :
     db.release.set (release_id, status = last)
 # end def update_release_status
 
-def backlink_documents (db, cl, nodeid, oldvalues) :
-    """reactor on release:
-    when the contents of the "documents" property chenges, the newly attached
-    docuemnts get their "release" property set correctly.
+def backlink_documents (db, cl, nodeid, old_values) :
+    """reactor on release.set
+
+    when the contents of the `documents` property chenges, the newly attached
+    docuemnts get their `release` property set accordingly.
     """
-    old_docs = oldvalues.get ("documents", [])
+    old_docs = old_values.get ("documents", [])
     new_docs = db.release.get (nodeid, "documents")
     print old_docs
     print new_docs
