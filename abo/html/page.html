@@ -8,7 +8,7 @@
  ; qname_f       python:((qname_form   [:len(uname)]==uname) and (qname_form   [(len(uname)+1):])) or (qname_form)
  ; qname_r       python:((qname_request[:len(uname)]==uname) and (qname_request[(len(uname)+1):])) or (qname_request)
  ; qname         python:qname_r or qname_f
- ; classname     context/_classname|default
+ ; classname     context/_classname|db/address/_classname
  ; Classname     python: utils.pretty (classname)
  ; klass         python:db [classname] or default
  ; is_user       python:uname!='anonymous'
@@ -462,32 +462,32 @@
 
    <tr>
     <td>
-     View
+     Anzeigen:
      <input type="text" size="4" name=":pagesize"
-            tal:attributes="value request/pagesize"> items per page,
-      Sort by:<select name=":sort"
+            tal:attributes="value request/pagesize"> pro Seite,
+      Sortierung:<select name=":sort"
                       onChange="this.form.elements[':startwith'].value='0'">
-         <option value="">- nothing -</option>
+         <option value="">- keine -</option>
          <option tal:repeat="prop props"
                  tal:attributes="selected python:prop[1]==request.sort[1];
                                  value    python:prop[1]"
                  tal:content="python:prop[0]"
          ></option>
         </select>
-        Descending:<input type="checkbox"
+        Absteigend:<input type="checkbox"
                           name=":sortdir"
                           onChange="this.form.elements[':startwith'].value='0'"
                           tal:attributes="checked python:request.sort[0] == '-'">
-     - Group by:<select name=":group"
+     - Gruppierung:<select name=":group"
                         onChange="this.form.elements[':startwith'].value='0'">
-         <option value="">- nothing -</option>
+         <option value="">- keine -</option>
          <option tal:repeat="prop props"
                  tal:attributes="selected python:prop[1]==request.group[1];
                                  value    python:prop[1]"
                  tal:content="python:prop[0]"
          ></option>
         </select>
-        Descending:<input type="checkbox"
+        Absteigend:<input type="checkbox"
                           name=":groupdir"
                           onChange="this.form.elements[':startwith'].value='0'"
                           tal:attributes="checked python:request.group[0] == '-'">
@@ -500,7 +500,7 @@
       <!-- fill in custom query data -->
       <!-- fill in multi selection boxes -->
       <tr>
-       <th style="text-align:center;">View:</th>
+       <th style="text-align:center;">Felder:</th>
    <tal:block tal:repeat="prop props">
        <th tal:condition="python:prop[1] in multi"
            tal:content="python:prop[0]+':'"></th>
@@ -517,22 +517,46 @@
                  tal:content="python:prop[0]"></option>
         </select>
        </td>
-   <tal:block tal:repeat="prop props">
-       <td style="text-align:center;"
-           tal:condition="python:prop[1] in multi">
-        <select multiple
-                size="7"
-                tal:attributes="name python:prop[1]"
-                tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
-         <option value=""
-                 tal:attributes="selected not:form_vals">don't care</option>
-         <option tal:repeat="s python:db[prop[2]].list()"
-                 tal:attributes="value    s/id;
-                                 selected python:s.id in form_vals"
-                 tal:content="python:s[prop[3]]"></option>
-        </select>
+       <tal:block tal:repeat="prop props">
+        <td style="text-align:center;"
+            tal:condition="python:prop[1] in multi">
+         <select multiple
+                 size="7"
+                 tal:attributes="name python:prop[1]"
+                 tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
+          <option value=""
+                  tal:attributes="selected not:form_vals">don't care</option>
+          <option tal:repeat="s python:db[prop[2]].list()"
+                  tal:attributes="value    s/id;
+                                  selected python:s.id in form_vals"
+                  tal:content="python:s[prop[3]]"></option>
+         </select>
+        </td>
+       </tal:block>
+       <td>
+        <table border="0" class="form">
+         <tr>
+          <th>Volltextsuche:</th>
+          <td colspan="5"><input name=":search_text"
+                                 onChange="this.form.elements[':startwith'].value='0'"
+                                 tal:attributes="value request/form/:search_text/value | nothing">
+          (Sucht auch in Notizen)</td>
+         </tr>
+   <!-- submit button -->
+         <tr>
+          <th>Abfrage speichern als:</th>
+          <td>
+           <input type="text"
+                  name="@queryname"
+                  tal:attributes="value request/form/@queryname/value | default">
+           <input type="submit"
+                  value="Suche Starten / Speichern">
+           <a tal:condition="request/form/queryid/value | nothing"
+              tal:attributes="href string:query${request/form/queryid/value}">Edit this query</a>
+          </td>
+         </tr>
+        </table>
        </td>
-   </tal:block>
       </tr>
      </table>
     </td>
@@ -559,32 +583,6 @@
    </tr>
 
 
-   <tr>
-    <td>
-     <table border="0" class="form">
-      <tr>
-       <th>Search full text:</th>
-       <td colspan="5"><input name=":search_text"
-                              onChange="this.form.elements[':startwith'].value='0'"
-                              tal:attributes="value request/form/:search_text/value | nothing">
-       (Searches also in messages)</td>
-      </tr>
-<!-- submit button -->
-      <tr>
-       <th>Store this query as:</th>
-       <td>
-        <input type="text"
-               name="@queryname"
-               tal:attributes="value request/form/@queryname/value | default">
-        <input type="submit"
-               value="Update View / Store">
-        <a tal:condition="request/form/queryid/value | nothing"
-           tal:attributes="href string:query${request/form/queryid/value}">Edit this query</a>
-       </td>
-      </tr>
-     </table>
-    </td>
-   </tr>
   </table>
 </form>
 </tal:block>

@@ -17,16 +17,34 @@
      <td tal:content="structure python:context.amount.field (6)"></td>
     </tr>
     <tr>
-     <th tal:content="python:utils.pretty('begin')" class="required"></th>
+     <th tal:content="python:utils.pretty('begin')"></th>
      <td tal:content="structure context/begin/field"></td>
      <th tal:content="python:utils.pretty('end')"></th>
-     <td tal:content="structure context/begin/field"></td>
+     <td tal:content="structure context/end/field"></td>
     </tr>
-    <tr>
-     <th tal:content="python:utils.pretty('subscriber')" class="required"></th>
+    <tr tal:define="rowspan python:(2, 1)[not context.id]">
+     <th tal:content="python:utils.pretty('subscriber')"
+         class="required" tal:attributes="rowspan rowspan"></th>
      <td tal:content="structure context/subscriber/field"></td>
-     <th tal:content="python:utils.pretty('payer')" class="required"></th>
+     <th tal:content="python:utils.pretty('payer')"
+         tal:attributes="rowspan rowspan"></th>
      <td tal:content="structure context/payer/field"></td>
+    </tr>
+    <tr tal:condition="context/id|nothing">
+     <td>
+      <a tal:attributes="href string:address${context/subscriber/id}"
+         tal:content="python:str (context.subscriber.firstname)
+                           + ' '
+                           + str (context.subscriber.lastname)">
+      </a>
+     </td>
+     <td>
+      <a tal:attributes="href string:address${context/payer/id}"
+         tal:content="python:str (context.payer.firstname)
+                           + ' '
+                           + str (context.payer.lastname)">
+      </a>
+     </td>
     </tr>
    </tal:block>
   </tal:block>

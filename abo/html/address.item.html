@@ -67,6 +67,32 @@
      <th tal:content="python:utils.pretty('fax')"></th>
      <td tal:content="structure context/fax/field"></td>
     </tr>
+    <tr tal:condition="context/id">
+     <th tal:content="python:utils.pretty('abos')"></th>
+     <td align="top">
+      <table>
+       <tr tal:repeat="abo context/abos">
+        <td>
+         <a tal:attributes="href string:abo${abo/id}"
+            tal:content="abo/aboprice">
+         </a>
+        </td>
+       </tr>
+      </table>
+     </td>
+     <th tal:content="python:utils.pretty('payed_abos')"></th>
+     <td align="top">
+      <table>
+       <tr tal:repeat="abo context/payed_abos">
+        <td>
+         <a tal:attributes="href string:abo${abo/id}"
+            tal:content="abo/aboprice">
+         </a>
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>

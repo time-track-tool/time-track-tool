@@ -1,0 +1,10 @@
+<!--
+ This is the default body that is displayed when people visit the
+ tracker. The tag below lists the current addresses. You may
+ replace it with a greeting message, or a different list of documents or
+ whatever. It's a good idea to have the documents on the front page though
+-->
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">Startseite</title>
+ <tal:block metal:fill-slot="menubar"></tal:block>
+</tal:block>
