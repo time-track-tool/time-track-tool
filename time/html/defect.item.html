@@ -16,13 +16,17 @@
     <input type="hidden" name="@required" value="product,version,severity,found_in_release">
     <tr>
      <th class="required">Product</th>
-     <td tal:content="structure context/product/menu"></td>
+     <td colspan="3"
+         tal:content="structure context/product/menu"></td>
+    </tr>
+    <tr>
      <th class="required">Version</th>
-     <td tal:content="structure context/version/field"></td>
+     <td colspan="3"
+         tal:content="structure context/version/field"></td>
     </tr>
     <tr>
      <th class="required">Found in Release</th>
-     <td>
+     <td colspan="3">
       <span tal:condition="not:context/id"
             tal:content="structure context/found_in_release/menu"/>
       <span tal:condition="context/id">
@@ -32,8 +36,6 @@
               tal:attributes="value context/found_in_release/id">
        </span>
      </td>
-     <th></th>
-     <td></td>
     </tr>
     <tr>
      <th class="required">Severity</th>
@@ -54,7 +56,7 @@
      <th>Status</th>
      <td>
       <select name="status"
-              tal:condition="python:context.cert.plain () == 'Yes'"
+              tal:condition="python:context.cert.plain () == 'Yes' and request.user.hasPermission ('May Change Status', 'defect')"
               tal:define="ok context/status/cert_transitions">
        <option tal:attributes="value context/status/id"
                tal:content="context/status/name"></option>
@@ -67,6 +69,8 @@
        </option>
        </tal:block>
       </select>
+      <span tal:condition="python:context.cert.plain () == 'Yes' and not request.user.hasPermission ('May Change Status', 'defect')"
+            tal:content="context/status"/>
       <select name="status"
               tal:condition="python:context.cert.plain () == 'No'"
               tal:define="ok context/status/transitions">

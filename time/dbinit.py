@@ -110,6 +110,7 @@ def open (name = None):
         , "task_status"
         , name                  = String    ()
         , description           = String    ()
+        , abbreviation          = String    ()
         , transitions           = Multilink ("task_status")
         , order                 = String    ()
         )
@@ -129,6 +130,7 @@ def open (name = None):
         , "feature_status"
         , name                  = String    ()
         , description           = String    ()
+        , abbreviation          = String    ()
         , transitions           = Multilink ("feature_status")
         , order                 = String    ()
         )
@@ -139,6 +141,7 @@ def open (name = None):
         , "defect_status"
         , name                  = String    ()
         , description           = String    ()
+        , abbreviation          = String    ()
         , cert                  = Boolean   ()
         , cert_transitions      = Multilink ("defect_status")
         , transitions           = Multilink ("defect_status")
@@ -154,6 +157,17 @@ def open (name = None):
         , order                 = String    ()
         )
     action_item_status.setkey ("name")
+
+    document_status = Class \
+        ( db
+        , "document_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , abbreviation          = String    ()
+        , transitions           = Multilink ("document_status")
+        , order                 = String    ()
+        )
+    document_status.setkey ("name")
 
     document_type = Class \
         ( db
@@ -322,7 +336,7 @@ def open (name = None):
         ( db
         , "document"
         , files                 = Multilink ("file")
-        , status                = Link      ("task_status")
+        , status                = Link      ("document_status")
         , release               = Link      ("release")
         , type                  = Link      ("document_type")
         )
@@ -519,8 +533,10 @@ def open (name = None):
         , ("room"              , ["User"], ["Admin"           ])
         , ("milestone"         , ["User"], ["Releasemanager"  ])
         , ("task_status"       , ["User"], ["Admin"           ])
+        , ("task_kind"         , ["User"], ["Admin"           ])
         , ("action_item_status", ["User"], ["Admin"           ])
         , ("defect_status"     , ["User"], ["Admin"           ])
+        , ("feature_status"    , ["User"], ["Admin"           ])
         , ("document_type"     , ["User"], ["Admin"           ])
         , ("severity"          , ["User"], ["Admin"           ])
         , ("product"           , ["User"], ["Admin"           ])
@@ -558,6 +574,11 @@ def open (name = None):
         for editor in edit_list :
             p = db.security.getPermission ("Edit", cl)
             db.security.addPermissionToRole (editor, p)
+
+    # add permission "May Change Status" to role "CCB" and "Admin"
+    p = db.security.addPermission (name="May Change Status", klass="defect")
+    db.security.addPermissionToRole("CCB", p)
+    db.security.addPermissionToRole("Admin", p)
 
     # Add special permission for receiving nosy msgs. In this way we may
     # spare in-house people from receiving notifications from roundup,
@@ -649,34 +670,66 @@ def init(adminpw):
     # add rooms here
 
     # task_status
-    # order, name, transitions, description
-    tasks = [ ("1", "issued"   , ("started", )
+    # order, name, abbreviation, transitions, description
+    tasks = [ ("1", "issued"              , "issu", ("started", )
               , "Waiting to get started")
-            , ("2", "started"  , ("available", "suspended")
+            , ("2", "started"             , "star", ("available", "suspended")
               , "Someone is working on it.")
-            , ("3", "available", ("accepted", "suspended")
+            , ("3", "available"           , "avai", ("accepted", "suspended")
               , "It is ready for review.")
-            , ("4", "accepted" , ("accepted-but-defects", )
+            , ("4", "accepted"            , "acce", ("accepted-but-defects", )
               , "It is reviewed and found to be correct.")
-            , ("5", "accepted-but-defects" , ("accepted", )
+            , ("5", "accepted-but-defects", "acbd", ("accepted", )
               , "It is accepted, but has defects reported.")
-            , ("6", "suspended", ("issued",)
+            , ("6", "suspended"           , "susp", ("issued",)
               , "We plan to do it later.")
-            , ("7", "closed-obsolete", ()
+            , ("7", "closed-obsolete"     , "obso", ()
               , "We agreed to not do it anymore")
             ]
 
     task_status = db.getclass ("task_status")
-    for order, name, trans, desc in tasks :
-        task_status.create ( name        = name
-                           , order       = order
-                           , description = desc
+    for order, name, abbr, trans, desc in tasks :
+        task_status.create ( name         = name
+                           , order        = order
+                           , description  = desc
+                           , abbreviation = abbr
                            )
-    for order, name, trans, desc in tasks :
+    for order, name, abbr, trans, desc in tasks :
         if trans :
             id        = task_status.lookup (name)
             trans_ids = [task_status.lookup (t) for t in trans]
             task_status.set (id, transitions = trans_ids)
+
+    # document_status
+    # order, name, abbr, transitions, description
+    docs = [ ("1", "issued"              , "issu", ("started", )
+             , "Waiting to get started")
+           , ("2", "started"             , "star", ("available", "suspended")
+             , "Someone is working on it.")
+           , ("3", "available"           , "avai", ("accepted", "suspended")
+             , "It is ready for review.")
+           , ("4", "accepted"            , "acce", ("accepted-but-defects", )
+             , "It is reviewed and found to be correct.")
+           , ("5", "accepted-but-defects", "acbd", ("accepted", )
+             , "It is accepted, but has defects reported.")
+##            , ("6", "suspended"           , "susp", ("issued",)
+##              , "We plan to do it later.")
+##            , ("7", "closed-obsolete"     , "obso", ()
+##              , "We agreed to not do it anymore")
+           ]
+
+    document_status = db.getclass ("document_status")
+    for order, name, abbr, trans, desc in tasks :
+        document_status.create ( name         = name
+                               , order        = order
+                               , description  = desc
+                               , abbreviation = abbr
+                               )
+    for order, name, abbr, trans, desc in tasks :
+        if trans :
+            id        = document_status.lookup (name)
+            trans_ids = [document_status.lookup (t) for t in trans]
+            document_status.set (id, transitions = trans_ids)
 
     # task_kind
     kinds = [ ("1", "srd"                  , "Software Requirements Document")
@@ -693,23 +746,27 @@ def init(adminpw):
                          )
 
     # feature_status
-    # order, name, transitions, description
-    fss = [ ("1", "raised"   , ("suspended", "rejected") # "open" automatically
+    # order, name, abbreviation, transitions, description
+    fss = [ ("1", "raised"   , "rais", ("suspended", "rejected") # "open" automatically
             , "We should start working on it.")
-          , ("2", "open"     , ("suspended", ) # "completed" automatically
+          , ("2", "open"     , "open", ("suspended", ) # "completed" automatically
             , "We are currently working on it.")
-          , ("3", "completed", ()
+          , ("3", "completed", "comp", ()
             , "It is completed.")
-          , ("4", "rejected" , ("raised", )
+          , ("4", "rejected" , "reje", ("raised", )
             , "We wont do it.")
-          , ("5", "suspended", ("raised", )
+          , ("5", "suspended", "susp", ("raised", )
             , "We will do it later.")
           ]
     feature_status = db.getclass ("feature_status")
-    for order, name, trans, desc in fss :
-        feature_status.create (name = name, order = order, description = desc)
+    for order, name, abbr, trans, desc in fss :
+        feature_status.create ( name         = name
+                              , order        = order
+                              , description  = desc
+                              , abbreviation = abbr
+                              )
 
-    for order, name, trans, desc in fss :
+    for order, name, abbr, trans, desc in fss :
         if trans :
             id        = feature_status.lookup (name)
             trans_ids = [feature_status.lookup (t) for t in trans]
@@ -739,49 +796,50 @@ def init(adminpw):
 ##     feature_status.create (name = "rejected"               , order = "11")
 
     # defect_status:
-    # order, name, cert, description, cert_trans, trans
-    dss = [ ("1", "assigned"        , False
+    # order, name, abbreviation, cert, description, cert_trans, trans
+    dss = [ ("1", "assigned"        , "assi", False
             , "Has just been reported"
             , ("analyzed", "closed")
             , ( "resolved"       , "closed-duplicate"
               , "closed-mistaken", "suspended"
               )
             )
-          , ("2", "analyzed"        , True
+          , ("2", "analyzed"        , "ana ", True
             , "We know what caused the defect"
             , ( "implemented"    , "closed-duplicate"
               , "closed-rejected", "suspended"
               )
             , ()
             )
-          , ("3", "implemented"     , True
+          , ("3", "implemented"     , "impl", True
             , "The fix is implemented"
             , ("analyzed", "resolved", "suspended")
             , ()
             )
-          , ("4", "resolved"        , False
+          , ("4", "resolved"        , "res ", False
             , "The defect is ready for testing"
             , ("closed", "suspended")
             , ("closed", "assigned", "suspended")
             )
-          , ("5", "closed"          , False, "Rest in peace"      , (), ())
-          , ("6", "closed-duplicate", False, "Is a duplicate"     , (), ())
-          , ("7", "closed-mistaken" , False, "Originator went mad", (), ())
-          , ("8", "closed-rejected" , True , "We dont do it"      , (), ())
-          , ("8", "suspended"       , False
+          , ("5", "closed"          , "clos", False, "Rest in peace"      , (), ())
+          , ("6", "closed-duplicate", "dupl", False, "Is a duplicate"     , (), ())
+          , ("7", "closed-mistaken" , "mist", False, "Originator went mad", (), ())
+          , ("8", "closed-rejected" , "rej ", True , "We dont do it"      , (), ())
+          , ("8", "suspended"       , "susp", False
             , "We will fix this later"
             , ("assigned", )
             , ("assigned", )
             )
           ]
     defect_status = db.getclass ("defect_status")
-    for order, name, cert, desc, c_trans, trans in dss :
-        defect_status.create ( name        = name
-                             , cert        = cert
-                             , order       = order
-                             , description = desc
+    for order, name, abbr, cert, desc, c_trans, trans in dss :
+        defect_status.create ( name         = name
+                             , cert         = cert
+                             , order        = order
+                             , description  = desc
+                             , abbreviation = abbr
                              )
-    for order, name, cert, desc, c_trans, trans in dss :
+    for order, name, abbr, cert, desc, c_trans, trans in dss :
         id        = defect_status.lookup (name)
         if c_trans :
             trans_ids = [defect_status.lookup (t) for t in c_trans]

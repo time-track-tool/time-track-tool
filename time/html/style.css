@@ -13,41 +13,71 @@ a[href], a[href]:link {
   color:blue;
   text-decoration: none;
 }
-a.feature_raised[href]:hover    {color:red;   text-decoration: underline;   }
-a.feature_raised[href]:link     {color:red;   text-decoration: none;        }
-a.feature_raised[href]          {color:red;   text-decoration: none;        }
-a.feature_open[href]:hover      {color:green; text-decoration: underline;   }
-a.feature_open[href]:link       {color:green; text-decoration: none;        }
-a.feature_open[href]            {color:green; text-decoration: none;        }
-a.feature_completed[href]:hover {color:blue;  text-decoration: underline;   }
-a.feature_completed[href]:link  {color:blue;  text-decoration: line-through;}
-a.feature_completed[href]       {color:blue;  text-decoration: line-through;}
-a.feature_rejected[href]:hover  {color:red;   text-decoration: underline;   }
-a.feature_rejected[href]:link   {color:red;   text-decoration: line-through;}
-a.feature_rejected[href]        {color:red;   text-decoration: line-through;}
-a.feature_suspended[href]:hover {color:green; text-decoration: underline;   }
-a.feature_suspended[href]:link  {color:green; text-decoration: line-through;}
-a.feature_suspended[href]       {color:green; text-decoration: line-through;}
+/*
+a.feature_raised[href]:hover    {color:orange; text-decoration: underline;   }
+a.feature_raised[href]:link     {color:orange; text-decoration: none;        }
+a.feature_raised[href]          {color:orange; text-decoration: none;        }
+a.feature_open[href]:hover      {color:green;  text-decoration: underline;   }
+a.feature_open[href]:link       {color:green;  text-decoration: none;        }
+a.feature_open[href]            {color:green;  text-decoration: none;        }
+a.feature_completed[href]:hover {color:blue;   text-decoration: underline;   }
+a.feature_completed[href]:link  {color:blue;   text-decoration: line-through;}
+a.feature_completed[href]       {color:blue;   text-decoration: line-through;}
+a.feature_rejected[href]:hover  {color:red;    text-decoration: underline;   }
+a.feature_rejected[href]:link   {color:red;    text-decoration: line-through;}
+a.feature_rejected[href]        {color:red;    text-decoration: line-through;}
+a.feature_suspended[href]:hover {color:blue;   text-decoration: underline;   }
+a.feature_suspended[href]:link  {color:blue;   text-decoration: line-through;}
+a.feature_suspended[href]       {color:blue;   text-decoration: line-through;}
+*/
 
-a.task_issued[href]               {color:red;   text-decoration: none;        }
-a.task_issued_Yes[href]           {color:red;   text-decoration: none;        }
-a.task_issued_No[href]            {color:red;   text-decoration: none;        }
-a.task_started[href]              {color:green; text-decoration: none;        }
-a.task_started_Yes[href]          {color:green; text-decoration: none;        }
-a.task_started_No[href]           {color:green; text-decoration: none;        }
-a.task_available[href]            {color:blue;  text-decoration: none;        }
-a.task_available_Yes[href]        {color:blue;  text-decoration: none;        }
-a.task_available_No[href]         {color:blue;  text-decoration: none;        }
-a.task_accepted[href]             {color:blue;  text-decoration: line-through;}
-a.task_accepted_Yes[href]         {color:blue;  text-decoration: line-through;}
-a.task_accepted_No[href]          {color:red;   text-decoration: blink;}
-a.task_suspended[href]            {color:green; text-decoration: line-through;}
-a.task_suspended_Yes[href]        {color:green; text-decoration: line-through;}
-a.task_suspended_No[href]         {color:green; text-decoration: line-through;}
-a.task_closed-obsolete[href]      {color:blue;  text-decoration: line-through;}
-a.task_closed-obsolete_Yes[href]  {color:blue;  text-decoration: line-through;}
-a.task_closed-obsolete_No[href]   {color:blue;  text-decoration: line-through;}
+a.feature_raised_[href]                {color:orange;  text-decoration: none;        }
+a.feature_open_[href]                  {color:green;   text-decoration: none;        }
+a.feature_completed_[href]             {color:blue;    text-decoration: line-through;}
+a.feature_rejected_[href]              {color:red;     text-decoration: line-through;}
+a.feature_suspended_[href]             {color:blue;    text-decoration: line-through;}
 
+a.task_issued[href]                   {color:orange;  text-decoration: none;        }
+a.task_issued_[href]                  {color:orange;  text-decoration: none;        }
+a.task_issued_Yes[href]               {color:orange;  text-decoration: none;        }
+a.task_issued_No[href]                {color:orange;  text-decoration: none;        }
+a.task_started[href]                  {color:green;   text-decoration: none;        }
+a.task_started_[href]                 {color:green;   text-decoration: none;        }
+a.task_started_Yes[href]              {color:green;   text-decoration: none;        }
+a.task_started_No[href]               {color:green;   text-decoration: none;        }
+a.task_available[href]                {color:green;   text-decoration: none;        }
+a.task_available_[href]               {color:green;   text-decoration: none;        }
+a.task_available_Yes[href]            {color:green;   text-decoration: none;        }
+a.task_available_No[href]             {color:green;   text-decoration: none;        }
+a.task_accepted[href]                 {color:blue;    text-decoration: line-through;}
+a.task_accepted_[href]                {color:blue;    text-decoration: line-through;}
+a.task_accepted_Yes[href]             {color:blue;    text-decoration: line-through;}
+a.task_accepted_No[href]              {color:blue;    text-decoration: blink;       }
+a.task_accepted-but-defects[href]     {color:red;     text-decoration: line-through;}
+a.task_accepted-but-defects_[href]    {color:red;     text-decoration: line-through;}
+a.task_accepted-but-defects_Yes[href] {color:red;     text-decoration: line-through;}
+a.task_accepted-but-defects_No[href]  {color:red;     text-decoration: blink;       }
+a.task_suspended[href]                {color:blue;    text-decoration: line-through;}
+a.task_suspended_[href]               {color:blue;    text-decoration: line-through;}
+a.task_suspended_Yes[href]            {color:blue;    text-decoration: line-through;}
+a.task_suspended_No[href]             {color:blue;    text-decoration: line-through;}
+a.task_closed-obsolete[href]          {color:blue;    text-decoration: line-through;}
+a.task_closed-obsolete_[href]         {color:blue;    text-decoration: line-through;}
+a.task_closed-obsolete_Yes[href]      {color:blue;    text-decoration: line-through;}
+a.task_closed-obsolete_No[href]       {color:blue;    text-decoration: line-through;}
+
+
+a.defect_assigned_[href]               {color:orange;  text-decoration: none;        }
+a.defect_analyzed_[href]               {color:brown;   text-decoration: none;        }
+a.defect_implemented_[href]            {color:green;   text-decoration: none;        }
+a.defect_resolved_[href]               {color:blue;    text-decoration: none;        }
+a.defect_closed_[href]                 {color:blue;    text-decoration: line-through;}
+a.defect_closed-duplicate_[href]       {color:blue;    text-decoration: line-through;}
+a.defect_closed-mistaken_[href]        {color:blue;    text-decoration: line-through;}
+a.defect_closed-rejected_[href]        {color:blue;    text-decoration: line-through;}
+a.defect_suspended_[href]              {color:blue;    text-decoration: line-through;}
+
+/* old stuff
 a.open[href]:hover      { color:red; text-decoration: underline; }
 a.open[href]:link       { color:red; text-decoration: none; }
 a.open[href]            { color:red; text-decoration: none; }
@@ -66,6 +96,7 @@ a.suspended[href]       { color:blue; text-decoration: line-through; }
 a.closed[href]:hover    { color:blue; text-decoration: line-through; }
 a.closed[href]:link     { color:blue; text-decoration: line-through; }
 a.closed[href]          { color:blue; text-decoration: line-through; }
+*/
 
 table.body {
   border: 0;
@@ -195,6 +226,7 @@ table.form td {
   color: #333;
   empty-cells: show;
   vertical-align: top;
+//  font-size: smaller;
 }
 
 table.form td.optional {
@@ -213,6 +245,10 @@ table.form td.test_failed {
   color: white;
   font-weight: bold;
   text-decoration: blink;
+}
+
+table.form td.task_list {
+  font-size: smaller;
 }
 
 table.form td.html {

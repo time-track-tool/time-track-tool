@@ -157,7 +157,7 @@
 <!-- logout -->
     <td class="sidebar">
      <span class="classblock">
-      <a href="?@action=logout">Logout</a>
+      <a tal:attributes="href string:${config/TRACKER_WEB}?@action=logout">Logout</a>
      </span>
     </td>
    </tr>
@@ -316,6 +316,22 @@
   </tal:block>
  </table>
 </td>
+
+<!-- list links to a group of items -->
+<!-- needs items and klassname set up -->
+<!-- klassname should be the name of the klass, is used for the style class -->
+<!-- each item should be a HTMLItem with the following properties: -->
+<!-- status/name, status/abbreviation, title, responsible -->
+<!-- status should map a ${klassname}_${item/status}_${postfix} a.href class in style.css -->
+<!--   where postfix will be "${item/test_ok|nothing}" -->
+<tal:block metal:define-macro="ttt_task_list">
+ <tal:block tal:repeat="item items"
+            tal:define="postfix item/test_ok|python:'';">
+  <a tal:attributes="href item/designator;
+                     class string:${klassname}_${item/status}_${postfix}"
+     tal:content="structure string:<code>${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname}):</code> ${item/title}"></a><br>
+ </tal:block>
+</tal:block>
 
 <!-- the following lists a nice list of files plus file upload form -->
 <tal:block metal:define-macro="ttt_issue_files">

@@ -42,7 +42,8 @@
     <tr tal:condition="context/id">
      <th>Release</th>
      <td>
-      <span tal:content="structure context/release/menu"></span>
+      <span tal:content="structure context/release/menu"
+            tal:condition="context/is_edit_ok"></span>
       <a tal:condition="context/release/id|nothing"
          tal:attributes="href context/release/designator"
          tal:content="context/release/title/plain"></a>
@@ -53,7 +54,8 @@
      <th>Status</th>
      <td>
       <select name="status"
-              tal:define="ok context/status/transitions">
+              tal:define="ok context/status/transitions"
+              tal:condition="context/is_edit_ok">
        <option tal:attributes="value context/status/id"
                tal:content="context/status/name"></option>
        <tal:block tal:repeat="state db/feature_status/list">
@@ -65,6 +67,8 @@
        </option>
        </tal:block>
       </select>
+      <span tal:condition="context/is_only_view_ok"
+            tal:content="context/status"/>
      </td>
     </tr>
 
@@ -81,6 +85,7 @@
      <th>Stakeholder</th>
      <td>
       <textarea tal:content="context/stakeholder/plain"
+                tal:attributes="readonly context/is_only_view_ok"
                 name="stakeholder"
                 wrap="hard"
                 rows="3"
@@ -88,121 +93,91 @@
      </td>
     </tr>
 
-    <tr>
+    <tr tal:condition="python:context.is_edit_ok () or context.depends">
      <th>Depends on</th>
-     <td>
+     <td class="task_list">
       <span tal:content="structure context/depends/field"/>
-      <span tal:replace="structure python:db.feature.classhelp
+      <span tal:condition="context/is_edit_ok"
+            tal:replace="structure python:db.feature.classhelp
                                              ( 'id,title,responsible'
                                              , property='depends'
                                              , width='600')" />
       <br>
-      <tal:block tal:repeat="f context/depends">
-       <a tal:attributes="href f/designator;
-                          class string:feature_${f/status/plain};
-                          title f/status/plain"
-          tal:content="string:${f/title}"
-       ></a><br>
+      <tal:block tal:define="items context/depends;
+                             klassname string:feature">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
       </tal:block>
      </td>
     </tr>
 
-    <tr>
+    <tr tal:condition="python:context.is_edit_ok () or context.needs">
      <th>Needs</th>
-     <td>
+     <td class="task_list">
       <span tal:content="structure context/needs/field"/>
-      <span tal:replace="structure python:db.feature.classhelp
+      <span tal:condition="context/is_edit_ok"
+            tal:replace="structure python:db.feature.classhelp
                                              ( 'id,title,responsible'
                                              , property='needs'
                                              , width='600')" />
       <br>
-      <tal:block tal:repeat="f context/needs">
-       <a tal:attributes="href f/designator;
-                          class string:feature_${f/status/plain};
-                          title f/status/plain"
-          tal:content="string:${f/title} - ${f/status} - ${f/release}"
-       ></a><br>
+      <tal:block tal:define="items context/needs;
+                             klassname string:feature">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
       </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="context/defects">
      <th>Defects</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task context/defects">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items context/defects;
+                             klassname string:defect">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="documents">
      <th>Documents</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task documents">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items documents;
+                             klassname string:task">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="implementation_tasks">
      <th>Implementation</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task implementation_tasks">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items implementation_tasks;
+                             klassname string:task">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="testcases">
      <th>Testcases</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task testcases">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-        <td tal:content="task/test_ok/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items testcases;
+                             klassname string:task">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="documentation_tasks">
      <th>Documentation</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task documentation_tasks">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items documentation_tasks;
+                             klassname string:task">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
-    <tr>
+    <tr tal:condition="context/is_edit_ok">
      <th>Add Task</th>
      <td>
       <table>

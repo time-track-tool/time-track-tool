@@ -50,34 +50,20 @@
     </tr>
 
     <tr tal:condition="context/id"
-        tal:define="available python:[]">
-     <th>Documents</th>
-     <td>
-      <table class="tasks"
-             tal:condition="context/documents">
-<!--
-       <tr>
-        <th class="header">Type</th>
-        <th class="header">Status</th>
-        <th class="header">Responsible</th>
-       </tr>
--->
-      <tr tal:repeat="doc python:db.document.filter
+        tal:define="items python:db.document.filter
                                ( filterspec = { 'release' : context.id }
                                , group      = ( '+', 'status' )
                                , sort       = ( '+', 'id'     )
                                )">
-        <td tal:define="_xx python:available.append (doc.type.id)">
-         <a tal:attributes="href doc/designator"
-            tal:content="doc/type/description"></a>
-        </td>
-        <td tal:content="doc/status/plain"></td>
-        <td tal:content="doc/responsible/plain"></td>
-       </tr>
-      </table>
+     <th>Documents</th>
+     <td class="task_list">
+      <tal:block tal:define="klassname string:task">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
+
       <table tal:condition="python:context.is_edit_ok ()
                                and (len (available) != len (db.document_type.list ()))"
-             border="0">
+             tal:define="available python:[item.id for item in items]">
        <tr>
         <th>Add by type:</th>
         <td>
@@ -98,58 +84,43 @@
 
     <tr tal:condition="context/features">
      <th>Features</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task python:db.feature.filter
-                                ( filterspec = { 'id' : [f.id for f in context.features] }
-                                , group      = ( '+', 'status' )
-                                , sort       = ( '+', 'id'     )
-                                )">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items python:db.feature.filter
+                                   ( filterspec = { 'id' : [f.id for f in context.features] }
+                                   , group      = ( '+', 'status' )
+                                   , sort       = ( '+', 'id'     )
+                                   );
+                             klassname string:feature">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="context/planned_fixes">
      <th>Planned Fixes</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task python:db.defect.filter
-                                ( filterspec = { 'id' : [d.id for d in context.planned_fixes] }
-                                , group      = ( '+', 'status' )
-                                , sort       = ( '+', 'id'     )
-                                )">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items python:db.defect.filter
+                                  ( filterspec = { 'id' : [d.id for d in context.planned_fixes] }
+                                  , group      = ( '+', 'status' )
+                                  , sort       = ( '+', 'id'     )
+                                  );
+                             klassname string:defect">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
     <tr tal:condition="context/bugs">
      <th>Bugs</th>
-     <td>
-      <table class="tasks">
-       <tr tal:repeat="task python:db.defect.filter
-                                ( filterspec = { 'id' : [d.id for d in context.bugs] }
-                                , group      = ( '+', 'status' )
-                                , sort       = ( '+', 'id'     )
-                                )">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
+     <td class="task_list">
+      <tal:block tal:define="items python:db.defect.filter
+                                  ( filterspec = { 'id' : [d.id for d in context.bugs] }
+                                  , group      = ( '+', 'status' )
+                                  , sort       = ( '+', 'id'     )
+                                  );
+                             klassname string:defect">
+       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+      </tal:block>
      </td>
     </tr>
 
