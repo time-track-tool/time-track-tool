@@ -154,8 +154,8 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 
 def init(db):
     # fire before changes are made
-    db.user.audit('set'   , audit_user_fields)
-    db.user.audit('create', audit_user_fields)
+    db.user.audit("set"   , audit_user_fields)
+    db.user.audit("create", audit_user_fields)
     db.user.react("create", update_userlist_html)
     db.user.react("set"   , update_userlist_html)
 
