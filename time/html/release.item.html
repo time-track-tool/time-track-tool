@@ -42,7 +42,7 @@
        </tr>
        <tr tal:repeat="doc context/documents/reverse">
         <td tal:define="_xx python:available.append(doc.type.id)">
-         <a tal:attributes="href string:javascript:help_window('document${doc/id}','800','600')"
+         <a tal:attributes="href doc/designator"
             tal:content="doc/type/description"></a>
         </td>
         <td tal:content="doc/status/plain"></td>
@@ -71,8 +71,9 @@
     <tr tal:condition="context/features">
      <th>Features</th>
      <td><span tal:repeat="f context/features">
-         <a tal:attributes="href string:feature${f/id}"
-            tal:content="string:[feature${f/id}] ${f/title}"></a><br>
+         <a tal:attributes="href  string:feature${f/id};
+                            class string:feature_${f/status}"
+            tal:content="string:${f/title}"></a><br>
          </span>
      </td>
     </tr>

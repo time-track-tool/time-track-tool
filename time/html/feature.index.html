@@ -1,19 +1,22 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title">Query Action Item</title>
+<title metal:fill-slot="head_title">Query Features</title>
 
 <tal:block metal:fill-slot="content">
  <tal:block tal:define="batch request/batch;
                         props python:( ('Id'         , 'id'         , ''                  , ''        , 'V')
                                      , ('Title'      , 'title'      , ''                  , ''        , 'T')
                                      , ('Responsible', 'responsible', 'user'              , 'username', 'L')
-                                     , ('Status'     , 'status'     , 'action_item_status', 'name'    , 'L')
-                                     , ('Meeting'    , 'meeting'    , 'meeting'           , 'title'   , 'L')
-                                     , ('Deadline'   , 'deadline'   , ''                  , ''        , 'D')
+                                     , ('Release'    , 'release'    , 'release'           , 'title'   , 'L')
+                                     , ('Status'     , 'status'     , 'feature_status'    , 'name'    , 'L')
+                                     , ('Test OK'    , 'test_ok'    , ''                  , ''        , 'V')
+                                     , ('Stakeholder', 'stakeholder', ''                  , ''        , 'V')
+                                     , ('Depends'    , 'depends'    , 'feature'           , 'title'   , 'M')
+                                     , ('Needs'      , 'needs'      , 'feature'           , 'title'   , 'M')
                                      , ('Nosy List'  , 'nosy'       , 'user'              , 'username', 'M')
                                      );
                         multi python:( 'responsible'
+                                     , 'release'
                                      , 'status'
-                                     , 'meeting'
                                      , 'nosy'
                                      )"
             tal:condition="context/is_view_ok">
@@ -21,7 +24,7 @@
   <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
 
-  <tal:block metal:fill-slot="query_title">Query Action Item</tal:block>
+  <tal:block metal:fill-slot="query_title">Query Features</tal:block>
   </tal:block>
  </tal:block>
 </tal:block>

@@ -1,0 +1,27 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Defect Reports</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define="batch request/batch;
+                        props python:( ('Id'         , 'id')
+                                     , ('Title'      , 'title')
+                                     , ('Responsible', 'responsible', 'user', 'username')
+                                     , ('Status'     , 'status', 'defect_status', 'name')
+                                     , ('Superseder' , 'superseder', 'defect', 'title')
+                                     , ('Part of Release', 'part_of_release', 'release', 'name')
+                                     , ('Nosy List'  , 'nosy', 'user', 'username')
+                                     );
+                        multi python:( 'responsible'
+                                     , 'status'
+                                     , 'nosy'
+                                     )"
+            tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_display"></tal:block>
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+  <tal:block metal:fill-slot="query_title">Query Defect Reports</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

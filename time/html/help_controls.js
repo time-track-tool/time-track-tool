@@ -1,7 +1,7 @@
 // initial values for either Nosy, Superseder, Topic and Waiting On,
 // depending on which has called
 
-original_field = window.opener.document.itemSynopsis[field].value;
+original_field = form[field].value;
 
 function trim(value) {
   var temp = value;
@@ -33,7 +33,7 @@ function determineList() {
 function updateList() {
   // write back to opener window
   if (document.frm_help.check==undefined) { return; }
-  window.opener.document.itemSynopsis[field].value = determineList();
+  form[field].value = determineList();
 }
 
 function updatePreview() {
@@ -102,7 +102,7 @@ function focusField(name) {
 function selectField(name) {
     for(i=0; i < document.forms.length; ++i) {
       var obj = document.forms[i].elements[name];
-      if (obj && obj.focus){obj.focus();} 
+      if (obj && obj.focus){obj.focus();}
       if (obj && obj.select){obj.select();}
     }
 }

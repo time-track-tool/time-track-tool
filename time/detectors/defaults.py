@@ -27,6 +27,8 @@
 #
 # Revision Dates
 #    22-Jul-2004 (MPH) Creation
+#    5-Oct-2004 (MPH) Added implementation_task.create and
+#                     documentation_task.create and testcase.create
 #    ««revision-date»»···
 #--
 #
@@ -39,10 +41,14 @@ def default_responsible (db, cl, nodeid, new_values) :
 # end def set_defaults
 
 def init (db) :
-    db.document.audit    ("create", default_responsible)
-    db.release.audit     ("create", default_responsible)
-    db.action_item.audit ("create", default_responsible)
-    db.feature.audit     ("create", default_responsible)
+    db.document.audit            ("create", default_responsible)
+    db.release.audit             ("create", default_responsible)
+    db.action_item.audit         ("create", default_responsible)
+    db.feature.audit             ("create", default_responsible)
+    db.design_document.audit     ("create", default_responsible)
+    db.implementation_task.audit ("create", default_responsible)
+    db.documentation_task.audit  ("create", default_responsible)
+    db.testcase.audit            ("create", default_responsible)
 # end def init
 
 ### __END__ defaults

@@ -1,7 +1,14 @@
 <tal:block metal:define-macro="icing">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
-<html tal:define="is_user python:request.user.username!='anonymous'">
+<html tal:define="
+   uname         python:str(request.user.username)
+ ; classname     context/_classname|db/user/_classname
+ ; klass         python:db [classname] or default
+ ; is_user       python:uname!='anonymous'
+ ; lbl           klass/_klass/labelprop
+ ; labelprop     python:(lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
+">
  <head>
   <title metal:define-slot="head_title">Welcome @ TTTech</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
@@ -96,6 +103,10 @@
        <option value="query?@template=edit">Manage Queries</option>
        <tal:block tal:define="name string:Action Items;
                               klass string:action_item">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Meetings;
+                              klass string:meeting">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
        <tal:block tal:define="name string:Releases;
@@ -201,8 +212,7 @@
 </tal:block>
 
 
-<!-- the following macro is used for all pages which display a
-     TTT_Issue_Class item. -->
+<!-- the following macro is used for all pages which display a TTT_Issue_Class item. -->
 
 <td metal:define-macro="ttt_issue">
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
@@ -259,7 +269,8 @@
    <th></th>
    <td colspan="3">
     <tal:block tal:replace="structure context/submit"/>
-    <input type="button" value="Show History"
+    <input tal:condition="context/id"
+           type="button" value="Show History"
            tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
    </td>
   </tr>
@@ -375,13 +386,15 @@
            tal:condition="prev"
            tal:attributes="href python:str(request.indexargs_href(request.classname,
            {':startwith':prev.first, ':pagesize':prev.size}))">&lt;&lt;&nbsp;previous</a></th>
-       <th tal:content="structure python:'<nobr>showing %d - %d of %d in total</nobr>'
+       <th tal:condition="batch/sequence_length"
+           tal:content="structure python:'<nobr>showing %d - %d of %d in total</nobr>'
                                % ( batch.start
                                  , batch.start + batch.length - 1
                                  , batch.sequence_length
                                  )"
            >
        </th>
+       <th tal:condition="not:batch/sequence_length"><nobr>Sorry, no results found</nobr></th>
        <th class="right">
         <a tal:define="next batch/next"
            tal:condition="next"
@@ -393,13 +406,97 @@
    </tr>
 </tal:block>
 
+<!--
+ the next two ttt_search_display and ttt_search_form needs the following variables set up
+ as follows:
+ props: ( (<attribute_name_to_display>, <attribute_name>, <class>, <display_attribute>, <opt>)
+        , ...
+        )
+   where: <attribute_name_to_display> is the name which is displayed for the attribute <attribute_name>
+          <attribute_name> is the name of the attribute we define something here
+          <class> when the attribute is a link (or multilink), this specifies the target we link to
+          <display_attribute> is the attribute of the target class which gets displayed
+          <opt> optional attributes:
+                'M' for multilinks - which get a href'd seperately
+                'V' for values - get only displayed
+                'D' for dates - may hava a date entry box in the search_form
+                'L' for links - get linked
+                'T' for `title` - gets linked to it's issues `item` page
+
+   note: attributes 'id' and 'title' are treated specially
+         - title gets linked to issues item page
+         - id will only be printed
+
+ multi: ( <attribute>
+        , ...
+        )
+   where: <attribute> is the attribute which gets a select box in the search form, all other not
+                      listed here get free form text entry fields
+-->
+
+<!-- display the search results -->
+<tal:block metal:define-macro="ttt_search_results">
+ <tal:block tal:condition="not:context/is_view_ok">
+  You are not allowed to view this page.
+ </tal:block>
+
+ <tal:block tal:define="batch request/batch"
+            tal:condition="context/is_view_ok">
+  <table class="list" border=1>
+   <tr>
+<!-- list all properties we want to see -->
+    <tal:block tal:repeat="prop props">
+     <th tal:condition="python:request.show[prop[1]]"
+         tal:content="python:prop[0]"></th>
+    </tal:block>
+   </tr>
+   <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
+   <!-- items found -->
+   <tal:block tal:repeat="i batch">
+    <tr tal:condition="python:request.group[1] and
+                              batch.propchanged(request.group[1])">
+     <th tal:attributes="colspan python:len(request.columns)"
+         tal:content="python:i[request.group[1]]" class="group">
+     </th>
+    </tr>
+    <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
+     <!-- all the properties: label property and id will be made a link -->
+     <!-- filter out only the properties the user wants to see -->
+     <tal:block tal:repeat="prop python:[p for p in props
+                                         if p[1] in request.show.columns.keys ()]">
+      <td tal:condition="python:prop[4] in ('V', 'D')"
+          tal:content="python:i[prop[1]]"></td>
+      <td tal:condition="python:prop[4] == 'T'">
+       <a tal:attributes="href string:${i/designator}"
+          tal:content="i/title"></a>
+      </td>
+      <td tal:condition="python:prop[4] == 'L' and i[prop[1]].isset()">
+       <a tal:attributes="href python:prop[2]+i [prop[1]].id"
+          tal:content="python:i[prop[1]]"></a>
+      </td>
+      <td tal:condition="python:prop[4] == 'L' and not i[prop[1]].isset()">&nbsp;</td>
+      <td tal:condition="python:prop[4] == 'M' and i[prop[1]].isset()">
+       <nobr tal:define="chain python:i [prop [1]];
+                         c_len python:len (chain)"
+             tal:repeat="item chain">
+        <a tal:attributes="href  python:prop[2]+item.id"
+           tal:content="python:item [prop[3]]"></a><tal:block
+           tal:content="python:str(((((repeat['item'].index+1)%(c_len))!=0) and ',')or'')"></tal:block>
+       </nobr>
+      </td>
+      <td tal:condition="python:prop[4] == 'M' and not i[prop[1]].isset()">&nbsp;</td>
+     </tal:block>
+    </tr>
+   </tal:block> <!-- repeat i batch -->
+  </table>
+ </tal:block>
+</tal:block>
+
 <tal:block metal:define-macro="ttt_search_form">
 <!-- query specification form -->
 <form method="GET"
       name="query"
-      tal:attributes="action request/classname"
-      onSubmit="javascript:if (document.forms['query'].elements[':queryname'].checked==true)
-               { document.forms['query'].elements[':queryname'].value = document.forms['query'].elements[':queryname'].value + document.forms['query'].elements['queryname'].value; }">
+      tal:attributes="action request/classname">
 <!-- no need for "structure python:request.indexargs_form(..." all other
      values are set via the search form below, only "startwidth" should be
      set magically ...
@@ -506,6 +603,12 @@
                size="40"
                tal:attributes="value python:request.form.getvalue(prop[1]) or nothing;
                                name  python:prop[1]">
+        <span tal:condition="python:prop[4] in ('L', 'M')"
+              tal:replace="structure python:db[prop[2]].classhelp
+                                         ( properties='id,title,status,responsible'
+                                         , property=prop[1]
+                                         , form='query'
+                                         )"/>
        </td>
       </tr>
    </tal:block>

@@ -153,14 +153,15 @@ def init(db):
     nosy_classes = [ "document"
                    , "release"
                    , "feature"
-                   , "work_package"
+                   , "implementation_task"
+                   , "documentation_task"
                    , "defect"
                    , "meeting"
                    , "action_item"
                    ]
     for klass in nosy_classes :
-        eval ("db.%s.react('create', nosyreaction)" % klass)
-        eval ("db.%s.react('set'   , nosyreaction)" % klass)
+#        eval ("db.%s.react('create', nosyreaction)" % klass)
+#        eval ("db.%s.react('set'   , nosyreaction)" % klass)
         eval ("db.%s.audit('create', updatenosy  )" % klass)
         eval ("db.%s.audit('set'   , updatenosy  )" % klass)
 

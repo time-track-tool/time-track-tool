@@ -14,6 +14,8 @@
 #     5-Jul-2004 (MPH) Work in progress.
 #     6-Jul-2004 (MPH) Added `closed-obsolete` to `work_package_status`.
 #    23-Jul-2004 (MPH) Removed `automatic` status changes from `feature_status`
+#     5-Oct-2004 (MPH) Split `work_package` into `implementation_task` and
+#                      `documentation_task`
 #    ««revision-date»»···
 #--
 #
@@ -140,6 +142,15 @@ def open (name = None):
         )
     document_type.setkey ("name")
 
+    document_type = Class \
+        ( db
+        , "design_document_type"
+        , name                  = String    ()
+        , description           = String    ()
+        , order                 = String    ()
+        )
+    document_type.setkey ("name")
+
     severity = Class \
         ( db
         , "severity"
@@ -217,6 +228,11 @@ def open (name = None):
         , alternate_addresses   = String    () # other email adresses
         , firstname             = String    () # e.g. alois
         , lastname              = String    () # e.g. goller
+        , realname              = String    () # gets automatically set from
+                                               # firstname and lastname - is
+                                               # needed by roundupdp.py's
+                                               # send_message - which is used
+                                               # e.g. by the nosyreactor
         , phone                 = String    () # shortcut: e.g. 42
         , external_phone        = String    () # mobile_short: e.g. 6142
         , private_phone         = String    () # whatever
@@ -363,10 +379,10 @@ def open (name = None):
         , test_ok               = Boolean   () # gets set automatically by a
                                                # detector depending on the
                                                # testcases test_ok switch.
-        , documents             = Multilink ("document") # SRD, SDD, etc.
-        , implementation_tasks  = Multilink ("work_package")
+        , documents             = Multilink ("design_document") # SRD, SDD, etc.
+        , implementation_tasks  = Multilink ("implementation_task")
         , testcases             = Multilink ("testcase")
-        , documentation_tasks   = Multilink ("work_package")
+        , documentation_tasks   = Multilink ("documentation_task")
         , depends               = Multilink ("feature")
         , needs                 = Multilink ("feature")
         , release               = Link      ("release")
@@ -376,14 +392,23 @@ def open (name = None):
         , actual_end            = Date      () # change of workpackages
         )
 
-    work_package = TTT_Issue_Class \
+    document = TTT_Issue_Class \
         ( db
-        , "work_package"
+        , "design_document"
+        , files                 = Multilink ("pdf_file")
+        , status                = Link      ("work_package_status")
+        , type                  = Link      ("design_document_type")
+        , feature               = Link      ("feature")
+        )
+
+    implementation_task = TTT_Issue_Class \
+        ( db
+        , "implementation_task"
         , status                = Link      ("work_package_status")
         , effort                = Interval  () # XXX: was: Number, but
                                                # Interval is better suited
-        , depends               = Multilink ("work_package")
-        , needs                 = Multilink ("work_package")
+        , depends               = Multilink ("implementation_task")
+        , needs                 = Multilink ("implementation_task")
         , files                 = Multilink ("file")
         , feature               = Link      ("feature")
         , planned_begin         = Date      ()
@@ -397,8 +422,8 @@ def open (name = None):
         , "testcase"
         , status                = Link      ("work_package_status")
         , effort                = Number    () # days only
-        , depends               = Multilink ("work_package")
-        , needs                 = Multilink ("work_package")
+        , depends               = Multilink ("testcase")
+        , needs                 = Multilink ("testcase")
         , files                 = Multilink ("file")
         , feature               = Link      ("feature")
         , planned_begin         = Date      ()
@@ -415,6 +440,22 @@ def open (name = None):
                                         # detector sets also the "test_ok"
                                         # field in the feature this testcase
                                         # belongs to.
+        )
+
+    documentation_task = TTT_Issue_Class \
+        ( db
+        , "documentation_task"
+        , status                = Link      ("work_package_status")
+        , effort                = Interval  () # XXX: was: Number, but
+                                               # Interval is better suited
+        , depends               = Multilink ("documentation_task")
+        , needs                 = Multilink ("documentation_task")
+        , files                 = Multilink ("file")
+        , feature               = Link      ("feature")
+        , planned_begin         = Date      ()
+        , planned_end           = Date      ()
+        , actual_begin          = Date      ()
+        , actual_end            = Date      ()
         )
 
     defect = TTT_Issue_Class \
@@ -520,8 +561,10 @@ def open (name = None):
         , ("room"                  , ["User"], ["Admin"           ])
         , ("milestone"             , ["User"], ["Teamleader"      ])
         , ("work_package_status"   , ["User"], ["Admin"           ])
+        , ("action_item_status"    , ["User"], ["Admin"           ])
         , ("defect_status"         , ["User"], ["Admin"           ])
         , ("document_type"         , ["User"], ["Admin"           ])
+        , ("design_document_type"  , ["User"], ["Admin"           ])
         , ("severity"              , ["User"], ["Admin"           ])
         , ("product"               , ["User"], ["Admin"           ])
         , ("organisation"          , ["User"], ["Admin"           ])
@@ -546,7 +589,8 @@ def open (name = None):
                                                , "Releasemanager"
                                                ]
           )
-        , ("work_package"          , ["User"], [ "User"           ])
+        , ("implementation_task"   , ["User"], [ "User"           ])
+        , ("documentation_task"    , ["User"], [ "User"           ])
         , ("defect"                , ["User"], [ "User"           ])
         , ("meeting"               , ["User"], [ "Admin"          ])
         , ("action_item"           , ["User"], [ "User"           ])
@@ -578,7 +622,8 @@ def open (name = None):
     nosy_classes = [ "document"
                    , "release"
                    , "feature"
-                   , "work_package"
+                   , "implementation_task"
+                   , "documentation_task"
                    , "defect"
                    , "meeting"
                    , "action_item"
@@ -792,10 +837,17 @@ def init(adminpw):
     dts = [ ("1", "ES" , "Evaluation Sheet"             )
           , ("2", "CMP", "Configuration Management Plan")
           , ("3", "HTP", "High-Level Test Plan"         )
-          , ("4", "SRD", "Software Requirements Document")
-          , ("5", "SDD", "Software Design Document")
           ]
     doc_type = db.getclass ("document_type")
+    for order, name, desc in dts :
+        doc_type.create (name = name, description = desc, order = order)
+
+    # design_document_type
+    # order, name, description
+    dts = [ ("1", "SRD", "Software Requirements Document")
+          , ("2", "SDD", "Software Design Document")
+          ]
+    doc_type = db.getclass ("design_document_type")
     for order, name, desc in dts :
         doc_type.create (name = name, description = desc, order = order)
 

@@ -13,6 +13,40 @@ a[href], a[href]:link {
   color:blue;
   text-decoration: none;
 }
+a.feature_raised[href]:hover    {color:red; text-decoration: underline;     }
+a.feature_raised[href]:link     {color:red; text-decoration: none;          }
+a.feature_raised[href]          {color:red; text-decoration: none;          }
+a.feature_open[href]:hover      {color:green; text-decoration: underline;   }
+a.feature_open[href]:link       {color:green; text-decoration: none;        }
+a.feature_open[href]            {color:green; text-decoration: none;        }
+a.feature_completed[href]:hover {color:blue; text-decoration: underline;    }
+a.feature_completed[href]:link  {color:blue; text-decoration: line-through; }
+a.feature_completed[href]       {color:blue; text-decoration: line-through; }
+a.feature_rejected[href]:hover  {color:red; text-decoration: underline;     }
+a.feature_rejected[href]:link   {color:red; text-decoration: line-through;  }
+a.feature_rejected[href]        {color:red; text-decoration: line-through;  }
+a.feature_suspended[href]:hover {color:green; text-decoration: underline;   }
+a.feature_suspended[href]:link  {color:green; text-decoration: line-through;}
+a.feature_suspended[href]       {color:green; text-decoration: line-through;}
+
+a.open[href]:hover      { color:red; text-decoration: underline; }
+a.open[href]:link       { color:red; text-decoration: none; }
+a.open[href]            { color:red; text-decoration: none; }
+a.feedback[href]:hover  { color:red; text-decoration: underline; }
+a.feedback[href]:link   { color:red; text-decoration: none; }
+a.feedback[href]        { color:red; text-decoration: none; }
+a.analyzed[href]:hover  { color:red; text-decoration: underline; }
+a.analyzed[href]:link   { color:red; text-decoration: none; }
+a.analyzed[href]        { color:red; text-decoration: none; }
+a.testing[href]:hover   { color:green; text-decoration: underline; }
+a.testing[href]:link    { color:green; text-decoration: none; }
+a.testing[href]         { color:green; text-decoration: none; }
+a.suspended[href]:hover { color:blue; text-decoration: line-through; }
+a.suspended[href]:link  { color:blue; text-decoration: line-through; }
+a.suspended[href]       { color:blue; text-decoration: line-through; }
+a.closed[href]:hover    { color:blue; text-decoration: line-through; }
+a.closed[href]:link     { color:blue; text-decoration: line-through; }
+a.closed[href]          { color:blue; text-decoration: line-through; }
 
 table.body {
   border: 0;
@@ -147,6 +181,19 @@ table.form td {
 table.form td.optional {
   font-weight: bold;
   font-style: italic;
+}
+
+table.form td.test_ok {
+  background-color: #22bb22;
+  color: white;
+  font-weight: bold;
+}
+
+table.form td.test_failed {
+  background-color: #bb2222;
+  color: white;
+  font-weight: bold;
+  text-decoration: blink;
 }
 
 table.form td.html {
