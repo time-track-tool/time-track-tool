@@ -22,9 +22,10 @@
 # ****************************************************************************
 # $Id$
 
-from roundup           import mailgw
-from roundup.cgi       import client
-from roundup.rup_utils import pretty
+from roundup                import mailgw
+from roundup.cgi            import client
+from roundup.cgi.templating import MultilinkHTMLProperty
+from roundup.rup_utils      import pretty
 import re
 import cgi
 import copy
@@ -77,6 +78,38 @@ class TemplatingUtils:
 
     def fieldname (self, name) :
         return "%s&nbsp;" % pretty (name)
+
+    def colonfield (self, klass, name) :
+        return "%s:&nbsp;%s" % (pretty (name), str (klass [name]))
+
+    def linkclass (self, item) :
+        try :
+            return ('canc','run') [not item.end.plain()]
+        except AttributeError :
+            pass
+        return ''
+
+    def formatlink (self, hprop, name, id) :
+        return """<a class="%s" href="%s%s">%s</a>""" \
+            % (self.linkclass (name), name, id, hprop)
+
+    def listingprop (self, item, prop, labelprop, classname) :
+        f     = prop [1]
+        hprop = item [f]
+        l     = len (prop)
+        if f == labelprop or f == 'id' :
+            return self.formatlink (hprop, classname, item.id)
+        elif l > 2 :
+            cln = prop [2]
+            fn  = prop [3]
+            if isinstance (hprop, MultilinkHTMLProperty) : 
+                return ", ".join \
+                    ([ self.formatlink (hprop [i][fn], cln, hprop._value [i])
+                       for i in range (len (hprop))
+                    ])
+            else :
+                return self.formatlink (hprop [fn], cln, hprop._value)
+        return hprop.plain ()
 
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
