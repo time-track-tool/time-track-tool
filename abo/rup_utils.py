@@ -56,6 +56,7 @@ prettymap = \
 , 'password'     : uni('Passwort')
 , 'payed_abos'   : uni('Zahler für')
 , 'payer'        : uni('Zahler')
+, 'phone'        : uni('Telefon')
 , 'phone_home'   : uni('Telefon privat')
 , 'phone_mobile' : uni('Telefon mobil')
 , 'phone_office' : uni('Telefon Geschäft')
@@ -72,3 +73,4 @@ prettymap = \
 def pretty (name) :
     return (prettymap.get (name, name))
 
+#SHA: 016d10a7e587e6ae6f26d398e0fab4bf738db628
