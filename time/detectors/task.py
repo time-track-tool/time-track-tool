@@ -27,11 +27,14 @@
 #
 # Revision Dates
 #     8-Nov-2004 (MPH) Creation
+#     9-Nov-2004 (MPH) Factored `update_features_status` to `common.py`
 #    ««revision-date»»···
 #--
 #
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
+
+import common
 
 def add_task (db, cl, nodeid, new_values) :
     """auditor for task.create:
@@ -46,7 +49,7 @@ def add_task (db, cl, nodeid, new_values) :
         raise Reject, "Required task property kind not supplied"
 # end def add_task
 
-def update_features_status (db, cl, nodeid, old_values) :
+def update_feature_status (db, cl, nodeid, old_values) :
     """reactor on task.set:
 
     set the features status according to the linked tasks's status.
@@ -56,35 +59,42 @@ def update_features_status (db, cl, nodeid, old_values) :
     - when all tasks are in status 'accepted', set the feature's
       status to `completed`. XXX: what about the defects ????
     """
-    old_status = old_values ["status"]
-    new_status = cl.get (nodeid, "status")
-    if old_status != new_status :
-        # status changed, we should investigate further
-        t_id_started = db.task_status.lookup    ("started")
-        f_id_open    = db.feature_status.lookup ("open")
-        f_id         = cl.get (nodeid, "feature") # new value, because it could
-                                                  # also have changed !
-        f_id_status  = db.feature.get (f_id, "status")
-        if new_status == t_id_started and f_id_status != f_id_open :
-            # status changed to status, we can safely set the feature's
-            # status to `open` if not already done so.
-            db.feature.set (f_id, status = f_id_open)
-        else :
-            # we need to iterate over all tasks of the feature, to
-            # find out if we can close the feature now
-            t_id_accepted = db.task_status.lookup ("accepted")
-            can_close     = True
-            tasks         = db.feature.get (f_id, "tasks")
-            for task in tasks :
-                if db.task.get (task, "status") != t_id_accepted :
-                    can_close = False
-                    break
-            if can_close :
-                f_id_completed = db.feature_status.lookup ("completed")
-                db.feature.set (f_id, status = f_id_completed)
-# end def update_features_status
+    feature = cl.get (nodeid, "feature")
+    new_values = {}
+    common.update_feature_status (db, db.feature, feature, new_values)
+    new_status = new_values.get ("status")
+    if new_status :
+        db.feature.set (feature, status = new_status)
+# end def update_feature_status
 
-def update_features_test_ok (db, cl, nodeid, old_values) :
+def audit_task_status (db, cl, nodeid, new_values) :
+    """auditor on task.set
+
+    checks if the pending defects are open/closed
+    if status accepted/accepted-but-defects:
+        if sum (defects).status < closed :
+            self.status = accepted-but-defects
+        else :
+            self.status = accepted
+    """
+    task_accepted    = db.task_status.lookup ("accepted")
+    task_acc_but_def = db.task_status.lookup ("accepted-but-defects")
+    task_status      = new_values.get ("status") or cl.get (nodeid, "status")
+    if task_status in [task_accepted, task_acc_but_def] :
+        defects = cl.get (nodeid, "defects")
+        open_defects = False
+        defect_closed = db.defect_status.lookup ("closed")
+        for defect in defects :
+            if db.defect.get (defect, "status") < defect_closed :
+                open_defects = True
+                break
+        if open_defects and (task_status == task_accepted) :
+            new_values ["status"] = task_acc_but_def
+        elif not open_defects and (task_status == task_acc_but_def) :
+            new_values ["status"] = task_accepted
+# end def audit_task_status
+
+def update_feature_test_ok (db, cl, nodeid, old_values) :
     """reactor of task.set:
 
     if this task is of kind `testcase` we should propagate the `test_ok`
@@ -123,12 +133,13 @@ def update_features_test_ok (db, cl, nodeid, old_values) :
             if len (all_testcases) == len (closed_ok_testcases) :
                 # all testcases are `accepted` and the test has passed
                 db.feature.set (f_id, test_ok = True)
-# end def update_features_test_ok
+# end def update_feature_test_ok
 
 def init (db) :
-    db.task.audit ("create", add_task               )
-    db.task.react ("set"   , update_features_status )
-    db.task.react ("set"   , update_features_test_ok)
+    db.task.audit ("create", add_task              )
+    db.task.audit ("set"   , audit_task_status     )
+    db.task.react ("set"   , update_feature_status )
+    db.task.react ("set"   , update_feature_test_ok)
 # end def init
 
 ### __END__ task

@@ -29,12 +29,15 @@
 #    23-Jul-2004 (MPH) Creation
 #     5-Oct-2004 (MPH) Added `set_composed_ofs_feature`
 #     8-Nov-2004 (MPH) Moved `task` related to `task.py`, major cleanup
+#     9-Nov-2004 (MPH) Some refactoring on `update_feature_status`
 #    ««revision-date»»···
 #--
 #
 
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
+
+import common
 
 def is_feature_completed (db, cl, nodeid, new_values) :
     """auditor on feature.set
@@ -148,16 +151,12 @@ def move_defects (db, cl, nodeid, old_values) :
 # end def move_defects
 
 def init (db) :
-#    db.feature.audit             ("set"   , is_feature_completed     )
-    db.feature.react             ("set"   , add_feature_to_release   )
-    db.feature.react             ("set"   , move_defects             )
-    db.feature.react             ("set"   , suspend_tasks_and_defects)
-    db.feature.react             ("set"   , backlink_task            )
+#    db.feature.audit             ("set"   , is_feature_completed        )
+    db.feature.audit             ("set"   , common.update_feature_status)
+    db.feature.react             ("set"   , add_feature_to_release      )
+    db.feature.react             ("set"   , move_defects                )
+    db.feature.react             ("set"   , suspend_tasks_and_defects   )
+    db.feature.react             ("set"   , backlink_task               )
 # end def init
 
-# TODO: feature.audit:
-#       - you cant start when it's not connected to a release ???
-#       - can a feature be "completed", when it has pending defects ???
 ### __END__ feature
-
-

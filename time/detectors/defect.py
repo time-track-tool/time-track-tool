@@ -29,11 +29,14 @@
 #    11-Oct-2004 (MPH) Creation
 #     2-Nov-2004 (MPH) Added `audit_superseder`
 #     8-Nov-2004 (MPH) Added `update_defects_task`, major cleanup
+#     9-Nov-2004 (MPH) Removed some debug output, refactoring
 #    ««revision-date»»···
 #--
 #
 from roundup import roundupdb, hyperdb, date
 from roundup.exceptions import Reject
+
+import common
 
 def check_new_defect (db, cl, nodeid, new_values) :
     """auditor for defect's create
@@ -172,30 +175,24 @@ def add_defect_to_release (db, cl, nodeid, old_values) :
         # remove this defect from the old release
         # from the bugs
         defs = db.release.get (old_solved_in_release, "bugs")
-        print "old bugs:", defs
         while nodeid in defs : # just to be really on the safe side, this
                                # should not be iterated over more than once
                                # ever, thus we can also live with the
                                # 'non-performant' db.release.set () call
                                # every time.
             defs.remove (nodeid)
-            print "set", defs
             db.release.set (old_solved_in_release, bugs = defs)
         # and/or from the planned_fixes
         defs = db.release.get (old_solved_in_release, "planned_fixes")
-        print "old planned_fixes:", defs
         while nodeid in defs :
             defs.remove (nodeid)
-            print "set", defs
             db.release.set (old_solved_in_release, planned_fixes = defs)
 
     if (found_in_release == new_solved_in_release) and \
        (new_solved_in_release != old_solved_in_release) :
         # newly generated "bug" report, attach to 'bugs' of found_in_release
         defs = db.release.get (found_in_release, "bugs")
-        print "append to ", found_in_release, defs
         defs.append (nodeid)
-        print "set", defs
         db.release.set (found_in_release, bugs = defs)
 
     elif new_solved_in_release and (new_solved_in_release != old_solved_in_release) :
@@ -203,26 +200,22 @@ def add_defect_to_release (db, cl, nodeid, old_values) :
         # new_solved_in_release, if it was a bug, it got cought by the if
         # above.
         defs = db.release.get (new_solved_in_release, "planned_fixes")
-        print "append to new", new_solved_in_release, defs
         defs.append (nodeid)
-        print "set", defs
         db.release.set (new_solved_in_release, planned_fixes = defs)
 # end def add_defect_to_release
 
-def belongs_to_auditor (db, cl, nodeid, new_values) :
+def belongs_to_feature_auditor (db, cl, nodeid, new_values) :
     """auditor on defect.set
 
     clears the `belongs_to_task` attribute if `belongs_to_feature` has
     changed.
-
-    removes the defect from the corresponding task's `defects` list.
     """
     new_btf = new_values.get ("belongs_to_feature", None)
     if new_btf :
         new_values ["belongs_to_task"] = None
-# end def belongs_to_auditor
+# end def belongs_to_feature_auditor
 
-def belongs_to_reactor (db, cl, nodeid, old_values) :
+def belongs_to_feature_reactor (db, cl, nodeid, old_values) :
     """reactor on defect.set
 
     clears `feature` and `task` references to this defect if
@@ -237,12 +230,18 @@ def belongs_to_reactor (db, cl, nodeid, old_values) :
             if nodeid in l :
                 l.remove (nodeid)
             db.feature.set (old_btf, defects = l)
+            # possibly update status of the feature from "completed-but-defects"
+            # to "completed", if no more open defects are attached to this
+            # feature
         if new_btf :
             # append us to the new feature's list of defects
             l = db.feature.get (new_btf, "defects")
             l.append (nodeid)
             db.feature.set (new_btf, defects = l)
-    # same now for belongs_to_tasks
+            # possibly update status of the feature from "completed"
+            # to "completed-but-defects", if it was "completed", as this defect
+            # surely is not accepted
+    # same now for belongs_to_task
     old_btt = old_values.get ("belongs_to_task")
     new_btt = cl.get (nodeid, "belongs_to_task")
     if old_btt != new_btt :
@@ -257,7 +256,7 @@ def belongs_to_reactor (db, cl, nodeid, old_values) :
             l = db.task.get (new_btt, "defects")
             l.append (nodeid)
             db.task.set (new_btt, defects = l)
-# end def belongs_to_reactor
+# end def belongs_to_feature_reactor
 
 def audit_superseder (db, cl, nodeid, new_values) :
     """auditor on defect's set
@@ -277,8 +276,6 @@ def audit_superseder (db, cl, nodeid, new_values) :
                       "to 'closed-duplicate'"
     if new_sup :
         new_values ["status"] = cd_id
-    print "new_values", new_values
-    print "oldnosy", cl.get (nodeid, "nosy")
 # end def audit_superseder
 
 def set_closer (db, cl, nodeid, new_values) :
@@ -297,18 +294,38 @@ def set_closer (db, cl, nodeid, new_values) :
             new_values ["closed"] = date.Date (".")
 # end def set_closer
 
+def react_on_closed (db, cl, nodeid, old_values) :
+    """reactor on defect.set
+
+    if the defect got closed (anything between and including `closed` and
+    `closed-rejected`) we need to update the feature's status this defect is
+    connected to.
+    """
+    closed          = db.defect_status.lookup ("closed")
+    closed_rejected = db.defect_status.lookup ("closed-rejected")
+    status          = cl.get                  (nodeid, "status")
+    if status >= closed and \
+       status <= closed_rejected :
+        feature = cl.get (nodeid, "belongs_to_feature")
+        if feature :
+            new_values = {}
+            common.update_feature_status (db, db.feature, feature, new_values)
+            new_status = new_values.get ("status")
+            if new_status :
+                db.feature.set (feature, status = new_status)
+# end def react_on_closed
+
 def init (db) :
-    db.defect.audit ("create", check_new_defect     )
-    db.defect.audit ("set"   , check_defect         )
-    db.defect.react ("create", add_defect_to_release)
-    db.defect.react ("set"   , add_defect_to_release)
-    db.defect.audit ("set"   , belongs_to_auditor   )
-    db.defect.react ("set"   , belongs_to_reactor   )
-    db.defect.audit ("set"   , audit_superseder     )
-    db.defect.audit ("set"   , set_closer           )
-    db.defect.react ("set"   , update_defects_task  )
+    db.defect.audit ("create", check_new_defect          )
+    db.defect.audit ("set"   , check_defect              )
+    db.defect.react ("create", add_defect_to_release     )
+    db.defect.react ("set"   , add_defect_to_release     )
+    db.defect.audit ("set"   , belongs_to_feature_auditor)
+    db.defect.react ("set"   , belongs_to_feature_reactor)
+    db.defect.audit ("set"   , audit_superseder          )
+    db.defect.audit ("set"   , set_closer                )
+    db.defect.react ("set"   , update_defects_task       )
+    db.defect.react ("set"   , react_on_closed           )
 # end def init
 
 ### __END__ defaults
-
-

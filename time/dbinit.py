@@ -26,6 +26,7 @@
 #                      - cleanup of unused classes
 #     4-Nov-2004 (MPH) Effort: `Interval` -> `Number`
 #     8-Nov-2004 (MPH) Cleanup, removed `accepted-but-defects` from `document_status`
+#     9-Nov-2004 (MPH) Added `completed-but-defects` to `feature_status`
 #    ««revision-date»»···
 #--
 #
@@ -654,11 +655,13 @@ def init(adminpw):
             , "We should start working on it.")
           , ("2", "open"     , "open", ("suspended", ) # "completed" automatically
             , "We are currently working on it.")
-          , ("3", "completed", "comp", ()
+          , ("3", "completed", "comp", ("completed-but-defects",)
             , "It is completed.")
-          , ("4", "rejected" , "reje", ("raised", )
+          , ("4", "completed-but-defects", "cdef", ("completed",)
+            , "It is completed, but has pending defects.")
+          , ("5", "rejected" , "reje", ("raised", )
             , "We wont do it.")
-          , ("5", "suspended", "susp", ("raised", )
+          , ("6", "suspended", "susp", ("raised", )
             , "We will do it later.")
           ]
     feature_status = db.getclass ("feature_status")

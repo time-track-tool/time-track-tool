@@ -29,6 +29,7 @@
 #    22-Jul-2004 (MPH) Creation
 #     4-Nov-2004 (MPH) Changed Milestones
 #     8-Nov-2004 (MPH) Cleanup
+#     9-Nov-2004 (MPH) Removed debug output, fixed `update_release_status`
 #    ««revision-date»»···
 #--
 #
@@ -90,7 +91,7 @@ def update_milestones (db, cl, nodeid, old_values) :
 # end def update_milestones
 
 def update_release_status (db, cl, nodeid, old_values) :
-    """reactor on release.set
+    """reactor on milestone.set
 
     link the release's status field to the last reached milestone.
     """
@@ -102,7 +103,6 @@ def update_release_status (db, cl, nodeid, old_values) :
         reached = cl.get (ms, "reached")
         if reached :
             last = ms
-        else :
             break
     db.release.set (release_id, status = last)
 # end def update_release_status
@@ -115,8 +115,6 @@ def backlink_documents (db, cl, nodeid, old_values) :
     """
     old_docs = old_values.get ("documents", [])
     new_docs = db.release.get (nodeid, "documents")
-    print old_docs
-    print new_docs
     if new_docs != old_docs and new_docs != [] :
         new_docs = [d for d in new_docs if d not in old_docs]
         for d in new_docs :
