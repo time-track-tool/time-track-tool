@@ -19,9 +19,9 @@
     , utils.SearchAttribute (utils, pdict ['date_payed'])
     , utils.SearchAttribute (utils, pdict ['bookentry'])
     , utils.SearchAttribute (utils, pdict ['receipt_no'])
-    , utils.SearchAttribute (utils, pdict ['abo'], 'payer.lastname')
-    , utils.SearchAttribute (utils, pdict ['abo'], 'subscriber.lastname')
-    , utils.SearchAttribute (utils, pdict ['abo'], 'aboprice')
+    , utils.SearchAttribute (utils, pdict ['abo'], lnkattr = 'payer.lastname')
+    , utils.SearchAttribute (utils, pdict ['abo'], lnkattr = 'subscriber.lastname')
+    , utils.SearchAttribute (utils, pdict ['abo'], lnkattr = 'aboprice')
     );
    edit_form python:( 'send_it'
                ,

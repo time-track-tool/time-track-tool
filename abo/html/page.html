@@ -404,8 +404,9 @@
    <tr>
 <!-- list all properties we want to see -->
     <tal:block tal:repeat="prop props">
-     <th tal:condition="python:request.show[prop.name]"
-         tal:content="python:prop.label"></th>
+     <th tal:condition="python:request.show[prop.selname]"
+         tal:content="python:prop.label">
+     </th>
     </tal:block>
    </tr>
    <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
@@ -420,9 +421,9 @@
     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
      <!-- all the properties: label property and id will be made a link -->
      <tal:block tal:repeat="prop props">
-      <td tal:condition="python:request.show [prop.name]"
-       tal:content="structure python:prop.listingprop (i)"
-      ></td>
+      <td tal:condition="python:request.show [prop.selname]"
+          tal:content="structure python:prop.as_listentry (i)">
+      </td>
      </tal:block>
     </tr>
    </tal:block>
@@ -511,8 +512,8 @@
        <td style="text-align:center;">
         <select multiple name=":columns" size="7">
          <option tal:repeat="prop filtered_props"
-                 tal:attributes="selected python:request.show[prop.name];
-                                 value    python:prop.name"
+                 tal:attributes="selected python:request.show[prop.selname];
+                                 value    python:prop.selname"
                  tal:content="python:prop.label"></option>
         </select>
        </td>
