@@ -16,6 +16,7 @@
 #     5-Apr-2005 (MPH) Changed `tmpnam` to `mkstemp`, fire
 #                      `update_userlist_html` on user.create also, removed
 #                      `None` from `is_alias` filterspec
+#     6-Apr-2005 (MPH) Fixed use of mkstemp
 #    ««revision-date»»···
 #--
 #
@@ -118,6 +119,7 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     root       = pjoin (db.config.TRACKER_HOME, "html")
     userlist   = "userlist.html"
     f, tmpname = mkstemp (".html", "userlist", root)
+    f          = os.fdopen (f, "w")
     # all 'real' users
     users      = cl.filter ( None # full text search
                            , filterspec = {"is_alias" : [False]}
