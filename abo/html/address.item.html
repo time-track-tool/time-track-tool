@@ -70,14 +70,13 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('adr_type')"
-         rowspan="2"></th>
-     <td rowspan=2
-         tal:content="structure python:context.adr_type.menu (height=5)"></td>
+     <th tal:content="structure python:utils.fieldname('adr_type')"></th>
+     <td tal:content="structure context/adr_type/field"></td>
      <th tal:content="structure python:utils.fieldname('fax')"></th>
      <td tal:content="structure context/fax/field"></td>
     </tr>
     <tr>
+     <th></th><td></td>
      <th tal:content="structure python:utils.fieldname('valid')"></th>
      <td tal:content="structure context/valid/menu"></td>
     </tr>
