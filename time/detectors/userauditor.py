@@ -1,30 +1,31 @@
-# Copyright (c) 2003 Richard Jones (richard@mechanicalcat.net)
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2004 TTTech Computertechnik AG. All rights reserved
+# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@tttech.com
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+#++
+# Name
+#    dbinit
 #
-#   The above copyright notice and this permission notice shall be included in
-#   all copies or substantial portions of the Software.
+# Purpose
+#    Auditor/Reactor for user class
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# Revision Dates
+#    14-Oct-2004 (MPH) Creation
+#    ««revision-date»»···
+#--
 #
-#$Id$
-
 def audit_user_fields(db, cl, nodeid, newvalues):
     ''' Make sure user properties are valid.
-
         - email address has no spaces in it
         - roles specified exist
+
+        TODO:
+        - email address matches TTTspec (and optionally auto-generate)
+          - firstname.lastname@tttech.com
+          - lastname@tttech.com
+          - (fla@tttech.com) # not implemented
+
+
     '''
     if newvalues.has_key('address') and ' ' in newvalues['address']:
         raise ValueError, 'Email address must not contain spaces'
@@ -34,11 +35,11 @@ def audit_user_fields(db, cl, nodeid, newvalues):
         for rolename in roles:
             if not db.security.role.has_key(rolename):
                 raise ValueError, 'Role "%s" does not exist'%rolename
-
+# end def audit_user_fields
 
 def init(db):
     # fire before changes are made
-    db.user.audit('set', audit_user_fields)
+    db.user.audit('set'   , audit_user_fields)
     db.user.audit('create', audit_user_fields)
 
 # vim: set filetype=python ts=4 sw=4 et si

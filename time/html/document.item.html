@@ -21,7 +21,7 @@
               tal:define="ok context/status/transitions">
        <option tal:attributes="value context/status/id"
                tal:content="context/status/name"></option>
-       <tal:block tal:repeat="state db/work_package_status/list">
+       <tal:block tal:repeat="state db/task_status/list">
        <option tal:condition="python:state.id in ok"
                tal:attributes="
                    value state/id;
@@ -33,9 +33,13 @@
      </td>
     </tr>
     <tr>
+     <th>Release</th>
+     <td><a tal:attributes="href context/release/designator"
+            tal:content="context/release/title"></a>
+    <tr>
      <th>Files</th>
      <td colspan="3">
-      <tal:block metal:use-macro="templates/page/macros/ttt_issue_pdf_files"/>
+      <tal:block metal:use-macro="templates/page/macros/ttt_issue_files"/>
      </td>
     </tr>
    </tal:block>

@@ -16,6 +16,14 @@
 #    23-Jul-2004 (MPH) Removed `automatic` status changes from `feature_status`
 #     5-Oct-2004 (MPH) Split `work_package` into `implementation_task` and
 #                      `documentation_task`
+#    14-Oct-2004 (pr) Major changes
+#                      - `task` with `task_kind` instead of `*_task` and
+#                        `testcase`
+#                      - added `estimated_[begin|end]` to task
+#                      - added `task` link to `defect` and vice versa, to
+#                        have to possibility to add defects also to tasks
+#                      - added `defects` multilink to `feature` (was missing)
+#                      - cleanup of unused classes
 #    ««revision-date»»···
 #--
 #
@@ -97,15 +105,24 @@ def open (name = None):
                                         # the last reached milestone.
         )
 
-    work_package_status = Class \
+    task_status = Class \
         ( db
-        , "work_package_status"
+        , "task_status"
         , name                  = String    ()
         , description           = String    ()
-        , transitions           = Multilink ("work_package_status")
+        , transitions           = Multilink ("task_status")
         , order                 = String    ()
         )
-    work_package_status.setkey ("name")
+    task_status.setkey ("name")
+
+    task_kind = Class \
+        ( db
+        , "task_kind"
+        , name                  = String    ()
+        , description           = String    ()
+        , order                 = String    ()
+        )
+    task_kind.setkey ("name")
 
     feature_status = Class \
         ( db
@@ -141,15 +158,6 @@ def open (name = None):
     document_type = Class \
         ( db
         , "document_type"
-        , name                  = String    ()
-        , description           = String    ()
-        , order                 = String    ()
-        )
-    document_type.setkey ("name")
-
-    document_type = Class \
-        ( db
-        , "design_document_type"
         , name                  = String    ()
         , description           = String    ()
         , order                 = String    ()
@@ -288,13 +296,6 @@ def open (name = None):
         , type                  = String    ()
         )
 
-    pdf_file = FileClass \
-        ( db
-        , "pdf_file"
-        , name                  = String    ()
-        , type                  = String    ()
-        )
-
     # TTT_Issue_Class automatically gets these properties:
     #   title       = String    ()
     #   responsible = Link      ("user")
@@ -320,8 +321,9 @@ def open (name = None):
     document = TTT_Issue_Class \
         ( db
         , "document"
-        , files                 = Multilink ("pdf_file")
-        , status                = Link      ("work_package_status")
+        , files                 = Multilink ("file")
+        , status                = Link      ("task_status")
+        , release               = Link      ("release")
         , type                  = Link      ("document_type")
         )
 
@@ -340,18 +342,6 @@ def open (name = None):
     release = TTT_Issue_Class \
         ( db
         , "release"
-        # XXX: instead of:
-        #, eval_sheet            = Link      ("pdf_file")
-        #, configuration_plan    = Link      ("pdf_file")
-        #, test_plan             = Link      ("pdf_file")
-        ## XXX: add the .ppt presentation of the release here ???
-        ##, release_plan          = Link      ("pdf_file")
-        # we have only one Multilink on "planning_document" - so we can
-        # easily adapt to the number of documents we want here. the type of
-        # the document can be set in the individual "planning_document"'s
-        # instaces. the presence of some document types can be checked by an
-        # auditor, all documents and their corresponding types are displayed
-        # on the web page.
         , status                = Link      ("milestone") # just to show
                                                           # something i the
                                                           # pop-up, gets set
@@ -393,83 +383,36 @@ def open (name = None):
         , test_ok               = Boolean   () # gets set automatically by a
                                                # detector depending on the
                                                # testcases test_ok switch.
-        , documents             = Multilink ("design_document") # SRD, SDD, etc.
-        , implementation_tasks  = Multilink ("implementation_task")
-        , testcases             = Multilink ("testcase")
-        , documentation_tasks   = Multilink ("documentation_task")
+        , tasks                 = Multilink ("task")
         , depends               = Multilink ("feature")
         , needs                 = Multilink ("feature")
         , release               = Link      ("release")
+        , defects               = Multilink ("defect")
         , planned_begin         = Date      () # automatically by import
         , planned_end           = Date      () # automatically by import
         , actual_begin          = Date      () # automatically by status
         , actual_end            = Date      () # change of workpackages
         )
 
-    document = TTT_Issue_Class \
+    task = TTT_Issue_Class \
         ( db
-        , "design_document"
-        , files                 = Multilink ("pdf_file")
-        , status                = Link      ("work_package_status")
-        , type                  = Link      ("design_document_type")
-        , feature               = Link      ("feature")
-        )
-
-    implementation_task = TTT_Issue_Class \
-        ( db
-        , "implementation_task"
-        , status                = Link      ("work_package_status")
+        , "task"
+        , status                = Link      ("task_status")
+        , kind                  = Link      ("task_kind")
         , effort                = Interval  () # XXX: was: Number, but
                                                # Interval is better suited
-        , depends               = Multilink ("implementation_task")
-        , needs                 = Multilink ("implementation_task")
+        , depends               = Multilink ("task")
+        , needs                 = Multilink ("task")
         , files                 = Multilink ("file")
         , feature               = Link      ("feature")
-        , planned_begin         = Date      ()
-        , planned_end           = Date      ()
-        , actual_begin          = Date      ()
-        , actual_end            = Date      ()
-        )
-
-    testcase = TTT_Issue_Class \
-        ( db
-        , "testcase"
-        , status                = Link      ("work_package_status")
-        , effort                = Number    () # days only
-        , depends               = Multilink ("testcase")
-        , needs                 = Multilink ("testcase")
-        , files                 = Multilink ("file")
-        , feature               = Link      ("feature")
-        , planned_begin         = Date      ()
-        , planned_end           = Date      ()
-        , actual_begin          = Date      ()
-        , actual_end            = Date      ()
-        , test_ok               = Boolean   () # only difference to the
-                                        # "work_package", but we need it in a
-                                        # seperate class to give permissions,
-                                        # and let the detectors only fire
-                                        # here.
-                                        # This gets set by the iv&v team when
-                                        # the particular test case failed. a
-                                        # detector sets also the "test_ok"
-                                        # field in the feature this testcase
-                                        # belongs to.
-        )
-
-    documentation_task = TTT_Issue_Class \
-        ( db
-        , "documentation_task"
-        , status                = Link      ("work_package_status")
-        , effort                = Interval  () # XXX: was: Number, but
-                                               # Interval is better suited
-        , depends               = Multilink ("documentation_task")
-        , needs                 = Multilink ("documentation_task")
-        , files                 = Multilink ("file")
-        , feature               = Link      ("feature")
-        , planned_begin         = Date      ()
-        , planned_end           = Date      ()
-        , actual_begin          = Date      ()
-        , actual_end            = Date      ()
+        , defects               = Multilink ("defect")
+        , test_ok               = Boolean   () # if kind == "testcase"
+        , planned_begin         = Date      () #
+        , planned_end           = Date      () # == durchlaufzeit 5d
+        , actual_begin          = Date      () #
+        , actual_end            = Date      () # == tatsächliche dauer 2h
+        , estimated_begin       = Date      () #
+        , estimated_end         = Date      () # == geschätze dauer 8w
         )
 
     defect = TTT_Issue_Class \
@@ -517,7 +460,8 @@ def open (name = None):
                                         # are also setting the "closed" date
                                         # for this, we can also set the
                                         # "closer" here.
-        , part_of_feature       = Link      ("feature") # if known
+        , feature               = Link      ("feature") # if known
+        , task                  = Link      ("task")    # if known
         )
 
 ## XXX: acc to AGO/RSC/MPH there should be no legacy "issue" class - if
@@ -571,49 +515,33 @@ def open (name = None):
     #        only)
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("query"                 , ["User"], ["User"            ])
-        , ("room"                  , ["User"], ["Admin"           ])
-        , ("milestone"             , ["User"], ["Teamleader"      ])
-        , ("work_package_status"   , ["User"], ["Admin"           ])
-        , ("action_item_status"    , ["User"], ["Admin"           ])
-        , ("defect_status"         , ["User"], ["Admin"           ])
-        , ("document_type"         , ["User"], ["Admin"           ])
-        , ("design_document_type"  , ["User"], ["Admin"           ])
-        , ("severity"              , ["User"], ["Admin"           ])
-        , ("product"               , ["User"], ["Admin"           ])
-        , ("organisation"          , ["User"], ["Admin"           ])
-        , ("department"            , ["User"], ["Admin"           ])
-        , ("title"                 , ["User"], ["Admin"           ])
-        , ("position"              , ["User"], ["Admin"           ])
-        , ("user"                  , ["User"], ["Admin", "Office" ])
-        , ("msg"                   , ["User"], ["User"            ])
-        , ("file"                  , ["User"], ["User"            ])
-        , ("pdf_file"              , ["User"], ["User"            ])
-        , ("document"              , ["User"], ["User"            ])
-## XXX: this behaviour has to be checked via tal on the page.
-##         , ("planning_document"     , ["User"], [ "Teamleader"
-##                                                , "Releasemanager"
-##                                                ]
-##           )
-        , ("release"               , ["User"], [ "Teamleader"
-                                               , "Releasemanager"
-                                               ]
-          )
-        , ("feature"               , ["User"], [ "Teamleader"
-                                               , "Releasemanager"
-                                               ]
-          )
-        , ("implementation_task"   , ["User"], [ "User"           ])
-        , ("documentation_task"    , ["User"], [ "User"           ])
-        , ("testcase"              , ["User"], [ "User"           ])
-        , ("defect"                , ["User"], [ "User"           ])
-        , ("meeting"               , ["User"], [ "Admin"          ])
-        , ("action_item"           , ["User"], [ "User"           ])
+        [ ("query"             , ["User"], ["User"            ])
+        , ("room"              , ["User"], ["Admin"           ])
+        , ("milestone"         , ["User"], ["Releasemanager"  ])
+        , ("task_status"       , ["User"], ["Admin"           ])
+        , ("action_item_status", ["User"], ["Admin"           ])
+        , ("defect_status"     , ["User"], ["Admin"           ])
+        , ("document_type"     , ["User"], ["Admin"           ])
+        , ("severity"          , ["User"], ["Admin"           ])
+        , ("product"           , ["User"], ["Admin"           ])
+        , ("organisation"      , ["User"], ["Admin"           ])
+        , ("department"        , ["User"], ["Admin"           ])
+        , ("title"             , ["User"], ["Admin"           ])
+        , ("position"          , ["User"], ["Admin"           ])
+        , ("user"              , ["User"], ["Admin", "Office" ])
+        , ("msg"               , ["User"], ["User"            ])
+        , ("file"              , ["User"], ["User"            ])
+        , ("document"          , ["User"], ["User"            ])
+        , ("release"           , ["User"], ["Releasemanager"  ])
+        , ("feature"           , ["User"], ["Releasemanager"  ])
+        , ("task"              , ["User"], ["User"            ])
+        , ("defect"            , ["User"], ["User"            ])
+        , ("meeting"           , ["User"], ["Admin"           ])
+        , ("action_item"       , ["User"], ["User"            ])
         ]
 
     roles = \
         [ ("Nosy"          , "Allowed on nosy list"          )
-        , ("Teamleader"    , "Is Teamleader"                 )
         , ("CCB"           , "Member of Change Control Board")
         , ("Office"        , "Member of Office"              )
         , ("Releasemanager", "Allowed to manage a SW Release")
@@ -637,8 +565,7 @@ def open (name = None):
     nosy_classes = [ "document"
                    , "release"
                    , "feature"
-                   , "implementation_task"
-                   , "documentation_task"
+                   , "task"
                    , "defect"
                    , "meeting"
                    , "action_item"
@@ -721,33 +648,49 @@ def init(adminpw):
     room.create        (name = "SW Dept.")
     # add rooms here
 
-    # work_package_status
+    # task_status
     # order, name, transitions, description
-    wps = [ ("1", "issued"   , ("started", )
-            , "Waiting to get started")
-          , ("2", "started"  , ("available", "suspended")
-            , "Someone is working on it.")
-          , ("3", "available", ("accepted", "suspended")
-            , "It is ready for review.")
-          , ("4", "accepted" , ()
-            , "It is reviewed and found to be correct.")
-          , ("5", "suspended", ("issued",)
-            , "We plan to do it later.")
-          , ("6", "closed-obsolete", ()
-            , "We agreed to not do it anymore")
-          ]
+    tasks = [ ("1", "issued"   , ("started", )
+              , "Waiting to get started")
+            , ("2", "started"  , ("available", "suspended")
+              , "Someone is working on it.")
+            , ("3", "available", ("accepted", "suspended")
+              , "It is ready for review.")
+            , ("4", "accepted" , ("accepted-but-defects", )
+              , "It is reviewed and found to be correct.")
+            , ("5", "accepted-but-defects" , ("accepted", )
+              , "It is accepted, but has defects reported.")
+            , ("6", "suspended", ("issued",)
+              , "We plan to do it later.")
+            , ("7", "closed-obsolete", ()
+              , "We agreed to not do it anymore")
+            ]
 
-    work_package_status = db.getclass ("work_package_status")
-    for order, name, trans, desc in wps :
-        work_package_status.create ( name        = name
-                                   , order       = order
-                                   , description = desc
-                                   )
+    task_status = db.getclass ("task_status")
+    for order, name, trans, desc in tasks :
+        task_status.create ( name        = name
+                           , order       = order
+                           , description = desc
+                           )
     for order, name, trans, desc in wps :
         if trans :
-            id        = work_package_status.lookup (name)
-            trans_ids = [work_package_status.lookup (t) for t in trans]
-            work_package_status.set (id, transitions = trans_ids)
+            id        = task_status.lookup (name)
+            trans_ids = [task_status.lookup (t) for t in trans]
+            task_status.set (id, transitions = trans_ids)
+
+    # task_kind
+    kinds = [ ("1", "srd"                  , "Software Requirements Document")
+            , ("2", "sdd"                  , "Software Design Document"      )
+            , ("3", "implementation_task"  , "Implementation Task"           )
+            , ("4", "testcase"             , "Testcase"                      )
+            , ("5", "product_documentation", "Product Documentation Task"    )
+            ]
+    task_kind = db.getclass ("task_kind")
+    for order, name, desc in kinds :
+        task_kind.create ( name        = name
+                         , order       = order
+                         , description = desc
+                         )
 
     # feature_status
     # order, name, transitions, description
@@ -818,8 +761,8 @@ def init(adminpw):
             )
           , ("4", "resolved"        , False
             , "The defect is ready for testing"
-            , ("closed", )
-            , ("closed", "assigned")
+            , ("closed", "suspended")
+            , ("closed", "assigned", "suspended")
             )
           , ("5", "closed"          , False, "Rest in peace"      , (), ())
           , ("6", "closed-duplicate", False, "Is a duplicate"     , (), ())
@@ -854,15 +797,6 @@ def init(adminpw):
           , ("3", "HTP", "High-Level Test Plan"         )
           ]
     doc_type = db.getclass ("document_type")
-    for order, name, desc in dts :
-        doc_type.create (name = name, description = desc, order = order)
-
-    # design_document_type
-    # order, name, description
-    dts = [ ("1", "SRD", "Software Requirements Document")
-          , ("2", "SDD", "Software Design Document")
-          ]
-    doc_type = db.getclass ("design_document_type")
     for order, name, desc in dts :
         doc_type.create (name = name, description = desc, order = order)
 
@@ -945,13 +879,13 @@ def init(adminpw):
     # XXX: we should import this from somewhere ;-)
     # but it should reside here - or not ???
     user.create ( username = "priesch"
-                , password = password.Password ("priesch")
+                , password = password.Password ("")
                 , address  = "priesch@tttech.com"
                 , roles    = "Admin, User, Nosy"
                 )
 
     user.create ( username = "pr"
-                , password = password.Password ("pr")
+                , password = password.Password ("")
                 , address  = "priesch@tttech.com"
                 , roles    = "Admin, User, Nosy"
                 )
@@ -959,7 +893,7 @@ def init(adminpw):
     # products:
     # name, responsible, description, nosy
     ps = [ ("TTPPlan"     , "priesch", "desc", [])
-         , ("TTPCalibrate", "priesch", "desc", [])
+         , ("TTPCalibrate", "pr"     , "desc", [])
          # XXX: add products here
          ]
     product = db.getclass ("product")

@@ -36,13 +36,13 @@
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
 
-def set_default_wp_status (db, cl, nodeid, new_values) :
+def set_default_task_status (db, cl, nodeid, new_values) :
     if not new_values.has_key ("status") :
         new_values ["status"] = "issued"
-# end def set_default_wp_status
+# end def set_default_task_status
 
 def set_document_defaults (db, cl, nodeid, new_values) :
-    set_default_wp_status (db, cl, nodeid, new_values)
+    set_default_task_status (db, cl, nodeid, new_values)
     if not new_values.has_key ("title") :
         # if type specified
         if new_values.has_key ("type") :
@@ -53,7 +53,7 @@ def set_document_defaults (db, cl, nodeid, new_values) :
 # end def set_document_defaults
 
 def set_design_doc_defaults (db, cl, nodeid, new_values) :
-    set_default_wp_status (db, cl, nodeid, new_values)
+    set_default_task_status (db, cl, nodeid, new_values)
     if not new_values.has_key ("title") :
         # if type specified
         if new_values.has_key ("type") :
@@ -68,10 +68,7 @@ def set_design_doc_defaults (db, cl, nodeid, new_values) :
 
 def init (db) :
     db.document.audit            ("create", set_document_defaults)
-    db.design_document.audit     ("create", set_design_doc_defaults)
-    db.implementation_task.audit ("create", set_default_wp_status)
-    db.documentation_task.audit  ("create", set_default_wp_status)
-    db.testcase.audit            ("create", set_default_wp_status)
+    db.task.audit                ("create", set_default_task_status)
 # end def init
 
 ### __END__ status

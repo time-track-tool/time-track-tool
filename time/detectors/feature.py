@@ -35,24 +35,16 @@
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
 
-def workpackage_iter (db) :
-    """yields a feature.attribute_name, db.klass tuple for all feature's
-    attributes which correspond to workpackages.
-    """
-    for attr, klass in ( ( "documents"           , db.design_document    )
-                       , ( "implementation_tasks", db.implementation_task)
-                       , ( "testcases"           , db.testcase           )
-                       , ( "documentation_tasks" , db.documentation_task )
-                       ) :
-        yield attr, klass
-# end def workpackage
-
 def create_defaults (db, cl, nodeid, new_values) :
     if not new_values.has_key ("status") :
         new_values ["status"] = "raised"
 # end def create_defaults
 
 def add_feature_to_release (db, cl, nodeid, old_values) :
+    """reactor on feature.set:
+
+    update links to and from releases
+    """
     old_release = old_values.get ("release", None)
     new_release = cl.get         (nodeid, "release")
 
@@ -69,69 +61,89 @@ def add_feature_to_release (db, cl, nodeid, old_values) :
             db.release.set (new_release, features = fs)
 # end def add_feature_to_release
 
-def set_composed_ofs_feature (db, cl, nodeid, old_values) :
-    """set the 'feature' link (pointing to myself) in the newly generated
-    issues which are now part of me
-    """
-    # we check the following attributes (which are multilinks to other
-    # issue classes)
-    for attr, klass in workpackage_iter (db) :
-        old = old_values [attr]
-        new = cl.get (nodeid, attr)
-        for new in [k for k in new if k not in old] :
-            k = klass.set (new, feature = nodeid)
-# end def set_composed_ofs_feature
+def update_features_status (db, cl, nodeid, old_values) :
+    """reactor on task.set:
 
-def update_status (db, cl, nodeid, old_values) :
-    """set the features status according to what the linked workpackages are
-    doing.
-    - when only one workpackage is in status `started`, set it's feature's
+    set the features status according to the linked tasks's status.
+
+    - when only one task is in status `started`, set the feature's
       status to `open`
-    - when all workpackages are in status 'accepted', set the feature's
+    - when all tasks are in status 'accepted', set the feature's
       status to `completed`
     """
     old_status = old_values ["status"]
     new_status = cl.get (nodeid, "status")
     if old_status != new_status :
-        id_started = db.work_package_status.lookup ("started")
-        id_open    = db.feature_status.lookup      ("open")
-        # status changed
-        feature = cl.get (nodeid, "feature") # new value, because it could
-                                             # also have changed !
-        if new_status == id_started :
-            db.feature.set (feature, status = id_open)
+        # status changed, we should investigate further
+        t_id_started = db.task_status.lookup    ("started")
+        f_id_open    = db.feature_status.lookup ("open")
+        f_id         = cl.get (nodeid, "feature") # new value, because it could
+                                                  # also have changed !
+        f_id_status  = db.feature.get (f_id, "status")
+        if new_status == t_id_started and f_id_status != f_id_open :
+            # status changed to status, we can safely set the feature's
+            # status to `open` if not already done so.
+            db.feature.set (f_id, status = f_id_open)
         else :
-            # we need to iterate over all workpackages of the feature, to
+            # we need to iterate over all tasks of the feature, to
             # find out if we can close the feature now
-            id_accepted = db.work_package_status.lookup ("accepted")
-            can_close = True
-            for attr, klass in workpackage_iter (db) :
-                wps = db.feature.get (feature, attr)
-                for wp in wps :
-                    if klass.get (wp, "status") != id_accepted :
-                        can_close = False
-                        break
+            t_id_accepted = db.task_status.lookup ("accepted")
+            can_close     = True
+            tasks         = db.feature.get (f_id, "tasks")
+            for task in tasks :
+                if db.task.get (task, "status") != t_id_accepted :
+                    can_close = False
+                    break
             if can_close :
-                id_completed = db.feature_status.lookup ("completed")
-                db.feature.set (feature, status = id_completed)
-    # check test_ok of all testcases and set the feature's test_ok
-    # accordingly
-    feature = cl.get (nodeid, "feature")
-    tcs     = db.feature.get (feature, "testcases")
-    test_ok = True
-    id_accepted = db.work_package_status.lookup ("accepted")
-    for tc in tcs :
-        if ( (db.testcase.get (tc, "status") == id_accepted)
-            and not db.testcase.get (tc, "test_ok")
-           ) :
-            test_ok = False
-            break
-    db.feature.set (feature, test_ok = test_ok)
-# end def update_status
+                f_id_completed = db.feature_status.lookup ("completed")
+                db.feature.set (f_id, status = f_id_completed)
+# end def update_features_status
 
-def suspend_workpackages (db, cl, nodeid, old_values) :
-    """if the feature's state changed to `suspended` or `rejected` all it's
-    workpackages status should change to `suspended`
+def update_features_test_ok (db, cl, nodeid, old_values) :
+    """reactor of task.set:
+    if this task is of kind `testcase` we should propagate the `test_ok`
+    value to the feature.
+    """
+    k_id_testcase = db.task_kind.lookup ("testcase")
+    s_id_accepted = db.task_status.lookup ("accepted")
+    if cl.get (nodeid, "kind")   == k_id_testcase and \
+       cl.get (nodeid, "status") == s_id_accepted :
+        f_id      = cl.get (nodeid, "feature")
+        f_test_ok = db.feature.get (f_id, "test_ok")
+        # if our `test_ok` is False, we can safely set the feature's test_ok
+        # to False, if it's not already
+        my_test_ok = cl.get (nodeid, "test_ok")
+        if not my_test_ok and f_test_ok == True :
+            # safe to set feature's test_ok to False
+            db.feature.set (f_id, test_ok = False)
+        elif my_test_ok :
+            # my test is ok, check if there are other testcases attached to
+            # this feature which have a `test_ok` which is False. If we find
+            # none, we can safely set the feature's test_ok to True.
+            all_testcases = \
+                db.task.filter ( None
+                               , { "feature" : f_id
+                                 , "kind"    : k_id_testcase
+                                 }
+                               )
+            closed_ok_testcases = \
+                db.task.filter ( None
+                               , { "feature" : f_id
+                                 , "kind"    : k_id_testcase
+                                 , "status"  : s_id_accepted
+                                 , "test_ok" : True
+                                 }
+                               )
+            if len (all_testcases) == len (closed_ok_testcases) :
+                # all testcases are `accepted` and the test has passed
+                db.feature.set (f_id, test_ok = True)
+# end def update_features_test_ok
+
+def suspend_tasks_and_defects (db, cl, nodeid, old_values) :
+    """reactor on feature.set:
+
+    if the feature's state changed to `suspended` or `rejected` all it's
+    task's and defect's status should also change to `suspended`
     """
     old_status = old_values ["status"]
     new_status = cl.get (nodeid, "status")
@@ -139,22 +151,34 @@ def suspend_workpackages (db, cl, nodeid, old_values) :
                   , db.feature_status.lookup ("rejected")
                   )
     if old_status != new_status and new_status in suspend_ids :
-        id_suspended = db.work_package_status.lookup ("suspended")
-        for attr, klass in workpackage_iter (db) :
-            wps = cl.get (nodeid, attr)
-            for wp in wps :
-                klass.set (wp, status = id_suspended)
+        tasks = cl.get (nodeid, "tasks")
+        if tasks :
+            t_id_suspended = db.task_status.lookup ("suspended")
+            for task in tasks :
+                db.task.set (task, status = t_id_suspende)
+        defects = cl.get (nodeid, "defects")
+        if defects :
+            d_id_suspended = db.defect_status.lookup ("suspended")
+            for defect in defects :
+                db.defect.set (defect, status = d_id_suspended)
 # end def suspend_workpackages
 
+def task_defaults (db, cl, nodeid, new_values) :
+    """auditor for task.create:
+
+    sets title if not given
+    """
+    if not new_values.get ("title") :
+        new_values ["title"] = "[no title]"
+# end def task_defaults
+
 def init (db) :
-    db.feature.audit             ("create", create_defaults         )
-    db.feature.react             ("set"   , add_feature_to_release  )
-    db.feature.react             ("set"   , set_composed_ofs_feature)
-    db.feature.react             ("set"   , suspend_workpackages    )
-    db.implementation_task.react ("set"   , update_status           )
-    db.testcase.react            ("set"   , update_status           )
-    db.documentation_task.react  ("set"   , update_status           )
-    db.design_document.react     ("set"   , update_status           )
+    db.feature.audit             ("create", create_defaults          )
+    db.feature.react             ("set"   , add_feature_to_release   )
+    db.feature.react             ("set"   , suspend_tasks_and_defects)
+    db.task.react                ("set"   , update_features_status   )
+    db.task.react                ("set"   , update_features_test_ok  )
+    db.task.audit                ("create", task_defaults            )
 # end def init
 
 # TODO: feature.audit:

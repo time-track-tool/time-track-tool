@@ -29,24 +29,24 @@ a.feature_suspended[href]:hover {color:green; text-decoration: underline;   }
 a.feature_suspended[href]:link  {color:green; text-decoration: line-through;}
 a.feature_suspended[href]       {color:green; text-decoration: line-through;}
 
-a.wp_issued[href]               {color:red;   text-decoration: none;        }
-a.wp_issued_Yes[href]           {color:red;   text-decoration: none;        }
-a.wp_issued_No[href]            {color:red;   text-decoration: none;        }
-a.wp_started[href]              {color:green; text-decoration: none;        }
-a.wp_started_Yes[href]          {color:green; text-decoration: none;        }
-a.wp_started_No[href]           {color:green; text-decoration: none;        }
-a.wp_available[href]            {color:blue;  text-decoration: none;        }
-a.wp_available_Yes[href]        {color:blue;  text-decoration: none;        }
-a.wp_available_No[href]         {color:blue;  text-decoration: none;        }
-a.wp_accepted[href]             {color:blue;  text-decoration: line-through;}
-a.wp_accepted_Yes[href]         {color:blue;  text-decoration: line-through;}
-a.wp_accepted_No[href]          {color:red;   text-decoration: blink;}
-a.wp_suspended[href]            {color:green; text-decoration: line-through;}
-a.wp_suspended_Yes[href]        {color:green; text-decoration: line-through;}
-a.wp_suspended_No[href]         {color:green; text-decoration: line-through;}
-a.wp_closed-obsolete[href]      {color:blue;  text-decoration: line-through;}
-a.wp_closed-obsolete_Yes[href]  {color:blue;  text-decoration: line-through;}
-a.wp_closed-obsolete_No[href]   {color:blue;  text-decoration: line-through;}
+a.task_issued[href]               {color:red;   text-decoration: none;        }
+a.task_issued_Yes[href]           {color:red;   text-decoration: none;        }
+a.task_issued_No[href]            {color:red;   text-decoration: none;        }
+a.task_started[href]              {color:green; text-decoration: none;        }
+a.task_started_Yes[href]          {color:green; text-decoration: none;        }
+a.task_started_No[href]           {color:green; text-decoration: none;        }
+a.task_available[href]            {color:blue;  text-decoration: none;        }
+a.task_available_Yes[href]        {color:blue;  text-decoration: none;        }
+a.task_available_No[href]         {color:blue;  text-decoration: none;        }
+a.task_accepted[href]             {color:blue;  text-decoration: line-through;}
+a.task_accepted_Yes[href]         {color:blue;  text-decoration: line-through;}
+a.task_accepted_No[href]          {color:red;   text-decoration: blink;}
+a.task_suspended[href]            {color:green; text-decoration: line-through;}
+a.task_suspended_Yes[href]        {color:green; text-decoration: line-through;}
+a.task_suspended_No[href]         {color:green; text-decoration: line-through;}
+a.task_closed-obsolete[href]      {color:blue;  text-decoration: line-through;}
+a.task_closed-obsolete_Yes[href]  {color:blue;  text-decoration: line-through;}
+a.task_closed-obsolete_No[href]   {color:blue;  text-decoration: line-through;}
 
 a.open[href]:hover      { color:red; text-decoration: underline; }
 a.open[href]:link       { color:red; text-decoration: none; }
@@ -319,7 +319,7 @@ table.messages td:first-child {
 table.files {
   border-spacing: 0;
   border-collapse: separate;
-  width: 100%;
+//  width: 100%;
 }
 
 table.files th.header{

@@ -117,16 +117,8 @@
                               klass string:feature">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
-       <tal:block tal:define="name string:Implementation Tasks;
-                              klass string:implementation_task">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Test Cases;
-                              klass string:testcase">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Documentation Tasks;
-                              klass string:documentation_task">
+       <tal:block tal:define="name string:Tasks;
+                              klass string:task">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
        <tal:block tal:define="name string:Defects;
@@ -208,11 +200,13 @@
                tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
                tal:content="structure string:&nbsp;&nbsp;${q/name}"
                >  Global Queries</option>
+       <tal:block tal:condition="request/user/queries">
        <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klass, 'id':[q.id for q in request.user.queries]})"
                tal:repeat="q queries"
                tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
                tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
                >    Private Queries</option>
+       </tal:block>
 </tal:block>
 
 
@@ -226,7 +220,7 @@
       onSubmit="return submit_once()"
       name="itemSynopsis"
       enctype="multipart/form-data"
-      tal:condition="context/is_edit_ok"
+      tal:condition="context/is_view_ok"
       tal:attributes="action context/designator">
 
  <input type="hidden" name="@template" value="item">
@@ -251,14 +245,15 @@
    <th>Nosy List</th>
    <td colspan="3">
     <span tal:replace="structure context/nosy/field" />
-    <span tal:replace="structure python:db.user.classhelp
+    <span tal:condition="context/is_edit_ok"
+          tal:replace="structure python:db.user.classhelp
                                             ( 'username,firstname,lastname'
                                             , property='nosy'
                                             , width='600')" /><br>
    </td>
   </tr>
 
-  <tr>
+  <tr tal:condition="context/is_edit_ok">
    <th>Message</th>
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"

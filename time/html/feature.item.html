@@ -10,9 +10,30 @@
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
    <tal:block metal:fill-slot="ttt_issue_content">
-    <tr>
+<tal:block tal:define="documents
+                           python:db.task.filter ( filterspec = { 'kind'    : [1, 2]
+                                                                , 'feature' : context.id
+                                                                }
+                                                 );
+                       implementation_tasks
+                           python:db.task.filter ( filterspec = { 'kind'    : 3
+                                                                , 'feature' : context.id
+                                                                }
+                                                 );
+                       testcases
+                           python:db.task.filter ( filterspec = { 'kind'    : 4
+                                                                , 'feature' : context.id
+                                                                }
+                                                 );
+                       documentation_tasks
+                           python:db.task.filter ( filterspec = { 'kind'    : 5
+                                                                , 'feature' : context.id
+                                                                }
+                                                 );
+                       ">
+    <tr tal:condition="context/id">
      <th>Release</th>
-     <td colspan="3">
+     <td>
       <span tal:content="structure context/release/menu"></span>
       <a tal:condition="context/release/id|nothing"
          tal:attributes="href context/release/designator"
@@ -22,7 +43,7 @@
 
     <tr tal:condition="context/id">
      <th>Status</th>
-     <td colspan="3">
+     <td>
       <select name="status"
               tal:define="ok context/status/transitions">
        <option tal:attributes="value context/status/id"
@@ -39,18 +60,18 @@
      </td>
     </tr>
 
-    <tr tal:condition="python:[t for t in context.testcases.reverse ()
+    <tr tal:condition="python:[t for t in testcases
                               if t.status.plain () == 'accepted']">
      <th>Test OK</th>
-     <td colspan="3" tal:condition="context/test_ok/_value"
+     <td tal:condition="context/test_ok/_value"
          class="test_ok">All testcases passed !</td>
-     <td colspan="3" tal:condition="not:context/test_ok/_value"
+     <td tal:condition="not:context/test_ok/_value"
          class="test_failed">Some testcases failed - see below !!!</td>
     </tr>
 
     <tr>
      <th>Stakeholder</th>
-     <td colspan="3">
+     <td>
       <textarea tal:content="context/stakeholder/plain"
                 name="stakeholder"
                 wrap="hard"
@@ -61,7 +82,7 @@
 
     <tr>
      <th>Depends on</th>
-     <td colspan="3">
+     <td>
       <span tal:content="structure context/depends/field"/>
       <span tal:replace="structure python:db.feature.classhelp
                                              ( 'id,title,responsible'
@@ -80,7 +101,7 @@
 
     <tr>
      <th>Needs</th>
-     <td colspan="3">
+     <td>
       <span tal:content="structure context/needs/field"/>
       <span tal:replace="structure python:db.feature.classhelp
                                              ( 'id,title,responsible'
@@ -97,167 +118,141 @@
      </td>
     </tr>
 
-    <tr tal:condition="context/release/plain">
-     <th>Tracking</th>
-     <td colspan="3">
-      <table>
+    <tr tal:condition="context/defects">
+     <th>Defects</th>
+     <td>
+      <span tal:repeat="def context/defects">
+       <a tal:attributes="href def/designator"
+          tal:content="def/title"></a><br>
+      </span>
+     </td>
+    </tr>
+
+    <tr>
+     <th>tasks</th>
+     <td>
+      <span tal:repeat="t context/tasks">
+       <a tal:attributes="href t/designator"
+          tal:content="t/designator"></a><br>
+      </span>
+     </td>
+    </tr>
+
+    <tr tal:condition="documents">
+     <th>Documents</th>
+     <td>
+      <table class="files">
        <tr>
-        <th>&nbsp;</th>
-        <th>planned</th>
-        <th>actual</th>
-        <th>delay</th>
+        <th>Status</th>
+        <th>Responsible</th>
+        <th>Type</th>
        </tr>
-       <tr>
-        <th>begin</th>
-        <td tal:content="context/planned_begin"></td>
-        <td tal:content="context/actual_begin"></td>
-        <td>XXX</td>
-       </tr>
-       <tr>
-        <th>end</th>
-        <td tal:content="context/planned_end"></td>
-        <td tal:content="context/actual_end"></td>
-        <td>XXX</td>
+       <tr tal:repeat="task documents">
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+        <td>
+         <a tal:attributes="href task/designator"
+            tal:content="task/kind/description"></a>
+        </td>
        </tr>
       </table>
      </td>
     </tr>
 
-    <tr tal:condition="context/id"
-        tal:define="available python:[]">
-     <th>Documents</th>
-     <td colspan="3">
-      <table class="files"
-             tal:condition="context/documents">
+    <tr tal:condition="implementation_tasks">
+     <th>Implementation</th>
+     <td>
+      <table class="files">
        <tr>
-        <th>Type</th>
         <th>Status</th>
         <th>Responsible</th>
+        <th>Title</th>
        </tr>
-       <tr tal:repeat="doc context/documents/reverse">
-        <td tal:define="_xx python:available.append(doc.type.id)">
-         <a tal:attributes="href doc/designator"
-            tal:content="doc/type/description"></a>
+       <tr tal:repeat="task implementation_tasks">
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+        <td>
+         <a tal:attributes="href task/designator"
+            tal:content="task/title"></a>
         </td>
-        <td tal:content="doc/status/plain"></td>
-        <td tal:content="doc/responsible/plain"></td>
        </tr>
       </table>
-      <table border="0">
+     </td>
+    </tr>
+
+    <tr tal:condition="testcases">
+     <th>Testcases</th>
+     <td>
+      <table class="files">
        <tr>
-        <th>Add new with type:</th>
+        <th>Status</th>
+        <th>Responsible</th>
+        <th>Test Passed</th>
+        <th>Title</th>
+       </tr>
+       <tr tal:repeat="task testcases">
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+        <td tal:content="task/test_ok/plain"></td>
         <td>
-         <select name="design_document-1@type">
-          <option selected="selected" value="-1">- select Design Document Type -</option>
-          <tal:block tal:repeat="t db/design_document_type/list">
-          <option tal:condition="python:t.id not in available"
-                  tal:attributes="value t/id"
-                  tal:content="string:${t/description} (${t/name})"></option>
-          </tal:block>
+         <a tal:attributes="href task/designator"
+            tal:content="task/title"></a>
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+
+    <tr tal:condition="documentation_tasks">
+     <th>Documentation</th>
+     <td>
+      <table class="files">
+       <tr>
+        <th>Status</th>
+        <th>Responsible</th>
+        <th>Title</th>
+       </tr>
+       <tr tal:repeat="task documentation_tasks">
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+        <td>
+         <a tal:attributes="href task/designator"
+            tal:content="task/title"></a>
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+
+    <tr>
+     <th>Add Task</th>
+     <td>
+      <table>
+       <tr>
+        <th>Title</th>
+        <td><input type="text" name="task-1@title" size="40"
+                   onChange="if (document.forms['itemSynopsis'].elements['task-1@kind'].selectedIndex==0)
+                             {alert ('You have to select a Kind for the task!'); }"></td>
+       </tr>
+       <tr>
+        <th>Kind</th>
+        <td>
+         <select name="task-1@kind">
+          <option selected="selected" value="-1">- select kind of task to add -</option>
+          <option tal:repeat="k db/task_kind/list"
+                  tal:attributes="value k/id"
+                  tal:content="k/description">
+          </option>
          </select>
         </td>
        </tr>
       </table>
-      <input type="hidden" name="@link@documents" value="design_document-1" />
+      <input type="hidden" name="@link@tasks" value="task-1" />
+      <input type="hidden" name="task-1@feature" tal:attributes="value context/id" />
      </td>
     </tr>
 
-    <tr tal:condition="context/id">
-     <th>Implementation</th>
-     <td colspan="3">
-      <table class="files"
-             tal:condition="context/implementation_tasks">
-       <tr>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Responsible</th>
-       </tr>
-       <tr tal:repeat="task context/implementation_tasks">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title|string:[no title]"
-               target="implementation_task"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
-      <table border="0">
-       <tr>
-        <th>Add new with title:</th>
-        <td>
-         <input type="text" name="implementation_task-1@title" size="50">
-        </td>
-       </tr>
-      </table>
-      <input type="hidden" name="@link@implementation_tasks"
-             value="implementation_task-1" />
-     </td>
-    </tr>
-
-    <tr tal:condition="context/id">
-     <th>Testcases</th>
-     <td colspan="3">
-      <table class="files"
-             tal:condition="context/testcases">
-       <tr>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Responsible</th>
-       </tr>
-       <tr tal:repeat="task context/testcases">
-        <td><a tal:attributes="href task/designator;
-                               class string:wp_${task/status/plain}_${task/test_ok/plain}"
-               tal:content="task/title"
-               target="testcase"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
-      <table border="0">
-       <tr>
-        <th>Add new with title:</th>
-        <td>
-         <input type="text" name="testcase-1@title" size="50">
-        </td>
-       </tr>
-      </table>
-      <input type="hidden" name="@link@testcases" value="testcase-1" />
-     </td>
-    </tr>
-
-    <tr tal:condition="context/id">
-     <th>Documentation</th>
-     <td colspan="3">
-      <table class="files"
-             tal:condition="context/documentation_tasks">
-       <tr>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Responsible</th>
-       </tr>
-       <tr tal:repeat="task context/documentation_tasks">
-        <td><a tal:attributes="href task/designator"
-               tal:content="task/title|string:[no title]"></a>
-        </td>
-        <td tal:content="task/status/plain"></td>
-        <td tal:content="task/responsible/plain"></td>
-       </tr>
-      </table>
-      <table border="0">
-       <tr>
-        <th>Add new with title:</th>
-        <td>
-         <input type="text" name="documentation_task-1@title" size="50">
-        </td>
-       </tr>
-      </table>
-      <input type="hidden" name="@link@documentation_tasks"
-             value="documentation_task-1" />
-     </td>
-    </tr>
-
-
+</tal:block>
    </tal:block>
   </tal:block>
  </tal:block>

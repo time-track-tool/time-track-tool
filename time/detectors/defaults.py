@@ -59,10 +59,7 @@ def init (db) :
     db.release.audit             ("create", default_responsible)
     db.action_item.audit         ("create", default_responsible)
     db.feature.audit             ("create", default_responsible)
-    db.design_document.audit     ("create", default_responsible)
-    db.implementation_task.audit ("create", default_responsible)
-    db.documentation_task.audit  ("create", default_responsible)
-    db.testcase.audit            ("create", default_responsible)
+    db.task.audit                ("create", default_responsible)
     db.defect.audit              ("create", default_defect_responsible)
     db.defect.audit              ("create", default_defect_status)
 # end def init

@@ -29,6 +29,7 @@
                tal:content="python:m.reached.pretty ('%d-%b-%y')"/>
          <span tal:condition="not:m/reached/_value">
              <input type="checkbox"
+                    tal:condition="context/is_edit_ok"
                     tal:attributes="name string:${m/designator}@reached;
                                     value m/reached/now">
          </span>
@@ -64,9 +65,11 @@
         <td tal:content="doc/responsible/plain"></td>
        </tr>
       </table>
-      <table border="0">
+      <table tal:condition="python:context.is_edit_ok ()
+                               and (len (available) != len (db.document_type.list ()))"
+             border="0">
        <tr>
-        <th>Add:</th>
+        <th>Add by type:</th>
         <td>
          <select name="document-1@type">
           <option selected="selected" value="-1">- select Document Type -</option>
@@ -80,6 +83,7 @@
        </tr>
       </table>
       <input type="hidden" name="@link@documents" value="document-1" />
+      <input type="hidden" name="document-1@release" tal:attributes="value context/id" />
      </td>
     </tr>
 
