@@ -18,56 +18,15 @@
 #
 # $Id$
 
-from roundup import mailgw
-from roundup.cgi import client
+from roundup           import mailgw
+from roundup.cgi       import client
+from roundup.rup_utils import pretty
 import re
 import cgi
 import copy
 import time
 
 CUTOFF = re.compile ("(.*?)(\s+\S+)$")
-
-prettymap = \
-{ 'abo'          : 'Abos'
-, 'abos'         : 'Abos'
-, 'abo_price'    : 'Preis'
-, 'aboprice'     : 'Abo Preis'
-, 'abo_type'     : 'Abo-Typ'
-, 'abotype'      : 'Abotyp'
-, 'activity'     : 'letzte Änderung'.decode ('latin1').encode('utf-8')
-, 'address'      : 'Adressen'
-, 'amount'       : 'Betrag'
-, 'begin'        : 'Beginn'
-, 'city'         : 'Ort'
-, 'confirm'      : 'Bestätigung Passwort'.decode('latin1').encode('utf-8')
-, 'country'      : 'Land'
-, 'countrycode'  : 'Ländercode'.decode ('latin1').encode ('utf-8')
-, 'currency'     : 'Währung'.decode ('latin1').encode ('utf-8')
-, 'description'  : 'Beschreibung'
-, 'email'        : 'Email'
-, 'end'          : 'Storniert per'
-, 'fax'          : 'Fax'
-, 'firstname'    : 'Vorname'
-, 'function'     : 'Funktion'
-, 'history'      : 'Liste der Änderungen'.decode ('latin1').encode ('utf-8')
-, 'id'           : 'ID'
-, 'lastname'     : 'Nachname'
-, 'messages'     : 'Notizen'
-, 'name'         : 'Name'
-, 'password'     : 'Passwort'
-, 'payed_abos'   : 'Zahler für'.decode ('latin1').encode ('utf-8')
-, 'payer'        : 'Zahler'
-, 'phone_home'   : 'Telefon privat'
-, 'phone_mobile' : 'Telefon mobil'
-, 'phone_office' : 'Telefon Geschäft'.decode ('latin1').encode ('utf-8')
-, 'realname'     : 'Name'
-, 'postalcode'   : 'PLZ'
-, 'salutation'   : 'Anrede'
-, 'street'       : 'Strasse'
-, 'subscriber'   : 'Abonnent'
-, 'title'        : 'Titel'
-, 'username'     : 'Login Name'
-}
 
 def _splitline (line, width) :
     line = line.rstrip ()
@@ -91,10 +50,7 @@ def _splitline (line, width) :
                 return line + "\n" + _splitline (rem.strip (), width)
 
 def propsort (p1, p2) :
-    return cmp \
-        ( prettymap.get (p1._name, p1._name)
-        , prettymap.get (p2._name, p2._name)
-        )
+    return cmp (pretty (p1._name), pretty (p2._name))
 
 class Client(client.Client):
     ''' derives basic CGI implementation from the standard module,
@@ -113,7 +69,10 @@ class TemplatingUtils:
         return props
 
     def pretty (self, name) :
-        return (prettymap.get (name, name))
+        return pretty (name)
+
+    def fieldname (self, name) :
+        return "%s&nbsp;" % pretty (name)
 
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
@@ -208,6 +167,3 @@ class MailGW(mailgw.MailGW):
         with any specific extensions
     '''
     pass
-
-# vim: set filetype=python ts=4 sw=4 et si
-#SHA: 183bd4a0b161f472a3e09e596c887f4ef254805c

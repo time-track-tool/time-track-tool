@@ -54,12 +54,50 @@ def open(name=None):
         , messages            = Multilink ("msg")
         )
 
+    abo_price = Class \
+        ( db, "abo_price"
+        , abotype             = Link      ('abo_type')
+        , currency            = Link      ('currency')
+        , amount              = Number    ()
+        , name                = String    ()
+        )
+
     abo_type = Class \
         ( db, "abo_type"
         , name                = String    ()
         , description         = String    ()
         )
     abo_type.setkey ("name")
+
+    address = Class \
+        ( db, "address"
+        , title               = String    ()
+        , firstname           = String    ()
+        , lastname            = String    ()
+        , function            = String    ()
+        , street              = String    ()
+        , country             = String    ()
+        , postalcode          = String    ()
+        , city                = String    ()
+        , phone_home          = String    ()
+        , phone_office        = String    ()
+        , phone_mobile        = String    ()
+        , fax                 = String    ()
+        , salutation          = String    ()
+        , messages            = Multilink ("msg")
+        , email               = String    ()
+        , abos                = Multilink ("abo")
+        , payed_abos          = Multilink ("abo")
+        , adr_type            = Multilink ("adr_type")
+        , valid               = Link      ("valid")
+        )
+
+    adr_type = Class \
+        ( db, "adr_type"
+        , code                = String    ()
+        , description         = String    ()
+        )
+    adr_type.setkey ("code")
 
     currency = Class \
         ( db, "currency"
@@ -68,13 +106,13 @@ def open(name=None):
         )
     currency.setkey ("name")
 
-    abo_price = Class \
-        ( db, "abo_price"
-        , abotype             = Link      ('abo_type')
-        , currency            = Link      ('currency')
-        , amount              = Number    ()
+    # Define codes for (in)valid addresses, e.g., "verstorben"
+    valid = Class \
+        ( db, "valid"
         , name                = String    ()
+        , description         = String    ()
         )
+    valid.setkey ("name")
 
     query = Class \
         ( db, "query"
@@ -118,27 +156,6 @@ def open(name=None):
         , summary               = String    ()
         , messageid             = String    ()
         , inreplyto             = String    ()
-        )
-
-    address = Class \
-        ( db, "address"
-        , title               = String    ()
-        , firstname           = String    ()
-        , lastname            = String    ()
-        , function            = String    ()
-        , street              = String    ()
-        , country             = String    ()
-        , postalcode          = String    ()
-        , city                = String    ()
-        , phone_home          = String    ()
-        , phone_office        = String    ()
-        , phone_mobile        = String    ()
-        , fax                 = String    ()
-        , salutation          = String    ()
-        , messages            = Multilink ("msg")
-        , email               = String    ()
-        , abos                = Multilink ("abo")
-        , payed_abos          = Multilink ("abo")
         )
 
     #
