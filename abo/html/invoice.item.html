@@ -15,22 +15,39 @@
      <th tal:content="structure python:utils.fieldname('invoice_no')"></th>
      <td tal:content="structure context/invoice_no"></td>
      <th tal:content="structure python:utils.fieldname('abo')"></th>
-     <td tal:content="structure python:utils.formatlink
-         (context.abo.aboprice, 'abo', 'abo', context.abo.id)"></td>
+     <td tal:content="structure python: utils.SearchAttribute
+         (utils, context.abo.aboprice, item = context.abo).formatlink ()">
+     </td>
     </tr>
     <tr tal:condition="context/id">
      <th tal:content="structure python:utils.fieldname('subscriber')"></th>
-     <td tal:content="structure python:utils.formatlink
-         (   str (context.abo.subscriber.firstname) + ' '
-           + str (context.abo.subscriber.lastname)
-         , 'address', 'address', context.abo.subscriber.id
-         )"></td>
+     <td tal:content="structure python: ' '.join
+      (( utils.SearchAttribute
+         ( utils
+         , context.abo.subscriber.firstname
+         , item = context.abo.subscriber
+         ).formatlink ()
+      ,  utils.SearchAttribute
+         ( utils
+         , context.abo.subscriber.lastname
+         , item = context.abo.subscriber
+         ).formatlink ()
+      ))">
+     </td>
      <th tal:content="structure python:utils.fieldname('payer')"></th>
-     <td tal:content="structure python:utils.formatlink
-         (   str (context.abo.payer.firstname) + ' '
-           + str (context.abo.payer.lastname)
-         , 'address', 'address', context.abo.payer.id
-         )"></td>
+     <td tal:content="structure python: ' '.join
+      (( utils.SearchAttribute
+         ( utils
+         , context.abo.payer.firstname
+         , item = context.abo.payer
+         ).formatlink ()
+      ,  utils.SearchAttribute
+         ( utils
+         , context.abo.payer.lastname
+         , item = context.abo.payer
+         ).formatlink ()
+      ))">
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('period_start')"></th>
