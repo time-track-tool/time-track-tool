@@ -66,6 +66,7 @@ def open(name=None):
         , currency            = Link      ('currency')
         , amount              = Number    ()
         , name                = String    ()
+        , invoice_template    = Multilink ('invoice_template')
         )
     abo_price.setkey ("name")
 
@@ -132,6 +133,14 @@ def open(name=None):
         )
     invoice.setkey ("invoice_no")
 
+    # The invoice_level number decides for which invoice level we use
+    # which template.
+    invoice_template = Class \
+        ( db, "invoice_template"
+        , template            = Link      ("template")
+        , invoice_level       = Number    ()
+        )
+
     # head should contain info for recreating a letter with multiple
     # destinations. In this case the file exists only once and the
     # customisation info in head is there for each recipient.
@@ -144,6 +153,12 @@ def open(name=None):
         , letter              = Link      ("file")
         , note                = Link      ("msg")
         , head                = String    ()
+        )
+
+    template = Class \
+        ( db, "template"
+        , name                = String    ()
+        , template            = Multilink ("file") # version control, use latest
         )
 
     # Define codes for (in)valid addresses, e.g., "verstorben"
