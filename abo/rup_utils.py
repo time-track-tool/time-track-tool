@@ -60,6 +60,7 @@ prettymap = \
 , 'invoice_no'   : uni('RgNr')
 , 'lastname'     : uni('Nachname')
 , 'last_sent'    : uni('verschickt am')
+, 'lettertitle'  : uni('Brief-Titel')
 , 'messages'     : uni('Notizen')
 , 'msg'          : uni('Notiz')
 , 'n_sent'       : uni('verschickt')

@@ -80,7 +80,9 @@ def open(name=None):
     address = Class \
         ( db, "address"
         , title               = String    ()
+        , lettertitle         = String    ()
         , firstname           = String    (indexme = do_index)
+        , initial             = String    ()
         , lastname            = String    (indexme = do_index)
         , function            = String    (indexme = do_index)
         , street              = String    (indexme = do_index)
