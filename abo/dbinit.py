@@ -65,6 +65,7 @@ def open(name=None):
         , amount              = Number    ()
         , name                = String    ()
         )
+    abo_price.setkey ("name")
 
     abo_type = Class \
         ( db, "abo_type"
@@ -354,3 +355,4 @@ def init(adminpw):
     db.commit()
 
 # vim: set filetype=python ts=4 sw=4 et si
+#SHA: 5bd9c0c6a1322f33a04706862a103b15a6638974
