@@ -148,7 +148,7 @@ class TemplatingUtils:
 
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
-            return prop.menu ()
+            return prop.menu (height=5)
         return prop.field ()
 
     def soft_wrap (self, str, width=80) :
