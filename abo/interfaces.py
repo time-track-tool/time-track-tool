@@ -220,17 +220,6 @@ class TemplatingUtils:
             pass
         return ''
 
-
-    def formatlink (self, hprop, item, name, id) :
-        """
-            render a property of an item as a link to this item. We get
-            the property, the item, the name of the item and its id
-            already pre-computed (although we could get most from the
-            item).
-        """
-        return """<a class="%s" href="%s%s">%s</a>""" \
-            % (self.linkclass (item), name, id, hprop)
-
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
             return prop.menu (height=5)
