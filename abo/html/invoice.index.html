@@ -4,29 +4,24 @@
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
   "batch request/batch;
-   props python:( (utils.pretty ('id'),           'id')
-                , (utils.pretty ('invoice_no'),   'invoice_no')
-                , (utils.pretty ('period_start'), 'period_start')
-                , (utils.pretty ('period_end'),   'period_end')
-                , (utils.pretty ('amount'),       'amount')
-                , (utils.pretty ('currency'),     'currency')
-                , (utils.pretty ('balance_open'), 'balance_open')
-                , (utils.pretty ('n_sent'),       'n_sent')
-                , (utils.pretty ('send_it'),      'send_it')
-                , (utils.pretty ('last_sent'),    'last_sent')
-                , (utils.pretty ('date_payed'),   'date_payed')
-                , (utils.pretty ('bookentry'),    'bookentry')
-                , (utils.pretty ('receipt_no'),   'receipt_no')
-                , ( utils.pretty ('payer'),       'abo'
-                  , 'abo',                        'payer.lastname'
-                  )
-                , ( utils.pretty ('abo'),         'abo'
-                  , 'abo',                        'aboprice'
-                  )
-                );
-   multi python:( 'valid'
-                ,
-                );
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.SearchAttribute (utils, pdict ['id'])
+    , utils.SearchAttribute (utils, pdict ['invoice_no'])
+    , utils.SearchAttribute (utils, pdict ['period_start'])
+    , utils.SearchAttribute (utils, pdict ['period_end'])
+    , utils.SearchAttribute (utils, pdict ['amount'])
+    , utils.SearchAttribute (utils, pdict ['currency'], multiselect = 1)
+    , utils.SearchAttribute (utils, pdict ['balance_open'])
+    , utils.SearchAttribute (utils, pdict ['n_sent'])
+    , utils.SearchAttribute (utils, pdict ['send_it'], editable = 1)
+    , utils.SearchAttribute (utils, pdict ['last_sent'])
+    , utils.SearchAttribute (utils, pdict ['date_payed'])
+    , utils.SearchAttribute (utils, pdict ['bookentry'])
+    , utils.SearchAttribute (utils, pdict ['receipt_no'])
+    , utils.SearchAttribute (utils, pdict ['abo'], 'payer.lastname')
+    , utils.SearchAttribute (utils, pdict ['abo'], 'aboprice')
+    );
    edit_form python:( 'send_it'
                ,
                )

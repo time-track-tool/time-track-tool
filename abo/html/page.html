@@ -13,10 +13,7 @@
  ; klass         python:db [classname] or default
  ; has_msgs      python:'messages' in klass._klass.getprops ()
  ; is_user       python:uname!='anonymous'
- ; lbl           klass/_klass/labelprop
- ; labelprop     python:(lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
- ; edit_form     python:()
- ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=subscriber&%3Acolumns=payer&%3Asearch_text=&%40queryname=&id=&aboprice=&amount=&begin=&end=&subscriber=&payer='
+ ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=end&%3Acolumns=subscriber&%3Acolumns=payer&aboprice=&%3Asearch_text=&%40queryname=&id=&amount=&begin=&end='
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
                         , 'abo_price': ''
                         , 'abo_type': ''
@@ -407,8 +404,8 @@
    <tr>
 <!-- list all properties we want to see -->
     <tal:block tal:repeat="prop props">
-     <th tal:condition="python:request.show[prop[1]]"
-         tal:content="python:prop[0]"></th>
+     <th tal:condition="python:request.show[prop.name]"
+         tal:content="python:prop.label"></th>
     </tal:block>
    </tr>
    <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
@@ -423,9 +420,8 @@
     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
      <!-- all the properties: label property and id will be made a link -->
      <tal:block tal:repeat="prop props">
-      <td tal:condition="python:request.show [prop[1]]"
-       tal:content="structure python:utils.listingprop
-        (i, prop, labelprop, classname, prop [1] in edit_form)"
+      <td tal:condition="python:request.show [prop.name]"
+       tal:content="structure python:prop.listingprop (i)"
       ></td>
      </tal:block>
     </tr>
@@ -438,8 +434,13 @@
 <!-- query specification form -->
 <form method="GET"
       name="query"
-      tal:define="filtered_props
-        python:[p for p in props if len (p) < 3 or not '.' in p [3]]"
+      tal:define="
+       filtered_props python: [p for p in props
+                               if not p.lnkattr or not '.' in p.lnkname];
+       multi_props    python: [p for p in filtered_props if p.multiselect];
+       nomulti_props  python: [p for p in filtered_props
+                               if not p.multiselect and (p.key or not p.lnkattr)]
+      "
       tal:attributes="action request/classname"
       onSubmit="javascript:if (document.forms['query'].elements[':queryname'].checked==true)
                { document.forms['query'].elements[':queryname'].value = document.forms['query'].elements[':queryname'].value + document.forms['query'].elements['queryname'].value; }">
@@ -467,9 +468,9 @@
                       onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- keine -</option>
          <option tal:repeat="prop props"
-                 tal:attributes="selected python:prop[1]==request.sort[1];
-                                 value    python:prop[1]"
-                 tal:content="python:prop[0]"
+                 tal:attributes="selected python:prop.name==request.sort[1];
+                                 value    python:prop.name"
+                 tal:content="python:prop.label"
          ></option>
         </select>
         Absteigend:<input type="checkbox"
@@ -480,9 +481,9 @@
                         onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- keine -</option>
          <option tal:repeat="prop props"
-                 tal:attributes="selected python:prop[1]==request.group[1];
-                                 value    python:prop[1]"
-                 tal:content="python:prop[0]"
+                 tal:attributes="selected python:prop.name==request.group[1];
+                                 value    python:prop.name"
+                 tal:content="python:prop.label"
          ></option>
         </select>
         Absteigend:<input type="checkbox"
@@ -498,11 +499,10 @@
       <!-- fill in custom query data -->
       <!-- fill in multi selection boxes -->
       <tr>
-       <th style="text-align:left;">Felder:</th>
-   <tal:block tal:repeat="prop filtered_props">
-       <th style="text-align:left;" tal:condition="python:prop[1] in multi"
-           tal:content="python:prop[0]+':'"></th>
-   </tal:block>
+        <th style="text-align:left;">Felder:</th>
+       <tal:block tal:repeat="prop multi_props">
+        <th style="text-align:left;" tal:content="python:prop.label+':'"></th>
+       </tal:block>
       </tr>
 
       <tr>
@@ -510,24 +510,26 @@
        <td style="text-align:center;">
         <select multiple name=":columns" size="7">
          <option tal:repeat="prop filtered_props"
-                 tal:attributes="selected python:request.show[prop[1]];
-                                 value    python:prop[1]"
-                 tal:content="python:prop[0]"></option>
+                 tal:attributes="selected python:request.show[prop.name];
+                                 value    python:prop.name"
+                 tal:content="python:prop.label"></option>
         </select>
        </td>
-       <tal:block tal:repeat="prop filtered_props">
-        <td style="text-align:center;"
-            tal:condition="python:prop[1] in multi">
+       <tal:block tal:repeat="prop multi_props">
+        <td style="text-align:center;">
          <select multiple
                  size="7"
-                 tal:attributes="name python:prop[1]"
-                 tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
+                 tal:attributes="name python:prop.name"
+                 tal:define="form_vals
+                   python:request.filterspec.get(prop.name) or []">
           <option value=""
-                  tal:attributes="selected not:form_vals">nicht suchen</option>
-          <option tal:repeat="s python:db[prop[2]].list()"
+                  tal:attributes="selected not:form_vals">nicht suchen
+          </option>
+          <option tal:repeat="s python:db[prop.lnkname].list()"
                   tal:attributes="value    s/id;
                                   selected python:s.id in form_vals"
-                  tal:content="python:s[prop[3]]"></option>
+                  tal:content="python:s[prop.lnkattr]">
+          </option>
          </select>
         </td>
        </tal:block>
@@ -562,15 +564,16 @@
     <td>
      <table border="0" bgcolor="#e0c0c0">
       <!-- fill in text entry fields -->
-   <tal:block tal:repeat="prop filtered_props">
-      <tr tal:condition="python:prop[1] not in multi">
+   <tal:block tal:repeat="prop nomulti_props">
+      <tr>
        <th style="text-align:right;"
-           tal:content="python:prop[0]+':'"></th>
-       <td tal:condition="python:prop[1] not in multi">
+           tal:content="python:prop.label+':'"></th>
+       <td>
         <input type="text"
                size="40"
-               tal:attributes="value python:request.form.getvalue(prop[1]) or nothing;
-                               name  python:prop[1]">
+               tal:attributes="
+                value python:request.form.getvalue(prop.name) or nothing;
+                name  python:prop.name">
        </td>
       </tr>
    </tal:block>

@@ -4,21 +4,17 @@
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
   "batch request/batch;
-   props python:( (utils.pretty ('id'),         'id')
-                , (utils.pretty ('aboprice'),   'aboprice'
-                                , 'abo_price',  'name'
-                  )
-                , (utils.pretty ('amount'),     'amount')
-                , (utils.pretty ('begin'),      'begin')
-                , (utils.pretty ('end'),        'end')
-                , (utils.pretty ('subscriber'), 'subscriber'
-                                , 'address',    'lastname'
-                  )
-                , (utils.pretty ('payer'),      'payer'
-                                , 'address',    'lastname'
-                  )
-                );
-   multi python:('aboprice',)
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.SearchAttribute (utils, pdict ['id'])
+    , utils.SearchAttribute
+        (utils, pdict ['aboprice'], multiselect = 1, is_label = 1)
+    , utils.SearchAttribute (utils, pdict ['amount'])
+    , utils.SearchAttribute (utils, pdict ['begin'])
+    , utils.SearchAttribute (utils, pdict ['end'])
+    , utils.SearchAttribute (utils, pdict ['subscriber'], lnkattr = 'lastname')
+    , utils.SearchAttribute (utils, pdict ['payer'],      lnkattr = 'lastname')
+    );
   "
   tal:condition="context/is_view_ok">
 
