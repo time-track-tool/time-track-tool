@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
 # This module is free software, and you may redistribute it and/or modify
@@ -16,6 +17,23 @@
 # SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #
 #$Id$
+#
+#++
+# Name
+#    init
+#
+# Purpose
+#    Execute the `init` functions of all modules in this directory
+#
+# Revision Dates
+#     8-Oct-2004 (MPH) Creation
+#    15-Nov-2004 (MPH) Modification to allow import statements from this
+#                      directory
+#    ««revision-date»»···
+#--
+#
+
+
 
 import sys, os, imp
 
@@ -23,6 +41,7 @@ def init(db):
     ''' execute the init functions of all the modules in this directory
     '''
     this_dir = os.path.split(__file__)[0]
+    sys.path.append (this_dir)
     for filename in os.listdir(this_dir):
         name, ext = os.path.splitext(filename)
         if name == '__init__':
