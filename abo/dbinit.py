@@ -126,6 +126,7 @@ def open(name=None):
         , date_payed          = Date      ()
         , bookentry           = Date      ()
         , receipt_no          = String    ()
+        , send_it             = Boolean   ()
         )
     invoice.setkey ("invoice_no")
 

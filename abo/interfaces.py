@@ -90,26 +90,60 @@ class TemplatingUtils:
         return ''
 
     def formatlink (self, hprop, item, name, id) :
+        """
+            render a property of an item as a link to this item. We get
+            the property, the item, the name of the item and its id
+            already pre-computed (although we could get everything from
+            the item).
+        """
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.linkclass (item), name, id, hprop)
 
-    def listingprop (self, item, prop, labelprop, classname) :
+    def deref (self, item, prop) :
+        """
+            from an item get the property prop. This does some recursive
+            magic: If prop consists of a path across several other Link
+            properties, we dereference the whole prop list.
+        """
+        for i in prop.split ('.') :
+            item = item [i]
+        return item
+
+    def listingprop (self, item, prop, labelprop, classname, edit = False) :
+        """
+            The "prop" attribute is a tuple consisting of at least 2 and
+            at most 4 fields. The 0th item of the tuple is the label of
+            the field in html. The 1st item is the name of the attribute
+            of the item. The 3rd and 4th field apply to Link and
+            Multilink properties only and give the name of the class to
+            which the link points and the attribute to display for this
+            class. The prop attribute will come from the index page for
+            a class (an entry in "props" for the search_display macro).
+        """
         f     = prop [1]
         hprop = item [f]
         l     = len (prop)
+        if edit :
+            return \
+                "<span style='white-space:nowrap'>" + hprop.field () + "</span>"
         if f == labelprop or f == 'id' :
             return self.formatlink (hprop, hprop, classname, item.id)
         elif l > 2 :
-            cln = prop [2]
-            fn  = prop [3]
+            cln  = prop [2]
+            attr = prop [3]
             if isinstance (hprop, MultilinkHTMLProperty) : 
                 return ", ".join \
                     ([ self.formatlink
-                           (hprop [i][fn], hprop [i], cln, hprop._value [i])
+                           ( self.deref (hprop [i], attr)
+                           , hprop [i]
+                           , cln
+                           , hprop._value [i]
+                           )
                        for i in range (len (hprop))
                     ])
             else :
-                return self.formatlink (hprop [fn], hprop, cln, hprop._value)
+                return self.formatlink \
+                    (self.deref (hprop, attr), hprop, cln, hprop._value)
         return hprop.plain ()
 
     def menu_or_field (self, prop) :
