@@ -231,18 +231,6 @@ class TemplatingUtils:
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.linkclass (item), name, id, hprop)
 
-    def deref (self, item, prop) :
-        """
-            from an item get the property prop. This does some recursive
-            magic: If prop consists of a path across several other Link
-            properties, we dereference the whole prop list.
-        """
-        last_item = item
-        for i in prop.split ('.') :
-            last_item = item
-            item = item [i]
-        return (item, last_item)
-
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
             return prop.menu (height=5)
