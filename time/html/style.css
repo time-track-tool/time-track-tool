@@ -255,6 +255,36 @@ table.form td.html {
   color: #777;
 }
 
+table.calendar {
+  background-color: #eee;
+  border-collapse: collapse;
+}
+
+/* style for calendar */
+table.calendar_nav {
+  border: 1px solid #444;
+  background-color: #eee;
+  font-weight: bold;
+}
+
+table.calendar_display {
+  border: 1px solid #444;
+  empty-cells: show;
+}
+
+table.calendar_display td {
+  text-align: center;
+}
+
+table.calendar_display tr.weekdays {
+  text-align: center;
+  font-weight: bold;
+}
+
+table.calendar td.today {
+  background-color: #ecc;
+}
+
 /* style for lists */
 table.list {
   border-spacing: 0;

@@ -16,22 +16,22 @@
     <input type="hidden" name="@required" value="product,version,severity,found_in_release">
     <tr>
      <th class="required">Product</th>
-     <td colspan="3"
-         tal:content="structure context/product/menu"></td>
+     <td tal:content="structure context/product/menu"></td>
     </tr>
     <tr>
      <th class="required">Version</th>
-     <td colspan="3"
-         tal:content="structure context/version/field"></td>
+     <td tal:content="structure context/version/field"></td>
     </tr>
     <tr>
      <th class="required">Found in Release</th>
-     <td colspan="3">
+     <td>
       <span tal:condition="not:context/id"
             tal:content="structure context/found_in_release/menu"/>
-      <span tal:condition="context/id">
-       <a tal:attributes="href context/found_in_release/designator"
-          tal:content="context/found_in_release/title"></a>
+      <span tal:condition="context/id"
+            tal:define="item context/found_in_release">
+       <a tal:attributes="href item/designator;
+                          class string:release_${item/status}"
+          tal:content="structure string:${item/title} <code>(${item/status/name}, ${item/responsible/nickname})</code>"></a>
        <input type="hidden" name="found_in_release"
               tal:attributes="value context/found_in_release/id">
        </span>
@@ -91,14 +91,19 @@
     </tr>
     <tr tal:condition="context/id">
      <th>Solved in Release</th>
-     <td>
+     <td class="task_list">
       <span tal:content="structure context/solved_in_release/menu"/>
-      <a tal:condition="context/solved_in_release/isset"
-         tal:attributes="href context/solved_in_release/designator"
-         tal:content="context/solved_in_release/title"></a>
-      </td>
+      <tal:block tal:condition="context/solved_in_release/isset"
+                 tal:define="item context/solved_in_release">
+       <a tal:attributes="href item/designator;
+                          class string:release_${item/status}"
+          tal:content="structure string:${item/designator} (${item/status}, ${item/responsible/nickname})"></a>
+      </tal:block>
+     </td>
+    </tr>
+    <tr>
      <th>Belongs to Feature</th>
-     <td>
+     <td class="task_list">
       <select name="belongs_to_feature"
               tal:define="curr context/belongs_to_feature/id | nothing">
        <option value="-1">- no selection -</option>
@@ -112,17 +117,18 @@
                                selected python:t.id == curr"
                tal:content="string:${t/release} ${t/title}"></option>
       </select>
-      <a tal:condition="context/belongs_to_feature/isset"
-         tal:attributes="href context/belongs_to_feature/designator"
-         tal:content="context/belongs_to_feature/title"></a>
-      </td>
+      <tal:block tal:condition="context/belongs_to_feature/isset"
+                 tal:define="item context/belongs_to_feature">
+       <a tal:attributes="href item/designator;
+                          class string:feature_${item/status}_"
+          tal:content="structure string:${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname})"></a>
+      </tal:block>
+     </td>
     </tr>
 
     <tr tal:condition="context/belongs_to_feature/isset">
-     <th></th>
-     <td></td>
      <th>Belongs to Task</th>
-     <td>
+     <td class="task_list">
       <select name="belongs_to_task"
               tal:define="curr context/belongs_to_task/id | nothing">
        <option value="-1">- no selection -</option>
@@ -136,37 +142,49 @@
                                selected python:t.id == curr"
                tal:content="t/title"></option>
       </select>
-      <a tal:condition="context/belongs_to_task/isset"
-         tal:attributes="href context/belongs_to_task/designator"
-         tal:content="context/belongs_to_task/title"></a>
+      <tal:block tal:condition="context/belongs_to_task/isset"
+                 tal:define="item context/belongs_to_task;
+                             postfix item/test_ok|python:''">
+       <a tal:attributes="href item/designator;
+                          class string:task_${item/status}_${postfix}"
+          tal:content="structure string:${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname})"></a>
+      </tal:block>
      </td>
     </tr>
 
     <tr>
-     <th>Est. Effort</th>
+     <th>Estimated Effort</th>
      <td tal:content="structure context/estimated_effort/field"></td>
+    </tr>
+    <tr>
      <th>Fixed until</th>
      <td tal:content="structure context/fixed_until/field"></td>
     </tr>
 
     <tr tal:condition="context/id">
      <th>Superseder</th>
-     <td colspan="3">
+     <td class="task_list">
       <span tal:content="structure context/superseder/field"/>
       <span tal:replace="structure python:db.defect.classhelp
                                             ( 'id,title,responsible'
                                             , property='superseder'
                                             , width='600')" />
+      <tal:block tal:condition="context/superseder/isset"
+                 tal:define="item context/superseder">
+       <br>
+       <a tal:attributes="href item/designator;
+                          class string:defect_${item/status}_"
+          tal:content="structure string:${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname}): ${item/title}"></a>
+      </tal:block>
      </td>
     </tr>
     <tr tal:condition="context/id">
      <th>Fixed in</th>
-     <td colspan="3"
-         tal:content="structure context/fixed_in/field"></td>
+     <td tal:content="structure context/fixed_in/field"></td>
     </tr>
     <tr tal:condition="python:context.id and context.cert.plain() == 'Yes'">
      <th>Files affected</th>
-     <td colspan="3">
+     <td>
       <textarea tal:content="request/form/files_affected/value | default"
                 name="files_affected"
                 wrap="hard"
@@ -176,7 +194,7 @@
     </tr>
     <tr>
      <th>Files</th>
-     <td colspan="3">
+     <td>
       <tal:block metal:use-macro="templates/page/macros/ttt_issue_files"/>
      </td>
     </tr>

@@ -27,6 +27,7 @@
 #
 # Revision Dates
 #    11-Oct-2004 (MPH) Creation
+#     2-Nov-2004 (MPH) Added `audit_superseder`
 #    ««revision-date»»···
 #--
 #
@@ -224,6 +225,23 @@ def belongs_to_reactor (db, cl, nodeid, oldvalues) :
             db.task.set (new_btt, defects = l)
 # end def belongs_to_reactor
 
+def audit_superseder (db, cl, nodeid, newvalues) :
+    """auditor on defects
+
+      * ensure that superseder gets not set to itself
+      * automatically set status to closed-duplicate
+      * ensure that superseder, once set can not be removed again
+    """
+    new_sup = newvalues.get ("superseder")
+    if new_sup == nodeid :
+        raise Reject, "Cant set superseder to yourself"
+    if new_sup :
+        cd_id = db.defect_status.lookup ("closed-duplicate")
+        newvalues ["status"] = cd_id
+    if not new_sup and cl.get (nodeid, "superseder") :
+        raise Reject, "You are not allowed to remove the superseder"
+# end def audit_superseder
+
 def init (db) :
     pass
     db.defect.audit ("create", check_new_defect     )
@@ -232,6 +250,7 @@ def init (db) :
     db.defect.react ("set"   , add_defect_to_release)
     db.defect.audit ("set"   , belongs_to_auditor   )
     db.defect.react ("set"   , belongs_to_reactor   )
+    db.defect.audit ("set"   , audit_superseder     )
 # end def init
 
 ### __END__ defaults

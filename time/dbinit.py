@@ -357,7 +357,7 @@ def open (name = None):
         ( db
         , "release"
         , status                = Link      ("milestone") # just to show
-                                                          # something i the
+                                                          # something in the
                                                           # pop-up, gets set
                                                           # to the last
                                                           # reached milestone

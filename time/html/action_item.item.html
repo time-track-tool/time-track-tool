@@ -28,7 +28,10 @@
     </tr>
     <tr>
      <th>Deadline</th>
-     <td colspan="3" tal:content="structure context/deadline/field"></td>
+     <td colspan="3">
+      <span tal:content="structure context/deadline/field"/>
+      <span tal:content="structure python:utils.date_help (request, context.deadline)"/>
+     </td>
     </tr>
     <tr>
      <th>Files</th>

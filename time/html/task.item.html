@@ -31,7 +31,7 @@
 
     <tr>
      <th>Kind</th>
-     <td tal:content="context/kind">
+     <td tal:content="context/kind/description">
 <!--
       <select name="kind">
        <option tal:repeat="k db/task_kind/list"
@@ -57,9 +57,10 @@
 
     <tr>
      <th>Feature</th>
-     <td><a tal:attributes="href context/feature/designator;
-                            class string:feature_${context/feature/status}"
-            tal:content="context/feature/title"></a>
+     <td tal:define="item context/feature">
+       <a tal:attributes="href item/designator;
+                          class string:feature_${item/status}_"
+          tal:content="structure string:${item/title} <code>(${item/status/name}, ${item/responsible/nickname})</code>"></a>
      </td>
     </tr>
 
@@ -129,7 +130,9 @@
      <th>Estimated</th>
      <td>
       <span tal:content="structure context/estimated_begin/field"></span>
+      <span tal:content="structure python:utils.date_help (request, context.estimated_begin)"/>
       <span tal:content="structure context/estimated_end/field"></span>
+      <span tal:content="structure python:utils.date_help (request, context.estimated_end)"/>
      </td>
     </tr>
     </tal:block>

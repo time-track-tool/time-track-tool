@@ -326,7 +326,7 @@
 <!--   where postfix will be "${item/test_ok|nothing}" -->
 <tal:block metal:define-macro="ttt_task_list">
  <tal:block tal:repeat="item items"
-            tal:define="postfix item/test_ok|python:'';">
+            tal:define="postfix item/test_ok|python:''">
   <a tal:attributes="href item/designator;
                      class string:${klassname}_${item/status}_${postfix}"
      tal:content="structure string:<code>${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname}):</code> ${item/title}"></a><br>

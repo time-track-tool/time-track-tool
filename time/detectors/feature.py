@@ -160,7 +160,10 @@ def suspend_tasks_and_defects (db, cl, nodeid, oldvalues) :
         if defects :
             d_id_suspended = db.defect_status.lookup ("suspended")
             for defect in defects :
-                db.defect.set (defect, status = d_id_suspended)
+                d_status = db.defect.get (defect, "status")
+                if int (d_status) < 4 :
+                    # all that are not closed or suspended
+                    db.defect.set (defect, status = d_id_suspended)
 # end def suspend_workpackages
 
 def add_task (db, cl, nodeid, newvalues) :
@@ -170,9 +173,9 @@ def add_task (db, cl, nodeid, newvalues) :
     title = newvalues.get ("title")
     kind  = newvalues.get ("kind" )
 
-    if kind and not title :
+    if not title :
         raise Reject, "Required task property title not supplied"
-    if title and not kind :
+    if not kind :
         raise Reject, "Required task property kind not supplied"
 # end def add_task
 

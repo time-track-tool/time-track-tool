@@ -41,12 +41,14 @@
                        ">
     <tr tal:condition="context/id">
      <th>Release</th>
-     <td>
+     <td class="task_list">
       <span tal:content="structure context/release/menu"
             tal:condition="context/is_edit_ok"></span>
-      <a tal:condition="context/release/id|nothing"
-         tal:attributes="href context/release/designator"
-         tal:content="context/release/title/plain"></a>
+      <tal:block tal:define="item context/release">
+       <a tal:attributes="href item/designator;
+                          class string:release_${item/status}"
+          tal:content="structure string:${item/designator} (${item/status}, ${item/responsible/nickname})"></a>
+      </tal:block>
      </td>
     </tr>
 
@@ -193,6 +195,18 @@
           <option tal:repeat="k db/task_kind/list"
                   tal:attributes="value k/id"
                   tal:content="k/description">
+          </option>
+         </select>
+        </td>
+       </tr>
+       <tr>
+        <th>Resp.</th>
+        <td>
+         <select name="task-1@responsible">
+          <option selected="selected" value="-1">- select responsible of task to add -</option>
+          <option tal:repeat="u db/user/list"
+                  tal:attributes="value u/id"
+                  tal:content="u/username">
           </option>
          </select>
         </td>
