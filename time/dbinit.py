@@ -93,6 +93,7 @@ def open (name = None):
         ( db
         , "work_package_status"
         , name                  = String    ()
+        , description           = String    ()
         , transitions           = Multilink ("work_package_status")
         , order                 = String    ()
         )
@@ -103,8 +104,8 @@ def open (name = None):
         , "feature_status"
         , name                  = String    ()
         , description           = String    ()
-        , order                 = String    ()
         , transitions           = Multilink ("feature_status")
+        , order                 = String    ()
         )
     feature_status.setkey ("name")
 
@@ -115,7 +116,7 @@ def open (name = None):
         , description           = String    ()
         , cert                  = Boolean   ()
         , cert_transitions      = Multilink ("defect_status")
-        , non_cert_transitions  = Multilink ("defect_status")
+        , transitions           = Multilink ("defect_status")
         , order                 = String    ()
         )
     defect_status.setkey ("name")
@@ -169,6 +170,9 @@ def open (name = None):
                                                # specific, but would require
                                                # much more classes ...
         , phone                 = String    ()
+        , mail_domain           = String    () # get automatically appended
+                                               # to the users mail address upon
+                                               # creation of a new user.
         )
     organisation.setkey ("name")
 
@@ -656,17 +660,31 @@ def init(adminpw):
     # add rooms here
 
     # work_package_status
-    # order, name
-    wps = [ ("1", "issued")
-          , ("2", "started")
-          , ("3", "available")
-          , ("4", "accepted")
-          , ("5", "suspended")
+    # order, name, transitions, description
+    wps = [ ("1", "issued"   , ("started", )
+            , "Waiting to get started")
+          , ("2", "started"  , ("available", "suspended")
+            , "Someone is working on it.")
+          , ("3", "available", ("accepted", "suspended")
+            , "It is ready for review.")
+          , ("4", "accepted" , ()
+            , "It is reviewed and found to be correct.")
+          , ("5", "suspended", ("issued",)
+            , "We plan to do it later.")
+          ,
           ]
 
     work_package_status = db.getclass ("work_package_status")
-    for order, name in wps :
-        work_package_status.create (name = name, order = order)
+    for order, name, trans, desc in wps :
+        work_package_status.create ( name        = name
+                                   , order       = order
+                                   , description = desc
+                                   )
+    for order, name, trans, desc in wps :
+        if trans :
+            id        = work_package_status.lookup (name)
+            trans_ids = [work_package_status.lookup (t) for t in trans]
+            work_package_status.set (id, transitions = trans_ids)
 
     # feature_status
     # order, name, transitions, description
@@ -687,7 +705,7 @@ def init(adminpw):
 
     for order, name, trans, desc in fss :
         if trans :
-            id = feature_status.lookup (name)
+            id        = feature_status.lookup (name)
             trans_ids = [feature_status.lookup (t) for t in trans]
             feature_status.set (id, transitions = trans_ids)
 
@@ -699,18 +717,6 @@ def init(adminpw):
     ai = db.getclass ("action_item_status")
     for order, name, desc in ais :
         ai.create (name = name, description = desc, order = order)
-
-    # document_type
-    # order, name, description
-    dts = [ ("1", "ES" , "Evaluation Sheet"             )
-          , ("2", "CMP", "Configuration Management Plan")
-          , ("3", "HTP", "High-Level Test Plan"         )
-          , ("4", "SRD", "Software Requirements Document")
-          , ("5", "SDD", "Software Design Document")
-          ]
-    doc_type = db.getclass ("document_type")
-    for order, name, desc in dts :
-        doc_type.create (name = name, description = desc, order = order)
 
 ##     feature_status = db.getclass ("feature_status")
 ##     # XXX: need the order to be 01, 02, 03, 04 to get sorted properly ???
@@ -727,19 +733,68 @@ def init(adminpw):
 ##     feature_status.create (name = "rejected"               , order = "11")
 
     # defect_status:
-    # order, name, cert
-    dss = [ ("1", "assigned"        , False)
-          , ("2", "analyzed"        , True )
-          , ("3", "implemented"     , True )
-          , ("4", "resolved"        , False)
-          , ("5", "closed"          , False)
-          , ("6", "closed-duplicate", False)
-          , ("7", "closed-mistaken" , False)
-          , ("8", "suspended"       , False)
+    # order, name, cert, description, cert_trans, trans
+    dss = [ ("1", "assigned"        , False
+            , "Has just been reported"
+            , ("analyzed", "closed")
+            , ( "resolved"       , "closed-duplicate"
+              , "closed-mistaken", "suspended"
+              )
+            )
+          , ("2", "analyzed"        , True
+            , "We know what caused the defect"
+            , ( "implemented"    , "closed-duplicate"
+              , "closed-rejected", "suspended"
+              )
+            , ()
+            )
+          , ("3", "implemented"     , True
+            , "The fix is implemented"
+            , ("analyzed", "resolved", "suspended")
+            , ()
+            )
+          , ("4", "resolved"        , False
+            , "The defect is ready for testing"
+            , ("closed", )
+            , ("closed", "assigned")
+            )
+          , ("5", "closed"          , False, "Rest in peace"      , (), ())
+          , ("6", "closed-duplicate", False, "Is a duplicate"     , (), ())
+          , ("7", "closed-mistaken" , False, "Originator went mad", (), ())
+          , ("8", "closed-rejected" , True , "We dont do it"      , (), ())
+          , ("8", "suspended"       , False
+            , "We will fix this later"
+            , ("assigned", )
+            , ("assigned", )
+            )
           ]
     defect_status = db.getclass ("defect_status")
-    for order, name, cert in dss :
-        defect_status.create (name = name, cert = cert, order = order)
+    for order, name, cert, desc, c_trans, trans in dss :
+        defect_status.create ( name        = name
+                             , cert        = cert
+                             , order       = order
+                             , description = desc
+                             )
+    for order, name, cert, desc, c_trans, trans in dss :
+        id        = defect_status.lookup (name)
+        if c_trans :
+            trans_ids = [defect_status.lookup (t) for t in c_trans]
+            defect_status.set (id, cert_transitions = trans_ids)
+        if trans :
+            trans_ids = [defect_status.lookup (t) for t in trans]
+            defect_status.set (id, transitions = trans_ids)
+
+    # document_type
+    # order, name, description
+    dts = [ ("1", "ES" , "Evaluation Sheet"             )
+          , ("2", "CMP", "Configuration Management Plan")
+          , ("3", "HTP", "High-Level Test Plan"         )
+          , ("4", "SRD", "Software Requirements Document")
+          , ("5", "SDD", "Software Design Document")
+          ]
+    doc_type = db.getclass ("document_type")
+    for order, name, desc in dts :
+        doc_type.create (name = name, description = desc, order = order)
 
     # severity
     # order, name
