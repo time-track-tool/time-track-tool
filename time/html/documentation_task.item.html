@@ -2,7 +2,7 @@
 
  <title metal:fill-slot="head_title">
   <span tal:condition="context/id"
-        tal:replace="string:Document: ${context/id} by ${context/creator}"></span>
+        tal:replace="string:Documentation Task: ${context/id} by ${context/creator}"></span>
   <span tal:condition="not:context/id"
         tal:replace="string:Create New Documentation Task"></span>
  </title>
@@ -47,7 +47,8 @@
                                              , width='600')" /><br>
       <tal:block tal:repeat="f context/depends">
        <a tal:attributes="href f/designator;
-                          class string:work_package_${f/status/plain}"
+                          class string:work_package_${f/status/plain};
+                          title f/status/plain"
           tal:content="string:${f/title}"
        ></a><br>
       </tal:block>
@@ -64,7 +65,8 @@
                                              , width='600')" /><br>
       <tal:block tal:repeat="f context/needs">
        <a tal:attributes="href f/designator;
-                          class string:work_package_${f/status/plain}"
+                          class string:work_package_${f/status/plain};
+                          title f/status/plain"
           tal:content="string:${f/title}"
        ></a><br>
       </tal:block>

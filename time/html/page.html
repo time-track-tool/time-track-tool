@@ -117,12 +117,16 @@
                               klass string:feature">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
-       <tal:block tal:define="name string:Work Packages;
-                              klass string:work_package">
+       <tal:block tal:define="name string:Implementation Tasks;
+                              klass string:implementation_task">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
        <tal:block tal:define="name string:Test Cases;
                               klass string:testcase">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Documentation Tasks;
+                              klass string:documentation_task">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
        <tal:block tal:define="name string:Defects;
@@ -228,7 +232,7 @@
  <input type="hidden" name="@template" value="item">
  <input type="hidden" name="@required" value="title">
 
- <table class="form">
+ <table class="form" border="0">
   <tr>
    <th class="required">Title</th>
    <td colspan="3"
@@ -274,12 +278,11 @@
            tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
    </td>
   </tr>
-
+ </table>
  <p tal:condition="context/id" tal:content="structure string:Created on
    <b>${context/creation}</b> by <b>${context/creator}</b>, last
    changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
 
- </table>
 </form>
 
  <table class="form" tal:condition="not:context/id">

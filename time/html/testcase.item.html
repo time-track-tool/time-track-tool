@@ -2,7 +2,7 @@
 
  <title metal:fill-slot="head_title">
   <span tal:condition="context/id"
-        tal:replace="string:Document: ${context/id} by ${context/creator}"></span>
+        tal:replace="string:Testcase: ${context/id} by ${context/creator}"></span>
   <span tal:condition="not:context/id"
         tal:replace="string:Create New Testcase"></span>
  </title>
@@ -29,7 +29,7 @@
      </td>
     </tr>
 
-    <tr>
+    <tr tal:condition="python:context.status.plain () == 'accepted'">
      <th>Test Ok</th>
      <td tal:condition="context/is_edit_ok"
          tal:content="structure context/test_ok/field">
@@ -51,13 +51,14 @@
      <th>Depends on</th>
      <td colspan="3">
       <span tal:content="structure context/depends/field"/>
-      <span tal:replace="structure python:db.documentation_task.classhelp
+      <span tal:replace="structure python:db.testcase.classhelp
                                              ( 'id,title,responsible'
                                              , property='depends'
                                              , width='600')" /><br>
       <tal:block tal:repeat="f context/depends">
        <a tal:attributes="href f/designator;
-                          class string:work_package_${f/status/plain}"
+                          class string:work_package_${f/status/plain};
+                          title f/status/plain"
           tal:content="string:${f/title}"
        ></a><br>
       </tal:block>
@@ -68,13 +69,14 @@
      <th>Needs</th>
      <td colspan="3">
       <span tal:content="structure context/needs/field"/>
-      <span tal:replace="structure python:db.documentation_task.classhelp
+      <span tal:replace="structure python:db.testcase.classhelp
                                              ( 'id,title,responsible'
                                              , property='needs'
                                              , width='600')" /><br>
       <tal:block tal:repeat="f context/needs">
        <a tal:attributes="href f/designator;
-                          class string:work_package_${f/status/plain}"
+                          class string:work_package_${f/status/plain};
+                          title f/status/plain"
           tal:content="string:${f/title}"
        ></a><br>
       </tal:block>

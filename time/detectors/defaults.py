@@ -40,6 +40,13 @@ def default_responsible (db, cl, nodeid, new_values) :
         new_values ["responsible"] = db.getuid()
 # end def set_defaults
 
+def default_defect_status (db, cl, nodeid, new_values) :
+    if not new_values.has_key ("status") \
+        or new_values ["status"] != "assigned" :
+        new_values ["status"] = "assigned"
+# end def default_defect_status
+
+
 def init (db) :
     db.document.audit            ("create", default_responsible)
     db.release.audit             ("create", default_responsible)
@@ -49,6 +56,8 @@ def init (db) :
     db.implementation_task.audit ("create", default_responsible)
     db.documentation_task.audit  ("create", default_responsible)
     db.testcase.audit            ("create", default_responsible)
+    db.defect.audit              ("create", default_responsible)
+    db.defect.audit              ("create", default_defect_status)
 # end def init
 
 ### __END__ defaults

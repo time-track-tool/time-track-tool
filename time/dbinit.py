@@ -591,6 +591,7 @@ def open (name = None):
           )
         , ("implementation_task"   , ["User"], [ "User"           ])
         , ("documentation_task"    , ["User"], [ "User"           ])
+        , ("testcase"              , ["User"], [ "User"           ])
         , ("defect"                , ["User"], [ "User"           ])
         , ("meeting"               , ["User"], [ "Admin"          ])
         , ("action_item"           , ["User"], [ "User"           ])

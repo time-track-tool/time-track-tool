@@ -12,8 +12,12 @@
    <tal:block metal:fill-slot="ttt_issue_content">
     <tr>
      <th>Release</th>
-     <td colspan="3"
-         tal:content="structure context/release/menu"></td>
+     <td colspan="3">
+      <span tal:content="structure context/release/menu"></span>
+      <a tal:condition="context/release/id|nothing"
+         tal:attributes="href context/release/designator"
+         tal:content="context/release/title/plain"></a>
+     </td>
     </tr>
 
     <tr tal:condition="context/id">
@@ -35,12 +39,13 @@
      </td>
     </tr>
 
-    <tr tal:condition="context/release/plain">
+    <tr tal:condition="python:[t for t in context.testcases.reverse ()
+                              if t.status.plain () == 'accepted']">
      <th>Test OK</th>
      <td colspan="3" tal:condition="context/test_ok/_value"
-         class="test_ok">Test OK</td>
+         class="test_ok">All testcases passed !</td>
      <td colspan="3" tal:condition="not:context/test_ok/_value"
-         class="test_failed">Test Failed</td>
+         class="test_failed">Some testcases failed - see below !!!</td>
     </tr>
 
     <tr>
@@ -56,37 +61,36 @@
 
     <tr>
      <th>Depends on</th>
-     <td>
+     <td colspan="3">
       <span tal:content="structure context/depends/field"/>
       <span tal:replace="structure python:db.feature.classhelp
                                              ( 'id,title,responsible'
                                              , property='depends'
                                              , width='600')" />
-     </td>
-     <th>-&gt;</th>
-     <td>
+      <br>
       <tal:block tal:repeat="f context/depends">
        <a tal:attributes="href f/designator;
-                          class string:feature_${f/status/plain}"
+                          class string:feature_${f/status/plain};
+                          title f/status/plain"
           tal:content="string:${f/title}"
        ></a><br>
       </tal:block>
      </td>
     </tr>
+
     <tr>
      <th>Needs</th>
-     <td>
+     <td colspan="3">
       <span tal:content="structure context/needs/field"/>
       <span tal:replace="structure python:db.feature.classhelp
                                              ( 'id,title,responsible'
                                              , property='needs'
                                              , width='600')" />
-     </td>
-     <th>-&gt;</th>
-     <td>
+      <br>
       <tal:block tal:repeat="f context/needs">
        <a tal:attributes="href f/designator;
-                          class string:feature_${f/status/plain}"
+                          class string:feature_${f/status/plain};
+                          title f/status/plain"
           tal:content="string:${f/title} - ${f/status} - ${f/release}"
        ></a><br>
       </tal:block>
@@ -201,7 +205,8 @@
         <th>Responsible</th>
        </tr>
        <tr tal:repeat="task context/testcases">
-        <td><a tal:attributes="href task/designator"
+        <td><a tal:attributes="href task/designator;
+                               class string:wp_${task/status/plain}_${task/test_ok/plain}"
                tal:content="task/title"
                target="testcase"></a>
         </td>

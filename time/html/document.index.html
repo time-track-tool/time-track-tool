@@ -1,0 +1,25 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Document</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define="batch request/batch;
+                        props python:( ('Id'         , 'id'         , ''                   , ''        , 'V')
+                                     , ('Title'      , 'title'      , ''                   , ''        , 'T')
+                                     , ('Responsible', 'responsible', 'user'               , 'username', 'L')
+                                     , ('Status'     , 'status'     , 'work_package_status', 'name'    , 'L')
+                                     , ('Nosy List'  , 'nosy'       , 'user'               , 'username', 'M')
+                                     );
+                        multi python:( 'responsible'
+                                     , 'status'
+                                     , 'nosy'
+                                     )"
+            tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+
+  <tal:block metal:fill-slot="query_title">Query Document</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

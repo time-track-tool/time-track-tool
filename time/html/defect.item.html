@@ -13,28 +13,37 @@
     <p tal:condition="context/closed/plain"
        tal:content="structure string:Closed on <b>${context/closed}</b>
                     by <b>${context/closer}</b>."></p>
+    <input type="hidden" name="@required" value="product,version,severity,found_in_release">
     <tr>
-     <th>Product</th>
+     <th class="required">Product</th>
      <td tal:content="structure context/product/menu"></td>
-     <th>Version</th>
+     <th class="required">Version</th>
      <td tal:content="structure context/version/field"></td>
     </tr>
     <tr>
-     <th>Severity</th>
+     <th class="required">Severity</th>
      <td tal:content="structure context/severity/menu"></td>
-     <th>Found in Release</th>
-     <td tal:content="structure context/found_in_release/menu"></td>
-    </tr>
-    <tr>
-     <th>Cert ?</th>
-     <td tal:content="structure context/cert/field"></td>
      <th></th>
      <td></td>
     </tr>
     <tr>
+     <th class="required">Found in Release</th>
+     <td tal:content="structure context/found_in_release/menu"></td>
+     <th></th>
+     <td></td>
+    </tr>
+    <tr>
+     <th>Cert ?</th>
+     <td tal:condition="not:context/id"
+         tal:content="structure context/cert/field"></td>
+     <td tal:condition="context/id"
+         tal:content="context/cert"></td>
+     <th></th>
+     <td></td>
+    </tr>
+    <tr tal:condition="context/id">
      <th>Status</th>
      <td>
-      <tal:block tal:condition="context/id">
       <select name="status"
               tal:condition="python:context.cert.plain () == 'Yes'"
               tal:define="ok context/status/cert_transitions">
@@ -63,9 +72,6 @@
        </option>
        </tal:block>
       </select>
-      </tal:block>
-      <tal:block tal:condition="not:context/id"
-                 tal:replace="structure context/status/menu" />
      </td>
      <th></th>
      <td></td>
@@ -77,9 +83,14 @@
      <td tal:content="structure context/feature/menu"></td>
     </tr>
     <tr tal:condition="context/id">
-     <th>Supereder</th>
-     <td colspan="3"
-         tal:content="structure context/superseder/field"></td>
+     <th>Superseder</th>
+     <td colspan="3">
+      <span tal:content="structure context/superseder/field"/>
+      <span tal:replace="structure python:db.defect.classhelp
+                                            ( 'id,title,responsible'
+                                            , property='superseder'
+                                            , width='600')" />
+     </td>
     </tr>
     <tr tal:condition="context/id">
      <th>Fixed in</th>

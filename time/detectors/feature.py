@@ -126,8 +126,11 @@ def update_status (db, cl, nodeid, old_values) :
     feature = cl.get (nodeid, "feature")
     tcs     = db.feature.get (feature, "testcases")
     test_ok = True
+    id_accepted = db.work_package_status.lookup ("accepted")
     for tc in tcs :
-        if not db.testcase.get (tc, "test_ok") :
+        if ( (db.testcase.get (tc, "status") == id_accepted)
+            and not db.testcase.get (tc, "test_ok")
+           ) :
             test_ok = False
             break
     db.feature.set (feature, test_ok = test_ok)
