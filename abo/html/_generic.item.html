@@ -1,13 +1,56 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 <title metal:fill-slot="head_title"
-       tal:content="python:context._classname.capitalize()+' editing'"></title>
+       tal:content="python:utils.pretty (context._classname)"></title>
 <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-      tal:content="python:context._classname.capitalize()+' editing'"></span>
+      tal:content="python:utils.pretty (context._classname)"></span>
 <td class="content" metal:fill-slot="content">
-
+<b tal:condition="python:0" tal:content="context/designator"></b>
 <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
 You are not allowed to view this page.
 </span>
+
+<table class="otherinfo"
+ tal:define=
+  " excpt     python: (labelprop, 'creator', 'creation', 'activity', 'actor')
+  ; props     python:[i for i in utils.sorted_properties (db, context)
+                      if i._name not in excpt
+                     ]
+  ; items     python:klass.list()
+  ; n         python:len (props) + 1
+  "
+ tal:condition="items"
+>
+ <tr>
+  <th tal:content="python:utils.pretty (labelprop)"></th>
+  <tal:block tal:repeat="prop props">
+   <th tal:content="python:utils.pretty (prop._name)"></th>
+  </tal:block>
+ </tr>
+ <tr tal:repeat="item items">
+  <td tal:condition="python:request.user.hasPermission('Edit', classname)">
+   <a tal:attributes="href string:${classname}${item/id}"
+      tal:content="python:item [labelprop]">keyword here</a>
+  </td>
+  <td tal:condition="python:not(request.user.hasPermission('Edit', classname))">
+   <b tal:content="python:item [labelprop]">keyword here</b>
+  </td>
+  <tal:block tal:repeat="prop props">
+   <td tal:condition="python:prop._name not in
+    (labelprop, 'creator', 'creation', 'activity', 'actor')"
+    tal:content="python:item [prop._name]"
+   >
+   </td>
+  </tal:block>
+ </tr>
+ <tr tal:condition="python:request.user.hasPermission('Edit', classname)">
+  <td tal:attributes="colspan n" style="border-top: 1px solid gray"
+  tal:content='structure python:"<p>Zum Editieren von %s auf das Feld unter \"%s\" klicken.</p>"
+   % (Classname, utils.pretty (labelprop))'>
+   click on its entry above.
+  </td>
+ </tr>
+</table>
+<p></p>
 
 <form method="POST" onSubmit="return submit_once()"
       enctype="multipart/form-data" tal:condition="context/is_edit_ok"
@@ -17,32 +60,33 @@ You are not allowed to view this page.
 
 <table class="form">
 
-<tr tal:repeat="prop python:db[context._classname].properties()">
- <tal:block tal:condition="python:prop._name not in ('id', 'creator',
-                                  'creation', 'activity')">
-  <th tal:content="prop/_name"></th>
-  <td tal:content="structure python:context[prop._name].field()"></td>
+ <tal:block tal:repeat="prop python:utils.sorted_properties (db, context)">
+  <tr tal:condition="python:prop._name not in ('id', 'creator',
+                                   'creation', 'activity', 'actor')">
+   <th tal:content="python:utils.pretty (prop._name)"></th>
+   <td tal:content="structure python:utils.menu_or_field (context[prop._name])">
+   </td>
+  </tr>
  </tal:block>
-</tr>
-<tr>
- <td>&nbsp;</td>
- <td colspan=3 tal:content="structure context/submit">
-  submit button will go here
- </td>
-</tr>
+ <tr>
+  <td>&nbsp;</td>
+  <td colspan=3 tal:content="structure context/submit">
+   submit button will go here
+  </td>
+ </tr>
 </table>
 
 </form>
 
 <table class="form" tal:condition="context/is_only_view_ok">
 
-<tr tal:repeat="prop python:db[context._classname].properties()">
- <tal:block tal:condition="python:prop._name not in ('id', 'creator',
-                                  'creation', 'activity')">
-  <th tal:content="prop/_name"></th>
-  <td tal:content="structure python:context[prop._name].field()"></td>
+ <tal:block tal:repeat="prop python:db[context._classname].properties()">
+  <tr tal:condition="python:prop._name not in ('id', 'creator',
+                                   'creation', 'activity')">
+   <th tal:content="prop/_name"></th>
+   <td tal:content="structure python:context[prop._name].field()"></td>
+  </tr>
  </tal:block>
-</tr>
 </table>
 
 
@@ -53,4 +97,3 @@ You are not allowed to view this page.
 </td>
 
 </tal:block>
-<!-- SHA: ffc70001610bc7b1af72e4dba94d8eb857480166 -->

@@ -1,0 +1,37 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Abfrage Adresse</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   props python:( (utils.pretty ('id'),           'id')
+                , (utils.pretty ('salutation'),   'salutation')
+                , (utils.pretty ('title'),        'title')
+                , (utils.pretty ('firstname'),    'firstname')
+                , (utils.pretty ('lastname'),     'lastname')
+                , (utils.pretty ('country'),      'country')
+                , (utils.pretty ('postalcode'),   'postalcode')
+                , (utils.pretty ('city'),         'city')
+                , (utils.pretty ('street'),       'street')
+                , (utils.pretty ('email'),        'email')
+                , (utils.pretty ('function'),     'function')
+                , (utils.pretty ('phone_office'), 'phone_office')
+                , (utils.pretty ('phone_home'),   'phone_home')
+                , (utils.pretty ('phone_mobile'), 'phone_mobile')
+                , (utils.pretty ('fax'),          'fax')
+                );
+   multi python:()
+  "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_display"></tal:block>
+
+  <tal:block metal:use-macro="templates/page/macros/search_form">
+   <tal:block metal:fill-slot="query_title">
+    <tal:block tal:replace="python:'Abfrage ' + Classname">
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

@@ -18,20 +18,12 @@
       tal:attributes="action context/designator">
 
 <table class="form">
- <tr>
-  <th>Name</th>
-  <td tal:content="structure context/realname/field">realname</td>
+ <tr tal:repeat="field python:['realname','username','password']">
+  <th tal:content="python:utils.pretty(field)">Name</th>
+  <td tal:content="structure python:context [field].field ()">realname</td>
  </tr>
  <tr>
-  <th>Login Name</th>
-  <td tal:content="structure context/username/field">username</td>
- </tr>
- <tr>
-  <th>Login Passwort</th>
-  <td tal:content="structure context/password/field">password</td>
- </tr>
- <tr>
-  <th>Bestätigung Passwort</th>
+  <th tal:content="python:utils.pretty ('confirm')"></th>
   <td tal:content="structure context/password/confirm">password</td>
  </tr>
  <tr tal:condition="python:request.user.hasPermission('Web Roles')">

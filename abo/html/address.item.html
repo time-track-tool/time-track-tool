@@ -1,0 +1,74 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+
+ <title metal:fill-slot="head_title">
+  <span tal:condition="context/id"
+        tal:replace="string:Abo: ${context/id} angelegt von ${context/creator}"></span>
+  <span tal:condition="not:context/id"
+        tal:replace="string:Neues Abo"></span>
+ </title>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
+    <tr>
+     <th tal:content="python:utils.pretty('salutation')"></th>
+     <td tal:content="structure context/salutation/field"></td>
+     <th tal:content="python:utils.pretty('title')"></th>
+     <td tal:content="structure context/title/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('firstname')"></th>
+     <td tal:content="structure context/firstname/field"></td>
+     <th tal:content="python:utils.pretty('lastname')" class="required"></th>
+     <td tal:content="structure context/lastname/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('country')" class="required"></th>
+     <td>
+      <table borderwidth=0>
+       <tr>
+        <td tal:content="structure python:context.country.field (4)"></td>
+        <th tal:content="python:utils.pretty('postalcode')" class="required"></th>
+        <td tal:content="structure python:context.postalcode.field (10)"></td>
+       </tr>
+      </table>
+     </td>
+     <th tal:content="python:utils.pretty('city')" class="required"></th>
+     <td tal:content="structure context/city/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('street')" class="required"></th>
+     <td tal:content="structure context/street/field"></td>
+     <th tal:content="python:utils.pretty('email')"></th>
+     <td tal:content="structure context/email/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('function')" rowspan="4"></th>
+     <td rowspan=4>
+      <textarea tal:content="context/function/plain"
+                name="function"
+                wrap="hard"
+                rows="3"
+                cols="30">
+      </textarea>
+     </td>
+     <th tal:content="python:utils.pretty('phone_office')"></th>
+     <td tal:content="structure context/phone_office/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('phone_home')"></th>
+     <td tal:content="structure context/phone_home/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('phone_mobile')"></th>
+     <td tal:content="structure context/phone_mobile/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="python:utils.pretty('fax')"></th>
+     <td tal:content="structure context/fax/field"></td>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
