@@ -1,6 +1,6 @@
 #! /usr/bin/python
-# Copyright (C) 1998 TTTech Computertechnik GmbH. All rights reserved
-# Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
+# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Reichergasse 131, A-3411 Weidling. office@runtux.com
 # ****************************************************************************
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -50,6 +50,7 @@ def open(name=None):
         , type                = Link      ('abo_price')
         , payer               = Link      ('address')
         , subscriber          = Link      ('address')
+        , amount              = Number    ()
         )
 
     abo_type = Class \
@@ -120,9 +121,7 @@ def open(name=None):
         , title               = String    ()
         , firstname           = String    ()
         , lastname            = String    ()
-        , function1           = String    ()
-        , function2           = String    ()
-        , function3           = String    ()
+        , function            = String    ()
         , street              = String    ()
         , country             = String    ()
         , postalcode          = String    ()
@@ -147,16 +146,17 @@ def open(name=None):
 
     # Assign the access and edit permissions
     # to regular users now
-    for cl in 'doc', 'ref_nr', 'query', 'msg' :
+    for cl in \
+        'abo', 'abo_type', 'currency', 'msg', 'abo_price', 'query', 'address' :
         p = db.security.getPermission('View', cl)
         db.security.addPermissionToRole('User', p)
         p = db.security.getPermission('Edit', cl)
         db.security.addPermissionToRole('User', p)
 
     # Access permissions for the other classes for regular users
-    for cl in 'id_type' , 'artefact', 'department', 'product_type' :
-        p = db.security.getPermission('View', cl)
-        db.security.addPermissionToRole('User', p)
+#    for cl in 'id_type' , 'artefact', 'department', 'product_type' :
+#        p = db.security.getPermission('View', cl)
+#        db.security.addPermissionToRole('User', p)
 
     # Maybe at some point in time we may want a different role for
     # administration of artefacts etc.
@@ -183,8 +183,7 @@ def open(name=None):
     # - Allow anonymous users access to the "issue" class of data
     #   Note: this also grants access to related information like files,
     #         messages, statuses etc that are linked to issues
-    for cl in ( 'doc', 'product_type', 'department', 'ref_nr'
-              , 'id_type', 'artefact', 'user'
+    for cl in ( 'user'
               ) :
         p = db.security.getPermission('View', cl)
         db.security.addPermissionToRole('Anonymous', p)
