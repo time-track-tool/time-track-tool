@@ -51,6 +51,7 @@ def open(name=None):
         , payer               = Link      ('address')
         , subscriber          = Link      ('address')
         , amount              = Number    ()
+        , messages            = Multilink ("msg")
         )
 
     abo_type = Class \
@@ -80,6 +81,7 @@ def open(name=None):
         , klass               = String    ()
         , name                = String    ()
         , url                 = String    ()
+        , private_for         = Link      ('user')
         )
     query.setkey("name")
 

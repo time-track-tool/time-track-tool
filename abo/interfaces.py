@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
 # This module is free software, and you may redistribute it and/or modify
@@ -26,35 +27,46 @@ import time
 
 CUTOFF = re.compile ("(.*?)(\s+\S+)$")
 
-prettyfields = \
-{ 'abos'         : 'Abos'
+prettymap = \
+{ 'abo'          : 'Abos'
+, 'abos'         : 'Abos'
+, 'abo_price'    : 'Preis'
 , 'aboprice'     : 'Abo Preis'
+, 'abo_type'     : 'Abo-Typ'
 , 'abotype'      : 'Abotyp'
+, 'activity'     : 'letzte Änderung'.decode ('latin1').encode('utf-8')
+, 'address'      : 'Adressen'
 , 'amount'       : 'Betrag'
 , 'begin'        : 'Beginn'
 , 'city'         : 'Ort'
+, 'confirm'      : 'Bestätigung Passwort'.decode('latin1').encode('utf-8')
 , 'country'      : 'Land'
-, 'countrycode'  : 'Ländercode'
-, 'currency'     : 'Währung'
+, 'countrycode'  : 'Ländercode'.decode ('latin1').encode ('utf-8')
+, 'currency'     : 'Währung'.decode ('latin1').encode ('utf-8')
 , 'description'  : 'Beschreibung'
 , 'email'        : 'Email'
 , 'end'          : 'Storniert per'
 , 'fax'          : 'Fax'
 , 'firstname'    : 'Vorname'
 , 'function'     : 'Funktion'
+, 'history'      : 'Liste der Änderungen'.decode ('latin1').encode ('utf-8')
+, 'id'           : 'ID'
 , 'lastname'     : 'Nachname'
-, 'messages'     : 'Nachrichten'
+, 'messages'     : 'Notizen'
 , 'name'         : 'Name'
-, 'payed_abos'   : 'Zahler für'
+, 'password'     : 'Passwort'
+, 'payed_abos'   : 'Zahler für'.decode ('latin1').encode ('utf-8')
 , 'payer'        : 'Zahler'
 , 'phone_home'   : 'Telefon privat'
 , 'phone_mobile' : 'Telefon mobil'
-, 'phone_office' : 'Telefon Geschäft'
+, 'phone_office' : 'Telefon Geschäft'.decode ('latin1').encode ('utf-8')
+, 'realname'     : 'Name'
 , 'postalcode'   : 'PLZ'
 , 'salutation'   : 'Anrede'
 , 'street'       : 'Strasse'
 , 'subscriber'   : 'Abonnent'
 , 'title'        : 'Titel'
+, 'username'     : 'Login Name'
 }
 
 def _splitline (line, width) :
@@ -80,8 +92,8 @@ def _splitline (line, width) :
 
 def propsort (p1, p2) :
     return cmp \
-        ( prettyfields.get (p1._name, p1._name)
-        , prettyfields.get (p2._name, p2._name)
+        ( prettymap.get (p1._name, p1._name)
+        , prettymap.get (p2._name, p2._name)
         )
 
 class Client(client.Client):
@@ -100,8 +112,8 @@ class TemplatingUtils:
         props.sort (propsort)
         return props
 
-    def prettyname (self, name) :
-        return (prettyfields.get (name, name))
+    def pretty (self, name) :
+        return (prettymap.get (name, name))
 
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
