@@ -103,6 +103,11 @@ class TemplatingUtils:
     def prettyname (self, name) :
         return (prettyfields.get (name, name))
 
+    def menu_or_field (self, prop) :
+        if hasattr (prop._prop, 'classname') :
+            return prop.menu ()
+        return prop.field ()
+
     def soft_wrap (self, str, width=80) :
         """just insert \n's after max 'length' characters
 

@@ -63,7 +63,7 @@ def open(name=None):
     currency = Class \
         ( db, "currency"
         , name                = String    ()
-        , countrycode         = String    ()
+        , description         = String    ()
         )
     currency.setkey ("name")
 
@@ -72,6 +72,7 @@ def open(name=None):
         , abotype             = Link      ('abo_type')
         , currency            = Link      ('currency')
         , amount              = Number    ()
+        , name                = String    ()
         )
 
     query = Class \
