@@ -3,12 +3,17 @@
 
 <tal:block metal:fill-slot="content">
  <tal:block tal:define="batch request/batch;
-                        props python:( ('Id'         , 'id'         , ''                  , ''        , 'V')
-                                     , ('Title'      , 'title'      , ''                  , ''        , 'T')
-                                     , ('Responsible', 'responsible', 'user'              , 'username', 'L')
-                                     , ('Nosy List'  , 'nosy'       , 'user'              , 'username', 'M')
-                                     );
+                        props python:
+    ( ('Id'           , 'id'           , ''                  , ''        , 'V')
+    , ('Title'        , 'title'        , ''                  , ''        , 'T')
+    , ('Responsible'  , 'responsible'  , 'user'              , 'username', 'L')
+    , ('Features'     , 'features'     , 'feature'           , 'title'   , 'M')
+    , ('Planned Fixes', 'planned_fixes', 'defect'            , 'title'   , 'M')
+    , ('Bugs'         , 'bugs'         , 'defect'            , 'title'   , 'M')
+    , ('Nosy List'    , 'nosy'         , 'user'              , 'username', 'M')
+    );
                         multi python:( 'responsible'
+                                     , 'features'
                                      , 'nosy'
                                      )"
             tal:condition="context/is_view_ok">

@@ -341,6 +341,35 @@ table.files td {
   empty-cells: show;
 }
 
+/* style for task displays */
+table.tasks {
+  border-spacing: 0;
+  border-collapse: separate;
+//  border: thin solid #0066FF;
+//  width: 100%;
+}
+
+table.tasks th.header{
+//  padding-top: 10px;
+//  border-bottom: 1px solid gray;
+  font-weight: bold;
+  background-color: white;
+  color: #707040;
+  font-size: smaller;
+//  border: thin solid #0066FF;
+//  background-color: #0099FF;
+}
+
+table.tasks th {
+  font-weight: bold;
+  text-align: left;
+}
+
+table.tasks td {
+  font-family: monospace;
+  empty-cells: show;
+}
+
 /* style for milestone displays */
 table.milestones {
   border-spacing: 0;

@@ -31,7 +31,11 @@
              <input type="checkbox"
                     tal:condition="context/is_edit_ok"
                     tal:attributes="name string:${m/designator}@reached;
-                                    value m/reached/now">
+                                    value m/reached/now;">
+<!--
+                                    "onSelect string:document.itemSynopsis.elements['@note'].value='Milestone ${m/name} reached:';
+                                    onChange string:document.itemSynopsis.elements['@note'].value=''"
+-->
          </span>
         </td>
         <tal:block tal:condition="m/reached/_value">
@@ -49,14 +53,20 @@
         tal:define="available python:[]">
      <th>Documents</th>
      <td>
-      <table class="files"
+      <table class="tasks"
              tal:condition="context/documents">
+<!--
        <tr>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Responsible</th>
+        <th class="header">Type</th>
+        <th class="header">Status</th>
+        <th class="header">Responsible</th>
        </tr>
-       <tr tal:repeat="doc context/documents/reverse">
+-->
+      <tr tal:repeat="doc python:db.document.filter
+                               ( filterspec = { 'release' : context.id }
+                               , group      = ( '+', 'status' )
+                               , sort       = ( '+', 'id'     )
+                               )">
         <td tal:define="_xx python:available.append (doc.type.id)">
          <a tal:attributes="href doc/designator"
             tal:content="doc/type/description"></a>
@@ -88,29 +98,58 @@
 
     <tr tal:condition="context/features">
      <th>Features</th>
-     <td><span tal:repeat="f context/features">
-         <a tal:attributes="href  string:feature${f/id};
-                            class string:feature_${f/status}"
-            tal:content="string:${f/title}"></a><br>
-         </span>
+     <td>
+      <table class="tasks">
+       <tr tal:repeat="task python:db.feature.filter
+                                ( filterspec = { 'id' : [f.id for f in context.features] }
+                                , group      = ( '+', 'status' )
+                                , sort       = ( '+', 'id'     )
+                                )">
+        <td><a tal:attributes="href task/designator"
+               tal:content="task/title"></a>
+        </td>
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+       </tr>
+      </table>
      </td>
     </tr>
 
     <tr tal:condition="context/planned_fixes">
      <th>Planned Fixes</th>
-     <td><span tal:repeat="f context/planned_fixes">
-         <a tal:attributes="href f/designator"
-            tal:content="f/title"></a><br>
-         </span>
+     <td>
+      <table class="tasks">
+       <tr tal:repeat="task python:db.defect.filter
+                                ( filterspec = { 'id' : [d.id for d in context.planned_fixes] }
+                                , group      = ( '+', 'status' )
+                                , sort       = ( '+', 'id'     )
+                                )">
+        <td><a tal:attributes="href task/designator"
+               tal:content="task/title"></a>
+        </td>
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+       </tr>
+      </table>
      </td>
     </tr>
 
     <tr tal:condition="context/bugs">
      <th>Bugs</th>
-     <td><span tal:repeat="f context/bugs">
-         <a tal:attributes="href f/designator"
-            tal:content="f/title"></a><br>
-         </span>
+     <td>
+      <table class="tasks">
+       <tr tal:repeat="task python:db.defect.filter
+                                ( filterspec = { 'id' : [d.id for d in context.bugs] }
+                                , group      = ( '+', 'status' )
+                                , sort       = ( '+', 'id'     )
+                                )">
+        <td><a tal:attributes="href task/designator"
+               tal:content="task/title"></a>
+        </td>
+        <td tal:content="task/status/plain"></td>
+        <td tal:content="task/responsible/plain"></td>
+       </tr>
+      </table>
      </td>
     </tr>
 

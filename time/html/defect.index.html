@@ -5,32 +5,32 @@
  <tal:block tal:define="batch request/batch;
                         props python:
     (
-      ('Id'              , 'id'              , ''                  , ''        , 'V')
-    , ('Title'           , 'title'           , ''                  , ''        , 'T')
-    , ('Responsible'     , 'responsible'     , 'user'              , 'username', 'L')
+      ('Id'                , 'id'                , ''                  , ''        , 'V')
+    , ('Title'             , 'title'             , ''                  , ''        , 'T')
+    , ('Responsible'       , 'responsible'       , 'user'              , 'username', 'L')
 
-    , ('Product'         , 'product'         , 'product'           , 'name'    , 'L')
-    , ('Version'         , 'version'         , ''                  , ''        , 'V')
+    , ('Product'           , 'product'           , 'product'           , 'name'    , 'L')
+    , ('Version'           , 'version'           , ''                  , ''        , 'V')
 
-    , ('Status'          , 'status'          , 'defect_status'     , 'name'    , 'L')
-    , ('Severity'        , 'severity'        , 'severity'          , 'name'    , 'L')
-    , ('Cert'            , 'cert'            , ''                  , ''        , 'V')
+    , ('Status'            , 'status'            , 'defect_status'     , 'name'    , 'L')
+    , ('Severity'          , 'severity'          , 'severity'          , 'name'    , 'L')
+    , ('Cert'              , 'cert'              , ''                  , ''        , 'V')
 
-    , ('Found in Release', 'found_in_release', 'release'           , 'title'   , 'L')
-    , ('Part of Release' , 'part_of_release' , 'release'           , 'title'   , 'L')
-    , ('Feature'         , 'feature'         , 'feature'           , 'title'   , 'L')
-    , ('Task'            , 'task'            , 'task'              , 'title'   , 'L')
+    , ('Found in Release'  , 'found_in_release'  , 'release'           , 'title'   , 'L')
+    , ('Solved in Release' , 'solved_in_release' , 'release'           , 'title'   , 'L')
+    , ('Belongs to Feature', 'belongs_to_feature', 'feature'           , 'title'   , 'L')
+    , ('Belongs to Task'   , 'belongs_to_task'   , 'task'              , 'title'   , 'L')
 
-    , ('Estimated Effort', 'estimated_effort', ''                  , ''        , 'V')
-    , ('Fixed until'     , 'fixed_until'     , ''                  , ''        , 'V')
-    , ('Fixed in'        , 'fixed_in'        , ''                  , ''        , 'V')
+    , ('Estimated Effort'  , 'estimated_effort'  , ''                  , ''        , 'V')
+    , ('Fixed until'       , 'fixed_until'       , ''                  , ''        , 'V')
+    , ('Fixed in'          , 'fixed_in'          , ''                  , ''        , 'V')
 
-    , ('Superseder'      , 'superseder'      , 'defect'            , 'title'   , 'L')
+    , ('Superseder'        , 'superseder'        , 'defect'            , 'title'   , 'L')
 
-    , ('Closed'          , 'closed'          , ''                  , ''        , 'V')
-    , ('Closer'          , 'closer'          , 'user'              , 'username', 'L')
+    , ('Closed'            , 'closed'            , ''                  , ''        , 'V')
+    , ('Closer'            , 'closer'            , 'user'              , 'username', 'L')
 
-    , ('Nosy List'       , 'nosy'            , 'user'              , 'username', 'M')
+    , ('Nosy List'         , 'nosy'              , 'user'              , 'username', 'M')
     );
                         multi python:( 'responsible'
                                      , 'product'

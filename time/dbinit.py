@@ -421,14 +421,14 @@ def open (name = None):
         , status                = Link      ("defect_status")
         , superseder            = Link      ("defect")
         , cert                  = Boolean   ()
-        , part_of_release       = Link      ("release") # in which "release"
+        , solved_in_release     = Link      ("release") # in which "release"
                                                         # it gets repaired.
                                                         # i.e. it is in the
                                                         # "planned_fixes" of
                                                         # that release.
         , found_in_release      = Link      ("release") # where it was
                                                         # initially found.
-                                                        # "part_of_release"
+                                                        # "solved_in_release"
                                                         # is initially set to
                                                         # "found_in_release"
         , estimated_effort      = Interval  ()
@@ -460,8 +460,8 @@ def open (name = None):
                                         # are also setting the "closed" date
                                         # for this, we can also set the
                                         # "closer" here.
-        , feature               = Link      ("feature") # if known
-        , task                  = Link      ("task")    # if known
+        , belongs_to_feature    = Link      ("feature") # if known
+        , belongs_to_task       = Link      ("task")    # if known
         )
 
 ## XXX: acc to AGO/RSC/MPH there should be no legacy "issue" class - if
