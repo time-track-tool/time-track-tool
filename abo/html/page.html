@@ -218,7 +218,7 @@
 
   <tal:block metal:define-slot="formatted_class_content"></tal:block>
 
-  <tr>
+  <tr tal:condition="context/messages|nothing">
    <th>Notiz</th>
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
@@ -265,7 +265,7 @@
  </tr>
  </table>
 
- <table class="messages" tal:condition="context/messages">
+ <table class="messages" tal:condition="context/messages|nothing">
   <tr>
    <th colspan="4" class="header"
        tal:content="python:utils.pretty ('messages')">Messages</th>
@@ -277,13 +277,9 @@
    </th>
    <th tal:content="structure python:utils.colonfield (msg,'author')"></th>
    <th tal:content="structure python:utils.colonfield (msg,'date')"></th>
-   <th>
-    <form style="padding:0" tal:condition="context/is_edit_ok"
-          tal:attributes="action string:${classname}${context/id}">
-     <input type="hidden" name="@remove@messages" tal:attributes="value msg/id">
-     <input type="hidden" name="@action" value="edit">
-     <input type="submit" tal:attributes="value python:utils.pretty('remove')">
-    </form>
+   <th><a tal:attributes= "href
+          string:address${context/id}?:remove:messages=${msg/id}&:action=edit"
+          tal:content="python:utils.pretty('remove')"></a>
    </th>
   </tr>
   <tr>
