@@ -64,10 +64,10 @@ def check_new_defect (db, cl, nodeid, new_values) :
     milestone_name = db.milestone.get (milestone_id, "name"  )
     ms_value       = int (milestone_name [1:]) # cut away the `M` from e.g.
                                                # "M100"
-    if ms_value < 150 :
+    if ms_value < 50 :
         rel_title = db.release.get (release_id, "title")
         raise Reject, "Release %r is not open for reporting bugs - " \
-                      "wait until 'M150' is reached !"% rel_title
+                      "wait until 'M50' is reached !"% rel_title
     elif ms_value >= 500 :
         # clear part_of_release - shouldn't be set anyway
         if new_values.has_key ("part_of_release") :
