@@ -31,7 +31,15 @@
 
     <tr>
      <th>Kind</th>
-     <td tal:content="structure context/kind/menu"></td>
+     <td>
+      <select name="kind">
+       <option tal:repeat="k db/task_kind/list"
+               tal:attributes="value k/id;
+                               selected python:k.id == context.kind.id"
+               tal:content="k/description">
+       </option>
+      </select>
+     </td>
     </tr>
 
     <tr tal:condition="python:(context.kind.plain () == 'testcase')
