@@ -18,6 +18,14 @@
  ; edit_form     python:()
  ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=subscriber&%3Acolumns=payer&%3Asearch_text=&%40queryname=&id=&aboprice=&amount=&begin=&end=&subscriber=&payer='
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
+                        , 'abo_price': ''
+                        , 'abo_type': ''
+                        , 'adr_type' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=code&%3Agroup=&%3Acolumns=id&%3Acolumns=code&%3Acolumns=description&%3Asearch_text=&%40queryname=&id=&code=&description='
+                        , 'currency': ''
+                        , 'invoice' : ''
+                        , 'invoice_template' : ''
+                        , 'template' : ''
+                        , 'valid': ''
                         }
  ">
  <head>
@@ -69,27 +77,24 @@
 <form name="menubar">
   <table bgcolor="#eeeeee" tal:condition="is_user">
    <tr>
-
-<!-- queries
-%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=title&%3Acolumns=responsible&responsible=5&status=&meeting=&nosy=&id=&title=&deadline=&%3Asearch_text=&%40queryname=mexx+items
--->
     <td tal:condition="python:1" class="sidebar" nowrap>
-     <span class="classblock">
-      <select name="query">
-       <option value="query?@template=edit">Abfragen</option>
-       <tal:block tal:repeat="klassname python:['abo','address']">
-        <tal:block tal:define="name python:utils.pretty (klassname)">
-         <tal:block metal:use-macro="templates/page/macros/query_list"/>
+      <span class="classblock">
+       <select name="query">
+        <option value="query?@template=edit">Abfragen</option>
+        <tal:block tal:repeat="klassname python:['abo','address']">
+         <tal:block tal:define="name python:utils.pretty (klassname)">
+          <tal:block metal:use-macro="templates/page/macros/query_list"/>
+         </tal:block>
         </tal:block>
-       </tal:block>
-      </select>
-      <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-     </span>
+       </select>
+       <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
+      </span>
     </td>
+    <td class="sidebar">
 
-<!-- custom classes with "New" Button -->
-        <tal:block tal:repeat="c python:['abo','address']">
-        <td class="sidebar" tal:condition="python:request.user.hasPermission('View', c)">
+     <!-- custom classes with "New" Button -->
+     <tal:block tal:repeat="c python:['abo','address']">
+        <tal:block tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
                                    request.user.hasPermission('Edit', c)"
@@ -102,20 +107,52 @@
              <a tal:attributes="href string:${c}?:template=item">Neu</a>
           </span>
          </span>
-        </td>
         </tal:block>
-<!-- custom classes -->
-        <tal:block
-         tal:repeat="c python:
-          ['abo_type','currency','abo_price','adr_type','valid']">
-        <td class="sidebar" tal:condition="python:request.user.hasPermission('View', c)">
+     </tal:block>
+
+     <!-- other custom classes -->
+     <tal:block tal:repeat="c python:['adr_type','invoice']">
+        <tal:block tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
                                    request.user.hasPermission('Edit', c)"
-             tal:attributes="href string:${c}?:template=item"
+             tal:attributes="href python:'%s?%s' % (c, default_query [c])"
              tal:content="python:utils.pretty (c)">xyzzy</a>
          </span>
-        </td>
+        </tal:block>
+     </tal:block>
+
+     <!-- username -> link to own profile -->
+     <span class="classblock">
+      <a tal:attributes="href string:user${request/user/id}"
+         tal:content="string:${request/user/username}"></a>
+     </span>
+
+<!-- logout -->
+     <span class="classblock">
+      <a tal:attributes="href python:request.indexargs_href('',
+          {'@action':'logout'})">Logout</a>
+     </span>
+    </td>
+   </tr>
+   <tr>
+     <!-- <td class="sidebar"></td> -->
+
+     <!-- custom classes -->
+     <td class="sidebar" colspan="2">
+        <tal:block tal:repeat="c python:
+          ['abo_type','currency','abo_price'
+          ,'valid','invoice_template','template'
+          ]">
+         <tal:block
+          tal:condition="python:request.user.hasPermission('View', c)">
+          <span class="classblock">
+           <a tal:condition="python:request.user.hasPermission('View', c) or
+                                    request.user.hasPermission('Edit', c)"
+              tal:attributes="href python:'%s?%s' % (c, default_query [c])"
+              tal:content="python:utils.pretty (c)">xyzzy</a>
+          </span>
+         </tal:block>
         </tal:block>
 
 
@@ -125,7 +162,6 @@
 -->
 
 <!-- user list -->
-       <td class="sidebar">
         <span class="classblock">
          <a tal:condition="python:request.user.hasPermission('View', 'user')
                                   or request.user.hasPermission('Edit', 'user')"
@@ -135,23 +171,6 @@
          >
              / <a href="user?:template=item">Neu</a></span>
          </span>
-       </td>
-
-<!-- username -> link to own profile -->
-    <td class="sidebar">
-     <span class="classblock">
-      <a tal:attributes="href string:user${request/user/id}"
-         tal:content="string:${request/user/username}"></a>
-     </span>
-    </td>
-
-<!-- logout -->
-    <td class="sidebar">
-     <span class="classblock">
-      <a tal:attributes="href python:request.indexargs_href('',
-          {'@action':'logout'})">Logout</a>
-     </span>
-    </td>
    </tr>
   </table>
 </form>
