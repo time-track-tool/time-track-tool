@@ -7,14 +7,13 @@
     ( ('Id'           , 'id'           , ''                  , ''        , 'V')
     , ('Title'        , 'title'        , ''                  , ''        , 'T')
     , ('Responsible'  , 'responsible'  , 'user'              , 'username', 'L')
-    , ('Status'       , 'status'       , 'milestone'         , 'name'    , 'L')
+    , ('Status'       , 'status'       , ''                  , ''        , 'T')
     , ('Features'     , 'features'     , 'feature'           , 'title'   , 'M')
     , ('Planned Fixes', 'planned_fixes', 'defect'            , 'title'   , 'M')
     , ('Bugs'         , 'bugs'         , 'defect'            , 'title'   , 'M')
     , ('Nosy List'    , 'nosy'         , 'user'              , 'username', 'M')
     );
                         multi python:( 'responsible'
-                                     , 'status'
                                      , 'features'
                                      , 'nosy'
                                      )"

@@ -641,17 +641,19 @@
         <input type="submit"
                value="Update view"
                onClick="document.forms ['query'].elements ['@queryname'].value = '';
-                        document.forms ['query'].elements ['queryid'].value = ''">
+                        document.forms ['query'].elements ['new_query'].value = '';
+                        document.forms ['query'].elements ['queryid'].value = '';">
        </td>
       </tr>
-      <tr tal:define="queryid request/form/queryid/value | nothing;
-                      u_q     python:[q.id for q in request.user.queries];
-                      bla     python:u_q.sort(lambda l, r:cmp(int(l), int(r)))">
+      <tr tal:define="queryid   request/form/queryid/value | nothing;
+                      new_query request/form/new_query/value | nothing;
+                      u_q       python:[q.id for q in request.user.queries];
+                      bla       python:u_q.sort(lambda l, r:cmp(int(l), int(r)))">
       <th style="text-align:right;">This query's name:</th>
-       <td tal:define="queryid python:request.form.has_key('new_query') and u_q.pop() or queryid">
+       <td tal:define="queryid python:new_query and u_q.pop() or queryid">
+        <input type="hidden" name="queryid" tal:attributes="value queryid | nothing">
         <span tal:condition="queryid">
          <span tal:condition="python:queryid in request.user.queries">
-          <input type="hidden" name="queryid" tal:attributes="value queryid">
           <input type="hidden" name="@queryname">
           <input type="text"
                 name="_queryname"
@@ -662,28 +664,22 @@
                           document.forms ['query'].elements ['_queryname'].value;">(If you change the name, you create a new query!!!)
          </span>
          <span tal:condition="python:queryid not in request.user.queries">
-          this query is not from me, just do as it would not exist
           <input type="text"
-                 name="@queryname">
-          <input type="hidden" name="new_query" value="1">
+                 name="@queryname"
+                 onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
+          <input type="hidden" name="new_query" value="">
           <input type="submit"
                  value="Update view & store this query as new">
          </span>
         </span>
         <span tal:condition="not:queryid">
          <input type="text"
-                name="@queryname">
-         <input type="hidden" name="new_query" value="1">
+                name="@queryname"
+                onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
+         <input type="hidden" name="new_query" value="">
          <input type="submit"
                 value="Update view & store this query as new">
         </span>
-<!--
-         <b>Delete this query</b>
-         <input type="checkbox"
-                tal:attributes="name string:${request/user/designator}@remove@queries;
-                                value request/form/queryid/value;">
--->
-
        </td>
       </tr>
      </table>
@@ -692,78 +688,3 @@
   </table>
 </form>
 </tal:block>
-
-<!-- begin not used stuff from above -->
-<!-- END -->
-
-
-<!--
-The following macros are intended to be used in search pages.
-
-The invoking context must define a "name" variable which names the
-property being searched.
-
-See issue.search.html in the classic template for examples.
--->
-<td metal:define-macro="search_input">
-  <input tal:attributes="value python:request.form.getvalue(name) or nothing;
-                         name name">
-</td>
-
-<td metal:define-macro="search_popup">
-  <!--
-    context needs to specify the popup "columns" as a comma-separated
-    string (eg. "id,title" or "id,name,description") as well as name
-  -->
-  <input tal:attributes="value python:request.form.getvalue(name) or nothing;
-                         name name">
-  <span tal:replace="structure python:db.issue.classhelp(columns,
-                                      property=name)" />
-</td>
-
-<td metal:define-macro="search_select">
-  <select tal:attributes="name name"
-          tal:define="value python:request.form.getvalue(name)">
-    <option value="">don't care</option>
-    <tal:block metal:define-slot="extra_options"></tal:block>
-    <option value="">------------</option>
-    <option tal:repeat="s python:db[db_klass].list()"
-            tal:attributes="value s/id; selected python:value == s.id"
-            tal:content="python:s[db_content]"></option>
-  </select>
-</td>
-
-<td metal:define-macro="search_checkboxes">
- <ul class="search-checkboxes"
-     tal:define="value python:request.form.getvalue(name)">
- <li tal:repeat="s python:db[db_klass].list()">
-  <input type="checkbox" tal:attributes="name name; id string:name-${s/id};
-    value s/id; checked python:value == s.id" />
-  <label tal:attributes="for string:$name-${s/id}" tal:content="s/name" />
- </li>
- <li metal:define-slot="no_value_item">
-  <input type="checkbox" value="-1" tal:attributes="name name;
-     id string:$name--1; checked python:value == '-1'" />
-  <label tal:attributes="for string:$name--1">no value</label>
- </li>
- </ul>
-</td>
-
-<td metal:define-macro="column_input">
-  <input type="checkbox" name="@columns"
-         tal:attributes="value name;
-                         checked python:name in cols">
-</td>
-
-<td metal:define-macro="sort_input">
-  <input type="radio" name="@sort"
-         tal:attributes="value name;
-                         checked python:name == sort_on">
-</td>
-
-<td metal:define-macro="group_input">
-  <input type="radio" name="@group"
-         tal:attributes="value name;
-                         checked python:name == group_on">
-</td>
-<!-- SHA: 9defd15b86478f539e44f06b9548340e239d7320 -->

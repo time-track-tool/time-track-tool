@@ -27,6 +27,7 @@
 #     4-Nov-2004 (MPH) Effort: `Interval` -> `Number`
 #     8-Nov-2004 (MPH) Cleanup, removed `accepted-but-defects` from `document_status`
 #     9-Nov-2004 (MPH) Added `completed-but-defects` to `feature_status`
+#    16-Nov-2004 (MPH) Added `May Public Queries` permission to `query`
 #    ««revision-date»»···
 #--
 #
@@ -515,6 +516,11 @@ def open (name = None):
     # add permission "May Change Status" to role "CCB" and "Admin"
     p = db.security.addPermission (name="May Change Status", klass="defect")
     db.security.addPermissionToRole("CCB", p)
+    db.security.addPermissionToRole("Admin", p)
+
+    # add permission "May Public Queries" to role "Releasemanager and "Admin"
+    p = db.security.addPermission (name="May Public Queries", klass="query")
+    db.security.addPermissionToRole("Releasemanager", p)
     db.security.addPermissionToRole("Admin", p)
 
     # Add special permission for receiving nosy msgs. In this way we may

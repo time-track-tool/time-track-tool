@@ -38,11 +38,11 @@ def audit_user_fields(db, cl, nodeid, new_values):
                 raise ValueError, 'Role "%s" does not exist'%rolename
 
     # automatic setting of realname
-    if new_values.has_key ("firstname") \
-        or new_values.has_key ("lastname") \
+    if (new_values.has_key ("firstname") \
+        or new_values.has_key ("lastname")) \
         and nodeid :
         fn = new_values.get ("firstname", cl.get (nodeid, "firstname"))
-        ln = new_values.get ("lastname" , cl.get (nodeid, "lastname"))
+        ln = new_values.get ("lastname" , cl.get (nodeid, "lastname" ))
         realname = " ".join ((fn, ln))
         new_values ["realname"] = realname
 # end def audit_user_fields
