@@ -26,6 +26,37 @@ import time
 
 CUTOFF = re.compile ("(.*?)(\s+\S+)$")
 
+prettyfields = \
+{ 'abos'         : 'Abos'
+, 'aboprice'     : 'Abo Preis'
+, 'abotype'      : 'Abotyp'
+, 'amount'       : 'Betrag'
+, 'begin'        : 'Beginn'
+, 'city'         : 'Ort'
+, 'country'      : 'Land'
+, 'countrycode'  : 'Ländercode'
+, 'currency'     : 'Währung'
+, 'description'  : 'Beschreibung'
+, 'email'        : 'Email'
+, 'end'          : 'Storniert per'
+, 'fax'          : 'Fax'
+, 'firstname'    : 'Vorname'
+, 'function'     : 'Funktion'
+, 'lastname'     : 'Nachname'
+, 'messages'     : 'Nachrichten'
+, 'name'         : 'Name'
+, 'payed_abos'   : 'Zahler für'
+, 'payer'        : 'Zahler'
+, 'phone_home'   : 'Telefon privat'
+, 'phone_mobile' : 'Telefon mobil'
+, 'phone_office' : 'Telefon Geschäft'
+, 'postalcode'   : 'PLZ'
+, 'salutation'   : 'Anrede'
+, 'street'       : 'Strasse'
+, 'subscriber'   : 'Abonnent'
+, 'title'        : 'Titel'
+}
+
 def _splitline (line, width) :
     line = line.rstrip ()
     if len (line) <= width:
@@ -47,6 +78,12 @@ def _splitline (line, width) :
             else:
                 return line + "\n" + _splitline (rem.strip (), width)
 
+def propsort (p1, p2) :
+    return cmp \
+        ( prettyfields.get (p1._name, p1._name)
+        , prettyfields.get (p2._name, p2._name)
+        )
+
 class Client(client.Client):
     ''' derives basic CGI implementation from the standard module,
         with any specific extensions
@@ -57,6 +94,14 @@ class TemplatingUtils:
     ''' Methods implemented on this class will be available to HTML templates
         through the 'utils' variable.
     '''
+
+    def sorted_properties (self, db, context) :
+        props = db [context._classname].properties ()
+        props.sort (propsort)
+        return props
+
+    def prettyname (self, name) :
+        return (prettyfields.get (name, name))
 
     def soft_wrap (self, str, width=80) :
         """just insert \n's after max 'length' characters
@@ -148,4 +193,4 @@ class MailGW(mailgw.MailGW):
     pass
 
 # vim: set filetype=python ts=4 sw=4 et si
-#SHA: 231e956e0e973fbc52fc70761328664493fb68a9
+#SHA: 183bd4a0b161f472a3e09e596c887f4ef254805c

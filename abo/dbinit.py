@@ -47,7 +47,7 @@ def open(name=None):
         ( db, "abo"
         , begin               = Date      ()
         , end                 = Date      ()
-        , type                = Link      ('abo_price')
+        , aboprice            = Link      ('abo_price')
         , payer               = Link      ('address')
         , subscriber          = Link      ('address')
         , amount              = Number    ()
@@ -69,7 +69,7 @@ def open(name=None):
 
     abo_price = Class \
         ( db, "abo_price"
-        , type                = Link      ('abo_type')
+        , abotype             = Link      ('abo_type')
         , currency            = Link      ('currency')
         , amount              = Number    ()
         )
@@ -95,6 +95,7 @@ def open(name=None):
         # other framework parts in rup
         , queries             = Multilink ('query')
         , roles               = String    ()
+        , timezone            = String    ()
         # optional
         , nickname            = String    ()
         )
@@ -135,9 +136,6 @@ def open(name=None):
         , email               = String    ()
         , abos                = Multilink ("abo")
         , payed_abos          = Multilink ("abo")
-        , street              = String    ()
-        , street              = String    ()
-        , street              = String    ()
         )
 
     #
@@ -183,8 +181,7 @@ def open(name=None):
     # - Allow anonymous users access to the "issue" class of data
     #   Note: this also grants access to related information like files,
     #         messages, statuses etc that are linked to issues
-    for cl in ( 'user'
-              ) :
+    for cl in ('user',) :
         p = db.security.getPermission('View', cl)
         db.security.addPermissionToRole('Anonymous', p)
     # Dont
@@ -237,3 +234,4 @@ def init(adminpw):
 
 # vim: set filetype=python ts=4 sw=4 et si
 
+#SHA: 3214e7d7760b31bdabc7afcb6a4a088e334ef782
