@@ -203,13 +203,12 @@
        <tr>
         <th>Resp.</th>
         <td>
-         <select name="task-1@responsible">
-          <option selected="selected" value="-1">- select responsible of task to add -</option>
-          <option tal:repeat="u db/user/list"
-                  tal:attributes="value u/id"
-                  tal:content="u/username">
-          </option>
-         </select>
+         <tal:block tal:define="name      string:task-1@responsible;
+                                form      string:itemSynopsis;
+                                dont_care string:- select responsible of task to add -;
+                                selected  string:0">
+          <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+         </tal:block>
         </td>
        </tr>
       </table>
