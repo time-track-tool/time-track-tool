@@ -242,19 +242,19 @@
    </td>
   </tr>
 
+ </table>
  <p tal:condition="context/id">
   <tal:block tal:content="structure string:Angelegt
    <b>${context/creation}</b> von <b>${context/creator}</b>,">
   </tal:block>
   <tal:block tal:content="structure
-   python:utils.pretty (context.activity.plain())">
+   python:utils.pretty ('changed')">
   </tal:block>
   <tal:block tal:content="structure string:<b>${context/activity}</b>
     von <b>${context/actor}</b>.">
   </tal:block>
  </p>
 
- </table>
 </form>
 
  <table class="form" tal:condition="not:context/id">
@@ -267,28 +267,27 @@
 
  <table class="messages" tal:condition="context/messages">
   <tr>
-   <th colspan="3" class="header"
+   <th colspan="4" class="header"
        tal:content="python:utils.pretty ('messages')">Messages</th>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
   <tr>
    <th><a tal:attributes="href string:msg${msg/id}"
-          tal:content="string:msg${msg/id}"></a></th>
-   <th tal:content="string:Author: ${msg/author}">author</th>
-   <th tal:content="string:Date: ${msg/date}">date</th>
-<!--
+          tal:content="string:msg${msg/id}"></a>
+   </th>
+   <th tal:content="structure python:utils.colonfield (msg,'author')"></th>
+   <th tal:content="structure python:utils.colonfield (msg,'date')"></th>
    <th>
     <form style="padding:0" tal:condition="context/is_edit_ok"
-          tal:attributes="action string:issue${context/id}">
+          tal:attributes="action string:${classname}${context/id}">
      <input type="hidden" name="@remove@messages" tal:attributes="value msg/id">
      <input type="hidden" name="@action" value="edit">
-     <input type="submit" value="remove">
+     <input type="submit" tal:attributes="value python:utils.pretty('remove')">
     </form>
    </th>
--->
   </tr>
   <tr>
-   <td colspan="3" class="content">
+   <td colspan="4" class="content">
     <pre tal:content="structure msg/content/hyperlinked">content</pre>
    </td>
   </tr>
@@ -407,20 +406,10 @@
     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
      <!-- all the properties: label property and id will be made a link -->
      <tal:block tal:repeat="prop props">
-      <tal:block tal:define=
-       "href python:prop[1] == labelprop or prop[1] == 'id'
-       ;lnk  python:len(prop) > 2 and not isinstance (i[prop[1]]._value, list)">
-       <tal:block tal:condition="python:request.show [prop[1]] and not href">
-        <td tal:condition="lnk"
-           tal:content="python:i [prop[1]][prop[3]]"></td>
-        <td tal:condition="not:lnk"
-           tal:content="python:i [prop[1]]"></td>
-       </tal:block>
-       <td tal:condition="python:request.show [prop[1]] and href">
-        <a tal:attributes="href python:classname + i.id"
-           tal:content="python:i [prop[1]]"></a>
-       </td>
-      </tal:block>
+      <td tal:condition="python:request.show [prop[1]]"
+       tal:content="structure python:utils.listingprop
+        (i, prop, labelprop, classname)"
+      ></td>
      </tal:block>
     </tr>
    </tal:block>
@@ -648,4 +637,4 @@ See issue.search.html in the classic template for examples.
          tal:attributes="value name;
                          checked python:name == group_on">
 </td>
-<!-- SHA: 9defd15b86478f539e44f06b9548340e239d7320 -->
+<!-- SHA: 4fe9ab2d13593eecc5c2c6340b34520f6cfee7d6 -->

@@ -86,7 +86,9 @@
       <table border="0" cellspacing="0" cellpadding="0">
        <tr tal:repeat="abo context/abos">
         <td>
-         <a tal:attributes="href string:abo${abo/id}"
+         <a tal:attributes="href string:abo${abo/id}
+                           ;class python:utils.linkclass (abo)
+                           "
             tal:content="abo/aboprice">
          </a>
         </td>
@@ -98,7 +100,9 @@
       <table border="0" cellspacing="0" cellpadding="0">
        <tr tal:repeat="abo context/payed_abos">
         <td>
-         <a tal:attributes="href string:abo${abo/id}"
+         <a tal:attributes="href  string:abo${abo/id}
+                           ;class python:utils.linkclass (abo)
+                           "
             tal:content="abo/aboprice">
          </a>
         </td>

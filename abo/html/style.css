@@ -13,6 +13,15 @@ a[href], a[href]:link {
   color:blue;
   text-decoration: none;
 }
+a[href]:hover { color:blue; text-decoration: underline; }
+a[href]:link  { color:blue; text-decoration: none; }
+a[href]       { color:blue; text-decoration: none; }
+
+a.run[href]:hover               { color:green; text-decoration: underline; }
+a.run[href]:link, a.run[href]   { color:green; text-decoration: none; }
+
+a.canc[href]:hover              { color:blue; text-decoration: underline; }
+a.canc[href]:link, a.canc[href] { color:blue; text-decoration: none; }
 
 table.body {
   border: 0;
@@ -413,3 +422,4 @@ table.otherinfo th {
   font-weight: bold;
   text-align: left;
 }
+/* SHA: 72d7b386f63bf5d10c770646ae6352ede3ca4056 */
