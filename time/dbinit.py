@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2004 TTTech Computertechnik AG. All rights reserved
-# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@undefined.dontknow
+# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@tttech.com
 #
 #++
 # Name
@@ -10,7 +10,8 @@
 #    Specify the DB-Schema for the tttech2 issue tracker.
 #
 # Revision Dates
-#    22-Jun-2004 () Creation
+#    22-Jun-2004 (MPH) Creation
+#     6-Jul-2004 (MPH) Work in progress.
 #    ««revision-date»»···
 #--
 #
@@ -18,11 +19,13 @@ import os
 
 import config
 from   select_db import Database, Class, FileClass, IssueClass
-from   roundup   import hyperdb, password
+from   roundup   import hyperdb, password, roundupdb
 
-class TTT_Issue_Class (Class) :
+class TTT_Issue_Class (Class, roundupdb.IssueClass) :
     """extends the IssueClass with some parameters common to all issues here
     at TTTech.
+    Note: inheritance methodology stolen from roundup/backends/back_anydbm.py's
+          IssueClass ;-)
     """
     def __init__ (self, db, classname, ** properties) :
         if not properties.has_key ("title") :
@@ -95,19 +98,21 @@ def open (name = None):
         )
     work_package_status.setkey ("name")
 
-##     feature_status = Class \
-##         ( db
-##         , "feature_status"
-##         , name                  = String    ()
-##         , order                 = String    ()
-##         , transitions           = Multilink ("feature_status")
-##         )
-##     feature_status.setkey ("name")
+    feature_status = Class \
+        ( db
+        , "feature_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , order                 = String    ()
+        , transitions           = Multilink ("feature_status")
+        )
+    feature_status.setkey ("name")
 
     defect_status = Class \
         ( db
         , "defect_status"
         , name                  = String    ()
+        , description           = String    ()
         , cert                  = Boolean   ()
         , cert_transitions      = Multilink ("defect_status")
         , non_cert_transitions  = Multilink ("defect_status")
@@ -115,23 +120,23 @@ def open (name = None):
         )
     defect_status.setkey ("name")
 
-    design_document_type = Class \
+    action_item_status = Class \
         ( db
-        , "design_document_type"
+        , "action_item_status"
         , name                  = String    ()
         , description           = String    ()
         , order                 = String    ()
         )
-    design_document_type.setkey ("name")
+    action_item_status.setkey ("name")
 
-    planning_document_type = Class \
+    document_type = Class \
         ( db
-        , "planning_document_type"
+        , "document_type"
         , name                  = String    ()
         , description           = String    ()
         , order                 = String    ()
         )
-    planning_document_type.setkey ("name")
+    document_type.setkey ("name")
 
     severity = Class \
         ( db
@@ -148,6 +153,10 @@ def open (name = None):
         , description           = String    ()
         , responsible           = Link      ("user")
         , nosy                  = Multilink ("user")
+        , certifiable           = Boolean   () # needs to be set, to let the
+                                        # "defect report" mechanism allow to
+                                        # mark some defect against a specific
+                                        # product as belonging to "cert".
         # XXX: no "order", gets sorted by "name" automatically.
         )
     product.setkey ("name")
@@ -186,6 +195,11 @@ def open (name = None):
 
     # XXX: needs to get clarified with OIT - regarding the LDAP Tree they are
     #      building up right now ...
+    #      Acc to the meeting from 1.7.04 they have some properties already
+    #      in ldap,  but dont care about a db backend right now, maybe some
+    #      day the ldap info will be created out of roundup.
+    #      RSC: has the current ldap spec, and will investigate further
+    #      properties needed here in roundup
     #
     # Note: roles is a comma-separated string of Role names
     user = Class \
@@ -196,8 +210,8 @@ def open (name = None):
         , password              = Password  ()
         , address               = String    () # email address
         , alternate_addresses   = String    () # other email adresses
-        , firstname             = String    ()
-        , lastname              = String    ()
+        , firstname             = String    () # e.g. alois
+        , lastname              = String    () # e.g. goller
         , phone                 = String    () # shortcut: e.g. 42
         , ext_phone             = String    () # mobile_short: e.g. 6142
         , priv_phone            = String    () # whatever
@@ -216,6 +230,11 @@ def open (name = None):
         , picture               = Link      ("file")
         # XXX: add wiki page url in the web-template based on firstname &
         #      lastname
+        # Note: email adresses could get set automatically by a detector on
+        #       creation of a new user, as its always <nickname>@tttech.com,
+        #       <username>@tttech.com and <firstname>.<lastname>@tttech.com.
+        #       However the "tttech.com" part should be part of the
+        #       "organisation" ???
         )
     user.setkey ("username")
 
@@ -260,33 +279,24 @@ def open (name = None):
     meeting = TTT_Issue_Class \
         ( db
         , "meeting"
-        , name                  = String    ()
-        , responsible           = Link      ("user")
-        , nosy                  = Multilink ("user")
-        , messages              = Multilink ("msg")
+        , files                 = Multilink ("file")
         )
-    meeting.setkey ("name")
 
     action_item = TTT_Issue_Class \
         ( db
         , "action_item"
-        , file                  = Multilink ("file")
+        , files                 = Multilink ("file")
         , meeting               = Link      ("meeting")
+        , status                = Link      ("action_item_status")
+        , deadline              = Date      ()
         )
 
-    design_document = TTT_Issue_Class \
+    document = TTT_Issue_Class \
         ( db
-        , "design_document"
+        , "document"
         , files                 = Multilink ("file")
         , status                = Link      ("work_package_status")
-        , type                  = Link      ("design_document_type")
-        )
-
-    planning_document = TTT_Issue_Class \
-        ( db
-        , "planning_document"
-        , files                 = Multilink ("file")
-        , type                  = Link      ("planning_document_type")
+        , type                  = Link      ("document_type")
         )
 
     ### XXX: "Software" Container is a singleton and was eliminated, instead
@@ -316,7 +326,7 @@ def open (name = None):
         # instaces. the presence of some document types can be checked by an
         # auditor, all documents and their corresponding types are displayed
         # on the web page.
-        , planning_documents    = Multilink ("planning_document")
+        , documents             = Multilink ("document")
         , features              = Multilink ("feature")
         , planned_fixes         = Multilink ("defect")
         , bugs                  = Multilink ("defect")
@@ -333,47 +343,73 @@ def open (name = None):
         ( db
         , "feature"
         , stakeholder           = String    () # some freeform text
-        # XXX: "status" eliminated, as it could be visible in the web-page
-        #      and easily queried by some reporting scripts.
-        #      Another reason was that almost everything is implicitly
-        #      covered by the issues connected to the feature. AGO/RSC/MPH
-        #      would vote for a test_ok flag which will be set by the iv&v
-        #      team - the question here is, should every "work_package" in
-        #      the "testcases" container have such a flag, and the overall
-        #      "feature" "test_ok" be comuted in such a case ??? - this would
-        #      require to have different "work_package"'s for testcases and
-        #      non-testcases ... ???
-        #, status                = Link      ("feature_status")
-        , test_ok               = Boolean   ()
-        # XXX: instead of the following we only have "design_documents" - see
-        #      "release" class for the reason.
-        #, sw_requirements       = Link      ("doc_file")
-        #, sw_design             = Link      ("doc_file")
-        , design_documents      = Multilink ("design_document")
+        # XXX: "status" is simplified to be only one of "raised",
+        #      "suspended", "open" and "completed", all other *.accepted
+        #      states can be computed directly from the status of the
+        #      attached issues.
+        #      There is now a seperate flag "test_ok" which covers the state
+        #      of the testcases, and gets set automatically by a detector
+        #      when the "test_ok" flag of some attached "testcase" changes.
+        #      Changes to the "testcase"s "test_ok" are only allowed by the
+        #      iv&v team, and are set manually at begin and later on this
+        #      should be automatically, based on the success of a given
+        #      testcase (identified by the issue no.).
+        , status                = Link      ("feature_status")
+        , test_ok               = Boolean   () # gets set automatically by a
+                                               # detector depending on the
+                                               # testcases test_ok switch.
+        , documents             = Multilink ("document") # SRD, SDD, etc.
         , implementation_tasks  = Multilink ("work_package")
-        , testcases             = Multilink ("work_package")
-        , product_documentation = Multilink ("work_package")
+        , testcases             = Multilink ("testcase")
+        , documentation_tasks   = Multilink ("work_package")
         , depends               = Multilink ("feature")
         , needs                 = Multilink ("feature")
-        # XXX: do we need this here also ??? - MPH/AGO/RSC: yes
-        #, planned_begin         = Date      () # automatically by import
-        #, planned_end           = Date      () # automatically by import
-        #, actual_begin          = Date      () # automatically by status
-        #, actual_end            = Date      () # change of workpackages
+        , release               = Link      ("release")
+        , planned_begin         = Date      () # automatically by import
+        , planned_end           = Date      () # automatically by import
+        , actual_begin          = Date      () # automatically by status
+        , actual_end            = Date      () # change of workpackages
         )
 
     work_package = TTT_Issue_Class \
         ( db
         , "work_package"
         , status                = Link      ("work_package_status")
-        , effort                = Number    () # days only
+        , effort                = Interval  () # XXX: was: Number, but
+                                               # Interval is better suited
         , depends               = Multilink ("work_package")
         , needs                 = Multilink ("work_package")
         , files                 = Multilink ("file")
+        , feature               = Link      ("feature")
         , planned_begin         = Date      ()
         , planned_end           = Date      ()
         , actual_begin          = Date      ()
         , actual_end            = Date      ()
+        )
+
+    testcase = TTT_Issue_Class \
+        ( db
+        , "testcase"
+        , status                = Link      ("work_package_status")
+        , effort                = Number    () # days only
+        , depends               = Multilink ("work_package")
+        , needs                 = Multilink ("work_package")
+        , files                 = Multilink ("file")
+        , feature               = Link      ("feature")
+        , planned_begin         = Date      ()
+        , planned_end           = Date      ()
+        , actual_begin          = Date      ()
+        , actual_end            = Date      ()
+        , test_ok               = Boolean   () # only difference to the
+                                        # "work_package", but we need it in a
+                                        # seperate class to give permissions,
+                                        # and let the detectors only fire
+                                        # here.
+                                        # This gets set by the iv&v team when
+                                        # the particular test case failed. a
+                                        # detector sets also the "test_ok"
+                                        # field in the feature this testcase
+                                        # belongs to.
         )
 
     defect = TTT_Issue_Class \
@@ -382,13 +418,44 @@ def open (name = None):
         , status                = Link      ("defect_status")
         , superseder            = Link      ("defect")
         , cert                  = Boolean   ()
-        , release               = Link      ("release") # was "part_of"
+        , part_of_release       = Link      ("release") # in which "release"
+                                                        # it gets repaired.
+                                                        # i.e. it is in the
+                                                        # "planned_fixes" of
+                                                        # that release.
+        , found_in_release      = Link      ("release") # where it was
+                                                        # initially found.
+                                                        # "part_of_release"
+                                                        # is initially set to
+                                                        # "found_in_release"
+        , estimated_effort      = Interval  ()
+        , fixed_until           = Date      () # currently optional, but the
+                                        # opinions differ if it is generally
+                                        # good to only say how long does it
+                                        # take, or to give some point in time
+                                        # where it is actually fixed... mph
+                                        # thinks that the estimated_effort is
+                                        # best - and gives some rough
+                                        # estimation on how much time we
+                                        # actually need to add for
+                                        # big-fixing. in tal's opinion it is
+                                        # important to know when it will be
+                                        # ready. but the past showed that
+                                        # "deadlines" in general are a bad
+                                        # idea - as they always point to some
+                                        # point back in time ;)
         , severity              = Link      ("severity")
         , product               = Link      ("product")
         , version               = String    ()
         , fixed_in              = String    ()
         , files_affected        = String    () # XXX only cert ???
         , closed                = Date      ()
+        , closer                = Link      ("user") # if it opens again,
+                                        # than we have a shortcut to who
+                                        # actually closed it last time. as we
+                                        # are also setting the "closed" date
+                                        # for this, we can also set the
+                                        # "closer" here.
         , feature               = Link      ("feature") # if known
         )
 
@@ -448,8 +515,7 @@ def open (name = None):
         , ("milestone"             , ["User"], ["Teamleader"      ])
         , ("work_package_status"   , ["User"], ["Admin"           ])
         , ("defect_status"         , ["User"], ["Admin"           ])
-        , ("design_document_type"  , ["User"], ["Admin"           ])
-        , ("planning_document_type", ["User"], ["Admin"           ])
+        , ("document_type"         , ["User"], ["Admin"           ])
         , ("severity"              , ["User"], ["Admin"           ])
         , ("product"               , ["User"], ["Admin"           ])
         , ("organisation"          , ["User"], ["Admin"           ])
@@ -460,11 +526,12 @@ def open (name = None):
         , ("msg"                   , ["User"], ["User"            ])
         , ("file"                  , ["User"], ["User"            ])
         , ("pdf_file"              , ["User"], ["User"            ])
-        , ("design_document"       , ["User"], ["User"            ])
-        , ("planning_document"     , ["User"], [ "Teamleader"
-                                               , "Releasemanager"
-                                               ]
-          )
+        , ("document"              , ["User"], ["User"            ])
+## XXX: this behaviour has to be checked via tal on the page.
+##         , ("planning_document"     , ["User"], [ "Teamleader"
+##                                                , "Releasemanager"
+##                                                ]
+##           )
         , ("release"               , ["User"], [ "Teamleader"
                                                , "Releasemanager"
                                                ]
@@ -476,6 +543,7 @@ def open (name = None):
         , ("work_package"          , ["User"], [ "User"           ])
         , ("defect"                , ["User"], [ "User"           ])
         , ("meeting"               , ["User"], [ "Admin"          ])
+        , ("action_item"           , ["User"], [ "User"           ])
         ]
 
     roles = \
@@ -484,6 +552,7 @@ def open (name = None):
         , ("CCB"           , "Member of Change Control Board")
         , ("Office"        , "Member of Office"              )
         , ("Releasemanager", "Allowed to manage a SW Release")
+        , ("IV&V"          , "Member of the IV&V Team."      )
         ]
 
     for name, desc in roles :
@@ -500,8 +569,7 @@ def open (name = None):
     # Add special permission for receiving nosy msgs. In this way we may
     # spare in-house people from receiving notifications from roundup,
     # more importantly we can add external listeners for nosy messages.
-    nosy_classes = [ "design_document"
-                   , "planning_document"
+    nosy_classes = [ "document"
                    , "release"
                    , "feature"
                    , "work_package"
@@ -582,10 +650,12 @@ def init(adminpw):
     db.clear  ()
 
     # init values
+    # room
     room = db.getclass ("room")
     room.create        (name = "SW Dept.")
     # add rooms here
 
+    # work_package_status
     # order, name
     wps = [ ("1", "issued")
           , ("2", "started")
@@ -598,19 +668,47 @@ def init(adminpw):
     for order, name in wps :
         work_package_status.create (name = name, order = order)
 
-    # order, name, desc
-    dts = [ ("1", "Eval Sheet"                   , "XXX: define it")
-          , ("2", "Configuration Management Plan", "XXX: define it")
-          , ("3", "Highlevel Test Plan"          , "XXX: define it")
+    # feature_status
+    # order, name, transitions, description
+    fss = [ ("1", "raised"   , ("suspended", "open", "rejected")
+            , "We should start working on it.")
+          , ("2", "open"     , ("suspended", "completed")
+            , "We are currently working on it.")
+          , ("3", "completed", ()
+            , "It is completed.")
+          , ("4", "rejected" , ("raised", )
+            , "We wont do it.")
+          , ("5", "suspended", ("raised", )
+            , "We will do it later.")
           ]
-    doc_type = db.getclass ("planning_document_type")
-    for order, name, desc in dts :
-        doc_type.create (name = name, description = desc, order = order)
+    feature_status = db.getclass ("feature_status")
+    for order, name, trans, desc in fss :
+        feature_status.create (name = name, order = order, description = desc)
 
-    dts = [ ("1", "SRD", "Software Requirements Document")
-          , ("2", "SDD", "Software Design Document")
+    for order, name, trans, desc in fss :
+        if trans :
+            id = feature_status.lookup (name)
+            trans_ids = [feature_status.lookup (t) for t in trans]
+            feature_status.set (id, transitions = trans_ids)
+
+    # action_item_status
+    # order, name, description
+    ais = [ ("1", "open"  , "The Action-Item is open"  )
+          , ("2", "closed", "The Action-Item is closed")
           ]
-    doc_type = db.getclass ("design_document_type")
+    ai = db.getclass ("action_item_status")
+    for order, name, desc in ais :
+        ai.create (name = name, description = desc, order = order)
+
+    # document_type
+    # order, name, description
+    dts = [ ("1", "ES" , "Evaluation Sheet"             )
+          , ("2", "CMP", "Configuration Management Plan")
+          , ("3", "HTP", "High-Level Test Plan"         )
+          , ("4", "SRD", "Software Requirements Document")
+          , ("5", "SDD", "Software Design Document")
+          ]
+    doc_type = db.getclass ("document_type")
     for order, name, desc in dts :
         doc_type.create (name = name, description = desc, order = order)
 
@@ -748,15 +846,15 @@ def init(adminpw):
                        )
 
     # meetings
-    # name, responsible, nosy
+    # title, responsible, nosy
     meetings = \
         [ ("Tools-Meeting", "admin", ["priesch", ])
         , ("SAFT-Meeting",  "pr"   , ["priesch", ])
         # XXX: add other meetings
         ]
     meeting = db.getclass ("meeting")
-    for name, resp, nosy in meetings :
-        meeting.create (name = name, responsible = resp,  nosy = nosy)
+    for title, resp, nosy in meetings :
+        meeting.create (title = title, responsible = resp,  nosy = nosy)
 
     # add any additional database create steps here - but only if you
     # haven't initialised the database with the admin "initialise" command
