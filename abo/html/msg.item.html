@@ -2,33 +2,36 @@
 <title metal:fill-slot="head_title"> 
 <span tal:condition="context/id" tal:replace="string:${Classname}:
 ${context/id} angelegt von ${context/creator}" />
-<tal:x tal:condition="not:context/id">New Message</tal:x> 
+<tal:x tal:condition="not:context/id">Neue Notiz</tal:x> 
 </title> 
-<span metal:fill-slot="body_title" tal:omit-tag="python:1">
-  Message<span tal:replace="context/id" />
-   <tal:x tal:condition="context/is_edit_ok">Editing</tal:x>
- </span>
+<span metal:fill-slot="body_title" tal:omit-tag="python:1"
+      tal:content="python:utils.pretty (context._classname)"></span>
+
 <td class="content" metal:fill-slot="content">
 <table class="form">
 
 <tr>
- <th>Author</th>
+ <th tal:content="structure python:utils.fieldname ('author')"></th>
  <td tal:content="context/author"></td>
 </tr>
 
 <tr>
- <th>Recipients</th>
+ <th tal:content="structure python:utils.fieldname ('recipients')"></th>
  <td tal:content="context/recipients"></td>
 </tr>
 
 <tr>
- <th>Date</th>
+ <th tal:content="structure python:utils.fieldname ('date')"></th>
  <td tal:content="context/date"></td>
 </tr>
 </table>
 
 <table class="messages">
- <tr><th colspan=2 class="header">Content</th></tr>
+ <tr>
+  <th colspan=2 class="header"
+   tal:content="structure python:utils.fieldname ('content')">
+  </th>
+ </tr>
  <tr>
   <td class="content" colspan=2><pre tal:content="structure context/content/hyperlinked"></pre></td>
  </tr>
