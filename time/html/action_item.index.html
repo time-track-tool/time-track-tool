@@ -5,11 +5,16 @@
  <tal:block tal:define="batch request/batch;
                         props python:( ('Id'         , 'id')
                                      , ('Title'      , 'title')
-                                     , ('Responsible', 'responsible')
-                                     , ('Status'     , 'status')
-                                     , ('Meeting'    , 'meeting')
+                                     , ('Responsible', 'responsible', 'user', 'username')
+                                     , ('Status'     , 'status', 'action_item_status', 'name')
+                                     , ('Meeting'    , 'meeting', 'meeting', 'title')
                                      , ('Deadline'   , 'deadline')
-                                     , ('Nosy List'  , 'nosy')
+                                     , ('Nosy List'  , 'nosy', 'user', 'username')
+                                     );
+                        multi python:( 'responsible'
+                                     , 'status'
+                                     , 'meeting'
+                                     , 'nosy'
                                      )"
             tal:condition="context/is_view_ok">
 

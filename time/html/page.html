@@ -65,14 +65,16 @@
      <span class="classblock">
       <select name="create_new"
               onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value + '?@template=item'; ">
-       <option>Create New</option>
+       <option>-- Create New --</option>
        <option value="action_item">Action Item</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'defect')"
-               value="defect">Defect</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'feature')"
-               value="feature">Feature</option>
+       <option tal:condition="python:request.user.hasPermission('Edit', 'meeting')"
+               value="meeting">Meeting</option>
        <option tal:condition="python:request.user.hasPermission('Edit', 'release')"
                value="release">Release</option>
+       <option tal:condition="python:request.user.hasPermission('Edit', 'feature')"
+               value="feature">Feature</option>
+       <option tal:condition="python:request.user.hasPermission('Edit', 'defect')"
+               value="defect">Defect</option>
        <option tal:condition="python:request.user.hasPermission('Edit', 'user')"
                value="user">User</option>
       </select>
@@ -82,42 +84,40 @@
      </span>
     </td>
 
-<!-- queries -->
+<!-- queries
+%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=title&%3Acolumns=responsible&responsible=5&status=&meeting=&nosy=&id=&title=&deadline=&%3Asearch_text=&%40queryname=mexx+items
+-->
     <td class="sidebar" nowrap>
-     <span class="classblock">
+     <span class="classblock"
+           tal:define="default_query string:@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=id&:columns=title&:columns=responsible&responsible=&id=&title=&:search_text=&@queryname=">
       <select name="query"
               onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-       <option>View / Query</option>
-       <option value="action_item">Action Item</option>
-       <option value="action_item?@template=index">&nbsp; &nbsp; My Items</option>
-       <option value="">&nbsp; &nbsp; TAL's items</option>
-       <option value="">Release</option>
-       <option value="">&nbsp; &nbsp; Open Releases</option>
-       <option value="">&nbsp; &nbsp; Closed Releases</option>
-       <option value="">Feature</option>
-       <option value="">&nbsp; &nbsp; Future Features</option>
-       <option value="">&nbsp; &nbsp; R7.0 Features</option>
-       <option value="">&nbsp; &nbsp; My Features</option>
-       <option value="">Work Packages</option>
-       <option value="">&nbsp; &nbsp; My Work</option>
-       <option value="">&nbsp; &nbsp; R7.0 Work</option>
-       <option value="">Test Case</option>
-       <option value="">&nbsp; &nbsp; My Test Cases</option>
-       <option value="">&nbsp; &nbsp; R7.0 Test Cases</option>
-       <option value="">Defect</option>
-       <option value="">&nbsp; &nbsp; Known Defects</option>
-       <option value="">&nbsp; &nbsp; My Defects</option>
-       <option value="">&nbsp; &nbsp; R7.0 Defects</option>
-<!--
-       <option tal:condition="python:(str(request.user.queries).find (uname+'_My Issues') < 0)"
-               tal:attributes="value string:issue?:columns=id,category,title,status,deadline,priority&:sort=-deadline&:group=-priority&:filter=status,kind,responsible&status=3,2,1,5,4&kind=1,2,4,3&responsible=${uname}&:pagesize=10&:startwith=0&queryname=${uname}_My Issues
-                              ">My Issues</option>
-       <tal:block tal:repeat="qs request/user/queries">
-        <option tal:attributes="value string:${qs/klass}?${qs/url}&queryname=${qs/name};
-                                selected python:qname == qs.name.plain()[len(uname)+1:]"
-                tal:content="python:str(qs.name)[len(uname)+1:]"></option>
+       <option>-- View / Query --</option>
+       <option value="query?@template=edit">Manage Queries</option>
+       <tal:block tal:define="name string:Action Items;
+                              klass string:action_item">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
--->
+       <tal:block tal:define="name string:Releases;
+                              klass string:release">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Features;
+                              klass string:feature">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Work Packages;
+                              klass string:work_package">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Test Cases;
+                              klass string:testcase">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Defects;
+                              klass string:defect">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
       </select>
 <!--
       <input type="button" value="Go" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['selected_query'].options[document.forms['menubar'].elements['selected_query'].options.selectedIndex].value; ">
@@ -184,6 +184,23 @@
 </html>
 </tal:block>
 
+<!-- list of queries - needs 'klass' and 'name' and 'default_query' defined -->
+<tal:block metal:define-macro="query_list">
+       <option tal:attributes="value string:${klass}?${default_query}"
+               tal:content="name"></option>
+       <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klass})"
+               tal:repeat="q queries"
+               tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+               tal:content="structure string:&nbsp;&nbsp;${q/name}"
+               >&nbsp; &nbsp; Global Queries</option>
+       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klass})"
+               tal:repeat="q queries"
+               tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+               tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
+               >&nbsp; &nbsp; My Queries</option>
+</tal:block>
+
+
 <!-- the following macro is used for all pages which display a
      TTT_Issue_Class item. -->
 
@@ -201,10 +218,6 @@
  <input type="hidden" name="@template" value="item">
  <input type="hidden" name="@required" value="title">
 
- <p tal:condition="context/id" tal:content="structure string:Created on
-   <b>${context/creation}</b> by <b>${context/creator}</b>, last
-   changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
-
  <table class="form">
   <tr>
    <th class="required">Title</th>
@@ -213,7 +226,7 @@
   </tr>
 
   <tr>
-   <th class="required">Responsible</th>
+   <th>Responsible</th>
    <td colspan="3"
        tal:content="structure context/responsible/menu"></td>
   </tr>
@@ -246,9 +259,14 @@
    <th></th>
    <td colspan="3">
     <tal:block tal:replace="structure context/submit"/>
-    <input type="button" value="Show History">
+    <input type="button" value="Show History"
+           tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
    </td>
   </tr>
+
+ <p tal:condition="context/id" tal:content="structure string:Created on
+   <b>${context/creation}</b> by <b>${context/creator}</b>, last
+   changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
 
  </table>
 </form>
@@ -316,6 +334,31 @@
  <input type="file" name="@file" size="40">
 </tal:block>
 
+<tal:block metal:define-macro="ttt_issue_pdf_files">
+ <!-- list of files -->
+ <table class="files" tal:condition="context/files">
+  <tr>
+   <th>File name</th>
+   <th>Uploaded</th>
+   <th>Type</th>
+  </tr>
+  <tr tal:repeat="file context/files">
+   <td>
+    <a tal:attributes="href file/download_url"
+       tal:content="file/name">dld link</a>
+   </td>
+   <td>
+    <span tal:content="file/creator">creator's name</span>,
+    <span tal:content="file/creation">creation date</span>
+   </td>
+   <td tal:content="file/type" />
+  </tr>
+ </table>
+ <!-- add new file -->
+ <input type="file" name="pdf_file-1@content" size="40">
+ <input type="hidden" name="@link@files" value="pdf_file-1">
+</tal:block>
+
 
 <!-- the following is used to have those nifty index/search form on one page -->
 <!-- the caller needs to define a list of tuples for the properties: -->
@@ -368,10 +411,10 @@
   <table border="0" bgcolor="#e0c0c0">
    <tr>
     <th bgcolor="#C08080">
-     <tal:block metal:define-slot="query_title">Current Query Specification
-     </tal:block>:
+     <tal:block metal:define-slot="query_title">Current Query Specification</tal:block>:
     </th>
    </tr>
+
    <tr>
     <td>
      View
@@ -406,41 +449,92 @@
     </td>
    </tr>
 
-
    <tr>
-    <th style="text-align:center;">View:</th>
-   </tr>
-   <tr>
-    <!-- View -->
     <td>
-     <select multiple name=":columns" size="7">
-      <option tal:repeat="prop props"
-              tal:attributes="selected python:request.show[prop[1]];
-                              value    python:prop[1]"
-              tal:content="python:prop[0]"></option>
-     </select>
+     <table border="0" bgcolor="#e0c0c0">
+      <!-- fill in custom query data -->
+      <!-- fill in multi selection boxes -->
+      <tr>
+       <th style="text-align:center;">View:</th>
+   <tal:block tal:repeat="prop props">
+       <th tal:condition="python:prop[1] in multi"
+           tal:content="python:prop[0]+':'"></th>
+   </tal:block>
+      </tr>
+
+      <tr>
+       <!-- View -->
+       <td style="text-align:center;">
+        <select multiple name=":columns" size="7">
+         <option tal:repeat="prop props"
+                 tal:attributes="selected python:request.show[prop[1]];
+                                 value    python:prop[1]"
+                 tal:content="python:prop[0]"></option>
+        </select>
+       </td>
+   <tal:block tal:repeat="prop props">
+       <td style="text-align:center;"
+           tal:condition="python:prop[1] in multi">
+        <select multiple
+                size="7"
+                tal:attributes="name python:prop[1]"
+                tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
+         <option value=""
+                 tal:attributes="selected not:form_vals">don't care</option>
+         <option tal:repeat="s python:db[prop[2]].list()"
+                 tal:attributes="value    s/id;
+                                 selected python:s.id in form_vals"
+                 tal:content="python:s[prop[3]]"></option>
+        </select>
+       </td>
+   </tal:block>
+      </tr>
+     </table>
     </td>
    </tr>
 
    <tr>
     <td>
+     <table border="0" bgcolor="#e0c0c0">
+      <!-- fill in text entry fields -->
+   <tal:block tal:repeat="prop props">
+      <tr tal:condition="python:prop[1] not in multi">
+       <th style="text-align:right;"
+           tal:content="python:prop[0]+':'"></th>
+       <td tal:condition="python:prop[1] not in multi">
+        <input type="text"
+               size="40"
+               tal:attributes="value python:request.form.getvalue(prop[1]) or nothing;
+                               name  python:prop[1]">
+       </td>
+      </tr>
+   </tal:block>
+     </table>
+    </td>
+   </tr>
+
+
+   <tr>
+    <td>
      <table border="0" class="form">
       <tr>
-       <th>Full Text:</th>
+       <th>Search full text:</th>
        <td colspan="5"><input name=":search_text"
                               onChange="this.form.elements[':startwith'].value='0'"
                               tal:attributes="value request/form/:search_text/value | nothing">
-       </td>
+       (Searches also in messages)</td>
       </tr>
 <!-- submit button -->
       <tr>
-       <th>Name:</th>
+       <th>Store this query as:</th>
        <td>
         <input type="text"
                name="@queryname"
                tal:attributes="value request/form/@queryname/value | default">
         <input type="submit"
                value="Update View / Store">
+        <a tal:condition="request/form/queryid/value | nothing"
+           tal:attributes="href string:query${request/form/queryid/value}">Edit this query</a>
        </td>
       </tr>
      </table>

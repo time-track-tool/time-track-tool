@@ -1,0 +1,120 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+
+ <title metal:fill-slot="head_title">
+  <span tal:condition="context/id"
+        tal:replace="string:Feature: ${context/id} by ${context/creator}"></span>
+  <span tal:condition="not:context/id"
+        tal:replace="string:Create New Feature"></span>
+ </title>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+   <tal:block metal:fill-slot="ttt_issue_content">
+    <tr tal:condition="context/id">
+     <th>Status</th>
+     <td>
+      <select name="status"
+              tal:define="ok context/status/transitions">
+       <option tal:attributes="value context/status/id"
+               tal:content="context/status/name"></option>
+       <tal:block tal:repeat="state db/feature_status/list">
+       <option tal:condition="python:state.id in ok"
+               tal:attributes="
+                   value state/id;
+                selected python:state.id == context.status.id"
+               tal:content="state/name">
+       </option>
+       </tal:block>
+      </select>
+     </td>
+    </tr>
+    <tr>
+     <th>Stakeholder</th>
+     <td colspan="3">
+      <textarea tal:content="context/stakeholder/plain"
+                name="stakeholder"
+                wrap="hard"
+                rows="3"
+                cols="80"></textarea>
+     </td>
+    </tr>
+
+    <tr>
+     <th>Depends on</th>
+     <td>
+      <span tal:content="structure context/depends/field"/>
+      <span tal:replace="structure python:db.feature.classhelp
+                                             ( 'id,title,responsible'
+                                             , property='depends'
+                                             , width='600')" /><br>
+      <tal:block tal:repeat="f context/depends">
+       <a tal:attributes="href f/designator;
+                          class string:feature_${f/status/plain}"
+          tal:content="string:${f/title}"
+       ></a><br>
+      </tal:block>
+     </td>
+     <th>Needs</th>
+     <td>
+      <span tal:content="structure context/needs/field"/>
+      <span tal:replace="structure python:db.feature.classhelp
+                                             ( 'id,title,responsible'
+                                             , property='needs'
+                                             , width='600')" /><br>
+      <tal:block tal:repeat="f context/needs">
+       <a tal:attributes="href f/designator;
+                          class string:feature_${f/status/plain}"
+          tal:content="string:${f/title}"
+       ></a><br>
+      </tal:block>
+     </td>
+    </tr>
+
+    <tr>
+     <th>Release</th>
+     <td colspan="3"
+         tal:content="structure context/release/menu"></td>
+    </tr>
+
+    <tr tal:condition="context/release/plain">
+     <th>Tracking</th>
+     <td colspan="3">
+      <table>
+       <tr>
+        <th>&nbsp;</th>
+        <th>planned</th>
+        <th>actual</th>
+        <th>delay</th>
+       </tr>
+       <tr>
+        <th>begin</th>
+        <td tal:content="context/planned_begin"></td>
+        <td tal:content="context/actual_begin"></td>
+        <td>XXX</td>
+       </tr>
+       <tr>
+        <th>end</th>
+        <td tal:content="context/planned_end"></td>
+        <td tal:content="context/actual_end"></td>
+        <td>XXX</td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+
+    <tr tal:condition="context/release/plain">
+     <th>Test_OK</th>
+     <td colspan="3"
+         tal:content="context/test_ok"></td>
+    </tr>
+
+    <tr tal:condition="context/id">
+     <th>Documents</th>
+     <td colspan="3"></td>
+    </tr>
+
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

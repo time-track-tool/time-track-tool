@@ -14,9 +14,17 @@
      <th>Meeting</th>
      <td colspan="3" tal:content="structure context/meeting/menu"></td>
     </tr>
-    <tr>
+    <tr tal:condition="context/id">
      <th>Status</th>
-     <td colspan="3" tal:content="structure context/status/menu"></td>
+     <td colspan="3">
+      <select name="status">
+       <option tal:repeat="s db/action_item_status/list"
+               tal:attributes="value s/id;
+                               selected python:s.id == context.status.id"
+               tal:content="s/name">
+       </option>
+      </select>
+     </td>
     </tr>
     <tr>
      <th>Deadline</th>

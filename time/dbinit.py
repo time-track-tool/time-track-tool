@@ -13,6 +13,7 @@
 #    22-Jun-2004 (MPH) Creation
 #     5-Jul-2004 (MPH) Work in progress.
 #     6-Jul-2004 (MPH) Added `closed-obsolete` to `work_package_status`.
+#    23-Jul-2004 (MPH) Removed `automatic` status changes from `feature_status`
 #    ««revision-date»»···
 #--
 #
@@ -86,9 +87,8 @@ def open (name = None):
         , description           = String    ()
         , planned               = Date      ()
         , reached               = Date      ()
-        , order                 = String    ()
+        , order                 = Number    ()
         )
-    milestone_class.setkey ("name")
 
     work_package_status = Class \
         ( db
@@ -691,9 +691,9 @@ def init(adminpw):
 
     # feature_status
     # order, name, transitions, description
-    fss = [ ("1", "raised"   , ("suspended", "open", "rejected")
+    fss = [ ("1", "raised"   , ("suspended", "rejected") # "open" automatically
             , "We should start working on it.")
-          , ("2", "open"     , ("suspended", "completed")
+          , ("2", "open"     , ("suspended", ) # "completed" automatically
             , "We are currently working on it.")
           , ("3", "completed", ()
             , "It is completed.")
