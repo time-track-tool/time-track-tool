@@ -47,6 +47,8 @@ def open(name=None):
     #   activity = Date ()
     #   creator  = Link ('user')
 
+    do_index = "yes"
+
     abo = Class \
         ( db, "abo"
         , begin               = Date      ()
@@ -78,18 +80,18 @@ def open(name=None):
     address = Class \
         ( db, "address"
         , title               = String    ()
-        , firstname           = String    (indexme = "yes")
-        , lastname            = String    (indexme = "yes")
-        , function            = String    (indexme = "yes")
-        , street              = String    (indexme = "yes")
+        , firstname           = String    (indexme = do_index)
+        , lastname            = String    (indexme = do_index)
+        , function            = String    (indexme = do_index)
+        , street              = String    (indexme = do_index)
         , country             = String    ()
         , postalcode          = String    ()
-        , city                = String    (indexme = "yes")
+        , city                = String    (indexme = do_index)
         , phone               = String    ()
         , fax                 = String    ()
-        , salutation          = String    (indexme = "yes")
+        , salutation          = String    ()
         , messages            = Multilink ("msg")
-        , email               = String    (indexme = "yes")
+        , email               = String    (indexme = do_index)
         , abos                = Multilink ("abo")
         , payed_abos          = Multilink ("abo")
         , adr_type            = Multilink ("adr_type")
@@ -109,6 +111,37 @@ def open(name=None):
         , description         = String    ()
         )
     currency.setkey ("name")
+
+    invoice = Class \
+        ( db, "invoice"
+        , invoice_no          = String    ()
+        , period_start        = Date      ()
+        , period_end          = Date      ()
+        , amount              = Number    ()
+        , currency            = Link      ("currency")
+        , balance_open        = Number    ()
+        , n_sent              = Number    ()
+        , last_sent           = Date      ()
+        , abo                 = Link      ("abo")
+        , date_payed          = Date      ()
+        , bookentry           = Date      ()
+        , receipt_no          = String    ()
+        )
+    invoice.setkey ("invoice_no")
+
+    # head should contain info for recreating a letter with multiple
+    # destinations. In this case the file exists only once and the
+    # customisation info in head is there for each recipient.
+    # The file types are either PDF (from old imported data) or an
+    # OpenOffice.org document which is cusomized using info in head.
+    letter = Class \
+        ( db, "letter"
+        , address             = Link      ("address")
+        , date                = Date      ()
+        , letter              = Link      ("file")
+        , note                = Link      ("msg")
+        , head                = String    ()
+        )
 
     # Define codes for (in)valid addresses, e.g., "verstorben"
     valid = Class \
@@ -150,8 +183,7 @@ def open(name=None):
     #   content = String()    [saved to disk in <tracker home>/db/files/]
     #   (it also gets the Class properties creation, activity and creator)
     msg = FileClass \
-        ( db
-        , "msg"
+        ( db, "msg"
         , date                  = Date      ()
         # Note: below fields are used by roundup internally (obviously by the
         #       mail-gateway)
@@ -160,6 +192,12 @@ def open(name=None):
         , summary               = String    ()
         , messageid             = String    ()
         , inreplyto             = String    ()
+        )
+
+    file = FileClass \
+        ( db, "file"
+        , name                  = String    ()
+        , type                  = String    ()
         )
 
     #
