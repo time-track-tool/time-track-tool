@@ -15,19 +15,22 @@
                 , (utils.pretty ('street'),       'street')
                 , (utils.pretty ('email'),        'email')
                 , (utils.pretty ('function'),     'function')
-                , (utils.pretty ('phone_office'), 'phone_office')
-                , (utils.pretty ('phone_home'),   'phone_home')
-                , (utils.pretty ('phone_mobile'), 'phone_mobile')
+                , (utils.pretty ('phone'),        'phone')
                 , (utils.pretty ('fax'),          'fax')
-                , (utils.pretty ( 'adr_type'),    'adr_type'
-                                , 'adr_type',     'code'
-                                )
-                , (utils.pretty ( 'valid'),       'valid'
-                                , 'valid',        'name'
-                                )
+                , ( utils.pretty ('abos'),        'abos'
+                  , 'abo',                        'aboprice'
+                  )
+                , ( utils.pretty ('payed_abos'),  'payed_abos'
+                  , 'abo',                        'aboprice'
+                  )
+                , ( utils.pretty ( 'adr_type'),   'adr_type'
+                  , 'adr_type',                   'code'
+                  )
+                , ( utils.pretty ( 'valid'),      'valid'
+                  , 'valid',                      'name'
+                  )
                 );
-   multi python:( 'adr_type'
-                , 'valid'
+   multi python:( 'valid',
                 )
   "
   tal:condition="context/is_view_ok">
@@ -43,3 +46,4 @@
  </tal:block>
 </tal:block>
 </tal:block>
+<!-- SHA: d67636a7dee415b91161bdd2d62c2a08d208d0fa -->
