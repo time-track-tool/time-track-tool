@@ -14,6 +14,7 @@
 <td class="content" metal:fill-slot="content">
 
 <form method="POST" onSubmit="return submit_once()"
+      name="user_form"
       enctype="multipart/form-data"
       tal:attributes="action context/designator">
 
@@ -33,6 +34,10 @@
  <tr>
   <th>Nickname</th>
   <td tal:content="structure context/nickname/field"></td>
+ </tr>
+ <tr>
+  <th>Is a Mail Alias</th>
+  <td tal:content="structure context/is_alias/field"></td>
  </tr>
  <tr>
   <th>Title</th>
@@ -90,11 +95,26 @@
  </tr>
  <tr>
   <th>Superior</th>
-  <td tal:content="structure context/superior/menu"></td>
+  <td>
+   <tal:block tal:define="name      string:superior;
+                          form      string:user_form;
+                          dont_care string:don't care;
+                          selected  context/superior/id | string:0">
+    <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+   </tal:block>
+  </td>
  </tr>
  <tr>
   <th>Substitutes</th>
-  <td tal:content="structure context/substitutes/menu"></td>
+  <td>
+   <tal:block tal:define="size      string:7;
+                          name      string:substitutes;
+                          form      string:user_form;
+                          dont_care string:don't care;
+                          selected  python:str([u.id for u in context.substitutes.reverse ()] or [''])[1:-1]">
+    <tal:block metal:use-macro="templates/userlist/macros/user_multi"></tal:block>
+   </tal:block>
+  </td>
  </tr>
  <tr>
   <th>Job Description</th>

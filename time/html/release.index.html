@@ -8,13 +8,11 @@
     , ('Title'        , 'title'        , ''                  , ''        , 'T')
     , ('Responsible'  , 'responsible'  , 'user'              , 'username', 'L')
     , ('Milestone'    , 'status'       , ''                  , ''        , 'T')
-    , ('Features'     , 'features'     , 'feature'           , 'title'   , 'M')
     , ('Planned Fixes', 'planned_fixes', 'defect'            , 'title'   , 'M')
     , ('Bugs'         , 'bugs'         , 'defect'            , 'title'   , 'M')
     , ('Nosy List'    , 'nosy'         , 'user'              , 'username', 'M')
     );
                         multi python:( 'responsible'
-                                     , 'features'
                                      , 'nosy'
                                      )"
             tal:condition="context/is_view_ok">

@@ -28,6 +28,7 @@
 # Revision Dates
 #    11-Oct-2004 (MPH) Creation - from default tracker's interfaces.py
 #     2-Nov-2004 (MPH) Added `calendar`
+#     1-Dec-2004 (MPH) Added `start_timer` and `time_stamp` for profiling
 #    ««revision-date»»···
 #--
 #
@@ -35,6 +36,7 @@
 from roundup import mailgw, date
 from roundup.cgi import client, templating
 import calendar
+import time
 
 r_date = date
 
@@ -68,6 +70,19 @@ class TemplatingUtils:
         r_d = date.Date (right.pretty (format))
         return l_d - r_d
     # end def rough_date_diff
+
+    def start_timer (self) :
+        """starts an internal timer for profiling the templates
+        """
+        self.timer = time.time ()
+        return self.timer
+    # end def start_timer
+
+    def time_stamp (self) :
+        """return a timestamp in seconds elapsed from last `start_timer` call
+        """
+        return time.time () - self.timer
+    # end def time_stamp
 
     def date_help ( self
                   , request

@@ -10,14 +10,12 @@
                                      , ('Kind'       , 'kind'       , 'task_kind'          , 'name'    , 'L')
                                      , ('Test OK'    , 'test_ok'    , ''                   , ''        , 'V')
                                      , ('Effort'     , 'effort'     , ''                   , ''        , 'V')
-                                     , ('Feature'    , 'feature'    , 'feature'            , 'title'   , 'L')
                                      , ('Defects'    , 'defects'    , 'defect'             , 'title'   , 'M')
                                      , ('Depends'    , 'depends'    , 'task'               , 'title'   , 'M')
                                      , ('Needs'      , 'needs'      , 'task'               , 'title'   , 'M')
                                      , ('Nosy List'  , 'nosy'       , 'user'               , 'username', 'M')
                                      );
                         multi python:( 'responsible'
-                                     , 'feature'
                                      , 'status'
                                      , 'kind'
                                      , 'nosy'

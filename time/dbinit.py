@@ -28,6 +28,7 @@
 #     8-Nov-2004 (MPH) Cleanup, removed `accepted-but-defects` from `document_status`
 #     9-Nov-2004 (MPH) Added `completed-but-defects` to `feature_status`
 #    16-Nov-2004 (MPH) Added `May Public Queries` permission to `query`
+#     1-Dec-2004 (MPH) Added `is_alias` to Class `user`
 #    ««revision-date»»···
 #--
 #
@@ -249,6 +250,8 @@ def open (name = None):
         , password              = Password  ()
         , address               = String    () # email address
         , alternate_addresses   = String    () # other email adresses
+        , is_alias              = Boolean   () # if this user is an email
+                                               # alias
         , firstname             = String    () # e.g. alois
         , lastname              = String    () # e.g. goller
         , realname              = String    () # gets automatically set from

@@ -234,8 +234,14 @@
 
   <tr>
    <th>Responsible</th>
-   <td colspan="3"
-       tal:content="structure context/responsible/menu"></td>
+   <td colspan="3">
+    <tal:block tal:define="name      string:responsible;
+                           form      string:itemSynopsis;
+                           dont_care string:don't care;
+                           selected  context/responsible/id | string:0">
+     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+    </tal:block>
+   </td>
   </tr>
 
   <tal:block metal:define-slot="ttt_issue_content"></tal:block>
@@ -585,17 +591,35 @@
    <tal:block tal:repeat="prop props">
        <td style="text-align:center;"
            tal:condition="python:prop[1] in multi">
-        <select multiple
-                size="7"
-                tal:attributes="name python:prop[1]"
-                tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
-         <option value=""
-                 tal:attributes="selected not:form_vals">don't care</option>
-         <option tal:repeat="s python:db[prop[2]].list()"
-                 tal:attributes="value    s/id;
-                                 selected python:s.id in form_vals"
-                 tal:content="python:s[prop[3]]"></option>
-        </select>
+        <tal:block tal:condition="python:prop[1] == 'responsible'"
+                   tal:define="size      string:7;
+                               name      python:prop[1];
+                               form      string:query;
+                               dont_care string:don't care;
+                               selected  python:str(request.filterspec.get(prop[1]) or [''])[1:-1]">
+         <tal:block metal:use-macro="templates/userlist/macros/user_multi"></tal:block>
+        </tal:block>
+        <tal:block tal:condition="python:prop[1] == 'nosy'"
+                   tal:define="size      string:7;
+                               name      python:prop[1];
+                               form      string:query;
+                               dont_care string:don't care;
+                               selected  python:str(request.filterspec.get(prop[1]) or [''])[1:-1]">
+         <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"></tal:block>
+        </tal:block>
+        <tal:block tal:condition="python:prop[1] not in ['responsible', 'nosy']">
+         <select multiple
+                 size="7"
+                 tal:attributes="name python:prop[1]"
+                 tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
+          <option value=""
+                  tal:attributes="selected not:form_vals">don't care</option>
+          <option tal:repeat="s python:db[prop[2]].list()"
+                  tal:attributes="value    s/id;
+                                  selected python:s.id in form_vals"
+                  tal:content="python:s[prop[3]]"></option>
+         </select>
+        </tal:block>
        </td>
    </tal:block>
       </tr>
