@@ -13,13 +13,24 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname('salutation')"></th>
-     <td tal:content="structure context/salutation/field"></td>
+     <td tal:content="structure context/salutation/field" colspan=3></td>
+    </tr>
+    <tr>
      <th tal:content="structure python:utils.fieldname('title')"></th>
      <td tal:content="structure context/title/field"></td>
+     <th tal:content="structure python:utils.fieldname('lettertitle')"></th>
+     <td tal:content="structure context/lettertitle/field"></td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('firstname')"></th>
-     <td tal:content="structure context/firstname/field"></td>
+     <td>
+      <table border="0" cellspacing="0" cellpadding="0">
+       <tr>
+        <td tal:content="structure python:context.firstname.field (24)"></td>
+        <td tal:content="structure python:context.initial.field (3)"></td>
+       </tr>
+      </table>
+     </td>
      <th tal:content="structure python:utils.fieldname('lastname')"
          class="required"></th>
      <td tal:content="structure context/lastname/field"></td>
