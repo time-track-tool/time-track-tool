@@ -80,6 +80,8 @@ class SearchAttribute :
         ( self
         , util
         , prop
+        , item        = None
+        , selname     = None
         , label       = None
         , lnkcls      = None
         , lnkattr     = None
@@ -89,9 +91,11 @@ class SearchAttribute :
         ) :
         self.util        = util
         self.prop        = prop
+        self.item        = item
         self.classname   = prop._classname
         self.klass       = prop._db.getclass (self.classname)
         self.name        = prop._name
+        self.selname     = selname
         self.label       = label
         self.lnkname     = None
         self.lnkattr     = lnkattr
@@ -103,8 +107,15 @@ class SearchAttribute :
             self.lnkname = prop._prop.classname
             self.lnkcls  = prop._db.getclass (self.lnkname)
             self.key     = self.lnkcls.getkey ()
+        if not self.selname :
+            self.selname = self.name
+            if self.lnkattr :
+                l = self.lnkattr.split ('.')
+                if len (l) > 1 :
+                    self.selname = l [-2]
         if not self.label :
-            self.label   = self.util.pretty (self.name)
+            self.label = self.util.pretty (self.selname)
+
         if self.lnkname and not self.lnkattr :
             self.lnkattr = self.lnkcls.labelprop ()
         if (   self.is_label is None
@@ -113,39 +124,61 @@ class SearchAttribute :
                )
            ) :
             self.is_label = 1
+        if self.item :
+            self.hprop = item [self.name]
     # end def __init__
 
-    def listingprop (self, item) :
-        hprop = item [self.name]
+    def as_listentry (self, item) :
+        self.item  = item
+        self.hprop = item [self.name]
         if self.editable :
-            return \
-                "<span style='white-space:nowrap'>" + hprop.field () + "</span>"
+            return self.editfield ()
         if self.is_label :
-            return self.util.formatlink (hprop, hprop, self.classname, item.id)
-        elif self.lnkattr :
-            if isinstance (hprop, MultilinkHTMLProperty) : 
+            return self.formatlink ()
+        elif self.lnkname :
+            if isinstance (self.hprop, MultilinkHTMLProperty) : 
                 return ", ".join \
-                    ([ self.util.formatlink
-                           ( self.util.deref (hprop [i], self.lnkattr)
-                           , hprop [i]
-                           , self.lnkname
-                           , hprop._value [i]
-                           )
-                       for i in range (len (hprop))
+                    ([ self.deref (i).formatlink ()
+                       for i in range (len (self.hprop))
                     ])
             else :
-                return self.util.formatlink \
-                    ( self.util.deref (hprop, self.lnkattr)
-                    , hprop
-                    , self.lnkname
-                    , hprop._value
-                    )
-        return str (hprop)
-    # end def listingprop
+                return self.deref ().formatlink ()
+        return str (self.hprop)
+    # end def as_listentry
+
+    def deref (self, index = None) :
+        """
+            from an item get the property prop. This does some recursive
+            magic: If prop consists of a path across several other Link
+            properties, we dereference the whole prop list.
+            Returns the new SearchAttribute.
+        """
+        p = self.hprop
+        if index is not None : p = self.hprop [index]
+        for i in self.lnkattr.split ('.') :
+            last_p = p
+            p      = p [i]
+        return self.util.SearchAttribute (self.util, p, item = last_p)
+    # end def deref
 
     def sortable (self) :
         return self.key == self.lnkattr
     # def sortable
+
+    def formatlink (self) :
+        """
+            Render my property of an item as a link to this item. We get
+            the item. The name of the item and its id are computed.
+        """
+        i = self.item
+        return """<a class="%s" href="%s%s">%s</a>""" \
+            % (self.util.linkclass (i), self.classname, i.id, self.hprop)
+    # end def formatlink
+
+    def editfield (self) :
+        return "<span style='white-space:nowrap'>%s</span>" \
+            % self.item [self.name].field ()
+    # end def editfield
 
 # end class SearchAttribute
 
@@ -177,11 +210,16 @@ class TemplatingUtils:
         return "%s:&nbsp;%s" % (pretty (name), str (klass [name]))
 
     def linkclass (self, item) :
+        """
+            returns css link-class: for "end" date we need a special
+            color code for marking abos that no longer valid.
+        """
         try :
             return ('canc','run') [not item.end.plain()]
         except AttributeError :
             pass
         return ''
+
 
     def formatlink (self, hprop, item, name, id) :
         """
@@ -199,9 +237,11 @@ class TemplatingUtils:
             magic: If prop consists of a path across several other Link
             properties, we dereference the whole prop list.
         """
+        last_item = item
         for i in prop.split ('.') :
+            last_item = item
             item = item [i]
-        return item
+        return (item, last_item)
 
     def menu_or_field (self, prop) :
         if hasattr (prop._prop, 'classname') :
