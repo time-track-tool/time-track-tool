@@ -54,7 +54,7 @@ DATABASE = os.path.join(TRACKER_HOME, 'db')
 TEMPLATES = os.path.join(TRACKER_HOME, 'html')
 
 # A descriptive name for your roundup instance
-TRACKER_NAME = 'Roundup issue tracker'
+TRACKER_NAME = 'Adressprogramm'
 
 # The email address that mail to roundup should go to
 TRACKER_EMAIL = 'issue_tracker@%s'%MAIL_DOMAIN
