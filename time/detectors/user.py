@@ -13,7 +13,8 @@
 #    14-Oct-2004 (MPH) Creation
 #     9-Nov-2004 (MPH) Renamed to user.py
 #     1-Dec-2004 (MPH) Added `update_userlist_html`
-#     5-Apr-2005 (MPH) Changed `tmpnam` to `mkstemp`
+#     5-Apr-2005 (MPH) Changed `tmpnam` to `mkstemp`, fire
+#                      `update_userlist_html` on user.create also.
 #    ««revision-date»»···
 #--
 #
@@ -154,7 +155,7 @@ def init(db):
     # fire before changes are made
     db.user.audit('set'   , audit_user_fields)
     db.user.audit('create', audit_user_fields)
-#    db.user.react("create", update_userlist_html)
+    db.user.react("create", update_userlist_html)
     db.user.react("set"   , update_userlist_html)
 
 # vim: set filetype=python ts=4 sw=4 et si
