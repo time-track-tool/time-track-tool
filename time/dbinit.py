@@ -11,7 +11,8 @@
 #
 # Revision Dates
 #    22-Jun-2004 (MPH) Creation
-#     6-Jul-2004 (MPH) Work in progress.
+#     5-Jul-2004 (MPH) Work in progress.
+#     6-Jul-2004 (MPH) Added `closed-obsolete` to `work_package_status`.
 #    ««revision-date»»···
 #--
 #
@@ -298,7 +299,7 @@ def open (name = None):
     document = TTT_Issue_Class \
         ( db
         , "document"
-        , files                 = Multilink ("file")
+        , files                 = Multilink ("pdf_file")
         , status                = Link      ("work_package_status")
         , type                  = Link      ("document_type")
         )
@@ -671,7 +672,8 @@ def init(adminpw):
             , "It is reviewed and found to be correct.")
           , ("5", "suspended", ("issued",)
             , "We plan to do it later.")
-          ,
+          , ("6", "closed-obsolete", ()
+            , "We agreed to not do it anymore")
           ]
 
     work_package_status = db.getclass ("work_package_status")
@@ -894,9 +896,10 @@ def init(adminpw):
          ]
     product = db.getclass ("product")
     for name, resp, desc, nosy in ps :
+        nosy_ids = [user.lookup (u) for u in nosy]
         product.create ( name        = name
                        , responsible = resp
-                       , nosy        = nosy
+                       , nosy        = nosy_ids
                        , description = desc
                        )
 
@@ -909,7 +912,8 @@ def init(adminpw):
         ]
     meeting = db.getclass ("meeting")
     for title, resp, nosy in meetings :
-        meeting.create (title = title, responsible = resp,  nosy = nosy)
+        nosy_ids = [user.lookup (u) for u in nosy]
+        meeting.create (title = title, responsible = resp,  nosy = nosy_ids)
 
     # add any additional database create steps here - but only if you
     # haven't initialised the database with the admin "initialise" command
