@@ -57,6 +57,7 @@ prettymap = \
 , 'function'         : uni('Funktion')
 , 'history'          : uni('Liste der Änderungen')
 , 'id'               : uni('ID')
+, 'invoice'          : uni('Rechnung')
 , 'invoice_no'       : uni('RgNr')
 , 'invoice_template' : uni('Rechnungsvorlage')
 , 'invoice_level'    : uni('Mahnstufe')
