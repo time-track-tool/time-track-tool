@@ -45,10 +45,11 @@ MAILHOST_TLS_KEYFILE = ''
 MAILHOST_TLS_CERTFILE = ''
 
 # The domain name used for email addresses.
-MAIL_DOMAIN = 'your.tracker.email.domain.example'
+MAIL_DOMAIN = 'zoo.priv.at'
 
 # This is the directory that the database is going to be stored in
 DATABASE = os.path.join(TRACKER_HOME, 'db')
+POSTGRESQL_DATABASE = {'database': 'roundup'}
 
 # This is the directory that the HTML templates reside in
 TEMPLATES = os.path.join(TRACKER_HOME, 'html')
@@ -63,7 +64,7 @@ TRACKER_EMAIL = 'issue_tracker@%s'%MAIL_DOMAIN
 # information sent to users of the tracker. The URL MUST include the cgi-bin
 # part or anything else that is required to get to the home page of the
 # tracker. You MUST include a trailing '/' in the URL.
-TRACKER_WEB = 'http://example.com:8090/abo/'
+TRACKER_WEB = 'http://localhost:8090/abo_import/'
 
 # The email address that roundup will complain to if it runs into trouble
 ADMIN_EMAIL = 'roundup-admin@%s'%MAIL_DOMAIN
@@ -142,6 +143,5 @@ EMAIL_CHARSET = 'iso-8859-1'   # use this instead for Eudora users
 # You may specify a different default timezone, for use when users do not
 # choose their own in their settings.
 DEFAULT_TIMEZONE = 0            # specify as numeric hour offest
-
 
 # vim: set filetype=python ts=4 sw=4 et si
