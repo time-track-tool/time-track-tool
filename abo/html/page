@@ -1,0 +1,156 @@
+<html metal:define-macro="icing">
+ <tal:block tal:define="
+   uname         python:str(request.user.username)
+ ; qname_form    request/form/queryname/value | python:''
+ ; qname_request python:(('queryname' in dir(request)) and request.queryname) or ''
+ ; qname_f       python:((qname_form   [:len(uname)]==uname) and (qname_form   [(len(uname)+1):])) or (qname_form)
+ ; qname_r       python:((qname_request[:len(uname)]==uname) and (qname_request[(len(uname)+1):])) or (qname_request)
+ ; qname         python:qname_r or qname_f
+ ; classname     context/_classname|default
+ ; class_pretty  python:
+    { 'abo'       : 'Abo'
+    , 'address'   : 'Adresse'
+    , 'abo_type'  : 'Abo-Typ'
+    , 'currency'  : 'Währung'
+    , 'abo_price' : 'Preise'
+    }
+ ; Classname     python: class_pretty.get (classname, classname.capitalize())
+ ; klass         python:db [classname] or default
+ ">
+ <head>
+  <title metal:define-slot="head_title">title goes here</title>
+  <link rel="stylesheet" type="text/css" href="_file/style.css">
+  <script tal:replace="structure request/base_javascript"></script>
+ </head>
+ <body class="body" marginwidth="0" marginheight="0">
+  <table class="body" border=0>
+   <tr tal:condition="python:uname=='anonymous'">
+    <td>
+     <form method="POST" action="">
+      <table class="form">
+       <tr>
+        <td colspan="2" align="center">Willkommen zur<br>Abonnentenverwaltung<br>
+                                       <font size="-2"><b>Cookies</b>
+                                       und <b>JavaScript</b> müssen
+                                       eingeschaltet sein.</font></td>
+       </tr>
+       <tr>
+        <th>Login:</th>
+        <td><input size="10" name="__login_name"></td>
+       </tr>
+       <tr>
+        <th>Passwort:</th>
+        <td><input size="10" type="password" name="__login_password"></td>
+       </tr>
+       <tr>
+        <td colspan="2" align="center"><input type="submit" name=":action" value="login"></td>
+       </tr>
+      </table>
+     </form>
+    </td>
+   </tr>
+<tal:block tal:condition="python:uname!='anonymous'">
+   <tr>
+    <td>
+<form name="menubar">
+     <table bgcolor="#eeeeee">
+      <tr>
+
+<!-- Create New -->
+       <td class="sidebar">
+        <span class="classblock"
+              tal:condition="python:request.user.hasPermission('Edit', 'doc')">
+         <a href="doc?:template=item">Create&nbsp;New</a>
+        </span>
+       </td>
+
+<!-- my docs -->
+       <td class="sidebar" nowrap>
+        <span class="classblock">
+         <select name="selected_query">
+          <option tal:condition="python:(str(request.user.queries).find (uname+'_My Docs') < 0)"
+                  tal:attributes="value string:doc?:columns=id,product_type,ref_nr,artefact,department,artefact_nr,title&:sort=ref_nr&:group=product_type&queryname=${request/user/username}_My Docs">My Docs
+          </option>
+          <tal:block tal:repeat="qs request/user/queries">
+           <option tal:attributes="value string:${qs/klass}?${qs/url}&queryname=${qs/name};
+                                   selected python:qname == qs.name.plain()[len(uname)+1:]"
+                   tal:content="python:str(qs.name)[len(uname)+1:]"></option>
+          </tal:block>
+         </select>
+         <input type="button" value="Go" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['selected_query'].options[document.forms['menubar'].elements['selected_query'].options.selectedIndex].value; ">
+        </span>
+       </td>
+
+<!-- custom classes -->
+        <tal:block tal:repeat="c python:['abo','address','abo_type','currency','abo_price']">
+        <td class="sidebar" tal:condition="python:request.user.hasPermission('View', c)">
+         <span class="classblock">
+          <a tal:condition="python:request.user.hasPermission('View', c) or
+                                   request.user.hasPermission('Edit', c)"
+             tal:attributes="href string:${c}?:template=item"
+             tal:content="python:class_pretty [c]">xyzzy</a>
+         </span>
+        </td>
+        </tal:block>
+
+<!-- user list -->
+       <td class="sidebar">
+        <span class="classblock">
+         <a tal:condition="python:request.user.hasPermission('View', 'user')
+                                  or request.user.hasPermission('Edit', 'user')"
+            href="user" >User</a>
+         <span
+          tal:condition="python:request.user.hasPermission('Edit', 'user')"
+         >
+             / <a href="user?:template=item">Neu</a></span>
+         </span>
+       </td>
+
+<!-- username -> link to own profile -->
+       <td class="sidebar">
+        <span class="classblock">
+<!--
+         <a href="user?:template=register">Register</a>
+-->
+         <a tal:attributes="href string:user${request/user/id}"
+            tal:content="string:${request/user/username}"></a>
+        </span>
+       </td>
+
+<!-- logout -->
+       <td class="sidebar">
+        <span class="classblock">
+         <a tal:attributes="href python:request.indexargs_href('',
+             {':action':'logout'})">Logout</a>
+        </span>
+       </td>
+      </tr>
+     </table>
+</form>
+    </td>
+   </tr>
+
+<!--
+   <tr>
+    <td class="page-header-top" metal:define-slot="body_title"><h2>name</h2></td>
+   </tr>
+-->
+
+   <tr>
+    <td>
+     <p tal:condition="options/error_message | nothing" class="error-message"
+        tal:repeat="m options/error_message" tal:content="structure m">error</p>
+     <p tal:condition="options/ok_message | nothing" class="ok-message"
+        tal:repeat="m options/ok_message" tal:content="structure m">error</p>
+    </td>
+   </tr>
+
+   <tr>
+    <td class="content" metal:define-slot="content">Page content goes here</td>
+   </tr>
+</tal:block> <!-- tal:condition="python:uname!='anonymous'" -->
+  </table>
+  <pre tal:condition="request/form/debug | nothing" tal:content="request"></pre>
+ </body>
+ </tal:block>
+</html>

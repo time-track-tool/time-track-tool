@@ -1,0 +1,36 @@
+<!--
+ This is the default body that is displayed when people visit the
+ tracker. The tag below lists the current abos. You may
+ replace it with a greeting message, or a different list of documents or
+ whatever. It's a good idea to have the documents on the front page though
+-->
+<tal:block tal:condition="python:(str(request.user.queries).find (str(request.user.username)+'_My Docs') >= 0)">
+ <tal:block tal:define="my_docs string:${request/user/username}_My Docs"
+            tal:repeat="q request/user/queries">
+  <tal:block tal:condition="python:q.name == my_docs"
+             tal:define="args python:utils.url_2_dict(q.url.plain()[1:])"
+             tal:replace="structure python:db.abo.renderWith( 'index'
+                                                              , sort       = args ['sort']
+                                                              , group      = args ['group']
+                                                              , filter     = args ['filter']
+                                                              , columns    = args ['columns']
+                                                              , filterspec = args ['filterspec']
+                                                              , pagesize   = args ['pagesize']
+                                                              , queryname = 'My Docs'
+                                                              )">
+  </tal:block>
+ </tal:block>
+</tal:block>
+
+<tal:block tal:condition="python:(str(request.user.queries).find (str(request.user.username)+'_My Docs') < 0)"
+           tal:define="args python:utils.url_2_dict(':columns=title,product_type,ref_nr,artefact,department,artefact_nr,owner&:sort=product_type&:group=ref_nr&:startwith=0&queryname='+str(request.user.username)+'_My Docs')"
+           tal:replace="structure python:db.abo.renderWith( 'index'
+                                                            , sort       = args ['sort']
+                                                            , group      = args ['group']
+                                                            , filter     = args ['filter']
+                                                            , columns    = args ['columns']
+                                                            , filterspec = args ['filterspec']
+                                                            , pagesize   = args ['pagesize']
+                                                            , queryname  = args ['queryname']
+                                                            )">
+</tal:block>

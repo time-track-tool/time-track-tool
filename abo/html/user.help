@@ -1,0 +1,33 @@
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="_file/style.css">
+  <script language="javascript">
+   <!--
+function paste_value (form, element, value) {
+    window.opener.document.forms[form].elements[element].value = window.opener.document.forms[form].elements[element].value + ',' + value;
+}
+   // -->
+  </script>
+ </head>
+<body class="body" marginwidth="0" marginheight="0">
+ <table class="classhelp"
+        tal:define="props python:request.form['properties'].value.split(',');
+                    link_prop request/form/link_property/value | nothing;
+                    input_name request/form/input_name/value | nothing;
+                    input_form request/form/input_form/value | nothing" >
+  <tr>
+   <th tal:repeat="prop props" tal:content="prop"></th>
+  </tr>
+  <tr tal:repeat="item context/list">
+   <td tal:repeat="prop props">
+    <tal:block tal:define="cond python:link_prop and input_form and input_name and prop==link_prop">
+     <a tal:condition="cond"
+        tal:attributes="href python:'javascript:paste_value('%s', '%s', '%s')' % (input_form, input_name, str(item[prop]))"
+        tal:content="python:item[prop]"></a>
+     <p tal:condition="not:cond"
+        tal:content="python:item[prop]"></p>
+    </tal:block>
+   </td>
+  </tr>
+ </table>
+</body>

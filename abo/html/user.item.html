@@ -1,0 +1,80 @@
+<!-- dollarId: user.item,v 1.7 2002/08/16 04:29:04 richard Exp dollar-->
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title"> 
+<span tal:condition="context/id"
+      tal:replace="string:User ${context/id}: ${context/username}" />
+<tal:x tal:condition="not:context/id">New User</tal:x> 
+- <span tal:replace="config/TRACKER_NAME" />
+</title> 
+<span metal:fill-slot="body_title" tal:omit-tag="python:1">
+  User<span tal:replace="context/id" />
+   <tal:x tal:condition="context/is_edit_ok">Editing</tal:x>
+ </span>
+
+<td class="content" metal:fill-slot="content">
+
+<form method="POST" onSubmit="return submit_once()"
+      enctype="multipart/form-data"
+      tal:attributes="action context/designator">
+
+<table class="form">
+ <tr>
+  <th>Name</th>
+  <td tal:content="structure context/realname/field">realname</td>
+ </tr>
+ <tr>
+  <th>Login Name</th>
+  <td tal:content="structure context/username/field">username</td>
+ </tr>
+ <tr>
+  <th>Login Passwort</th>
+  <td tal:content="structure context/password/field">password</td>
+ </tr>
+ <tr>
+  <th>Bestätigung Passwort</th>
+  <td tal:content="structure context/password/confirm">password</td>
+ </tr>
+ <tr tal:condition="python:request.user.hasPermission('Web Roles')">
+  <th>Rollen</th>
+  <td>
+   <input tal:condition="context/id"
+          tal:replace="structure context/roles/field">
+   <input name="roles" tal:condition="not:context/id"
+          tal:attributes="value db/config/NEW_WEB_USER_ROLES">
+   (Komma-getrennte Liste)
+  </td>
+ </tr>
+ <tr tal:condition="python:0">
+  <th>Timezone</th>
+  <td>
+   <input tal:replace="structure context/timezone/field">
+   (this is a numeric hour offset, the default is
+   <span tal:replace="db/config/DEFAULT_TIMEZONE" />)
+  </td>
+ </tr>
+ <tr>
+  <th>E-mail</th>
+  <td tal:content="structure context/address/field">address</td>
+ </tr>
+ <tr>
+  <th>Alternative E-mail Adressen<br>Eine pro Zeile</th>
+  <td tal:content="structure context/alternate_addresses/multiline">alternate_addresses</td>
+ </tr>
+
+ <tr>
+  <td>
+   &nbsp;
+   <input type="hidden" name="@template" value="item">
+   <input type="hidden" name="@required" value="username,address">
+  </td>
+  <td tal:content="structure context/submit">submit button here</td>
+ </tr>
+</table>
+</form>
+
+<tal:block tal:replace="structure context/history" />
+
+</td>
+
+</tal:block>
+<!-- SHA: d5cb9d17816c28aca81c34bfd70e1cef3ea4155a -->
