@@ -4,18 +4,18 @@
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
   "batch request/batch;
-   props python:( (utils.pretty ('id'),           'id')
-                , (utils.pretty ('aboprice'),     'aboprice'
-                  , 'abo_price', 'name'
+   props python:( (utils.pretty ('id'),         'id')
+                , (utils.pretty ('aboprice'),   'aboprice'
+                                , 'abo_price',  'name'
                   )
-                , (utils.pretty ('amount'),       'amount')
-                , (utils.pretty ('begin'),        'begin')
-                , (utils.pretty ('end'),          'end')
-                , (utils.pretty ('subscriber'),   'subscriber'
-                  , 'address', 'lastname'
+                , (utils.pretty ('amount'),     'amount')
+                , (utils.pretty ('begin'),      'begin')
+                , (utils.pretty ('end'),        'end')
+                , (utils.pretty ('subscriber'), 'subscriber'
+                                , 'address',    'lastname'
                   )
-                , (utils.pretty ('payer'),        'payer'
-                  , 'address', 'lastname'
+                , (utils.pretty ('payer'),      'payer'
+                                , 'address',    'lastname'
                   )
                 );
    multi python:()

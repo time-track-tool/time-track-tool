@@ -9,37 +9,38 @@
 You are not allowed to view this page.
 </span>
 
-<table class="otherinfo"
+<tal:block
  tal:define=
-  " excpt     python: (labelprop, 'creator', 'creation', 'activity', 'actor')
+  " excpt     python: ('creator', 'creation', 'activity', 'actor', 'content')
+  ; linkprops python: (labelprop, 'id')
   ; props     python:[i for i in utils.sorted_properties (db, context)
                       if i._name not in excpt
                      ]
   ; items     python:klass.list()
   ; n         python:len (props) + 1
-  "
+  ">
+<table class="otherinfo"
  tal:condition="items"
 >
  <tr>
-  <th tal:content="python:utils.pretty (labelprop)"></th>
   <tal:block tal:repeat="prop props">
    <th tal:content="python:utils.pretty (prop._name)"></th>
   </tal:block>
  </tr>
  <tr tal:repeat="item items">
-  <td tal:condition="python:request.user.hasPermission('Edit', classname)">
-   <a tal:attributes="href string:${classname}${item/id}"
-      tal:content="python:item [labelprop]">keyword here</a>
-  </td>
-  <td tal:condition="python:not(request.user.hasPermission('Edit', classname))">
-   <b tal:content="python:item [labelprop]">keyword here</b>
-  </td>
   <tal:block tal:repeat="prop props">
-   <td tal:condition="python:prop._name not in
-    (labelprop, 'creator', 'creation', 'activity', 'actor')"
-    tal:content="python:item [prop._name]"
-   >
-   </td>
+   <tal:block tal:condition="python:prop._name in linkprops">
+    <td tal:condition="python:request.user.hasPermission('Edit', classname)">
+     <a tal:attributes="href string:${classname}${item/id}"
+        tal:content="python:item [prop._name]">keyword here</a>
+    </td>
+    <td tal:condition="python:not(request.user.hasPermission('Edit', classname))">
+     <b tal:content="python:item [prop._name]">keyword here</b>
+    </td>
+   </tal:block>
+   <tal:block tal:condition="python:prop._name not in linkprops">
+    <td tal:content="python:item [prop._name]"></td>
+   </tal:block>
   </tal:block>
  </tr>
  <tr tal:condition="python:request.user.hasPermission('Edit', classname)">
@@ -60,9 +61,8 @@ You are not allowed to view this page.
 
 <table class="form">
 
- <tal:block tal:repeat="prop python:utils.sorted_properties (db, context)">
-  <tr tal:condition="python:prop._name not in ('id', 'creator',
-                                   'creation', 'activity', 'actor')">
+ <tal:block tal:repeat="prop props">
+  <tr tal:condition="python:prop._name not in ('id','date','author')">
    <th tal:content="python:utils.pretty (prop._name)"></th>
    <td tal:content="structure python:utils.menu_or_field (context[prop._name])">
    </td>
@@ -80,9 +80,8 @@ You are not allowed to view this page.
 
 <table class="form" tal:condition="context/is_only_view_ok">
 
- <tal:block tal:repeat="prop python:db[context._classname].properties()">
-  <tr tal:condition="python:prop._name not in ('id', 'creator',
-                                   'creation', 'activity')">
+ <tal:block tal:repeat="prop props">
+  <tr tal:condition="python:prop._name not in ('id','date','author')">
    <th tal:content="prop/_name"></th>
    <td tal:content="structure python:context[prop._name].field()"></td>
   </tr>
@@ -94,6 +93,7 @@ You are not allowed to view this page.
  <tal:block tal:replace="structure context/history" />
 </tal:block>
 
+</tal:block>
 </td>
 
 </tal:block>

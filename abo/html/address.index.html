@@ -19,8 +19,16 @@
                 , (utils.pretty ('phone_home'),   'phone_home')
                 , (utils.pretty ('phone_mobile'), 'phone_mobile')
                 , (utils.pretty ('fax'),          'fax')
+                , (utils.pretty ( 'adr_type'),    'adr_type'
+                                , 'adr_type',     'code'
+                                )
+                , (utils.pretty ( 'valid'),       'valid'
+                                , 'valid',        'name'
+                                )
                 );
-   multi python:()
+   multi python:( 'adr_type'
+                , 'valid'
+                )
   "
   tal:condition="context/is_view_ok">
 

@@ -118,6 +118,7 @@ table.form {
   padding: 2px;
   border-spacing: 0;
   border-collapse: separate;
+  vertical-align: top;
 }
 
 table.form th {
@@ -136,6 +137,10 @@ table.form th.header {
 
 table.form th.required {
   font-weight: bold;
+}
+
+table.form tr {
+  vertical-align: top;
 }
 
 table.form td {

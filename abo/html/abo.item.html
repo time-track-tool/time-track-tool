@@ -2,31 +2,33 @@
 
  <title metal:fill-slot="head_title">
   <span tal:condition="context/id"
-        tal:replace="string:Abo: ${context/id} angelegt von ${context/creator}"></span>
-  <span tal:condition="not:context/id"
-        tal:replace="string:Neues Abo"></span>
+        tal:replace="string:${Classname}: ${context/id} angelegt von
+                     ${context/creator}">
+  </span>
+  <span tal:condition="not:context/id" tal:replace="string:Neues Abo"></span>
  </title>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="python:utils.pretty('aboprice')" class="required"></th>
+     <th tal:content="structure python:utils.fieldname('aboprice')"
+         class="required"></th>
      <td tal:content="structure context/aboprice/menu"></td>
-     <th tal:content="python:utils.pretty('amount')"></th>
+     <th tal:content="structure python:utils.fieldname('amount')"></th>
      <td tal:content="structure python:context.amount.field (6)"></td>
     </tr>
     <tr>
-     <th tal:content="python:utils.pretty('begin')"></th>
+     <th tal:content="structure python:utils.fieldname('begin')"></th>
      <td tal:content="structure context/begin/field"></td>
-     <th tal:content="python:utils.pretty('end')"></th>
+     <th tal:content="structure python:utils.fieldname('end')"></th>
      <td tal:content="structure context/end/field"></td>
     </tr>
     <tr tal:define="rowspan python:(2, 1)[not context.id]">
-     <th tal:content="python:utils.pretty('subscriber')"
+     <th tal:content="structure python:utils.fieldname('subscriber')"
          class="required" tal:attributes="rowspan rowspan"></th>
      <td tal:content="structure context/subscriber/field"></td>
-     <th tal:content="python:utils.pretty('payer')"
+     <th tal:content="structure python:utils.fieldname('payer')"
          tal:attributes="rowspan rowspan"></th>
      <td tal:content="structure context/payer/field"></td>
     </tr>

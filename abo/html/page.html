@@ -14,6 +14,9 @@
  ; is_user       python:uname!='anonymous'
  ; lbl           klass/_klass/labelprop
  ; labelprop     python:(lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
+ ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=subscriber&%3Acolumns=payer&%3Asearch_text=&%40queryname=&id=&aboprice=&amount=&begin=&end=&subscriber=&payer='
+                        , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
+                        }
  ">
  <head>
   <title metal:define-slot="head_title">Welcome</title>
@@ -30,7 +33,7 @@
      <table class="form">
       <tr>
        <td colspan="2" align="center">Willkommen zur<br>Abonnentenverwaltung<br>
-          <font size="-2"><b>Cookies</b> und <b>JavaScript</b> müssen eingeschaltet sein.</font></td>
+          <font size="-2"><b>Cookies</b> und <b>JavaScript</b> mÃ¼ssen eingeschaltet sein.</font></td>
       </tr>
       <tr>
        <th>Login:</th>
@@ -65,42 +68,20 @@
   <table bgcolor="#eeeeee" tal:condition="is_user">
    <tr>
 
-<!-- queries -->
-       <td class="sidebar" nowrap>
-        <span class="classblock">
-         <select name="selected_query">
-          <option tal:condition="python:(str(request.user.queries).find (uname+'_My Docs') < 0)"
-                  tal:attributes="value string:doc?:columns=id,product_type,ref_nr,artefact,department,artefact_nr,title&:sort=ref_nr&:group=product_type&queryname=${request/user/username}_My Docs">My Docs
-          </option>
-          <tal:block tal:repeat="qs request/user/queries">
-           <option tal:attributes="value string:${qs/klass}?${qs/url}&queryname=${qs/name};
-                                   selected python:qname == qs.name.plain()[len(uname)+1:]"
-                   tal:content="python:str(qs.name)[len(uname)+1:]"></option>
-          </tal:block>
-         </select>
-         <input type="button" value="Go" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['selected_query'].options[document.forms['menubar'].elements['selected_query'].options.selectedIndex].value; ">
-        </span>
-       </td>
-
 <!-- queries
 %3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=title&%3Acolumns=responsible&responsible=5&status=&meeting=&nosy=&id=&title=&deadline=&%3Asearch_text=&%40queryname=mexx+items
 -->
     <td tal:condition="python:1" class="sidebar" nowrap>
-     <span class="classblock"
-           tal:define="default_query string:@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=id&:columns=title&:columns=responsible&responsible=&id=&title=&:search_text=&@queryname=">
-      <select name="query"
-              onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-       <option>-- View / Query --</option>
-       <option value="query?@template=edit">Manage Queries</option>
-       <tal:block tal:repeat="klass python:['abo','address']">
-        <tal:block tal:define="name python:utils.pretty (klass)">
+     <span class="classblock">
+      <select name="query">
+       <option value="query?@template=edit">Abfragen</option>
+       <tal:block tal:repeat="klassname python:['abo','address']">
+        <tal:block tal:define="name python:utils.pretty (klassname)">
          <tal:block metal:use-macro="templates/page/macros/query_list"/>
         </tal:block>
        </tal:block>
       </select>
-<!--
-      <input type="button" value="Go" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['selected_query'].options[document.forms['menubar'].elements['selected_query'].options.selectedIndex].value; ">
--->
+      <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
      </span>
     </td>
 
@@ -110,7 +91,7 @@
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
                                    request.user.hasPermission('Edit', c)"
-             tal:attributes="href string:${c}"
+             tal:attributes="href python:'%s?%s' % (c, default_query [c])"
              tal:content="python:utils.pretty (c)">xyzzy</a>
           <span
             tal:condition="python:request.user.hasPermission('Edit', 'user')"
@@ -122,7 +103,9 @@
         </td>
         </tal:block>
 <!-- custom classes -->
-        <tal:block tal:repeat="c python:['abo_type','currency','abo_price']">
+        <tal:block
+         tal:repeat="c python:
+          ['abo_type','currency','abo_price','adr_type','valid']">
         <td class="sidebar" tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
@@ -197,18 +180,19 @@
 </html>
 </tal:block>
 
-<!-- list of queries - needs 'klass' and 'name' and 'default_query' defined -->
+<!-- list of queries - needs 'klassname', 'name' and 'default_query' defined -->
 <tal:block metal:define-macro="query_list">
-       <option tal:attributes="value string:${klass}?${default_query}"
+       <option tal:attributes="
+                value python:'%s?%s' % (klassname, default_query [klassname])"
                tal:content="name"></option>
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klass})"
+       <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klassname})"
                tal:repeat="q queries"
-               tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+               tal:attributes="value string:${klassname}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
                tal:content="structure string:&nbsp;&nbsp;${q/name}"
                >&nbsp; &nbsp; Global Queries</option>
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klass})"
+       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klassname})"
                tal:repeat="q queries"
-               tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+               tal:attributes="value string:${klassname}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
                tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
                >&nbsp; &nbsp; My Queries</option>
 </tal:block>
@@ -283,7 +267,8 @@
 
  <table class="messages" tal:condition="context/messages">
   <tr>
-   <th colspan="3" class="header">Messages</th>
+   <th colspan="3" class="header"
+       tal:content="python:utils.pretty ('messages')">Messages</th>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
   <tr>
@@ -424,8 +409,12 @@
      <tal:block tal:repeat="prop props">
       <tal:block tal:define="lnk python:prop[1] == labelprop
                                      or prop[1] == 'id'">
-       <td tal:condition="python:request.show [prop[1]] and not lnk"
+       <tal:block tal:condition="python:request.show [prop[1]] and not lnk">
+        <td tal:condition="python:len (prop) >  2"
+           tal:content="python:i [prop[1]][prop[3]]"></td>
+        <td tal:condition="python:len (prop) <= 2"
            tal:content="python:i [prop[1]]"></td>
+       </tal:block>
        <td tal:condition="python:request.show [prop[1]] and lnk">
         <a tal:attributes="href python:classname + i.id"
            tal:content="python:i [prop[1]]"></a>
@@ -500,9 +489,9 @@
       <!-- fill in custom query data -->
       <!-- fill in multi selection boxes -->
       <tr>
-       <th style="text-align:center;">Felder:</th>
+       <th style="text-align:left;">Felder:</th>
    <tal:block tal:repeat="prop props">
-       <th tal:condition="python:prop[1] in multi"
+       <th style="text-align:left;" tal:condition="python:prop[1] in multi"
            tal:content="python:prop[0]+':'"></th>
    </tal:block>
       </tr>
@@ -525,7 +514,7 @@
                  tal:attributes="name python:prop[1]"
                  tal:define="form_vals python:request.filterspec.get(prop[1]) or []">
           <option value=""
-                  tal:attributes="selected not:form_vals">don't care</option>
+                  tal:attributes="selected not:form_vals">nicht suchen</option>
           <option tal:repeat="s python:db[prop[2]].list()"
                   tal:attributes="value    s/id;
                                   selected python:s.id in form_vals"
@@ -551,8 +540,15 @@
                   tal:attributes="value request/form/@queryname/value | default">
            <input type="submit"
                   value="Suche Starten / Speichern">
+          </td>
+         </tr>
+         <tr>
+          <td></td>
+          <td>
            <a tal:condition="request/form/queryid/value | nothing"
-              tal:attributes="href string:query${request/form/queryid/value}">Edit this query</a>
+              tal:attributes="href string:query${request/form/queryid/value}">
+              Abfrage bearbeiten
+           </a>
           </td>
          </tr>
         </table>
@@ -618,7 +614,7 @@ See issue.search.html in the classic template for examples.
 <td metal:define-macro="search_select">
   <select tal:attributes="name name"
           tal:define="value python:request.form.getvalue(name)">
-    <option value="">don't care</option>
+    <option value="">nicht suchen</option>
     <tal:block metal:define-slot="extra_options"></tal:block>
     <option value="">------------</option>
     <option tal:repeat="s python:db[db_klass].list()"
