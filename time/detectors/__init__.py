@@ -16,8 +16,6 @@
 # BASIS, AND THERE IS NO OBLIGATION WHATSOEVER TO PROVIDE MAINTENANCE,
 # SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #
-#$Id$
-#
 #++
 # Name
 #    init
@@ -32,8 +30,6 @@
 #    ««revision-date»»···
 #--
 #
-
-
 
 import sys, os, imp
 

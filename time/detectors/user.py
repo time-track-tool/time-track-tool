@@ -15,7 +15,7 @@
 #    ««revision-date»»···
 #--
 #
-def audit_user_fields(db, cl, nodeid, newvalues):
+def audit_user_fields(db, cl, nodeid, new_values):
     ''' Make sure user properties are valid.
         - email address has no spaces in it
         - roles specified exist
@@ -28,14 +28,23 @@ def audit_user_fields(db, cl, nodeid, newvalues):
 
 
     '''
-    if newvalues.has_key('address') and ' ' in newvalues['address']:
+    if new_values.has_key('address') and ' ' in new_values['address']:
         raise ValueError, 'Email address must not contain spaces'
 
-    if newvalues.has_key('roles'):
-        roles = [x.lower().strip() for x in newvalues['roles'].split(',')]
+    if new_values.has_key('roles'):
+        roles = [x.lower().strip() for x in new_values['roles'].split(',')]
         for rolename in roles:
             if not db.security.role.has_key(rolename):
                 raise ValueError, 'Role "%s" does not exist'%rolename
+
+    # automatic setting of realname
+    if new_values.has_key ("firstname") \
+        or new_values.has_key ("lastname") \
+        and nodeid :
+        fn = new_values.get ("firstname", cl.get (nodeid, "firstname"))
+        ln = new_values.get ("lastname" , cl.get (nodeid, "lastname"))
+        realname = " ".join ((fn, ln))
+        new_values ["realname"] = realname
 # end def audit_user_fields
 
 def init(db):

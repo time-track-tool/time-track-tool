@@ -23,7 +23,7 @@ You are not allowed to view this page.
   <a tal:attributes="href string:user${user/id}"
      tal:content="user/username">username</a>
  </td>
- <td tal:content="python:user.firstname.plain()+' '+user.lastname.plain() or default">&nbsp;</td>
+ <td tal:content="python:user.realname.plain() or default">&nbsp;</td>
  <td tal:content="python:user.organisation.plain() or default">&nbsp;</td>
  <td tal:content="python:user.address.email() or default">&nbsp;</td>
  <td tal:content="python:user.phone.plain() or default">&nbsp;</td>

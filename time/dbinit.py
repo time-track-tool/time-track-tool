@@ -498,6 +498,7 @@ def open (name = None):
         , ("Office"        , "Member of Office"              )
         , ("Releasemanager", "Allowed to manage a SW Release")
         , ("IV&V"          , "Member of the IV&V Team."      )
+        , ("halfweek"      , "User works only the half week" )
         ]
 
     for name, desc in roles :
@@ -768,7 +769,7 @@ def init(adminpw):
            , ("TTTech Germany"       , "addr", "phone")
            , ("TTTech Japan"         , "addr", "phone")
            , ("TTTech North America" , "addr", "phone")
-           , ("TTTChip"              , "addr", "phone")
+           , ("TTChip"               , "addr", "phone")
            , ("TTControl"            , "addr", "phone")
            # XXX: add other companies name, address & phone
            ]

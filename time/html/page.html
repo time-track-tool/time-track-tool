@@ -639,49 +639,51 @@
        <th></th>
        <td>
         <input type="submit"
-               value="Update view & don't store this query">
+               value="Update view"
+               onClick="document.forms ['query'].elements ['@queryname'].value = '';
+                        document.forms ['query'].elements ['queryid'].value = ''">
        </td>
       </tr>
-      <tr>
+      <tr tal:define="queryid request/form/queryid/value | nothing;
+                      u_q     python:[q.id for q in request.user.queries];
+                      bla     python:u_q.sort(lambda l, r:cmp(int(l), int(r)))">
       <th style="text-align:right;">This query's name:</th>
-       <td>
-        <input type="text"
-               name="_queryname"
-               tal:attributes="value request/form/@queryname/value | default">
-        <input type="hidden" name="@queryname">
-        <span tal:condition="request/form/queryid/value | nothing">
-         <a tal:attributes="href string:query${request/form/queryid/value};"
-          >(edit this query)</a>
-         <input type="hidden" name="queryid"
-                tal:attributes="value request/form/queryid/value">
+       <td tal:define="queryid python:request.form.has_key('new_query') and u_q.pop() or queryid">
+        <span tal:condition="queryid">
+         <span tal:condition="python:queryid in request.user.queries">
+          <input type="hidden" name="queryid" tal:attributes="value queryid">
+          <input type="hidden" name="@queryname">
+          <input type="text"
+                name="_queryname"
+                tal:attributes="value request/form/@queryname/value | default">
+          <input type="submit"
+                 value="Update view & store this query"
+                 onClick="document.forms ['query'].elements ['@queryname'].value =
+                          document.forms ['query'].elements ['_queryname'].value;">(If you change the name, you create a new query!!!)
+         </span>
+         <span tal:condition="python:queryid not in request.user.queries">
+          this query is not from me, just do as it would not exist
+          <input type="text"
+                 name="@queryname">
+          <input type="hidden" name="new_query" value="1">
+          <input type="submit"
+                 value="Update view & store this query as new">
+         </span>
+        </span>
+        <span tal:condition="not:queryid">
+         <input type="text"
+                name="@queryname">
+         <input type="hidden" name="new_query" value="1">
+         <input type="submit"
+                value="Update view & store this query as new">
+        </span>
 <!--
-         <b>Private for me:</b>
-         <select tal:condition="request/form/queryid/value | nothing"
-                tal:attributes="name string:query${request/form/queryid/value}@private_for"
-                tal:define="uid request/user/id;
-                            qid request/form/queryid/value;
-                            qry python:db.query.getItem (qid)">
-         <option tal:attributes="selected python:qry.private_for == uid;
-                                 value uid">yes</option>
-         <option tal:attributes="selected python:qry.private_for == None"
-                 value="-1">no</option>
-         </select>
          <b>Delete this query</b>
          <input type="checkbox"
                 tal:attributes="name string:${request/user/designator}@remove@queries;
                                 value request/form/queryid/value;">
 -->
-        </span>
-       </td>
-      </tr>
-<!-- submit button -->
-      <tr>
-       <th></th>
-       <td>
-        <input type="submit"
-               value="Update view & store this query"
-               onclick="document.forms ['query'].elements ['@queryname'].value =
-                        document.forms ['query'].elements ['_queryname'].value;">
+
        </td>
       </tr>
      </table>
