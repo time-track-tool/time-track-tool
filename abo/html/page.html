@@ -407,15 +407,16 @@
     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
      <!-- all the properties: label property and id will be made a link -->
      <tal:block tal:repeat="prop props">
-      <tal:block tal:define="lnk python:prop[1] == labelprop
-                                     or prop[1] == 'id'">
-       <tal:block tal:condition="python:request.show [prop[1]] and not lnk">
-        <td tal:condition="python:len (prop) >  2"
+      <tal:block tal:define=
+       "href python:prop[1] == labelprop or prop[1] == 'id'
+       ;lnk  python:len(prop) > 2 and not isinstance (i[prop[1]]._value, list)">
+       <tal:block tal:condition="python:request.show [prop[1]] and not href">
+        <td tal:condition="lnk"
            tal:content="python:i [prop[1]][prop[3]]"></td>
-        <td tal:condition="python:len (prop) <= 2"
+        <td tal:condition="not:lnk"
            tal:content="python:i [prop[1]]"></td>
        </tal:block>
-       <td tal:condition="python:request.show [prop[1]] and lnk">
+       <td tal:condition="python:request.show [prop[1]] and href">
         <a tal:attributes="href python:classname + i.id"
            tal:content="python:i [prop[1]]"></a>
        </td>
