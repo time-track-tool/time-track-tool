@@ -13,10 +13,12 @@
 #    14-Oct-2004 (MPH) Creation
 #     9-Nov-2004 (MPH) Renamed to user.py
 #     1-Dec-2004 (MPH) Added `update_userlist_html`
+#     5-Apr-2005 (MPH) Changed `tmpnam` to `mkstemp`
 #    ««revision-date»»···
 #--
 #
 import os
+from tempfile import mkstemp
 import shutil
 pjoin = os.path.join
 
@@ -111,16 +113,14 @@ def audit_user_fields(db, cl, nodeid, new_values):
 def update_userlist_html (db, cl, nodeid, old_values) :
     """newly create user_list.html macro page
     """
-    root     = pjoin (db.config.TRACKER_HOME, "html")
-    userlist = "userlist.html"
-    tmpname  = os.tempnam (root, userlist)
-    f        = open (tmpname, "w")
-
+    root       = pjoin (db.config.TRACKER_HOME, "html")
+    userlist   = "userlist.html"
+    f, tmpname = mkstemp (".html", "userlist", root)
     # all 'real' users
-    users    = cl.filter ( None # full text search
-                         , filterspec = {"is_alias" : [None, False]}
-                         , sort       = ("+", "username")
-                         )
+    users      = cl.filter ( None # full text search
+                           , filterspec = {"is_alias" : [None, False]}
+                           , sort       = ("+", "username")
+                           )
     if users :
         options  = [OPTION_FMT % (id, cl.get (id, "username")) for id in users]
 
