@@ -1,0 +1,59 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Action Item</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define="batch request/batch;
+                        props python:( ('Id'         , 'id')
+                                     , ('Title'      , 'title')
+                                     , ('Responsible', 'responsible')
+                                     , ('Status'     , 'status')
+                                     , ('Meeting'    , 'meeting')
+                                     , ('Deadline'   , 'deadline')
+                                     , ('Nosy List'  , 'nosy')
+                                     )"
+            tal:condition="context/is_view_ok">
+
+  <tal:block tal:condition="not:context/is_view_ok">
+   You are not allowed to view this page.
+  </tal:block>
+
+  <tal:block tal:define="batch request/batch"
+             tal:condition="context/is_view_ok">
+   <table class="list" border=1>
+    <tr>
+<!-- list all properties we want to see -->
+<tal:block tal:repeat="prop props">
+     <th tal:condition="python:request.show[prop[1]]"
+         tal:content="python:prop[0]"></th>
+</tal:block>
+    </tr>
+   <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
+<!-- items found -->
+<tal:block tal:repeat="i batch">
+    <tr tal:condition="python:request.group[1] and
+                              batch.propchanged(request.group[1])">
+     <th tal:attributes="colspan python:len(request.columns)"
+         tal:content="python:i[request.group[1]]" class="group">
+     </th>
+    </tr>
+    <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
+     <td tal:condition="request/show/id" tal:content="i/id"></td>
+     <td tal:condition="request/show/title">
+      <a tal:attributes="href string:action_item${i/id}"
+         tal:content="python:str(i.title.plain(hyperlink=0)) or '[no title]'">title</a>
+     </td>
+     <td tal:condition="request/show/responsible" tal:content="i/responsible"></td>
+     <td tal:condition="request/show/status" tal:content="i/status"></td>
+     <td tal:condition="request/show/meeting" tal:content="i/meeting"></td>
+     <td tal:condition="request/show/deadline" tal:content="i/deadline"></td>
+     <td tal:condition="request/show/nosy" tal:content="i/nosy"></td>
+    </tr>
+</tal:block>
+   </table>
+  </tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+  <tal:block metal:fill-slot="query_title">Query Action Item</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

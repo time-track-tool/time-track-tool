@@ -1,0 +1,173 @@
+<!-- dollarId: user.item,v 1.7 2002/08/16 04:29:04 richard Exp dollar-->
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">
+<span tal:condition="context/id"
+      tal:replace="string:User ${context/id}: ${context/username}" />
+<tal:x tal:condition="not:context/id">New User</tal:x>
+- <span tal:replace="config/TRACKER_NAME" />
+</title>
+<span metal:fill-slot="body_title" tal:omit-tag="python:1">
+  User<span tal:replace="context/id" />
+   <tal:x tal:condition="context/is_edit_ok">Editing</tal:x>
+</span>
+
+<td class="content" metal:fill-slot="content">
+
+<form method="POST" onSubmit="return submit_once()"
+      enctype="multipart/form-data"
+      tal:attributes="action context/designator">
+
+<table class="form">
+ <tr>
+  <th>First Name</th>
+  <td tal:content="structure context/firstname/field"></td>
+ </tr>
+ <tr>
+  <th>Last Name</th>
+  <td tal:content="structure context/lastname/field"></td>
+ </tr>
+ <tr>
+  <th>Login Name</th>
+  <td tal:content="structure context/username/field"></td>
+ </tr>
+ <tr>
+  <th>Nickname</th>
+  <td tal:content="structure context/nickname/field"></td>
+ </tr>
+ <tr>
+  <th>Title</th>
+  <td tal:content="structure context/title/menu"></td>
+ </tr>
+ <tr tal:condition="context/is_edit_ok">
+  <th>Login Password</th>
+  <td tal:content="structure context/password/field"></td>
+ </tr>
+ <tr tal:condition="context/is_edit_ok">
+  <th>Confirm Password</th>
+  <td tal:content="structure context/password/confirm"></td>
+ </tr>
+ <tr tal:condition="python:request.user.hasPermission('Web Roles')">
+  <th>Roles</th>
+  <td>
+   <input tal:condition="context/id"
+          tal:replace="structure context/roles/field">
+   <input name="roles" tal:condition="not:context/id"
+          tal:attributes="value db/config/NEW_WEB_USER_ROLES">
+   <br>(to give the user more than one role, enter a comma,separated,list)
+  </td>
+ </tr>
+ <tr>
+  <th>Phone</th>
+  <td tal:content="structure context/phone/field"></td>
+ </tr>
+ <tr>
+  <th>External Phone</th>
+  <td tal:content="structure context/external_phone/field"></td>
+ </tr>
+ <tr>
+  <th>Private Phone</th>
+  <td tal:content="structure context/private_phone/field"></td>
+ </tr>
+ <tr>
+  <th>Organisation</th>
+  <td tal:content="structure context/organisation/menu"></td>
+ </tr>
+ <tr>
+  <th>Location</th>
+  <td tal:content="structure context/location/field"></td>
+ </tr>
+ <tr>
+  <th>Room</th>
+  <td tal:content="structure context/room/menu"></td>
+ </tr>
+ <tr>
+  <th>Department</th>
+  <td tal:content="structure context/department/menu"></td>
+ </tr>
+ <tr>
+  <th>Position</th>
+  <td tal:content="structure context/position/menu"></td>
+ </tr>
+ <tr>
+  <th>Superior</th>
+  <td tal:content="structure context/superior/menu"></td>
+ </tr>
+ <tr>
+  <th>Substitutes</th>
+  <td tal:content="structure context/substitutes/menu"></td>
+ </tr>
+ <tr>
+  <th>Job Description</th>
+  <td tal:content="structure context/job_description/multiline"></td>
+ </tr>
+ <tr>
+  <th>Timezone</th>
+  <td>
+   <input tal:replace="structure context/timezone/field">
+   <br>(this is a numeric hour offset, the default is
+   <span tal:replace="db/config/DEFAULT_TIMEZONE" />)
+  </td>
+ </tr>
+ <tr>
+  <th>E-mail address</th>
+  <td tal:content="structure context/address/field">address</td>
+ </tr>
+ <tr>
+  <th>Alternate E-mail addresses<br>One address per line</th>
+  <td tal:content="structure context/alternate_addresses/multiline">alternate_addresses</td>
+ </tr>
+ <tr tal:condition="context/is_edit_ok">
+  <th>Picture</th>
+  <td>
+   <input type="file"   name="file-1@content" size="40">
+   <input type="hidden" name="@link@pictures" value="file-1">
+  </td>
+ </tr>
+
+ <tr tal:condition="context/is_edit_ok">
+  <td>
+   &nbsp;
+   <input type="hidden" name="@template" value="item">
+   <input type="hidden" name="@required" value="username,address">
+  </td>
+  <td tal:content="structure context/submit">submit button here</td>
+ </tr>
+</table>
+</form>
+
+<table class="files" tal:condition="context/pictures">
+ <tr>
+  <th colspan="4" class="header">pictures</th>
+ </tr>
+ <tr>
+  <th>File name</th>
+  <th>Uploaded</th>
+  <th>Type</th>
+  <th>Remove</th>
+ </tr>
+ <tr tal:repeat="file context/pictures">
+  <td>
+   <img tal:attributes="src file/download_url">
+  </td>
+  <td>
+   <span tal:content="file/creator">creator's name</span>,
+   <span tal:content="file/creation">creation date</span>
+  </td>
+  <td tal:content="file/type" />
+  <td>
+   <form style="padding:0"
+         tal:condition="context/is_edit_ok"
+         tal:attributes="action string:user${context/id}">
+    <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
+    <input type="hidden" name="@action" value="edit">
+    <input type="submit" value="remove">
+   </form>
+  </td>
+ </tr>
+</table>
+
+<tal:block tal:replace="structure context/history" />
+
+</td>
+
+</tal:block>

@@ -1,0 +1,14 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">TTTech - Home</title>
+<tal:block metal:fill-slot="menubar">
+</tal:block>
+<td class="content" metal:fill-slot="content">
+You're at home, baby ;)</td>
+</tal:block>
+
+<!--
+<span tal:replace="structure python:db.issue.renderWith('index',
+    sort=('-', 'activity'), group=('+', 'priority'), filter=['status'],
+    columns=['id','activity','title','creator','assignedto', 'status'],
+    filterspec={'status':['-1','1','2','3','4','5','6','7']})" />
+-->

@@ -232,7 +232,7 @@ def open (name = None):
         , queries               = Multilink ("query")
         , roles                 = String    ()
         , timezone              = String    ()
-        , picture               = Link      ("file")
+        , pictures              = Multilink ("file")
         # XXX: add wiki page url in the web-template based on firstname &
         #      lastname
         # Note: email adresses could get set automatically by a detector on
@@ -452,6 +452,7 @@ def open (name = None):
         , severity              = Link      ("severity")
         , product               = Link      ("product")
         , version               = String    ()
+        , files                 = Multilink ("file")
         , fixed_in              = String    ()
         , files_affected        = String    () # XXX only cert ???
         , closed                = Date      ()
