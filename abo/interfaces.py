@@ -89,26 +89,27 @@ class TemplatingUtils:
             pass
         return ''
 
-    def formatlink (self, hprop, name, id) :
+    def formatlink (self, hprop, item, name, id) :
         return """<a class="%s" href="%s%s">%s</a>""" \
-            % (self.linkclass (name), name, id, hprop)
+            % (self.linkclass (item), name, id, hprop)
 
     def listingprop (self, item, prop, labelprop, classname) :
         f     = prop [1]
         hprop = item [f]
         l     = len (prop)
         if f == labelprop or f == 'id' :
-            return self.formatlink (hprop, classname, item.id)
+            return self.formatlink (hprop, hprop, classname, item.id)
         elif l > 2 :
             cln = prop [2]
             fn  = prop [3]
             if isinstance (hprop, MultilinkHTMLProperty) : 
                 return ", ".join \
-                    ([ self.formatlink (hprop [i][fn], cln, hprop._value [i])
+                    ([ self.formatlink
+                           (hprop [i][fn], hprop [i], cln, hprop._value [i])
                        for i in range (len (hprop))
                     ])
             else :
-                return self.formatlink (hprop [fn], cln, hprop._value)
+                return self.formatlink (hprop [fn], hprop, cln, hprop._value)
         return hprop.plain ()
 
     def menu_or_field (self, prop) :
