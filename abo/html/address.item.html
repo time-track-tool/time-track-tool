@@ -50,9 +50,8 @@
      <td tal:content="structure context/email/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('function')"
-         rowspan="3"></th>
-     <td rowspan=3>
+     <th tal:content="structure python:utils.fieldname('function')"></th>
+     <td>
       <textarea tal:content="context/function/plain"
                 name="function"
                 wrap="hard"
@@ -60,16 +59,15 @@
                 cols="30">
       </textarea>
      </td>
-     <th tal:content="structure python:utils.fieldname('phone_office')"></th>
-     <td tal:content="structure context/phone_office/field"></td>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname('phone_home')"></th>
-     <td tal:content="structure context/phone_home/field"></td>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname('phone_mobile')"></th>
-     <td tal:content="structure context/phone_mobile/field"></td>
+     <th tal:content="structure python:utils.fieldname('phone')"></th>
+     <td>
+      <textarea tal:content="context/phone/plain"
+                name="phone"
+                wrap="hard"
+                rows="3"
+                cols="30">
+      </textarea>
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('adr_type')"
@@ -114,3 +112,4 @@
  </tal:block>
 
 </tal:block>
+<!-- SHA: fa124c2ab6027aa7aec0fbd7fba8cd076ff5931b -->
