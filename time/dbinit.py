@@ -672,7 +672,7 @@ def init(adminpw):
                            , order       = order
                            , description = desc
                            )
-    for order, name, trans, desc in wps :
+    for order, name, trans, desc in tasks :
         if trans :
             id        = task_status.lookup (name)
             trans_ids = [task_status.lookup (t) for t in trans]

@@ -3,12 +3,13 @@
 
 <tal:block metal:fill-slot="content">
  <tal:block tal:define="batch request/batch;
-                        props python:( ('Id'         , 'id'         , ''                   , ''        , 'V')
-                                     , ('Title'      , 'title'      , ''                   , ''        , 'T')
-                                     , ('Responsible', 'responsible', 'user'               , 'username', 'L')
-                                     , ('Status'     , 'status'     , 'work_package_status', 'name'    , 'L')
-                                     , ('Release'    , 'release'    , 'release'            , 'title'   , 'L')
-                                     , ('Nosy List'  , 'nosy'       , 'user'               , 'username', 'M')
+                        props python:( ('Id'         , 'id'         , ''             , ''        , 'V')
+                                     , ('Title'      , 'title'      , ''             , ''        , 'T')
+                                     , ('Responsible', 'responsible', 'user'         , 'username', 'L')
+                                     , ('Status'     , 'status'     , 'task_status'  , 'name'    , 'L')
+                                     , ('Type'       , 'type'       , 'document_type', 'name'    , 'L')
+                                     , ('Release'    , 'release'    , 'release'      , 'title'   , 'L')
+                                     , ('Nosy List'  , 'nosy'       , 'user'         , 'username', 'M')
                                      );
                         multi python:( 'responsible'
                                      , 'status'

@@ -57,7 +57,7 @@
         <th>Responsible</th>
        </tr>
        <tr tal:repeat="doc context/documents/reverse">
-        <td tal:define="_xx python:available.append(doc.type.id)">
+        <td tal:define="_xx python:available.append (doc.type.id)">
          <a tal:attributes="href doc/designator"
             tal:content="doc/type/description"></a>
         </td>
@@ -83,7 +83,6 @@
        </tr>
       </table>
       <input type="hidden" name="@link@documents" value="document-1" />
-      <input type="hidden" name="document-1@release" tal:attributes="value context/id" />
      </td>
     </tr>
 

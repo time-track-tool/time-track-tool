@@ -128,28 +128,18 @@
      </td>
     </tr>
 
-    <tr>
-     <th>tasks</th>
-     <td>
-      <span tal:repeat="t context/tasks">
-       <a tal:attributes="href t/designator"
-          tal:content="t/designator"></a><br>
-      </span>
-     </td>
-    </tr>
-
     <tr tal:condition="documents">
      <th>Documents</th>
      <td>
       <table class="files">
        <tr>
-        <th>Status</th>
         <th>Responsible</th>
+        <th>Status</th>
         <th>Type</th>
        </tr>
        <tr tal:repeat="task documents">
-        <td tal:content="task/status/plain"></td>
         <td tal:content="task/responsible/plain"></td>
+        <td tal:content="task/status/plain"></td>
         <td>
          <a tal:attributes="href task/designator"
             tal:content="task/kind/description"></a>
@@ -164,13 +154,13 @@
      <td>
       <table class="files">
        <tr>
-        <th>Status</th>
         <th>Responsible</th>
+        <th>Status</th>
         <th>Title</th>
        </tr>
        <tr tal:repeat="task implementation_tasks">
-        <td tal:content="task/status/plain"></td>
         <td tal:content="task/responsible/plain"></td>
+        <td tal:content="task/status/plain"></td>
         <td>
          <a tal:attributes="href task/designator"
             tal:content="task/title"></a>
@@ -185,19 +175,19 @@
      <td>
       <table class="files">
        <tr>
-        <th>Status</th>
         <th>Responsible</th>
-        <th>Test Passed</th>
+        <th>Status</th>
         <th>Title</th>
+        <th>Test Passed</th>
        </tr>
        <tr tal:repeat="task testcases">
-        <td tal:content="task/status/plain"></td>
         <td tal:content="task/responsible/plain"></td>
-        <td tal:content="task/test_ok/plain"></td>
+        <td tal:content="task/status/plain"></td>
         <td>
          <a tal:attributes="href task/designator"
             tal:content="task/title"></a>
         </td>
+        <td tal:content="task/test_ok/plain"></td>
        </tr>
       </table>
      </td>
@@ -208,13 +198,13 @@
      <td>
       <table class="files">
        <tr>
-        <th>Status</th>
         <th>Responsible</th>
+        <th>Status</th>
         <th>Title</th>
        </tr>
        <tr tal:repeat="task documentation_tasks">
-        <td tal:content="task/status/plain"></td>
         <td tal:content="task/responsible/plain"></td>
+        <td tal:content="task/status/plain"></td>
         <td>
          <a tal:attributes="href task/designator"
             tal:content="task/title"></a>
@@ -229,13 +219,11 @@
      <td>
       <table>
        <tr>
-        <th>Title</th>
-        <td><input type="text" name="task-1@title" size="40"
-                   onChange="if (document.forms['itemSynopsis'].elements['task-1@kind'].selectedIndex==0)
-                             {alert ('You have to select a Kind for the task!'); }"></td>
+        <th class="required">Title</th>
+        <td><input type="text" name="task-1@title" size="40"></td>
        </tr>
        <tr>
-        <th>Kind</th>
+        <th class="required">Kind</th>
         <td>
          <select name="task-1@kind">
           <option selected="selected" value="-1">- select kind of task to add -</option>

@@ -155,7 +155,7 @@ def suspend_tasks_and_defects (db, cl, nodeid, old_values) :
         if tasks :
             t_id_suspended = db.task_status.lookup ("suspended")
             for task in tasks :
-                db.task.set (task, status = t_id_suspende)
+                db.task.set (task, status = t_id_suspended)
         defects = cl.get (nodeid, "defects")
         if defects :
             d_id_suspended = db.defect_status.lookup ("suspended")
@@ -163,14 +163,18 @@ def suspend_tasks_and_defects (db, cl, nodeid, old_values) :
                 db.defect.set (defect, status = d_id_suspended)
 # end def suspend_workpackages
 
-def task_defaults (db, cl, nodeid, new_values) :
+def add_task (db, cl, nodeid, newvalues) :
     """auditor for task.create:
 
-    sets title if not given
-    """
-    if not new_values.get ("title") :
-        new_values ["title"] = "[no title]"
-# end def task_defaults
+    checks if both task.kind and task.title are set"""
+    title = newvalues.get ("title")
+    kind  = newvalues.get ("kind" )
+
+    if kind and not title :
+        raise Reject, "Required task property title not supplied"
+    if title and not kind :
+        raise Reject, "Required task property kind not supplied"
+# end def add_task
 
 def init (db) :
     db.feature.audit             ("create", create_defaults          )
@@ -178,7 +182,7 @@ def init (db) :
     db.feature.react             ("set"   , suspend_tasks_and_defects)
     db.task.react                ("set"   , update_features_status   )
     db.task.react                ("set"   , update_features_test_ok  )
-    db.task.audit                ("create", task_defaults            )
+    db.task.audit                ("create", add_task                 )
 # end def init
 
 # TODO: feature.audit:

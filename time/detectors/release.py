@@ -96,9 +96,25 @@ def update_release_status (db, cl, nodeid, old_values) :
     db.release.set (release_id, status = last)
 # end def update_release_status
 
+def backlink_documents (db, cl, nodeid, oldvalues) :
+    """reactor on release:
+    when the contents of the "documents" property chenges, the newly attached
+    docuemnts get their "release" property set correctly.
+    """
+    old_docs = oldvalues.get ("documents", [])
+    new_docs = db.release.get (nodeid, "documents")
+    print old_docs
+    print new_docs
+    if new_docs != old_docs and new_docs != [] :
+        new_docs = [d for d in new_docs if d not in old_docs]
+        for d in new_docs :
+            db.document.set (d, release = nodeid)
+# end def backlink_documents
+
 def init (db) :
     db.release.audit   ("create", add_milestones)
     db.release.react   ("create", update_milestones)
+    db.release.react   ("set"   , backlink_documents)
     db.milestone.react ("set"   , update_release_status)
 # end def init
 
