@@ -85,6 +85,11 @@
        </option>
        </tal:block>
       </select>
+      <span tal:condition="context/closer/isset">
+       Closed by: <a tal:attributes="href context/closer/designator"
+                     tal:content="context/closer"></a>
+       on <span tal:replace="python: context.closed.pretty (format='%Y-%m-%d')"/>
+      </span>
      </td>
      <th></th>
      <td></td>

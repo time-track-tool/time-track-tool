@@ -27,6 +27,7 @@
 #
 # Revision Dates
 #    22-Jul-2004 (MPH) Creation
+#     4-Nov-2004 (MPH) Changed Milestones
 #    ««revision-date»»···
 #--
 #
@@ -36,19 +37,18 @@ from roundup.exceptions import Reject
 
 def add_milestones (db, cl, nodeid, new_values) :
     milestones = \
-        [ ("M0"  , "+     0d", "Release Planning has started")
-        , ("M50" , "+ 1m 20d", "Release Planning ready for start of Design")
+        [ ("M000", "+     0d", "Release Planning has started")
         , ("M100", "+ 2m 15d", "Release Planning completed, Feature Freeze")
-        , ("M150", "+ 3m"    , "Design ready for start of Implementation")
-        , ("M200", "+ 3m 20d", "Desgin completed")
-        , ("M250", "+ 4m 20d", "Implementation ready for start of "
-                               "Integration Test")
+        , ("M200", "+ 3m 20d", "Design completed")
+        , ("M210", "+ 3m 30d", "Check for Customer Appslications to be "
+                               "used as Testcases")
         , ("M300", "+ 6m 20d", "Implementation completed")
-        , ("M310", "+ 7m"    , "TC Spec & TC Implementation completed")
-        , ("M350", "+ 7m 15d", "Integration Test ready for start of Test by "
-                               "Services; Alpha Release")
+        , ("M310", "+ 7m    ", "TC Spec & TC Implementation completed")
         , ("M400", "+ 8m 15d", "Integration Test completed; Beta Release")
-        , ("M500", "+ 9m 10d", "Test by Services completed; Production Release")
+        , ("M410", "+ 8m 20d", "Documentation Completed")
+        , ("M490", "+ 9m    ", "Bugfixing completed")
+        , ("M500", "+ 9m 10d", "Test by Services completed; Production "
+                               "Release")
         , ("M600", "+10m"    , "Shipment completed")
         ]
     order  = 1

@@ -31,7 +31,7 @@
 #    ««revision-date»»···
 #--
 #
-from roundup import roundupdb, hyperdb
+from roundup import roundupdb, hyperdb, date
 from roundup.exceptions import Reject
 
 def add_defect_to_release (db, cl, nodeid, old_values) :
@@ -65,11 +65,7 @@ def check_new_defect (db, cl, nodeid, new_values) :
     milestone_name = db.milestone.get (milestone_id, "name"  )
     ms_value       = int (milestone_name [1:]) # cut away the `M` from e.g.
                                                # "M100"
-    if ms_value < 50 :
-        rel_title = db.release.get (release_id, "title")
-        raise Reject, "Release %r is not open for reporting bugs - " \
-                      "wait until 'M50' is reached !"% rel_title
-    elif ms_value >= 500 :
+    if ms_value >= 500 :
         # clear solved_in_release - shouldn't be set anyway
         if new_values.has_key ("solved_in_release") :
             del new_values ["solved_in_release"]
@@ -233,14 +229,33 @@ def audit_superseder (db, cl, nodeid, newvalues) :
       * ensure that superseder, once set can not be removed again
     """
     new_sup = newvalues.get ("superseder")
+    cd_id   = db.defect_status.lookup ("closed-duplicate")
     if new_sup == nodeid :
         raise Reject, "Cant set superseder to yourself"
-    if new_sup :
-        cd_id = db.defect_status.lookup ("closed-duplicate")
-        newvalues ["status"] = cd_id
     if not new_sup and cl.get (nodeid, "superseder") :
         raise Reject, "You are not allowed to remove the superseder"
+    if newvalues.get ("status", None) == cd_id and not new_sup :
+        raise Reject, "You need to specify a superseder, when setting "\
+                      "to 'closed-duplicate'"
+    if new_sup :
+        newvalues ["status"] = cd_id
 # end def audit_superseder
+
+def set_closer (db, cl, nodeid, newvalues) :
+    """auditor on defect's status change
+
+    when status changes to one of closed-*:
+     - `closer` is set to the current user
+     - `closed` is set to current time
+    """
+    status_id = newvalues.get ("status")
+    if status_id :
+        id_min = db.defect_status.lookup ("closed")
+        id_max = db.defect_status.lookup ("closed-rejected")
+        if status_id >= id_min and status_id <= id_max :
+            newvalues ["closer"] = db.getuid ()
+            newvalues ["closed"] = date.Date (".")
+# end def set_closer
 
 def init (db) :
     pass
@@ -251,6 +266,7 @@ def init (db) :
     db.defect.audit ("set"   , belongs_to_auditor   )
     db.defect.react ("set"   , belongs_to_reactor   )
     db.defect.audit ("set"   , audit_superseder     )
+    db.defect.audit ("set"   , set_closer           )
 # end def init
 
 ### __END__ defaults

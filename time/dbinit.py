@@ -24,6 +24,7 @@
 #                        have to possibility to add defects also to tasks
 #                      - added `defects` multilink to `feature` (was missing)
 #                      - cleanup of unused classes
+#     4-Nov-2004 (MPH) Effort: `Interval` -> `Number`
 #    ««revision-date»»···
 #--
 #
@@ -413,8 +414,8 @@ def open (name = None):
         , "task"
         , status                = Link      ("task_status")
         , kind                  = Link      ("task_kind")
-        , effort                = Interval  () # XXX: was: Number, but
-                                               # Interval is better suited
+        , effort                = Number    () # not Interval, as it's
+                                               # actually in workingdays
         , depends               = Multilink ("task")
         , needs                 = Multilink ("task")
         , files                 = Multilink ("file")
@@ -445,7 +446,7 @@ def open (name = None):
                                                         # "solved_in_release"
                                                         # is initially set to
                                                         # "found_in_release"
-        , estimated_effort      = Interval  ()
+        , estimated_effort      = Number    ()
         , fixed_until           = Date      () # currently optional, but the
                                         # opinions differ if it is generally
                                         # good to only say how long does it
@@ -821,11 +822,13 @@ def init(adminpw):
             , ("closed", "suspended")
             , ("closed", "assigned", "suspended")
             )
-          , ("5", "closed"          , "clos", False, "Rest in peace"      , (), ())
-          , ("6", "closed-duplicate", "dupl", False, "Is a duplicate"     , (), ())
-          , ("7", "closed-mistaken" , "mist", False, "Originator went mad", (), ())
-          , ("8", "closed-rejected" , "rej ", True , "We dont do it"      , (), ())
-          , ("8", "suspended"       , "susp", False
+          , ("5", "closed"          , "clos", False, "Rest in peace"  , (), ())
+          , ("6", "closed-duplicate", "dupl", False, "Is a duplicate" , (), ())
+          , ("7", "closed-mistaken" , "mist", False, "Originator "
+                                                     "misunderstood "
+                                                     "something"      , (), ())
+          , ("8", "closed-rejected" , "rej ", True , "We dont do it"  , (), ())
+          , ("9", "suspended"       , "susp", False
             , "We will fix this later"
             , ("assigned", )
             , ("assigned", )
@@ -936,17 +939,17 @@ def init(adminpw):
     # create TTTech users:
     # XXX: we should import this from somewhere ;-)
     # but it should reside here - or not ???
-    user.create ( username = "priesch"
-                , password = password.Password ("")
-                , address  = "priesch@tttech.com"
-                , roles    = "Admin, User, Nosy"
-                )
+##     user.create ( username = "priesch"
+##                 , password = password.Password ("")
+##                 , address  = "priesch@tttech.com"
+##                 , roles    = "Admin, User, Nosy"
+##                 )
 
-    user.create ( username = "pr"
-                , password = password.Password ("")
-                , address  = "priesch@tttech.com"
-                , roles    = "Admin, User, Nosy"
-                )
+##     user.create ( username = "pr"
+##                 , password = password.Password ("")
+##                 , address  = "priesch@tttech.com"
+##                 , roles    = "Admin, User, Nosy"
+##                 )
 
     # products:
     # name, responsible, description, nosy

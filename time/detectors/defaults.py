@@ -35,6 +35,15 @@
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
 
+def union (* lists) :
+    """Compute the union of lists.
+    """
+    tab = {}
+    for l in lists :
+        map (lambda x, tab = tab : tab.update  ({x : 1}), l)
+    return tab.keys ()
+# end def union
+
 def default_responsible (db, cl, nodeid, new_values) :
     if not new_values.has_key ("responsible") :
         new_values ["responsible"] = db.getuid()
@@ -54,6 +63,31 @@ def default_defect_responsible (db, cl, nodeid, new_values) :
         new_values ["responsible"] = prod_resp
 # end def default_defect_responsible
 
+def default_defect_nosy (db, cl, nodeid, new_values) :
+    """auditor on defect
+
+    sets the nosy list to contain creator, responsible and the product's nosy
+    users.
+    """
+    nosy      = new_values.get ("nosy"   , []    )
+    product   = new_values.get ("product"        )
+    prod_nosy = db.product.get (product  , "nosy")
+    creator   = new_values.get ("creator"        )
+    print "blaa"
+    print nosy, prod_nosy, creator, new_values ["responsible"]
+    nosy      = union ( nosy
+                      , prod_nosy
+                      , [ creator
+                        , new_values ["responsible"]
+                        ]
+                      )
+    print nosy
+    # XXX: why is the next neccesary ???
+    if None in nosy :
+        nosy.remove (None)
+    new_values ["nosy"] = nosy
+# end def default_defect_nosy
+
 def init (db) :
     db.document.audit            ("create", default_responsible)
     db.release.audit             ("create", default_responsible)
@@ -62,6 +96,7 @@ def init (db) :
     db.task.audit                ("create", default_responsible)
     db.defect.audit              ("create", default_defect_responsible)
     db.defect.audit              ("create", default_defect_status)
+    db.defect.audit              ("create", default_defect_nosy)
 # end def init
 
 ### __END__ defaults

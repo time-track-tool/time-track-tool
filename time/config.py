@@ -54,7 +54,7 @@ MAILHOST_TLS_KEYFILE = ''
 MAILHOST_TLS_CERTFILE = ''
 
 # The domain name used for email addresses.
-MAIL_DOMAIN = 'localhost'
+MAIL_DOMAIN = 'tttmexx.at.vie.tttech.ttt'
 
 # This is the directory that the database is going to be stored in
 DATABASE = os.path.join(TRACKER_HOME, 'db')
@@ -72,7 +72,7 @@ TRACKER_EMAIL = 'issue_tracker@%s'%MAIL_DOMAIN
 # information sent to users of the tracker. The URL MUST include the cgi-bin
 # part or anything else that is required to get to the home page of the
 # tracker. You MUST include a trailing '/' in the URL.
-TRACKER_WEB = 'http://tttgentoovm:8000/tttech_postgresql/'
+TRACKER_WEB = 'http://tttmexx:8000/tttech_postgresql/'
 
 # The email address that roundup will complain to if it runs into trouble
 ADMIN_EMAIL = 'roundup-admin@%s'%MAIL_DOMAIN

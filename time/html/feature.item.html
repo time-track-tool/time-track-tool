@@ -44,7 +44,8 @@
      <td class="task_list">
       <span tal:content="structure context/release/menu"
             tal:condition="context/is_edit_ok"></span>
-      <tal:block tal:define="item context/release">
+      <tal:block tal:condition="context/release/isset"
+                 tal:define="item context/release">
        <a tal:attributes="href item/designator;
                           class string:release_${item/status}"
           tal:content="structure string:${item/designator} (${item/status}, ${item/responsible/nickname})"></a>
