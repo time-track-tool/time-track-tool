@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
 # This module is free software, and you may redistribute it and/or modify
@@ -16,6 +17,21 @@
 # SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #
 #$Id$
+#
+#++
+# Name
+#    nosyreaction
+#
+# Purpose
+#    Send out notification emails to all the users on the nosy list.
+#
+# Revision Dates
+#    24-Jun-2004 (MPH) Creation
+#     6-Jul-2004 (MPH) Changed `*_document` to `document`.
+#    ««revision-date»»···
+#--
+#
+
 
 from roundup import roundupdb, hyperdb
 
@@ -134,8 +150,7 @@ def updatenosy(db, cl, nodeid, newvalues):
     newvalues['nosy'] = current.keys()
 
 def init(db):
-    nosy_classes = [ "design_document"
-                   , "planning_document"
+    nosy_classes = [ "document"
                    , "release"
                    , "feature"
                    , "work_package"
