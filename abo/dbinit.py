@@ -1,6 +1,9 @@
 #! /usr/bin/python
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
-# Reichergasse 131, A-3411 Weidling. office@runtux.com
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -23,6 +26,7 @@ import os
 
 import config
 from select_db import Database, Class, FileClass, IssueClass
+from rup_utils import uni
 
 def open(name=None):
     ''' as from the roundupdb method openDB 
@@ -66,6 +70,7 @@ def open(name=None):
         ( db, "abo_type"
         , name                = String    ()
         , description         = String    ()
+        , order               = Number    ()
         )
     abo_type.setkey ("name")
 
@@ -79,9 +84,7 @@ def open(name=None):
         , country             = String    ()
         , postalcode          = String    ()
         , city                = String    ()
-        , phone_home          = String    ()
-        , phone_office        = String    ()
-        , phone_mobile        = String    ()
+        , phone               = String    ()
         , fax                 = String    ()
         , salutation          = String    ()
         , messages            = Multilink ("msg")
@@ -243,15 +246,111 @@ def init(adminpw):
 
     # create the two default users
     user = db.getclass('user')
-    user.create(username="admin", password=adminpw,
-        address=config.ADMIN_EMAIL, roles='Admin')
-    user.create(username="anonymous", roles='Anonymous')
+    user.create \
+        ( username="admin"
+        , password=adminpw
+        , address=config.ADMIN_EMAIL
+        , roles='Admin'
+        )
+    user.create (username="anonymous", roles='Anonymous')
 
     # add any additional database create steps here - but only if you
     # haven't initialised the database with the admin "initialise" command
 
+    currency = db.getclass ('currency')
+    currency.create (name = 'CHF', description = 'Schweizer Franken')
+    currency.create (name = 'EUR', description = 'Euro')
+    currency.create (name = 'GBP', description = 'Britische Pfund')
+    currency.create (name = 'USD', description = 'US-Dollar')
+
+    abo_type = db.getclass ('abo_type')
+    abo_type.create \
+        ( name        = 'ZFW12norm'
+        , description = uni ('Jahresabo Zeit-Fragen')
+        , order       = 1
+        )
+    abo_type.create \
+        ( name        = 'ZFW06norm'
+        , description = uni ('Halbjahresabo Zeit-Fragen')
+        , order       = 2
+        )
+    abo_type.create \
+        ( name        = 'ZFW12gift'
+        , description = uni ('Geschenkabo Zeit-Fragen')
+        , order       = 3
+        )
+    abo_type.create \
+        ( name        = 'CCM12norm'
+        , description = uni ('Subscription Current Concerns')
+        , order       = 4
+        )
+    abo_type.create \
+        ( name        = 'HDM12norm'
+        , description = uni ('abonnement Horizons et débats')
+        , order       = 5
+        )
+    abo_type.create \
+        ( name        = 'ZFM12norm'
+        , description = uni ('Jahresabo Zeit-Fragen Monatsausgabe')
+        , order       = 6
+        )
+    abo_type.create \
+        ( name        = 'ZFM12gift'
+        , description = uni ('Geschenkabo Zeit-Fragen Monatsausgabe')
+        , order       = 7
+        )
+    abo_type.create \
+        ( name        = 'ZFM12spon'
+        , description = uni ('Förderabo Zeit-Fragen Monatsausgabe')
+        , order       = 8
+        )
+    abo_type.create \
+        ( name        = 'ZFW12free'
+        , description = uni ('Gratisabo Zeit-Fragen')
+        , order       = 9
+        )
+    abo_type.create \
+        ( name        = 'ZFW12spec'
+        , description = uni ('Spezialabo Zeit-Fragen')
+        , order       = 10
+        )
+    abo_type.create \
+        ( name        = 'CCM12gift'
+        , description = uni ('Gift subscription Current Concerns')
+        , order       = 11
+        )
+    abo_type.create \
+        ( name        = 'CCM12free'
+        , description = uni ('Free subscription Current Concerns')
+        , order       = 12
+        )
+    abo_type.create \
+        ( name        = 'HDM12gift'
+        , description = uni ('abonnement-cadeau Horizons et débats')
+        , order       = 13
+        )
+    abo_type.create \
+        ( name        = 'ZFW12pate'
+        , description = uni ('Patenschaftsabo Zeit-Fragen')
+        , order       = 14
+        )
+    abo_type.create \
+        ( name        = 'ZFW06gift'
+        , description = uni ('Halbjahres-Geschenkabo Zeit-Fragen')
+        , order       = 15
+        )
+    abo_type.create \
+        ( name        = 'ZFW06spec'
+        , description = uni ('Halbjahres-Spezialabo Zeit-Fragen')
+        , order       = 16
+        )
+
+    valid = db.getclass ('valid')
+    valid.create \
+        ( name = uni ('gültig')
+        , description = uni ('Gültige Adresse')
+        )
+
     db.commit()
 
 # vim: set filetype=python ts=4 sw=4 et si
-
-#SHA: 3214e7d7760b31bdabc7afcb6a4a088e334ef782
