@@ -13,23 +13,61 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname('invoice_no')"></th>
-     <td tal:content="structure context/invoice_no/field"></td>
+     <td tal:content="structure context/invoice_no"></td>
      <th tal:content="structure python:utils.fieldname('abo')"></th>
-     <td tal:content="structure context/abo"></td>
+     <td tal:content="structure python:utils.formatlink
+         (context.abo.aboprice, 'abo', 'abo', context.abo.id)"></td>
     </tr>
     <tr tal:condition="context/id">
-     <th>Abonnent Nr: </th>
-     <td tal:content="structure context/abo/subscriber/id" colspan=3></td>
+     <th tal:content="structure python:utils.fieldname('subscriber')"></th>
+     <td tal:content="structure python:utils.formatlink
+         (   str (context.abo.subscriber.firstname) + ' '
+           + str (context.abo.subscriber.lastname)
+         , 'address', 'address', context.abo.subscriber.id
+         )"></td>
+     <th tal:content="structure python:utils.fieldname('payer')"></th>
+     <td tal:content="structure python:utils.formatlink
+         (   str (context.abo.payer.firstname) + ' '
+           + str (context.abo.payer.lastname)
+         , 'address', 'address', context.abo.payer.id
+         )"></td>
     </tr>
-    <tr tal:condition="context/id">
-     <th tal:content="structure python:utils.fieldname('firstname')"></th>
-     <td tal:content="structure context/abo/subscriber/firstname"></td>
-     <th tal:content="structure python:utils.fieldname('lastname')"></th>
-     <td tal:content="structure context/abo/subscriber/lastname"></td>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('period_start')"></th>
+     <td tal:content="structure context/period_start"></td>
+     <th tal:content="structure python:utils.fieldname('period_end')"></th>
+     <td tal:content="structure context/period_end"></td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('amount')"></th>
+     <td tal:content="structure context/amount/field"></td>
+     <th tal:content="structure python:utils.fieldname('currency')"></th>
+     <td tal:content="structure context/currency/menu"></td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('balance_open')"></th>
+     <td tal:content="structure context/balance_open/field"></td>
+     <th tal:content="structure python:utils.fieldname('send_it')"></th>
+     <td tal:content="structure context/send_it/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('n_sent')"></th>
+     <td tal:content="structure context/n_sent/field"></td>
+     <th tal:content="structure python:utils.fieldname('last_sent')"></th>
+     <td tal:content="structure context/last_sent"></td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('receipt_no')"></th>
+     <td tal:content="structure context/receipt_no/field"></td>
+     <th tal:content="structure python:utils.fieldname('date_payed')"></th>
+     <td tal:content="structure context/date_payed/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('bookentry')"></th>
+     <td tal:content="structure context/bookentry" colspan=3></td>
     </tr>
    </tal:block>
   </tal:block>
  </tal:block>
 
 </tal:block>
-<!-- SHA: fa124c2ab6027aa7aec0fbd7fba8cd076ff5931b -->

@@ -11,9 +11,11 @@
  ; classname     context/_classname|db/address/_classname
  ; Classname     python: utils.pretty (classname)
  ; klass         python:db [classname] or default
+ ; has_msgs      python:'messages' in klass._klass.getprops ()
  ; is_user       python:uname!='anonymous'
  ; lbl           klass/_klass/labelprop
  ; labelprop     python:(lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
+ ; edit_form     python:()
  ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=subscriber&%3Acolumns=payer&%3Asearch_text=&%40queryname=&id=&aboprice=&amount=&begin=&end=&subscriber=&payer='
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
                         }
@@ -218,7 +220,7 @@
 
   <tal:block metal:define-slot="formatted_class_content"></tal:block>
 
-  <tr tal:condition="context/messages|nothing">
+  <tr tal:condition="has_msgs">
    <th>Notiz</th>
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
@@ -265,7 +267,7 @@
  </tr>
  </table>
 
- <table class="messages" tal:condition="context/messages|nothing">
+ <table class="messages" tal:condition="has_msgs">
   <tr>
    <th colspan="4" class="header"
        tal:content="python:utils.pretty ('messages')">Messages</th>
@@ -404,7 +406,7 @@
      <tal:block tal:repeat="prop props">
       <td tal:condition="python:request.show [prop[1]]"
        tal:content="structure python:utils.listingprop
-        (i, prop, labelprop, classname)"
+        (i, prop, labelprop, classname, prop [1] in edit_form)"
       ></td>
      </tal:block>
     </tr>
@@ -417,6 +419,8 @@
 <!-- query specification form -->
 <form method="GET"
       name="query"
+      tal:define="filtered_props
+        python:[p for p in props if len (p) < 3 or not '.' in p [3]]"
       tal:attributes="action request/classname"
       onSubmit="javascript:if (document.forms['query'].elements[':queryname'].checked==true)
                { document.forms['query'].elements[':queryname'].value = document.forms['query'].elements[':queryname'].value + document.forms['query'].elements['queryname'].value; }">
@@ -476,7 +480,7 @@
       <!-- fill in multi selection boxes -->
       <tr>
        <th style="text-align:left;">Felder:</th>
-   <tal:block tal:repeat="prop props">
+   <tal:block tal:repeat="prop filtered_props">
        <th style="text-align:left;" tal:condition="python:prop[1] in multi"
            tal:content="python:prop[0]+':'"></th>
    </tal:block>
@@ -486,13 +490,13 @@
        <!-- View -->
        <td style="text-align:center;">
         <select multiple name=":columns" size="7">
-         <option tal:repeat="prop props"
+         <option tal:repeat="prop filtered_props"
                  tal:attributes="selected python:request.show[prop[1]];
                                  value    python:prop[1]"
                  tal:content="python:prop[0]"></option>
         </select>
        </td>
-       <tal:block tal:repeat="prop props">
+       <tal:block tal:repeat="prop filtered_props">
         <td style="text-align:center;"
             tal:condition="python:prop[1] in multi">
          <select multiple
@@ -539,7 +543,7 @@
     <td>
      <table border="0" bgcolor="#e0c0c0">
       <!-- fill in text entry fields -->
-   <tal:block tal:repeat="prop props">
+   <tal:block tal:repeat="prop filtered_props">
       <tr tal:condition="python:prop[1] not in multi">
        <th style="text-align:right;"
            tal:content="python:prop[0]+':'"></th>

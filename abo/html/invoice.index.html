@@ -12,27 +12,35 @@
                 , (utils.pretty ('currency'),     'currency')
                 , (utils.pretty ('balance_open'), 'balance_open')
                 , (utils.pretty ('n_sent'),       'n_sent')
+                , (utils.pretty ('send_it'),      'send_it')
                 , (utils.pretty ('last_sent'),    'last_sent')
                 , (utils.pretty ('date_payed'),   'date_payed')
                 , (utils.pretty ('bookentry'),    'bookentry')
                 , (utils.pretty ('receipt_no'),   'receipt_no')
-                , ( utils.pretty ('lastname'),    'abo'
-                  , 'abo',                        'lastname'
+                , ( utils.pretty ('payer'),       'abo'
+                  , 'abo',                        'payer.lastname'
                   )
-                , ( utils.pretty ('firstname'),   'abo'
-                  , 'abo',                        'firstname'
-                  )
-                , ( utils.pretty ('abo_id'),      'abo'
+                , ( utils.pretty ('abo'),         'abo'
                   , 'abo',                        'aboprice'
                   )
                 );
    multi python:( 'valid'
                 ,
-                )
+                );
+   edit_form python:( 'send_it'
+               ,
+               )
   "
   tal:condition="context/is_view_ok">
 
+  <form method="POST" tal:attributes="action request/classname">
   <tal:block metal:use-macro="templates/page/macros/search_display"></tal:block>
+  <p>
+  <input type="submit" value=" Speichern ">
+  <input type="hidden" name="@action" value="edit">
+  <tal:block replace="structure request/indexargs_form" />
+  </p>
+  </form>
 
   <tal:block metal:use-macro="templates/page/macros/search_form">
    <tal:block metal:fill-slot="query_title">
