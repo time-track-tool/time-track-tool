@@ -14,7 +14,8 @@
 #     9-Nov-2004 (MPH) Renamed to user.py
 #     1-Dec-2004 (MPH) Added `update_userlist_html`
 #     5-Apr-2005 (MPH) Changed `tmpnam` to `mkstemp`, fire
-#                      `update_userlist_html` on user.create also.
+#                      `update_userlist_html` on user.create also, removed
+#                      `None` from `is_alias` filterspec
 #    ««revision-date»»···
 #--
 #
@@ -119,7 +120,7 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     f, tmpname = mkstemp (".html", "userlist", root)
     # all 'real' users
     users      = cl.filter ( None # full text search
-                           , filterspec = {"is_alias" : [None, False]}
+                           , filterspec = {"is_alias" : [False]}
                            , sort       = ("+", "username")
                            )
     if users :
