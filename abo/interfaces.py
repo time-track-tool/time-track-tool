@@ -141,6 +141,11 @@ class SearchAttribute :
                     , hprop._value
                     )
         return str (hprop)
+    # end def listingprop
+
+    def sortable (self) :
+        return self.key == self.lnkattr
+    # def sortable
 
 # end class SearchAttribute
 
