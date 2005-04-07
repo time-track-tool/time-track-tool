@@ -1,0 +1,30 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Announcements</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define="batch request/batch;
+                        props python:( ('Id'                , 'id'                , ''                  , ''        , 'V')
+                                     , ('Title'             , 'title'             , ''                  , ''        , 'T')
+                                     , ('Responsible'       , 'responsible'       , 'user'              , 'username', 'L')
+                                     , ('Status'            , 'status'            , 'review_status'     , 'name'    , 'L')
+                                     , ('Review'            , 'review'            , 'review'            , 'title'   , 'L')
+                                     , ('Version'           , 'version'           , ''                  , ''        , 'V')
+                                     , ('Location'          , 'location'          , ''                  , ''        , 'V')
+                                     , ('Comments'          , 'comments'          , 'comment'           , 'title'   , 'M')
+                                     , ('Nosy List'         , 'nosy'              , 'user'              , 'username', 'M')
+                                     );
+                        multi python:( 'responsible'
+                                     , 'status'
+                                     , 'review'
+                                     , 'nosy'
+                                     )"
+            tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+
+  <tal:block metal:fill-slot="query_title">Query Announcements</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

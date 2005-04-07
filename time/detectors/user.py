@@ -154,7 +154,7 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     shutil.move (tmpname, pjoin (root, userlist))
 # end def update_userlist_html
 
-def init(db):
+def init (db) :
     # fire before changes are made
     db.user.audit("set"   , audit_user_fields)
     db.user.audit("create", audit_user_fields)

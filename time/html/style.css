@@ -13,6 +13,11 @@ a[href], a[href]:link {
   color:blue;
   text-decoration: none;
 }
+
+tr.add_new {
+  background-color: #c0c0ff;
+}
+
 /*
 a.feature_raised[href]:hover    {color:orange; text-decoration: underline;   }
 a.feature_raised[href]:link     {color:orange; text-decoration: none;        }
@@ -76,6 +81,12 @@ a.defect_closed-duplicate_[href]       {color:blue;    text-decoration: line-thr
 a.defect_closed-mistaken_[href]        {color:blue;    text-decoration: line-through;}
 a.defect_closed-rejected_[href]        {color:blue;    text-decoration: line-through;}
 a.defect_suspended_[href]              {color:blue;    text-decoration: line-through;}
+
+a.comment_assigned[href]               {color:orange;  text-decoration: none;        }
+a.comment_resolved[href]               {color:green;   text-decoration: none;        }
+a.comment_accepted[href]               {color:blue;    text-decoration: line-through;}
+a.comment_rejected[href]               {color:red;     text-decoration: none;        }
+
 
 /* old stuff
 a.open[href]:hover      { color:red; text-decoration: underline; }

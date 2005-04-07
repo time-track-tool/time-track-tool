@@ -1,0 +1,34 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Reviews</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define="batch request/batch;
+                        props python:( ('Id'                , 'id'                , ''                  , ''        , 'V')
+                                     , ('Title'             , 'title'             , ''                  , ''        , 'T')
+                                     , ('Moderator'         , 'responsible'       , 'user'              , 'username', 'L')
+                                     , ('Status'            , 'status'            , 'review_status'     , 'name'    , 'L')
+                                     , ('QA Repr.'          , 'qa_representative' , 'user'              , 'username', 'L')
+                                     , ('Recorder'          , 'recorder'          , 'user'              , 'username', 'L')
+                                     , ('Peer Reviewers'    , 'peer_reviewers'    , 'user'              , 'username', 'M')
+                                     , ('Opt. Reviewers'    , 'opt_reviewers'     , 'user'              , 'username', 'M')
+                                     , ('Cut Off Date'      , 'cut_off_date'      , ''                  , ''        , 'V')
+                                     , ('Final Meeting Date', 'final_meeting_date', ''                  , ''        , 'V')
+                                     , ('Announcements'     , 'announcements'     , 'announcement'      , 'title'   , 'M')
+                                     , ('Nosy List'         , 'nosy'              , 'user'              , 'username', 'M')
+                                     );
+                        multi python:( 'responsible'
+                                     , 'status'
+                                     , 'qa_representative'
+                                     , 'recorder'
+                                     , 'nosy'
+                                     )"
+            tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+
+  <tal:block metal:fill-slot="query_title">Query Reviews</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

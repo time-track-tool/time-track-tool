@@ -29,6 +29,8 @@
 #     9-Nov-2004 (MPH) Added `completed-but-defects` to `feature_status`
 #    16-Nov-2004 (MPH) Added `May Public Queries` permission to `query`
 #     1-Dec-2004 (MPH) Added `is_alias` to Class `user`
+#     5-Apr-2005 (MPH) Added `composed_of` and `part_of` to `feature`, added
+#                      support for Online Peer Reviews
 #    ««revision-date»»···
 #--
 #
@@ -41,6 +43,7 @@ from   roundup   import hyperdb, password, roundupdb
 class TTT_Issue_Class (Class, roundupdb.IssueClass) :
     """extends the IssueClass with some parameters common to all issues here
     at TTTech.
+
     Note: inheritance methodology stolen from roundup/backends/back_anydbm.py's
           IssueClass ;-)
     """
@@ -162,6 +165,25 @@ def open (name = None):
         , order                 = String    ()
         )
     action_item_status.setkey ("name")
+
+    review_status = Class \
+        ( db
+        , "review_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , order                 = String    ()
+        )
+    review_status.setkey ("name")
+
+    comment_status = Class \
+        ( db
+        , "comment_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , transitions           = Multilink ("comment_status")
+        , order                 = String    ()
+        )
+    comment_status.setkey ("name")
 
     document_status = Class \
         ( db
@@ -381,6 +403,8 @@ def open (name = None):
         , needs                 = Multilink ("feature")
         , release               = Link      ("release")
         , defects               = Multilink ("defect")
+        , composed_of           = Multilink ("feature")
+        , part_of               = Link      ("feature")
         , planned_begin         = Date      () # automatically by import
         , planned_end           = Date      () # automatically by import
         , actual_begin          = Date      () # automatically by status
@@ -457,6 +481,44 @@ def open (name = None):
         , belongs_to_task       = Link      ("task")    # if known
         )
 
+    TTT_Issue_Class \
+        ( db
+        , "review"
+        # `moderator` is implemented with `responsible`
+        , status                = Link      ("review_status")
+        , authors               = Multilink ("user")
+        , qa_representative     = Link      ("user")
+        , recorder              = Link      ("user")
+        , peer_reviewers        = Multilink ("user")
+        , opt_reviewers         = Multilink ("user")
+        , cut_off_date          = Date      ()
+        , final_meeting_date    = Date      ()
+        , files                 = Multilink ("files")
+        , announcements         = Multilink ("announcement")
+        )
+
+    TTT_Issue_Class \
+        ( db
+        , "announcement"
+        , version               = String    ()
+        , location              = String    ()
+        , comments              = Multilink ("comment")
+        , review                = Link      ("review")
+        , status                = Link      ("review_status")
+        , files                 = Multilink ("files")
+        )
+
+    TTT_Issue_Class \
+        ( db
+        , "comment"
+        , severity              = Link      ("severity")
+        , status                = Link      ("comment_status")
+        , review                = Link      ("review")
+        , announcement          = Link      ("announcement")
+        , file_name             = String    ()
+        , line_number           = String    ()
+        )
+
     #
     # SECURITY SETTINGS
     #
@@ -477,6 +539,8 @@ def open (name = None):
         , ("action_item_status", ["User"], ["Admin"           ])
         , ("defect_status"     , ["User"], ["Admin"           ])
         , ("feature_status"    , ["User"], ["Admin"           ])
+        , ("review_status"     , ["User"], ["Admin"           ])
+        , ("comment_status"    , ["User"], ["Admin"           ])
         , ("document_type"     , ["User"], ["Admin"           ])
         , ("severity"          , ["User"], ["Admin"           ])
         , ("product"           , ["User"], ["Admin"           ])
@@ -494,6 +558,9 @@ def open (name = None):
         , ("defect"            , ["User"], ["User"            ])
         , ("meeting"           , ["User"], ["Admin"           ])
         , ("action_item"       , ["User"], ["User"            ])
+        , ("review"            , ["User"], ["User"            ])
+        , ("announcement"      , ["User"], ["User"            ])
+        , ("comment"           , ["User"], ["User"            ])
         ]
 
     roles = \
@@ -536,6 +603,9 @@ def open (name = None):
                    , "defect"
                    , "meeting"
                    , "action_item"
+                   , "review"
+                   , "announcement"
+                   , "comment"
                    ]
     for klass in nosy_classes :
         db.security.addPermission \
@@ -696,6 +766,41 @@ def init(adminpw):
     ai = db.getclass ("action_item_status")
     for order, name, desc in ais :
         ai.create (name = name, description = desc, order = order)
+
+    # review_status
+    # order, name, description
+    rs = [ ("1", "open"  , "The Review is open"  )
+         , ("2", "closed", "The Review is closed")
+         ]
+    r = db.getclass ("review_status")
+    for order, name, desc in rs :
+        r.create (name = name, description = desc, order = order)
+
+    # comment_status
+    # order, name, description, transitions
+    cs = [ ("1", "assigned", "The Comment just got reported"
+           , ("resolved", "rejected")
+           )
+         , ("2", "resolved", "The Comment got resolved from the author"
+           , ("accepted", "assigned")
+           )
+         , ("3", "accepted", "The Fix is accepted by the reviewer"
+           , ()
+           )
+         , ("4", "rejected", "The Comment got rejected"
+           , ()
+           )
+         ]
+    comment_status = db.getclass ("comment_status")
+
+    for order, name, desc, trans in cs :
+        comment_status.create (name = name, description = desc, order = order)
+
+    for order, name, desc, trans in cs :
+        id = comment_status.lookup (name)
+        if trans :
+            trans_ids = [comment_status.lookup (t) for t in trans]
+            comment_status.set (id, transitions = trans_ids)
 
     # defect_status:
     # order, name, abbreviation, cert, description, cert_trans, trans

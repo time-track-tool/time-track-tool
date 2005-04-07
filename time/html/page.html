@@ -74,6 +74,8 @@
               onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value + '?@template=item'; ">
        <option>-- Create New --</option>
        <option value="action_item">Action Item</option>
+       <option tal:condition="python:request.user.hasPermission('Edit', 'review')"
+               value="review">Review</option>
        <option tal:condition="python:request.user.hasPermission('Edit', 'meeting')"
                value="meeting">Meeting</option>
        <option tal:condition="python:request.user.hasPermission('Edit', 'release')"
@@ -103,6 +105,18 @@
        <option value="query?@template=edit">Manage Queries</option>
        <tal:block tal:define="name string:Action Items;
                               klass string:action_item">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Reviews;
+                              klass string:review">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Announcements;
+                              klass string:announcement">
+        <tal:block metal:use-macro="templates/page/macros/query_list"/>
+       </tal:block>
+       <tal:block tal:define="name string:Comments;
+                              klass string:comment">
         <tal:block metal:use-macro="templates/page/macros/query_list"/>
        </tal:block>
        <tal:block tal:define="name string:Meetings;
@@ -223,7 +237,6 @@
       tal:attributes="action context/designator">
 
  <input type="hidden" name="@template" value="item">
- <input type="hidden" name="@required" value="title">
 
  <table class="form" border="0">
   <tr>
@@ -233,7 +246,8 @@
   </tr>
 
   <tr>
-   <th>Responsible</th>
+   <th tal:attributes="class responsible_required | default"
+       tal:content="responsible_title | string:Responsible">Responsible</th>
    <td colspan="3">
     <tal:block tal:define="name      string:responsible;
                            form      string:itemSynopsis;
@@ -283,6 +297,8 @@
    <b>${context/creation}</b> by <b>${context/creator}</b>, last
    changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
 
+ <input type="hidden" name="@required"
+        tal:attributes="value required_attributes | string:title">
 </form>
 
  <table class="form" tal:condition="not:context/id">
@@ -336,6 +352,14 @@
   <a tal:attributes="href item/designator;
                      class string:${klassname}_${item/status}_${postfix}"
      tal:content="structure string:<code>${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname}):</code> ${item/title}"></a><br>
+ </tal:block>
+</tal:block>
+
+<tal:block metal:define-macro="ttt_simple_list">
+ <tal:block tal:repeat="item items">
+  <a tal:attributes="href item/designator;
+                     class string:${klassname}_${item/status}"
+     tal:content="structure string:<code>${item/designator} (${item/status}, ${item/responsible/nickname}):</code> ${item/title}"></a><br>
  </tal:block>
 </tal:block>
 

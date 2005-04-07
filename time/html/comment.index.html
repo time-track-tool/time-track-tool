@@ -1,0 +1,31 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Comments</title>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define="batch request/batch;
+                        props python:( ('Id'                , 'id'                , ''                  , ''        , 'V')
+                                     , ('Title'             , 'title'             , ''                  , ''        , 'T')
+                                     , ('Responsible'       , 'responsible'       , 'user'              , 'username', 'L')
+                                     , ('Status'            , 'status'            , 'review_status'     , 'name'    , 'L')
+                                     , ('Severity'          , 'severity'          , 'severity'          , 'name'    , 'L')
+                                     , ('Review'            , 'review'            , 'review'            , 'title'   , 'L')
+                                     , ('Announcement'      , 'announcement'      , 'announcement'      , 'title'   , 'L')
+                                     , ('Filename'          , 'file_name'         , ''                  , ''        , 'V')
+                                     , ('Linenumber'        , 'line_number'       , ''                  , ''        , 'V')
+                                     , ('Nosy List'         , 'nosy'              , 'user'              , 'username', 'M')
+                                     );
+                        multi python:( 'responsible'
+                                     , 'status'
+                                     , 'severity'
+                                     , 'nosy'
+                                     )"
+            tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+
+  <tal:block metal:fill-slot="query_title">Query Comments</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>
