@@ -19,24 +19,21 @@
    <tal:block metal:fill-slot="ttt_issue_content">
 
     <tr>
-     <th class="required">QA Representative</th>
-     <td colspan="3">
-      <tal:block tal:define="name      string:qa_representative;
-                             form      string:itemSynopsis;
-                             dont_care string:don't care;
-                             selected  context/qa_representative/id | string:0">
-       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-      </tal:block>
-     </td>
-    </tr>
-
-    <tr>
      <th class="required">Recorder</th>
-     <td colspan="3">
+     <td>
       <tal:block tal:define="name      string:recorder;
                              form      string:itemSynopsis;
                              dont_care string:don't care;
                              selected  context/recorder/id | string:0">
+       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      </tal:block>
+     </td>
+     <th class="required">QA Representative</th>
+     <td>
+      <tal:block tal:define="name      string:qa_representative;
+                             form      string:itemSynopsis;
+                             dont_care string:don't care;
+                             selected  context/qa_representative/id | string:0">
        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
       </tal:block>
      </td>
@@ -57,7 +54,7 @@
 
     <tr>
      <th class="required">Peer Reviewers</th>
-     <td colspan="3">
+     <td>
       <tal:block tal:define="size      string:3;
                              name      string:peer_reviewers;
                              form      string:itemSynopsis;
@@ -66,11 +63,8 @@
        <tal:block metal:use-macro="templates/userlist/macros/user_multi"></tal:block>
       </tal:block>
      </td>
-    </tr>
-
-    <tr>
      <th>Optional Reviewers</th>
-     <td colspan="3">
+     <td>
       <tal:block tal:define="size      string:3;
                              name      string:opt_reviewers;
                              form      string:itemSynopsis;
