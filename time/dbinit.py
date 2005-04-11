@@ -31,6 +31,8 @@
 #     1-Dec-2004 (MPH) Added `is_alias` to Class `user`
 #     5-Apr-2005 (MPH) Added `composed_of` and `part_of` to `feature`, added
 #                      support for Online Peer Reviews
+#    11-Apr-2005 (MPH) Fixed Multilink in `review` and `announcement` to link
+#                      to `file` instead of `files`
 #    ««revision-date»»···
 #--
 #
@@ -493,7 +495,7 @@ def open (name = None):
         , opt_reviewers         = Multilink ("user")
         , cut_off_date          = Date      ()
         , final_meeting_date    = Date      ()
-        , files                 = Multilink ("files")
+        , files                 = Multilink ("file")
         , announcements         = Multilink ("announcement")
         )
 
@@ -505,7 +507,7 @@ def open (name = None):
         , comments              = Multilink ("comment")
         , review                = Link      ("review")
         , status                = Link      ("review_status")
-        , files                 = Multilink ("files")
+        , files                 = Multilink ("file")
         )
 
     TTT_Issue_Class \
