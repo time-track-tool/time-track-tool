@@ -22,8 +22,6 @@
 # ****************************************************************************
 # $Id$
 
-from roundup                import mailgw
-from roundup.cgi            import client
 from roundup.cgi.templating import MultilinkHTMLProperty
 from roundup.rup_utils      import pretty
 import re
@@ -56,12 +54,6 @@ def _splitline (line, width) :
 
 def propsort (p1, p2) :
     return cmp (pretty (p1._name), pretty (p2._name))
-
-class Client(client.Client):
-    ''' derives basic CGI implementation from the standard module,
-        with any specific extensions
-    '''
-    pass
 
 class SearchAttribute :
     """
@@ -182,134 +174,128 @@ class SearchAttribute :
 
 # end class SearchAttribute
 
-class TemplatingUtils:
-    ''' Methods implemented on this class will be available to HTML templates
-        through the 'utils' variable.
-    '''
+def sorted_properties (self, db, context) :
+    props = db [context._classname].properties ()
+    props.sort (propsort)
+    return props
 
-    SearchAttribute = SearchAttribute
+def properties_dict (self, db, context) :
+    props = {}
+    for prop in db [context._classname].properties () :
+        props [prop._name] = prop
+    return props
 
-    def sorted_properties (self, db, context) :
-        props = db [context._classname].properties ()
-        props.sort (propsort)
-        return props
+def fieldname (self, name) :
+    return "%s&nbsp;" % pretty (name)
 
-    def properties_dict (self, db, context) :
-        props = {}
-        for prop in db [context._classname].properties () :
-            props [prop._name] = prop
-        return props
+def colonfield (self, klass, name) :
+    return "%s:&nbsp;%s" % (pretty (name), str (klass [name]))
 
-    def pretty (self, name) :
-        return pretty (name)
+def linkclass (self, item) :
+    """
+        returns css link-class: for "end" date we need a special
+        color code for marking abos that no longer valid.
+    """
+    try :
+        return ('canc','run') [not item.end.plain()]
+    except AttributeError :
+        pass
+    return ''
 
-    def fieldname (self, name) :
-        return "%s&nbsp;" % pretty (name)
+def menu_or_field (self, prop) :
+    if hasattr (prop._prop, 'classname') :
+        return prop.menu (height=5)
+    return prop.field ()
 
-    def colonfield (self, klass, name) :
-        return "%s:&nbsp;%s" % (pretty (name), str (klass [name]))
+def soft_wrap (self, str, width=80) :
+    """just insert \n's after max 'length' characters
 
-    def linkclass (self, item) :
-        """
-            returns css link-class: for "end" date we need a special
-            color code for marking abos that no longer valid.
-        """
-        try :
-            return ('canc','run') [not item.end.plain()]
-        except AttributeError :
-            pass
-        return ''
+    and split on word boundaries ;-)
+    """
 
-    def menu_or_field (self, prop) :
-        if hasattr (prop._prop, 'classname') :
-            return prop.menu (height=5)
-        return prop.field ()
+    result   = ""
+    lines    = re.split ("\r?\n", str)
 
-    def soft_wrap (self, str, width=80) :
-        """just insert \n's after max 'length' characters
+    for line in lines :
+        result += _splitline (line, width)
+    return result
 
-        and split on word boundaries ;-)
-        """
+def truncate_chars(self, str, max_chars=40, append=''):
+    """truncates a String on a word boundary.
 
-        result   = ""
-        lines    = re.split ("\r?\n", str)
+    max_chars specifies number of max chars. note that the string will
+    be smaller than max_chars. If no whitespace can be found, the string
+    will be cut off at max_chars.
 
-        for line in lines :
-            result += _splitline (line, width)
-        return result
+    if append is specified, the length of append will be subtracted from max_chars
+    if string is longer than max_chars, and append gets appended to the
+    result. usually append could be ' ...'
+    """
 
-    def truncate_chars(self, str, max_chars=40, append=''):
-        """truncates a String on a word boundary.
+    result = ""
+    real_append = ""
+    if str:
+        if len(str) > max_chars:
+            if len(append) < max_chars:
+                max_chars = max_chars - len(append)
+                real_append = append
 
-        max_chars specifies number of max chars. note that the string will
-        be smaller than max_chars. If no whitespace can be found, the string
-        will be cut off at max_chars.
+        parts = re.findall('(\s*)(\S*)',str)
+        for (ws, c) in parts:
+            if len(result) + len(ws) + len(c) > max_chars:
+                break
+            else:
+                result = result + ws + c
 
-        if append is specified, the length of append will be subtracted from max_chars
-        if string is longer than max_chars, and append gets appended to the
-        result. usually append could be ' ...'
-        """
+        if not result:
+            result = str[:max_chars]
 
-        result = ""
-        real_append = ""
-        if str:
-            if len(str) > max_chars:
-                if len(append) < max_chars:
-                    max_chars = max_chars - len(append)
-                    real_append = append
+    return result + real_append
 
-            parts = re.findall('(\s*)(\S*)',str)
-            for (ws, c) in parts:
-                if len(result) + len(ws) + len(c) > max_chars:
-                    break
-                else:
-                    result = result + ws + c
+def url_2_dict (self, url) :
+    url_dict = cgi.parse_qs (url)
+    result = { "sort"      : None
+             , "group"     : None
+             , "filter"    : []
+             , "columns"   : []
+             , "filterspec": {}
+             , "pagesize"  : 20
+             , "queryname" : ""
+             }
+    for k, v in url_dict.items () :
+        v = v[0]
+        if k in (":sort", ":group") :
+            if v[0] == "-" :
+                result [k[1:]] = ("-", v[1:])
+            else:
+                result [k[1:]] = ("", v)
+        elif k == "queryname" :
+            result ["queryname"] = v
+        elif k in (":pagesize", ":startwith") :
+            result [k[1:]] = int (v)
+        elif k[0] != ":" :
+            result ["filterspec"] [k] = v.split(",")
+        else :
+            result [k[1:]] = v.split(",")
+    return result
 
-            if not result:
-                result = str[:max_chars]
+def user_list_to_named_list (self, userlist) :
+    result = []
+    if type (userlist) == type ("") :
+        for user in userlist.split (",") :
+            if user.isdigit () :
+                # convert to name
+                result.append (self.client.db.user.get (user, "username"))
+            else:
+                result.append (user)
+    return ",".join (result)
 
-        return result + real_append
-
-    def url_2_dict (self, url) :
-        url_dict = cgi.parse_qs (url)
-        result = { "sort"      : None
-                 , "group"     : None
-                 , "filter"    : []
-                 , "columns"   : []
-                 , "filterspec": {}
-                 , "pagesize"  : 20
-                 , "queryname" : ""
-                 }
-        for k, v in url_dict.items () :
-            v = v[0]
-            if k in (":sort", ":group") :
-                if v[0] == "-" :
-                    result [k[1:]] = ("-", v[1:])
-                else:
-                    result [k[1:]] = ("", v)
-            elif k == "queryname" :
-                result ["queryname"] = v
-            elif k in (":pagesize", ":startwith") :
-                result [k[1:]] = int (v)
-            elif k[0] != ":" :
-                result ["filterspec"] [k] = v.split(",")
-            else :
-                result [k[1:]] = v.split(",")
-        return result
-
-    def user_list_to_named_list (self, userlist) :
-        result = []
-        if type (userlist) == type ("") :
-            for user in userlist.split (",") :
-                if user.isdigit () :
-                    # convert to name
-                    result.append (self.client.db.user.get (user, "username"))
-                else:
-                    result.append (user)
-        return ",".join (result)
-
-class MailGW(mailgw.MailGW):
-    ''' derives basic mail gateway implementation from the standard module,
-        with any specific extensions
-    '''
-    pass
+def init (instance)
+    reg = instance.registerUtil
+    reg ('sorted_properties', sorted_properties)
+    reg ('properties_dict',   properties_dict)
+    reg ('SearchAttribute',   SearchAttribute)
+    reg ('fieldname',         fieldname)
+    reg ('colonfield',        colonfield)
+    reg ('linkclass',         linkclass)
+    reg ('menu_or_field',     menu_or_field)
