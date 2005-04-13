@@ -71,7 +71,6 @@ def init (instance) :
     reg = instance.registerUtil
     reg ('sorted_properties', sorted_properties)
     reg ('properties_dict',   properties_dict)
-    reg ('SearchAttribute',   SearchAttribute)
     reg ('fieldname',         fieldname)
     reg ('colonfield',        colonfield)
     reg ('linkclass',         linkclass)

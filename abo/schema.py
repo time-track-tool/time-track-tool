@@ -119,7 +119,7 @@ invoice.setkey ("invoice_no")
 # which template.
 invoice_template = Class \
     ( db, "invoice_template"
-    , template            = Link      ("template")
+    , tmplate             = Link      ("tmplate")
     , invoice_level       = Number    ()
     )
 
@@ -137,11 +137,12 @@ letter = Class \
     , head                = String    ()
     )
 
-template = Class \
-    ( db, "template"
+tmplate = Class \
+    ( db, "tmplate"
     , name                = String    ()
-    , template            = Multilink ("file") # version control, use latest
+    , files               = Multilink ("file") # version control, use latest
     )
+tmplate.setkey ("name")
 
 # Define codes for (in)valid addresses, e.g., "verstorben"
 valid = Class \
@@ -216,7 +217,7 @@ classes = \
     , ("letter"            , ["User"], ["Abo"           ])
     , ("msg"               , ["User"], ["User"          ])
     , ("query"             , ["User"], ["User"          ])
-    , ("template"          , ["User"], ["Abo", "Invoice"])
+    , ("tmplate"           , ["User"], ["Abo", "Invoice"])
     , ("user"              , ["User"], ["Admin"         ])
     , ("valid"             , ["User"], ["Admin"         ])
     ]
