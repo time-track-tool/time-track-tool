@@ -1,5 +1,6 @@
-Name: abo
-Description:  Newspaper subscription tracker with customer database,
-              tracking of invoices, etc.
-Intended-For: Users needing to track customers with subscription,
-              invoice etc.
+Name: abo-abo
+Description: Newspaper subscription tracker with customer database,
+ tracking of invoices, etc.
+Intended-for: Users needing to track customers with subscription, invoice
+ etc.
+Path: /home/ralf/roundup/abo

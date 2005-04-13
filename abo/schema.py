@@ -243,4 +243,4 @@ db.security.addPermissionToRole('User', 'Email Access')
 
 # Anonymous may view other users profiles - required for intranet pages.
 db.security.addPermissionToRole('Anonymous', 'View', 'user')
-#SHA: ee7e0c15ee53108d04127840330c4b7d8315325a
+db.security.addPermissionToRole('Anonymous', 'Web Access')
