@@ -299,3 +299,4 @@ def init (instance) :
     reg ('colonfield',        colonfield)
     reg ('linkclass',         linkclass)
     reg ('menu_or_field',     menu_or_field)
+    reg ('pretty',            pretty)
