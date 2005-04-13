@@ -12,6 +12,7 @@ You are not allowed to view this page.
 <tal:block
  tal:define=
   " excpt     python: ('creator', 'creation', 'activity', 'actor', 'content')
+  ; labelprop python: klass._klass.labelprop ()
   ; linkprops python: (labelprop, 'id')
   ; props     python:[i for i in utils.sorted_properties (db, context)
                       if i._name not in excpt
@@ -97,3 +98,4 @@ You are not allowed to view this page.
 </td>
 
 </tal:block>
+<!-- SHA: b260ef77841a3f29460e387e9d32c251aafb5084 -->
