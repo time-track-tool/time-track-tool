@@ -28,6 +28,7 @@
 #   creator  = Link ('user')
 
 do_index = "yes"
+do_index = "no"
 
 abo = Class \
     ( db, "abo"
@@ -103,6 +104,7 @@ invoice = Class \
     , amount              = Number    ()
     , currency            = Link      ("currency")
     , balance_open        = Number    ()
+    , open                = Boolean   ()
     , n_sent              = Number    ()
     , last_sent           = Date      ()
     , abo                 = Link      ("abo")

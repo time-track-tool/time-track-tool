@@ -68,6 +68,7 @@ prettymap = \
 , 'msg'              : uni('Notiz')
 , 'n_sent'           : uni('verschickt')
 , 'name'             : uni('Name')
+, 'open'             : uni('offen')
 , 'order'            : uni('Sortiernummer')
 , 'password'         : uni('Passwort')
 , 'payed_abos'       : uni('Zahler für')
@@ -95,4 +96,4 @@ prettymap = \
 def pretty (name) :
     return (prettymap.get (name, name))
 
-#SHA: 016d10a7e587e6ae6f26d398e0fab4bf738db628
+#SHA: d55ddf42bba67c9592641143477732556710b340

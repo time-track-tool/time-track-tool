@@ -15,19 +15,19 @@
      <th tal:content="structure python:utils.fieldname('invoice_no')"></th>
      <td tal:content="structure context/invoice_no"></td>
      <th tal:content="structure python:utils.fieldname('abo')"></th>
-     <td tal:content="structure python: utils.SearchAttribute
+     <td tal:content="structure python: utils.ExtProperty
          (utils, context.abo.aboprice, item = context.abo).formatlink ()">
      </td>
     </tr>
     <tr tal:condition="context/id">
      <th tal:content="structure python:utils.fieldname('subscriber')"></th>
      <td tal:content="structure python: ' '.join
-      (( utils.SearchAttribute
+      (( utils.ExtProperty
          ( utils
          , context.abo.subscriber.firstname
          , item = context.abo.subscriber
          ).formatlink ()
-      ,  utils.SearchAttribute
+      ,  utils.ExtProperty
          ( utils
          , context.abo.subscriber.lastname
          , item = context.abo.subscriber
@@ -36,12 +36,12 @@
      </td>
      <th tal:content="structure python:utils.fieldname('payer')"></th>
      <td tal:content="structure python: ' '.join
-      (( utils.SearchAttribute
+      (( utils.ExtProperty
          ( utils
          , context.abo.payer.firstname
          , item = context.abo.payer
          ).formatlink ()
-      ,  utils.SearchAttribute
+      ,  utils.ExtProperty
          ( utils
          , context.abo.payer.lastname
          , item = context.abo.payer
@@ -51,9 +51,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('period_start')"></th>
-     <td tal:content="structure context/period_start"></td>
+     <td tal:content="structure python:context.period_start.pretty('%Y-%m-%d')">
+     </td>
      <th tal:content="structure python:utils.fieldname('period_end')"></th>
-     <td tal:content="structure context/period_end"></td>
+     <td tal:content="structure python:context.period_end.pretty('%Y-%m-%d')">
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('amount')"></th>
@@ -88,3 +90,4 @@
  </tal:block>
 
 </tal:block>
+<!-- SHA: 5054c4fea230f122cd72e954a6d4aa892a918d73 -->

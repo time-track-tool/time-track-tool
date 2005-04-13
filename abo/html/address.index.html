@@ -6,23 +6,23 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    props python:
-    ( utils.SearchAttribute (utils, pdict ['id'])
-    , utils.SearchAttribute (utils, pdict ['salutation'])
-    , utils.SearchAttribute (utils, pdict ['title'],    is_label = 0)
-    , utils.SearchAttribute (utils, pdict ['firstname'])
-    , utils.SearchAttribute (utils, pdict ['lastname'], is_label = 1)
-    , utils.SearchAttribute (utils, pdict ['country'])
-    , utils.SearchAttribute (utils, pdict ['postalcode'])
-    , utils.SearchAttribute (utils, pdict ['city'])
-    , utils.SearchAttribute (utils, pdict ['street'])
-    , utils.SearchAttribute (utils, pdict ['email'])
-    , utils.SearchAttribute (utils, pdict ['function'])
-    , utils.SearchAttribute (utils, pdict ['phone'])
-    , utils.SearchAttribute (utils, pdict ['fax'])
-    , utils.SearchAttribute (utils, pdict ['abos'])
-    , utils.SearchAttribute (utils, pdict ['payed_abos'])
-    , utils.SearchAttribute (utils, pdict ['adr_type'])
-    , utils.SearchAttribute (utils, pdict ['valid'], multiselect = 1)
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['salutation'])
+    , utils.ExtProperty (utils, pdict ['title'],    is_label = 0)
+    , utils.ExtProperty (utils, pdict ['firstname'])
+    , utils.ExtProperty (utils, pdict ['lastname'], is_label = 1)
+    , utils.ExtProperty (utils, pdict ['country'])
+    , utils.ExtProperty (utils, pdict ['postalcode'])
+    , utils.ExtProperty (utils, pdict ['city'])
+    , utils.ExtProperty (utils, pdict ['street'])
+    , utils.ExtProperty (utils, pdict ['email'])
+    , utils.ExtProperty (utils, pdict ['function'])
+    , utils.ExtProperty (utils, pdict ['phone'])
+    , utils.ExtProperty (utils, pdict ['fax'])
+    , utils.ExtProperty (utils, pdict ['abos'])
+    , utils.ExtProperty (utils, pdict ['payed_abos'])
+    , utils.ExtProperty (utils, pdict ['adr_type'])
+    , utils.ExtProperty (utils, pdict ['valid'], multiselect = 1)
     );
   "
   tal:condition="context/is_view_ok">
@@ -38,4 +38,4 @@
  </tal:block>
 </tal:block>
 </tal:block>
-<!-- SHA: d67636a7dee415b91161bdd2d62c2a08d208d0fa -->
+<!-- SHA: ecefcf11e709b64ea734d867a2bbd9e01f273981 -->

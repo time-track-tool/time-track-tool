@@ -5,23 +5,25 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
+   ep    python: utils.ExtProperty;
    props python:
-    ( utils.SearchAttribute (utils, pdict ['id'])
-    , utils.SearchAttribute (utils, pdict ['invoice_no'])
-    , utils.SearchAttribute (utils, pdict ['period_start'])
-    , utils.SearchAttribute (utils, pdict ['period_end'])
-    , utils.SearchAttribute (utils, pdict ['amount'])
-    , utils.SearchAttribute (utils, pdict ['currency'], multiselect = 1)
-    , utils.SearchAttribute (utils, pdict ['balance_open'])
-    , utils.SearchAttribute (utils, pdict ['n_sent'])
-    , utils.SearchAttribute (utils, pdict ['send_it'], editable = 1)
-    , utils.SearchAttribute (utils, pdict ['last_sent'])
-    , utils.SearchAttribute (utils, pdict ['date_payed'])
-    , utils.SearchAttribute (utils, pdict ['bookentry'])
-    , utils.SearchAttribute (utils, pdict ['receipt_no'])
-    , utils.SearchAttribute (utils, pdict ['abo'], lnkattr = 'payer.lastname')
-    , utils.SearchAttribute (utils, pdict ['abo'], lnkattr = 'subscriber.lastname')
-    , utils.SearchAttribute (utils, pdict ['abo'])
+    ( ep (utils, pdict ['id'])
+    , ep (utils, pdict ['invoice_no'])
+    , ep (utils, pdict ['period_start'])
+    , ep (utils, pdict ['period_end'])
+    , ep (utils, pdict ['amount'])
+    , ep (utils, pdict ['currency'], multiselect = 1)
+    , ep (utils, pdict ['balance_open'])
+    , ep (utils, pdict ['open'])
+    , ep (utils, pdict ['n_sent'])
+    , ep (utils, pdict ['send_it'], editable = 1)
+    , ep (utils, pdict ['last_sent'])
+    , ep (utils, pdict ['date_payed'])
+    , ep (utils, pdict ['bookentry'])
+    , ep (utils, pdict ['receipt_no'])
+    , ep (utils, pdict ['abo'], lnkattr = 'payer.lastname')
+    , ep (utils, pdict ['abo'], lnkattr = 'subscriber.lastname')
+    , ep (utils, pdict ['abo'])
     );
    edit_form python:( 'send_it'
                ,
@@ -47,4 +49,4 @@
  </tal:block>
 </tal:block>
 </tal:block>
-<!-- SHA: d67636a7dee415b91161bdd2d62c2a08d208d0fa -->
+<!-- SHA: 6f33d36f184247915bb771417e49d77414e31836 -->

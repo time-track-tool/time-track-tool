@@ -6,9 +6,9 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    props python:
-    ( utils.SearchAttribute (utils, pdict ['id'])
-    , utils.SearchAttribute (utils, pdict ['code'], is_label = 1)
-    , utils.SearchAttribute (utils, pdict ['description'])
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['code'], is_label = 1)
+    , utils.ExtProperty (utils, pdict ['description'])
     );
   "
   tal:condition="context/is_view_ok">
@@ -24,4 +24,4 @@
  </tal:block>
 </tal:block>
 </tal:block>
-<!-- SHA: d67636a7dee415b91161bdd2d62c2a08d208d0fa -->
+<!-- SHA: 35e36aba0637678562f364701c45f0496edea2aa -->
