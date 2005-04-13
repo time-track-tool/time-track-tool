@@ -174,24 +174,24 @@ class SearchAttribute :
 
 # end class SearchAttribute
 
-def sorted_properties (self, db, context) :
+def sorted_properties (db, context) :
     props = db [context._classname].properties ()
     props.sort (propsort)
     return props
 
-def properties_dict (self, db, context) :
+def properties_dict (db, context) :
     props = {}
     for prop in db [context._classname].properties () :
         props [prop._name] = prop
     return props
 
-def fieldname (self, name) :
+def fieldname (name) :
     return "%s&nbsp;" % pretty (name)
 
-def colonfield (self, klass, name) :
+def colonfield (klass, name) :
     return "%s:&nbsp;%s" % (pretty (name), str (klass [name]))
 
-def linkclass (self, item) :
+def linkclass (item) :
     """
         returns css link-class: for "end" date we need a special
         color code for marking abos that no longer valid.
@@ -202,12 +202,12 @@ def linkclass (self, item) :
         pass
     return ''
 
-def menu_or_field (self, prop) :
+def menu_or_field (prop) :
     if hasattr (prop._prop, 'classname') :
         return prop.menu (height=5)
     return prop.field ()
 
-def soft_wrap (self, str, width=80) :
+def soft_wrap (str, width=80) :
     """just insert \n's after max 'length' characters
 
     and split on word boundaries ;-)
@@ -220,7 +220,7 @@ def soft_wrap (self, str, width=80) :
         result += _splitline (line, width)
     return result
 
-def truncate_chars(self, str, max_chars=40, append=''):
+def truncate_chars(str, max_chars=40, append=''):
     """truncates a String on a word boundary.
 
     max_chars specifies number of max chars. note that the string will
@@ -252,7 +252,7 @@ def truncate_chars(self, str, max_chars=40, append=''):
 
     return result + real_append
 
-def url_2_dict (self, url) :
+def url_2_dict (url) :
     url_dict = cgi.parse_qs (url)
     result = { "sort"      : None
              , "group"     : None
