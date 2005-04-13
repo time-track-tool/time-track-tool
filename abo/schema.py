@@ -230,7 +230,7 @@ for name, desc in roles :
 
 
 # Assign the access and edit permissions
-for cl, view_list, edit_list in classes : \
+for cl, view_list, edit_list in classes :
     for viewer in view_list :
         db.security.addPermissionToRole (viewer, 'View', cl)
     for editor in edit_list :
@@ -243,3 +243,4 @@ db.security.addPermissionToRole('User', 'Email Access')
 
 # Anonymous may view other users profiles - required for intranet pages.
 db.security.addPermissionToRole('Anonymous', 'View', 'user')
+#SHA: ee7e0c15ee53108d04127840330c4b7d8315325a

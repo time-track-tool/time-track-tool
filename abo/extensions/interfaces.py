@@ -290,7 +290,7 @@ def user_list_to_named_list (self, userlist) :
                 result.append (user)
     return ",".join (result)
 
-def init (instance)
+def init (instance) :
     reg = instance.registerUtil
     reg ('sorted_properties', sorted_properties)
     reg ('properties_dict',   properties_dict)

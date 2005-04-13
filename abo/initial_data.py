@@ -22,6 +22,8 @@
 # ****************************************************************************
 # $Id$
 
+from roundup.rup_utils import uni
+
 #
 # INITIAL VALUES
 #
@@ -31,7 +33,7 @@ user = db.getclass('user')
 user.create \
     ( username="admin"
     , password=adminpw
-    , address=config.ADMIN_EMAIL
+    , address=db.config.ADMIN_EMAIL
     , roles='Admin'
     )
 user.create (username="anonymous", roles='Anonymous')
@@ -133,3 +135,4 @@ valid.create \
     ( name = uni ('verstorben')
     , description = uni ('Verstorbener Adressat')
     )
+#SHA: 9b88fcddef8b08c95429c81fdb29c4f65851e9ee
