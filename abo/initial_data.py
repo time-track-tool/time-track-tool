@@ -44,88 +44,6 @@ currency.create (name = 'EUR', description = 'Euro')
 currency.create (name = 'GBP', description = 'Britische Pfund')
 currency.create (name = 'USD', description = 'US-Dollar')
 
-abo_type = db.getclass ('abo_type')
-abo_type.create \
-    ( name        = 'ZFW12norm'
-    , description = uni ('Jahresabo Zeit-Fragen')
-    , order       = 1
-    )
-abo_type.create \
-    ( name        = 'ZFW06norm'
-    , description = uni ('Halbjahresabo Zeit-Fragen')
-    , order       = 2
-    )
-abo_type.create \
-    ( name        = 'ZFW12gift'
-    , description = uni ('Geschenkabo Zeit-Fragen')
-    , order       = 3
-    )
-abo_type.create \
-    ( name        = 'CCM12norm'
-    , description = uni ('Subscription Current Concerns')
-    , order       = 4
-    )
-abo_type.create \
-    ( name        = 'HDM12norm'
-    , description = uni ('abonnement Horizons et débats')
-    , order       = 5
-    )
-abo_type.create \
-    ( name        = 'ZFM12norm'
-    , description = uni ('Jahresabo Zeit-Fragen Monatsausgabe')
-    , order       = 6
-    )
-abo_type.create \
-    ( name        = 'ZFM12gift'
-    , description = uni ('Geschenkabo Zeit-Fragen Monatsausgabe')
-    , order       = 7
-    )
-abo_type.create \
-    ( name        = 'ZFM12spon'
-    , description = uni ('Förderabo Zeit-Fragen Monatsausgabe')
-    , order       = 8
-    )
-abo_type.create \
-    ( name        = 'ZFW12free'
-    , description = uni ('Gratisabo Zeit-Fragen')
-    , order       = 9
-    )
-abo_type.create \
-    ( name        = 'ZFW12spec'
-    , description = uni ('Spezialabo Zeit-Fragen')
-    , order       = 10
-    )
-abo_type.create \
-    ( name        = 'CCM12gift'
-    , description = uni ('Gift subscription Current Concerns')
-    , order       = 11
-    )
-abo_type.create \
-    ( name        = 'CCM12free'
-    , description = uni ('Free subscription Current Concerns')
-    , order       = 12
-    )
-abo_type.create \
-    ( name        = 'HDM12gift'
-    , description = uni ('abonnement-cadeau Horizons et débats')
-    , order       = 13
-    )
-abo_type.create \
-    ( name        = 'ZFW12pate'
-    , description = uni ('Patenschaftsabo Zeit-Fragen')
-    , order       = 14
-    )
-abo_type.create \
-    ( name        = 'ZFW06gift'
-    , description = uni ('Halbjahres-Geschenkabo Zeit-Fragen')
-    , order       = 15
-    )
-abo_type.create \
-    ( name        = 'ZFW06spec'
-    , description = uni ('Halbjahres-Spezialabo Zeit-Fragen')
-    , order       = 16
-    )
-
 valid = db.getclass ('valid')
 valid.create \
     ( name = uni ('gültig')
@@ -135,4 +53,3 @@ valid.create \
     ( name = uni ('verstorben')
     , description = uni ('Verstorbener Adressat')
     )
-#SHA: 9b88fcddef8b08c95429c81fdb29c4f65851e9ee
