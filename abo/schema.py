@@ -123,18 +123,17 @@ invoice_template = Class \
     , invoice_level       = Number    ()
     )
 
-# head should contain info for recreating a letter with multiple
-# destinations. In this case the file exists only once and the
-# customisation info in head is there for each recipient.
 # The file types are either PDF (from old imported data) or an
-# OpenOffice.org document which is cusomized using info in head.
+# OpenOffice.org document which is cusomized using info pointed to with
+# invoice and/or address. The invoice link is optional -- not every
+# letter is related to an invoice.
 letter = Class \
     ( db, "letter"
     , address             = Link      ("address")
     , date                = Date      ()
-    , letter              = Link      ("file")
-    , note                = Link      ("msg")
-    , head                = String    ()
+    , files               = Multilink ("file")
+    , note                = Multilink ("msg")
+    , invoice             = Link      ("invoice")
     )
 
 tmplate = Class \
