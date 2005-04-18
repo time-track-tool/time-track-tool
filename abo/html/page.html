@@ -281,14 +281,19 @@
 
  </table>
  <p tal:condition="context/id">
-  <tal:block tal:content="structure string:Angelegt
-   <b>${context/creation}</b> von <b>${context/creator}</b>,">
-  </tal:block>
-  <tal:block tal:content="structure
-   python:utils.pretty ('changed')">
-  </tal:block>
-  <tal:block tal:content="structure string:<b>${context/activity}</b>
-    von <b>${context/actor}</b>.">
+  <tal:block tal:content="structure python:''.join
+   (('Angelegt <b>'
+   , str (context.creation.pretty ('%Y-%m-%d'))
+   , '</b> von <b>'
+   , str (context.creator)
+   , '</b>, '
+   , utils.pretty ('changed')
+   , ' <b>'
+   , str (context.activity.pretty ('%Y-%m-%d'))
+   , '</b> von <b>'
+   , str (context.actor)
+   , '</b>,'
+   ))">
   </tal:block>
  </p>
 

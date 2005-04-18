@@ -7,6 +7,8 @@
   </span>
   <span tal:condition="not:context/id" tal:replace="string:Neue Rechnung"></span>
  </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
@@ -24,13 +26,13 @@
      <td tal:content="structure python: ' '.join
       (( utils.ExtProperty
          ( utils
-         , context.abo.subscriber.firstname
-         , item = context.abo.subscriber
+         , context.subscriber.firstname
+         , item = context.subscriber
          ).formatlink ()
       ,  utils.ExtProperty
          ( utils
-         , context.abo.subscriber.lastname
-         , item = context.abo.subscriber
+         , context.subscriber.lastname
+         , item = context.subscriber
          ).formatlink ()
       ))">
      </td>
@@ -38,13 +40,13 @@
      <td tal:content="structure python: ' '.join
       (( utils.ExtProperty
          ( utils
-         , context.abo.payer.firstname
-         , item = context.abo.payer
+         , context.payer.firstname
+         , item = context.payer
          ).formatlink ()
       ,  utils.ExtProperty
          ( utils
-         , context.abo.payer.lastname
-         , item = context.abo.payer
+         , context.payer.lastname
+         , item = context.payer
          ).formatlink ()
       ))">
      </td>

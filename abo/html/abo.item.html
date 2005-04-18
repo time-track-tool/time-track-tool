@@ -1,5 +1,4 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-
  <title metal:fill-slot="head_title">
   <span tal:condition="context/id"
         tal:replace="string:${Classname}: ${context/id} angelegt von
@@ -7,6 +6,8 @@
   </span>
   <span tal:condition="not:context/id" tal:replace="string:Neues Abo"></span>
  </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
