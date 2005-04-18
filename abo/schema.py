@@ -86,8 +86,16 @@ adr_type = Class \
     ( db, "adr_type"
     , code                = String    ()
     , description         = String    ()
+    , typecat             = Link      ("adr_type_cat")
     )
 adr_type.setkey ("code")
+
+adr_type_cat = Class \
+    ( db, "adr_type_cat"
+    , code                = String    ()
+    , description         = String    ()
+    )
+adr_type_cat.setkey ("code")
 
 currency = Class \
     ( db, "currency"
@@ -132,7 +140,7 @@ letter = Class \
     , address             = Link      ("address")
     , date                = Date      ()
     , files               = Multilink ("file")
-    , note                = Multilink ("msg")
+    , messages            = Multilink ("msg")
     , invoice             = Link      ("invoice")
     )
 

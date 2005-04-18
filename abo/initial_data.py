@@ -49,7 +49,3 @@ valid.create \
     ( name = uni ('gültig')
     , description = uni ('Gültige Adresse')
     )
-valid.create \
-    ( name = uni ('verstorben')
-    , description = uni ('Verstorbener Adressat')
-    )
