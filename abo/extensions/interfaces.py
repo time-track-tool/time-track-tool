@@ -45,15 +45,20 @@ def fieldname (name) :
     return "%s&nbsp;" % pretty (name)
 # end def fieldname
 
+formattable = \
+    [ ('end',  'canc', 'run')
+    , ('open', 'open', 'closed')
+    ]
 def linkclass (item) :
     """
         returns css link-class: for "end" date we need a special
         color code for marking abos that no longer valid.
     """
-    try :
-        return ('canc','run') [not item.end.plain()]
-    except AttributeError :
-        pass
+    for i, t, f in formattable :
+        try :
+            return (t, f) [not item [i]]
+        except KeyError :
+            pass
     return ''
 # end def linkclass
 

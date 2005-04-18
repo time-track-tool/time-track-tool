@@ -160,7 +160,7 @@ class ExtProperty :
     # end def editfield
 
     def colonfield (self, item = None) :
-        return "%s:&nbsp;%s" % (self.selname, self.as_listentry (item))
+        return "%s:&nbsp;%s" % (self.label, self.as_listentry (item))
     # end def colonfield
 # end class ExtProperty
 

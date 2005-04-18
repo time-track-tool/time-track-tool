@@ -70,6 +70,7 @@ prettymap = \
 , 'msg'              : uni('Notiz')
 , 'n_sent'           : uni('verschickt')
 , 'name'             : uni('Name')
+, 'o_invoices'       : uni('offene Rechnungen')
 , 'open'             : uni('offen')
 , 'order'            : uni('Sortiernummer')
 , 'password'         : uni('Passwort')
