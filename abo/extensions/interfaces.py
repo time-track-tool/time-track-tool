@@ -45,10 +45,6 @@ def fieldname (name) :
     return "%s&nbsp;" % pretty (name)
 # end def fieldname
 
-def colonfield (klass, name) :
-    return "%s:&nbsp;%s" % (pretty (name), str (klass [name]))
-# end def colonfield
-
 def linkclass (item) :
     """
         returns css link-class: for "end" date we need a special
@@ -72,7 +68,6 @@ def init (instance) :
     reg ('sorted_properties', sorted_properties)
     reg ('properties_dict',   properties_dict)
     reg ('fieldname',         fieldname)
-    reg ('colonfield',        colonfield)
     reg ('linkclass',         linkclass)
     reg ('menu_or_field',     menu_or_field)
     reg ('pretty',            pretty)

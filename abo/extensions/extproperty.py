@@ -98,9 +98,10 @@ class ExtProperty :
             self.hprop = item [self.name]
     # end def __init__
 
-    def as_listentry (self, item) :
-        self.item  = item
-        self.hprop = item [self.name]
+    def as_listentry (self, item = None) :
+        if item :
+            self.item  = item
+            self.hprop = item [self.name]
         if self.editable :
             return self.editfield ()
         if self.is_label :
@@ -158,6 +159,9 @@ class ExtProperty :
             % self.item [self.name].field ()
     # end def editfield
 
+    def colonfield (self, item = None) :
+        return "%s:&nbsp;%s" % (self.selname, self.as_listentry (item))
+    # end def colonfield
 # end class ExtProperty
 
 def init (instance) :

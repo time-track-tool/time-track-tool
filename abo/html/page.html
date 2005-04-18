@@ -256,7 +256,7 @@
   <tal:block metal:define-slot="formatted_class_content"></tal:block>
 
   <tr tal:condition="has_msgs">
-   <th>Notiz</th>
+   <th tal:content="structure python:utils.fieldname('msg')">Notiz</th>
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
               name="@note"
@@ -317,8 +317,10 @@
    <th><a tal:attributes="href string:msg${msg/id}"
           tal:content="string:msg${msg/id}"></a>
    </th>
-   <th tal:content="structure python:utils.colonfield (msg,'author')"></th>
-   <th tal:content="structure python:utils.colonfield (msg,'date')"></th>
+   <th tal:content="structure python:utils.ExtProperty
+       (utils, msg.author, item = msg).colonfield ()"></th>
+   <th tal:content="structure python:utils.ExtProperty
+       (utils, msg.date, item = msg).colonfield ()"></th>
    <th><a tal:attributes= "href
           string:address${context/id}?:remove:messages=${msg/id}&:action=edit"
           tal:content="python:utils.pretty('remove')"></a>
@@ -385,12 +387,10 @@
 
 
 <!-- the following is used to have those nifty index/search form on one page -->
-<!-- the caller needs to define a list of tuples for the properties: -->
-<!--  props = (("<name to display>", "<designator>"), ...) -->
 
 <tal:block metal:define-macro="ttt_search_nav">
 <!-- previous / next links -->
-   <tr tal:condition="request/form">
+   <tr>
     <th tal:attributes="colspan python:len(request.columns)">
      <table width="100%">
       <tr class="navigation">

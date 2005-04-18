@@ -14,6 +14,15 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
+     <th tal:content="structure python:utils.fieldname('subject')"></th>
+     <td tal:condition="not:context/id" colspan="3"
+         tal:content="structure context/subject/field">
+     </td>
+     <td tal:condition="context/id" colspan="3"
+         tal:content="structure context/subject">
+     </td>
+    </tr>
+    <tr>
      <th tal:content="structure python:utils.fieldname('date')"></th>
      <td tal:condition="not:context/id"
          tal:content="structure context/date/field">
