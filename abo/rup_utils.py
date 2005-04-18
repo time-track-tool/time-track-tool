@@ -32,7 +32,7 @@ prettymap = \
 , 'abo_type'         : uni('Abo-Typ')
 , 'abotype'          : uni('Abotyp')
 , 'activity'         : uni('letzte Änderung')
-, 'address'          : uni('Adressen')
+, 'address'          : uni('Adresse')
 , 'adr_type'         : uni('Typ')
 , 'amount'           : uni('Betrag')
 , 'author'           : uni('Autor')
@@ -64,6 +64,7 @@ prettymap = \
 , 'invoice_level'    : uni('Mahnstufe')
 , 'lastname'         : uni('Nachname')
 , 'last_sent'        : uni('verschickt am')
+, 'letter'           : uni('Brief')
 , 'lettertitle'      : uni('Brief-Titel')
 , 'messages'         : uni('Notizen')
 , 'msg'              : uni('Notiz')
@@ -87,6 +88,7 @@ prettymap = \
 , 'remove'           : uni('löschen')
 , 'salutation'       : uni('Anrede')
 , 'street'           : uni('Strasse')
+, 'subject'          : uni('Betreff')
 , 'subscriber'       : uni('Abonnent')
 , 'tmplate'          : uni('Vorlage')
 , 'title'            : uni('Titel')
@@ -97,4 +99,4 @@ prettymap = \
 def pretty (name) :
     return (prettymap.get (name, name))
 
-#SHA: d55ddf42bba67c9592641143477732556710b340
+#SHA: 8c68e6202a158fc180563a74ec42e57d568e7bdb

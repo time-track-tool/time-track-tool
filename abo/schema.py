@@ -39,6 +39,7 @@ abo = Class \
     , subscriber          = Link      ('address')
     , amount              = Number    ()
     , messages            = Multilink ("msg")
+    , invoices            = Multilink ("invoice")
     )
 
 abo_price = Class \
@@ -80,6 +81,8 @@ address = Class \
     , payed_abos          = Multilink ("abo")
     , adr_type            = Multilink ("adr_type")
     , valid               = Link      ("valid")
+    , letters             = Multilink ("letter")
+    , invoices            = Multilink ("invoice")
     )
 
 adr_type = Class \
@@ -115,6 +118,8 @@ invoice = Class \
     , open                = Boolean   ()
     , n_sent              = Number    ()
     , last_sent           = Date      ()
+    , payer               = Link      ("address")
+    , subscriber          = Link      ("address")
     , abo                 = Link      ("abo")
     , date_payed          = Date      ()
     , bookentry           = Date      ()
@@ -137,6 +142,7 @@ invoice_template = Class \
 # letter is related to an invoice.
 letter = Class \
     ( db, "letter"
+    , subject             = String    ()
     , address             = Link      ("address")
     , date                = Date      ()
     , files               = Multilink ("file")
