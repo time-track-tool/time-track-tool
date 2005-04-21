@@ -27,7 +27,7 @@ Reject = ValueError
 def set_defaults (db, cl, nodeid, new_values) :
     for i in ('aboprice', 'subscriber') :
         if not new_values.has_key (i) :
-            raise Reject, uni('Feld "%s" muss ausgefüllt werden') % pretty (i)
+            raise Reject, uni('"%s" muss ausgefüllt werden') % pretty (i)
     if not new_values.has_key ('amount') :
         new_values ['amount'] = \
             db.abo_price.get (new_values ['aboprice'], 'amount')
@@ -61,4 +61,3 @@ def init (db) :
     db.abo.audit ("create", set_defaults)
     db.abo.react ("create", update_address)
 # end def init
-
