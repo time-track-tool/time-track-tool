@@ -22,8 +22,7 @@ Reject = ValueError
 from roundup.rup_utils import uni, pretty
 
 def check_period (db, cl, nodeid, new_values) :
-    print "check_period"
-    period = new_values.get ('period', cl.get (nodeid, 'period'))
+    period = new_values.get ('period')
     if not period :
         raise Reject, uni('"%s" muss ausgefüllt werden') % pretty ('period')
     if int (period) != period :

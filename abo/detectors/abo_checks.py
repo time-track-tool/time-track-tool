@@ -20,14 +20,18 @@
 
 from time              import localtime
 from roundup.rup_utils import uni, pretty
-from roundup.date      import Date
+from roundup.date      import Date, Interval
 
 Reject = ValueError
 
 def set_defaults (db, cl, nodeid, new_values) :
+    print "start of set_defaults"
     for i in ('aboprice', 'subscriber') :
         if not new_values.has_key (i) :
             raise Reject, uni('"%s" muss ausgefüllt werden') % pretty (i)
+    for i in ('invoices',) :
+        if new_values.has_key (i) :
+            raise Reject, uni ('"%s" darf nicht ausgefüllt werden') % pretty (i)
     if not new_values.has_key ('amount') :
         new_values ['amount'] = \
             db.abo_price.get (new_values ['aboprice'], 'amount')
@@ -44,20 +48,26 @@ def set_defaults (db, cl, nodeid, new_values) :
         new_values ['begin'] = Date ('%d-%d-%d' % (year, month, day))
     if not new_values.has_key ('payer') :
         new_values ['payer'] = new_values ['subscriber']
+    print "end of set_defaults"
 # end def set_defaults
 
+def create_invoice (db, cl, nodeid, oldvalues) :
+    print 'create_invoice', nodeid
+    db.invoice.create (abo = nodeid)
+    print 'after create_invoice'
+# end def create_invoice
+
 def update_address (db, cl, nodeid, oldvalues) :
-    adr = db.address.getnode (cl.get (nodeid, 'payer'))
-    a = adr.payed_abos
-    a.append (nodeid)
-    adr.payed_abos = a
-    adr = db.address.getnode (cl.get (nodeid, 'subscriber'))
-    a = adr.abos
-    a.append (nodeid)
-    adr.abos       = a
+    for lattr, rattr in (('payer', 'payed_abos'), ('subscriber', 'abos')) :
+        adr_id = cl.get (nodeid, lattr)
+        adr    = db.address.getnode (adr_id)
+        l      = adr [rattr] or []
+        l.append (nodeid)
+        db.address.set (adr_id, ** {rattr : l})
 # end def update_address
 
 def init (db) :
     db.abo.audit ("create", set_defaults)
     db.abo.react ("create", update_address)
+    db.abo.react ("create", create_invoice)
 # end def init
