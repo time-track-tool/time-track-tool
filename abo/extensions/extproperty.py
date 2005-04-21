@@ -127,7 +127,13 @@ class ExtProperty :
             Returns the new ExtProperty.
         """
         p = self.hprop
-        if index is not None : p = self.hprop [index]
+        if index is not None :
+            # Looks like newer version do no longer support index.
+            try :
+                p = self.hprop [index]
+            except AttributeError :
+                p = [i for i in self.hprop][index]
+
         for i in self.lnkattr.split ('.') :
             last_p = p
             p      = p [i]
