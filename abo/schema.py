@@ -56,6 +56,7 @@ abo_type = Class \
     ( db, "abo_type"
     , name                = String    ()
     , description         = String    ()
+    , period              = Number    () # subscription period in months
     , order               = Number    ()
     )
 abo_type.setkey ("name")
