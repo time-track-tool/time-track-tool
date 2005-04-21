@@ -75,7 +75,8 @@
      <th tal:content="structure python:utils.fieldname('n_sent')"></th>
      <td tal:content="structure context/n_sent/field"></td>
      <th tal:content="structure python:utils.fieldname('last_sent')"></th>
-     <td tal:content="structure context/last_sent"></td>
+     <td tal:content="structure python:context.last_sent.pretty ('%Y-%m-%d')">
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('receipt_no')"></th>
@@ -85,7 +86,8 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('bookentry')"></th>
-     <td tal:content="structure context/bookentry" colspan=3></td>
+     <td tal:content="structure python:context.bookentry.pretty ('%Y-%m-%d')">
+     </td>
     </tr>
    </tal:block>
   </tal:block>
