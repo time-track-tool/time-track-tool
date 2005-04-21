@@ -76,6 +76,7 @@ prettymap = \
 , 'password'         : uni('Passwort')
 , 'payed_abos'       : uni('Zahler für')
 , 'payer'            : uni('Zahler')
+, 'period'           : uni('Laufzeit')
 , 'period_start'     : uni('Datum von')
 , 'period_end'       : uni('Datum bis')
 , 'phone'            : uni('Telefon')
