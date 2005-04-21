@@ -16,6 +16,7 @@
     , utils.ExtProperty (utils, pdict ['end'])
     , utils.ExtProperty (utils, pdict ['subscriber'], lnkattr = 'lastname')
     , utils.ExtProperty (utils, pdict ['payer'],      lnkattr = 'lastname')
+    , utils.ExtProperty (utils, pdict ['invoices'])
     );
   "
   tal:condition="context/is_view_ok">
