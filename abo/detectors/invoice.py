@@ -19,19 +19,8 @@
 # ****************************************************************************
 
 Reject = ValueError
-from roundup.rup_utils import uni, pretty
+from roundup.rup_utils import uni, pretty, abo_max_invoice
 from roundup.date      import Date, Interval
-
-def max_invoice (db, abo) :
-    maxid   = abo ['invoices'][0]
-    maxdate = db.invoice.get (maxid, 'period_end')
-    for i in abo ['invoices'] :
-        d = db.invoice.get (i, 'period_end')
-        if maxdate < d :
-            maxdate = d
-            maxid   = i
-    return maxid, maxdate
-# end def max_invoice
 
 def new_invoice (db, cl, nodeid, new_values) :
     print "new_invoice"
@@ -60,15 +49,15 @@ def new_invoice (db, cl, nodeid, new_values) :
     new_values ['subscriber']   = abo ['subscriber']
     new_values ['send_it']      = False
     if not len (abo ['invoices']) :
-        start = abo ['begin']
+        start  = abo ['begin']
     else :
-        max, maxdate = max_invoice (db, abo)
-        start = maxdate + Interval ('1d')
+        maxinv = abo_max_invoice (db, abo)
+        start  = maxinv ['period_end'] + Interval ('1d')
     end = start + Interval ('%dm' % abo_type ['period'])
     end = end   - Interval ('1d')
     new_values ['period_start'] = start
     new_values ['period_end']   = end
-    new_values ['invoice_no']   = "R%s%s" % (abo_id, end.pretty ('%y%m'))
+    new_values ['invoice_no']   = "R%s%s" % (abo_id, end.pretty ('%m%y'))
     print "end new_invoice", new_values ['invoice_no']
 # end def new_invoice
 
@@ -111,9 +100,7 @@ def create_new_invoice (db, cl, nodeid, oldvalues) :
     abo    = db.abo.getnode (abo_id)
     if 'open' in oldvalues and not cl.get (nodeid, 'open') :
         print "closed"
-        max, maxdate = max_invoice (db, abo)
-        print "max", max
-        invoice = db.invoice.getnode (max)
+        invoice = abo_max_invoice (db, abo)
         if not invoice ['open'] :
             db.invoice.create (abo = abo_id)
 # end def create_new_invoice

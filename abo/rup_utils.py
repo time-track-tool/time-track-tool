@@ -102,4 +102,16 @@ prettymap = \
 def pretty (name) :
     return (prettymap.get (name, name))
 
-#SHA: 8c68e6202a158fc180563a74ec42e57d568e7bdb
+def abo_max_invoice (db, abo) :
+    if not len (abo ['invoices']) :
+        return None
+    maxinv  = db.invoice.getnode (abo ['invoices'][0])
+    maxdate = maxinv ['period_end']
+    for i in abo ['invoices'] :
+        inv = db.invoice.getnode (i)
+        d   = inv ['period_end']
+        if maxdate < d :
+            maxdate = d
+            maxinv  = inv
+    return maxinv
+# end def abo_max_invoice
