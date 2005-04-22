@@ -53,6 +53,7 @@ prettymap = \
 , 'email'            : uni('Email')
 , 'end'              : uni('Storniert per')
 , 'fax'              : uni('Fax')
+, 'filename'         : uni('Dateiname')
 , 'files'            : uni('Dateien')
 , 'firstname'        : uni('Vorname')
 , 'function'         : uni('Funktion')
