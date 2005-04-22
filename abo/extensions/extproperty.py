@@ -104,10 +104,14 @@ class ExtProperty :
             self.hprop = self.prop
     # end def __init__
 
-    def as_listentry (self, item = None) :
+    def _set_item (self, item = None) :
         if item :
             self.item  = item
             self.hprop = item [self.name]
+    # end def _set_item
+
+    def as_listentry (self, item = None) :
+        self._set_item (item)
         if self.editable :
             return self.editfield ()
         if self.is_label :
@@ -164,15 +168,23 @@ class ExtProperty :
         return self.key == self.lnkattr
     # def sortable
 
-    def formatlink (self) :
+    def formatlink (self, item = None) :
         """
             Render my property of an item as a link to this item. We get
             the item. The name of the item and its id are computed.
         """
-        i = self.item
+        i = item or self.item
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.get_linkcls (i), self.classname, i.id, self.hprop)
     # end def formatlink
+
+    def menu (self) :
+        """ Render as menu if condition, otherwise formatlink to hprop """
+        if self.editable :
+            return self.hprop.menu ()
+        print "non-editable:"
+        return self.formatlink (self.hprop)
+    # end def menu
 
     def editfield (self) :
         return "<span style='white-space:nowrap'>%s</span>" \

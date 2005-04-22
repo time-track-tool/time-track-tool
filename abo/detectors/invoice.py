@@ -34,7 +34,7 @@ def new_invoice (db, cl, nodeid, new_values) :
     for i in \
         ( 'balance_open', 'n_sent', 'last_sent', 'payer', 'subscriber'
         , 'date_payed', 'bookentry', 'receipt_no', 'send_it'
-        , 'period_start', 'period_end', 'invoice_no'
+        , 'period_start', 'period_end', 'invoice_no', 'payment'
         ) :
         if i in new_values :
             raise Reject, uni ('"%s" darf nicht ausgefüllt werden') % pretty (i)
@@ -43,6 +43,7 @@ def new_invoice (db, cl, nodeid, new_values) :
     if 'currency' not in new_values :
         new_values ['currency'] = abo_price  ['currency']
     new_values ['balance_open'] = new_values ['amount']
+    new_values ['payment']      = 0.0
     new_values ['open']         = new_values ['balance_open'] > 0
     new_values ['n_sent']       = 0
     new_values ['payer']        = abo ['payer']
@@ -73,25 +74,52 @@ def add_to_abo_payer (db, cl, nodeid, oldvalues) :
 # end def add_to_abo_payer
 
 def check_invoice (db, cl, nodeid, new_values) :
-    print "check_invoice"
+    now = Date ('.')
     for i in \
         ( 'abo', 'invoice_no', 'period_start', 'period_end'
-        , 'payer', 'subscriber', 'open'
+        , 'payer', 'subscriber', 'open', 'receipt_no'
         ) :
         if i in new_values :
             raise Reject, uni ('"%s" darf nicht geändert werden') % pretty (i)
     invoice = db.invoice.getnode (nodeid)
     balance = new_values.get ('balance_open', cl.get (nodeid, 'balance_open'))
     amount  = new_values.get ('amount',       cl.get (nodeid, 'amount'))
+    payment = new_values.get ('payment',      cl.get (nodeid, 'payment'))
     date_p  = new_values.get ('date_payed',   cl.get (nodeid, 'date_payed'))
+    receipt = new_values.get ('receipt_no',   cl.get (nodeid, 'receipt_no'))
+    inv_no  = cl.get (nodeid, 'invoice_no')
+    abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
+    if abo ['end'] :
+        raise Reject, uni ('Kein Buchen bei storniertem Abo')
+    if balance is None or amount is None or payment is None :
+        raise Reject, uni ('"%s", "%s", "%s": nur Zahlen erlaubt') % \
+            (pretty ('payment'), pretty ('balance_open'), pretty ('amount'))
+    if 'amount' in new_values :
+        if cl.get (nodeid, 'payment') > 0 :
+            raise Reject, uni ('Betrag darf nicht nach Zahlung geändert werden')
+    if 'payment' in new_values and 'balance_open' in new_values :
+        if amount - payment != balance :
+            raise Reject, uni ('Inkonsistenz von %s:%s und %s:%s') % \
+                (pretty ('payment'), payment, pretty ('balance_open'), balance)
+    elif 'payment' in new_values :
+        new_values ['balance_open'] = amount - payment
+    elif 'balance_open' in new_values :
+        new_values ['payment']      = amount - balance
     if balance > amount :
-        raise Reject, uni ('Offener Betrag muss kleiner sein als Betrag')
+        raise Reject, uni ('Zahlung darf Betrag nicht übersteigen')
+    # is there too now if only balance changed:
+    if 'payment' in new_values :
+        new_values ['bookentry'] = now
+        if not receipt :
+            rnum = inv_no.replace ('R', 'B')
+            if rnum [0] != 'B' : rnum = 'b' + rnum
+            new_values ['receipt_no'] = rnum
     if not balance :
         new_values ['open'] = False
     else :
         new_values ['open'] = True
     if not balance and not date_p :
-        new_values ['date_payed'] = Date ('.')
+        new_values ['date_payed'] = now
     print "check_invoice", new_values
 # end def check_invoice
 

@@ -126,6 +126,7 @@ invoice = Class \
     , bookentry           = Date      ()
     , receipt_no          = String    ()
     , send_it             = Boolean   ()
+    , payment             = Number    ()
     )
 invoice.setkey ("invoice_no")
 
