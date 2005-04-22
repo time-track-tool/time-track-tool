@@ -32,6 +32,7 @@ errmsgs = \
     , 'forbidden' : uni ('"%s" darf nicht ausgefüllt werden')
     , 'nochange'  : uni ('"%s" darf nicht geändert werden')
     , 'nonzero'   : uni ('"%s" darf nicht 0 werden')
+    , 'positive'  : uni ('"%s" muss größer oder gleich 0 sein')
     , 'endtime'   : uni ('Storno: Endzeit muss größer/gleich Startzeit sein')
     , 'month'     : uni ('"%s" (Storno) nur +/- ein Monat')
     , 'period'    : uni ('"%s" nur im Bereich letzte Rechnungsperiode: %s-%s')
@@ -103,8 +104,10 @@ def check_change (db, cl, nodeid, new_values) :
         if i in new_values :
             raise Reject, err ('nochange', i)
     if 'amount' in new_values :
-        if new_values ['amount'] == 0 and abo ['amount'] > 0 :
-            raise Reject, err ('nonzero', 'amount')
+        if new_values ['amount'] == 0 and abo ['amount']  > 0 :
+            raise Reject, err ('nonzero',  'amount')
+        if new_values ['amount']  > 0 and abo ['amount'] == 0 :
+            raise Reject, err ('nochange', 'amount')
     # Changing 'end':
     if  'end' in new_values :
         o_end   = abo        ['end']
@@ -160,9 +163,16 @@ def check_change (db, cl, nodeid, new_values) :
                     db.address.set (id, invoices = l)
 # end def check_change
 
+def check_amount (db, cl, nodeid, new_values) :
+    if amount in new_values and amount < 0 :
+        raise Reject, err ('positive', 'amount')
+# end def check_amount
+
 def init (db) :
     db.abo.audit ("create", set_defaults)
     db.abo.audit ("set",    check_change)
+    db.abo.audit ("create", check_amount)
+    db.abo.audit ("set",    check_amount)
     db.abo.react ("create", update_address)
     db.abo.react ("create", create_invoice)
 # end def init
