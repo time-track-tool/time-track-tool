@@ -488,7 +488,7 @@
        multi_props    python: [p for p in filtered_props if p.multiselect];
        sort_props     python: [p for p in props if p.sortable ()];
        nomulti_props  python: [p for p in filtered_props
-                               if not p.multiselect and (p.key or not p.lnkattr)]
+                               if not p.multiselect and p.searchable]
       "
       tal:attributes="action request/classname"
       onSubmit="javascript:if (document.forms['query'].elements[':queryname'].checked==true)

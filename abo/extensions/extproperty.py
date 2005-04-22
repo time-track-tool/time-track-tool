@@ -49,6 +49,7 @@ class ExtProperty :
         , multiselect = None
         , is_label    = None
         , editable    = None
+        , searchable  = None # usually computed, override with False
         , pretty      = None # optional pretty-printing function
         , linkclass   = None # optional function for getting css class
         ) :
@@ -65,14 +66,15 @@ class ExtProperty :
         self.multiselect = multiselect
         self.is_label    = is_label
         self.pretty      = pretty or utils.pretty
-        self.linkclass   = linkclass
+        self.get_linkcls = linkclass
         self.editable    = editable
         self.key         = None
-        if not self.linkclass :
+        self.searchable  = searchable
+        if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
-                self.linkclass = self.utils.linkclass
+                self.get_linkcls = self.utils.linkclass
             else :
-                self.linkclass = lambda a : ""
+                self.get_linkcls = lambda a : ""
         if hasattr (prop._prop, 'classname') :
             self.lnkname = prop._prop.classname
             self.lnkcls  = prop._db.getclass (self.lnkname)
@@ -88,6 +90,8 @@ class ExtProperty :
 
         if self.lnkname and not self.lnkattr :
             self.lnkattr = self.lnkcls.labelprop ()
+        if self.searchable is None or self.searchable :
+            self.searchable = self.key or not self.lnkattr
         if (   self.is_label is None
            and (  self.name == 'id'
                or self.name == self.klass.labelprop ()
@@ -142,11 +146,19 @@ class ExtProperty :
             , p
             , item = last_p
             , pretty = self.pretty
-            , linkclass = self.linkclass
+            , linkclass = self.get_linkcls
             )
     # end def deref
 
     def sortable (self) :
+        """
+            Check if it's a Link and has a key property and the key
+            property is the current property -- or it's some other
+            Non-Link property. It also doesn't make much sense to sort
+            by Multilink.
+        """
+        if isinstance (self.hprop, MultilinkHTMLProperty) :
+            return False
         return self.key == self.lnkattr
     # def sortable
 
@@ -157,7 +169,7 @@ class ExtProperty :
         """
         i = self.item
         return """<a class="%s" href="%s%s">%s</a>""" \
-            % (self.linkclass (i), self.classname, i.id, self.hprop)
+            % (self.get_linkcls (i), self.classname, i.id, self.hprop)
     # end def formatlink
 
     def editfield (self) :
