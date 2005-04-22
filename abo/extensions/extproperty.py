@@ -100,6 +100,8 @@ class ExtProperty :
             self.is_label = 1
         if self.item :
             self.hprop = item [self.name]
+        else :
+            self.hprop = self.prop
     # end def __init__
 
     def as_listentry (self, item = None) :
