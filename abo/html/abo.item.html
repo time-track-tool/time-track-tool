@@ -15,13 +15,24 @@
     <tr>
      <th tal:content="structure python:utils.fieldname('aboprice')"
          class="required"></th>
-     <td tal:content="structure context/aboprice/menu"></td>
+     <td tal:content="structure context/aboprice/menu"
+         tal:condition="not:context/id">
+     </td>
+     <td tal:content="structure python: utils.ExtProperty
+         (utils, context.aboprice.name, item = context.aboprice).formatlink ()"
+         tal:condition="context/id">
+     </td>
      <th tal:content="structure python:utils.fieldname('amount')"></th>
      <td tal:content="structure python:context.amount.field (6)"></td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname('begin')"></th>
-     <td tal:content="structure context/begin/field"></td>
+     <td tal:content="structure context/begin/field"
+         tal:condition="not:context/id">
+     </td>
+     <td tal:content="structure python:context.begin.pretty ('%Y-%m-%d')"
+         tal:condition="context/id">
+     </td>
      <th tal:content="structure python:utils.fieldname('end')"></th>
      <td tal:content="structure context/end/field"></td>
     </tr>
