@@ -363,9 +363,8 @@
  <!-- list of files -->
  <table class="files" tal:condition="context/files">
   <tr>
-   <th>File name</th>
-   <th>Uploaded</th>
-   <th>Type</th>
+   <th tal:content="python:utils.pretty ('filename')">Datei</th>
+   <th tal:content="python:utils.pretty ('changed')"></th>
   </tr>
   <tr tal:repeat="file context/files">
    <td>
@@ -376,7 +375,6 @@
     <span tal:content="file/creator">creator's name</span>,
     <span tal:content="file/creation">creation date</span>
    </td>
-   <td tal:content="file/type" />
   </tr>
  </table>
  <!-- add new file -->
