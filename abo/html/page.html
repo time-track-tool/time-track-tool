@@ -19,9 +19,11 @@
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
                         , 'abo_price': ''
                         , 'abo_type': ''
-                        , 'adr_type' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=code&%3Agroup=&%3Acolumns=id&%3Acolumns=code&%3Acolumns=description&%3Asearch_text=&%40queryname=&id=&code=&description='
+                        , 'adr_type_cat': ''
+                        , 'adr_type' : ':columns=code,description&:sort=code&:pagesize=50&:startwith=0'
                         , 'currency': ''
                         , 'invoice' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=period_start&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=invoice_no&%3Acolumns=period_start&%3Acolumns=period_end&%3Acolumns=amount&%3Acolumns=currency&%3Acolumns=balance_open&%3Acolumns=open&%3Acolumns=n_sent&%3Acolumns=send_it&%3Acolumns=last_sent&%3Acolumns=date_payed&%3Acolumns=bookentry&%3Acolumns=receipt_no&%3Acolumns=payer&%3Acolumns=subscriber&%3Acolumns=abo&currency=&%3Asearch_text=&%40queryname=&id=&invoice_no=&period_start=&period_end=&amount=&balance_open=&open=1&n_sent=&send_it=&last_sent=&date_payed=&bookentry=&receipt_no='
+                        , 'invoice_group' : ''
                         , 'invoice_template' : ''
                         , 'tmplate' : ''
                         , 'valid': ''
@@ -79,9 +81,28 @@
     <td tal:condition="python:1" class="sidebar" nowrap>
       <span class="classblock">
        <select name="query">
-        <option value="query?@template=edit">Abfragen</option>
-        <tal:block tal:repeat="klassname python:['abo','address']">
-         <tal:block tal:define="name python:utils.pretty (klassname)">
+        <option value="query?@template=edit">-- Abfragen --</option>
+        <tal:block
+         tal:repeat="kp python:
+          [ ('abo',              'View')
+          , ('address',          'View')
+          , ('invoice',          'Edit')
+          , ('adr_type',         'Edit')
+          , ('adr_type_cat',     'Edit')
+          , ('abo_type',         'Edit')
+          , ('currency',         'Edit')
+          , ('abo_price',        'Edit')
+          , ('valid',            'Edit')
+          , ('invoice_group',    'Edit')
+          , ('invoice_template', 'Edit')
+          ]">
+         <tal:block
+          tal:define="
+              klassname python:kp [0]
+            ; name      python:utils.pretty (klassname)
+            ; perm      python: kp [1]
+            "
+          tal:condition="python:request.user.hasPermission (perm,klassname)">
           <tal:block metal:use-macro="templates/page/macros/query_list"/>
          </tal:block>
         </tal:block>
@@ -92,7 +113,7 @@
     <td class="sidebar">
 
      <!-- custom classes with "New" Button -->
-     <tal:block tal:repeat="c python:['abo','address']">
+     <tal:block tal:repeat="c python:['abo','address','tmplate']">
         <tal:block tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
@@ -109,7 +130,7 @@
         </tal:block>
      </tal:block>
 
-     <!-- other custom classes -->
+     <!-- other custom classes
      <tal:block tal:repeat="c python:['adr_type','invoice']">
         <tal:block tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
@@ -120,6 +141,18 @@
          </span>
         </tal:block>
      </tal:block>
+     -->
+
+     <!-- user list -->
+        <span class="classblock">
+         <a tal:condition="python:request.user.hasPermission('View', 'user')
+                                  or request.user.hasPermission('Edit', 'user')"
+            href="user" >User</a>
+         <span
+          tal:condition="python:request.user.hasPermission('Edit', 'user')"
+         >
+             / <a href="user?:template=item">Neu</a></span>
+         </span>
 
      <!-- username -> link to own profile -->
      <span class="classblock">
@@ -134,11 +167,10 @@
      </span>
     </td>
    </tr>
+   <tal:block tal:condition=python:False>
    <tr>
-     <!-- <td class="sidebar"></td> -->
-
-     <!-- custom classes -->
      <td class="sidebar" colspan="2">
+     <!-- custom classes -->
         <tal:block tal:repeat="c python:
           ['abo_type','currency','abo_price'
           ,'valid','invoice_template'
@@ -172,24 +204,8 @@
         </tal:block>
      </tal:block>
 
-
-
-<!-- template specific menues -->
-<!--
-    <tal:block metal:define-slot="menubar"></tal:block>
--->
-
-<!-- user list -->
-        <span class="classblock">
-         <a tal:condition="python:request.user.hasPermission('View', 'user')
-                                  or request.user.hasPermission('Edit', 'user')"
-            href="user" >User</a>
-         <span
-          tal:condition="python:request.user.hasPermission('Edit', 'user')"
-         >
-             / <a href="user?:template=item">Neu</a></span>
-         </span>
    </tr>
+   </tal:block>
   </table>
 </form>
 
