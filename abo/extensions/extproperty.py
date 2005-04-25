@@ -110,6 +110,12 @@ class ExtProperty :
             self.hprop = item [self.name]
     # end def _set_item
 
+    def formatted (self) :
+        if isinstance (self.hprop, DateHTMLProperty) :
+            return self.hprop.pretty ('%Y-%m-%d')
+        return str (self.hprop)
+    # end def formatted
+
     def as_listentry (self, item = None) :
         self._set_item (item)
         if self.editable :
@@ -124,9 +130,8 @@ class ExtProperty :
                     ])
             else :
                 return self.deref ().formatlink ()
-        elif isinstance (self.hprop, DateHTMLProperty) :
-            return self.hprop.pretty ('%Y-%m-%d')
-        return str (self.hprop)
+        else :
+            return self.formatted ()
     # end def as_listentry
 
     def deref (self, index = None) :
@@ -175,7 +180,7 @@ class ExtProperty :
         """
         i = item or self.item
         return """<a class="%s" href="%s%s">%s</a>""" \
-            % (self.get_linkcls (i), self.classname, i.id, self.hprop)
+            % (self.get_linkcls (i), self.classname, i.id, self.formatted ())
     # end def formatlink
 
     def menu (self) :

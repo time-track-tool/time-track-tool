@@ -13,6 +13,7 @@
  ; klass         python:db [classname] or default
  ; has_msgs      python:'messages' in klass._klass.getprops ()
  ; has_invoices  python:'invoices' in klass._klass.getprops ()
+ ; has_letters   python:'letters'  in klass._klass.getprops ()
  ; is_user       python:uname!='anonymous'
  ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=end&%3Acolumns=subscriber&%3Acolumns=payer&aboprice=&%3Asearch_text=&%40queryname=&id=&amount=&begin=&end='
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
@@ -281,21 +282,48 @@
   </tr>
 
   <tr tal:condition="has_invoices">
-   <th class="required">Rechnungen</th>
+   <th style="text-align:left" class="required">Rechnungen</th>
   </tr>
   <tal:block tal:repeat="inv context/invoices/reverse"
        tal:condition="has_invoices">
    <tr>
     <th tal:content="structure python:utils.fieldname ('invoice_no')"></th>
-    <td colspan="3" tal:content="structure python:''.join
+    <td tal:content="structure python:''.join
         (( utils.ExtProperty
            (utils, inv.invoice_no, item = inv).as_listentry ()
-        , '&nbsp;'
-        ,  utils.ExtProperty
+        ,
+        ))">
+    </td>
+    <th tal:content="structure python:utils.fieldname ('period')"></th>
+    <td tal:content="structure python:''.join
+        (( utils.ExtProperty
            (utils, inv.period_start, item = inv).as_listentry ()
         , '-'
         ,  utils.ExtProperty
-           (utils, inv.period_end, item = inv).as_listentry ()
+           (utils, inv.period_end,   item = inv).as_listentry ()
+        ))">
+    </td>
+   </tr>
+  </tal:block>
+
+  <tr tal:condition="python:has_letters and context.letters">
+   <th style="text-align:left" class="required">Briefe</th>
+  </tr>
+  <tal:block tal:repeat="ltr context/letters/reverse"
+       tal:condition="has_letters">
+   <tr>
+    <th tal:content="structure python:utils.fieldname ('date')"></th>
+    <td tal:content="structure python:''.join
+        (( utils.ExtProperty
+           (utils, ltr.date,    item = ltr, is_label = 1).as_listentry ()
+        ,
+        ))">
+    </td>
+    <th tal:content="structure python:utils.fieldname ('subject')"></th>
+    <td tal:content="structure python:''.join
+        ((  utils.ExtProperty
+           (utils, ltr.subject, item = ltr, is_label = 1).as_listentry ()
+        ,
         ))">
     </td>
    </tr>
