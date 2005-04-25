@@ -49,6 +49,7 @@ abo_price = Class \
     , amount              = Number    ()
     , name                = String    ()
     , invoice_template    = Multilink ('invoice_template')
+    , invoice_group       = Link      ('invoice_group')
     )
 abo_price.setkey ("name")
 
@@ -127,8 +128,16 @@ invoice = Class \
     , receipt_no          = String    ()
     , send_it             = Boolean   ()
     , payment             = Number    ()
+    , invoice_group       = Link      ("invoice_group")
     )
 invoice.setkey ("invoice_no")
+
+invoice_group = Class \
+    ( db, "invoice_group"
+    , name                = String    ()
+    , description         = String    ()
+    )
+invoice_group.setkey ("name")
 
 # The invoice_level number decides for which invoice level we use
 # which template.
@@ -136,6 +145,7 @@ invoice_template = Class \
     ( db, "invoice_template"
     , tmplate             = Link      ("tmplate")
     , invoice_level       = Number    ()
+    , interval            = Number    ()
     )
 
 # The file types are either PDF (from old imported data) or an

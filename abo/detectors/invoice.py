@@ -35,6 +35,7 @@ def new_invoice (db, cl, nodeid, new_values) :
         ( 'balance_open', 'n_sent', 'last_sent', 'payer', 'subscriber'
         , 'date_payed', 'bookentry', 'receipt_no', 'send_it'
         , 'period_start', 'period_end', 'invoice_no', 'payment'
+        , 'invoice_group'
         ) :
         if i in new_values :
             raise Reject, uni ('"%s" darf nicht ausgefüllt werden') % pretty (i)

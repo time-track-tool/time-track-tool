@@ -27,6 +27,7 @@
     , ep (utils, pdict ['payer'],      lnkattr = 'lastname')
     , ep (utils, pdict ['subscriber'], lnkattr = 'lastname')
     , ep (utils, pdict ['abo'])
+    , ep (utils, pdict ['invoice_group'], multiselect = 1)
     );
   "
   tal:condition="context/is_view_ok">

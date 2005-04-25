@@ -40,7 +40,8 @@ You are not allowed to view this page.
     </td>
    </tal:block>
    <tal:block tal:condition="python:prop._name not in linkprops">
-    <td tal:content="python:item [prop._name]"></td>
+    <td tal:content="structure python:utils.ExtProperty
+        (utils, prop, item = item).as_listentry ()"></td>
    </tal:block>
   </tal:block>
  </tr>

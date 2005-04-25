@@ -86,8 +86,10 @@ class ExtProperty :
                 if len (l) > 1 :
                     self.selname = l [-2]
         if not self.label :
-            self.label = self.pretty (self.selname)
-
+            if self.selname :
+                self.label = self.pretty (self.selname)
+            else :
+                self.label = ''
         if self.lnkname and not self.lnkattr :
             self.lnkattr = self.lnkcls.labelprop ()
         if self.searchable is None or self.searchable :
@@ -111,7 +113,9 @@ class ExtProperty :
     # end def _set_item
 
     def formatted (self) :
-        if isinstance (self.hprop, DateHTMLProperty) :
+        if not self.hprop :
+            return ""
+        elif isinstance (self.hprop, DateHTMLProperty) :
             return self.hprop.pretty ('%Y-%m-%d')
         return str (self.hprop)
     # end def formatted
@@ -187,7 +191,6 @@ class ExtProperty :
         """ Render as menu if condition, otherwise formatlink to hprop """
         if self.editable :
             return self.hprop.menu ()
-        print "non-editable:"
         return self.formatlink (self.hprop)
     # end def menu
 
