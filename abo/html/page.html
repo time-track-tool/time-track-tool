@@ -15,6 +15,7 @@
  ; has_invoices  python:'invoices' in klass._klass.getprops ()
  ; has_letters   python:'letters'  in klass._klass.getprops ()
  ; is_user       python:uname!='anonymous'
+ ; invoice       request/form/invoice/value|nothing
  ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=end&%3Acolumns=subscriber&%3Acolumns=payer&aboprice=&%3Asearch_text=&%40queryname=&id=&amount=&begin=&end='
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
                         , 'abo_price': ''
@@ -84,23 +85,25 @@
         <option value="query?@template=edit">-- Abfragen --</option>
         <tal:block
          tal:repeat="kp python:
-          [ ('abo',              'View')
-          , ('address',          'View')
-          , ('invoice',          'Edit')
-          , ('adr_type',         'Edit')
-          , ('adr_type_cat',     'Edit')
-          , ('abo_type',         'Edit')
-          , ('currency',         'Edit')
-          , ('abo_price',        'Edit')
-          , ('valid',            'Edit')
-          , ('invoice_group',    'Edit')
-          , ('invoice_template', 'Edit')
+          [ ('abo',              '',                  'View', '')
+          , ('address',          '',                  'View', '')
+          , ('invoice',          '',                  'Edit', '')
+          , ('invoice',          'generate invoices', 'Edit', 'send')
+          , ('adr_type',         '',                  'Edit', '')
+          , ('adr_type_cat',     '',                  'Edit', '')
+          , ('abo_type',         '',                  'Edit', '')
+          , ('currency',         '',                  'Edit', '')
+          , ('abo_price',        '',                  'Edit', '')
+          , ('valid',            '',                  'Edit', '')
+          , ('invoice_group',    '',                  'Edit', '')
+          , ('invoice_template', '',                  'Edit', '')
           ]">
          <tal:block
           tal:define="
               klassname python:kp [0]
-            ; name      python:utils.pretty (klassname)
-            ; perm      python: kp [1]
+            ; name      python:utils.pretty (kp [1] or klassname)
+            ; perm      python: kp [2]
+            ; tplate    python: ('&@template=%s' % kp [3], '') [not kp [3]]
             "
           tal:condition="python:request.user.hasPermission (perm,klassname)">
           <tal:block metal:use-macro="templates/page/macros/query_list"/>
@@ -167,8 +170,7 @@
      </span>
     </td>
    </tr>
-   <tal:block tal:condition=python:False>
-   <tr>
+   <tr tal:condition="python:False">
      <td class="sidebar" colspan="2">
      <!-- custom classes -->
         <tal:block tal:repeat="c python:
@@ -205,7 +207,9 @@
      </tal:block>
 
    </tr>
-   </tal:block>
+
+   <tal:block metal:define-slot="menu_slot" />
+
   </table>
 </form>
 
@@ -238,7 +242,7 @@
 <!-- list of queries - needs 'klassname', 'name' and 'default_query' defined -->
 <tal:block metal:define-macro="query_list">
        <option tal:attributes="
-                value python:'%s?%s' % (klassname, default_query [klassname])"
+                value python:'%s?%s%s' % (klassname, default_query [klassname], tplate)"
                tal:content="name"></option>
        <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klassname})"
                tal:repeat="q queries"
