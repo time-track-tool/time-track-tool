@@ -1,10 +1,11 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
- <tal:block metal:fill-slot="menu_slot">
-   <tr tal:condition="python:request.user.hasPermission('Edit','invoice')">
+ <tal:block metal:fill-slot="menu_slot"
+   tal:condition="python:request.user.hasPermission('Edit','invoice')">
+   <tr>
     <td tal:condition="python:1" class="sidebar" nowrap>
       <span class="classblock"
        tal:define="igroups python:db.invoice_group.filter()">
-       <select name="invoice">
+       <select name="invoice_g">
         <option tal:attributes="value string:invoice?@template=send">
          - Rechnungen -
         </option>
@@ -13,12 +14,12 @@
               tal:define="
               q string::columns=invoice_no,period_start,period_end,amount,currency,balance_open,n_sent,send_it,last_sent,payer,subscriber,abo&:sort=-period_start&:filter=open,invoice_group,send_it&:pagesize=50&:startwith=0&open=1&invoice_group=${ig/id}&send_it=1"
               tal:attributes="
-                 value string:invoice?invoice=${ig/name}&@template=send&${q}
-               ; selected python:invoice == ig.name
+                 value string:invoice?invoice_g=${ig/id}&@template=send&${q}
+               ; selected python:invoice_g == ig.id
                "/>
         </tal:block>
        </select>
-       <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['invoice'].options[document.forms['menubar'].elements['invoice'].options.selectedIndex].value; ">
+       <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['invoice_g'].options[document.forms['menubar'].elements['invoice_g'].options.selectedIndex].value; ">
       </span>
     </td>
     <td tal:condition="true" class="sidebar" nowrap>
@@ -45,13 +46,14 @@
     </td>
    </tr>
  </tal:block>
-<title metal:fill-slot="head_title">Verschicken Rechnung</title>
-<span metal:fill-slot="body_title" tal:omit-tag="python:1"
-      tal:define="iv python:[': %s' % invoice, ''] [not invoice]"
-      tal:content="string:Verschicken ${Classname}${iv}"></span>
+ <title metal:fill-slot="head_title">Verschicken Rechnung</title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+      tal:define="iv python:[': %s' % inv_group.name, ''] [not invoice_g]"
+      tal:content="string:Verschicken ${Classname}${iv}">
+ </span>
 
 <tal:block metal:fill-slot="content">
-<tal:block tal:condition="invoice">
+<tal:block tal:condition="invoice_g">
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
