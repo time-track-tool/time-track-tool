@@ -6,15 +6,20 @@
       <span class="classblock"
        tal:define="igroups python:db.invoice_group.filter()">
        <select name="invoice_g">
-        <option tal:attributes="value string:invoice?@template=send">
+        <option tal:attributes="value string:invoice?@template=send"
+         tal:content="python:str(invoice_g) + 'HUHU'"
+        >
          - Rechnungen -
         </option>
         <tal:block tal:repeat="ig igroups">
             <option tal:content="ig/name"
-              tal:define="
-              q string::columns=invoice_no,period_start,period_end,amount,currency,balance_open,n_sent,send_it,last_sent,payer,subscriber,abo&:sort=-period_start&:filter=open,invoice_group,send_it&:pagesize=50&:startwith=0&open=1&invoice_group=${ig/id}&send_it=1"
-              tal:attributes="
-                 value string:invoice?invoice_g=${ig/id}&@template=send&${q}
+              tal:attributes="value python:request.indexargs_url
+                 ( classname
+                 , { '@template'     : 'send'
+                   , ':invoice_g'    : ig.id
+                   , 'invoice_group' : ig.id
+                   }
+                 )
                ; selected python:invoice_g == ig.id
                "/>
         </tal:block>
@@ -24,12 +29,26 @@
     </td>
     <td tal:condition="true" class="sidebar" nowrap>
      <span class="classblock">
-      <a tal:attributes="href string::template=item"
+      <a tal:attributes="href python:request.indexargs_url
+         ( classname
+         , { '@action'       : 'mark_invoice'
+           , '@template'     : 'send'
+           , ':invoice_g'    : invoice_g
+           , 'invoice_group' : invoice_g
+           }
+         )"
          tal:content="python:utils.pretty ('mark')">
       </a>
      </span>
      <span class="classblock">
-      <a tal:attributes="href string::template=item"
+      <a tal:attributes="href python:request.indexargs_url
+         ( classname
+         , { '@action'       : 'mark_invoice'
+           , '@template'     : 'send'
+           , ':invoice_g'    : invoice_g
+           , 'invoice_group' : invoice_g
+           }
+         )"
          tal:content="python:utils.pretty ('unmark')">
       </a>
      </span>
@@ -55,10 +74,20 @@
 <tal:block metal:fill-slot="content">
 <tal:block tal:condition="invoice_g">
  <tal:block tal:define=
-  "batch request/batch;
-   pdict python: utils.properties_dict (db, context);
-   ep    python: utils.ExtProperty;
-   props python:
+  " batch       request/batch
+  ; pdict       python: utils.properties_dict (db, context)
+  ; ep          python: utils.ExtProperty
+  ; tplate_args python:{'@template':'send',':invoice_g':invoice_g}
+  ; invoice_g   python: (  (   request.form.has_key (':invoice_g')
+                           and request.form [':invoice_g'].value
+                           )
+                        or ( request.form.has_key ('invoice_group')
+                           and str (request.form ['invoice_group'].value)
+                           )
+                        )
+  ; inv_group   python:db.invoice_group.getItem (invoice_g or '1')
+
+  ; props       python:
     ( ep (utils, pdict ['id'])
     , ep (utils, pdict ['invoice_no'])
     , ep (utils, pdict ['period_start'])
@@ -78,7 +107,7 @@
     , ep (utils, pdict ['subscriber'], lnkattr = 'lastname')
     , ep (utils, pdict ['abo'])
     , ep (utils, pdict ['invoice_group'], multiselect = 1)
-    );
+    )
   "
   tal:condition="context/is_view_ok">
 
@@ -87,6 +116,8 @@
   <p>
   <input type="submit" value=" Speichern ">
   <input type="hidden" name="@action" value="edit">
+  <input type="hidden" name="@template" value="send">
+  <input type="hidden" name=":invoice_g" tal:attributes="value invoice_g">
   <tal:block replace="structure request/indexargs_form" />
   </p>
   </form>

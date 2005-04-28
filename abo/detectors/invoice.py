@@ -23,7 +23,6 @@ from roundup.rup_utils import uni, pretty, abo_max_invoice
 from roundup.date      import Date, Interval
 
 def new_invoice (db, cl, nodeid, new_values) :
-    print "new_invoice"
     for i in ('abo', ) :
         if not i in new_values :
             raise Reject, uni ('"%s" muss ausgefüllt werden') % pretty (i)
@@ -60,7 +59,6 @@ def new_invoice (db, cl, nodeid, new_values) :
     new_values ['period_start'] = start
     new_values ['period_end']   = end
     new_values ['invoice_no']   = "R%s%s" % (abo_id, end.pretty ('%m%y'))
-    print "end new_invoice", new_values ['invoice_no']
 # end def new_invoice
 
 def add_to_abo_payer (db, cl, nodeid, oldvalues) :
@@ -121,14 +119,12 @@ def check_invoice (db, cl, nodeid, new_values) :
         new_values ['open'] = True
     if not balance and not date_p :
         new_values ['date_payed'] = now
-    print "check_invoice", new_values
 # end def check_invoice
 
 def create_new_invoice (db, cl, nodeid, oldvalues) :
     abo_id = cl.get (nodeid, 'abo')
     abo    = db.abo.getnode (abo_id)
     if 'open' in oldvalues and not cl.get (nodeid, 'open') :
-        print "closed"
         invoice = abo_max_invoice (db, abo)
         if not invoice ['open'] :
             db.invoice.create (abo = abo_id)

@@ -146,7 +146,9 @@ invoice_template = Class \
     , tmplate             = Link      ("tmplate")
     , invoice_level       = Number    ()
     , interval            = Number    ()
+    , name                = String    ()
     )
+invoice_template.setkey ("name")
 
 # The file types are either PDF (from old imported data) or an
 # OpenOffice.org document which is cusomized using info pointed to with

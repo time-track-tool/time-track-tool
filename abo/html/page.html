@@ -15,8 +15,15 @@
  ; has_invoices  python:'invoices' in klass._klass.getprops ()
  ; has_letters   python:'letters'  in klass._klass.getprops ()
  ; is_user       python:uname!='anonymous'
- ; invoice_g     request/form/invoice_g/value|nothing
+ ; invoice_g     python: (  (   request.form.has_key (':invoice_g')
+                            and request.form [':invoice_g'].value
+                            )
+                         or ( request.form.has_key ('invoice_group')
+                            and request.form ['invoice_group'].value
+                            )
+                         )
  ; inv_group     python:db.invoice_group.getItem (invoice_g or '1')
+ ; tplate_args   python:{}
  ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=end&%3Acolumns=subscriber&%3Acolumns=payer&aboprice=&%3Asearch_text=&%40queryname=&id=&amount=&begin=&end='
                         , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
                         , 'abo_price': ''
@@ -467,8 +474,13 @@
        <th class="left">
         <a tal:define="prev batch/previous"
            tal:condition="prev"
-           tal:attributes="href python:str(request.indexargs_href(request.classname,
-           {':startwith':prev.first, ':pagesize':prev.size}))">&lt;&lt;&nbsp;previous</a></th>
+           tal:attributes="href python:request.indexargs_url
+             (classname
+             , dict
+                ( tplate_args.items ()
+                + [(':startwith',prev.first) , (':pagesize',prev.size)]
+                )
+             )">&lt;&lt;&nbsp;previous</a></th>
        <th tal:content="structure python:'<nobr>showing %d - %d of %d in total</nobr>'
                                % ( batch.start
                                  , batch.start + batch.length - 1
@@ -479,8 +491,13 @@
        <th class="right">
         <a tal:define="next batch/next"
            tal:condition="next"
-           tal:attributes="href python:str(request.indexargs_href(request.classname,
-           {':startwith':next.first, ':pagesize':next.size}))">next&nbsp;&gt;&gt;</a></th>
+           tal:attributes="href python:request.indexargs_url
+             ( classname
+             , dict
+                ( tplate_args.items ()
+                + [(':startwith',next.first) , (':pagesize',next.size)]
+                )
+             )">next&nbsp;&gt;&gt;</a></th>
       </tr>
      </table>
     </th>
@@ -631,6 +648,15 @@
        </tal:block>
        <td>
         <table border="0" class="form">
+         <tr>
+          <th />
+          <td colspan="5" style="text-align:right">
+           <a tal:attributes="href python:request.indexargs_url
+            (classname, {'@action':'export_csv_names'})" i18n:translate="">
+            Download as CSV
+           </a>
+          </td>
+         </tr>
          <tr>
           <th>Volltextsuche:</th>
           <td colspan="5"><input name=":search_text"
