@@ -5,8 +5,9 @@ from roundup.date        import Date, Interval
 
 Reject = ValueError
 
-class MarkInvoice (Action) :
-    name = 'export'
+
+class Invoice (Action, object) :
+    name = 'invoice actions'
     permissionType = 'Edit'
 
     def marked (self) :
@@ -40,6 +41,32 @@ class MarkInvoice (Action) :
         return max
     # end def get_iv_template
 
+    def handle (self) :
+        # figure the request
+        request    = templating.HTMLRequest (self.client)
+        filterspec = request.filterspec
+
+        if request.classname != 'invoice' :
+            raise Reject, self._ ('You can only mark invoices')
+        # get invoice_group:
+        self.invoice_group = filterspec ['invoice_group'][0]
+    # end def handle
+# end class Invoice
+
+class UnMarkInvoice (Invoice) :
+    name = 'unmark'
+
+    def handle (self) :
+        super (self.__class__, self).handle ()
+        for i in self.marked () :
+            self.db.invoice.set (i, invoice_group = None)
+        self.db.commit ()
+    # end def handle
+# end class UnMarkInvoice
+
+class MarkInvoice (Invoice) :
+    name = 'mark'
+
     def iv_filter (self, ids) :
         """ Filter invoices for 
 
@@ -70,23 +97,13 @@ class MarkInvoice (Action) :
 
     def handle (self) :
         ''' Mark invoices with the given invoice_group. '''
-        # figure the request
+        super (self.__class__, self).handle ()
         self.now   = Date ('.')
-        request    = templating.HTMLRequest (self.client)
-        filterspec = request.filterspec
-        sort       = request.sort
-        group      = request.group
-        columns    = request.columns
-        invoice    = self.db.invoice
 
-        if request.classname != 'invoice' :
-            raise Reject, self._ ('You can only mark invoices')
-        # get invoice_group:
-        print filterspec
-        self.invoice_group = filterspec ['invoice_group'][0]
         if self.marked () :
             raise Reject, self._ ('invoices are already marked')
 
+        invoice = self.db.invoice
         spec = \
             { 'open'         : True
             , 'period_start' : ';1m'
@@ -99,6 +116,10 @@ class MarkInvoice (Action) :
                 (i ['id'], send_it = True, invoice_group = self.invoice_group)
         self.db.commit ()
     # end def handle
+# end class MarkInvoice
+
+def
 
 def init (instance) :
-          instance.registerAction ('mark_invoice', MarkInvoice)
+          instance.registerAction ('mark_invoice',   MarkInvoice)
+          instance.registerAction ('unmark_invoice', UnMarkInvoice)
