@@ -57,6 +57,7 @@ class UnMarkInvoice (Invoice) :
     name = 'unmark'
 
     def handle (self) :
+        ''' Remove mark created by MarkInvoice. '''
         super (self.__class__, self).handle ()
         for i in self.marked () :
             self.db.invoice.set (i, invoice_group = None)
@@ -118,8 +119,22 @@ class MarkInvoice (Invoice) :
     # end def handle
 # end class MarkInvoice
 
-def
+class GenerateInvoice (Invoice) :
+    def handle (self) :
+        ''' Prepare invoices for printout and send to browser.'''
+        super (self.__class__, self).handle ()
+    # end def handle
+# end class GenerateInvoice
+
+class MarkInvoiceSent (Invoice) :
+    def handle (self) :
+        ''' Mark the marked invoices as sent and remove mark.'''
+        super (self.__class__, self).handle ()
+    # end def handle
+# end class MarkSent
 
 def init (instance) :
-          instance.registerAction ('mark_invoice',   MarkInvoice)
-          instance.registerAction ('unmark_invoice', UnMarkInvoice)
+          instance.registerAction ('mark_invoice',      MarkInvoice)
+          instance.registerAction ('unmark_invoice',    UnMarkInvoice)
+          instance.registerAction ('mark_invoice_sent', MarkInvoiceSent)
+          instance.registerAction ('generate_invoice',  GenerateInvoice)
