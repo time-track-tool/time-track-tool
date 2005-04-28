@@ -24,6 +24,10 @@ class ExportCSVNamesAction (Action) :
         group      = request.group
         columns    = request.columns
         klass      = self.db.getclass (request.classname)
+        props      = klass.getprops ()
+        if not columns :
+            columns = props.keys ()
+            columns.sort ()
 
         # full-text search
         if request.search_text :
@@ -57,7 +61,6 @@ class ExportCSVNamesAction (Action) :
                     return " ".join ([str (cls.get (x, col)) for col in cols])
             return f
 
-        props = klass.getprops ()
 
         for col in columns :
             represent [col] = str
@@ -65,12 +68,10 @@ class ExportCSVNamesAction (Action) :
                 cn = props [col].classname
                 cl = self.db.getclass (cn)
                 pr = cl.getprops ()
-                if 'name' in pr :
-                    represent [col] = repr_link (cl, ('name',))
-                elif 'lastname' in pr :
+                if 'lastname' in pr :
                     represent [col] = repr_link (cl, ('firstname', 'lastname'))
-                elif cn == 'user' :
-                    represent [col] = repr_link (cl, ('username',))
+                else :
+                    represent [col] = repr_link (cl, (cl.labelprop (),))
             elif isinstance (props [col], hyperdb.Date) :
                 represent [col] = repr_date
 
