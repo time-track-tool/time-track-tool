@@ -92,26 +92,26 @@
        <select name="query">
         <option value="query?@template=edit">-- Abfragen --</option>
         <tal:block
-         tal:repeat="kp python:
-          [ ('abo',              '',                  'View', '')
-          , ('address',          '',                  'View', '')
-          , ('invoice',          '',                  'Edit', '')
-          , ('invoice',          'generate invoices', 'Edit', 'send')
-          , ('adr_type',         '',                  'Edit', '')
-          , ('adr_type_cat',     '',                  'Edit', '')
-          , ('abo_type',         '',                  'Edit', '')
-          , ('currency',         '',                  'Edit', '')
-          , ('abo_price',        '',                  'Edit', '')
-          , ('valid',            '',                  'Edit', '')
-          , ('invoice_group',    '',                  'Edit', '')
-          , ('invoice_template', '',                  'Edit', '')
-          ]">
+         tal:define="klasses python:
+          [ ('abo',              'View', (('',''),))
+          , ('address',          'View', (('',''),))
+          , ('invoice',          'Edit', (('generate invoices', 'send'),('','')))
+          , ('adr_type',         'Edit', (('',''),))
+          , ('adr_type_cat',     'Edit', (('',''),))
+          , ('abo_type',         'Edit', (('',''),))
+          , ('currency',         'Edit', (('',''),))
+          , ('abo_price',        'Edit', (('',''),))
+          , ('valid',            'Edit', (('',''),))
+          , ('invoice_group',    'Edit', (('',''),))
+          , ('invoice_template', 'Edit', (('',''),))
+          ]"
+         tal:repeat="kp klasses"
+        >
          <tal:block
           tal:define="
-              klassname python:kp [0]
-            ; name      python:utils.pretty (kp [1] or klassname)
-            ; perm      python: kp [2]
-            ; tplate    python: ('&@template=%s' % kp [3], '') [not kp [3]]
+              klassname python: kp [0]
+            ; perm      python: kp [1]
+            ; tplates   python: kp [2]
             "
           tal:condition="python:request.user.hasPermission (perm,klassname)">
           <tal:block metal:use-macro="templates/page/macros/query_list"/>
@@ -249,19 +249,25 @@
 
 <!-- list of queries - needs 'klassname', 'name' and 'default_query' defined -->
 <tal:block metal:define-macro="query_list">
-       <option tal:attributes="
-                value python:'%s?%s%s' % (klassname, default_query [klassname], tplate)"
-               tal:content="name"></option>
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klassname})"
-               tal:repeat="q queries"
-               tal:attributes="value string:${klassname}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
-               tal:content="structure string:&nbsp;&nbsp;${q/name}"
-               >&nbsp; &nbsp; Global Queries</option>
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klassname})"
-               tal:repeat="q queries"
-               tal:attributes="value string:${klassname}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
-               tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
-               >&nbsp; &nbsp; My Queries</option>
+ <tal:block tal:repeat="t tplates">
+ <tal:block
+  tal:define=" name      python:utils.pretty (t [0] or klassname)
+             ; tplate    python: ('&@template=%s' % t [1], '') [not t [1]]">
+   <option tal:attributes="
+    value python:'%s?%s%s' % (klassname, default_query [klassname], tplate)"
+    tal:content="name"></option>
+  </tal:block>
+ </tal:block>
+ <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klassname})"
+  tal:repeat="q queries"
+  tal:attributes="value string:${klassname}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+  tal:content="structure string:&nbsp;&nbsp;${q/name}"
+ >&nbsp; &nbsp; Global Queries</option>
+ <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klassname})"
+  tal:repeat="q queries"
+  tal:attributes="value string:${klassname}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+  tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
+ >&nbsp; &nbsp; My Queries</option>
 </tal:block>
 
 

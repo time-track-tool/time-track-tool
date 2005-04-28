@@ -82,6 +82,7 @@ class MarkInvoice (Action) :
         if request.classname != 'invoice' :
             raise Reject, self._ ('You can only mark invoices')
         # get invoice_group:
+        print filterspec
         self.invoice_group = filterspec ['invoice_group'][0]
         if self.marked () :
             raise Reject, self._ ('invoices are already marked')

@@ -6,20 +6,13 @@
       <span class="classblock"
        tal:define="igroups python:db.invoice_group.filter()">
        <select name="invoice_g">
-        <option tal:attributes="value string:invoice?@template=send"
-         tal:content="python:str(invoice_g) + 'HUHU'"
-        >
+        <option tal:attributes="value string:invoice?@template=send">
          - Rechnungen -
         </option>
         <tal:block tal:repeat="ig igroups">
             <option tal:content="ig/name"
-              tal:attributes="value python:request.indexargs_url
-                 ( classname
-                 , { '@template'     : 'send'
-                   , ':invoice_g'    : ig.id
-                   , 'invoice_group' : ig.id
-                   }
-                 )
+              tal:attributes="value string:${classname}?:invoice_g=${ig/id}&@template=send&:columns=invoice_no,period_start,period_end,amount,currency,balance_open,n_sent,send_it,last_sent,payer,subscriber,abo&:sort=-period_start&:filter=open,invoice_group,send_it&:pagesize=50&:startwith=0&open=1&invoice_group=${ig/id}&send_it=1
+               ; req python:request.filterspec
                ; selected python:invoice_g == ig.id
                "/>
         </tal:block>
@@ -34,7 +27,6 @@
          , { '@action'       : 'mark_invoice'
            , '@template'     : 'send'
            , ':invoice_g'    : invoice_g
-           , 'invoice_group' : invoice_g
            }
          )"
          tal:content="python:utils.pretty ('mark')">
@@ -46,7 +38,6 @@
          , { '@action'       : 'mark_invoice'
            , '@template'     : 'send'
            , ':invoice_g'    : invoice_g
-           , 'invoice_group' : invoice_g
            }
          )"
          tal:content="python:utils.pretty ('unmark')">

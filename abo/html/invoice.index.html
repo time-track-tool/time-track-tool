@@ -19,7 +19,7 @@
     , ep (utils, pdict ['payment'])
     , ep (utils, pdict ['open'])
     , ep (utils, pdict ['n_sent'])
-    , ep (utils, pdict ['send_it'], editable = 1)
+    , ep (utils, pdict ['send_it'])
     , ep (utils, pdict ['last_sent'])
     , ep (utils, pdict ['date_payed'])
     , ep (utils, pdict ['bookentry'])
@@ -35,7 +35,6 @@
   <form method="POST" tal:attributes="action request/classname">
   <tal:block metal:use-macro="templates/page/macros/search_display"></tal:block>
   <p>
-  <input type="submit" value=" Speichern ">
   <input type="hidden" name="@action" value="edit">
   <tal:block replace="structure request/indexargs_form" />
   </p>
