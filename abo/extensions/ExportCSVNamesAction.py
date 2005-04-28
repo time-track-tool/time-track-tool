@@ -1,0 +1,74 @@
+from roundup.cgi.actions import Action
+from roundup.cgi import templating
+from roundup import hyperdb
+
+import csv
+
+class ExportCSVNamesAction (Action) :
+    name = 'export'
+    permissionType = 'View'
+
+    def handle (self) :
+        ''' Export the specified search query as CSV. '''
+        # figure the request
+        request    = templating.HTMLRequest (self.client)
+        filterspec = request.filterspec
+        sort       = request.sort
+        group      = request.group
+        columns    = request.columns
+        klass      = self.db.getclass (request.classname)
+
+        # full-text search
+        if request.search_text :
+            matches = self.db.indexer.search (
+                re.findall (r'\b\w{2,25}\b', request.search_text), klass)
+        else :
+            matches = None
+
+        h                        = self.client.additional_headers
+        h ['Content-Type']       = 'text/csv'
+        # some browsers will honor the filename here...
+        h ['Content-Disposition'] = 'inline; filename=query.csv'
+
+        self.client.header ()
+
+        if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
+            # all done, return a dummy string
+            return 'dummy'
+
+        writer = csv.writer (self.client.request.wfile)
+        writer.writerow (columns)
+
+        # Figure out Link columns
+        represent = {}
+
+        def repr_link (cls, col) :
+            def f (x) :
+                if x == None :
+                    return ""
+                else :
+                    return str (cls.get (x,col))
+            return f
+
+        props = klass.getprops ()
+
+        for col in columns :
+            represent [col] = str
+            if isinstance (props [col], hyperdb.Link) :
+                cn = props [col].classname
+                cl = self.db.getclass (cn)
+                if cl.getprops ().has_key ('name') :
+                    represent [col] = repr_link (cl, 'name')
+                elif cn == 'user' :
+                    represent [col] = repr_link (cl, 'username')
+
+        # and search
+        for itemid in klass.filter (matches, filterspec, sort, group) :
+            writer.writerow ([represent [col] (klass.get (itemid, col)) for 
+                col in columns])
+
+        return '\n'
+    # end def handle
+
+def init (instance) :
+          instance.registerAction ('export_csv_names', ExportCSVNamesAction)
