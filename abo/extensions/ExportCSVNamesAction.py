@@ -4,6 +4,13 @@ from roundup import hyperdb
 
 import csv
 
+def repr_date (x) :
+    if x == None :
+        return ""
+    else :
+        return x.pretty ('%Y-%m-%d')
+# end def repr_date
+
 class ExportCSVNamesAction (Action) :
     name = 'export'
     permissionType = 'View'
@@ -42,12 +49,12 @@ class ExportCSVNamesAction (Action) :
         # Figure out Link columns
         represent = {}
 
-        def repr_link (cls, col) :
+        def repr_link (cls, cols) :
             def f (x) :
                 if x == None :
                     return ""
                 else :
-                    return str (cls.get (x,col))
+                    return " ".join ([str (cls.get (x, col)) for col in cols])
             return f
 
         props = klass.getprops ()
@@ -57,10 +64,15 @@ class ExportCSVNamesAction (Action) :
             if isinstance (props [col], hyperdb.Link) :
                 cn = props [col].classname
                 cl = self.db.getclass (cn)
-                if cl.getprops ().has_key ('name') :
-                    represent [col] = repr_link (cl, 'name')
+                pr = cl.getprops ()
+                if 'name' in pr :
+                    represent [col] = repr_link (cl, ('name',))
+                elif 'lastname' in pr :
+                    represent [col] = repr_link (cl, ('firstname', 'lastname'))
                 elif cn == 'user' :
-                    represent [col] = repr_link (cl, 'username')
+                    represent [col] = repr_link (cl, ('username',))
+            elif isinstance (props [col], hyperdb.Date) :
+                represent [col] = repr_date
 
         # and search
         for itemid in klass.filter (matches, filterspec, sort, group) :
