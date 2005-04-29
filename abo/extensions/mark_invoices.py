@@ -1,17 +1,24 @@
+from cStringIO           import StringIO
 from roundup.cgi.actions import Action
 from roundup.cgi         import templating
 from roundup             import hyperdb
 from roundup.date        import Date, Interval
+from ooopy.OOoPy         import OOoPy
+from ooopy.Transformer   import Transformer
+from ooopy.Transforms    import renumber_frames, renumber_sections \
+                              , renumber_tables, get_meta, set_meta
+import ooopy.Transforms as Transforms
 
 Reject = ValueError
-
 
 class Invoice (Action, object) :
     name = 'invoice actions'
     permissionType = 'Edit'
 
-    def marked (self) :
+    def marked (self, send_it = False) :
         marked_spec = {'invoice_group' : self.invoice_group}
+        if send_it :
+            marked_spec ['send_it'] = True
         return self.db.invoice.filter (None, marked_spec)
     # end def marked
 
@@ -58,7 +65,7 @@ class UnMarkInvoice (Invoice) :
 
     def handle (self) :
         ''' Remove mark created by MarkInvoice. '''
-        super (self.__class__, self).handle ()
+        super (UnMarkInvoice, self).handle ()
         for i in self.marked () :
             self.db.invoice.set (i, invoice_group = None)
         self.db.commit ()
@@ -98,7 +105,7 @@ class MarkInvoice (Invoice) :
 
     def handle (self) :
         ''' Mark invoices with the given invoice_group. '''
-        super (self.__class__, self).handle ()
+        super (MarkInvoice, self).handle ()
         self.now   = Date ('.')
 
         if self.marked () :
@@ -119,17 +126,100 @@ class MarkInvoice (Invoice) :
     # end def handle
 # end class MarkInvoice
 
+class OOoPyInvoiceWrapper (object) :
+    def __init__ (self, db, iv) :
+        self.db = db
+        self.items = \
+            { 'invoice' : iv
+            , 'date'    : Date ('.')
+            }
+        self.items ['address'] = self._deref ('invoice.payer')
+    # end def __init__
+
+    def _pretty (self, item) :
+        if isinstance (item, Date) :
+            return item.pretty ('%d. %m. %Y')
+        return str (item).decode ('utf-8')
+    # end def _pretty
+
+    def _deref (self, name) :
+        """ dereference a dotted name -- we may want to cache this."""
+        names = name.split ('.')
+        x  = self.items [names [0]]
+        for i in names [1:] :
+            p = x.cl.properties [i]
+            if isinstance (p, hyperdb.Link) :
+                x = self.db.getclass (p.classname).getnode (x [i])
+            else :
+                x = x [i]
+        return x
+    # end def _split
+
+    def __getitem__ (self, name) :
+        return self._pretty (self._deref (name))
+    # end def __getitem__
+
+    def has_key (self, name) :
+        try :
+            self._deref (name)
+        except KeyError :
+            return False
+        return True
+    # end def has_key
+
+    __contains__ = has_key
+
+# end class OOoPyInvoiceWrapper
+
 class GenerateInvoice (Invoice) :
     def handle (self) :
         ''' Prepare invoices for printout and send to browser.'''
-        super (self.__class__, self).handle ()
+        super (GenerateInvoice, self).handle ()
+        invoices  = [self.db.invoice.getnode (i) for i in self.marked (True)]
+        ivts      = [(self.get_iv_template (i), i) for i in invoices]
+        iv_by_tid = {}
+        tp_by_tid = {}
+        for i in ivts :
+            tid = i [0]['id']
+            if tid not in iv_by_tid :
+                iv_by_tid [tid] = []
+                tp_by_tid [tid] = i [0]
+            iv_by_tid [tid].append (OOoPyInvoiceWrapper (self.db, i [1]))
+        sio = {}
+        for tid,tp in tp_by_tid.iteritems () :
+            sio [tid] = StringIO ()
+            fileid    = self.db.tmplate.get (tp ['tmplate'], 'files')[-1]
+            file      = StringIO (self.db.file.get (fileid, 'content'))
+
+            o = OOoPy (infile = file, outfile = sio [tid])
+            t = Transformer \
+                ( get_meta
+                , Transforms.Addpagebreak_Style ()
+                , Transforms.Mailmerge          (iterator = iv_by_tid [tid])
+                , Transforms.Attribute_Access
+                  ( ( renumber_frames
+                    , renumber_sections
+                    , renumber_tables
+                  ) )
+                , set_meta
+                )
+            t.transform (o)
+            o.close ()
+        h = self.client.additional_headers
+        h ['Content-Type']        = 'application/vnd.sun.xml.writer'
+        h ['Content-Disposition'] = 'inline; filename=inv.sxw'
+        self.client.header ()
+        return sio.itervalues ().next ().getvalue ()
     # end def handle
 # end class GenerateInvoice
 
 class MarkInvoiceSent (Invoice) :
     def handle (self) :
         ''' Mark the marked invoices as sent and remove mark.'''
-        super (self.__class__, self).handle ()
+        super (MarkInvoiceSent, self).handle ()
+        for i in self.marked () :
+            self.db.invoice.set (i, invoice_group = None)
+        self.db.commit ()
     # end def handle
 # end class MarkSent
 
