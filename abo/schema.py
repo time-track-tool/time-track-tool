@@ -129,6 +129,7 @@ invoice = Class \
     , send_it             = Boolean   ()
     , payment             = Number    ()
     , invoice_group       = Link      ("invoice_group")
+    , letters             = Multilink ("letter")
     )
 invoice.setkey ("invoice_no")
 

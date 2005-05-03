@@ -19,25 +19,28 @@
 # ****************************************************************************
 
 Reject = ValueError
-from roundup.rup_utils import uni, pretty, abo_max_invoice
+from roundup.rup_utils import uni, pretty
 from roundup.date      import Date, Interval
 
-def new_iv_template (db, cl, nodeid, new_values) :
-    for i in ('tmplate', 'invoice_level', 'interval') :
+def new_letter (db, cl, nodeid, new_values) :
+    for i in ('address', ) :
         if not i in new_values :
             raise Reject, uni ('"%s" muss ausgefüllt werden') % pretty (i)
-    if not 'name' in new_values :
-        new_values ['name'] = db.tmplate.get (new_values ['tmplate'], 'name')
-# end def new_iv_template
+    if 'date' not in new_values :
+        new_values ['date'] = Date ('.')
+# end def new_letter
 
-def iv_template_ok (db, cl, nodeid, new_values) :
-    for i in ('tmplate', 'invoice_level', 'interval', 'name') :
+def check_letter (db, cl, nodeid, new_values) :
+    for i in ('address', 'invoice') :
+        if i in new_values :
+            raise Reject, uni ('"%s" darf nicht geändert werden') % pretty (i)
+    for i in ('subject', 'date') :
         x = new_values.get (i, cl.get (nodeid, i))
         if x is None :
             raise Reject, uni ('"%s" darf nicht gelöscht werden') % pretty (i)
-# end def iv_template_ok
+# end def check_letter
 
 def init (db) :
-    db.invoice_template.audit ("create", new_iv_template)
-    db.invoice_template.audit ("set",    iv_template_ok)
+    db.letter.audit ("create", new_letter)
+    db.letter.audit ("set",    check_letter)
 # end def init

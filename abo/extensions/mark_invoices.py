@@ -4,14 +4,14 @@ from roundup.cgi         import templating
 from roundup             import hyperdb
 from roundup.date        import Date, Interval
 from ooopy.OOoPy         import OOoPy
-from ooopy.Transformer   import Transformer
+from ooopy.Transformer   import Transformer, autosuper
 from ooopy.Transforms    import renumber_frames, renumber_sections \
                               , renumber_tables, get_meta, set_meta
 import ooopy.Transforms as Transforms
 
 Reject = ValueError
 
-class Invoice (Action, object) :
+class Invoice (Action, autosuper) :
     name = 'invoice actions'
     permissionType = 'Edit'
 
@@ -58,6 +58,13 @@ class Invoice (Action, object) :
         # get invoice_group:
         self.invoice_group = filterspec ['invoice_group'][0]
     # end def handle
+
+    def _unmark (self) :
+        for i in self.marked () :
+            self.db.invoice.set (i, invoice_group = None)
+        self.db.commit ()
+    # end def _unmark
+
 # end class Invoice
 
 class UnMarkInvoice (Invoice) :
@@ -65,10 +72,8 @@ class UnMarkInvoice (Invoice) :
 
     def handle (self) :
         ''' Remove mark created by MarkInvoice. '''
-        super (UnMarkInvoice, self).handle ()
-        for i in self.marked () :
-            self.db.invoice.set (i, invoice_group = None)
-        self.db.commit ()
+        self.__super.handle ()
+        self._unmark ()
     # end def handle
 # end class UnMarkInvoice
 
@@ -105,7 +110,7 @@ class MarkInvoice (Invoice) :
 
     def handle (self) :
         ''' Mark invoices with the given invoice_group. '''
-        super (MarkInvoice, self).handle ()
+        self.__super.handle ()
         self.now   = Date ('.')
 
         if self.marked () :
@@ -126,7 +131,7 @@ class MarkInvoice (Invoice) :
     # end def handle
 # end class MarkInvoice
 
-class OOoPyInvoiceWrapper (object) :
+class OOoPyInvoiceWrapper (autosuper) :
     def __init__ (self, db, iv) :
         self.db = db
         self.items = \
@@ -174,7 +179,7 @@ class OOoPyInvoiceWrapper (object) :
 class GenerateInvoice (Invoice) :
     def handle (self) :
         ''' Prepare invoices for printout and send to browser.'''
-        super (GenerateInvoice, self).handle ()
+        self.__super.handle ()
         invoices  = [self.db.invoice.getnode (i) for i in self.marked (True)]
         ivts      = [(self.get_iv_template (i), i) for i in invoices]
         iv_by_tid = {}
@@ -216,15 +221,40 @@ class GenerateInvoice (Invoice) :
 class MarkInvoiceSent (Invoice) :
     def handle (self) :
         ''' Mark the marked invoices as sent and remove mark.'''
-        super (MarkInvoiceSent, self).handle ()
-        for i in self.marked () :
-            self.db.invoice.set (i, invoice_group = None)
+        self.__super.handle ()
+        now       = Date ('.')
+        ivclass   = self.db.invoice
+        invoices  = [ivclass.getnode (i) for i in self.marked (True)]
+        for iv in invoices :
+            id   = iv ['id']
+            print id
+            ivt  = self.get_iv_template (iv)
+            file = self.db.tmplate.get (ivt ['tmplate'], 'files') [-1]
+            letter = self.db.letter.create \
+                ( subject  = ivt ['name']
+                , address  = iv.payer
+                , date     = now
+                , files    = [file]
+                , messages = []
+                , invoice  = id
+                )
+            print "letter:", letter
+            letters = iv ['letters']
+            letters.append (letter)
+            ivclass.set \
+                ( id
+                , letters   = letters
+                , n_sent    = iv ['n_sent'] + 1
+                , last_sent = now
+                )
+        self._unmark ()
         self.db.commit ()
     # end def handle
 # end class MarkSent
 
 def init (instance) :
-          instance.registerAction ('mark_invoice',      MarkInvoice)
-          instance.registerAction ('unmark_invoice',    UnMarkInvoice)
-          instance.registerAction ('mark_invoice_sent', MarkInvoiceSent)
-          instance.registerAction ('generate_invoice',  GenerateInvoice)
+    instance.registerAction ('mark_invoice',      MarkInvoice)
+    instance.registerAction ('unmark_invoice',    UnMarkInvoice)
+    instance.registerAction ('mark_invoice_sent', MarkInvoiceSent)
+    instance.registerAction ('generate_invoice',  GenerateInvoice)
+# end def init

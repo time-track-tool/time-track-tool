@@ -84,4 +84,5 @@ class ExportCSVNamesAction (Action) :
     # end def handle
 
 def init (instance) :
-          instance.registerAction ('export_csv_names', ExportCSVNamesAction)
+    instance.registerAction ('export_csv_names', ExportCSVNamesAction)
+# end def init

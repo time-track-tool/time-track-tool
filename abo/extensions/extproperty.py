@@ -206,3 +206,4 @@ class ExtProperty :
 
 def init (instance) :
     instance.registerUtil ('ExtProperty', ExtProperty)
+# end def init
