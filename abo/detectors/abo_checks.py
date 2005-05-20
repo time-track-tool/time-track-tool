@@ -164,7 +164,7 @@ def check_change (db, cl, nodeid, new_values) :
 # end def check_change
 
 def check_amount (db, cl, nodeid, new_values) :
-    if amount in new_values and amount < 0 :
+    if 'amount' in new_values and new_values['amount'] < 0 :
         raise Reject, err ('positive', 'amount')
 # end def check_amount
 
