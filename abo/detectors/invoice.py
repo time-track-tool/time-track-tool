@@ -88,7 +88,7 @@ def check_invoice (db, cl, nodeid, new_values) :
     receipt = new_values.get ('receipt_no',   cl.get (nodeid, 'receipt_no'))
     inv_no  = cl.get (nodeid, 'invoice_no')
     abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
-    if abo ['end'] :
+    if abo ['end'] and new_values.keys () != ['invoice_group']:
         raise Reject, uni ('Kein Buchen bei storniertem Abo')
     if balance is None or amount is None or payment is None :
         raise Reject, uni ('"%s", "%s", "%s": nur Zahlen erlaubt') % \
@@ -136,3 +136,4 @@ def init (db) :
     db.invoice.audit ("set",    check_invoice)
     db.invoice.react ("set",    create_new_invoice)
 # end def init
+#SHA: 70083841a9880545aa67478d9946b11f2b7aa127
