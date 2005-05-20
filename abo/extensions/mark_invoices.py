@@ -157,7 +157,8 @@ class OOoPyInvoiceWrapper (autosuper) :
                 x = self.db.getclass (p.classname).getnode (x [i])
             else :
                 x = x [i]
-        return x
+        if x : return x
+        return ""
     # end def _split
 
     def __getitem__ (self, name) :
@@ -258,3 +259,4 @@ def init (instance) :
     instance.registerAction ('mark_invoice_sent', MarkInvoiceSent)
     instance.registerAction ('generate_invoice',  GenerateInvoice)
 # end def init
+#SHA: 163bbf34c9a4006b58963d9fc9b1619fdf5c8df5
