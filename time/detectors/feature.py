@@ -37,7 +37,7 @@
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
 
-import common
+common = None
 
 def is_feature_completed (db, cl, nodeid, new_values) :
     """auditor on feature.set
@@ -151,6 +151,10 @@ def move_defects (db, cl, nodeid, old_values) :
 # end def move_defects
 
 def init (db) :
+    import sys, os
+    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+    common = __import__ ('common', globals (), locals ())
+
 #    db.feature.audit             ("set"   , is_feature_completed        )
     db.feature.audit             ("set"   , common.update_feature_status)
     db.feature.react             ("set"   , add_feature_to_release      )
@@ -160,3 +164,4 @@ def init (db) :
 # end def init
 
 ### __END__ feature
+#SHA: 64cf93ea65f488ae811693a8c919a31d5bb829b4

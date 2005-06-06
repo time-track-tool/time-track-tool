@@ -35,8 +35,7 @@
 #
 from roundup import roundupdb, hyperdb, date
 from roundup.exceptions import Reject
-
-import common
+common = None
 
 def check_new_defect (db, cl, nodeid, new_values) :
     """auditor for defect's create
@@ -316,6 +315,10 @@ def react_on_closed (db, cl, nodeid, old_values) :
 # end def react_on_closed
 
 def init (db) :
+    import sys, os
+    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+    common = __import__ ('common', globals (), locals ())
+
     db.defect.audit ("create", check_new_defect          )
     db.defect.audit ("set"   , check_defect              )
     db.defect.react ("create", add_defect_to_release     )
@@ -329,3 +332,4 @@ def init (db) :
 # end def init
 
 ### __END__ defaults
+#SHA: 399e19477196c366b2d8de3954e6731ae2c99b97
