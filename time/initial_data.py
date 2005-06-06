@@ -29,7 +29,12 @@
 #     9-Nov-2004 (MPH) Added `completed-but-defects` to `feature_status`
 #    16-Nov-2004 (MPH) Added `May Public Queries` permission to `query`
 #     1-Dec-2004 (MPH) Added `is_alias` to Class `user`
+#     5-Apr-2005 (MPH) Added `composed_of` and `part_of` to `feature`, added
+#                      support for Online Peer Reviews
 #     6-Apr-2005 (RSC) Factored from dbinit.py
+#    11-Apr-2005 (MPH) Fixed Multilink in `review` and `announcement` to link
+#                      to `file` instead of `files`
+#     6-Jun-2005 (RSC) Incorporate changes from dbinit.py
 #    ««revision-date»»···
 #--
 #
@@ -148,6 +153,41 @@ ais = [ ("1", "open"  , "The Action-Item is open"  )
 ai = db.getclass ("action_item_status")
 for order, name, desc in ais :
     ai.create (name = name, description = desc, order = order)
+
+# review_status
+# order, name, description
+rs = [ ("1", "open"  , "The Review is open"  )
+     , ("2", "closed", "The Review is closed")
+     ]
+r = db.getclass ("review_status")
+for order, name, desc in rs :
+    r.create (name = name, description = desc, order = order)
+
+# comment_status
+# order, name, description, transitions
+cs = [ ("1", "assigned", "The Comment just got reported"
+       , ("resolved", "rejected")
+       )
+     , ("2", "resolved", "The Comment got resolved from the author"
+       , ("accepted", "assigned")
+       )
+     , ("3", "accepted", "The Fix is accepted by the reviewer"
+       , ()
+       )
+     , ("4", "rejected", "The Comment got rejected"
+       , ()
+       )
+     ]
+comment_status = db.getclass ("comment_status")
+
+for order, name, desc, trans in cs :
+    comment_status.create (name = name, description = desc, order = order)
+
+for order, name, desc, trans in cs :
+    id = comment_status.lookup (name)
+    if trans :
+        trans_ids = [comment_status.lookup (t) for t in trans]
+        comment_status.set (id, transitions = trans_ids)
 
 # defect_status:
 # order, name, abbreviation, cert, description, cert_trans, trans
@@ -282,10 +322,9 @@ for _position in positions :
 user = db.getclass ('user')
 user.create ( username = "admin"
             , password = adminpw
-            , address  = config.ADMIN_EMAIL
+            , address  = db.config.ADMIN_EMAIL
             , roles    = "Admin"
             )
 user.create ( username = "anonymous"
             , roles    = "Anonymous"
             )
-

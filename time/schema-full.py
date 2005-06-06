@@ -46,8 +46,13 @@
 #     9-Nov-2004 (MPH) Added `completed-but-defects` to `feature_status`
 #    16-Nov-2004 (MPH) Added `May Public Queries` permission to `query`
 #     1-Dec-2004 (MPH) Added `is_alias` to Class `user`
+#     5-Apr-2005 (MPH) Added `composed_of` and `part_of` to `feature`, added
+#                      support for Online Peer Reviews
 #     6-Apr-2005 (RSC) Factored from dbinit.py for roundup 0.8.2
 #                      "May Public Queries"->"May publish Queries"
+#    11-Apr-2005 (MPH) Fixed Multilink in `review` and `announcement` to link
+#                      to `file` instead of `files`
+#     6-Jun-2005 (RSC) Incorporate changes from dbinit.py
 #    ««revision-date»»···
 #--
 #
@@ -60,15 +65,15 @@ class TTT_Issue_Class (Class, roundupdb.IssueClass) :
     """
     def __init__ (self, db, classname, ** properties) :
         if not properties.has_key ("title") :
-            properties ["title"]       = hyperdb.String    (indexme = "yes")
+            properties ["title"]       = String    (indexme = "yes")
         if not properties.has_key ("responsible") :
-            properties ["responsible"] = hyperdb.Link      ("user")
+            properties ["responsible"] = Link      ("user")
         if not properties.has_key ("nosy") :
-            properties ["nosy"]        = hyperdb.Multilink ( "user"
+            properties ["nosy"]        = Multilink ( "user"
                                                            , do_journal = "no"
                                                            )
         if not properties.has_key ("messages") :
-            properties ["messages"]    = hyperdb.Multilink ("msg")
+            properties ["messages"]    = Multilink ("msg")
         Class.__init__ (self, db, classname, ** properties)
     # end def __init__
 # end class TTT_Issue_Class
@@ -166,6 +171,25 @@ action_item_status = Class \
     , order                 = String    ()
     )
 action_item_status.setkey ("name")
+
+review_status = Class \
+    ( db
+    , "review_status"
+    , name                  = String    ()
+    , description           = String    ()
+    , order                 = String    ()
+    )
+review_status.setkey ("name")
+
+comment_status = Class \
+    ( db
+    , "comment_status"
+    , name                  = String    ()
+    , description           = String    ()
+    , transitions           = Multilink ("comment_status")
+    , order                 = String    ()
+    )
+comment_status.setkey ("name")
 
 document_status = Class \
     ( db
@@ -382,6 +406,8 @@ feature = TTT_Issue_Class \
     , needs                 = Multilink ("feature")
     , release               = Link      ("release")
     , defects               = Multilink ("defect")
+    , composed_of           = Multilink ("feature")
+    , part_of               = Link      ("feature")
     , planned_begin         = Date      () # automatically by import
     , planned_end           = Date      () # automatically by import
     , actual_begin          = Date      () # automatically by status
@@ -446,6 +472,44 @@ defect = TTT_Issue_Class \
     , belongs_to_task       = Link      ("task")    # if known
     )
 
+TTT_Issue_Class \
+    ( db
+    , "review"
+    # `moderator` is implemented with `responsible`
+    , status                = Link      ("review_status")
+    , authors               = Multilink ("user")
+    , qa_representative     = Link      ("user")
+    , recorder              = Link      ("user")
+    , peer_reviewers        = Multilink ("user")
+    , opt_reviewers         = Multilink ("user")
+    , cut_off_date          = Date      ()
+    , final_meeting_date    = Date      ()
+    , files                 = Multilink ("file")
+    , announcements         = Multilink ("announcement")
+    )
+
+TTT_Issue_Class \
+    ( db
+    , "announcement"
+    , version               = String    ()
+    , location              = String    ()
+    , comments              = Multilink ("comment")
+    , review                = Link      ("review")
+    , status                = Link      ("review_status")
+    , files                 = Multilink ("file")
+    )
+
+TTT_Issue_Class \
+    ( db
+    , "comment"
+    , severity              = Link      ("severity")
+    , status                = Link      ("comment_status")
+    , review                = Link      ("review")
+    , announcement          = Link      ("announcement")
+    , file_name             = String    ()
+    , line_number           = String    ()
+    )
+
 #
 # SECURITY SETTINGS
 #
@@ -466,6 +530,8 @@ classes = \
     , ("action_item_status", ["User"], ["Admin"           ])
     , ("defect_status"     , ["User"], ["Admin"           ])
     , ("feature_status"    , ["User"], ["Admin"           ])
+    , ("review_status"     , ["User"], ["Admin"           ])
+    , ("comment_status"    , ["User"], ["Admin"           ])
     , ("document_type"     , ["User"], ["Admin"           ])
     , ("severity"          , ["User"], ["Admin"           ])
     , ("product"           , ["User"], ["Admin"           ])
@@ -483,6 +549,9 @@ classes = \
     , ("defect"            , ["User"], ["User"            ])
     , ("meeting"           , ["User"], ["Admin"           ])
     , ("action_item"       , ["User"], ["User"            ])
+    , ("review"            , ["User"], ["User"            ])
+    , ("announcement"      , ["User"], ["User"            ])
+    , ("comment"           , ["User"], ["User"            ])
     ]
 
 roles = \
@@ -526,6 +595,9 @@ nosy_classes = [ "document"
                , "defect"
                , "meeting"
                , "action_item"
+               , "review"
+               , "announcement"
+               , "comment"
                ]
 for klass in nosy_classes :
     db.security.addPermission \
@@ -544,6 +616,6 @@ db.security.addPermissionToRole('Anonymous', 'View', 'user')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
-# db.security.addPermissionToRole('Anonymous', 'Web Access')
+db.security.addPermissionToRole('Anonymous', 'Web Access')
 # db.security.addPermissionToRole('Anonymous', 'Email Access')
 
