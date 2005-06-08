@@ -53,11 +53,13 @@
 #    11-Apr-2005 (MPH) Fixed Multilink in `review` and `announcement` to link
 #                      to `file` instead of `files`
 #     6-Jun-2005 (RSC) Incorporate changes from dbinit.py
+#     8-Jun-2005 (RSC) time_record and time_wp added.
+#                      IssueClass used directly
 #    ««revision-date»»···
 #--
 #
 
-class TTT_Issue_Class (Class, roundupdb.IssueClass) :
+class TTT_Issue_Class (Class, IssueClass) :
     """extends the IssueClass with some parameters common to all issues here
     at TTTech.
     Note: inheritance methodology stolen from roundup/backends/back_anydbm.py's
@@ -267,6 +269,25 @@ position = Class \
     , position              = String    ()
     )
 position.setkey ("position")
+
+time_wp = Class \
+    ( db
+    , "time_wp"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+time_wp.setkey ("name")
+
+time_record = Class \
+    ( db
+    , "time_record"
+    , user                  = Link      ("user")
+    , date                  = Date      ()
+    , start                 = Date      ()
+    , end                   = Date      ()
+    , duration              = Number    ()
+    , wp                    = Link      ("time_wp")
+    )
 
 # Note: roles is a comma-separated string of Role names
 user = Class \

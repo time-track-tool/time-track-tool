@@ -32,11 +32,14 @@
 #     6-Jun-2005 (RSC) Moved to extensions and reworked for new 0.8 framework
 #     8-Jun-2005 (RSC) Removed "self" (was reference to utils in old framework)
 #                      Note that the timer now needs some explicit object
+#     8-Jun-2005 (RSC) Missing import of time and calendar added.
 #    ««revision-date»»···
 #--
 #
 
 from roundup import date as r_date
+import calendar
+import time
 
 def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
@@ -212,4 +215,3 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
-#SHA: 63697d1a60983901b8bd0c29db6b43a3f5f5bf17
