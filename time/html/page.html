@@ -4,6 +4,7 @@
 <html tal:define="
    uname         python:str(request.user.username)
  ; classname     context/_classname|db/user/_classname
+ ; Classname     python: utils.pretty (classname)
  ; klass         python:db [classname] or default
  ; is_user       python:uname!='anonymous'
  ; lbl           klass/_klass/labelprop
