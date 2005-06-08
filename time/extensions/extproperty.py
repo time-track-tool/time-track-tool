@@ -131,8 +131,8 @@ class ExtProperty :
                 self.label = ''
         if self.lnkname and not self.lnkattr :
             self.lnkattr = self.lnkcls.labelprop ()
-        if self.searchable is None or self.searchable :
-            self.searchable = self.key or not self.lnkattr
+        if self.searchable is None :
+            self.searchable = not self.need_lookup ()
         if (   self.is_label is None
            and (  self.name == 'id'
                or self.name == self.klass.labelprop ()
@@ -158,6 +158,11 @@ class ExtProperty :
             return self.hprop.pretty ('%Y-%m-%d')
         return str (self.hprop)
     # end def formatted
+
+    def need_lookup (self) :
+        """ Needs a list-lookup, because the user can't specify the key """
+        return self.lnkattr and not self.key
+    # end def need_lookup
 
     def as_listentry (self, item = None) :
         self._set_item (item)

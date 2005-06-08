@@ -28,6 +28,7 @@
 # Revision Dates
 #     8-Nov-2004 (MPH) Creation
 #     9-Nov-2004 (MPH) Factored `update_features_status` to `common.py`
+#     8-Jun-2005 (RSC) Hack for import of common
 #    ««revision-date»»···
 #--
 #
@@ -138,6 +139,7 @@ def init (db) :
     import sys, os
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     common = __import__ ('common', globals (), locals ())
+    del (sys.path [0])
 
     db.task.audit ("create", add_task              )
     db.task.audit ("set"   , audit_task_status     )
@@ -146,6 +148,3 @@ def init (db) :
 # end def init
 
 ### __END__ task
-
-
-#SHA: 85883b06a30f931e5e61733aa0106c08cb4beacd

@@ -30,6 +30,7 @@
 #     5-Oct-2004 (MPH) Added `set_composed_ofs_feature`
 #     8-Nov-2004 (MPH) Moved `task` related to `task.py`, major cleanup
 #     9-Nov-2004 (MPH) Some refactoring on `update_feature_status`
+#     8-Jun-2005 (RSC) Hack for import of common
 #    ««revision-date»»···
 #--
 #
@@ -154,6 +155,7 @@ def init (db) :
     import sys, os
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     common = __import__ ('common', globals (), locals ())
+    del (sys.path [0])
 
 #    db.feature.audit             ("set"   , is_feature_completed        )
     db.feature.audit             ("set"   , common.update_feature_status)
@@ -164,4 +166,3 @@ def init (db) :
 # end def init
 
 ### __END__ feature
-#SHA: 64cf93ea65f488ae811693a8c919a31d5bb829b4

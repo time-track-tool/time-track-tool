@@ -30,6 +30,7 @@
 #     2-Nov-2004 (MPH) Added `audit_superseder`
 #     8-Nov-2004 (MPH) Added `update_defects_task`, major cleanup
 #     9-Nov-2004 (MPH) Removed some debug output, refactoring
+#     8-Jun-2005 (RSC) Hack for import of common
 #    ««revision-date»»···
 #--
 #
@@ -318,6 +319,7 @@ def init (db) :
     import sys, os
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     common = __import__ ('common', globals (), locals ())
+    del (sys.path [0])
 
     db.defect.audit ("create", check_new_defect          )
     db.defect.audit ("set"   , check_defect              )
@@ -332,4 +334,3 @@ def init (db) :
 # end def init
 
 ### __END__ defaults
-#SHA: 399e19477196c366b2d8de3954e6731ae2c99b97
