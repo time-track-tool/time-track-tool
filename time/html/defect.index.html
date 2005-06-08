@@ -2,49 +2,36 @@
 <title metal:fill-slot="head_title">Query Defect Reports</title>
 
 <tal:block metal:fill-slot="content">
- <tal:block tal:define="batch request/batch;
-                        props python:
-    (
-      ('Id'                , 'id'                , ''                  , ''        , 'V')
-    , ('Title'             , 'title'             , ''                  , ''        , 'T')
-    , ('Responsible'       , 'responsible'       , 'user'              , 'username', 'L')
-
-    , ('Product'           , 'product'           , 'product'           , 'name'    , 'L')
-    , ('Version'           , 'version'           , ''                  , ''        , 'V')
-
-    , ('Status'            , 'status'            , 'defect_status'     , 'name'    , 'L')
-    , ('Severity'          , 'severity'          , 'severity'          , 'name'    , 'L')
-    , ('Cert'              , 'cert'              , ''                  , ''        , 'V')
-
-    , ('Found in Release'  , 'found_in_release'  , 'release'           , 'title'   , 'L')
-    , ('Solved in Release' , 'solved_in_release' , 'release'           , 'title'   , 'L')
-    , ('Belongs to Feature', 'belongs_to_feature', 'feature'           , 'title'   , 'L')
-    , ('Belongs to Task'   , 'belongs_to_task'   , 'task'              , 'title'   , 'L')
-
-    , ('Estimated Effort'  , 'estimated_effort'  , ''                  , ''        , 'V')
-    , ('Fixed until'       , 'fixed_until'       , ''                  , ''        , 'V')
-    , ('Fixed in'          , 'fixed_in'          , ''                  , ''        , 'V')
-
-    , ('Superseder'        , 'superseder'        , 'defect'            , 'title'   , 'L')
-
-    , ('Closed'            , 'closed'            , ''                  , ''        , 'V')
-    , ('Closer'            , 'closer'            , 'user'              , 'username', 'L')
-
-    , ('Nosy List'         , 'nosy'              , 'user'              , 'username', 'M')
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['title'])
+    , utils.ExtProperty (utils, pdict ['responsible'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['product'],            multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['version'])
+    , utils.ExtProperty (utils, pdict ['status'],             multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['severity'],           multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['cert'])
+    , utils.ExtProperty (utils, pdict ['found_in_release'],   searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['solved_in_release'],  searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['belongs_to_feature'], searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['belongs_to_task'],    searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['estimated_effort'])
+    , utils.ExtProperty (utils, pdict ['fixed_until'])
+    , utils.ExtProperty (utils, pdict ['fixed_in'])
+    , utils.ExtProperty (utils, pdict ['superseder'],         searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['closed'])
+    , utils.ExtProperty (utils, pdict ['closer'],             multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['nosy'],               multiselect = 1)
     );
-                        multi python:( 'responsible'
-                                     , 'product'
-                                     , 'status'
-                                     , 'severity'
-                                     , 'closer'
-                                     , 'nosy'
-                                     )"
-            tal:condition="context/is_view_ok">
+  "
+  tal:condition="context/is_view_ok">
 
   <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
-
-  <tal:block metal:fill-slot="query_title">Query Defect Reports</tal:block>
+   <tal:block metal:fill-slot="query_title">Query Defect Reports</tal:block>
   </tal:block>
  </tal:block>
 </tal:block>

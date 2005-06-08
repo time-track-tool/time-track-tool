@@ -2,30 +2,28 @@
 <title metal:fill-slot="head_title">Query Tasks</title>
 
 <tal:block metal:fill-slot="content">
- <tal:block tal:define="batch request/batch;
-                        props python:( ('Id'         , 'id'         , ''                   , ''        , 'V')
-                                     , ('Title'      , 'title'      , ''                   , ''        , 'T')
-                                     , ('Responsible', 'responsible', 'user'               , 'username', 'L')
-                                     , ('Status'     , 'status'     , 'task_status'        , 'name'    , 'L')
-                                     , ('Kind'       , 'kind'       , 'task_kind'          , 'name'    , 'L')
-                                     , ('Test OK'    , 'test_ok'    , ''                   , ''        , 'V')
-                                     , ('Effort'     , 'effort'     , ''                   , ''        , 'V')
-                                     , ('Defects'    , 'defects'    , 'defect'             , 'title'   , 'M')
-                                     , ('Depends'    , 'depends'    , 'task'               , 'title'   , 'M')
-                                     , ('Needs'      , 'needs'      , 'task'               , 'title'   , 'M')
-                                     , ('Nosy List'  , 'nosy'       , 'user'               , 'username', 'M')
-                                     );
-                        multi python:( 'responsible'
-                                     , 'status'
-                                     , 'kind'
-                                     , 'nosy'
-                                     )"
-            tal:condition="context/is_view_ok">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['title'])
+    , utils.ExtProperty (utils, pdict ['responsible'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['kind'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['test_ok'])
+    , utils.ExtProperty (utils, pdict ['effort'])
+    , utils.ExtProperty (utils, pdict ['defects'],     searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['depends'],     searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['needs'],       searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['nosy'],        multiselect = 1)
+    );
+  "
+  tal:condition="context/is_view_ok">
 
   <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
-
-  <tal:block metal:fill-slot="query_title">Query Tasks</tal:block>
+   <tal:block metal:fill-slot="query_title">Query Tasks</tal:block>
   </tal:block>
  </tal:block>
 </tal:block>

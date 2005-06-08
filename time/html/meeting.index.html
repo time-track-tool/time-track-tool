@@ -2,21 +2,21 @@
 <title metal:fill-slot="head_title">Query Meeting</title>
 
 <tal:block metal:fill-slot="content">
- <tal:block tal:define="batch request/batch;
-                        props python:( ('Id'         , 'id'         , ''                  , ''        , 'V')
-                                     , ('Title'      , 'title'      , ''                  , ''        , 'T')
-                                     , ('Responsible', 'responsible', 'user'              , 'username', 'L')
-                                     , ('Nosy List'  , 'nosy'       , 'user'              , 'username', 'M')
-                                     );
-                        multi python:( 'responsible'
-                                     , 'nosy'
-                                     )"
-            tal:condition="context/is_view_ok">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['title'])
+    , utils.ExtProperty (utils, pdict ['responsible'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['nosy'],        multiselect = 1)
+    );
+  "
+  tal:condition="context/is_view_ok">
 
   <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
-
-  <tal:block metal:fill-slot="query_title">Query Meeting</tal:block>
+   <tal:block metal:fill-slot="query_title">Query Meeting</tal:block>
   </tal:block>
  </tal:block>
 </tal:block>
