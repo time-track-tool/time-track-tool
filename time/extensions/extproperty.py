@@ -30,10 +30,38 @@
 #
 # Revision Dates
 #     6-Jun-2005 (RSC) Moved from another project
+#     8-Jun-2005 (RSC) Several convenience functions added.
 #    ««revision-date»»···
 #--
 
 from roundup.cgi.templating import MultilinkHTMLProperty, DateHTMLProperty
+
+def pretty (s) :
+    return s [0].upper () + s [1:]
+# end def pretty
+
+def propsort (p1, p2) :
+    return cmp (pretty (p1._name), pretty (p2._name))
+# end def propsort
+
+def sorted_properties (db, context) :
+    props = db [context._classname].properties ()
+    props.sort (propsort)
+    return props
+# end def sorted_properties
+
+def properties_dict (db, context) :
+    props = {}
+    for prop in db [context._classname].properties () :
+        props [prop._name] = prop
+    return props
+# end def properties_dict
+
+def menu_or_field (prop) :
+    if hasattr (prop._prop, 'classname') :
+        return prop.menu (height=5)
+    return prop.field ()
+# end def menu_or_field
 
 class ExtProperty :
     """
@@ -216,5 +244,9 @@ class ExtProperty :
 # end class ExtProperty
 
 def init (instance) :
-    instance.registerUtil ('ExtProperty', ExtProperty)
+    instance.registerUtil ('ExtProperty',       ExtProperty)
+    instance.registerUtil ('pretty',            pretty)
+    instance.registerUtil ('sorted_properties', sorted_properties)
+    instance.registerUtil ('properties_dict',   properties_dict)
+    instance.registerUtil ('menu_or_field',     menu_or_field)
 # end def init

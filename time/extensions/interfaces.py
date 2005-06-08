@@ -30,13 +30,15 @@
 #     2-Nov-2004 (MPH) Added `calendar`
 #     1-Dec-2004 (MPH) Added `start_timer` and `time_stamp` for profiling
 #     6-Jun-2005 (RSC) Moved to extensions and reworked for new 0.8 framework
+#     8-Jun-2005 (RSC) Removed "self" (was reference to utils in old framework)
+#                      Note that the timer now needs some explicit object
 #    ««revision-date»»···
 #--
 #
 
 from roundup import date as r_date
 
-def correct_midnight_date_string (self, db) :
+def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
     suitable for passing in to forms that need this date.
     """
@@ -44,7 +46,7 @@ def correct_midnight_date_string (self, db) :
     return d.pretty ('%Y-%m-%d.%H:%M:%S')
 # end def correct_midnight_date_string
 
-def rough_date_diff (self, left, right, format = "%Y-%m-%d") :
+def rough_date_diff (left, right, format = "%Y-%m-%d") :
     """returns the interval between the two dates left - right.
     format is used for the granularity when interpreting the two values.
 
@@ -56,22 +58,21 @@ def rough_date_diff (self, left, right, format = "%Y-%m-%d") :
     return l_d - r_d
 # end def rough_date_diff
 
-def start_timer (self) :
+def start_timer (utils) :
     """starts an internal timer for profiling the templates
     """
-    self.timer = time.time ()
-    return self.timer
+    utils.timer = time.time ()
+    return utils.timer
 # end def start_timer
 
-def time_stamp (self) :
+def time_stamp (utils) :
     """return a timestamp in seconds elapsed from last `start_timer` call
     """
-    return time.time () - self.timer
+    return time.time () - utils.timer
 # end def time_stamp
 
 def date_help \
-    ( self
-    , request
+    ( request
     , item
     , width    = 300
     , height   = 200
@@ -102,7 +103,7 @@ def date_help \
            )
 # end def date_help
 
-def html_calendar (self, request) :
+def html_calendar (request) :
     """returns a html calendar.
 
     `request`  the roundup.request object
@@ -211,3 +212,4 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
+#SHA: 63697d1a60983901b8bd0c29db6b43a3f5f5bf17
