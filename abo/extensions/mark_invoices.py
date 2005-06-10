@@ -1,11 +1,13 @@
-from cStringIO           import StringIO
-from roundup.cgi.actions import Action
-from roundup.cgi         import templating
-from roundup             import hyperdb
-from roundup.date        import Date, Interval
-from ooopy.OOoPy         import OOoPy
-from ooopy.Transformer   import Transformer, autosuper
-from ooopy.Transforms    import renumber_all, get_meta, set_meta
+from cStringIO              import StringIO
+from roundup.cgi.actions    import Action
+from roundup.cgi            import templating
+from roundup                import hyperdb
+from roundup.date           import Date, Interval
+from ooopy.OOoPy            import OOoPy
+from ooopy.Transformer      import Transformer, autosuper
+from ooopy.Transforms       import renumber_all, get_meta, set_meta
+from roundup.cgi.exceptions import Redirect
+
 import ooopy.Transforms as Transforms
 
 Reject = ValueError
@@ -65,6 +67,12 @@ class Invoice (Action, autosuper) :
         self.db.commit ()
     # end def _unmark
 
+    def redirect (self) :
+        url = templating.HTMLRequest (self.client).indexargs_url \
+            ('' , { '@template'  : 'send' })
+        raise Redirect, url
+    # end def redirect
+
 # end class Invoice
 
 class Unmark_Invoice (Invoice) :
@@ -73,7 +81,8 @@ class Unmark_Invoice (Invoice) :
     def handle (self) :
         ''' Remove mark created by Mark_Invoice. '''
         self.__super.handle ()
-        self._unmark ()
+        self._unmark        ()
+        self.redirect       ()
     # end def handle
 # end class Unmark_Invoice
 
@@ -128,6 +137,7 @@ class Mark_Invoice (Invoice) :
             invoice.set \
                 (i ['id'], send_it = True, invoice_group = self.invoice_group)
         self.db.commit ()
+        self.redirect ()
     # end def handle
 # end class Mark_Invoice
 
@@ -258,8 +268,9 @@ class Mark_Invoice_Sent (Invoice) :
                 , n_sent    = iv ['n_sent'] + 1
                 , last_sent = now
                 )
-        self._unmark ()
+        self._unmark   ()
         self.db.commit ()
+        self.redirect  ()
     # end def handle
 # end class Mark_Invoice_Sent
 
