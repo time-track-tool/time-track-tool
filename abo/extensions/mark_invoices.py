@@ -5,8 +5,7 @@ from roundup             import hyperdb
 from roundup.date        import Date, Interval
 from ooopy.OOoPy         import OOoPy
 from ooopy.Transformer   import Transformer, autosuper
-from ooopy.Transforms    import renumber_frames, renumber_sections \
-                              , renumber_tables, get_meta, set_meta
+from ooopy.Transforms    import renumber_all, get_meta, set_meta
 import ooopy.Transforms as Transforms
 
 Reject = ValueError
@@ -27,24 +26,25 @@ class Invoice (Action, autosuper) :
             n_sent for the current invoice.
         """
         db          = self.db
-        aboprice    = db.abo.get (iv ['abo'], 'aboprice')
-        iv_tmplates = db.abo_price.get (aboprice, 'invoice_template')
+        aboprice    = db.abo.get      (iv ['abo'], 'aboprice')
+        ivg         = db.abo_price.get (aboprice, 'invoice_group')
+        iv_tmplates = db.invoice_group.get (ivg, 'invoice_template')
         if not iv_tmplates :
             raise Reject, \
                 ( self._ ('No invoice_template defined for all invoices: %s')
                 % iv ['invoice_no']
                 )
-        ivs = [db.invoice_template.getnode (i) for i in iv_tmplates]
-        ivs = [i for i in ivs if i ['invoice_level'] <= iv ['n_sent']]
-        if not ivs :
+        ivts = [db.invoice_template.getnode (i) for i in iv_tmplates]
+        ivts = [i for i in ivts if i ['invoice_level'] <= iv ['n_sent']]
+        if not ivts :
             raise Reject, \
                 ( self._ ('No matching invoice_template for invoice%s')
                 % iv ['invoice_no']
                 )
-        max = ivs [0]
-        for iv in ivs :
-            if iv ['invoice_level'] > max ['invoice_level'] :
-                max = iv
+        max = ivts [0]
+        for ivt in ivts :
+            if ivt ['invoice_level'] > max ['invoice_level'] :
+                max = ivt
         return max
     # end def get_iv_template
 
@@ -202,11 +202,7 @@ class Generate_Invoice (Invoice) :
                 ( get_meta
                 , Transforms.Addpagebreak_Style ()
                 , Transforms.Mailmerge          (iterator = iv_by_tid [tid])
-                , Transforms.Attribute_Access
-                  ( ( renumber_frames
-                    , renumber_sections
-                    , renumber_tables
-                  ) )
+                , renumber_all
                 , set_meta
                 )
             t.transform (o)

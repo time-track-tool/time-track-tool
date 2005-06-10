@@ -48,7 +48,6 @@ abo_price = Class \
     , currency            = Link      ('currency')
     , amount              = Number    ()
     , name                = String    ()
-    , invoice_template    = Multilink ('invoice_template')
     , invoice_group       = Link      ('invoice_group')
     )
 abo_price.setkey ("name")
@@ -137,6 +136,7 @@ invoice_group = Class \
     ( db, "invoice_group"
     , name                = String    ()
     , description         = String    ()
+    , invoice_template    = Multilink ('invoice_template')
     )
 invoice_group.setkey ("name")
 
