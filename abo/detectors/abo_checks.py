@@ -143,7 +143,7 @@ def check_change (db, cl, nodeid, new_values) :
                              for x in ('period_start', 'period_end')
                             ]
                         )
-                if (invoice.get ('invoice_group') :
+                if (invoice.get ('invoice_group')) :
                     raise Reject, err ('marked')
             if n_end == abo ['begin'] :
                 if  (  len (abo ['invoices']) > 1
