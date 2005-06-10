@@ -131,7 +131,7 @@ class Mark_Invoice (Invoice) :
     # end def handle
 # end class Mark_Invoice
 
-class OOoPyInvoiceWrapper (autosuper) :
+class OOoPy_Invoice_Wrapper (autosuper) :
     def __init__ (self, db, iv) :
         self.db = db
         self.items = \
@@ -175,7 +175,7 @@ class OOoPyInvoiceWrapper (autosuper) :
 
     __contains__ = has_key
 
-# end class OOoPyInvoiceWrapper
+# end class OOoPy_Invoice_Wrapper
 
 class Generate_Invoice (Invoice) :
     def handle (self) :
@@ -190,7 +190,7 @@ class Generate_Invoice (Invoice) :
             if tid not in iv_by_tid :
                 iv_by_tid [tid] = []
                 tp_by_tid [tid] = i [0]
-            iv_by_tid [tid].append (OOoPyInvoiceWrapper (self.db, i [1]))
+            iv_by_tid [tid].append (OOoPy_Invoice_Wrapper (self.db, i [1]))
         sio = {}
         for tid,tp in tp_by_tid.iteritems () :
             sio [tid] = StringIO ()
@@ -211,11 +211,25 @@ class Generate_Invoice (Invoice) :
                 )
             t.transform (o)
             o.close ()
+        outfiles = sio.values ()
+        if len (outfiles) > 1 :
+            out = StringIO ()
+            o   = OOoPy (infile = outfiles [0], outfile = out)
+            t   = Transformer \
+                  ( get_meta
+                  , Transforms.Concatenate (* (outfiles [1:]))
+                  , renumber_all
+                  , set_meta
+                  )
+            t.transform (o)
+            o.close ()
+        else :
+            out = outfiles [0]
         h = self.client.additional_headers
         h ['Content-Type']        = 'application/vnd.sun.xml.writer'
         h ['Content-Disposition'] = 'inline; filename=inv.sxw'
-        self.client.header ()
-        return sio.itervalues ().next ().getvalue ()
+        self.client.header  ()
+        return out.getvalue ()
     # end def handle
 # end class Generate_Invoice
 
