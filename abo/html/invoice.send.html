@@ -1,3 +1,10 @@
+<tal:block
+ tal:define=
+  " invoice_g   python: (   request.form.has_key ('invoice_group')
+                        and str (request.form ['invoice_group'].value)
+                        )
+  ; inv_group   python:db.invoice_group.getItem (invoice_g or '1')
+  ">
 <tal:block metal:use-macro="templates/page/macros/icing">
  <tal:block metal:fill-slot="menu_slot"
    tal:condition="python:request.user.hasPermission('Edit','invoice')">
@@ -11,7 +18,7 @@
         </option>
         <tal:block tal:repeat="ig igroups">
             <option tal:content="ig/name"
-              tal:attributes="value string:${classname}?:invoice_g=${ig/id}&@template=send&:columns=invoice_no,period_start,period_end,amount,currency,balance_open,n_sent,send_it,last_sent,payer,subscriber,abo&:sort=-period_start&:filter=open,invoice_group,send_it&:pagesize=50&:startwith=0&open=1&invoice_group=${ig/id}&send_it=1
+              tal:attributes="value string:${classname}?@template=send&:columns=invoice_no,period_start,period_end,amount,currency,balance_open,n_sent,send_it,last_sent,payer,subscriber,abo&:sort=-period_start&:filter=open,invoice_group,send_it&:pagesize=50&:startwith=0&open=1&invoice_group=${ig/id}&send_it=1
                ; req python:request.filterspec
                ; selected python:invoice_g == ig.id
                "/>
@@ -27,7 +34,6 @@
          ( classname
          , { '@action'       : 'mark_invoice'
            , '@template'     : 'send'
-           , ':invoice_g'    : invoice_g
            }
          )"
          tal:content="python:utils.pretty ('mark')">
@@ -38,7 +44,6 @@
          ( classname
          , { '@action'       : 'unmark_invoice'
            , '@template'     : 'send'
-           , ':invoice_g'    : invoice_g
            }
          )"
          tal:content="python:utils.pretty ('unmark')">
@@ -49,7 +54,6 @@
          ( classname
          , { '@action'       : 'generate_invoice'
            , '@template'     : 'send'
-           , ':invoice_g'    : invoice_g
            }
          )"
          tal:content="python:utils.pretty ('generate invoices')">
@@ -60,7 +64,6 @@
          ( classname
          , { '@action'       : 'mark_invoice_sent'
            , '@template'     : 'send'
-           , ':invoice_g'    : invoice_g
            }
          )"
          tal:content="python:utils.pretty ('mark as sent')">
@@ -81,16 +84,6 @@
   " batch       request/batch
   ; pdict       python: utils.properties_dict (db, context)
   ; ep          python: utils.ExtProperty
-  ; tplate_args python:{'@template':'send',':invoice_g':invoice_g}
-  ; invoice_g   python: (  (   request.form.has_key (':invoice_g')
-                           and request.form [':invoice_g'].value
-                           )
-                        or ( request.form.has_key ('invoice_group')
-                           and str (request.form ['invoice_group'].value)
-                           )
-                        )
-  ; inv_group   python:db.invoice_group.getItem (invoice_g or '1')
-
   ; props       python:
     ( ep (utils, pdict ['id'])
     , ep (utils, pdict ['invoice_no'])
@@ -121,11 +114,11 @@
   <input type="submit" value=" Speichern ">
   <input type="hidden" name="@action" value="edit">
   <input type="hidden" name="@template" value="send">
-  <input type="hidden" name=":invoice_g" tal:attributes="value invoice_g">
   <tal:block replace="structure request/indexargs_form" />
   </p>
   </form>
  </tal:block>
+</tal:block>
 </tal:block>
 </tal:block>
 </tal:block>
