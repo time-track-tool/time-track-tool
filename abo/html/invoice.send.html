@@ -20,7 +20,8 @@
        <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['invoice_g'].options[document.forms['menubar'].elements['invoice_g'].options.selectedIndex].value; ">
       </span>
     </td>
-    <td tal:condition="true" class="sidebar" nowrap>
+    <td tal:condition="python:request.filterspec.has_key ('invoice_group')"
+        class="sidebar" nowrap>
      <span class="classblock">
       <a tal:attributes="href python:request.indexargs_url
          ( classname
