@@ -18,9 +18,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from roundup.rup_utils import uni, pretty
-
-Reject = ValueError
+from roundup.rup_utils  import uni, pretty
+from roundup.exceptions import Reject
 
 def set_adr_defaults (db, cl, nodeid, new_values) :
     """ Set some default values for new address """

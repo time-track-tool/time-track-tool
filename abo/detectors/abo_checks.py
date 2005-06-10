@@ -18,11 +18,10 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from time              import localtime
-from roundup.rup_utils import uni, pretty, abo_max_invoice
-from roundup.date      import Date, Interval
-
-Reject = ValueError
+from time               import localtime
+from roundup.rup_utils  import uni, pretty, abo_max_invoice
+from roundup.date       import Date, Interval
+from roundup.exceptions import Reject
 
 month  = Interval ('1m')
 month2 = Interval ('2m')

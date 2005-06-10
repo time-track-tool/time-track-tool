@@ -18,9 +18,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-Reject = ValueError
-from roundup.rup_utils import uni, pretty
-from roundup.date      import Date, Interval
+from roundup.exceptions import Reject
+from roundup.rup_utils  import uni, pretty
+from roundup.date       import Date, Interval
 
 def new_letter (db, cl, nodeid, new_values) :
     for i in ('address', ) :

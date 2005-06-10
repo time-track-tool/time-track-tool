@@ -18,9 +18,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-Reject = ValueError
-from roundup.rup_utils import uni, pretty, abo_max_invoice
-from roundup.date      import Date, Interval
+from roundup.exceptions import Reject
+from roundup.rup_utils  import uni, pretty, abo_max_invoice
+from roundup.date       import Date, Interval
 
 def new_invoice (db, cl, nodeid, new_values) :
     for i in ('abo', ) :
