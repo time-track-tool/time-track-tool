@@ -67,17 +67,17 @@ class Invoice (Action, autosuper) :
 
 # end class Invoice
 
-class UnMarkInvoice (Invoice) :
+class Unmark_Invoice (Invoice) :
     name = 'unmark'
 
     def handle (self) :
-        ''' Remove mark created by MarkInvoice. '''
+        ''' Remove mark created by Mark_Invoice. '''
         self.__super.handle ()
         self._unmark ()
     # end def handle
-# end class UnMarkInvoice
+# end class Unmark_Invoice
 
-class MarkInvoice (Invoice) :
+class Mark_Invoice (Invoice) :
     name = 'mark'
 
     def iv_filter (self, ids) :
@@ -129,7 +129,7 @@ class MarkInvoice (Invoice) :
                 (i ['id'], send_it = True, invoice_group = self.invoice_group)
         self.db.commit ()
     # end def handle
-# end class MarkInvoice
+# end class Mark_Invoice
 
 class OOoPyInvoiceWrapper (autosuper) :
     def __init__ (self, db, iv) :
@@ -177,7 +177,7 @@ class OOoPyInvoiceWrapper (autosuper) :
 
 # end class OOoPyInvoiceWrapper
 
-class GenerateInvoice (Invoice) :
+class Generate_Invoice (Invoice) :
     def handle (self) :
         ''' Prepare invoices for printout and send to browser.'''
         self.__super.handle ()
@@ -217,9 +217,9 @@ class GenerateInvoice (Invoice) :
         self.client.header ()
         return sio.itervalues ().next ().getvalue ()
     # end def handle
-# end class GenerateInvoice
+# end class Generate_Invoice
 
-class MarkInvoiceSent (Invoice) :
+class Mark_Invoice_Sent (Invoice) :
     def handle (self) :
         ''' Mark the marked invoices as sent and remove mark.'''
         self.__super.handle ()
@@ -251,12 +251,11 @@ class MarkInvoiceSent (Invoice) :
         self._unmark ()
         self.db.commit ()
     # end def handle
-# end class MarkSent
+# end class Mark_Invoice_Sent
 
 def init (instance) :
-    instance.registerAction ('mark_invoice',      MarkInvoice)
-    instance.registerAction ('unmark_invoice',    UnMarkInvoice)
-    instance.registerAction ('mark_invoice_sent', MarkInvoiceSent)
-    instance.registerAction ('generate_invoice',  GenerateInvoice)
+    instance.registerAction ('mark_invoice',      Mark_Invoice)
+    instance.registerAction ('unmark_invoice',    Unmark_Invoice)
+    instance.registerAction ('mark_invoice_sent', Mark_Invoice_Sent)
+    instance.registerAction ('generate_invoice',  Generate_Invoice)
 # end def init
-#SHA: 163bbf34c9a4006b58963d9fc9b1619fdf5c8df5
