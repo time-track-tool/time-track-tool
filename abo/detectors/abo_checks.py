@@ -28,18 +28,19 @@ month  = Interval ('1m')
 month2 = Interval ('2m')
 
 errmsgs = \
-    { 'mandatory' : uni ('"%s" muss ausgefüllt werden')
+    { 'closefree' : uni ('Wiederaufnahme Abo nur innerhalb Zweimonatsfrist')
+    , 'closepay'  : uni ('Wiederaufnahme Abo nur innerhalb letzter Periode')
+    , 'delete'    : uni ('Storno mit Löschen nur für unbezahlte neue Abos')
+    , 'endtime'   : uni ('Storno: Endzeit muss größer/gleich Startzeit sein')
     , 'forbidden' : uni ('"%s" darf nicht ausgefüllt werden')
+    , 'mandatory' : uni ('"%s" muss ausgefüllt werden')
+    , 'marked'    : uni ('Rechnung ist markiert')
+    , 'month'     : uni ('"%s" (Storno) nur +/- ein Monat')
     , 'nochange'  : uni ('"%s" darf nicht geändert werden')
     , 'nonzero'   : uni ('"%s" darf nicht 0 werden')
-    , 'positive'  : uni ('"%s" muss größer oder gleich 0 sein')
-    , 'endtime'   : uni ('Storno: Endzeit muss größer/gleich Startzeit sein')
-    , 'month'     : uni ('"%s" (Storno) nur +/- ein Monat')
-    , 'period'    : uni ('"%s" nur im Bereich letzte Rechnungsperiode: %s-%s')
-    , 'delete'    : uni ('Storno mit Löschen nur für unbezahlte neue Abos')
-    , 'closefree' : uni ('Wiederaufnahme Abo nur innerhalb Zweimonatsfrist')
-    , 'closepay'  : uni ('Wiederaufnahme Abo nur innerhalb letzter Periode')
     , 'openfail'  : uni ('Wiederaufnahme/Änderung nur für gültige Abos')
+    , 'period'    : uni ('"%s" nur im Bereich letzte Rechnungsperiode: %s-%s')
+    , 'positive'  : uni ('"%s" muss größer oder gleich 0 sein')
     }
 
 def err (msg, * param) :
@@ -131,18 +132,19 @@ def check_change (db, cl, nodeid, new_values) :
                 raise Reject, err ('endtime')
             if not invoice and (n_end < now - month or n_end > now + month) :
                 raise Reject, err ('month', 'end')
-            if  (   invoice
-                and (  n_end < invoice ['period_start']
+            if  (invoice) :
+                if  (  n_end < invoice ['period_start']
                     or n_end > invoice ['period_end']
-                    )
-                ) :
-                raise Reject, err \
-                    ('period'
-                    , 'end'
-                    , * [invoice [x].pretty ('%Y-%m-%d')
-                         for x in ('period_start', 'period_end')
-                        ]
-                    )
+                    ) :
+                    raise Reject, err \
+                        ( 'period'
+                        , 'end'
+                        , * [invoice [x].pretty ('%Y-%m-%d')
+                             for x in ('period_start', 'period_end')
+                            ]
+                        )
+                if (invoice.get ('invoice_group') :
+                    raise Reject, err ('marked')
             if n_end == abo ['begin'] :
                 if  (  len (abo ['invoices']) > 1
                     or (invoice and not invoice ['open'])
