@@ -22,10 +22,12 @@
 # ****************************************************************************
 # $Id$
 
-from roundup.rup_utils      import pretty
+from roundup.i18n import get_translation
+
+_ = None
 
 def propsort (p1, p2) :
-    return cmp (pretty (p1._name), pretty (p2._name))
+    return cmp (_ (p1._name), _ (p2._name))
 # end def propsort
 
 def sorted_properties (db, context) :
@@ -42,7 +44,7 @@ def properties_dict (db, context) :
 # end def properties_dict
 
 def fieldname (name) :
-    return "%s&nbsp;" % pretty (name)
+    return "%s&nbsp;" % _ (name)
 # end def fieldname
 
 formattable = \
@@ -69,10 +71,13 @@ def menu_or_field (prop) :
 # end def menu_or_field
 
 def init (instance) :
+    global _
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerUtil
     reg ('sorted_properties', sorted_properties)
     reg ('properties_dict',   properties_dict)
     reg ('fieldname',         fieldname)
     reg ('linkclass',         linkclass)
     reg ('menu_or_field',     menu_or_field)
-    reg ('pretty',            pretty)
+    reg ('pretty',            _)

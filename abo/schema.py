@@ -23,15 +23,17 @@
 # $Id$
 
 # Class automatically gets these properties:
+#   id
 #   creation = Date ()
-#   activity = Date ()
 #   creator  = Link ('user')
+#   activity = Date ()
+#   actor    = Link ('user')
 
 do_index = "yes"
 do_index = "no"
 
 abo = Class \
-    ( db, "abo"
+    ( db, ''"abo"
     , begin               = Date      ()
     , end                 = Date      ()
     , aboprice            = Link      ('abo_price')
@@ -41,28 +43,33 @@ abo = Class \
     , messages            = Multilink ("msg")
     , invoices            = Multilink ("invoice")
     )
+''"creation", ''"creator", ''"activity", ''"actor", ''"id",
+''"begin", ''"end", ''"aboprice", ''"payer", ''"subscriber", ''"amount",
+''"messages", ''"invoices"
 
 abo_price = Class \
-    ( db, "abo_price"
+    ( db, ''"abo_price"
     , abotype             = Link      ('abo_type')
     , currency            = Link      ('currency')
     , amount              = Number    ()
     , name                = String    ()
     , invoice_group       = Link      ('invoice_group')
     )
-abo_price.setkey ("name")
+abo_price.setkey (''"name")
+''"abotype", ''"currency", ''"amount"
 
 abo_type = Class \
-    ( db, "abo_type"
+    ( db, ''"abo_type"
     , name                = String    ()
     , description         = String    ()
     , period              = Number    () # subscription period in months
     , order               = Number    ()
     )
-abo_type.setkey ("name")
+abo_type.setkey (''"name")
+''"description", ''"period", ''"order"
 
 address = Class \
-    ( db, "address"
+    ( db, ''"address"
     , title               = String    ()
     , lettertitle         = String    ()
     , firstname           = String    (indexme = do_index)
@@ -85,31 +92,36 @@ address = Class \
     , letters             = Multilink ("letter")
     , invoices            = Multilink ("invoice")
     )
+''"title", ''"lettertitle", ''"firstname", ''"lastname", ''"function",
+''"street", ''"country", ''"postalcode", ''"city", ''"phone", ''"fax",
+''"salutation", ''"messages", ''"email", ''"abos", ''"payed_abos",
+''"adr_type", ''"letters", ''"invoices"
 
 adr_type = Class \
-    ( db, "adr_type"
+    ( db, ''"adr_type"
     , code                = String    ()
     , description         = String    ()
     , typecat             = Link      ("adr_type_cat")
     )
 adr_type.setkey ("code")
+''"typecat"
 
 adr_type_cat = Class \
-    ( db, "adr_type_cat"
+    ( db, ''"adr_type_cat"
     , code                = String    ()
     , description         = String    ()
     )
-adr_type_cat.setkey ("code")
+adr_type_cat.setkey (''"code")
 
 currency = Class \
-    ( db, "currency"
+    ( db, ''"currency"
     , name                = String    ()
     , description         = String    ()
     )
-currency.setkey ("name")
+currency.setkey (''"name")
 
 invoice = Class \
-    ( db, "invoice"
+    ( db, ''"invoice"
     , invoice_no          = String    ()
     , period_start        = Date      ()
     , period_end          = Date      ()
@@ -130,33 +142,38 @@ invoice = Class \
     , invoice_group       = Link      ("invoice_group")
     , letters             = Multilink ("letter")
     )
-invoice.setkey ("invoice_no")
+invoice.setkey (''"invoice_no")
+''"period_start", ''"period_end", ''"amount", ''"currency",
+''"balance_open", ''"open", ''"n_sent", ''"last_sent", ''"payer",
+''"subscriber", ''"date_payed", ''"bookentry", ''"receipt_no",
+''"send_it", ''"payment", ''"letters"
 
 invoice_group = Class \
-    ( db, "invoice_group"
+    ( db, ''"invoice_group"
     , name                = String    ()
     , description         = String    ()
     , invoice_template    = Multilink ('invoice_template')
     )
-invoice_group.setkey ("name")
+invoice_group.setkey (''"name")
 
 # The invoice_level number decides for which invoice level we use
 # which template.
 invoice_template = Class \
-    ( db, "invoice_template"
+    ( db, ''"invoice_template"
     , tmplate             = Link      ("tmplate")
     , invoice_level       = Number    ()
     , interval            = Number    ()
     , name                = String    ()
     )
-invoice_template.setkey ("name")
+invoice_template.setkey (''"name")
+''"invoice_level", ''"interval"
 
 # The file types are either PDF (from old imported data) or an
 # OpenOffice.org document which is cusomized using info pointed to with
 # invoice and/or address. The invoice link is optional -- not every
 # letter is related to an invoice.
 letter = Class \
-    ( db, "letter"
+    ( db, ''"letter"
     , subject             = String    ()
     , address             = Link      ("address")
     , date                = Date      ()
@@ -164,35 +181,37 @@ letter = Class \
     , messages            = Multilink ("msg")
     , invoice             = Link      ("invoice")
     )
+''"subject", ''"date", ''"files", ''"messages"
 
 tmplate = Class \
-    ( db, "tmplate"
+    ( db, ''"tmplate"
     , name                = String    ()
     , files               = Multilink ("file") # version control, use latest
     )
-tmplate.setkey ("name")
+tmplate.setkey (''"name")
 
 # Define codes for (in)valid addresses, e.g., "verstorben"
 valid = Class \
-    ( db, "valid"
+    ( db, ''"valid"
     , name                = String    ()
     , description         = String    ()
     )
-valid.setkey ("name")
+valid.setkey (''"name")
 
 query = Class \
-    ( db, "query"
+    ( db, ''"query"
     , klass               = String    ()
     , name                = String    ()
     , url                 = String    ()
     , private_for         = Link      ('user')
     )
-query.setkey("name")
+query.setkey(''"name")
+''"klass", ''"url", ''"private_for"
 
 
 # Note: roles is a comma-separated string of Role names
 user = Class \
-    ( db, "user"
+    ( db, ''"user"
     , username            = String    ()
     , password            = Password  ()
     # used by email gateway:
@@ -206,13 +225,15 @@ user = Class \
     # optional
     , nickname            = String    ()
     )
-user.setkey("username")
+user.setkey(''"username")
+''"password", ''"realname", ''"alternate_addresses", ''"queries",
+''"roles", ''"timezone", ''"nickname"
 
 # FileClass automatically gets these properties:
 #   content = String()    [saved to disk in <tracker home>/db/files/]
 #   (it also gets the Class properties creation, activity and creator)
 msg = FileClass \
-    ( db, "msg"
+    ( db, ''"msg"
     , date                  = Date      ()
     # Note: below fields are used by roundup internally (obviously by the
     #       mail-gateway)
@@ -222,12 +243,15 @@ msg = FileClass \
     , messageid             = String    ()
     , inreplyto             = String    ()
     )
+''"content",
+''"author", ''"recipients", ''"summary", ''"messageid", ''"inreplyto"
 
 file = FileClass \
-    ( db, "file"
+    ( db, ''"file"
     , name                  = String    ()
     , type                  = String    ()
     )
+''"type"
 
 #
 # SECURITY SETTINGS

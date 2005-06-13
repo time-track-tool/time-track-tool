@@ -23,6 +23,9 @@
 # $Id$
 
 from roundup.cgi.templating import MultilinkHTMLProperty, DateHTMLProperty
+from roundup.i18n           import get_translation
+
+_ = None
 
 class ExtProperty :
     """
@@ -50,7 +53,7 @@ class ExtProperty :
         , is_label    = None
         , editable    = None
         , searchable  = None # usually computed, override with False
-        , pretty      = None # optional pretty-printing function
+        , pretty      = _    # optional pretty-printing function
         , linkclass   = None # optional function for getting css class
         ) :
         self.utils       = utils
@@ -65,7 +68,7 @@ class ExtProperty :
         self.lnkattr     = lnkattr
         self.multiselect = multiselect
         self.is_label    = is_label
-        self.pretty      = pretty or utils.pretty
+        self.pretty      = pretty or _
         self.get_linkcls = linkclass
         self.editable    = editable
         self.key         = None
@@ -205,5 +208,8 @@ class ExtProperty :
 # end class ExtProperty
 
 def init (instance) :
+    global _
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     instance.registerUtil ('ExtProperty', ExtProperty)
 # end def init
