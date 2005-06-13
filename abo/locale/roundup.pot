@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 16:28+0200\n"
+"POT-Creation-Date: 2005-06-13 16:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,23 +34,27 @@ msgstr ""
 msgid "invoices are already marked"
 msgstr ""
 
-#: ../html/page.html:392
+#: ../html/page.html:304
+msgid "history"
+msgstr ""
+
+#: ../html/page.html:391
 msgid "Messages"
 msgstr ""
 
-#: ../html/page.html:403
+#: ../html/page.html:402
 msgid "remove"
 msgstr ""
 
-#: ../html/page.html:422
+#: ../html/page.html:421
 msgid "filename"
 msgstr ""
 
-#: ../html/page.html:423
+#: ../html/page.html:422
 msgid "changed"
 msgstr ""
 
-#: ../html/page.html:654 ../html/user.index.html:32
+#: ../html/page.html:653 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr ""
 
@@ -379,30 +383,34 @@ msgid "msg"
 msgstr ""
 
 #: ../schema.py:246
+msgid "content"
+msgstr ""
+
+#: ../schema.py:247
 msgid "author"
 msgstr ""
 
-#: ../schema.py:246
+#: ../schema.py:247
 msgid "inreplyto"
 msgstr ""
 
-#: ../schema.py:246
+#: ../schema.py:247
 msgid "messageid"
 msgstr ""
 
-#: ../schema.py:246
+#: ../schema.py:247
 msgid "recipients"
 msgstr ""
 
-#: ../schema.py:246
+#: ../schema.py:247
 msgid "summary"
 msgstr ""
 
-#: ../schema.py:249
+#: ../schema.py:250
 msgid "file"
 msgstr ""
 
 #.  SECURITY SETTINGS
-#: ../schema.py:253
+#: ../schema.py:254
 msgid "type"
 msgstr ""
