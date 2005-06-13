@@ -23,7 +23,7 @@
 # $Id$
 
 from roundup.cgi.templating import MultilinkHTMLProperty, DateHTMLProperty
-from roundup.i18n           import get_translation
+from roundup.cgi.TranslationService import get_translation
 
 _ = None
 

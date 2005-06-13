@@ -5,7 +5,7 @@ ${context/id} angelegt von ${context/creator}" />
 <tal:x tal:condition="not:context/id">Neue Notiz</tal:x> 
 </title> 
 <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-      tal:content="python:utils.pretty (context._classname)"></span>
+      tal:content="python:i18n.gettext (context._classname)"></span>
 
 <td class="content" metal:fill-slot="content">
 <table class="form">

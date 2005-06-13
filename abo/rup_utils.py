@@ -29,7 +29,6 @@ gettext = roundup.i18n.get_translation ('de', '/home/ralf/roundup/abo').gettext
 
 prettymap = \
 { 'confirm'           : uni('Bestätigung Passwort')
-, 'countrycode'       : uni('Ländercode')
 }
 
 def pretty (name) :

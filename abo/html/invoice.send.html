@@ -35,8 +35,8 @@
          , { '@action'       : 'mark_invoice'
            , '@template'     : 'send'
            }
-         )"
-         tal:content="python:utils.pretty ('mark')">
+         )" i18n:translate="">
+         mark
       </a>
      </span>
      <span class="classblock">
@@ -45,8 +45,8 @@
          , { '@action'       : 'unmark_invoice'
            , '@template'     : 'send'
            }
-         )"
-         tal:content="python:utils.pretty ('unmark')">
+         )" i18n:translate="">
+         unmark
       </a>
      </span>
      <span class="classblock">
@@ -55,10 +55,8 @@
          , { '@action'       : 'generate_invoice'
            , '@template'     : 'send'
            }
-         )"
-         i18n:translate=""
-      >
-       generate invoices
+         )" i18n:translate="">
+         generate invoices
       </a>
      </span>
      <span class="classblock">
@@ -67,8 +65,8 @@
          , { '@action'       : 'mark_invoice_sent'
            , '@template'     : 'send'
            }
-         )"
-         tal:content="python:utils.pretty ('mark as sent')">
+         )" i18n:translate="">
+         mark as sent
       </a>
      </span>
     </td>

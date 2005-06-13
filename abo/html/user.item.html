@@ -3,12 +3,11 @@
 <title metal:fill-slot="head_title"> 
 <span tal:condition="context/id"
       tal:replace="string:User ${context/id}: ${context/username}" />
-<tal:x tal:condition="not:context/id">New User</tal:x> 
+<tal:x tal:condition="not:context/id" i18n:translate="">New User</tal:x> 
 - <span tal:replace="config/TRACKER_NAME" />
 </title> 
 <span metal:fill-slot="body_title" tal:omit-tag="python:1">
   User<span tal:replace="context/id" />
-   <tal:x tal:condition="context/is_edit_ok">Editing</tal:x>
  </span>
 
 <td class="content" metal:fill-slot="content">
@@ -19,11 +18,11 @@
 
 <table class="form">
  <tr tal:repeat="field python:['realname','username','password']">
-  <th tal:content="python:utils.pretty(field)">Name</th>
+  <th tal:content="python:i18n.gettext(field)">Name</th>
   <td tal:content="structure python:context [field].field ()">realname</td>
  </tr>
  <tr>
-  <th tal:content="python:utils.pretty ('confirm')"></th>
+  <th i18n:translate="">confirm</th>
   <td tal:content="structure context/password/confirm">password</td>
  </tr>
  <tr tal:condition="python:request.user.hasPermission('Web Roles')">

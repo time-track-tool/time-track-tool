@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 17:07+0200\n"
+"POT-Creation-Date: 2005-06-13 21:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,26 +16,38 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../extensions/mark_invoices.py:36
+#: ../extensions/mark_invoices.py:38
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:43
+#: ../extensions/mark_invoices.py:45
 #, python-format
-msgid "No matching invoice_template for invoice%s"
+msgid "No matching invoice_template for invoice %s"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:59
+#: ../extensions/mark_invoices.py:61
 msgid "You can only mark invoices"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:126
+#: ../extensions/mark_invoices.py:128
 msgid "invoices are already marked"
+msgstr ""
+
+#: ../html/invoice.send.html:33
+msgid "mark"
+msgstr ""
+
+#: ../html/invoice.send.html:43
+msgid "unmark"
 msgstr ""
 
 #: ../html/invoice.send.html:53
 msgid "generate invoices"
+msgstr ""
+
+#: ../html/invoice.send.html:63
+msgid "mark as sent"
 msgstr ""
 
 #: ../html/page.html:304
@@ -60,6 +72,14 @@ msgstr ""
 
 #: ../html/page.html:653 ../html/user.index.html:32
 msgid "Download as CSV"
+msgstr ""
+
+#: ../html/user.item.html:6
+msgid "New User"
+msgstr ""
+
+#: ../html/user.item.html:25
+msgid "confirm"
 msgstr ""
 
 #: ../schema.py:36

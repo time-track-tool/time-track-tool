@@ -22,7 +22,7 @@
 # ****************************************************************************
 # $Id$
 
-from roundup.i18n import get_translation
+from roundup.cgi.TranslationService import get_translation
 
 _ = None
 
@@ -80,4 +80,3 @@ def init (instance) :
     reg ('fieldname',         fieldname)
     reg ('linkclass',         linkclass)
     reg ('menu_or_field',     menu_or_field)
-    reg ('pretty',            _)

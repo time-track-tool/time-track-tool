@@ -1,24 +1,19 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
 <html tal:define=
- "classname context/_classname|default
-
- ;klass     python:db [classname] or default
- ;lbl       klass/_klass/labelprop
- ;label     python:(lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
- ;title     python:utils.pretty ('history')
-            + ' von '
-            + context [label].plain ()
+ " classname context/_classname|db/address/_classname
+ ; Classname python: i18n.gettext (classname)
+ ; klass     python:db [classname] or default
  ">
  <head>
-  <title tal:content="string:Aenderungen"></title>
+  <title tal:content="string:Verlauf"></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
   <link rel="stylesheet" type="text/css" href="@@file/style.css">
   <script tal:replace="structure request/base_javascript"></script>
  </head>
  <body class="body">
   <tal:block tal:condition="python:context.is_view_ok() and context.id">
-   <h3 tal:content="title"></h3>
+   <h3 tal:content="string: history of ${Classname}" i18n:attributes=content></h3>
    <tal:block tal:replace="structure context/history" />
   </tal:block>
  </body>

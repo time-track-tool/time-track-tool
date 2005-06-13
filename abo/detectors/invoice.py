@@ -136,4 +136,3 @@ def init (db) :
     db.invoice.audit ("set",    check_invoice)
     db.invoice.react ("set",    create_new_invoice)
 # end def init
-#SHA: 70083841a9880545aa67478d9946b11f2b7aa127

@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 17:07+0200\n"
+"POT-Creation-Date: 2005-06-13 19:15+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../extensions/mark_invoices.py:36
@@ -32,9 +32,21 @@ msgstr ""
 msgid "invoices are already marked"
 msgstr ""
 
+#: ../html/invoice.send.html:33
+msgid "mark"
+msgstr "markieren"
+
+#: ../html/invoice.send.html:43
+msgid "unmark"
+msgstr "Markierung aufheben"
+
 #: ../html/invoice.send.html:53
 msgid "generate invoices"
 msgstr "Rechnungen erzeugen"
+
+#: ../html/invoice.send.html:63
+msgid "mark as sent"
+msgstr "als gesendet markieren"
 
 #: ../html/page.html:304
 msgid "history"
@@ -59,6 +71,14 @@ msgstr "geändert"
 #: ../html/page.html:653 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr "Als CSV laden"
+
+#: ../html/user.item.html:6
+msgid "New User"
+msgstr "Neuer User"
+
+#: ../html/user.item.html:25
+msgid "confirm"
+msgstr "Wiederholung Passwort"
 
 #: ../schema.py:36
 msgid "abo"

@@ -1,16 +1,18 @@
-from cStringIO              import StringIO
-from roundup.cgi.actions    import Action
-from roundup.cgi            import templating
-from roundup                import hyperdb
-from roundup.date           import Date, Interval
-from ooopy.OOoPy            import OOoPy
-from ooopy.Transformer      import Transformer, autosuper
-from ooopy.Transforms       import renumber_all, get_meta, set_meta
-from roundup.cgi.exceptions import Redirect
+from cStringIO                      import StringIO
+from roundup.cgi.actions            import Action
+from roundup.cgi                    import templating
+from roundup                        import hyperdb
+from roundup.date                   import Date, Interval
+from ooopy.OOoPy                    import OOoPy
+from ooopy.Transformer              import Transformer, autosuper
+from ooopy.Transforms               import renumber_all, get_meta, set_meta
+from roundup.cgi.exceptions         import Redirect
+from roundup.cgi.TranslationService import get_translation
 
 import ooopy.Transforms as Transforms
 
 Reject = ValueError
+_      = None
 
 class Invoice (Action, autosuper) :
     name = 'invoice actions'
@@ -33,14 +35,14 @@ class Invoice (Action, autosuper) :
         iv_tmplates = db.invoice_group.get (ivg, 'invoice_template')
         if not iv_tmplates :
             raise Reject, \
-                ( self._ ('No invoice_template defined for all invoices: %s')
+                ( _ ('No invoice_template defined for all invoices: %s')
                 % iv ['invoice_no']
                 )
         ivts = [db.invoice_template.getnode (i) for i in iv_tmplates]
         ivts = [i for i in ivts if i ['invoice_level'] <= iv ['n_sent']]
         if not ivts :
             raise Reject, \
-                ( self._ ('No matching invoice_template for invoice%s')
+                ( _ ('No matching invoice_template for invoice %s')
                 % iv ['invoice_no']
                 )
         max = ivts [0]
@@ -56,7 +58,7 @@ class Invoice (Action, autosuper) :
         filterspec = request.filterspec
 
         if request.classname != 'invoice' :
-            raise Reject, self._ ('You can only mark invoices')
+            raise Reject, _ ('You can only mark invoices')
         # get invoice_group:
         self.invoice_group = filterspec ['invoice_group'][0]
     # end def handle
@@ -123,7 +125,7 @@ class Mark_Invoice (Invoice) :
         self.now   = Date ('.')
 
         if self.marked () :
-            raise Reject, self._ ('invoices are already marked')
+            raise Reject, _ ('invoices are already marked')
 
         invoice = self.db.invoice
         spec = \
@@ -275,6 +277,9 @@ class Mark_Invoice_Sent (Invoice) :
 # end class Mark_Invoice_Sent
 
 def init (instance) :
+    global _
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     instance.registerAction ('mark_invoice',      Mark_Invoice)
     instance.registerAction ('unmark_invoice',    Unmark_Invoice)
     instance.registerAction ('mark_invoice_sent', Mark_Invoice_Sent)
