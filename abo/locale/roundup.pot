@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 15:58+0200\n"
+"POT-Creation-Date: 2005-06-13 16:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,335 +54,355 @@ msgstr ""
 msgid "Download as CSV"
 msgstr ""
 
-#: ../schema.py:34
+#: ../schema.py:36
 msgid "abo"
 msgstr ""
 
-#: ../schema.py:44
+#: ../schema.py:46
+msgid "activity"
+msgstr ""
+
+#: ../schema.py:46
+msgid "actor"
+msgstr ""
+
+#: ../schema.py:46
+msgid "creation"
+msgstr ""
+
+#: ../schema.py:46
+msgid "creator"
+msgstr ""
+
+#: ../schema.py:46
+msgid "id"
+msgstr ""
+
+#: ../schema.py:47
 msgid "aboprice"
 msgstr ""
 
-#: ../schema.py:44 ../schema.py:56 ../schema.py:143
+#: ../schema.py:47 ../schema.py:59 ../schema.py:146
 msgid "amount"
 msgstr ""
 
-#: ../schema.py:44
+#: ../schema.py:47
 msgid "begin"
 msgstr ""
 
-#: ../schema.py:44
+#: ../schema.py:47
 msgid "end"
 msgstr ""
 
-#: ../schema.py:44 ../schema.py:144
+#: ../schema.py:47 ../schema.py:147
 msgid "payer"
 msgstr ""
 
-#: ../schema.py:44 ../schema.py:145
+#: ../schema.py:47 ../schema.py:148
 msgid "subscriber"
 msgstr ""
 
-#: ../schema.py:45 ../schema.py:95
+#: ../schema.py:48 ../schema.py:98
 msgid "invoices"
 msgstr ""
 
-#: ../schema.py:45 ../schema.py:94 ../schema.py:181
+#: ../schema.py:48 ../schema.py:97 ../schema.py:184
 msgid "messages"
 msgstr ""
 
-#: ../schema.py:48
+#: ../schema.py:51
 msgid "abo_price"
 msgstr ""
 
-#: ../schema.py:55 ../schema.py:65 ../schema.py:118 ../schema.py:154
-#: ../schema.py:165 ../schema.py:188 ../schema.py:196 ../schema.py:205
+#: ../schema.py:58 ../schema.py:68 ../schema.py:121 ../schema.py:157
+#: ../schema.py:168 ../schema.py:191 ../schema.py:199 ../schema.py:208
 msgid "name"
 msgstr ""
 
-#: ../schema.py:56
+#: ../schema.py:59
 msgid "abotype"
 msgstr ""
 
-#: ../schema.py:56 ../schema.py:114 ../schema.py:143
+#: ../schema.py:59 ../schema.py:117 ../schema.py:146
 msgid "currency"
 msgstr ""
 
-#: ../schema.py:59
+#: ../schema.py:62
 msgid "abo_type"
 msgstr ""
 
-#: ../schema.py:66
+#: ../schema.py:69
 msgid "description"
 msgstr ""
 
-#: ../schema.py:66
+#: ../schema.py:69
 msgid "order"
 msgstr ""
 
-#: ../schema.py:66
+#: ../schema.py:69
 msgid "period"
 msgstr ""
 
-#: ../schema.py:69
+#: ../schema.py:72
 msgid "address"
 msgstr ""
 
-#: ../schema.py:92
+#: ../schema.py:95
 msgid "firstname"
 msgstr ""
 
-#: ../schema.py:92
+#: ../schema.py:95
 msgid "function"
 msgstr ""
 
-#: ../schema.py:92
+#: ../schema.py:95
 msgid "lastname"
 msgstr ""
 
-#: ../schema.py:92
+#: ../schema.py:95
 msgid "lettertitle"
 msgstr ""
 
-#: ../schema.py:92
+#: ../schema.py:95
 msgid "title"
 msgstr ""
 
-#: ../schema.py:93
+#: ../schema.py:96
 msgid "city"
 msgstr ""
 
-#: ../schema.py:93
+#: ../schema.py:96
 msgid "country"
 msgstr ""
 
-#: ../schema.py:93
+#: ../schema.py:96
 msgid "fax"
 msgstr ""
 
-#: ../schema.py:93
+#: ../schema.py:96
 msgid "phone"
 msgstr ""
 
-#: ../schema.py:93
+#: ../schema.py:96
 msgid "postalcode"
 msgstr ""
 
-#: ../schema.py:93
+#: ../schema.py:96
 msgid "street"
 msgstr ""
 
-#: ../schema.py:94
+#: ../schema.py:97
 msgid "abos"
 msgstr ""
 
-#: ../schema.py:94
+#: ../schema.py:97
 msgid "email"
 msgstr ""
 
-#: ../schema.py:94
+#: ../schema.py:97
 msgid "payed_abos"
 msgstr ""
 
-#: ../schema.py:94
+#: ../schema.py:97
 msgid "salutation"
 msgstr ""
 
-#: ../schema.py:95 ../schema.py:98
+#: ../schema.py:98 ../schema.py:101
 msgid "adr_type"
 msgstr ""
 
-#: ../schema.py:95 ../schema.py:146
+#: ../schema.py:98 ../schema.py:149
 msgid "letters"
 msgstr ""
 
-#: ../schema.py:104
+#: ../schema.py:107
 msgid "typecat"
 msgstr ""
 
-#: ../schema.py:107
+#: ../schema.py:110
 msgid "adr_type_cat"
 msgstr ""
 
-#: ../schema.py:111
+#: ../schema.py:114
 msgid "code"
 msgstr ""
 
-#: ../schema.py:121
+#: ../schema.py:124
 msgid "invoice"
 msgstr ""
 
-#: ../schema.py:142
+#: ../schema.py:145
 msgid "invoice_no"
 msgstr ""
 
-#: ../schema.py:143
+#: ../schema.py:146
 msgid "period_end"
 msgstr ""
 
-#: ../schema.py:143
+#: ../schema.py:146
 msgid "period_start"
 msgstr ""
 
-#: ../schema.py:144
+#: ../schema.py:147
 msgid "balance_open"
 msgstr ""
 
-#: ../schema.py:144
+#: ../schema.py:147
 msgid "last_sent"
 msgstr ""
 
-#: ../schema.py:144
+#: ../schema.py:147
 msgid "n_sent"
 msgstr ""
 
-#: ../schema.py:144
+#: ../schema.py:147
 msgid "open"
 msgstr ""
 
-#: ../schema.py:145
+#: ../schema.py:148
 msgid "bookentry"
 msgstr ""
 
-#: ../schema.py:145
+#: ../schema.py:148
 msgid "date_payed"
 msgstr ""
 
-#: ../schema.py:145
+#: ../schema.py:148
 msgid "receipt_no"
 msgstr ""
 
-#: ../schema.py:146
+#: ../schema.py:149
 msgid "payment"
 msgstr ""
 
-#: ../schema.py:146
+#: ../schema.py:149
 msgid "send_it"
 msgstr ""
 
-#: ../schema.py:149
+#: ../schema.py:152
 msgid "invoice_group"
 msgstr ""
 
-#: ../schema.py:159
+#: ../schema.py:162
 msgid "invoice_template"
 msgstr ""
 
 #.  The file types are either PDF (from old imported data) or an OpenOffice.org document which is cusomized using info pointed to with invoice and/or address. The invoice link is optional -- not every letter is related to an invoice.
-#: ../schema.py:166
+#: ../schema.py:169
 msgid "interval"
 msgstr ""
 
-#: ../schema.py:166
+#: ../schema.py:169
 msgid "invoice_level"
 msgstr ""
 
-#: ../schema.py:173
+#: ../schema.py:176
 msgid "letter"
 msgstr ""
 
-#: ../schema.py:181
+#: ../schema.py:184
 msgid "date"
 msgstr ""
 
-#: ../schema.py:181
+#: ../schema.py:184
 msgid "files"
 msgstr ""
 
-#: ../schema.py:181
+#: ../schema.py:184
 msgid "subject"
 msgstr ""
 
-#: ../schema.py:184
+#: ../schema.py:187
 msgid "tmplate"
 msgstr ""
 
-#: ../schema.py:192
+#: ../schema.py:195
 msgid "valid"
 msgstr ""
 
-#: ../schema.py:199
+#: ../schema.py:202
 msgid "query"
 msgstr ""
 
-#: ../schema.py:206
+#: ../schema.py:209
 msgid "klass"
 msgstr ""
 
 #.  Note: roles is a comma-separated string of Role names
-#: ../schema.py:206
+#: ../schema.py:209
 msgid "private_for"
 msgstr ""
 
-#: ../schema.py:206
+#: ../schema.py:209
 msgid "url"
 msgstr ""
 
-#: ../schema.py:211
+#: ../schema.py:214
 msgid "user"
 msgstr ""
 
-#: ../schema.py:225
+#: ../schema.py:228
 msgid "username"
 msgstr ""
 
-#: ../schema.py:226
+#: ../schema.py:229
 msgid "alternate_addresses"
 msgstr ""
 
-#: ../schema.py:226
+#: ../schema.py:229
 msgid "password"
 msgstr ""
 
-#: ../schema.py:226
+#: ../schema.py:229
 msgid "queries"
 msgstr ""
 
-#: ../schema.py:226
+#: ../schema.py:229
 msgid "realname"
 msgstr ""
 
 #.  FileClass automatically gets these properties:   content = String()    [saved to disk in <tracker home>/db/files/]   (it also gets the Class properties creation, activity and creator)
-#: ../schema.py:227
+#: ../schema.py:230
 msgid "nickname"
 msgstr ""
 
-#: ../schema.py:227
+#: ../schema.py:230
 msgid "roles"
 msgstr ""
 
-#: ../schema.py:227
+#: ../schema.py:230
 msgid "timezone"
 msgstr ""
 
-#: ../schema.py:233
+#: ../schema.py:236
 msgid "msg"
 msgstr ""
 
-#: ../schema.py:243
+#: ../schema.py:246
 msgid "author"
 msgstr ""
 
-#: ../schema.py:243
+#: ../schema.py:246
 msgid "inreplyto"
 msgstr ""
 
-#: ../schema.py:243
+#: ../schema.py:246
 msgid "messageid"
 msgstr ""
 
-#: ../schema.py:243
+#: ../schema.py:246
 msgid "recipients"
 msgstr ""
 
-#: ../schema.py:243
+#: ../schema.py:246
 msgid "summary"
 msgstr ""
 
-#: ../schema.py:246
+#: ../schema.py:249
 msgid "file"
 msgstr ""
 
 #.  SECURITY SETTINGS
-#: ../schema.py:250
+#: ../schema.py:253
 msgid "type"
 msgstr ""
