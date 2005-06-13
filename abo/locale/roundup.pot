@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 16:55+0200\n"
+"POT-Creation-Date: 2005-06-13 17:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,6 +32,10 @@ msgstr ""
 
 #: ../extensions/mark_invoices.py:126
 msgid "invoices are already marked"
+msgstr ""
+
+#: ../html/invoice.send.html:53
+msgid "generate invoices"
 msgstr ""
 
 #: ../html/page.html:304
