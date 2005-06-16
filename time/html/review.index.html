@@ -6,18 +6,20 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['title'])
-    , utils.ExtProperty (utils, pdict ['responsible'],       multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['status'],            multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['qa_representative'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['recorder'],          multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['peer_reviewers'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['opt_reviewers'],     multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['cut_off_date'])
-    , utils.ExtProperty (utils, pdict ['final_meeting_date'])
-    , utils.ExtProperty (utils, pdict ['announcements'],     searchable  = 1)
-    , utils.ExtProperty (utils, pdict ['nosy'],              multiselect = 1)
+    ( utils.ExtProperty ( utils, pdict ['id'])
+    , utils.ExtProperty ( utils, pdict ['title'])
+    , utils.ExtProperty ( utils, pdict ['responsible'],       multiselect = 1
+                        , label = 'Moderator'
+                        )
+    , utils.ExtProperty ( utils, pdict ['status'],            multiselect = 1)
+    , utils.ExtProperty ( utils, pdict ['qa_representative'], multiselect = 1)
+    , utils.ExtProperty ( utils, pdict ['recorder'],          multiselect = 1)
+    , utils.ExtProperty ( utils, pdict ['peer_reviewers'],    multiselect = 1)
+    , utils.ExtProperty ( utils, pdict ['opt_reviewers'],     multiselect = 1)
+    , utils.ExtProperty ( utils, pdict ['cut_off_date'])
+    , utils.ExtProperty ( utils, pdict ['final_meeting_date'])
+    , utils.ExtProperty ( utils, pdict ['announcements'],     searchable  = 1)
+    , utils.ExtProperty ( utils, pdict ['nosy'],              multiselect = 1)
     );
   "
   tal:condition="context/is_view_ok">
