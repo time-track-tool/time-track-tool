@@ -34,14 +34,13 @@
 #    ««revision-date»»···
 #--
 
-from roundup.cgi.templating import MultilinkHTMLProperty, DateHTMLProperty
+from roundup.cgi.templating         import MultilinkHTMLProperty, DateHTMLProperty
+from roundup.cgi.TranslationService import get_translation
 
-def pretty (s) :
-    return s [0].upper () + s [1:]
-# end def pretty
+_ = None
 
 def propsort (p1, p2) :
-    return cmp (pretty (p1._name), pretty (p2._name))
+    return cmp (_ (p1._name), _ (p2._name))
 # end def propsort
 
 def sorted_properties (db, context) :
@@ -89,7 +88,7 @@ class ExtProperty :
         , is_label    = None
         , editable    = None
         , searchable  = None # usually computed, override with False
-        , pretty      = None # optional pretty-printing function
+        , pretty      = _    # optional pretty-printing function
         , linkclass   = None # optional function for getting css class
         ) :
         self.utils       = utils
@@ -104,7 +103,7 @@ class ExtProperty :
         self.lnkattr     = lnkattr
         self.multiselect = multiselect
         self.is_label    = is_label
-        self.pretty      = pretty or utils.pretty
+        self.pretty      = pretty or _
         self.get_linkcls = linkclass
         self.editable    = editable
         self.key         = None
@@ -249,8 +248,10 @@ class ExtProperty :
 # end class ExtProperty
 
 def init (instance) :
+    global _
+    _ = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     instance.registerUtil ('ExtProperty',       ExtProperty)
-    instance.registerUtil ('pretty',            pretty)
     instance.registerUtil ('sorted_properties', sorted_properties)
     instance.registerUtil ('properties_dict',   properties_dict)
     instance.registerUtil ('menu_or_field',     menu_or_field)
