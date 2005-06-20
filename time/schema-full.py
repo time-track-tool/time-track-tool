@@ -55,6 +55,7 @@
 #     6-Jun-2005 (RSC) Incorporate changes from dbinit.py
 #     8-Jun-2005 (RSC) time_record and time_wp added.
 #                      IssueClass used directly
+#    15-Jun-2005 (RSC) i18n stuff for name translations
 #    ««revision-date»»···
 #--
 #
@@ -89,7 +90,7 @@ class TTT_Issue_Class (Class, IssueClass) :
 #       the alphabetically "first" attribute.
 query = Class \
     ( db
-    , "query"
+    , ''"query"
     , klass                 = String    ()
     , name                  = String    ()
     , url                   = String    ()
@@ -98,7 +99,7 @@ query = Class \
 
 room = Class \
     ( db
-    , "room"
+    , ''"room"
     , name                  = String    ()
     # XXX: or more specific, but without a key
     #, building              = String    ()
@@ -109,7 +110,7 @@ room.setkey ("name")
 
 milestone_class = Class \
     ( db
-    , "milestone"
+    , ''"milestone"
     , name                  = String    ()
     , description           = String    ()
     , planned               = Date      ()
@@ -123,7 +124,7 @@ milestone_class = Class \
 
 task_status = Class \
     ( db
-    , "task_status"
+    , ''"task_status"
     , name                  = String    ()
     , description           = String    ()
     , abbreviation          = String    ()
@@ -134,7 +135,7 @@ task_status.setkey ("name")
 
 task_kind = Class \
     ( db
-    , "task_kind"
+    , ''"task_kind"
     , name                  = String    ()
     , description           = String    ()
     , order                 = String    ()
@@ -143,7 +144,7 @@ task_kind.setkey ("name")
 
 feature_status = Class \
     ( db
-    , "feature_status"
+    , ''"feature_status"
     , name                  = String    ()
     , description           = String    ()
     , abbreviation          = String    ()
@@ -154,7 +155,7 @@ feature_status.setkey ("name")
 
 defect_status = Class \
     ( db
-    , "defect_status"
+    , ''"defect_status"
     , name                  = String    ()
     , description           = String    ()
     , abbreviation          = String    ()
@@ -167,7 +168,7 @@ defect_status.setkey ("name")
 
 action_item_status = Class \
     ( db
-    , "action_item_status"
+    , ''"action_item_status"
     , name                  = String    ()
     , description           = String    ()
     , order                 = String    ()
@@ -176,7 +177,7 @@ action_item_status.setkey ("name")
 
 review_status = Class \
     ( db
-    , "review_status"
+    , ''"review_status"
     , name                  = String    ()
     , description           = String    ()
     , order                 = String    ()
@@ -185,7 +186,7 @@ review_status.setkey ("name")
 
 comment_status = Class \
     ( db
-    , "comment_status"
+    , ''"comment_status"
     , name                  = String    ()
     , description           = String    ()
     , transitions           = Multilink ("comment_status")
@@ -195,7 +196,7 @@ comment_status.setkey ("name")
 
 document_status = Class \
     ( db
-    , "document_status"
+    , ''"document_status"
     , name                  = String    ()
     , description           = String    ()
     , abbreviation          = String    ()
@@ -206,7 +207,7 @@ document_status.setkey ("name")
 
 document_type = Class \
     ( db
-    , "document_type"
+    , ''"document_type"
     , name                  = String    ()
     , description           = String    ()
     , order                 = String    ()
@@ -215,7 +216,7 @@ document_type.setkey ("name")
 
 severity = Class \
     ( db
-    , "severity"
+    , ''"severity"
     , name                  = String    ()
     , order                 = String    ()
     )
@@ -223,7 +224,7 @@ severity.setkey ("name")
 
 product = Class \
     ( db
-    , "product"
+    , ''"product"
     , name                  = String    ()
     , description           = String    ()
     , responsible           = Link      ("user")
@@ -238,7 +239,7 @@ product.setkey ("name")
 
 organisation = Class \
     ( db
-    , "organisation"
+    , ''"organisation"
     , name                  = String    ()
     # XXX: should be more specific, but would require much more classes
     , address               = String    ()
@@ -251,28 +252,28 @@ organisation.setkey ("name")
 
 department = Class \
     ( db
-    , "department"
+    , ''"department"
     , name                  = String    ()
     )
 department.setkey ("name")
 
 title = Class \
     ( db
-    , "title"
+    , ''"title"
     , title                 = String    ()
     )
 title.setkey ("title")
 
 position = Class \
     ( db
-    , "position"
+    , ''"position"
     , position              = String    ()
     )
 position.setkey ("position")
 
 time_wp = Class \
     ( db
-    , "time_wp"
+    , ''"time_wp"
     , name                  = String    ()
     , description           = String    ()
     )
@@ -280,7 +281,7 @@ time_wp.setkey ("name")
 
 time_record = Class \
     ( db
-    , "time_record"
+    , ''"time_record"
     , user                  = Link      ("user")
     , date                  = Date      ()
     , start                 = Date      ()
@@ -292,7 +293,7 @@ time_record = Class \
 # Note: roles is a comma-separated string of Role names
 user = Class \
     ( db
-    , "user"
+    , ''"user"
     , username              = String    () # e.g. goller
     , nickname              = String    () # e.g. ago
     , password              = Password  ()
@@ -338,7 +339,7 @@ user.setkey ("username")
 #   (it also gets the Class properties creation, activity and creator)
 msg = FileClass \
     ( db
-    , "msg"
+    , ''"msg"
     , date                  = Date      ()
     , files                 = Multilink ("file")
     # Note: below fields are used by roundup internally (obviously by the
@@ -352,7 +353,7 @@ msg = FileClass \
 
 file = FileClass \
     ( db
-    , "file"
+    , ''"file"
     , name                  = String    ()
     , type                  = String    ()
     )
@@ -366,13 +367,13 @@ file = FileClass \
 
 meeting = TTT_Issue_Class \
     ( db
-    , "meeting"
+    , ''"meeting"
     , files                 = Multilink ("file")
     )
 
 action_item = TTT_Issue_Class \
     ( db
-    , "action_item"
+    , ''"action_item"
     , files                 = Multilink ("file")
     , meeting               = Link      ("meeting")
     , status                = Link      ("action_item_status")
@@ -381,7 +382,7 @@ action_item = TTT_Issue_Class \
 
 document = TTT_Issue_Class \
     ( db
-    , "document"
+    , ''"document"
     , files                 = Multilink ("file")
     , status                = Link      ("document_status")
     , release               = Link      ("release")
@@ -390,7 +391,7 @@ document = TTT_Issue_Class \
 
 release = TTT_Issue_Class \
     ( db
-    , "release"
+    , ''"release"
     # just to show something in the pop-up, gets set to the last reached
     # milestone
     , status                = Link      ("milestone")
@@ -405,7 +406,7 @@ release = TTT_Issue_Class \
 
 feature = TTT_Issue_Class \
     ( db
-    , "feature"
+    , ''"feature"
     , stakeholder           = String    () # some freeform text
     # note: "status" is simplified to be only one of "raised",
     #       "suspended", "open" and "completed", all other *.accepted
@@ -437,7 +438,7 @@ feature = TTT_Issue_Class \
 
 task = TTT_Issue_Class \
     ( db
-    , "task"
+    , ''"task"
     , status                = Link      ("task_status")
     , kind                  = Link      ("task_kind")
     , effort                = Number    () # not Interval, as it's
@@ -458,7 +459,7 @@ task = TTT_Issue_Class \
 
 defect = TTT_Issue_Class \
     ( db
-    , "defect"
+    , ''"defect"
     , status                = Link      ("defect_status")
     , superseder            = Link      ("defect")
     , cert                  = Boolean   ()
@@ -495,7 +496,7 @@ defect = TTT_Issue_Class \
 
 TTT_Issue_Class \
     ( db
-    , "review"
+    , ''"review"
     # `moderator` is implemented with `responsible`
     , status                = Link      ("review_status")
     , authors               = Multilink ("user")
@@ -511,7 +512,7 @@ TTT_Issue_Class \
 
 TTT_Issue_Class \
     ( db
-    , "announcement"
+    , ''"announcement"
     , version               = String    ()
     , location              = String    ()
     , comments              = Multilink ("comment")
@@ -522,7 +523,7 @@ TTT_Issue_Class \
 
 TTT_Issue_Class \
     ( db
-    , "comment"
+    , ''"comment"
     , severity              = Link      ("severity")
     , status                = Link      ("comment_status")
     , review                = Link      ("review")
