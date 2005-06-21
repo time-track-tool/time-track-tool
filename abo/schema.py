@@ -162,7 +162,7 @@ letter = Class \
     , subject             = String    ()
     , address             = Link      ("address")
     , date                = Date      ()
-    , files               = Multilink ("file")
+    , files               = Multilink ("file", do_journal='no')
     , messages            = Multilink ("msg")
     , invoice             = Link      ("invoice")
     )
