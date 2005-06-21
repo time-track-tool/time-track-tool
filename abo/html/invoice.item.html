@@ -15,15 +15,15 @@
    <tal:block metal:fill-slot="formatted_class_content"
     tal:define="cond python:not context.abo.end">
     <tr>
-     <th tal:content="structure python:utils.fieldname('invoice_no')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'invoice_no')"></th>
      <td tal:content="structure context/invoice_no"></td>
-     <th tal:content="structure python:utils.fieldname('abo')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'abo')"></th>
      <td tal:content="structure python: utils.ExtProperty
          (utils, context.abo.aboprice, item = context.abo).formatlink ()">
      </td>
     </tr>
     <tr tal:condition="context/id">
-     <th tal:content="structure python:utils.fieldname('subscriber')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'subscriber')"></th>
      <td tal:content="structure python: ' '.join
       (( utils.ExtProperty
          ( utils
@@ -37,7 +37,7 @@
          ).formatlink ()
       ))">
      </td>
-     <th tal:content="structure python:utils.fieldname('payer')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'payer')"></th>
      <td tal:content="structure python: ' '.join
       (( utils.ExtProperty
          ( utils
@@ -53,71 +53,71 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('period_start')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'period_start')"></th>
      <td tal:content="structure python:context.period_start.pretty('%Y-%m-%d')">
      </td>
-     <th tal:content="structure python:utils.fieldname('period_end')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'period_end')"></th>
      <td tal:content="structure python:context.period_end.pretty('%Y-%m-%d')">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('amount')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'amount')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.amount, item = context, editable = cond)
          .as_listentry ()">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('payment')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'payment')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.payment, item = context, editable = cond)
          .as_listentry ()">
      </td>
-     <th tal:content="structure python:utils.fieldname('currency')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'currency')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.currency, item = context, editable = cond).menu ()">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('balance_open')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'balance_open')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.balance_open, item = context, editable = cond)
          .as_listentry ()">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('receipt_no')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'receipt_no')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.receipt_no, item = context).as_listentry ()">
      </td>
-     <th tal:content="structure python:utils.fieldname('date_payed')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'date_payed')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.date_payed, item = context, editable = cond)
          .as_listentry ()">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('bookentry')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'bookentry')"></th>
     <td tal:content="structure python:context.bookentry.pretty ('%Y-%m-%d')">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('send_it')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'send_it')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.send_it, item = context, editable = cond)
          .as_listentry ()">
      </td>
-     <th tal:content="structure python:utils.fieldname('last_sent')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'last_sent')"></th>
      <td tal:content="structure python:context.last_sent.pretty ('%Y-%m-%d')">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('n_sent')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'n_sent')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.n_sent, item = context, editable = cond)
          .as_listentry ()">
      </td>
-     <th tal:content="structure python:utils.fieldname('invoice_group')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'invoice_group')"></th>
      <td tal:content="structure python:utils.ExtProperty
          (utils, context.invoice_group, item = context, editable = False)
          .as_listentry ()">

@@ -13,7 +13,7 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="structure python:utils.fieldname('aboprice')"
+     <th tal:content="structure python:utils.fieldname(classname, 'aboprice')"
          class="required"></th>
      <td tal:content="structure context/aboprice/menu"
          tal:condition="not:context/id">
@@ -22,25 +22,25 @@
          (utils, context.aboprice.name, item = context.aboprice).formatlink ()"
          tal:condition="context/id">
      </td>
-     <th tal:content="structure python:utils.fieldname('amount')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'amount')"></th>
      <td tal:content="structure python:context.amount.field (6)"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('begin')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'begin')"></th>
      <td tal:content="structure context/begin/field"
          tal:condition="not:context/id">
      </td>
      <td tal:content="structure python:context.begin.pretty ('%Y-%m-%d')"
          tal:condition="context/id">
      </td>
-     <th tal:content="structure python:utils.fieldname('end')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'end')"></th>
      <td tal:content="structure context/end/field"></td>
     </tr>
     <tr tal:define="rowspan python:(2, 1)[not context.id]">
-     <th tal:content="structure python:utils.fieldname('subscriber')"
+     <th tal:content="structure python:utils.fieldname(classname, 'subscriber')"
          class="required" tal:attributes="rowspan rowspan"></th>
      <td tal:content="structure context/subscriber/field"></td>
-     <th tal:content="structure python:utils.fieldname('payer')"
+     <th tal:content="structure python:utils.fieldname(classname, 'payer')"
          tal:attributes="rowspan rowspan"></th>
      <td tal:content="structure context/payer/field"></td>
     </tr>

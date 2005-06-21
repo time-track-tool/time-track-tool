@@ -14,11 +14,11 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="structure python:utils.fieldname('name')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'name')"></th>
      <td tal:content="structure context/name/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('files')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'files')"></th>
      <td colspan="3">
       <tal:block metal:use-macro="templates/page/macros/issue_files"/>
      </td>

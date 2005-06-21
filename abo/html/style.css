@@ -141,6 +141,14 @@ table.form th {
   white-space: nowrap;
 }
 
+table.form th a:link {
+  color: #338;
+  text-align: right;
+  vertical-align: top;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
 table.form th.header {
   font-weight: bold;
   background-color: #eef;
@@ -148,6 +156,10 @@ table.form th.header {
 }
 
 table.form th.required {
+  font-weight: bold;
+}
+
+table.form th.required a {
   font-weight: bold;
 }
 

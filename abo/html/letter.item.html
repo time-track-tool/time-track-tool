@@ -14,7 +14,7 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="structure python:utils.fieldname('subject')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'subject')"></th>
      <td tal:condition="not:context/id" colspan="3"
          tal:content="structure context/subject/field">
      </td>
@@ -23,14 +23,14 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('date')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'date')"></th>
      <td tal:condition="not:context/id"
          tal:content="structure context/date/field">
      </td>
      <td tal:condition="context/id|nothing"
          tal:content="structure python:context.date.pretty ('%Y-%m-%d')">
      </td>
-     <th tal:content="structure python:utils.fieldname('address')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'address')"></th>
      <td tal:condition="not:context/id"
          tal:content="structure context/address/field">
      </td>
@@ -42,7 +42,7 @@
       </a>
      </td>
     <tr>
-     <th tal:content="structure python:utils.fieldname('files')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'files')"></th>
      <td colspan="3">
       <tal:block metal:use-macro="templates/page/macros/issue_files"/>
      </td>

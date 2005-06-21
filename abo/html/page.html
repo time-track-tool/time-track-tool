@@ -287,7 +287,7 @@
   <tal:block metal:define-slot="formatted_class_content"></tal:block>
 
   <tr tal:condition="has_msgs">
-   <th tal:content="structure python:utils.fieldname('msg')">Notiz</th>
+   <th tal:content="structure python:utils.fieldname(classname, 'msg')" />
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
               name="@note"
@@ -310,19 +310,19 @@
   </tr>
 
   <tr tal:condition="has_invoices">
-   <th style="text-align:left" class="required">Rechnungen</th>
+   <th style="text-align:left" class="required" tal:content="structure python:utils.fieldname(classname, 'invoices')" />
   </tr>
   <tal:block tal:repeat="inv context/invoices/reverse"
        tal:condition="has_invoices">
    <tr>
-    <th tal:content="structure python:utils.fieldname ('invoice_no')"></th>
+    <th tal:content="structure python:utils.fieldname ('invoice','invoice_no')"></th>
     <td tal:content="structure python:''.join
         (( utils.ExtProperty
            (utils, inv.invoice_no, item = inv).as_listentry ()
         ,
         ))">
     </td>
-    <th tal:content="structure python:utils.fieldname ('period')"></th>
+    <th tal:content="structure python:utils.fieldname ('invoice','period', 'period_start')"></th>
     <td tal:content="structure python:''.join
         (( utils.ExtProperty
            (utils, inv.period_start, item = inv).as_listentry ()
@@ -335,19 +335,19 @@
   </tal:block>
 
   <tr tal:condition="python:has_letters and context.letters">
-   <th style="text-align:left" class="required">Briefe</th>
+   <th style="text-align:left" class="required" tal:content="structure python:fieldname (classname, 'letters')" />
   </tr>
   <tal:block tal:repeat="ltr context/letters/reverse"
        tal:condition="has_letters">
    <tr>
-    <th tal:content="structure python:utils.fieldname ('date')"></th>
+    <th tal:content="structure python:utils.fieldname ('letter','date')"></th>
     <td tal:content="structure python:''.join
         (( utils.ExtProperty
            (utils, ltr.date,    item = ltr, is_label = 1).as_listentry ()
         ,
         ))">
     </td>
-    <th tal:content="structure python:utils.fieldname ('subject')"></th>
+    <th tal:content="structure python:utils.fieldname ('letter', 'subject')"></th>
     <td tal:content="structure python:''.join
         ((  utils.ExtProperty
            (utils, ltr.subject, item = ltr, is_label = 1).as_listentry ()

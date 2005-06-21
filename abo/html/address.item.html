@@ -14,17 +14,17 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="structure python:utils.fieldname('salutation')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'salutation')"></th>
      <td tal:content="structure context/salutation/field" colspan=3></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('title')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'title')"></th>
      <td tal:content="structure context/title/field"></td>
-     <th tal:content="structure python:utils.fieldname('lettertitle')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'lettertitle')"></th>
      <td tal:content="structure context/lettertitle/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('firstname')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'firstname')"></th>
      <td>
       <table border="0" cellspacing="0" cellpadding="0">
        <tr>
@@ -33,37 +33,37 @@
        </tr>
       </table>
      </td>
-     <th tal:content="structure python:utils.fieldname('lastname')"
+     <th tal:content="structure python:utils.fieldname(classname, 'lastname')"
          class="required"></th>
      <td tal:content="structure context/lastname/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('country')"
+     <th tal:content="structure python:utils.fieldname(classname, 'country')"
          class="required"></th>
      <td>
       <table border="0" cellspacing="0" cellpadding="0">
        <tr>
         <td tal:content="structure python:context.country.field (4)"></td>
         <td>&nbsp</td>
-        <th tal:content="structure python:utils.fieldname('postalcode')"
+        <th tal:content="structure python:utils.fieldname(classname, 'postalcode')"
             class="required"></th>
         <td tal:content="structure python:context.postalcode.field (10)"></td>
        </tr>
       </table>
      </td>
-     <th tal:content="structure python:utils.fieldname('city')"
+     <th tal:content="structure python:utils.fieldname(classname, 'city')"
          class="required"></th>
      <td tal:content="structure context/city/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('street')"
+     <th tal:content="structure python:utils.fieldname(classname, 'street')"
          class="required"></th>
      <td tal:content="structure context/street/field"></td>
-     <th tal:content="structure python:utils.fieldname('email')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'email')"></th>
      <td tal:content="structure context/email/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('function')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'function')"></th>
      <td>
       <textarea tal:content="context/function/plain"
                 name="function"
@@ -72,7 +72,7 @@
                 cols="30">
       </textarea>
      </td>
-     <th tal:content="structure python:utils.fieldname('phone')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'phone')"></th>
      <td>
       <textarea tal:content="context/phone/plain"
                 name="phone"
@@ -83,18 +83,18 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname('adr_type')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'adr_type')"></th>
      <td tal:content="structure context/adr_type/field"></td>
-     <th tal:content="structure python:utils.fieldname('fax')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'fax')"></th>
      <td tal:content="structure context/fax/field"></td>
     </tr>
     <tr>
      <th></th><td></td>
-     <th tal:content="structure python:utils.fieldname('valid')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'valid')"></th>
      <td tal:content="structure context/valid/menu"></td>
     </tr>
     <tr tal:condition="context/id">
-     <th tal:content="structure python:utils.fieldname('abos')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'abos')"></th>
      <td align="top">
       <table border="0" cellspacing="0" cellpadding="0">
        <tr tal:repeat="abo context/abos">
@@ -108,7 +108,7 @@
        </tr>
       </table>
      </td>
-     <th tal:content="structure python:utils.fieldname('payed_abos')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'payed_abos')"></th>
      <td align="top">
       <table border="0" cellspacing="0" cellpadding="0">
        <tr tal:repeat="abo context/payed_abos">

@@ -126,6 +126,8 @@ helptext = \
       ""'''Message-ID if this message was received via email'''
     , ""'messages'            :
       ""'''List of messages for this %(Classname)s'''
+    , ""'msg'            :
+      ""'''Field for messages for %(Classname)s'''
     , ""'n_sent'              :
       ""'''Number of times this invoice was sent'''
     , ""'name'                :

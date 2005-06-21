@@ -43,8 +43,13 @@ def properties_dict (db, context) :
     return props
 # end def properties_dict
 
-def fieldname (name) :
-    return "%s&nbsp;" % _ (name)
+def fieldname (cls, name, fieldname = None) :
+    if not fieldname : fieldname = name
+    return "<a href=\"javascript:help_window" \
+           "('%s?:template=property_help#%s', '500', '400')\">" \
+           "%s&nbsp; </a>" \
+           % (cls, fieldname, _ (name))
+
 # end def fieldname
 
 formattable = \
