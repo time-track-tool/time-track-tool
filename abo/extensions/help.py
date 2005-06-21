@@ -23,7 +23,7 @@
 # $Id$
 
 helptext = \
-    { 'abo'                 :
+    { ""'abo'                 :
       ""'''Subscription to which this invoice belongs'''
     , ""'aboprice'            :
       ""'''Price and currency for this subscription'''

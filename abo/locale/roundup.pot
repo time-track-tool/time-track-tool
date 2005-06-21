@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 15:47+0200\n"
+"POT-Creation-Date: 2005-06-21 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -115,6 +115,10 @@ msgstr ""
 #: ../detectors/invoice_template.py:39 ../detectors/letter.py:42
 #, python-format
 msgid "\"%(attr)s\" may not be deleted"
+msgstr ""
+
+#: ../extensions/help.py:26 ../schema.py:36
+msgid "abo"
 msgstr ""
 
 #: ../extensions/help.py:27
@@ -829,6 +833,14 @@ msgstr ""
 msgid "next &gt;&gt;"
 msgstr ""
 
+#: ../html/_generic.property_help.html:4 ../html/_generic.property_help.html:8
+msgid "Help for ${Classname}"
+msgstr ""
+
+#: ../html/_generic.property_help.html:19
+msgid "Properties of ${Classname}"
+msgstr ""
+
 #: ../html/invoice.send.html:33
 msgid "mark"
 msgstr ""
@@ -887,10 +899,6 @@ msgstr ""
 
 #: ../html/user.item.html:25
 msgid "confirm"
-msgstr ""
-
-#: ../schema.py:36
-msgid "abo"
 msgstr ""
 
 #: ../schema.py:48
