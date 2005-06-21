@@ -479,13 +479,18 @@
                 ( tplate_args.items ()
                 + [(':startwith',prev.first) , (':pagesize',prev.size)]
                 )
-             )">&lt;&lt;&nbsp;previous</a></th>
-       <th tal:content="structure python:'<nobr>showing %d - %d of %d in total</nobr>'
-                               % ( batch.start
-                                 , batch.start + batch.length - 1
-                                 , batch.sequence_length
-                                 )"
-           >
+             )"
+           i18n:translate="">&lt;&lt;&nbsp;previous
+        </a>
+       </th>
+       <th>
+        <nobr i18n:translate="">
+            showing <span tal:replace="python:batch.start" i18n:name="start" />
+            - <span tal:replace="python:batch.start + batch.length - 1"
+                    i18n:name="end" />
+            of <span tal:replace="python:batch.sequence_length"
+                     i18n:name="length" /> in total
+        </nobr>
        </th>
        <th class="right">
         <a tal:define="next batch/next"
@@ -496,7 +501,8 @@
                 ( tplate_args.items ()
                 + [(':startwith',next.first) , (':pagesize',next.size)]
                 )
-             )">next&nbsp;&gt;&gt;</a></th>
+             )"
+           i18n:translate="">next&nbsp;&gt;&gt;</a></th>
       </tr>
      </table>
     </th>

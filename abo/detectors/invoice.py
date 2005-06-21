@@ -19,13 +19,16 @@
 # ****************************************************************************
 
 from roundup.exceptions import Reject
-from roundup.rup_utils  import uni, pretty, abo_max_invoice
+from roundup.rup_utils  import abo_max_invoice
 from roundup.date       import Date, Interval
+
+_ = lambda x : x
 
 def new_invoice (db, cl, nodeid, new_values) :
     for i in ('abo', ) :
         if not i in new_values :
-            raise Reject, uni ('"%s" muss ausgefüllt werden') % pretty (i)
+            raise Reject, _ ('"%(attr)s" must be filled in') \
+                % {'attr' : _ (i)}
     abo_id    = new_values.get       ('abo', None)
     abo       = db.abo.getnode       (abo_id)
     abo_price = db.abo_price.getnode (abo ['aboprice'])
@@ -37,7 +40,8 @@ def new_invoice (db, cl, nodeid, new_values) :
         , 'invoice_group'
         ) :
         if i in new_values :
-            raise Reject, uni ('"%s" darf nicht ausgefüllt werden') % pretty (i)
+            raise Reject, _ ('"%(attr)s" must not be filled in') \
+                % {'attr' : _ (i)}
     if 'amount' not in new_values :
         new_values ['amount']   = abo        ['amount']
     if 'currency' not in new_values :
@@ -79,7 +83,8 @@ def check_invoice (db, cl, nodeid, new_values) :
         , 'payer', 'subscriber', 'open', 'receipt_no'
         ) :
         if i in new_values :
-            raise Reject, uni ('"%s" darf nicht geändert werden') % pretty (i)
+            raise Reject, _ ('"%(attr)s" must not be changed') \
+                % {'attr' : _ (i)}
     invoice = db.invoice.getnode (nodeid)
     balance = new_values.get ('balance_open', cl.get (nodeid, 'balance_open'))
     amount  = new_values.get ('amount',       cl.get (nodeid, 'amount'))
@@ -89,23 +94,23 @@ def check_invoice (db, cl, nodeid, new_values) :
     inv_no  = cl.get (nodeid, 'invoice_no')
     abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
     if abo ['end'] and new_values.keys () != ['invoice_group']:
-        raise Reject, uni ('Kein Buchen bei storniertem Abo')
+        raise Reject, _ ('no change of closed subscription')
     if balance is None or amount is None or payment is None :
-        raise Reject, uni ('"%s", "%s", "%s": nur Zahlen erlaubt') % \
-            (pretty ('payment'), pretty ('balance_open'), pretty ('amount'))
+        raise Reject, \
+            _ ('"payment", "balance_open", "amount": only numbers allowed')
     if 'amount' in new_values :
         if cl.get (nodeid, 'payment') > 0 :
-            raise Reject, uni ('Betrag darf nicht nach Zahlung geändert werden')
+            raise Reject, _ ('amount may not be changed after payment')
     if 'payment' in new_values and 'balance_open' in new_values :
         if amount - payment != balance :
-            raise Reject, uni ('Inkonsistenz von %s:%s und %s:%s') % \
-                (pretty ('payment'), payment, pretty ('balance_open'), balance)
+            raise Reject, _ ('inconsistency of payment:%s and balance_open:%s')\
+                % (payment, balance)
     elif 'payment' in new_values :
         new_values ['balance_open'] = amount - payment
     elif 'balance_open' in new_values :
         new_values ['payment']      = amount - balance
     if balance > amount :
-        raise Reject, uni ('Zahlung darf Betrag nicht übersteigen')
+        raise Reject, _ ('payment may not exceed balance_open')
     # is there too now if only balance changed:
     if 'payment' in new_values :
         new_values ['bookentry'] = now
@@ -131,6 +136,9 @@ def create_new_invoice (db, cl, nodeid, oldvalues) :
 # end def create_new_invoice
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.invoice.audit ("create", new_invoice)
     db.invoice.react ("create", add_to_abo_payer)
     db.invoice.audit ("set",    check_invoice)

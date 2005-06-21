@@ -4,7 +4,6 @@ import time
 import csv
 import os
 import re
-from roundup.rup_utils import uni
 from roundup           import date
 from textwrap          import fill
 from roundup           import instance

@@ -18,18 +18,22 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from roundup.rup_utils  import uni, pretty
 from roundup.exceptions import Reject
+
+_ = lambda x : x
 
 def check_period (db, cl, nodeid, new_values) :
     period = new_values.get ('period')
     if not period :
-        raise Reject, uni('"%s" muss ausgefüllt werden') % pretty ('period')
+        raise Reject, _ ('period must be filled in')
     if int (period) != period :
-        raise Reject, uni('"%s" muss ganzzahlig sein')   % pretty ('period')
+        raise Reject, _ ('period must be an integer')
 # end def check_period
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.abo_type.audit ("create", check_period)
     db.abo_type.audit ("set",    check_period)
 # end def init

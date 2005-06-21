@@ -18,42 +18,49 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from time               import localtime
-from roundup.rup_utils  import uni, pretty, abo_max_invoice
-from roundup.date       import Date, Interval
-from roundup.exceptions import Reject
+from time                           import localtime
+from roundup.rup_utils              import abo_max_invoice
+from roundup.date                   import Date, Interval
+from roundup.exceptions             import Reject
+from roundup.cgi.TranslationService import get_translation
 
 month  = Interval ('1m')
 month2 = Interval ('2m')
 
+_ = lambda x : x
+
 errmsgs = \
-    { 'closefree' : uni ('Wiederaufnahme Abo nur innerhalb Zweimonatsfrist')
-    , 'closepay'  : uni ('Wiederaufnahme Abo nur innerhalb letzter Periode')
-    , 'delete'    : uni ('Storno mit Löschen nur für unbezahlte neue Abos')
-    , 'endtime'   : uni ('Storno: Endzeit muss größer/gleich Startzeit sein')
-    , 'forbidden' : uni ('"%s" darf nicht ausgefüllt werden')
-    , 'mandatory' : uni ('"%s" muss ausgefüllt werden')
-    , 'marked'    : uni ('Rechnung ist markiert')
-    , 'month'     : uni ('"%s" (Storno) nur +/- ein Monat')
-    , 'nochange'  : uni ('"%s" darf nicht geändert werden')
-    , 'nonzero'   : uni ('"%s" darf nicht 0 werden')
-    , 'openfail'  : uni ('Wiederaufnahme/Änderung nur für gültige Abos')
-    , 'period'    : uni ('"%s" nur im Bereich letzte Rechnungsperiode: %s-%s')
-    , 'positive'  : uni ('"%s" muss größer oder gleich 0 sein')
+    { 'closefree' : ""'Restart of subscription only within two months'
+    , 'closepay'  : ""'Restart of subscription only within last period'
+    , 'delete'    : ""'Termination with deletion only for unpayed subscriptions'
+    , 'endtime'   : ""'Termination: end must be greater or equal to start time'
+    , 'forbidden' : ""'"%(attr)s" may not be filled in'
+    , 'mandatory' : ""'"%(attr)s" must be filled in'
+    , 'marked'    : ""'invoice is marked'
+    , 'month'     : ""'"end" (close subscription) only +/- one month'
+    , 'nochange'  : ""'"%(attr)s" may not be changed'
+    , 'nonzero'   : ""'"%(attr)s" may not be zero'
+    , 'openfail'  : ""'Open/change only for valid subscription'
+    , 'period'    : ""'"end" may only be changed for last invoice period: ' \
+                      '%(period_start)s-%(period_end)s'
+    , 'positive'  : ""'"%(attr)s" must be greater or equal to zero'
     }
 
-def err (msg, * param) :
-    return errmsgs [msg] % tuple ([pretty (str (p)) for p in param])
+def err (msg, ** param) :
+    d = {}
+    for k, v in param :
+        d [k] = _ (v)
+    return _ (errmsgs [msg]) % d
 # end def err
 
 def set_defaults (db, cl, nodeid, new_values) :
     print "start of set_defaults"
     for i in ('aboprice', 'subscriber') :
         if not new_values.has_key (i) :
-            raise Reject, err ('mandatory', i)
+            raise Reject, err ('mandatory', attr = i)
     for i in ('invoices',) :
         if new_values.has_key (i) :
-            raise Reject, err ('forbidden', i)
+            raise Reject, err ('forbidden', attr = i)
     if not new_values.has_key ('amount') :
         new_values ['amount'] = \
             db.abo_price.get (new_values ['aboprice'], 'amount')
@@ -102,12 +109,12 @@ def check_change (db, cl, nodeid, new_values) :
     abo = cl.getnode (nodeid)
     for i in ('aboprice', 'begin') :
         if i in new_values :
-            raise Reject, err ('nochange', i)
+            raise Reject, err ('nochange', attr = i)
     if 'amount' in new_values :
         if new_values ['amount'] == 0 and abo ['amount']  > 0 :
-            raise Reject, err ('nonzero',  'amount')
+            raise Reject, err ('nonzero',  attr = 'amount')
         if new_values ['amount']  > 0 and abo ['amount'] == 0 :
-            raise Reject, err ('nochange', 'amount')
+            raise Reject, err ('nochange', attr = 'amount')
     # Changing 'end':
     if  'end' in new_values :
         o_end   = abo        ['end']
@@ -130,17 +137,16 @@ def check_change (db, cl, nodeid, new_values) :
             if n_end < abo ['begin'] :
                 raise Reject, err ('endtime')
             if not invoice and (n_end < now - month or n_end > now + month) :
-                raise Reject, err ('month', 'end')
+                raise Reject, err ('month')
             if  (invoice) :
                 if  (  n_end < invoice ['period_start']
                     or n_end > invoice ['period_end']
                     ) :
                     raise Reject, err \
                         ( 'period'
-                        , 'end'
-                        , * [invoice [x].pretty ('%Y-%m-%d')
+                        , * dict ([(x, invoice [x].pretty ('%Y-%m-%d'))
                              for x in ('period_start', 'period_end')
-                            ]
+                            ])
                         )
                 if (invoice.get ('invoice_group')) :
                     raise Reject, err ('marked')
@@ -166,10 +172,13 @@ def check_change (db, cl, nodeid, new_values) :
 
 def check_amount (db, cl, nodeid, new_values) :
     if 'amount' in new_values and new_values['amount'] < 0 :
-        raise Reject, err ('positive', 'amount')
+        raise Reject, err ('positive', {'attr' : 'amount'})
 # end def check_amount
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.abo.audit ("create", set_defaults)
     db.abo.audit ("set",    check_change)
     db.abo.audit ("create", check_amount)

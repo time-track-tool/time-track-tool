@@ -19,13 +19,14 @@
 # ****************************************************************************
 
 from roundup.exceptions import Reject
-from roundup.rup_utils  import uni, pretty, abo_max_invoice
 from roundup.date       import Date, Interval
+
+_ = lambda x : x
 
 def new_iv_template (db, cl, nodeid, new_values) :
     for i in ('tmplate', 'invoice_level', 'interval') :
         if not i in new_values :
-            raise Reject, uni ('"%s" muss ausgefüllt werden') % pretty (i)
+            raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
     if not 'name' in new_values :
         new_values ['name'] = db.tmplate.get (new_values ['tmplate'], 'name')
 # end def new_iv_template
@@ -34,10 +35,13 @@ def iv_template_ok (db, cl, nodeid, new_values) :
     for i in ('tmplate', 'invoice_level', 'interval', 'name') :
         x = new_values.get (i, cl.get (nodeid, i))
         if x is None :
-            raise Reject, uni ('"%s" darf nicht gelöscht werden') % pretty (i)
+            raise Reject, _ ('"%(attr)s" may not be deleted') % {'attr' : _ (i)}
 # end def iv_template_ok
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.invoice_template.audit ("create", new_iv_template)
     db.invoice_template.audit ("set",    iv_template_ok)
 # end def init

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 11:43+0200\n"
+"POT-Creation-Date: 2005-06-21 11:59+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -175,11 +175,15 @@ msgstr "geändert"
 msgid "&lt;&lt;&nbsp;previous"
 msgstr "&lt;&lt;&nbsp;zurück"
 
-#: ../html/page.html:497
+#: ../html/page.html:491
+msgid "showing ${start} - ${end} of ${length} in total"
+msgstr "${start} - ${end} von gesamt ${length}"
+
+#: ../html/page.html:496
 msgid "next&nbsp;&gt;&gt;"
 msgstr "vorwärts&nbsp;&gt;&gt;"
 
-#: ../html/page.html:660 ../html/user.index.html:32
+#: ../html/page.html:659 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr "Als CSV laden"
 
