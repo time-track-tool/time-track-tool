@@ -35,12 +35,13 @@
 
       <!-- item entry -->
       <tr tal:repeat="itemkey itemkeys">
-       <th class="header2" nowrap>
-        <a tal:attributes="name itemkey"
+       <th class="header2" nowrap
            tal:content="python:i18n.gettext (itemkey)" />
-       </th>
-       <td class="item" tal:content="structure python:i18n.gettext
-        (utils.helptext [itemkey]) % {'Classname' : Classname}" />
+       <td class="item">
+        <a tal:attributes="name itemkey"
+           tal:content="structure python:i18n.gettext
+           (utils.helptext [itemkey]) % {'Classname' : Classname}" />
+       </td>
       </tr>
      </table>
  </td>

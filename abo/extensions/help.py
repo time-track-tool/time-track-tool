@@ -119,7 +119,9 @@ helptext = \
     , ""'lastname'            :
       ""'''Last name of this %(Classname)s'''
     , ""'letter'             :
-      ""'''Download of letter into OpenOffice'''
+      ""'''Download of letter -- usually this will open the letter in
+           OpenOffice
+        '''
     , ""'letters'             :
       ""'''List of letters for this %(Classname)s'''
     , ""'lettertitle'         :
