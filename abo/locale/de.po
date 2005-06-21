@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 11:02+0200\n"
+"POT-Creation-Date: 2005-06-21 11:43+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -82,10 +82,12 @@ msgid "period must be an integer"
 msgstr "Laufzeit muss ganzzahlig sein"
 
 #: ../detectors/invoice.py:43
+#, python-format
 msgid "\"%(attr)s\" must not be filled in"
 msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
 
 #: ../detectors/invoice.py:86
+#, python-format
 msgid "\"%(attr)s\" must not be changed"
 msgstr "\"%(attr)s\" darf nicht geändert werden"
 
@@ -169,7 +171,15 @@ msgstr "Dateiname"
 msgid "changed"
 msgstr "geändert"
 
-#: ../html/page.html:653 ../html/user.index.html:32
+#: ../html/page.html:474
+msgid "&lt;&lt;&nbsp;previous"
+msgstr "&lt;&lt;&nbsp;zurück"
+
+#: ../html/page.html:497
+msgid "next&nbsp;&gt;&gt;"
+msgstr "vorwärts&nbsp;&gt;&gt;"
+
+#: ../html/page.html:660 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr "Als CSV laden"
 

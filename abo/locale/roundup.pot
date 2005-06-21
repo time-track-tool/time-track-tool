@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 11:02+0200\n"
+"POT-Creation-Date: 2005-06-21 11:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,7 +171,15 @@ msgstr ""
 msgid "changed"
 msgstr ""
 
-#: ../html/page.html:653 ../html/user.index.html:32
+#: ../html/page.html:474
+msgid "&lt;&lt;&nbsp;previous"
+msgstr ""
+
+#: ../html/page.html:497
+msgid "next&nbsp;&gt;&gt;"
+msgstr ""
+
+#: ../html/page.html:660 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr ""
 
