@@ -21,19 +21,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-import roundup.i18n
-def uni (latin1) :
-    return latin1.decode ('latin1').encode ('utf8')
-
-gettext = roundup.i18n.get_translation ('de', '/home/ralf/roundup/abo').gettext
-
-prettymap = \
-{ 'confirm'           : uni('Bestätigung Passwort')
-}
-
-def pretty (name) :
-    return (prettymap.get (name, gettext (name)))
-
 def abo_max_invoice (db, abo) :
     if not len (abo ['invoices']) :
         return None
