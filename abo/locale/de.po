@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 20:17+0200\n"
+"POT-Creation-Date: 2005-06-21 20:51+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -827,6 +827,10 @@ msgstr "gültig"
 msgid "Status of this address"
 msgstr "Gültigkeits-Status dieser Adresse"
 
+#: ../extensions/interfaces.py:79
+msgid "Download letter"
+msgstr "Brief laden"
+
 #: ../extensions/mark_invoices.py:39
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
@@ -897,43 +901,39 @@ msgstr "Rechnungen erzeugen"
 msgid "mark as sent"
 msgstr "als gesendet markieren"
 
-#: ../html/letter.item.html:56
-msgid "Download letter"
-msgstr "Brief laden"
-
 #: ../html/page.html:304
 msgid "history"
 msgstr "Liste der Änderungen"
 
-#: ../html/page.html:391
+#: ../html/page.html:394
 msgid "Messages"
 msgstr "Notizen"
 
-#: ../html/page.html:402
+#: ../html/page.html:405
 msgid "remove"
 msgstr "löschen"
 
-#: ../html/page.html:421
+#: ../html/page.html:424
 msgid "filename"
 msgstr "Dateiname"
 
-#: ../html/page.html:422
+#: ../html/page.html:425
 msgid "changed"
 msgstr "geändert"
 
-#: ../html/page.html:474
+#: ../html/page.html:477
 msgid "&lt;&lt;&nbsp;previous"
 msgstr "&lt;&lt;&nbsp;zurück"
 
-#: ../html/page.html:491
+#: ../html/page.html:494
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr "${start} - ${end} von gesamt ${length}"
 
-#: ../html/page.html:496
+#: ../html/page.html:499
 msgid "next&nbsp;&gt;&gt;"
 msgstr "vorwärts&nbsp;&gt;&gt;"
 
-#: ../html/page.html:659 ../html/user.index.html:32
+#: ../html/page.html:662 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr "Als CSV laden"
 

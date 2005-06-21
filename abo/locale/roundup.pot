@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 20:17+0200\n"
+"POT-Creation-Date: 2005-06-21 20:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -807,6 +807,10 @@ msgstr ""
 msgid "Status of this address"
 msgstr ""
 
+#: ../extensions/interfaces.py:79
+msgid "Download letter"
+msgstr ""
+
 #: ../extensions/mark_invoices.py:39
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
@@ -877,43 +881,39 @@ msgstr ""
 msgid "mark as sent"
 msgstr ""
 
-#: ../html/letter.item.html:56
-msgid "Download letter"
-msgstr ""
-
 #: ../html/page.html:304
 msgid "history"
 msgstr ""
 
-#: ../html/page.html:391
+#: ../html/page.html:394
 msgid "Messages"
 msgstr ""
 
-#: ../html/page.html:402
+#: ../html/page.html:405
 msgid "remove"
 msgstr ""
 
-#: ../html/page.html:421
+#: ../html/page.html:424
 msgid "filename"
 msgstr ""
 
-#: ../html/page.html:422
+#: ../html/page.html:425
 msgid "changed"
 msgstr ""
 
-#: ../html/page.html:474
+#: ../html/page.html:477
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:491
+#: ../html/page.html:494
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:496
+#: ../html/page.html:499
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:659 ../html/user.index.html:32
+#: ../html/page.html:662 ../html/user.index.html:32
 msgid "Download as CSV"
 msgstr ""
 
