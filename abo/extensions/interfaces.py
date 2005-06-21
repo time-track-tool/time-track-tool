@@ -52,6 +52,34 @@ def fieldname (cls, name, fieldname = None) :
 
 # end def fieldname
 
+def help_properties (klass) :
+    """Return all class properties plus some more for which help texts
+       should be displayed (e.g., "message" which describes the message
+       window). The parameter klass is a html klass.
+    """
+    p = []
+    properties = klass._klass.getprops ()
+    if 'messages' in properties :
+        p.append ('msg')
+    if klass.classname == 'letter' :
+        p.append ('letter')
+    p.extend (properties.keys ())
+    p.sort ()
+    return p
+# end def help_properties
+
+def letter_link (request, id) :
+    return """<a href="%s">%s</a>""" \
+        % ( request.indexargs_url
+            ( 'letter'
+            , { '@action'  : 'download_letter'
+              , 'id'       : id
+              }
+            )
+          , _ ('Download letter')
+          )
+# end def letter_link
+
 formattable = \
     [ ('end',  'canc', 'run')
     , ('open', 'open', 'closed')
@@ -83,5 +111,7 @@ def init (instance) :
     reg ('sorted_properties', sorted_properties)
     reg ('properties_dict',   properties_dict)
     reg ('fieldname',         fieldname)
+    reg ('help_properties',   help_properties)
+    reg ('letter_link',       letter_link)
     reg ('linkclass',         linkclass)
     reg ('menu_or_field',     menu_or_field)

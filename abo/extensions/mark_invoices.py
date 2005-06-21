@@ -8,6 +8,7 @@ from ooopy.Transformer              import Transformer, autosuper
 from ooopy.Transforms               import renumber_all, get_meta, set_meta
 from roundup.cgi.exceptions         import Redirect
 from roundup.cgi.TranslationService import get_translation
+from os.path                        import splitext
 
 import ooopy.Transforms as Transforms
 
@@ -144,16 +145,21 @@ class Mark_Invoice (Invoice) :
 # end class Mark_Invoice
 
 class OOoPy_Invoice_Wrapper (autosuper) :
-    def __init__ (self, db, iv) :
+    def __init__ (self, db, iv, date = None, address = None) :
         self.db = db
+        if not date :
+            date = Date ('.')
         self.items = \
             { 'invoice' : iv
-            , 'date'    : Date ('.')
+            , 'date'    : date
             }
-        self.items ['address'] = self._deref ('invoice.payer')
+        if not address :
+            address = self._deref ('invoice.payer')
+        self.items ['address'] = address
     # end def __init__
 
     def _pretty (self, item) :
+        print "pretty", str (item)
         if isinstance (item, Date) :
             return item.pretty ('%d. %m. %Y')
         return str (item).decode ('utf-8')
@@ -161,6 +167,7 @@ class OOoPy_Invoice_Wrapper (autosuper) :
 
     def _deref (self, name) :
         """ dereference a dotted name -- we may want to cache this."""
+        print "deref", name
         names = name.split ('.')
         x  = self.items [names [0]]
         for i in names [1:] :
@@ -174,6 +181,7 @@ class OOoPy_Invoice_Wrapper (autosuper) :
     # end def _split
 
     def __getitem__ (self, name) :
+        print "__getitem__", name
         return self._pretty (self._deref (name))
     # end def __getitem__
 
@@ -250,7 +258,6 @@ class Mark_Invoice_Sent (Invoice) :
         invoices  = [ivclass.getnode (i) for i in self.marked (True)]
         for iv in invoices :
             id   = iv ['id']
-            print id
             ivt  = self.get_iv_template (iv)
             file = self.db.tmplate.get (ivt ['tmplate'], 'files') [-1]
             letter = self.db.letter.create \
@@ -261,7 +268,6 @@ class Mark_Invoice_Sent (Invoice) :
                 , messages = []
                 , invoice  = id
                 )
-            print "letter:", letter
             letters = iv ['letters']
             letters.append (letter)
             ivclass.set \
@@ -276,6 +282,51 @@ class Mark_Invoice_Sent (Invoice) :
     # end def handle
 # end class Mark_Invoice_Sent
 
+class Download_Letter (Action, autosuper) :
+    def handle (self) :
+        request    = templating.HTMLRequest (self.client)
+        filterspec = request.filterspec
+
+        if request.classname != 'letter' :
+            raise Reject, _ ('You can only download letters')
+        # get id:
+        try :
+            self.id = request.form ['id'].value
+        except KeyError :
+            self.id = filterspec ['id'][0]
+        letter = self.db.letter.getnode (str (self.id))
+        files  = letter.files
+        if not files :
+            raise Redirect, 'letter%s' % self.id
+        file = self.db.file.getnode (files [0])
+        if  (   file.type != 'application/vnd.sun.xml.writer'
+            and splitext (file.name) [1] != '.sxw'
+            ) :
+            raise Redirect, 'file%s/%s' % (file.id, file.name)
+        out = StringIO ()
+        o   = OOoPy (infile = StringIO (file.content), outfile = out)
+        print letter.invoice, letter.date, letter.address
+        t   = Transformer \
+              ( Transforms.Editinfo ()
+              , Transforms.Field_Replace
+                ( replace = OOoPy_Invoice_Wrapper
+                    ( self.db
+                    , self.db.invoice.getnode (letter.invoice)
+                    , letter.date
+                    , self.db.address.getnode (letter.address)
+                    )
+                )
+              )
+        t.transform (o)
+        o.close ()
+        h = self.client.additional_headers
+        h ['Content-Type']        = 'application/vnd.sun.xml.writer'
+        h ['Content-Disposition'] = 'inline; filename=inv.sxw'
+        self.client.header  ()
+        return out.getvalue ()
+    # end def handle
+# end class Download_Letter
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -284,4 +335,5 @@ def init (instance) :
     instance.registerAction ('unmark_invoice',    Unmark_Invoice)
     instance.registerAction ('mark_invoice_sent', Mark_Invoice_Sent)
     instance.registerAction ('generate_invoice',  Generate_Invoice)
+    instance.registerAction ('download_letter',   Download_Letter)
 # end def init

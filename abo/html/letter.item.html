@@ -14,23 +14,31 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'subject')"></th>
-     <td tal:condition="not:context/id" colspan="3"
+     <th tal:content="structure python:utils.fieldname(classname, 'subject')" />
+     <td tal:condition="not:context/id"
          tal:content="structure context/subject/field">
      </td>
-     <td tal:condition="context/id" colspan="3"
+     <td tal:condition="context/id"
          tal:content="structure context/subject">
+     </td>
+     <th tal:condition="python: context.id and context.invoice"
+         tal:content="structure python:utils.fieldname(classname, 'invoice')" />
+     <td tal:condition="python: context.id and context.invoice"
+         tal:content="structure python: utils.ExtProperty
+         ( utils, context.invoice.invoice_no
+         , item = context.invoice
+         ).formatlink ()">
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'date')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'date')" />
      <td tal:condition="not:context/id"
          tal:content="structure context/date/field">
      </td>
      <td tal:condition="context/id|nothing"
          tal:content="structure python:context.date.pretty ('%Y-%m-%d')">
      </td>
-     <th tal:content="structure python:utils.fieldname(classname, 'address')"></th>
+     <th tal:content="structure python:utils.fieldname(classname, 'address')" />
      <td tal:condition="not:context/id"
          tal:content="structure context/address/field">
      </td>
@@ -41,6 +49,11 @@
                            + str (context.address.lastname)">
       </a>
      </td>
+    </tr>
+    <tr tal:condition="context/files">
+     <th tal:content="structure python:utils.fieldname(classname, 'letter')" />
+     <td tal:content="structure python:utils.letter_link (request, context.id)" />
+    </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'files')"></th>
      <td colspan="3">

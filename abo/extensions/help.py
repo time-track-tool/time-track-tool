@@ -118,6 +118,8 @@ helptext = \
       ""'''Date when an invoice was last sent'''
     , ""'lastname'            :
       ""'''Last name of this %(Classname)s'''
+    , ""'letter'             :
+      ""'''Download of letter into OpenOffice'''
     , ""'letters'             :
       ""'''List of letters for this %(Classname)s'''
     , ""'lettertitle'         :

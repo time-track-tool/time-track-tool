@@ -11,9 +11,7 @@
  <b tal:condition="python:0" tal:content="context/designator"></b>
 
      <table class="otherinfo"
-       tal:define="
-         itemkeys python:klass._klass.getprops ().keys();
-         _bla python:itemkeys.sort()">
+       tal:define="itemkeys python:utils.help_properties (klass)">
       <tr>
        <th class="header" colspan="2" i18n:translate="">
         Properties of <span tal:replace="Classname" i18n:name="Classname" />

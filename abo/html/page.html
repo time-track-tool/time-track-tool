@@ -335,7 +335,7 @@
   </tal:block>
 
   <tr tal:condition="python:has_letters and context.letters">
-   <th style="text-align:left" class="required" tal:content="structure python:fieldname (classname, 'letters')" />
+   <th style="text-align:left" class="required" tal:content="structure python:utils.fieldname (classname, 'letters')" />
   </tr>
   <tal:block tal:repeat="ltr context/letters/reverse"
        tal:condition="has_letters">
@@ -344,14 +344,17 @@
     <td tal:content="structure python:''.join
         (( utils.ExtProperty
            (utils, ltr.date,    item = ltr, is_label = 1).as_listentry ()
-        ,
+         , '&nbsp;'
+         , '--'
+         , '&nbsp;'
+         , utils.letter_link (request, ltr.id)
         ))">
     </td>
     <th tal:content="structure python:utils.fieldname ('letter', 'subject')"></th>
     <td tal:content="structure python:''.join
         ((  utils.ExtProperty
            (utils, ltr.subject, item = ltr, is_label = 1).as_listentry ()
-        ,
+         ,
         ))">
     </td>
    </tr>
