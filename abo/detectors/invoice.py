@@ -18,9 +18,10 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from roundup.exceptions import Reject
-from roundup.rup_utils  import abo_max_invoice
-from roundup.date       import Date, Interval
+from roundup.exceptions             import Reject
+from roundup.rup_utils              import abo_max_invoice
+from roundup.date                   import Date, Interval
+from roundup.cgi.TranslationService import get_translation
 
 _ = lambda x : x
 
