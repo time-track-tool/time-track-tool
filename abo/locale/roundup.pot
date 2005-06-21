@@ -8,13 +8,114 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 22:04+0200\n"
+"POT-Creation-Date: 2005-06-21 11:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../detectors/abo_checks.py:33
+msgid "Restart of subscription only within two months"
+msgstr ""
+
+#: ../detectors/abo_checks.py:34
+msgid "Restart of subscription only within last period"
+msgstr ""
+
+#: ../detectors/abo_checks.py:35
+msgid "Termination with deletion only for unpayed subscriptions"
+msgstr ""
+
+#: ../detectors/abo_checks.py:36
+msgid "Termination: end must be greater or equal to start time"
+msgstr ""
+
+#: ../detectors/abo_checks.py:37
+msgid "\"%(attr)s\" may not be filled in"
+msgstr ""
+
+#: ../detectors/abo_checks.py:38 ../detectors/invoice.py:30
+#: ../detectors/invoice_template.py:29 ../detectors/letter.py:29
+#, python-format
+msgid "\"%(attr)s\" must be filled in"
+msgstr ""
+
+#: ../detectors/abo_checks.py:39
+msgid "invoice is marked"
+msgstr ""
+
+#: ../detectors/abo_checks.py:40
+msgid "\"end\" (close subscription) only +/- one month"
+msgstr ""
+
+#: ../detectors/abo_checks.py:41 ../detectors/letter.py:37
+#, python-format
+msgid "\"%(attr)s\" may not be changed"
+msgstr ""
+
+#: ../detectors/abo_checks.py:42
+msgid "\"%(attr)s\" may not be zero"
+msgstr ""
+
+#: ../detectors/abo_checks.py:43
+msgid "Open/change only for valid subscription"
+msgstr ""
+
+#: ../detectors/abo_checks.py:44
+msgid ""
+"\"end\" may only be changed for last invoice period: %(period_start)s-%"
+"(period_end)s"
+msgstr ""
+
+#: ../detectors/abo_checks.py:46
+msgid "\"%(attr)s\" must be greater or equal to zero"
+msgstr ""
+
+#: ../detectors/abo_type.py:28
+msgid "period must be filled in"
+msgstr ""
+
+#: ../detectors/abo_type.py:30
+msgid "period must be an integer"
+msgstr ""
+
+#: ../detectors/invoice.py:43
+#, python-format
+msgid "\"%(attr)s\" must not be filled in"
+msgstr ""
+
+#: ../detectors/invoice.py:86
+#, python-format
+msgid "\"%(attr)s\" must not be changed"
+msgstr ""
+
+#: ../detectors/invoice.py:97
+msgid "no change of closed subscription"
+msgstr ""
+
+#: ../detectors/invoice.py:100
+msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
+msgstr ""
+
+#: ../detectors/invoice.py:103
+msgid "amount may not be changed after payment"
+msgstr ""
+
+#: ../detectors/invoice.py:106
+#, python-format
+msgid "inconsistency of payment:%s and balance_open:%s"
+msgstr ""
+
+#: ../detectors/invoice.py:113
+msgid "payment may not exceed balance_open"
+msgstr ""
+
+#: ../detectors/invoice_template.py:38 ../detectors/letter.py:41
+#, python-format
+msgid "\"%(attr)s\" may not be deleted"
+msgstr ""
 
 #: ../extensions/mark_invoices.py:38
 #, python-format

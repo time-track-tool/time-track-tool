@@ -7,17 +7,118 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-13 21:45+0200\n"
+"POT-Creation-Date: 2005-06-21 11:02+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../detectors/abo_checks.py:33
+msgid "Restart of subscription only within two months"
+msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
+
+#: ../detectors/abo_checks.py:34
+msgid "Restart of subscription only within last period"
+msgstr "Wiederaufnahme Abo nur innerhalb letzter Periode"
+
+#: ../detectors/abo_checks.py:35
+msgid "Termination with deletion only for unpayed subscriptions"
+msgstr "Storno mit Löschen nur für unbezahlte neue Abos"
+
+#: ../detectors/abo_checks.py:36
+msgid "Termination: end must be greater or equal to start time"
+msgstr "Storno: Endzeit muss größer/gleich Startzeit sein"
+
+#: ../detectors/abo_checks.py:37
+msgid "\"%(attr)s\" may not be filled in"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+#: ../detectors/abo_checks.py:38 ../detectors/invoice.py:30
+#: ../detectors/invoice_template.py:29 ../detectors/letter.py:29
+#, python-format
+msgid "\"%(attr)s\" must be filled in"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
+#: ../detectors/abo_checks.py:39
+msgid "invoice is marked"
+msgstr "Rechnung ist markiert"
+
+#: ../detectors/abo_checks.py:40
+msgid "\"end\" (close subscription) only +/- one month"
+msgstr "\"Storniert per\" (Storno) nur +/- ein Monat"
+
+#: ../detectors/abo_checks.py:41 ../detectors/letter.py:37
+#, python-format
+msgid "\"%(attr)s\" may not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#: ../detectors/abo_checks.py:42
+msgid "\"%(attr)s\" may not be zero"
+msgstr "\"%(attr)s\" darf nicht Null werden"
+
+#: ../detectors/abo_checks.py:43
+msgid "Open/change only for valid subscription"
+msgstr "Wiederaufnahme/Änderung nur für gültige Abos"
+
+#: ../detectors/abo_checks.py:44
+msgid ""
+"\"end\" may only be changed for last invoice period: %(period_start)s-%"
+"(period_end)s"
+msgstr ""
+"\"Storniert per\" darf nur im Bereich der letzten Rechnungsperiode geändert "
+"werden: %(period_start)s-%(period_end)s"
+
+#: ../detectors/abo_checks.py:46
+msgid "\"%(attr)s\" must be greater or equal to zero"
+msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
+
+#: ../detectors/abo_type.py:28
+msgid "period must be filled in"
+msgstr "Laufzeit muss ausgefüllt werden"
+
+#: ../detectors/abo_type.py:30
+msgid "period must be an integer"
+msgstr "Laufzeit muss ganzzahlig sein"
+
+#: ../detectors/invoice.py:43
+msgid "\"%(attr)s\" must not be filled in"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+#: ../detectors/invoice.py:86
+msgid "\"%(attr)s\" must not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#: ../detectors/invoice.py:97
+msgid "no change of closed subscription"
+msgstr "Kein Buchen bei storniertem Abo"
+
+#: ../detectors/invoice.py:100
+msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
+msgstr "\"Zahlung\", \"Offen\", \"Betrag\": nur Zahlen erlaubt"
+
+#: ../detectors/invoice.py:103
+msgid "amount may not be changed after payment"
+msgstr "Betrag darf nicht nach Zahlung geändert werden"
+
+#: ../detectors/invoice.py:106
+#, python-format
+msgid "inconsistency of payment:%s and balance_open:%s"
+msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
+
+#: ../detectors/invoice.py:113
+msgid "payment may not exceed balance_open"
+msgstr "Zahlung darf Betrag nicht übersteigen"
+
+#: ../detectors/invoice_template.py:38 ../detectors/letter.py:41
+#, python-format
+msgid "\"%(attr)s\" may not be deleted"
+msgstr "\"%(attr)s\" darf nicht gelöscht werden"
+
 #: ../extensions/mark_invoices.py:38
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
-msgstr ""
+msgstr "Es ist nicht für jede Rechnung eine Vorlage definiert: %s"
 
 #: ../extensions/mark_invoices.py:45
 #, python-format
