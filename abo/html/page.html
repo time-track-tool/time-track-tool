@@ -147,10 +147,9 @@
      <!-- other custom classes with special template -->
      <tal:block tal:repeat="c python:[('invoice','send')]">
         <tal:block
-         tal:condition="python:request.user.hasPermission('View', c [0])">
+         tal:condition="python:request.user.hasPermission('Edit', c [0])">
          <span class="classblock">
-          <a tal:condition="python:request.user.hasPermission('View', c [0]) or
-                                   request.user.hasPermission('Edit', c [0])"
+          <a tal:condition="python:request.user.hasPermission('Edit', c [0])"
              tal:attributes=
               "href python:'%s?%s&@template=%s' %
                 (c [0], default_query [c [0]], c [1])"
