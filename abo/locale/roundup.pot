@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 11:59+0200\n"
+"POT-Creation-Date: 2005-06-21 15:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,8 +36,8 @@ msgstr ""
 msgid "\"%(attr)s\" may not be filled in"
 msgstr ""
 
-#: ../detectors/abo_checks.py:38 ../detectors/invoice.py:30
-#: ../detectors/invoice_template.py:29 ../detectors/letter.py:29
+#: ../detectors/abo_checks.py:38 ../detectors/invoice.py:31
+#: ../detectors/invoice_template.py:30 ../detectors/letter.py:30
 #, python-format
 msgid "\"%(attr)s\" must be filled in"
 msgstr ""
@@ -50,7 +50,7 @@ msgstr ""
 msgid "\"end\" (close subscription) only +/- one month"
 msgstr ""
 
-#: ../detectors/abo_checks.py:41 ../detectors/letter.py:37
+#: ../detectors/abo_checks.py:41 ../detectors/letter.py:38
 #, python-format
 msgid "\"%(attr)s\" may not be changed"
 msgstr ""
@@ -73,48 +73,718 @@ msgstr ""
 msgid "\"%(attr)s\" must be greater or equal to zero"
 msgstr ""
 
-#: ../detectors/abo_type.py:28
+#: ../detectors/abo_type.py:29
 msgid "period must be filled in"
 msgstr ""
 
-#: ../detectors/abo_type.py:30
+#: ../detectors/abo_type.py:31
 msgid "period must be an integer"
 msgstr ""
 
-#: ../detectors/invoice.py:43
+#: ../detectors/invoice.py:44
 #, python-format
 msgid "\"%(attr)s\" must not be filled in"
 msgstr ""
 
-#: ../detectors/invoice.py:86
+#: ../detectors/invoice.py:87
 #, python-format
 msgid "\"%(attr)s\" must not be changed"
 msgstr ""
 
-#: ../detectors/invoice.py:97
+#: ../detectors/invoice.py:98
 msgid "no change of closed subscription"
 msgstr ""
 
-#: ../detectors/invoice.py:100
+#: ../detectors/invoice.py:101
 msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
 msgstr ""
 
-#: ../detectors/invoice.py:103
+#: ../detectors/invoice.py:104
 msgid "amount may not be changed after payment"
 msgstr ""
 
-#: ../detectors/invoice.py:106
+#: ../detectors/invoice.py:107
 #, python-format
 msgid "inconsistency of payment:%s and balance_open:%s"
 msgstr ""
 
-#: ../detectors/invoice.py:113
+#: ../detectors/invoice.py:114
 msgid "payment may not exceed balance_open"
 msgstr ""
 
-#: ../detectors/invoice_template.py:38 ../detectors/letter.py:41
+#: ../detectors/invoice_template.py:39 ../detectors/letter.py:42
 #, python-format
 msgid "\"%(attr)s\" may not be deleted"
+msgstr ""
+
+#: ../extensions/help.py:27
+msgid "Subscription to which this invoice belongs"
+msgstr ""
+
+#: ../extensions/help.py:28
+msgid "aboprice"
+msgstr ""
+
+#: ../extensions/help.py:29
+msgid "Price and currency for this subscription"
+msgstr ""
+
+#: ../extensions/help.py:30
+msgid "abos"
+msgstr ""
+
+#: ../extensions/help.py:31
+msgid "Subscriptions for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:32
+msgid "abotype"
+msgstr ""
+
+#: ../extensions/help.py:33
+msgid "Type of this subscription"
+msgstr ""
+
+#: ../extensions/help.py:34
+msgid "activity"
+msgstr ""
+
+#: ../extensions/help.py:35
+msgid "Date of last change"
+msgstr ""
+
+#: ../extensions/help.py:36
+msgid "actor"
+msgstr ""
+
+#: ../extensions/help.py:37
+msgid "Person doing the last change"
+msgstr ""
+
+#: ../extensions/help.py:38 ../schema.py:67
+msgid "address"
+msgstr ""
+
+#: ../extensions/help.py:39
+msgid "Address for this letter"
+msgstr ""
+
+#: ../extensions/help.py:40 ../schema.py:92
+msgid "adr_type"
+msgstr ""
+
+#: ../extensions/help.py:41
+msgid "Type of Address"
+msgstr ""
+
+#: ../extensions/help.py:42
+msgid "alternate_addresses"
+msgstr ""
+
+#: ../extensions/help.py:43
+msgid "Alternate email addresses for this user, one per line"
+msgstr ""
+
+#: ../extensions/help.py:44
+msgid "amount"
+msgstr ""
+
+#: ../extensions/help.py:45
+msgid "Amount this subscription costs"
+msgstr ""
+
+#: ../extensions/help.py:46
+msgid "author"
+msgstr ""
+
+#: ../extensions/help.py:47
+msgid "Author of this message"
+msgstr ""
+
+#: ../extensions/help.py:48
+msgid "balance_open"
+msgstr ""
+
+#: ../extensions/help.py:49
+msgid "Open amount not yet payed"
+msgstr ""
+
+#: ../extensions/help.py:50
+msgid "begin"
+msgstr ""
+
+#: ../extensions/help.py:51
+msgid "Begin of period"
+msgstr ""
+
+#: ../extensions/help.py:52
+msgid "bookentry"
+msgstr ""
+
+#: ../extensions/help.py:53
+msgid "Date when the payment was booked"
+msgstr ""
+
+#: ../extensions/help.py:54
+msgid "city"
+msgstr ""
+
+#: ../extensions/help.py:55
+msgid "City where this person lives"
+msgstr ""
+
+#: ../extensions/help.py:56 ../schema.py:104
+msgid "code"
+msgstr ""
+
+#: ../extensions/help.py:57
+msgid "Code of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:58
+msgid "content"
+msgstr ""
+
+#: ../extensions/help.py:59
+msgid "Content of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:60
+msgid "country"
+msgstr ""
+
+#: ../extensions/help.py:61
+msgid "Country for this address"
+msgstr ""
+
+#: ../extensions/help.py:62
+msgid "creation"
+msgstr ""
+
+#: ../extensions/help.py:63
+msgid "Date of creation of this record"
+msgstr ""
+
+#: ../extensions/help.py:64
+msgid "creator"
+msgstr ""
+
+#: ../extensions/help.py:65
+msgid "Person who created this record"
+msgstr ""
+
+#: ../extensions/help.py:66 ../schema.py:107
+msgid "currency"
+msgstr ""
+
+#: ../extensions/help.py:67
+msgid "Currency for this price"
+msgstr ""
+
+#: ../extensions/help.py:68
+msgid "date"
+msgstr ""
+
+#: ../extensions/help.py:69
+msgid "Date when this %(Classname)s was sent"
+msgstr ""
+
+#: ../extensions/help.py:70
+msgid "date_payed"
+msgstr ""
+
+#: ../extensions/help.py:71
+msgid "Date when this %(Classname)s was payed"
+msgstr ""
+
+#: ../extensions/help.py:72
+msgid "description"
+msgstr ""
+
+#: ../extensions/help.py:73
+msgid "Verbose description of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:74
+msgid "email"
+msgstr ""
+
+#: ../extensions/help.py:75
+msgid "Email address for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:76
+msgid "end"
+msgstr ""
+
+#: ../extensions/help.py:77
+msgid "Date when this subscription ends"
+msgstr ""
+
+#: ../extensions/help.py:78
+msgid "fax"
+msgstr ""
+
+#: ../extensions/help.py:79
+msgid "FAX number for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:80
+msgid "files"
+msgstr ""
+
+#: ../extensions/help.py:81
+msgid "Files for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:82
+msgid "firstname"
+msgstr ""
+
+#: ../extensions/help.py:83
+msgid "First name for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:84
+msgid "function"
+msgstr ""
+
+#: ../extensions/help.py:85
+msgid ""
+"Multiline field for this %(Classname)s, will be printed on an\n"
+"           address label\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:88
+msgid "id"
+msgstr ""
+
+#: ../extensions/help.py:89
+msgid ""
+"ID of this record, automatically generated by the system.\n"
+"           Cannot be changed by the user.\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:92
+msgid "initial"
+msgstr ""
+
+#: ../extensions/help.py:93
+msgid "Initials of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:94
+msgid "inreplyto"
+msgstr ""
+
+#: ../extensions/help.py:95
+msgid "In Reply To field if this %(Classname)s was received by email"
+msgstr ""
+
+#: ../extensions/help.py:96
+msgid "interval"
+msgstr ""
+
+#: ../extensions/help.py:97
+msgid ""
+"Interval for sending out an invoice in months. If the\n"
+"           invoice_level is non-zero, the distance in months since the\n"
+"           last invoice sent.\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:101 ../schema.py:114
+msgid "invoice"
+msgstr ""
+
+#: ../extensions/help.py:102
+msgid "Link to invoice for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:103 ../schema.py:138
+msgid "invoice_group"
+msgstr ""
+
+#: ../extensions/help.py:104
+msgid "Link to invoice_group for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:105
+msgid "invoice_level"
+msgstr ""
+
+#: ../extensions/help.py:106
+msgid ""
+"When the customer has received more invoices than this number\n"
+"           indicates, an invoice of this type is sent.\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:109 ../schema.py:135
+msgid "invoice_no"
+msgstr ""
+
+#: ../extensions/help.py:110
+msgid "Unique number for this invoice, generated by the system"
+msgstr ""
+
+#: ../extensions/help.py:111 ../schema.py:148
+msgid "invoice_template"
+msgstr ""
+
+#: ../extensions/help.py:112
+msgid "An OpenOffice file used as a template for this type of invoice"
+msgstr ""
+
+#: ../extensions/help.py:113
+msgid "invoices"
+msgstr ""
+
+#: ../extensions/help.py:114
+msgid "List of invoices for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:115
+msgid "klass"
+msgstr ""
+
+#: ../extensions/help.py:116
+msgid "Class for this query"
+msgstr ""
+
+#: ../extensions/help.py:117
+msgid "last_sent"
+msgstr ""
+
+#: ../extensions/help.py:118
+msgid "Date when an invoice was last sent"
+msgstr ""
+
+#: ../extensions/help.py:119
+msgid "lastname"
+msgstr ""
+
+#: ../extensions/help.py:120
+msgid "Last name of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:121
+msgid "letters"
+msgstr ""
+
+#: ../extensions/help.py:122
+msgid "List of letters for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:123
+msgid "lettertitle"
+msgstr ""
+
+#: ../extensions/help.py:124
+msgid "Title of this person used in a letter"
+msgstr ""
+
+#: ../extensions/help.py:125
+msgid "messageid"
+msgstr ""
+
+#: ../extensions/help.py:126
+msgid "Message-ID if this message was received via email"
+msgstr ""
+
+#: ../extensions/help.py:127
+msgid "messages"
+msgstr ""
+
+#: ../extensions/help.py:128
+msgid "List of messages for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:129
+msgid "n_sent"
+msgstr ""
+
+#: ../extensions/help.py:130
+msgid "Number of times this invoice was sent"
+msgstr ""
+
+#: ../extensions/help.py:131 ../schema.py:55 ../schema.py:64 ../schema.py:111
+#: ../schema.py:143 ../schema.py:154 ../schema.py:175 ../schema.py:183
+#: ../schema.py:192
+msgid "name"
+msgstr ""
+
+#: ../extensions/help.py:132
+msgid "Unique name for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:133
+msgid "nickname"
+msgstr ""
+
+#: ../extensions/help.py:134
+msgid "Nickname (or short name) for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:135
+msgid "open"
+msgstr ""
+
+#: ../extensions/help.py:136
+msgid ""
+"Indicates if this invoice is still open. Automatically\n"
+"           maintained by the system\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:139
+msgid "order"
+msgstr ""
+
+#: ../extensions/help.py:140
+msgid "Items are ordered by this property in drop-down boxes etc."
+msgstr ""
+
+#: ../extensions/help.py:141
+msgid "password"
+msgstr ""
+
+#: ../extensions/help.py:142
+msgid "Password for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:143
+msgid "payed_abos"
+msgstr ""
+
+#: ../extensions/help.py:144
+msgid "Subscriptions for which this %(Classname)s is paying"
+msgstr ""
+
+#: ../extensions/help.py:145
+msgid "payer"
+msgstr ""
+
+#: ../extensions/help.py:146
+msgid "Address which is paying for this subscription"
+msgstr ""
+
+#: ../extensions/help.py:147
+msgid "payment"
+msgstr ""
+
+#: ../extensions/help.py:148
+msgid "Amount of payment received for this invoice"
+msgstr ""
+
+#: ../extensions/help.py:149
+msgid "period"
+msgstr ""
+
+#: ../extensions/help.py:150
+msgid "Subscription period in months."
+msgstr ""
+
+#: ../extensions/help.py:151
+msgid "period_end"
+msgstr ""
+
+#: ../extensions/help.py:152
+msgid "Date when this invoice period ends"
+msgstr ""
+
+#: ../extensions/help.py:153
+msgid "period_start"
+msgstr ""
+
+#: ../extensions/help.py:154
+msgid "Date when this invoice period starts"
+msgstr ""
+
+#: ../extensions/help.py:155
+msgid "phone"
+msgstr ""
+
+#: ../extensions/help.py:156
+msgid "Phone number(s) "
+msgstr ""
+
+#: ../extensions/help.py:157
+msgid "postalcode"
+msgstr ""
+
+#: ../extensions/help.py:158
+msgid "Postal code for this %(Classname)s "
+msgstr ""
+
+#: ../extensions/help.py:159
+msgid "private_for"
+msgstr ""
+
+#: ../extensions/help.py:160
+msgid "Flag if this is a private %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:161
+msgid "queries"
+msgstr ""
+
+#: ../extensions/help.py:162
+msgid "Queries for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:163
+msgid "realname"
+msgstr ""
+
+#: ../extensions/help.py:164
+msgid "Real name for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:165
+msgid "receipt_no"
+msgstr ""
+
+#: ../extensions/help.py:166
+msgid "Unique identification of this payment"
+msgstr ""
+
+#: ../extensions/help.py:167
+msgid "recipients"
+msgstr ""
+
+#: ../extensions/help.py:168
+msgid "Only set if message was received via email."
+msgstr ""
+
+#: ../extensions/help.py:169
+msgid "roles"
+msgstr ""
+
+#: ../extensions/help.py:170
+msgid "Roles for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:171
+msgid "salutation"
+msgstr ""
+
+#: ../extensions/help.py:172
+msgid "Salutation used for printing an address"
+msgstr ""
+
+#: ../extensions/help.py:173
+msgid "send_it"
+msgstr ""
+
+#: ../extensions/help.py:174
+msgid ""
+"Flag indicating if this invoice should be sent. If not set,\n"
+"           this invoice will disappear from the current list of invoices. It\n"
+"           is not sent when generating invoices and is not marked when sent\n"
+"           invoices are marked.\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:179
+msgid "street"
+msgstr ""
+
+#: ../extensions/help.py:180
+msgid "Street for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:181
+msgid "subject"
+msgstr ""
+
+#: ../extensions/help.py:182
+msgid "Short identification of this message"
+msgstr ""
+
+#: ../extensions/help.py:183
+msgid "subscriber"
+msgstr ""
+
+#: ../extensions/help.py:184
+msgid "Subscriber of this subscription"
+msgstr ""
+
+#: ../extensions/help.py:185
+msgid "summary"
+msgstr ""
+
+#: ../extensions/help.py:186
+msgid "Short summary of this message (usually first line)"
+msgstr ""
+
+#: ../extensions/help.py:187
+msgid "timezone"
+msgstr ""
+
+#: ../extensions/help.py:188
+msgid "Time zone of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:189
+msgid "title"
+msgstr ""
+
+#: ../extensions/help.py:190
+msgid "Title of the person belonging to this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:191 ../schema.py:171
+msgid "tmplate"
+msgstr ""
+
+#: ../extensions/help.py:192
+msgid ""
+"Used for writing letters (and invoices if selected as an\n"
+"           invoice template)\n"
+"        "
+msgstr ""
+
+#: ../extensions/help.py:195
+msgid "type"
+msgstr ""
+
+#: ../extensions/help.py:196
+msgid "Mime type of this file"
+msgstr ""
+
+#: ../extensions/help.py:197
+msgid "typecat"
+msgstr ""
+
+#: ../extensions/help.py:198
+msgid "Category of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:199
+msgid "url"
+msgstr ""
+
+#: ../extensions/help.py:200
+msgid "Web-Link for this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:201 ../schema.py:211
+msgid "username"
+msgstr ""
+
+#: ../extensions/help.py:202
+msgid "Login-name"
+msgstr ""
+
+#: ../extensions/help.py:203 ../schema.py:179
+msgid "valid"
+msgstr ""
+
+#: ../extensions/help.py:204
+msgid "Status of this address"
 msgstr ""
 
 #: ../extensions/mark_invoices.py:38
@@ -133,6 +803,30 @@ msgstr ""
 
 #: ../extensions/mark_invoices.py:128
 msgid "invoices are already marked"
+msgstr ""
+
+#: ../html/_generic.help.html:9
+msgid "${property} help - ${tracker}"
+msgstr ""
+
+#: ../html/_generic.help.html:31
+msgid " Cancel "
+msgstr ""
+
+#: ../html/_generic.help.html:34
+msgid " Apply "
+msgstr ""
+
+#: ../html/_generic.help.html:41
+msgid "&lt;&lt; previous"
+msgstr ""
+
+#: ../html/_generic.help.html:52
+msgid "${start}..${end} out of ${total}"
+msgstr ""
+
+#: ../html/_generic.help.html:56
+msgid "next &gt;&gt;"
 msgstr ""
 
 #: ../html/invoice.send.html:33
@@ -199,355 +893,34 @@ msgstr ""
 msgid "abo"
 msgstr ""
 
-#: ../schema.py:46
-msgid "activity"
-msgstr ""
-
-#: ../schema.py:46
-msgid "actor"
-msgstr ""
-
-#: ../schema.py:46
-msgid "creation"
-msgstr ""
-
-#: ../schema.py:46
-msgid "creator"
-msgstr ""
-
-#: ../schema.py:46
-msgid "id"
-msgstr ""
-
-#: ../schema.py:47
-msgid "aboprice"
-msgstr ""
-
-#: ../schema.py:47 ../schema.py:59 ../schema.py:146
-msgid "amount"
-msgstr ""
-
-#: ../schema.py:47
-msgid "begin"
-msgstr ""
-
-#: ../schema.py:47
-msgid "end"
-msgstr ""
-
-#: ../schema.py:47 ../schema.py:147
-msgid "payer"
-msgstr ""
-
-#: ../schema.py:47 ../schema.py:148
-msgid "subscriber"
-msgstr ""
-
-#: ../schema.py:48 ../schema.py:98
-msgid "invoices"
-msgstr ""
-
-#: ../schema.py:48 ../schema.py:97 ../schema.py:184
-msgid "messages"
-msgstr ""
-
-#: ../schema.py:51
+#: ../schema.py:48
 msgid "abo_price"
 msgstr ""
 
-#: ../schema.py:58 ../schema.py:68 ../schema.py:121 ../schema.py:157
-#: ../schema.py:168 ../schema.py:191 ../schema.py:199 ../schema.py:208
-msgid "name"
-msgstr ""
-
-#: ../schema.py:59
-msgid "abotype"
-msgstr ""
-
-#: ../schema.py:59 ../schema.py:117 ../schema.py:146
-msgid "currency"
-msgstr ""
-
-#: ../schema.py:62
+#: ../schema.py:58
 msgid "abo_type"
 msgstr ""
 
-#: ../schema.py:69
-msgid "description"
-msgstr ""
-
-#: ../schema.py:69
-msgid "order"
-msgstr ""
-
-#: ../schema.py:69
-msgid "period"
-msgstr ""
-
-#: ../schema.py:72
-msgid "address"
-msgstr ""
-
-#: ../schema.py:95
-msgid "firstname"
-msgstr ""
-
-#: ../schema.py:95
-msgid "function"
-msgstr ""
-
-#: ../schema.py:95
-msgid "lastname"
-msgstr ""
-
-#: ../schema.py:95
-msgid "lettertitle"
-msgstr ""
-
-#: ../schema.py:95
-msgid "title"
-msgstr ""
-
-#: ../schema.py:96
-msgid "city"
-msgstr ""
-
-#: ../schema.py:96
-msgid "country"
-msgstr ""
-
-#: ../schema.py:96
-msgid "fax"
-msgstr ""
-
-#: ../schema.py:96
-msgid "phone"
-msgstr ""
-
-#: ../schema.py:96
-msgid "postalcode"
-msgstr ""
-
-#: ../schema.py:96
-msgid "street"
-msgstr ""
-
-#: ../schema.py:97
-msgid "abos"
-msgstr ""
-
-#: ../schema.py:97
-msgid "email"
-msgstr ""
-
-#: ../schema.py:97
-msgid "payed_abos"
-msgstr ""
-
-#: ../schema.py:97
-msgid "salutation"
-msgstr ""
-
-#: ../schema.py:98 ../schema.py:101
-msgid "adr_type"
-msgstr ""
-
-#: ../schema.py:98 ../schema.py:149
-msgid "letters"
-msgstr ""
-
-#: ../schema.py:107
-msgid "typecat"
-msgstr ""
-
-#: ../schema.py:110
+#: ../schema.py:100
 msgid "adr_type_cat"
 msgstr ""
 
-#: ../schema.py:114
-msgid "code"
-msgstr ""
-
-#: ../schema.py:124
-msgid "invoice"
-msgstr ""
-
-#: ../schema.py:145
-msgid "invoice_no"
-msgstr ""
-
-#: ../schema.py:146
-msgid "period_end"
-msgstr ""
-
-#: ../schema.py:146
-msgid "period_start"
-msgstr ""
-
-#: ../schema.py:147
-msgid "balance_open"
-msgstr ""
-
-#: ../schema.py:147
-msgid "last_sent"
-msgstr ""
-
-#: ../schema.py:147
-msgid "n_sent"
-msgstr ""
-
-#: ../schema.py:147
-msgid "open"
-msgstr ""
-
-#: ../schema.py:148
-msgid "bookentry"
-msgstr ""
-
-#: ../schema.py:148
-msgid "date_payed"
-msgstr ""
-
-#: ../schema.py:148
-msgid "receipt_no"
-msgstr ""
-
-#: ../schema.py:149
-msgid "payment"
-msgstr ""
-
-#: ../schema.py:149
-msgid "send_it"
-msgstr ""
-
-#: ../schema.py:152
-msgid "invoice_group"
-msgstr ""
-
-#: ../schema.py:162
-msgid "invoice_template"
-msgstr ""
-
-#.  The file types are either PDF (from old imported data) or an OpenOffice.org document which is cusomized using info pointed to with invoice and/or address. The invoice link is optional -- not every letter is related to an invoice.
-#: ../schema.py:169
-msgid "interval"
-msgstr ""
-
-#: ../schema.py:169
-msgid "invoice_level"
-msgstr ""
-
-#: ../schema.py:176
+#: ../schema.py:161
 msgid "letter"
 msgstr ""
 
-#: ../schema.py:184
-msgid "date"
-msgstr ""
-
-#: ../schema.py:184
-msgid "files"
-msgstr ""
-
-#: ../schema.py:184
-msgid "subject"
-msgstr ""
-
-#: ../schema.py:187
-msgid "tmplate"
-msgstr ""
-
-#: ../schema.py:195
-msgid "valid"
-msgstr ""
-
-#: ../schema.py:202
+#: ../schema.py:186
 msgid "query"
 msgstr ""
 
-#: ../schema.py:209
-msgid "klass"
-msgstr ""
-
-#.  Note: roles is a comma-separated string of Role names
-#: ../schema.py:209
-msgid "private_for"
-msgstr ""
-
-#: ../schema.py:209
-msgid "url"
-msgstr ""
-
-#: ../schema.py:214
+#: ../schema.py:197
 msgid "user"
 msgstr ""
 
-#: ../schema.py:228
-msgid "username"
-msgstr ""
-
-#: ../schema.py:229
-msgid "alternate_addresses"
-msgstr ""
-
-#: ../schema.py:229
-msgid "password"
-msgstr ""
-
-#: ../schema.py:229
-msgid "queries"
-msgstr ""
-
-#: ../schema.py:229
-msgid "realname"
-msgstr ""
-
-#.  FileClass automatically gets these properties:   content = String()    [saved to disk in <tracker home>/db/files/]   (it also gets the Class properties creation, activity and creator)
-#: ../schema.py:230
-msgid "nickname"
-msgstr ""
-
-#: ../schema.py:230
-msgid "roles"
-msgstr ""
-
-#: ../schema.py:230
-msgid "timezone"
-msgstr ""
-
-#: ../schema.py:236
+#: ../schema.py:217
 msgid "msg"
 msgstr ""
 
-#: ../schema.py:246
-msgid "content"
-msgstr ""
-
-#: ../schema.py:247
-msgid "author"
-msgstr ""
-
-#: ../schema.py:247
-msgid "inreplyto"
-msgstr ""
-
-#: ../schema.py:247
-msgid "messageid"
-msgstr ""
-
-#: ../schema.py:247
-msgid "recipients"
-msgstr ""
-
-#: ../schema.py:247
-msgid "summary"
-msgstr ""
-
-#: ../schema.py:250
+#: ../schema.py:229
 msgid "file"
-msgstr ""
-
-#.  SECURITY SETTINGS
-#: ../schema.py:254
-msgid "type"
 msgstr ""

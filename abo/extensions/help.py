@@ -22,7 +22,7 @@
 # ****************************************************************************
 # $Id$
 
-helptext =
+helptext = \
     { 'abo'                 :
       ""'''Subscription to which this invoice belongs'''
     , ""'aboprice'            :

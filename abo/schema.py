@@ -43,9 +43,6 @@ abo = Class \
     , messages            = Multilink ("msg")
     , invoices            = Multilink ("invoice")
     )
-''"creation", ''"creator", ''"activity", ''"actor", ''"id",
-''"begin", ''"end", ''"aboprice", ''"payer", ''"subscriber", ''"amount",
-''"messages", ''"invoices"
 
 abo_price = Class \
     ( db, ''"abo_price"
@@ -56,7 +53,6 @@ abo_price = Class \
     , invoice_group       = Link      ('invoice_group')
     )
 abo_price.setkey (''"name")
-''"abotype", ''"currency", ''"amount"
 
 abo_type = Class \
     ( db, ''"abo_type"
@@ -66,7 +62,6 @@ abo_type = Class \
     , order               = Number    ()
     )
 abo_type.setkey (''"name")
-''"description", ''"period", ''"order"
 
 address = Class \
     ( db, ''"address"
@@ -92,10 +87,6 @@ address = Class \
     , letters             = Multilink ("letter")
     , invoices            = Multilink ("invoice")
     )
-''"title", ''"lettertitle", ''"firstname", ''"lastname", ''"function",
-''"street", ''"country", ''"postalcode", ''"city", ''"phone", ''"fax",
-''"salutation", ''"messages", ''"email", ''"abos", ''"payed_abos",
-''"adr_type", ''"letters", ''"invoices"
 
 adr_type = Class \
     ( db, ''"adr_type"
@@ -104,7 +95,6 @@ adr_type = Class \
     , typecat             = Link      ("adr_type_cat")
     )
 adr_type.setkey ("code")
-''"typecat"
 
 adr_type_cat = Class \
     ( db, ''"adr_type_cat"
@@ -143,10 +133,6 @@ invoice = Class \
     , letters             = Multilink ("letter")
     )
 invoice.setkey (''"invoice_no")
-''"period_start", ''"period_end", ''"amount", ''"currency",
-''"balance_open", ''"open", ''"n_sent", ''"last_sent", ''"payer",
-''"subscriber", ''"date_payed", ''"bookentry", ''"receipt_no",
-''"send_it", ''"payment", ''"letters"
 
 invoice_group = Class \
     ( db, ''"invoice_group"
@@ -166,7 +152,6 @@ invoice_template = Class \
     , name                = String    ()
     )
 invoice_template.setkey (''"name")
-''"invoice_level", ''"interval"
 
 # The file types are either PDF (from old imported data) or an
 # OpenOffice.org document which is cusomized using info pointed to with
@@ -181,7 +166,6 @@ letter = Class \
     , messages            = Multilink ("msg")
     , invoice             = Link      ("invoice")
     )
-''"subject", ''"date", ''"files", ''"messages"
 
 tmplate = Class \
     ( db, ''"tmplate"
@@ -206,7 +190,6 @@ query = Class \
     , private_for         = Link      ('user')
     )
 query.setkey(''"name")
-''"klass", ''"url", ''"private_for"
 
 
 # Note: roles is a comma-separated string of Role names
@@ -226,8 +209,6 @@ user = Class \
     , nickname            = String    ()
     )
 user.setkey(''"username")
-''"password", ''"realname", ''"alternate_addresses", ''"queries",
-''"roles", ''"timezone", ''"nickname"
 
 # FileClass automatically gets these properties:
 #   content = String()    [saved to disk in <tracker home>/db/files/]
@@ -243,15 +224,12 @@ msg = FileClass \
     , messageid             = String    ()
     , inreplyto             = String    ()
     )
-''"content",
-''"author", ''"recipients", ''"summary", ''"messageid", ''"inreplyto"
 
 file = FileClass \
     ( db, ''"file"
     , name                  = String    ()
     , type                  = String    ()
     )
-''"type"
 
 #
 # SECURITY SETTINGS
