@@ -18,15 +18,15 @@
 
 <table class="form">
  <tr tal:repeat="field python:['realname','username','password']">
-  <th tal:content="python:i18n.gettext(field)">Name</th>
-  <td tal:content="structure python:context [field].field ()">realname</td>
+  <th tal:content="structure python:utils.fieldname('user', field)" />
+  <td tal:content="structure python:context [field].field ()" />
  </tr>
  <tr>
-  <th i18n:translate="">confirm</th>
+  <th tal:content="structure python:utils.fieldname('user', 'confirm')" />
   <td tal:content="structure context/password/confirm">password</td>
  </tr>
  <tr tal:condition="python:request.user.hasPermission('Web Roles')">
-  <th>Rollen</th>
+  <th tal:content="structure python:utils.fieldname('user', 'roles')" />
   <td>
    <input tal:condition="context/id"
           tal:replace="structure context/roles/field">
@@ -36,7 +36,7 @@
   </td>
  </tr>
  <tr tal:condition="python:0">
-  <th>Timezone</th>
+  <th tal:content="structure python:utils.fieldname('user', 'timezone')" />
   <td>
    <input tal:replace="structure context/timezone/field">
    (this is a numeric hour offset, the default is
@@ -44,11 +44,11 @@
   </td>
  </tr>
  <tr>
-  <th>E-mail</th>
+  <th tal:content="structure python:utils.fieldname('user', 'email', 'address')" />
   <td tal:content="structure context/address/field">address</td>
  </tr>
  <tr>
-  <th>Alternative E-mail Adressen<br>Eine pro Zeile</th>
+  <th tal:content="structure python:utils.fieldname('user', 'alternate_addresses')" />
   <td tal:content="structure context/alternate_addresses/multiline">alternate_addresses</td>
  </tr>
 

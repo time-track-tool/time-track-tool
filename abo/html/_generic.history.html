@@ -13,7 +13,9 @@
  </head>
  <body class="body">
   <tal:block tal:condition="python:context.is_view_ok() and context.id">
-   <h3 tal:content="string: history of ${Classname}" i18n:attributes=content></h3>
+   <h3 i18n:translate="">
+   history of <span tal:replace="Classname" i18n:name="Classname" />
+   </h3>
    <tal:block tal:replace="structure context/history" />
   </tal:block>
  </body>

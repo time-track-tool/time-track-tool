@@ -22,6 +22,10 @@
 # ****************************************************************************
 # $Id$
 
+from roundup.cgi.TranslationService import get_translation
+
+_ = None
+
 helptext = \
     { ""'abo'                 :
       ""'''Subscription to which this invoice belongs'''
@@ -37,6 +41,8 @@ helptext = \
       ""'''Person doing the last change'''
     , ""'address'             :
       ""'''Address for this letter'''
+    , ""'user.address'        :
+      ""'''Email address for this user'''
     , ""'adr_type'            :
       ""'''Type of Address'''
     , ""'alternate_addresses' :
@@ -55,6 +61,10 @@ helptext = \
       ""'''City where this person lives'''
     , ""'code'                :
       ""'''Code of this %(Classname)s'''
+    , ""'confirm'                :
+      ""'''Confirm the password here: first password and this entry
+           must match.
+        '''
     , ""'content'                :
       ""'''Content of this %(Classname)s'''
     , ""'country'             :
@@ -210,6 +220,50 @@ helptext = \
       ""'''Status of this address'''
     }
 
+def combined_name (cls, attr) :
+    pname = '%s.%s' % (cls, attr)
+    if pname in helptext :
+        return pname
+    return attr
+# end def combined_name
+
+def help_properties (klass) :
+    """Return all class properties plus some more for which help texts
+       should be displayed (e.g., "message" which describes the message
+       window). The parameter klass is a html klass.
+    """
+    p = []
+    properties = klass._klass.getprops ()
+    if 'messages' in properties :
+        p.append ('msg')
+    if klass.classname == 'letter' :
+        p.append ('letter')
+    if klass.classname == 'user' :
+        p.append ('confirm')
+    for i in properties.iterkeys () :
+        pname = combined_name (klass.classname, i)
+        p.append (pname)
+    p = [(_ (i).decode ('utf-8'), i) for i in p]
+    p.sort ()
+    return [i [1] for i in p]
+# end def help_properties
+
+def fieldname (cls, name, fieldname = None) :
+    if not fieldname : fieldname = name
+    prop = combined_name (cls, fieldname)
+    return "<a href=\"javascript:help_window" \
+           "('%s?:template=property_help#%s', '500', '400')\">" \
+           "%s&nbsp; </a>" \
+           % (cls, prop, _ (name))
+
+# end def fieldname
+
+
 def init (instance) :
-    instance.registerUtil ('helptext', helptext)
+    global _
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
+    instance.registerUtil ('helptext',        helptext)
+    instance.registerUtil ('help_properties', help_properties)
+    instance.registerUtil ('fieldname',       fieldname)
 # end def init
