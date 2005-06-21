@@ -129,7 +129,7 @@ invoice = Class \
     , receipt_no          = String    ()
     , send_it             = Boolean   ()
     , payment             = Number    ()
-    , invoice_group       = Link      ("invoice_group")
+    , invoice_group       = Link      ("invoice_group", do_journal='no')
     , letters             = Multilink ("letter")
     )
 invoice.setkey (''"invoice_no")
