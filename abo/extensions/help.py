@@ -55,6 +55,8 @@ helptext =
       ""'''City where this person lives'''
     , ""'code'                :
       ""'''Code of this %(Classname)s'''
+    , ""'content'                :
+      ""'''Content of this %(Classname)s'''
     , ""'country'             :
       ""'''Country for this address'''
     , ""'creation'            :
