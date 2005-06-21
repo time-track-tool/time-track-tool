@@ -88,7 +88,7 @@
           [ ('abo',              'View', (('',''),))
           , ('address',          'View', (('',''),))
           , ('invoice',          'Edit', (('generate invoices', 'send'),('','')))
-          , ('adr_type',         'Edit', (('',''),))
+          , ('adr_type',         'View', (('',''),))
           , ('adr_type_cat',     'Edit', (('',''),))
           , ('abo_type',         'Edit', (('',''),))
           , ('currency',         'Edit', (('',''),))
@@ -269,14 +269,10 @@
      class that needs some more formatting -->
 
 <td metal:define-macro="formatted_class">
- <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
- You are not allowed to view this page.
- </span>
 <form method="POST"
       onSubmit="return submit_once()"
       name="itemSynopsis"
       enctype="multipart/form-data"
-      tal:condition="context/is_edit_ok"
       tal:attributes="action context/designator">
 
  <input type="hidden" name="@template" value="item">
@@ -296,10 +292,11 @@
    </td>
   </tr>
 
-  <tr tal:condition="context/is_edit_ok">
+  <tr>
    <th></th>
    <td colspan="3">
-    <tal:block tal:replace="structure context/submit"/>
+    <tal:block tal:replace="structure context/submit"
+     tal:condition="context/is_edit_ok"/>
     <input type="button" tal:condition="context/id"
      tal:attributes=
       "onClick string:javascript:help_window('${context/designator}?@template=history','600','300')"

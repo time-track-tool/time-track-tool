@@ -186,6 +186,8 @@ class ExtProperty :
             the item. The name of the item and its id are computed.
         """
         i = item or self.item
+        if not i.is_view_ok () :
+            return self.formatted ()
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.get_linkcls (i), self.classname, i.id, self.formatted ())
     # end def formatlink

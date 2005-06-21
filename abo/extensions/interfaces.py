@@ -51,7 +51,7 @@ def letter_link (request, id) :
               , 'id'       : id
               }
             )
-          , _ ('Download letter')
+          , _ ('Download&nbsp;letter')
           )
 # end def letter_link
 

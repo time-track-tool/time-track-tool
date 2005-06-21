@@ -58,12 +58,18 @@
    <input type="hidden" name="@template" value="item">
    <input type="hidden" name="@required" value="username,address">
   </td>
-  <td tal:content="structure context/submit">submit button here</td>
+  <td>
+    <span tal:content="structure context/submit"
+        tal:condition="context/is_edit_ok" />
+    <input type="button"
+     tal:condition="python:context.id and context.is_view_ok()"
+     tal:attributes=
+      "onClick string:javascript:help_window('${context/designator}?@template=history','600','300')"
+     value="history" i18n:attributes="value">
+  </td>
  </tr>
 </table>
 </form>
-
-<tal:block tal:replace="structure context/history" />
 
 </td>
 

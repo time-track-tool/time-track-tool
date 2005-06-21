@@ -13,7 +13,7 @@ You are not allowed to view this page.
  <th>Username</th>
  <th>Name</th>
  <th>Email Adresse</th>
- <th tal:condition="context/is_edit_ok">löschen</th>
+ <th tal:condition="context/is_edit_ok" i18n:translate="">delete</th>
 </tr>
 <tr tal:repeat="user context/list"
     tal:attributes="class python:['normal', 'alt'][repeat['user'].index%6/3]">
@@ -24,8 +24,9 @@ You are not allowed to view this page.
  <td tal:content="python:user.realname.plain() or default">&nbsp;</td>
  <td tal:content="python:user.address.email() or default">&nbsp;</td>
  <td tal:condition="context/is_edit_ok">
-  <a tal:attributes="href string:user${user/id}?@action=retire&@template=index">
-   löschen</a>
+  <a tal:attributes="href string:user${user/id}?@action=retire&@template=index"
+     i18n:translate="">
+   delete</a>
  </td>
 </tr>
 </table>

@@ -5,9 +5,6 @@
       tal:content="python:i18n.gettext (context._classname)"></span>
 <td class="content" metal:fill-slot="content">
 <b tal:condition="python:0" tal:content="context/designator"></b>
-<span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
-You are not allowed to view this page.
-</span>
 
 <tal:block
  tal:define=
