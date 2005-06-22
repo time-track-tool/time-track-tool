@@ -330,6 +330,7 @@ user.create ( username = "anonymous"
             , roles    = "Anonymous"
             )
 
+daily_record_status = db.getclass ('daily_record_status')
 daily_record_status.create \
     ( name        = "open"
     , description = "Open for editing"
