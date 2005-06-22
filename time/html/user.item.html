@@ -20,39 +20,39 @@
 
 <table class="form">
  <tr>
-  <th>First Name</th>
+  <th tal:content="structure python:utils.fieldname('user', 'firstname')" />
   <td tal:content="structure context/firstname/field"></td>
  </tr>
  <tr>
-  <th>Last Name</th>
+  <th tal:content="structure python:utils.fieldname('user', 'lastname')" />
   <td tal:content="structure context/lastname/field"></td>
  </tr>
  <tr>
-  <th>Login Name</th>
+  <th tal:content="structure python:utils.fieldname('user', 'username')" />
   <td tal:content="structure context/username/field"></td>
  </tr>
  <tr>
-  <th>Nickname</th>
+  <th tal:content="structure python:utils.fieldname('user', 'nickname')" />
   <td tal:content="structure context/nickname/field"></td>
  </tr>
  <tr>
-  <th>Is a Mail Alias</th>
+  <th tal:content="structure python:utils.fieldname('user', 'is_alias')" />
   <td tal:content="structure context/is_alias/field"></td>
  </tr>
  <tr>
-  <th>Title</th>
+  <th tal:content="structure python:utils.fieldname('user', 'title')" />
   <td tal:content="structure context/title/menu"></td>
  </tr>
  <tr tal:condition="context/is_edit_ok">
-  <th>Login Password</th>
+  <th tal:content="structure python:utils.fieldname('user', 'password')" />
   <td tal:content="structure context/password/field"></td>
  </tr>
  <tr tal:condition="context/is_edit_ok">
-  <th>Confirm Password</th>
+  <th tal:content="structure python:utils.fieldname('user', 'confirm')" />
   <td tal:content="structure context/password/confirm"></td>
  </tr>
  <tr tal:condition="python:request.user.hasPermission('Web Roles')">
-  <th>Roles</th>
+  <th tal:content="structure python:utils.fieldname('user', 'roles')" />
   <td>
    <input tal:condition="context/id"
           tal:replace="structure context/roles/field">
@@ -62,39 +62,39 @@
   </td>
  </tr>
  <tr>
-  <th>Phone</th>
+  <th tal:content="structure python:utils.fieldname('user', 'phone')" />
   <td tal:content="structure context/phone/field"></td>
  </tr>
  <tr>
-  <th>External Phone</th>
+  <th tal:content="structure python:utils.fieldname('user', 'external_phone')"/>
   <td tal:content="structure context/external_phone/field"></td>
  </tr>
  <tr>
-  <th>Private Phone</th>
+  <th tal:content="structure python:utils.fieldname('user', 'private_phone')"/>
   <td tal:content="structure context/private_phone/field"></td>
  </tr>
  <tr>
-  <th>Organisation</th>
+  <th tal:content="structure python:utils.fieldname('user', 'organisation')"/>
   <td tal:content="structure context/organisation/menu"></td>
  </tr>
  <tr>
-  <th>Location</th>
+  <th tal:content="structure python:utils.fieldname('user', 'location')"/>
   <td tal:content="structure context/location/field"></td>
  </tr>
  <tr>
-  <th>Room</th>
+  <th tal:content="structure python:utils.fieldname('user', 'room')"/>
   <td tal:content="structure context/room/menu"></td>
  </tr>
  <tr>
-  <th>Department</th>
+  <th tal:content="structure python:utils.fieldname('user', 'department')"/>
   <td tal:content="structure context/department/menu"></td>
  </tr>
  <tr>
-  <th>Position</th>
+  <th tal:content="structure python:utils.fieldname('user', 'position')"/>
   <td tal:content="structure context/position/menu"></td>
  </tr>
  <tr>
-  <th>Superior</th>
+  <th tal:content="structure python:utils.fieldname('user', 'superior')"/>
   <td>
    <tal:block tal:define="name      string:superior;
                           form      string:user_form;
@@ -105,7 +105,7 @@
   </td>
  </tr>
  <tr>
-  <th>Substitutes</th>
+  <th tal:content="structure python:utils.fieldname('user', 'substitutes')"/>
   <td>
    <tal:block tal:define="size      string:7;
                           name      string:substitutes;
@@ -117,11 +117,12 @@
   </td>
  </tr>
  <tr>
-  <th>Job Description</th>
+  <th tal:content="structure
+      python:utils.fieldname('user', 'job_description')"/>
   <td tal:content="structure context/job_description/multiline"></td>
  </tr>
  <tr>
-  <th>Timezone</th>
+  <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
   <td>
    <input tal:replace="structure context/timezone/field">
    <br>(this is a numeric hour offset, the default is
@@ -129,23 +130,33 @@
   </td>
  </tr>
  <tr>
-  <th>E-mail address</th>
+  <th tal:content="structure python:utils.fieldname ('user', 'address')"/>
   <td tal:content="structure context/address/field">address</td>
  </tr>
  <tr>
-  <th>Alternate E-mail addresses<br>One address per line</th>
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'alternate_addresses')"/>
   <td tal:content="structure context/alternate_addresses/multiline">alternate_addresses</td>
  </tr>
  <tr tal:condition="context/is_edit_ok">
-  <th>Picture</th>
+  <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
   <td>
    <input type="file"   name="file-1@content" size="40">
    <input type="hidden" name="@link@pictures" value="file-1">
   </td>
  </tr>
+ <tr>
+  <th tal:content="structure python:utils.fieldname ('user', 'lunch_start')"/>
+  <td tal:content="structure context/lunch_start/field"></td>
+ </tr>
+ <tr>
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'lunch_duration')"/>
+  <td tal:content="structure context/lunch_duration/field"></td>
+ </tr>
 
  <tr>
-  <th>My Queries</th>
+  <th tal:content="structure python:utils.fieldname ('user', 'queries')"/>
   <td tal:content="structure context/queries/field"></td>
  </tr>
 
@@ -155,7 +166,15 @@
    <input type="hidden" name="@template" value="item">
    <input type="hidden" name="@required" value="username,address">
   </td>
-  <td tal:content="structure context/submit">submit button here</td>
+  <td>
+   <span tal:content="structure context/submit"
+         tal:condition="context/is_edit_ok" />
+   <input type="button"
+     tal:condition="python:context.id and context.is_view_ok()"
+     tal:attributes=
+      "onClick string:javascript:help_window('${context/designator}?@template=history','600','300')"
+     value="History" i18n:attributes="value">
+  </td>
  </tr>
 </table>
 </form>
@@ -190,8 +209,6 @@
   </td>
  </tr>
 </table>
-
-<tal:block tal:replace="structure context/history" />
 
 </td>
 

@@ -35,6 +35,7 @@
 #    11-Apr-2005 (MPH) Fixed Multilink in `review` and `announcement` to link
 #                      to `file` instead of `files`
 #     6-Jun-2005 (RSC) Incorporate changes from dbinit.py
+#    22-Jun-2005 (RSC) time recording stuff added.
 #    ««revision-date»»···
 #--
 #
@@ -328,3 +329,16 @@ user.create ( username = "admin"
 user.create ( username = "anonymous"
             , roles    = "Anonymous"
             )
+
+daily_record_status.create \
+    ( name        = "open"
+    , description = "Open for editing"
+    )
+daily_record_status.create \
+    ( name        = "submitted"
+    , description = "Submitted to supervisor"
+    )
+daily_record_status.create \
+    ( name        = "accepted"
+    , description = "Accepted by supervisor"
+    )

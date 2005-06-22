@@ -57,6 +57,9 @@
 #                      IssueClass used directly
 #    15-Jun-2005 (RSC) i18n stuff for name translations
 #    22-Jun-2005 (RSC) schema additions for time-tracking
+#    22-Jun-2005 (RSC) schema additions for time-tracking
+#                      moved some comments in the class definition into
+#                      the extensions/help.py
 #    ««revision-date»»···
 #--
 #
@@ -248,6 +251,9 @@ organisation = Class \
     # get automatically appended to the users mail address upon creation
     # of a new user.
     , mail_domain           = String    ()
+    , valid_from            = Date      ()
+    , valid_to              = Date      ()
+    , messages              = Multilink ("msg")
     )
 organisation.setkey ("name")
 
@@ -285,8 +291,10 @@ time_project = Class \
     , responsible           = Link      ("user")
     , deputy                = Link      ("user")
     , team_members          = Multilink ("user")
-    , company               = Link      ("company")
+    , organisation          = Link      ("organisation")
     , department            = Link      ("department")
+    , time_start            = Date      ()
+    , time_end              = Date      ()
     )
 time_project.setkey ("name")
 
@@ -300,15 +308,41 @@ time_wp = Class \
     )
 time_wp.setkey ("name")
 
+onsite = Class \
+    ( db
+    , ''"onsite"
+    , code                  = String    ()
+    , description           = String    ()
+    )
+onsite.setkey ("code")
+
+daily_record_status = Class \
+    ( db
+    , ''"daily_record_status"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+daily_record_status.setkey ("name")
+
+daily_record = Class \
+    ( db
+    , ''"daily_record"
+    , user                  = Link      ("user")
+    , date                  = Date      ()
+    , status                = Link      ("daily_record_status")
+    , time_record           = Multilink ("time_record")
+    )
+
 time_record = Class \
     ( db
     , ''"time_record"
-    , user                  = Link      ("user")
-    , date                  = Date      ()
     , start                 = Date      ()
     , end                   = Date      ()
     , duration              = Number    ()
     , wp                    = Link      ("time_wp")
+    , time_activity         = Link      ("time_activity")
+    , onsite                = Link      ("onsite")
+    , comment               = String    ()
     )
 
 time_activity = Class \
@@ -328,6 +362,24 @@ time_wp_group = Class \
     )
 time_wp_group.setkey ("name")
 
+cost_center = Class \
+    ( db
+    , ''"cost_center"
+    , name                  = String    ()
+    , description           = String    ()
+    , wp                    = Multilink ("time_wp")
+    , cost_center_status    = Link      ("cost_center_status")
+    )
+cost_center.setkey ("name")
+
+cost_center_status = Class \
+    ( db
+    , ''"cost_center_status"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+cost_center_status.setkey ("name")
+
 
 
 
@@ -335,38 +387,35 @@ time_wp_group.setkey ("name")
 user = Class \
     ( db
     , ''"user"
-    , username              = String    () # e.g. goller
-    , nickname              = String    () # e.g. ago
+    , username              = String    ()
+    , nickname              = String    ()
     , password              = Password  ()
-    , address               = String    () # email address
-    , alternate_addresses   = String    () # other email adresses
-    , is_alias              = Boolean   () # if this user is an email
-                                           # alias
-    , firstname             = String    () # e.g. alois
-    , lastname              = String    () # e.g. goller
-    , realname              = String    () # gets automatically set from
-                                           # firstname and lastname - is
-                                           # needed by roundupdp.py's
-                                           # send_message - which is used
-                                           # e.g. by the nosyreactor
-    , phone                 = String    () # shortcut: e.g. 42
-    , external_phone        = String    () # mobile_short: e.g. 6142
-    , private_phone         = String    () # whatever
-    , organisation          = Link      ("organisation") # e.g. TTTech
+    , address               = String    ()
+    , alternate_addresses   = String    ()
+    , is_alias              = Boolean   ()
+    , firstname             = String    ()
+    , lastname              = String    ()
+    , realname              = String    ()
+    , phone                 = String    ()
+    , external_phone        = String    ()
+    , private_phone         = String    ()
+    , organisation          = Link      ("organisation")
     , location              = String    () # e.g. Vienna HQ, XXX: Link ???
-    , department            = Link      ("department")   # e.g. SW, Sales
+    , department            = Link      ("department")
     , superior              = Link      ("user")
     , substitutes           = Multilink ("user")
     , room                  = Link      ("room")
-    , title                 = Link      ("title")    # e.g. Dipl. Ing.
+    , title                 = Link      ("title")
     , position              = Link      ("position") # e.g. SW Developer
     , job_description       = String    ()
     , queries               = Multilink ("query")
     , roles                 = String    ()
     , timezone              = String    ()
     , pictures              = Multilink ("file")
+    , lunch_start           = Date      ()
+    , lunch_duration        = Number    ()
     # XXX: add wiki page url in the web-template based on firstname &
-    #      lastname
+    #      lastname -> why not compute this on the fly (RSC)
     # Note: email adresses could get set automatically by a detector on
     #       creation of a new user, as its always <nickname>@tttech.com,
     #       <username>@tttech.com and <firstname>.<lastname>@tttech.com.
