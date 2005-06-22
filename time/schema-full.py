@@ -56,6 +56,7 @@
 #     8-Jun-2005 (RSC) time_record and time_wp added.
 #                      IssueClass used directly
 #    15-Jun-2005 (RSC) i18n stuff for name translations
+#    22-Jun-2005 (RSC) schema additions for time-tracking
 #    ««revision-date»»···
 #--
 #
@@ -254,6 +255,11 @@ department = Class \
     ( db
     , ''"department"
     , name                  = String    ()
+    , description           = String    ()
+    , manager               = Link      ("user")
+    , valid_from            = Date      ()
+    , valid_to              = Date      ()
+    , messages              = Multilink ("msg")
     )
 department.setkey ("name")
 
@@ -271,11 +277,26 @@ position = Class \
     )
 position.setkey ("position")
 
+time_project = Class \
+    ( db
+    , ''"time_project"
+    , name                  = String    ()
+    , description           = String    ()
+    , responsible           = Link      ("user")
+    , deputy                = Link      ("user")
+    , team_members          = Multilink ("user")
+    , company               = Link      ("company")
+    , department            = Link      ("department")
+    )
+time_project.setkey ("name")
+
 time_wp = Class \
     ( db
     , ''"time_wp"
     , name                  = String    ()
     , description           = String    ()
+    , responsible           = Link      ("user")
+    , project               = Link      ("time_project")
     )
 time_wp.setkey ("name")
 
@@ -289,6 +310,26 @@ time_record = Class \
     , duration              = Number    ()
     , wp                    = Link      ("time_wp")
     )
+
+time_activity = Class \
+    ( db
+    , ''"time_activity"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+time_activity.setkey ("name")
+
+time_wp_group = Class \
+    ( db
+    , ''"time_wp_group"
+    , name                  = String    ()
+    , description           = String    ()
+    , wp                    = Multilink ("time_wp")
+    )
+time_wp_group.setkey ("name")
+
+
+
 
 # Note: roles is a comma-separated string of Role names
 user = Class \

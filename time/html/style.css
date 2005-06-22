@@ -13,101 +13,18 @@ a[href], a[href]:link {
   color:blue;
   text-decoration: none;
 }
+a[href]:hover { color:blue; text-decoration: underline; }
+a[href]:link  { color:blue; text-decoration: none; }
+a[href]       { color:blue; text-decoration: none; }
 
-tr.add_new {
-  background-color: #c0c0ff;
-}
-
-/*
-a.feature_raised[href]:hover    {color:orange; text-decoration: underline;   }
-a.feature_raised[href]:link     {color:orange; text-decoration: none;        }
-a.feature_raised[href]          {color:orange; text-decoration: none;        }
-a.feature_open[href]:hover      {color:green;  text-decoration: underline;   }
-a.feature_open[href]:link       {color:green;  text-decoration: none;        }
-a.feature_open[href]            {color:green;  text-decoration: none;        }
-a.feature_completed[href]:hover {color:blue;   text-decoration: underline;   }
-a.feature_completed[href]:link  {color:blue;   text-decoration: line-through;}
-a.feature_completed[href]       {color:blue;   text-decoration: line-through;}
-a.feature_rejected[href]:hover  {color:red;    text-decoration: underline;   }
-a.feature_rejected[href]:link   {color:red;    text-decoration: line-through;}
-a.feature_rejected[href]        {color:red;    text-decoration: line-through;}
-a.feature_suspended[href]:hover {color:blue;   text-decoration: underline;   }
-a.feature_suspended[href]:link  {color:blue;   text-decoration: line-through;}
-a.feature_suspended[href]       {color:blue;   text-decoration: line-through;}
-*/
-
-a.feature_raised_[href]                {color:orange;  text-decoration: none;        }
-a.feature_open_[href]                  {color:green;   text-decoration: none;        }
-a.feature_completed_[href]             {color:blue;    text-decoration: line-through;}
-a.feature_rejected_[href]              {color:red;     text-decoration: line-through;}
-a.feature_suspended_[href]             {color:blue;    text-decoration: line-through;}
-
-a.task_issued[href]                   {color:orange;  text-decoration: none;        }
-a.task_issued_[href]                  {color:orange;  text-decoration: none;        }
-a.task_issued_Yes[href]               {color:orange;  text-decoration: none;        }
-a.task_issued_No[href]                {color:orange;  text-decoration: none;        }
-a.task_started[href]                  {color:green;   text-decoration: none;        }
-a.task_started_[href]                 {color:green;   text-decoration: none;        }
-a.task_started_Yes[href]              {color:green;   text-decoration: none;        }
-a.task_started_No[href]               {color:green;   text-decoration: none;        }
-a.task_available[href]                {color:green;   text-decoration: none;        }
-a.task_available_[href]               {color:green;   text-decoration: none;        }
-a.task_available_Yes[href]            {color:green;   text-decoration: none;        }
-a.task_available_No[href]             {color:green;   text-decoration: none;        }
-a.task_accepted[href]                 {color:blue;    text-decoration: line-through;}
-a.task_accepted_[href]                {color:blue;    text-decoration: line-through;}
-a.task_accepted_Yes[href]             {color:blue;    text-decoration: line-through;}
-a.task_accepted_No[href]              {color:blue;    text-decoration: blink;       }
-a.task_accepted-but-defects[href]     {color:red;     text-decoration: line-through;}
-a.task_accepted-but-defects_[href]    {color:red;     text-decoration: line-through;}
-a.task_accepted-but-defects_Yes[href] {color:red;     text-decoration: line-through;}
-a.task_accepted-but-defects_No[href]  {color:red;     text-decoration: blink;       }
-a.task_suspended[href]                {color:blue;    text-decoration: line-through;}
-a.task_suspended_[href]               {color:blue;    text-decoration: line-through;}
-a.task_suspended_Yes[href]            {color:blue;    text-decoration: line-through;}
-a.task_suspended_No[href]             {color:blue;    text-decoration: line-through;}
-a.task_closed-obsolete[href]          {color:blue;    text-decoration: line-through;}
-a.task_closed-obsolete_[href]         {color:blue;    text-decoration: line-through;}
-a.task_closed-obsolete_Yes[href]      {color:blue;    text-decoration: line-through;}
-a.task_closed-obsolete_No[href]       {color:blue;    text-decoration: line-through;}
-
-
-a.defect_assigned_[href]               {color:orange;  text-decoration: none;        }
-a.defect_analyzed_[href]               {color:brown;   text-decoration: none;        }
-a.defect_implemented_[href]            {color:green;   text-decoration: none;        }
-a.defect_resolved_[href]               {color:blue;    text-decoration: none;        }
-a.defect_closed_[href]                 {color:blue;    text-decoration: line-through;}
-a.defect_closed-duplicate_[href]       {color:blue;    text-decoration: line-through;}
-a.defect_closed-mistaken_[href]        {color:blue;    text-decoration: line-through;}
-a.defect_closed-rejected_[href]        {color:blue;    text-decoration: line-through;}
-a.defect_suspended_[href]              {color:blue;    text-decoration: line-through;}
-
-a.comment_assigned[href]               {color:orange;  text-decoration: none;        }
-a.comment_resolved[href]               {color:green;   text-decoration: none;        }
-a.comment_accepted[href]               {color:blue;    text-decoration: line-through;}
-a.comment_rejected[href]               {color:red;     text-decoration: none;        }
-
-
-/* old stuff
-a.open[href]:hover      { color:red; text-decoration: underline; }
-a.open[href]:link       { color:red; text-decoration: none; }
-a.open[href]            { color:red; text-decoration: none; }
-a.feedback[href]:hover  { color:red; text-decoration: underline; }
-a.feedback[href]:link   { color:red; text-decoration: none; }
-a.feedback[href]        { color:red; text-decoration: none; }
-a.analyzed[href]:hover  { color:red; text-decoration: underline; }
-a.analyzed[href]:link   { color:red; text-decoration: none; }
-a.analyzed[href]        { color:red; text-decoration: none; }
-a.testing[href]:hover   { color:green; text-decoration: underline; }
-a.testing[href]:link    { color:green; text-decoration: none; }
-a.testing[href]         { color:green; text-decoration: none; }
-a.suspended[href]:hover { color:blue; text-decoration: line-through; }
-a.suspended[href]:link  { color:blue; text-decoration: line-through; }
-a.suspended[href]       { color:blue; text-decoration: line-through; }
-a.closed[href]:hover    { color:blue; text-decoration: line-through; }
-a.closed[href]:link     { color:blue; text-decoration: line-through; }
-a.closed[href]          { color:blue; text-decoration: line-through; }
-*/
+a.closed[href]:hover                { color:green; text-decoration: underline; }
+a.closed[href]:link, a.closed[href] { color:green; text-decoration: none; }
+a.open[href]:hover                  { color:red;   text-decoration: underline; }
+a.open[href]:link, a.open[href]     { color:red;   text-decoration: none; }
+a.run[href]:hover                   { color:green; text-decoration: underline; }
+a.run[href]:link, a.run[href]       { color:green; text-decoration: none; }
+a.canc[href]:hover                  { color:blue;  text-decoration: underline; }
+a.canc[href]:link, a.canc[href]     { color:blue;  text-decoration: none; }
 
 table.body {
   border: 0;
@@ -213,9 +130,18 @@ table.form {
   padding: 2px;
   border-spacing: 0;
   border-collapse: separate;
+  vertical-align: top;
 }
 
 table.form th {
+  color: #338;
+  text-align: right;
+  vertical-align: top;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+table.form th a:link {
   color: #338;
   text-align: right;
   vertical-align: top;
@@ -233,11 +159,18 @@ table.form th.required {
   font-weight: bold;
 }
 
+table.form th.required a {
+  font-weight: bold;
+}
+
+table.form tr {
+  vertical-align: top;
+}
+
 table.form td {
   color: #333;
   empty-cells: show;
   vertical-align: top;
-//  font-size: smaller;
 }
 
 table.form td.optional {
@@ -245,55 +178,8 @@ table.form td.optional {
   font-style: italic;
 }
 
-table.form td.test_ok {
-  background-color: #22bb22;
-  color: white;
-  font-weight: bold;
-}
-
-table.form td.test_failed {
-  background-color: #bb2222;
-  color: white;
-  font-weight: bold;
-  text-decoration: blink;
-}
-
-table.form td.task_list {
-  font-size: smaller;
-}
-
 table.form td.html {
   color: #777;
-}
-
-table.calendar {
-  background-color: #eee;
-  border-collapse: collapse;
-}
-
-/* style for calendar */
-table.calendar_nav {
-  border: 1px solid #444;
-  background-color: #eee;
-  font-weight: bold;
-}
-
-table.calendar_display {
-  border: 1px solid #444;
-  empty-cells: show;
-}
-
-table.calendar_display td {
-  text-align: center;
-}
-
-table.calendar_display tr.weekdays {
-  text-align: center;
-  font-weight: bold;
-}
-
-table.calendar td.today {
-  background-color: #ecc;
 }
 
 /* style for lists */
@@ -396,7 +282,7 @@ table.messages td:first-child {
 table.files {
   border-spacing: 0;
   border-collapse: separate;
-//  width: 100%;
+  width: 100%;
 }
 
 table.files th.header{
@@ -416,80 +302,6 @@ table.files th {
 table.files td {
   font-family: monospace;
   empty-cells: show;
-}
-
-/* style for task displays */
-table.tasks {
-  border-spacing: 0;
-  border-collapse: separate;
-//  border: thin solid #0066FF;
-//  width: 100%;
-}
-
-table.tasks th.header{
-//  padding-top: 10px;
-//  border-bottom: 1px solid gray;
-  font-weight: bold;
-  background-color: white;
-  color: #707040;
-  font-size: smaller;
-//  border: thin solid #0066FF;
-//  background-color: #0099FF;
-}
-
-table.tasks th {
-  font-weight: bold;
-  text-align: left;
-}
-
-table.tasks td {
-  font-family: monospace;
-  empty-cells: show;
-}
-
-/* style for milestone displays */
-table.milestones {
-  border-spacing: 0;
-  border-collapse: separate;
-//  width: 100%;
-  font-size: smaller;
-}
-
-table.milestones th.header{
-//  padding-top: 10px;
-  border-bottom: 1px solid gray;
-  font-weight: bold;
-  background-color: white;
-  color: #707040;
-  text-align: center;
-}
-
-table.milestones th {
-  font-weight: bold;
-  text-align: center;
-}
-
-table.milestones td {
-
-  font-family: monospace;
-  empty-cells: show;
-  text-align: right;
-}
-
-table.milestones td.delta_plus {
-  font-weight: bold;
-  color: #e00000;
-  font-family: monospace;
-  empty-cells: show;
-  text-align: right;
-}
-
-table.milestones td.delta_minus{
-//  font-weight: bold;
-  color: #00e000;
-  font-family: monospace;
-  empty-cells: show;
-  text-align: right;
 }
 
 /* style for history displays */
@@ -625,3 +437,4 @@ table.otherinfo th {
   font-weight: bold;
   text-align: left;
 }
+/* SHA: 14bc13ebdf1ca0a0304765f03ee1c7342fff29aa */

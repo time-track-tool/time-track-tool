@@ -1,15 +1,28 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<html tal:define=
+ " classname context/_classname|db/address/_classname
+ ; Classname python: i18n.gettext (classname)
+ ; klass     python:db [classname] or default
+ ; lbl       klass/_klass/labelprop
+ ; label     python:context [lbl]
+ ">
  <head>
-  <title tal:content="string:History for ${context/designator} - ${context/title}"></title>
+  <title i18n:translate="">
+    History for
+    <span tal:replace="context/designator" i18n:name="designator" />
+    -
+    <span tal:replace="label" i18n:name="label" />
+  </title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
   <link rel="stylesheet" type="text/css" href="@@file/style.css">
   <script tal:replace="structure request/base_javascript"></script>
  </head>
  <body class="body">
   <tal:block tal:condition="python:context.is_view_ok() and context.id">
-   <h3 tal:content="string:History for ${context/title}"></h3>
+   <h3 i18n:translate="">
+    History for <span tal:replace="label" i18n:name="label" />
+   </h3>
    <tal:block tal:replace="structure context/history" />
   </tal:block>
  </body>

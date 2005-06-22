@@ -5,9 +5,6 @@
       tal:content="python:i18n.gettext (context._classname)"></span>
 <td class="content" metal:fill-slot="content">
 <b tal:condition="python:0" tal:content="context/designator"></b>
-<span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
-You are not allowed to view this page.
-</span>
 
 <tal:block
  tal:define=
@@ -56,7 +53,7 @@ You are not allowed to view this page.
 <p></p>
 
 <form method="POST" onSubmit="return submit_once()"
-      enctype="multipart/form-data" tal:condition="context/is_edit_ok"
+      enctype="multipart/form-data" tal:condition="context/is_view_ok"
       tal:attributes="action context/designator">
 
 <input type="hidden" name="@template" value="item">
@@ -65,35 +62,27 @@ You are not allowed to view this page.
 
  <tal:block tal:repeat="prop props">
   <tr tal:condition="python:prop._name not in ('id','date','author')">
-   <th tal:content="python:i18n.gettext (prop._name)"></th>
+   <th tal:content="structure python:utils.fieldname (classname, prop._name)"></th>
    <td tal:content="structure python:utils.menu_or_field (context[prop._name])">
    </td>
   </tr>
  </tal:block>
  <tr>
-  <td>&nbsp;</td>
-  <td colspan=3 tal:content="structure context/submit">
-   submit button will go here
+  <td>&nbsp;
+  </td>
+  <td colspan=3>
+   <span tal:content="structure context/submit" tal:condition="context/is_edit_ok" />
+   <input type="button"
+     tal:condition="python:context.id and context.is_view_ok()"
+     tal:attributes=
+      "onClick string:javascript:help_window('${context/designator}?@template=history','600','300')"
+     value="History" i18n:attributes="value">
   </td>
  </tr>
 </table>
 
 </form>
 
-<table class="form" tal:condition="context/is_only_view_ok">
-
- <tal:block tal:repeat="prop props">
-  <tr tal:condition="python:prop._name not in ('id','date','author')">
-   <th tal:content="prop/_name"></th>
-   <td tal:content="structure python:context[prop._name].field()"></td>
-  </tr>
- </tal:block>
-</table>
-
-
-<tal:block tal:condition="python:context.id and context.is_view_ok()">
- <tal:block tal:replace="structure context/history" />
-</tal:block>
 
 </tal:block>
 </td>
