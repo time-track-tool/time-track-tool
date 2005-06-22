@@ -159,7 +159,6 @@ class OOoPy_Invoice_Wrapper (autosuper) :
     # end def __init__
 
     def _pretty (self, item) :
-        print "pretty", str (item)
         if isinstance (item, Date) :
             return item.pretty ('%d. %m. %Y')
         return str (item).decode ('utf-8')
@@ -167,7 +166,6 @@ class OOoPy_Invoice_Wrapper (autosuper) :
 
     def _deref (self, name) :
         """ dereference a dotted name -- we may want to cache this."""
-        print "deref", name
         names = name.split ('.')
         x  = self.items [names [0]]
         for i in names [1:] :
@@ -181,7 +179,6 @@ class OOoPy_Invoice_Wrapper (autosuper) :
     # end def _split
 
     def __getitem__ (self, name) :
-        print "__getitem__", name
         return self._pretty (self._deref (name))
     # end def __getitem__
 
@@ -305,7 +302,6 @@ class Download_Letter (Action, autosuper) :
             raise Redirect, 'file%s/%s' % (file.id, file.name)
         out = StringIO ()
         o   = OOoPy (infile = StringIO (file.content), outfile = out)
-        print letter.invoice, letter.date, letter.address
         t   = Transformer \
               ( Transforms.Editinfo ()
               , Transforms.Field_Replace
