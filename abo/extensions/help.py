@@ -242,7 +242,8 @@ def help_properties (klass) :
         p.append ('confirm')
     for i in properties.iterkeys () :
         pname = combined_name (klass.classname, i)
-        p.append (pname)
+        if pname in helptext :
+            p.append (pname)
     p = [(_ (i).decode ('utf-8'), i) for i in p]
     p.sort ()
     return [i [1] for i in p]
@@ -251,6 +252,8 @@ def help_properties (klass) :
 def fieldname (cls, name, fieldname = None) :
     if not fieldname : fieldname = name
     prop = combined_name (cls, fieldname)
+    if not prop in helptext :
+        return "%s&nbsp;" % _ (name)
     return "<a href=\"javascript:help_window" \
            "('%s?:template=property_help#%s', '500', '400')\">" \
            "%s&nbsp; </a>" \
