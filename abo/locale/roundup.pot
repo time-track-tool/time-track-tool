@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 23:13+0200\n"
+"POT-Creation-Date: 2005-06-22 13:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -883,9 +883,12 @@ msgstr ""
 msgid "history of ${Classname}"
 msgstr ""
 
-#: ../html/_generic.index.html:75 ../html/_generic.item.html:75
-#: ../html/page.html:300 ../html/user.item.html:64
-msgid "history"
+#: ../html/_generic.index.html:50 ../html/_generic.item.html:50
+msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
+msgstr ""
+
+#: ../html/_generic.index.html:78 ../html/_generic.item.html:78
+msgid "History"
 msgstr ""
 
 #: ../html/_generic.property_help.html:4 ../html/_generic.property_help.html:8
@@ -910,6 +913,10 @@ msgstr ""
 
 #: ../html/invoice.send.html:63
 msgid "mark as sent"
+msgstr ""
+
+#: ../html/page.html:300 ../html/user.item.html:64
+msgid "history"
 msgstr ""
 
 #: ../html/page.html:390

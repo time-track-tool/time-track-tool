@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-21 23:13+0200\n"
+"POT-Creation-Date: 2005-06-22 13:37+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -905,9 +905,13 @@ msgstr "vorwärts &gt;&gt;"
 msgid "history of ${Classname}"
 msgstr "Liste der Änderungen von ${Classname}"
 
-#: ../html/_generic.index.html:75 ../html/_generic.item.html:75
-#: ../html/page.html:300 ../html/user.item.html:64
-msgid "history"
+#: ../html/_generic.index.html:50 ../html/_generic.item.html:50
+msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
+msgstr "Zum Editieren von ${Classname} auf das Feld unter &quot;${labelprop}&quot; klicken."
+
+#: ../html/_generic.index.html:78 ../html/_generic.item.html:78
+#, fuzzy
+msgid "History"
 msgstr "Liste der Änderungen"
 
 #: ../html/_generic.property_help.html:4 ../html/_generic.property_help.html:8
@@ -933,6 +937,10 @@ msgstr "Rechnungen erzeugen"
 #: ../html/invoice.send.html:63
 msgid "mark as sent"
 msgstr "als gesendet markieren"
+
+#: ../html/page.html:300 ../html/user.item.html:64
+msgid "history"
+msgstr "Liste der Änderungen"
 
 #: ../html/page.html:390
 msgid "Messages"
