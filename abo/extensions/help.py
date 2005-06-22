@@ -253,14 +253,13 @@ def fieldname (cls, name, fieldname = None) :
     if not fieldname : fieldname = name
     prop = combined_name (cls, fieldname)
     if not prop in helptext :
-        return "%s&nbsp;" % _ (name)
+        return "%s&nbsp;" % _ (prop)
     return "<a href=\"javascript:help_window" \
            "('%s?:template=property_help#%s', '500', '400')\">" \
            "%s&nbsp; </a>" \
-           % (cls, prop, _ (name))
+           % (cls, prop, _ (prop))
 
 # end def fieldname
-
 
 def init (instance) :
     global _
