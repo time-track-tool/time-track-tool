@@ -34,3 +34,6 @@ def abo_max_invoice (db, abo) :
             maxinv  = inv
     return maxinv
 # end def abo_max_invoice
+
+def uni (x) :
+    return x.decode ("latin1").encode ("utf-8")
