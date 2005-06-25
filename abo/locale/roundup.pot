@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-22 13:37+0200\n"
+"POT-Creation-Date: 2005-06-25 07:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -851,7 +851,7 @@ msgstr ""
 msgid "invoices are already marked"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:291
+#: ../extensions/mark_invoices.py:288
 msgid "You can only download letters"
 msgstr ""
 
@@ -917,6 +917,22 @@ msgstr ""
 
 #: ../html/page.html:300 ../html/user.item.html:64
 msgid "history"
+msgstr ""
+
+#: ../html/page.html:382
+msgid "Note:&nbsp;"
+msgstr ""
+
+#: ../html/page.html:383
+msgid "highlighted"
+msgstr ""
+
+#: ../html/page.html:384
+msgid "&nbsp;fields are required."
+msgstr ""
+
+#: ../html/page.html:384
+msgid "<td>x</td> <th class=\"required\">x</th> <td>x</td>"
 msgstr ""
 
 #: ../html/page.html:390
