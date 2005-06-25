@@ -25,6 +25,8 @@ _ = lambda x : x
 
 def check_period (db, cl, nodeid, new_values) :
     period = new_values.get ('period')
+    if not period and nodeid :
+        period = cl.get (nodeid, 'period')
     if not period :
         raise Reject, _ ('period must be filled in')
     if int (period) != period :

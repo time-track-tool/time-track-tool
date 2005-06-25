@@ -60,6 +60,8 @@ abo_type = Class \
     , description         = String    ()
     , period              = Number    () # subscription period in months
     , order               = Number    ()
+    , invoice_template    = Multilink ('invoice_template')
+    , adr_type            = Link      ('adr_type')
     )
 abo_type.setkey (''"name")
 
@@ -138,7 +140,6 @@ invoice_group = Class \
     ( db, ''"invoice_group"
     , name                = String    ()
     , description         = String    ()
-    , invoice_template    = Multilink ('invoice_template')
     )
 invoice_group.setkey (''"name")
 

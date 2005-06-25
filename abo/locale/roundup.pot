@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-25 07:20+0200\n"
+"POT-Creation-Date: 2005-06-25 18:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,11 +73,11 @@ msgstr ""
 msgid "\"%(attr)s\" must be greater or equal to zero"
 msgstr ""
 
-#: ../detectors/abo_type.py:29
+#: ../detectors/abo_type.py:31
 msgid "period must be filled in"
 msgstr ""
 
-#: ../detectors/abo_type.py:31
+#: ../detectors/abo_type.py:33
 msgid "period must be an integer"
 msgstr ""
 
@@ -150,267 +150,281 @@ msgid "Type of this subscription"
 msgstr ""
 
 #: ../extensions/help.py:38
-msgid "activity"
+msgid "abo_type.adr_type"
 msgstr ""
 
 #: ../extensions/help.py:39
-msgid "Date of last change"
-msgstr ""
-
-#: ../extensions/help.py:40
-msgid "actor"
-msgstr ""
-
-#: ../extensions/help.py:41
-msgid "Person doing the last change"
-msgstr ""
-
-#: ../extensions/help.py:42 ../schema.py:67
-msgid "address"
-msgstr ""
-
-#: ../extensions/help.py:43
-msgid "Address for this letter"
-msgstr ""
-
-#: ../extensions/help.py:44
-msgid "user.address"
+msgid ""
+"Type of Address -- this field indicates the address type to\n"
+"           be used for marking addresses that should be exported for\n"
+"           sending. When a new subsription is generated this type will\n"
+"           be automatically added to the subscriber. When cancelling a\n"
+"           subscription, this type will be deleted from the subscriber.\n"
+"        "
 msgstr ""
 
 #: ../extensions/help.py:45
-msgid "Email address for this user"
+msgid "activity"
 msgstr ""
 
-#: ../extensions/help.py:46 ../schema.py:92
-msgid "adr_type"
+#: ../extensions/help.py:46
+msgid "Date of last change"
 msgstr ""
 
 #: ../extensions/help.py:47
-msgid "Type of Address"
+msgid "actor"
 msgstr ""
 
 #: ../extensions/help.py:48
-msgid "alternate_addresses"
+msgid "Person doing the last change"
 msgstr ""
 
-#: ../extensions/help.py:49
-msgid "Alternate email addresses for this user, one per line"
+#: ../extensions/help.py:49 ../schema.py:69
+msgid "address"
 msgstr ""
 
 #: ../extensions/help.py:50
-msgid "amount"
+msgid "Address for this letter"
 msgstr ""
 
 #: ../extensions/help.py:51
-msgid "Amount this subscription costs"
+msgid "user.address"
 msgstr ""
 
 #: ../extensions/help.py:52
-msgid "author"
+msgid "Email address for this user"
 msgstr ""
 
-#: ../extensions/help.py:53
-msgid "Author of this message"
+#: ../extensions/help.py:53 ../schema.py:94
+msgid "adr_type"
 msgstr ""
 
 #: ../extensions/help.py:54
-msgid "balance_open"
+msgid "Type of Address"
 msgstr ""
 
 #: ../extensions/help.py:55
-msgid "Open amount not yet payed"
+msgid "alternate_addresses"
 msgstr ""
 
 #: ../extensions/help.py:56
-msgid "begin"
+msgid "Alternate email addresses for this user, one per line"
 msgstr ""
 
 #: ../extensions/help.py:57
-msgid "Begin of period"
+msgid "amount"
 msgstr ""
 
 #: ../extensions/help.py:58
-msgid "bookentry"
+msgid "Amount this subscription costs"
 msgstr ""
 
 #: ../extensions/help.py:59
-msgid "Date when the payment was booked"
+msgid "author"
 msgstr ""
 
 #: ../extensions/help.py:60
-msgid "city"
+msgid "Author of this message"
 msgstr ""
 
 #: ../extensions/help.py:61
-msgid "City where this person lives"
+msgid "balance_open"
 msgstr ""
 
-#: ../extensions/help.py:62 ../schema.py:104
-msgid "code"
+#: ../extensions/help.py:62
+msgid "Open amount not yet payed"
 msgstr ""
 
 #: ../extensions/help.py:63
-msgid "Code of this %(Classname)s"
+msgid "begin"
 msgstr ""
 
 #: ../extensions/help.py:64
-msgid "confirm"
+msgid "Begin of period"
 msgstr ""
 
 #: ../extensions/help.py:65
+msgid "bookentry"
+msgstr ""
+
+#: ../extensions/help.py:66
+msgid "Date when the payment was booked"
+msgstr ""
+
+#: ../extensions/help.py:67
+msgid "city"
+msgstr ""
+
+#: ../extensions/help.py:68
+msgid "City where this person lives"
+msgstr ""
+
+#: ../extensions/help.py:69 ../schema.py:106
+msgid "code"
+msgstr ""
+
+#: ../extensions/help.py:70
+msgid "Code of this %(Classname)s"
+msgstr ""
+
+#: ../extensions/help.py:71
+msgid "confirm"
+msgstr ""
+
+#: ../extensions/help.py:72
 msgid ""
 "Confirm the password here: first password and this entry\n"
 "           must match.\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:68
+#: ../extensions/help.py:75
 msgid "content"
 msgstr ""
 
-#: ../extensions/help.py:69
+#: ../extensions/help.py:76
 msgid "Content of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:70
+#: ../extensions/help.py:77
 msgid "country"
 msgstr ""
 
-#: ../extensions/help.py:71
+#: ../extensions/help.py:78
 msgid "Country for this address"
 msgstr ""
 
-#: ../extensions/help.py:72
+#: ../extensions/help.py:79
 msgid "creation"
 msgstr ""
 
-#: ../extensions/help.py:73
+#: ../extensions/help.py:80
 msgid "Date of creation of this record"
 msgstr ""
 
-#: ../extensions/help.py:74
+#: ../extensions/help.py:81
 msgid "creator"
 msgstr ""
 
-#: ../extensions/help.py:75
+#: ../extensions/help.py:82
 msgid "Person who created this record"
 msgstr ""
 
-#: ../extensions/help.py:76 ../schema.py:107
+#: ../extensions/help.py:83 ../schema.py:109
 msgid "currency"
 msgstr ""
 
-#: ../extensions/help.py:77
+#: ../extensions/help.py:84
 msgid "Currency for this price"
 msgstr ""
 
-#: ../extensions/help.py:78
+#: ../extensions/help.py:85
 msgid "date"
 msgstr ""
 
-#: ../extensions/help.py:79
+#: ../extensions/help.py:86
 msgid "Date when this %(Classname)s was sent"
 msgstr ""
 
-#: ../extensions/help.py:80
+#: ../extensions/help.py:87
 msgid "date_payed"
 msgstr ""
 
-#: ../extensions/help.py:81
+#: ../extensions/help.py:88
 msgid "Date when this %(Classname)s was payed"
 msgstr ""
 
-#: ../extensions/help.py:82
+#: ../extensions/help.py:89
 msgid "description"
 msgstr ""
 
-#: ../extensions/help.py:83
+#: ../extensions/help.py:90
 msgid "Verbose description of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:84
+#: ../extensions/help.py:91
 msgid "email"
 msgstr ""
 
-#: ../extensions/help.py:85
+#: ../extensions/help.py:92
 msgid "Email address for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:86
+#: ../extensions/help.py:93
 msgid "end"
 msgstr ""
 
-#: ../extensions/help.py:87
+#: ../extensions/help.py:94
 msgid "Date when this subscription ends"
 msgstr ""
 
-#: ../extensions/help.py:88
+#: ../extensions/help.py:95
 msgid "fax"
 msgstr ""
 
-#: ../extensions/help.py:89
+#: ../extensions/help.py:96
 msgid "FAX number for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:90
+#: ../extensions/help.py:97
 msgid "files"
 msgstr ""
 
-#: ../extensions/help.py:91
+#: ../extensions/help.py:98
 msgid "Files for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:92
+#: ../extensions/help.py:99
 msgid "firstname"
 msgstr ""
 
-#: ../extensions/help.py:93
+#: ../extensions/help.py:100
 msgid "First name for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:94
+#: ../extensions/help.py:101
 msgid "function"
 msgstr ""
 
-#: ../extensions/help.py:95
+#: ../extensions/help.py:102
 msgid ""
 "Multiline field for this %(Classname)s, will be printed on an\n"
 "           address label\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:98
+#: ../extensions/help.py:105
 msgid "id"
 msgstr ""
 
-#: ../extensions/help.py:99
+#: ../extensions/help.py:106
 msgid ""
 "ID of this record, automatically generated by the system.\n"
 "           Cannot be changed by the user.\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:102
+#: ../extensions/help.py:109
 msgid "initial"
 msgstr ""
 
-#: ../extensions/help.py:103
+#: ../extensions/help.py:110
 msgid "Initials of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:104
+#: ../extensions/help.py:111
 msgid "inreplyto"
 msgstr ""
 
-#: ../extensions/help.py:105
+#: ../extensions/help.py:112
 msgid "In Reply To field if this %(Classname)s was received by email"
 msgstr ""
 
-#: ../extensions/help.py:106
+#: ../extensions/help.py:113
 msgid "interval"
 msgstr ""
 
-#: ../extensions/help.py:107
+#: ../extensions/help.py:114
 msgid ""
 "Interval for sending out an invoice in months. If the\n"
 "           invoice_level is non-zero, the distance in months since the\n"
@@ -418,310 +432,310 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:111 ../schema.py:114
+#: ../extensions/help.py:118 ../schema.py:116
 msgid "invoice"
 msgstr ""
 
-#: ../extensions/help.py:112
+#: ../extensions/help.py:119
 msgid "Link to invoice for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:113 ../schema.py:138
+#: ../extensions/help.py:120 ../schema.py:140
 msgid "invoice_group"
 msgstr ""
 
-#: ../extensions/help.py:114
+#: ../extensions/help.py:121
 msgid "Link to invoice_group for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:115
+#: ../extensions/help.py:122
 msgid "invoice_level"
 msgstr ""
 
-#: ../extensions/help.py:116
+#: ../extensions/help.py:123
 msgid ""
 "When the customer has received more invoices than this number\n"
 "           indicates, an invoice of this type is sent.\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:119 ../schema.py:135
+#: ../extensions/help.py:126 ../schema.py:137
 msgid "invoice_no"
 msgstr ""
 
-#: ../extensions/help.py:120
+#: ../extensions/help.py:127
 msgid "Unique number for this invoice, generated by the system"
 msgstr ""
 
-#: ../extensions/help.py:121 ../schema.py:148
+#: ../extensions/help.py:128 ../schema.py:149
 msgid "invoice_template"
 msgstr ""
 
-#: ../extensions/help.py:122
+#: ../extensions/help.py:129
 msgid "An OpenOffice file used as a template for this type of invoice"
 msgstr ""
 
-#: ../extensions/help.py:123
+#: ../extensions/help.py:130
 msgid "invoices"
 msgstr ""
 
-#: ../extensions/help.py:124
+#: ../extensions/help.py:131
 msgid "List of invoices for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:125
+#: ../extensions/help.py:132
 msgid "klass"
 msgstr ""
 
-#: ../extensions/help.py:126
+#: ../extensions/help.py:133
 msgid "Class for this query"
 msgstr ""
 
-#: ../extensions/help.py:127
+#: ../extensions/help.py:134
 msgid "last_sent"
 msgstr ""
 
-#: ../extensions/help.py:128
+#: ../extensions/help.py:135
 msgid "Date when an invoice was last sent"
 msgstr ""
 
-#: ../extensions/help.py:129
+#: ../extensions/help.py:136
 msgid "lastname"
 msgstr ""
 
-#: ../extensions/help.py:130
+#: ../extensions/help.py:137
 msgid "Last name of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:131 ../schema.py:161
+#: ../extensions/help.py:138 ../schema.py:162
 msgid "letter"
 msgstr ""
 
-#: ../extensions/help.py:132
+#: ../extensions/help.py:139
 msgid ""
 "Download of letter -- usually this will open the letter in\n"
 "           OpenOffice\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:135
+#: ../extensions/help.py:142
 msgid "letters"
 msgstr ""
 
-#: ../extensions/help.py:136
+#: ../extensions/help.py:143
 msgid "List of letters for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:137
+#: ../extensions/help.py:144
 msgid "lettertitle"
 msgstr ""
 
-#: ../extensions/help.py:138
+#: ../extensions/help.py:145
 msgid "Title of this person used in a letter"
 msgstr ""
 
-#: ../extensions/help.py:139
+#: ../extensions/help.py:146
 msgid "messageid"
 msgstr ""
 
-#: ../extensions/help.py:140
+#: ../extensions/help.py:147
 msgid "Message-ID if this message was received via email"
 msgstr ""
 
-#: ../extensions/help.py:141
+#: ../extensions/help.py:148
 msgid "messages"
 msgstr ""
 
-#: ../extensions/help.py:142
+#: ../extensions/help.py:149
 msgid "List of messages for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:143 ../schema.py:217
+#: ../extensions/help.py:150 ../schema.py:218
 msgid "msg"
 msgstr ""
 
-#: ../extensions/help.py:144
+#: ../extensions/help.py:151
 msgid "Field for messages for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:145
+#: ../extensions/help.py:152
 msgid "n_sent"
 msgstr ""
 
-#: ../extensions/help.py:146
+#: ../extensions/help.py:153
 msgid "Number of times this invoice was sent"
 msgstr ""
 
-#: ../extensions/help.py:147 ../schema.py:55 ../schema.py:64 ../schema.py:111
-#: ../schema.py:143 ../schema.py:154 ../schema.py:175 ../schema.py:183
-#: ../schema.py:192
+#: ../extensions/help.py:154 ../schema.py:55 ../schema.py:66 ../schema.py:113
+#: ../schema.py:144 ../schema.py:155 ../schema.py:176 ../schema.py:184
+#: ../schema.py:193
 msgid "name"
 msgstr ""
 
-#: ../extensions/help.py:148
+#: ../extensions/help.py:155
 msgid "Unique name for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:149
+#: ../extensions/help.py:156
 msgid "nickname"
 msgstr ""
 
-#: ../extensions/help.py:150
+#: ../extensions/help.py:157
 msgid "Nickname (or short name) for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:151
+#: ../extensions/help.py:158
 msgid "open"
 msgstr ""
 
-#: ../extensions/help.py:152
+#: ../extensions/help.py:159
 msgid ""
 "Indicates if this invoice is still open. Automatically\n"
 "           maintained by the system\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:155
+#: ../extensions/help.py:162
 msgid "order"
 msgstr ""
 
-#: ../extensions/help.py:156
+#: ../extensions/help.py:163
 msgid "Items are ordered by this property in drop-down boxes etc."
 msgstr ""
 
-#: ../extensions/help.py:157
+#: ../extensions/help.py:164
 msgid "password"
 msgstr ""
 
-#: ../extensions/help.py:158
+#: ../extensions/help.py:165
 msgid "Password for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:159
+#: ../extensions/help.py:166
 msgid "payed_abos"
 msgstr ""
 
-#: ../extensions/help.py:160
+#: ../extensions/help.py:167
 msgid "Subscriptions for which this %(Classname)s is paying"
 msgstr ""
 
-#: ../extensions/help.py:161
+#: ../extensions/help.py:168
 msgid "payer"
 msgstr ""
 
-#: ../extensions/help.py:162
+#: ../extensions/help.py:169
 msgid "Address which is paying for this subscription"
 msgstr ""
 
-#: ../extensions/help.py:163
+#: ../extensions/help.py:170
 msgid "payment"
 msgstr ""
 
-#: ../extensions/help.py:164
+#: ../extensions/help.py:171
 msgid "Amount of payment received for this invoice"
 msgstr ""
 
-#: ../extensions/help.py:165
+#: ../extensions/help.py:172
 msgid "period"
 msgstr ""
 
-#: ../extensions/help.py:166
+#: ../extensions/help.py:173
 msgid "Subscription period in months."
 msgstr ""
 
-#: ../extensions/help.py:167
+#: ../extensions/help.py:174
 msgid "period_end"
 msgstr ""
 
-#: ../extensions/help.py:168
+#: ../extensions/help.py:175
 msgid "Date when this invoice period ends"
 msgstr ""
 
-#: ../extensions/help.py:169
+#: ../extensions/help.py:176
 msgid "period_start"
 msgstr ""
 
-#: ../extensions/help.py:170
+#: ../extensions/help.py:177
 msgid "Date when this invoice period starts"
 msgstr ""
 
-#: ../extensions/help.py:171
+#: ../extensions/help.py:178
 msgid "phone"
 msgstr ""
 
-#: ../extensions/help.py:172
+#: ../extensions/help.py:179
 msgid "Phone number(s) "
 msgstr ""
 
-#: ../extensions/help.py:173
+#: ../extensions/help.py:180
 msgid "postalcode"
 msgstr ""
 
-#: ../extensions/help.py:174
+#: ../extensions/help.py:181
 msgid "Postal code for this %(Classname)s "
 msgstr ""
 
-#: ../extensions/help.py:175
+#: ../extensions/help.py:182
 msgid "private_for"
 msgstr ""
 
-#: ../extensions/help.py:176
+#: ../extensions/help.py:183
 msgid "Flag if this is a private %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:177
+#: ../extensions/help.py:184
 msgid "queries"
 msgstr ""
 
-#: ../extensions/help.py:178
+#: ../extensions/help.py:185
 msgid "Queries for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:179
+#: ../extensions/help.py:186
 msgid "realname"
 msgstr ""
 
-#: ../extensions/help.py:180
+#: ../extensions/help.py:187
 msgid "Real name for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:181
+#: ../extensions/help.py:188
 msgid "receipt_no"
 msgstr ""
 
-#: ../extensions/help.py:182
+#: ../extensions/help.py:189
 msgid "Unique identification of this payment"
 msgstr ""
 
-#: ../extensions/help.py:183
+#: ../extensions/help.py:190
 msgid "recipients"
 msgstr ""
 
-#: ../extensions/help.py:184
+#: ../extensions/help.py:191
 msgid "Only set if message was received via email."
 msgstr ""
 
-#: ../extensions/help.py:185
+#: ../extensions/help.py:192
 msgid "roles"
 msgstr ""
 
-#: ../extensions/help.py:186
+#: ../extensions/help.py:193
 msgid "Roles for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:187
+#: ../extensions/help.py:194
 msgid "salutation"
 msgstr ""
 
-#: ../extensions/help.py:188
+#: ../extensions/help.py:195
 msgid "Salutation used for printing an address"
 msgstr ""
 
-#: ../extensions/help.py:189
+#: ../extensions/help.py:196
 msgid "send_it"
 msgstr ""
 
-#: ../extensions/help.py:190
+#: ../extensions/help.py:197
 msgid ""
 "Flag indicating if this invoice should be sent. If not set,\n"
 "           this invoice will disappear from the current list of invoices. It\n"
@@ -730,102 +744,102 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:195
+#: ../extensions/help.py:202
 msgid "street"
 msgstr ""
 
-#: ../extensions/help.py:196
+#: ../extensions/help.py:203
 msgid "Street for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:197
+#: ../extensions/help.py:204
 msgid "subject"
 msgstr ""
 
-#: ../extensions/help.py:198
+#: ../extensions/help.py:205
 msgid "Short identification of this message"
 msgstr ""
 
-#: ../extensions/help.py:199
+#: ../extensions/help.py:206
 msgid "subscriber"
 msgstr ""
 
-#: ../extensions/help.py:200
+#: ../extensions/help.py:207
 msgid "Subscriber of this subscription"
 msgstr ""
 
-#: ../extensions/help.py:201
+#: ../extensions/help.py:208
 msgid "summary"
 msgstr ""
 
-#: ../extensions/help.py:202
+#: ../extensions/help.py:209
 msgid "Short summary of this message (usually first line)"
 msgstr ""
 
-#: ../extensions/help.py:203
+#: ../extensions/help.py:210
 msgid "timezone"
 msgstr ""
 
-#: ../extensions/help.py:204
+#: ../extensions/help.py:211
 msgid "Time zone of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:205
+#: ../extensions/help.py:212
 msgid "title"
 msgstr ""
 
-#: ../extensions/help.py:206
+#: ../extensions/help.py:213
 msgid "Title of the person belonging to this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:207 ../schema.py:171
+#: ../extensions/help.py:214 ../schema.py:172
 msgid "tmplate"
 msgstr ""
 
-#: ../extensions/help.py:208
+#: ../extensions/help.py:215
 msgid ""
 "Used for writing letters (and invoices if selected as an\n"
 "           invoice template)\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:211
+#: ../extensions/help.py:218
 msgid "type"
 msgstr ""
 
-#: ../extensions/help.py:212
+#: ../extensions/help.py:219
 msgid "Mime type of this file"
 msgstr ""
 
-#: ../extensions/help.py:213
+#: ../extensions/help.py:220
 msgid "typecat"
 msgstr ""
 
-#: ../extensions/help.py:214
+#: ../extensions/help.py:221
 msgid "Category of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:215
+#: ../extensions/help.py:222
 msgid "url"
 msgstr ""
 
-#: ../extensions/help.py:216
+#: ../extensions/help.py:223
 msgid "Web-Link for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:217 ../schema.py:211
+#: ../extensions/help.py:224 ../schema.py:212
 msgid "username"
 msgstr ""
 
-#: ../extensions/help.py:218
+#: ../extensions/help.py:225
 msgid "Login-name"
 msgstr ""
 
-#: ../extensions/help.py:219 ../schema.py:179
+#: ../extensions/help.py:226 ../schema.py:180
 msgid "valid"
 msgstr ""
 
-#: ../extensions/help.py:220
+#: ../extensions/help.py:227
 msgid "Status of this address"
 msgstr ""
 
@@ -931,10 +945,6 @@ msgstr ""
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:384
-msgid "<td>x</td> <th class=\"required\">x</th> <td>x</td>"
-msgstr ""
-
 #: ../html/page.html:390
 msgid "Messages"
 msgstr ""
@@ -983,18 +993,18 @@ msgstr ""
 msgid "abo_type"
 msgstr ""
 
-#: ../schema.py:100
+#: ../schema.py:102
 msgid "adr_type_cat"
 msgstr ""
 
-#: ../schema.py:186
+#: ../schema.py:187
 msgid "query"
 msgstr ""
 
-#: ../schema.py:197
+#: ../schema.py:198
 msgid "user"
 msgstr ""
 
-#: ../schema.py:229
+#: ../schema.py:230
 msgid "file"
 msgstr ""

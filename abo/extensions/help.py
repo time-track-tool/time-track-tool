@@ -35,6 +35,13 @@ helptext = \
       ""'''Subscriptions for this %(Classname)s'''
     , ""'abotype'             :
       ""'''Type of this subscription'''
+    , ""'abo_type.adr_type'   :
+      ""'''Type of Address -- this field indicates the address type to
+           be used for marking addresses that should be exported for
+           sending. When a new subsription is generated this type will
+           be automatically added to the subscriber. When cancelling a
+           subscription, this type will be deleted from the subscriber.
+        '''
     , ""'activity'            :
       ""'''Date of last change'''
     , ""'actor'               :

@@ -31,9 +31,9 @@ class Invoice (Action, autosuper) :
             n_sent for the current invoice.
         """
         db          = self.db
-        aboprice    = db.abo.get      (iv ['abo'], 'aboprice')
-        ivg         = db.abo_price.get (aboprice, 'invoice_group')
-        iv_tmplates = db.invoice_group.get (ivg, 'invoice_template')
+        aboprice    = db.abo.get       (iv ['abo'], 'aboprice')
+        abotype     = db.abo_price.get (aboprice, 'abotype')
+        iv_tmplates = db.abo_type.get  (abotype, 'invoice_template')
         if not iv_tmplates :
             raise Reject, \
                 ( _ ('No invoice_template defined for all invoices: %s')
