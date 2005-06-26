@@ -1,5 +1,7 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title" tal:content="string:Abfrage ${Classname}">
+<title metal:fill-slot="head_title">
+ <span tal:replace="string:Abfrage ${Classname}" />
+</title>
 </title>
 <span metal:fill-slot="body_title" tal:omit-tag="python:1"
       tal:content="string:Abfrage ${Classname}"></span>
@@ -34,3 +36,4 @@
  </tal:block>
 </tal:block>
 </tal:block>
+<!-- SHA: af6a7b9781b6accc5d5d8b3ff2da8f0a0e3b7042 -->

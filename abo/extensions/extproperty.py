@@ -207,6 +207,16 @@ class ExtProperty :
     def colonfield (self, item = None) :
         return "%s:&nbsp;%s" % (self.label, self.as_listentry (item))
     # end def colonfield
+
+    def classhelp_properties (self, *propnames) :
+        assert (self.lnkcls)
+        p = ['id', self.lnkattr]
+        p.extend (propnames)
+        for pn in 'description', 'firstname' :
+            print self.lnkcls.properties.keys ()
+            if pn in self.lnkcls.properties.keys () :
+                p.append (pn)
+        return ','.join (p)
 # end class ExtProperty
 
 def init (instance) :

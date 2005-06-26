@@ -92,11 +92,11 @@ address = Class \
 
 adr_type = Class \
     ( db, ''"adr_type"
-    , code                = String    ()
+    , name                = String    ()
     , description         = String    ()
     , typecat             = Link      ("adr_type_cat")
     )
-adr_type.setkey ("code")
+adr_type.setkey ("name")
 
 adr_type_cat = Class \
     ( db, ''"adr_type_cat"
