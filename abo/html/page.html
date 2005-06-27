@@ -405,7 +405,7 @@
    <th tal:content="structure python:utils.ExtProperty
        (utils, msg.date, item = msg).colonfield ()"></th>
    <th><a tal:attributes= "href
-          string:address${context/id}?:remove:messages=${msg/id}&:action=edit"
+          string:${classname}${context/id}?:remove:messages=${msg/id}&:action=edit"
           i18n:translate="">remove</a>
    </th>
   </tr>
