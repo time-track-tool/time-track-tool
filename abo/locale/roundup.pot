@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-25 18:51+0200\n"
+"POT-Creation-Date: 2005-06-26 23:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -869,8 +869,8 @@ msgstr ""
 msgid "You can only download letters"
 msgstr ""
 
-#: ../html/_generic.help.html:9
-msgid "${property} help - ${tracker}"
+#: ../html/_generic.help.html:8
+msgid "${property} help"
 msgstr ""
 
 #: ../html/_generic.help.html:31
@@ -881,15 +881,15 @@ msgstr ""
 msgid " Apply "
 msgstr ""
 
-#: ../html/_generic.help.html:41
+#: ../html/_generic.help.html:66
 msgid "&lt;&lt; previous"
 msgstr ""
 
-#: ../html/_generic.help.html:52
+#: ../html/_generic.help.html:77
 msgid "${start}..${end} out of ${total}"
 msgstr ""
 
-#: ../html/_generic.help.html:56
+#: ../html/_generic.help.html:81
 msgid "next &gt;&gt;"
 msgstr ""
 
@@ -913,68 +913,140 @@ msgstr ""
 msgid "Properties of ${Classname}"
 msgstr ""
 
-#: ../html/invoice.send.html:33
+#: ../html/address.item.html:21
+msgid "New Subscription"
+msgstr ""
+
+#: ../html/invoice.send.html:36
 msgid "mark"
 msgstr ""
 
-#: ../html/invoice.send.html:43
+#: ../html/invoice.send.html:46
 msgid "unmark"
 msgstr ""
 
-#: ../html/invoice.send.html:53
+#: ../html/invoice.send.html:56
 msgid "generate invoices"
 msgstr ""
 
-#: ../html/invoice.send.html:63
+#: ../html/invoice.send.html:66
 msgid "mark as sent"
 msgstr ""
 
-#: ../html/page.html:300 ../html/user.item.html:64
+#: ../html/page.html:304 ../html/user.item.html:64
 msgid "history"
 msgstr ""
 
-#: ../html/page.html:382
+#: ../html/page.html:388
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:383
+#: ../html/page.html:389
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:384
+#: ../html/page.html:390
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:390
+#: ../html/page.html:396
 msgid "Messages"
 msgstr ""
 
-#: ../html/page.html:401
+#: ../html/page.html:407 ../html/query.edit.html:50
 msgid "remove"
 msgstr ""
 
-#: ../html/page.html:420
+#: ../html/page.html:426
 msgid "filename"
 msgstr ""
 
-#: ../html/page.html:421
+#: ../html/page.html:427
 msgid "changed"
 msgstr ""
 
-#: ../html/page.html:473
+#: ../html/page.html:479
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:490
+#: ../html/page.html:496
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:495
+#: ../html/page.html:501
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:658 ../html/user.index.html:33
+#: ../html/page.html:664 ../html/user.index.html:33
 msgid "Download as CSV"
+msgstr ""
+
+#: ../html/query.edit.html:4
+msgid "\"Your Queries\" Editing - ${tracker}"
+msgstr ""
+
+#: ../html/query.edit.html:6
+msgid "\"Your Queries\" Editing"
+msgstr ""
+
+#: ../html/query.edit.html:11
+msgid "You are not allowed to edit queries."
+msgstr ""
+
+#: ../html/query.edit.html:28
+msgid "Query"
+msgstr ""
+
+#: ../html/query.edit.html:29
+msgid "Include in \"Your Queries\""
+msgstr ""
+
+#: ../html/query.edit.html:30
+msgid "Edit"
+msgstr ""
+
+#: ../html/query.edit.html:31
+msgid "Private to you?"
+msgstr ""
+
+#: ../html/query.edit.html:44
+msgid "leave out"
+msgstr ""
+
+#: ../html/query.edit.html:45
+msgid "include"
+msgstr ""
+
+#: ../html/query.edit.html:49
+msgid "leave in"
+msgstr ""
+
+#: ../html/query.edit.html:54
+msgid "[query is retired]"
+msgstr ""
+
+#: ../html/query.edit.html:67
+msgid "edit"
+msgstr ""
+
+#: ../html/query.edit.html:71
+msgid "yes"
+msgstr ""
+
+#: ../html/query.edit.html:73
+msgid "no"
+msgstr ""
+
+#: ../html/query.edit.html:79
+msgid "Delete"
+msgstr ""
+
+#: ../html/query.edit.html:90
+msgid "[not yours to edit]"
+msgstr ""
+
+#: ../html/query.edit.html:96
+msgid "Save Selection"
 msgstr ""
 
 #: ../html/user.index.html:16 ../html/user.index.html:27

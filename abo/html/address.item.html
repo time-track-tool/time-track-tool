@@ -15,7 +15,14 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'salutation')"></th>
-     <td tal:content="structure context/salutation/field" colspan=3></td>
+     <td tal:content="structure context/salutation/field"></td>
+     <th/>
+     <td>
+      <a i18n:translate=""
+         tal:attributes="href string:abo?:template=item&subscriber=${context/id}&payer=${context/id}">
+       New Subscription
+      </a>
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'title')"></th>

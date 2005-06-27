@@ -21,7 +21,7 @@
                         , 'abo_price': ''
                         , 'abo_type': ''
                         , 'adr_type_cat': ''
-                        , 'adr_type' : ':columns=code,description&:sort=code&:pagesize=50&:startwith=0'
+                        , 'adr_type' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=&%3Agroup=&%3Acolumns=id&%3Acolumns=description&%3Acolumns=typecat&typecat=19&typecat=6&typecat=16&typecat=5&typecat=3&typecat=7&typecat=14&typecat=10&typecat=1&typecat=12&typecat=4&typecat=15&typecat=17&typecat=8&typecat=9&typecat=2&typecat=11&typecat=13&typecat=18&%3Asearch_text=&%40queryname=&id=&name=&description='
                         , 'currency': ''
                         , 'invoice' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=period_start&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=invoice_no&%3Acolumns=period_start&%3Acolumns=period_end&%3Acolumns=amount&%3Acolumns=currency&%3Acolumns=balance_open&%3Acolumns=open&%3Acolumns=n_sent&%3Acolumns=send_it&%3Acolumns=last_sent&%3Acolumns=date_payed&%3Acolumns=bookentry&%3Acolumns=receipt_no&%3Acolumns=payer&%3Acolumns=subscriber&%3Acolumns=abo&currency=&%3Asearch_text=&%40queryname=&id=&invoice_no=&period_start=&period_end=&amount=&balance_open=&open=1&n_sent=&send_it=&last_sent=&date_payed=&bookentry=&receipt_no='
                         , 'invoice_group' : ''
@@ -81,7 +81,9 @@
    <tr>
     <td tal:condition="python:1" class="sidebar" nowrap>
       <span class="classblock">
-       <select name="query">
+       <select name="query"
+        onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
+
         <option value="query?@template=edit">-- Abfragen --</option>
         <tal:block
          tal:define="klasses python:
@@ -110,7 +112,9 @@
          </tal:block>
         </tal:block>
        </select>
+       <!--
        <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
+       -->
       </span>
     </td>
     <td class="sidebar">
@@ -306,7 +310,9 @@
   </tr>
 
   <tr tal:condition="has_invoices">
-   <th style="text-align:left" class="required" tal:content="structure python:utils.fieldname(classname, 'invoices')" />
+   <th style="text-align:left" class="required"
+    tal:content="structure python:utils.fieldname(classname, 'invoices')"
+    tal:condition="context/invoices" />
   </tr>
   <tal:block tal:repeat="inv context/invoices/reverse"
        tal:condition="has_invoices">

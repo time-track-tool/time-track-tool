@@ -20,6 +20,27 @@
 
 from roundup.exceptions import Reject
 
+def fix_adr_type (db, cl, nodeid, new_values) :
+    if 'adr_type' in new_values :
+        type_cat  = db.adr_type_cat.lookup ('ABO')
+        adr_types = db.adr_type.find (typecat = type_cat)
+        abos = new_values.get ('abos', None)
+        if abos is None and nodeid :
+            abos = cl.get (nodeid, 'abos')
+        abos = [db.abo.getnode (a) for a in abos]
+        adr_type_dict = dict ([(a, 1) for a in new_values ['adr_type']])
+        for t in adr_types :
+            if t in adr_type_dict :
+                del adr_type_dict [t]
+        for abo in abos :
+            if not abo ['end'] :
+                abotype = db.abo_price.get (abo ['aboprice'], 'abotype')
+                adrtype = db.abo_type.get  (abotype, 'adr_type')
+                assert (adrtype)
+                adr_type_dict [adrtype] = 1
+        new_values ['adr_type'] = adr_type_dict.keys ()
+# end def check_adr_type
+
 def set_adr_defaults (db, cl, nodeid, new_values) :
     """ Set some default values for new address """
     if 'lettertitle' not in new_values  and 'title' in new_values :
@@ -32,4 +53,6 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
 
 def init (db) :
     db.address.audit ("create", set_adr_defaults)
+    db.address.audit ("create", fix_adr_type)
+    db.address.audit ("set", fix_adr_type)
 # end def init

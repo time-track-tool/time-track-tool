@@ -12,7 +12,8 @@
     <td tal:condition="python:1" class="sidebar" nowrap>
       <span class="classblock"
        tal:define="igroups python:db.invoice_group.filter()">
-       <select name="invoice_g">
+       <select name="invoice_g"
+        onChange="javascript:document.location=document.forms['menubar'].elements['invoice_g'].options[document.forms['menubar'].elements['invoice_g'].options.selectedIndex].value; ">
         <option tal:attributes="value string:invoice?@template=send">
          - Rechnungen -
         </option>
@@ -24,7 +25,9 @@
                "/>
         </tal:block>
        </select>
+       <!--
        <input type="button" value="!" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['invoice_g'].options[document.forms['menubar'].elements['invoice_g'].options.selectedIndex].value; ">
+       -->
       </span>
     </td>
     <td tal:condition="python:request.filterspec.has_key ('invoice_group')"
