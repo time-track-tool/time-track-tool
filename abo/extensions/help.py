@@ -41,6 +41,8 @@ helptext = \
            sending. When a new subsription is generated this type will
            be automatically added to the subscriber. When cancelling a
            subscription, this type will be deleted from the subscriber.
+           Note that only address types can be selected here for which
+           the address type category is "ABO".
         '''
     , ""'activity'            :
       ""'''Date of last change'''
@@ -48,6 +50,13 @@ helptext = \
       ""'''Person doing the last change'''
     , ""'address'             :
       ""'''Address for this letter'''
+    , ""'adr_type_cat.code'   :
+      ""'''Code of this %(Classname)s. The address type category with
+           code "ABO" is special: It is used by the system for marking
+           all address types that are used for marking subscribers
+           addresses of running abos. Therefore the address type
+           category with code "ABO" may not be deleted or changed.
+        '''
     , ""'user.address'        :
       ""'''Email address for this user'''
     , ""'adr_type'            :
