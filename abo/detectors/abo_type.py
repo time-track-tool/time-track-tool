@@ -24,17 +24,18 @@ from roundup.cgi.TranslationService import get_translation
 _ = lambda x : x
 
 def check (db, cl, nodeid, new_values) :
+    attr = {}
     for i in 'period', 'adr_type' :
         if i in new_values :
-            attr = new_values.get (i)
+            attr [i] = new_values.get (i)
         elif nodeid :
-            attr = cl.get (nodeid, i)
-        if not attr :
+            attr [i] = cl.get (nodeid, i)
+        if not i in attr or not attr [i] :
             raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
-    period = new_values.get   ('period',   cl.get (nodeid, 'period'))
+    period   = attr ['period']
     if int (period) != period :
         raise Reject, _ ('period must be an integer')
-    adr_type = new_values.get ('adr_type', cl.get (nodeid, 'adr_type'))
+    adr_type = attr ['adr_type']
     cat = db.adr_type.get  (adr_type, 'typecat')
     if db.adr_type_cat.get (cat, 'code') != 'ABO' :
         raise Reject, _ \
