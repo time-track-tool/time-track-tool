@@ -14,8 +14,8 @@
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'name')"></th>
-     <td tal:content="structure context/name/field"></td>
+     <th tal:content="structure python:utils.fieldname(classname, 'code')"></th>
+     <td tal:content="structure context/code/field"></td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'description')"></th>

@@ -11,7 +11,7 @@
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'], is_label = 1)
+    , utils.ExtProperty (utils, pdict ['code'], is_label = 1)
     , utils.ExtProperty (utils, pdict ['description'])
     , utils.ExtProperty (utils, pdict ['typecat'], multiselect = 1)
     );
