@@ -706,7 +706,7 @@
                tal:attributes="
                 value python:request.form.getvalue(prop.name) or nothing;
                 name  python:prop.name">
-        <span tal:condition="python:prop.lnkname"
+        <span tal:condition="python:prop.do_classhelp"
           tal:replace="structure python:db[prop.lnkname].classhelp
            ( properties=prop.classhelp_properties()
            , property=prop.selname

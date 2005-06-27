@@ -44,35 +44,37 @@ class ExtProperty :
         ( self
         , utils
         , prop
-        , item        = None
-        , selname     = None
-        , label       = None
-        , lnkcls      = None
-        , lnkattr     = None
-        , multiselect = None
-        , is_label    = None
-        , editable    = None
-        , searchable  = None # usually computed, override with False
-        , pretty      = _    # optional pretty-printing function
-        , linkclass   = None # optional function for getting css class
+        , item         = None
+        , selname      = None
+        , label        = None
+        , lnkcls       = None
+        , lnkattr      = None
+        , multiselect  = None
+        , is_label     = None
+        , editable     = None
+        , searchable   = None # usually computed, override with False
+        , pretty       = _    # optional pretty-printing function
+        , linkclass    = None # optional function for getting css class
+        , do_classhelp = None
         ) :
-        self.utils       = utils
-        self.prop        = prop
-        self.item        = item
-        self.classname   = prop._classname
-        self.klass       = prop._db.getclass (self.classname)
-        self.name        = prop._name
-        self.selname     = selname
-        self.label       = label
-        self.lnkname     = None
-        self.lnkattr     = lnkattr
-        self.multiselect = multiselect
-        self.is_label    = is_label
-        self.pretty      = pretty or _
-        self.get_linkcls = linkclass
-        self.editable    = editable
-        self.key         = None
-        self.searchable  = searchable
+        self.utils        = utils
+        self.prop         = prop
+        self.item         = item
+        self.classname    = prop._classname
+        self.klass        = prop._db.getclass (self.classname)
+        self.name         = prop._name
+        self.selname      = selname
+        self.label        = label
+        self.lnkname      = None
+        self.lnkattr      = lnkattr
+        self.multiselect  = multiselect
+        self.is_label     = is_label
+        self.pretty       = pretty or _
+        self.get_linkcls  = linkclass
+        self.editable     = editable
+        self.key          = None
+        self.searchable   = searchable
+        self.do_classhelp = do_classhelp
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
@@ -95,6 +97,8 @@ class ExtProperty :
                 self.label = ''
         if self.lnkname and not self.lnkattr :
             self.lnkattr = self.lnkcls.labelprop ()
+        if self.do_classhelp is None :
+            self.do_classhelp = self.lnkname
         if self.searchable is None or self.searchable :
             self.searchable = self.key or not self.lnkattr
         if (   self.is_label is None
