@@ -23,20 +23,23 @@ from roundup.cgi.TranslationService import get_translation
 
 _ = lambda x : x
 
-def check_period (db, cl, nodeid, new_values) :
-    period = new_values.get ('period')
-    if not period and nodeid :
-        period = cl.get (nodeid, 'period')
-    if not period :
-        raise Reject, _ ('period must be filled in')
+def check (db, cl, nodeid, new_values) :
+    for i in 'period', 'adr_type' :
+        if i in new_values :
+            attr = new_values.get (i)
+        elif nodeid :
+            attr = cl.get (nodeid, i)
+        if not attr :
+            raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
+    period = new_values.get ('period', cl.get (nodeid, 'period'))
     if int (period) != period :
         raise Reject, _ ('period must be an integer')
-# end def check_period
+# end def check
 
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.abo_type.audit ("create", check_period)
-    db.abo_type.audit ("set",    check_period)
+    db.abo_type.audit ("create", check)
+    db.abo_type.audit ("set",    check)
 # end def init
