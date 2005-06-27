@@ -48,17 +48,16 @@ errmsgs = \
 
 def err (msg, ** param) :
     d = {}
-    for k, v in param :
+    for k, v in param.iteritems () :
         d [k] = _ (v)
     return _ (errmsgs [msg]) % d
 # end def err
 
 def set_defaults (db, cl, nodeid, new_values) :
-    print "start of set_defaults"
     for i in ('aboprice', 'subscriber') :
         if not new_values.has_key (i) :
             raise Reject, err ('mandatory', attr = i)
-    for i in ('invoices',) :
+    for i in ('invoices', 'end') :
         if new_values.has_key (i) :
             raise Reject, err ('forbidden', attr = i)
     if not new_values.has_key ('amount') :
@@ -77,7 +76,6 @@ def set_defaults (db, cl, nodeid, new_values) :
         new_values ['begin'] = Date ('%d-%d-%d' % (year, month, day))
     if not new_values.has_key ('payer') :
         new_values ['payer'] = new_values ['subscriber']
-    print "end of set_defaults"
 # end def set_defaults
 
 def create_invoice (db, cl, nodeid, oldvalues) :
@@ -144,9 +142,9 @@ def check_change (db, cl, nodeid, new_values) :
                     ) :
                     raise Reject, err \
                         ( 'period'
-                        , * dict ([(x, invoice [x].pretty ('%Y-%m-%d'))
-                             for x in ('period_start', 'period_end')
-                            ])
+                        , ** dict ([(x, invoice [x].pretty ('%Y-%m-%d'))
+                              for x in ('period_start', 'period_end')
+                             ])
                         )
                 if (invoice.get ('invoice_group')) :
                     raise Reject, err ('marked')
@@ -175,6 +173,22 @@ def check_amount (db, cl, nodeid, new_values) :
         raise Reject, err ('positive', {'attr' : 'amount'})
 # end def check_amount
 
+def update_adr_type_in_address (db, cl, nodeid, oldvalues) :
+    """ We *always* add the adr_type for this abo to our subscriber
+        address. The address already has an auditor that takes care of
+        making the adr_type of the address consistent with the
+        subscribed abos. Note that we can do this only in a reactor --
+        the address auditor would otherwise not see the correct data!
+    """
+    price   = cl.get (nodeid, 'aboprice')
+    adr     = cl.get (nodeid, 'subscriber')
+    abotype = db.abo_price.get (price, 'abotype')
+    type    = db.abo_type.get  (abotype, 'adr_type')
+    types   = db.address.get (adr, 'adr_type')
+    types.append (type)
+    db.address.set (adr, adr_type = types)
+# end def update_adr_type_in_address
+
 def init (db) :
     global _
     _   = get_translation \
@@ -185,4 +199,6 @@ def init (db) :
     db.abo.audit ("set",    check_amount)
     db.abo.react ("create", update_address)
     db.abo.react ("create", create_invoice)
+    db.abo.react ("create", update_adr_type_in_address)
+    db.abo.react ("set",    update_adr_type_in_address)
 # end def init
