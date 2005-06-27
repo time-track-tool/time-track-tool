@@ -31,9 +31,14 @@ def check (db, cl, nodeid, new_values) :
             attr = cl.get (nodeid, i)
         if not attr :
             raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
-    period = new_values.get ('period', cl.get (nodeid, 'period'))
+    period = new_values.get   ('period',   cl.get (nodeid, 'period'))
     if int (period) != period :
         raise Reject, _ ('period must be an integer')
+    adr_type = new_values.get ('adr_type', cl.get (nodeid, 'adr_type'))
+    cat = db.adr_type.get  (adr_type, 'typecat')
+    if db.adr_type_cat.get (cat, 'code') != 'ABO' :
+        raise Reject, _ \
+            ('Selected address types must be in type category "ABO"')
 # end def check
 
 def init (db) :

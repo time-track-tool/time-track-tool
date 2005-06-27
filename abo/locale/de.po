@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-27 15:37+0200\n"
+"POT-Creation-Date: 2005-06-27 15:58+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -78,11 +78,16 @@ msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
 msgid "period must be an integer"
 msgstr "Laufzeit muss ganzzahlig sein"
 
+#: ../detectors/abo_type.py:41
+msgid "Selected address types must be in type category \"ABO\""
+msgstr "Ausgewählte Adresstypen müssen in der Kategorie \"ABO\" sein."
+
 #: ../detectors/adr_type_cat.py:29 ../detectors/adr_type_cat.py:37
 msgid ""
 "address type category \"ABO\" is used by the system and may not be changed."
-msgstr "Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf "
-"nicht geändert werden."
+msgstr ""
+"Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf nicht geändert "
+"werden."
 
 #: ../detectors/invoice.py:44
 #, python-format
@@ -171,8 +176,8 @@ msgstr ""
 "Markieren von Adressen für den Versand verwendet werden soll. Beim Anlegen "
 "eines neuen Abos wird automatisch der Typ bei der Abonnenten-Adresse "
 "eingetragen. Beim Stornieren eines Abos wird der Typ automatisch in der "
-"Abonnenten-Adresse gelöscht. Bitte beachten: Nur Adress-Typen die zur "
-"Typ-Kategorie \"ABO\" gehören, dürfen hier ausgewählt werden."
+"Abonnenten-Adresse gelöscht. Bitte beachten: Nur Adress-Typen die zur Typ-"
+"Kategorie \"ABO\" gehören, dürfen hier ausgewählt werden."
 
 #: ../extensions/help.py:47
 msgid "activity"
@@ -210,10 +215,11 @@ msgid ""
 "           addresses of running abos. Therefore the address type\n"
 "           category with code \"ABO\" may not be deleted or changed.\n"
 "        "
-msgstr "Code für diese %(Classname)s. Die Typ-Kategorie mit dem Code "
-"\"ABO\" wird vom System zum Markieren von Adress-Typen verwendet, die "
-"zur Markierung von Abonnenten-Adressen von laufenden Abos dienen.  Daher "
-"darf die Typ-Kategorie \"ABO\" weder verändert noch gelöscht werden."
+msgstr ""
+"Code für diese %(Classname)s. Die Typ-Kategorie mit dem Code \"ABO\" wird "
+"vom System zum Markieren von Adress-Typen verwendet, die zur Markierung von "
+"Abonnenten-Adressen von laufenden Abos dienen.  Daher darf die Typ-Kategorie "
+"\"ABO\" weder verändert noch gelöscht werden."
 
 #: ../extensions/help.py:60
 msgid "user.address"
@@ -304,8 +310,9 @@ msgid ""
 "Confirm the password here: first password and this entry\n"
 "           must match.\n"
 "        "
-msgstr "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser "
-"Eintrag müssen übereinstimmen."
+msgstr ""
+"Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
+"müssen übereinstimmen."
 
 #: ../extensions/help.py:84
 msgid "content"

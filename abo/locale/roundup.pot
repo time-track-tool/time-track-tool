@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-27 15:37+0200\n"
+"POT-Creation-Date: 2005-06-27 15:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,6 +76,10 @@ msgstr ""
 
 #: ../detectors/abo_type.py:36
 msgid "period must be an integer"
+msgstr ""
+
+#: ../detectors/abo_type.py:41
+msgid "Selected address types must be in type category \"ABO\""
 msgstr ""
 
 #: ../detectors/adr_type_cat.py:29 ../detectors/adr_type_cat.py:37
