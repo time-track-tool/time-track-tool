@@ -120,7 +120,7 @@ class ExtProperty :
     # end def _set_item
 
     def formatted (self) :
-        if not self.hprop :
+        if self.hprop is None :
             return ""
         elif isinstance (self.hprop, DateHTMLProperty) :
             return self.hprop.pretty ('%Y-%m-%d')
