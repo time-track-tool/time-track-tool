@@ -128,7 +128,7 @@
              tal:attributes="href python:'%s?%s' % (c, default_query [c])"
              tal:content="python:i18n.gettext (c)">xyzzy</a>
           <span
-            tal:condition="python:request.user.hasPermission('Edit', 'user')"
+            tal:condition="python:request.user.hasPermission('Edit', c)"
           >
              /
              <a tal:attributes="href string:${c}?:template=item">Neu</a>
