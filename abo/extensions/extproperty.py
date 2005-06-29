@@ -24,6 +24,7 @@
 
 from roundup.cgi.templating import MultilinkHTMLProperty, DateHTMLProperty
 from roundup.cgi.TranslationService import get_translation
+from roundup.cgi.templating import MissingValue
 
 _ = None
 
@@ -120,7 +121,7 @@ class ExtProperty :
     # end def _set_item
 
     def formatted (self) :
-        if self.hprop is None :
+        if self.hprop is None or isinstance (self.hprop, MissingValue) :
             return ""
         elif isinstance (self.hprop, DateHTMLProperty) :
             return self.hprop.pretty ('%Y-%m-%d')
@@ -219,14 +220,29 @@ class ExtProperty :
 
     def classhelp_properties (self, *propnames) :
         assert (self.lnkcls)
-        p = ['id', self.lnkattr]
-        p.extend (propnames)
-        for pn in 'description', 'firstname' :
-            print self.lnkcls.properties.keys ()
-            if pn in self.lnkcls.properties.keys () :
+        if self.lnkattr == self.lnkcls.getkey () :
+            p = [self.lnkattr]
+        else :
+            p = ['id', self.lnkattr]
+        for pn in propnames :
+            if pn in self.lnkcls.properties.keys () and pn != self.lnkattr :
                 p.append (pn)
         return ','.join (p)
     # end def classhelp_properties
+
+    def pretty_ids (self, idstring) :
+        if not idstring or not self.lnkcls :
+            return idstring
+        key = self.lnkcls.getkey ()
+        if not key :
+            return idstring
+        ids = idstring.split (',')
+        try :
+            ids = [self.lnkcls.lookup (i) for i in ids]
+        except KeyError :
+            pass
+        return ",".join ([self.lnkcls.get (i, key) for i in ids])
+    # end def pretty_ids
 
 # end class ExtProperty
 
