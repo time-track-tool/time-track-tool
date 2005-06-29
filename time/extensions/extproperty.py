@@ -79,35 +79,37 @@ class ExtProperty :
         ( self
         , utils
         , prop
-        , item        = None
-        , selname     = None
-        , label       = None
-        , lnkcls      = None
-        , lnkattr     = None
-        , multiselect = None
-        , is_label    = None
-        , editable    = None
-        , searchable  = None # usually computed, override with False
-        , pretty      = _    # optional pretty-printing function
-        , linkclass   = None # optional function for getting css class
+        , item         = None
+        , selname      = None
+        , label        = None
+        , lnkcls       = None
+        , lnkattr      = None
+        , multiselect  = None
+        , is_label     = None
+        , editable     = None
+        , searchable   = None # usually computed, override with False
+        , pretty       = _    # optional pretty-printing function
+        , linkclass    = None # optional function for getting css class
+        , do_classhelp = None
         ) :
-        self.utils       = utils
-        self.prop        = prop
-        self.item        = item
-        self.classname   = prop._classname
-        self.klass       = prop._db.getclass (self.classname)
-        self.name        = prop._name
-        self.selname     = selname
-        self.label       = label
-        self.lnkname     = None
-        self.lnkattr     = lnkattr
-        self.multiselect = multiselect
-        self.is_label    = is_label
-        self.pretty      = pretty or _
-        self.get_linkcls = linkclass
-        self.editable    = editable
-        self.key         = None
-        self.searchable  = searchable
+        self.utils        = utils
+        self.prop         = prop
+        self.item         = item
+        self.classname    = prop._classname
+        self.klass        = prop._db.getclass (self.classname)
+        self.name         = prop._name
+        self.selname      = selname
+        self.label        = label
+        self.lnkname      = None
+        self.lnkattr      = lnkattr
+        self.multiselect  = multiselect
+        self.is_label     = is_label
+        self.pretty       = pretty or _
+        self.get_linkcls  = linkclass
+        self.editable     = editable
+        self.key          = None
+        self.searchable   = searchable
+        self.do_classhelp = do_classhelp
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
@@ -130,6 +132,8 @@ class ExtProperty :
                 self.label = ''
         if self.lnkname and not self.lnkattr :
             self.lnkattr = self.lnkcls.labelprop ()
+        if self.do_classhelp is None :
+            self.do_classhelp = self.lnkname
         if self.searchable is None :
             self.searchable = not self.need_lookup ()
         if (   self.is_label is None
@@ -151,7 +155,7 @@ class ExtProperty :
     # end def _set_item
 
     def formatted (self) :
-        if not self.hprop :
+        if self.hprop is None :
             return ""
         elif isinstance (self.hprop, DateHTMLProperty) :
             return self.hprop.pretty ('%Y-%m-%d')
@@ -226,6 +230,8 @@ class ExtProperty :
             the item. The name of the item and its id are computed.
         """
         i = item or self.item
+        if not i.is_view_ok () :
+            return self.formatted ()
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.get_linkcls (i), self.classname, i.id, self.formatted ())
     # end def formatlink
@@ -245,6 +251,18 @@ class ExtProperty :
     def colonfield (self, item = None) :
         return "%s:&nbsp;%s" % (self.label, self.as_listentry (item))
     # end def colonfield
+
+    def classhelp_properties (self, *propnames) :
+        assert (self.lnkcls)
+        p = ['id', self.lnkattr]
+        p.extend (propnames)
+        for pn in 'description', 'firstname' :
+            print self.lnkcls.properties.keys ()
+            if pn in self.lnkcls.properties.keys () :
+                p.append (pn)
+        return ','.join (p)
+    # end def classhelp_properties
+
 # end class ExtProperty
 
 def init (instance) :
