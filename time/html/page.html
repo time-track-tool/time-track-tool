@@ -631,11 +631,13 @@
        <td>
         <input type="text"
                size="40"
-               tal:attributes="value python:request.form.getvalue(prop.selname) or nothing;
-                               name  python:prop.selname">
+               tal:define="value python:request.form.getvalue(prop.selname) or nothing"
+               tal:attributes="value python:prop.pretty_ids (value)
+                              ;name  python:prop.selname
+                              ">
         <span tal:condition="python:prop.lnkname"
           tal:replace="structure python:db[prop.lnkname].classhelp
-           ( properties='id,title,status,responsible'
+           ( properties=prop.classhelp_properties ('description', 'status', 'responsible')
            , property=prop.selname
            , form='query'
            )"/>
