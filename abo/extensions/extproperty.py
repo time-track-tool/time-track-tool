@@ -66,6 +66,7 @@ class ExtProperty :
         self.name         = prop._name
         self.selname      = selname
         self.label        = label
+        self.lnkcls       = lnkcls
         self.lnkname      = None
         self.lnkattr      = lnkattr
         self.multiselect  = multiselect
