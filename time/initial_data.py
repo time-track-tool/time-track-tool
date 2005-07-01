@@ -266,18 +266,18 @@ for order, name in ss :
     severity.create (name = name, order = order)
 
 # organisation
-# name, address, phone
-orgs = [ ("TTTech Vienna"        , "addr", "phone")
-       , ("TTTech Germany"       , "addr", "phone")
-       , ("TTTech Japan"         , "addr", "phone")
-       , ("TTTech North America" , "addr", "phone")
-       , ("TTChip"               , "addr", "phone")
-       , ("TTControl"            , "addr", "phone")
-       # XXX: add other companies name, address & phone
+# name
+orgs = [ ("TTTech Vienna",)
+       , ("TTTech Germany",)
+       , ("TTTech Japan",)
+       , ("TTTech North America",)
+       , ("TTChip",)
+       , ("TTControl",)
+       # XXX: add other companies name
        ]
 org = db.getclass ("organisation")
-for name, address, phone in orgs :
-    org.create (name = name, address = address, phone = phone)
+for name, in orgs :
+    org.create (name = name)
 
 # departments
 # name
@@ -293,19 +293,6 @@ depts = [ "Software"
 dept = db.getclass ("department")
 for name in depts :
     dept.create (name = name)
-
-# titles
-# title
-titles = [ "Dipl. Ing."
-         , "Dr."
-         , "DI Dr."
-         , "DDr."
-         # XXX: add titles (notably the international (english)
-         #      counterparts)
-         ]
-title = db.getclass ("title")
-for _title in titles :
-    title.create (title = _title)
 
 # positions
 # position
@@ -349,3 +336,4 @@ work_location.create \
     ( code = "on site"
     , description = "Person working at office"
     )
+#SHA: c07fe7ba1b9861b665703fae1c78ee96b7c9b1ff
