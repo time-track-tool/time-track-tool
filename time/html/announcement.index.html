@@ -1,6 +1,11 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 <title metal:fill-slot="head_title">Query Announcements</title>
 
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
   "batch request/batch;

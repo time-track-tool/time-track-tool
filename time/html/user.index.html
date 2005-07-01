@@ -2,6 +2,10 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 <title metal:fill-slot="head_title">User listing</title>
 <span metal:fill-slot="body_title" tal:omit-tag="python:1">User listing</span>
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
 <td class="content" metal:fill-slot="content">
 
 <span tal:condition="not:context/is_view_ok">

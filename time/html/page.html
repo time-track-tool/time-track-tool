@@ -75,84 +75,8 @@
     </td>
 -->
 
-<!-- create new -->
-    <td class="sidebar" nowrap>
-     <span class="classblock">
-      <select name="create_new"
-              onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value + '?@template=item'; ">
-       <option>-- Create New --</option>
-       <option value="action_item">Action Item</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'review')"
-               value="review">Review</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'meeting')"
-               value="meeting">Meeting</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'release')"
-               value="release">Release</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'feature')"
-               value="feature">Feature</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'defect')"
-               value="defect">Defect</option>
-       <option tal:condition="python:request.user.hasPermission('Edit', 'user')"
-               value="user">User</option>
-      </select>
-<!--
-     <input type="button" value="Go" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value + '?@template=item'; ">
--->
-     </span>
-    </td>
-
-<!-- queries
-%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=title&%3Acolumns=responsible&responsible=5&status=&meeting=&nosy=&id=&title=&deadline=&%3Asearch_text=&%40queryname=mexx+items
--->
-    <td class="sidebar" nowrap>
-     <span class="classblock"
-           tal:define="default_query string:@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=id&:columns=title&:columns=responsible&responsible=&id=&title=&:search_text=&@queryname=">
-      <select name="query"
-              onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-       <option>-- View / Query --</option>
-       <option value="query?@template=edit">Manage Queries</option>
-       <tal:block tal:define="name string:Action Items;
-                              klass string:action_item">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Reviews;
-                              klass string:review">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Announcements;
-                              klass string:announcement">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Comments;
-                              klass string:comment">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Meetings;
-                              klass string:meeting">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Releases;
-                              klass string:release">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Features;
-                              klass string:feature">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Tasks;
-                              klass string:task">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-       <tal:block tal:define="name string:Defects;
-                              klass string:defect">
-        <tal:block metal:use-macro="templates/page/macros/query_list"/>
-       </tal:block>
-      </select>
-<!--
-      <input type="button" value="Go" href="#" onClick="javascript:document.location=document.forms['menubar'].elements['selected_query'].options[document.forms['menubar'].elements['selected_query'].options.selectedIndex].value; ">
--->
-     </span>
-    </td>
+<!-- create new / query -->
+    <tal:block metal:define-slot="create_or_query" />
 
 <!-- template specific menues -->
 <!--
@@ -212,24 +136,101 @@
 </html>
 </tal:block>
 
-<!-- list of queries - needs 'klass' and 'name' and 'default_query' defined -->
-<tal:block metal:define-macro="query_list">
-       <option tal:attributes="value string:${klass}?${default_query}"
-               tal:content="name"></option>
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':None, 'klass':klass})"
-               tal:repeat="q queries"
-               tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
-               tal:content="structure string:&nbsp;&nbsp;${q/name}"
-               >  Global Queries</option>
-       <tal:block tal:condition="request/user/queries">
-       <option tal:define="queries python:db.query.filter(filterspec={'private_for':request.user.id, 'klass':klass, 'id':[q.id for q in request.user.queries]})"
-               tal:repeat="q queries"
-               tal:attributes="value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
-               tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
-               >    Private Queries</option>
-       </tal:block>
-</tal:block>
 
+<!-- Macro to display selector for new item in menu -->
+<td metal:define-macro="create_new" class="sidebar" nowrap>
+ <span class="classblock">
+  <select name="create_new"
+          onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value + '?@template=item'; ">
+   <option>-- Create New --</option>
+   <option value="action_item">Action Item</option>
+   <tal:block tal:repeat="k klasses">
+    <option tal:condition="python:request.user.hasPermission(k [1], k [0])"
+            tal:attributes="value python:k[0]"
+            tal:content="python:i18n.gettext (k[0])" />
+   </tal:block>
+  </select>
+ </span>
+</td>
+
+<!-- Macro to display query selector in menu -->
+<td metal:define-macro="select_query" class="sidebar" nowrap>
+ <span class="classblock"
+       tal:define="default_query string:@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=id&:columns=title&:columns=responsible&responsible=&id=&title=&:search_text=&@queryname=">
+  <select name="query"
+          onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
+   <option>-- View / Query --</option>
+   <option value="query?@template=edit">Manage Queries</option>
+   <tal:block
+    tal:repeat="k klasses">
+     <tal:block tal:define=
+       " name  python:i18n.gettext (k [0])
+       ; klass python:k [0]
+       ; perm  python:k [1]
+       " tal:condition="python:request.user.hasPermission (perm,klass)">
+         <option tal:attributes="value string:${klass}?${default_query}"
+                 tal:content="name"></option>
+         <option tal:define="
+            queries python:db.query.filter
+             (filterspec={'private_for':None, 'klass':klass})"
+          tal:repeat="q queries"
+          tal:attributes="
+            value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+          tal:content="structure string:&nbsp;&nbsp;${q/name}"
+         >  Global Queries</option>
+         <tal:block tal:condition="request/user/queries">
+          <option tal:define="
+             queries python:db.query.filter
+              (filterspec=
+               { 'private_for':request.user.id
+               , 'klass':klass
+               , 'id':[q.id for q in request.user.queries]
+               }
+              )"
+           tal:repeat="q queries"
+           tal:attributes="
+             value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+           tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
+          >    Private Queries</option>
+         </tal:block>
+
+     </tal:block>
+   </tal:block>
+  </select>
+ </span>
+</td>
+
+<!-- Macro to display selector for new class and query selector in menu
+     This creates the menu items used in Tracker classes
+-->
+<tal:block metal:define-macro="create_or_query_new_tracker_item">
+ <tal:block
+  tal:define="klasses python:
+   [ ('review',  'Edit')
+   , ('meeting', 'Edit')
+   , ('release', 'Edit')
+   , ('feature', 'Edit')
+   , ('defect',  'Edit')
+   , ('user',    'Edit')
+   ]">
+  <td metal:use-macro="templates/page/macros/create_new" />
+ </tal:block>
+
+ <tal:block
+  tal:define="klasses python:
+   [ ('action_item',  'View')
+   , ('announcement', 'View')
+   , ('comment',      'View')
+   , ('defect',       'View')
+   , ('feature',      'View')
+   , ('meeting',      'View')
+   , ('release',      'View')
+   , ('review',       'View')
+   , ('task',         'View')
+   ]">
+  <td metal:use-macro="templates/page/macros/select_query" />
+ </tal:block>
+</tal:block>
 
 <!-- the following macro is used for all pages which display a TTT_Issue_Class item. -->
 
