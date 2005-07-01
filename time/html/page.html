@@ -15,7 +15,55 @@
  ; has_title     python: 'title'       in props
  ; has_resp      python: 'responsible' in props
  ; has_nosy      python: 'nosy'        in props
-
+ ; menu_tracker  python:
+   ( ( ('review',       'Edit')
+     , ('meeting',      'Edit')
+     , ('release',      'Edit')
+     , ('feature',      'Edit')
+     , ('defect',       'Edit')
+     , ('user',         'Edit')
+     )
+   , ( ('action_item',  'View')
+     , ('announcement', 'View')
+     , ('comment',      'View')
+     , ('defect',       'View')
+     , ('feature',      'View')
+     , ('meeting',      'View')
+     , ('release',      'View')
+     , ('review',       'View')
+     , ('task',         'View')
+     )
+   )
+ ; menu_time     python:
+   ( ( ('cost_center',         'Edit')
+     , ('cost_center_status',  'Edit')
+     , ('daily_record',        'Edit')
+     , ('daily_record_status', 'Edit')
+     , ('department',          'Edit')
+     , ('meeting_room',        'Edit')
+     , ('org_location',        'Edit')
+     , ('organisation',        'Edit')
+     , ('position',            'Edit')
+     , ('room',                'Edit')
+     , ('time_activity',       'Edit')
+     , ('time_project',        'Edit')
+     , ('time_project_status', 'Edit')
+     , ('time_record',         'Edit')
+     , ('time_wp',             'Edit')
+     , ('time_wp_group',       'Edit')
+     , ('user',                'Edit')
+     , ('work_location',       'Edit')
+     )
+   , ( ('cost_center',   'View')
+     , ('daily_record',  'View')
+     , ('time_project',  'View')
+     , ('time_record',   'View')
+     , ('time_wp',       'View')
+     , ('time_wp_group', 'View')
+     )
+   )
+ ; menu_type     python:
+    dict ([(k [0],menu_time) for k in menu_time [0]])
 ">
  <head>
   <title metal:define-slot="head_title">Welcome @ TTTech</title>
@@ -141,12 +189,11 @@
 <td metal:define-macro="create_new" class="sidebar" nowrap>
  <span class="classblock">
   <select name="create_new"
-          onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value + '?@template=item'; ">
-   <option>-- Create New --</option>
-   <option value="action_item">Action Item</option>
+          onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
+   <option value="">-- Create New --</option>
    <tal:block tal:repeat="k klasses">
     <option tal:condition="python:request.user.hasPermission(k [1], k [0])"
-            tal:attributes="value python:k[0]"
+            tal:attributes="value python:k[0] + '?@template=item'"
             tal:content="python:i18n.gettext (k[0])" />
    </tal:block>
   </select>
@@ -159,7 +206,7 @@
        tal:define="default_query string:@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=id&:columns=title&:columns=responsible&responsible=&id=&title=&:search_text=&@queryname=">
   <select name="query"
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-   <option>-- View / Query --</option>
+   <option value="">-- View / Query --</option>
    <option value="query?@template=edit">Manage Queries</option>
    <tal:block
     tal:repeat="k klasses">
@@ -201,34 +248,17 @@
 </td>
 
 <!-- Macro to display selector for new class and query selector in menu
-     This creates the menu items used in Tracker classes
+     This creates the menu items used in Tracker classes as default
 -->
 <tal:block metal:define-macro="create_or_query_new_tracker_item">
- <tal:block
-  tal:define="klasses python:
-   [ ('review',  'Edit')
-   , ('meeting', 'Edit')
-   , ('release', 'Edit')
-   , ('feature', 'Edit')
-   , ('defect',  'Edit')
-   , ('user',    'Edit')
-   ]">
-  <td metal:use-macro="templates/page/macros/create_new" />
- </tal:block>
+ <tal:block tal:define="menu python:menu_type.get (classname, menu_tracker)">
+  <tal:block tal:define="klasses python: menu [0]">
+   <td metal:use-macro="templates/page/macros/create_new" />
+  </tal:block>
 
- <tal:block
-  tal:define="klasses python:
-   [ ('action_item',  'View')
-   , ('announcement', 'View')
-   , ('comment',      'View')
-   , ('defect',       'View')
-   , ('feature',      'View')
-   , ('meeting',      'View')
-   , ('release',      'View')
-   , ('review',       'View')
-   , ('task',         'View')
-   ]">
-  <td metal:use-macro="templates/page/macros/select_query" />
+  <tal:block tal:define="klasses python: menu [1]">
+   <td metal:use-macro="templates/page/macros/select_query" />
+  </tal:block>
  </tal:block>
 </tal:block>
 

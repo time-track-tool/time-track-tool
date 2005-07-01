@@ -7,6 +7,11 @@
         tal:replace="string:Create New Task"></span>
  </title>
 
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
    <tal:block metal:fill-slot="ttt_issue_content">
@@ -148,3 +153,4 @@
  </tal:block>
 
 </tal:block>
+<!-- SHA: 896d4a23395929da5d260f4dfbefbebbc9cd03dc -->

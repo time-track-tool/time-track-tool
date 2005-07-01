@@ -7,6 +7,11 @@
         tal:replace="string:Create New Product"></span>
  </title>
 
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
  <tal:block metal:fill-slot="content">
 <td>
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
@@ -83,3 +88,4 @@
 </td>
 </tal:block>
 </tal:block>
+<!-- SHA: d84e3448306e870f0f6f3590a83beef0cd20407d -->

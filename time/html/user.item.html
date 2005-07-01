@@ -1,15 +1,23 @@
 <!-- dollarId: user.item,v 1.7 2002/08/16 04:29:04 richard Exp dollar-->
 <tal:block metal:use-macro="templates/page/macros/icing">
 <title metal:fill-slot="head_title">
-<span tal:condition="context/id"
-      tal:replace="string:User ${context/id}: ${context/username}" />
-<tal:x tal:condition="not:context/id">New User</tal:x>
-- <span tal:replace="config/TRACKER_NAME" />
+ <tal:block i18n:translate="" tal:condition="context/id">
+  User 
+  <span tal:replace="string:${context/id}: ${context/username}" />
+ </tal:block>
+ <tal:block i18n:translate=""
+  tal:condition="not:context/id">New User</tal:block>
 </title>
-<span metal:fill-slot="body_title" tal:omit-tag="python:1">
+<span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+  <span tal:condition="not:context/id" i18n:translate="">New</span>
   User<span tal:replace="context/id" />
-   <tal:x tal:condition="context/is_edit_ok">Editing</tal:x>
+   <tal:x tal:condition="context/is_edit_ok" i18n:translate="">Editing</tal:x>
 </span>
+
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
 
 <td class="content" metal:fill-slot="content">
 
@@ -41,7 +49,7 @@
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'title')" />
-  <td tal:content="structure context/title/menu"></td>
+  <td tal:content="structure context/title/field"></td>
  </tr>
  <tr tal:condition="context/is_edit_ok">
   <th tal:content="structure python:utils.fieldname('user', 'password')" />
@@ -74,12 +82,8 @@
   <td tal:content="structure context/private_phone/field"></td>
  </tr>
  <tr>
-  <th tal:content="structure python:utils.fieldname('user', 'organisation')"/>
-  <td tal:content="structure context/organisation/menu"></td>
- </tr>
- <tr>
-  <th tal:content="structure python:utils.fieldname('user', 'location')"/>
-  <td tal:content="structure context/location/field"></td>
+  <th tal:content="structure python:utils.fieldname('user', 'org_location')"/>
+  <td tal:content="structure context/org_location/menu"></td>
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'room')"/>

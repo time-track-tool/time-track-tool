@@ -7,6 +7,11 @@
         tal:replace="string:Create New Comment"></span>
  </title>
 
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
  <tal:block metal:fill-slot="content">
  <tal:block tal:define="responsible_required string:required;
                         required_attributes string:title,responsible,status;">
@@ -78,3 +83,4 @@
  </tal:block>
  </tal:block>
 </tal:block>
+<!-- SHA: 648b51dda5ef1357572abc856d1b632c00b656d5 -->

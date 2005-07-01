@@ -7,6 +7,11 @@
         tal:replace="string:Create New Announcement"></span>
  </title>
 
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
  <tal:block metal:fill-slot="content">
  <tal:block tal:define="responsible_required string:required;
                         required_attributes string:title,responsible,version,location;
@@ -102,3 +107,4 @@
  </tal:block>
  </tal:block>
 </tal:block>
+<!-- SHA: 15a7fb4ab1fe081c121232220b35de95565e82bb -->

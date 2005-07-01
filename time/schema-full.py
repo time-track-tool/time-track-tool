@@ -101,17 +101,6 @@ query = Class \
     , private_for           = Link      ('user')
     )
 
-room = Class \
-    ( db
-    , ''"room"
-    , name                  = String    ()
-    # XXX: or more specific, but without a key
-    #, building              = String    ()
-    #, floor                 = String    ()
-    #, room_number           = String    ()
-    )
-room.setkey ("name")
-
 milestone_class = Class \
     ( db
     , ''"milestone"
@@ -245,9 +234,6 @@ organisation = Class \
     ( db
     , ''"organisation"
     , name                  = String    ()
-    # XXX: should be more specific, but would require much more classes
-    , address               = String    ()
-    , phone                 = String    ()
     # get automatically appended to the users mail address upon creation
     # of a new user.
     , mail_domain           = String    ()
@@ -256,6 +242,34 @@ organisation = Class \
     , messages              = Multilink ("msg")
     )
 organisation.setkey ("name")
+
+org_location = Class \
+    ( db
+    , ''"org_location"
+    , name                  = String    ()
+    , address               = String    ()
+    , phone                 = String    ()
+    , valid_from            = Date      ()
+    , valid_to              = Date      ()
+    , organisation          = Link      ("organisation")
+    )
+org_location.setkey ("name")
+
+room = Class \
+    ( db
+    , ''"room"
+    , name                  = String    ()
+    , org_location          = Link      ("org_location")
+    )
+room.setkey ("name")
+
+meeting_room = Class \
+    ( db
+    , ''"meeting_room"
+    , name                  = String    ()
+    , room                  = Link      ("room")
+    )
+meeting_room.setkey ("name")
 
 department = Class \
     ( db
@@ -269,19 +283,20 @@ department = Class \
     )
 department.setkey ("name")
 
-title = Class \
-    ( db
-    , ''"title"
-    , title                 = String    ()
-    )
-title.setkey ("title")
-
 position = Class \
     ( db
     , ''"position"
     , position              = String    ()
     )
 position.setkey ("position")
+
+time_project_status = Class \
+    ( db
+    , ''"time_project_status"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+time_project_status.setkey ("name")
 
 time_project = Class \
     ( db
@@ -296,6 +311,7 @@ time_project = Class \
     , time_start            = Date      ()
     , time_end              = Date      ()
     , planned_effort        = Number    ()
+    , time_project_status   = Link      ("time_project_status")
     )
 time_project.setkey ("name")
 
@@ -372,7 +388,6 @@ cost_center = Class \
     , ''"cost_center"
     , name                  = String    ()
     , description           = String    ()
-    , wp                    = Multilink ("time_wp")
     , cost_center_status    = Link      ("cost_center_status")
     )
 cost_center.setkey ("name")
@@ -404,13 +419,12 @@ user = Class \
     , phone                 = String    ()
     , external_phone        = String    ()
     , private_phone         = String    ()
-    , organisation          = Link      ("organisation")
-    , location              = String    () # e.g. Vienna HQ, XXX: Link ???
     , department            = Link      ("department")
     , supervisor            = Link      ("user")
     , substitutes           = Multilink ("user")
     , room                  = Link      ("room")
-    , title                 = Link      ("title")
+    , org_location          = Link      ("org_location")
+    , title                 = String    ()
     , position              = Link      ("position") # e.g. SW Developer
     , job_description       = String    ()
     , queries               = Multilink ("query")
@@ -609,7 +623,7 @@ TTT_Issue_Class \
     ( db
     , ''"announcement"
     , version               = String    ()
-    , location              = String    ()
+    , meeting_room          = Link      ("meeting_room")
     , comments              = Multilink ("comment")
     , review                = Link      ("review")
     , status                = Link      ("review_status")
@@ -654,7 +668,6 @@ classes = \
     , ("product"           , ["User"], ["Admin"           ])
     , ("organisation"      , ["User"], ["Admin"           ])
     , ("department"        , ["User"], ["Admin"           ])
-    , ("title"             , ["User"], ["Admin"           ])
     , ("position"          , ["User"], ["Admin"           ])
     , ("user"              , ["User"], ["Admin", "Office" ])
     , ("msg"               , ["User"], ["User"            ])
