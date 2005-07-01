@@ -2,13 +2,20 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
 <html tal:define="
-   uname         python:str(request.user.username)
+   uname         python: str (request.user.username)
  ; classname     context/_classname|db/user/_classname
  ; Classname     python: i18n.gettext (classname)
- ; klass         python:db [classname] or default
- ; is_user       python:uname!='anonymous'
+ ; klass         python: db [classname] or default
+ ; is_user       python: uname != 'anonymous'
  ; lbl           klass/_klass/labelprop
- ; labelprop     python:(lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
+ ; labelprop     python: (lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
+ ; props         python: klass._klass.getprops ()
+ ; has_msgs      python: 'messages'    in props
+ ; has_files     python: 'files'       in props
+ ; has_title     python: 'title'       in props
+ ; has_resp      python: 'responsible' in props
+ ; has_nosy      python: 'nosy'        in props
+
 ">
  <head>
   <title metal:define-slot="head_title">Welcome @ TTTech</title>
@@ -226,6 +233,10 @@
 
 <!-- the following macro is used for all pages which display a TTT_Issue_Class item. -->
 
+<!-- ttt_issue is now a misnomer. Generalized this to fit most classes
+     by checking availability of certain attributes.
+     But I didn't want to change many classes so the name sticks.
+-->
 <td metal:define-macro="ttt_issue">
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
  You are not allowed to view this page.
@@ -240,15 +251,16 @@
  <input type="hidden" name="@template" value="item">
 
  <table class="form" border="0">
-  <tr>
-   <th class="required">Title</th>
+  <tr tal:condition="has_title">
+   <th class="required"
+    tal:content="structure python:utils.fieldname(classname, 'title')" />
    <td colspan="3"
        tal:content="structure python:context.title.field (size=60)"></td>
   </tr>
 
-  <tr>
+  <tr tal:condition="has_resp">
    <th tal:attributes="class responsible_required | default"
-       tal:content="responsible_title | string:Responsible">Responsible</th>
+    tal:content="structure python:utils.fieldname(classname, 'responsible')" />
    <td colspan="3">
     <tal:block tal:define="name      string:responsible;
                            form      string:itemSynopsis;
@@ -261,8 +273,8 @@
 
   <tal:block metal:define-slot="ttt_issue_content"></tal:block>
 
-  <tr>
-   <th>Nosy List</th>
+  <tr tal:condition="has_nosy">
+   <th tal:content="structure python:utils.fieldname(classname, 'nosy')" />
    <td colspan="3">
     <span tal:replace="structure context/nosy/field" />
     <span tal:condition="context/is_edit_ok"
@@ -273,16 +285,7 @@
    </td>
   </tr>
 
-  <tr tal:condition="context/is_edit_ok">
-   <th>Message</th>
-   <td colspan="3">
-    <textarea tal:content="request/form/@note/value | default"
-              name="@note"
-              wrap="hard"
-              rows="8"
-              cols="80"></textarea>
-   </td>
-  </tr>
+  <tr metal:use-macro="templates/page/macros/message_box" />
 
   <tr tal:condition="context/is_edit_ok">
    <th></th>
@@ -302,6 +305,25 @@
         tal:attributes="value required_attributes | string:title">
 </form>
 
+ <table metal:use-macro="templates/page/macros/note_required" />
+ <table metal:use-macro="templates/page/macros/message_display" />
+
+</td>
+
+<tal:block metal:define-macro="message_box">
+  <tr tal:condition="python:context.is_edit_ok () and has_msgs">
+   <th tal:content="structure python:utils.fieldname(classname,'msg')" />
+   <td colspan="3">
+    <textarea tal:content="request/form/@note/value | default"
+              name="@note"
+              wrap="hard"
+              rows="8"
+              cols="80"></textarea>
+   </td>
+  </tr>
+</tal:block>
+
+<tal:block metal:define-macro="note_required">
  <table class="form" tal:condition="not:context/id">
  <tr>
   <td>Note:&nbsp;</td>
@@ -309,8 +331,10 @@
   <td>&nbsp;fields are required.</td>
  </tr>
  </table>
+</tal:block>
 
- <table class="messages" tal:condition="context/messages">
+<tal:block metal:define-macro="message_display">
+ <table class="messages" tal:condition="python:has_msgs and context.messages">
   <tr>
    <th colspan="3" class="header">Messages</th>
   </tr>
@@ -338,7 +362,7 @@
   </tr>
   </tal:block>
  </table>
-</td>
+</tal:block>
 
 <!-- list links to a group of items -->
 <!-- needs items and klassname set up -->

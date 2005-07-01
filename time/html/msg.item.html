@@ -1,0 +1,43 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title"> 
+<span tal:condition="context/id" tal:replace="string:${Classname}:
+${context/id} angelegt von ${context/creator}" />
+<tal:x tal:condition="not:context/id">Neue Notiz</tal:x> 
+</title> 
+<span metal:fill-slot="body_title" tal:omit-tag="python:1"
+      tal:content="python:i18n.gettext (context._classname)"></span>
+
+<td class="content" metal:fill-slot="content">
+<table class="form">
+
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'author')"></th>
+ <td tal:content="context/author"></td>
+</tr>
+
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'recipients')"></th>
+ <td tal:content="context/recipients"></td>
+</tr>
+
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'date')"></th>
+ <td tal:content="context/date"></td>
+</tr>
+</table>
+
+<table class="messages">
+ <tr>
+  <th colspan=2 class="header"
+   tal:content="structure python:utils.fieldname (classname, 'content')">
+  </th>
+ </tr>
+ <tr>
+  <td class="content" colspan=2><pre tal:content="structure context/content/hyperlinked"></pre></td>
+ </tr>
+</table>
+
+<tal:block tal:replace="structure context/history" />
+</td>
+
+</tal:block>

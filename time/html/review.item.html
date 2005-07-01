@@ -8,8 +8,7 @@
  </title>
 
  <tal:block metal:fill-slot="content">
- <tal:block tal:define="responsible_title string:Moderator;
-                        responsible_required string:required;
+ <tal:block tal:define="responsible_required string:required;
                         required_attributes string:title,responsible,qa_representative,recorder,authors,peer_reviewers,cut_off_date;
                         announcements python:db.announcement.filter ( filterspec = { 'review' : context.id }
                                                                     , sort       = ( '+', 'id'    )
@@ -19,7 +18,8 @@
    <tal:block metal:fill-slot="ttt_issue_content">
 
     <tr>
-     <th class="required">Recorder</th>
+     <th class="required" 
+      tal:content="structure python:utils.fieldname(classname, 'recorder')" />
      <td>
       <tal:block tal:define="name      string:recorder;
                              form      string:itemSynopsis;
@@ -28,7 +28,9 @@
        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
       </tal:block>
      </td>
-     <th class="required">QA Representative</th>
+     <th class="required"
+         tal:content="structure python:utils.fieldname
+         (classname, 'qa_representative')" />
      <td>
       <tal:block tal:define="name      string:qa_representative;
                              form      string:itemSynopsis;
@@ -40,7 +42,8 @@
     </tr>
 
     <tr>
-     <th class="required">Authors</th>
+     <th class="required"
+      tal:content="structure python:utils.fieldname (classname, 'authors')" />
      <td colspan="3">
       <tal:block tal:define="size      string:3;
                              name      string:authors;
@@ -53,7 +56,9 @@
     </tr>
 
     <tr>
-     <th class="required">Peer Reviewers</th>
+     <th class="required"
+      tal:content="structure python:utils.fieldname
+      (classname, 'peer_reviewers')" />
      <td>
       <tal:block tal:define="size      string:3;
                              name      string:peer_reviewers;
@@ -63,7 +68,8 @@
        <tal:block metal:use-macro="templates/userlist/macros/user_multi"></tal:block>
       </tal:block>
      </td>
-     <th>Optional Reviewers</th>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'opt_reviewers')" />
      <td>
       <tal:block tal:define="size      string:3;
                              name      string:opt_reviewers;
@@ -76,7 +82,9 @@
     </tr>
 
     <tr>
-     <th class="required">Cut Off Date</th>
+     <th class="required"
+      tal:content="structure python:utils.fieldname
+      (classname, 'cut_off_date')" />
      <td colspan="3">
       <span tal:content="structure context/cut_off_date/field"/>
       <span tal:content="structure python:utils.date_help (request, context.cut_off_date)"/>
@@ -84,7 +92,8 @@
     </tr>
 
     <tr>
-     <th>Final Meeting Date</th>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'final_meeting_date')" />
      <td colspan="3">
       <span tal:content="structure context/final_meeting_date/field"/>
       <span tal:content="structure python:utils.date_help (request, context.final_meeting_date)"/>
@@ -92,7 +101,8 @@
     </tr>
 
     <tr tal:condition="announcements">
-     <th>Announcements</th>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'announcements')" />
      <td colspan="3" class="task_list">
       <tal:block tal:define="items announcements;
                              klassname string:announcement;">
@@ -104,24 +114,29 @@
     <tal:block tal:condition="context/id">
     <tr tal:condition="context/is_edit_ok"
         class="add_new">
-     <th>Add Announcement</th>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'add_announcement')" />
      <td>
       <table>
        <tr>
-        <th class="required">Title</th>
+        <th class="required" tal:content="structure python:utils.fieldname
+         ('announcement', 'title')" />
         <td><input type="text" name="announcement-1@title" size="40"></td>
        </tr>
        <tr>
-        <th class="required">Version</th>
+        <th class="required" tal:content="structure python:utils.fieldname
+         ('announcement', 'version')" />
         <td><input type="text" name="announcement-1@version" size="40"></td>
        </tr>
        <tr>
-        <th class="required">Location</th>
+        <th class="required" tal:content="structure python:utils.fieldname
+         ('announcement', 'location')" />
         <td><input type="text" name="announcement-1@location" size="40"></td>
        </tr>
 <!-- doesnt work !
        <tr>
-        <th>Add File</th>
+        <th tal:content="structure python:utils.fieldname
+         (classname, 'add_file')" />
         <td><input type="file" name="announcement-1@file" size="40"></td>
        </tr>
 -->
@@ -134,7 +149,8 @@
 
 
     <tr>
-     <th>Files</th>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'files')" />
      <td colspan="3">
       <tal:block metal:use-macro="templates/page/macros/ttt_issue_files"/>
      </td>

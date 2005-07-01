@@ -343,3 +343,9 @@ daily_record_status.create \
     ( name        = "accepted"
     , description = "Accepted by supervisor"
     )
+
+work_location = db.getclass ('work_location')
+work_location.create \
+    ( code = "on site"
+    , description = "Person working at office"
+    )

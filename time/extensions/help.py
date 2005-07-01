@@ -33,8 +33,14 @@ helptext = \
       ""'''Person doing the last change'''
     , ""'alternate_addresses' :
       ""'''Alternate email addresses for this user, one per line'''
+    , ""'announcements' :
+      ""'''Announcements for this %(Classname)s'''
+    , ""'add_announcement' :
+      ""'''Mail out an announcement for another review step'''
     , ""'author'              :
-      ""'''Author of this message'''
+      ""'''Author of this %(Classname)s'''
+    , ""'authors'              :
+      ""'''Authors of the artefact of this %(Classname)s'''
     , ""'company'             :
       ""'''Company for %(Classname)s'''
     , ""'confirm'             :
@@ -47,6 +53,8 @@ helptext = \
       ""'''Date of creation of this record'''
     , ""'creator'             :
       ""'''Person who created this record'''
+    , ""'cut_off_date'        :
+      ""'''Date until when this %(Classname)s must be finished'''
     , ""'department'          :
       ""'''Department for %(Classname)s, e.g., SW, Sales.'''
     , ""'description'         :
@@ -59,8 +67,12 @@ helptext = \
            the company prefix stored in "Organisation" to form a valid
            external phone number.
         '''
+    , ""'add_file'            :
+      ""'''Add an new file for %(Classname)s'''
     , ""'files'               :
       ""'''Files for %(Classname)s'''
+    , ""'final_meeting_date'  :
+      ""'''Date of final meeting for this %(Classname)s'''
     , ""'firstname'           :
       ""'''First name for this user, e.g., Ralf'''
     , ""'id'                  :
@@ -88,22 +100,32 @@ helptext = \
     , ""'messages'            :
       ""'''List of messages for %(Classname)s'''
     , ""'msg'                 :
-      ""'''Field for messages for %(Classname)s'''
+      ""'''New message or notice for %(Classname)s'''
     , ""'name'                :
       ""'''Unique name for %(Classname)s'''
     , ""'nickname'            :
       ""'''Nickname (or short name) for this %(Classname)s, e.g., rsc'''
+    , ""'nosy'                :
+      ""'''People receiving announcements (messages) for %(Classname)s'''
+    , ""'opt_reviewers'       :
+      ""'''Optional reviewers for this %(Classname)s'''
     , ""'order'               :
       ""'''Items are ordered by this property in drop-down boxes etc.'''
     , ""'organisation'        :
       ""'''Organisation for %(Classname)s -- e.g., TTTech.'''
     , ""'password'            :
       ""'''Password for this %(Classname)s'''
+    , ""'peer_reviewers'      :
+      ""'''Peer reviewers for this %(Classname)s'''
     , ""'phone'               :
       ""'''Short phone number (suffix) only, e.g., 42.
            Can be concatenated with
            the company prefix stored in "Organisation" to form a valid
            external phone number.
+        '''
+    , ""'planned_effort'      :
+      ""'''Effort for the %(Classname)s in man-days; for the project
+           this is from the Eval-Sheet.
         '''
     , ""'private_for'         :
       ""'''Flag if this is a private %(Classname)s'''
@@ -111,8 +133,12 @@ helptext = \
       ""'''Privat phone number. Always as a full number valid on the
            PSTN.
         '''
+    , ""'qa_representative'   :
+      ""'''Representative from the QA department for this %(Classname)s'''
     , ""'queries'             :
       ""'''Queries for this %(Classname)s'''
+    , ""'recorder'            :
+      ""'''Person responsible for recording findings'''
     , ""'realname'            :
       ''"""Real name for this %(Classname)s -- automatically generated
            by the system from first and last name. Needed by roundup
@@ -123,6 +149,12 @@ helptext = \
       ""'''Only set if message was received via email.'''
     , ""'responsible'         :
       ""'''Person responsible for %(Classname)s'''
+    , ""'review.responsible'  :
+      ""'''Moderator for %(Classname)s -- Note: If you do not specify
+           the moderator, you will get an indication that the field
+           "Responsible" must be filled in -- the moderator is reponsible for
+           %(Classname)s.
+        '''
     , ""'roles'               :
       ""'''Roles for this %(Classname)s'''
     , ""'room'               :
@@ -137,6 +169,8 @@ helptext = \
       ""'''Supervisor for %(Classname)s'''
     , ""'timezone'            :
       ""'''Time zone of this %(Classname)s'''
+    , ""'title'            :
+      ""'''Title of this %(Classname)s'''
     , ""'type'                :
       ""'''Mime type of this file'''
     , ""'url'                 :
@@ -147,6 +181,10 @@ helptext = \
       ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
     , ""'username'            :
       ""'''Login-name for this %(Classname)s, e.g., schlatterbeck'''
+    , ""'wp_no'               :
+      ""'''Work package number in the project. Number must be unique for
+           the project and cannot be changed after assignment.
+        '''
     }
 
 def combined_name (cls, attr) :
@@ -167,6 +205,10 @@ def help_properties (klass) :
         p.append ('msg')
     if klass.classname == 'user' :
         p.append ('confirm')
+    if 'announcements' in properties :
+        p.append ('add_announcement')
+    if 'files' in properties :
+        p.append ('add_file')
     for i in properties.iterkeys () :
         pname = combined_name (klass.classname, i)
         if pname in helptext :

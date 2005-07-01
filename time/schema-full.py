@@ -295,6 +295,7 @@ time_project = Class \
     , department            = Link      ("department")
     , time_start            = Date      ()
     , time_end              = Date      ()
+    , planned_effort        = Number    ()
     )
 time_project.setkey ("name")
 
@@ -302,19 +303,23 @@ time_wp = Class \
     ( db
     , ''"time_wp"
     , name                  = String    ()
+    , wp_no                 = String    ()
     , description           = String    ()
     , responsible           = Link      ("user")
     , project               = Link      ("time_project")
+    , time_start            = Date      ()
+    , time_end              = Date      ()
+    , planned_effort        = Number    ()
     )
-time_wp.setkey ("name")
+time_wp.setkey ("name") # FIXME
 
-onsite = Class \
+work_location = Class \
     ( db
-    , ''"onsite"
+    , ''"work_location"
     , code                  = String    ()
     , description           = String    ()
     )
-onsite.setkey ("code")
+work_location.setkey ("code")
 
 daily_record_status = Class \
     ( db
@@ -402,7 +407,7 @@ user = Class \
     , organisation          = Link      ("organisation")
     , location              = String    () # e.g. Vienna HQ, XXX: Link ???
     , department            = Link      ("department")
-    , superior              = Link      ("user")
+    , supervisor            = Link      ("user")
     , substitutes           = Multilink ("user")
     , room                  = Link      ("room")
     , title                 = Link      ("title")

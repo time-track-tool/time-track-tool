@@ -8,7 +8,11 @@
 
 <tal:block
  tal:define=
-  " excpt     python: ('creator', 'creation', 'activity', 'actor', 'content')
+  " excpt     python:
+              ( 'creator', 'creation'
+              , 'actor',   'activity'
+              , 'content', 'messages', 'files'
+              )
   ; labelprop python: klass._klass.labelprop ()
   ; linkprops python: (labelprop, 'id')
   ; props     python:[i for i in utils.sorted_properties (db, context)
@@ -70,6 +74,14 @@
    </td>
   </tr>
  </tal:block>
+ <tr metal:use-macro="templates/page/macros/message_box" />
+ <tr tal:condition="has_files">
+   <th tal:content="structure python:utils.fieldname (classname, 'files')" />
+   <td colspan="3">
+    <tal:block metal:use-macro="templates/page/macros/ttt_issue_files"/>
+   </td>
+ </tr>
+
  <tr>
   <td>&nbsp;
   </td>
@@ -85,6 +97,9 @@
 </table>
 
 </form>
+
+ <table metal:use-macro="templates/page/macros/note_required" />
+ <table metal:use-macro="templates/page/macros/message_display" />
 
 
 </tal:block>
