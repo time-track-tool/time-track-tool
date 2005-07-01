@@ -16,7 +16,6 @@ You are not allowed to view this page.
 <tr>
  <th>Username</th>
  <th>Real name</th>
- <th>Organisation</th>
  <th>Email address</th>
  <th>Phone number</th>
  <th tal:condition="context/is_edit_ok">Retire</th>
@@ -28,7 +27,6 @@ You are not allowed to view this page.
      tal:content="user/username">username</a>
  </td>
  <td tal:content="python:user.realname.plain() or default">&nbsp;</td>
- <td tal:content="python:user.organisation.plain() or default">&nbsp;</td>
  <td tal:content="python:user.address.email() or default">&nbsp;</td>
  <td tal:content="python:user.phone.plain() or default">&nbsp;</td>
  <td tal:condition="context/is_edit_ok">
@@ -40,3 +38,4 @@ You are not allowed to view this page.
 </td>
 
 </tal:block>
+<!-- SHA: efe66393d3136a2367e2f34495990852faf4d277 -->
