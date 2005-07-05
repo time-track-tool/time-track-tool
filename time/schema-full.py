@@ -361,7 +361,7 @@ time_record = Class \
     , duration              = Number    ()
     , wp                    = Link      ("time_wp")
     , time_activity         = Link      ("time_activity")
-    , onsite                = Link      ("onsite")
+    , work_location         = Link      ("work_location")
     , comment               = String    ()
     )
 
