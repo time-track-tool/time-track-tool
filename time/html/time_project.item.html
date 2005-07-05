@@ -1,0 +1,93 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+   <tal:block metal:fill-slot="ttt_issue_content">
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'deputy')"/>
+     <td colspan="3">
+      <tal:block tal:define="name      string:deputy;
+                             form      string:itemSynopsis;
+                             dont_care string:don't care;
+                             selected  context/deputy/id | string:0">
+       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      </tal:block>
+     </td>
+
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'description')"/>
+     <td tal:content="structure python:context.description.field (60)"
+      colspan="3"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'organisation')"/>
+     <td tal:content="structure python:context.organisation.menu ()"
+         tal:condition="context/id"/>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'department')"/>
+     <td tal:content="structure python:context.department.menu ()"
+         tal:condition="context/id"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'time_start')"/>
+     <td>
+      <span tal:content="structure python:context.time_start.field ()"/>
+      <span tal:replace="structure python:utils.date_help
+            (request, context.time_start)"/>
+      &nbsp;
+     </td>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'time_end')"/>
+     <td>
+      <span tal:replace="structure python:context.time_end.field ()"/>
+      <span tal:replace="structure python:utils.date_help
+            (request, context.time_end)"/>
+     </td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'planned_effort')"/>
+     <td tal:content="structure python:context.planned_effort.field ()"
+         tal:condition="context/id" colspan="3"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'team_members')"/>
+     <td colspan="3">
+      <tal:block tal:define="size      string:5;
+                             name      string:team_members;
+                             form      string:itemSynopsis;
+                             dont_care string:don't care;
+                             selected  python:str([u.id for u in context.team_members.reverse ()] or [''])[1:-1]">
+       <tal:block metal:use-macro="templates/userlist/macros/user_multi"/>
+      </tal:block>
+     </td>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

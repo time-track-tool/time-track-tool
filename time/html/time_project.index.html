@@ -1,0 +1,36 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title">Query Announcements</title>
+
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['name'])
+    , utils.ExtProperty (utils, pdict ['description'])
+    , utils.ExtProperty (utils, pdict ['responsible'],         multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['deputy'],              multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['team_members'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['organisation'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['department'],          multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['time_project_status'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['time_start'])
+    , utils.ExtProperty (utils, pdict ['time_end'])
+    , utils.ExtProperty (utils, pdict ['planned_effort'])
+    );
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+   <tal:block metal:fill-slot="query_title">Query Announcements</tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
+</tal:block>

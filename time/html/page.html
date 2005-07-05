@@ -266,79 +266,78 @@
 
 <!-- ttt_issue is now a misnomer. Generalized this to fit most classes
      by checking availability of certain attributes.
-     But I didn't want to change many classes so the name sticks.
+     But I didn't want to change many *.item.html so the name sticks.
 -->
 <td metal:define-macro="ttt_issue">
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
  You are not allowed to view this page.
  </span>
-<form method="POST"
-      onSubmit="return submit_once()"
-      name="itemSynopsis"
-      enctype="multipart/form-data"
-      tal:condition="context/is_view_ok"
-      tal:attributes="action context/designator">
+ <form method="POST"
+       onSubmit="return submit_once()"
+       name="itemSynopsis"
+       enctype="multipart/form-data"
+       tal:condition="context/is_view_ok"
+       tal:attributes="action context/designator">
 
- <input type="hidden" name="@template" value="item">
+  <input type="hidden" name="@template" value="item">
 
- <table class="form" border="0">
-  <tr tal:condition="has_title">
-   <th class="required"
-    tal:content="structure python:utils.fieldname(classname, 'title')" />
-   <td colspan="3"
-       tal:content="structure python:context.title.field (size=60)"></td>
-  </tr>
+  <table class="form" border="0">
+   <tr>
+    <th class="required"
+     tal:content="structure python:utils.fieldname(classname, labelprop)"/>
+    <td colspan="3"
+        tal:content="structure python:context [labelprop].field (size=60)"/>
+   </tr>
+   <tr tal:condition="has_resp">
+    <th tal:attributes="class responsible_required | default"
+     tal:content="structure python:utils.fieldname(classname, 'responsible')">
+    </th>
+    <td colspan="3">
+     <tal:block tal:define="name      string:responsible;
+                            form      string:itemSynopsis;
+                            dont_care string:don't care;
+                            selected  context/responsible/id | string:0">
+      <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+     </tal:block>
+    </td>
+   </tr>
 
-  <tr tal:condition="has_resp">
-   <th tal:attributes="class responsible_required | default"
-    tal:content="structure python:utils.fieldname(classname, 'responsible')" />
-   <td colspan="3">
-    <tal:block tal:define="name      string:responsible;
-                           form      string:itemSynopsis;
-                           dont_care string:don't care;
-                           selected  context/responsible/id | string:0">
-     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-    </tal:block>
-   </td>
-  </tr>
+   <tal:block metal:define-slot="ttt_issue_content"></tal:block>
 
-  <tal:block metal:define-slot="ttt_issue_content"></tal:block>
+   <tr tal:condition="has_nosy">
+    <th tal:content="structure python:utils.fieldname(classname, 'nosy')"></th>
+    <td colspan="3">
+     <span tal:replace="structure context/nosy/field"></span>
+     <span tal:condition="context/is_edit_ok"
+           tal:replace="structure python:db.user.classhelp
+                                             ( 'username,firstname,lastname'
+                                             , property='nosy'
+                                             , width='600')"></span><br>
+    </td>
+   </tr>
 
-  <tr tal:condition="has_nosy">
-   <th tal:content="structure python:utils.fieldname(classname, 'nosy')" />
-   <td colspan="3">
-    <span tal:replace="structure context/nosy/field" />
-    <span tal:condition="context/is_edit_ok"
-          tal:replace="structure python:db.user.classhelp
-                                            ( 'username,firstname,lastname'
-                                            , property='nosy'
-                                            , width='600')" /><br>
-   </td>
-  </tr>
+   <tr metal:use-macro="templates/page/macros/message_box" />
 
-  <tr metal:use-macro="templates/page/macros/message_box" />
+   <tr tal:condition="context/is_edit_ok">
+    <th></th>
+    <td colspan="3">
+     <tal:block tal:replace="structure context/submit"/>
+     <input tal:condition="context/id"
+            type="button" value="Show History"
+            tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
+    </td>
+   </tr>
+  </table>
+  <p tal:condition="context/id" tal:content="structure string:Created on
+    <b>${context/creation}</b> by <b>${context/creator}</b>, last
+    changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
 
-  <tr tal:condition="context/is_edit_ok">
-   <th></th>
-   <td colspan="3">
-    <tal:block tal:replace="structure context/submit"/>
-    <input tal:condition="context/id"
-           type="button" value="Show History"
-           tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
-   </td>
-  </tr>
- </table>
- <p tal:condition="context/id" tal:content="structure string:Created on
-   <b>${context/creation}</b> by <b>${context/creator}</b>, last
-   changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
-
- <input type="hidden" name="@required"
-        tal:attributes="value required_attributes | string:title">
-</form>
+  <input type="hidden" name="@required"
+         tal:attributes="value required_attributes | labelprop">
+ </form>
 
  <table metal:use-macro="templates/page/macros/note_required" />
  <table metal:use-macro="templates/page/macros/message_display" />
-
 </td>
 
 <tal:block metal:define-macro="message_box">

@@ -87,7 +87,12 @@ def date_help \
     item: HTMLProperty e.g.: context.deadline
     """
     if item.isset () :
-        date = "&date=%s" % item
+        # Hack: rup seems to have a bug where sometimes item._value is a
+        # string and not a Date class... in this case __str__ fails.
+        # Looks like this happens when an error is raised.
+        x = item
+        if type ("") == type (item._value) : x = item._value
+        date = "&date=%s" % x
     else :
         date = ""
     return ( """<a class="classhelp" """
@@ -215,3 +220,4 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
+#SHA: 2f60bc3f3d63709cefb02833b17881bdacda78b7

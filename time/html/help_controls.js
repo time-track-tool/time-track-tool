@@ -105,5 +105,6 @@ function selectField(name) {
       if (obj && obj.focus){obj.focus();}
       if (obj && obj.select){obj.select();}
     }
+    clearList ()
 }
 

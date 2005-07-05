@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-07-01 18:07+0200\n"
+"POT-Creation-Date: 2005-07-02 16:08+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr ""
 #: ../locale/attr.py:339 ../locale/attr.py:347 ../locale/attr.py:354
 #: ../locale/attr.py:379 ../locale/attr.py:385 ../locale/attr.py:391
 #: ../locale/attr.py:402 ../locale/attr.py:415 ../locale/attr.py:425
-#: ../locale/attr.py:439 ../locale/attr.py:450 ../locale/attr.py:457
+#: ../locale/attr.py:439 ../locale/attr.py:450 ../locale/attr.py:458
 #: ../locale/attr.py:470 ../locale/attr.py:497 attr.py:11 attr.py:19
 #: attr.py:34 attr.py:49 attr.py:54 attr.py:65 attr.py:73 attr.py:79
 #: attr.py:89 attr.py:116 attr.py:127 attr.py:140 attr.py:150 attr.py:157
@@ -35,7 +35,7 @@ msgstr ""
 #: attr.py:238 attr.py:252 attr.py:264 attr.py:265 attr.py:278 attr.py:284
 #: attr.py:292 attr.py:312 attr.py:317 attr.py:339 attr.py:347 attr.py:354
 #: attr.py:379 attr.py:385 attr.py:391 attr.py:402 attr.py:415 attr.py:425
-#: attr.py:439 attr.py:450 attr.py:457 attr.py:470 attr.py:497
+#: attr.py:439 attr.py:450 attr.py:458 attr.py:470 attr.py:497
 msgid "activity"
 msgstr "Activity"
 
@@ -303,7 +303,7 @@ msgstr ""
 #: ../locale/attr.py:340 ../locale/attr.py:348 ../locale/attr.py:355
 #: ../locale/attr.py:377 ../locale/attr.py:386 ../locale/attr.py:392
 #: ../locale/attr.py:403 ../locale/attr.py:419 ../locale/attr.py:426
-#: ../locale/attr.py:434 ../locale/attr.py:451 ../locale/attr.py:458
+#: ../locale/attr.py:434 ../locale/attr.py:451 ../locale/attr.py:459
 #: ../locale/attr.py:485 ../locale/attr.py:498 attr.py:13 attr.py:20
 #: attr.py:36 attr.py:51 attr.py:55 attr.py:67 attr.py:74 attr.py:83
 #: attr.py:90 attr.py:101 attr.py:123 attr.py:135 attr.py:153 attr.py:158
@@ -311,7 +311,7 @@ msgstr ""
 #: attr.py:234 attr.py:253 attr.py:259 attr.py:272 attr.py:280 attr.py:288
 #: attr.py:297 attr.py:314 attr.py:326 attr.py:340 attr.py:348 attr.py:355
 #: attr.py:377 attr.py:386 attr.py:392 attr.py:403 attr.py:419 attr.py:426
-#: attr.py:434 attr.py:451 attr.py:458 attr.py:485 attr.py:498
+#: attr.py:434 attr.py:451 attr.py:459 attr.py:485 attr.py:498
 msgid "id"
 msgstr "Id"
 
@@ -769,6 +769,14 @@ msgstr ""
 msgid "Properties of ${Classname}"
 msgstr ""
 
+#: ../html/time_wp_group.item.html:7
+msgid "${classname_id} created by ${creator}"
+msgstr ""
+
+#: ../html/time_wp_group.item.html:10
+msgid "New ${Classname}"
+msgstr ""
+
 #: ../html/user.item.html:6
 msgid "User"
 msgstr "User"
@@ -1089,7 +1097,7 @@ msgstr "Comment"
 msgid "time_activity"
 msgstr "Activity"
 
-#: ../locale/attr.py:432 ../locale/attr.py:459 attr.py:432 attr.py:459
+#: ../locale/attr.py:432 attr.py:432
 msgid "wp"
 msgstr "Work Package"
 
@@ -1112,6 +1120,10 @@ msgstr "Start"
 #: ../locale/attr.py:448 attr.py:448
 msgid "project"
 msgstr "Project"
+
+#: ../locale/attr.py:457 attr.py:457
+msgid "wps"
+msgstr "Work Packages"
 
 #: ../locale/attr.py:462 attr.py:462
 msgid "supervisor"

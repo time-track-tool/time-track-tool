@@ -327,7 +327,6 @@ time_wp = Class \
     , time_end              = Date      ()
     , planned_effort        = Number    ()
     )
-time_wp.setkey ("name") # FIXME
 
 work_location = Class \
     ( db
@@ -379,7 +378,7 @@ time_wp_group = Class \
     , ''"time_wp_group"
     , name                  = String    ()
     , description           = String    ()
-    , wp                    = Multilink ("time_wp")
+    , wps                   = Multilink ("time_wp")
     )
 time_wp_group.setkey ("name")
 
