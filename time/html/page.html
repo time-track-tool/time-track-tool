@@ -581,7 +581,13 @@
     <td>
      View
      <input type="text" size="4" name=":pagesize"
-            tal:attributes="value request/pagesize"> items per page,
+            tal:attributes="value request/pagesize">
+      items per page&nbsp;&nbsp;
+      <a tal:attributes="href python:request.indexargs_url
+            (classname, {'@action':'export_csv_names'})" i18n:translate="">
+            Download as CSV
+      </a>
+      <br>
       Sort by:<select name=":sort"
                       onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- nothing -</option>

@@ -1,41 +1,46 @@
-<!-- dollarId: user.index,v 1.3 2002/07/09 05:29:51 richard Exp dollar-->
 <tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title">User listing</title>
-<span metal:fill-slot="body_title" tal:omit-tag="python:1">User listing</span>
+<title metal:fill-slot="head_title" tal:content="Classname" />
+
 <tal:block metal:fill-slot="create_or_query">
  <tal:block 
   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
 </tal:block>
-<td class="content" metal:fill-slot="content">
 
-<span tal:condition="not:context/is_view_ok">
-You are not allowed to view this page.
-</span>
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['username'])
+    , utils.ExtProperty (utils, pdict ['nickname'])
+    , utils.ExtProperty (utils, pdict ['address'])
+    , utils.ExtProperty (utils, pdict ['is_alias'])
+    , utils.ExtProperty (utils, pdict ['firstname'])
+    , utils.ExtProperty (utils, pdict ['lastname'])
+    , utils.ExtProperty (utils, pdict ['realname'])
+    , utils.ExtProperty (utils, pdict ['phone'])
+    , utils.ExtProperty (utils, pdict ['external_phone'])
+    , utils.ExtProperty (utils, pdict ['private_phone'])
+    , utils.ExtProperty (utils, pdict ['department'],   multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['supervisor'],   multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['substitutes'],  multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['room'],         multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['org_location'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['position'],     multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['title'])
+    , utils.ExtProperty (utils, pdict ['roles'])
+    , utils.ExtProperty (utils, pdict ['timezone'])
+    , utils.ExtProperty (utils, pdict ['lunch_start'])
+    , utils.ExtProperty (utils, pdict ['lunch_duration'])
+    );
+   "
+  tal:condition="context/is_view_ok">
 
-<table width="100%" tal:condition="context/is_view_ok" class="list">
-<tr>
- <th>Username</th>
- <th>Real name</th>
- <th>Email address</th>
- <th>Phone number</th>
- <th tal:condition="context/is_edit_ok">Retire</th>
-</tr>
-<tr tal:repeat="user context/list"
-    tal:attributes="class python:['normal', 'alt'][repeat['user'].index%6/3]">
- <td>
-  <a tal:attributes="href string:user${user/id}"
-     tal:content="user/username">username</a>
- </td>
- <td tal:content="python:user.realname.plain() or default">&nbsp;</td>
- <td tal:content="python:user.address.email() or default">&nbsp;</td>
- <td tal:content="python:user.phone.plain() or default">&nbsp;</td>
- <td tal:condition="context/is_edit_ok">
-  <a tal:attributes="href string:user${user/id}?@action=retire&@template=index">
-   retire</a>
- </td>
-</tr>
-</table>
-</td>
-
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
+   <tal:block metal:fill-slot="query_title">Query Announcements</tal:block>
+  </tal:block>
+ </tal:block>
 </tal:block>
-<!-- SHA: efe66393d3136a2367e2f34495990852faf4d277 -->
+</tal:block>
