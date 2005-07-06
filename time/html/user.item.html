@@ -97,12 +97,12 @@
   <td tal:content="structure context/position/menu"></td>
  </tr>
  <tr>
-  <th tal:content="structure python:utils.fieldname('user', 'superior')"/>
+  <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
   <td>
-   <tal:block tal:define="name      string:superior;
+   <tal:block tal:define="name      string:supervisor;
                           form      string:user_form;
                           dont_care string:don't care;
-                          selected  context/superior/id | string:0">
+                          selected  context/supervisor/id | string:0">
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
