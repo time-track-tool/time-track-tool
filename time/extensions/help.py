@@ -156,7 +156,9 @@ helptext = \
            %(Classname)s.
         '''
     , ""'roles'               :
-      ""'''Roles for this %(Classname)s'''
+      ""'''Roles for this %(Classname)s -- to give the user more than
+           one role, enter a comma,separated,list
+        '''
     , ""'room'               :
       ""'''Room number'''
     , ""'subject'             :

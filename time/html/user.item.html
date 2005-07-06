@@ -66,7 +66,6 @@
           tal:replace="structure context/roles/field">
    <input name="roles" tal:condition="not:context/id"
           tal:attributes="value db/config/NEW_WEB_USER_ROLES">
-   <br>(to give the user more than one role, enter a comma,separated,list)
   </td>
  </tr>
  <tr>
@@ -129,8 +128,8 @@
   <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
   <td>
    <input tal:replace="structure context/timezone/field">
-   <br>(this is a numeric hour offset, the default is
-   <span tal:replace="db/config/DEFAULT_TIMEZONE" />)
+   default: 
+   <span tal:replace="db/config/DEFAULT_TIMEZONE" />
   </td>
  </tr>
  <tr>
@@ -157,11 +156,6 @@
   <th tal:content="structure
       python:utils.fieldname ('user', 'lunch_duration')"/>
   <td tal:content="structure context/lunch_duration/field"></td>
- </tr>
-
- <tr>
-  <th tal:content="structure python:utils.fieldname ('user', 'queries')"/>
-  <td tal:content="structure context/queries/field"></td>
  </tr>
 
  <tr tal:condition="context/is_edit_ok">
