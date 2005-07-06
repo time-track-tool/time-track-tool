@@ -168,7 +168,7 @@ helptext = \
     , ""'superior'            :
       ""'''Supervisor for %(Classname)s'''
     , ""'timezone'            :
-      ""'''Time zone of this %(Classname)s'''
+      ""'''Time zone of this %(Classname)s -- this is a numeric hour offset'''
     , ""'title'            :
       ""'''Title of this %(Classname)s'''
     , ""'type'                :

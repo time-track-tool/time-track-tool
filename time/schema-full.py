@@ -348,7 +348,7 @@ daily_record = Class \
     ( db
     , ''"daily_record"
     , user                  = Link      ("user")
-    , date                  = Date      ()
+    , date                  = String    ()
     , status                = Link      ("daily_record_status")
     , time_record           = Multilink ("time_record")
     )
@@ -356,8 +356,8 @@ daily_record = Class \
 time_record = Class \
     ( db
     , ''"time_record"
-    , start                 = Date      ()
-    , end                   = Date      ()
+    , start                 = String    ()
+    , end                   = String    ()
     , duration              = Number    ()
     , wp                    = Link      ("time_wp")
     , time_activity         = Link      ("time_activity")
@@ -430,7 +430,7 @@ user = Class \
     , roles                 = String    ()
     , timezone              = String    ()
     , pictures              = Multilink ("file")
-    , lunch_start           = Date      ()
+    , lunch_start           = String    ()
     , lunch_duration        = Number    ()
     # XXX: add wiki page url in the web-template based on firstname &
     #      lastname -> why not compute this on the fly (RSC)
