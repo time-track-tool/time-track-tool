@@ -360,7 +360,7 @@ daily_record = Class \
     ( db
     , ''"daily_record"
     , user                  = Link      ("user")
-    , date                  = String    ()
+    , date                  = Date      ()
     , status                = Link      ("daily_record_status")
     , time_record           = Multilink ("time_record")
     )
