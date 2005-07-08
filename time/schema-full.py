@@ -234,24 +234,31 @@ organisation = Class \
     ( db
     , ''"organisation"
     , name                  = String    ()
+    , description           = String    ()
     # get automatically appended to the users mail address upon creation
     # of a new user.
     , mail_domain           = String    ()
     , valid_from            = Date      ()
     , valid_to              = Date      ()
-    , messages              = Multilink ("msg")
     )
 organisation.setkey ("name")
+
+location = Class \
+    ( db
+    , ''"location"
+    , name                  = String    ()
+    , address               = String    ()
+    , country               = String    ()
+    )
+location.setkey ("name")
 
 org_location = Class \
     ( db
     , ''"org_location"
     , name                  = String    ()
-    , address               = String    ()
     , phone                 = String    ()
-    , valid_from            = Date      ()
-    , valid_to              = Date      ()
     , organisation          = Link      ("organisation")
+    , location              = Link      ("location")
     )
 org_location.setkey ("name")
 
@@ -276,10 +283,8 @@ cost_center_group = Class \
     , ''"cost_center_group"
     , name                  = String    ()
     , description           = String    ()
-    , cost_center           = Link      ("cost_center")
-    , valid_from            = Date      ()
-    , valid_to              = Date      ()
-    , messages              = Multilink ("msg")
+    , responsible           = Link      ("user")
+    , active                = Boolean   ()
     )
 cost_center_group.setkey ("name")
 
@@ -401,6 +406,8 @@ cost_center = Class \
     , name                  = String    ()
     , description           = String    ()
     , cost_center_status    = Link      ("cost_center_status")
+    , cost_center_group     = Link      ("cost_center_group")
+    , organisation          = Link      ("organisation")
     )
 cost_center.setkey ("name")
 
@@ -409,11 +416,9 @@ cost_center_status = Class \
     , ''"cost_center_status"
     , name                  = String    ()
     , description           = String    ()
+    , active                = Boolean   ()
     )
 cost_center_status.setkey ("name")
-
-
-
 
 # Note: roles is a comma-separated string of Role names
 user = Class \
