@@ -12,9 +12,9 @@
  ; props         python: klass._klass.getprops ()
  ; has_msgs      python: 'messages'    in props
  ; has_files     python: 'files'       in props
- ; has_title     python: 'title'       in props
  ; has_resp      python: 'responsible' in props
  ; has_nosy      python: 'nosy'        in props
+ ; use_labelprop python: 1
  ; menu_tracker  python:
    ( ( ('review',       'Edit')
      , ('meeting',      'Edit')
@@ -36,6 +36,7 @@
    )
  ; menu_time     python:
    ( ( ('cost_center',         'Edit')
+     , ('cost_center_group',   'Edit')
      , ('cost_center_status',  'Edit')
      , ('daily_record',        'Edit')
      , ('daily_record_status', 'Edit')
@@ -48,7 +49,7 @@
      , ('time_activity',       'Edit')
      , ('time_project',        'Edit')
      , ('time_project_status', 'Edit')
-     , ('time_record',         'Edit')
+     , ('time_record',         None)
      , ('time_wp',             'Edit')
      , ('time_wp_group',       'Edit')
      , ('user',                'Edit')
@@ -282,7 +283,7 @@
   <input type="hidden" name="@template" value="item">
 
   <table class="form" border="0">
-   <tr>
+   <tr tal:condition="use_labelprop">
     <th class="required"
      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
     <td colspan="3"

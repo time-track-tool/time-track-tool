@@ -271,6 +271,18 @@ meeting_room = Class \
     )
 meeting_room.setkey ("name")
 
+cost_center_group = Class \
+    ( db
+    , ''"cost_center_group"
+    , name                  = String    ()
+    , description           = String    ()
+    , cost_center           = Link      ("cost_center")
+    , valid_from            = Date      ()
+    , valid_to              = Date      ()
+    , messages              = Multilink ("msg")
+    )
+cost_center_group.setkey ("name")
+
 department = Class \
     ( db
     , ''"department"
@@ -356,6 +368,7 @@ daily_record = Class \
 time_record = Class \
     ( db
     , ''"time_record"
+    , daily_record          = Link      ("daily_record")
     , start                 = String    ()
     , end                   = String    ()
     , duration              = Number    ()
