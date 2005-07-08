@@ -31,9 +31,12 @@
 #--
 #
 
-from roundup            import roundupdb, hyperdb
-from roundup.exceptions import Reject
-from roundup.date       import Date
+from roundup                        import roundupdb, hyperdb
+from roundup.exceptions             import Reject
+from roundup.date                   import Date
+from roundup.cgi.TranslationService import get_translation
+
+_ = lambda x : x
 
 def check_timestamps (start, end, date) :
     start.year  = end.year  = date.year
@@ -50,50 +53,113 @@ def check_duration (d) :
         raise Reject, "Times must be given in quarters of an hour"
 # end def check_duration
 
-def new_time_record (db, cl, nodeid, new_values) :
-    """ auditor on time_record
-        set default for date of today if not given
-        either duration or both start/end must be set but not both
-        -- correct start/end to 'date' if wrong day
-        set duration from start/end if duration empty
+hour_format = '%h:%m'
+
+def check_daily_record (db, cl, nodeid, new_values) :
+    for i in 'user', 'date' :
+        if i in new_values :
+            raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+# end def check_daily_record
+
+def new_daily_record (db, cl, nodeid, new_values) :
     """
-    if 'date' not in new_values :
-        now = Date ('.')
-        now.hour = now.minute = now.second = 0
-        new_values ['date'] = now
-    if 'start' in new_values :
-        if not 'end' in new_values :
-            raise Reject, "end time must be given"
+        If a new daily_record is created, we check the date provided:
+        If hours, minutes, seconds are all zero we think the time was
+        entered in UTC and do no conversion. If one is non-zero, we get
+        the timezone from the user information and re-encode the date as
+        UTC -- this effectively makes the date a 'naive' date. Then we
+        nullify hour, minute, second of the date.
+        After that, we check that there is no duplicate daily_record
+        with the same date for this user.
+    """
+    for i in 'user', 'date' :
+        if i not in new_values :
+            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    date = new_values ['date']
+    if date.hour or date.minute or date.second :
+        print "before corr:", date
+        tz = db.getUserTimezone ()
+        date = Date (str (date.local (tz)).split ('.') [0], offset = 0)
+        print "after  corr:", date
+        assert (not (date.hour or date.minute or date.second))
+    new_values ['date'] = date
+    user = new_values ['user']
+    if db.daily_record.filter \
+        (None, {'date' : str (date.local (tz)), 'user' : user}) :
+        raise Reject, "Duplicate record: date = %(date)s, user = %(user)s" \
+            % new_values
+# end def new_daily_record
+
+def check_start_end_duration (start, end, duration, new_values) :
+    """
+        either duration or both start/end must be set but not both
+        of duration/end
+        set duration from start/end if duration empty
+        set end from start/duration if end empty
+        Note: We are using naive times (with timezone 0) here, this
+        means we can safely use date.pretty for converting back to
+        string.
+        FIXME: if start not provided, check if allowed to record
+               durations only
+    """
+    if 'end' in new_values :
+        if not start :
+            raise Reject, "%(attr)s must be specified" % {'attr' : 'start'}
         if 'duration' in new_values :
             raise Reject, "Either specify duration or start/end"
-        start = new_values ['start']
-        end   = new_values ['end']
-        check_timestamps (start, end, date)
-        new_values ['duration'] = start - end
+        dstart = Date (start, offset = 0)
+        dend   = Date (end,   offset = 0)
+        check_timestamps (dstart, dend, date)
+        new_values ['duration'] = (start - end).as_seconds () / 60
+        new_values ['start']    = dstart.pretty (hour_format)
+        new_values ['end']      = dend.pretty   (hour_format)
     else :
-        if 'start' in new_values or 'end' in new_values :
+        if not duration :
             raise Reject, "Either specify duration or start/end"
-        duration = new_values ['duration']
         check_duration (duration)
+        if 'duration' in new_values :
+            new_values ['duration'] = duration
+        if 'start' in new_values :
+            dstart = Date (new_values ['start'], offset = 0)
+            dend   = dstart + Interval ('0:%d' % duration)
+            check_timestamps (dstart, dend, date)
+            new_values ['start'] = dstart.pretty (hour_format)
+            new_values ['end']   = dend.pretty   (hour_format)
+# end def check_start_end_duration
+
+def new_time_record (db, cl, nodeid, new_values) :
+    """ auditor on time_record
+    """
+    for i in 'daily_record', :
+        if i not in new_values :
+            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    date     = db.daily_record.get (new_values ['daily_record'], 'date')
+    start    = new_values.get ('start',    None)
+    end      = new_values.get ('end',      None)
+    duration = new_values.get ('duration', None)
+    check_start_end_duration (start, end, duration, new_values)
 # end def new_time_record
 
 def check_time_record (db, cl, nodeid, new_values) :
-    date     = new_values.get ('date',       cl.get (nodeid, 'date'))
-    start    = new_values.get ('start',      cl.get (nodeid, 'start'))
-    end      = new_values.get ('end',        cl.get (nodeid, 'end'))
-    duration = new_values.get ('duration',   cl.get (nodeid, 'duration'))
-    if start :
-        if 'duration' in new_values :
-            raise Reject, "Either specify duration or start/end"
-        check_timestamps (start, end, date)
-        new_values ['duration'] = start - end
-    else :
-        check_duration (duration)
+    for i in 'daily_record', :
+        if i not in new_values :
+            raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+    drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
+    start    = new_values.get ('start',        cl.get (nodeid, 'start'))
+    end      = new_values.get ('end',          cl.get (nodeid, 'end'))
+    duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
+    date     = db.daily_record.get (drec, 'date')
+    check_start_end_duration (start, end, duration, new_values)
 # end def check_time_record
 
 def init (db) :
-    db.time_record.audit ("create" , new_time_record)
-    db.time_record.audit ("set"    , check_time_record)
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    db.time_record.audit  ("create", new_time_record)
+    db.time_record.audit  ("set",    check_time_record)
+    db.daily_record.audit ("create", new_daily_record)
+    db.daily_record.audit ("set",    check_daily_record)
 # end def init
 
 ### __END__ time_record
