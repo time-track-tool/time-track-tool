@@ -23,7 +23,7 @@
 #    time_record
 #
 # Purpose
-#    Detectors for the 'time_record'
+#    Detectors for the 'time_record' and 'daily_record'
 #
 # Revision Dates
 #     8-Jun-2005 (RSC) Creation
@@ -76,16 +76,11 @@ def new_daily_record (db, cl, nodeid, new_values) :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     date = new_values ['date']
-    if date.hour or date.minute or date.second :
-        print "before corr:", date
-        tz = db.getUserTimezone ()
-        date = Date (str (date.local (tz)).split ('.') [0], offset = 0)
-        print "after  corr:", date
-        assert (not (date.hour or date.minute or date.second))
+    date.hour = date.minute = date.second = 0
     new_values ['date'] = date
     user = new_values ['user']
     if db.daily_record.filter \
-        (None, {'date' : str (date.local (tz)), 'user' : user}) :
+        (None, {'date' : str (date.local (0)), 'user' : user}) :
         raise Reject, "Duplicate record: date = %(date)s, user = %(user)s" \
             % new_values
 # end def new_daily_record

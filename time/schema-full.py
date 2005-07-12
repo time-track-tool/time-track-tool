@@ -76,9 +76,7 @@ class TTT_Issue_Class (Class, IssueClass) :
         if not properties.has_key ("responsible") :
             properties ["responsible"] = Link      ("user")
         if not properties.has_key ("nosy") :
-            properties ["nosy"]        = Multilink ( "user"
-                                                           , do_journal = "no"
-                                                           )
+            properties ["nosy"]        = Multilink ("user", do_journal = "no")
         if not properties.has_key ("messages") :
             properties ["messages"]    = Multilink ("msg")
         Class.__init__ (self, db, classname, ** properties)
@@ -365,7 +363,7 @@ daily_record = Class \
     ( db
     , ''"daily_record"
     , user                  = Link      ("user")
-    , date                  = Date      ()
+    , date                  = Date      (offset = 0)
     , status                = Link      ("daily_record_status")
     , time_record           = Multilink ("time_record")
     )
