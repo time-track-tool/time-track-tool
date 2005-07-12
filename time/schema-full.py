@@ -418,6 +418,13 @@ cost_center_status = Class \
     )
 cost_center_status.setkey ("name")
 
+sex = Class \
+    ( db
+    , ''"sex"
+    , name                  = String    ()
+    )
+sex.setkey ("name")
+
 # Note: roles is a comma-separated string of Role names
 user = Class \
     ( db
@@ -448,6 +455,7 @@ user = Class \
     , pictures              = Multilink ("file")
     , lunch_start           = String    ()
     , lunch_duration        = Number    ()
+    , sex                   = Link      ("sex")
     # XXX: add wiki page url in the web-template based on firstname &
     #      lastname -> why not compute this on the fly (RSC)
     # Note: email adresses could get set automatically by a detector on

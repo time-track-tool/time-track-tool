@@ -98,10 +98,12 @@ def audit_user_fields(db, cl, nodeid, new_values):
         raise ValueError, 'Email address must not contain spaces'
 
     if new_values.has_key('roles'):
-        roles = [x.lower().strip() for x in new_values['roles'].split(',')]
-        for rolename in roles:
-            if not db.security.role.has_key(rolename):
-                raise ValueError, 'Role "%s" does not exist'%rolename
+        roles = new_values ['roles'].strip ()
+        if roles :
+            roles = [x.lower().strip() for x in roles.split(',')]
+            for rolename in roles:
+                if not db.security.role.has_key(rolename):
+                    raise ValueError, 'Role "%s" does not exist'%rolename
 
     # automatic setting of realname
     if (new_values.has_key ("firstname") \
@@ -162,3 +164,4 @@ def init (db) :
     db.user.react("set"   , update_userlist_html)
 
 # vim: set filetype=python ts=4 sw=4 et si
+#SHA: bf38ee5be0f92803df8c2abcf604075294144321

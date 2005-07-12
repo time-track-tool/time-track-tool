@@ -307,3 +307,7 @@ work_location.create \
     ( code = "on site"
     , description = "Person working at office"
     )
+
+sex = db.getclass ('sex')
+sex.create (name = "female")
+sex.create (name = "male")
