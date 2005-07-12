@@ -44,6 +44,10 @@
   <td tal:content="structure context/nickname/field"></td>
  </tr>
  <tr>
+  <th tal:content="structure python:utils.fieldname('user', 'sex')" />
+  <td tal:content="structure context/nickname/menu"></td>
+ </tr>
+ <tr>
   <th tal:content="structure python:utils.fieldname('user', 'is_alias')" />
   <td tal:content="structure context/is_alias/field"></td>
  </tr>
