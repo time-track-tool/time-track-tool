@@ -40,11 +40,17 @@ from roundup import hyperdb
 import csv
 
 def repr_date (x) :
-    if x == None :
+    if x is None :
         return ""
     else :
         return x.pretty ('%Y-%m-%d')
 # end def repr_date
+
+def repr_str (x) :
+    if x is None :
+        return ""
+    return str (x).decode ('utf-8').encode ('latin1')
+# end def repr_str
 
 class ExportCSVNamesAction (Action) :
     name = 'export'
@@ -93,17 +99,18 @@ class ExportCSVNamesAction (Action) :
                 if x == None :
                     return ""
                 else :
-                    return " ".join ([str (cls.get (x, col)) for col in cols])
+                    s = " ".join ([str (cls.get (x, col)) for col in cols])
+                    return s.decode ('utf-8').encode ('latin1')
             return f
 
 
         for col in columns :
-            represent [col] = str
+            represent [col] = repr_str
             if isinstance (props [col], hyperdb.Link) :
                 cn = props [col].classname
                 cl = self.db.getclass (cn)
                 pr = cl.getprops ()
-                if 'lastname' in pr :
+                if 'lastname' in pr and cl.labelprop () != 'username' :
                     represent [col] = repr_link (cl, ('firstname', 'lastname'))
                 else :
                     represent [col] = repr_link (cl, (cl.labelprop (),))
