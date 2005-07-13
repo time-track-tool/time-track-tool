@@ -132,6 +132,20 @@
 <!--
     <tal:block metal:define-slot="menubar"></tal:block>
 -->
+    <!-- time-tracking for current daily_record selection or current week -->
+    <td class="sidebar">
+     <span class="classblock">
+      <a tal:attributes="href python:
+       [ 'daily_record?:action=daily_record_action'
+       , str
+         ( request.indexargs_url
+          (classname, {'@action':'daily_record_action'})
+         )
+       ][classname == 'daily_record']">
+       Time
+      </a>
+     </span>
+    </td>
 
 <!-- user list -->
     <td class="sidebar">

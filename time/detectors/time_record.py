@@ -59,6 +59,9 @@ def check_daily_record (db, cl, nodeid, new_values) :
     for i in 'user', 'date' :
         if i in new_values :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+    if i in ('status',) :
+        if i in new_values and not new_values [i] :
+            raise Reject, "%(attr)s must be set" % {'attr' : _ (i)}
 # end def check_daily_record
 
 def new_daily_record (db, cl, nodeid, new_values) :
@@ -75,6 +78,9 @@ def new_daily_record (db, cl, nodeid, new_values) :
     for i in 'user', 'date' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    for i in 'status', 'time_record' :
+        if i in new_values :
+            raise Reject, "%(attr)s must not be specified" % {'attr' : _ (i)}
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
@@ -83,6 +89,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
         (None, {'date' : str (date.local (0)), 'user' : user}) :
         raise Reject, "Duplicate record: date = %(date)s, user = %(user)s" \
             % new_values
+    new_values ['time_record'] = []
+    new_values ['status']      = db.daily_record_status.lookup ('open')
 # end def new_daily_record
 
 def check_start_end_duration (start, end, duration, new_values) :
