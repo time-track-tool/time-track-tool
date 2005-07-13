@@ -30,16 +30,16 @@ helptext = \
     { ""'activity'            :
       ""'''Date of last change'''
     , ""'actor'               :
-      ""'''Person doing the last change'''
+      ""'''Person who has done the last change'''
     , ""'alternate_addresses' :
       ""'''Alternate email addresses for this user, one per line'''
-    , ""'announcements' :
+    , ""'announcements'       :
       ""'''Announcements for this %(Classname)s'''
-    , ""'add_announcement' :
+    , ""'add_announcement'    :
       ""'''Mail out an announcement for another review step'''
     , ""'author'              :
       ""'''Author of this %(Classname)s'''
-    , ""'authors'              :
+    , ""'authors'             :
       ""'''Authors of the artefact of this %(Classname)s'''
     , ""'company'             :
       ""'''Company for %(Classname)s'''
@@ -49,14 +49,18 @@ helptext = \
         '''
     , ""'content'             :
       ""'''Content of %(Classname)s'''
+    , ""'cost_center_status'  :
+      ""'''Specifies the Phase the Cost Center is in'''
     , ""'creation'            :
-      ""'''Date of creation of this record'''
+      ""'''Record creation date'''
     , ""'creator'             :
       ""'''Person who created this record'''
     , ""'cut_off_date'        :
       ""'''Date until when this %(Classname)s must be finished'''
     , ""'department'          :
-      ""'''Department for %(Classname)s, e.g., SW, Sales.'''
+      ""'''Department in which the %(Classname)s is based, e.g., SW, Sales.'''
+    , ""'deputy'              :
+      ""'''Substitute for the responsible Person of %(Classname)s'''
     , ""'description'         :
       ""'''Verbose description of %(Classname)s'''
     , ""'email'               :
@@ -83,7 +87,7 @@ helptext = \
       ""'''Initials of this %(Classname)s'''
     , ""'inreplyto'           :
       ""'''In Reply To field if this %(Classname)s was received by email'''
-    , ""'is_alias'           :
+    , ""'is_alias'            :
       ""'''No real user but only an email alias'''
     , ""'klass'               :
       ""'''Class for this query'''
@@ -93,8 +97,10 @@ helptext = \
       ""'''Location of %(Classname)s, e.g., Vienna HQ.'''
     , ""'lunch_duration'      :
       ""'''Preference for time tracking, duration of lunch break in minutes'''
-    , ""'lunch_start'      :
+    , ""'lunch_start'         :
       ""'''Preference for time tracking, start of lunch break'''
+    , ""'manager'             :
+      ""'''Responsible person of the %(Classname)s'''
     , ""'messageid'           :
       ""'''Message-ID if this message was received via email'''
     , ""'messages'            :
@@ -102,7 +108,7 @@ helptext = \
     , ""'msg'                 :
       ""'''New message or notice for %(Classname)s'''
     , ""'name'                :
-      ""'''Unique name for %(Classname)s'''
+      ""'''Unique %(Clasname)s name'''
     , ""'nickname'            :
       ""'''Nickname (or short name) for this %(Classname)s, e.g., rsc'''
     , ""'nosy'                :
@@ -112,7 +118,7 @@ helptext = \
     , ""'order'               :
       ""'''Items are ordered by this property in drop-down boxes etc.'''
     , ""'organisation'        :
-      ""'''Organisation for %(Classname)s -- e.g., TTTech.'''
+      ""'''Organisation in which the %(Classname)s is based, e.g., TTTech.'''
     , ""'password'            :
       ""'''Password for this %(Classname)s'''
     , ""'peer_reviewers'      :
@@ -124,14 +130,18 @@ helptext = \
            external phone number.
         '''
     , ""'planned_effort'      :
-      ""'''Effort for the %(Classname)s in man-days; for the project
-           this is from the Eval-Sheet.
+      ""'''Effort for the %(Classname)s in person-days; as it is stated
+           in the Project Evaluation Sheet.
         '''
     , ""'private_for'         :
       ""'''Flag if this is a private %(Classname)s'''
     , ""'private_phone'       :
       ""'''Privat phone number. Always as a full number valid on the
            PSTN.
+        '''
+    , ""'project'             :
+      ""'''%(Classname)s is part of a Project. With the Project name a
+           %(Classname)s can be clearly  identified
         '''
     , ""'qa_representative'   :
       ""'''Representative from the QA department for this %(Classname)s'''
@@ -148,7 +158,7 @@ helptext = \
     , ""'recipients'          :
       ""'''Only set if message was received via email.'''
     , ""'responsible'         :
-      ""'''Person responsible for %(Classname)s'''
+      ""'''Person who is responsible for the %(Classname)s'''
     , ""'review.responsible'  :
       ""'''Moderator for %(Classname)s -- Note: If you do not specify
            the moderator, you will get an indication that the field
@@ -159,7 +169,7 @@ helptext = \
       ""'''Roles for this %(Classname)s -- to give the user more than
            one role, enter a comma,separated,list
         '''
-    , ""'room'               :
+    , ""'room'                :
       ""'''Room number'''
     , ""'subject'             :
       ""'''Short identification of this message'''
@@ -169,9 +179,17 @@ helptext = \
       ""'''Short summary of this message (usually first line)'''
     , ""'superior'            :
       ""'''Supervisor for %(Classname)s'''
+    , ""'team_members'        :
+      ""'''Persons who are assigned to the project and are allowed
+           to book their effort on this project
+        '''
+    , ""'time_start'          :
+      ""'''Date when %(Classname)s officially starts'''
+    , ""'time_end'            :
+      ""'''Date when %(Classname)s is officially closed'''
     , ""'timezone'            :
       ""'''Time zone of this %(Classname)s -- this is a numeric hour offset'''
-    , ""'title'            :
+    , ""'title'               :
       ""'''Title of this %(Classname)s'''
     , ""'type'                :
       ""'''Mime type of this file'''
@@ -183,9 +201,20 @@ helptext = \
       ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
     , ""'username'            :
       ""'''Login-name for this %(Classname)s, e.g., schlatterbeck'''
+    , ""'valid_from'          :
+      ""'''Creation date, or date since when this %(Classname)s can be
+           booked at
+        '''
+    , ""'valid_to'            :
+      ""'''Expiration date for %(Classname)s'''
     , ""'wp_no'               :
       ""'''Work package number in the project. Number must be unique for
            the project and cannot be changed after assignment.
+        '''
+    , ""'wps'                 :
+      ""'''For a better handling of the work load of a project it is
+           split in to work packages. This field defines a list of work
+           packages for this %(Classname)s
         '''
     }
 

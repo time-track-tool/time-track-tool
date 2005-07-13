@@ -238,7 +238,7 @@ organisation = Class \
     , mail_domain           = String    ()
     , valid_from            = Date      ()
     , valid_to              = Date      ()
-    , messages              = Multilink (msg)
+    , messages              = Multilink ("msg")
     )
 organisation.setkey ("name")
 
