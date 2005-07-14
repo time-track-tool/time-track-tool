@@ -76,12 +76,9 @@ def update_nosy_review (db, cl, nodeid, new_values) :
 def new_announcement (db, cl, nodeid, new_values) :
     """auditor on announcement's create
     """
-    if not new_values.get ("title") :
-        raise Reject, "Required announcement property title not supplied"
-    if not new_values.get ("version") :
-        raise Reject, "Required announcement property version not supplied"
-    if not new_values.get ("location") :
-        raise Reject, "Required announcement property location not supplied"
+    for i in 'title', 'version', 'meeting_room' :
+        if i not in new_values :
+            raise Reject, 'Required announcement property %s not supplied' % i
     new_values ["status"] = db.review_status.lookup ("open")
 # end def new_announcement
 
@@ -162,3 +159,4 @@ def init (db) :
 ### __END__ review
 
 
+#SHA: a4905d2eff5c50717fb7571c19803004e809ad1d

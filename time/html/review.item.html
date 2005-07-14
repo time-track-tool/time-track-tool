@@ -135,8 +135,10 @@
        </tr>
        <tr>
         <th class="required" tal:content="structure python:utils.fieldname
-         ('announcement', 'location')" />
-        <td><input type="text" name="announcement-1@location" size="40"></td>
+         ('announcement', 'meeting_room')" />
+        <td tal:content="structure python:utils.new_property
+         (context, db, 'announcement', -1, 'meeting_room').menu()">
+        </td>
        </tr>
 <!-- doesnt work !
        <tr>

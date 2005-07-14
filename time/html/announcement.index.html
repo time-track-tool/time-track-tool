@@ -13,13 +13,13 @@
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['title'])
-    , utils.ExtProperty (utils, pdict ['responsible'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['review'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['responsible'],  multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['status'],       multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['review'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['version'])
-    , utils.ExtProperty (utils, pdict ['location'])
-    , utils.ExtProperty (utils, pdict ['comments'],    searchable  = 1)
-    , utils.ExtProperty (utils, pdict ['nosy'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['meeting_room'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['comments'],     searchable  = 1)
+    , utils.ExtProperty (utils, pdict ['nosy'],         multiselect = 1)
     );
    "
   tal:condition="context/is_view_ok">

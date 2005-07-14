@@ -14,7 +14,7 @@
 
  <tal:block metal:fill-slot="content">
  <tal:block tal:define="responsible_required string:required;
-                        required_attributes string:title,responsible,version,location;
+                        required_attributes string:title,responsible,version,meeting_room;
                         comments python:db.comment.filter ( filterspec = { 'announcement' : context.id }
                                                           , sort       = ( '+', 'id'    )
                                                           );">
@@ -23,21 +23,24 @@
    <tal:block metal:fill-slot="ttt_issue_content">
 
     <tr>
-     <th class="required">Version</th>
+     <th class="required" tal:content=
+      "structure python:utils.fieldname('announcement','version')"/>
      <td colspan="3">
       <span tal:content="structure context/version/field"/>
      </td>
     </tr>
 
     <tr>
-     <th class="required">Location</th>
+     <th class="required" tal:content=
+      "structure python:utils.fieldname('announcement','meeting_room')"/>
      <td colspan="3">
-      <span tal:content="structure context/location/field"/>
+      <span tal:content="structure context/meeting_room/menu"/>
      </td>
     </tr>
 
     <tr>
-     <th>Review</th>
+     <th tal:content=
+      "structure python:utils.fieldname('announcement','review')"/>
      <td colspan="3">
       <a tal:attributes="href context/review/designator"
          tal:content="structure context/review/title"/>
@@ -45,14 +48,16 @@
     </tr>
 
     <tr>
-     <th>Status</th>
+     <th tal:content=
+      "structure python:utils.fieldname('announcement','status')"/>
      <td colspan="3">
       <span tal:content="structure context/status/menu"/>
      </td>
     </tr>
 
     <tr tal:condition="comments">
-     <th>Comments</th>
+     <th tal:content=
+      "structure python:utils.fieldname('announcement','comments')"/>
      <td colspan="3" class="task_list">
       <tal:block tal:define="items comments;
                              klassname string:comment;">
@@ -63,15 +68,18 @@
 
     <tr tal:condition="context/is_edit_ok"
         class="add_new">
-     <th>Add Comment</th>
+     <th tal:content=
+      "structure python:utils.fieldname('announcement','comments')"/>
      <td>
       <table>
        <tr>
-        <th class="required">Title</th>
+        <th class="required" tal:content=
+         "structure python:utils.fieldname('comment','title')"/>
         <td><input type="text" name="comment-1@title" size="40"></td>
        </tr>
        <tr>
-        <th class="required">Severity</th>
+        <th class="required" tal:content=
+         "structure python:utils.fieldname('comment','severity')"/>
         <td>
          <select name="comment-1@severity">
           <option selected="selected" value="-1">- select severity of comment -</option>
@@ -83,11 +91,13 @@
         </td>
        </tr>
        <tr>
-        <th>Filename</th>
+        <th tal:content=
+         "structure python:utils.fieldname('comment','file_name')"/>
         <td><input type="text" name="comment-1@file_name" size="40"></td>
        </tr>
        <tr>
-        <th>Linenumber</th>
+        <th tal:content=
+         "structure python:utils.fieldname('comment','line_number')"/>
         <td><input type="text" name="comment-1@line_number" size="40"></td>
        </tr>
       </table>
@@ -96,7 +106,8 @@
     </tr>
 
     <tr>
-     <th>Files</th>
+     <th tal:content=
+      "structure python:utils.fieldname('announcement','add_file')"/>
      <td colspan="3">
       <tal:block metal:use-macro="templates/page/macros/ttt_issue_files"/>
      </td>
