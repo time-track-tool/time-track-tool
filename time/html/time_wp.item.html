@@ -65,9 +65,18 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'bookers')"/>
+     <td>
+      <span tal:replace="structure context/bookers/field"/>
+      <span tal:replace="structure python:db.user.classhelp
+            ( 'username,firstname,lastname'
+            , property='bookers'
+            , width='600'
+            )"/>
+     </td>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'planned_effort')"/>
-     <td tal:content="structure python:context.planned_effort.field ()"
-         tal:condition="context/id" colspan="3"/>
+     <td tal:content="structure python:context.planned_effort.field ()"/>
     </tr>
    </tal:block>
   </tal:block>

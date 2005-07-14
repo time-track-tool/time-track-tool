@@ -136,10 +136,10 @@
     <td class="sidebar">
      <span class="classblock">
       <a tal:attributes="href python:
-       [ 'daily_record?:action=daily_record_action'
+       [ 'daily_record?:action=daily_record_action&:template=edit'
        , str
          ( request.indexargs_url
-          (classname, {'@action':'daily_record_action'})
+          (classname, {'@action':'daily_record_action', '@template':'edit'})
          )
        ][classname == 'daily_record']">
        Time

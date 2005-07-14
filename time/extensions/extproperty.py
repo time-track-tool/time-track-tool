@@ -34,7 +34,7 @@
 #    ««revision-date»»···
 #--
 
-from roundup.cgi.templating         import MultilinkHTMLProperty
+from roundup.cgi.templating         import MultilinkHTMLProperty, propclasses
 from roundup.cgi.templating         import DateHTMLProperty, MissingValue
 from roundup.cgi.TranslationService import get_translation
 
@@ -234,6 +234,8 @@ class ExtProperty :
         i = item or self.item
         if not i.is_view_ok () :
             return self.formatted ()
+        if not self.classname :
+            return ""
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.get_linkcls (i), self.classname, i.id, self.formatted ())
     # end def formatlink
@@ -282,6 +284,15 @@ class ExtProperty :
 
 # end class ExtProperty
 
+def new_property (context, db, classname, id, propname) :
+    kl     = db [classname]
+    prop   = db [classname]._props [propname]
+    for kl, hkl in propclasses :
+        if isinstance (prop, kl) :
+            return hkl (context._client, classname, id, prop, propname, None)
+    return None
+# end def new_property
+
 def init (instance) :
     global _
     _ = get_translation \
@@ -290,4 +301,5 @@ def init (instance) :
     instance.registerUtil ('sorted_properties', sorted_properties)
     instance.registerUtil ('properties_dict',   properties_dict)
     instance.registerUtil ('menu_or_field',     menu_or_field)
+    instance.registerUtil ('new_property',      new_property)
 # end def init

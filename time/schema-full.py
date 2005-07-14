@@ -342,6 +342,7 @@ time_wp = Class \
     , time_start            = Date      ()
     , time_end              = Date      ()
     , planned_effort        = Number    ()
+    , bookers               = Multilink ("user")
     )
 
 work_location = Class \

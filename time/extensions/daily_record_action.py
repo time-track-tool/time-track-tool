@@ -92,9 +92,10 @@ class daily_record_action (Action) :
             }
         url = request.indexargs_url \
             ( ''
-            , { ':action' : 'search'
-              , ':sort'   : 'date'
-              , ':group'  : ''
+            , { ':action'   : 'search'
+              , ':template' : 'edit'
+              , ':sort'     : 'date'
+              , ':group'    : ''
               }
             )
         raise Redirect, url
