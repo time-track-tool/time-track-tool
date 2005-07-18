@@ -20,6 +20,10 @@
   <tal:block tal:condition="not:context/is_view_ok">
    You are not allowed to view this page.
   </tal:block>
+  <form method="GET" name="query" tal:attributes="action request/classname">
+   <tal:block tal:replace="structure python:request.indexargs_form
+    (sort='date', group='user', filter=1, filterspec=1, columns=0)"/>
+  </form>
 
   <form method="POST" tal:attributes="action request/classname">
    <tal:block tal:define="batch request/batch"
@@ -47,14 +51,30 @@
                   ;idx   python:repeat['i'].index + 1
                   ">
        <tr tal:attributes="class class">
-        <tal:block tal:repeat="p python:['user','date','status']">
+        <td tal:content="structure python:i ['date'].pretty ('%a')"/>
+        <tal:block tal:repeat="p python:['user','status']">
          <td tal:content="structure python:pdict [p].as_listentry (i)"/>
         </tal:block>
         <td/><td/><td/>
        </tr>
        <tal:block tal:repeat="r python: i ['time_record']">
         <tr tal:attributes="class class">
-         <td tal:content="python: r ['daily_record']"/>
+         <td tal:repeat="pn python:['start','end','duration']">
+          <tal:block tal:replace="structure python: r [pn].field (5)"/>
+         </td>
+         <td>
+          <select
+           tal:attributes="name python:'time_record%s@wp'%r.id">
+           <option selected="selected" value="-1">- no selection -</option>
+           <option tal:repeat="wp python:db.time_wp.filter
+              (filterspec = {'bookers' : db._db.getuid ()})"
+             tal:content="python:' '.join
+              ([str (wp [i]) for i in 'name','wp_no','project'])"/>
+          </select>
+         </td>
+         <td tal:repeat="pn python:['time_activity','work_location']">
+          <tal:block tal:replace="structure python: r [pn].menu ()"/>
+         </td>
         </tr>
        </tal:block>
        <tr tal:condition="python: 1"
@@ -77,10 +97,7 @@
          <tal:block tal:replace="structure python:utils.new_property
            (context, db, 'time_record', -idx, pn).menu ()"/>
         </td>
-        <input type="hidden"
-         tal:attributes="name  python:'@link@daily_record%s@time_record'%i.id
-                        ;value python:'time_record-%d'%idx
-                        "/>
+
         <input type="hidden"
          tal:attributes="name  python:'time_record-%d@daily_record'%idx
                         ;value python:i.id
@@ -90,10 +107,9 @@
      </tal:block>
      <tr><td colspan="5"/>
       <td>
-       <input type="submit" value=" Submit " i18n:attributes="value">
-       <input type="hidden" name="@action" value="edit">
+       <input type="submit" value=" Save " i18n:attributes="value">
+       <input type="hidden" name="@action" value="daily_record_edit_action">
        <input type="hidden" name="@template" value="edit">
-       <tal:block replace="structure request/indexargs_form" />
       </td>
      </tr>
     </table>

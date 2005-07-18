@@ -42,7 +42,7 @@ def check_timestamps (start, end, date) :
     start.year  = end.year  = date.year
     start.month = end.month = date.month
     start.day   = end.day   = date.day
-    if start < end :
+    if start >= end :
         raise Reject, "start and end must be on same day and start < end."
     if start.timestamp () % 900 or end.timestamp () % 900 :
         raise Reject, "Times must be given in quarters of an hour"
@@ -53,7 +53,7 @@ def check_duration (d) :
         raise Reject, "Times must be given in quarters of an hour"
 # end def check_duration
 
-hour_format = '%h:%m'
+hour_format = '%H:%M'
 
 def check_daily_record (db, cl, nodeid, new_values) :
     for i in 'user', 'date' :
@@ -63,6 +63,17 @@ def check_daily_record (db, cl, nodeid, new_values) :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s must be set" % {'attr' : _ (i)}
 # end def check_daily_record
+
+def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
+    drec_id = cl.get (nodeid, 'daily_record')
+    trecs_o = [int (i) for i in db.daily_record.get (drec_id, 'time_record')]
+    trecs   = dict ([(i, 1) for i in trecs_o])
+    trecs [int (nodeid)] = 1
+    trecs   = trecs.keys ()
+    trecs.sort ()
+    if trecs != trecs_o :
+        db.daily_record.set (drec_id, time_record = [str (i) for i in trecs])
+# end def update_time_record_in_daily_record
 
 def new_daily_record (db, cl, nodeid, new_values) :
     """
@@ -93,7 +104,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
     new_values ['status']      = db.daily_record_status.lookup ('open')
 # end def new_daily_record
 
-def check_start_end_duration (start, end, duration, new_values) :
+def check_start_end_duration (date, start, end, duration, new_values) :
     """
         either duration or both start/end must be set but not both
         of duration/end
@@ -113,7 +124,7 @@ def check_start_end_duration (start, end, duration, new_values) :
         dstart = Date (start, offset = 0)
         dend   = Date (end,   offset = 0)
         check_timestamps (dstart, dend, date)
-        new_values ['duration'] = (start - end).as_seconds () / 60
+        new_values ['duration'] = (dend - dstart).as_seconds () / 60
         new_values ['start']    = dstart.pretty (hour_format)
         new_values ['end']      = dend.pretty   (hour_format)
     else :
@@ -140,19 +151,19 @@ def new_time_record (db, cl, nodeid, new_values) :
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
-    check_start_end_duration (start, end, duration, new_values)
+    check_start_end_duration (date, start, end, duration, new_values)
 # end def new_time_record
 
 def check_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
-        if i not in new_values :
+        if i in new_values :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
     drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
     date     = db.daily_record.get (drec, 'date')
-    check_start_end_duration (start, end, duration, new_values)
+    check_start_end_duration (date, start, end, duration, new_values)
 # end def check_time_record
 
 def init (db) :
@@ -161,6 +172,7 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_record.audit  ("create", new_time_record)
     db.time_record.audit  ("set",    check_time_record)
+    db.time_record.react  ("create", update_time_record_in_daily_record)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
 # end def init

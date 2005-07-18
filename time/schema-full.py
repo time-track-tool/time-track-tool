@@ -374,8 +374,8 @@ time_record = Class \
     ( db
     , ''"time_record"
     , daily_record          = Link      ("daily_record")
-    , start                 = Date      (offset = 0)
-    , end                   = Date      (offset = 0)
+    , start                 = String    ()
+    , end                   = String    ()
     , duration              = Number    ()
     , wp                    = Link      ("time_wp")
     , time_activity         = Link      ("time_activity")
