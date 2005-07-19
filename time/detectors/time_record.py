@@ -133,8 +133,8 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         check_duration (duration)
         if 'duration' in new_values :
             new_values ['duration'] = duration
-        if 'start' in new_values :
-            dstart  = Date (new_values ['start'], offset = 0)
+        if start and ('start' in new_values or 'duration' in new_values) :
+            dstart  = Date (start, offset = 0)
             minutes = duration * 60
             hours   = duration % 60
             minutes = minutes - hours * 60

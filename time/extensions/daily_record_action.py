@@ -119,8 +119,7 @@ class Daily_Record_Edit_Action (EditItemAction) :
             if cl == 'time_record' :
                 if int (id) < 0 and val.keys () == ['daily_record'] :
                     del props [(cl, id)]
-        print props, links
-        EditItemAction._editnodes (self, props, links)
+        return EditItemAction._editnodes (self, props, links)
     # end def _editnodes
 # end class Daily_Record_Edit_Action
 
