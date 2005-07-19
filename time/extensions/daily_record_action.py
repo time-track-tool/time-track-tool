@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2005 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -45,6 +45,62 @@ from roundup.cgi            import templating
 from roundup.date           import Date, Interval, Range
 from roundup                import hyperdb
 from time                   import gmtime
+from copy                   import copy
+
+ymd = '%Y-%m-%d'
+
+def date_range (db, filterspec) :
+    if 'date' in filterspec :
+        r = Range (filterspec ['date'], Date)
+        if r.to_value is None :
+            start = end = r.from_value
+        elif r.from_value is None or r.from_value == r.to_value :
+            start = end = r.to_value
+        else :
+            start = r.from_value
+            end   = r.to_value
+    else :
+        date       = Date ('.')
+        date       = Date (str (date.local (db.getUserTimezone ())))
+        wday       = gmtime (date.timestamp ())[6]
+        start      = date + Interval ("%sd" % -wday)
+        end        = date + Interval ("%sd" % (6 - wday))
+    start.hours = start.minutes = start.seconds = 0
+    end.hours   = end.minutes   = end.seconds   = 0
+    return start, end
+# end def date_range
+
+def prev_week (db, request) :
+    start, end = date_range (db, request.filterspec)
+    n_end   = start - Interval ('1d')
+    n_start = n_end - Interval ('6d')
+    date    = ';'.join ([x.pretty (ymd) for x in (n_start, n_end)])
+    request = copy (request)
+    request.filterspec = copy (request.filterspec)
+    request.filterspec ['date'] = date
+    return request.indexargs_url \
+        ( ''
+        , { ':action'   : 'daily_record_action'
+          , ':template' : 'edit'
+          }
+        )
+# end def prev_week
+
+def next_week (db, request) :
+    start, end = date_range (db, request.filterspec)
+    n_start = end     + Interval ('1d')
+    n_end   = n_start + Interval ('6d')
+    date    = ';'.join ([x.pretty (ymd) for x in (n_start, n_end)])
+    request = copy (request)
+    request.filterspec = copy (request.filterspec)
+    request.filterspec ['date'] = date
+    return request.indexargs_url \
+        ( ''
+        , { ':action'   : 'daily_record_action'
+          , ':template' : 'edit'
+          }
+        )
+# end def next_week
 
 class Daily_Record_Action (Action) :
     name = 'daily_record'
@@ -57,31 +113,29 @@ class Daily_Record_Action (Action) :
         filterspec = request.filterspec
         columns    = request.columns
         assert (request.classname == 'daily_record')
-        if 'date' in filterspec :
-            r = Range (filterspec ['date'], Date)
-            if r.to_value is None :
-                start = end = r.from_value
-            elif r.from_value is None or r.from_value == r.to_value :
-                start = end = r.to_value
-            else :
-                start = r.from_value
-                end   = r.to_value
-        else :
-            date       = Date ('.')
-            date       = Date (str (date.local (self.db.getUserTimezone ())))
-            wday       = gmtime (date.timestamp ())[6]
-            start      = date + Interval ("%sd" % -wday)
-            end        = date + Interval ("%sd" % (6 - wday))
-        start.hours = start.minutes = start.seconds = 0
-        end.hours   = end.minutes   = end.seconds   = 0
+        start, end = date_range (self.db, filterspec)
         max = start + Interval ('31d')
         if end > max :
-            raise ValueError, "Interval may not exceed one month: %s;%s" % \
-                tuple ([i.pretty ('%Y-%m-%d') for i in (start, end)])
+            msg = \
+                ( "Error: Interval may not exceed one month: %s"
+                % ' to '.join ([i.pretty (ymd) for i in (start, end)])
+                )
+            end = max
+            request.filterspec ['date'] = \
+                '%s;%s' % (start.pretty (ymd), end.pretty (ymd))
+            url = request.indexargs_url \
+                ( ''
+                , { ':action'        : 'search'
+                  , ':template'      : 'edit'
+                  , ':sort'          : 'date'
+                  , ':group'         : 'user'
+                  , ':error_message' : msg
+                  }
+                )
+            raise Redirect, url
         d = start
         while d <= end :
             try :
-                print "try-create: %s" % d.pretty ('%Y-%m-%d')
                 x = self.db.daily_record.create \
                     ( user = self.db.getuid ()
                     , date = d
@@ -90,21 +144,20 @@ class Daily_Record_Action (Action) :
             except Reject :
                 pass
             d = d + Interval ('1d')
-
-        print columns
-        print filterspec
-
-        d = '%Y-%m-%d'
+        if 'user' in filterspec :
+            user = filterspec ['user'][0]
+        else :
+            user = self.db.getuid ()
         request.filterspec = \
-            { 'date' : '%s;%s' % (start.pretty (d), end.pretty (d))
-            , 'user' : self.db.getuid ()
+            { 'date' : '%s;%s' % (start.pretty (ymd), end.pretty (ymd))
+            , 'user' : user
             }
         url = request.indexargs_url \
             ( ''
             , { ':action'   : 'search'
               , ':template' : 'edit'
               , ':sort'     : 'date'
-              , ':group'    : ''
+              , ':group'    : 'user'
               }
             )
         raise Redirect, url
@@ -124,7 +177,10 @@ class Daily_Record_Edit_Action (EditItemAction) :
 # end class Daily_Record_Edit_Action
 
 def init (instance) :
-    reg = instance.registerAction
-    reg ('daily_record_action',      Daily_Record_Action)
-    reg ('daily_record_edit_action', Daily_Record_Edit_Action)
+    actn = instance.registerAction
+    actn ('daily_record_action',      Daily_Record_Action)
+    actn ('daily_record_edit_action', Daily_Record_Edit_Action)
+    util = instance.registerUtil
+    util ('next_week',                next_week)
+    util ('prev_week',                prev_week)
 # end def init

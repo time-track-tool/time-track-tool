@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 TTTech Computertechnik AG. All rights reserved
+# Copyright (C) 2004,2005 TTTech Computertechnik AG. All rights reserved
 # Schönbrunnerstraße 7, A--1040 Wien, Austria. office@mexx.mobile
 # ****************************************************************************
 #
@@ -220,4 +220,3 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
-#SHA: 2f60bc3f3d63709cefb02833b17881bdacda78b7

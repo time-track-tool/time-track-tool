@@ -223,12 +223,26 @@ table.list td {
   empty-cells: show;
 }
 
+table.list tr.time-nav th {
+  width: 23%;
+  border-style: hidden;
+  text-align: center;
+}
+table.list tr.time-nav td {
+    border: none
+}
+table.list tr.time-nav th:first-child {
+  text-align: left;
+}
+table.list tr.time-nav th:last-child {
+  text-align: right;
+}
+
 table.list tr.navigation th {
   width: 33%;
   border-style: hidden;
   text-align: center;
 }
-
 table.list tr.navigation td {
     border: none
 }

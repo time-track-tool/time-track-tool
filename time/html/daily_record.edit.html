@@ -12,7 +12,7 @@
  <span tal:condition="python:not db._db.user.get
    (request.filterspec ['user'][0], 'firstname')"
   tal:replace="python: db._db.user.get
-   (request.filterspec ['user'][0], 'username')">
+   (request.filterspec ['user'][0], 'username')" i18n:name="username">
  </span>
 </span>
 
@@ -35,10 +35,38 @@
   <tal:block tal:condition="not:context/is_view_ok">
    You are not allowed to view this page.
   </tal:block>
-  <form method="GET" name="query" tal:attributes="action request/classname">
-   <tal:block tal:replace="structure python:request.indexargs_form
-    (sort='date', group='user', filter=1, filterspec=1, columns=0)"/>
-  </form>
+
+   <table class="list">
+    <tr class="time-nav" tal:define="date python:pdict ['date']">
+     <th>
+      <a tal:attributes="href python:utils.prev_week (db, request)">
+       &lt;&lt;&nbsp;previous
+      </a>
+     </th>
+     <th>
+      <a tal:attributes="href python:utils.next_week (db, request)">
+       next&nbsp;&gt;&gt;
+      </a>
+     </th>
+     <th style="text-align:right;" tal:content="python:date.label+':'"/>
+     <td>
+      <form method="GET" name="query" tal:attributes="action request/classname">
+       <input type="hidden" name="@sort"     value="date">
+       <input type="hidden" name="@group"    value="user">
+       <input type="hidden" name="@filter"   value="date,user">
+       <input type="hidden" name="@action"   value="daily_record_action">
+       <input type="hidden" name="@template" value="edit">
+       <input type="text" size="22"
+        tal:define="value python:request.form.getvalue(date.selname) or nothing"
+        tal:attributes="value python:date.pretty_ids (value)
+                       ;name  python:date.selname
+                       ">
+       <input type="hidden" name="user"
+        tal:attributes="value python:request.form.getvalue ('user') or nothing">
+      </form>
+     </td>
+    </tr>
+   </table>
 
   <form method="POST" tal:attributes="action request/classname">
    <tal:block tal:define="batch request/batch"
@@ -138,9 +166,6 @@
    </tal:block>
   </form>
 
-  <tal:block metal:use-macro="templates/page/macros/ttt_search_form">
-   <tal:block metal:fill-slot="query_title">Query Announcements</tal:block>
-  </tal:block>
  </tal:block>
 </tal:block>
 </tal:block>
