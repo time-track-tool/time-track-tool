@@ -116,8 +116,8 @@ class Daily_Record_Edit_Action (EditItemAction) :
         # use props.items here, otherwise we get a RuntimeError
         # "dictionary changed size during iteration"
         for (cl, id), val in props.items () :
-            if cl == 'time_record' and int (id) < 0 :
-                if val.keys () == ['daily_record'] :
+            if cl == 'time_record' :
+                if int (id) < 0 and val.keys () == ['daily_record'] :
                     del props [(cl, id)]
         print props, links
         EditItemAction._editnodes (self, props, links)

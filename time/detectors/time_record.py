@@ -33,7 +33,7 @@
 
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
-from roundup.date                   import Date
+from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
 
 _ = lambda x : x
@@ -49,7 +49,7 @@ def check_timestamps (start, end, date) :
 # end def check_timestamp
 
 def check_duration (d) :
-    if duration.as_seconds () % 900 :
+    if (d * 3600) % 900 :
         raise Reject, "Times must be given in quarters of an hour"
 # end def check_duration
 
@@ -124,7 +124,7 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         dstart = Date (start, offset = 0)
         dend   = Date (end,   offset = 0)
         check_timestamps (dstart, dend, date)
-        new_values ['duration'] = (dend - dstart).as_seconds () / 60
+        new_values ['duration'] = (dend - dstart).as_seconds () / 3600.
         new_values ['start']    = dstart.pretty (hour_format)
         new_values ['end']      = dend.pretty   (hour_format)
     else :
@@ -134,8 +134,11 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         if 'duration' in new_values :
             new_values ['duration'] = duration
         if 'start' in new_values :
-            dstart = Date (new_values ['start'], offset = 0)
-            dend   = dstart + Interval ('0:%d' % duration)
+            dstart  = Date (new_values ['start'], offset = 0)
+            minutes = duration * 60
+            hours   = duration % 60
+            minutes = minutes - hours * 60
+            dend    = dstart + Interval ('%d:%d' % (hours, minutes))
             check_timestamps (dstart, dend, date)
             new_values ['start'] = dstart.pretty (hour_format)
             new_values ['end']   = dend.pretty   (hour_format)

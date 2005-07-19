@@ -65,9 +65,15 @@
          <td>
           <select
            tal:attributes="name python:'time_record%s@wp'%r.id">
-           <option selected="selected" value="-1">- no selection -</option>
+           <option tal:attributes="selected not:r/wp/id" value="-1">
+            - no selection -
+           </option>
            <option tal:repeat="wp python:db.time_wp.filter
               (filterspec = {'bookers' : db._db.getuid ()})"
+             tal:attributes=
+               "value wp/id
+               ;selected python:wp.id == r.wp.id
+               "
              tal:content="python:' '.join
               ([str (wp [i]) for i in 'name','wp_no','project'])"/>
           </select>
@@ -89,6 +95,7 @@
           <option selected="selected" value="-1">- no selection -</option>
           <option tal:repeat="wp python:db.time_wp.filter
              (filterspec = {'bookers' : db._db.getuid ()})"
+            tal:attributes="value wp/id"
             tal:content="python:' '.join
              ([str (wp [i]) for i in 'name','wp_no','project'])"/>
          </select>

@@ -63,6 +63,10 @@ helptext = \
       ""'''Substitute for the responsible Person of %(Classname)s'''
     , ""'description'         :
       ""'''Verbose description of %(Classname)s'''
+    , ""'duration'            :
+      ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
+           allowed, e.g., 7.10 is not allowed.
+        '''
     , ""'email'               :
       ""'''Email address for this %(Classname)s'''
     , ""'external_phone'      :
