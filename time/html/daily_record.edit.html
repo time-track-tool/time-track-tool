@@ -1,5 +1,20 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 <title metal:fill-slot="head_title" tal:content="Classname" />
+<span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+ Time-Tracking for
+ <span tal:condition="python:db._db.user.get
+  (request.filterspec ['user'][0], 'firstname')">
+  <span tal:replace="python: db._db.user.get
+   (request.filterspec ['user'][0], 'firstname')" i18n:name="firstname"/>
+  <span tal:replace="python: db._db.user.get
+   (request.filterspec ['user'][0], 'lastname')"  i18n:name="lastname"/>
+ </span>
+ <span tal:condition="python:not db._db.user.get
+   (request.filterspec ['user'][0], 'firstname')"
+  tal:replace="python: db._db.user.get
+   (request.filterspec ['user'][0], 'username')">
+ </span>
+</span>
 
 <tal:block metal:fill-slot="create_or_query">
  <tal:block 
@@ -30,20 +45,18 @@
               tal:condition="context/is_view_ok">
     <table class="list">
      <tr>
-      <th i18n:translate="">user</th>
-      <th i18n:translate="">date</th>
-      <th i18n:translate="">status</th>
-     </tr>
-     <tr>
-      <th i18n:translate="">start</th>
-      <th i18n:translate="">end</th>
-      <th i18n:translate="">duration</th>
-      <th i18n:translate="">wp</th>
-      <th i18n:translate="">time_activity</th>
-      <th i18n:translate="">work_location</th>
-     </tr>
-     <tr>
-      <th i18n:translate="" colspan="6">comment</th>
+      <th tal:content="structure python:utils.fieldname
+          ('time_record', 'start',         space = False)"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_record', 'end',           space = False)"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_record', 'duration',      space = False)"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_record', 'wp',            space = False)"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_record', 'time_activity', space = False)"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_record', 'work_location', space = False)"/>
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
@@ -52,10 +65,10 @@
                   ">
        <tr tal:attributes="class class">
         <td tal:content="structure python:i ['date'].pretty ('%a')"/>
-        <tal:block tal:repeat="p python:['user','status']">
-         <td tal:content="structure python:pdict [p].as_listentry (i)"/>
-        </tal:block>
-        <td/><td/><td/>
+        <td tal:content="structure python:i ['date'].pretty ('%Y-%m-%d')"
+         colspan="2"/>
+        <td tal:content="structure python:pdict ['status'].colonfield (i)"
+         colspan="3"/>
        </tr>
        <tal:block tal:repeat="r python: i ['time_record']">
         <tr tal:attributes="class class">
@@ -117,6 +130,8 @@
        <input type="submit" value=" Save " i18n:attributes="value">
        <input type="hidden" name="@action" value="daily_record_edit_action">
        <input type="hidden" name="@template" value="edit">
+       <tal:block tal:replace="structure python:request.indexargs_form
+        (sort=1, group=1, filter=1, filterspec=1, columns=0)"/>
       </td>
      </tr>
     </table>

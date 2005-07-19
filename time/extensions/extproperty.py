@@ -253,7 +253,12 @@ class ExtProperty :
     # end def editfield
 
     def colonfield (self, item = None) :
-        return "%s:&nbsp;%s" % (self.label, self.as_listentry (item))
+        return "<a class=\"header\" href=\"javascript:help_window" \
+               "('%s?:template=property_help#%s', '500', '400')\">" \
+               "%s:</a>&nbsp;%s" \
+               % ( self.classname, self.hprop
+                 , self.label,     self.as_listentry (item)
+                 )
     # end def colonfield
 
     def classhelp_properties (self, *propnames) :

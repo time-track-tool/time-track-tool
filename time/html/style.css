@@ -239,6 +239,9 @@ table.list tr.navigation th:last-child {
   text-align: right;
 }
 
+table.list td a[href]:hover.header { color: #404070 }
+table.list td a[href]:link.header { color: #404070 }
+table.list td a[href].header { color: #404070 }
 
 /* style for message displays */
 table.messages {
