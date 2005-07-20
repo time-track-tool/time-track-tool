@@ -23,8 +23,24 @@
 # $Id$
 
 from roundup.cgi.TranslationService import get_translation
+from roundup.date                   import Date, Range
+try :
+    from happydoc.StructuredText import StructuredText
+except ImportError :
+    StructuredText = None
 
 _ = None
+
+if StructuredText :
+    date_help  = StructuredText (Date.__doc__,  level = 1, header = 0)
+    range_help = StructuredText (Range.__doc__, level = 1, header = 0)
+else :
+    print "OOops"
+    date_help  = Date.__doc__ 
+    range_help = Range.__doc__
+
+date_text = "<br><br>Ranges are used for searching dates: A range ".join \
+    ((date_help, range_help))
 
 helptext = \
     { ""'activity'            :
@@ -56,7 +72,9 @@ helptext = \
     , ""'creator'             :
       ""'''Person who created this record'''
     , ""'cut_off_date'        :
-      ""'''Date until when this %(Classname)s must be finished'''
+      ""'''Date until when this %(Classname)s must be finished.''' + date_text
+    , ""'date'                :
+      ""'''Date of this %(Classname)s.<br>''' + date_text
     , ""'department'          :
       ""'''Department in which the %(Classname)s is based, e.g., SW, Sales.'''
     , ""'deputy'              :
@@ -80,7 +98,7 @@ helptext = \
     , ""'files'               :
       ""'''Files for %(Classname)s'''
     , ""'final_meeting_date'  :
-      ""'''Date of final meeting for this %(Classname)s'''
+      ""'''Date of final meeting for this %(Classname)s.''' + date_text
     , ""'firstname'           :
       ""'''First name for this user, e.g., Ralf'''
     , ""'id'                  :
@@ -175,6 +193,8 @@ helptext = \
         '''
     , ""'room'                :
       ""'''Room number'''
+    , ""'status'              :
+      ""'''Status of this %(Classname)s'''
     , ""'subject'             :
       ""'''Short identification of this message'''
     , ""'substitutes'         :
@@ -208,9 +228,15 @@ helptext = \
     , ""'valid_from'          :
       ""'''Creation date, or date since when this %(Classname)s can be
            booked at
-        '''
+        ''' + date_text
     , ""'valid_to'            :
-      ""'''Expiration date for %(Classname)s'''
+      ""'''Expiration date for %(Classname)s.''' + date_text
+    , ""'week'                :
+      ""'''Week for time tracking, this is an alternative for specifying
+           a date range: just enter the week number here (for the
+           current year) or YYYY/WW where YYYY is the year and WW the
+           week number for that year.
+      '''
     , ""'wp_no'               :
       ""'''Work package number in the project. Number must be unique for
            the project and cannot be changed after assignment.
@@ -223,6 +249,12 @@ helptext = \
     }
 
 def combined_name (cls, attr) :
+    """ Produce a combined name of class and attribute of the class. If
+        a help-text exists for the combination, return the combination,
+        otherwise return only the attribute. In this way we can override
+        help-texts by specifying a help-text entry with the key
+        classname.attribute.
+    """
     pname = '%s.%s' % (cls, attr)
     if pname in helptext :
         return pname
@@ -240,6 +272,8 @@ def help_properties (klass) :
         p.append ('msg')
     if klass.classname == 'user' :
         p.append ('confirm')
+    if klass.classname == 'daily_record' :
+        p.append ('week')
     if 'announcements' in properties :
         p.append ('add_announcement')
     if 'files' in properties :

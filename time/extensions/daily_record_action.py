@@ -49,6 +49,17 @@ from copy                   import copy
 
 ymd = '%Y-%m-%d'
 
+def pretty_range (start, end) :
+    return ';'.join ([x.pretty (ymd) for x in (start, end)])
+# end def pretty_range
+
+def week_from_date (date) :
+    wday  = gmtime (date.timestamp ())[6]
+    start = date + Interval ("%sd" % -wday)
+    end   = date + Interval ("%sd" % (6 - wday))
+    return start, end
+# end def week_from_date
+
 def date_range (db, filterspec) :
     if 'date' in filterspec :
         r = Range (filterspec ['date'], Date)
@@ -62,19 +73,86 @@ def date_range (db, filterspec) :
     else :
         date       = Date ('.')
         date       = Date (str (date.local (db.getUserTimezone ())))
-        wday       = gmtime (date.timestamp ())[6]
-        start      = date + Interval ("%sd" % -wday)
-        end        = date + Interval ("%sd" % (6 - wday))
+        start, end = week_from_date (date)
     start.hours = start.minutes = start.seconds = 0
     end.hours   = end.minutes   = end.seconds   = 0
     return start, end
 # end def date_range
 
+def from_week_number (year, week_no) :
+    """ Get first thursday in year, then add days.
+        >>> from_week_number (1998, 52)
+        (<Date 1998-12-21.00:00:0.000000>, <Date 1998-12-27.00:00:0.000000>)
+        >>> from_week_number (1998, 53)
+        (<Date 1998-12-28.00:00:0.000000>, <Date 1999-01-03.00:00:0.000000>)
+        >>> from_week_number (1999,  1)
+        (<Date 1999-01-04.00:00:0.000000>, <Date 1999-01-10.00:00:0.000000>)
+        >>> from_week_number (1999, 52)
+        (<Date 1999-12-27.00:00:0.000000>, <Date 2000-01-02.00:00:0.000000>)
+        >>> from_week_number (2000,  1)
+        (<Date 2000-01-03.00:00:0.000000>, <Date 2000-01-09.00:00:0.000000>)
+        >>> from_week_number (2000, 52)
+        (<Date 2000-12-25.00:00:0.000000>, <Date 2000-12-31.00:00:0.000000>)
+        >>> from_week_number (2001,  1)
+        (<Date 2001-01-01.00:00:0.000000>, <Date 2001-01-07.00:00:0.000000>)
+        >>> from_week_number (2001, 52)
+        (<Date 2001-12-24.00:00:0.000000>, <Date 2001-12-30.00:00:0.000000>)
+        >>> from_week_number (2002,  1)
+        (<Date 2001-12-31.00:00:0.000000>, <Date 2002-01-06.00:00:0.000000>)
+        >>> from_week_number (2002, 52)
+        (<Date 2002-12-23.00:00:0.000000>, <Date 2002-12-29.00:00:0.000000>)
+        >>> from_week_number (2003,  1)
+        (<Date 2002-12-30.00:00:0.000000>, <Date 2003-01-05.00:00:0.000000>)
+        >>> from_week_number (2003, 52)
+        (<Date 2003-12-22.00:00:0.000000>, <Date 2003-12-28.00:00:0.000000>)
+        >>> from_week_number (2004,  1)
+        (<Date 2003-12-29.00:00:0.000000>, <Date 2004-01-04.00:00:0.000000>)
+        >>> from_week_number (2004, 52)
+        (<Date 2004-12-20.00:00:0.000000>, <Date 2004-12-26.00:00:0.000000>)
+        >>> from_week_number (2004, 53)
+        (<Date 2004-12-27.00:00:0.000000>, <Date 2005-01-02.00:00:0.000000>)
+        >>> from_week_number (2005,  1)
+        (<Date 2005-01-03.00:00:0.000000>, <Date 2005-01-09.00:00:0.000000>)
+        >>> from_week_number (2005, 29)
+        (<Date 2005-07-18.00:00:0.000000>, <Date 2005-07-24.00:00:0.000000>)
+        >>> from_week_number (2005, 52)
+        (<Date 2005-12-26.00:00:0.000000>, <Date 2006-01-01.00:00:0.000000>)
+        >>> from_week_number (2006,  1)
+        (<Date 2006-01-02.00:00:0.000000>, <Date 2006-01-08.00:00:0.000000>)
+        >>> from_week_number (2006, 52)
+        (<Date 2006-12-25.00:00:0.000000>, <Date 2006-12-31.00:00:0.000000>)
+        >>> from_week_number (2007,  1)
+        (<Date 2007-01-01.00:00:0.000000>, <Date 2007-01-07.00:00:0.000000>)
+        >>> from_week_number (2007, 52)
+        (<Date 2007-12-24.00:00:0.000000>, <Date 2007-12-30.00:00:0.000000>)
+        >>> from_week_number (2008,  1)
+        (<Date 2007-12-31.00:00:0.000000>, <Date 2008-01-06.00:00:0.000000>)
+        >>> from_week_number (2008, 52)
+        (<Date 2008-12-22.00:00:0.000000>, <Date 2008-12-28.00:00:0.000000>)
+        >>> from_week_number (2009,  1)
+        (<Date 2008-12-29.00:00:0.000000>, <Date 2009-01-04.00:00:0.000000>)
+        >>> from_week_number (2009, 52)
+        (<Date 2009-12-21.00:00:0.000000>, <Date 2009-12-27.00:00:0.000000>)
+        >>> from_week_number (2009, 53)
+        (<Date 2009-12-28.00:00:0.000000>, <Date 2010-01-03.00:00:0.000000>)
+        >>> from_week_number (2010,  1)
+        (<Date 2010-01-04.00:00:0.000000>, <Date 2010-01-10.00:00:0.000000>)
+        >>> from_week_number (2010, 52)
+        (<Date 2010-12-27.00:00:0.000000>, <Date 2011-01-02.00:00:0.000000>)
+    """
+    for i in range (1, 8) :
+        date = Date ('%s-01-%02d' % (year, i))
+        if gmtime (date.timestamp ()) [6] == 3 : # Thursday
+            date = date + Interval ('%dd' % ((week_no - 1) * 7))
+            return week_from_date (date)
+    assert (0)
+# end def from_week_number
+
 def prev_week (db, request) :
     start, end = date_range (db, request.filterspec)
     n_end   = start - Interval ('1d')
     n_start = n_end - Interval ('6d')
-    date    = ';'.join ([x.pretty (ymd) for x in (n_start, n_end)])
+    date    = pretty_range (n_start, n_end)
     request = copy (request)
     request.filterspec = copy (request.filterspec)
     request.filterspec ['date'] = date
@@ -90,7 +168,7 @@ def next_week (db, request) :
     start, end = date_range (db, request.filterspec)
     n_start = end     + Interval ('1d')
     n_end   = n_start + Interval ('6d')
-    date    = ';'.join ([x.pretty (ymd) for x in (n_start, n_end)])
+    date    = pretty_range (n_start, n_end)
     request = copy (request)
     request.filterspec = copy (request.filterspec)
     request.filterspec ['date'] = date
@@ -101,6 +179,37 @@ def next_week (db, request) :
           }
         )
 # end def next_week
+
+class Weekno_Action (Action) :
+    name = 'weekno_action'
+    permissionType = 'View'
+
+    def handle (self) :
+        print "HUHU"
+        request    = templating.HTMLRequest (self.client)
+        filterspec = request.filterspec
+        try :
+            weeknostr = filterspec ['weekno']
+        except KeyError :
+            weeknostr = request.form ['weekno'].value
+        try :
+            year, weekno = [int (i) for i in weeknostr.split ('/')]
+        except ValueError :
+            year = Date ('.').year
+            weekno = int (weeknostr)
+        filterspec ['date'] = pretty_range (* from_week_number (year, weekno))
+        url = request.indexargs_url \
+            ( ''
+            , { ':action'        : 'daily_record_action'
+              , ':template'      : 'edit'
+              , ':sort'          : 'date'
+              , ':group'         : 'user'
+              , 'weekno'         : None
+              }
+            )
+        raise Redirect, url
+    # end def handle
+# end class Weekno_Action
 
 class Daily_Record_Action (Action) :
     name = 'daily_record'
@@ -121,8 +230,7 @@ class Daily_Record_Action (Action) :
                 % ' to '.join ([i.pretty (ymd) for i in (start, end)])
                 )
             end = max
-            request.filterspec ['date'] = \
-                '%s;%s' % (start.pretty (ymd), end.pretty (ymd))
+            request.filterspec ['date'] = pretty_range (start, end)
             url = request.indexargs_url \
                 ( ''
                 , { ':action'        : 'search'
@@ -149,7 +257,7 @@ class Daily_Record_Action (Action) :
         else :
             user = self.db.getuid ()
         request.filterspec = \
-            { 'date' : '%s;%s' % (start.pretty (ymd), end.pretty (ymd))
+            { 'date' : pretty_range (start, end)
             , 'user' : user
             }
         url = request.indexargs_url \
@@ -180,6 +288,7 @@ def init (instance) :
     actn = instance.registerAction
     actn ('daily_record_action',      Daily_Record_Action)
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
+    actn ('weekno_action',            Weekno_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
