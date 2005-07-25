@@ -223,12 +223,25 @@ table.list td {
   empty-cells: show;
 }
 
+table.list tr.time-nav th {
+  border-style: hidden;
+  text-align: center;
+}
+table.list tr.time-nav td {
+    border: none
+}
+table.list tr.time-nav th:first-child {
+  text-align: left;
+}
+table.list tr.time-nav th:last-child {
+  text-align: right;
+}
+
 table.list tr.navigation th {
   width: 33%;
   border-style: hidden;
   text-align: center;
 }
-
 table.list tr.navigation td {
     border: none
 }
@@ -239,6 +252,9 @@ table.list tr.navigation th:last-child {
   text-align: right;
 }
 
+table.list td a[href]:hover.header { color: #404070 }
+table.list td a[href]:link.header { color: #404070 }
+table.list td a[href].header { color: #404070 }
 
 /* style for message displays */
 table.messages {
@@ -261,6 +277,10 @@ table.messages th {
   text-align: left;
   border-bottom: 1px solid #afafaf;
 }
+
+table.messages th a[href]:hover.header { color: black }
+table.messages th a[href]:link.header { color: black }
+table.messages th a[href].header { color: black }
 
 table.messages td {
   font-family: monospace;

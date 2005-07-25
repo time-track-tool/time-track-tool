@@ -199,6 +199,8 @@ class ExtProperty :
         i = item or self.item
         if not i.is_view_ok () :
             return self.formatted ()
+        if not self.classname :
+            return ""
         return """<a class="%s" href="%s%s">%s</a>""" \
             % (self.get_linkcls (i), self.classname, i.id, self.formatted ())
     # end def formatlink
@@ -216,7 +218,12 @@ class ExtProperty :
     # end def editfield
 
     def colonfield (self, item = None) :
-        return "%s:&nbsp;%s" % (self.label, self.as_listentry (item))
+        return "<a class=\"header\" href=\"javascript:help_window" \
+               "('%s?:template=property_help#%s', '500', '400')\">" \
+               "%s:</a>&nbsp;%s" \
+               % ( self.classname, self.name
+                 , self.label,     self.as_listentry (item)
+                 )
     # end def colonfield
 
     def classhelp_properties (self, *propnames) :
