@@ -256,7 +256,7 @@ class ExtProperty :
         return "<a class=\"header\" href=\"javascript:help_window" \
                "('%s?:template=property_help#%s', '500', '400')\">" \
                "%s:</a>&nbsp;%s" \
-               % ( self.classname, self.hprop
+               % ( self.classname, self.name
                  , self.label,     self.as_listentry (item)
                  )
     # end def colonfield

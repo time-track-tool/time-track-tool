@@ -278,6 +278,10 @@ table.messages th {
   border-bottom: 1px solid #afafaf;
 }
 
+table.messages th a[href]:hover.header { color: black }
+table.messages th a[href]:link.header { color: black }
+table.messages th a[href].header { color: black }
+
 table.messages td {
   font-family: monospace;
   background-color: #efefef;
