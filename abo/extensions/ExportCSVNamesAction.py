@@ -49,9 +49,58 @@ def repr_str (x) :
     return str (x).decode ('utf-8').encode ('latin1')
 # end def repr_str
 
+def repr_link (cls, cols) :
+    def f (x) :
+        if x == None :
+            return ""
+        else :
+            s = " ".join ([str (cls.get (x, col)) for col in cols])
+            return s.decode ('utf-8').encode ('latin1')
+    return f
+# end def repr_link
+
+def repr_func (col) :
+    idx = int (col.split ('.')[1])
+    def f (x) :
+        try :
+            return repr_str (x.split ('\n', 2) [idx])
+        except AttributeError :
+            pass
+        except IndexError :
+            return ""
+        if x : return repr_str (x)
+        return ""
+    return f
+# end def repr_func
+
 class Export_CSV_Names (Action) :
-    name = 'export'
+    name           = 'export'
     permissionType = 'View'
+    print_head     = True
+    filename       = 'query.csv'
+
+    def _setup (self, request) :
+        columns    = request.columns
+        if not columns :
+            columns = props.keys ()
+            columns.sort ()
+        # full-text search
+        if request.search_text :
+            matches = self.db.indexer.search \
+                (re.findall (r'\b\w{2,25}\b', request.search_text), klass)
+        else :
+            matches = None
+        self.columns = columns
+        self.matches = matches
+    # end def _setup
+
+    def _attr (self, col) :
+        try :
+            return col.split ('.')[0]
+        except AttributeError :
+            pass
+        return col
+    # end def _attr
 
     def handle (self) :
         ''' Export the specified search query as CSV. '''
@@ -60,24 +109,14 @@ class Export_CSV_Names (Action) :
         filterspec = request.filterspec
         sort       = request.sort
         group      = request.group
-        columns    = request.columns
         klass      = self.db.getclass (request.classname)
         props      = klass.getprops ()
-        if not columns :
-            columns = props.keys ()
-            columns.sort ()
-
-        # full-text search
-        if request.search_text :
-            matches = self.db.indexer.search (
-                re.findall (r'\b\w{2,25}\b', request.search_text), klass)
-        else :
-            matches = None
+        self._setup (request)
 
         h                        = self.client.additional_headers
         h ['Content-Type']       = 'text/csv'
         # some browsers will honor the filename here...
-        h ['Content-Disposition'] = 'inline; filename=query.csv'
+        h ['Content-Disposition'] = 'inline; filename=%s' % self.filename
 
         self.client.header ()
 
@@ -86,24 +125,17 @@ class Export_CSV_Names (Action) :
             return 'dummy'
 
         writer = csv.writer (self.client.request.wfile)
-        writer.writerow (columns)
+        if self.print_head :
+            writer.writerow (self.columns)
 
         # Figure out Link columns
         represent = {}
 
-        def repr_link (cls, cols) :
-            def f (x) :
-                if x == None :
-                    return ""
-                else :
-                    s = " ".join ([str (cls.get (x, col)) for col in cols])
-                    return s.decode ('utf-8').encode ('latin1')
-            return f
-        # end def repr_link
-
-        for col in columns :
+        for col in self.columns :
             represent [col] = repr_str
-            if isinstance (props [col], hyperdb.Link) :
+            if col.startswith ('function.') :
+                represent [col] = repr_func (col)
+            elif isinstance (props [col], hyperdb.Link) :
                 cn = props [col].classname
                 cl = self.db.getclass (cn)
                 pr = cl.getprops ()
@@ -113,32 +145,40 @@ class Export_CSV_Names (Action) :
                     represent [col] = repr_link (cl, (cl.labelprop (),))
             elif isinstance (props [col], hyperdb.Date) :
                 represent [col] = repr_date
-            elif col.startswith ('function.') :
-                idx = int (col.split ('.')[1])
-                represent [col] = repr_func (idx)
 
         # and search
-        for itemid in klass.filter (matches, filterspec, sort, group) :
-            writer.writerow ([represent [col] (klass.get (itemid, col)) for 
-                col in columns])
+        for itemid in klass.filter (self.matches, filterspec, sort, group) :
+            writer.writerow \
+                ( [represent [col] (klass.get (itemid, self._attr (col)))
+                   for col in self.columns
+                  ]
+                )
 
         return '\n'
     # end def handle
 # end class Export_CSV_Names
 
-def repr_func (idx) :
-    def f (x) :
-        try :
-            return x.split ('\n', 2) [idx]
-        except AttributeError :
-            pass
-        except IndexError :
-            pass
-        return ""
-    return f
-
 class Export_CSV_Addresses (Export_CSV_Names) :
-    pass
+
+    print_head = False
+    filename   = 'ZFABO.CSV'
+
+    def _setup (self, request) :
+        self.columns = \
+            [ 'title'
+            , 'firstname'
+            , 'lastname'
+            , 'function.0'
+            , 'function.1'
+            , 'function.2'
+            , 'street'
+            , 'country'
+            , 'postalcode'
+            , 'city'
+            ]
+        self.matches = None
+    # end def _setup
+
 # end class Export_Addresses
 
 def init (instance) :

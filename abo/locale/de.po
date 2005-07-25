@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-06-27 15:58+0200\n"
+"POT-Creation-Date: 2005-07-25 12:25+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Storno: Endzeit muss größer/gleich Startzeit sein"
 msgid "\"%(attr)s\" may not be filled in"
 msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
 
-#: ../detectors/abo_checks.py:38 ../detectors/abo_type.py:33
+#: ../detectors/abo_checks.py:38 ../detectors/abo_type.py:34
 #: ../detectors/invoice.py:31 ../detectors/invoice_template.py:30
 #: ../detectors/letter.py:30
 #, python-format
@@ -74,11 +74,11 @@ msgstr ""
 msgid "\"%(attr)s\" must be greater or equal to zero"
 msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
 
-#: ../detectors/abo_type.py:36
+#: ../detectors/abo_type.py:37
 msgid "period must be an integer"
 msgstr "Laufzeit muss ganzzahlig sein"
 
-#: ../detectors/abo_type.py:41
+#: ../detectors/abo_type.py:42
 msgid "Selected address types must be in type category \"ABO\""
 msgstr "Ausgewählte Adresstypen müssen in der Kategorie \"ABO\" sein."
 
@@ -972,6 +972,10 @@ msgstr "Hilfe für ${Classname}"
 #: ../html/_generic.property_help.html:17
 msgid "Properties of ${Classname}"
 msgstr "Eigenschaften von ${Classname}"
+
+#: ../html/address.index.html:7
+msgid "export addresses"
+msgstr "Versand-Export"
 
 #: ../html/address.item.html:21
 msgid "New Subscription"
