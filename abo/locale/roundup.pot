@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-07-25 12:25+0200\n"
+"POT-Creation-Date: 2005-07-25 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -895,23 +895,23 @@ msgstr ""
 msgid "${property} help"
 msgstr ""
 
-#: ../html/_generic.help.html:31
+#: ../html/_generic.help.html:30
 msgid " Cancel "
 msgstr ""
 
-#: ../html/_generic.help.html:34
+#: ../html/_generic.help.html:33
 msgid " Apply "
 msgstr ""
 
-#: ../html/_generic.help.html:66
+#: ../html/_generic.help.html:40
 msgid "&lt;&lt; previous"
 msgstr ""
 
-#: ../html/_generic.help.html:77
+#: ../html/_generic.help.html:51
 msgid "${start}..${end} out of ${total}"
 msgstr ""
 
-#: ../html/_generic.help.html:81
+#: ../html/_generic.help.html:55
 msgid "next &gt;&gt;"
 msgstr ""
 

@@ -11,7 +11,7 @@
           tal:content="structure string:
           // this is the name of the field in the original form that we're working on
           form  = window.opener.document.${request/form/form/value};
-          field = '${request/form/property/value}';" >
+          field = '${request/form/property/value}';">
       </script>
       <script src="@@file/help_controls.js" type="text/javascript"><!--
       //--></script>
@@ -19,8 +19,7 @@
   </head>
  <body class="body" onload="resetList();">
  <form name="frm_help" tal:attributes="action request/base"
-       tal:define="start python:int(request.form['@startwith'].value);
-                   batch python:utils.Batch(context.list(), 500, start);
+       tal:define="batch request/batch;
                    props python:request.form['properties'].value.split(',')">
 
      <div id="classhelp-controls">
@@ -35,31 +34,6 @@
               value=" Apply " onclick="updateList(); window.close();"
               i18n:attributes="value" />
      </div>
-
-     <table class="classhelp">
-       <tr>
-           <th>&nbsp;<b>x</b></th>
-           <th tal:repeat="prop props" tal:content="prop" i18n:translate=""></th>
-       </tr>
-       <tr tal:repeat="item batch">
-           <tal:block tal:define="attr python:item[props[0]]">
-             <td>
-                 <input type="checkbox" name="check"
-                 onclick="updatePreview();"
-                 tal:attributes="value attr; id string:id_$attr" />
-             </td>
-             <td tal:repeat="prop props">
-                 <label class="classhelp-label"
-                        tal:attributes="for string:id_$attr"
-                        tal:content="structure python:item[prop]"></label>
-             </td>
-           </tal:block>
-       </tr>
-       <tr>
-           <th>&nbsp;<b>x</b></th>
-           <th tal:repeat="prop props" tal:content="prop" i18n:translate=""></th>
-       </tr>
-     </table>
      <table width="100%">
       <tr class="navigation">
        <th>
@@ -89,6 +63,32 @@
        </th>
       </tr>
      </table>
+
+     <table class="classhelp">
+       <tr>
+           <th>&nbsp;<b>x</b></th>
+           <th tal:repeat="prop props" tal:content="prop" i18n:translate=""></th>
+       </tr>
+       <tr tal:repeat="item batch">
+           <tal:block tal:define="attr python:item[props[0]]">
+             <td>
+                 <input type="checkbox" name="check"
+                 onclick="updatePreview();"
+                 tal:attributes="value attr; id string:id_$attr" />
+             </td>
+             <td tal:repeat="prop props">
+                 <label class="classhelp-label"
+                        tal:attributes="for string:id_$attr"
+                        tal:content="structure python:item[prop]"></label>
+             </td>
+           </tal:block>
+       </tr>
+       <tr>
+           <th>&nbsp;<b>x</b></th>
+           <th tal:repeat="prop props" tal:content="prop" i18n:translate=""></th>
+       </tr>
+     </table>
+
  </form>
  </body>
 </html>

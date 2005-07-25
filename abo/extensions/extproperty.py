@@ -57,6 +57,7 @@ class ExtProperty :
         , pretty       = _    # optional pretty-printing function
         , linkclass    = None # optional function for getting css class
         , do_classhelp = None
+        , filter       = None
         ) :
         self.utils        = utils
         self.prop         = prop
@@ -77,6 +78,7 @@ class ExtProperty :
         self.key          = None
         self.searchable   = searchable
         self.do_classhelp = do_classhelp
+        self.filter       = filter
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
