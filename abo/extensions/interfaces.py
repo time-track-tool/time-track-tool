@@ -72,9 +72,9 @@ def linkclass (item) :
     return ''
 # end def linkclass
 
-def menu_or_field (prop) :
+def menu_or_field (prop, filter = {}) :
     if hasattr (prop._prop, 'classname') :
-        return prop.menu (height=5)
+        return prop.menu (height=5, **filter)
     return prop.field ()
 # end def menu_or_field
 

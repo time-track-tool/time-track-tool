@@ -10,6 +10,8 @@
  tal:define=
   " excpt     python: ('creator', 'creation', 'activity', 'actor', 'content')
   ; labelprop python: klass._klass.labelprop ()
+  ; tc        python:db._db.adr_type_cat.lookup ('ABO')
+  ; filt      python:{'typecat' : tc}
   ; linkprops python: (labelprop, 'id')
   ; props     python:[i for i in utils.sorted_properties (db, context)
                       if i._name not in excpt
@@ -38,7 +40,7 @@
    </tal:block>
    <tal:block tal:condition="python:prop._name not in linkprops">
     <td tal:content="structure python:utils.ExtProperty
-        (utils, prop, item = item).as_listentry ()"></td>
+        (utils, prop, item = item, filter=filter).as_listentry ()"></td>
    </tal:block>
   </tal:block>
  </tr>
@@ -64,9 +66,11 @@
 <table class="form">
 
  <tal:block tal:repeat="prop props">
-  <tr tal:condition="python:prop._name not in ('id','date','author')">
+  <tr tal:condition="python:prop._name not in ('id','date','author')"
+   tal:define="filter python:[{},filt][prop._name == 'adr_type']">
    <th tal:content="structure python:utils.fieldname (classname, prop._name)"></th>
-   <td tal:content="structure python:utils.menu_or_field (context[prop._name])">
+   <td tal:content="structure python:utils.menu_or_field
+    (context[prop._name], filter=filter)">
    </td>
   </tr>
  </tal:block>
