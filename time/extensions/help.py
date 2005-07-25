@@ -288,7 +288,7 @@ def help_properties (klass) :
 # end def help_properties
 
 def fieldname (cls, name, fieldname = None, space = True) :
-    nbsp = ['&nbsp;',''][not space]
+    nbsp = ['&nbsp;', ''][not space]
     if not fieldname : fieldname = name
     prop = combined_name (cls, fieldname)
     if not prop in helptext :
@@ -299,7 +299,6 @@ def fieldname (cls, name, fieldname = None, space = True) :
            % (cls, prop, _ (prop), nbsp)
 
 # end def fieldname
-
 
 def init (instance) :
     global _
