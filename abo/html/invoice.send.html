@@ -108,6 +108,7 @@
     , ep (utils, pdict ['abo'])
     , ep (utils, pdict ['invoice_group'], multiselect = 1)
     )
+  ; tplate_args python: {':template' : 'send'}
   "
   tal:condition="context/is_view_ok">
 
