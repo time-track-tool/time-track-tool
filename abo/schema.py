@@ -280,3 +280,20 @@ db.security.addPermissionToRole('User', 'Email Access')
 # Anonymous may view other users profiles - required for intranet pages.
 db.security.addPermissionToRole('Anonymous', 'View', 'user')
 db.security.addPermissionToRole('Anonymous', 'Web Access')
+
+# Users should be able to edit their own details -- this permission
+# is limited to only the situation where the Viewed or Edited item
+# is their own.
+def own_record(db, userid, itemid):
+    '''Determine whether the userid matches the item being accessed.'''
+    print "userid: %s itemid: %s" % (userid, itemid)
+    return userid == itemid
+
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'user'
+    , check       = own_record
+    , description = "User is allowed to edit their own user details"
+    , properties  = ('password', 'realname')
+    )
+db.security.addPermissionToRole('User', p)
