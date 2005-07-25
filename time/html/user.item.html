@@ -6,7 +6,8 @@
   <span tal:replace="string:${context/id}: ${context/username}" />
  </tal:block>
  <tal:block i18n:translate=""
-  tal:condition="not:context/id">New User</tal:block>
+  tal:condition="not:context/id">New User
+ </tal:block>
 </title>
 <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
   <span tal:condition="not:context/id" i18n:translate="">New</span>
