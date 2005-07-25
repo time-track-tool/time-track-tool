@@ -23,7 +23,7 @@
 #
 #++
 # Name
-#    ExportCSVNamesAction
+#    Export_CSV_Names
 #
 # Purpose
 #    Action for exporting current query as CSV (comma separated values)
@@ -52,7 +52,7 @@ def repr_str (x) :
     return str (x).decode ('utf-8').encode ('latin1')
 # end def repr_str
 
-class ExportCSVNamesAction (Action) :
+class Export_CSV_Names (Action) :
     name = 'export'
     permissionType = 'View'
 
@@ -102,7 +102,7 @@ class ExportCSVNamesAction (Action) :
                     s = " ".join ([str (cls.get (x, col)) for col in cols])
                     return s.decode ('utf-8').encode ('latin1')
             return f
-
+        # end def repr_link
 
         for col in columns :
             represent [col] = repr_str
@@ -124,7 +124,8 @@ class ExportCSVNamesAction (Action) :
 
         return '\n'
     # end def handle
+# end class Export_CSV_Names
 
 def init (instance) :
-    instance.registerAction ('export_csv_names', ExportCSVNamesAction)
+    instance.registerAction ('export_csv_names', Export_CSV_Names)
 # end def init
