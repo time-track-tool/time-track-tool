@@ -286,7 +286,6 @@ db.security.addPermissionToRole('Anonymous', 'Web Access')
 # is their own.
 def own_record(db, userid, itemid):
     '''Determine whether the userid matches the item being accessed.'''
-    print "userid: %s itemid: %s" % (userid, itemid)
     return userid == itemid
 
 p = db.security.addPermission \
