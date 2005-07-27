@@ -16,14 +16,14 @@
  ; has_letters   python:'letters'  in klass._klass.getprops ()
  ; is_user       python:uname!='anonymous'
  ; tplate_args   python:{}
- ; default_query python:{ 'abo'     : '%3Aaction=search&%3Astartwith=0&%3Apagesize=20&%3Asort=id&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=aboprice&%3Acolumns=amount&%3Acolumns=begin&%3Acolumns=end&%3Acolumns=subscriber&%3Acolumns=payer&aboprice=&%3Asearch_text=&%40queryname=&id=&amount=&begin=&end='
-                        , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation&:columns=title&:columns=id&:columns=lastname&:columns=firstname&valid=1&:search_text=&@queryname='
+ ; default_query python:{ 'abo'     : '@action=search&:columns=id,aboprice,amount,begin,end,subscriber,payer&:sort=-id&:pagesize=20&:startwith=0'
+                        , 'address' : '@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=salutation,title,id,lastname,firstname,country,street,postalcode,city&valid=1&adr_type=ZFW&:search_text=&@queryname='
                         , 'abo_price': ''
                         , 'abo_type': ''
                         , 'adr_type_cat': ''
-                        , 'adr_type' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=code&%3Agroup=&%3Acolumns=id&%3Acolumns=code&%3Acolumns=description&%3Acolumns=typecat&typecat=19&typecat=6&typecat=16&typecat=5&typecat=3&typecat=7&typecat=14&typecat=10&typecat=1&typecat=12&typecat=4&typecat=15&typecat=17&typecat=8&typecat=9&typecat=2&typecat=11&typecat=13&typecat=18&%3Asearch_text=&%40queryname=&id=&name=&description='
+                        , 'adr_type' : '@action=search&:columns=id,code,description,typecat&:sort=code&:filter=typecat&:pagesize=50&:startwith=0&typecat=%s' % ','.join (db._db.adr_type_cat.getnodeids ())
                         , 'currency': ''
-                        , 'invoice' : '%3Aaction=search&%3Astartwith=0&%3Apagesize=50&%3Asort=period_start&%3Asortdir=on&%3Agroup=&%3Acolumns=id&%3Acolumns=invoice_no&%3Acolumns=period_start&%3Acolumns=period_end&%3Acolumns=amount&%3Acolumns=currency&%3Acolumns=balance_open&%3Acolumns=open&%3Acolumns=n_sent&%3Acolumns=send_it&%3Acolumns=last_sent&%3Acolumns=date_payed&%3Acolumns=bookentry&%3Acolumns=receipt_no&%3Acolumns=payer&%3Acolumns=subscriber&%3Acolumns=abo&currency=&%3Asearch_text=&%40queryname=&id=&invoice_no=&period_start=&period_end=&amount=&balance_open=&open=1&n_sent=&send_it=&last_sent=&date_payed=&bookentry=&receipt_no='
+                        , 'invoice' : '@action=search&:columns=invoice_no,period_start,period_end,amount,currency,balance_open,n_sent,payer,subscriber,abo&:sort=-period_start&:filter=open&:pagesize=50&:startwith=0&open=1'
                         , 'invoice_group' : ''
                         , 'invoice_template' : ''
                         , 'tmplate' : ''
