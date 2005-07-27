@@ -311,3 +311,8 @@ work_location.create \
 sex = db.getclass ('sex')
 sex.create (name = "female")
 sex.create (name = "male")
+
+user_status = db.getclass ('user_status')
+user_status.create (name = "valid",    description = "Valid user")
+user_status.create (name = "obsolete", description = "No longer @TTTech")
+

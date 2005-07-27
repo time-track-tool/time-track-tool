@@ -293,6 +293,8 @@ department = Class \
     , name                  = String    ()
     , description           = String    ()
     , manager               = Link      ("user")
+    , part_of               = Link      ("department")
+    , doc_num               = String    ()
     , valid_from            = Date      ()
     , valid_to              = Date      ()
     , messages              = Multilink ("msg")
@@ -311,6 +313,7 @@ time_project_status = Class \
     , ''"time_project_status"
     , name                  = String    ()
     , description           = String    ()
+    , only_controlling      = Boolean   ()
     )
 time_project_status.setkey ("name")
 
@@ -327,7 +330,7 @@ time_project = Class \
     , time_start            = Date      ()
     , time_end              = Date      ()
     , planned_effort        = Number    ()
-    , time_project_status   = Link      ("time_project_status")
+    , status                = Link      ("time_project_status")
     )
 time_project.setkey ("name")
 
@@ -427,6 +430,14 @@ sex = Class \
     )
 sex.setkey ("name")
 
+user_status = Class \
+    ( db
+    , ''"user_status"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+user_status.setkey ("name")
+
 # Note: roles is a comma-separated string of Role names
 user = Class \
     ( db
@@ -436,7 +447,7 @@ user = Class \
     , password              = Password  ()
     , address               = String    ()
     , alternate_addresses   = String    ()
-    , is_alias              = Boolean   ()
+    , status                = Link      ("user_status")
     , firstname             = String    ()
     , lastname              = String    ()
     , realname              = String    ()

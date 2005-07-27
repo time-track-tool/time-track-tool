@@ -17,6 +17,7 @@
 #                      `update_userlist_html` on user.create also, removed
 #                      `None` from `is_alias` filterspec
 #     6-Apr-2005 (MPH) Fixed use of mkstemp
+#    27-Jul-2005 (RSC) is_alias -> status
 #    ««revision-date»»···
 #--
 #
@@ -124,7 +125,7 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     f          = os.fdopen (f, "w")
     # all 'real' users
     users      = cl.filter ( None # full text search
-                           , filterspec = {"is_alias" : [False]}
+                           , filterspec = {"status" : ['1']}
                            , sort       = ("+", "username")
                            )
     if users :

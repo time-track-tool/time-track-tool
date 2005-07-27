@@ -139,7 +139,7 @@
                ;selected python:wp.id == r.wp.id
                "
              tal:content="python:' '.join
-              ([str (wp [i]) for i in 'name','wp_no','project'])"/>
+              ([str (wp [i]) for i in 'project','wp_no','name'])"/>
           </select>
          </td>
          <td tal:repeat="pn python:['time_activity','work_location']">
@@ -161,7 +161,7 @@
              (filterspec = {'bookers' : db._db.getuid ()})"
             tal:attributes="value wp/id"
             tal:content="python:' '.join
-             ([str (wp [i]) for i in 'name','wp_no','project'])"/>
+             ([str (wp [i]) for i in 'project','wp_no','name'])"/>
          </select>
         </td>
         <td tal:repeat="pn python:['time_activity','work_location']">
