@@ -39,10 +39,16 @@
     <tr tal:define="rowspan python:(2, 1)[not context.id]">
      <th tal:content="structure python:utils.fieldname(classname, 'subscriber')"
          class="required" tal:attributes="rowspan rowspan"></th>
-     <td tal:content="structure context/subscriber/field"></td>
+     <td tal:condition="context/is_edit_ok"
+         tal:content="structure context/subscriber/field"></td>
+     <td tal:condition="not:context/is_edit_ok"
+         tal:content="structure context/subscriber/id"></td>
      <th tal:content="structure python:utils.fieldname(classname, 'payer')"
          tal:attributes="rowspan rowspan"></th>
-     <td tal:content="structure context/payer/field"></td>
+     <td tal:condition="context/is_edit_ok"
+         tal:content="structure context/payer/field"></td>
+     <td tal:condition="not:context/is_edit_ok"
+         tal:content="structure context/payer/id"></td>
     </tr>
     <tr tal:condition="context/id|nothing">
      <td>
