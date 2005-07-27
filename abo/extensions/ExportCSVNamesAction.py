@@ -32,6 +32,10 @@
 from roundup.cgi.actions import Action
 from roundup.cgi import templating
 from roundup import hyperdb
+try :
+    from cStringIO import StringIO
+except ImportError :
+    from StringIO  import StringIO
 
 import csv
 import re
@@ -73,11 +77,23 @@ def repr_func (col) :
     return f
 # end def repr_func
 
+def repr_code (cls, adr_types) :
+    def f (x) :
+        if x is None :
+            return "0"
+        for t in x :
+            if t in adr_types :
+                return "A"
+        return "0"
+    return f
+# end def repr_code
+
 class Export_CSV_Names (Action) :
     name           = 'export'
     permissionType = 'View'
     print_head     = True
     filename       = 'query.csv'
+    delimiter      = '\t'
 
     def _setup (self, request) :
         columns    = request.columns
@@ -95,6 +111,8 @@ class Export_CSV_Names (Action) :
     # end def _setup
 
     def _attr (self, col) :
+        if col == 'code' :
+            return 'adr_type'
         try :
             return col.split ('.')[0]
         except AttributeError :
@@ -113,6 +131,10 @@ class Export_CSV_Names (Action) :
         props      = klass.getprops ()
         self._setup (request)
 
+        typecat        = self.db.adr_type_cat.lookup ('ABO')
+        self.adr_types = dict \
+            ([(i, 1) for i in self.db.adr_type.find (typecat = typecat)])
+
         h                        = self.client.additional_headers
         h ['Content-Type']       = 'text/csv'
         # some browsers will honor the filename here...
@@ -124,7 +146,12 @@ class Export_CSV_Names (Action) :
             # all done, return a dummy string
             return 'dummy'
 
-        writer = csv.writer (self.client.request.wfile)
+        io = StringIO ()
+        writer = csv.writer \
+            ( io
+            , dialect   = 'excel'
+            , delimiter = self.delimiter
+            )
         if self.print_head :
             writer.writerow (self.columns)
 
@@ -133,7 +160,9 @@ class Export_CSV_Names (Action) :
 
         for col in self.columns :
             represent [col] = repr_str
-            if col.startswith ('function.') :
+            if col == 'code' :
+                represent [col] = repr_code (col, self.adr_types)
+            elif col.startswith ('function.') :
                 represent [col] = repr_func (col)
             elif isinstance (props [col], hyperdb.Link) :
                 cn = props [col].classname
@@ -154,7 +183,7 @@ class Export_CSV_Names (Action) :
                   ]
                 )
 
-        return '\n'
+        return io.getvalue ()
     # end def handle
 # end class Export_CSV_Names
 
@@ -175,6 +204,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
             , 'country'
             , 'postalcode'
             , 'city'
+            , 'code'
             ]
         self.matches = None
     # end def _setup
