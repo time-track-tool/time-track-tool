@@ -149,13 +149,12 @@ class OOoPy_Invoice_Wrapper (autosuper) :
         self.db = db
         if not date :
             date = Date ('.')
-        self.items = \
-            { 'invoice' : iv
-            , 'date'    : date
-            }
+        self.items = {'date' : date}
         if not address :
             address = self._deref ('invoice.payer')
         self.items ['address'] = address
+        if iv :
+            self.items ['invoice'] = iv
     # end def __init__
 
     def _pretty (self, item) :
@@ -320,9 +319,12 @@ class Download_Letter (Action, autosuper) :
         files  = letter.files
         if not files :
             raise Redirect, 'letter%s' % self.id
+        invoice = letter.invoice
+        if invoice :
+            invoice = self.db.invoice.getnode (invoice)
         return self.create_file \
             ( self.db.file.getnode (files [0])
-            , self.db.invoice.getnode (letter.invoice)
+            , invoice
             , letter.date
             , self.db.address.getnode (letter.address)
             )
