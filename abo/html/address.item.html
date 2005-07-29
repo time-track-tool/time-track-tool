@@ -10,7 +10,7 @@
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
        tal:content="Classname"></span>
  <tal:block metal:fill-slot="menu_slot">
-   <tr tal:condition="python:request.user.hasPermission ('View','address')">
+   <tr tal:condition="context/id">
      <td class="sidebar" nowrap
       tal:condition="python:request.user.hasPermission ('View','tmplate')">
       <span class="classblock">
