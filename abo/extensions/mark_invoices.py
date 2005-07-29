@@ -168,6 +168,8 @@ class OOoPy_Invoice_Wrapper (autosuper) :
         """ dereference a dotted name -- we may want to cache this."""
         names = name.split ('.')
         x  = self.items [names [0]]
+        if not x :
+            raise KeyError, names [0]
         for i in names [1:] :
             p = x.cl.properties [i]
             if isinstance (p, hyperdb.Link) :
@@ -280,6 +282,29 @@ class Mark_Invoice_Sent (Invoice) :
 # end class Mark_Invoice_Sent
 
 class Download_Letter (Action, autosuper) :
+    def create_file (self, file, invoice, date, address) :
+        if  (   file.type != 'application/vnd.sun.xml.writer'
+            and splitext (file.name) [1] != '.sxw'
+            ) :
+            raise Redirect, 'file%s/%s' % (file.id, file.name)
+        out = StringIO ()
+        o   = OOoPy (infile = StringIO (file.content), outfile = out)
+        t   = Transformer \
+              ( Transforms.Editinfo ()
+              , Transforms.Field_Replace
+                ( replace = OOoPy_Invoice_Wrapper
+                    (self.db, invoice, date, address)
+                )
+              )
+        t.transform (o)
+        o.close ()
+        h = self.client.additional_headers
+        h ['Content-Type']        = 'application/vnd.sun.xml.writer'
+        h ['Content-Disposition'] = 'inline; filename=inv.sxw'
+        self.client.header  ()
+        return out.getvalue ()
+    # end def create_file
+
     def handle (self) :
         request    = templating.HTMLRequest (self.client)
         filterspec = request.filterspec
@@ -295,41 +320,48 @@ class Download_Letter (Action, autosuper) :
         files  = letter.files
         if not files :
             raise Redirect, 'letter%s' % self.id
-        file = self.db.file.getnode (files [0])
-        if  (   file.type != 'application/vnd.sun.xml.writer'
-            and splitext (file.name) [1] != '.sxw'
-            ) :
-            raise Redirect, 'file%s/%s' % (file.id, file.name)
-        out = StringIO ()
-        o   = OOoPy (infile = StringIO (file.content), outfile = out)
-        t   = Transformer \
-              ( Transforms.Editinfo ()
-              , Transforms.Field_Replace
-                ( replace = OOoPy_Invoice_Wrapper
-                    ( self.db
-                    , self.db.invoice.getnode (letter.invoice)
-                    , letter.date
-                    , self.db.address.getnode (letter.address)
-                    )
-                )
-              )
-        t.transform (o)
-        o.close ()
-        h = self.client.additional_headers
-        h ['Content-Type']        = 'application/vnd.sun.xml.writer'
-        h ['Content-Disposition'] = 'inline; filename=inv.sxw'
-        self.client.header  ()
-        return out.getvalue ()
+        return self.create_file \
+            ( self.db.file.getnode (files [0])
+            , self.db.invoice.getnode (letter.invoice)
+            , letter.date
+            , self.db.address.getnode (letter.address)
+            )
     # end def handle
 # end class Download_Letter
+
+class Personalized_Template (Download_Letter) :
+    def handle (self) :
+        request    = templating.HTMLRequest (self.client)
+        filterspec = request.filterspec
+
+        if request.classname != 'address' :
+            raise Reject, _ ('You can only download templates for an address')
+        try :
+            template = request.form ['tmplate'].value
+        except KeyError :
+            template = filterspec ['tmplate'][0]
+        template = self.db.tmplate.getnode (template)
+        address  = self.db.address.getnode (self.context ['context'].id)
+        files    = template.files
+        if not files :
+            raise Reject, _ ('No files for %(tmplate)s' % template.name)
+        return self.create_file \
+            ( self.db.file.getnode (files [0])
+            , None
+            , Date ('.')
+            , address
+            )
+    # end def handle
+# end class Personalized_Template
 
 def init (instance) :
     global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
-    instance.registerAction ('mark_invoice',      Mark_Invoice)
-    instance.registerAction ('unmark_invoice',    Unmark_Invoice)
-    instance.registerAction ('mark_invoice_sent', Mark_Invoice_Sent)
-    instance.registerAction ('generate_invoice',  Generate_Invoice)
-    instance.registerAction ('download_letter',   Download_Letter)
+    instance.registerAction ('mark_invoice',          Mark_Invoice)
+    instance.registerAction ('unmark_invoice',        Unmark_Invoice)
+    instance.registerAction ('mark_invoice_sent',     Mark_Invoice_Sent)
+    instance.registerAction ('generate_invoice',      Generate_Invoice)
+    instance.registerAction ('download_letter',       Download_Letter)
+    instance.registerAction ('personalized_template', Personalized_Template)
 # end def init

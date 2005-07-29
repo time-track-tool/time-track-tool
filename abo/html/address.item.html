@@ -21,10 +21,10 @@
         -- tmplates --
         </option>
         <tal:block tal:repeat="o python:db.tmplate.filter (sort=('+','name'))">
-         <option tal:content="o/name" tal:attributes="value python:'file%s/%s' %
-                  ( o.files.reverse ().next ().id
-                  , o.files.reverse ().next ().name
-                  )"/>
+         <option tal:content="o/name"
+          tal:attributes="value
+           python:'address%s?:action=personalized_template&tmplate=%s' %
+            (context.id, o.id)"/>
         </tal:block>
        </select>
       </span>
