@@ -48,7 +48,7 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
     if 'valid' not in new_values :
         new_values ['valid'] = '1'
     if 'initial' not in new_values and 'firstname' in new_values :
-        initial = firstname [0].upper () + '.'
+        initial = new_values ['firstname'][0].upper () + '.'
 # end def set_adr_defaults
 
 def init (db) :
