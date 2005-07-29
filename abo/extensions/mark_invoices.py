@@ -1,3 +1,27 @@
+#! /usr/bin/python
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2005 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
+# ****************************************************************************
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# ****************************************************************************
+# $Id$
+
 from cStringIO                      import StringIO
 from roundup.cgi.actions            import Action
 from roundup.cgi                    import templating
@@ -60,8 +84,12 @@ class Invoice (Action, autosuper) :
 
         if request.classname != 'invoice' :
             raise Reject, _ ('You can only mark invoices')
-        # get invoice_group:
-        self.invoice_group = filterspec ['invoice_group'][0]
+        # get invoice_group -- if existing:
+        self.invoice_group = None
+        try :
+            self.invoice_group = filterspec ['invoice_group'][0]
+        except KeyError :
+            pass
     # end def handle
 
     def _unmark (self) :
@@ -150,11 +178,11 @@ class OOoPy_Invoice_Wrapper (autosuper) :
         if not date :
             date = Date ('.')
         self.items = {'date' : date}
+        if iv :
+            self.items ['invoice'] = iv
         if not address :
             address = self._deref ('invoice.payer')
         self.items ['address'] = address
-        if iv :
-            self.items ['invoice'] = iv
     # end def __init__
 
     def _pretty (self, item) :
@@ -199,7 +227,7 @@ class Generate_Invoice (Invoice) :
     def handle (self) :
         ''' Prepare invoices for printout and send to browser.'''
         self.__super.handle ()
-        invoices  = [self.db.invoice.getnode (i) for i in self.marked (True)]
+        invoices = [self.db.invoice.getnode (i) for i in self.marked (True)]
         ivts      = [(self.get_iv_template (i), i) for i in invoices]
         iv_by_tid = {}
         tp_by_tid = {}
@@ -247,13 +275,10 @@ class Generate_Invoice (Invoice) :
     # end def handle
 # end class Generate_Invoice
 
-class Mark_Invoice_Sent (Invoice) :
-    def handle (self) :
-        ''' Mark the marked invoices as sent and remove mark.'''
-        self.__super.handle ()
+class _Mark_Invoice (Invoice) :
+    def _mark_ivs (self, invoices) :
+        ''' Mark the marked invoices as sent.'''
         now       = Date ('.')
-        ivclass   = self.db.invoice
-        invoices  = [ivclass.getnode (i) for i in self.marked (True)]
         for iv in invoices :
             id   = iv ['id']
             ivt  = self.get_iv_template (iv)
@@ -268,17 +293,38 @@ class Mark_Invoice_Sent (Invoice) :
                 )
             letters = iv ['letters']
             letters.append (letter)
-            ivclass.set \
+            self.db.invoice.set \
                 ( id
                 , letters   = letters
                 , n_sent    = iv ['n_sent'] + 1
                 , last_sent = now
                 )
+    # end def _mark_ivs
+# end class _Mark_Invoice
+
+class Mark_Invoice_Sent (_Mark_Invoice) :
+    def handle (self) :
+        ''' Mark the marked invoices as sent and remove mark.'''
+        self.__super.handle ()
+        invoices  = [self.db.invoice.getnode (i) for i in self.marked (True)]
+        self._mark_ivs (invoices)
         self._unmark   ()
         self.db.commit ()
         self.redirect  ()
     # end def handle
 # end class Mark_Invoice_Sent
+
+class Mark_Single_Invoice_Sent (_Mark_Invoice) :
+    def handle (self) :
+        '''get current invoice and handle it'''
+        self.__super.handle ()
+        invoice  = self.db.invoice.getnode (self.context ['context'].id)
+        invoices = [invoice]
+        self._mark_ivs (invoices)
+        self.db.commit ()
+        raise Redirect ('invoice%s' % invoice.id)
+    # end def handle
+# end class Mark_Single_Invoice_Sent
 
 class Download_Letter (Action, autosuper) :
     def create_file (self, file, invoice, date, address) :
@@ -360,10 +406,12 @@ def init (instance) :
     global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
-    instance.registerAction ('mark_invoice',          Mark_Invoice)
-    instance.registerAction ('unmark_invoice',        Unmark_Invoice)
-    instance.registerAction ('mark_invoice_sent',     Mark_Invoice_Sent)
-    instance.registerAction ('generate_invoice',      Generate_Invoice)
-    instance.registerAction ('download_letter',       Download_Letter)
-    instance.registerAction ('personalized_template', Personalized_Template)
+    reg = instance.registerAction
+    reg ('mark_invoice',             Mark_Invoice)
+    reg ('unmark_invoice',           Unmark_Invoice)
+    reg ('mark_invoice_sent',        Mark_Invoice_Sent)
+    reg ('generate_invoice',         Generate_Invoice)
+    reg ('mark_single_invoice_sent', Mark_Single_Invoice_Sent)
+    reg ('download_letter',          Download_Letter)
+    reg ('personalized_template',    Personalized_Template)
 # end def init

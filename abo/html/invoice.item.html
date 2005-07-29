@@ -9,6 +9,22 @@
  </title>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
        tal:content="Classname"></span>
+ <tal:block metal:fill-slot="menu_slot">
+   <tr tal:condition="python:request.user.hasPermission ('Edit','invoice')">
+    <td/>
+    <td class="sidebar" nowrap
+     tal:condition="python:request.user.hasPermission ('Edit','invoice')">
+     <span class="classblock">
+      <a i18n:translate=""
+         tal:attributes=
+          "href python:'invoice%s?:action=mark_single_invoice_sent' %
+           context.id">
+       Generate single invoice
+      </a>
+     </span>
+    </td>
+   </tr>
+ </tal:block>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
