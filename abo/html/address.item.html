@@ -9,6 +9,46 @@
  </title>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
        tal:content="Classname"></span>
+ <tal:block metal:fill-slot="menu_slot">
+   <tr tal:condition="python:request.user.hasPermission ('View','address')">
+     <td class="sidebar" nowrap
+      tal:condition="python:request.user.hasPermission ('View','tmplate')">
+      <span class="classblock">
+       <select name="tmplates"
+        onChange="javascript:document.location=document.forms['menubar'].elements['tmplates'].options[document.forms['menubar'].elements['tmplates'].options.selectedIndex].value;">
+
+        <option value="" i18n:translate="">
+        -- tmplates --
+        </option>
+        <tal:block tal:repeat="o python:db.tmplate.filter (sort=('+','name'))">
+         <option tal:content="o/name" tal:attributes="value python:'file%s/%s' %
+                  ( o.files.reverse ().next ().id
+                  , o.files.reverse ().next ().name
+                  )"/>
+        </tal:block>
+       </select>
+      </span>
+     </td>
+     <td class="sidebar" nowrap>
+      <span class="classblock"
+       tal:condition="python:request.user.hasPermission ('Edit','abo')">
+       <a i18n:translate=""
+          tal:attributes="href string:abo?:template=item&subscriber=${context/id}&payer=${context/id}">
+        New Subscription for
+        <tal:block i18n:name="lastname" tal:replace="context/lastname"/>
+       </a>
+      </span>
+      <span class="classblock"
+       tal:condition="python:request.user.hasPermission ('Edit','letter')">
+       <a i18n:translate=""
+          tal:attributes="href string:letter?:template=item&address=${context/id}">
+        New Letter for
+        <tal:block i18n:name="lastname" tal:replace="context/lastname"/>
+       </a>
+      </span>
+     </td>
+   </tr>
+ </tal:block>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
@@ -16,13 +56,6 @@
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'salutation')"></th>
      <td tal:content="structure context/salutation/field"></td>
-     <th/>
-     <td>
-      <a i18n:translate=""
-         tal:attributes="href string:abo?:template=item&subscriber=${context/id}&payer=${context/id}">
-       New Subscription
-      </a>
-     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'title')"></th>

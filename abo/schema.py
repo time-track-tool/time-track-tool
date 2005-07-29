@@ -171,7 +171,8 @@ letter = Class \
 tmplate = Class \
     ( db, ''"tmplate"
     , name                = String    ()
-    , files               = Multilink ("file") # version control, use latest
+    # version control, use latest:
+    , files               = Multilink ("file", do_journal='no')
     )
 tmplate.setkey (''"name")
 
@@ -224,6 +225,7 @@ msg = FileClass \
     , summary               = String    ()
     , messageid             = String    ()
     , inreplyto             = String    ()
+    , files                 = Multilink ("file", do_journal='no')
     )
 
 file = FileClass \

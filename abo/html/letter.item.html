@@ -15,12 +15,7 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'subject')" />
-     <td tal:condition="not:context/id"
-         tal:content="structure context/subject/field">
-     </td>
-     <td tal:condition="context/id"
-         tal:content="structure context/subject">
-     </td>
+     <td tal:content="structure context/subject/field"/>
      <th tal:condition="python: context.id and context.invoice"
          tal:content="structure python:utils.fieldname(classname, 'invoice')" />
      <td tal:condition="python: context.id and context.invoice"

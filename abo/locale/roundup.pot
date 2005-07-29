@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-07-25 17:30+0200\n"
+"POT-Creation-Date: 2005-07-29 14:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "\"end\" (close subscription) only +/- one month"
 msgstr ""
 
-#: ../detectors/abo_checks.py:41 ../detectors/letter.py:38
+#: ../detectors/abo_checks.py:41 ../detectors/letter.py:45
 #, python-format
 msgid "\"%(attr)s\" may not be changed"
 msgstr ""
@@ -118,7 +118,7 @@ msgstr ""
 msgid "payment may not exceed balance_open"
 msgstr ""
 
-#: ../detectors/invoice_template.py:39 ../detectors/letter.py:42
+#: ../detectors/invoice_template.py:39 ../detectors/letter.py:49
 #, python-format
 msgid "\"%(attr)s\" may not be deleted"
 msgstr ""
@@ -572,7 +572,7 @@ msgstr ""
 msgid "List of messages for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:159 ../schema.py:218
+#: ../extensions/help.py:159 ../schema.py:219
 msgid "msg"
 msgstr ""
 
@@ -589,8 +589,8 @@ msgid "Number of times this invoice was sent"
 msgstr ""
 
 #: ../extensions/help.py:163 ../schema.py:55 ../schema.py:66 ../schema.py:113
-#: ../schema.py:144 ../schema.py:155 ../schema.py:176 ../schema.py:184
-#: ../schema.py:193
+#: ../schema.py:144 ../schema.py:155 ../schema.py:177 ../schema.py:185
+#: ../schema.py:194
 msgid "name"
 msgstr ""
 
@@ -849,7 +849,7 @@ msgstr ""
 msgid "Web-Link for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:233 ../schema.py:212
+#: ../extensions/help.py:233 ../schema.py:213
 msgid "username"
 msgstr ""
 
@@ -857,7 +857,7 @@ msgstr ""
 msgid "Login-name"
 msgstr ""
 
-#: ../extensions/help.py:235 ../schema.py:180
+#: ../extensions/help.py:235 ../schema.py:181
 msgid "valid"
 msgstr ""
 
@@ -919,11 +919,11 @@ msgstr ""
 msgid "history of ${Classname}"
 msgstr ""
 
-#: ../html/_generic.index.html:50 ../html/_generic.item.html:50
+#: ../html/_generic.index.html:52 ../html/_generic.item.html:52
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
-#: ../html/_generic.index.html:78 ../html/_generic.item.html:78
+#: ../html/_generic.index.html:82 ../html/_generic.item.html:82
 msgid "History"
 msgstr ""
 
@@ -939,8 +939,16 @@ msgstr ""
 msgid "export addresses"
 msgstr ""
 
-#: ../html/address.item.html:21
-msgid "New Subscription"
+#: ../html/address.item.html:20
+msgid "-- tmplates --"
+msgstr ""
+
+#: ../html/address.item.html:38
+msgid "New Subscription for ${lastname}"
+msgstr ""
+
+#: ../html/address.item.html:46
+msgid "New Letter for ${lastname}"
 msgstr ""
 
 #: ../html/invoice.send.html:36
@@ -1095,14 +1103,14 @@ msgstr ""
 msgid "adr_type_cat"
 msgstr ""
 
-#: ../schema.py:187
+#: ../schema.py:188
 msgid "query"
 msgstr ""
 
-#: ../schema.py:198
+#: ../schema.py:199
 msgid "user"
 msgstr ""
 
-#: ../schema.py:230
+#: ../schema.py:232
 msgid "file"
 msgstr ""

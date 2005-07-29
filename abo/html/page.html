@@ -88,16 +88,16 @@
         <tal:block
          tal:define="klasses python:
           [ ('abo',              'View', (('',''),))
-          , ('address',          'View', (('',''),))
-          , ('invoice',          'Edit', (('generate invoices', 'send'),('','')))
-          , ('adr_type',         'View', (('',''),))
-          , ('adr_type_cat',     'Edit', (('',''),))
           , ('abo_type',         'Edit', (('',''),))
-          , ('currency',         'Edit', (('',''),))
-          , ('abo_price',        'Edit', (('',''),))
+          , ('address',          'View', (('',''),))
           , ('valid',            'Edit', (('',''),))
+          , ('abo_price',        'View', (('',''),))
+          , ('invoice',          'Edit', (('generate invoices', 'send'),('','')))
           , ('invoice_group',    'Edit', (('',''),))
           , ('invoice_template', 'Edit', (('',''),))
+          , ('adr_type',         'View', (('',''),))
+          , ('adr_type_cat',     'Edit', (('',''),))
+          , ('currency',         'Edit', (('',''),))
           ]"
          tal:repeat="kp klasses"
         >
@@ -120,7 +120,7 @@
     <td class="sidebar">
 
      <!-- custom classes with "New" Button -->
-     <tal:block tal:repeat="c python:['abo','address','tmplate']">
+     <tal:block tal:repeat="c python:['abo','address','adr_type','tmplate']">
         <tal:block tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
