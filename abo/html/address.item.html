@@ -124,7 +124,16 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'adr_type')"></th>
-     <td tal:content="structure context/adr_type/field"></td>
+     <td tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
+      <span tal:content="structure context/adr_type/field"/>
+      <span tal:replace="structure python:db.adr_type.classhelp
+           ( properties='code,description'
+           , property='adr_type'
+           , filter='typecat=%s' % tc
+           , pagesize=500
+           , sort='code'
+           )"/>
+     </td>
      <th tal:content="structure python:utils.fieldname(classname, 'fax')"></th>
      <td tal:content="structure context/fax/field"></td>
     </tr>
