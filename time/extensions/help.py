@@ -35,7 +35,6 @@ if StructuredText :
     date_help  = StructuredText (Date.__doc__,  level = 1, header = 0)
     range_help = StructuredText (Range.__doc__, level = 1, header = 0)
 else :
-    print "OOops"
     date_help  = Date.__doc__ 
     range_help = Range.__doc__
 
@@ -57,6 +56,11 @@ helptext = \
       ""'''Author of this %(Classname)s'''
     , ""'authors'             :
       ""'''Authors of the artefact of this %(Classname)s'''
+    , ""'bookers'             :
+      ""'''Users who may book on this %(Classname)s. If nothing is
+           selected here, all users may book on this %(Classname)s (e.g.,
+           jour fixe).
+        '''
     , ""'company'             :
       ""'''Company for %(Classname)s'''
     , ""'confirm'             :
@@ -84,6 +88,13 @@ helptext = \
     , ""'duration'            :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
            allowed, e.g., 7.10 is not allowed.
+        '''
+    , ""'durations_allowed'   :
+      ""'''Flag if booking of durations is allowed for this
+           %(Classname)s -- is mainly used for special projects, like,
+           e.g., holidays. The value of this field is inherited by a
+           work package from its project if nothing is specified for the
+           work package.
         '''
     , ""'email'               :
       ""'''Email address for this %(Classname)s'''
@@ -130,7 +141,7 @@ helptext = \
     , ""'msg'                 :
       ""'''New message or notice for %(Classname)s'''
     , ""'name'                :
-      ""'''Unique %(Clasname)s name'''
+      ""'''Unique %(Classname)s name'''
     , ""'nickname'            :
       ""'''Nickname (or short name) for this %(Classname)s, e.g., rsc'''
     , ""'nosy'                :

@@ -78,6 +78,11 @@
          (classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>
     </tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'durations_allowed')"/>
+     <td tal:content="structure python:context.durations_allowed.field ()"/>
+    <tr>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>

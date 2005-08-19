@@ -78,15 +78,17 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'team_members')"/>
-     <td colspan="3">
-      <tal:block tal:define="size      string:5;
-                             name      string:team_members;
-                             form      string:itemSynopsis;
-                             dont_care string:don't care;
-                             selected  python:str([u.id for u in context.team_members.reverse ()] or [''])[1:-1]">
-       <tal:block metal:use-macro="templates/userlist/macros/user_multi"/>
-      </tal:block>
+     <td>
+      <span tal:replace="structure context/team_members/field"/>
+      <span tal:replace="structure python:db.user.classhelp
+            ( 'username,firstname,lastname'
+            , property='team_members'
+            , width='600'
+            )"/>
      </td>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'durations_allowed')"/>
+     <td tal:content="structure python:context.durations_allowed.field ()"/>
     </tr>
    </tal:block>
   </tal:block>
