@@ -43,12 +43,10 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'organisation')"/>
-     <td tal:content="structure python:context.organisation.menu ()"
-         tal:condition="context/id"/>
+     <td tal:content="structure python:context.organisation.menu ()"/>
      <th tal:content="structure python:utils.fieldname
          (classname, 'department')"/>
-     <td tal:content="structure python:context.department.menu ()"
-         tal:condition="context/id"/>
+     <td tal:content="structure python:context.department.menu ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
@@ -70,8 +68,7 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'planned_effort')"/>
-     <td tal:content="structure python:context.planned_effort.field ()"
-         tal:condition="context/id"/>
+     <td tal:content="structure python:context.planned_effort.field ()"/>
      <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
      <td tal:content="structure python:context.status.menu ()"/>
     </tr>
@@ -86,9 +83,6 @@
             , width='600'
             )"/>
      </td>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'durations_allowed')"/>
-     <td tal:content="structure python:context.durations_allowed.field ()"/>
     </tr>
    </tal:block>
   </tal:block>

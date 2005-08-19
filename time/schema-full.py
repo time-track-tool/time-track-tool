@@ -330,7 +330,6 @@ time_project = Class \
     , time_start            = Date      (offset = 0)
     , time_end              = Date      (offset = 0)
     , planned_effort        = Number    ()
-    , durations_allowed     = Boolean   ()
     , status                = Link      ("time_project_status")
     )
 time_project.setkey ("name")
@@ -348,6 +347,7 @@ time_wp = Class \
     , planned_effort        = Number    ()
     , bookers               = Multilink ("user")
     , durations_allowed     = Boolean   ()
+    , cost_center           = Link      ("cost_center")
     )
 
 work_location = Class \
@@ -480,6 +480,8 @@ user = Class \
     #       "organisation" ???
     )
 user.setkey ("username")
+
+#user_dynamic
 
 # FileClass automatically gets these properties:
 #   content = String()    [saved to disk in <tracker home>/db/files/]

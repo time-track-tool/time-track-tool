@@ -91,10 +91,8 @@ helptext = \
         '''
     , ""'durations_allowed'   :
       ""'''Flag if booking of durations is allowed for this
-           %(Classname)s -- is mainly used for special projects, like,
-           e.g., holidays. The value of this field is inherited by a
-           work package from its project if nothing is specified for the
-           work package.
+           %(Classname)s -- is mainly used for special %(Classname)ss, like,
+           e.g., holidays.
         '''
     , ""'email'               :
       ""'''Email address for this %(Classname)s'''

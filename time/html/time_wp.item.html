@@ -28,6 +28,12 @@
       colspan="3"/>
     </tr>
     <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'cost_center')"/>
+     <td tal:content="structure python:context.cost_center.menu ()"
+      colspan="3"/>
+    </tr>
+    <tr>
      <th tal:content="structure python:utils.fieldname (classname, 'project')"/>
      <td>
       <span tal:replace="structure context/project/field"/>
@@ -40,7 +46,7 @@
      </td>
      <th tal:content="structure python:utils.fieldname
          (classname, 'wp_no')"/>
-     <td tal:content="structure python:context.wp_no.field (60)"
+     <td tal:content="structure python:context.wp_no.field ()"
          tal:condition="not:context/id"/>
      <!-- FIXME after testing auditor this should be plain -->
      <td tal:content="structure python:context.wp_no.field ()"
