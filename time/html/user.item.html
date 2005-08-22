@@ -121,6 +121,21 @@
   </td>
  </tr>
  <tr>
+  <th tal:content="structure python:utils.fieldname('user', 'subst_active')"/>
+  <td tal:content="structure context/subst_active/field"/>
+ </tr>
+ <tr>
+  <th tal:content="structure python:utils.fieldname('user', 'clearance_by')"/>
+  <td>
+   <tal:block tal:define="name      string:clearance_by;
+                          form      string:user_form;
+                          dont_care string:don't care;
+                          selected  context/clearance_by/id | string:0">
+    <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+   </tal:block>
+  </td>
+ </tr>
+ <tr>
   <th tal:content="structure
       python:utils.fieldname('user', 'job_description')"/>
   <td tal:content="structure context/job_description/multiline"></td>

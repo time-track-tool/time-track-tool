@@ -459,6 +459,8 @@ user = Class \
     , department            = Link      ("department")
     , supervisor            = Link      ("user")
     , substitutes           = Multilink ("user")
+    , subst_active          = Boolean   ()
+    , clearance_by          = Link      ("user")
     , room                  = Link      ("room")
     , title                 = String    ()
     , position              = Link      ("position") # e.g. SW Developer
@@ -484,8 +486,8 @@ user_dynamic = Class \
     ( db
     , ''"user_dynamic"
     , user                  = Link      ("user")
-    , valid_from            = Date      ()
-    , valid_to              = Date      ()
+    , valid_from            = Date      (offset = 0)
+    , valid_to              = Date      (offset = 0)
     , durations_allowed     = Boolean   ()
     , long_worktime         = Boolean   ()
     , weekly_hours          = Number    ()

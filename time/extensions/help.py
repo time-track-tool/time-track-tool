@@ -61,6 +61,12 @@ helptext = \
            selected here, all users may book on this %(Classname)s (e.g.,
            jour fixe).
         '''
+    , ""'clearance_by'        :
+      ""'''Usually the supervisor of a person gives the clearance for
+           time records. This can be delegated using this attribute. It
+           specifies the person who gives clearance for time records for
+           all people whose supervisor this is.
+        '''
     , ""'company'             :
       ""'''Company for %(Classname)s'''
     , ""'confirm'             :
@@ -207,7 +213,13 @@ helptext = \
     , ""'subject'             :
       ""'''Short identification of this message'''
     , ""'substitutes'         :
-      ""'''Others who can substitute %(Classname)s'''
+      ""'''Others who can substitute %(Classname)s for giving clearance
+           for time records.
+        '''
+    , ""'subst_active'         :
+      ""'''This field is set to "yes" for enabling the field
+           "substitutes" for delegating time record processing
+        '''
     , ""'summary'             :
       ""'''Short summary of this message (usually first line)'''
     , ""'superior'            :
