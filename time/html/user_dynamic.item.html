@@ -1,0 +1,102 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:0">
+   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+    <tal:block metal:fill-slot="ttt_issue_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'user')"/>
+      <td>
+       <tal:block tal:define=
+            " name      string:user
+            ; form      string:itemSynopsis
+            ; dont_care string:- no selection -
+            ; selected  context/user/id | string:0
+            ">
+        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+       </tal:block>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'valid_from')"/>
+      <td>
+       <span tal:content="structure python:context.valid_from.field ()"/>
+       <span tal:replace="structure python:utils.date_help
+             (request, context.valid_from)"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'valid_to')"/>
+      <td>
+       <span tal:replace="structure python:context.valid_to.field ()"/>
+       <span tal:replace="structure python:utils.date_help
+             (request, context.valid_to)"/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'durations_allowed')"/>
+      <td tal:content="structure python:context.durations_allowed.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'long_worktime')"/>
+      <td tal:content="structure python:context.long_worktime.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'holidays')"/>
+      <td tal:content="structure python:context.holidays.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'weekly_hours')"/>
+      <td tal:content="structure python:context.weekly_hours.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'daily_hours')"/>
+      <td colspan=3>
+       <span tal:repeat="i python:
+              [ context.hours_mon
+              , context.hours_tue
+              , context.hours_wed
+              , context.hours_thu
+              , context.hours_fri
+              , context.hours_sat
+              , context.hours_sun
+              ]"
+        tal:content="structure python:utils.ExtProperty
+         ( utils, i
+         , item       = context
+         , editable   = 1
+         , fieldwidth = 3
+         ).colonfield ()"/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'org_location')"/>
+      <td tal:content="structure python:context.org_location.menu ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

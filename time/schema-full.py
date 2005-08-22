@@ -460,7 +460,6 @@ user = Class \
     , supervisor            = Link      ("user")
     , substitutes           = Multilink ("user")
     , room                  = Link      ("room")
-    , org_location          = Link      ("org_location")
     , title                 = String    ()
     , position              = Link      ("position") # e.g. SW Developer
     , job_description       = String    ()
@@ -481,7 +480,25 @@ user = Class \
     )
 user.setkey ("username")
 
-#user_dynamic
+user_dynamic = Class \
+    ( db
+    , ''"user_dynamic"
+    , user                  = Link      ("user")
+    , valid_from            = Date      ()
+    , valid_to              = Date      ()
+    , durations_allowed     = Boolean   ()
+    , long_worktime         = Boolean   ()
+    , weekly_hours          = Number    ()
+    , hours_mon             = Number    ()
+    , hours_tue             = Number    ()
+    , hours_wed             = Number    ()
+    , hours_thu             = Number    ()
+    , hours_fri             = Number    ()
+    , hours_sat             = Number    ()
+    , hours_sun             = Number    ()
+    , holidays              = Number    ()
+    , org_location          = Link      ("org_location")
+    )
 
 # FileClass automatically gets these properties:
 #   content = String()    [saved to disk in <tracker home>/db/files/]
@@ -709,7 +726,7 @@ classes = \
     , ("organisation"      , ["User"], ["Admin"           ])
     , ("department"        , ["User"], ["Admin"           ])
     , ("position"          , ["User"], ["Admin"           ])
-    , ("user"              , ["User"], ["Admin", "Office" ])
+#    , ("user"              , ["User"], ["Admin", "Office" ])
     , ("msg"               , ["User"], ["User"            ])
     , ("file"              , ["User"], ["User"            ])
     , ("document"          , ["User"], ["User"            ])

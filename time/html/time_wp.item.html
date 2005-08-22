@@ -27,10 +27,12 @@
      <td tal:content="structure python:context.description.field (60)"
       colspan="3"/>
     </tr>
-    <tr>
+    <tr tal:define="cc_status python:db._db.cost_center_status.filter
+         (None, {'active':True})">
      <th tal:content="structure python:utils.fieldname
          (classname, 'cost_center')"/>
-     <td tal:content="structure python:context.cost_center.menu ()"
+     <td tal:content="structure python:context.cost_center.menu
+         (status = cc_status)"
       colspan="3"/>
     </tr>
     <tr>

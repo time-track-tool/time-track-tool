@@ -92,6 +92,7 @@ class ExtProperty :
         , pretty       = _    # optional pretty-printing function
         , linkclass    = None # optional function for getting css class
         , do_classhelp = None
+        , fieldwidth   = None
         ) :
         self.utils        = utils
         self.prop         = prop
@@ -112,6 +113,7 @@ class ExtProperty :
         self.key          = None
         self.searchable   = searchable
         self.do_classhelp = do_classhelp
+        self.fieldwidth   = fieldwidth
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
@@ -249,7 +251,7 @@ class ExtProperty :
 
     def editfield (self) :
         return "<span style='white-space:nowrap'>%s</span>" \
-            % self.item [self.name].field ()
+            % self.item [self.name].field (size = self.fieldwidth)
     # end def editfield
 
     def colonfield (self, item = None) :
