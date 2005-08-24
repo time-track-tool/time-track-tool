@@ -91,7 +91,8 @@
     </tr>
    </table>
 
-  <form method="POST" tal:attributes="action request/classname">
+  <form method="POST" tal:attributes="action request/classname"
+   name="edit_daily_record">
    <tal:block tal:define="batch request/batch"
               tal:condition="context/is_view_ok">
     <table class="list">
@@ -179,10 +180,10 @@
      <tr><td colspan="4"/>
       <td>
        <input type="button" tal:attributes=
-        " value   python:utils.submit_to (db, request.filterspec ['user'][0])
-        ; onClick python:'self.location.href=\'' + request.indexargs_url
-          ('', {':action':'daily_record_submit'}) + '\''
-        ">
+        " value   python:utils.submit_to (db, request.filterspec ['user'][0])"
+        onClick="document.forms.edit_daily_record ['@action'].value =
+            'daily_record_submit';
+          document.edit_daily_record.submit ();">
       </td>
       <td>
        <input type="submit" value=" Save " i18n:attributes="value">
