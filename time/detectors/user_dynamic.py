@@ -110,6 +110,8 @@ def close_existing (db, cl, nodeid, old_values) :
     current = cl.getnode (nodeid)
     dynrecs = cl.find (user = current.user)
     for dr in dynrecs :
+        if dr == nodeid :
+            continue
         r = cl.getnode (dr)
         if not r.valid_to and current.valid_from >= r.valid_from:
             print "close_existing:", current.valid_from, r.valid_from
