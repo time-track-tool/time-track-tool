@@ -41,6 +41,7 @@ import calendar
 import time
 from roundup.cgi.TranslationService import get_translation
 from roundup                        import date as r_date
+from copy                           import copy
 
 _ = lambda x : x
 
@@ -227,6 +228,24 @@ def submit_to (db, user) :
     return _ ("Submit to %(nickname)s" % locals ())
 # end def submit_to
 
+def batch_open (batch) :
+    b = copy (batch)
+    for i in batch :
+        if str (i.status) == 'open' :
+            return True
+    return False
+# end def batch_open
+
+def sorted (vals, keys) :
+    """ Sort given values by given keys. Should be optimized to use key
+        sorting (available in python 2.4) and fuction "sorted".
+    """
+    keyfun = lambda x,y : cmp ([x [k] for k in keys], [y [k] for k in keys])
+    vals = [v for v in vals]
+    vals.sort (keyfun)
+    return vals
+# end def sorted
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -239,3 +258,5 @@ def init (instance) :
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
     reg ("submit_to",                    submit_to)
+    reg ("batch_open",                   batch_open)
+    reg ("sorted",                       sorted)

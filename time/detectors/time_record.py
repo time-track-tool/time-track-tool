@@ -60,16 +60,12 @@ def check_duration (d) :
 
 hour_format = '%H:%M'
 
-def pretty_time_record (tr, date, user) :
-    wp    = tr.wp or ""
-    sdate = date.pretty ('%Y-%m-%d')
+def pretty_time_record (tr, sdate, user) :
     tr_pr = ["%(user)s, %(sdate)s" % locals ()]
     if tr.start :
         tr_pr.append ("%s-%s" % (tr.start, tr.end))
     else :
         tr_pr.append ("%sh" % tr.duration)
-    if wp :
-        tr_pr.append ("wp: %s" % wp)
     return ' '.join (tr_pr)
 # end def pretty_time_record
 
@@ -89,6 +85,7 @@ def time_records_consistent (db, cl, nodeid) :
           specified
     """
     date  = cl.get (nodeid, 'date')
+    sdate = date.pretty ('%Y-%m-%d')
     uid   = cl.get (nodeid, 'user')
     uname = db.user.get (uid, 'username')
     msgs  = []
@@ -96,11 +93,12 @@ def time_records_consistent (db, cl, nodeid) :
     if not dynamic :
         raise Reject, "No dynamic user data for %(uname)s, %(date)s" % locals ()
     trec = \
-        dict ([(i, db.time_record.getnode (i)) for i in db.time_record.filter
-                  (None, dict (daily_record = nodeid), sort = ('+', 'start'))
-             ])
+        [db.time_record.getnode (i) for i in db.time_record.filter
+         (None, dict (daily_record = nodeid), sort = ('+', 'start'))
+        ]
     nonempty = []
-    for tr in trec.itervalues () :
+    for tr in trec :
+        print tr.start
         tr_pr = pretty_time_record (tr, date, uname)
         if not tr.wp :
             msgs.append ("%(tr_pr)s: No work package" % locals ())
@@ -120,10 +118,10 @@ def time_records_consistent (db, cl, nodeid) :
         end   = [t.end   for t in tr]
         tr_pr = ', '.join ([pretty_time_record (t, date, uname) for t in tr])
         if not (start [0] >= end [1] or start [1] >= end [0]) :
-            raise Reject, "%(tr_pr)s overlap" % locals ()
-    tr_pr = "%s, %s:" % (uname, date)
+            msgs.append ("%(tr_pr)s overlap" % locals ())
+    tr_pr = "%s, %s:" % (uname, sdate)
     if not dynamic.long_worktime :
-        work = reduce (add, [t.duration for t in trec.itervalues ()], 0)
+        work = reduce (add, [t.duration for t in trec], 0)
         if work > 10 :
             msgs.append \
                 ("%(tr_pr)s Overall work-time more than 10 hours: %s" % work)
@@ -139,6 +137,7 @@ def time_records_consistent (db, cl, nodeid) :
                 msgs.append \
                     ("%(tr_pr)s More than 6 hours "
                      "without a break of at least half an hour"
+                    % locals ()
                     )
                 break
 
@@ -275,7 +274,7 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         if start and ('start' in new_values or 'duration' in new_values) :
             dstart  = Date (start, offset = 0)
             minutes = duration * 60
-            hours   = duration % 60
+            hours   = int (duration % 60)
             minutes = minutes - hours * 60
             dend    = dstart + Interval ('%d:%d' % (hours, minutes))
             check_timestamps (dstart, dend, date)

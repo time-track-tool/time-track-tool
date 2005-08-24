@@ -93,8 +93,11 @@
 
   <form method="POST" tal:attributes="action request/classname"
    name="edit_daily_record">
-   <tal:block tal:define="batch request/batch"
-              tal:condition="context/is_view_ok">
+   <tal:block tal:define=
+    "batch   request/batch;
+     is_open python:utils.batch_open (batch);
+    "
+    tal:condition="context/is_view_ok">
     <table class="list">
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -112,23 +115,29 @@
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
-       tal:define="class python:['normal','alt'][repeat['i'].index%2]
-                  ;idx   python:repeat['i'].index + 1
+       tal:define="cls      python:['normal','alt'][repeat['i'].index%2]
+                  ;idx      python:repeat['i'].index + 1
+                  ;editable python:str (i.status) == 'open'
                   ">
-       <tr tal:attributes="class class">
-        <td tal:content="structure python:i ['date'].pretty ('%a')"/>
-        <td tal:content="structure python:i ['date'].pretty ('%Y-%m-%d')"
-         colspan="2"/>
-        <td tal:content="structure python:pdict ['status'].colonfield (i)"
-         colspan="3"/>
+       <tr tal:attributes="class cls">
+        <td class="subhead"
+         tal:content="structure python:i ['date'].pretty ('%a')"/>
+        <td class="subhead" colspan="2"
+         tal:content="structure python:i ['date'].pretty ('%Y-%m-%d')"/>
+        <td class="subhead"
+         tal:content="structure python:pdict ['status'].colonfield (i)"/>
+        <td/><td/>
        </tr>
-       <tal:block tal:repeat="r python: i ['time_record']">
-        <tr tal:attributes="class class">
+       <tal:block tal:repeat="r python: utils.sorted
+        (i ['time_record'], ('start',))">
+        <tr tal:attributes="class cls">
          <td tal:repeat="pn python:['start','end','duration']">
-          <tal:block tal:replace="structure python: r [pn].field (5)"/>
+          <tal:block tal:replace="structure python: utils.ExtProperty
+          (utils, r [pn], item = r, editable = editable, fieldwidth = 5)
+          .as_listentry ()"/>
          </td>
          <td>
-          <select
+          <select tal:condition="editable"
            tal:attributes="name python:'time_record%s@wp'%r.id">
            <option tal:attributes="selected not:r/wp/id" value="-1">
             - no selection -
@@ -142,14 +151,22 @@
              tal:content="python:' '.join
               ([str (wp [i]) for i in 'project','wp_no','name'])"/>
           </select>
+          <span tal:condition="not:editable" tal:content="structure python:
+           '&nbsp;'.join
+            ([utils.ExtProperty
+              (utils, i [0], item = i [1], lnkattr = i [2]).as_listentry ()
+              for i in ((r.wp.project,r.wp,None),(r.wp,r,'wp_no'),(r.wp,r,None))
+            ])
+           "/>
          </td>
          <td tal:repeat="pn python:['time_activity','work_location']">
-          <tal:block tal:replace="structure python: r [pn].menu ()"/>
+          <tal:block tal:replace="structure python: utils.ExtProperty
+          (utils, r [pn], item = r, editable = editable).menu ()"/>
          </td>
         </tr>
        </tal:block>
-       <tr tal:condition="python: 1"
-           tal:attributes="class class">
+       <tr tal:condition="python: editable"
+           tal:attributes="class cls">
         <td tal:repeat="pn python:['start','end','duration']">
          <tal:block tal:replace="structure python:utils.new_property
           (context, db, 'time_record', -idx, pn).field (5)"/>
@@ -177,7 +194,7 @@
        </tr>
       </tal:block>
      </tal:block>
-     <tr><td colspan="4"/>
+     <tr tal:condition="is_open"><td colspan="4"/>
       <td>
        <input type="button" tal:attributes=
         " value   python:utils.submit_to (db, request.filterspec ['user'][0])"

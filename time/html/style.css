@@ -207,8 +207,8 @@ table.list th {
   empty-cells: show;
 }
 table.list th a[href]:hover { color: #404070 }
-table.list th a[href]:link { color: #404070 }
-table.list th a[href] { color: #404070 }
+table.list th a[href]:link  { color: #404070 }
+table.list th a[href]       { color: #404070 }
 table.list th.group {
   background-color: #f4f4ff;
   text-align: center;
@@ -225,6 +225,10 @@ table.list td {
   background-color: #efefef;
   vertical-align: top;
   empty-cells: show;
+}
+
+table.list td.subhead {
+  font-weight: bold;
 }
 
 table.list tr.time-nav th {
@@ -257,8 +261,16 @@ table.list tr.navigation th:last-child {
 }
 
 table.list td a[href]:hover.header { color: #404070 }
-table.list td a[href]:link.header { color: #404070 }
-table.list td a[href].header { color: #404070 }
+table.list td a[href]:link.header  { color: #404070 }
+table.list td a[href].header       { color: #404070 }
+
+table.list td.subhead a[href]:hover { font-weight: normal }
+table.list td.subhead a[href]:link  { font-weight: normal }
+table.list td.subhead a[href]       { font-weight: normal }
+
+table.list td.subhead a[href]:hover.header { font-weight: bold }
+table.list td.subhead a[href]:link.header  { font-weight: bold }
+table.list td.subhead a[href].header       { font-weight: bold }
 
 /* style for message displays */
 table.messages {
