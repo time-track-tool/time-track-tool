@@ -297,6 +297,8 @@ def new_time_record (db, cl, nodeid, new_values) :
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
     check_start_end_duration (date, start, end, duration, new_values)
+    if 'work_location' not in new_values :
+        new_values ['work_location'] = '1'
 # end def new_time_record
 
 def check_time_record (db, cl, nodeid, new_values) :
@@ -311,7 +313,11 @@ def check_time_record (db, cl, nodeid, new_values) :
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
     date     = db.daily_record.get (drec, 'date')
+    wl       = 'work_location'
+    location = new_values.get (wl,             cl.get (nodeid, wl))
     check_start_end_duration (date, start, end, duration, new_values)
+    if not location :
+        new_values ['work_location'] = '1'
 # end def check_time_record
 
 def init (db) :
