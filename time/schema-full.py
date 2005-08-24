@@ -750,6 +750,7 @@ roles = \
     , ("Releasemanager", "Allowed to manage a SW Release")
     , ("IV&V"          , "Member of the IV&V Team."      )
     , ("halfweek"      , "User works only the half week" )
+    , ("HR"            , "Human Ressources team"         )
     ]
 
 for name, desc in roles :

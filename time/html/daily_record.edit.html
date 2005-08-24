@@ -176,7 +176,14 @@
        </tr>
       </tal:block>
      </tal:block>
-     <tr><td colspan="5"/>
+     <tr><td colspan="4"/>
+      <td>
+       <input type="button" tal:attributes=
+        " value   python:utils.submit_to (db, request.filterspec ['user'][0])
+        ; onClick python:'self.location.href=\'' + request.indexargs_url
+          ('', {':action':'daily_record_submit'}) + '\''
+        ">
+      </td>
       <td>
        <input type="submit" value=" Save " i18n:attributes="value">
        <input type="hidden" name="@action" value="daily_record_edit_action">

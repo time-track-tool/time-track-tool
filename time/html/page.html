@@ -133,7 +133,8 @@
     <tal:block metal:define-slot="menubar"></tal:block>
 -->
     <!-- time-tracking for current daily_record selection or current week -->
-    <td class="sidebar">
+    <td class="sidebar"
+     tal:condition="python:db._db.user_dynamic.find (user = request.user.id)">
      <span class="classblock">
       <a tal:attributes="href python:
        [ 'daily_record?:action=daily_record_action&:template=edit'

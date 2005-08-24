@@ -38,33 +38,166 @@ from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
+from operator                       import add
 
-_ = lambda x : x
+get_user_dynamic = None
+_                = lambda x : x
 
 def check_timestamps (start, end, date) :
     start.year  = end.year  = date.year
     start.month = end.month = date.month
     start.day   = end.day   = date.day
     if start >= end :
-        raise Reject, "start and end must be on same day and start < end."
+        raise Reject, _ ("start and end must be on same day and start < end.")
     if start.timestamp () % 900 or end.timestamp () % 900 :
-        raise Reject, "Times must be given in quarters of an hour"
+        raise Reject, _ ("Times must be given in quarters of an hour")
 # end def check_timestamp
 
 def check_duration (d) :
     if (d * 3600) % 900 :
-        raise Reject, "Times must be given in quarters of an hour"
+        raise Reject, _ ("Times must be given in quarters of an hour")
 # end def check_duration
 
 hour_format = '%H:%M'
 
+def pretty_time_record (tr, date, user) :
+    wp    = tr.wp or ""
+    sdate = date.pretty ('%Y-%m-%d')
+    tr_pr = ["%(user)s, %(sdate)s" % locals ()]
+    if tr.start :
+        tr_pr.append ("%s-%s" % (tr.start, tr.end))
+    else :
+        tr_pr.append ("%sh" % tr.duration)
+    if wp :
+        tr_pr.append ("wp: %s" % wp)
+    return ' '.join (tr_pr)
+# end def pretty_time_record
+
+def time_records_consistent (db, cl, nodeid) :
+    """ Check if all time records for this daily record are consistent
+
+        + check that each record contains a wp
+        + check that a start_time exists unless durations_allowed
+        + check that there are no overlapping work hours
+          - get all records with a start time
+          - sort by start time
+          - check pairwise for overlap
+        + check that sum of work-time does not exceed 10 hours -- if user
+          may not work more than 10 hours
+        + check that there is a lunch break of at least .5 hours if user
+          worked for more than 6 hours and durations_allowed is not
+          specified
+    """
+    date  = cl.get (nodeid, 'date')
+    uid   = cl.get (nodeid, 'user')
+    uname = db.user.get (uid, 'username')
+    msgs  = []
+    dynamic = get_user_dynamic (db, uid, date)
+    if not dynamic :
+        raise Reject, "No dynamic user data for %(uname)s, %(date)s" % locals ()
+    trec = \
+        dict ([(i, db.time_record.getnode (i)) for i in db.time_record.filter
+                  (None, dict (daily_record = nodeid), sort = ('+', 'start'))
+             ])
+    nonempty = []
+    for tr in trec.itervalues () :
+        tr_pr = pretty_time_record (tr, date, uname)
+        if not tr.wp :
+            msgs.append ("%(tr_pr)s: No work package" % locals ())
+            durations_allowed = dynamic.durations_allowed
+        else :
+            durations_allowed = \
+                (  dynamic.durations_allowed
+                or db.time_wp.get (tr.wp, 'durations_allowed')
+                )
+        if not durations_allowed and not tr.start :
+            msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
+        if tr.start :
+            nonempty.append (tr)
+    for i in range (len (nonempty) - 1) :
+        tr    = (nonempty [i], nonempty [i + 1])
+        start = [t.start for t in tr]
+        end   = [t.end   for t in tr]
+        tr_pr = ', '.join ([pretty_time_record (t, date, uname) for t in tr])
+        if not (start [0] >= end [1] or start [1] >= end [0]) :
+            raise Reject, "%(tr_pr)s overlap" % locals ()
+    tr_pr = "%s, %s:" % (uname, date)
+    if not dynamic.long_worktime :
+        work = reduce (add, [t.duration for t in trec.itervalues ()], 0)
+        if work > 10 :
+            msgs.append \
+                ("%(tr_pr)s Overall work-time more than 10 hours: %s" % work)
+    if not dynamic.durations_allowed :
+        nobreak  = 0
+        last_end = None
+        for tr in nonempty :
+            if last_end and tr.start - last_end >= Interval ('30m') :
+                nobreak  = tr.duration
+            else :
+                nobreak += tr.duration
+            if nobreak > 6 :
+                msgs.append \
+                    ("%(tr_pr)s More than 6 hours "
+                     "without a break of at least half an hour"
+                    )
+                break
+
+    if msgs :
+        msgs.sort ()
+        raise Reject, '\n'.join ([_ (i) for i in msgs])
+    return True
+# end def time_records_consistent
+
 def check_daily_record (db, cl, nodeid, new_values) :
+    """ Check that status changes are OK. Allowed changes:
+
+         - From open to submitted by user or by HR
+         - From submitted to accepted by supervisor or by HR
+         - From submitted to open     by supervisor or by HR
+         - From accepted  to open     by HR
+    """
     for i in 'user', 'date' :
         if i in new_values :
-            raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
     if i in ('status',) :
         if i in new_values and not new_values [i] :
-            raise Reject, "%(attr)s must be set" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
+    user       = cl.get (nodeid, 'user')
+    uid        = db.getuid ()
+    roles      = db.user.get (uid, 'roles')
+    rolenames  = dict ([(x.lower().strip(), 1) for x in roles.split(',')])
+    is_hr      = 'hr' in rolenames
+    old_status = cl.get (nodeid, 'status')
+    status     = new_values.get ('status', old_status)
+    supervisor = db.user.get (uid, 'supervisor')
+    clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
+    clearers   = db.user.get (clearance, 'substitutes')
+    if not db.user.get (clearance, 'subst_active') :
+        clearers = []
+    clearers.append (clearance)
+    may_give_clearance = uid in clearers
+
+    old_status, status = \
+        [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
+    if status != old_status :
+        if not (  (   status == 'submitted' and old_status == 'open'
+                  and (is_hr or user == uid)
+                  and time_records_consistent (db, cl, nodeid)
+                  )
+               or (   status == 'accepted'  and old_status == 'submitted'
+                  and (is_hr or may_give_clearance)
+                  )
+               or (   status == 'open'      and old_status == 'submitted'
+                  and (is_hr or may_give_clearance)
+                  )
+               or (   status == 'open'      and old_status == 'accepted'
+                  and is_hr
+                  )
+               ) :
+            raise Reject, \
+                ( _ ("Denied state change: %(status)s->%(old_status)s")
+                % locals ()
+                )
 # end def check_daily_record
 
 def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
@@ -80,6 +213,8 @@ def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
 
 def new_daily_record (db, cl, nodeid, new_values) :
     """
+        Only create a daily_record if a user_dynamic record exists for
+        the user.
         If a new daily_record is created, we check the date provided:
         If hours, minutes, seconds are all zero we think the time was
         entered in UTC and do no conversion. If one is non-zero, we get
@@ -91,17 +226,20 @@ def new_daily_record (db, cl, nodeid, new_values) :
     """
     for i in 'user', 'date' :
         if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
     for i in 'status', 'time_record' :
         if i in new_values :
-            raise Reject, "%(attr)s must not be specified" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
     user = new_values ['user']
+    if not get_user_dynamic (db, user, date) :
+        raise Reject, \
+            _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
     if db.daily_record.filter \
         (None, {'date' : str (date.local (0)), 'user' : user}) :
-        raise Reject, "Duplicate record: date = %(date)s, user = %(user)s" \
+        raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
             % new_values
     new_values ['time_record'] = []
     new_values ['status']      = db.daily_record_status.lookup ('open')
@@ -116,14 +254,12 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         Note: We are using naive times (with timezone 0) here, this
         means we can safely use date.pretty for converting back to
         string.
-        FIXME: if start not provided, check if allowed to record
-               durations only
     """
     if 'end' in new_values :
         if not start :
-            raise Reject, "%(attr)s must be specified" % {'attr' : 'start'}
+            raise Reject, _ ("%(attr)s must be specified") % {'attr' : 'start'}
         if 'duration' in new_values :
-            raise Reject, "Either specify duration or start/end"
+            raise Reject, _ ("Either specify duration or start/end")
         dstart = Date (start, offset = 0)
         dend   = Date (end,   offset = 0)
         check_timestamps (dstart, dend, date)
@@ -132,7 +268,7 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         new_values ['end']      = dend.pretty   (hour_format)
     else :
         if not duration :
-            raise Reject, "Either specify duration or start/end"
+            raise Reject, _ ("Either specify duration or start/end")
         check_duration (duration)
         if 'duration' in new_values :
             new_values ['duration'] = duration
@@ -152,7 +288,10 @@ def new_time_record (db, cl, nodeid, new_values) :
     """
     for i in 'daily_record', :
         if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+    status   = db.daily_record.get (new_values ['daily_record'], 'status')
+    if status != db.daily_record_status.lookup ('open') :
+        raise Reject, _ ('Editing of time records only for status "open"')
     date     = db.daily_record.get (new_values ['daily_record'], 'date')
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
@@ -163,7 +302,10 @@ def new_time_record (db, cl, nodeid, new_values) :
 def check_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i in new_values :
-            raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
+    status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
+    if status != db.daily_record_status.lookup ('open') :
+        raise Reject, _ ('Editing of time records only for status "open"')
     drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
@@ -173,7 +315,12 @@ def check_time_record (db, cl, nodeid, new_values) :
 # end def check_time_record
 
 def init (db) :
-    global _
+    import sys, os
+    global _, get_user_dynamic
+    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+    user_dynamic = __import__ ('user_dynamic', globals (), locals ())
+    get_user_dynamic = user_dynamic.get_user_dynamic
+    del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_record.audit  ("create", new_time_record)

@@ -37,9 +37,12 @@
 #--
 #
 
-from roundup import date as r_date
 import calendar
 import time
+from roundup.cgi.TranslationService import get_translation
+from roundup                        import date as r_date
+
+_ = lambda x : x
 
 def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
@@ -212,7 +215,22 @@ def html_calendar (request) :
     return "\n".join (res)
 # end def html_calendar
 
+def submit_to (db, user) :
+    """ Create the submit_to button for time tracking submissions. We
+        get the supervisor of the user and check if clearance is
+        delegated.
+    """
+    db = db._db
+    supervisor = db.user.get (user,       'supervisor')
+    clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
+    nickname   = db.user.get (clearance,  'nickname').upper ()
+    return _ ("Submit to %(nickname)s" % locals ())
+# end def submit_to
+
 def init (instance) :
+    global _
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
     reg ("rough_date_diff",              rough_date_diff)
@@ -220,3 +238,4 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
+    reg ("submit_to",                    submit_to)

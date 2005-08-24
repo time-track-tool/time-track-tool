@@ -160,6 +160,7 @@ def prev_week (db, request) :
         ( ''
         , { ':action'   : 'daily_record_action'
           , ':template' : 'edit'
+          , ':filter'   : ','.join (request.filterspec.keys ())
           }
         )
 # end def prev_week
@@ -176,6 +177,7 @@ def next_week (db, request) :
         ( ''
         , { ':action'   : 'daily_record_action'
           , ':template' : 'edit'
+          , ':filter'   : ','.join (request.filterspec.keys ())
           }
         )
 # end def next_week
@@ -204,6 +206,7 @@ class Weekno_Action (Action) :
               , ':template'      : 'edit'
               , ':sort'          : 'date'
               , ':group'         : 'user'
+              , ':filter'        : ','.join (filterspec.keys ())
               , 'weekno'         : None
               }
             )
@@ -211,19 +214,20 @@ class Weekno_Action (Action) :
     # end def handle
 # end class Weekno_Action
 
-class Daily_Record_Action (Action) :
+class Daily_Record_Common (Action) :
     name = 'daily_record'
-    permissionType = 'View'
+    permissionType = 'Edit'
 
-    def handle (self) :
-        ''' Export the specified search query as CSV. '''
+    def create_daily_records (self) :
         # figure the request
-        request    = templating.HTMLRequest (self.client)
-        filterspec = request.filterspec
-        columns    = request.columns
+        self.request    = request = templating.HTMLRequest (self.client)
+        filterspec      = request.filterspec
+        columns         = request.columns
         assert (request.classname == 'daily_record')
-        start, end = date_range (self.db, filterspec)
-        max = start + Interval ('31d')
+        start, end      = date_range (self.db, filterspec)
+        self.start      = start
+        self.end        = end
+        max             = start + Interval ('31d')
         if end > max :
             msg = \
                 ( "Error: Interval may not exceed one month: %s"
@@ -237,35 +241,44 @@ class Daily_Record_Action (Action) :
                   , ':template'      : 'edit'
                   , ':sort'          : 'date'
                   , ':group'         : 'user'
+                  , ':filter'        : ','.join (request.filterspec.keys ())
                   , ':error_message' : msg
                   }
                 )
             raise Redirect, url
         d = start
+        if 'user' in filterspec :
+            self.user = filterspec ['user'][0]
+        else :
+            self.user = self.db.getuid ()
         while d <= end :
             try :
                 x = self.db.daily_record.create \
-                    ( user = self.db.getuid ()
+                    ( user = self.user
                     , date = d
                     )
                 self.db.commit ()
             except Reject :
                 pass
             d = d + Interval ('1d')
-        if 'user' in filterspec :
-            user = filterspec ['user'][0]
-        else :
-            user = self.db.getuid ()
-        request.filterspec = \
-            { 'date' : pretty_range (start, end)
-            , 'user' : user
+    # end def create_daily_records
+# end class Daily_Record_Common
+
+class Daily_Record_Action (Daily_Record_Common) :
+
+    def handle (self) :
+        self.create_daily_records ()
+        self.request.filterspec = \
+            { 'date' : pretty_range (self.start, self.end)
+            , 'user' : self.user
             }
-        url = request.indexargs_url \
+        url = self.request.indexargs_url \
             ( ''
             , { ':action'   : 'search'
               , ':template' : 'edit'
               , ':sort'     : 'date'
               , ':group'    : 'user'
+              , ':filter'   : ','.join (self.request.filterspec.keys ())
               }
             )
         raise Redirect, url
@@ -274,20 +287,63 @@ class Daily_Record_Action (Action) :
 
 class Daily_Record_Edit_Action (EditItemAction) :
     def _editnodes (self, props, links) :
-        # use props.items here, otherwise we get a RuntimeError
+        # use props.items here, with iteritems we get a RuntimeError
         # "dictionary changed size during iteration"
         for (cl, id), val in props.items () :
             if cl == 'time_record' :
                 if int (id) < 0 and val.keys () == ['daily_record'] :
                     del props [(cl, id)]
+        print "before upcall _editnodes"
         return EditItemAction._editnodes (self, props, links)
     # end def _editnodes
 # end class Daily_Record_Edit_Action
+
+class Daily_Record_Submit (Daily_Record_Edit_Action, Daily_Record_Common) :
+    def handle (self) :
+        self.create_daily_records ()
+        try :
+            # returns only in error case
+            return Daily_Record_Edit_Action.handle (self)
+        except Redirect :
+            pass
+        # figure the request
+        request    = self.request
+        filterspec = request.filterspec
+        sort       = request.sort
+        group      = request.group
+        klass      = self.db.getclass (request.classname)
+
+        msg = ["Just a test", "Und noch ein test"]
+        s_open     = self.db.daily_record_status.lookup ('open')
+        s_submit   = self.db.daily_record_status.lookup ('submitted')
+        for itemid in klass.filter (None, filterspec, sort, group) :
+            try :
+                if klass.get (itemid, 'status') == s_open :
+                    klass.set (itemid, status = s_submit)
+            except Reject, cause :
+                msg.append (str (cause).replace ("\n", "<br>"))
+        args = \
+            { ':action'        : 'search'
+            , ':template'      : 'edit'
+            , ':sort'          : 'date'
+            , ':group'         : 'user'
+            , ':filter'        : ','.join (filterspec.keys ())
+            }
+        if msg :
+            self.db.rollback ()
+            args [':error_message'] = "<br>".join (msg)
+        else :
+            self.db.commit ()
+        url = request.indexargs_url ('', args)
+        raise Redirect, url
+    # end def handle
+# end class Daily_Record_Submit
 
 def init (instance) :
     actn = instance.registerAction
     actn ('daily_record_action',      Daily_Record_Action)
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
+    actn ('daily_record_submit',      Daily_Record_Submit)
     actn ('weekno_action',            Weekno_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)
