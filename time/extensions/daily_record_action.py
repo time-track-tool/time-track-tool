@@ -312,10 +312,9 @@ class Daily_Record_Submit (Daily_Record_Edit_Action, Daily_Record_Common) :
         sort       = request.sort
         group      = request.group
         klass      = self.db.getclass (request.classname)
-
-        msg = ["Just a test", "Und noch ein test"]
         s_open     = self.db.daily_record_status.lookup ('open')
         s_submit   = self.db.daily_record_status.lookup ('submitted')
+        msg        = []
         for itemid in klass.filter (None, filterspec, sort, group) :
             try :
                 if klass.get (itemid, 'status') == s_open :
