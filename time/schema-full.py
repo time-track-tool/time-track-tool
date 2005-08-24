@@ -386,6 +386,7 @@ time_record = Class \
     , time_activity         = Link      ("time_activity")
     , work_location         = Link      ("work_location")
     , comment               = String    ()
+    , split                 = Number    ()
     )
 
 time_activity = Class \

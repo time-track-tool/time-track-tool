@@ -112,6 +112,9 @@
           ('time_record', 'time_activity', space = False)"/>
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'work_location', space = False)"/>
+      <th tal:condition="is_open"
+          tal:content="structure python:utils.fieldname
+          ('time_record', 'split',         space = False)"/>
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
@@ -127,6 +130,7 @@
         <td class="subhead"
          tal:content="structure python:pdict ['status'].colonfield (i)"/>
         <td/><td/>
+        <td tal:condition="is_open"/>
        </tr>
        <tal:block tal:repeat="r python: utils.sorted
         (i ['time_record'], ('start',))">
@@ -163,6 +167,12 @@
           <tal:block tal:replace="structure python: utils.ExtProperty
           (utils, r [pn], item = r, editable = editable).menu ()"/>
          </td>
+         <td tal:condition="is_open">
+          <tal:block tal:condition="editable"
+           tal:replace="structure python: utils.ExtProperty
+           (utils, r.split, item = r, editable = editable, fieldwidth = 5)
+           .as_listentry ()"/>
+         </td>
         </tr>
        </tal:block>
        <tr tal:condition="python: editable"
@@ -186,7 +196,7 @@
          <tal:block tal:replace="structure python:utils.new_property
            (context, db, 'time_record', -idx, pn).menu ()"/>
         </td>
-
+        <td/>
         <input type="hidden"
          tal:attributes="name  python:'time_record-%d@daily_record'%idx
                         ;value python:i.id
@@ -209,6 +219,7 @@
        <tal:block tal:replace="structure python:request.indexargs_form
         (sort=1, group=1, filter=1, filterspec=1, columns=0)"/>
       </td>
+      <td/>
      </tr>
     </table>
    </tal:block>

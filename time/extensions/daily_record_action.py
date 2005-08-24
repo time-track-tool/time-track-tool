@@ -187,7 +187,6 @@ class Weekno_Action (Action) :
     permissionType = 'View'
 
     def handle (self) :
-        print "HUHU"
         request    = templating.HTMLRequest (self.client)
         filterspec = request.filterspec
         try :
@@ -293,7 +292,6 @@ class Daily_Record_Edit_Action (EditItemAction) :
             if cl == 'time_record' :
                 if int (id) < 0 and val.keys () == ['daily_record'] :
                     del props [(cl, id)]
-        print "before upcall _editnodes"
         return EditItemAction._editnodes (self, props, links)
     # end def _editnodes
 # end class Daily_Record_Edit_Action

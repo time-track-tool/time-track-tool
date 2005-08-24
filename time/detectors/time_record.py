@@ -98,7 +98,6 @@ def time_records_consistent (db, cl, nodeid) :
         ]
     nonempty = []
     for tr in trec :
-        print tr.start
         tr_pr = pretty_time_record (tr, date, uname)
         if not tr.wp :
             msgs.append ("%(tr_pr)s: No work package" % locals ())
@@ -129,10 +128,12 @@ def time_records_consistent (db, cl, nodeid) :
         nobreak  = 0
         last_end = None
         for tr in nonempty :
-            if last_end and tr.start - last_end >= Interval ('30m') :
+            start   = Date (tr.start, offset = 0)
+            if last_end and (start - last_end).as_seconds () >= 30 * 60 :
                 nobreak  = tr.duration
             else :
                 nobreak += tr.duration
+            last_end = Date (tr.end,  offset = 0)
             if nobreak > 6 :
                 msgs.append \
                     ("%(tr_pr)s More than 6 hours "
@@ -244,7 +245,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
     new_values ['status']      = db.daily_record_status.lookup ('open')
 # end def new_daily_record
 
-def check_start_end_duration (date, start, end, duration, new_values) :
+def check_start_end_duration \
+    (date, start, end, duration, new_values, split = 0) :
     """
         either duration or both start/end must be set but not both
         of duration/end
@@ -254,6 +256,9 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         means we can safely use date.pretty for converting back to
         string.
     """
+    dstart = None
+    if split :
+        check_duration (split)
     if 'end' in new_values :
         if not start :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : 'start'}
@@ -262,7 +267,8 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         dstart = Date (start, offset = 0)
         dend   = Date (end,   offset = 0)
         check_timestamps (dstart, dend, date)
-        new_values ['duration'] = (dend - dstart).as_seconds () / 3600.
+        duration                = (dend - dstart).as_seconds () / 3600.
+        new_values ['duration'] = duration
         new_values ['start']    = dstart.pretty (hour_format)
         new_values ['end']      = dend.pretty   (hour_format)
     else :
@@ -271,8 +277,8 @@ def check_start_end_duration (date, start, end, duration, new_values) :
         check_duration (duration)
         if 'duration' in new_values :
             new_values ['duration'] = duration
+        dstart  = Date (start, offset = 0)
         if start and ('start' in new_values or 'duration' in new_values) :
-            dstart  = Date (start, offset = 0)
             minutes = duration * 60
             hours   = int (duration % 60)
             minutes = minutes - hours * 60
@@ -280,6 +286,18 @@ def check_start_end_duration (date, start, end, duration, new_values) :
             check_timestamps (dstart, dend, date)
             new_values ['start'] = dstart.pretty (hour_format)
             new_values ['end']   = dend.pretty   (hour_format)
+    if split :
+        if duration <= split :
+            raise Reject, _ ("Split must be < duration")
+        duration -= split
+        if start :
+            minutes = split * 60
+            hours   = int (split % 60)
+            minutes = minutes - hours * 60
+            dstart  = dstart + Interval ('%d:%d' % (hours, minutes))
+            new_values ['start'] = dstart.pretty (hour_format)
+        del new_values ['split']
+        new_values ['duration']  = duration
 # end def check_start_end_duration
 
 def new_time_record (db, cl, nodeid, new_values) :
@@ -288,6 +306,9 @@ def new_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+    for i in 'split', :
+        if i in new_values :
+            raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     status   = db.daily_record.get (new_values ['daily_record'], 'status')
     if status != db.daily_record_status.lookup ('open') :
         raise Reject, _ ('Editing of time records only for status "open"')
@@ -311,12 +332,28 @@ def check_time_record (db, cl, nodeid, new_values) :
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
+    split    = new_values.get ('split',        cl.get (nodeid, 'split'))
+    wp       = new_values.get ('wp',           cl.get (nodeid, 'wp'))
     date     = db.daily_record.get (drec, 'date')
     wl       = 'work_location'
+    ta       = 'time_activity'
     location = new_values.get (wl,             cl.get (nodeid, wl))
-    check_start_end_duration (date, start, end, duration, new_values)
+    activity = new_values.get (ta,             cl.get (nodeid, ta))
+    check_start_end_duration \
+        (date, start, end, duration, new_values, split = split)
     if not location :
         new_values ['work_location'] = '1'
+    if split :
+        if 'wp' in new_values :
+            del new_values ['wp']
+        cl.create \
+            ( daily_record  = cl.get (nodeid, 'daily_record')
+            , start         = start
+            , duration      = split
+            , wp            = wp
+            , time_activity = activity
+            , work_location = location
+            )
 # end def check_time_record
 
 def init (db) :
