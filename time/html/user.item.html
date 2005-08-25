@@ -109,14 +109,14 @@
   </td>
  </tr>
  <tr>
-  <th tal:content="structure python:utils.fieldname('user', 'substitutes')"/>
+  <th tal:content="structure python:utils.fieldname('user', 'substitute')"/>
   <td>
    <tal:block tal:define="size      string:7;
-                          name      string:substitutes;
+                          name      string:substitute;
                           form      string:user_form;
                           dont_care string:don't care;
-                          selected  python:str([u.id for u in context.substitutes.reverse ()] or [''])[1:-1]">
-    <tal:block metal:use-macro="templates/userlist/macros/user_multi"></tal:block>
+                          selected  python:str([u.id for u in context.substitute.reverse ()] or [''])[1:-1]">
+    <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
  </tr>

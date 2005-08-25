@@ -132,7 +132,7 @@ msgstr ""
 
 #: ../extensions/help.py:64 ../locale/attr.py:510 attr.py:510
 msgid "clearance_by"
-msgstr "Clearance by"
+msgstr "Approval delegated to"
 
 #: ../extensions/help.py:65
 msgid ""
@@ -780,8 +780,8 @@ msgid "Short identification of this message"
 msgstr ""
 
 #: ../extensions/help.py:215 ../locale/attr.py:521 attr.py:521
-msgid "substitutes"
-msgstr "Substitutes"
+msgid "substitute"
+msgstr "Substitute"
 
 #: ../extensions/help.py:216
 msgid ""
@@ -792,12 +792,12 @@ msgstr ""
 
 #: ../extensions/help.py:219 ../locale/attr.py:512 attr.py:512
 msgid "subst_active"
-msgstr "Substitutes active"
+msgstr "Substitute active"
 
 #: ../extensions/help.py:220
 msgid ""
 "This field is set to \"yes\" for enabling the field\n"
-"           \"substitutes\" for delegating time record processing\n"
+"           \"Substitute\" for delegating time record processing\n"
 "        "
 msgstr ""
 
