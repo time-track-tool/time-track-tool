@@ -72,7 +72,6 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
 # end def check_ranges
 
 def check_user_dynamic (db, cl, nodeid, new_values) :
-    print "check_user_dynamic"
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
@@ -88,7 +87,6 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
 # end def check_user_dynamic
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
-    print "new_user_dynamic"
     for i in 'user', 'valid_from', 'long_worktime', 'vacation' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
@@ -114,7 +112,6 @@ def close_existing (db, cl, nodeid, old_values) :
             continue
         r = cl.getnode (dr)
         if not r.valid_to and current.valid_from >= r.valid_from:
-            print "close_existing:", current.valid_from, r.valid_from
             cl.set (dr, valid_to = current.valid_from)
             break
 # end def close_existing
