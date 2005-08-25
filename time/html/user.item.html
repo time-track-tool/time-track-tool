@@ -111,11 +111,10 @@
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'substitute')"/>
   <td>
-   <tal:block tal:define="size      string:7;
-                          name      string:substitute;
+   <tal:block tal:define="name      string:substitute;
                           form      string:user_form;
                           dont_care string:don't care;
-                          selected  python:str([u.id for u in context.substitute.reverse ()] or [''])[1:-1]">
+                          selected  context/substitute/id | string:0">
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
