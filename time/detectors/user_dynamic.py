@@ -89,7 +89,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
     print "new_user_dynamic"
-    for i in 'user', 'valid_from', 'long_worktime', 'holidays' :
+    for i in 'user', 'valid_from', 'long_worktime', 'vacation' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     if 'durations_allowed' not in new_values :

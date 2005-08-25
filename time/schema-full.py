@@ -499,7 +499,7 @@ user_dynamic = Class \
     , hours_fri             = Number    ()
     , hours_sat             = Number    ()
     , hours_sun             = Number    ()
-    , holidays              = Number    ()
+    , vacation              = Number    ()
     , org_location          = Link      ("org_location")
     )
 

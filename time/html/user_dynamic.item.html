@@ -54,7 +54,7 @@
          , 'hours_fri'
          , 'hours_sat'
          , 'hours_sun'
-         , 'holidays'
+         , 'vacation'
          , 'org_location'
          ]
         ]
@@ -89,8 +89,8 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'holidays')"/>
-      <td tal:content="structure python:context.holidays.field ()"/>
+          (classname, 'vacation')"/>
+      <td tal:content="structure python:context.vacation.field ()"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'weekly_hours')"/>
       <td tal:content="structure python:context.weekly_hours.field ()"/>

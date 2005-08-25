@@ -318,7 +318,7 @@ msgid ""
 "Flag if booking of durations is allowed for this\n"
 "           %(Classname)s -- is mainly used for special %(Classname)ss, "
 "like,\n"
-"           e.g., holidays.\n"
+"           e.g., vacations.\n"
 "        "
 msgstr ""
 
@@ -1368,8 +1368,8 @@ msgid "hours_wed"
 msgstr "Wed"
 
 #: ../locale/attr.py:536 attr.py:536
-msgid "holidays"
-msgstr "Holidays"
+msgid "vacation"
+msgstr "Vacation days"
 
 #: ../locale/attr.py:540 attr.py:540
 msgid "hours_tue"

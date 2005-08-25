@@ -98,7 +98,7 @@ helptext = \
     , ""'durations_allowed'   :
       ""'''Flag if booking of durations is allowed for this
            %(Classname)s -- is mainly used for special %(Classname)ss, like,
-           e.g., holidays.
+           e.g., vacation.
         '''
     , ""'email'               :
       ""'''Email address for this %(Classname)s'''
