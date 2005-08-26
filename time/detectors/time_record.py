@@ -39,6 +39,7 @@ from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
 from operator                       import add
+from time                           import gmtime
 
 get_user_dynamic = None
 _                = lambda x : x
@@ -310,14 +311,18 @@ def new_time_record (db, cl, nodeid, new_values) :
     for i in 'split', :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
-    status   = db.daily_record.get (new_values ['daily_record'], 'status')
-    if status != db.daily_record_status.lookup ('open') :
+    dr       = db.daily_record.getnode (new_values ['daily_record'])
+    if dr.status != db.daily_record_status.lookup ('open') :
         raise Reject, _ ('Editing of time records only for status "open"')
-    date     = db.daily_record.get (new_values ['daily_record'], 'date')
+    dynamic  = get_user_dynamic (db, dr.user, dr.date)
+    if not dynamic.weekend_allowed :
+        wday = gmtime (dr.date.timestamp ())[6]
+        if wday in (5, 6) :
+            raise Reject, _ ('No weekend booking allowed')
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
-    check_start_end_duration (date, start, end, duration, new_values)
+    check_start_end_duration (dr.date, start, end, duration, new_values)
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
 # end def new_time_record

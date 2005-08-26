@@ -118,9 +118,12 @@
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
-       tal:define="cls      python:['normal','alt'][repeat['i'].index%2]
-                  ;idx      python:repeat['i'].index + 1
-                  ;editable python:str (i.status) == 'open'
+       tal:define="cls       python:['normal','alt'][repeat['i'].index%2]
+                  ;idx       python:repeat['i'].index + 1
+                  ;editable  python:str (i.status) == 'open'
+                  ;w_allowed python:utils.weekend_allowed (db._db, i)
+                  ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
+                  ;allowed   python:w_allowed or not is_wend
                   ">
        <tr tal:attributes="class cls">
         <td class="subhead"
@@ -175,7 +178,7 @@
          </td>
         </tr>
        </tal:block>
-       <tr tal:condition="python: editable"
+       <tr tal:condition="python: editable and allowed"
            tal:attributes="class cls">
         <td tal:repeat="pn python:['start','end','duration']">
          <tal:block tal:replace="structure python:utils.new_property

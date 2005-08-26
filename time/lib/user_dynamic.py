@@ -29,17 +29,24 @@
 #    access routines for 'user_dynamic'
 #
 
-dyn = None # cache
+from roundup.date import Date
+
+dynamic = {} # cache
 
 def get_user_dynamic (db, user, date) :
     """ Get a user_dynamic record by user and date.
         Return None if no record could be found.
     """
-    global dyn
-    if not dyn :
-        dyn  = [db.user_dynamic.getnode (i) for i in db.user_dynamic.filter
-                 (None, {'user' : user}, sort = ('-', 'valid_from'))
-               ]
+    global dynamic
+    user = str  (user)
+    date = Date (date)
+    if user in dynamic :
+        dyn = dynamic [user]
+    else :
+        dyn = [db.user_dynamic.getnode (i) for i in db.user_dynamic.filter
+                (None, {'user' : user}, sort = ('-', 'valid_from'))
+              ]
+        dynamic [user] = dyn
     # search linearly -- we don't expect more than say 10-30 dynamic
     # user records per user. We dont want to have a binary search
     # algorithm here: the first record found is probably the current one

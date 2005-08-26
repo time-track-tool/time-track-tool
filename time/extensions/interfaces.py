@@ -43,7 +43,8 @@ from roundup.cgi.TranslationService import get_translation
 from roundup                        import date as r_date
 from copy                           import copy
 
-_ = lambda x : x
+_      = lambda x : x
+common = None
 
 def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
@@ -246,8 +247,20 @@ def sorted (vals, keys) :
     return vals
 # end def sorted
 
+def weekend_allowed (db, daily_record) :
+    user, date = [str (daily_record [i]) for i in 'user', 'date']
+    user = db.user.lookup (user)
+    dyn = get_user_dynamic (db, user, date)
+    return dyn and dyn.weekend_allowed
+# end def weekend_allowed
+
 def init (instance) :
-    global _
+    import sys, os
+    global _, get_user_dynamic
+    sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
+    user_dynamic = __import__ ('user_dynamic', globals (), locals ())
+    get_user_dynamic = user_dynamic.get_user_dynamic
+    del (sys.path [0])
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     reg = instance.registerUtil
@@ -260,3 +273,4 @@ def init (instance) :
     reg ("submit_to",                    submit_to)
     reg ("batch_open",                   batch_open)
     reg ("sorted",                       sorted)
+    reg ("weekend_allowed",              weekend_allowed)
