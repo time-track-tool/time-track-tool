@@ -46,6 +46,7 @@
          [ 'user'
          , 'durations_allowed'
          , 'long_worktime'
+         , 'weekend_allowed'
          , 'weekly_hours'
          , 'hours_mon'
          , 'hours_tue'
@@ -86,6 +87,11 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'long_worktime')"/>
       <td tal:content="structure python:context.long_worktime.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'weekend_allowed')"/>
+      <td tal:content="structure python:context.weekend_allowed.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

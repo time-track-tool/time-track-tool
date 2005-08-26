@@ -86,4 +86,11 @@ def update_feature_status (db, cl, nodeid, new_values) :
             new_values ["status"] = db.feature_status.lookup (status)
 # end def update_feature_status
 
+def check_name_len (_, name) :
+    if len (name) > 25 :
+        raise Reject, \
+            _ ('Name "%(name)s" too long (> 25 characters)') % locals ()
+# end def name_len
+
+
 ### __END__ feature

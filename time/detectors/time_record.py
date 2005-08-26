@@ -171,7 +171,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
     status     = new_values.get ('status', old_status)
     supervisor = db.user.get (uid, 'supervisor')
     clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
-    clearers   = db.user.get (clearance, 'substitutes')
+    clearers   = [db.user.get (clearance, 'substitute')]
     if not db.user.get (clearance, 'subst_active') :
         clearers = []
     clearers.append (clearance)
@@ -277,15 +277,16 @@ def check_start_end_duration \
         check_duration (duration)
         if 'duration' in new_values :
             new_values ['duration'] = duration
-        dstart  = Date (start, offset = 0)
-        if start and ('start' in new_values or 'duration' in new_values) :
-            minutes = duration * 60
-            hours   = int (duration % 60)
-            minutes = minutes - hours * 60
-            dend    = dstart + Interval ('%d:%d' % (hours, minutes))
-            check_timestamps (dstart, dend, date)
-            new_values ['start'] = dstart.pretty (hour_format)
-            new_values ['end']   = dend.pretty   (hour_format)
+        if start :
+            dstart  = Date (start, offset = 0)
+            if 'start' in new_values or 'duration' in new_values :
+                minutes = duration * 60
+                hours   = int (duration % 60)
+                minutes = minutes - hours * 60
+                dend    = dstart + Interval ('%d:%d' % (hours, minutes))
+                check_timestamps (dstart, dend, date)
+                new_values ['start'] = dstart.pretty (hour_format)
+                new_values ['end']   = dend.pretty   (hour_format)
     if split :
         if duration <= split :
             raise Reject, _ ("Split must be < duration")

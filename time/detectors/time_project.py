@@ -32,25 +32,32 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
-_ = lambda x : x
+_      = lambda x : x
+common = None
 
 def check_time_project (db, cl, nodeid, new_values) :
     for i in 'wp_no', 'project' :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+    common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
     for i in \
-        ( 'responsible', 'deputy',        'organisation'
-        , 'department',  'planned_effort'
+        ( 'name', 'responsible', 'deputy', 'organisation'
+        , 'department', 'planned_effort'
         ) :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.check_name_len (_, new_values ['name'])
 # end def new_time_project
 
 def init (db) :
-    global _
+    import sys, os
+    global common, _
+    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+    common = __import__ ('common', globals (), locals ())
+    del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_project.audit  ("create", new_time_project)

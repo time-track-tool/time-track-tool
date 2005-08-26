@@ -491,6 +491,7 @@ user_dynamic = Class \
     , valid_to              = Date      (offset = 0)
     , durations_allowed     = Boolean   ()
     , long_worktime         = Boolean   ()
+    , weekend_allowed       = Boolean   ()
     , weekly_hours          = Number    ()
     , hours_mon             = Number    ()
     , hours_tue             = Number    ()

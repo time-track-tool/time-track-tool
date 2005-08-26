@@ -40,229 +40,249 @@ else :
 
 date_text = "<br><br>Ranges are used for searching dates: A range ".join \
     ((date_help, range_help))
+durations = \
+    ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
+daily_hours = \
+    ""'''Expected daily work-time for %(Classname)s for each day of
+         the week. If nothing is specified, the average of Weekly
+         hours is taken. The field is mainly needed for part-time
+         employees with irregular work time.
+      '''
 
 helptext = \
-    { ""'activity'            :
+    { ""'activity'               :
       ""'''Date of last change'''
-    , ""'actor'               :
+    , ""'actor'                  :
       ""'''Person who has done the last change'''
-    , ""'alternate_addresses' :
+    , ""'alternate_addresses'    :
       ""'''Alternate email addresses for this user, one per line'''
-    , ""'announcements'       :
+    , ""'announcements'          :
       ""'''Announcements for this %(Classname)s'''
-    , ""'add_announcement'    :
+    , ""'add_announcement'       :
       ""'''Mail out an announcement for another review step'''
-    , ""'author'              :
+    , ""'author'                 :
       ""'''Author of this %(Classname)s'''
-    , ""'authors'             :
+    , ""'authors'                :
       ""'''Authors of the artefact of this %(Classname)s'''
-    , ""'bookers'             :
+    , ""'bookers'                :
       ""'''Users who may book on this %(Classname)s. If nothing is
            selected here, all users may book on this %(Classname)s (e.g.,
            jour fixe).
         '''
-    , ""'clearance_by'        :
+    , ""'clearance_by'           :
       ""'''Usually the supervisor of a person approves
            time records. This can be delegated using this attribute. It
            specifies the person who approves time records for
            all people whose supervisor this is.
         '''
-    , ""'company'             :
+    , ""'company'                :
       ""'''Company for %(Classname)s'''
-    , ""'confirm'             :
+    , ""'confirm'                :
       ""'''Confirm the password here: first password and this entry
            must match.
         '''
-    , ""'content'             :
+    , ""'content'                :
       ""'''Content of %(Classname)s'''
-    , ""'cost_center_status'  :
+    , ""'cost_center_status'     :
       ""'''Specifies the Phase the Cost Center is in'''
-    , ""'creation'            :
+    , ""'creation'               :
       ""'''Record creation date'''
-    , ""'creator'             :
+    , ""'creator'                :
       ""'''Person who created this record'''
-    , ""'cut_off_date'        :
+    , ""'cut_off_date'           :
       ""'''Date until when this %(Classname)s must be finished.''' + date_text
-    , ""'date'                :
+    , ""'date'                   :
       ""'''Date of this %(Classname)s.<br>''' + date_text
-    , ""'department'          :
+    , ""'daily_hours'            : daily_hours
+    , ""'department'             :
       ""'''Department in which the %(Classname)s is based, e.g., SW, Sales.'''
-    , ""'deputy'              :
+    , ""'deputy'                 :
       ""'''Substitute for the responsible Person of %(Classname)s'''
-    , ""'description'         :
+    , ""'description'            :
       ""'''Verbose description of %(Classname)s'''
-    , ""'duration'            :
+    , ""'duration'               :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
            allowed, e.g., 7.10 is not allowed.
         '''
-    , ""'durations_allowed'   :
-      ""'''Flag if booking of durations is allowed for this
-           %(Classname)s -- is mainly used for special %(Classname)ss, like,
+    , ""'user_dynamic.durations_allowed' : durations
+    , ""'wp.durations_allowed'   : durations +
+      ""'''This is mainly used for special %(Classname)ss, like,
            e.g., vacation.
         '''
-    , ""'email'               :
+    , ""'email'                  :
       ""'''Email address for this %(Classname)s'''
-    , ""'external_phone'      :
+    , ""'external_phone'         :
       ""'''Short mobile or external phone number, e.g., 6142.
            Can be concatenated with
            the company prefix stored in "Organisation" to form a valid
            external phone number.
         '''
-    , ""'add_file'            :
+    , ""'add_file'               :
       ""'''Add an new file for %(Classname)s'''
-    , ""'files'               :
+    , ""'files'                  :
       ""'''Files for %(Classname)s'''
-    , ""'final_meeting_date'  :
+    , ""'final_meeting_date'     :
       ""'''Date of final meeting for this %(Classname)s.''' + date_text
-    , ""'firstname'           :
+    , ""'firstname'              :
       ""'''First name for this user, e.g., Ralf'''
-    , ""'id'                  :
+    , ""'hours_mon'              : daily_hours
+    , ""'hours_tue'              : daily_hours
+    , ""'hours_wed'              : daily_hours
+    , ""'hours_thu'              : daily_hours
+    , ""'hours_fri'              : daily_hours
+    , ""'hours_sat'              : daily_hours
+    , ""'hours_sun'              : daily_hours
+    , ""'id'                     :
       ""'''ID of this record, automatically generated by the system.
            Cannot be changed by the user.
         '''
-    , ""'initial'             :
+    , ""'initial'                :
       ""'''Initials of this %(Classname)s'''
-    , ""'inreplyto'           :
+    , ""'inreplyto'              :
       ""'''In Reply To field if this %(Classname)s was received by email'''
-    , ""'is_alias'            :
+    , ""'is_alias'               :
       ""'''No real user but only an email alias'''
-    , ""'klass'               :
+    , ""'klass'                  :
       ""'''Class for this query'''
-    , ""'lastname'            :
+    , ""'lastname'               :
       ""'''Last name for this user, e.g., Schlatterbeck'''
-    , ""'location'            :
+    , ""'location'               :
       ""'''Location of %(Classname)s, e.g., Vienna HQ.'''
-    , ""'lunch_duration'      :
+    , ""'lunch_duration'         :
       ""'''Preference for time tracking, duration of lunch break in minutes'''
-    , ""'lunch_start'         :
+    , ""'lunch_start'            :
       ""'''Preference for time tracking, start of lunch break'''
-    , ""'manager'             :
+    , ""'manager'                :
       ""'''Responsible person of the %(Classname)s'''
-    , ""'messageid'           :
+    , ""'messageid'              :
       ""'''Message-ID if this message was received via email'''
-    , ""'messages'            :
+    , ""'messages'               :
       ""'''List of messages for %(Classname)s'''
-    , ""'msg'                 :
+    , ""'msg'                    :
       ""'''New message or notice for %(Classname)s'''
-    , ""'name'                :
+    , ""'name'                   :
       ""'''Unique %(Classname)s name'''
-    , ""'nickname'            :
+    , ""'nickname'               :
       ""'''Nickname (or short name) for this %(Classname)s, e.g., rsc'''
-    , ""'nosy'                :
+    , ""'nosy'                   :
       ""'''People receiving announcements (messages) for %(Classname)s'''
-    , ""'opt_reviewers'       :
+    , ""'opt_reviewers'          :
       ""'''Optional reviewers for this %(Classname)s'''
-    , ""'order'               :
+    , ""'order'                  :
       ""'''Items are ordered by this property in drop-down boxes etc.'''
-    , ""'organisation'        :
+    , ""'organisation'           :
       ""'''Organisation in which the %(Classname)s is based, e.g., TTTech.'''
-    , ""'password'            :
+    , ""'password'               :
       ""'''Password for this %(Classname)s'''
-    , ""'peer_reviewers'      :
+    , ""'peer_reviewers'         :
       ""'''Peer reviewers for this %(Classname)s'''
-    , ""'phone'               :
+    , ""'phone'                  :
       ""'''Short phone number (suffix) only, e.g., 42.
            Can be concatenated with
            the company prefix stored in "Organisation" to form a valid
            external phone number.
         '''
-    , ""'planned_effort'      :
+    , ""'planned_effort'         :
       ""'''Effort for the %(Classname)s in person-days; as it is stated
            in the Project Evaluation Sheet.
         '''
-    , ""'private_for'         :
+    , ""'private_for'            :
       ""'''Flag if this is a private %(Classname)s'''
-    , ""'private_phone'       :
+    , ""'private_phone'          :
       ""'''Privat phone number. Always as a full number valid on the
            PSTN.
         '''
-    , ""'project'             :
+    , ""'project'                :
       ""'''%(Classname)s is part of a Project. With the Project name a
            %(Classname)s can be clearly  identified
         '''
-    , ""'qa_representative'   :
+    , ""'qa_representative'      :
       ""'''Representative from the QA department for this %(Classname)s'''
-    , ""'queries'             :
+    , ""'queries'                :
       ""'''Queries for this %(Classname)s'''
-    , ""'recorder'            :
+    , ""'recorder'               :
       ""'''Person responsible for recording findings'''
-    , ""'realname'            :
+    , ""'realname'               :
       ''"""Real name for this %(Classname)s -- automatically generated
            by the system from first and last name. Needed by roundup
            internally. (More specifically by roundupdp.py's send_message
            -- which is used e.g. by the nosyreactor)
         """
-    , ""'recipients'          :
+    , ""'recipients'             :
       ""'''Only set if message was received via email.'''
-    , ""'responsible'         :
+    , ""'responsible'            :
       ""'''Person who is responsible for the %(Classname)s'''
-    , ""'review.responsible'  :
+    , ""'review.responsible'     :
       ""'''Moderator for %(Classname)s -- Note: If you do not specify
            the moderator, you will get an indication that the field
            "Responsible" must be filled in -- the moderator is reponsible for
            %(Classname)s.
         '''
-    , ""'roles'               :
+    , ""'roles'                  :
       ""'''Roles for this %(Classname)s -- to give the user more than
            one role, enter a comma,separated,list
         '''
-    , ""'room'                :
+    , ""'room'                   :
       ""'''Room number'''
-    , ""'status'              :
+    , ""'status'                 :
       ""'''Status of this %(Classname)s'''
-    , ""'subject'             :
+    , ""'subject'                :
       ""'''Short identification of this message'''
-    , ""'substitute'         :
+    , ""'substitute'             :
       ""'''Person who can substitute %(Classname)s for approving time
            records.
         '''
-    , ""'subst_active'         :
+    , ""'subst_active'           :
       ""'''This field is set to "yes" for enabling the field
            "Substitute" for delegating time record approval.
         '''
-    , ""'summary'             :
+    , ""'summary'                :
       ""'''Short summary of this message (usually first line)'''
-    , ""'superior'            :
+    , ""'superior'               :
       ""'''Supervisor for %(Classname)s'''
-    , ""'team_members'        :
+    , ""'team_members'           :
       ""'''Persons who are assigned to the project and are allowed
            to book their effort on this project
         '''
-    , ""'time_start'          :
+    , ""'time_start'             :
       ""'''Date when %(Classname)s officially starts'''
-    , ""'time_end'            :
+    , ""'time_end'               :
       ""'''Date when %(Classname)s is officially closed'''
-    , ""'timezone'            :
+    , ""'timezone'               :
       ""'''Time zone of this %(Classname)s -- this is a numeric hour offset'''
-    , ""'title'               :
+    , ""'title'                  :
       ""'''Title of this %(Classname)s'''
-    , ""'type'                :
+    , ""'type'                   :
       ""'''Mime type of this file'''
-    , ""'url'                 :
+    , ""'url'                    :
       ""'''Web-Link for this %(Classname)s'''
-    , ""'user.address'        :
+    , ""'user.address'           :
       ""'''Primary email address for this user'''
-    , ""'user.title'          :
+    , ""'user.title'             :
       ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
-    , ""'username'            :
+    , ""'username'               :
       ""'''Login-name for this %(Classname)s, e.g., schlatterbeck'''
-    , ""'valid_from'          :
+    , ""'valid_from'             :
       ""'''Creation date, or date since when this %(Classname)s can be
            booked at
         ''' + date_text
-    , ""'valid_to'            :
+    , ""'valid_to'               :
       ""'''Expiration date for %(Classname)s.''' + date_text
-    , ""'week'                :
+    , ""'week'                   :
       ""'''Week for time tracking, this is an alternative for specifying
            a date range: just enter the week number here (for the
            current year) or YYYY/WW where YYYY is the year and WW the
            week number for that year.
       '''
-    , ""'wp_no'               :
+    , ""'weekend_allowed'        :
+      ""'''Flag if booking on weekends is allowed for this %(Classname)s.'''
+    , ""'weekly_hours'           :
+      ""'''Expected weekly work-time for %(Classname)s.'''
+    , ""'wp_no'                  :
       ""'''Work package number in the project. Number must be unique for
            the project and cannot be changed after assignment.
         '''
-    , ""'wps'                 :
+    , ""'wps'                    :
       ""'''For a better handling of the work load of a project it is
            split in to work packages. This field defines a list of work
            packages for this %(Classname)s
@@ -295,6 +315,8 @@ def help_properties (klass) :
         p.append ('confirm')
     if klass.classname == 'daily_record' :
         p.append ('week')
+    if klass.classname == 'user_dynamic' :
+        p.append (""'daily_hours')
     if 'announcements' in properties :
         p.append ('add_announcement')
     if 'files' in properties :
