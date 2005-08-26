@@ -231,6 +231,11 @@ table.list td.subhead {
   font-weight: bold;
 }
 
+table.list td.subhead-nb {
+  font-weight: bold;
+  border-right: 0
+}
+
 table.list tr.time-nav th {
   border-style: hidden;
   text-align: center;

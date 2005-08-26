@@ -45,7 +45,7 @@
        &lt;&lt;&nbsp;previous
       </a>
      </th>
-     <td>
+     <th>
        <input type="hidden" name="@sort"     value="date">
        <input type="hidden" name="@group"    value="user">
        <input type="hidden" name="@filter"   value="date,user">
@@ -60,29 +60,29 @@
        <input type="hidden" name="user"
         tal:attributes="value python:request.form.getvalue ('user') or nothing">
        &nbsp;
-     </td>
-     <td>&nbsp;</td>
+     </th>
+     <th>&nbsp;</th>
      <th style="text-align:right;"
          tal:content="structure
              python:utils.fieldname ('daily_record', 'week', space = 0) + ':'"/>
-     <td>
+     <th>
        <input type="text" size="7" name="weekno"
         onChange="document.forms.edit_daily_record ['@action'].value =
             'weekno_action';
           document.edit_daily_record.submit ();">
-     </td>
+     </th>
      <th style="text-align:right;"
       tal:content="structure
           python: utils.fieldname ('daily_record', 'date', space = 0) + ':'"/>
-     <td>
+     <th>
       <input type="text" size="22"
        tal:define="value python:request.form.getvalue(date.selname) or nothing"
        tal:attributes="value python:date.pretty_ids (value)
                       ;name  python:date.selname
                       ">
-     </td>
-     <td>&nbsp;</td>
-     <td>&nbsp;</td>
+     </th>
+     <th>&nbsp;</th>
+     <th>&nbsp;</th>
      <th>
       <a tal:attributes="href python:utils.next_week (db, request)">
        next&nbsp;&gt;&gt;
@@ -105,7 +105,8 @@
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'duration',      space = False)"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'wp',            space = False)"/>
+          ('time_record', 'wp',            space = False)"
+          colspan="2"/>
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'time_activity', space = False)"/>
       <th tal:content="structure python:utils.fieldname
@@ -124,13 +125,16 @@
                   ;allowed   python:w_allowed or not is_wend
                   ">
        <tr tal:attributes="class cls">
-        <td class="subhead"
-         tal:content="structure python:i ['date'].pretty ('%a')"/>
+        <td class="subhead-nb"
+         tal:content="structure python:i.date.pretty ('%a')"/>
         <td class="subhead" colspan="2"
-         tal:content="structure python:i ['date'].pretty ('%Y-%m-%d')"/>
+         tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
+        <td class="subhead-nb"
+         tal:content="python:'(Week %s)' % utils.weekno (i.date)"/>
         <td class="subhead"
          tal:content="structure python:pdict ['status'].colonfield (i)"/>
-        <td/><td/>
+        <td class="subhead"/>
+        <td class="subhead"/>
         <td tal:condition="is_open"/>
        </tr>
        <tal:block tal:repeat="r python: utils.sorted
@@ -141,7 +145,7 @@
           (utils, r [pn], item = r, editable = editable, fieldwidth = 5)
           .as_listentry ()"/>
          </td>
-         <td>
+         <td colspan="2">
           <select tal:condition="editable"
            tal:attributes="name python:'time_record%s@wp'%r.id">
            <option tal:attributes="selected not:r/wp/id" value="-1">
@@ -182,7 +186,7 @@
          <tal:block tal:replace="structure python:utils.new_property
           (context, db, 'time_record', -idx, pn).field (5)"/>
         </td>
-        <td>
+        <td colspan="2">
          <select
           tal:attributes="name python:'time_record-%d@wp'%idx">
           <option selected="selected" value="-1">- no selection -</option>
@@ -205,7 +209,7 @@
        </tr>
       </tal:block>
      </tal:block>
-     <tr tal:condition="is_open"><td colspan="4"/>
+     <tr tal:condition="is_open"><td colspan="5"/>
       <td>
        <tal:block tal:replace="structure python:utils.submit_to
         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
