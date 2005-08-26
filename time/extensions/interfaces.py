@@ -217,7 +217,7 @@ def html_calendar (request) :
     return "\n".join (res)
 # end def html_calendar
 
-def submit_to (db, user) :
+def submit_to (db, user, date) :
     """ Create the submit_to button for time tracking submissions. We
         get the supervisor of the user and check if clearance is
         delegated.
@@ -226,7 +226,16 @@ def submit_to (db, user) :
     supervisor = db.user.get (user,       'supervisor')
     clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
     nickname   = db.user.get (clearance,  'nickname').upper ()
-    return _ ("Submit to %(nickname)s" % locals ())
+    return \
+        '''<input type="button" value="%s"
+            onClick="
+                document.forms.edit_daily_record ['@action'].value =
+                    'daily_record_submit';
+                document.forms.edit_daily_record ['date'].value =
+                    '%s'
+                document.edit_daily_record.submit ();
+            ">
+        ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
 # end def submit_to
 
 def batch_open (batch) :

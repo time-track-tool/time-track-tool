@@ -36,6 +36,8 @@
    You are not allowed to view this page.
   </tal:block>
 
+  <form method="POST" tal:attributes="action request/classname"
+   name="edit_daily_record">
    <table class="list">
     <tr class="time-nav" tal:define="date python:pdict ['date']">
      <th>
@@ -43,43 +45,41 @@
        &lt;&lt;&nbsp;previous
       </a>
      </th>
-     <td>&nbsp;</td>
+     <td>
+       <input type="hidden" name="@sort"     value="date">
+       <input type="hidden" name="@group"    value="user">
+       <input type="hidden" name="@filter"   value="date,user">
+       <input type="hidden" name="@action"   value="daily_record_edit_action">
+       <input type="hidden" name="@template" value="edit">
+       <input type="hidden" name="@pagesize"
+        tal:attributes="value python:request.form.getvalue ('@pagesize')
+        or '50'">
+       <input type="hidden" name="@startwith"
+        tal:attributes="value python:request.form.getvalue ('@startwith')
+        or '0'">
+       <input type="hidden" name="user"
+        tal:attributes="value python:request.form.getvalue ('user') or nothing">
+       &nbsp;
+     </td>
      <td>&nbsp;</td>
      <th style="text-align:right;"
          tal:content="structure
              python:utils.fieldname ('daily_record', 'week', space = 0) + ':'"/>
      <td>
-      <form method="GET" name="q1" tal:attributes="action request/classname">
-       <input type="hidden" name="@sort"     value="date">
-       <input type="hidden" name="@group"    value="user">
-       <input type="hidden" name="@filter"   value="date,user">
-       <input type="hidden" name="@action"   value="weekno_action">
-       <input type="hidden" name="@template" value="edit">
-       <input type="text" size="7" name="weekno">
-       <input type="hidden" name="user"
-        tal:attributes="value python:request.form.getvalue ('user') or nothing">
-       <input type="hidden" name="date"
-        tal:attributes="value python:request.form.getvalue ('date') or nothing">
-      </form>
+       <input type="text" size="7" name="weekno"
+        onChange="document.forms.edit_daily_record ['@action'].value =
+            'weekno_action';
+          document.edit_daily_record.submit ();">
      </td>
      <th style="text-align:right;"
       tal:content="structure
           python: utils.fieldname ('daily_record', 'date', space = 0) + ':'"/>
      <td>
-      <form method="GET" name="q2" tal:attributes="action request/classname">
-       <input type="hidden" name="@sort"     value="date">
-       <input type="hidden" name="@group"    value="user">
-       <input type="hidden" name="@filter"   value="date,user">
-       <input type="hidden" name="@action"   value="daily_record_action">
-       <input type="hidden" name="@template" value="edit">
-       <input type="text" size="22"
-        tal:define="value python:request.form.getvalue(date.selname) or nothing"
-        tal:attributes="value python:date.pretty_ids (value)
-                       ;name  python:date.selname
-                       ">
-       <input type="hidden" name="user"
-        tal:attributes="value python:request.form.getvalue ('user') or nothing">
-      </form>
+      <input type="text" size="22"
+       tal:define="value python:request.form.getvalue(date.selname) or nothing"
+       tal:attributes="value python:date.pretty_ids (value)
+                      ;name  python:date.selname
+                      ">
      </td>
      <td>&nbsp;</td>
      <td>&nbsp;</td>
@@ -91,8 +91,6 @@
     </tr>
    </table>
 
-  <form method="POST" tal:attributes="action request/classname"
-   name="edit_daily_record">
    <tal:block tal:define=
     "batch   request/batch;
      is_open python:utils.batch_open (batch);
@@ -136,7 +134,7 @@
         <td tal:condition="is_open"/>
        </tr>
        <tal:block tal:repeat="r python: utils.sorted
-        (i ['time_record'], ('start',))">
+        (i ['time_record'], ('start','wp'))">
         <tr tal:attributes="class cls">
          <td tal:repeat="pn python:['start','end','duration']">
           <tal:block tal:replace="structure python: utils.ExtProperty
@@ -209,18 +207,11 @@
      </tal:block>
      <tr tal:condition="is_open"><td colspan="4"/>
       <td>
-       <input type="button" tal:attributes=
-        " value   python:utils.submit_to (db, request.filterspec ['user'][0])"
-        onClick="document.forms.edit_daily_record ['@action'].value =
-            'daily_record_submit';
-          document.edit_daily_record.submit ();">
+       <tal:block tal:replace="structure python:utils.submit_to
+        (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
       </td>
       <td>
        <input type="submit" value=" Save " i18n:attributes="value">
-       <input type="hidden" name="@action" value="daily_record_edit_action">
-       <input type="hidden" name="@template" value="edit">
-       <tal:block tal:replace="structure python:request.indexargs_form
-        (sort=1, group=1, filter=1, filterspec=1, columns=0)"/>
       </td>
       <td/>
      </tr>

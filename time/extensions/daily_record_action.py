@@ -49,6 +49,18 @@ from copy                   import copy
 
 ymd = '%Y-%m-%d'
 
+class _autosuper (type) :
+    def __init__ (cls, name, bases, dict) :
+        super   (_autosuper, cls).__init__ (name, bases, dict)
+        setattr (cls, "_%s__super" % name, super (cls))
+    # end def __init__
+# end class _autosuper
+
+class autosuper (object) :
+    __metaclass__ = _autosuper
+    pass
+# end class autosuper
+
 def pretty_range (start, end) :
     return ';'.join ([x.pretty (ymd) for x in (start, end)])
 # end def pretty_range
@@ -153,16 +165,11 @@ def prev_week (db, request) :
     n_end   = start - Interval ('1d')
     n_start = n_end - Interval ('6d')
     date    = pretty_range (n_start, n_end)
-    request = copy (request)
-    request.filterspec = copy (request.filterspec)
-    request.filterspec ['date'] = date
-    return request.indexargs_url \
-        ( ''
-        , { ':action'   : 'daily_record_action'
-          , ':template' : 'edit'
-          , ':filter'   : ','.join (request.filterspec.keys ())
-          }
-        )
+    return \
+        '''javascript:
+            document.forms.edit_daily_record ['date'].value = '%s';
+            document.edit_daily_record.submit ();
+        ''' % date
 # end def prev_week
 
 def next_week (db, request) :
@@ -170,56 +177,27 @@ def next_week (db, request) :
     n_start = end     + Interval ('1d')
     n_end   = n_start + Interval ('6d')
     date    = pretty_range (n_start, n_end)
-    request = copy (request)
-    request.filterspec = copy (request.filterspec)
-    request.filterspec ['date'] = date
-    return request.indexargs_url \
-        ( ''
-        , { ':action'   : 'daily_record_action'
-          , ':template' : 'edit'
-          , ':filter'   : ','.join (request.filterspec.keys ())
-          }
-        )
+    return \
+        '''javascript:
+            document.forms.edit_daily_record ['date'].value = '%s';
+            document.edit_daily_record.submit ();
+        ''' % date
 # end def next_week
 
-class Weekno_Action (Action) :
-    name = 'weekno_action'
+class Daily_Record_Common (Action, autosuper) :
+    """ Methods for creation of daily records that do not yet exist """
+
     permissionType = 'View'
 
-    def handle (self) :
-        request    = templating.HTMLRequest (self.client)
-        filterspec = request.filterspec
-        try :
-            weeknostr = filterspec ['weekno']
-        except KeyError :
-            weeknostr = request.form ['weekno'].value
-        try :
-            year, weekno = [int (i) for i in weeknostr.split ('/')]
-        except ValueError :
-            year = Date ('.').year
-            weekno = int (weeknostr)
-        filterspec ['date'] = pretty_range (* from_week_number (year, weekno))
-        url = request.indexargs_url \
-            ( ''
-            , { ':action'        : 'daily_record_action'
-              , ':template'      : 'edit'
-              , ':sort'          : 'date'
-              , ':group'         : 'user'
-              , ':filter'        : ','.join (filterspec.keys ())
-              , 'weekno'         : None
-              }
-            )
-        raise Redirect, url
-    # end def handle
-# end class Weekno_Action
-
-class Daily_Record_Common (Action) :
-    name = 'daily_record'
-    permissionType = 'Edit'
+    def set_request (self) :
+        """ figure the request """
+        if not hasattr (self, 'request') :
+            self.request = templating.HTMLRequest (self.client)
+    # end def set_request
 
     def create_daily_records (self) :
-        # figure the request
-        self.request    = request = templating.HTMLRequest (self.client)
+        self.set_request ()
+        request         = self.request
         filterspec      = request.filterspec
         columns         = request.columns
         assert (request.classname == 'daily_record')
@@ -261,15 +239,22 @@ class Daily_Record_Common (Action) :
                 pass
             d = d + Interval ('1d')
     # end def create_daily_records
+
 # end class Daily_Record_Common
 
 class Daily_Record_Action (Daily_Record_Common) :
+    """ Move to the given date range for the given user after creating
+        the daily records for the given range.
+        Note: No editing is performed.
+    """
+
+    name           = 'daily_record_action'
 
     def handle (self) :
         self.create_daily_records ()
         self.request.filterspec = \
             { 'date' : pretty_range (self.start, self.end)
-            , 'user' : self.user
+            , 'user' : [self.user]
             }
         url = self.request.indexargs_url \
             ( ''
@@ -282,9 +267,20 @@ class Daily_Record_Action (Daily_Record_Common) :
             )
         raise Redirect, url
     # end def handle
+
 # end class Daily_Record_Action
 
-class Daily_Record_Edit_Action (EditItemAction) :
+class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
+    """ Remove items that did not change (for which we defined a hidden
+        attribute in the mask) from the new items. Then proceed as usual
+        like for EditItemAction. The filterspec is modified from the
+        date input field before doing the editing, so after editing we
+        move to the new selection.
+    """
+
+    name           = 'daily_record_edit_action'
+    permissionType = 'Edit'
+
     def _editnodes (self, props, links) :
         # use props.items here, with iteritems we get a RuntimeError
         # "dictionary changed size during iteration"
@@ -292,28 +288,81 @@ class Daily_Record_Edit_Action (EditItemAction) :
             if cl == 'time_record' :
                 if int (id) < 0 and val.keys () == ['daily_record'] :
                     del props [(cl, id)]
-        return EditItemAction._editnodes (self, props, links)
+        self.ok_msg = EditItemAction._editnodes (self, props, links)
+        return self.ok_msg
     # end def _editnodes
-# end class Daily_Record_Edit_Action
 
-class Daily_Record_Submit (Daily_Record_Edit_Action, Daily_Record_Common) :
     def handle (self) :
         self.create_daily_records ()
+        self.request.filterspec = \
+            { 'date' : pretty_range (self.start, self.end)
+            , 'user' : [self.user]
+            }
+        # returns only in error case
+        return self.__super.handle ()
+    # end def handle
+
+# end class Daily_Record_Edit_Action
+
+class Weekno_Action (Daily_Record_Edit_Action) :
+    """ Parse the weekno field and move to the given week instead of to
+        the range given in the date attribute after editing.
+    """
+
+    name = 'weekno_action'
+
+    def handle (self) :
+        self.set_request ()
+        filterspec   = self.request.filterspec
         try :
-            # returns only in error case
-            return Daily_Record_Edit_Action.handle (self)
+            weeknostr = filterspec ['weekno']
+        except KeyError :
+            weeknostr = self.request.form ['weekno'].value
+        try :
+            year, weekno = [int (i) for i in weeknostr.split ('/')]
+        except ValueError :
+            year = Date ('.').year
+            weekno = int (weeknostr)
+        filterspec ['date'] = pretty_range (* from_week_number (year, weekno))
+        try :
+            return self.__super.handle ()
+        except Redirect :
+            pass
+        args = \
+            { ':action'        : 'search'
+            , ':template'      : 'edit'
+            , ':sort'          : 'date'
+            , ':group'         : 'user'
+            , ':filter'        : ','.join (self.request.filterspec.keys ())
+            , ':ok_message'    : self.ok_msg
+            }
+        url = self.request.indexargs_url ('', args)
+        raise Redirect, url
+    # end def handle
+# end class Weekno_Action
+
+class Daily_Record_Submit (Daily_Record_Edit_Action) :
+    """ Handle editing. If everything is OK, try to submit the current
+        selection, otherwise display error messages from the edit. If
+        the submit creates errors they are shown. Otherwise move to the
+        *current* selection.
+    """
+
+    def handle (self) :
+        try :
+            # returns only in case of error
+            return self.__super.handle ()
         except Redirect :
             pass
         # figure the request
         request    = self.request
-        filterspec = request.filterspec
         sort       = request.sort
         group      = request.group
         klass      = self.db.getclass (request.classname)
         s_open     = self.db.daily_record_status.lookup ('open')
         s_submit   = self.db.daily_record_status.lookup ('submitted')
         msg        = []
-        for itemid in klass.filter (None, filterspec, sort, group) :
+        for itemid in klass.filter (None, request.filterspec, sort, group) :
             try :
                 if klass.get (itemid, 'status') == s_open :
                     klass.set (itemid, status = s_submit)
@@ -324,12 +373,13 @@ class Daily_Record_Submit (Daily_Record_Edit_Action, Daily_Record_Common) :
             , ':template'      : 'edit'
             , ':sort'          : 'date'
             , ':group'         : 'user'
-            , ':filter'        : ','.join (filterspec.keys ())
+            , ':filter'        : ','.join (request.filterspec.keys ())
             }
         if msg :
             self.db.rollback ()
             args [':error_message'] = "<br>".join (msg)
         else :
+            args [':ok_message']    = self.ok_msg
             self.db.commit ()
         url = request.indexargs_url ('', args)
         raise Redirect, url
@@ -338,8 +388,8 @@ class Daily_Record_Submit (Daily_Record_Edit_Action, Daily_Record_Common) :
 
 def init (instance) :
     actn = instance.registerAction
-    actn ('daily_record_action',      Daily_Record_Action)
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
+    actn ('daily_record_action',      Daily_Record_Action)
     actn ('daily_record_submit',      Daily_Record_Submit)
     actn ('weekno_action',            Weekno_Action)
     util = instance.registerUtil
