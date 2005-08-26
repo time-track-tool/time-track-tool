@@ -62,9 +62,9 @@ helptext = \
            jour fixe).
         '''
     , ""'clearance_by'        :
-      ""'''Usually the supervisor of a person gives the clearance for
+      ""'''Usually the supervisor of a person approves
            time records. This can be delegated using this attribute. It
-           specifies the person who gives clearance for time records for
+           specifies the person who approves time records for
            all people whose supervisor this is.
         '''
     , ""'company'             :
@@ -212,13 +212,13 @@ helptext = \
       ""'''Status of this %(Classname)s'''
     , ""'subject'             :
       ""'''Short identification of this message'''
-    , ""'substitutes'         :
-      ""'''Others who can substitute %(Classname)s for giving clearance
-           for time records.
+    , ""'substitute'         :
+      ""'''Person who can substitute %(Classname)s for approving time
+           records.
         '''
     , ""'subst_active'         :
       ""'''This field is set to "yes" for enabling the field
-           "substitutes" for delegating time record processing
+           "Substitute" for delegating time record approval.
         '''
     , ""'summary'             :
       ""'''Short summary of this message (usually first line)'''
