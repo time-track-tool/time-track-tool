@@ -129,7 +129,7 @@
          tal:content="structure python:i.date.pretty ('%a')"/>
         <td class="subhead" colspan="2"
          tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
-        <td class="subhead-nb"
+        <td class="subhead-nb" width="1%" nowrap
          tal:content="python:'(Week %s)' % utils.weekno (i.date)"/>
         <td class="subhead"
          tal:content="structure python:pdict ['status'].colonfield (i)"/>
