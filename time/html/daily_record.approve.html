@@ -1,0 +1,44 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title" tal:content="Classname" />
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+  Approvals pending
+ </span>
+
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:condition="context/is_view_ok"
+   tal:define=
+   " pending python: utils.approvals_pending
+             (db, request, request.filterspec ['user'] or [])
+   ; users   python:utils.sorted
+             ([db._db.user.getnode (u) for u in pending.keys ()], 'username')
+   ">
+   <table class="list" border="1" tal:condition="pending">
+    <tr>
+     <th i18n:translate="">User</th>
+     <th i18n:translate="">Week</th>
+    </tr>
+    <tal:block tal:repeat="u python:users">
+     <tr tal:repeat="w python:pending [u.id].iterkeys ()">
+       <td>
+        <a tal:content="python: u.username"
+           tal:attributes="href python:pending [u.id][w][0]"/>
+       </td>
+       <td>
+        <a tal:content="python: w"
+           tal:attributes="href python:pending [u.id][w][1]"/>
+       </td>
+     </tr>
+    </tal:block>
+    <tr class="normal"><th/><th/></tr>
+   </table>
+   <span tal:condition="not:pending" i18n:translate="">
+   You have no pending submitted records.
+   </span>
+  </tal:block>
+ </tal:block>
+</tal:block>
