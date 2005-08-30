@@ -217,7 +217,7 @@ def html_calendar (request) :
     return "\n".join (res)
 # end def html_calendar
 
-def submit_to (db, user, date) :
+def button_submit_to (db, user, date) :
     """ Create the submit_to button for time tracking submissions. We
         get the supervisor of the user and check if clearance is
         delegated.
@@ -231,17 +231,29 @@ def submit_to (db, user, date) :
             onClick="
                 document.forms.edit_daily_record ['@action'].value =
                     'daily_record_submit';
-                document.forms.edit_daily_record ['date'].value =
-                    '%s'
+                document.forms.edit_daily_record ['date'].value = '%s'
                 document.edit_daily_record.submit ();
             ">
         ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
-# end def submit_to
+# end def button_submit_to
 
-def batch_open (batch) :
+def button_approve (date) :
+    """ Create the approve button for time tracking approvals.  """
+    return \
+        '''<input type="button" value="Approve"
+            onClick="
+                document.forms.edit_daily_record ['@action'].value =
+                    'daily_record_approve';
+                document.forms.edit_daily_record ['date'].value = '%s'
+                document.edit_daily_record.submit ();
+            ">
+        ''' % date
+# end def button_approve
+
+def batch_has_status (batch, status) :
     b = copy (batch)
     for i in batch :
-        if str (i.status) == 'open' :
+        if str (i.status) == status :
             return True
     return False
 # end def batch_open
@@ -263,6 +275,21 @@ def weekend_allowed (db, daily_record) :
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
 
+def approval_for (db) :
+    try :
+        db  = db._db
+    except AttributeError :
+        pass
+    uid = db.getuid ()
+    clearer_for = db.user.find (clearance_by = uid)
+    if not db.user.get (uid, 'clearance_by') :
+        clearer_for.append (uid)
+    approve_for = []
+    for u in clearer_for :
+        approve_for.extend (db.user.find (supervisor = u))
+    return approve_for
+# end def approval_for
+
 def init (instance) :
     import sys, os
     global _, get_user_dynamic
@@ -279,7 +306,9 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
-    reg ("submit_to",                    submit_to)
-    reg ("batch_open",                   batch_open)
+    reg ("button_submit_to",             button_submit_to)
+    reg ("button_approve",               button_approve)
+    reg ("batch_has_status",             batch_has_status)
     reg ("sorted",                       sorted)
     reg ("weekend_allowed",              weekend_allowed)
+    reg ("approval_for",                 approval_for)

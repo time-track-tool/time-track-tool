@@ -170,7 +170,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
     is_hr      = 'hr' in rolenames
     old_status = cl.get (nodeid, 'status')
     status     = new_values.get ('status', old_status)
-    supervisor = db.user.get (uid, 'supervisor')
+    supervisor = db.user.get (user, 'supervisor')
     clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
     clearers   = [db.user.get (clearance, 'substitute')]
     if not db.user.get (clearance, 'subst_active') :

@@ -92,8 +92,9 @@
    </table>
 
    <tal:block tal:define=
-    "batch   request/batch;
-     is_open python:utils.batch_open (batch);
+    "batch        request/batch;
+     is_open      python:utils.batch_has_status (batch, 'open');
+     is_submitted python:utils.batch_has_status (batch, 'submitted');
     "
     tal:condition="context/is_view_ok">
     <table class="list">
@@ -211,11 +212,19 @@
      </tal:block>
      <tr tal:condition="is_open"><td colspan="5"/>
       <td>
-       <tal:block tal:replace="structure python:utils.submit_to
+       <tal:block tal:replace="structure python:utils.button_submit_to
         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
       </td>
       <td>
        <input type="submit" value=" Save " i18n:attributes="value">
+      </td>
+      <td/>
+     </tr>
+     <tr tal:condition="python: not is_open and is_submitted"><td colspan="5"/>
+      <td/>
+      <td>
+       <tal:block tal:replace="structure python:utils.button_approve
+        (request.filterspec ['date'])"/>
       </td>
       <td/>
      </tr>

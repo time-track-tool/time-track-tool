@@ -15,6 +15,7 @@
  ; has_resp      python: 'responsible' in props
  ; has_nosy      python: 'nosy'        in props
  ; use_labelprop python: 1
+ ; approval_for  python: utils.approval_for (db)
  ; menu_tracker  python:
    ( ( ('review',       'Edit')
      , ('meeting',      'Edit')
@@ -41,6 +42,7 @@
      , ('daily_record',        'Edit')
      , ('daily_record_status', 'Edit')
      , ('department',          'Edit')
+     , ('user_dynamic',        'Edit')
      , ('location',            'Edit')
      , ('meeting_room',        'Edit')
      , ('org_location',        'Edit')
@@ -58,9 +60,9 @@
      )
    , ( ('cost_center',   'View')
      , ('daily_record',  'View')
+     , ('user_dynamic',  'View')
      , ('time_project',  'View')
      , ('time_record',   'View')
-     , ('user_dynamic',  'View')
      , ('time_wp',       'View')
      , ('time_wp_group', 'View')
      )
@@ -145,6 +147,21 @@
          )
        ][classname == 'daily_record']">
        Time
+      </a>
+     </span>
+    </td>
+
+    <!-- approval if user can approve records -->
+    <td class="sidebar"
+     tal:condition="approval_for">
+     <span class="classblock">
+      <a tal:attributes="href python:
+       [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
+         % ','.join (approval_for)
+       , str (request.indexargs_url (classname, {'@template':'approve'}))
+       ][classname == 'daily_record']
+      ">
+       Approval
       </a>
      </span>
     </td>

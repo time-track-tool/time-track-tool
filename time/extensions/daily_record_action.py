@@ -350,6 +350,11 @@ def weekno_from_day (date) :
 # end def weekno_from_day
 
 def prev_week (db, request) :
+    try :
+        db  = db._db
+    except AttributeError :
+        pass
+    print db
     start, end = date_range (db, request.filterspec)
     n_end   = start - Interval ('1d')
     n_start = n_end - Interval ('6d')
@@ -362,6 +367,10 @@ def prev_week (db, request) :
 # end def prev_week
 
 def next_week (db, request) :
+    try :
+        db  = db._db
+    except AttributeError :
+        pass
     start, end = date_range (db, request.filterspec)
     n_start = end     + Interval ('1d')
     n_end   = n_start + Interval ('6d')
@@ -530,11 +539,11 @@ class Weekno_Action (Daily_Record_Edit_Action) :
     # end def handle
 # end class Weekno_Action
 
-class Daily_Record_Submit (Daily_Record_Edit_Action) :
-    """ Handle editing. If everything is OK, try to submit the current
-        selection, otherwise display error messages from the edit. If
-        the submit creates errors they are shown. Otherwise move to the
-        *current* selection.
+class Daily_Record_Change_State (Daily_Record_Edit_Action) :
+    """ Handle editing. If everything is OK, try to change state for the
+        current selection, otherwise display error messages from the
+        edit.  If the state change creates errors they are shown.
+        Otherwise move to the *current* selection.
     """
 
     def handle (self) :
@@ -548,13 +557,11 @@ class Daily_Record_Submit (Daily_Record_Edit_Action) :
         sort       = request.sort
         group      = request.group
         klass      = self.db.getclass (request.classname)
-        s_open     = self.db.daily_record_status.lookup ('open')
-        s_submit   = self.db.daily_record_status.lookup ('submitted')
         msg        = []
         for itemid in klass.filter (None, request.filterspec, sort, group) :
             try :
-                if klass.get (itemid, 'status') == s_open :
-                    klass.set (itemid, status = s_submit)
+                if klass.get (itemid, 'status') == self.state_from :
+                    klass.set (itemid, status = self.state_to)
             except Reject, cause :
                 msg.append (str (cause).replace ("\n", "<br>"))
         args = \
@@ -573,16 +580,77 @@ class Daily_Record_Submit (Daily_Record_Edit_Action) :
         url = request.indexargs_url ('', args)
         raise Redirect, url
     # end def handle
+# end class Daily_Record_Change_State
+
+class Daily_Record_Submit (Daily_Record_Change_State) :
+    def handle (self) :
+        self.state_from = self.db.daily_record_status.lookup ('open')
+        self.state_to   = self.db.daily_record_status.lookup ('submitted')
+        return self.__super.handle ()
+    # end def handle
 # end class Daily_Record_Submit
+
+class Daily_Record_Approve (Daily_Record_Change_State) :
+    def handle (self) :
+        self.state_from = self.db.daily_record_status.lookup ('submitted')
+        self.state_to   = self.db.daily_record_status.lookup ('accepted')
+        return self.__super.handle ()
+    # end def handle
+# end class Daily_Record_Submit
+
+def approvals_pending (db, request, userlist) :
+    try :
+        db  = db._db
+    except AttributeError :
+        pass
+    pending   = {}
+    submitted = db.daily_record_status.lookup ('submitted')
+    spec      = copy (request.filterspec)
+    filter    = request.filterspec
+    editdict  = {':template' : 'edit', ':filter' : 'user,date'}
+    for u in userlist :
+        p_user = db.daily_record.find (user = u, status = submitted)
+        if p_user :
+            pending [u] = {}
+            earliest = latest = None
+            for p in p_user :
+                date = db.daily_record.get (p, 'date')
+                week = int (weekno_from_day (date))
+                if not earliest or date < earliest :
+                    earliest = date
+                if not latest   or date > latest :
+                    latest   = date
+                filter ['date'] = pretty_range (* week_from_date (date))
+                filter ['user'] = u
+                print request.filterspec
+                pending [u][week] = \
+                    [ None
+                    , request.indexargs_url ('', editdict)
+                    ]
+            interval = latest - earliest
+            for k in pending [u].iterkeys () :
+                if interval < Interval ('31d') :
+                    filter ['date'] = pretty_range (earliest, latest)
+                    print request.filterspec
+                    pending [u][k][0] = request.indexargs_url ('', editdict)
+                else :
+                    print request.filterspec
+                    pending [u][k][0] = pending [u][k][1]
+                print pending [u][k]
+    request.filterspec = spec
+    return pending
+# end def approvals_pending
 
 def init (instance) :
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)
     actn ('daily_record_submit',      Daily_Record_Submit)
+    actn ('daily_record_approve',     Daily_Record_Approve)
     actn ('weekno_action',            Weekno_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
     util ('weekno',                   weekno_from_day)
+    util ("approvals_pending",        approvals_pending)
 # end def init
