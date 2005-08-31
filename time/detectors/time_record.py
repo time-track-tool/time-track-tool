@@ -352,14 +352,16 @@ def check_time_record (db, cl, nodeid, new_values) :
     if split :
         if 'wp' in new_values :
             del new_values ['wp']
-        cl.create \
+        newrec = dict \
             ( daily_record  = cl.get (nodeid, 'daily_record')
-            , start         = start
             , duration      = split
             , wp            = wp
             , time_activity = activity
             , work_location = location
             )
+        if (start) :
+            newrec ['start'] = start
+        cl.create (** newrec)
 # end def check_time_record
 
 def init (db) :
