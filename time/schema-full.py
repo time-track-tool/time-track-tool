@@ -369,23 +369,25 @@ daily_record_status.setkey ("name")
 daily_record = Class \
     ( db
     , ''"daily_record"
-    , user                  = Link      ("user")
+    , user                  = Link      ("user",          do_journal = "no")
     , date                  = Date      (offset = 0)
-    , status                = Link      ("daily_record_status")
-    , time_record           = Multilink ("time_record")
+    , status                = Link      ( "daily_record_status"
+                                        , do_journal = "no"
+                                        )
+    , time_record           = Multilink ("time_record",   do_journal = "no")
     )
 
 time_record = Class \
     ( db
     , ''"time_record"
-    , daily_record          = Link      ("daily_record")
-    , start                 = String    ()
-    , end                   = String    ()
+    , daily_record          = Link      ("daily_record",  do_journal = "no")
+    , start                 = String    (indexme = "no")
+    , end                   = String    (indexme = "no")
     , duration              = Number    ()
-    , wp                    = Link      ("time_wp")
-    , time_activity         = Link      ("time_activity")
-    , work_location         = Link      ("work_location")
-    , comment               = String    ()
+    , wp                    = Link      ("time_wp",       do_journal = "no")
+    , time_activity         = Link      ("time_activity", do_journal = "no")
+    , work_location         = Link      ("work_location", do_journal = "no")
+    , comment               = String    (indexme = "no")
     , split                 = Number    ()
     )
 

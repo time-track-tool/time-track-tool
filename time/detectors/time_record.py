@@ -171,12 +171,15 @@ def check_daily_record (db, cl, nodeid, new_values) :
     old_status = cl.get (nodeid, 'status')
     status     = new_values.get ('status', old_status)
     supervisor = db.user.get (user, 'supervisor')
-    clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
-    clearers   = [db.user.get (clearance, 'substitute')]
-    if not db.user.get (clearance, 'subst_active') :
-        clearers = []
-    clearers.append (clearance)
-    may_give_clearance = uid in clearers
+    if supervisor : # if no supervisor nobody can do it
+        clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
+        clearers   = [db.user.get (clearance, 'substitute')]
+        if not db.user.get (clearance, 'subst_active') :
+            clearers = []
+        clearers.append (clearance)
+        may_give_clearance = uid in clearers
+    else :
+        may_give_clearance = False
 
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
@@ -225,17 +228,22 @@ def new_daily_record (db, cl, nodeid, new_values) :
         After that, we check that there is no duplicate daily_record
         with the same date for this user.
     """
+    uid = db.getuid ()
     for i in 'user', 'date' :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
-    for i in 'status', 'time_record' :
+    for i in 'time_record', :
         if i in new_values :
+            raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
+    # the following is allowed for the admin (import!)
+    for i in 'status', :
+        if i in new_values and uid != '1' :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
     user = new_values ['user']
-    if not get_user_dynamic (db, user, date) :
+    if not get_user_dynamic (db, user, date) and uid != '1' :
         raise Reject, \
             _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
     if db.daily_record.filter \
@@ -243,7 +251,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
         raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
             % new_values
     new_values ['time_record'] = []
-    new_values ['status']      = db.daily_record_status.lookup ('open')
+    if 'status' not in new_values :
+        new_values ['status']  = db.daily_record_status.lookup ('open')
 # end def new_daily_record
 
 def check_start_end_duration \
@@ -305,6 +314,7 @@ def check_start_end_duration \
 def new_time_record (db, cl, nodeid, new_values) :
     """ auditor on time_record
     """
+    uid = db.getuid ()
     for i in 'daily_record', :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
@@ -312,13 +322,18 @@ def new_time_record (db, cl, nodeid, new_values) :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     dr       = db.daily_record.getnode (new_values ['daily_record'])
-    if dr.status != db.daily_record_status.lookup ('open') :
+    if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
     dynamic  = get_user_dynamic (db, dr.user, dr.date)
-    if not dynamic.weekend_allowed :
-        wday = gmtime (dr.date.timestamp ())[6]
-        if wday in (5, 6) :
-            raise Reject, _ ('No weekend booking allowed')
+    if not dynamic :
+        if uid != '1' :
+            raise Reject, \
+                _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
+    else :
+        if not dynamic.weekend_allowed and uid != '1' :
+            wday = gmtime (dr.date.timestamp ())[6]
+            if wday in (5, 6) :
+                raise Reject, _ ('No weekend booking allowed')
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
