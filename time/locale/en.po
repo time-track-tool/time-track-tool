@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-09-05 16:11+0200\n"
+"POT-Creation-Date: 2005-09-07 10:42+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -97,7 +97,31 @@ msgstr ""
 msgid "Location where the person worked."
 msgstr ""
 
-#: ../extensions/help.py:55
+#: ../extensions/help.py:55 ../locale/attr.py:11 ../locale/attr.py:19
+#: ../locale/attr.py:34 ../locale/attr.py:49 ../locale/attr.py:54
+#: ../locale/attr.py:64 ../locale/attr.py:73 ../locale/attr.py:84
+#: ../locale/attr.py:91 ../locale/attr.py:101 ../locale/attr.py:128
+#: ../locale/attr.py:139 ../locale/attr.py:151 ../locale/attr.py:164
+#: ../locale/attr.py:171 ../locale/attr.py:183 ../locale/attr.py:207
+#: ../locale/attr.py:212 ../locale/attr.py:220 ../locale/attr.py:232
+#: ../locale/attr.py:238 ../locale/attr.py:249 ../locale/attr.py:260
+#: ../locale/attr.py:274 ../locale/attr.py:278 ../locale/attr.py:295
+#: ../locale/attr.py:299 ../locale/attr.py:305 ../locale/attr.py:313
+#: ../locale/attr.py:333 ../locale/attr.py:338 ../locale/attr.py:360
+#: ../locale/attr.py:368 ../locale/attr.py:375 ../locale/attr.py:381
+#: ../locale/attr.py:406 ../locale/attr.py:412 ../locale/attr.py:418
+#: ../locale/attr.py:429 ../locale/attr.py:444 ../locale/attr.py:454
+#: ../locale/attr.py:469 ../locale/attr.py:482 ../locale/attr.py:492
+#: ../locale/attr.py:505 ../locale/attr.py:536 ../locale/attr.py:553
+#: ../locale/attr.py:561 attr.py:11 attr.py:19 attr.py:34 attr.py:49
+#: attr.py:54 attr.py:64 attr.py:73 attr.py:84 attr.py:91 attr.py:101
+#: attr.py:128 attr.py:139 attr.py:151 attr.py:164 attr.py:171 attr.py:183
+#: attr.py:207 attr.py:212 attr.py:220 attr.py:232 attr.py:238 attr.py:249
+#: attr.py:260 attr.py:274 attr.py:278 attr.py:295 attr.py:299 attr.py:305
+#: attr.py:313 attr.py:333 attr.py:338 attr.py:360 attr.py:368 attr.py:375
+#: attr.py:381 attr.py:406 attr.py:412 attr.py:418 attr.py:429 attr.py:444
+#: attr.py:454 attr.py:469 attr.py:482 attr.py:492 attr.py:505 attr.py:536
+#: attr.py:553 attr.py:561
 msgid "activity"
 msgstr "Activity"
 
@@ -105,7 +129,31 @@ msgstr "Activity"
 msgid "Date of last change"
 msgstr ""
 
-#: ../extensions/help.py:57
+#: ../extensions/help.py:57 ../locale/attr.py:8 ../locale/attr.py:17
+#: ../locale/attr.py:33 ../locale/attr.py:46 ../locale/attr.py:59
+#: ../locale/attr.py:69 ../locale/attr.py:78 ../locale/attr.py:83
+#: ../locale/attr.py:96 ../locale/attr.py:100 ../locale/attr.py:123
+#: ../locale/attr.py:137 ../locale/attr.py:150 ../locale/attr.py:162
+#: ../locale/attr.py:176 ../locale/attr.py:181 ../locale/attr.py:205
+#: ../locale/attr.py:217 ../locale/attr.py:226 ../locale/attr.py:231
+#: ../locale/attr.py:244 ../locale/attr.py:248 ../locale/attr.py:258
+#: ../locale/attr.py:269 ../locale/attr.py:283 ../locale/attr.py:294
+#: ../locale/attr.py:298 ../locale/attr.py:310 ../locale/attr.py:319
+#: ../locale/attr.py:330 ../locale/attr.py:346 ../locale/attr.py:358
+#: ../locale/attr.py:366 ../locale/attr.py:373 ../locale/attr.py:380
+#: ../locale/attr.py:403 ../locale/attr.py:410 ../locale/attr.py:423
+#: ../locale/attr.py:428 ../locale/attr.py:441 ../locale/attr.py:453
+#: ../locale/attr.py:464 ../locale/attr.py:479 ../locale/attr.py:490
+#: ../locale/attr.py:520 ../locale/attr.py:540 ../locale/attr.py:552
+#: ../locale/attr.py:560 attr.py:8 attr.py:17 attr.py:33 attr.py:46 attr.py:59
+#: attr.py:69 attr.py:78 attr.py:83 attr.py:96 attr.py:100 attr.py:123
+#: attr.py:137 attr.py:150 attr.py:162 attr.py:176 attr.py:181 attr.py:205
+#: attr.py:217 attr.py:226 attr.py:231 attr.py:244 attr.py:248 attr.py:258
+#: attr.py:269 attr.py:283 attr.py:294 attr.py:298 attr.py:310 attr.py:319
+#: attr.py:330 attr.py:346 attr.py:358 attr.py:366 attr.py:373 attr.py:380
+#: attr.py:403 attr.py:410 attr.py:423 attr.py:428 attr.py:441 attr.py:453
+#: attr.py:464 attr.py:479 attr.py:490 attr.py:520 attr.py:540 attr.py:552
+#: attr.py:560
 msgid "actor"
 msgstr "Actor"
 
@@ -113,7 +161,7 @@ msgstr "Actor"
 msgid "Person who has done the last change"
 msgstr ""
 
-#: ../extensions/help.py:59
+#: ../extensions/help.py:59 ../locale/attr.py:519 attr.py:519
 msgid "alternate_addresses"
 msgstr "Alternate Addresses"
 
@@ -121,7 +169,7 @@ msgstr "Alternate Addresses"
 msgid "Alternate email addresses for this user, one per line"
 msgstr ""
 
-#: ../extensions/help.py:61
+#: ../extensions/help.py:61 ../locale/attr.py:350 attr.py:350
 msgid "announcements"
 msgstr "Announcements"
 
@@ -137,7 +185,7 @@ msgstr "Add Announcement"
 msgid "Mail out an announcement for another review step"
 msgstr ""
 
-#: ../extensions/help.py:65
+#: ../extensions/help.py:65 ../locale/attr.py:265 attr.py:265
 msgid "author"
 msgstr "Author"
 
@@ -145,7 +193,7 @@ msgstr "Author"
 msgid "Author of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:67
+#: ../extensions/help.py:67 ../locale/attr.py:349 attr.py:349
 msgid "authors"
 msgstr "Authors"
 
@@ -153,7 +201,7 @@ msgstr "Authors"
 msgid "Authors of the artefact of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:69
+#: ../extensions/help.py:69 ../locale/attr.py:472 attr.py:472
 msgid "bookers"
 msgstr "Admitted users"
 
@@ -165,7 +213,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:74
+#: ../extensions/help.py:74 ../locale/attr.py:512 attr.py:512
 msgid "clearance_by"
 msgstr "Approval delegated to"
 
@@ -197,7 +245,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:86
+#: ../extensions/help.py:86 ../locale/attr.py:219 ../locale/attr.py:271
+#: attr.py:219 attr.py:271
 msgid "content"
 msgstr "Content"
 
@@ -213,7 +262,31 @@ msgstr "Cost Center Status"
 msgid "Specifies the Phase the Cost Center is in"
 msgstr ""
 
-#: ../extensions/help.py:90
+#: ../extensions/help.py:90 ../locale/attr.py:3 ../locale/attr.py:16
+#: ../locale/attr.py:24 ../locale/attr.py:39 ../locale/attr.py:52
+#: ../locale/attr.py:66 ../locale/attr.py:71 ../locale/attr.py:82
+#: ../locale/attr.py:93 ../locale/attr.py:99 ../locale/attr.py:107
+#: ../locale/attr.py:132 ../locale/attr.py:146 ../locale/attr.py:157
+#: ../locale/attr.py:169 ../locale/attr.py:180 ../locale/attr.py:189
+#: ../locale/attr.py:210 ../locale/attr.py:223 ../locale/attr.py:230
+#: ../locale/attr.py:237 ../locale/attr.py:247 ../locale/attr.py:254
+#: ../locale/attr.py:268 ../locale/attr.py:280 ../locale/attr.py:287
+#: ../locale/attr.py:297 ../locale/attr.py:302 ../locale/attr.py:316
+#: ../locale/attr.py:323 ../locale/attr.py:340 ../locale/attr.py:357
+#: ../locale/attr.py:365 ../locale/attr.py:372 ../locale/attr.py:379
+#: ../locale/attr.py:388 ../locale/attr.py:409 ../locale/attr.py:416
+#: ../locale/attr.py:427 ../locale/attr.py:446 ../locale/attr.py:452
+#: ../locale/attr.py:463 ../locale/attr.py:484 ../locale/attr.py:489
+#: ../locale/attr.py:502 ../locale/attr.py:532 ../locale/attr.py:551
+#: ../locale/attr.py:559 attr.py:3 attr.py:16 attr.py:24 attr.py:39 attr.py:52
+#: attr.py:66 attr.py:71 attr.py:82 attr.py:93 attr.py:99 attr.py:107
+#: attr.py:132 attr.py:146 attr.py:157 attr.py:169 attr.py:180 attr.py:189
+#: attr.py:210 attr.py:223 attr.py:230 attr.py:237 attr.py:247 attr.py:254
+#: attr.py:268 attr.py:280 attr.py:287 attr.py:297 attr.py:302 attr.py:316
+#: attr.py:323 attr.py:340 attr.py:357 attr.py:365 attr.py:372 attr.py:379
+#: attr.py:388 attr.py:409 attr.py:416 attr.py:427 attr.py:446 attr.py:452
+#: attr.py:463 attr.py:484 attr.py:489 attr.py:502 attr.py:532 attr.py:551
+#: attr.py:559
 msgid "creation"
 msgstr "Creation"
 
@@ -221,7 +294,31 @@ msgstr "Creation"
 msgid "Record creation date"
 msgstr ""
 
-#: ../extensions/help.py:92
+#: ../extensions/help.py:92 ../locale/attr.py:9 ../locale/attr.py:15
+#: ../locale/attr.py:35 ../locale/attr.py:50 ../locale/attr.py:57
+#: ../locale/attr.py:62 ../locale/attr.py:76 ../locale/attr.py:81
+#: ../locale/attr.py:94 ../locale/attr.py:98 ../locale/attr.py:108
+#: ../locale/attr.py:131 ../locale/attr.py:145 ../locale/attr.py:163
+#: ../locale/attr.py:174 ../locale/attr.py:179 ../locale/attr.py:190
+#: ../locale/attr.py:215 ../locale/attr.py:222 ../locale/attr.py:228
+#: ../locale/attr.py:236 ../locale/attr.py:246 ../locale/attr.py:253
+#: ../locale/attr.py:267 ../locale/attr.py:281 ../locale/attr.py:286
+#: ../locale/attr.py:296 ../locale/attr.py:308 ../locale/attr.py:317
+#: ../locale/attr.py:334 ../locale/attr.py:353 ../locale/attr.py:356
+#: ../locale/attr.py:364 ../locale/attr.py:371 ../locale/attr.py:378
+#: ../locale/attr.py:386 ../locale/attr.py:408 ../locale/attr.py:421
+#: ../locale/attr.py:426 ../locale/attr.py:443 ../locale/attr.py:451
+#: ../locale/attr.py:460 ../locale/attr.py:476 ../locale/attr.py:488
+#: ../locale/attr.py:500 ../locale/attr.py:531 ../locale/attr.py:550
+#: ../locale/attr.py:558 attr.py:9 attr.py:15 attr.py:35 attr.py:50 attr.py:57
+#: attr.py:62 attr.py:76 attr.py:81 attr.py:94 attr.py:98 attr.py:108
+#: attr.py:131 attr.py:145 attr.py:163 attr.py:174 attr.py:179 attr.py:190
+#: attr.py:215 attr.py:222 attr.py:228 attr.py:236 attr.py:246 attr.py:253
+#: attr.py:267 attr.py:281 attr.py:286 attr.py:296 attr.py:308 attr.py:317
+#: attr.py:334 attr.py:353 attr.py:356 attr.py:364 attr.py:371 attr.py:378
+#: attr.py:386 attr.py:408 attr.py:421 attr.py:426 attr.py:443 attr.py:451
+#: attr.py:460 attr.py:476 attr.py:488 attr.py:500 attr.py:531 attr.py:550
+#: attr.py:558
 msgid "creator"
 msgstr "Creator"
 
@@ -229,7 +326,7 @@ msgstr "Creator"
 msgid "Person who created this record"
 msgstr ""
 
-#: ../extensions/help.py:94
+#: ../extensions/help.py:94 ../locale/attr.py:354 attr.py:354
 msgid "cut_off_date"
 msgstr "Cut-off Date"
 
@@ -237,7 +334,8 @@ msgstr "Cut-off Date"
 msgid "Date until when this %(Classname)s must be finished."
 msgstr ""
 
-#: ../extensions/help.py:96
+#: ../extensions/help.py:96 ../locale/attr.py:92 ../locale/attr.py:273
+#: attr.py:92 attr.py:273
 msgid "date"
 msgstr "Date"
 
@@ -249,7 +347,8 @@ msgstr ""
 msgid "daily_hours"
 msgstr "Daily hours"
 
-#: ../extensions/help.py:99 ../schema.py:292
+#: ../extensions/help.py:99 ../locale/attr.py:445 ../locale/attr.py:525
+#: ../schema.py:292 attr.py:445 attr.py:525
 msgid "department"
 msgstr "Department"
 
@@ -257,7 +356,7 @@ msgstr "Department"
 msgid "Department in which the %(Classname)s is based, e.g., SW, Sales."
 msgstr ""
 
-#: ../extensions/help.py:101
+#: ../extensions/help.py:101 ../locale/attr.py:437 attr.py:437
 msgid "deputy"
 msgstr "Deputy"
 
@@ -265,7 +364,19 @@ msgstr "Deputy"
 msgid "Substitute for the responsible Person of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:103
+#: ../extensions/help.py:103 ../locale/attr.py:14 ../locale/attr.py:53
+#: ../locale/attr.py:63 ../locale/attr.py:72 ../locale/attr.py:80
+#: ../locale/attr.py:97 ../locale/attr.py:130 ../locale/attr.py:144
+#: ../locale/attr.py:170 ../locale/attr.py:178 ../locale/attr.py:211
+#: ../locale/attr.py:252 ../locale/attr.py:285 ../locale/attr.py:303
+#: ../locale/attr.py:355 ../locale/attr.py:407 ../locale/attr.py:417
+#: ../locale/attr.py:425 ../locale/attr.py:436 ../locale/attr.py:450
+#: ../locale/attr.py:475 ../locale/attr.py:487 ../locale/attr.py:549
+#: ../locale/attr.py:557 attr.py:14 attr.py:53 attr.py:63 attr.py:72
+#: attr.py:80 attr.py:97 attr.py:130 attr.py:144 attr.py:170 attr.py:178
+#: attr.py:211 attr.py:252 attr.py:285 attr.py:303 attr.py:355 attr.py:407
+#: attr.py:417 attr.py:425 attr.py:436 attr.py:450 attr.py:475 attr.py:487
+#: attr.py:549 attr.py:557
 msgid "description"
 msgstr "Description"
 
@@ -273,7 +384,7 @@ msgstr "Description"
 msgid "Verbose description of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:105
+#: ../extensions/help.py:105 ../locale/attr.py:468 attr.py:468
 msgid "duration"
 msgstr "Duration"
 
@@ -307,7 +418,7 @@ msgstr "Email"
 msgid "Email address for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:116
+#: ../extensions/help.py:116 ../locale/attr.py:522 attr.py:522
 msgid "external_phone"
 msgstr "External Phone Number"
 
@@ -328,7 +439,11 @@ msgstr "Add File"
 msgid "Add an new file for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:124
+#: ../extensions/help.py:124 ../locale/attr.py:2 ../locale/attr.py:22
+#: ../locale/attr.py:104 ../locale/attr.py:156 ../locale/attr.py:235
+#: ../locale/attr.py:263 ../locale/attr.py:336 ../locale/attr.py:383 attr.py:2
+#: attr.py:22 attr.py:104 attr.py:156 attr.py:235 attr.py:263 attr.py:336
+#: attr.py:383
 msgid "files"
 msgstr "Files"
 
@@ -336,7 +451,7 @@ msgstr "Files"
 msgid "Files for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:126
+#: ../extensions/help.py:126 ../locale/attr.py:341 attr.py:341
 msgid "final_meeting_date"
 msgstr "Final Meeting Date"
 
@@ -344,7 +459,7 @@ msgstr "Final Meeting Date"
 msgid "Date of final meeting for this %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:128
+#: ../extensions/help.py:128 ../locale/attr.py:499 attr.py:499
 msgid "firstname"
 msgstr "First Name"
 
@@ -352,35 +467,59 @@ msgstr "First Name"
 msgid "First name for this user, e.g., Ralf"
 msgstr ""
 
-#: ../extensions/help.py:130
+#: ../extensions/help.py:130 ../locale/attr.py:548 attr.py:548
 msgid "hours_mon"
 msgstr "Mon"
 
-#: ../extensions/help.py:131
+#: ../extensions/help.py:131 ../locale/attr.py:546 attr.py:546
 msgid "hours_tue"
 msgstr "Tue"
 
-#: ../extensions/help.py:132
+#: ../extensions/help.py:132 ../locale/attr.py:533 attr.py:533
 msgid "hours_wed"
 msgstr "Wed"
 
-#: ../extensions/help.py:133
+#: ../extensions/help.py:133 ../locale/attr.py:529 attr.py:529
 msgid "hours_thu"
 msgstr "Thu"
 
-#: ../extensions/help.py:134
+#: ../extensions/help.py:134 ../locale/attr.py:528 attr.py:528
 msgid "hours_fri"
 msgstr "Fri"
 
-#: ../extensions/help.py:135
+#: ../extensions/help.py:135 ../locale/attr.py:545 attr.py:545
 msgid "hours_sat"
 msgstr "Sat"
 
-#: ../extensions/help.py:136
+#: ../extensions/help.py:136 ../locale/attr.py:530 attr.py:530
 msgid "hours_sun"
 msgstr "Sun"
 
-#: ../extensions/help.py:137
+#: ../extensions/help.py:137 ../locale/attr.py:13 ../locale/attr.py:20
+#: ../locale/attr.py:36 ../locale/attr.py:51 ../locale/attr.py:55
+#: ../locale/attr.py:68 ../locale/attr.py:77 ../locale/attr.py:86
+#: ../locale/attr.py:95 ../locale/attr.py:102 ../locale/attr.py:113
+#: ../locale/attr.py:135 ../locale/attr.py:153 ../locale/attr.py:167
+#: ../locale/attr.py:172 ../locale/attr.py:184 ../locale/attr.py:198
+#: ../locale/attr.py:213 ../locale/attr.py:225 ../locale/attr.py:233
+#: ../locale/attr.py:243 ../locale/attr.py:250 ../locale/attr.py:256
+#: ../locale/attr.py:275 ../locale/attr.py:282 ../locale/attr.py:289
+#: ../locale/attr.py:301 ../locale/attr.py:309 ../locale/attr.py:318
+#: ../locale/attr.py:335 ../locale/attr.py:347 ../locale/attr.py:361
+#: ../locale/attr.py:369 ../locale/attr.py:376 ../locale/attr.py:382
+#: ../locale/attr.py:404 ../locale/attr.py:413 ../locale/attr.py:419
+#: ../locale/attr.py:430 ../locale/attr.py:447 ../locale/attr.py:455
+#: ../locale/attr.py:470 ../locale/attr.py:485 ../locale/attr.py:493
+#: ../locale/attr.py:521 ../locale/attr.py:537 ../locale/attr.py:554
+#: ../locale/attr.py:562 attr.py:13 attr.py:20 attr.py:36 attr.py:51
+#: attr.py:55 attr.py:68 attr.py:77 attr.py:86 attr.py:95 attr.py:102
+#: attr.py:113 attr.py:135 attr.py:153 attr.py:167 attr.py:172 attr.py:184
+#: attr.py:198 attr.py:213 attr.py:225 attr.py:233 attr.py:243 attr.py:250
+#: attr.py:256 attr.py:275 attr.py:282 attr.py:289 attr.py:301 attr.py:309
+#: attr.py:318 attr.py:335 attr.py:347 attr.py:361 attr.py:369 attr.py:376
+#: attr.py:382 attr.py:404 attr.py:413 attr.py:419 attr.py:430 attr.py:447
+#: attr.py:455 attr.py:470 attr.py:485 attr.py:493 attr.py:521 attr.py:537
+#: attr.py:554 attr.py:562
 msgid "id"
 msgstr "Id"
 
@@ -399,7 +538,7 @@ msgstr "Initial"
 msgid "Initials of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:143
+#: ../extensions/help.py:143 ../locale/attr.py:264 attr.py:264
 msgid "inreplyto"
 msgstr "In Reply To"
 
@@ -415,7 +554,7 @@ msgstr "Is Alias"
 msgid "No real user but only an email alias"
 msgstr ""
 
-#: ../extensions/help.py:147
+#: ../extensions/help.py:147 ../locale/attr.py:320 attr.py:320
 msgid "klass"
 msgstr "Class"
 
@@ -423,7 +562,7 @@ msgstr "Class"
 msgid "Class for this query"
 msgstr ""
 
-#: ../extensions/help.py:149
+#: ../extensions/help.py:149 ../locale/attr.py:501 attr.py:501
 msgid "lastname"
 msgstr "Last Name"
 
@@ -431,7 +570,8 @@ msgstr "Last Name"
 msgid "Last name for this user, e.g., Schlatterbeck"
 msgstr ""
 
-#: ../extensions/help.py:151 ../schema.py:247
+#: ../extensions/help.py:151 ../locale/attr.py:277 ../schema.py:247
+#: attr.py:277
 msgid "location"
 msgstr "Location"
 
@@ -439,7 +579,7 @@ msgstr "Location"
 msgid "Location of %(Classname)s, e.g., Vienna HQ."
 msgstr ""
 
-#: ../extensions/help.py:153
+#: ../extensions/help.py:153 ../locale/attr.py:511 attr.py:511
 msgid "lunch_duration"
 msgstr "Lunch Duration"
 
@@ -447,7 +587,7 @@ msgstr "Lunch Duration"
 msgid "Preference for time tracking, duration of lunch break in minutes"
 msgstr ""
 
-#: ../extensions/help.py:155
+#: ../extensions/help.py:155 ../locale/attr.py:513 attr.py:513
 msgid "lunch_start"
 msgstr "Lunch Start"
 
@@ -455,7 +595,7 @@ msgstr "Lunch Start"
 msgid "Preference for time tracking, start of lunch break"
 msgstr ""
 
-#: ../extensions/help.py:157
+#: ../extensions/help.py:157 ../locale/attr.py:149 attr.py:149
 msgid "manager"
 msgstr "Manager"
 
@@ -463,7 +603,7 @@ msgstr "Manager"
 msgid "Responsible person of the %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:159
+#: ../extensions/help.py:159 ../locale/attr.py:272 attr.py:272
 msgid "messageid"
 msgstr "Message ID"
 
@@ -471,7 +611,13 @@ msgstr "Message ID"
 msgid "Message-ID if this message was received via email"
 msgstr ""
 
-#: ../extensions/help.py:161
+#: ../extensions/help.py:161 ../locale/attr.py:7 ../locale/attr.py:29
+#: ../locale/attr.py:45 ../locale/attr.py:121 ../locale/attr.py:147
+#: ../locale/attr.py:161 ../locale/attr.py:204 ../locale/attr.py:242
+#: ../locale/attr.py:293 ../locale/attr.py:328 ../locale/attr.py:345
+#: ../locale/attr.py:401 attr.py:7 attr.py:29 attr.py:45 attr.py:121
+#: attr.py:147 attr.py:161 attr.py:204 attr.py:242 attr.py:293 attr.py:328
+#: attr.py:345 attr.py:401
 msgid "messages"
 msgstr "Messages"
 
@@ -487,7 +633,22 @@ msgstr "Message"
 msgid "New message or notice for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:165
+#: ../extensions/help.py:165 ../locale/attr.py:21 ../locale/attr.py:60
+#: ../locale/attr.py:70 ../locale/attr.py:79 ../locale/attr.py:87
+#: ../locale/attr.py:103 ../locale/attr.py:136 ../locale/attr.py:154
+#: ../locale/attr.py:177 ../locale/attr.py:185 ../locale/attr.py:218
+#: ../locale/attr.py:221 ../locale/attr.py:227 ../locale/attr.py:251
+#: ../locale/attr.py:257 ../locale/attr.py:284 ../locale/attr.py:291
+#: ../locale/attr.py:304 ../locale/attr.py:312 ../locale/attr.py:362
+#: ../locale/attr.py:363 ../locale/attr.py:370 ../locale/attr.py:377
+#: ../locale/attr.py:414 ../locale/attr.py:424 ../locale/attr.py:431
+#: ../locale/attr.py:448 ../locale/attr.py:456 ../locale/attr.py:486
+#: ../locale/attr.py:494 ../locale/attr.py:555 attr.py:21 attr.py:60
+#: attr.py:70 attr.py:79 attr.py:87 attr.py:103 attr.py:136 attr.py:154
+#: attr.py:177 attr.py:185 attr.py:218 attr.py:221 attr.py:227 attr.py:251
+#: attr.py:257 attr.py:284 attr.py:291 attr.py:304 attr.py:312 attr.py:362
+#: attr.py:363 attr.py:370 attr.py:377 attr.py:414 attr.py:424 attr.py:431
+#: attr.py:448 attr.py:456 attr.py:486 attr.py:494 attr.py:555
 msgid "name"
 msgstr "Name"
 
@@ -495,7 +656,7 @@ msgstr "Name"
 msgid "Unique %(Classname)s name"
 msgstr ""
 
-#: ../extensions/help.py:167
+#: ../extensions/help.py:167 ../locale/attr.py:510 attr.py:510
 msgid "nickname"
 msgstr "Nickname"
 
@@ -503,7 +664,12 @@ msgstr "Nickname"
 msgid "Nickname (or short name) for this %(Classname)s, e.g., rsc"
 msgstr ""
 
-#: ../extensions/help.py:169
+#: ../extensions/help.py:169 ../locale/attr.py:5 ../locale/attr.py:26
+#: ../locale/attr.py:47 ../locale/attr.py:119 ../locale/attr.py:159
+#: ../locale/attr.py:202 ../locale/attr.py:240 ../locale/attr.py:306
+#: ../locale/attr.py:326 ../locale/attr.py:343 ../locale/attr.py:399 attr.py:5
+#: attr.py:26 attr.py:47 attr.py:119 attr.py:159 attr.py:202 attr.py:240
+#: attr.py:306 attr.py:326 attr.py:343 attr.py:399
 msgid "nosy"
 msgstr "Nosy List"
 
@@ -511,7 +677,7 @@ msgstr "Nosy List"
 msgid "People receiving announcements (messages) for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:171
+#: ../extensions/help.py:171 ../locale/attr.py:348 attr.py:348
 msgid "opt_reviewers"
 msgstr "Optional Reviewers"
 
@@ -519,7 +685,12 @@ msgstr "Optional Reviewers"
 msgid "Optional reviewers for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:173
+#: ../extensions/help.py:173 ../locale/attr.py:18 ../locale/attr.py:58
+#: ../locale/attr.py:141 ../locale/attr.py:175 ../locale/attr.py:182
+#: ../locale/attr.py:216 ../locale/attr.py:262 ../locale/attr.py:359
+#: ../locale/attr.py:374 ../locale/attr.py:411 ../locale/attr.py:422
+#: attr.py:18 attr.py:58 attr.py:141 attr.py:175 attr.py:182 attr.py:216
+#: attr.py:262 attr.py:359 attr.py:374 attr.py:411 attr.py:422
 msgid "order"
 msgstr "Order"
 
@@ -527,7 +698,8 @@ msgstr "Order"
 msgid "Items are ordered by this property in drop-down boxes etc."
 msgstr ""
 
-#: ../extensions/help.py:175 ../schema.py:233
+#: ../extensions/help.py:175 ../locale/attr.py:65 ../locale/attr.py:279
+#: ../locale/attr.py:438 ../schema.py:233 attr.py:65 attr.py:279 attr.py:438
 msgid "organisation"
 msgstr "Organisation"
 
@@ -535,7 +707,7 @@ msgstr "Organisation"
 msgid "Organisation in which the %(Classname)s is based, e.g., TTTech."
 msgstr ""
 
-#: ../extensions/help.py:177
+#: ../extensions/help.py:177 ../locale/attr.py:509 attr.py:509
 msgid "password"
 msgstr "Password"
 
@@ -543,7 +715,7 @@ msgstr "Password"
 msgid "Password for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:179
+#: ../extensions/help.py:179 ../locale/attr.py:339 attr.py:339
 msgid "peer_reviewers"
 msgstr "Peer Reviewers"
 
@@ -551,7 +723,8 @@ msgstr "Peer Reviewers"
 msgid "Peer reviewers for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:181
+#: ../extensions/help.py:181 ../locale/attr.py:276 ../locale/attr.py:504
+#: attr.py:276 attr.py:504
 msgid "phone"
 msgstr "Phone"
 
@@ -564,7 +737,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:187
+#: ../extensions/help.py:187 ../locale/attr.py:442 ../locale/attr.py:481
+#: attr.py:442 attr.py:481
 msgid "planned_effort"
 msgstr "Planned effort"
 
@@ -575,7 +749,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:191
+#: ../extensions/help.py:191 ../locale/attr.py:315 attr.py:315
 msgid "private_for"
 msgstr "Private for"
 
@@ -583,7 +757,7 @@ msgstr "Private for"
 msgid "Flag if this is a private %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:193
+#: ../extensions/help.py:193 ../locale/attr.py:527 attr.py:527
 msgid "private_phone"
 msgstr "Private Phone Number"
 
@@ -594,7 +768,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:197
+#: ../extensions/help.py:197 ../locale/attr.py:480 attr.py:480
 msgid "project"
 msgstr "Project"
 
@@ -605,7 +779,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:201
+#: ../extensions/help.py:201 ../locale/attr.py:352 attr.py:352
 msgid "qa_representative"
 msgstr "QA-Representative"
 
@@ -613,7 +787,7 @@ msgstr "QA-Representative"
 msgid "Representative from the QA department for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:203
+#: ../extensions/help.py:203 ../locale/attr.py:524 attr.py:524
 msgid "queries"
 msgstr "Queries"
 
@@ -621,7 +795,7 @@ msgstr "Queries"
 msgid "Queries for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:205
+#: ../extensions/help.py:205 ../locale/attr.py:351 attr.py:351
 msgid "recorder"
 msgstr "Recorder"
 
@@ -629,7 +803,7 @@ msgstr "Recorder"
 msgid "Person responsible for recording findings"
 msgstr ""
 
-#: ../extensions/help.py:207
+#: ../extensions/help.py:207 ../locale/attr.py:498 attr.py:498
 msgid "realname"
 msgstr "Realname"
 
@@ -642,7 +816,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:213
+#: ../extensions/help.py:213 ../locale/attr.py:266 attr.py:266
 msgid "recipients"
 msgstr "Recipients"
 
@@ -650,7 +824,14 @@ msgstr "Recipients"
 msgid "Only set if message was received via email."
 msgstr ""
 
-#: ../extensions/help.py:215
+#: ../extensions/help.py:215 ../locale/attr.py:6 ../locale/attr.py:28
+#: ../locale/attr.py:44 ../locale/attr.py:75 ../locale/attr.py:120
+#: ../locale/attr.py:160 ../locale/attr.py:203 ../locale/attr.py:241
+#: ../locale/attr.py:307 ../locale/attr.py:327 ../locale/attr.py:344
+#: ../locale/attr.py:385 ../locale/attr.py:439 ../locale/attr.py:477 attr.py:6
+#: attr.py:28 attr.py:44 attr.py:75 attr.py:120 attr.py:160 attr.py:203
+#: attr.py:241 attr.py:307 attr.py:327 attr.py:344 attr.py:385 attr.py:439
+#: attr.py:477
 msgid "responsible"
 msgstr "Responsible"
 
@@ -672,7 +853,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:223
+#: ../extensions/help.py:223 ../locale/attr.py:516 attr.py:516
 msgid "roles"
 msgstr "Roles"
 
@@ -683,7 +864,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:227 ../schema.py:266
+#: ../extensions/help.py:227 ../locale/attr.py:245 ../locale/attr.py:515
+#: ../schema.py:266 attr.py:245 attr.py:515
 msgid "room"
 msgstr "Room"
 
@@ -691,7 +873,13 @@ msgstr "Room"
 msgid "Room number"
 msgstr ""
 
-#: ../extensions/help.py:229
+#: ../extensions/help.py:229 ../locale/attr.py:1 ../locale/attr.py:23
+#: ../locale/attr.py:37 ../locale/attr.py:61 ../locale/attr.py:88
+#: ../locale/attr.py:105 ../locale/attr.py:155 ../locale/attr.py:186
+#: ../locale/attr.py:321 ../locale/attr.py:337 ../locale/attr.py:384
+#: ../locale/attr.py:432 ../locale/attr.py:495 attr.py:1 attr.py:23 attr.py:37
+#: attr.py:61 attr.py:88 attr.py:105 attr.py:155 attr.py:186 attr.py:321
+#: attr.py:337 attr.py:384 attr.py:432 attr.py:495
 msgid "status"
 msgstr "Status"
 
@@ -707,7 +895,7 @@ msgstr "Subject"
 msgid "Short identification of this message"
 msgstr ""
 
-#: ../extensions/help.py:233
+#: ../extensions/help.py:233 ../locale/attr.py:523 attr.py:523
 msgid "substitute"
 msgstr "Substitute"
 
@@ -718,7 +906,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:237
+#: ../extensions/help.py:237 ../locale/attr.py:514 attr.py:514
 msgid "subst_active"
 msgstr "Substitute active"
 
@@ -729,7 +917,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:241
+#: ../extensions/help.py:241 ../locale/attr.py:270 attr.py:270
 msgid "summary"
 msgstr "Summary"
 
@@ -745,7 +933,7 @@ msgstr "Superior"
 msgid "Supervisor for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:245
+#: ../extensions/help.py:245 ../locale/attr.py:434 attr.py:434
 msgid "team_members"
 msgstr "Team members"
 
@@ -756,7 +944,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:249
+#: ../extensions/help.py:249 ../locale/attr.py:435 ../locale/attr.py:474
+#: attr.py:435 attr.py:474
 msgid "time_start"
 msgstr "Timetracking Start"
 
@@ -764,7 +953,8 @@ msgstr "Timetracking Start"
 msgid "Date when %(Classname)s officially starts"
 msgstr ""
 
-#: ../extensions/help.py:251
+#: ../extensions/help.py:251 ../locale/attr.py:440 ../locale/attr.py:478
+#: attr.py:440 attr.py:478
 msgid "time_end"
 msgstr "Timetracking End"
 
@@ -772,7 +962,7 @@ msgstr "Timetracking End"
 msgid "Date when %(Classname)s is officially closed"
 msgstr ""
 
-#: ../extensions/help.py:253
+#: ../extensions/help.py:253 ../locale/attr.py:508 attr.py:508
 msgid "timezone"
 msgstr "Timezone"
 
@@ -780,7 +970,12 @@ msgstr "Timezone"
 msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
 msgstr ""
 
-#: ../extensions/help.py:255
+#: ../extensions/help.py:255 ../locale/attr.py:4 ../locale/attr.py:25
+#: ../locale/attr.py:48 ../locale/attr.py:117 ../locale/attr.py:158
+#: ../locale/attr.py:201 ../locale/attr.py:239 ../locale/attr.py:325
+#: ../locale/attr.py:342 ../locale/attr.py:398 ../locale/attr.py:517 attr.py:4
+#: attr.py:25 attr.py:48 attr.py:117 attr.py:158 attr.py:201 attr.py:239
+#: attr.py:325 attr.py:342 attr.py:398 attr.py:517
 msgid "title"
 msgstr "Title"
 
@@ -788,7 +983,8 @@ msgstr "Title"
 msgid "Title of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:257
+#: ../extensions/help.py:257 ../locale/attr.py:166 ../locale/attr.py:224
+#: attr.py:166 attr.py:224
 msgid "type"
 msgstr "Type"
 
@@ -796,7 +992,7 @@ msgstr "Type"
 msgid "Mime type of this file"
 msgstr ""
 
-#: ../extensions/help.py:259
+#: ../extensions/help.py:259 ../locale/attr.py:314 attr.py:314
 msgid "url"
 msgstr "URL"
 
@@ -820,7 +1016,7 @@ msgstr "Title"
 msgid "Academic title of %(Classname)s, e.g., Dipl. Ing."
 msgstr ""
 
-#: ../extensions/help.py:265
+#: ../extensions/help.py:265 ../locale/attr.py:496 attr.py:496
 msgid "username"
 msgstr "User Name"
 
@@ -828,7 +1024,8 @@ msgstr "User Name"
 msgid "Login-name for this %(Classname)s, e.g., schlatterbeck"
 msgstr ""
 
-#: ../extensions/help.py:267
+#: ../extensions/help.py:267 ../locale/attr.py:143 ../locale/attr.py:290
+#: ../locale/attr.py:539 attr.py:143 attr.py:290 attr.py:539
 msgid "valid_from"
 msgstr "Valid since"
 
@@ -839,7 +1036,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:271
+#: ../extensions/help.py:271 ../locale/attr.py:148 ../locale/attr.py:288
+#: ../locale/attr.py:543 attr.py:148 attr.py:288 attr.py:543
 msgid "valid_to"
 msgstr "Valid until"
 
@@ -860,7 +1058,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: ../extensions/help.py:279
+#: ../extensions/help.py:279 ../locale/attr.py:544 attr.py:544
 msgid "weekend_allowed"
 msgstr "Weekend allowed"
 
@@ -868,7 +1066,7 @@ msgstr "Weekend allowed"
 msgid "Flag if booking on weekends is allowed for this %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:281
+#: ../extensions/help.py:281 ../locale/attr.py:547 attr.py:547
 msgid "weekly_hours"
 msgstr "Weekly hours"
 
@@ -876,7 +1074,7 @@ msgstr "Weekly hours"
 msgid "Expected weekly work-time for %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:283
+#: ../extensions/help.py:283 ../locale/attr.py:471 attr.py:471
 msgid "wp_no"
 msgstr "Work Package Number"
 
@@ -887,7 +1085,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:287
+#: ../extensions/help.py:287 ../locale/attr.py:491 attr.py:491
 msgid "wps"
 msgstr "Work Packages"
 
@@ -899,7 +1097,8 @@ msgid ""
 "        "
 msgstr ""
 
-#: ../extensions/help.py:292 ../schema.py:356
+#: ../extensions/help.py:292 ../locale/attr.py:433 ../locale/attr.py:458
+#: ../schema.py:356 attr.py:433 attr.py:458
 msgid "work_location"
 msgstr "Work location"
 
@@ -1012,6 +1211,333 @@ msgstr "New Dynamic User Data"
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
 
+#: ../locale/attr.py:10 attr.py:10
+msgid "deadline"
+msgstr "Deadline"
+
+#: ../locale/attr.py:12 ../schema.py:543 attr.py:12
+msgid "meeting"
+msgstr "Meeting"
+
+#.  `moderator` is implemented with `responsible`
+#: ../locale/attr.py:27 ../locale/attr.py:43 ../schema.py:672 attr.py:27
+#: attr.py:43
+msgid "review"
+msgstr "Review"
+
+#: ../locale/attr.py:30 attr.py:30
+msgid "comments"
+msgstr "Comments"
+
+#: ../locale/attr.py:31 ../schema.py:274 attr.py:31
+msgid "meeting_room"
+msgstr "Meeting Room"
+
+#: ../locale/attr.py:32 ../locale/attr.py:125 attr.py:32 attr.py:125
+msgid "version"
+msgstr "Version"
+
+#: ../locale/attr.py:38 attr.py:38
+msgid "line_number"
+msgstr "Linenumber"
+
+#: ../locale/attr.py:40 ../locale/attr.py:116 ../schema.py:210 attr.py:40
+#: attr.py:116
+msgid "severity"
+msgstr "Severity"
+
+#: ../locale/attr.py:41 ../schema.py:688 attr.py:41
+msgid "announcement"
+msgstr "Announcement"
+
+#: ../locale/attr.py:42 attr.py:42
+msgid "file_name"
+msgstr "Filename"
+
+#: ../locale/attr.py:56 ../locale/attr.py:134 ../locale/attr.py:173
+#: ../locale/attr.py:214 ../locale/attr.py:420 attr.py:56 attr.py:134
+#: attr.py:173 attr.py:214 attr.py:420
+msgid "transitions"
+msgstr "Transitions"
+
+#: ../locale/attr.py:67 ../schema.py:282 attr.py:67
+msgid "cost_center_group"
+msgstr "Cost Center Group"
+
+#: ../locale/attr.py:74 ../locale/attr.py:85 attr.py:74 attr.py:85
+msgid "active"
+msgstr "Active"
+
+#: ../locale/attr.py:89 ../locale/attr.py:535 ../schema.py:450 attr.py:89
+#: attr.py:535
+msgid "user"
+msgstr "User"
+
+#: ../locale/attr.py:90 ../schema.py:383 attr.py:90
+msgid "time_record"
+msgstr "Time Record"
+
+#: ../locale/attr.py:106 ../schema.py:218 attr.py:106
+msgid "product"
+msgstr "Product"
+
+#: ../locale/attr.py:109 attr.py:109
+msgid "belongs_to_task"
+msgstr "Belongs to task"
+
+#: ../locale/attr.py:110 attr.py:110
+msgid "belongs_to_feature"
+msgstr "Belongs to feature"
+
+#: ../locale/attr.py:111 attr.py:111
+msgid "estimated_effort"
+msgstr "Estimated Effort"
+
+#: ../locale/attr.py:112 attr.py:112
+msgid "fixed_until"
+msgstr "Fixed until"
+
+#: ../locale/attr.py:114 attr.py:114
+msgid "closer"
+msgstr "Closer"
+
+#: ../locale/attr.py:115 attr.py:115
+msgid "found_in_release"
+msgstr "Found in Release"
+
+#: ../locale/attr.py:118 attr.py:118
+msgid "solved_in_release"
+msgstr "Solved in Release"
+
+#: ../locale/attr.py:122 attr.py:122
+msgid "files_affected"
+msgstr "Files Affected"
+
+#: ../locale/attr.py:124 ../locale/attr.py:138 attr.py:124 attr.py:138
+msgid "cert"
+msgstr "Cert"
+
+#: ../locale/attr.py:126 attr.py:126
+msgid "fixed_in"
+msgstr "Fixed in"
+
+#: ../locale/attr.py:127 attr.py:127
+msgid "closed"
+msgstr "Closed"
+
+#: ../locale/attr.py:129 attr.py:129
+msgid "superseder"
+msgstr "Superseder"
+
+#: ../locale/attr.py:133 ../locale/attr.py:168 ../locale/attr.py:209
+#: ../locale/attr.py:415 attr.py:133 attr.py:168 attr.py:209 attr.py:415
+msgid "abbreviation"
+msgstr "Abbreviation"
+
+#: ../locale/attr.py:140 attr.py:140
+msgid "cert_transitions"
+msgstr "Cert Transitions"
+
+#: ../locale/attr.py:142 ../locale/attr.py:187 attr.py:142 attr.py:187
+msgid "part_of"
+msgstr "Part of"
+
+#: ../locale/attr.py:152 attr.py:152
+msgid "doc_num"
+msgstr "Document number"
+
+#.  just to show something in the pop-up, gets set to the last reached milestone
+#: ../locale/attr.py:165 ../locale/attr.py:208 ../locale/attr.py:261
+#: ../schema.py:567 attr.py:165 attr.py:208 attr.py:261
+msgid "release"
+msgstr "Release"
+
+#: ../locale/attr.py:188 attr.py:188
+msgid "composed_of"
+msgstr "Composed of"
+
+#: ../locale/attr.py:191 ../locale/attr.py:387 attr.py:191 attr.py:387
+msgid "planned_begin"
+msgstr "Planned Begin"
+
+#: ../locale/attr.py:192 attr.py:192
+msgid "stakeholder"
+msgstr "Stakeholder"
+
+#: ../locale/attr.py:193 ../locale/attr.py:389 attr.py:193 attr.py:389
+msgid "needs"
+msgstr "Needs"
+
+#: ../locale/attr.py:194 ../locale/attr.py:390 attr.py:194 attr.py:390
+msgid "depends"
+msgstr "Depends"
+
+#: ../locale/attr.py:195 attr.py:195
+msgid "tasks"
+msgstr "Tasks"
+
+#: ../locale/attr.py:196 ../locale/attr.py:392 attr.py:196 attr.py:392
+msgid "defects"
+msgstr "Defects"
+
+#: ../locale/attr.py:197 ../locale/attr.py:393 attr.py:197 attr.py:393
+msgid "actual_begin"
+msgstr "Actual begin"
+
+#: ../locale/attr.py:199 ../locale/attr.py:396 attr.py:199 attr.py:396
+msgid "actual_end"
+msgstr "Actual end"
+
+#: ../locale/attr.py:200 ../locale/attr.py:397 attr.py:200 attr.py:397
+msgid "test_ok"
+msgstr "Test OK"
+
+#: ../locale/attr.py:206 ../locale/attr.py:391 attr.py:206 attr.py:391
+msgid "planned_end"
+msgstr "Planned end"
+
+#: ../locale/attr.py:229 attr.py:229
+msgid "country"
+msgstr ""
+
+#: ../locale/attr.py:234 ../locale/attr.py:507 attr.py:234 attr.py:507
+msgid "address"
+msgstr "Address"
+
+#: ../locale/attr.py:255 attr.py:255
+msgid "reached"
+msgstr "Reached"
+
+#: ../locale/attr.py:259 attr.py:259
+msgid "planned"
+msgstr "Planned"
+
+#: ../locale/attr.py:292 attr.py:292
+msgid "mail_domain"
+msgstr "Mail domain"
+
+#: ../locale/attr.py:300 ../locale/attr.py:526 ../schema.py:306 attr.py:300
+#: attr.py:526
+msgid "position"
+msgstr "Position"
+
+#: ../locale/attr.py:311 attr.py:311
+msgid "certifiable"
+msgstr "Certifiable"
+
+#: ../locale/attr.py:322 attr.py:322
+msgid "documents"
+msgstr "Documents"
+
+#: ../locale/attr.py:324 attr.py:324
+msgid "features"
+msgstr "Features"
+
+#: ../locale/attr.py:329 attr.py:329
+msgid "bugs"
+msgstr "Bugs"
+
+#: ../locale/attr.py:331 attr.py:331
+msgid "milestones"
+msgstr "Milestones"
+
+#: ../locale/attr.py:332 attr.py:332
+msgid "planned_fixes"
+msgstr "Planned Fixes"
+
+#: ../locale/attr.py:367 ../locale/attr.py:534 ../schema.py:256 attr.py:367
+#: attr.py:534
+msgid "org_location"
+msgstr "Organisaton/Location"
+
+#: ../locale/attr.py:394 attr.py:394
+msgid "effort"
+msgstr "Effort"
+
+#: ../locale/attr.py:395 attr.py:395
+msgid "kind"
+msgstr "Kind"
+
+#: ../locale/attr.py:400 attr.py:400
+msgid "estimated_begin"
+msgstr "Estimated Begin"
+
+#: ../locale/attr.py:402 ../schema.py:582 attr.py:402
+msgid "feature"
+msgstr "Feature"
+
+#: ../locale/attr.py:405 attr.py:405
+msgid "estimated_end"
+msgstr "Estimated End"
+
+#: ../locale/attr.py:449 attr.py:449
+msgid "only_controlling"
+msgstr ""
+
+#: ../locale/attr.py:457 ../schema.py:699 attr.py:457
+msgid "comment"
+msgstr "Comment"
+
+#: ../locale/attr.py:459 attr.py:459
+msgid "end"
+msgstr "End"
+
+#: ../locale/attr.py:461 ../schema.py:397 attr.py:461
+msgid "time_activity"
+msgstr "Activity"
+
+#: ../locale/attr.py:462 ../schema.py:372 attr.py:462
+msgid "daily_record"
+msgstr "Daily Record"
+
+#: ../locale/attr.py:465 attr.py:465
+msgid "start"
+msgstr "Start"
+
+#: ../locale/attr.py:466 attr.py:466
+msgid "split"
+msgstr ""
+
+#: ../locale/attr.py:467 attr.py:467
+msgid "wp"
+msgstr "Work Package"
+
+#: ../locale/attr.py:473 ../locale/attr.py:541 attr.py:473 attr.py:541
+msgid "durations_allowed"
+msgstr "Durations allowed"
+
+#: ../locale/attr.py:483 ../schema.py:414 attr.py:483
+msgid "cost_center"
+msgstr "Cost Center"
+
+#: ../locale/attr.py:497 attr.py:497
+msgid "supervisor"
+msgstr "Supervisor"
+
+#: ../locale/attr.py:503 ../schema.py:434 attr.py:503
+msgid "sex"
+msgstr ""
+
+#: ../locale/attr.py:506 attr.py:506
+msgid "job_description"
+msgstr "Job Description"
+
+#: ../locale/attr.py:518 attr.py:518
+msgid "pictures"
+msgstr "Picture"
+
+#: ../locale/attr.py:538 attr.py:538
+msgid "long_worktime"
+msgstr "Work >= 10h"
+
+#: ../locale/attr.py:542 attr.py:542
+msgid "vacation"
+msgstr "Vacation days"
+
+#: ../locale/attr.py:556 attr.py:556
+msgid "code"
+msgstr "Code"
+
 #: ../schema.py:95
 msgid "query"
 msgstr "Query"
@@ -1056,30 +1582,6 @@ msgstr "Document status"
 msgid "document_type"
 msgstr "Document type"
 
-#: ../schema.py:210
-msgid "severity"
-msgstr "Severity"
-
-#: ../schema.py:218
-msgid "product"
-msgstr "Product"
-
-#: ../schema.py:256
-msgid "org_location"
-msgstr "Organisaton/Location"
-
-#: ../schema.py:274
-msgid "meeting_room"
-msgstr "Meeting Room"
-
-#: ../schema.py:282
-msgid "cost_center_group"
-msgstr "Cost Center Group"
-
-#: ../schema.py:306
-msgid "position"
-msgstr "Position"
-
 #: ../schema.py:313
 msgid "time_project_status"
 msgstr "Project Status"
@@ -1096,37 +1598,13 @@ msgstr "Work Package"
 msgid "daily_record_status"
 msgstr "Daily Record Status"
 
-#: ../schema.py:372
-msgid "daily_record"
-msgstr "Daily Record"
-
-#: ../schema.py:383
-msgid "time_record"
-msgstr "Time Record"
-
-#: ../schema.py:397
-msgid "time_activity"
-msgstr "Activity"
-
 #: ../schema.py:405
 msgid "time_wp_group"
 msgstr "Work Package Group"
 
-#: ../schema.py:414
-msgid "cost_center"
-msgstr "Cost Center"
-
-#: ../schema.py:434
-msgid "sex"
-msgstr ""
-
 #: ../schema.py:441
 msgid "user_status"
 msgstr "User Status"
-
-#: ../schema.py:450
-msgid "user"
-msgstr "User"
 
 #: ../schema.py:491
 msgid "user_dynamic"
@@ -1136,10 +1614,6 @@ msgstr "Dynamic User Data"
 msgid "file"
 msgstr "File"
 
-#: ../schema.py:543
-msgid "meeting"
-msgstr "Meeting"
-
 #: ../schema.py:549
 msgid "action_item"
 msgstr "Action Item"
@@ -1148,15 +1622,6 @@ msgstr "Action Item"
 msgid "document"
 msgstr "Document"
 
-#.  just to show something in the pop-up, gets set to the last reached milestone
-#: ../schema.py:567
-msgid "release"
-msgstr "Release"
-
-#: ../schema.py:582
-msgid "feature"
-msgstr "Feature"
-
 #: ../schema.py:614
 msgid "task"
 msgstr "Task"
@@ -1164,196 +1629,3 @@ msgstr "Task"
 #: ../schema.py:635
 msgid "defect"
 msgstr "Defect"
-
-#.  `moderator` is implemented with `responsible`
-#: ../schema.py:672
-msgid "review"
-msgstr "Review"
-
-#: ../schema.py:688
-msgid "announcement"
-msgstr "Announcement"
-
-#: ../schema.py:699
-msgid "comment"
-msgstr "Comment"
-
-msgid "deadline"
-msgstr "Deadline"
-
-msgid "comments"
-msgstr "Comments"
-
-msgid "version"
-msgstr "Version"
-
-msgid "line_number"
-msgstr "Linenumber"
-
-msgid "file_name"
-msgstr "Filename"
-
-msgid "transitions"
-msgstr "Transitions"
-
-msgid "active"
-msgstr "Active"
-
-msgid "belongs_to_task"
-msgstr "Belongs to task"
-
-msgid "belongs_to_feature"
-msgstr "Belongs to feature"
-
-msgid "estimated_effort"
-msgstr "Estimated Effort"
-
-msgid "fixed_until"
-msgstr "Fixed until"
-
-msgid "closer"
-msgstr "Closer"
-
-msgid "found_in_release"
-msgstr "Found in Release"
-
-msgid "solved_in_release"
-msgstr "Solved in Release"
-
-msgid "files_affected"
-msgstr "Files Affected"
-
-msgid "cert"
-msgstr "Cert"
-
-msgid "fixed_in"
-msgstr "Fixed in"
-
-msgid "closed"
-msgstr "Closed"
-
-msgid "superseder"
-msgstr "Superseder"
-
-msgid "abbreviation"
-msgstr "Abbreviation"
-
-msgid "cert_transitions"
-msgstr "Cert Transitions"
-
-msgid "part_of"
-msgstr "Part of"
-
-msgid "doc_num"
-msgstr "Document number"
-
-msgid "composed_of"
-msgstr "Composed of"
-
-msgid "planned_begin"
-msgstr "Planned Begin"
-
-msgid "stakeholder"
-msgstr "Stakeholder"
-
-msgid "needs"
-msgstr "Needs"
-
-msgid "depends"
-msgstr "Depends"
-
-msgid "tasks"
-msgstr "Tasks"
-
-msgid "defects"
-msgstr "Defects"
-
-msgid "actual_begin"
-msgstr "Actual begin"
-
-msgid "actual_end"
-msgstr "Actual end"
-
-msgid "test_ok"
-msgstr "Test OK"
-
-msgid "planned_end"
-msgstr "Planned end"
-
-msgid "address"
-msgstr "Address"
-
-msgid "reached"
-msgstr "Reached"
-
-msgid "planned"
-msgstr "Planned"
-
-msgid "mail_domain"
-msgstr "Mail domain"
-
-msgid "certifiable"
-msgstr "Certifiable"
-
-msgid "documents"
-msgstr "Documents"
-
-msgid "features"
-msgstr "Features"
-
-msgid "bugs"
-msgstr "Bugs"
-
-msgid "milestones"
-msgstr "Milestones"
-
-msgid "planned_fixes"
-msgstr "Planned Fixes"
-
-msgid "effort"
-msgstr "Effort"
-
-msgid "kind"
-msgstr "Kind"
-
-msgid "estimated_begin"
-msgstr "Estimated Begin"
-
-msgid "estimated_end"
-msgstr "Estimated End"
-
-msgid "end"
-msgstr "End"
-
-msgid "start"
-msgstr "Start"
-
-msgid "wp"
-msgstr "Work Package"
-
-msgid "durations_allowed"
-msgstr "Durations allowed"
-
-msgid "supervisor"
-msgstr "Supervisor"
-
-msgid "job_description"
-msgstr "Job Description"
-
-msgid "pictures"
-msgstr "Picture"
-
-msgid "long_worktime"
-msgstr "Work >= 10h"
-
-msgid "vacation"
-msgstr "Vacation days"
-
-msgid "code"
-msgstr "Code"
-
-msgid "onsite"
-msgstr "On-site"
-
-msgid "optional_reviewers"
-msgstr "Optional Reviewers"
