@@ -400,6 +400,7 @@ class Daily_Record_Common (Action, autosuper) :
         columns         = request.columns
         assert (request.classname == 'daily_record')
         start, end      = date_range (self.db, filterspec)
+        print "interval:", start, end
         self.start      = start
         self.end        = end
         max             = start + Interval ('31d')
@@ -417,6 +418,7 @@ class Daily_Record_Common (Action, autosuper) :
                   , ':sort'          : 'date'
                   , ':group'         : 'user'
                   , ':filter'        : ','.join (request.filterspec.keys ())
+                  , ':startwith'     : '0'
                   , ':error_message' : msg
                   }
                 )
@@ -456,13 +458,15 @@ class Daily_Record_Action (Daily_Record_Common) :
             }
         url = self.request.indexargs_url \
             ( ''
-            , { ':action'   : 'search'
-              , ':template' : 'edit'
-              , ':sort'     : 'date'
-              , ':group'    : 'user'
-              , ':filter'   : ','.join (self.request.filterspec.keys ())
+            , { ':action'    : 'search'
+              , ':template'  : 'edit'
+              , ':sort'      : 'date'
+              , ':group'     : 'user'
+              , ':startwith' : '0'
+              , ':filter'    : ','.join (self.request.filterspec.keys ())
               }
             )
+        print "URL:", url
         raise Redirect, url
     # end def handle
 
@@ -532,6 +536,7 @@ class Weekno_Action (Daily_Record_Edit_Action) :
             , ':sort'          : 'date'
             , ':group'         : 'user'
             , ':filter'        : ','.join (self.request.filterspec.keys ())
+            , ':startwith'     : '0'
             , ':ok_message'    : self.ok_msg
             }
         url = self.request.indexargs_url ('', args)
@@ -570,6 +575,7 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
             , ':sort'          : 'date'
             , ':group'         : 'user'
             , ':filter'        : ','.join (request.filterspec.keys ())
+            , ':startwith'     : '0'
             }
         if msg :
             self.db.rollback ()
