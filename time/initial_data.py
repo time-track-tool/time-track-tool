@@ -307,6 +307,24 @@ work_location.create \
     ( code = "on site"
     , description = "Person working at office"
     )
+work_location.create \
+    ( code = "home"
+    , description = "Zuhaus / Home office"
+    )
+work_location.create \
+    ( code = "off-site/trav."
+    , description = \
+      "Travel -- Unterwegs, Dienstgang, Dienstreise "
+      "(reisend oder an einer Nicht-TTTech-Location)"
+    )
+work_location.create \
+    ( code = "other-TTT"
+    , description = "In einer anderen als der eigenen Org-Location"
+    )
+work_location.create \
+    ( code = "off"
+    , description = "Abwesend"
+    )
 
 sex = db.getclass ('sex')
 sex.create (name = "female")

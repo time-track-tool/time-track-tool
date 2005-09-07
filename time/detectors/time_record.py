@@ -311,6 +311,13 @@ def check_start_end_duration \
         new_values ['duration']  = duration
 # end def check_start_end_duration
 
+def correct_work_location (db, wp, new_values) :
+    project_id    = db.time_wp.get      (wp,         'project')
+    work_location = db.time_project.get (project_id, 'work_location')
+    if work_location :
+        new_values ['work_location'] = work_location
+# end def correct_work_location
+
 def new_time_record (db, cl, nodeid, new_values) :
     """ auditor on time_record
     """
@@ -340,6 +347,8 @@ def new_time_record (db, cl, nodeid, new_values) :
     check_start_end_duration (dr.date, start, end, duration, new_values)
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
+    if 'wp' in new_values :
+        correct_work_location (db, new_values ['wp'], new_values)
 # end def new_time_record
 
 def check_time_record (db, cl, nodeid, new_values) :
@@ -367,6 +376,7 @@ def check_time_record (db, cl, nodeid, new_values) :
     if split :
         if 'wp' in new_values :
             del new_values ['wp']
+            wp = cl.get (nodeid, 'wp')
         newrec = dict \
             ( daily_record  = cl.get (nodeid, 'daily_record')
             , duration      = split
@@ -377,6 +387,8 @@ def check_time_record (db, cl, nodeid, new_values) :
         if (start) :
             newrec ['start'] = start
         cl.create (** newrec)
+    if wp :
+        correct_work_location (db, wp, new_values)
 # end def check_time_record
 
 def init (db) :

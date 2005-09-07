@@ -83,6 +83,9 @@
             , width='600'
             )"/>
      </td>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'work_location')"/>
+     <td tal:content="structure python:context.work_location.menu ()"/>
     </tr>
    </tal:block>
   </tal:block>

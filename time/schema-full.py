@@ -331,6 +331,7 @@ time_project = Class \
     , time_end              = Date      (offset = 0)
     , planned_effort        = Number    ()
     , status                = Link      ("time_project_status")
+    , work_location         = Link      ("work_location")
     )
 time_project.setkey ("name")
 
