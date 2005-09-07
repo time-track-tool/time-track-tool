@@ -717,35 +717,90 @@ TTT_Issue_Class \
 #        only)
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("query"             , ["User"], ["User"            ])
-    , ("room"              , ["User"], ["Admin"           ])
-    , ("milestone"         , ["User"], ["Releasemanager"  ])
-    , ("task_status"       , ["User"], ["Admin"           ])
-    , ("task_kind"         , ["User"], ["Admin"           ])
-    , ("action_item_status", ["User"], ["Admin"           ])
-    , ("defect_status"     , ["User"], ["Admin"           ])
-    , ("feature_status"    , ["User"], ["Admin"           ])
-    , ("review_status"     , ["User"], ["Admin"           ])
-    , ("comment_status"    , ["User"], ["Admin"           ])
-    , ("document_type"     , ["User"], ["Admin"           ])
-    , ("severity"          , ["User"], ["Admin"           ])
-    , ("product"           , ["User"], ["Admin"           ])
-    , ("organisation"      , ["User"], ["Admin"           ])
-    , ("department"        , ["User"], ["Admin"           ])
-    , ("position"          , ["User"], ["Admin"           ])
-#    , ("user"              , ["User"], ["Admin", "Office" ])
-    , ("msg"               , ["User"], ["User"            ])
-    , ("file"              , ["User"], ["User"            ])
-    , ("document"          , ["User"], ["User"            ])
-    , ("release"           , ["User"], ["Releasemanager"  ])
-    , ("feature"           , ["User"], ["Releasemanager"  ])
-    , ("task"              , ["User"], ["User"            ])
-    , ("defect"            , ["User"], ["User"            ])
-    , ("meeting"           , ["User"], ["Admin"           ])
-    , ("action_item"       , ["User"], ["User"            ])
-    , ("review"            , ["User"], ["User"            ])
-    , ("announcement"      , ["User"], ["User"            ])
-    , ("comment"           , ["User"], ["User"            ])
+    [ ("department"          , ["User"], ["HR"              ])
+    , ("file"                , ["User"], ["User"            ])
+    , ("location"            , ["User"], ["HR"              ])
+    , ("meeting_room"        , ["User"], ["HR"              ])
+    , ("msg"                 , ["User"], ["User"            ])
+    , ("organisation"        , ["User"], ["HR"              ])
+    , ("org_location"        , ["User"], ["HR"              ])
+    , ("position"            , ["User"], ["HR"              ])
+    , ("query"               , ["User"], ["User"            ])
+    , ("room"                , ["User"], ["HR"              ])
+    , ("sex"                 , ["User"], ["Admin"           ])
+#   , ("user"                , See below -- individual fields)
+    , ("user_status"         , ["User"], ["Admin"           ])
+    # Issue Tracker classes:
+    , ("action_item"         , ["User"], ["User"            ])
+    , ("action_item_status"  , ["User"], ["Admin"           ])
+    , ("announcement"        , ["User"], ["User"            ])
+    , ("comment"             , ["User"], ["User"            ])
+    , ("comment_status"      , ["User"], ["Admin"           ])
+    , ("defect"              , ["User"], ["User"            ])
+    , ("defect_status"       , ["User"], ["Admin"           ])
+    , ("document"            , ["User"], ["User"            ])
+    , ("document_status"     , ["User"], ["Admin"           ])
+    , ("document_type"       , ["User"], ["Admin"           ])
+    , ("feature"             , ["User"], ["Releasemanager"  ])
+    , ("feature_status"      , ["User"], ["Admin"           ])
+    , ("meeting"             , ["User"], ["Admin"           ])
+    , ("milestone"           , ["User"], ["Releasemanager"  ])
+    , ("product"             , ["User"], ["Admin"           ])
+    , ("release"             , ["User"], ["Releasemanager"  ])
+    , ("review"              , ["User"], ["User"            ])
+    , ("review_status"       , ["User"], ["Admin"           ])
+    , ("severity"            , ["User"], ["Admin"           ])
+    , ("task"                , ["User"], ["User"            ])
+    , ("task_kind"           , ["User"], ["Admin"           ])
+    , ("task_status"         , ["User"], ["Admin"           ])
+    # Time-Tracking classes
+    # For daily_record, time_record, additional restrictions apply
+    , ("cost_center"         , ["User"], ["Controlling"     ])
+    , ("cost_center_group"   , ["User"], ["Controlling"     ])
+    , ("cost_center_status"  , ["User"], ["Controlling"     ])
+    , ("daily_record"        , ["User"], ["HR","Controlling"])
+    , ("daily_record_status" , ["User"], ["Admin"           ])
+    , ("time_activity"       , ["User"], ["Controlling"     ])
+    , ("time_project"        , ["User"], ["Project"         ])
+    , ("time_project_status" , ["User"], ["Project"         ])
+    , ("time_record"         , [      ], ["HR","Controlling"])
+    , ("time_wp"             , ["User"], ["Project"         ])
+    , ("time_wp_group"       , ["User"], ["Project"         ])
+    , ("user_dynamic"        , [      ], ["HR"              ])
+    , ("work_location"       , ["User"], ["Controlling"     ])
+    ]
+
+class_field_perms = \
+    [ ( "user", "Edit", ["IT"]
+      , ( "address"
+        , "alternate_addresses"
+        , "nickname"
+        , "password"
+        , "timezone"
+        , "username"
+        )
+      )
+    , ( "user", "Edit", ["HR"]
+      , ( "clearance_by", "department", "external_phone", "firstname"
+        , "job_description", "lastname", "lunch_duration", "lunch_start"
+        , "phone", "pictures", "position", "private_phone", "realname"
+        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
+        , "title"
+        )
+      )
+    , ( "user", "Edit", ["Admin","HR","IT"]
+      , ("roles",)
+      )
+    , ( "user", "View", ["User"]
+      , ( "activity", "actor", "address", "alternate_addresses"
+        , "clearance_by", "creation", "creator", "department"
+        , "external_phone", "firstname", "job_description", "lastname"
+        , "lunch_duration", "lunch_start", "nickname", "password", "phone"
+        , "pictures", "position", "queries", "realname", "roles", "room", "sex"
+        , "status", "subst_active", "substitute", "supervisor", "timezone"
+        , "title", "username"
+        )
+      )
     ]
 
 roles = \
@@ -756,6 +811,9 @@ roles = \
     , ("IV&V"          , "Member of the IV&V Team."      )
     , ("halfweek"      , "User works only the half week" )
     , ("HR"            , "Human Ressources team"         )
+    , ("Controlling"   , "Controlling"                   )
+    , ("IT"            , "IT-Department"                 )
+    , ("Project"       , "Project Office"                )
     ]
 
 for name, desc in roles :
@@ -767,6 +825,76 @@ for cl, view_list, edit_list in classes :
     for editor in edit_list :
         db.security.addPermissionToRole (editor, 'Edit',   cl)
         db.security.addPermissionToRole (editor, 'Create', cl)
+
+for cl, perm, roles, props in class_field_perms :
+    p = db.security.addPermission \
+        ( name        = perm
+        , klass       = cl
+        , description = "Allowed to edit this property"
+        , properties  = props
+        )
+    for r in roles :
+        db.security.addPermissionToRole (r, p)
+
+# HR should be able to create new users:
+db.security.addPermissionToRole ("HR", "Create", "user")
+
+def own_user_record (db, userid, itemid) :
+    """Determine whether the userid matches the item being accessed"""
+    return userid == itemid
+# end def own_user_record
+
+def own_daily_record (db, userid, itemid) :
+    """Determine if the user owns the daily record, a negative itemid
+       indicates that the record doesn't exits yet -- we allow creation
+       in this case.
+    """
+    if int (itemid) < 0 : # allow creation
+        return True
+    ownerid = db.daily_record.get (itemid, 'user')
+    return userid == ownerid
+# end def own_daily_record
+
+def own_time_record (db, userid, itemid) :
+    """Determine if the user owns the daily record, a negative itemid
+       indicates that the record doesn't exits yet -- we allow creation
+       in this case.
+    """
+    if int (itemid) < 0 : # allow creation
+        return True
+    dr      = db.time_record.get  (itemid, 'daily_record')
+    ownerid = db.daily_record.get (dr, 'user')
+    return userid == ownerid
+# end def own_time_record
+
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'user'
+    , check       = own_user_record
+    , description = "User is allowed to edit (some of) their own user details"
+    , properties  = \
+        ( 'password', 'firstname', 'lastname', 'realname', 'private_phone'
+        , 'substitute', 'subst_active', 'title', 'queries', 'pictures'
+        , 'lunch_start', 'lunch_duration', 'timezone'
+        )
+    )
+db.security.addPermissionToRole('User', p)
+
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'daily_record'
+    , check       = own_daily_record
+    , description = 'User may edit own daily_records'
+    )
+db.security.addPermissionToRole('User', p)
+
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'time_record'
+    , check       = own_time_record
+    , description = 'User may edit own time_records'
+    )
+db.security.addPermissionToRole('User', p)
 
 # add permission "May Change Status" to role "CCB" and "Admin"
 p = db.security.addPermission (name="May Change Status", klass="defect")
@@ -806,11 +934,7 @@ for klass in nosy_classes :
 db.security.addPermissionToRole('User', 'Web Access')
 db.security.addPermissionToRole('User', 'Email Access')
 
-# Anonymous may view other users profiles - required for intranet pages.
-db.security.addPermissionToRole('Anonymous', 'View', 'user')
-
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
-# db.security.addPermissionToRole('Anonymous', 'Email Access')
 

@@ -77,7 +77,8 @@
   <script tal:replace="structure request/base_javascript"></script>
  </head>
  <body class="body">
-  <table class="body" tal:condition="not:is_user" align="center" valign="middle">
+  <table class="body" align="center" valign="middle"
+   tal:condition="python:request.user.username=='anonymous'">
    <tr>
 <!-- login -->
     <td>
@@ -117,7 +118,8 @@
 
 <!-- menubar -->
 <form name="menubar">
-  <table bgcolor="#eeeeee" tal:condition="is_user">
+  <table bgcolor="#eeeeee"
+   tal:condition="python:request.user.username!='anonymous'">
    <tr>
 <!-- home -->
 <!--
