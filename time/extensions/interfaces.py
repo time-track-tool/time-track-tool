@@ -267,7 +267,7 @@ def work_packages (db, daily_record) :
         }
     x1 = db.time_wp.filter (filterspec = filterspec)
     print x1
-    filterspec ['time_end'] = -1
+    filterspec ['time_end'] = ''
     x2 = db.time_wp.filter (filterspec = filterspec)
     print x2
     return x1 + x2
