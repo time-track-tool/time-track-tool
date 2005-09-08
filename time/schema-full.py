@@ -796,7 +796,7 @@ class_field_perms = \
         , "clearance_by", "creation", "creator", "department"
         , "external_phone", "firstname", "job_description", "lastname"
         , "lunch_duration", "lunch_start", "nickname", "password", "phone"
-        , "pictures", "position", "queries", "realname", "roles", "room", "sex"
+        , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username"
         )
@@ -849,9 +849,11 @@ def own_daily_record (db, userid, itemid) :
        indicates that the record doesn't exits yet -- we allow creation
        in this case.
     """
+    print "daily_record: itemid:", itemid, "userid:", userid
     if int (itemid) < 0 : # allow creation
         return True
     ownerid = db.daily_record.get (itemid, 'user')
+    print "daily_record: ownerid:", ownerid
     return userid == ownerid
 # end def own_daily_record
 
@@ -860,10 +862,13 @@ def own_time_record (db, userid, itemid) :
        indicates that the record doesn't exits yet -- we allow creation
        in this case.
     """
+    print "time_record: itemid:", itemid, "userid:", userid
     if int (itemid) < 0 : # allow creation
         return True
     dr      = db.time_record.get  (itemid, 'daily_record')
+    print "dr:", dr
     ownerid = db.daily_record.get (dr, 'user')
+    print "time_record: ownerid:", ownerid
     return userid == ownerid
 # end def own_time_record
 
@@ -931,8 +936,12 @@ for klass in nosy_classes :
     db.security.addPermissionToRole ("Nosy", "Nosy", klass)
 
 # and give the regular users access to the web and email interface
-db.security.addPermissionToRole('User', 'Web Access')
-db.security.addPermissionToRole('User', 'Email Access')
+db.security.addPermissionToRole ('User', 'Web Access')
+db.security.addPermissionToRole ('User', 'Email Access')
+
+# editing of roles:
+for r in "Admin", "HR", "IT" :
+    db.security.addPermissionToRole (r, 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

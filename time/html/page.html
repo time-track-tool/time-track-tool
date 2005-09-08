@@ -90,11 +90,11 @@
       </tr>
       <tr>
        <th>Login:</th>
-       <td><input size="10" name="__login_name"></td>
+       <td><input size="15" name="__login_name"></td>
       </tr>
       <tr>
        <th>Password:</th>
-       <td><input size="10" type="password" name="__login_password"></td>
+       <td><input size="15" type="password" name="__login_password"></td>
       </tr>
       <tr>
        <td colspan="2" align="center">
@@ -197,7 +197,8 @@
 </form>
 
 <!-- body_title -->
-  <tal:block tal:condition="is_user">
+  <tal:block
+   tal:condition="python:request.user.username!='anonymous'">
    <h3><span metal:define-slot="body_title"></span></h3>
   </tal:block>
 
@@ -212,7 +213,7 @@
      tal:content   = "structure m">error</p>
 
 <!-- page content -->
-  <tal:block tal:condition="is_user">
+  <tal:block tal:condition="python:request.user.username!='anonymous'">
    <span class="content" metal:define-slot="content"></span>
   </tal:block>
 

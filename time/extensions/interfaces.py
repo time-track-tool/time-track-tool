@@ -258,12 +258,28 @@ def batch_has_status (batch, status) :
     return False
 # end def batch_open
 
+def work_packages (db, daily_record) :
+    """ Needs a HTML db and a HTML daily_record. """
+    filterspec = \
+        { 'bookers'    : db._db.getuid ()
+        , 'time_start' : ';%s' % daily_record.date
+        , 'time_end'   : '%s;' % daily_record.date
+        }
+    x1 = db.time_wp.filter (filterspec = filterspec)
+    print x1
+    filterspec ['time_end'] = -1
+    x2 = db.time_wp.filter (filterspec = filterspec)
+    print x2
+    return x1 + x2
+# end def work_packages
+
 def sorted (vals, keys) :
     """ Sort given values by given keys. Should be optimized to use key
         sorting (available in python 2.4) and fuction "sorted".
     """
-    keyfun = lambda x,y : cmp ([x [k] for k in keys], [y [k] for k in keys])
-    vals = [v for v in vals]
+    keyfun = lambda x, y : \
+        cmp ([str (x [k]) for k in keys], [str (y [k]) for k in keys])
+    vals   = [v for v in vals]
     vals.sort (keyfun)
     return vals
 # end def sorted
@@ -309,6 +325,7 @@ def init (instance) :
     reg ("button_submit_to",             button_submit_to)
     reg ("button_approve",               button_approve)
     reg ("batch_has_status",             batch_has_status)
+    reg ("work_packages",                work_packages)
     reg ("sorted",                       sorted)
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)

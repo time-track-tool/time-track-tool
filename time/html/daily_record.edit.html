@@ -124,6 +124,8 @@
                   ;w_allowed python:utils.weekend_allowed (db._db, i)
                   ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
                   ;allowed   python:w_allowed or not is_wend
+                  ;wps       python:utils.sorted 
+                             (utils.work_packages (db, i), ('project', 'name'))
                   ">
        <tr tal:attributes="class cls">
         <td class="subhead-nb"
@@ -152,9 +154,7 @@
            <option tal:attributes="selected not:r/wp/id" value="-1">
             - no selection -
            </option>
-           <option tal:repeat="wp python:db.time_wp.filter
-              (filterspec = {'bookers' : db._db.getuid ()})"
-             tal:attributes=
+           <option tal:repeat="wp wps" tal:attributes=
                "value wp/id
                ;selected python:wp.id == r.wp.id
                "
@@ -191,10 +191,8 @@
          <select
           tal:attributes="name python:'time_record-%d@wp'%idx">
           <option selected="selected" value="-1">- no selection -</option>
-          <option tal:repeat="wp python:db.time_wp.filter
-             (filterspec = {'bookers' : db._db.getuid ()})"
-            tal:attributes="value wp/id"
-            tal:content="python:' '.join
+          <option tal:repeat="wp wps" tal:attributes="value wp/id"
+           tal:content="python:' '.join
              ([str (wp [i]) for i in 'project','wp_no','name'])"/>
          </select>
         </td>
