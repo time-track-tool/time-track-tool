@@ -849,11 +849,9 @@ def own_daily_record (db, userid, itemid) :
        indicates that the record doesn't exits yet -- we allow creation
        in this case.
     """
-    print "daily_record: itemid:", itemid, "userid:", userid
     if int (itemid) < 0 : # allow creation
         return True
     ownerid = db.daily_record.get (itemid, 'user')
-    print "daily_record: ownerid:", ownerid
     return userid == ownerid
 # end def own_daily_record
 
@@ -862,13 +860,10 @@ def own_time_record (db, userid, itemid) :
        indicates that the record doesn't exits yet -- we allow creation
        in this case.
     """
-    print "time_record: itemid:", itemid, "userid:", userid
     if int (itemid) < 0 : # allow creation
         return True
     dr      = db.time_record.get  (itemid, 'daily_record')
-    print "dr:", dr
     ownerid = db.daily_record.get (dr, 'user')
-    print "time_record: ownerid:", ownerid
     return userid == ownerid
 # end def own_time_record
 
@@ -885,21 +880,22 @@ p = db.security.addPermission \
     )
 db.security.addPermissionToRole('User', p)
 
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'daily_record'
-    , check       = own_daily_record
-    , description = 'User may edit own daily_records'
-    )
-db.security.addPermissionToRole('User', p)
+for perm in 'View', 'Edit' :
+    p = db.security.addPermission \
+        ( name        = perm
+        , klass       = 'daily_record'
+        , check       = own_daily_record
+        , description = 'User may edit own daily_records'
+        )
+    db.security.addPermissionToRole('User', p)
 
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'time_record'
-    , check       = own_time_record
-    , description = 'User may edit own time_records'
-    )
-db.security.addPermissionToRole('User', p)
+    p = db.security.addPermission \
+        ( name        = perm
+        , klass       = 'time_record'
+        , check       = own_time_record
+        , description = 'User may edit own time_records'
+        )
+    db.security.addPermissionToRole('User', p)
 
 # add permission "May Change Status" to role "CCB" and "Admin"
 p = db.security.addPermission (name="May Change Status", klass="defect")
