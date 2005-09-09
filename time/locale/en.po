@@ -123,7 +123,7 @@ msgstr ""
 #: attr.py:454 attr.py:469 attr.py:482 attr.py:492 attr.py:505 attr.py:536
 #: attr.py:553 attr.py:561
 msgid "activity"
-msgstr "Activity"
+msgstr "Last Activity"
 
 #: ../extensions/help.py:56
 msgid "Date of last change"

@@ -49,7 +49,7 @@ daily_hours = \
          employees with irregular work time.
       '''
 work_loc = \
-    ""'''Location where the person worked.'''
+    ""'''Location where you worked.'''
 
 helptext = \
     { ""'activity'                   :
@@ -104,7 +104,13 @@ helptext = \
       ""'''Verbose description of %(Classname)s'''
     , ""'duration'                   :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
-           allowed, e.g., 7.10 is not allowed.
+           allowed, e.g., 7.10 is not allowed. The duration is computed
+           automatically by the system when you specify "Start" and
+           "End". Attention: If you specify both, "Start" and "Duration"
+           with a duration of more than six hours, the system will
+           consult your user preferences and add the lunch break, e.g.
+           specifying "Start" 10:00 and "Duration" 8 will result in an
+           "End" time of 18:30.
         '''
     , ""'user_dynamic.durations_allowed' : durations
     , ""'wp.durations_allowed'       : durations +
@@ -113,6 +119,15 @@ helptext = \
         '''
     , ""'email'                      :
       ""'''Email address for this %(Classname)s'''
+    , ""'end'                        :
+      ""'''Format xx:xx  (e.g. 17:00), is created automatically by the
+           system when you specify "Start" and "Duration". Attention: If
+           you specify both, "Start" and "End", with more than six hours
+           in between, the system will consult your user preferences and
+           subtract the lunch break, e.g. specifying "Start" 10:00 and
+           "End" 18:00 will result in a duration of 7.5 hours (because
+           half an hour lunch break was subtracted).
+        '''
     , ""'external_phone'             :
       ""'''Short mobile or external phone number, e.g., 6142.
            Can be concatenated with
@@ -226,6 +241,16 @@ helptext = \
         '''
     , ""'room'                       :
       ""'''Room number'''
+    , ""'split'                      :
+      ""'''The duration you entered can be split and connected to
+           different work packages. For that purpose enter the number of
+           hours you want to split from the rest (e.g 2).
+        '''
+    , ""'start'                      :
+      ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
+           be specified except for absences like e.g. holidays or sick
+           leave.
+        '''
     , ""'status'                     :
       ""'''Status of this %(Classname)s'''
     , ""'subject'                    :
@@ -246,6 +271,8 @@ helptext = \
       ""'''Persons who are assigned to the project and are allowed
            to book their effort on this project
         '''
+    , ""'time_activity'              :
+      ""'''Specifies the kind of work you did (e.g. meeting, ...)'''
     , ""'time_start'                 :
       ""'''Date when %(Classname)s officially starts'''
     , ""'time_end'                   :
@@ -283,6 +310,11 @@ helptext = \
     , ""'wp_no'                      :
       ""'''Work package number in the project. Number must be unique for
            the project and cannot be changed after assignment.
+        '''
+    , ""'wp'                         :
+      ""'''Only work packages where you have permission to register show
+           here. If you miss one, please contact the responsible project
+           manager
         '''
     , ""'wps'                        :
       ""'''For a better handling of the work load of a project it is
