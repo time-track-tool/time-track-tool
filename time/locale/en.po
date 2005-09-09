@@ -1283,11 +1283,11 @@ msgstr "Product"
 
 #: ../locale/attr.py:109 attr.py:109
 msgid "belongs_to_task"
-msgstr "Belongs to task"
+msgstr "Belongs to Workpackage"
 
 #: ../locale/attr.py:110 attr.py:110
 msgid "belongs_to_feature"
-msgstr "Belongs to feature"
+msgstr "Belongs to Requirement"
 
 #: ../locale/attr.py:111 attr.py:111
 msgid "estimated_effort"
@@ -1303,11 +1303,11 @@ msgstr "Closer"
 
 #: ../locale/attr.py:115 attr.py:115
 msgid "found_in_release"
-msgstr "Found in Release"
+msgstr "Found in Project"
 
 #: ../locale/attr.py:118 attr.py:118
 msgid "solved_in_release"
-msgstr "Solved in Release"
+msgstr "Solved in Project"
 
 #: ../locale/attr.py:122 attr.py:122
 msgid "files_affected"
@@ -1350,7 +1350,7 @@ msgstr "Document number"
 #: ../locale/attr.py:165 ../locale/attr.py:208 ../locale/attr.py:261
 #: ../schema.py:567 attr.py:165 attr.py:208 attr.py:261
 msgid "release"
-msgstr "Release"
+msgstr "Project"
 
 #: ../locale/attr.py:188 attr.py:188
 msgid "composed_of"
@@ -1374,7 +1374,7 @@ msgstr "Depends"
 
 #: ../locale/attr.py:195 attr.py:195
 msgid "tasks"
-msgstr "Tasks"
+msgstr "Workpackages"
 
 #: ../locale/attr.py:196 ../locale/attr.py:392 attr.py:196 attr.py:392
 msgid "defects"
@@ -1431,7 +1431,7 @@ msgstr "Documents"
 
 #: ../locale/attr.py:324 attr.py:324
 msgid "features"
-msgstr "Features"
+msgstr "Requirements"
 
 #: ../locale/attr.py:329 attr.py:329
 msgid "bugs"
@@ -1464,7 +1464,7 @@ msgstr "Estimated Begin"
 
 #: ../locale/attr.py:402 ../schema.py:582 attr.py:402
 msgid "feature"
-msgstr "Feature"
+msgstr "Requirement"
 
 #: ../locale/attr.py:405 attr.py:405
 msgid "estimated_end"
@@ -1548,15 +1548,15 @@ msgstr "Milestone"
 
 #: ../schema.py:118
 msgid "task_status"
-msgstr "Task Status"
+msgstr "Workpackage Status"
 
 #: ../schema.py:129
 msgid "task_kind"
-msgstr "Task Kind"
+msgstr "Workpackage Kind"
 
 #: ../schema.py:138
 msgid "feature_status"
-msgstr "Feature Status"
+msgstr "Requirement Status"
 
 #: ../schema.py:149
 msgid "defect_status"
@@ -1624,7 +1624,7 @@ msgstr "Document"
 
 #: ../schema.py:614
 msgid "task"
-msgstr "Task"
+msgstr "Workpackage"
 
 #: ../schema.py:635
 msgid "defect"
