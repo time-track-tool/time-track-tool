@@ -199,7 +199,11 @@
 <!-- body_title -->
   <tal:block
    tal:condition="python:request.user.username!='anonymous'">
-   <h3><span metal:define-slot="body_title"></span></h3>
+   <h3>
+    <span metal:define-slot="body_title">
+     <span tal:replace="Classname"/>
+    </span>
+   </h3>
   </tal:block>
 
 <!-- errors --->
