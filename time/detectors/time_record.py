@@ -315,13 +315,13 @@ def check_start_end_duration \
             raise Reject, _ ("Split must be < duration")
         duration -= split
         if start :
-            minutes = split * 60
-            hours   = int (split % 60)
-            minutes = minutes - hours * 60
+            hours   = int (split)
+            minutes = (split - hours) * 60
             dstart  = dstart + Interval ('%d:%d' % (hours, minutes))
             new_values ['start'] = dstart.pretty (hour_format)
         del new_values ['split']
         new_values ['duration']  = duration
+    return dstart, dend
 # end def check_start_end_duration
 
 def correct_work_location (db, wp, new_values) :
@@ -359,13 +359,38 @@ def new_time_record (db, cl, nodeid, new_values) :
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
-    check_start_end_duration (dr.date, start, end, duration, new_values)
+    dstart, dend = check_start_end_duration \
+        (dr.date, start, end, duration, new_values)
     if 'duration' in new_values and new_values ['duration'] == 0 :
         raise Reject, _ ('Duration must be non-zero for new time record')
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
     if 'wp' in new_values :
         correct_work_location (db, new_values ['wp'], new_values)
+    duration = new_values.get ('duration', None)
+    ls       = Date (db.user.get (dr.user, 'lunch_start'))
+    ls.year  = dr.date.year
+    ls.month = dr.date.month
+    ls.day   = dr.date.day
+    ld       = db.user.get (dr.user, 'lunch_duration')
+    hours    = int (ld)
+    minutes  = (ld - hours) * 60
+    le       = ls + Interval ('%d:%d' % (hours, minutes))
+    print duration, ls, ld, hours, minutes, le, start, dstart, dend
+    if duration > 6 and start and dstart < ls and dend > ls :
+        newrec  = { 'daily_record' : new_values ['daily_record']
+                  , 'start'        : le.pretty (hour_format) 
+                  }
+        
+        dur1    = (ls - dstart).as_seconds () / 3600.
+        dur2    = duration - dur1
+        if end :
+            dur2 -= ld
+        newrec ['duration']     = dur2
+        new_values ['end']      = ls.pretty (hour_format)
+        new_values ['duration'] = dur1
+        if dur2 > 0 :
+            db.time_record.create (** newrec)
 # end def new_time_record
 
 def check_time_record (db, cl, nodeid, new_values) :

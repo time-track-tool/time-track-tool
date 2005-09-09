@@ -22,9 +22,13 @@
 #--
 #
 import os
-from tempfile import mkstemp
 import shutil
 pjoin = os.path.join
+from roundup.cgi.TranslationService import get_translation
+from tempfile                       import mkstemp
+from roundup.date                   import Date
+from roundup.exceptions             import Reject
+_ = lambda x : x
 
 USER_SINGLE = """
 <tal:block metal:define-macro="%(macro_name)s">
@@ -114,6 +118,16 @@ def audit_user_fields(db, cl, nodeid, new_values):
         ln = new_values.get ("lastname" , cl.get (nodeid, "lastname" ))
         realname = " ".join ((fn, ln))
         new_values ["realname"] = realname
+    if 'lunch_duration' in new_values :
+        ld = new_values ['lunch_duration']
+        if ld * 3600 % 900 :
+            raise Reject, _ ("Times must be given in quarters of an hour")
+        new_values ['lunch_duration'] = int (ld * 4) / 4
+        if ld > 8 :
+            raise Reject, _ ("Lunchbreak of more than 8 hours? Sure?")
+    if 'lunch_start' in new_values :
+        ls = new_values ['lunch_start']
+        ls = Date (ls) # trigger date-spec error if this fails.
 # end def audit_user_fields
 
 def update_userlist_html (db, cl, nodeid, old_values) :
@@ -158,6 +172,9 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 # end def update_userlist_html
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     # fire before changes are made
     db.user.audit("set"   , audit_user_fields)
     db.user.audit("create", audit_user_fields)
@@ -165,4 +182,3 @@ def init (db) :
     db.user.react("set"   , update_userlist_html)
 
 # vim: set filetype=python ts=4 sw=4 et si
-#SHA: bf38ee5be0f92803df8c2abcf604075294144321
