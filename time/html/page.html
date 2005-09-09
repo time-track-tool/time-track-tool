@@ -611,8 +611,9 @@
   <input type="hidden" name=":startwith" tal:attributes="value request/startwith">
   <table border="0" bgcolor="#e0c0c0">
    <tr>
-    <th bgcolor="#C08080">
-     <tal:block metal:define-slot="query_title">Current Query Specification</tal:block>:
+    <th bgcolor="#C08080" i18n:translate="">
+     Query
+     <span tal:replace="Classname" i18n:name="Classname"/>
     </th>
    </tr>
 
