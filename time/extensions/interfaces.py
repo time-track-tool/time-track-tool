@@ -129,7 +129,7 @@ def html_calendar (request) :
 
     html will simply be a table.
     """
-    print request.form
+    #print request.form
     date_str  = request.form.getfirst ("date", ".")
     display   = request.form.getfirst ("display", date_str)
     template  = request.form.getfirst ("@template", "calendar")
@@ -193,7 +193,7 @@ def html_calendar (request) :
         for day_ in week_ :
             link = "javascript:form[field].value = '%d-%02d-%02d'; " \
                               "window.close ();" % (year, month, day_)
-            print curr_date, day_, month, year
+            #print curr_date, day_, month, year
             if day_  == curr_date.day   and \
                month == curr_date.month and \
                year  == curr_date.year :
@@ -260,17 +260,14 @@ def batch_has_status (batch, status) :
 
 def work_packages (db, daily_record) :
     """ Needs a HTML db and a HTML daily_record. """
+    date       = daily_record.date
     filterspec = \
         { 'bookers'    : db._db.getuid ()
-        , 'time_start' : ';%s' % daily_record.date
-        , 'time_end'   : '%s;' % daily_record.date
+        , 'time_start' : ';%s' % date
         }
-    x1 = db.time_wp.filter (filterspec = filterspec)
-    print x1
-    filterspec ['time_end'] = ''
-    x2 = db.time_wp.filter (filterspec = filterspec)
-    print x2
-    return x1 + x2
+    x = db.time_wp.filter (filterspec = filterspec)
+    x = [wp for wp in x if not wp.time_end or wp.time_end >= date]
+    return x
 # end def work_packages
 
 def sorted (vals, keys, fun = str) :
