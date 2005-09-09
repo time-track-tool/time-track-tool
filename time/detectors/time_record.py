@@ -42,14 +42,15 @@ from operator                       import add
 from time                           import gmtime
 
 get_user_dynamic = None
+user_has_role    = None
 _                = lambda x : x
 
 def check_timestamps (start, end, date) :
     start.year  = end.year  = date.year
     start.month = end.month = date.month
     start.day   = end.day   = date.day
-    if start >= end :
-        raise Reject, _ ("start and end must be on same day and start < end.")
+    if start > end :
+        raise Reject, _ ("start and end must be on same day and start <= end.")
     if start.timestamp () % 900 or end.timestamp () % 900 :
         raise Reject, _ ("Times must be given in quarters of an hour")
 # end def check_timestamp
@@ -165,9 +166,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
     user       = cl.get (nodeid, 'user')
     uid        = db.getuid ()
-    roles      = db.user.get (uid, 'roles')
-    rolenames  = dict ([(x.lower().strip(), 1) for x in roles.split(',')])
-    is_hr      = 'hr' in rolenames
+    is_hr      = user_has_role (db, uid, 'hr')
     old_status = cl.get (nodeid, 'status')
     status     = new_values.get ('status', old_status)
     supervisor = db.user.get (user, 'supervisor')
@@ -204,15 +203,27 @@ def check_daily_record (db, cl, nodeid, new_values) :
                 )
 # end def check_daily_record
 
-def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
-    drec_id = cl.get (nodeid, 'daily_record')
+def update_timerecs (db, time_record_id, set_it) :
+    """ Update list of time_records with the given time_record_id
+        if do_reset is specified, we *remove* the given id from the
+        list, otherwise we *add* it.
+    """
+    id      = int (time_record_id)
+    drec_id = db.time_record.get (time_record_id, 'daily_record')
     trecs_o = [int (i) for i in db.daily_record.get (drec_id, 'time_record')]
     trecs   = dict ([(i, 1) for i in trecs_o])
-    trecs [int (nodeid)] = 1
+    if set_it :
+        trecs [id] = 1
+    else :
+        del trecs [id]
     trecs   = trecs.keys ()
     trecs.sort ()
     if trecs != trecs_o :
         db.daily_record.set (drec_id, time_record = [str (i) for i in trecs])
+# end def update_timerecs
+
+def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
+    update_timerecs (db, nodeid, True)
 # end def update_time_record_in_daily_record
 
 def new_daily_record (db, cl, nodeid, new_values) :
@@ -232,6 +243,9 @@ def new_daily_record (db, cl, nodeid, new_values) :
     for i in 'user', 'date' :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+    user = new_values ['user']
+    if uid != user and not user_has_role (db, uid, 'controlling') :
+        raise Reject, _ ("Only user and Controlling may create daily records")
     for i in 'time_record', :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
@@ -242,7 +256,6 @@ def new_daily_record (db, cl, nodeid, new_values) :
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
-    user = new_values ['user']
     if not get_user_dynamic (db, user, date) and uid != '1' :
         raise Reject, \
             _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
@@ -282,7 +295,7 @@ def check_start_end_duration \
         new_values ['start']    = dstart.pretty (hour_format)
         new_values ['end']      = dend.pretty   (hour_format)
     else :
-        if not duration :
+        if not duration and duration != 0 :
             raise Reject, _ ("Either specify duration or start/end")
         check_duration (duration)
         if 'duration' in new_values :
@@ -331,6 +344,8 @@ def new_time_record (db, cl, nodeid, new_values) :
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
+    if uid != dr.user and not user_has_role (db, uid, 'controlling') :
+        raise Reject, _ ("Only user and Controlling may create time records")
     dynamic  = get_user_dynamic (db, dr.user, dr.date)
     if not dynamic :
         if uid != '1' :
@@ -345,6 +360,8 @@ def new_time_record (db, cl, nodeid, new_values) :
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
     check_start_end_duration (dr.date, start, end, duration, new_values)
+    if 'duration' in new_values and new_values ['duration'] == 0 :
+        raise Reject, _ ('Duration must be non-zero for new time record')
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
     if 'wp' in new_values :
@@ -391,18 +408,32 @@ def check_time_record (db, cl, nodeid, new_values) :
         correct_work_location (db, wp, new_values)
 # end def check_time_record
 
+def check_for_retire (db, cl, nodeid, old_values) :
+    if cl.get (nodeid, 'duration') == 0 :
+        cl.retire (nodeid)
+# end def check_for_retire
+
+def check_retire (db, cl, nodeid, dummy) :
+    """ remove ourselves from the daily record """
+    update_timerecs (db, nodeid, False)
+# end def check_retire
+
 def init (db) :
     import sys, os
-    global _, get_user_dynamic
+    global _, get_user_dynamic, user_has_role
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    user_dynamic = __import__ ('user_dynamic', globals (), locals ())
+    user_dynamic     = __import__ ('user_dynamic', globals (), locals ())
     get_user_dynamic = user_dynamic.get_user_dynamic
+    common           = __import__ ('common', globals (), locals ())
+    user_has_role    = common.user_has_role
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_record.audit  ("create", new_time_record)
     db.time_record.audit  ("set",    check_time_record)
     db.time_record.react  ("create", update_time_record_in_daily_record)
+    db.time_record.react  ("set",    check_for_retire)
+    db.time_record.react  ("retire", check_retire)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
 # end def init

@@ -118,6 +118,7 @@
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
+       tal:condition="i/is_view_ok"
        tal:define="cls       python:['normal','alt'][repeat['i'].index%2]
                   ;idx       python:repeat['i'].index + 1
                   ;editable  python:str (i.status) == 'open'

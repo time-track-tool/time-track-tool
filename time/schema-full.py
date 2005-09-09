@@ -755,19 +755,19 @@ classes = \
     , ("task_status"         , ["User"], ["Admin"           ])
     # Time-Tracking classes
     # For daily_record, time_record, additional restrictions apply
-    , ("cost_center"         , ["User"], ["Controlling"     ])
-    , ("cost_center_group"   , ["User"], ["Controlling"     ])
-    , ("cost_center_status"  , ["User"], ["Controlling"     ])
-    , ("daily_record"        , ["User"], ["HR","Controlling"])
-    , ("daily_record_status" , ["User"], ["Admin"           ])
-    , ("time_activity"       , ["User"], ["Controlling"     ])
-    , ("time_project"        , ["User"], ["Project"         ])
-    , ("time_project_status" , ["User"], ["Project"         ])
-    , ("time_record"         , [      ], ["HR","Controlling"])
-    , ("time_wp"             , ["User"], ["Project"         ])
-    , ("time_wp_group"       , ["User"], ["Project"         ])
-    , ("user_dynamic"        , [      ], ["HR"              ])
-    , ("work_location"       , ["User"], ["Controlling"     ])
+    , ("cost_center"         , ["User"],             ["Controlling"     ])
+    , ("cost_center_group"   , ["User"],             ["Controlling"     ])
+    , ("cost_center_status"  , ["User"],             ["Controlling"     ])
+    , ("daily_record"        , ["HR","Controlling"], ["HR","Controlling"])
+    , ("daily_record_status" , ["User"],             ["Admin"           ])
+    , ("time_activity"       , ["User"],             ["Controlling"     ])
+    , ("time_project"        , ["User"],             ["Project"         ])
+    , ("time_project_status" , ["User"],             ["Project"         ])
+    , ("time_record"         , ["HR","Controlling"], ["HR","Controlling"])
+    , ("time_wp"             , ["User"],             ["Project"         ])
+    , ("time_wp_group"       , ["User"],             ["Project"         ])
+    , ("user_dynamic"        , ["HR","Controlling"], ["HR"              ])
+    , ("work_location"       , ["User"],             ["Controlling"     ])
     ]
 
 class_field_perms = \
@@ -825,6 +825,10 @@ for cl, view_list, edit_list in classes :
     for editor in edit_list :
         db.security.addPermissionToRole (editor, 'Edit',   cl)
         db.security.addPermissionToRole (editor, 'Create', cl)
+
+# For the following the use is regulated by auditors.
+db.security.addPermissionToRole ('User', 'Create', 'time_record')
+db.security.addPermissionToRole ('User', 'Create', 'daily_record')
 
 for cl, perm, roles, props in class_field_perms :
     p = db.security.addPermission \

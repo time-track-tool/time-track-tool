@@ -92,5 +92,11 @@ def check_name_len (_, name) :
             _ ('Name "%(name)s" too long (> 25 characters)') % locals ()
 # end def name_len
 
+def user_has_role (db, uid, role) :
+    roles = db.user.get (uid, 'roles')
+    roles = dict ([(r.lower ().strip (), 1) for r in roles.split (',')])
+    role  = role.lower ().strip ()
+    return role in roles
+# end def user_has_role
 
 ### __END__ feature

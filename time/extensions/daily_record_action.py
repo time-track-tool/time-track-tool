@@ -354,7 +354,6 @@ def prev_week (db, request) :
         db  = db._db
     except AttributeError :
         pass
-    print db
     start, end = date_range (db, request.filterspec)
     n_end   = start - Interval ('1d')
     n_start = n_end - Interval ('6d')
@@ -400,7 +399,6 @@ class Daily_Record_Common (Action, autosuper) :
         columns         = request.columns
         assert (request.classname == 'daily_record')
         start, end      = date_range (self.db, filterspec)
-        print "interval:", start, end
         self.start      = start
         self.end        = end
         max             = start + Interval ('31d')
@@ -466,7 +464,6 @@ class Daily_Record_Action (Daily_Record_Common) :
               , ':filter'    : ','.join (self.request.filterspec.keys ())
               }
             )
-        print "URL:", url
         raise Redirect, url
     # end def handle
 
@@ -628,7 +625,6 @@ def approvals_pending (db, request, userlist) :
                     latest   = date
                 filter ['date'] = pretty_range (* week_from_date (date))
                 filter ['user'] = u
-                print request.filterspec
                 pending [u][week] = \
                     [ None
                     , request.indexargs_url ('', editdict)
@@ -637,12 +633,9 @@ def approvals_pending (db, request, userlist) :
             for k in pending [u].iterkeys () :
                 if interval < Interval ('31d') :
                     filter ['date'] = pretty_range (earliest, latest)
-                    print request.filterspec
                     pending [u][k][0] = request.indexargs_url ('', editdict)
                 else :
-                    print request.filterspec
                     pending [u][k][0] = pending [u][k][1]
-                print pending [u][k]
     request.filterspec = spec
     return pending
 # end def approvals_pending
