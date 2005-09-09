@@ -276,6 +276,9 @@ def work_packages (db, daily_record) :
 def sorted (vals, keys, fun = str) :
     """ Sort given values by given keys. Should be optimized to use key
         sorting (available in python 2.4) and fuction "sorted".
+        The function "fun" is tricky. If you want to sort numerically,
+        use "int" here, but i18n.gettext is also nice for sorting by
+        translated values...
     """
     keyfun = lambda x, y : \
         cmp ([fun (x [k]) for k in keys], [fun (y [k]) for k in keys])
