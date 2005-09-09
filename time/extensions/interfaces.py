@@ -273,12 +273,12 @@ def work_packages (db, daily_record) :
     return x1 + x2
 # end def work_packages
 
-def sorted (vals, keys) :
+def sorted (vals, keys, fun = str) :
     """ Sort given values by given keys. Should be optimized to use key
         sorting (available in python 2.4) and fuction "sorted".
     """
     keyfun = lambda x, y : \
-        cmp ([str (x [k]) for k in keys], [str (y [k]) for k in keys])
+        cmp ([fun (x [k]) for k in keys], [fun (y [k]) for k in keys])
     vals   = [v for v in vals]
     vals.sort (keyfun)
     return vals

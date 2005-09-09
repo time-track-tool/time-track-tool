@@ -230,7 +230,7 @@
   <select name="create_new"
           onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
    <option value="">-- Create New --</option>
-   <tal:block tal:repeat="k klasses">
+   <tal:block tal:repeat="k python:utils.sorted (klasses, (0,), i18n.gettext)">
     <option tal:condition="python:request.user.hasPermission(k [1], k [0])"
             tal:attributes="value python:k[0] + '?@template=item'"
             tal:content="python:i18n.gettext (k[0])" />
@@ -248,7 +248,7 @@
    <option value="">-- View / Query --</option>
    <option value="query?@template=edit">Manage Queries</option>
    <tal:block
-    tal:repeat="k klasses">
+    tal:repeat="k python:utils.sorted (klasses, (0,), i18n.gettext)">
      <tal:block tal:define=
        " name  python:i18n.gettext (k [0])
        ; klass python:k [0]
