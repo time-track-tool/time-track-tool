@@ -179,30 +179,23 @@ class ExtProperty :
             return self.formatlink ()
         elif self.lnkname :
             if isinstance (self.hprop, MultilinkHTMLProperty) :
+                hprops = [i for i in self.hprop]
                 return ", ".join \
-                    ([ self.deref (i).formatlink ()
-                       for i in range (len (self.hprop))
-                    ])
+                    ([self.deref (p).formatlink () for p in hprops])
             else :
                 return self.deref ().formatlink ()
         else :
             return self.formatted ()
     # end def as_listentry
 
-    def deref (self, index = None) :
+    def deref (self, hprop = None) :
         """
             from an item get the property prop. This does some recursive
             magic: If prop consists of a path across several other Link
             properties, we dereference the whole prop list.
             Returns the new ExtProperty.
         """
-        p = self.hprop
-        if index is not None :
-            # Looks like newer version do no longer support index.
-            try :
-                p = self.hprop [index]
-            except AttributeError :
-                p = [i for i in self.hprop][index]
+        p = hprop or self.hprop
 
         for i in self.lnkattr.split ('.') :
             last_p = p
