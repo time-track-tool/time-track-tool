@@ -90,6 +90,11 @@ Datenübernahme
 Urlaub:
 - Spezifikation nach Email von BST 30.6. bzw. Antwort darauf von MMA
   1.7.
+- Notizen RSC -- remaining vacation for user
+  - compute vacation user had since last start
+  - compute vacation taken
+  - difference
+  - make a vacation summary report
 
 Auswertungen
 - (Meeting 15.7.) Es soll möglich sein, nach Department bzw.
