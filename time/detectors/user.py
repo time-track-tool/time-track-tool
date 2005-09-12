@@ -125,6 +125,8 @@ def audit_user_fields(db, cl, nodeid, new_values):
         new_values ['lunch_duration'] = int (ld * 4) / 4
         if ld > 8 :
             raise Reject, _ ("Lunchbreak of more than 8 hours? Sure?")
+        if ld < .5 :
+            raise Reject, _ ("Lunchbreak must be at least half an hour.")
     if 'lunch_start' in new_values :
         ls = new_values ['lunch_start']
         ls = Date (ls) # trigger date-spec error if this fails.
