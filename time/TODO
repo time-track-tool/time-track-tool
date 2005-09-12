@@ -1,0 +1,113 @@
+Default Queries
+  - For User:
+    - Only valid users
+    - sort by lastname
+    - lastname, firstname, nickname, username, phone, supervisor,
+      department, org_location, position, room
+- (Meeting 15.7.) Die Cost-Center Tabelle soll mit ID und Namen beginnen
+
+Abwesenheitsmeldung
+- (Meeting 21.7.) Abwesenheit aufgrund Dienstreise über die Eingabe
+  einer anderen work_location in der Maske , die man dann aber bereits
+  für die Zukunft ausfüllen und submitten muss -- noch unklar --
+  submit-absence Button. Momentan nicht dringend.
+- (Meeting 21.7.) Ausser Save und Submit Button soll es vermutlich einen
+  submit absence Botton geben.
+- (Meeting 7.7.) Die Freigabe der Zeiterfassung und des Urlaubes sollen
+  in Zukunft vom direkten Vorgesetzten (z.B. TAL) genehmigt werden, mit
+  der Möglichkeit, die Freigabe der Zeiterfassung zu delegieren. Bsp.
+  Zeiterfassung TAL an SPO kann an HR delegiert werden.
+- (Meeting 23.6.) It shall be possible to generate the company time
+  table automatically (using among other information the work_location)
+- (Meeting 15.6.) Entry of absence time because of illness shall be done
+  for example by the office. Check will be done by supervisor after
+  submission.
+- Verständigung über Email (Mail MMA, 21.7.): Um 2 Uhr morgens prüfen,
+  ob für einen User Submissions offen stehen, die des approvals harren.
+  Falls ja, kurze Mail mit dem Titel "You have n TTT submission
+  approval(s) pending."
+- (Mail MMA 1.9.) Sonderberechtigung Office, Time Records der
+  Projektgruppe Abwesenheit (Urlaub, Sonderurlaub, Krakenstand etc.)
+  anzulegen und "Submit Absence" zu drücken. Der jeweilige Supervisor
+  akzeptiert das dann, der Wechsel auf accepted sollte für diese Records
+  bei Bedarf aber von Rolle HR durchgeführt werden (Bescheinigung bei
+  Krankheit...).
+
+Feiertage:
+- (Meeting 21.7.) System soll Feiertage automatisch eintragen, je nach
+  location des users (aus seiner org_location). Feiertagstabelle muss
+  enthalten: 
+  - Datum
+  - ob halb oder ganz
+  Es gibt fixe Feiertage (wie 25. u. 26. 12.) die in jedem Jahr gleich
+  bleiben und solche die man jährlich einmal eingeben muss.
+- (Meeting 21.7.) Weiters kann der User beim Erfassen selbst Feiertage
+  eingeben (Protestantische Feiertage -- Karfreitag)
+- (Meeting 15.6.) Public Holiday will be entered in a general company
+  wide calendar and entered automatically into ZET.
+
+Erfassungsmaske, Erfassung
+- (Meeting 21.7.) Weiters fehlt noch die Summe der Stunden pro Tag.
+- (Meeting 21.7.) Kommentare: Nur für bereits gesavete Zeilen ist Knopf
+  rechts möglich, für die offene Zeile gibt es eine comments-Zeile unten
+- (Meeting 15.7.) Bei Work-Packages Admitted Users default "All
+  selected", dann dürfen wenn keine User speziell ausgewählt werden,
+  alle buchen.
+- (Meeting 15.7.) Für die Comments soll ein gängiges Icon (Notizblock
+  o.ä.) verwendet werden.
+- Copy/Paste ?!
+
+Permissions
+- (Meeting 15.7.) Der project owner und sein substitute sind berechtigt
+  WP anzulegen und Team members dafür einzutragen.
+- (Meeting 7.7.) User soll ... Daten wie seinen Titel oder seine Room Nr
+  selbst eingeben können
+
+
+Allgemein Web-Interface
+- (Meeting 21.7.) Im Help: Überschriften nicht mehr zentrieren sondern
+  nach oben
+
+Allgemein Datenbankschema, Verhalten
+- (Meeting 15.7.) Team members die einem Project zugeteilt werden,
+  werden automatisch den dazugehörigen WP vererbt. Umgekehrt sollen auch
+  alle Team member die einem WP zugeordnet werden im übergeordneten
+  Project wiederzufinden sein. -- really: ist das immer noch so?
+- (Meeting 15.7.) Project Status: Die Stati new, open, closed, hold (?)
+  sind aktiv und nicht für Projects zu verwenden. CC und WP können nur
+  mit aktiven Stati angelegt werden.
+- (Meeting 23.6.) Retire of a user give the opportunity to re-assign the
+  user-id -- this should not be possible and needs to be changed.
+- Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
+  + Datenexport für LDAP
+- Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
+  die den User darauf hinweist wie er es per Email wieder deaktiviert.
+  (Mail MMA 25.8.)
+
+Datenübernahme
+- (Meeting 7.7.) ... werden z.B. die Fotos ins Roundup übernommen
+
+Urlaub:
+- Spezifikation nach Email von BST 30.6. bzw. Antwort darauf von MMA
+  1.7.
+
+Auswertungen
+- (Meeting 15.7.) Es soll möglich sein, nach Department bzw.
+  Vorgesetzten auszuwerten
+- (Meeting 7.7.) Einführen einer User Group um nach (u.a. temporären)
+  Gruppen auswerten zu können
+- (Meeting 7.7.) Auswertung nach usern
+  - Name
+  - User Group
+  - Department
+    Keine Subdepartments, diese werden über User Group definiert
+  - Supervisor
+    Department und Supervisor sind nicht immer identisch
+  - Company
+- (Meeting 7.7.) Auswertung Projects
+  - CC-Group
+  - Kostenstellen
+  - WP
+  - WP-Groups
+- (Meeting 7.7.) Diese beiden Auswertungen (Projects und Users) sollen
+  in verschiedenen Richtungen kombinierbar sein.
