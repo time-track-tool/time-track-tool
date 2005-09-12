@@ -61,6 +61,8 @@ def new_time_wp (db, cl, nodeid, new_values) :
         new_values ['durations_allowed'] = False
     common.check_name_len (_, new_values ['name'])
     project = new_values  ['project']
+    if 'wp_no' in new_values and not new_values ['wp_no'] :
+        del new_values ['wp_no']
     for i in 'name', 'wp_no' :
         if i in new_values :
             check_duplicate_field_value (cl, project, i, new_values [i])

@@ -244,7 +244,10 @@ def new_daily_record (db, cl, nodeid, new_values) :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
     user = new_values ['user']
-    if uid != user and not user_has_role (db, uid, 'controlling') :
+    if  (   uid != user
+        and not user_has_role (db, uid, 'controlling')
+        and not user_has_role (db, uid, 'admin')
+        ) :
         raise Reject, _ ("Only user and Controlling may create daily records")
     for i in 'time_record', :
         if i in new_values :
@@ -279,7 +282,7 @@ def check_start_end_duration \
         means we can safely use date.pretty for converting back to
         string.
     """
-    dstart = None
+    dstart = dend = None
     if split :
         check_duration (split)
     if 'end' in new_values :
@@ -344,7 +347,10 @@ def new_time_record (db, cl, nodeid, new_values) :
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
-    if uid != dr.user and not user_has_role (db, uid, 'controlling') :
+    if  (   uid != dr.user
+        and not user_has_role (db, uid, 'controlling')
+        and not user_has_role (db, uid, 'admin')
+        ) :
         raise Reject, _ ("Only user and Controlling may create time records")
     dynamic  = get_user_dynamic (db, dr.user, dr.date)
     if not dynamic :
