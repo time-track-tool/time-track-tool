@@ -104,7 +104,7 @@ helptext = \
       ""'''Verbose description of %(Classname)s'''
     , ""'duration'                   :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
-           allowed, e.g., 7.10 is not allowed. The duration is computed
+           allowed, e.g., 7.10 is not allowed. The duration is created
            automatically by the system when you specify "Start" and
            "End". Attention: If you specify both, "Start" and "Duration"
            with a duration of more than six hours, the system will
