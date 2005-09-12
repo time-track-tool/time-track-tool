@@ -122,7 +122,7 @@ def audit_user_fields(db, cl, nodeid, new_values):
         ld = new_values ['lunch_duration']
         if ld * 3600 % 900 :
             raise Reject, _ ("Times must be given in quarters of an hour")
-        new_values ['lunch_duration'] = int (ld * 4) / 4
+        new_values ['lunch_duration'] = int (ld * 4) / 4.
         if ld > 8 :
             raise Reject, _ ("Lunchbreak of more than 8 hours? Sure?")
         if ld < .5 :
