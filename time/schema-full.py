@@ -893,7 +893,7 @@ p = db.security.addPermission \
     , properties  = \
         ( 'password', 'firstname', 'lastname', 'realname', 'private_phone'
         , 'substitute', 'subst_active', 'title', 'queries'
-        , 'lunch_start', 'lunch_duration', 'timezone'
+        , 'lunch_start', 'lunch_duration', 'room', 'timezone'
         )
     )
 db.security.addPermissionToRole('User', p)
