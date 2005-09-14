@@ -161,7 +161,7 @@
      <span class="classblock">
       <a tal:attributes="href python:
        [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
-         % ','.join (approval_for)
+         % ','.join (approval_for.keys ())
        , str (request.indexargs_url (classname, {'@template':'approve'}))
        ][classname == 'daily_record']
       ">

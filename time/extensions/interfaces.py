@@ -237,18 +237,20 @@ def button_submit_to (db, user, date) :
         ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
 # end def button_submit_to
 
-def button_approve (date) :
-    """ Create the approve button for time tracking approvals.  """
+def button_action (date, action, value) :
+    """ Create a button for time-tracking actions """
+    ''"approve", ''"deny", ''"edit again"
+    print action, value
     return \
-        '''<input type="button" value="Approve"
+        '''<input type="button" value="%s"
             onClick="
                 document.forms.edit_daily_record ['@action'].value =
-                    'daily_record_approve';
+                    'daily_record_%s';
                 document.forms.edit_daily_record ['date'].value = '%s'
                 document.edit_daily_record.submit ();
             ">
-        ''' % date
-# end def button_approve
+        ''' % (value, action, date)
+# end def button_action
 
 def batch_has_status (batch, status) :
     b = copy (batch)
@@ -292,6 +294,9 @@ def weekend_allowed (db, daily_record) :
 # end def weekend_allowed
 
 def approval_for (db) :
+    """ Return a hash of all user-ids for which the current db.getuid()
+        user may approve time records
+    """
     try :
         db  = db._db
     except AttributeError :
@@ -303,15 +308,15 @@ def approval_for (db) :
     approve_for = []
     for u in clearer_for :
         approve_for.extend (db.user.find (supervisor = u))
-    return approve_for
+    return dict ([(a, 1) for a in approve_for])
 # end def approval_for
 
 def init (instance) :
     import sys, os
     global _, get_user_dynamic
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
-    user_dynamic = __import__ ('user_dynamic', globals (), locals ())
-    get_user_dynamic = user_dynamic.get_user_dynamic
+    from user_dynamic import get_user_dynamic
+    from common       import clearance_by
     del (sys.path [0])
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
@@ -323,9 +328,10 @@ def init (instance) :
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
     reg ("button_submit_to",             button_submit_to)
-    reg ("button_approve",               button_approve)
+    reg ("button_action",                button_action)
     reg ("batch_has_status",             batch_has_status)
     reg ("work_packages",                work_packages)
     reg ("sorted",                       sorted)
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)
+    reg ("clearance_by",                 clearance_by)

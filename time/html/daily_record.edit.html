@@ -209,21 +209,30 @@
        </tr>
       </tal:block>
      </tal:block>
-     <tr tal:condition="is_open"><td colspan="5"/>
-      <td>
+     <tr tal:condition="python:is_open or is_submitted"><td colspan="5"/>
+      <td tal:condition="is_open">
        <tal:block tal:replace="structure python:utils.button_submit_to
         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
       </td>
-      <td>
+      <td tal:condition="python: not is_open and is_submitted">
+       <tal:block tal:replace="structure python:utils.button_action
+        (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))"/>
+      </td>
+      <td tal:condition="is_open">
        <input type="submit" value=" Save " i18n:attributes="value">
       </td>
       <td/>
      </tr>
-     <tr tal:condition="python: not is_open and is_submitted"><td colspan="5"/>
-      <td/>
+     <tr tal:condition="python:
+      is_submitted and request.filterspec ['user'][0] in approval_for">
+      <td colspan="5"/>
       <td>
-       <tal:block tal:replace="structure python:utils.button_approve
-        (request.filterspec ['date'])"/>
+       <tal:block tal:replace="structure python:utils.button_action
+        (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
+      </td>
+      <td tal:condition="not:is_open">
+       <tal:block tal:replace="structure python:utils.button_action
+        (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
       </td>
       <td/>
      </tr>

@@ -99,4 +99,14 @@ def user_has_role (db, uid, role) :
     return role in roles
 # end def user_has_role
 
+def clearance_by (db, userid) :
+    sv = db.user.get (userid, 'supervisor')
+    ap = db.user.get (sv, 'clearance_by') or sv
+    su = db.user.get (ap, 'substitute')
+    clearance = [ap]
+    if su and db.user.get (ap, 'subst_active') :
+        clearance.append (su)
+    return clearance
+# end def clearance_by
+
 ### __END__ feature

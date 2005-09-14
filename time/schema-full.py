@@ -64,6 +64,11 @@
 #--
 #
 
+import sys, os
+sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+from common import clearance_by
+del sys.path [0]
+
 class TTT_Issue_Class (Class, IssueClass) :
     """extends the IssueClass with some parameters common to all issues here
     at TTTech.
@@ -847,16 +852,6 @@ def own_user_record (db, userid, itemid) :
     """Determine whether the userid matches the item being accessed"""
     return userid == itemid
 # end def own_user_record
-
-def clearance_by (db, userid) :
-    sv = db.user.get (userid, 'supervisor')
-    ap = db.user.get (sv, 'clearance_by') or sv
-    su = db.user.get (ap, 'substitute')
-    clearance = [ap]
-    if su and db.user.get (ap, 'subst_active') :
-        clearance.append (su)
-    return clearance
-# end def clearance_by
 
 def ok_daily_record (db, userid, itemid) :
     """Determine if the user owns the daily record, a negative itemid

@@ -191,14 +191,14 @@ def check_daily_record (db, cl, nodeid, new_values) :
                   and (is_hr or may_give_clearance)
                   )
                or (   status == 'open'      and old_status == 'submitted'
-                  and (is_hr or may_give_clearance)
+                  and (is_hr or user == uid or may_give_clearance)
                   )
                or (   status == 'open'      and old_status == 'accepted'
                   and is_hr
                   )
                ) :
             raise Reject, \
-                ( _ ("Denied state change: %(status)s->%(old_status)s")
+                ( _ ("Denied state change: %(old_status)s->%(status)s")
                 % locals ()
                 )
 # end def check_daily_record
