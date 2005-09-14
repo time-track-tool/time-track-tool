@@ -227,6 +227,10 @@ helptext = \
         """
     , ""'recipients'                 :
       ""'''Only set if message was received via email.'''
+    , ""'remove'                     :
+      ""'''Remove attached item. Will not remove item from the database,
+           it can usually still be downloaded via the History button.
+        '''
     , ""'responsible'                :
       ""'''Person who is responsible for the %(Classname)s'''
     , ""'review.responsible'         :
@@ -355,6 +359,8 @@ def help_properties (klass) :
         p.append ('confirm')
     if klass.classname == 'daily_record' :
         p.append ('week')
+    if klass.classname == 'file' :
+        p.append (""'remove')
     if klass.classname == 'user_dynamic' :
         p.append (""'daily_hours')
     if 'announcements' in properties :

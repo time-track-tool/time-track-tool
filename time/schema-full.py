@@ -878,7 +878,7 @@ p = db.security.addPermission \
     , description = "User is allowed to edit (some of) their own user details"
     , properties  = \
         ( 'password', 'firstname', 'lastname', 'realname', 'private_phone'
-        , 'substitute', 'subst_active', 'title', 'queries', 'pictures'
+        , 'substitute', 'subst_active', 'title', 'queries'
         , 'lunch_start', 'lunch_duration', 'timezone'
         )
     )

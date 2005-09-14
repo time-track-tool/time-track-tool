@@ -71,7 +71,9 @@
     dict ([(k [0],menu_time) for k in menu_time [0]])
 ">
  <head>
-  <title metal:define-slot="head_title">Welcome @ TTTech</title>
+  <title metal:define-slot="head_title">
+   <span tal:replace="Classname"/>
+  </title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
   <link rel="stylesheet" type="text/css" href="@@file/style.css">
   <script tal:replace="structure request/base_javascript"></script>

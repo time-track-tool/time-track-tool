@@ -1,0 +1,32 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+   <tal:block metal:fill-slot="ttt_issue_content">
+
+    <tr>
+     <th tal:content="structure python:utils.fieldname (classname, 'type')"/>
+     <td tal:content="structure context/type/field"></td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname (classname, 'content')"/>
+     <td><input type="file" name="content" size="40"></td>
+    </tr>
+
+    <tr>
+     <td/>
+     <td>
+      <a tal:condition="python:context.id and context.is_view_ok()"
+         tal:attributes="href string:file${context/id}/${context/name}">
+       download
+      </a>
+     </td>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

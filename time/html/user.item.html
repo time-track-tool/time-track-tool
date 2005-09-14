@@ -31,6 +31,10 @@
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'firstname')" />
   <td tal:content="structure context/firstname/field"></td>
+  <td tal:condition="context/pictures" rowspan="9">
+    <img width="112" alt="Photo" tal:attributes="src python:
+     context.pictures.reverse().next ().download_url ()">
+  </td>
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'lastname')" />
@@ -162,13 +166,6 @@
       python:utils.fieldname ('user', 'alternate_addresses')"/>
   <td tal:content="structure context/alternate_addresses/multiline">alternate_addresses</td>
  </tr>
- <tr tal:condition="context/is_edit_ok">
-  <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
-  <td>
-   <input type="file"   name="file-1@content" size="40">
-   <input type="hidden" name="@link@pictures" value="file-1">
-  </td>
- </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname ('user', 'lunch_start')"/>
   <td tal:content="structure context/lunch_start/field"></td>
@@ -177,6 +174,13 @@
   <th tal:content="structure
       python:utils.fieldname ('user', 'lunch_duration')"/>
   <td tal:content="structure context/lunch_duration/field"></td>
+ </tr>
+ <tr tal:condition="context/pictures/is_edit_ok">
+  <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
+  <td>
+   <input type="file"   name="file-1@content" size="40">
+   <input type="hidden" name="@link@pictures" value="file-1">
+  </td>
  </tr>
 
  <tr tal:condition="context/is_edit_ok">
@@ -198,19 +202,20 @@
 </table>
 </form>
 
-<table class="files" tal:condition="context/pictures">
+<table class="files"
+ tal:condition="python: context.pictures and context.pictures.is_edit_ok ()">
  <tr>
-  <th colspan="4" class="header">pictures</th>
+  <th colspan="4" class="header" i18n:translate="">pictures</th>
  </tr>
  <tr>
-  <th>File name</th>
-  <th>Uploaded</th>
-  <th>Type</th>
-  <th>Remove</th>
+  <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
+  <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
+  <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
+  <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
  </tr>
  <tr tal:repeat="file context/pictures">
   <td>
-   <img tal:attributes="src file/download_url">
+   <img width="112" tal:attributes="src file/download_url">
   </td>
   <td>
    <span tal:content="file/creator">creator's name</span>,

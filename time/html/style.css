@@ -340,6 +340,10 @@ table.files th {
   text-align: left;
 }
 
+table.files th a[href]:hover { color: #333 }
+table.files th a[href]:link  { color: #333 }
+table.files th a[href]       { color: #333 }
+
 table.files td {
   font-family: monospace;
   empty-cells: show;
