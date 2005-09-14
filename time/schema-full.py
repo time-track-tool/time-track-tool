@@ -848,28 +848,42 @@ def own_user_record (db, userid, itemid) :
     return userid == itemid
 # end def own_user_record
 
-def own_daily_record (db, userid, itemid) :
-    """Determine if the user owns the daily record, a negative itemid
-       indicates that the record doesn't exits yet -- we allow creation
-       in this case.
-    """
-    if int (itemid) < 0 : # allow creation
-        return True
-    ownerid = db.daily_record.get (itemid, 'user')
-    return userid == ownerid
-# end def own_daily_record
+def clearance_by (db, userid) :
+    sv = db.user.get (userid, 'supervisor')
+    ap = db.user.get (sv, 'clearance_by') or sv
+    su = db.user.get (ap, 'substitute')
+    clearance = [ap]
+    if su :
+        clearance.append (su)
+    return clearance
+# end def clearance_by
 
-def own_time_record (db, userid, itemid) :
+def ok_daily_record (db, userid, itemid) :
     """Determine if the user owns the daily record, a negative itemid
        indicates that the record doesn't exits yet -- we allow creation
-       in this case.
+       in this case. Modification is also allowed by the supervisor or
+       the person to whom approvals are delegated.
     """
     if int (itemid) < 0 : # allow creation
         return True
-    dr      = db.time_record.get  (itemid, 'daily_record')
-    ownerid = db.daily_record.get (dr, 'user')
-    return userid == ownerid
-# end def own_time_record
+    ownerid   = db.daily_record.get (itemid, 'user')
+    clearance = clearance_by (db, ownerid)
+    return userid == ownerid or userid in clearance
+# end def ok_daily_record
+
+def ok_time_record (db, userid, itemid) :
+    """Determine if the user owns the daily record, a negative itemid
+       indicates that the record doesn't exits yet -- we allow creation
+       in this case. Modification is also allowed by the supervisor or
+       the person to whom approvals are delegated.
+    """
+    if int (itemid) < 0 : # allow creation
+        return True
+    dr        = db.time_record.get  (itemid, 'daily_record')
+    ownerid   = db.daily_record.get (dr, 'user')
+    clearance = clearance_by (db, ownerid)
+    return userid == ownerid or userid in clearance
+# end def ok_time_record
 
 p = db.security.addPermission \
     ( name        = 'Edit'
@@ -888,7 +902,7 @@ for perm in 'View', 'Edit' :
     p = db.security.addPermission \
         ( name        = perm
         , klass       = 'daily_record'
-        , check       = own_daily_record
+        , check       = ok_daily_record
         , description = 'User may edit own daily_records'
         )
     db.security.addPermissionToRole('User', p)
@@ -896,7 +910,7 @@ for perm in 'View', 'Edit' :
     p = db.security.addPermission \
         ( name        = perm
         , klass       = 'time_record'
-        , check       = own_time_record
+        , check       = ok_time_record
         , description = 'User may edit own time_records'
         )
     db.security.addPermissionToRole('User', p)

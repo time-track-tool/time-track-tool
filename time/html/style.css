@@ -482,4 +482,7 @@ table.otherinfo th {
   font-weight: bold;
   text-align: left;
 }
-/* SHA: 14bc13ebdf1ca0a0304765f03ee1c7342fff29aa */
+
+table.otherinfo th.header2 {
+  vertical-align: top;
+}

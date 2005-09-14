@@ -66,11 +66,6 @@ Permissions
 - (Meeting 7.7.) User soll ... Daten wie seinen Titel oder seine Room Nr
   selbst eingeben können
 
-
-Allgemein Web-Interface
-- (Meeting 21.7.) Im Help: Überschriften nicht mehr zentrieren sondern
-  nach oben
-
 Allgemein Datenbankschema, Verhalten
 - (Meeting 15.7.) Team members die einem Project zugeteilt werden,
   werden automatisch den dazugehörigen WP vererbt. Umgekehrt sollen auch
