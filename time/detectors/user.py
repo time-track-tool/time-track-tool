@@ -173,6 +173,10 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     shutil.move (tmpname, pjoin (root, userlist))
 # end def update_userlist_html
 
+def check_retire (db, cl, nodeid, old_values) :
+    raise Reject, _ ("Not allowed to retire a user")
+# end def check_retire
+
 def init (db) :
     global _
     _   = get_translation \
@@ -182,5 +186,6 @@ def init (db) :
     db.user.audit("create", audit_user_fields)
     db.user.react("create", update_userlist_html)
     db.user.react("set"   , update_userlist_html)
+    db.user.audit("retire", check_retire)
 
 # vim: set filetype=python ts=4 sw=4 et si

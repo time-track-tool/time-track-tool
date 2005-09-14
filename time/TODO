@@ -72,8 +72,6 @@ Allgemein Datenbankschema, Verhalten
 - (Meeting 15.7.) Project Status: Die Stati new, open, closed, hold (?)
   sind aktiv und nicht für Projects zu verwenden. CC und WP können nur
   mit aktiven Stati angelegt werden.
-- (Meeting 23.6.) Retire of a user give the opportunity to re-assign the
-  user-id -- this should not be possible and needs to be changed.
 - Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
   + Datenexport für LDAP
 - Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
