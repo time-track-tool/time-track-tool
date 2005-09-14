@@ -317,6 +317,7 @@ def init (instance) :
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from user_dynamic import get_user_dynamic
     from common       import clearance_by
+    from common       import user_has_role
     del (sys.path [0])
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
@@ -335,3 +336,4 @@ def init (instance) :
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)
     reg ("clearance_by",                 clearance_by)
+    reg ("user_has_role",                user_has_role)

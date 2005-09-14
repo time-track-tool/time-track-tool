@@ -23,14 +23,18 @@
 
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
-  " batch request/batch
-  ; pdict python: utils.properties_dict (db, context)
-  ; pdict python: dict
+  " batch   request/batch
+  ; pdict   python: utils.properties_dict (db, context)
+  ; pdict   python: dict
     ( user   = utils.ExtProperty (utils, pdict ['user'],   multiselect = 1)
     , date   = utils.ExtProperty (utils, pdict ['date'])
     , status = utils.ExtProperty (utils, pdict ['status'], multiselect = 1)
     )
-  ; props python: pdict.itervalues ()
+  ; props   python: pdict.itervalues ()
+  ; edit_ok python: (  db._db.getuid () == request.filterspec ['user'][0]
+                    or utils.user_has_role 
+                       (db._db, db._db.getuid (), 'controlling')
+                    )
   " tal:condition="context/is_view_ok">
   <tal:block tal:condition="not:context/is_view_ok">
    You are not allowed to view this page.
@@ -119,15 +123,16 @@
      <tal:block tal:repeat="i batch">
       <tal:block
        tal:condition="i/is_view_ok"
-       tal:define="cls       python:['normal','alt'][repeat['i'].index%2]
-                  ;idx       python:repeat['i'].index + 1
-                  ;editable  python:str (i.status) == 'open'
-                  ;w_allowed python:utils.weekend_allowed (db._db, i)
-                  ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
-                  ;allowed   python:w_allowed or not is_wend
-                  ;wps       python:utils.sorted 
+       tal:define=
+        "cls       python:['normal','alt'][repeat['i'].index%2]
+        ;idx       python:repeat['i'].index + 1
+        ;editable  python: edit_ok and str (i.status) == 'open'
+        ;w_allowed python:utils.weekend_allowed (db._db, i)
+        ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
+        ;allowed   python: (w_allowed or not is_wend) and edit_ok
+        ;wps       python:utils.sorted 
                              (utils.work_packages (db, i), ('project', 'name'))
-                  ">
+        ">
        <tr tal:attributes="class cls">
         <td class="subhead-nb"
          tal:content="structure python:i.date.pretty ('%a')"/>
@@ -209,7 +214,8 @@
        </tr>
       </tal:block>
      </tal:block>
-     <tr tal:condition="python:is_open or is_submitted"><td colspan="5"/>
+     <tr tal:condition="python:edit_ok and (is_open or is_submitted)">
+      <td colspan="5"/>
       <td tal:condition="is_open">
        <tal:block tal:replace="structure python:utils.button_submit_to
         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>

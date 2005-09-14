@@ -866,19 +866,27 @@ def ok_daily_record (db, userid, itemid) :
     return userid == ownerid or userid in clearance
 # end def ok_daily_record
 
-def ok_time_record (db, userid, itemid) :
+def own_time_record (db, userid, itemid) :
     """Determine if the user owns the daily record, a negative itemid
        indicates that the record doesn't exits yet -- we allow creation
-       in this case. Modification is also allowed by the supervisor or
-       the person to whom approvals are delegated.
+       in this case.
     """
     if int (itemid) < 0 : # allow creation
         return True
+    dr      = db.time_record.get  (itemid, 'daily_record')
+    ownerid = db.daily_record.get (dr, 'user')
+    return userid == ownerid
+# end def own_time_record
+
+def approval_for_time_record (db, userid, itemid) :
+    """Viewing is allowed by the supervisor or the person to whom
+       approvals are delegated.
+    """
     dr        = db.time_record.get  (itemid, 'daily_record')
     ownerid   = db.daily_record.get (dr, 'user')
     clearance = clearance_by (db, ownerid)
-    return userid == ownerid or userid in clearance
-# end def ok_time_record
+    return userid in clearance
+# end def approval_for_time_record
 
 p = db.security.addPermission \
     ( name        = 'Edit'
@@ -898,17 +906,25 @@ for perm in 'View', 'Edit' :
         ( name        = perm
         , klass       = 'daily_record'
         , check       = ok_daily_record
-        , description = 'User may edit own daily_records'
+        , description = 'User and approver may edit daily_records'
         )
     db.security.addPermissionToRole('User', p)
 
     p = db.security.addPermission \
         ( name        = perm
         , klass       = 'time_record'
-        , check       = ok_time_record
+        , check       = own_time_record
         , description = 'User may edit own time_records'
         )
     db.security.addPermissionToRole('User', p)
+
+p = db.security.addPermission \
+    ( name        = 'View'
+    , klass       = 'time_record'
+    , check       = approval_for_time_record
+    , description = 'Supervisor may see time record'
+    )
+db.security.addPermissionToRole('User', p)
 
 # add permission "May Change Status" to role "CCB" and "Admin"
 p = db.security.addPermission (name="May Change Status", klass="defect")
