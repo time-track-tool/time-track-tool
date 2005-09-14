@@ -853,7 +853,7 @@ def clearance_by (db, userid) :
     ap = db.user.get (sv, 'clearance_by') or sv
     su = db.user.get (ap, 'substitute')
     clearance = [ap]
-    if su :
+    if su and db.user.get (ap, 'subst_active') :
         clearance.append (su)
     return clearance
 # end def clearance_by
