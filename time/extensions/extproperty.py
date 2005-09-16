@@ -93,6 +93,7 @@ class ExtProperty :
         , linkclass    = None # optional function for getting css class
         , do_classhelp = None
         , fieldwidth   = None
+        , format       = None
         ) :
         self.utils        = utils
         self.prop         = prop
@@ -114,6 +115,7 @@ class ExtProperty :
         self.searchable   = searchable
         self.do_classhelp = do_classhelp
         self.fieldwidth   = fieldwidth
+        self.format       = format
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
@@ -162,7 +164,13 @@ class ExtProperty :
         if self.hprop is None or isinstance (self.hprop, MissingValue) :
             return ""
         elif isinstance (self.hprop, DateHTMLProperty) :
-            return self.hprop.pretty ('%Y-%m-%d')
+            if self.format :
+                format = self.format
+            else :
+                format = '%Y-%m-%d'
+            return self.hprop.pretty (format)
+        elif self.format :
+            return self.format % self.item [self.name]
         return str (self.hprop)
     # end def formatted
 
@@ -173,7 +181,7 @@ class ExtProperty :
 
     def as_listentry (self, item = None) :
         self._set_item (item)
-        if self.editable :
+        if self.editable and self.item [self.name].is_edit_ok () :
             return self.editfield ()
         if self.is_label :
             return self.formatlink ()

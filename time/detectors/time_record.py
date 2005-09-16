@@ -334,6 +334,13 @@ def correct_work_location (db, wp, new_values) :
         new_values ['work_location'] = work_location
 # end def correct_work_location
 
+def check_generated (new_values) :
+    if 'start' in new_values and 'start_generated' not in new_values :
+        new_values ['start_generated'] = False
+    if 'end'   in new_values and   'end_generated' not in new_values :
+        new_values   ['end_generated'] = False
+# end def check_generated
+
 def new_time_record (db, cl, nodeid, new_values) :
     """ auditor on time_record
     """
@@ -344,6 +351,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     for i in 'split', :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
+    check_generated (new_values)
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
@@ -403,6 +411,7 @@ def check_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i in new_values :
             raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
+    check_generated (new_values)
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     if status != db.daily_record_status.lookup ('open') :
         raise Reject, _ ('Editing of time records only for status "open"')

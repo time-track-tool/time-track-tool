@@ -236,6 +236,10 @@ table.list td.subhead-nb {
   border-right: 0
 }
 
+table.list td.generated input {
+    color: #008000;
+}
+
 table.list tr.time-nav th {
   border-style: hidden;
   text-align: center;

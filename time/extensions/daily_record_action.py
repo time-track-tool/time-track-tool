@@ -47,6 +47,7 @@ from roundup.date           import Date, Interval, Range
 from roundup                import hyperdb
 from time                   import gmtime
 from copy                   import copy
+from operator               import add
 
 ymd = '%Y-%m-%d'
 
@@ -648,6 +649,37 @@ def approvals_pending (db, request, userlist) :
     return pending
 # end def approvals_pending
 
+def daysum (db, daily_record, format = None) :
+    tr  = db.daily_record.get (daily_record, 'time_record')
+    val =  reduce (add, [db.time_record.get (i, 'duration') for i in tr], 0)
+    if format :
+        return format % val
+    return val
+# end def daysum
+
+def weeksum (db, drid, format = None) :
+    start, end = week_from_date (db.daily_record.get (drid, 'date'))
+    user       = db.daily_record.get (drid, 'user')
+    d   = start
+    sum = 0.
+    while d <= end :
+        dr   = db.daily_record.filter \
+            (None, dict (date = pretty_range (d, d), user = user))
+        assert (len (dr) == 1)
+        dr   = dr [0]
+        sum += daysum (db, dr)
+        d    = d + Interval ('1d')
+    if format :
+        return format % sum
+    return sum
+# end def weeksum
+
+def is_end_of_week (date) :
+    date = Date (str (date))
+    wday = gmtime (date.timestamp ())[6]
+    return wday == 6
+# end def is_end_of_week
+
 def init (instance) :
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
@@ -660,5 +692,8 @@ def init (instance) :
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
     util ('weekno',                   weekno_from_day)
+    util ('daysum',                   daysum)
+    util ('weeksum',                  weeksum)
     util ("approvals_pending",        approvals_pending)
+    util ("is_end_of_week",           is_end_of_week)
 # end def init

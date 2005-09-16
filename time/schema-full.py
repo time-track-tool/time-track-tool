@@ -389,6 +389,8 @@ time_record = Class \
     , daily_record          = Link      ("daily_record",  do_journal = "no")
     , start                 = String    (indexme = "no")
     , end                   = String    (indexme = "no")
+    , start_generated       = Boolean   ()
+    , end_generated         = Boolean   ()
     , duration              = Number    ()
     , wp                    = Link      ("time_wp",       do_journal = "no")
     , time_activity         = Link      ("time_activity", do_journal = "no")
