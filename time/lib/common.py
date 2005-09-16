@@ -100,7 +100,10 @@ def user_has_role (db, uid, role) :
 # end def user_has_role
 
 def clearance_by (db, userid) :
+    assert (userid)
     sv = db.user.get (userid, 'supervisor')
+    if not sv :
+        return []
     ap = db.user.get (sv, 'clearance_by') or sv
     su = db.user.get (ap, 'substitute')
     clearance = [ap]

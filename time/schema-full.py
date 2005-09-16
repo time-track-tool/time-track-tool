@@ -862,6 +862,8 @@ def ok_daily_record (db, userid, itemid) :
     if int (itemid) < 0 : # allow creation
         return True
     ownerid   = db.daily_record.get (itemid, 'user')
+    if not ownerid :
+        return False
     clearance = clearance_by (db, ownerid)
     return userid == ownerid or userid in clearance
 # end def ok_daily_record

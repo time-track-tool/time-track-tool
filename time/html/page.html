@@ -2,20 +2,32 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
 <html tal:define="
-   uname         python: str (request.user.username)
- ; classname     context/_classname|db/user/_classname
- ; Classname     python: i18n.gettext (classname)
- ; klass         python: db [classname] or default
- ; is_user       python: uname != 'anonymous'
- ; lbl           klass/_klass/labelprop
- ; labelprop     python: (lbl,'lastname')[lbl == 'title' and hasattr (context, 'lastname')]
- ; props         python: klass._klass.getprops ()
- ; has_msgs      python: 'messages'    in props
- ; has_files     python: 'files'       in props
- ; has_resp      python: 'responsible' in props
- ; has_nosy      python: 'nosy'        in props
- ; use_labelprop python: 1
- ; approval_for  python: utils.approval_for (db)
+   uname           python: str (request.user.username)
+ ; classname       context/_classname|db/user/_classname
+ ; Classname       python: i18n.gettext (classname)
+ ; klass           python: db [classname] or default
+ ; is_user         python: uname != 'anonymous'
+ ; lbl             klass/_klass/labelprop
+ ; labelprop       python: (lbl,'lastname')
+                           [lbl == 'title' and hasattr (context, 'lastname')]
+ ; props           python: klass._klass.getprops ()
+ ; has_msgs        python: 'messages'    in props
+ ; has_files       python: 'files'       in props
+ ; has_resp        python: 'responsible' in props
+ ; has_nosy        python: 'nosy'        in props
+ ; use_labelprop   python: 1
+ ; approval_for    python: utils.approval_for (db)
+ ; default_query   string::action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
+ ; default_queries python:
+   { 'cost_center'  : ':columns=name,status,organisation&:sort=-name&'
+                      ':filter=status&:pagesize=20&:startwith=0&status=5,1,2,4'
+   , 'daily_record' : ':columns=id,user,date,status&:sort=-id&'
+                      ':filter=user,date&:pagesize=20&:startwith=0&'
+                      'date=.-1%%3B.%%2B1&user=%s' % db._db.getuid ()
+   , 'user'         : ':columns=username,nickname,firstname,lastname'
+                      ',phone,department,supervisor,room,position&'
+                      ':sort=lastname&:pagesize=20&:startwith=0'
+   }
  ; menu_tracker  python:
    ( ( ('review',       'Edit')
      , ('meeting',      'Edit')
@@ -39,7 +51,7 @@
    ( ( ('cost_center',         'Edit')
      , ('cost_center_group',   'Edit')
      , ('cost_center_status',  'Edit')
-     , ('daily_record',        'Edit')
+     , ('daily_record',         None)
      , ('daily_record_status', 'Edit')
      , ('department',          'Edit')
      , ('user_dynamic',        'Edit')
@@ -52,19 +64,18 @@
      , ('time_activity',       'Edit')
      , ('time_project',        'Edit')
      , ('time_project_status', 'Edit')
-     , ('time_record',         None)
+     , ('time_record',          None)
      , ('time_wp',             'Edit')
      , ('time_wp_group',       'Edit')
      , ('user',                'Edit')
      , ('work_location',       'Edit')
      )
-   , ( ('cost_center',   'View')
-     , ('daily_record',  'View')
-     , ('user_dynamic',  'View')
-     , ('time_project',  'View')
-     , ('time_record',   'View')
-     , ('time_wp',       'View')
-     , ('time_wp_group', 'View')
+   , ( ('cost_center',   'View', '')
+     , ('daily_record',  'View', 'controlling')
+     , ('user_dynamic',  'View', '')
+     , ('time_project',  'View', '')
+     , ('time_wp',       'View', '')
+     , ('time_wp_group', 'View', '')
      )
    )
  ; menu_type     python:
@@ -175,7 +186,9 @@
      <span class="classblock">
       <a tal:condition="python:request.user.hasPermission('View', 'user')
                             or request.user.hasPermission('Edit', 'user')"
-         href="user" >User&nbsp;List</a>
+         tal:attributes="href python: 'user?' + default_queries ['user']">
+         User&nbsp;List
+      </a>
      </span>
     </td>
 
@@ -248,7 +261,7 @@
 <!-- Macro to display query selector in menu -->
 <td metal:define-macro="select_query" class="sidebar" nowrap>
  <span class="classblock"
-       tal:define="default_query string:@action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:group=&:columns=id&:columns=title&:columns=responsible&responsible=&id=&title=&:search_text=&@queryname=">
+       >
   <select name="query"
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
    <option value="">-- View / Query --</option>
@@ -259,9 +272,14 @@
        " name  python:i18n.gettext (k [0])
        ; klass python:k [0]
        ; perm  python:k [1]
-       " tal:condition="python:request.user.hasPermission (perm,klass)">
-         <option tal:attributes="value string:${klass}?${default_query}"
-                 tal:content="name"></option>
+       ; role  python:k [2]
+       " tal:condition="python:
+          (   request.user.hasPermission (perm, klass)
+          and (not role or utils.user_has_role (db._db, db._db.getuid (), role))
+          )">
+         <option tal:attributes="value python:
+          klass + '?' + default_queries.get (klass, default_query)"
+          tal:content="name"/>
          <option tal:define="
             queries python:db.query.filter
              (filterspec={'private_for':None, 'klass':klass})"
