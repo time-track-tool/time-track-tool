@@ -22,6 +22,8 @@ Abwesenheitsmeldung -> später
   Krankheit...).
   (Meeting 15.9.): Das Office soll nur die Abwesenheitsrekords einsehen
   können, alle anderen Daten sollen verborgen sein.
+- Button für Abwesenheitsmeldung abschicken soll "Absence notification"
+  heissen. (Telefonat MMA 19.9.)
 
 Feiertage:
 - (Meeting 21.7.) System soll Feiertage automatisch eintragen, je nach
@@ -59,15 +61,25 @@ Erfassungsmaske, Erfassung
   dass es sich um einen ZA handelt)
 - (Meeting 15.9.) Löschen eines Records/Tag -- Duration ohne Wert bzw.
   Wert löschen -- löscht die ganze Zeile.
+- Distribute soll auch für schon gesetzte WPs möglich sein (wie früher
+  beim split Feld). Verhalten identisch mit ungesetztem Feld, wenn
+  weniger als die Duration des Feldes eingegeben wird, bleibt für die
+  nicht angegebene Zeit das alte WP erhalten. (Telefonat MMA 19.9.)
 
 Permissions
 - (Meeting 15.7.) Der project owner und sein substitute sind berechtigt
   WP anzulegen und Team members dafür einzutragen.
 
 Allgemein Datenbankschema, Verhalten
-- (Meeting 15.7.) Project Status: Die Stati new, open, closed, hold (?)
-  sind aktiv und nicht für Projects zu verwenden. CC und WP können nur
-  mit aktiven Stati angelegt werden.
+- Das Feld "only_controlling" im project_status ist umzubenennen in
+  "active" (analog zu cost_center_status). (Telefonat MMA 19.9.)
+- Project status: Nur für die Stati für die "only_controlling" gesetzt
+  ist (zukünftig "active") dürfen WPs angelegt werden. (Telefonat MMA
+  19.9.)
+- Project status wird *nicht* für die Bestimmung der aktiven
+  Arbeitspakete pro User verwendet. Dafür sind die Gültigkeitszeiten im
+  WP zuständig. Das Feld wird nur benötigt um zu bestimmen ob WPs
+  angelegt werden dürfen. (Telefonat MMA 19.9.)
 - Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
   + Datenexport für LDAP
 - Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
@@ -105,6 +117,8 @@ Urlaub:
   - compute vacation taken
   - difference
   - make a vacation summary report
+- Es soll einen Vacation Report geben der Auskunft über genommenen und
+  übriggebliebenen Urlaub liefert. (Telefonat MMA 19.9.)
 
 Datenkonversion:
 - Einlesen von Resturlaub
@@ -133,3 +147,5 @@ Auswertungen
   - WP-Groups
 - (Meeting 7.7.) Diese beiden Auswertungen (Projects und Users) sollen
   in verschiedenen Richtungen kombinierbar sein.
+- Soll/Ist Vergleich (geplante vs. tatsächliche Aufwände) soll möglich
+  sein (Telefonat MMA 19.9.)
