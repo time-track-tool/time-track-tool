@@ -104,10 +104,11 @@
     <table class="list">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'start',         space = False)" colspan = "2"
-          width="2%"/>
+          ('time_record', 'start',         space = False)" class="nb"/>
+      <th class="nb"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'end',           space = False)"/>
+          ('time_record', 'end',           space = False)"
+       style="text-align:right"/>
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'duration',      space = False)"/>
       <th tal:content="structure python:utils.fieldname
@@ -118,7 +119,7 @@
           ('time_record', 'work_location', space = False)"/>
       <th tal:condition="is_open"
           tal:content="structure python:utils.fieldname
-          ('time_record', 'split',         space = False)"/>
+          ('time_record', 'dist',          space = False)"/>
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
@@ -134,12 +135,12 @@
                              (utils.work_packages (db, i), ('project', 'name'))
         ">
        <tr tal:attributes="class cls">
-        <td class="subhead"  width="1%"
+        <td class="subhead-nb" width="1%"
          tal:content="structure python:i.date.pretty ('%a')"/>
         <td class="subhead" colspan="2" width="1%"
          tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
         <td tal:content="python: utils.daysum (db._db, i.id, format = '%.2f')"
-         align="right" class="subhead"/>
+         style="text-align:right;" class="subhead"/>
         <td class="subhead"
          tal:content="structure python:pdict ['status'].colonfield (i)"/>
         <td class="subhead"/>
@@ -149,11 +150,10 @@
        <tal:block tal:repeat="r python: utils.sorted
         (i ['time_record'], ('start','wp'))">
         <tr tal:attributes="class cls">
-         <tal:block tal:repeat="pn python:[('start', 2),('end', 1)]">
-          <td  tal:define="gen python: r [pn [0] + '_generated']"
-           tal:attributes="class python: ['generated',''][not gen]
-                          ;colspan python: '%s' % pn [1]
-                          ;width   python: '%s%%' % pn [1]
+         <tal:block tal:repeat="pn python: [('start', 2),('end', 1)]">
+          <td tal:define="gen python: r [pn [0] + '_generated']"
+           tal:attributes="class python: ['generated',''][not gen] + pn [0]
+                          ;colspan python: pn [1]
                           "
            tal:content="structure python: 
             [ ''
@@ -165,7 +165,7 @@
          <td tal:content="structure python: utils.ExtProperty
           ( utils, r.duration, item = r, editable = editable, fieldwidth = 5
           , format = '%.2f'
-          ).as_listentry ()" align="right"/>
+          ).as_listentry ()" style="text-align:right;"/>
          <td>
           <select tal:condition="editable"
            tal:attributes="name python:'time_record%s@wp'%r.id">
@@ -191,12 +191,13 @@
           <tal:block tal:replace="structure python: utils.ExtProperty
           (utils, r [pn], item = r, editable = editable).menu ()"/>
          </td>
-         <td tal:condition="is_open">
+         <td tal:condition="python:is_open and not r.wp">
           <tal:block tal:condition="editable"
            tal:replace="structure python: utils.ExtProperty
-           (utils, r.split, item = r, editable = editable, fieldwidth = 5)
+           (utils, r.dist, item = r, editable = editable, fieldwidth = 5)
            .as_listentry ()"/>
          </td>
+         <td tal:condition="python:is_open and r.wp"/>
         </tr>
        </tal:block>
        <tr tal:condition="python: editable and allowed"
@@ -205,9 +206,12 @@
          tal:repeat="pn python:[('start',2),('end',1)]">
          <td tal:content="structure python:utils.new_property
           (context, db, 'time_record', -idx, pn [0]).field (5)"
-          tal:attributes="colspan python:pn [1]"/>
+          tal:attributes="colspan python: pn [1]
+                         ;class   python: pn [0]
+                         "/>
         </tal:block>
-        <td align="right" tal:content="structure python:utils.new_property
+        <td style="text-align:right;"
+         tal:content="structure python:utils.new_property
           (context, db, 'time_record', -idx, 'duration').field (5)"/>
         <td>
          <select
@@ -229,10 +233,10 @@
                         "/>
        </tr>
        <tr tal:condition="python:utils.is_end_of_week (i.date)">
-        <td/>
-        <td class="subhead" colspan="2" align="decimal"
+        <td class="subhead-nb"/>
+        <td class="subhead" colspan="2" style="text-align:right;"
          tal:content="python:'Week %s:' % utils.weekno (i.date)"/>
-        <td align="right" class="subhead"
+        <td style="text-align:right;" class="subhead"
          tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
         <td/><td/><td/><td tal:condition="is_open"/>
        </tr>

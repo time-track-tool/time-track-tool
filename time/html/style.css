@@ -213,6 +213,9 @@ table.list th.group {
   background-color: #f4f4ff;
   text-align: center;
 }
+table.list th.nb {
+  border-right: 0
+}
 
 table.list td {
   padding: 0 4px 0 4px;
@@ -237,7 +240,33 @@ table.list td.subhead-nb {
 }
 
 table.list td.generated input {
-    color: #008000;
+  color: #008000;
+}
+
+table.list td.generatedstart input {
+  color: #008000;
+}
+
+table.list td.generatedend input {
+  color: #008000;
+}
+
+table.list td.generatedstart {
+  border-right: 0;
+  text-align: left;
+}
+
+table.list td.generatedend {
+  text-align: right;
+}
+
+table.list td.start {
+  border-right: 0;
+  text-align: left;
+}
+
+table.list td.end {
+  text-align: right;
 }
 
 table.list tr.time-nav th {

@@ -34,6 +34,10 @@
 #
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
+from roundup.date       import Date, Interval
+from time               import gmtime
+
+ymd = '%Y-%m-%d'
 
 def update_feature_status (db, cl, nodeid, new_values) :
     """auditor on feature.set
@@ -112,4 +116,15 @@ def clearance_by (db, userid) :
     return clearance
 # end def clearance_by
 
-### __END__ feature
+def week_from_date (date) :
+    wday  = gmtime (date.timestamp ())[6]
+    start = date + Interval ("%sd" % -wday)
+    end   = date + Interval ("%sd" % (6 - wday))
+    return start, end
+# end def week_from_date
+
+def pretty_range (start, end) :
+    return ';'.join ([x.pretty (ymd) for x in (start, end)])
+# end def pretty_range
+
+### __END__

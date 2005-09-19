@@ -39,6 +39,7 @@
 #
 #--
 
+import os, sys
 from roundup.cgi.actions    import Action, EditItemAction
 from roundup.cgi.exceptions import Redirect
 from roundup.exceptions     import Reject
@@ -49,8 +50,9 @@ from time                   import gmtime
 from copy                   import copy
 from operator               import add
 
-ymd = '%Y-%m-%d'
-
+week_from_date = None
+ymd            = None
+pretty_range   = None
 class _autosuper (type) :
     def __init__ (cls, name, bases, dict) :
         super   (_autosuper, cls).__init__ (name, bases, dict)
@@ -62,17 +64,6 @@ class autosuper (object) :
     __metaclass__ = _autosuper
     pass
 # end class autosuper
-
-def pretty_range (start, end) :
-    return ';'.join ([x.pretty (ymd) for x in (start, end)])
-# end def pretty_range
-
-def week_from_date (date) :
-    wday  = gmtime (date.timestamp ())[6]
-    start = date + Interval ("%sd" % -wday)
-    end   = date + Interval ("%sd" % (6 - wday))
-    return start, end
-# end def week_from_date
 
 def date_range (db, filterspec) :
     if 'date' in filterspec :
@@ -681,6 +672,10 @@ def is_end_of_week (date) :
 # end def is_end_of_week
 
 def init (instance) :
+    global pretty_range, week_from_date, ymd
+    sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
+    from common import pretty_range, week_from_date, ymd
+    del sys.path [0]
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)

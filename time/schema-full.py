@@ -396,7 +396,7 @@ time_record = Class \
     , time_activity         = Link      ("time_activity", do_journal = "no")
     , work_location         = Link      ("work_location", do_journal = "no")
     , comment               = String    (indexme = "no")
-    , split                 = Number    ()
+    , dist                  = Number    ()
     )
 
 time_activity = Class \

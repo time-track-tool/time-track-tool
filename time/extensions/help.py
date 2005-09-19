@@ -102,6 +102,13 @@ helptext = \
       ""'''Substitute for the responsible Person of %(Classname)s'''
     , ""'description'                :
       ""'''Verbose description of %(Classname)s'''
+    , ""'dist'                       :
+      ""'''You can enter a work package and a number of hours to
+           distribute. The given number of hours will be distributed to
+           your time records which don't yet have a work package
+           associated. Only quarters of an hour allowed, e.g., 1.25 is
+           OK, while 1.1 isn't.
+        '''
     , ""'duration'                   :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
            allowed, e.g., 7.10 is not allowed. The duration is created
@@ -245,11 +252,6 @@ helptext = \
         '''
     , ""'room'                       :
       ""'''Room number'''
-    , ""'split'                      :
-      ""'''The duration you entered can be split and connected to
-           different work packages. For that purpose enter the number of
-           hours you want to split from the rest (e.g 2).
-        '''
     , ""'start'                      :
       ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
            be specified except for absences like e.g. holidays or sick

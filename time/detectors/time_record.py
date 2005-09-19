@@ -55,9 +55,13 @@ def check_timestamps (start, end, date) :
         raise Reject, _ ("Times must be given in quarters of an hour")
 # end def check_timestamp
 
-def check_duration (d) :
+def check_duration (d, max = 0) :
+    if d < 0 :
+        raise Reject, _ ("No negative times are allowed")
     if (d * 3600) % 900 :
         raise Reject, _ ("Times must be given in quarters of an hour")
+    if max and d > max :
+        raise Reject, _ ("Duration must not exceed %s hours" % max)
 # end def check_duration
 
 hour_format = '%H:%M'
@@ -272,7 +276,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
 # end def new_daily_record
 
 def check_start_end_duration \
-    (date, start, end, duration, new_values, split = 0) :
+    (date, start, end, duration, new_values, dist = 0) :
     """
         either duration or both start/end must be set but not both
         of duration/end
@@ -283,8 +287,12 @@ def check_start_end_duration \
         string.
     """
     dstart = dend = None
-    if split :
-        check_duration (split)
+    if dist :
+        check_duration (dist)
+    if start and ":" not in start :
+        start = start + ":00"
+    if end   and ":" not in end :
+        end   = end   + ":00"
     if 'end' in new_values :
         if not start :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : 'start'}
@@ -300,7 +308,7 @@ def check_start_end_duration \
     else :
         if not duration and duration != 0 :
             raise Reject, _ ("Either specify duration or start/end")
-        check_duration (duration)
+        check_duration (duration, 24)
         if 'duration' in new_values :
             new_values ['duration'] = duration
         if start :
@@ -313,16 +321,13 @@ def check_start_end_duration \
                 check_timestamps (dstart, dend, date)
                 new_values ['start'] = dstart.pretty (hour_format)
                 new_values ['end']   = dend.pretty   (hour_format)
-    if split :
-        if duration <= split :
-            raise Reject, _ ("Split must be < duration")
-        duration -= split
+    if dist and dist < duration :
+        duration -= dist
         if start :
-            hours   = int (split)
-            minutes = (split - hours) * 60
+            hours   = int (dist)
+            minutes = (dist - hours) * 60
             dstart  = dstart + Interval ('%d:%d' % (hours, minutes))
             new_values ['start'] = dstart.pretty (hour_format)
-        del new_values ['split']
         new_values ['duration']  = duration
     return dstart, dend
 # end def check_start_end_duration
@@ -337,7 +342,12 @@ def correct_work_location (db, wp, new_values) :
 def check_generated (new_values) :
     if 'start' in new_values and 'start_generated' not in new_values :
         new_values ['start_generated'] = False
-    if 'end'   in new_values and   'end_generated' not in new_values :
+    if (   (  'start'    in new_values
+           or 'end'      in new_values
+           or 'duration' in new_values
+           )
+       and 'end_generated' not in new_values
+       ) :
         new_values   ['end_generated'] = False
 # end def check_generated
 
@@ -348,7 +358,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
-    for i in 'split', :
+    for i in 'dist', :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     check_generated (new_values)
@@ -379,7 +389,7 @@ def new_time_record (db, cl, nodeid, new_values) :
         raise Reject, _ ('Duration must be non-zero for new time record')
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
-    if 'wp' in new_values :
+    if 'wp' in new_values and new_values ['wp'] :
         correct_work_location (db, new_values ['wp'], new_values)
     duration = new_values.get ('duration', None)
     ls       = Date (db.user.get (dr.user, 'lunch_start'))
@@ -390,7 +400,6 @@ def new_time_record (db, cl, nodeid, new_values) :
     hours    = int (ld)
     minutes  = (ld - hours) * 60
     le       = ls + Interval ('%d:%d' % (hours, minutes))
-    print duration, ls, ld, hours, minutes, le, start, dstart, dend
     if duration > 6 and start and dstart < ls and dend > ls :
         newrec  = { 'daily_record' : new_values ['daily_record']
                   , 'start'        : le.pretty (hour_format) 
@@ -419,31 +428,105 @@ def check_time_record (db, cl, nodeid, new_values) :
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
-    split    = new_values.get ('split',        cl.get (nodeid, 'split'))
+    dist     = new_values.get ('dist',         cl.get (nodeid, 'dist'))
     wp       = new_values.get ('wp',           cl.get (nodeid, 'wp'))
     date     = db.daily_record.get (drec, 'date')
+    user     = db.daily_record.get (drec, 'user')
     wl       = 'work_location'
     ta       = 'time_activity'
     location = new_values.get (wl,             cl.get (nodeid, wl))
     activity = new_values.get (ta,             cl.get (nodeid, ta))
     check_start_end_duration \
-        (date, start, end, duration, new_values, split = split)
+        (date, start, end, duration, new_values, dist = dist)
     if not location :
         new_values ['work_location'] = '1'
-    if split :
-        if 'wp' in new_values :
-            del new_values ['wp']
-            wp = cl.get (nodeid, 'wp')
-        newrec = dict \
-            ( daily_record  = cl.get (nodeid, 'daily_record')
-            , duration      = split
-            , wp            = wp
-            , time_activity = activity
-            , work_location = location
-            )
-        if (start) :
-            newrec ['start'] = start
-        cl.create (** newrec)
+    if dist and not ('wp' in new_values and wp and not cl.get (nodeid, 'wp')) :
+        raise Reject, _ \
+            ("Distribution only allowed for empty WP, new WP must be given")
+    if dist :
+        if dist < duration :
+            newrec = dict \
+                ( daily_record  = drec
+                , duration      = dist
+                , wp            = wp
+                , time_activity = activity
+                , work_location = location
+                )
+            start_generated = new_values.get \
+                ('start_generated', cl.get (nodeid, 'start_generated'))
+            if (start) :
+                newrec     ['start']           = start
+                newrec     ['end_generated']   = True
+                newrec     ['start_generated'] = start_generated
+                new_values ['start_generated'] = True
+            cl.create (** newrec)
+            if 'wp' in new_values :
+                del new_values ['wp']
+                wp = cl.get (nodeid, 'wp')
+        elif dist == duration :
+            # Nothing to do -- just set new wp
+            pass
+        else :
+            dist -= duration
+            wstart, wend = week_from_date (date)
+            dsearch = pretty_range (date, wend)
+            drs = db.daily_record.filter \
+                (None, dict (user = user, date = dsearch))
+            trs = db.time_record.filter  \
+                (None, {'daily_record' : drs})
+            trs = [db.time_record.getnode (t) for t in trs]
+            trs = [t for t in trs
+                   if not t.wp and (   t.daily_record != drec
+                                    or (  start and t.start > start
+                                       or not start
+                                       )
+                                   )
+                  ]
+            trs = [(db.daily_record.get (tr.daily_record, 'date'), tr.start, tr)
+                   for tr in trs
+                  ]
+            trs.sort ()
+            trs = [tr [2] for tr in trs]
+            sum = reduce (add, [t.duration for t in trs], 0)
+            if sum < dist :
+                raise Reject, _ \
+                    ("dist must not exceed sum of unassigned times in week")
+            for tr in trs :
+                if tr.duration <= dist :
+                    dist -= tr.duration
+                    db.time_record.set \
+                        ( tr.id
+                        , wp            = wp
+                        , time_activity = activity
+                        , work_location = location
+                        )
+                else :
+                    param = dict (duration = tr.duration - dist)
+                    newrec = dict \
+                        ( daily_record  = tr.daily_record
+                        , duration      = dist
+                        , wp            = wp
+                        , time_activity = activity
+                        , work_location = location
+                        )
+                    if tr.start :
+                        param ['start_generated'] = True
+                        dstart  = Date (tr.start)
+                        hours   = int (dist)
+                        minutes = (dist - hours) * 60
+                        dstart += Interval ('%d:%d' % (hours, minutes))
+                        param ['start'] = dstart.pretty (hour_format)
+                        newrec ['start']           = tr.start
+                        newrec ['end_generated']   = True
+                    cl.create          (** newrec)
+                    # warning side-effect, calling set will change
+                    # values in current tr!
+                    db.time_record.set (tr.id, **param)
+                    dist = 0
+                if not dist :
+                    break
+            assert (dist == 0)
+        del new_values ['dist']
     if wp :
         correct_work_location (db, wp, new_values)
 # end def check_time_record
@@ -460,12 +543,10 @@ def check_retire (db, cl, nodeid, dummy) :
 
 def init (db) :
     import sys, os
-    global _, get_user_dynamic, user_has_role
+    global _, get_user_dynamic, pretty_range, user_has_role, week_from_date
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    user_dynamic     = __import__ ('user_dynamic', globals (), locals ())
-    get_user_dynamic = user_dynamic.get_user_dynamic
-    common           = __import__ ('common', globals (), locals ())
-    user_has_role    = common.user_has_role
+    from user_dynamic import get_user_dynamic
+    from common       import pretty_range, user_has_role, week_from_date
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
