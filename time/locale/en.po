@@ -936,7 +936,7 @@ msgstr ""
 
 #: ../extensions/help.py:248 ../locale/attr.py:459 attr.py:459
 msgid "dist"
-msgstr ""
+msgstr "Dist."
 
 #: ../extensions/help.py:249
 msgid ""
