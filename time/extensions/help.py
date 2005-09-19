@@ -103,11 +103,15 @@ helptext = \
     , ""'description'                :
       ""'''Verbose description of %(Classname)s'''
     , ""'dist'                       :
-      ""'''You can enter a work package and a number of hours to
-           distribute. The given number of hours will be distributed to
-           your time records which don't yet have a work package
-           associated. Only quarters of an hour allowed, e.g., 1.25 is
-           OK, while 1.1 isn't.
+      ""'''Distribute: In a first step you can enter Start and End time
+           for each day or the hours you worked during the day. In a
+           second step you can distribute these hours to the different
+           work packages you worked on during the week by entering the
+           work package and the number of hours into the "Distr." field.
+           The remaining hours will be distributed to your time records
+           which don't have a work package associated.
+           This mechanism works after you press "Save" and will split a
+           single time record into two if necessary.
         '''
     , ""'duration'                   :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours

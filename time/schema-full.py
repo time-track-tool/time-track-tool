@@ -329,7 +329,6 @@ time_project = Class \
     , description           = String    ()
     , responsible           = Link      ("user")
     , deputy                = Link      ("user")
-    , team_members          = Multilink ("user")
     , organisation          = Link      ("organisation")
     , department            = Link      ("department")
     , time_start            = Date      (offset = 0)
@@ -337,6 +336,7 @@ time_project = Class \
     , planned_effort        = Number    ()
     , status                = Link      ("time_project_status")
     , work_location         = Link      ("work_location")
+    , max_hours             = Number    ()
     )
 time_project.setkey ("name")
 

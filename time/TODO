@@ -1,12 +1,4 @@
-Default Queries
-  - For User:
-    - Only valid users
-    - sort by lastname
-    - lastname, firstname, nickname, username, phone, supervisor,
-      department, org_location, position, room
-- (Meeting 15.7.) Die Cost-Center Tabelle soll mit ID und Namen beginnen
-
-Abwesenheitsmeldung
+Abwesenheitsmeldung -> später
 - (Meeting 21.7.) Abwesenheit aufgrund Dienstreise über die Eingabe
   einer anderen work_location in der Maske , die man dann aber bereits
   für die Zukunft ausfüllen und submitten muss -- noch unklar --
@@ -22,16 +14,14 @@ Abwesenheitsmeldung
 - (Meeting 15.6.) Entry of absence time because of illness shall be done
   for example by the office. Check will be done by supervisor after
   submission.
-- Verständigung über Email (Mail MMA, 21.7.): Um 2 Uhr morgens prüfen,
-  ob für einen User Submissions offen stehen, die des approvals harren.
-  Falls ja, kurze Mail mit dem Titel "You have n TTT submission
-  approval(s) pending."
 - (Mail MMA 1.9.) Sonderberechtigung Office, Time Records der
   Projektgruppe Abwesenheit (Urlaub, Sonderurlaub, Krakenstand etc.)
   anzulegen und "Submit Absence" zu drücken. Der jeweilige Supervisor
   akzeptiert das dann, der Wechsel auf accepted sollte für diese Records
   bei Bedarf aber von Rolle HR durchgeführt werden (Bescheinigung bei
   Krankheit...).
+  (Meeting 15.9.): Das Office soll nur die Abwesenheitsrekords einsehen
+  können, alle anderen Daten sollen verborgen sein.
 
 Feiertage:
 - (Meeting 21.7.) System soll Feiertage automatisch eintragen, je nach
@@ -45,9 +35,11 @@ Feiertage:
   eingeben (Protestantische Feiertage -- Karfreitag)
 - (Meeting 15.6.) Public Holiday will be entered in a general company
   wide calendar and entered automatically into ZET.
+- (Meeting 15.9.) Beim Anlegen des Daily Records sollen die Feiertage
+  automatisch eingetragen werden bzw. beim öffnen der neuen Woche sollen
+  die Feiertage automatisch eingetragen werden.
 
 Erfassungsmaske, Erfassung
-- (Meeting 21.7.) Weiters fehlt noch die Summe der Stunden pro Tag.
 - (Meeting 21.7.) Kommentare: Nur für bereits gesavete Zeilen ist Knopf
   rechts möglich, für die offene Zeile gibt es eine comments-Zeile unten
 - (Meeting 15.7.) Bei Work-Packages Admitted Users default "All
@@ -55,18 +47,24 @@ Erfassungsmaske, Erfassung
   alle buchen.
 - (Meeting 15.7.) Für die Comments soll ein gängiges Icon (Notizblock
   o.ä.) verwendet werden.
-- Copy/Paste ?!
-- Erfassung von Zeitausgleich??
+- Copy/Paste ?! (Meeting 15.9.): Statt dem copy/past soll es die
+  Einstellung geben, bei "on leave" des Feldes sollen sich die
+  Einstellungen des "aktuellen" Feldes auf alle darunter stehenden
+  Felder die noch keinem WP zugeordnet sind vererben. 
+- (Meeting 15.9.): Erfassung von Zeitausgleich: Bei der Duration null
+  Std. erlauben, und im WP Zeitausgleich explizit angeben. Existierende
+  ZA sollen bei der Importierung auf null Std. gesetzt werden.
+  Für die Checks werden von RSC die maximal Durations (pro Projekt und
+  Tag) benötigt, zB für ZA sind es null Std. (so weiß man automatisch,
+  dass es sich um einen ZA handelt)
+- (Meeting 15.9.) Löschen eines Records/Tag -- Duration ohne Wert bzw.
+  Wert löschen -- löscht die ganze Zeile.
 
 Permissions
 - (Meeting 15.7.) Der project owner und sein substitute sind berechtigt
   WP anzulegen und Team members dafür einzutragen.
 
 Allgemein Datenbankschema, Verhalten
-- (Meeting 15.7.) Team members die einem Project zugeteilt werden,
-  werden automatisch den dazugehörigen WP vererbt. Umgekehrt sollen auch
-  alle Team member die einem WP zugeordnet werden im übergeordneten
-  Project wiederzufinden sein. -- really: ist das immer noch so?
 - (Meeting 15.7.) Project Status: Die Stati new, open, closed, hold (?)
   sind aktiv und nicht für Projects zu verwenden. CC und WP können nur
   mit aktiven Stati angelegt werden.
@@ -75,6 +73,29 @@ Allgemein Datenbankschema, Verhalten
 - Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
   die den User darauf hinweist wie er es per Email wieder deaktiviert.
   (Mail MMA 25.8.)
+- In dynamischen Userdaten ein Feld, wielange der User maximal arbeiten
+  darf (statt derzeit einem Flag "may work more than 10 hours") -- wenn
+  in dem Feld 0 steht, gibt es keine Beschränkung.
+- Für die Reisezeit-Berechnung brauchen wir ein Flag in den dynamischen 
+  Userdaten, das uns sagt, ob Reisezeit für den User voll oder halb 
+  gerechnet wird. Vorschlag für Feldnamen "travel_full" mit default 
+  "no".
+  (Meeting 15.9.): Reisezeiten -- Special ob halbe oder nicht halbe Std.
+  angenommen werden, soll bei der Auswertung berücksichtigt werden und
+  nicht beim Eintragen der Stunden, mit einer entsprechenden Flag.
+  Sollte einfach umzusetzen sein, da auf das WP Reisezeit gebucht wird.
+- Für die Wieder-Auffüllung des Urlaubs (zum Jahreswechsel) brauche ich 
+  ein Feld in den dynamischen Userdaten, das mir sagt, wieviel 
+  Jahresurlaub ein User hat (soviel ich weiss, wird das mit zunehmendem 
+  Alter mehr?! Ausserdem wird das in verschiedenen Ländern wohl 
+  verschieden sein).
+- Verständigung über Email (Mail MMA, 21.7.): Um 2 Uhr morgens prüfen,
+  ob für einen User Submissions offen stehen, die des approvals harren.
+  Falls ja, kurze Mail mit dem Titel "You have n TTT submission
+  approval(s) pending."
+  (Meeting 15.9.): Diese eMail Benachrichtigung soll Montag morgens
+  erfolgen. Eigene eMail Adresse mit dem Subject: "Tracker" für eine
+  eindeutige Erkennung.
 
 Urlaub:
 - Spezifikation nach Email von BST 30.6. bzw. Antwort darauf von MMA
@@ -84,6 +105,13 @@ Urlaub:
   - compute vacation taken
   - difference
   - make a vacation summary report
+
+Datenkonversion:
+- Einlesen von Resturlaub
+- Einlesen von Jahresurlaub
+- Einlesen von Room-Number Infos aus dem Web
+- Einlesen von Department-Infos aus dem Web
+- Einlesen von Organisation-Infos aus dem Web
 
 Auswertungen
 - (Meeting 15.7.) Es soll möglich sein, nach Department bzw.

@@ -74,18 +74,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'team_members')"/>
-     <td>
-      <span tal:replace="structure context/team_members/field"/>
-      <span tal:replace="structure python:db.user.classhelp
-            ( 'username,firstname,lastname'
-            , property='team_members'
-            , width='600'
-            )"/>
-     </td>
-     <th tal:content="structure python:utils.fieldname
       (classname, 'work_location')"/>
      <td tal:content="structure python:context.work_location.menu ()"/>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'max_hours')"/>
+     <td tal:content="structure python:context.max_hours.field ()"/>
     </tr>
    </tal:block>
   </tal:block>
