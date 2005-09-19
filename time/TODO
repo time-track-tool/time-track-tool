@@ -125,7 +125,10 @@ Datenkonversion:
 - Einlesen von Jahresurlaub
 - Einlesen von Room-Number Infos aus dem Web
 - Einlesen von Department-Infos aus dem Web
-- Einlesen von Organisation-Infos aus dem Web
+- Einlesen von Organisation-Infos aus dem Web -> doch nicht RSC bekommt 
+  Tabelle wer nicht zu TTTech Vienna gehört (TTAutomotive, TTControl, 
+  Germany). (Telefonat MMA 19.9.)
+
 
 Auswertungen
 - (Meeting 15.7.) Es soll möglich sein, nach Department bzw.
