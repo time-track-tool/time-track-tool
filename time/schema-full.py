@@ -781,25 +781,23 @@ classes = \
     ]
 
 class_field_perms = \
-    [ ( "user", "Edit", ["IT"]
+    [ ( "user", "Edit", ["Admin", "HR", "IT"]
       , ( "address"
         , "alternate_addresses"
         , "nickname"
         , "password"
+        , "roles"
         , "timezone"
         , "username"
         )
       )
-    , ( "user", "Edit", ["HR"]
+    , ( "user", "Edit", ["Admin", "HR"]
       , ( "clearance_by", "department", "external_phone", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "phone", "pictures", "position", "private_phone", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
         , "title"
         )
-      )
-    , ( "user", "Edit", ["Admin","HR","IT"]
-      , ("roles",)
       )
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
@@ -825,6 +823,8 @@ roles = \
     , ("IT"            , "IT-Department"                 )
     , ("Project"       , "Project Office"                )
     ]
+
+db.security.addPermissionToRole ('HR', 'Create', 'user')
 
 for name, desc in roles :
     db.security.addRole (name = name, description = desc)

@@ -251,7 +251,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
     for i in 'user', 'date' :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
-    user = new_values ['user']
+    user  = new_values ['user']
+    uname = db.user.get (user, 'username')
     if  (   uid != user
         and not user_has_role (db, uid, 'controlling')
         and not user_has_role (db, uid, 'admin')
@@ -267,10 +268,11 @@ def new_daily_record (db, cl, nodeid, new_values) :
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
-    if not get_user_dynamic (db, user, date) and uid != '1' :
+    dyn  = get_user_dynamic (db, user, date)
+    if not dyn and uid != '1' :
         raise Reject, \
-            _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
-    if uid != '1' and not dynamic.booking_allowed :
+            _ ("No dynamic user data for %(uname)s, %(date)s") % locals ()
+    if uid != '1' and not dyn.booking_allowed :
         raise Reject, _ \
             ("Booking not allowed for %(uname)s, %(date)s") % locals ()
     if db.daily_record.filter \
@@ -370,18 +372,22 @@ def new_time_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     check_generated (new_values)
     dr       = db.daily_record.getnode (new_values ['daily_record'])
+    uname    = db.user.get (dr.user, 'username')
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
     if  (   uid != dr.user
         and not user_has_role (db, uid, 'controlling')
         and not user_has_role (db, uid, 'admin')
         ) :
-        raise Reject, _ ("Only user and Controlling may create time records")
+        raise Reject, _ \
+            ( ("Only %(uname)s and Controlling may create time records")
+            % locals ()
+            )
     dynamic  = get_user_dynamic (db, dr.user, dr.date)
     if not dynamic :
         if uid != '1' :
             raise Reject, _ \
-                ("No dynamic user data for %(user)s, %(date)s") % locals ()
+                ("No dynamic user data for %(uname)s, %(date)s") % locals ()
     else :
         if not dynamic.booking_allowed :
             raise Reject, _ \
