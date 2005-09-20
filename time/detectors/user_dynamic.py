@@ -75,7 +75,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
-    for i in 'valid_from', :
+    for i in 'valid_from', 'vacation_yearly', 'org_location', 'department' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be empty" % {'attr' : _ (i)}
     user       = new_values.get ('user',       cl.get (nodeid, 'user'))
@@ -87,7 +87,13 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
 # end def check_user_dynamic
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
-    for i in 'user', 'valid_from', 'long_worktime', 'vacation' :
+    for i in \
+        ( 'user'
+        , 'valid_from'
+        , 'vacation_yearly'
+        , 'org_location'
+        , 'department'
+        ) :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     if 'durations_allowed' not in new_values :
@@ -97,6 +103,8 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     valid_to   = new_values.get ('valid_to', None)
     new_values ['valid_from'], new_values ['valid_to'] = \
         check_ranges (cl, nodeid, user, valid_from, valid_to)
+    # FIXME: Todo: compute remaining vacation from old dyn record and
+    # all time tracking data for this user.
 # end def new_user_dynamic
 
 def close_existing (db, cl, nodeid, old_values) :

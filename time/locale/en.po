@@ -1636,12 +1636,18 @@ msgid "pictures"
 msgstr "Picture"
 
 #: ../locale/attr.py:540 attr.py:540
-msgid "long_worktime"
-msgstr "Work >= 10h"
+msgid "daily_worktime"
+msgstr "Daily worktime"
 
 #: ../locale/attr.py:544 attr.py:544
-msgid "vacation"
-msgstr "Vacation days"
+msgid "vacation_remaining"
+msgstr "Remaining vacation"
+
+msgid "vacation_yearly"
+msgstr "Yearly vacation"
+
+msgid "travel_full"
+msgstr "Travel full"
 
 #: ../locale/attr.py:558 attr.py:558
 msgid "code"

@@ -124,6 +124,14 @@ helptext = \
            "End" time of 18:30.
         '''
     , ""'user_dynamic.durations_allowed' : durations
+    , ""'vacation_remaining'         :
+      ""'''Remaining vacation for this user at the start of a dynamic
+           user data record.
+        '''
+    , ""'vacation_yearly'            :
+      ""'''Yearly vacation for this user: This is the amount of vacation
+           that is added for each year.
+        '''
     , ""'wp.durations_allowed'       : durations +
       ""'''This is mainly used for special %(Classname)ss, like,
            e.g., vacation.

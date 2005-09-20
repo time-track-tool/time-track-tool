@@ -125,11 +125,13 @@ def time_records_consistent (db, cl, nodeid) :
         if not (start [0] >= end [1] or start [1] >= end [0]) :
             msgs.append ("%(tr_pr)s overlap" % locals ())
     tr_pr = "%s, %s:" % (uname, sdate)
-    if not dynamic.long_worktime :
+    if dynamic.daily_worktime :
         work = reduce (add, [t.duration for t in trec], 0)
-        if work > 10 :
+        if work > dynamic.daily_worktime :
             msgs.append \
-                ("%(tr_pr)s Overall work-time more than 10 hours: %s" % work)
+                ( "%(tr_pr)s Overall work-time more than %s hours: %s"
+                % (daily_worktime, work)
+                )
     if not dynamic.durations_allowed :
         nobreak  = 0
         last_end = None

@@ -45,7 +45,7 @@
        ([ '%s=%s' % (i, context [i]) for i in
          [ 'user'
          , 'durations_allowed'
-         , 'long_worktime'
+         , 'daily_worktime'
          , 'weekend_allowed'
          , 'weekly_hours'
          , 'hours_mon'
@@ -55,7 +55,6 @@
          , 'hours_fri'
          , 'hours_sat'
          , 'hours_sun'
-         , 'vacation'
          , 'org_location'
          ]
         ]
@@ -85,18 +84,26 @@
           (classname, 'durations_allowed')"/>
       <td tal:content="structure python:context.durations_allowed.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'long_worktime')"/>
-      <td tal:content="structure python:context.long_worktime.field ()"/>
+          (classname, 'daily_worktime')"/>
+      <td tal:content="structure python:context.daily_worktime.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'weekend_allowed')"/>
       <td tal:content="structure python:context.weekend_allowed.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'travel_full')"/>
+      <td tal:content="structure python:context.travel_full.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'vacation')"/>
-      <td tal:content="structure python:context.vacation.field ()"/>
+          (classname, 'vacation_remaining')"/>
+      <td tal:content="structure python:context.vacation_remaining.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'vacation_yearly')"/>
+      <td tal:content="structure python:context.vacation_yearly.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'weekly_hours')"/>
       <td tal:content="structure python:context.weekly_hours.field ()"/>
@@ -126,6 +133,9 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'org_location')"/>
       <td tal:content="structure python:context.org_location.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'department')"/>
+      <td tal:content="structure python:context.department.menu ()"/>
      </tr>
     </tal:block>
    </tal:block>

@@ -24,9 +24,17 @@
    , 'daily_record' : ':columns=id,user,date,status&:sort=-id&'
                       ':filter=user,date&:pagesize=20&:startwith=0&'
                       'date=.-1%%3B.%%2B1&user=%s' % db._db.getuid ()
+   , 'time_project' : ':columns=name,responsible,organisation,department'
+                      ',status&:sort=-name&:filter=status&:pagesize=20&'
+                      ':startwith=0&status=1,2'
+   , 'time_wp'      : ':columns=name,wp_no,responsible,project,time_start'
+                      ',time_end,cost_center&:sort=-name&:group=project&'
+                      ':pagesize=20&:startwith=0'
    , 'user'         : ':columns=username,nickname,firstname,lastname'
                       ',phone,department,supervisor,room,position&'
                       ':sort=lastname&:pagesize=20&:startwith=0'
+   , 'user_dynamic' : ':columns=id,user,valid_from,org_location&:sort=-id&'
+                      ':pagesize=20&:startwith=0'
    }
  ; menu_tracker  python:
    ( ( ('review',       'Edit')
@@ -272,7 +280,7 @@
        " name  python:i18n.gettext (k [0])
        ; klass python:k [0]
        ; perm  python:k [1]
-       ; role  python:k [2]
+       ; role  python: ('',k [-1])[len (k) > 2]
        " tal:condition="python:
           (   request.user.hasPermission (perm, klass)
           and (not role or utils.user_has_role (db._db, db._db.getuid (), role))
