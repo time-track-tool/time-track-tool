@@ -90,15 +90,17 @@ def time_records_consistent (db, cl, nodeid) :
           worked for more than 6 hours and durations_allowed is not
           specified
     """
-    date  = cl.get (nodeid, 'date')
-    sdate = date.pretty ('%Y-%m-%d')
-    uid   = cl.get (nodeid, 'user')
-    uname = db.user.get (uid, 'username')
-    msgs  = []
-    dynamic = get_user_dynamic (db, uid, date)
+    date     = cl.get (nodeid, 'date')
+    sdate    = date.pretty ('%Y-%m-%d')
+    uid      = cl.get (nodeid, 'user')
+    uname    = db.user.get (uid, 'username')
+    msgs     = []
+    dynamic  = get_user_dynamic (db, uid, date)
     if not dynamic :
         raise Reject, "No dynamic user data for %(uname)s, %(date)s" % locals ()
-    trec = \
+    if not dynamic.booking_allowed :
+        raise Reject, "Booking not allowed for %(uname)s, %(date)s" % locals ()
+    trec     = \
         [db.time_record.getnode (i) for i in db.time_record.filter
          (None, dict (daily_record = nodeid), sort = ('+', 'start'))
         ]
@@ -268,6 +270,9 @@ def new_daily_record (db, cl, nodeid, new_values) :
     if not get_user_dynamic (db, user, date) and uid != '1' :
         raise Reject, \
             _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
+    if uid != '1' and not dynamic.booking_allowed :
+        raise Reject, _ \
+            ("Booking not allowed for %(uname)s, %(date)s") % locals ()
     if db.daily_record.filter \
         (None, {'date' : str (date.local (0)), 'user' : user}) :
         raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
@@ -375,9 +380,12 @@ def new_time_record (db, cl, nodeid, new_values) :
     dynamic  = get_user_dynamic (db, dr.user, dr.date)
     if not dynamic :
         if uid != '1' :
-            raise Reject, \
-                _ ("No dynamic user data for %(user)s, %(date)s") % locals ()
+            raise Reject, _ \
+                ("No dynamic user data for %(user)s, %(date)s") % locals ()
     else :
+        if not dynamic.booking_allowed :
+            raise Reject, _ \
+                ("Booking not allowed for %(uname)s, %(date)s") % locals ()
         if not dynamic.weekend_allowed and uid != '1' :
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6) :
