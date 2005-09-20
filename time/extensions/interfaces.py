@@ -261,14 +261,18 @@ def batch_has_status (batch, status) :
 # end def batch_open
 
 def work_packages (db, daily_record) :
-    """ Needs a HTML db and a HTML daily_record. """
+    """ Compute allowed work packages for this date and user of the
+        given daily_record. Needs a HTML db and a HTML daily_record.
+    """
     date       = daily_record.date
     filterspec = \
-        { 'bookers'    : db._db.getuid ()
+        { 'bookers'    : daily_record.user.id
         , 'time_start' : ';%s' % date
         }
-    x = db.time_wp.filter (filterspec = filterspec)
-    x = [wp for wp in x if not wp.time_end or wp.time_end >= date]
+    x1 = db.time_wp.filter (filterspec = filterspec)
+    filterspec ['bookers'] = '-1'
+    x2 = db.time_wp.filter (filterspec = filterspec)
+    x = [wp for wp in x1 + x2 if not wp.time_end or wp.time_end >= date]
     return x
 # end def work_packages
 
