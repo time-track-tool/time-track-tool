@@ -44,9 +44,6 @@ Feiertage:
 Erfassungsmaske, Erfassung
 - (Meeting 21.7.) Kommentare: Nur für bereits gesavete Zeilen ist Knopf
   rechts möglich, für die offene Zeile gibt es eine comments-Zeile unten
-- (Meeting 15.7.) Bei Work-Packages Admitted Users default "All
-  selected", dann dürfen wenn keine User speziell ausgewählt werden,
-  alle buchen.
 - (Meeting 15.7.) Für die Comments soll ein gängiges Icon (Notizblock
   o.ä.) verwendet werden.
 - Copy/Paste ?! (Meeting 15.9.): Statt dem copy/past soll es die
@@ -85,22 +82,6 @@ Allgemein Datenbankschema, Verhalten
 - Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
   die den User darauf hinweist wie er es per Email wieder deaktiviert.
   (Mail MMA 25.8.)
-- In dynamischen Userdaten ein Feld, wielange der User maximal arbeiten
-  darf (statt derzeit einem Flag "may work more than 10 hours") -- wenn
-  in dem Feld 0 steht, gibt es keine Beschränkung.
-- Für die Reisezeit-Berechnung brauchen wir ein Flag in den dynamischen 
-  Userdaten, das uns sagt, ob Reisezeit für den User voll oder halb 
-  gerechnet wird. Vorschlag für Feldnamen "travel_full" mit default 
-  "no".
-  (Meeting 15.9.): Reisezeiten -- Special ob halbe oder nicht halbe Std.
-  angenommen werden, soll bei der Auswertung berücksichtigt werden und
-  nicht beim Eintragen der Stunden, mit einer entsprechenden Flag.
-  Sollte einfach umzusetzen sein, da auf das WP Reisezeit gebucht wird.
-- Für die Wieder-Auffüllung des Urlaubs (zum Jahreswechsel) brauche ich 
-  ein Feld in den dynamischen Userdaten, das mir sagt, wieviel 
-  Jahresurlaub ein User hat (soviel ich weiss, wird das mit zunehmendem 
-  Alter mehr?! Ausserdem wird das in verschiedenen Ländern wohl 
-  verschieden sein).
 - Verständigung über Email (Mail MMA, 21.7.): Um 2 Uhr morgens prüfen,
   ob für einen User Submissions offen stehen, die des approvals harren.
   Falls ja, kurze Mail mit dem Titel "You have n TTT submission
@@ -119,6 +100,7 @@ Urlaub:
   - make a vacation summary report
 - Es soll einen Vacation Report geben der Auskunft über genommenen und
   übriggebliebenen Urlaub liefert. (Telefonat MMA 19.9.)
+- Jahresurlaub in vacation_yearly in dyn. Userdaten
 
 Datenkonversion:
 - Einlesen von Resturlaub
@@ -152,3 +134,8 @@ Auswertungen
   in verschiedenen Richtungen kombinierbar sein.
 - Soll/Ist Vergleich (geplante vs. tatsächliche Aufwände) soll möglich
   sein (Telefonat MMA 19.9.)
+- Reisezeit: halb (siehe Flag travel_full in dynamischen Userdaten)
+  (Meeting 15.9.): Reisezeiten -- Special ob halbe oder nicht halbe Std.
+  angenommen werden, soll bei der Auswertung berücksichtigt werden und
+  nicht beim Eintragen der Stunden, mit einer entsprechenden Flag.
+  Sollte einfach umzusetzen sein, da auf das WP Reisezeit gebucht wird.
