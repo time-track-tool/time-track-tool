@@ -21,10 +21,13 @@
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
    <tal:block metal:fill-slot="ttt_issue_content">
-    <tr>
+    <tr tal:define=
+     "uid  python:db._db.getuid ()
+     ;user python:db._db.user.get (uid, 'username')
+     ">
      <th tal:content="structure python:utils.fieldname
          (classname, 'deputy')"/>
-     <td colspan="3">
+     <td>
       <tal:block tal:define="name      string:deputy;
                              form      string:itemSynopsis;
                              dont_care string:don't care;
@@ -32,7 +35,25 @@
        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
       </tal:block>
      </td>
-
+     <th/>
+     <td tal:condition="python:
+      context.id
+      and (  user == str (context.responsible)
+          or user == str (context.deputy)
+          or utils.user_has_role (db._db, uid, 'Project')
+          )">
+      <a i18n:translate="" tal:attributes="href python:
+      'time_wp?:template=item&' + '&'.join
+      ([ '%s=%s' % (i [0], i [1]) for i in
+        [ ('project',     context.name)
+        , ('responsible', user)
+        , ('bookers',     user)
+        ]
+       ]
+      )">
+         new time_wp
+      </a>
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname

@@ -121,7 +121,7 @@ helptext = \
            work packages you worked on during the week by entering the
            work package and the number of hours into the "Distr." field.
            The remaining hours will be distributed to your time records
-           which don't have a work package associated.
+           which don\'t have a work package associated.
            This mechanism works after you press "Save" and will split a
            single time record into two if necessary.
         '''
@@ -202,6 +202,10 @@ helptext = \
       ""'''Preference for time tracking, start of lunch break'''
     , ""'manager'                    :
       ""'''Responsible person of the %(Classname)s'''
+    , ""'max_hours'                  :
+      ""'''If given for a %(Classname)s restricts the number of hours
+           you can book on this %(Classname)s for a single day.
+        '''
     , ""'messageid'                  :
       ""'''Message-ID if this message was received via email'''
     , ""'messages'                   :

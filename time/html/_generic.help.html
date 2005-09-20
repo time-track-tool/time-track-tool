@@ -40,9 +40,17 @@
        <tr tal:repeat="item batch">
            <tal:block tal:define="attr python:item[props[0]]">
              <td>
-                 <input type="checkbox" name="check"
-                 onclick="updatePreview();"
-                 tal:attributes="value attr; id string:id_$attr" />
+                 <input tal:attributes=
+                  "type  python: ('checkbox','radio')
+                   [(  (   ':type' in request.form
+                       and request.form [':type'].value
+                       )
+                    or ''
+                    ) == 'link'
+                   ]
+                  ;value attr
+                  ;id    string:id_$attr"
+                  name="check" onclick="updatePreview();"/>
              </td>
              <td tal:repeat="prop props">
                  <label class="classhelp-label"

@@ -26,15 +26,7 @@
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'daily_record')"/>
-      <td>
-       <span tal:replace="structure context/daily_record/field"/>
-       <!-- FIXME: classhelp should work for Link not only Multilik -->
-       <span tal:replace="structure python:db.daily_record.classhelp
-             ( 'id,user,date,status'
-             , property='daily_record'
-             , width='600'
-             )"/>
-      </td>
+      <td tal:content="structure context/daily_record/field"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'duration')"/>
       <td tal:content="structure python:context.duration.field (20)"/>
@@ -50,10 +42,9 @@
           (classname, 'time_wp')"/>
       <td colspan="3">
        <span tal:replace="structure context/wp/field"/>
-       <!-- FIXME: classhelp should work for Link not only Multilik -->
        <span tal:replace="structure python:db.time_wp.classhelp
              ( 'id,project,wp_no,name,description'
-             , property='wp'
+             , property='wp&amp;:type=link'
              , width='600'
              )"/>
       </td>

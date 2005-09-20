@@ -39,10 +39,9 @@
      <th tal:content="structure python:utils.fieldname (classname, 'project')"/>
      <td>
       <span tal:replace="structure context/project/field"/>
-      <!-- FIXME: classhelp should work for Link not only Multilik -->
       <span tal:replace="structure python:db.time_project.classhelp
             ( 'name,description'
-            , property='project'
+            , property='project&amp;:type=link'
             , width='600'
             )"/>
      </td>
@@ -50,8 +49,7 @@
          (classname, 'wp_no')"/>
      <td tal:content="structure python:context.wp_no.field ()"
          tal:condition="not:context/id"/>
-     <!-- FIXME after testing auditor this should be plain -->
-     <td tal:content="structure python:context.wp_no.field ()"
+     <td tal:content="structure python:context.wp_no.plain ()"
          tal:condition="context/id"/>
      <th/><td/>
     </tr>
