@@ -100,20 +100,22 @@ def date_help \
         date = "&date=%s" % x
     else :
         date = ""
-    return ( """<a class="classhelp" """
-             """href="javascript:help_window """
-           """('%s?@template=calendar"""
-             """&property=%s"""
-             """&form=%s%s', %d, %d)">%s</a>"""
-             % ( request.classname
-               , item._name
-               , form
-               , date
-               , width
-               , height
-               , label
+    if item.is_edit_ok () :
+        return ( """<a class="classhelp" """
+                 """href="javascript:help_window """
+               """('%s?@template=calendar"""
+                 """&property=%s"""
+                 """&form=%s%s', %d, %d)">%s</a>"""
+                 % ( request.classname
+                   , item._name
+                   , form
+                   , date
+                   , width
+                   , height
+                   , label
+                   )
                )
-           )
+    return ''
 # end def date_help
 
 def html_calendar (request) :
