@@ -99,7 +99,7 @@
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
-  <td tal:condition="context/supervisor/is_edit_ok">
+  <td>
    <tal:block tal:define="name      string:supervisor;
                           form      string:user_form;
                           dont_care string:don't care;
@@ -107,12 +107,10 @@
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
-  <td tal:content="context/supervisor/plain"
-   tal:condition="not:context/supervisor/is_edit_ok"/>
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'substitute')"/>
-  <td tal:condition="context/substitute/is_edit_ok">
+  <td>
    <tal:block tal:define="name      string:substitute;
                           form      string:user_form;
                           dont_care string:don't care;
@@ -120,8 +118,6 @@
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
-  <td tal:content="context/substitute/plain"
-   tal:condition="not:context/substitute/is_edit_ok"/>
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'subst_active')"/>

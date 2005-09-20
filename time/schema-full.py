@@ -824,10 +824,10 @@ roles = \
     , ("Project"       , "Project Office"                )
     ]
 
-db.security.addPermissionToRole ('HR', 'Create', 'user')
-
 for name, desc in roles :
     db.security.addRole (name = name, description = desc)
+
+db.security.addPermissionToRole ('HR', 'Create', 'user')
 
 for cl, view_list, edit_list in classes :
     for viewer in view_list :
