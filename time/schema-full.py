@@ -318,7 +318,7 @@ time_project_status = Class \
     , ''"time_project_status"
     , name                  = String    ()
     , description           = String    ()
-    , only_controlling      = Boolean   ()
+    , active                = Boolean   ()
     )
 time_project_status.setkey ("name")
 
@@ -498,9 +498,13 @@ user_dynamic = Class \
     , user                  = Link      ("user")
     , valid_from            = Date      (offset = 0)
     , valid_to              = Date      (offset = 0)
+    , booking_allowed       = Boolean   ()
+    , travel_full           = Boolean   ()
     , durations_allowed     = Boolean   ()
-    , daily_worktime        = Number    ()
     , weekend_allowed       = Boolean   ()
+    , vacation_remaining    = Number    ()
+    , vacation_yearly       = Number    ()
+    , daily_worktime        = Number    ()
     , weekly_hours          = Number    ()
     , hours_mon             = Number    ()
     , hours_tue             = Number    ()
@@ -509,11 +513,8 @@ user_dynamic = Class \
     , hours_fri             = Number    ()
     , hours_sat             = Number    ()
     , hours_sun             = Number    ()
-    , vacation_remaining    = Number    ()
-    , vacation_yearly       = Number    ()
     , org_location          = Link      ("org_location")
     , department            = Link      ("department")
-    , travel_full           = Boolean   ()
     )
 
 # FileClass automatically gets these properties:

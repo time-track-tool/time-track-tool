@@ -967,6 +967,9 @@ msgstr ""
 msgid "status"
 msgstr "Status"
 
+msgid "time_project.status"
+msgstr "Status"
+
 #: ../extensions/help.py:261
 msgid "Status of this %(Classname)s"
 msgstr ""
@@ -1389,6 +1392,9 @@ msgstr "Cost Center Group"
 msgid "active"
 msgstr "Active"
 
+msgid "time_project_status.active"
+msgstr "Active"
+
 #: ../locale/attr.py:89 ../locale/attr.py:537 ../schema.py:457 attr.py:89
 #: attr.py:537
 msgid "user"
@@ -1645,6 +1651,9 @@ msgstr "Remaining vacation"
 
 msgid "vacation_yearly"
 msgstr "Yearly vacation"
+
+msgid "booking_allowed"
+msgstr "Booking allowed"
 
 msgid "travel_full"
 msgstr "Travel full"

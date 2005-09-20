@@ -52,7 +52,15 @@ work_loc = \
     ""'''Location where you worked.'''
 
 helptext = \
-    { ""'activity'                   :
+    { ""'active'                     :
+      ""'''Set if this %(Classname)s is active.'''
+    , ""'time_project_status.active' :
+      ""'''Set if this %(Classname)s is active. This determines if new
+           work packages may be created for a project with this activity
+           status. If a status is marked active, new work packages may
+           be created for a project with this status.
+      '''
+    , ""'activity'                   :
       ""'''Date of last change'''
     , ""'actor'                      :
       ""'''Person who has done the last change'''
@@ -70,6 +78,10 @@ helptext = \
       ""'''Users who may book on this %(Classname)s. If nothing is
            selected here, all users may book on this %(Classname)s (e.g.,
            jour fixe).
+        '''
+    , ""'booking_allowed'            :
+      ""'''User is allowed to book time records during the validity span
+           of the given %(Classname)s
         '''
     , ""'clearance_by'               :
       ""'''Usually the supervisor of a person approves
@@ -268,6 +280,12 @@ helptext = \
       ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
            be specified except for absences like e.g. holidays or sick
            leave.
+        '''
+    , ""'time_project.status'        :
+      ""'''Status of this %(Classname)s. Note that this status is only
+           used for determining if new work packages may be created for
+           this %(Classname)s -- it is not used during time recording
+           for determining if the user may book on a work package.
         '''
     , ""'status'                     :
       ""'''Status of this %(Classname)s'''
