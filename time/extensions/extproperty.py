@@ -65,7 +65,7 @@ def menu_or_field (prop) :
 # end def menu_or_field
 
 dwidth  = 460
-dheight = 125
+dheight = 190
 def comment_edit \
     ( klass
     , property
