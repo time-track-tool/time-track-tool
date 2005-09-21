@@ -57,6 +57,17 @@ def new_time_wp (db, cl, nodeid, new_values) :
     for i in 'name', 'responsible', 'project', 'planned_effort', 'cost_center' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    prid = new_values ['project']
+    uid  = db.getuid ()
+    prj  = db.time_project.getnode (prid)
+    if  (  uid != prj.responsible
+        and uid != prj.deputy
+        and not common.user_has_role (db, uid, 'Project')
+        ) :
+        raise Reject, ("You may only create WPs for your own projects")
+    act  = db.time_project_status.get (prj.status, 'active')
+    if not act :
+        raise Reject, ("You may only create WPs for active projects")
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
     common.check_name_len (_, new_values ['name'])
@@ -76,7 +87,7 @@ def init (db) :
     import sys, os
     global common, _
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    common = __import__ ('common', globals (), locals ())
+    import common
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

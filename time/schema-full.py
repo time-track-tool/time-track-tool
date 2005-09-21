@@ -827,7 +827,9 @@ roles = \
 for name, desc in roles :
     db.security.addRole (name = name, description = desc)
 
-db.security.addPermissionToRole ('HR', 'Create', 'user')
+db.security.addPermissionToRole ('HR',   'Create', 'user')
+# the following is further checked in an auditor:
+db.security.addPermissionToRole ('User', 'Create', 'time_wp')
 
 for cl, view_list, edit_list in classes :
     for viewer in view_list :
@@ -885,6 +887,20 @@ def own_time_record (db, userid, itemid) :
     return userid == ownerid
 # end def own_time_record
 
+def ok_work_package (db, userid, itemid) :
+    """ Check if user is responsible for wp or if user is responsible
+        for project or is the deputy for project
+    """
+    if int (itemid) < 0 :
+        return False
+    ownerid = db.time_wp.get (itemid, 'responsible')
+    if ownerid == userid :
+        return True
+    prid    = db.time_wp.get (itemid, 'project')
+    project = db.time_project.getnode (prid)
+    return userid == project.responsible or userid == project.deputy
+# end def ok_work_package
+
 def approval_for_time_record (db, userid, itemid) :
     """Viewing is allowed by the supervisor or the person to whom
        approvals are delegated.
@@ -904,6 +920,18 @@ p = db.security.addPermission \
         ( 'password', 'firstname', 'lastname', 'realname', 'private_phone'
         , 'substitute', 'subst_active', 'title', 'queries'
         , 'lunch_start', 'lunch_duration', 'room', 'timezone'
+        )
+    )
+db.security.addPermissionToRole('User', p)
+
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'time_wp'
+    , check       = ok_work_package
+    , description = "User is allowed to edit (some of) their own user wps"
+    , properties  = \
+        ( 'responsible', 'description', 'cost_center'
+        , 'time_start', 'time_end', 'bookers', 'planned_effort'
         )
     )
 db.security.addPermissionToRole('User', p)

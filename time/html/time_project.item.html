@@ -41,7 +41,8 @@
       and (  user == str (context.responsible)
           or user == str (context.deputy)
           or utils.user_has_role (db._db, uid, 'Project')
-          )">
+          )
+      and context.status.active">
       <a i18n:translate="" tal:attributes="href python:
       'time_wp?:template=item&' + '&'.join
       ([ '%s=%s' % (i [0], i [1]) for i in
