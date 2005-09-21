@@ -114,7 +114,7 @@
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'wp',            space = False)"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'time_activity', space = False)"/>
+          ('time_record', 'time_activity', space = False)" colspan="2"/>
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'work_location', space = False)"/>
       <th tal:condition="is_open"
@@ -143,7 +143,7 @@
          style="text-align:right;" class="subhead"/>
         <td class="subhead"
          tal:content="structure python:pdict ['status'].colonfield (i)"/>
-        <td class="subhead"/>
+        <td class="subhead" colspan="2"/>
         <td class="subhead"/>
         <td tal:condition="is_open"/>
        </tr>
@@ -187,17 +187,22 @@
             ])
            "/>
          </td>
-         <td tal:repeat="pn python:['time_activity','work_location']">
-          <tal:block tal:replace="structure python: utils.ExtProperty
-          (utils, r [pn], item = r, editable = editable).menu ()"/>
-         </td>
+         <td class="nb" tal:content="structure python: utils.ExtProperty
+          (utils, r.time_activity, item = r, editable = editable).menu ()"/>
+         <td style="text-align:right;"
+          tal:condition="python:editable or r.comment"
+          tal:content="structure python: utils.ExtProperty
+          (utils, r.comment, item = r, editable = editable)
+          .comment_edit (form='edit_daily_record')"/>
+         <td tal:condition="python: not editable and not r.comment"/>
+         <td tal:content="structure python: utils.ExtProperty
+          (utils, r.work_location, item = r, editable = editable).menu ()"/>
          <td tal:condition="python:is_open">
           <tal:block tal:condition="editable"
            tal:replace="structure python: utils.ExtProperty
            (utils, r.dist, item = r, editable = editable, fieldwidth = 5)
            .as_listentry ()"/>
          </td>
-         <td tal:condition="python:is_open and r.wp"/>
         </tr>
        </tal:block>
        <tr tal:condition="python: editable and allowed"
@@ -222,10 +227,18 @@
              ([str (wp [i]) for i in 'project','wp_no','name'])"/>
          </select>
         </td>
-        <td tal:repeat="pn python:['time_activity','work_location']">
-         <tal:block tal:replace="structure python:utils.new_property
-           (context, db, 'time_record', -idx, pn).menu ()"/>
+        <td class="nb" tal:content="structure python:utils.new_property
+           (context, db, 'time_record', -idx, 'time_activity').menu ()"/>
+        <td style="text-align:right;"
+         tal:content="structure python:utils.comment_edit
+           ('time_record', 'time_record-%d@comment'%idx
+           , form='edit_daily_record'
+           , title=i18n.gettext ('comment')
+           , editable=editable
+           )">
         </td>
+        <td tal:content="structure python:utils.new_property
+           (context, db, 'time_record', -idx, 'work_location').menu ()"/>
         <td/>
         <input type="hidden"
          tal:attributes="name  python:'time_record-%d@daily_record'%idx
@@ -238,17 +251,17 @@
          tal:content="python:'Week %s:' % utils.weekno (i.date)"/>
         <td style="text-align:right;" class="subhead"
          tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
-        <td/><td/><td/><td tal:condition="is_open"/>
+        <td/><td colspan="2"/><td/><td tal:condition="is_open"/>
        </tr>
       </tal:block>
      </tal:block>
      <tr tal:condition="python:edit_ok and (is_open or is_submitted)">
       <td colspan="5"/>
-      <td tal:condition="is_open">
+      <td colspan="2" tal:condition="is_open">
        <tal:block tal:replace="structure python:utils.button_submit_to
         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
       </td>
-      <td tal:condition="python: not is_open and is_submitted">
+      <td colspan="2" tal:condition="python: not is_open and is_submitted">
        <tal:block tal:replace="structure python:utils.button_action
         (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))"/>
       </td>

@@ -316,7 +316,12 @@ def check_start_end_duration \
         new_values ['end']      = dend.pretty   (hour_format)
     else :
         if not duration and duration != 0 :
-            raise Reject, _ ("Either specify duration or start/end")
+            raise Reject, \
+                ( _ ("%s: You specified new values for %s but no duration")
+                % ( date.pretty (common.ymd)
+                  , ", ".join ([_ (i) for i in new_values.keys ()])
+                  )
+                )
         check_duration (duration, 24)
         if 'duration' in new_values :
             new_values ['duration'] = duration

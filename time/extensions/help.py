@@ -413,15 +413,17 @@ def help_properties (klass) :
 # end def help_properties
 
 def fieldname (cls, name, fieldname = None, space = True) :
-    nbsp = ['&nbsp;', ''][not space]
+    nbsp  = ['&nbsp;', ''][not space]
     if not fieldname : fieldname = name
-    prop = combined_name (cls, fieldname)
+    prop  = combined_name (cls, fieldname)
     if not prop in helptext :
         return "%s%s" % (_ (prop), nbsp)
-    return "<a href=\"javascript:help_window" \
-           "('%s?:template=property_help#%s', '500', '400')\">" \
-           "%s%s</a>" \
-           % (cls, prop, _ (prop), nbsp)
+    label = _ (prop)
+    return ("""<a title="Help for %s" href="javascript:help_window"""
+            """('%s?:template=property_help#%s', '500', '400')">"""
+            """%s%s</a>""" \
+            % (label, cls, prop, label, nbsp)
+           )
 
 # end def fieldname
 

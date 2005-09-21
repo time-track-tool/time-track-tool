@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="@@file/style.css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8;" />
+  <tal:block tal:condition="python:request.form.has_key('property')">
+   <title i18n:translate="">Comment editing</title>
+   <script language="Javascript" type="text/javascript"
+       tal:content="structure string:
+       // this is the name of the field in the original form that we're
+       // working on; Note that naming the variable 'form' won't work
+       // for storing the value -- seems form is special.
+       var field = '${request/form/property/value}';
+       var frm   = window.opener.document.${request/form/form/value};
+       ">
+   </script>
+  </tal:block>
+ </head>
+
+ <body class="body" tal:define="editable request/form/editable/value|nothing"
+  onload="document.frm_content ['comment'].value = frm [field].value; ">
+  <form name="frm_content" tal:attributes="action request/base">
+   <textarea type="text" name="comment" rows="5" cols="60" class="preview"
+    tal:attributes="readonly not:editable">
+   </textarea>
+   <input type="button" name="btn_apply" class="apply" value="OK" onclick="
+          frm [field].value = document.frm_content ['comment'].value;
+          window.close();" tal:condition="editable"/>
+   <input type="button" name="cancel" class="cancel" value="Cancel" onclick="
+          window.close();"/>
+  </form>
+ </body>
+</html>

@@ -37,6 +37,7 @@
 from roundup.cgi.templating         import MultilinkHTMLProperty, propclasses
 from roundup.cgi.templating         import DateHTMLProperty, MissingValue
 from roundup.cgi.TranslationService import get_translation
+from xml.sax.saxutils               import quoteattr as quote
 
 _ = None
 
@@ -62,6 +63,42 @@ def menu_or_field (prop) :
         return prop.menu (height=5)
     return prop.field ()
 # end def menu_or_field
+
+dwidth  = 460
+dheight = 125
+def comment_edit \
+    ( klass
+    , property
+    , width    = dwidth
+    , height   = dheight
+    , value    = ""
+    , form     = "itemSynopsis"
+    , title    = "Comment"
+    , editable = False
+    ) :
+    """ Create a hidden field for this item with proper contents and
+        a javascript link for editing the content property.
+    """
+    return ( """<input type="hidden" name="%s" value=%s> """
+             """<a class="classhelp" """
+             """href="javascript:help_window """
+             """('%s?@template=comment"""
+             """&property=%s&editable=%s"""
+             """&form=%s', %d, %d)">"""
+             """<img src="@@file/comment.png" alt="C" title="%s" border="0">"""
+             """</a>"""
+             % ( property
+               , quote (str (value))
+               , klass
+               , property
+               , ('1','')[not editable]
+               , form
+               , width
+               , height
+               , title
+               )
+           )
+# end def comment_edit
 
 class ExtProperty :
     """
@@ -247,7 +284,7 @@ class ExtProperty :
         """ Render as menu if condition, otherwise formatlink to hprop """
         if self.editable :
             return self.hprop.menu ()
-        return self.formatlink (self.hprop)
+        return self.deref ().formatlink ()
     # end def menu
 
     def editfield (self) :
@@ -256,12 +293,14 @@ class ExtProperty :
     # end def editfield
 
     def colonfield (self, item = None) :
-        return "<a class=\"header\" href=\"javascript:help_window" \
-               "('%s?:template=property_help#%s', '500', '400')\">" \
-               "%s:</a>&nbsp;%s" \
-               % ( self.classname, self.name
-                 , self.label,     self.as_listentry (item)
-                 )
+        return ("""<a class="header" title="Help for %s" """
+                """href="javascript:help_window"""
+                """('%s?:template=property_help#%s', '500', '400')">"""
+                """%s:</a>&nbsp;%s"""
+                % ( self.label, self.classname, self.name
+                  , self.label, self.as_listentry (item)
+                  )
+               )
     # end def colonfield
 
     def classhelp_properties (self, *propnames) :
@@ -290,6 +329,20 @@ class ExtProperty :
         return ",".join ([self.lnkcls.get (i, key) for i in ids])
     # end def pretty_ids
 
+    def comment_edit \
+        (self, width = dwidth, height = dheight, form = "itemSynopsis") :
+        return comment_edit \
+            ( self.classname
+            , "%s%s@%s" % (self.classname, self.item.id, self.name)
+            , width
+            , height
+            , form     = form
+            , value    = self.item [self.name]
+            , title    = self.label
+            , editable = self.editable
+            )
+    # end def comment_edit
+
 # end class ExtProperty
 
 def new_property (context, db, classname, id, propname) :
@@ -310,4 +363,5 @@ def init (instance) :
     instance.registerUtil ('properties_dict',   properties_dict)
     instance.registerUtil ('menu_or_field',     menu_or_field)
     instance.registerUtil ('new_property',      new_property)
+    instance.registerUtil ('comment_edit',      comment_edit)
 # end def init

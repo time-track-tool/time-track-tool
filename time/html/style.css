@@ -239,6 +239,10 @@ table.list td.subhead-nb {
   border-right: 0
 }
 
+table.list td.nb {
+  border-right: 0
+}
+
 table.list td.generated input {
   color: #008000;
 }
