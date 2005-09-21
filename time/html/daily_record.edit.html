@@ -191,7 +191,7 @@
           <tal:block tal:replace="structure python: utils.ExtProperty
           (utils, r [pn], item = r, editable = editable).menu ()"/>
          </td>
-         <td tal:condition="python:is_open and not r.wp">
+         <td tal:condition="python:is_open">
           <tal:block tal:condition="editable"
            tal:replace="structure python: utils.ExtProperty
            (utils, r.dist, item = r, editable = editable, fieldwidth = 5)

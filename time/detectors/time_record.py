@@ -42,7 +42,7 @@ from operator                       import add
 from time                           import gmtime
 
 get_user_dynamic = None
-user_has_role    = None
+common           = None
 _                = lambda x : x
 
 def check_timestamps (start, end, date) :
@@ -91,7 +91,7 @@ def time_records_consistent (db, cl, nodeid) :
           specified
     """
     date     = cl.get (nodeid, 'date')
-    sdate    = date.pretty ('%Y-%m-%d')
+    sdate    = date.pretty (common.ymd)
     uid      = cl.get (nodeid, 'user')
     uname    = db.user.get (uid, 'username')
     msgs     = []
@@ -174,7 +174,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
     user       = cl.get (nodeid, 'user')
     uid        = db.getuid ()
-    is_hr      = user_has_role (db, uid, 'hr')
+    is_hr      = common.user_has_role (db, uid, 'hr')
     old_status = cl.get (nodeid, 'status')
     status     = new_values.get ('status', old_status)
     supervisor = db.user.get (user, 'supervisor')
@@ -254,8 +254,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
     user  = new_values ['user']
     uname = db.user.get (user, 'username')
     if  (   uid != user
-        and not user_has_role (db, uid, 'controlling')
-        and not user_has_role (db, uid, 'admin')
+        and not common.user_has_role (db, uid, 'controlling')
+        and not common.user_has_role (db, uid, 'admin')
         ) :
         raise Reject, _ ("Only user and Controlling may create daily records")
     for i in 'time_record', :
@@ -376,14 +376,15 @@ def new_time_record (db, cl, nodeid, new_values) :
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
     if  (   uid != dr.user
-        and not user_has_role (db, uid, 'controlling')
-        and not user_has_role (db, uid, 'admin')
+        and not common.user_has_role (db, uid, 'controlling')
+        and not common.user_has_role (db, uid, 'admin')
         ) :
         raise Reject, _ \
             ( ("Only %(uname)s and Controlling may create time records")
             % locals ()
             )
     dynamic  = get_user_dynamic (db, dr.user, dr.date)
+    date     = dr.date.pretty (common.ymd)
     if not dynamic :
         if uid != '1' :
             raise Reject, _ \
@@ -456,9 +457,8 @@ def check_time_record (db, cl, nodeid, new_values) :
         (date, start, end, duration, new_values, dist = dist)
     if not location :
         new_values ['work_location'] = '1'
-    if dist and not ('wp' in new_values and wp and not cl.get (nodeid, 'wp')) :
-        raise Reject, _ \
-            ("Distribution only allowed for empty WP, new WP must be given")
+    if dist and not wp :
+        raise Reject, _ ("Distribution: WP must be given")
     if dist :
         if dist < duration :
             newrec = dict \
@@ -484,8 +484,8 @@ def check_time_record (db, cl, nodeid, new_values) :
             pass
         else :
             dist -= duration
-            wstart, wend = week_from_date (date)
-            dsearch = pretty_range (date, wend)
+            wstart, wend = common.week_from_date (date)
+            dsearch = common.pretty_range (date, wend)
             drs = db.daily_record.filter \
                 (None, dict (user = user, date = dsearch))
             trs = db.time_record.filter  \
@@ -559,10 +559,10 @@ def check_retire (db, cl, nodeid, dummy) :
 
 def init (db) :
     import sys, os
-    global _, get_user_dynamic, pretty_range, user_has_role, week_from_date
+    global _, common, get_user_dynamic
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     from user_dynamic import get_user_dynamic
-    from common       import pretty_range, user_has_role, week_from_date
+    import common
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
