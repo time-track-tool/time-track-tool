@@ -197,7 +197,7 @@ helptext = \
     , ""'location'                   :
       ""'''Location of %(Classname)s, e.g., Vienna HQ.'''
     , ""'lunch_duration'             :
-      ""'''Preference for time tracking, duration of lunch break in minutes'''
+      ""'''Preference for time tracking, duration of lunch break in hours'''
     , ""'lunch_start'                :
       ""'''Preference for time tracking, start of lunch break'''
     , ""'manager'                    :
