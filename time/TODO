@@ -46,10 +46,6 @@ Erfassungsmaske, Erfassung
   rechts möglich, für die offene Zeile gibt es eine comments-Zeile unten
 - (Meeting 15.7.) Für die Comments soll ein gängiges Icon (Notizblock
   o.ä.) verwendet werden.
-- Copy/Paste ?! (Meeting 15.9.): Statt dem copy/past soll es die
-  Einstellung geben, bei "on leave" des Feldes sollen sich die
-  Einstellungen des "aktuellen" Feldes auf alle darunter stehenden
-  Felder die noch keinem WP zugeordnet sind vererben. 
 - (Meeting 15.9.): Erfassung von Zeitausgleich: Bei der Duration null
   Std. erlauben, und im WP Zeitausgleich explizit angeben. Existierende
   ZA sollen bei der Importierung auf null Std. gesetzt werden.
@@ -58,10 +54,6 @@ Erfassungsmaske, Erfassung
   dass es sich um einen ZA handelt)
 - (Meeting 15.9.) Löschen eines Records/Tag -- Duration ohne Wert bzw.
   Wert löschen -- löscht die ganze Zeile.
-- Distribute soll auch für schon gesetzte WPs möglich sein (wie früher
-  beim split Feld). Verhalten identisch mit ungesetztem Feld, wenn
-  weniger als die Duration des Feldes eingegeben wird, bleibt für die
-  nicht angegebene Zeit das alte WP erhalten. (Telefonat MMA 19.9.)
 
 Allgemein Datenbankschema, Verhalten
 - Das Feld "only_controlling" im project_status ist umzubenennen in
