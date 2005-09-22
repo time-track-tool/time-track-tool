@@ -331,8 +331,6 @@ time_project = Class \
     , deputy                = Link      ("user")
     , organisation          = Link      ("organisation")
     , department            = Link      ("department")
-    , time_start            = Date      (offset = 0)
-    , time_end              = Date      (offset = 0)
     , planned_effort        = Number    ()
     , status                = Link      ("time_project_status")
     , work_location         = Link      ("work_location")
