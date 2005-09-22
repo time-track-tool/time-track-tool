@@ -68,7 +68,7 @@
      <th>&nbsp;</th>
      <th style="text-align:right;"
          tal:content="structure
-             python:utils.fieldname ('daily_record', 'week', space = 0) + ':'"/>
+             python:utils.fieldname ('daily_record', 'week', endswith = ':')"/>
      <th>
        <input type="text" size="7" name="weekno"
         onChange="document.forms.edit_daily_record ['@action'].value =
@@ -77,13 +77,16 @@
      </th>
      <th style="text-align:right;"
       tal:content="structure
-          python: utils.fieldname ('daily_record', 'date', space = 0) + ':'"/>
+          python: utils.fieldname ('daily_record', 'date', endswith = ':')"/>
      <th>
       <input type="text" size="22"
        tal:define="value python:request.form.getvalue(date.selname) or nothing"
        tal:attributes="value python:date.pretty_ids (value)
                       ;name  python:date.selname
-                      ">
+                      "
+       onChange="document.forms.edit_daily_record ['@action'].value =
+            'daily_record_edit_action';
+          document.edit_daily_record.submit ();">
      </th>
      <th>&nbsp;</th>
      <th>&nbsp;</th>
@@ -104,22 +107,22 @@
     <table class="list">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'start',         space = False)" class="nb"/>
+          ('time_record', 'start',         endswith = '')" class="nb"/>
       <th class="nb"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'end',           space = False)"
+          ('time_record', 'end',           endswith = '')"
        style="text-align:right"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'duration',      space = False)"/>
+          ('time_record', 'duration',      endswith = '')"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'wp',            space = False)"/>
+          ('time_record', 'wp',            endswith = '')"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'time_activity', space = False)" colspan="2"/>
+          ('time_record', 'time_activity', endswith = '')" colspan="2"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'work_location', space = False)"/>
+          ('time_record', 'work_location', endswith = '')"/>
       <th tal:condition="is_open"
           tal:content="structure python:utils.fieldname
-          ('time_record', 'dist',          space = False)"/>
+          ('time_record', 'dist',          endswith = '')"/>
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
@@ -266,7 +269,10 @@
         (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))"/>
       </td>
       <td tal:condition="is_open">
-       <input type="submit" value=" Save " i18n:attributes="value">
+       <input type="button" value=" Save " i18n:attributes="value"
+        onClick="document.forms.edit_daily_record ['@action'].value =
+            'daily_record_edit_action';
+          document.edit_daily_record.submit ();">
       </td>
       <td/>
      </tr>
