@@ -35,6 +35,16 @@
        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
       </tal:block>
      </td>
+     <th tal:content="structure python:utils.fieldname (classname, 'nosy')"/>
+     <td>
+      <span tal:replace="context/nosy/field"/>
+      <span tal:replace="structure python:db.time_project.classhelp
+            ( 'username,firstname,lastname'
+            , property='nosy'
+            , width='600'
+            )"/>
+
+     </td>
      <th/>
      <td tal:condition="python:
       context.id

@@ -335,6 +335,7 @@ time_project = Class \
     , status                = Link      ("time_project_status")
     , work_location         = Link      ("work_location")
     , max_hours             = Number    ()
+    , nosy                  = Multilink ("user")
     )
 time_project.setkey ("name")
 
@@ -433,6 +434,15 @@ cost_center_status = Class \
     , active                = Boolean   ()
     )
 cost_center_status.setkey ("name")
+
+public_holiday = Class \
+    ( db
+    , ''"public_holiday"
+    , name                  = String    ()
+    , description           = String    ()
+    , date                  = Date      (offset = 0)
+    , locations             = Multilink (location)
+    )
 
 sex = Class \
     ( db
