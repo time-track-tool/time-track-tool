@@ -442,6 +442,7 @@ public_holiday = Class \
     , description           = String    ()
     , date                  = Date      (offset = 0)
     , locations             = Multilink (location)
+    , is_half               = Boolean   ()
     )
 
 sex = Class \
