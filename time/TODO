@@ -42,10 +42,6 @@ Feiertage:
   die Feiertage automatisch eingetragen werden.
 
 Erfassungsmaske, Erfassung
-- (Meeting 21.7.) Kommentare: Nur für bereits gesavete Zeilen ist Knopf
-  rechts möglich, für die offene Zeile gibt es eine comments-Zeile unten
-- (Meeting 15.7.) Für die Comments soll ein gängiges Icon (Notizblock
-  o.ä.) verwendet werden.
 - (Meeting 15.9.): Erfassung von Zeitausgleich: Bei der Duration null
   Std. erlauben, und im WP Zeitausgleich explizit angeben. Existierende
   ZA sollen bei der Importierung auf null Std. gesetzt werden.
@@ -56,15 +52,6 @@ Erfassungsmaske, Erfassung
   Wert löschen -- löscht die ganze Zeile.
 
 Allgemein Datenbankschema, Verhalten
-- Das Feld "only_controlling" im project_status ist umzubenennen in
-  "active" (analog zu cost_center_status). (Telefonat MMA 19.9.)
-- Project status: Nur für die Stati für die "only_controlling" gesetzt
-  ist (zukünftig "active") dürfen WPs angelegt werden. (Telefonat MMA
-  19.9.)
-- Project status wird *nicht* für die Bestimmung der aktiven
-  Arbeitspakete pro User verwendet. Dafür sind die Gültigkeitszeiten im
-  WP zuständig. Das Feld wird nur benötigt um zu bestimmen ob WPs
-  angelegt werden dürfen. (Telefonat MMA 19.9.)
 - Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
   + Datenexport für LDAP
 - Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
