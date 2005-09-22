@@ -50,6 +50,9 @@ Erfassungsmaske, Erfassung
   dass es sich um einen ZA handelt)
 - (Meeting 15.9.) Löschen eines Records/Tag -- Duration ohne Wert bzw.
   Wert löschen -- löscht die ganze Zeile.
+- Vorschläge für Begrüßungstext:
+  MMA: "Time is of the essence."
+  MMA: "Make the most of your time."
 
 Allgemein Datenbankschema, Verhalten
 - Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
