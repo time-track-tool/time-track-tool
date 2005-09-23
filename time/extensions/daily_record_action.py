@@ -50,9 +50,15 @@ from time                   import gmtime
 from copy                   import copy
 from operator               import add
 
-week_from_date = None
-ymd            = None
-pretty_range   = None
+# Hack: We want to import this from the conversion functions, too.
+# But in the conversion the init routine is not called.
+try :
+    from common             import pretty_range, week_from_date, ymd
+except ImportError :
+    week_from_date = None
+    ymd            = None
+    pretty_range   = None
+
 class _autosuper (type) :
     def __init__ (cls, name, bases, dict) :
         super   (_autosuper, cls).__init__ (name, bases, dict)

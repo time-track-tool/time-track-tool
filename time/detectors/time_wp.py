@@ -63,6 +63,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
     if  (  uid != prj.responsible
         and uid != prj.deputy
         and not common.user_has_role (db, uid, 'Project')
+        and uid != '1'
         ) :
         raise Reject, ("You may only create WPs for your own projects")
     act  = db.time_project_status.get (prj.status, 'active')

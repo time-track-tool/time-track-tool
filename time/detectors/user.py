@@ -142,6 +142,15 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     """
     root       = pjoin (db.config.TRACKER_HOME, "html")
     userlist   = "userlist.html"
+    changed    = False
+    for i in 'username', 'status', 'roles' :
+        if  (  not old_values
+            or i not in old_values
+            or old_values [i] != cl.get (nodeid, i)
+            ) :
+            changed = True
+    if not changed :
+        return
     f, tmpname = mkstemp (".html", "userlist", root)
     f          = os.fdopen (f, "w")
     # all 'real' users
