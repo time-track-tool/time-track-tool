@@ -779,6 +779,7 @@ classes = \
     , ("cost_center_status"  , ["User"],             ["Controlling"     ])
     , ("daily_record"        , ["HR","Controlling"], ["HR","Controlling"])
     , ("daily_record_status" , ["User"],             ["Admin"           ])
+    , ("public_holiday"      , ["User"],             ["HR","Controlling"])
     , ("time_activity"       , ["User"],             ["Controlling"     ])
     , ("time_project"        , ["User"],             ["Project"         ])
     , ("time_project_status" , ["User"],             ["Project"         ])
