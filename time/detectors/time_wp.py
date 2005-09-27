@@ -67,7 +67,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
         ) :
         raise Reject, ("You may only create WPs for your own projects")
     act  = db.time_project_status.get (prj.status, 'active')
-    if not act :
+    if not act and uid != '1' :
         raise Reject, ("You may only create WPs for active projects")
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
@@ -79,9 +79,6 @@ def new_time_wp (db, cl, nodeid, new_values) :
         if i in new_values :
             check_duplicate_field_value (cl, project, i, new_values [i])
     status = db.time_project.get (project, 'status')
-    is_act = db.time_project_status.get (status, 'active')
-    if not is_act :
-        raise Reject, _ ("Creation of WP only for project with active status")
 # end def new_time_wp
 
 def init (db) :

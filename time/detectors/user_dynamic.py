@@ -64,18 +64,29 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
         else :
             if not (valid_from >= rvalid_to or valid_to <= rvalid_from) :
                 raise Reject, \
-                    ( "%(valid_from)s;%(valid_to)s overlaps with "
-                      "%(rvalid_from)s;%(rvalid_to)s"
+                    ( _ ("%(valid_from)s;%(valid_to)s overlaps with "
+                         "%(rvalid_from)s;%(rvalid_to)s"
+                        )
                     % locals ()
                     )
     return valid_from, valid_to
 # end def check_ranges
 
+def check_vacation (attr, new_values) :
+    if attr in new_values :
+        vacation = new_values [attr]
+        if vacation is None :
+            return
+        if vacation <= 0 and attr != 'vacation_remaining' :
+            raise Reject, \
+                _ ( "%(attr)s must be positive or empty") % locals ()
+# end def check_vacation
+
 def check_user_dynamic (db, cl, nodeid, new_values) :
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
-    for i in 'valid_from', 'vacation_yearly', 'org_location', 'department' :
+    for i in 'valid_from', 'org_location', 'department' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be empty" % {'attr' : _ (i)}
     user       = new_values.get ('user',       cl.get (nodeid, 'user'))
@@ -84,13 +95,14 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
             check_ranges (cl, nodeid, user, valid_from, valid_to)
+    for i in 'vacation_yearly', 'vacation_remaining' :
+        check_vacation (i, new_values)
 # end def check_user_dynamic
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
     for i in \
         ( 'user'
         , 'valid_from'
-        , 'vacation_yearly'
         , 'org_location'
         , 'department'
         ) :
@@ -103,8 +115,12 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     valid_to   = new_values.get ('valid_to', None)
     new_values ['valid_from'], new_values ['valid_to'] = \
         check_ranges (cl, nodeid, user, valid_from, valid_to)
+    for i in 'vacation_yearly', 'vacation_remaining' :
+        check_vacation (i, new_values)
     # FIXME: Todo: compute remaining vacation from old dyn record and
     # all time tracking data for this user.
+    # No: if vacation data is missing look up backwards until a vacation
+    # record is found
 # end def new_user_dynamic
 
 def close_existing (db, cl, nodeid, old_values) :

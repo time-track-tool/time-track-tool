@@ -407,8 +407,6 @@ def new_time_record (db, cl, nodeid, new_values) :
     duration = new_values.get ('duration', None)
     dstart, dend = check_start_end_duration \
         (dr.date, start, end, duration, new_values)
-    if 'duration' in new_values and new_values ['duration'] == 0 :
-        raise Reject, _ ('Duration must be non-zero for new time record')
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
     if 'wp' in new_values and new_values ['wp'] :
@@ -442,6 +440,9 @@ def check_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i in new_values :
             raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
+    # allow empty duration to delete record
+    if duration in new_values and new_values ['duration'] is None :
+        return
     check_generated (new_values)
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     if status != db.daily_record_status.lookup ('open') :
@@ -553,7 +554,7 @@ def check_time_record (db, cl, nodeid, new_values) :
 # end def check_time_record
 
 def check_for_retire (db, cl, nodeid, old_values) :
-    if cl.get (nodeid, 'duration') == 0 :
+    if cl.get (nodeid, 'duration') is None :
         cl.retire (nodeid)
 # end def check_for_retire
 
