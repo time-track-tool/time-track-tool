@@ -41,6 +41,9 @@ def check_time_project (db, cl, nodeid, new_values) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
+    for n in 'department', :
+        if not new_values.get (n, cl.get (nodeid, n)) :
+            raise Reject, "%(attr)s must be specified" % {'attr' : _ (n)}
     if not wl :
         for n in 'organisation', :
             if not new_values.get (n, cl.get (nodeid, n)) :
@@ -48,7 +51,7 @@ def check_time_project (db, cl, nodeid, new_values) :
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
-    for i in ( 'name', 'responsible', 'planned_effort') :
+    for i in ( 'name', 'responsible', 'planned_effort', 'department') :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     for i in ('organisation', ) :
