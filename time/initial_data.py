@@ -42,10 +42,6 @@
 
 
 # init values
-# room
-room = db.getclass ("room")
-room.create        (name = "SW Dept.")
-# add rooms here
 
 # task_status
 # order, name, abbreviation, transitions, description
