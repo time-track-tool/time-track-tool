@@ -54,10 +54,12 @@ from operator               import add
 # But in the conversion the init routine is not called.
 try :
     from common             import pretty_range, week_from_date, ymd
+    from user_dynamic       import get_user_dynamic
 except ImportError :
-    week_from_date = None
-    ymd            = None
-    pretty_range   = None
+    week_from_date   = None
+    ymd              = None
+    pretty_range     = None
+    get_user_dynamic = None
 
 class _autosuper (type) :
     def __init__ (cls, name, bases, dict) :
@@ -379,6 +381,46 @@ def next_week (db, request) :
         ''' % date
 # end def next_week
 
+def day_work_hours (dynuser, date) :
+    """ Compute hours for a holiday etc from the date """
+    wday  = gmtime (date.timestamp ())[6]
+    field = 'hours_' + ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'][wday]
+    hours = dynuser [field]
+    if hours :
+        return hours
+    if wday in (5, 6) or not dynuser.weekly_hours :
+        return 0
+    hours = int ((dynuser.weekly_hours / 5.) * 4 + .5) / 4.
+    return hours
+# end def day_work_hours
+
+def try_create_public_holiday (db, daily_record, date, user) :
+    dyn = get_user_dynamic (db, user, date)
+    wh  = day_work_hours   (dyn, date)
+    if wh :
+        loc = db.org_location.get (dyn.org_location, 'location')
+        hol = db.public_holiday.filter \
+            (None, {'date' : pretty_range (date, date), 'locations' : loc})
+        if hol and wh :
+            try :
+                prj = db.time_project.lookup ('Public Holiday')
+            except KeyError :
+                return
+            wp  = db.time_wp.filter (None, dict (project = prj, bookers = user))
+            if wp :
+                comment = '\n'.join \
+                    ([db.public_holiday.get (hol [0], i)
+                      for i in 'name', 'description'
+                    ])
+                db.time_record.create \
+                    ( daily_record  = daily_record
+                    , duration      = wh
+                    , wp            = wp [0]
+                    , comment       = comment
+                    , work_location = db.work_location.lookup ('off')
+                    )
+# end def try_create_public_holiday
+
 class Daily_Record_Common (Action, autosuper) :
     """ Methods for creation of daily records that do not yet exist """
 
@@ -430,6 +472,7 @@ class Daily_Record_Common (Action, autosuper) :
                     ( user = self.user
                     , date = d
                     )
+                try_create_public_holiday (self.db, x, d, self.user)
                 self.db.commit ()
             except Reject :
                 pass
@@ -681,9 +724,10 @@ def is_end_of_week (date) :
 # end def is_end_of_week
 
 def init (instance) :
-    global pretty_range, week_from_date, ymd
+    global pretty_range, week_from_date, ymd, get_user_dynamic
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
-    from common import pretty_range, week_from_date, ymd
+    from common       import pretty_range, week_from_date, ymd
+    from user_dynamic import get_user_dynamic
     del sys.path [0]
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)

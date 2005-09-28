@@ -441,7 +441,7 @@ def check_time_record (db, cl, nodeid, new_values) :
         if i in new_values :
             raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
     # allow empty duration to delete record
-    if duration in new_values and new_values ['duration'] is None :
+    if 'duration' in new_values and new_values ['duration'] is None :
         return
     check_generated (new_values)
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
