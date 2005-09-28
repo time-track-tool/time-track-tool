@@ -390,8 +390,7 @@ def day_work_hours (dynuser, date) :
         return hours
     if wday in (5, 6) or not dynuser.weekly_hours :
         return 0
-    hours = int ((dynuser.weekly_hours / 5.) * 4 + .5) / 4.
-    return hours
+    return dynuser.weekly_hours / 5.
 # end def day_work_hours
 
 def try_create_public_holiday (db, daily_record, date, user) :
@@ -408,10 +407,11 @@ def try_create_public_holiday (db, daily_record, date, user) :
                 return
             wp  = db.time_wp.filter (None, dict (project = prj, bookers = user))
             if wp :
-                comment = '\n'.join \
-                    ([db.public_holiday.get (hol [0], i)
-                      for i in 'name', 'description'
-                    ])
+                holiday = db.public_holiday.getnode (hol [0])
+                comment = '\n'.join ((holiday.name, holiday.description))
+                if holiday.is_half :
+                    wh = wh / 2.
+                wh = int (wh * 4. + .5) / 4.
                 db.time_record.create \
                     ( daily_record  = daily_record
                     , duration      = wh
