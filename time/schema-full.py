@@ -270,7 +270,7 @@ room = Class \
     ( db
     , ''"room"
     , name                  = String    ()
-    , org_location          = Link      ("org_location")
+    , location              = Link      ("location")
     )
 room.setkey ("name")
 
