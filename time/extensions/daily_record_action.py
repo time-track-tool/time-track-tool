@@ -662,6 +662,9 @@ def weeksum (db, drid, format = None) :
     while d <= end :
         dr   = db.daily_record.filter \
             (None, dict (date = pretty_range (d, d), user = user))
+        if len (dr) == 0 :
+            d = d + Interval ('1d')
+            continue
         assert (len (dr) == 1)
         dr   = dr [0]
         sum += daysum (db, dr)
