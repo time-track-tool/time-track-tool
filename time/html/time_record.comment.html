@@ -25,6 +25,7 @@
    <textarea type="text" name="comment" rows="5" cols="60" class="preview"
     tal:attributes="readonly not:editable">
    </textarea>
+   <br/>
    <input type="button" name="btn_apply" class="apply" value="OK" onclick="
           frm [field].value = document.frm_content ['comment'].value;
           window.close();" tal:condition="editable"/>
