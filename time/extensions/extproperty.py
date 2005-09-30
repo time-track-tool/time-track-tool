@@ -268,18 +268,27 @@ class ExtProperty :
         return self.key == self.lnkattr
     # def sortable
 
-    def formatlink (self, item = None) :
+    def formatlink (self, item = None, add_hiddden_property = False) :
         """
             Render my property of an item as a link to this item. We get
             the item. The name of the item and its id are computed.
         """
+        hidden = ""
+        if add_hiddden_property :
+            hidden = """<input name="%s" value="%s" type="hidden"/>""" \
+                % (self.classname, str (self.hprop))
         i = item or self.item
         if not i.is_view_ok () :
             return self.formatted ()
         if not self.classname :
             return ""
-        return """<a class="%s" href="%s%s">%s</a>""" \
-            % (self.get_linkcls (i), self.classname, i.id, self.formatted ())
+        return """<a class="%s" href="%s%s">%s</a>%s""" \
+            % ( self.get_linkcls (i)
+              , self.classname
+              , i.id
+              , self.formatted ()
+              , hidden
+              )
     # end def formatlink
 
     def menu (self) :
