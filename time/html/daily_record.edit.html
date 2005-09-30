@@ -113,7 +113,7 @@
           ('time_record', 'end',           endswith = '')"
        style="text-align:right"/>
       <th tal:content="structure python:utils.fieldname
-          ('time_record', 'duration',      endswith = '')"/>
+          ('time_record', 'duration',      endswith = '')" colspan="2"/>
       <th tal:content="structure python:utils.fieldname
           ('time_record', 'wp',            endswith = '')"/>
       <th tal:content="structure python:utils.fieldname
@@ -143,7 +143,8 @@
         <td class="subhead" colspan="2" width="1%"
          tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
         <td tal:content="python: utils.daysum (db._db, i.id, format = '%.2f')"
-         style="text-align:right;" class="subhead"/>
+         style="text-align:right;" class="subhead-nb"/>
+        <td/>
         <td class="subhead"
          tal:content="structure python:pdict ['status'].colonfield (i)"/>
         <td class="subhead" colspan="2"/>
@@ -152,7 +153,12 @@
        </tr>
        <tal:block tal:repeat="r python: utils.sorted
         (i ['time_record'], ('start','wp'))">
-        <tr tal:attributes="class cls">
+        <tr tal:attributes="class cls"
+         tal:define="dur python: utils.ExtProperty
+          ( utils, r.duration, item = r, editable = editable, fieldwidth = 5
+          , format = '%.2f'
+          )
+         ">
          <tal:block tal:repeat="pn python: [('start', 2),('end', 1)]">
           <td tal:define="gen python: r [pn [0] + '_generated']"
            tal:attributes="class python: ['generated',''][not gen] + pn [0]
@@ -165,10 +171,16 @@
               .as_listentry ()
             ][not gen or editable]"/>
          </tal:block>
-         <td tal:content="structure python: utils.ExtProperty
-          ( utils, r.duration, item = r, editable = editable, fieldwidth = 5
-          , format = '%.2f'
-          ).as_listentry ()" style="text-align:right;"/>
+         <td tal:content="structure dur/as_listentry"
+          style="text-align:right;" class="nb" />
+         <td style="text-align:right;">
+          <span tal:condition="editable"
+           title="Mark line for deletion by removing duration">
+           <img src="@@file/del.png" alt="D" border="0"
+            tal:attributes="onclick
+             python:dur.del_link (form='edit_daily_record')">
+          </span>
+         </td>
          <td>
           <select tal:condition="editable"
            tal:attributes="name python:'time_record%s@wp'%r.id">
@@ -218,9 +230,10 @@
                          ;class   python: pn [0]
                          "/>
         </tal:block>
-        <td style="text-align:right;"
+        <td style="text-align:right;" class="nb"
          tal:content="structure python:utils.new_property
           (context, db, 'time_record', -idx, 'duration').field (5)"/>
+        <td/>
         <td>
          <select
           tal:attributes="name python:'time_record-%d@wp'%idx">
@@ -252,14 +265,15 @@
         <td class="subhead-nb"/>
         <td class="subhead" colspan="2" style="text-align:right;"
          tal:content="python:'Week %s:' % utils.weekno (i.date)"/>
-        <td style="text-align:right;" class="subhead"
+        <td style="text-align:right;" class="subhead-nb"
          tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
+        <td/>
         <td/><td colspan="2"/><td/><td tal:condition="is_open"/>
        </tr>
       </tal:block>
      </tal:block>
      <tr tal:condition="python:edit_ok and (is_open or is_submitted)">
-      <td colspan="5"/>
+      <td colspan="6"/>
       <td colspan="2" tal:condition="is_open">
        <tal:block tal:replace="structure python:utils.button_submit_to
         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
@@ -278,8 +292,8 @@
      </tr>
      <tr tal:condition="python:
       is_submitted and request.filterspec ['user'][0] in approval_for">
-      <td colspan="4"/>
-      <td>
+      <td colspan="6"/>
+      <td colspan="2">
        <tal:block tal:replace="structure python:utils.button_action
         (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
       </td>
@@ -287,7 +301,6 @@
        <tal:block tal:replace="structure python:utils.button_action
         (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
       </td>
-      <td/>
      </tr>
     </table>
    </tal:block>

@@ -340,11 +340,27 @@ class ExtProperty :
         return ",".join ([self.lnkcls.get (i, key) for i in ids])
     # end def pretty_ids
 
+    def _propstring (self) :
+        return "%s%s@%s" % (self.classname, self.item.id, self.name)
+    # end def _propstring
+
+    def del_link (self, form) :
+        """Generate a javascript delete link for the current item, to be
+           used in a href
+        """
+        prop = self._propstring ()
+        return \
+            ("""javascript:"""
+             """document.forms.%(form)s ['%(prop)s'].value = ' '; """
+            % locals ()
+            )
+    # end def del_link
+
     def comment_edit \
         (self, width = dwidth, height = dheight, form = "itemSynopsis") :
         return comment_edit \
             ( self.classname
-            , "%s%s@%s" % (self.classname, self.item.id, self.name)
+            , self._propstring ()
             , width
             , height
             , form     = form
