@@ -97,6 +97,24 @@
     </tr>
    </tal:block>
   </tal:block>
+  <tal:block tal:define="wps python:db.time_wp.filter
+   (None, {'project' : context.id})">
+   <table class="files">
+    <tr><th colspan="3" class="header" i18n:translate="">time_wp</th></tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname ('time_wp', 'name')"/>
+     <th tal:content="structure python:utils.fieldname ('time_wp', 'wp_no')"/>
+     <th tal:content="structure python:utils.fieldname
+      ('time_wp', 'description')"/>
+    </tr>
+    <tr tal:repeat="wp wps">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, wp.name, item = wp).formatlink ()"/>
+     <td tal:content="wp/wp_no"/>
+     <td tal:content="wp/description"/>
+    </tr>
+   </table>
+  </tal:block>
  </tal:block>
 
 </tal:block>
