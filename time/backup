@@ -1,6 +1,7 @@
 #!/bin/sh
 
 TRACKER=/roundup/tracker/ttt
+BACKUPDIR=/roundup/backup
 
 ### WARNING ###
 ### WARNING ###
@@ -17,8 +18,18 @@ TRACKER=/roundup/tracker/ttt
 ### WARNING ###
 RESTORE=/roundup/tracker/xyzzy
 
-/roundup/sw/python/bin/roundup-admin -i $TRACKER export /roundup/backup
+if [ ${TRACKER} == ${RESTORE} ] ; then
+    echo "READ COMMENTS. You don't want to overwrite your tracker?!"
+    exit 23
+fi
+
+dir=${BACKUPDIR}/backup-$(date +%a)
+echo Backing up to $dir
+rm -rf $dir
+mkdir $dir
+
+/roundup/sw/python/bin/roundup-admin -i $TRACKER export $dir
 
 /roundup/sw/python/bin/roundup-admin -i $RESTORE init xyzzy
-/roundup/sw/python/bin/roundup-admin -i $RESTORE import /roundup/backup
+/roundup/sw/python/bin/roundup-admin -i $RESTORE import $dir
 
