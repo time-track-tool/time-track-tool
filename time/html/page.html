@@ -359,6 +359,11 @@
    <tr tal:condition="use_labelprop">
     <th class="required"
      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
+    <input tal:condition="python:not context [labelprop].is_edit_ok ()"
+     type="hidden" tal:attributes=
+      " name  labelprop
+      ; value python:context [labelprop]
+      ">
     <td colspan="3"
         tal:content="structure python:context [labelprop].field (size=60)"/>
    </tr>

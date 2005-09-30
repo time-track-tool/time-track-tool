@@ -218,19 +218,21 @@ class ExtProperty :
         return self.lnkattr and not self.key
     # end def need_lookup
 
-    def as_listentry (self, item = None) :
+    def as_listentry (self, item = None, add_hidden = False) :
         self._set_item (item)
         if self.editable and self.item [self.name].is_edit_ok () :
             return self.editfield ()
         if self.is_label :
-            return self.formatlink ()
+            return self.formatlink (add_hidden = add_hidden)
         elif self.lnkname :
             if isinstance (self.hprop, MultilinkHTMLProperty) :
                 hprops = [i for i in self.hprop]
                 return ", ".join \
-                    ([self.deref (p).formatlink () for p in hprops])
+                    ([self.deref (p).formatlink (add_hidden = add_hidden)
+                      for p in hprops
+                    ])
             else :
-                return self.deref ().formatlink ()
+                return self.deref ().formatlink (add_hidden = add_hidden)
         else :
             return self.formatted ()
     # end def as_listentry
@@ -268,13 +270,13 @@ class ExtProperty :
         return self.key == self.lnkattr
     # def sortable
 
-    def formatlink (self, item = None, add_hiddden_property = False) :
+    def formatlink (self, item = None, add_hidden = False) :
         """
             Render my property of an item as a link to this item. We get
             the item. The name of the item and its id are computed.
         """
         hidden = ""
-        if add_hiddden_property :
+        if add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
                 % (self.classname, str (self.hprop))
         i = item or self.item

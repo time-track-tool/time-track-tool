@@ -38,8 +38,11 @@
     <tr>
      <th tal:content="structure python:utils.fieldname (classname, 'project')"/>
      <td>
-      <span tal:replace="structure context/project/field"/>
-      <span tal:replace="structure python:db.time_project.classhelp
+      <span tal:replace="structure python:utils.ExtProperty
+       (utils, context.project.name, editable = True, item = context.project)
+        .as_listentry (add_hidden = True)"/>
+      <span tal:condition="context/project/is_edit_ok"
+       tal:replace="structure python:db.time_project.classhelp
             ( 'name,description'
             , property='project&amp;:type=link'
             , width='600'
