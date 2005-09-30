@@ -54,7 +54,7 @@ def check_time_wp (db, cl, nodeid, new_values) :
 # end def check_time_wp
 
 def new_time_wp (db, cl, nodeid, new_values) :
-    for i in 'name', 'responsible', 'project', 'planned_effort', 'cost_center' :
+    for i in 'name', 'responsible', 'project', 'cost_center' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     prid = new_values ['project']
