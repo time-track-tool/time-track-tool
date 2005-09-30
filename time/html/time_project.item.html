@@ -37,7 +37,7 @@
      </td>
      <th tal:content="structure python:utils.fieldname (classname, 'nosy')"/>
      <td>
-      <span tal:replace="context/nosy/field"/>
+      <span tal:replace="structure context/nosy/field"/>
       <span tal:replace="structure python:db.time_project.classhelp
             ( 'username,firstname,lastname'
             , property='nosy'
