@@ -1,0 +1,24 @@
+#!/bin/sh
+
+TRACKER=/roundup/tracker/ttt
+
+### WARNING ###
+### WARNING ###
+### WARNING ###
+# If the following is specified, an import will be done for the given
+# tracker with the data exported from the tracker above. ALL DATA WILL
+# BE DESTROYED in the RESTORE tracker!!!!!
+# Make sure -- if you are using the same backend for the RESTORE
+# tracker, that it uses a different database from the TRACKER to backup!
+# This means the "name" property in the "[rdbms]" section of
+# "config.ini" *must* be different for both trackers !!!
+### WARNING ###
+### WARNING ###
+### WARNING ###
+RESTORE=/roundup/tracker/xyzzy
+
+/roundup/sw/python/bin/roundup-admin -i $TRACKER export /roundup/backup
+
+/roundup/sw/python/bin/roundup-admin -i $RESTORE init xyzzy
+/roundup/sw/python/bin/roundup-admin -i $RESTORE import /roundup/backup
+
