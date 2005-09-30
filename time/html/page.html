@@ -24,7 +24,7 @@
                       ':filter=status&:pagesize=20&:startwith=0&status=5,1,2,4'
    , 'daily_record' : ':columns=id,user,date,status&:sort=-id&'
                       ':filter=user,date&:pagesize=20&:startwith=0&'
-                      'date=.-1%%3B.%%2B1&user=%s' % uid
+                      'date=.-1d%%3B.%%2B1d&user=%s' % uid
    , 'time_project' : ':columns=name,responsible,organisation,department'
                       ',status&:sort=name&:filter=status&:pagesize=20&'
                       ':startwith=0&status=1,2'
