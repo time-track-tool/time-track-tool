@@ -103,7 +103,7 @@ def user_has_role (db, uid, role) :
     return role in roles
 # end def user_has_role
 
-def clearance_by (db, userid) :
+def clearance_by (db, userid, only_subs = False) :
     assert (userid)
     sv = db.user.get (userid, 'supervisor')
     if not sv :
@@ -112,6 +112,8 @@ def clearance_by (db, userid) :
     su = db.user.get (ap, 'substitute')
     clearance = [ap]
     if su and db.user.get (ap, 'subst_active') :
+        if only_subs :
+            return [su]
         clearance.append (su)
     return clearance
 # end def clearance_by
