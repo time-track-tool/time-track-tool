@@ -17,19 +17,23 @@ BACKUPDIR=/roundup/backup
 ### WARNING ###
 ### WARNING ###
 RESTORE=/roundup/tracker/xyzzy
+RESTOREPW="xyzzy"
 
 if [ ${TRACKER} == ${RESTORE} ] ; then
     echo "READ COMMENTS. You don't want to overwrite your tracker?!"
-    exit 23
+    exit 42
 fi
 
 dir=${BACKUPDIR}/backup-$(date +%a)
-echo Backing up to $dir
+echo Backing up $TRACKER to $dir
 rm -rf $dir
 mkdir $dir
 
 /roundup/sw/python/bin/roundup-admin -i $TRACKER export $dir
 
-/roundup/sw/python/bin/roundup-admin -i $RESTORE init xyzzy
-/roundup/sw/python/bin/roundup-admin -i $RESTORE import $dir
+if [ -n "$RESTORE" ] ; then
+    echo Restoring from $dir to $RESTORE
+    echo y | /roundup/sw/python/bin/roundup-admin -i $RESTORE init ${RESTOREPW}
+    /roundup/sw/python/bin/roundup-admin -i $RESTORE import $dir
+fi
 
