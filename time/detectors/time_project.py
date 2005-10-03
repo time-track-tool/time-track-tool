@@ -51,13 +51,15 @@ def check_time_project (db, cl, nodeid, new_values) :
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
-    for i in ( 'name', 'responsible', 'planned_effort', 'department') :
+    for i in ( 'name', 'responsible', 'department') :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     for i in ('organisation', ) :
         if i not in new_values and 'work_location' not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     common.check_name_len (_, new_values ['name'])
+    if 'status' not in new_values :
+        new_values ['status'] = db.time_project_status.lookup ('New')
 # end def new_time_project
 
 def init (db) :
