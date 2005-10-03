@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-09-23 16:48+0200\n"
+"POT-Creation-Date: 2005-09-30 16:12+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Duration must not exceed %s hours"
 msgstr ""
 
-#: ../detectors/time_record.py:171 ../detectors/time_record.py:444
+#: ../detectors/time_record.py:171 ../detectors/time_record.py:442
 #, python-format
 msgid "%(attr)s may not be changed"
 msgstr ""
@@ -87,7 +87,7 @@ msgstr ""
 msgid "%s: You specified new values for %s but no duration"
 msgstr ""
 
-#: ../detectors/time_record.py:382 ../detectors/time_record.py:448
+#: ../detectors/time_record.py:382 ../detectors/time_record.py:449
 msgid "Editing of time records only for status \"open\""
 msgstr ""
 
@@ -95,25 +95,17 @@ msgstr ""
 msgid "No weekend booking allowed"
 msgstr ""
 
-#: ../detectors/time_record.py:411
-msgid "Duration must be non-zero for new time record"
-msgstr ""
-
-#: ../detectors/time_record.py:466
+#: ../detectors/time_record.py:467
 msgid "Distribution: WP must be given"
 msgstr ""
 
-#: ../detectors/time_record.py:514
+#: ../detectors/time_record.py:515
 msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
 #: ../detectors/time_wp.py:42
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
-msgstr ""
-
-#: ../detectors/time_wp.py:84
-msgid "Creation of WP only for project with active status"
 msgstr ""
 
 #: ../detectors/user.py:132
@@ -124,8 +116,18 @@ msgstr ""
 msgid "Lunchbreak must be at least half an hour."
 msgstr ""
 
-#: ../detectors/user.py:188
+#: ../detectors/user.py:191
 msgid "Not allowed to retire a user"
+msgstr ""
+
+#: ../detectors/user_dynamic.py:67
+#, python-format
+msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
+msgstr ""
+
+#: ../detectors/user_dynamic.py:82
+#, python-format
+msgid "%(attr)s must be positive or empty"
 msgstr ""
 
 #: ../extensions/help.py:44
@@ -716,8 +718,8 @@ msgstr "Last Name"
 msgid "Last name for this user, e.g., Schlatterbeck"
 msgstr ""
 
-#: ../extensions/help.py:197 ../locale/attr.py:277 ../schema.py:252
-#: attr.py:277
+#: ../extensions/help.py:197 ../locale/attr.py:277 ../locale/attr.py:377
+#: ../schema.py:252 attr.py:277 attr.py:377
 msgid "location"
 msgstr "Location"
 
@@ -1278,7 +1280,7 @@ msgstr ""
 
 #: ../extensions/help.py:350 ../locale/attr.py:482 attr.py:482
 msgid "wp_no"
-msgstr "Work Package Number"
+msgstr "Work package number"
 
 #: ../extensions/help.py:351
 msgid ""
@@ -1289,7 +1291,7 @@ msgstr ""
 
 #: ../extensions/help.py:354 ../locale/attr.py:476 attr.py:476
 msgid "wp"
-msgstr "Work Package"
+msgstr "Work package"
 
 #: ../extensions/help.py:355
 msgid ""
@@ -1301,7 +1303,7 @@ msgstr ""
 
 #: ../extensions/help.py:359 ../locale/attr.py:502 attr.py:502
 msgid "wps"
-msgstr "Work Packages"
+msgstr "Work packages"
 
 #: ../extensions/help.py:360
 msgid ""
@@ -1357,7 +1359,12 @@ msgstr ""
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
-#: ../html/_generic.index.html:95 ../html/_generic.item.html:95
+#: ../html/_generic.index.html:62 ../html/_generic.item.html:62
+#: ../html/page.html:661
+msgid "Download as CSV"
+msgstr ""
+
+#: ../html/_generic.index.html:99 ../html/_generic.item.html:99
 #: ../html/user.item.html:187
 msgid "History"
 msgstr ""
@@ -1404,21 +1411,21 @@ msgstr ""
 msgid "Time-Tracking for <span> ${firstname} ${lastname} </span> ${username}"
 msgstr ""
 
-#: ../html/daily_record.edit.html:272
+#: ../html/daily_record.edit.html:286
 msgid " Save "
 msgstr ""
 
-#: ../html/page.html:649
+#: ../html/page.html:651
 msgid "Query ${Classname}"
 msgstr ""
 
-#: ../html/page.html:659
-msgid "Download as CSV"
+#: ../html/time_project.item.html:82
+msgid "Current work package(s)"
 msgstr ""
 
-#: ../html/time_project.item.html:56
+#: ../html/time_project.item.html:87
 msgid "new time_wp"
-msgstr "New Work Package"
+msgstr "New work package"
 
 #: ../html/time_record.comment.html:8 ../html/time_record.comment.html:23
 msgid "Comment editing"
@@ -1440,7 +1447,7 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
-#: ../html/user_dynamic.item.html:43
+#: ../html/user_dynamic.item.html:47
 msgid "new user_dynamic record"
 msgstr "New Dynamic User Data"
 
@@ -1687,11 +1694,6 @@ msgstr "Milestones"
 msgid "planned_fixes"
 msgstr "Planned Fixes"
 
-#: ../locale/attr.py:377 ../locale/attr.py:544 ../schema.py:261 attr.py:377
-#: attr.py:544
-msgid "org_location"
-msgstr "Organisaton/Location"
-
 #: ../locale/attr.py:404 attr.py:404
 msgid "effort"
 msgstr "Effort"
@@ -1751,6 +1753,10 @@ msgstr "Job Description"
 #: ../locale/attr.py:529 attr.py:529
 msgid "pictures"
 msgstr "Picture"
+
+#: ../locale/attr.py:544 ../schema.py:261 attr.py:544
+msgid "org_location"
+msgstr "Organisaton/Location"
 
 #: ../locale/attr.py:546 attr.py:546
 msgid "daily_worktime"
@@ -1818,7 +1824,7 @@ msgstr "Project"
 
 #: ../schema.py:344
 msgid "time_wp"
-msgstr "Work Package"
+msgstr "Work package"
 
 #: ../schema.py:368
 msgid "daily_record_status"
@@ -1826,7 +1832,7 @@ msgstr "Daily Record Status"
 
 #: ../schema.py:411
 msgid "time_wp_group"
-msgstr "Work Package Group"
+msgstr "Work package group"
 
 #: ../schema.py:440
 msgid "public_holiday"
