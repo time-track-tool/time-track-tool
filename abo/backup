@@ -1,0 +1,35 @@
+#!/bin/sh
+
+TRACKER=/data/roundup/abo
+BACKUPDIR=/data/roundup/backup
+
+### WARNING ###
+### WARNING ###
+### WARNING ###
+# If the following is specified, an import will be done for the given
+# tracker with the data exported from the tracker above. ALL DATA WILL
+# BE DESTROYED in the RESTORE tracker!!!!!
+# Make sure -- if you are using the same backend for the RESTORE
+# tracker, that it uses a different database from the TRACKER to backup!
+# This means the "name" property in the "[rdbms]" section of
+# "config.ini" *must* be different for both trackers !!!
+### WARNING ###
+### WARNING ###
+### WARNING ###
+RESTORE=/data/roundup/xyzzy
+
+if [ ${TRACKER} == ${RESTORE} ] ; then
+    echo "READ COMMENTS. You don't want to overwrite your tracker?!"
+    exit 23
+fi
+
+dir=${BACKUPDIR}/backup-$(date +%a)
+echo Backing up to $dir
+rm -rf $dir
+mkdir $dir
+
+/roundup/sw/python/bin/roundup-admin -i $TRACKER export $dir
+
+/roundup/sw/python/bin/roundup-admin -i $RESTORE init xyzzy
+/roundup/sw/python/bin/roundup-admin -i $RESTORE import $dir
+
