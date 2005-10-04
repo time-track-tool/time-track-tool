@@ -28,8 +28,8 @@ echo Backing up to $dir
 rm -rf $dir
 mkdir $dir
 
-/roundup/sw/python/bin/roundup-admin -i $TRACKER export $dir
+roundup-admin -i $TRACKER export $dir
 
-/roundup/sw/python/bin/roundup-admin -i $RESTORE init xyzzy
-/roundup/sw/python/bin/roundup-admin -i $RESTORE import $dir
+roundup-admin -i $RESTORE init xyzzy
+roundup-admin -i $RESTORE import $dir
 
