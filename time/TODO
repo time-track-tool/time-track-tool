@@ -26,33 +26,16 @@ Abwesenheitsmeldung -> später
   heissen. (Telefonat MMA 19.9.)
 
 Feiertage:
-- (Meeting 21.7.) System soll Feiertage automatisch eintragen, je nach
-  location des users (aus seiner org_location). Feiertagstabelle muss
-  enthalten: 
-  - Datum
-  - ob halb oder ganz
-  Es gibt fixe Feiertage (wie 25. u. 26. 12.) die in jedem Jahr gleich
+- Es gibt fixe Feiertage (wie 25. u. 26. 12.) die in jedem Jahr gleich
   bleiben und solche die man jährlich einmal eingeben muss.
-- (Meeting 21.7.) Weiters kann der User beim Erfassen selbst Feiertage
-  eingeben (Protestantische Feiertage -- Karfreitag)
+  ???
 - (Meeting 15.6.) Public Holiday will be entered in a general company
   wide calendar and entered automatically into ZET.
-- (Meeting 15.9.) Beim Anlegen des Daily Records sollen die Feiertage
-  automatisch eingetragen werden bzw. beim öffnen der neuen Woche sollen
-  die Feiertage automatisch eingetragen werden.
 
-Erfassungsmaske, Erfassung
-- (Meeting 15.9.): Erfassung von Zeitausgleich: Bei der Duration null
-  Std. erlauben, und im WP Zeitausgleich explizit angeben. Existierende
-  ZA sollen bei der Importierung auf null Std. gesetzt werden.
-  Für die Checks werden von RSC die maximal Durations (pro Projekt und
-  Tag) benötigt, zB für ZA sind es null Std. (so weiß man automatisch,
-  dass es sich um einen ZA handelt)
-- (Meeting 15.9.) Löschen eines Records/Tag -- Duration ohne Wert bzw.
-  Wert löschen -- löscht die ganze Zeile.
 - Vorschläge für Begrüßungstext:
   - (Mail 19.9.) MMA: "Time is of the essence."
   - (Mail 19.9.) MMA: "Make the most of your time."
+  -> Soll ein File von HR änderbar sein.
 
 Allgemein Datenbankschema, Verhalten
 - Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
@@ -81,14 +64,7 @@ Urlaub:
 - Jahresurlaub in vacation_yearly in dyn. Userdaten
 
 Datenkonversion:
-- Einlesen von Resturlaub
-- Einlesen von Jahresurlaub
-- Einlesen von Room-Number Infos aus dem Web
-- Einlesen von Department-Infos aus dem Web
-- Einlesen von Organisation-Infos aus dem Web -> doch nicht RSC bekommt 
-  Tabelle wer nicht zu TTTech Vienna gehört (TTAutomotive, TTControl, 
-  Germany). (Telefonat MMA 19.9.)
-
+- restliche erfasste Daten 2005
 
 Auswertungen
 - (Meeting 15.7.) Es soll möglich sein, nach Department bzw.
