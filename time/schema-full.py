@@ -803,7 +803,7 @@ class_field_perms = \
         )
       )
     , ( "user", "Edit", ["Admin", "HR"]
-      , ( "clearance_by", "department", "external_phone", "firstname"
+      , ( "clearance_by", "external_phone", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "phone", "pictures", "position", "private_phone", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
