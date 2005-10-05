@@ -898,6 +898,15 @@ def own_time_record (db, userid, itemid) :
     return userid == ownerid
 # end def own_time_record
 
+def is_project_owner_of_wp (db, userid, itemid) :
+    """ Check if user is owner of wp """
+    if int (itemid) < 0 :
+        return False
+    prid    = db.time_wp.get (itemid, 'project')
+    project = db.time_project.getnode (prid)
+    return userid == project.responsible
+# end def is_project_owner_of_wp
+
 def ok_work_package (db, userid, itemid) :
     """ Check if user is responsible for wp or if user is responsible
         for project or is the deputy for project
@@ -944,6 +953,15 @@ p = db.security.addPermission \
         ( 'responsible', 'description', 'cost_center'
         , 'time_start', 'time_end', 'bookers', 'planned_effort'
         )
+    )
+db.security.addPermissionToRole('User', p)
+
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'time_wp'
+    , check       = is_project_owner_of_wp
+    , description = "User is allowed to edit name and wp_no"
+    , properties  = ('name', 'wp_no')
     )
 db.security.addPermissionToRole('User', p)
 
