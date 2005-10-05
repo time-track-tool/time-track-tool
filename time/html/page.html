@@ -721,13 +721,13 @@
        </td>
    <tal:block tal:repeat="prop multi_props">
        <td style="text-align:center;">
-        <tal:block tal:condition="python:prop.selname in ['responsible', 'closer']"
+        <tal:block tal:condition="python:prop.selname in ['responsible', 'closer', 'deputy']"
                    tal:define="size      string:7;
                                name      python:prop.selname;
                                form      string:query;
                                dont_care string:don't care;
                                selected  python:str(request.filterspec.get(prop.selname) or [''])[1:-1]">
-         <tal:block metal:use-macro="templates/userlist/macros/user_multi"></tal:block>
+         <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
         </tal:block>
         <tal:block tal:condition="python:prop.selname == 'nosy'"
                    tal:define="size      string:7;
@@ -737,7 +737,8 @@
                                selected  python:str(request.filterspec.get(prop.selname) or [''])[1:-1]">
          <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"></tal:block>
         </tal:block>
-        <tal:block tal:condition="python:prop.selname not in ['responsible', 'nosy', 'closer']">
+        <tal:block tal:condition="python:prop.selname not in
+         ['responsible', 'nosy', 'closer', 'deputy']">
          <select multiple
                  size="7"
                  tal:attributes="name python:prop.name"

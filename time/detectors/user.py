@@ -60,9 +60,9 @@ for (i = 0; i < select_box.length; i++)
 
 USER_MULTI = """
 <tal:block metal:define-macro="%(macro_name)s">
- <tal:block tal:condition="python:not context [name].is_edit_ok ()"
+ <tal:block tal:condition="python:not context [name].is_%(permission)s_ok ()"
   tal:replace="python: context [name]"/>
- <select multiple tal:condition="python: context [name].is_edit_ok ()"
+ <select multiple tal:condition="python: context [name].is_%(permission)s_ok ()"
          tal:attributes="size size;
                          name name">
   <option value=""
@@ -167,12 +167,20 @@ def update_userlist_html (db, cl, nodeid, old_values) :
                 )
         f.write (USER_MULTI  % { "macro_name"  : "user_multi"
                                , "option_list" : "\n".join (options)
+                               , "permission"  : "edit"
+                               }
+                )
+        f.write (USER_MULTI  % { "macro_name"  : "user_multi_read"
+                               , "option_list" : "\n".join (options)
+                               , "permission"  : "view"
                                }
                 )
 
     # all users (incl. mail alias users)
+    # RSC: now there are no mail alias users -- and we don't want
+    # invalid users here, so use the same filterspec.
     users    = cl.filter ( None # full text search
-                         , filterspec = {}
+                         , filterspec = {"status" : ['1']}
                          , sort       = ("+", "username")
                          )
     if users :
@@ -180,6 +188,7 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 
         f.write (USER_MULTI  % { "macro_name"  : "nosy_multi"
                                , "option_list" : "\n".join (options)
+                               , "permission"  : "view"
                                }
                 )
 
