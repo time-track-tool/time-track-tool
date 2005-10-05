@@ -45,7 +45,7 @@ def check_duplicate_field_value (cl, project, field, value) :
 # end def check_duplicate_field_value
 
 def check_time_wp (db, cl, nodeid, new_values) :
-    for i in 'wp_no', 'project' :
+    for i in 'project', :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))

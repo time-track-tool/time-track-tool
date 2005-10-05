@@ -46,13 +46,8 @@
             , width='600'
             )"/>
      </td>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'wp_no')"/>
-     <td tal:content="structure python:context.wp_no.field ()"
-         tal:condition="not:context/id"/>
-     <td tal:content="structure python:context.wp_no.plain ()"
-         tal:condition="context/id"/>
-     <th/><td/>
+     <th tal:content="structure python:utils.fieldname (classname, 'wp_no')"/>
+     <td tal:content="structure python:context.wp_no.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
