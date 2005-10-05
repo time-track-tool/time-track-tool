@@ -431,7 +431,7 @@ def new_time_record (db, cl, nodeid, new_values) :
             dur2 -= ld
         newrec ['duration']     = dur2
         for attr in 'wp', 'time_activity', 'work_location' :
-            if new_values [attr] :
+            if attr in new_values and new_values [attr] :
                 newrec [attr] = new_values [attr]
         new_values ['end']      = ls.pretty (hour_format)
         new_values ['duration'] = dur1
