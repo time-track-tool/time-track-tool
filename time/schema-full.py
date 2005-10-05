@@ -736,12 +736,12 @@ TTT_Issue_Class \
 #        only)
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("department"          , ["User"], ["HR"              ])
+    [ ("department"          , ["User"], ["Controlling"     ])
     , ("file"                , ["User"], ["User"            ])
     , ("location"            , ["User"], ["HR"              ])
     , ("meeting_room"        , ["User"], ["HR"              ])
     , ("msg"                 , ["User"], ["User"            ])
-    , ("organisation"        , ["User"], ["HR"              ])
+    , ("organisation"        , ["User"], ["HR","Controlling"])
     , ("org_location"        , ["User"], ["HR"              ])
     , ("position"            , ["User"], ["HR"              ])
     , ("query"               , ["User"], ["User"            ])
