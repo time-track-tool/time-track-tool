@@ -37,6 +37,8 @@ common = None
 
 def check_duplicate_field_value (cl, project, field, value) :
     ids     = cl.filter (None, {field : value, 'project' : project})
+    # filter for exact match!
+    ids     = [i for i in ids if cl.get (i, field) == value]
     if ids :
         assert (len (ids) == 1)
         raise Reject, _ ('Duplicate %(field)s "%(value)s"') % locals ()
