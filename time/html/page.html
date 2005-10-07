@@ -723,7 +723,7 @@
    <tal:block tal:repeat="prop multi_props">
        <td style="text-align:center;">
         <tal:block tal:condition="python:prop.selname in
-         ['responsible', 'closer', 'deputy', 'user']"
+         ['responsible', 'closer', 'deputy', 'user', 'supervisor']"
                    tal:define="size      string:7;
                                name      python:prop.selname;
                                form      string:query;
@@ -740,7 +740,7 @@
          <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"></tal:block>
         </tal:block>
         <tal:block tal:condition="python:prop.selname not in
-         ['responsible', 'nosy', 'closer', 'deputy']">
+         ['responsible', 'nosy', 'closer', 'deputy', 'user', 'supervisor']">
          <select multiple
                  size="7"
                  tal:attributes="name python:prop.name"
