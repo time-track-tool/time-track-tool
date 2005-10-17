@@ -60,9 +60,9 @@ for (i = 0; i < select_box.length; i++)
 
 USER_MULTI = """
 <tal:block metal:define-macro="%(macro_name)s">
- <tal:block tal:condition="python:not context [name].is_%(permission)s_ok ()"
+ <tal:block tal:condition="python:not %(condition)s"
   tal:replace="python: context [name]"/>
- <select multiple tal:condition="python: context [name].is_%(permission)s_ok ()"
+ <select multiple tal:condition="python: %(condition)s"
          tal:attributes="size size;
                          name name">
   <option value=""
@@ -178,12 +178,12 @@ def update_userlist_html (db, cl, nodeid, old_values) :
                 )
         f.write (USER_MULTI  % { "macro_name"  : "user_multi"
                                , "option_list" : "\n".join (options)
-                               , "permission"  : "edit"
+                               , "condition"   : "context [name].is_edit_ok ()"
                                }
                 )
         f.write (USER_MULTI  % { "macro_name"  : "user_multi_read"
                                , "option_list" : "\n".join (options)
-                               , "permission"  : "view"
+                               , "condition"   : "True"
                                }
                 )
 
@@ -199,7 +199,7 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 
         f.write (USER_MULTI  % { "macro_name"  : "nosy_multi"
                                , "option_list" : "\n".join (options)
-                               , "permission"  : "view"
+                               , "condition"   : "True"
                                }
                 )
 
