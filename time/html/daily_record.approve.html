@@ -15,7 +15,7 @@
    " pending python: utils.approvals_pending
              (db, request, request.filterspec ['user'] or [])
    ; users   python:utils.sorted
-             ([db._db.user.getnode (u) for u in pending.keys ()], 'username')
+             ([db._db.user.getnode (u) for u in pending.keys ()], ('username',))
    ">
    <table class="list" border="1" tal:condition="pending">
     <tr>
