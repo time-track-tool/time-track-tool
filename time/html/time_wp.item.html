@@ -44,6 +44,7 @@
             ( 'name,description'
             , property='project&amp;:type=link'
             , width='600'
+            , pagesize=500
             )"/>
      </td>
      <th tal:content="structure python:utils.fieldname (classname, 'wp_no')"/>
@@ -74,6 +75,8 @@
             ( 'username,firstname,lastname'
             , property='bookers'
             , width='600'
+            , filter='status=%s' % db._db.user_status.lookup ('valid')
+            , pagesize=500
             )"/>
      </td>
      <th tal:content="structure python:utils.fieldname

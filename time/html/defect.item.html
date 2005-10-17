@@ -176,9 +176,11 @@
      <td class="task_list">
       <span tal:content="structure context/superseder/field"/>
       <span tal:replace="structure python:db.defect.classhelp
-                                            ( 'id,title,responsible'
-                                            , property='superseder'
-                                            , width='600')" />
+        ( 'id,title,responsible'
+        , property='superseder'
+        , width='600'
+        , pagesize=500
+        )" />
       <tal:block tal:condition="context/superseder/isset"
                  tal:define="item context/superseder">
        <br>

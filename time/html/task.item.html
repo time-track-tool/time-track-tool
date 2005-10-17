@@ -74,9 +74,11 @@
      <td class="task_list" colspan="3">
       <span tal:content="structure context/depends/field"/>
       <span tal:replace="structure python:db.task.classhelp
-                                             ( 'id,title,responsible'
-                                             , property='depends'
-                                             , width='600')" /><br>
+         ( 'id,title,responsible'
+         , property='depends'
+         , width='600'
+         , pagesize=500
+         )" /><br>
       <tal:block tal:define="items context/depends;
                              klassname string:task">
        <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
@@ -89,9 +91,11 @@
      <td class="task_list" colspan="3">
       <span tal:content="structure context/needs/field"/>
       <span tal:replace="structure python:db.task.classhelp
-                                             ( 'id,title,responsible'
-                                             , property='needs'
-                                             , width='600')" /><br>
+         ( 'id,title,responsible'
+         , property='needs'
+         , width='600'
+         , pagesize=500
+         )" /><br>
       <tal:block tal:define="items context/needs;
                              klassname string:task">
        <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>

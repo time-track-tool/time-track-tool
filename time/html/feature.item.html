@@ -107,9 +107,11 @@
       <span tal:content="structure context/depends/field"/>
       <span tal:condition="context/is_edit_ok"
             tal:replace="structure python:db.feature.classhelp
-                                             ( 'id,title,responsible'
-                                             , property='depends'
-                                             , width='600')" />
+                 ( 'id,title,responsible'
+                 , property='depends'
+                 , width='600'
+                 , pagesize=500
+                 )" />
       <br>
       <tal:block tal:define="items context/depends;
                              klassname string:feature">
@@ -124,9 +126,11 @@
       <span tal:content="structure context/needs/field"/>
       <span tal:condition="context/is_edit_ok"
             tal:replace="structure python:db.feature.classhelp
-                                             ( 'id,title,responsible'
-                                             , property='needs'
-                                             , width='600')" />
+                 ( 'id,title,responsible'
+                 , property='needs'
+                 , width='600'
+                 , pagesize=500
+                 )" />
       <br>
       <tal:block tal:define="items context/needs;
                              klassname string:feature">
