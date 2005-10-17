@@ -526,6 +526,20 @@ user_dynamic = Class \
     , department            = Link      ("department")
     )
 
+summary_report = Class \
+    ( db
+    , ''"summary_report"
+    , date                  = Date      (offset = 0)
+    , user                  = Link      ("user")
+    , department            = Link      ("department")
+    , supervisor            = Link      ("user")
+    , org_location          = Link      ("org_location")
+    , time_wp               = Link      ("time_wp")
+    , time_wp_group         = Link      ("time_wp_group")
+    , cost_center           = Link      ("cost_center")
+    , cost_center_group     = Link      ("cost_center_group")
+    )
+
 # FileClass automatically gets these properties:
 #   content = String()    [saved to disk in <tracker home>/db/files/]
 #   (it also gets the Class properties creation, activity and creator)
@@ -781,12 +795,13 @@ classes = \
     , ("daily_record"        , ["HR","Controlling"], ["HR","Controlling"])
     , ("daily_record_status" , ["User"],             ["Admin"           ])
     , ("public_holiday"      , ["User"],             ["HR","Controlling"])
+    , ("summary_report"      , ["User"],             [                  ])
     , ("time_activity"       , ["User"],             ["Controlling"     ])
-    , ("time_project"        , ["User"],             ["Project"         ])
     , ("time_project_status" , ["User"],             ["Project"         ])
+    , ("time_project"        , ["User"],             ["Project"         ])
     , ("time_record"         , ["HR","Controlling"], ["HR","Controlling"])
-    , ("time_wp"             , ["User"],             ["Project"         ])
     , ("time_wp_group"       , ["User"],             ["Project"         ])
+    , ("time_wp"             , ["User"],             ["Project"         ])
     , ("user_dynamic"        , ["HR","Controlling"], ["HR"              ])
     , ("work_location"       , ["User"],             ["Controlling"     ])
     ]

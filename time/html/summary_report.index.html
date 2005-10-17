@@ -1,0 +1,31 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title" tal:content="Classname" />
+
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['date'])
+    , utils.ExtProperty (utils, pdict ['user'],              multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['department'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['supervisor'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['org_location'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['time_wp'],           multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['time_wp_group'],     multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['cost_center'],       multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['cost_center_group'], multiselect = 1)
+    );
+    sr   python: utils.summary_report (db._db, request)
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>

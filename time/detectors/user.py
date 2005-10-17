@@ -135,6 +135,17 @@ def audit_user_fields(db, cl, nodeid, new_values):
     if 'lunch_start' in new_values :
         ls = new_values ['lunch_start']
         ls = Date (ls) # trigger date-spec error if this fails.
+    if 'supervisor' in new_values :
+        sv  = new_values ['supervisor']
+        svs = [ nodeid ]
+        while sv :
+            if sv in svs :
+                raise Reject, \
+                    ( _ ("Supervisor loop: %s")
+                    % ','.join ([db.user.get (u, 'username') for u in svs])
+                    )
+            svs.append (sv)
+            sv = db.user.get (sv, 'supervisor')
 # end def audit_user_fields
 
 def update_userlist_html (db, cl, nodeid, old_values) :
