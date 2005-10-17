@@ -394,6 +394,7 @@
              , property='nosy'
              , width='600'
              , pagesize=500
+             , filter='status=%s' % db._db.user_status.lookup ('valid')
              )"></span><br>
     </td>
    </tr>
