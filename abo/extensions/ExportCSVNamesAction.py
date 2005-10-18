@@ -95,7 +95,7 @@ class Export_CSV_Names (Action) :
     filename       = 'query.csv'
     delimiter      = '\t'
 
-    def _setup (self, request) :
+    def _setup (self, request, props) :
         columns    = request.columns
         if not columns :
             columns = props.keys ()
@@ -129,7 +129,7 @@ class Export_CSV_Names (Action) :
         group      = request.group
         klass      = self.db.getclass (request.classname)
         props      = klass.getprops ()
-        self._setup (request)
+        self._setup (request, props)
 
         typecat        = self.db.adr_type_cat.lookup ('ABO')
         self.adr_types = dict \
@@ -192,7 +192,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     print_head = False
     filename   = 'ZFABO.CSV'
 
-    def _setup (self, request) :
+    def _setup (self, request, props) :
         self.columns = \
             [ 'title'
             , 'firstname'
