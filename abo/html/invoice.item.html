@@ -113,19 +113,10 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'bookentry')"></th>
-    <td tal:content="structure python:context.bookentry.pretty ('%Y-%m-%d')">
-     </td>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'send_it')"></th>
-     <td tal:content="structure python:utils.ExtProperty
-         (utils, context.send_it, item = context, editable = cond)
-         .as_listentry ()">
-     </td>
-     <th tal:content="structure python:utils.fieldname(classname, 'last_sent')"></th>
-     <td tal:content="structure python:context.last_sent.pretty ('%Y-%m-%d')">
-     </td>
+     <th tal:content="structure python:utils.fieldname(classname,'bookentry')"/>
+     <td tal:content="structure python:context.bookentry.pretty ('%Y-%m-%d')"/>
+     <th tal:content="structure python:utils.fieldname(classname,'last_sent')"/>
+     <td tal:content="structure python:context.last_sent.pretty ('%Y-%m-%d')"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname(classname, 'n_sent')"></th>
