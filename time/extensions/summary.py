@@ -63,6 +63,10 @@ def update_wps_and_group (wps, group, group_item) :
 
 sup_cache = {}
 def user_supervisor_for (db, uid = None) :
+    """ Recursively compute the users for which the given uid is
+        supervisor. If uid in not given (None), the current database
+        user is taken.
+    """
     if not uid :
         uid = db.getuid ()
     if uid in sup_cache :
@@ -79,7 +83,7 @@ def user_supervisor_for (db, uid = None) :
 
 class Extended_Node (autosuper) :
     def __getattr__ (self, name) :
-        """ Delegate everything to our daily_record """
+        """ Delegate everything to our node """
         if not name.startswith ('__') :
             result = getattr (self.node, name)
             setattr (self, name, result)
@@ -106,8 +110,7 @@ class Extended_Daily_Record (Extended_Node) :
         self.username     = db.user.get (self.user, 'username')
         uid               = db.getuid ()
         self.is_own       = \
-            (  user_has_role (db, uid, 'HR')
-            or user_has_role (db, uid, 'Controlling')
+            (  user_has_role (db, uid, 'HR', 'Controlling')
             or uid == self.user
             or self.user in supervised_users
             )
@@ -120,6 +123,12 @@ class Extended_Daily_Record (Extended_Node) :
 # end class Extended_Daily_Record
 
 class Extended_WP (Extended_Node) :
+    """ Keeps information about the username *and* about the status of
+        the work package: own records (is_own = True) are records wich
+        may be unconditionally viewed by the user. This is the case if
+        the user is responsible for the wp or if he is responsible or
+        deputy for the project of the WP.
+    """
     def __init__ (self, db, wpid) :
         self.node         = db.time_wp.getnode  (wpid)
         self.project_name = db.time_project.get (self.project, 'name')
@@ -139,6 +148,12 @@ class Extended_WP (Extended_Node) :
 # end class Extended_WP
 
 class Extended_Time_Record (Extended_Node) :
+    """ Keeps information about the username *and* about the status of
+        the time record: own records (is_own = True) are records wich
+        may be unconditionally viewed by the user. This is the case if
+        the user owns the wp or owns the daily_record of the time
+        record.
+    """
     def __init__ (self, db, trid, dr, wp) :
         self.node         = db.time_record.getnode  (trid)
         self.dr           = dr [self.node.daily_record]
@@ -220,6 +235,8 @@ def summary_report (db, request) :
             wps = dict ([(w, 1) for w in db.time_wp.find (cost_center = cc)])
             update_wps_and_group (wps, wp_ccg, ccg)
             wp.update (wps)
+    if not wp :
+        wp = dict ([(w, 1) for w in db.time_wp.getnodeids ()])
     print "n_wp:", len (wp)
     work_pkg    = dict ([(w, Extended_WP (db, w)) for w in wp.iterkeys ()])
     time_recs   = [Extended_Time_Record (db, t, dr, work_pkg)
