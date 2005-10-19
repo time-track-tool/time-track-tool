@@ -492,11 +492,11 @@ def check_time_record (db, cl, nodeid, new_values) :
             # Nothing to do -- just set new wp
             pass
         else :
-            dist -= duration
             wstart, wend = common.week_from_date (date)
             dsearch = common.pretty_range (date, wend)
             drs = db.daily_record.filter \
                 (None, dict (user = user, date = dsearch))
+            print drs
             trs = db.time_record.filter  \
                 (None, {'daily_record' : drs})
             trs = [db.time_record.getnode (t) for t in trs]
