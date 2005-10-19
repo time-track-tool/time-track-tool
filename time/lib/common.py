@@ -96,11 +96,14 @@ def check_name_len (_, name) :
             _ ('Name "%(name)s" too long (> 25 characters)') % locals ()
 # end def name_len
 
-def user_has_role (db, uid, role) :
+def user_has_role (db, uid, * role) :
     roles = db.user.get (uid, 'roles')
     roles = dict ([(r.lower ().strip (), 1) for r in roles.split (',')])
-    role  = role.lower ().strip ()
-    return role in roles
+    role  = [r.lower ().strip () for r in role]
+    print role, roles
+    for r in role :
+        if r in roles : return True
+    return False
 # end def user_has_role
 
 def clearance_by (db, userid, only_subs = False) :

@@ -82,7 +82,7 @@
      , ('public_holiday',      'Edit')
      )
    , ( ('cost_center',    'View', '')
-     , ('daily_record',   'View', 'controlling')
+     , ('daily_record',   'View', 'controlling,hr')
      , ('user_dynamic',   'View', '')
      , ('time_project',   'View', '')
      , ('time_wp',        'View', '')
@@ -284,10 +284,10 @@
        " name  python:i18n.gettext (k [0])
        ; klass python:k [0]
        ; perm  python:k [1]
-       ; role  python: ('',k [-1])[len (k) > 2]
+       ; role  python: (('',k [-1])[len (k) > 2]).split (',')
        " tal:condition="python:
           (   request.user.hasPermission (perm, klass)
-          and (not role or utils.user_has_role (db._db, uid, role))
+          and (not role [0] or utils.user_has_role (db._db, uid, *role))
           )">
          <option tal:attributes="value python:
           klass + '?' + default_queries.get (klass, default_query)"
