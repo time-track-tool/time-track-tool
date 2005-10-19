@@ -182,6 +182,16 @@ class Extended_Time_Record (Extended_Node) :
 # end class Extended_Time_Record
 
 def summary_report (db, request) :
+    """ TODO:
+        - intermediate sums by
+          - time_wp_group
+          - project
+          - cost_center
+          - cost_center_group
+        - special colors for 
+          - daily record not yet accepted
+          - no daily record found
+    """
     filterspec  = request.filterspec
     sort_by     = request.sort
     group_by    = request.group

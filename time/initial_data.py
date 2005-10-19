@@ -330,3 +330,7 @@ user_status = db.getclass ('user_status')
 user_status.create (name = "valid",    description = "Valid user")
 user_status.create (name = "obsolete", description = "No longer @TTTech")
 
+summary_type = db.summary_type
+summary_type.create (name = "day",   order = 1)
+summary_type.create (name = "week",  order = 2)
+summary_type.create (name = "month", order = 3)

@@ -526,6 +526,13 @@ user_dynamic = Class \
     , department            = Link      ("department")
     )
 
+summary_type = Class \
+    ( db
+    , ''"summary_type"
+    , name                  = String    ()
+    , order                 = Number    ()
+    )
+
 summary_report = Class \
     ( db
     , ''"summary_report"
@@ -538,6 +545,7 @@ summary_report = Class \
     , time_wp_group         = Link      ("time_wp_group")
     , cost_center           = Link      ("cost_center")
     , cost_center_group     = Link      ("cost_center_group")
+    , summary_type          = Link      ("summary_type")
     )
 
 # FileClass automatically gets these properties:
@@ -796,6 +804,7 @@ classes = \
     , ("daily_record_status" , ["User"],             ["Admin"           ])
     , ("public_holiday"      , ["User"],             ["HR","Controlling"])
     , ("summary_report"      , ["User"],             [                  ])
+    , ("summary_type"        , ["User"],             ["Admin"           ])
     , ("time_activity"       , ["User"],             ["Controlling"     ])
     , ("time_project_status" , ["User"],             ["Project"         ])
     , ("time_project"        , ["User"],             ["Project"         ])

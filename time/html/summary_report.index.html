@@ -20,6 +20,7 @@
     , utils.ExtProperty (utils, pdict ['time_wp_group'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center_group'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['summary_type'],      multiselect = 1)
     );
     sr   python: utils.summary_report (db._db, request)
    "
