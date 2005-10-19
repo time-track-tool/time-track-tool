@@ -16,7 +16,9 @@
     , utils.ExtProperty (utils, pdict ['department'],        multiselect = 1)
     , utils.ExtProperty (utils, pdict ['supervisor'],        multiselect = 1)
     , utils.ExtProperty (utils, pdict ['org_location'],      multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['time_wp'],           multiselect = 1)
+    , utils.ExtProperty 
+        (utils, pdict ['time_wp'], help_props = ['project', 'name'],
+        searchable = True)
     , utils.ExtProperty (utils, pdict ['time_wp_group'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center_group'], multiselect = 1)

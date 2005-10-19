@@ -133,6 +133,7 @@ class ExtProperty :
         , do_classhelp = None
         , fieldwidth   = None
         , format       = None
+        , help_props   = None
         ) :
         self.utils        = utils
         self.prop         = prop
@@ -155,6 +156,7 @@ class ExtProperty :
         self.do_classhelp = do_classhelp
         self.fieldwidth   = fieldwidth
         self.format       = format
+        self.help_props   = help_props or []
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
@@ -322,9 +324,21 @@ class ExtProperty :
             p = [self.lnkattr]
         else :
             p = ['id', self.lnkattr]
-        for pn in propnames :
-            if pn in self.lnkcls.properties.keys () and pn != self.lnkattr :
+        props = dict ([(x, 1) for x in p])
+        for pn in self.help_props :
+            if (   pn in self.lnkcls.properties.keys ()
+               and pn != self.lnkattr
+               and pn not in props
+               ) :
                 p.append (pn)
+                props [pn] = 1
+        for pn in propnames :
+            if (   pn in self.lnkcls.properties.keys ()
+               and pn != self.lnkattr
+               and pn not in props
+               ) :
+                p.append (pn)
+                props [pn] = 1
         return ','.join (p)
     # end def classhelp_properties
 
