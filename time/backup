@@ -2,6 +2,7 @@
 
 TRACKER=/roundup/tracker/ttt
 BACKUPDIR=/roundup/backup
+ROUNDUP_ADMIN=/roundup/sw/python/bin/roundup-admin 
 
 ### WARNING ###
 ### WARNING ###
@@ -29,11 +30,12 @@ echo Backing up $TRACKER to $dir
 rm -rf $dir
 mkdir $dir
 
-/roundup/sw/python/bin/roundup-admin -i $TRACKER export $dir
+$ROUNDUP_ADMIN -i $TRACKER export $dir
 
 if [ -n "$RESTORE" ] ; then
     echo Restoring from $dir to $RESTORE
-    echo y | /roundup/sw/python/bin/roundup-admin -i $RESTORE init ${RESTOREPW}
-    /roundup/sw/python/bin/roundup-admin -i $RESTORE import $dir
+    cp $TRACKER/db/backend_name $RESTORE/db
+    echo y | $ROUNDUP_ADMIN -i $RESTORE init ${RESTOREPW}
+    $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
 
