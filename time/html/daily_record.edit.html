@@ -106,10 +106,8 @@
         </tr>
        </table>
       </th>
-      <th tal:condition="python:edit_ok and (is_open or is_submitted)"
-          colspan="2"/>
-      <th tal:condition="python:edit_ok and (is_open or is_submitted)"
-          style="text-align:left">
+      <th tal:condition="python:edit_ok and is_open" colspan="2"/>
+      <th tal:condition="python:edit_ok and is_open" style="text-align:left">
        <input type="button" value=" Save " i18n:attributes="value"
         onClick="document.forms.edit_daily_record ['@action'].value =
             'daily_record_edit_action';
