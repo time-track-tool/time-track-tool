@@ -8,7 +8,7 @@
 
  <tal:block metal:fill-slot="menubar"/>
  <td class="content" metal:fill-slot="content">
-  <tal:block tal:replace="python: utils.welcome (db._db)"/>
+  <tal:block tal:replace="structure python: utils.welcome (db._db)"/>
  </td>
 </tal:block>
 
