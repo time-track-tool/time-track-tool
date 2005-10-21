@@ -110,8 +110,12 @@
 <form method="POST" name="login_form" tal:attributes="action request/base">
      <table class="form">
       <tr>
-       <td colspan="2" align="center">Welcome to <br>Roundup Issue Tracking system @ TTTech<br>
-                                      <font size="-2">Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.</font></td>
+       <td colspan="2" align="center">Welcome to
+        <br><tal:block tal:replace="config/TRACKER_NAME"/><br>
+        <font size="-2">
+         Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.
+        </font>
+       </td>
       </tr>
       <tr>
        <th>Login:</th>
@@ -172,7 +176,9 @@
          ( request.indexargs_url
           (classname, {'@action':'daily_record_action', '@template':'edit'})
          )
-       ][classname == 'daily_record']">
+       ][   classname == 'daily_record'
+        and request.template not in ('approve','edit')
+        ]">
        Time
       </a>
      </span>
@@ -186,8 +192,9 @@
        [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
          % ','.join (approval_for.keys ())
        , str (request.indexargs_url (classname, {'@template':'approve'}))
-       ][classname == 'daily_record']
-      ">
+       ][   classname == 'daily_record'
+        and request.template not in ('approve','edit')
+        ]">
        Approval
       </a>
      </span>
