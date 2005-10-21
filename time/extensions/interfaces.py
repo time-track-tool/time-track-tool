@@ -39,9 +39,11 @@
 
 import calendar
 import time
+import os
 from roundup.cgi.TranslationService import get_translation
 from roundup                        import date as r_date
 from copy                           import copy
+from xml.sax.saxutils               import escape
 
 _      = lambda x : x
 common = None
@@ -317,6 +319,19 @@ def approval_for (db) :
     return dict ([(a, 1) for a in approve_for])
 # end def approval_for
 
+def welcome (db) :
+    fname = os.path.join \
+        ( '/tttech/company/operations/org-handbook/info'
+        , 'Welcome-info-Startseite-Time2005.txt'
+        )
+    try :
+        text = file (fname, 'rU').read ()
+        return escape (text).replace ('\n\n', '<br>\n')
+    except IOError :
+        pass
+    return "".join ((_ ("Welcome to the "), db.config.TRACKER_NAME, '.'))
+# end def welcome
+
 def init (instance) :
     import sys, os
     global _, get_user_dynamic
@@ -343,3 +358,4 @@ def init (instance) :
     reg ("approval_for",                 approval_for)
     reg ("clearance_by",                 clearance_by)
     reg ("user_has_role",                user_has_role)
+    reg ("welcome",                      welcome)

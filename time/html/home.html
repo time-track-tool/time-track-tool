@@ -6,16 +6,9 @@
  </tal:block>
  <span metal:fill-slot="body_title"/>
 
- <tal:block metal:fill-slot="menubar">
- </tal:block>
+ <tal:block metal:fill-slot="menubar"/>
  <td class="content" metal:fill-slot="content">
- Welcome to our new web-based time tracking tool.
- <br>
- Last training session for users will be held on Monday, Oct. 24th, at
- 10:30 in C0.
- <br>
- Training material can be found in the intranet in Projects -- Reporting.
- <br>
+  <tal:block tal:replace="python: utils.welcome (db._db)"/>
  </td>
 </tal:block>
 
