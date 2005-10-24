@@ -53,13 +53,18 @@ from operator               import add
 # Hack: We want to import this from the conversion functions, too.
 # But in the conversion the init routine is not called.
 try :
-    from common             import pretty_range, week_from_date, ymd
+    from common             import pretty_range, week_from_date, ymd \
+                                 , date_range, weekno_from_day       \
+                                 , from_week_number
     from user_dynamic       import get_user_dynamic
 except ImportError :
     week_from_date   = None
     ymd              = None
     pretty_range     = None
     get_user_dynamic = None
+    date_range       = None
+    weekno_from_day  = None
+    from_week_number = None
 
 class _autosuper (type) :
     def __init__ (cls, name, bases, dict) :
@@ -72,282 +77,6 @@ class autosuper (object) :
     __metaclass__ = _autosuper
     pass
 # end class autosuper
-
-def date_range (db, filterspec) :
-    if 'date' in filterspec :
-        r = Range (filterspec ['date'], Date)
-        if r.to_value is None :
-            start = end = r.from_value
-        elif r.from_value is None or r.from_value == r.to_value :
-            start = end = r.to_value
-        else :
-            start = r.from_value
-            end   = r.to_value
-    else :
-        date       = Date ('.')
-        date       = Date (str (date.local (db.getUserTimezone ())))
-        start, end = week_from_date (date)
-    start.hours = start.minutes = start.seconds = 0
-    end.hours   = end.minutes   = end.seconds   = 0
-    return start, end
-# end def date_range
-
-def first_thursday (year) :
-    """ compute first thursday in the given year as a Date
-        >>> first_thursday (1998)
-        <Date 1998-01-01.00:00:0.000000>
-        >>> first_thursday ("1998")
-        <Date 1998-01-01.00:00:0.000000>
-        >>> first_thursday (1999)
-        <Date 1999-01-07.00:00:0.000000>
-        >>> first_thursday (2000)
-        <Date 2000-01-06.00:00:0.000000>
-        >>> first_thursday (2001)
-        <Date 2001-01-04.00:00:0.000000>
-        >>> first_thursday (2002)
-        <Date 2002-01-03.00:00:0.000000>
-        >>> first_thursday (2003)
-        <Date 2003-01-02.00:00:0.000000>
-        >>> first_thursday (2004)
-        <Date 2004-01-01.00:00:0.000000>
-        >>> first_thursday (2005)
-        <Date 2005-01-06.00:00:0.000000>
-        >>> first_thursday (2006)
-        <Date 2006-01-05.00:00:0.000000>
-        >>> first_thursday (2007)
-        <Date 2007-01-04.00:00:0.000000>
-        >>> first_thursday (2008)
-        <Date 2008-01-03.00:00:0.000000>
-        >>> first_thursday (2009)
-        <Date 2009-01-01.00:00:0.000000>
-        >>> first_thursday (2010)
-        <Date 2010-01-07.00:00:0.000000>
-        >>> first_thursday (2011)
-        <Date 2011-01-06.00:00:0.000000>
-        >>> first_thursday (2012)
-        <Date 2012-01-05.00:00:0.000000>
-        >>> first_thursday (2013)
-        <Date 2013-01-03.00:00:0.000000>
-        >>> first_thursday (2014)
-        <Date 2014-01-02.00:00:0.000000>
-        >>> first_thursday (2015)
-        <Date 2015-01-01.00:00:0.000000>
-        >>> first_thursday (2016)
-        <Date 2016-01-07.00:00:0.000000>
-        >>> first_thursday (2017)
-        <Date 2017-01-05.00:00:0.000000>
-        >>> first_thursday (2018)
-        <Date 2018-01-04.00:00:0.000000>
-        >>> first_thursday (2019)
-        <Date 2019-01-03.00:00:0.000000>
-        >>> first_thursday (2020)
-        <Date 2020-01-02.00:00:0.000000>
-        >>> first_thursday (2021)
-        <Date 2021-01-07.00:00:0.000000>
-    """
-    for i in range (1, 8) :
-        date = Date ('%s-01-%02d' % (year, i))
-        if gmtime (date.timestamp ()) [6] == 3 : # Thursday
-            return date
-    assert (0)
-# end def first_thursday
-
-def from_week_number (year, week_no) :
-    """ Get first thursday in year, then add days.
-        >>> from_week_number (1998, 52)
-        (<Date 1998-12-21.00:00:0.000000>, <Date 1998-12-27.00:00:0.000000>)
-        >>> from_week_number (1998, 53)
-        (<Date 1998-12-28.00:00:0.000000>, <Date 1999-01-03.00:00:0.000000>)
-        >>> from_week_number (1999,  1)
-        (<Date 1999-01-04.00:00:0.000000>, <Date 1999-01-10.00:00:0.000000>)
-        >>> from_week_number (1999, 52)
-        (<Date 1999-12-27.00:00:0.000000>, <Date 2000-01-02.00:00:0.000000>)
-        >>> from_week_number (2000,  1)
-        (<Date 2000-01-03.00:00:0.000000>, <Date 2000-01-09.00:00:0.000000>)
-        >>> from_week_number (2000, 52)
-        (<Date 2000-12-25.00:00:0.000000>, <Date 2000-12-31.00:00:0.000000>)
-        >>> from_week_number (2001,  1)
-        (<Date 2001-01-01.00:00:0.000000>, <Date 2001-01-07.00:00:0.000000>)
-        >>> from_week_number (2001, 52)
-        (<Date 2001-12-24.00:00:0.000000>, <Date 2001-12-30.00:00:0.000000>)
-        >>> from_week_number (2002,  1)
-        (<Date 2001-12-31.00:00:0.000000>, <Date 2002-01-06.00:00:0.000000>)
-        >>> from_week_number (2002, 52)
-        (<Date 2002-12-23.00:00:0.000000>, <Date 2002-12-29.00:00:0.000000>)
-        >>> from_week_number (2003,  1)
-        (<Date 2002-12-30.00:00:0.000000>, <Date 2003-01-05.00:00:0.000000>)
-        >>> from_week_number (2003, 52)
-        (<Date 2003-12-22.00:00:0.000000>, <Date 2003-12-28.00:00:0.000000>)
-        >>> from_week_number (2004,  1)
-        (<Date 2003-12-29.00:00:0.000000>, <Date 2004-01-04.00:00:0.000000>)
-        >>> from_week_number (2004, 52)
-        (<Date 2004-12-20.00:00:0.000000>, <Date 2004-12-26.00:00:0.000000>)
-        >>> from_week_number (2004, 53)
-        (<Date 2004-12-27.00:00:0.000000>, <Date 2005-01-02.00:00:0.000000>)
-        >>> from_week_number (2005,  1)
-        (<Date 2005-01-03.00:00:0.000000>, <Date 2005-01-09.00:00:0.000000>)
-        >>> from_week_number (2005, 29)
-        (<Date 2005-07-18.00:00:0.000000>, <Date 2005-07-24.00:00:0.000000>)
-        >>> from_week_number (2005, 52)
-        (<Date 2005-12-26.00:00:0.000000>, <Date 2006-01-01.00:00:0.000000>)
-        >>> from_week_number (2006,  1)
-        (<Date 2006-01-02.00:00:0.000000>, <Date 2006-01-08.00:00:0.000000>)
-        >>> from_week_number (2006, 52)
-        (<Date 2006-12-25.00:00:0.000000>, <Date 2006-12-31.00:00:0.000000>)
-        >>> from_week_number (2007,  1)
-        (<Date 2007-01-01.00:00:0.000000>, <Date 2007-01-07.00:00:0.000000>)
-        >>> from_week_number (2007, 52)
-        (<Date 2007-12-24.00:00:0.000000>, <Date 2007-12-30.00:00:0.000000>)
-        >>> from_week_number (2008,  1)
-        (<Date 2007-12-31.00:00:0.000000>, <Date 2008-01-06.00:00:0.000000>)
-        >>> from_week_number (2008, 52)
-        (<Date 2008-12-22.00:00:0.000000>, <Date 2008-12-28.00:00:0.000000>)
-        >>> from_week_number (2009,  1)
-        (<Date 2008-12-29.00:00:0.000000>, <Date 2009-01-04.00:00:0.000000>)
-        >>> from_week_number (2009, 52)
-        (<Date 2009-12-21.00:00:0.000000>, <Date 2009-12-27.00:00:0.000000>)
-        >>> from_week_number (2009, 53)
-        (<Date 2009-12-28.00:00:0.000000>, <Date 2010-01-03.00:00:0.000000>)
-        >>> from_week_number (2010,  1)
-        (<Date 2010-01-04.00:00:0.000000>, <Date 2010-01-10.00:00:0.000000>)
-        >>> from_week_number (2010, 52)
-        (<Date 2010-12-27.00:00:0.000000>, <Date 2011-01-02.00:00:0.000000>)
-    """
-    date = first_thursday (year)
-    date = date + Interval ('%dd' % ((week_no - 1) * 7))
-    return week_from_date (date)
-# end def from_week_number
-
-def weekno_from_day (date) :
-    """ Compute the week number from the given date
-        >>> weekno_from_day (Date ('2005-08-26'))
-        34
-        >>> weekno_from_day (Date ("1998-12-21"))
-        52
-        >>> weekno_from_day (Date ("1998-12-27"))
-        52
-        >>> weekno_from_day (Date ("1998-12-28"))
-        53
-        >>> weekno_from_day (Date ("1999-01-03"))
-        53
-        >>> weekno_from_day (Date ("1999-01-04"))
-        1
-        >>> weekno_from_day (Date ("1999-01-10"))
-        1
-        >>> weekno_from_day (Date ("1999-12-27"))
-        52
-        >>> weekno_from_day (Date ("2000-01-02"))
-        52
-        >>> weekno_from_day (Date ("2000-01-03"))
-        1
-        >>> weekno_from_day (Date ("2000-01-09"))
-        1
-        >>> weekno_from_day (Date ("2000-12-25"))
-        52
-        >>> weekno_from_day (Date ("2000-12-31"))
-        52
-        >>> weekno_from_day (Date ("2001-01-01"))
-        1
-        >>> weekno_from_day (Date ("2001-01-07"))
-        1
-        >>> weekno_from_day (Date ("2001-12-24"))
-        52
-        >>> weekno_from_day (Date ("2001-12-30"))
-        52
-        >>> weekno_from_day (Date ("2001-12-31"))
-        1
-        >>> weekno_from_day (Date ("2002-01-06"))
-        1
-        >>> weekno_from_day (Date ("2002-12-23"))
-        52
-        >>> weekno_from_day (Date ("2002-12-29"))
-        52
-        >>> weekno_from_day (Date ("2002-12-30"))
-        1
-        >>> weekno_from_day (Date ("2003-01-05"))
-        1
-        >>> weekno_from_day (Date ("2003-12-22"))
-        52
-        >>> weekno_from_day (Date ("2003-12-28"))
-        52
-        >>> weekno_from_day (Date ("2003-12-29"))
-        1
-        >>> weekno_from_day (Date ("2004-01-04"))
-        1
-        >>> weekno_from_day (Date ("2004-12-20"))
-        52
-        >>> weekno_from_day (Date ("2004-12-26"))
-        52
-        >>> weekno_from_day (Date ("2004-12-27"))
-        53
-        >>> weekno_from_day (Date ("2005-01-02"))
-        53
-        >>> weekno_from_day (Date ("2005-01-03"))
-        1
-        >>> weekno_from_day (Date ("2005-01-09"))
-        1
-        >>> weekno_from_day (Date ("2005-07-18"))
-        29
-        >>> weekno_from_day (Date ("2005-07-24"))
-        29
-        >>> weekno_from_day (Date ("2005-12-26"))
-        52
-        >>> weekno_from_day (Date ("2006-01-01"))
-        52
-        >>> weekno_from_day (Date ("2006-01-02"))
-        1
-        >>> weekno_from_day (Date ("2006-01-08"))
-        1
-        >>> weekno_from_day (Date ("2006-12-25"))
-        52
-        >>> weekno_from_day (Date ("2006-12-31"))
-        52
-        >>> weekno_from_day (Date ("2007-01-01"))
-        1
-        >>> weekno_from_day (Date ("2007-01-07"))
-        1
-        >>> weekno_from_day (Date ("2007-12-24"))
-        52
-        >>> weekno_from_day (Date ("2007-12-30"))
-        52
-        >>> weekno_from_day (Date ("2007-12-31"))
-        1
-        >>> weekno_from_day (Date ("2008-01-06"))
-        1
-        >>> weekno_from_day (Date ("2008-12-22"))
-        52
-        >>> weekno_from_day (Date ("2008-12-28"))
-        52
-        >>> weekno_from_day (Date ("2008-12-29"))
-        1
-        >>> weekno_from_day (Date ("2009-01-04"))
-        1
-        >>> weekno_from_day (Date ("2009-12-21"))
-        52
-        >>> weekno_from_day (Date ("2009-12-27"))
-        52
-        >>> weekno_from_day (Date ("2009-12-28"))
-        53
-        >>> weekno_from_day (Date ("2010-01-03"))
-        53
-        >>> weekno_from_day (Date ("2010-01-04"))
-        1
-        >>> weekno_from_day (Date ("2010-01-10"))
-        1
-        >>> weekno_from_day (Date ("2010-12-27"))
-        52
-        >>> weekno_from_day (Date ("2011-01-02"))
-        52
-    """
-    date   = Date (str (date))
-    wday   = gmtime (date.timestamp ())[6]
-    date   = date + Interval ('%dd' % (3 - wday)) # Thursday that week
-    yday2  = gmtime (date.timestamp ())[7]
-    d      = first_thursday (date.year)
-    yday1  = gmtime (d.timestamp    ())[7]
-    assert ((yday2 - yday1) % 7 == 0)
-    return int ((yday2 - yday1) / 7 + 1)
-# end def weekno_from_day
 
 def prev_week (db, request) :
     try :
@@ -724,9 +453,11 @@ def is_end_of_week (date) :
 # end def is_end_of_week
 
 def init (instance) :
-    global pretty_range, week_from_date, ymd, get_user_dynamic
+    global pretty_range, week_from_date, ymd, get_user_dynamic, date_range
+    global weekno_from_day, from_week_number
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
-    from common       import pretty_range, week_from_date, ymd
+    from common       import pretty_range, week_from_date, ymd, date_range \
+                           , weekno_from_day, from_week_number
     from user_dynamic import get_user_dynamic
     del sys.path [0]
     actn = instance.registerAction

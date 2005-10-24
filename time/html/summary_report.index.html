@@ -22,12 +22,13 @@
     , utils.ExtProperty (utils, pdict ['time_wp_group'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center_group'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['time_project'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['summary_type'],      multiselect = 1)
     );
-    sr   python: utils.summary_report (db._db, request)
+    sr   python: utils.Summary_Report (db, request)
    "
   tal:condition="context/is_view_ok">
-
+  <tal:block tal:replace="structure python:sr.as_html ()"/>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form"/>
  </tal:block>
 </tal:block>

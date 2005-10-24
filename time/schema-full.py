@@ -532,6 +532,7 @@ summary_type = Class \
     , name                  = String    ()
     , order                 = Number    ()
     )
+summary_type.setkey ("name")
 
 summary_report = Class \
     ( db
@@ -545,6 +546,7 @@ summary_report = Class \
     , time_wp_group         = Link      ("time_wp_group")
     , cost_center           = Link      ("cost_center")
     , cost_center_group     = Link      ("cost_center_group")
+    , time_project          = Link      ("time_project")
     , summary_type          = Link      ("summary_type")
     )
 
