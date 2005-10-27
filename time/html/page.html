@@ -34,7 +34,7 @@
                       ':pagesize=20&:startwith=0&bookers=%s' % uid
    , 'user'         : ':columns=lastname,firstname,nickname,username'
                       ',phone,room,position,supervisor&:sort=lastname&'
-                      ':filter=status&:pagesize=20&:startwith=0&status=1'
+                      ':filter=status&:pagesize=200&:startwith=0&status=1'
    , 'user_dynamic' : ':columns=id,user,valid_from,org_location&:sort=-id&'
                       ':pagesize=20&:startwith=0'
    }
@@ -640,29 +640,33 @@
 </tal:block>
 
 <tal:block metal:define-macro="ttt_search_form">
+ <tal:block tal:define=
+     " filtered_props python: [p for p in props
+                               if not p.lnkattr or not '.' in p.lnkname]
+     ; multi_props    python: [p for p in filtered_props if p.multiselect]
+     ; sort_props     python: [p for p in props if p.sortable ()]
+     ; nomulti_props  python: [p for p in filtered_props
+                               if not p.multiselect and p.searchable]
+     ; csv_link       python:request.indexargs_url
+            (classname, {'@action':'export_csv_names'})
+     ; do_fulltext    python: True
+     ">
+  <tal:block metal:use-macro="templates/page/macros/search_form"/>
+ </tal:block>
+</tal:block>
+
+<!-- needs filtered_props, multi_props, sort_props, nomulti_props, csv_link -->
+<tal:block metal:define-macro="search_form">
 <!-- query specification form -->
 <form method="GET"
       name="query"
-      tal:define="
-       filtered_props python: [p for p in props
-                               if not p.lnkattr or not '.' in p.lnkname];
-       multi_props    python: [p for p in filtered_props if p.multiselect];
-       sort_props     python: [p for p in props if p.sortable ()];
-       nomulti_props  python: [p for p in filtered_props
-                               if not p.multiselect and p.searchable]
-      "
       tal:attributes="action request/classname">
-<!-- no need for "structure python:request.indexargs_form(..." all other
-     values are set via the search form below, only "startwidth" should be
-     set magically ...
-    <tal:block tal:replace="structure python:request.indexargs_form(sort=0, group=0, filter=1, filterspec=1, columns=0, pagesize=0, ignore={'filter':'status', 'filterspec':'status'})">
-    </tal:block>
- -->
+  <tal:block metal:define-slot="search_variables"/>
   <input type="hidden" name=":action" value="search">
   <input type="hidden" name=":startwith" tal:attributes="value request/startwith">
   <table border="0" bgcolor="#e0c0c0">
    <tr>
-    <th bgcolor="#C08080" i18n:translate="">
+    <th bgcolor="#C08080" i18n:translate="" colspan="2">
      Query
      <span tal:replace="Classname" i18n:name="Classname"/>
     </th>
@@ -673,12 +677,14 @@
      View
      <input type="text" size="4" name=":pagesize"
             tal:attributes="value request/pagesize">
-      items per page&nbsp;&nbsp;
-      <a tal:attributes="href python:request.indexargs_url
-            (classname, {'@action':'export_csv_names'})" i18n:translate="">
-            Download as CSV
-      </a>
-      <br>
+      items per page
+    </td>
+    <td>
+     <a tal:attributes="href csv_link" i18n:translate="">Download as CSV</a>
+    </td>
+   </tr>
+   <tr tal:condition="python:sort_props">
+    <td nowrap>
       Sort by:<select name=":sort"
                       onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- nothing -</option>
@@ -692,7 +698,9 @@
                           name=":sortdir"
                           onChange="this.form.elements[':startwith'].value='0'"
                           tal:attributes="checked python:request.sort[0] == '-'">
-     - Group by:<select name=":group"
+    </td>
+    <td nowrap>
+     Group by:<select name=":group"
                         onChange="this.form.elements[':startwith'].value='0'">
          <option value="">- nothing -</option>
          <option tal:repeat="prop sort_props"
@@ -702,24 +710,17 @@
          ></option>
         </select>
         Descending:<input type="checkbox"
-                          name=":groupdir"
-                          onChange="this.form.elements[':startwith'].value='0'"
-                          tal:attributes="checked python:request.group[0] == '-'">
+                    name=":groupdir"
+                    onChange="this.form.elements[':startwith'].value='0'"
+                    tal:attributes="checked python:request.group[0] == '-'">
     </td>
    </tr>
-
    <tr>
-    <td>
-     <table border="0" bgcolor="#e0c0c0">
-      <!-- fill in custom query data -->
-      <!-- fill in multi selection boxes -->
+    <td colspan="2">
+     <table border="0" bgcolor="#e0c0c0" align="left">
       <tr>
        <th style="text-align:left;">View:</th>
-   <tal:block tal:repeat="prop multi_props">
-       <th style="text-align:left;" tal:content="python:prop.label+':'"></th>
-   </tal:block>
       </tr>
-
       <tr>
        <!-- View -->
        <td style="text-align:center;">
@@ -730,7 +731,14 @@
                  tal:content="python:prop.label"></option>
         </select>
        </td>
+      </tr>
+     </table>
    <tal:block tal:repeat="prop multi_props">
+     <table border="0" bgcolor="#e0c0c0" align="left">
+      <tr>
+       <th style="text-align:left;" tal:content="python:prop.label+':'"></th>
+      </tr>
+      <tr>
        <td style="text-align:center;">
         <tal:block tal:condition="python:prop.selname in
          ['responsible', 'closer', 'deputy', 'user', 'supervisor']"
@@ -767,14 +775,14 @@
          </select>
         </tal:block>
        </td>
-   </tal:block>
       </tr>
      </table>
+   </tal:block>
     </td>
    </tr>
 
    <tr>
-    <td>
+    <td colspan="2">
      <table border="0" bgcolor="#e0c0c0">
       <!-- fill in text entry fields -->
    <tal:block tal:repeat="prop nomulti_props">
@@ -798,7 +806,7 @@
        </td>
       </tr>
    </tal:block>
-      <tr>
+      <tr tal:condition="do_fulltext">
        <th style="text-align:right;">Search full text:</th>
        <td><input type="text"
                   size="40"

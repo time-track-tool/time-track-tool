@@ -19,10 +19,10 @@
     , utils.ExtProperty 
         (utils, pdict ['time_wp'], help_props = ['project', 'name'],
         searchable = True)
+    , utils.ExtProperty (utils, pdict ['time_project'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['time_wp_group'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center_group'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['time_project'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['summary_type'],      multiselect = 1)
     );
     sr   python: utils.Summary_Report (db, request)
