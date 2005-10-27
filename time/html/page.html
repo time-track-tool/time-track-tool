@@ -650,6 +650,7 @@
      ; csv_link       python:request.indexargs_url
             (classname, {'@action':'export_csv_names'})
      ; do_fulltext    python: True
+     ; do_pagesize    python: True
      ">
   <tal:block metal:use-macro="templates/page/macros/search_form"/>
  </tal:block>
@@ -673,7 +674,7 @@
    </tr>
 
    <tr>
-    <td>
+    <td tal:condition="do_pagesize">
      View
      <input type="text" size="4" name=":pagesize"
             tal:attributes="value request/pagesize">

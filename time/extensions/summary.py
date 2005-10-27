@@ -31,9 +31,16 @@
 
 import sys
 import os
+import csv
+try :
+    from cStringIO import StringIO
+except ImportError :
+    from StringIO  import StringIO
 
 from roundup.date                   import Date, Interval
+from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
+from roundup.cgi.actions            import Action
 
 _      = lambda x : x
 
@@ -452,34 +459,67 @@ class Summary_Report :
         self.wp_containers   = wp_containers
     # end def __init__
 
-    def html_sum (self, sum) :
-        if sum :
-            return ('  <td style="text-align:right;">%2.02f</td>' % sum)
-        else :
-            return ('  <td/>')
-    # end def html_sum
+    def html_item (self, item) :
+        if not item :
+            return "   <td/>"
+        if isinstance (item, type (0.0)) :
+            return ('  <td style="text-align:right;">%2.02f</td>' % item)
+        return ('  <td>%s</td>' % str (item))
+    # end def html_item
 
-    def html_line (self, wpc, type, idx) :
-        s = [" <tr>"]
-        tc = self.time_containers [type][idx]
-        s.append ("  <td>%s</td>" % str (wpc))
-        s.append ("  <td>%s</td>" % str (tc))
-        for u in self.usernames :
-            s.append (self.html_sum (tc.get (wpc, u, '')))
-        s.append (self.html_sum (tc.get (wpc)))
-        s.append (" </tr>")
-        return s
+    def html_header_item (self, item) :
+        return ('  <th>%s</th>' % str (item))
+    # end def html_header_item
+
+    def html_line (self, items) :
+        items.insert (0, " <tr>")
+        items.append (" </tr>")
+        self.html_output.extend (items)
     # end def html_line
 
-    def as_html (self) :
-        s = ["", '<table class="list" border="1">']
-        s.append (" <tr>")
-        s.append ("  <th>%s</th>" % _ ('Container'))
-        s.append ("  <th>%s</th>" % _ ('time'))
+    def csv_item (self, item) :
+        if not item :
+            return ''
+        if isinstance (item, type (0.0)) :
+            return '%2.02f' % item
+        return str (item)
+    # end def csv_item
+
+    def csv_line (self, items) :
+        self.csvwriter.writerow (items)
+    # end def csv_line
+
+    def header_line (self, formatter) :
+        line = []
+        line.append (formatter (_ ('Container')))
+        line.append (formatter (_ ('time')))
         for u in self.usernames :
-            s.append ("  <th>%s</th>" % u)
-        s.append ("  <th>Sum</th>")
-        s.append (" </tr>")
+            line.append (formatter (u))
+        line.append (formatter (_ ('Sum')))
+        return line
+    # end def header_line
+
+    def as_html (self) :
+        s = self.html_output = ['']
+        s.append ('<table class="list" border="1">')
+        self.html_line (self.header_line (self.html_header_item))
+        self._output   (self.html_line, self.html_item)
+        s.append ("</table>")
+        return '\n'.join (s)
+    # end def as_html
+
+    def _output_line (self, wpc, type, idx, formatter) :
+        line = []
+        tc   = self.time_containers [type][idx]
+        line.append (formatter (wpc))
+        line.append (formatter (tc))
+        for u in self.usernames :
+            line.append (formatter (tc.get (wpc, u, '')))
+        line.append (formatter (tc.get (wpc)))
+        return line
+    # end def _output_line
+
+    def _output (self, line_formatter, item_formatter) :
         start = self.start + Interval ('1d')
         end   = max \
             ([self.time_containers [i][-1].end
@@ -497,13 +537,37 @@ class Summary_Report :
                     except IndexError :
                         continue
                     if d >= tc.end :
-                        s.extend (self.html_line (wpc, tcp, tc_pointers [tcp]))
+                        line_formatter \
+                            (self._output_line 
+                                (wpc, tcp, tc_pointers [tcp], item_formatter)
+                            )
                         tc_pointers [tcp] += 1
                 d = d + Interval ('1d')
-        s.append ("</table>")
-        return '\n'.join (s)
-    # end def as_html
+    # end def _output
+
+    def as_csv (self) :
+        io             = StringIO ()
+        self.csvwriter = csv.writer (io, dialect = 'excel', delimiter = ',')
+        self.csv_line (self.header_line (self.csv_item))
+        self._output  (self.csv_line, self.csv_item)
+        return io.getvalue ()
+    # end def as_csv
 # end class Summary_Report
+
+class csv_summary_report (Action) :
+    def handle (self) :
+        request                   = templating.HTMLRequest (self.client)
+        h                         = self.client.additional_headers
+        h ['Content-Type']        = 'text/csv'
+        h ['Content-Disposition'] = 'inline; filename=summary.csv'
+        self.client.header    ()
+        if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
+            # all done, return a dummy string
+            return 'dummy'
+        summary                   = Summary_Report (self.db, request)
+        return summary.as_csv ()
+    # end def handle
+# end class csv_summary_report
 
 def init (instance) :
     global _, ymd, pretty_range, week_from_date, user_has_role, date_range
@@ -514,6 +578,8 @@ def init (instance) :
     from common import pretty_range, week_from_date, ymd, user_has_role \
                      , date_range, weekno_from_day
     del sys.path [0]
-    util = instance.registerUtil
-    util ('Summary_Report', Summary_Report)
+    util   = instance.registerUtil
+    util   ('Summary_Report',     Summary_Report)
+    action = instance.registerAction
+    action ('csv_summary_report', csv_summary_report)
 # end def init
