@@ -36,6 +36,8 @@
       (utils, pdict ['cost_center_group'], multiselect = 1)
     , summary_type      = utils.ExtProperty
       (utils, pdict ['summary_type'],      multiselect = 1)
+    , summary           = utils.ExtProperty
+      (utils, pdict ['summary'])
     );
     sr   python: utils.Summary_Report (db, request)
    "
@@ -44,7 +46,7 @@
   <tal:block tal:define=
       " filtered_props python: [props [p] for p in
         ( 'user', 'time_wp', 'time_project', 'time_wp_group', 'cost_center'
-        , 'cost_center_group'
+        , 'cost_center_group', 'summary'
         )]
       ; propkeys       python:
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'

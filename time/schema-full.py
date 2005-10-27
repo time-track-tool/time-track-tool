@@ -548,6 +548,7 @@ summary_report = Class \
     , cost_center_group     = Link      ("cost_center_group")
     , time_project          = Link      ("time_project")
     , summary_type          = Link      ("summary_type")
+    , summary               = Boolean   ()
     )
 
 # FileClass automatically gets these properties:

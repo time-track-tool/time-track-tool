@@ -274,10 +274,57 @@ class Month_Container (Time_Container) :
     # end def __str__
 # end class Month_Container
 
-time_container_classes = \
-    {'day' : Day_Container, 'week' : Week_Container, 'month' : Month_Container}
+class Range_Container (Time_Container) :
+    """ Contains the whole selected time-range """
+    def __str__ (self) :
+        return _ ("All")
+    # end def __str__
+# end class Range_Container
 
-class WP_Container (Container, dict) :
+time_container_classes = \
+    { 'day'   : Day_Container
+    , 'week'  : Week_Container
+    , 'month' : Month_Container
+    , 'range' : Range_Container
+    }
+
+class Comparable_Container (Container, dict) :
+    sortkey = 50
+    def __str__ (self) :
+        return self.name
+    # end def __str__
+
+    def __cmp__ (self, other) :
+        return \
+            (  cmp (self.sortkey, other.sortkey) 
+            or cmp (_ (self.classname), _ (other.classname))
+            or cmp (self.name, other.name)
+            )
+    # end def __cmp__
+
+# end class Comparable_Container
+
+class Sum_Container (Comparable_Container, dict) :
+    sortkey = 100
+    def __init__ (self, name = "Sum", visible = True, * args, ** kw) :
+        self.__super.__init__ (* args, ** kw)
+        self.name      = name
+        self.visible   = visible
+        self.classname = ''
+    # end def __init__
+
+    def __repr__ (self) :
+        classname = self.__class__.__name__
+        return "%s (%s, %s, %s)" % \
+            (classname, self.name, self.visible, self.__super.__repr__ ())
+    # end def __repr__
+
+    def __hash__ (self) :
+        return hash ((self.__class__, self.name))
+    # end def __hash__
+# end class Sum_Container
+
+class WP_Container (Comparable_Container, dict) :
     def __init__ (self, klass, id, visible = True, * args, ** kw) :
         self.__super.__init__ (* args, ** kw)
         self.klass     = klass
@@ -287,6 +334,7 @@ class WP_Container (Container, dict) :
         self.name      = klass.get (id, 'name')
 
         if klass.classname == 'time_wp' :
+            self.sortkey = 30
             p = klass.db.time_project.get (klass.get (id, 'project'), 'name')
             self.name  = '/'.join ((p, self.name))
     # end def __init__
@@ -301,16 +349,8 @@ class WP_Container (Container, dict) :
         return "%s %s" % (_ (self.classname), self.name)
     # end def __str__
 
-    def __cmp__ (self, other) :
-        return \
-            (  cmp (other.classname == 'time_wp', self.classname == 'time_wp')
-            or cmp (_ (self.classname), _ (other.classname))
-            or cmp (self.name, other.name)
-            )
-    # end def __cmp__
-
     def __hash__ (self) :
-        return hash ("%s%s" % (self.classname, self.id))
+        return hash ((self.__class__, self.classname, self.id))
     # end def __hash__
 # end class WP_Container
 
@@ -435,6 +475,8 @@ class Summary_Report :
                     , ((w, 1),)
                     )
                 )
+        wp_containers.append \
+            (Sum_Container (_ ('Sum'), 'summary' in self.columns, wps))
 
         # Build time containers
         rep_types  = filterspec.get ('summary_type', ('1', '2', '3'))
@@ -444,11 +486,15 @@ class Summary_Report :
         while d <= end :
             for t, cont in time_containers.iteritems () :
                 if not cont or cont [-1].end <= d :
-                    cont.append (time_container_classes [t] (d))
+                    try :
+                        cont.append (time_container_classes [t] (d))
+                    except TypeError :
+                        cont.append \
+                            ( time_container_classes [t]
+                                (start, end + Interval ('1m'))
+                            )
             d = d + Interval ('1d')
-        #print time_containers
         wp_containers.sort ()
-        #print wp_containers
         # invert wp_containers
         containers_by_wp = {}
         for wc in wp_containers :
@@ -537,7 +583,7 @@ class Summary_Report :
             tc_pointers = dict \
                 ([(i, 0) for i in self.time_containers.iterkeys ()])
             d = start
-            containertypes = 'day', 'week', 'month' # order matters.
+            containertypes = 'day', 'week', 'month', 'range' # order matters.
             while d <= end :
                 for tcp in [i for i in containertypes if i in tc_pointers] :
                     try :
