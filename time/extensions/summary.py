@@ -278,11 +278,12 @@ time_container_classes = \
     {'day' : Day_Container, 'week' : Week_Container, 'month' : Month_Container}
 
 class WP_Container (Container, dict) :
-    def __init__ (self, klass, id, * args, ** kw) :
+    def __init__ (self, klass, id, visible = True, * args, ** kw) :
         self.__super.__init__ (* args, ** kw)
         self.klass     = klass
         self.classname = klass.classname
         self.id        = id
+        self.visible   = visible
         self.name      = klass.get (id, 'name')
 
         if klass.classname == 'time_wp' :
@@ -333,9 +334,9 @@ class Summary_Report :
         assert (request.classname == 'summary_report')
         sup_users     = user_supervisor_for (db)
         wp_containers = []
-
         if not columns :
-            columns = db.summary_report.getprops ().keys ()
+            columns   = db.summary_report.getprops ().keys ()
+        self.columns  = dict ([(c, True) for c in columns])
 
         #print filterspec
         start, end  = date_range (db, filterspec)
@@ -366,8 +367,9 @@ class Summary_Report :
         wpgs        = filterspec.get ('time_wp_group',     [])
         for wpg in wpgs :
             wp_containers.append \
-                (WP_Container
+                ( WP_Container
                     ( db.time_wp_group, wpg
+                    , 'time_wp_group' in self.columns
                     , [(w, 1) for w in db.time_wp_group.get (wpg, 'wps')]
                     )
                 )
@@ -375,8 +377,9 @@ class Summary_Report :
         projects    = filterspec.get ('time_project',      [])
         for p in projects :
             wp_containers.append \
-                (WP_Container
+                ( WP_Container
                     ( db.time_project, p
+                    , 'time_project' in self.columns
                     , [(w, 1) for w in db.time_wp.find (project = p)]
                     )
                 )
@@ -384,8 +387,9 @@ class Summary_Report :
         ccs         = filterspec.get ('cost_center',       [])
         for cc in ccs :
             wp_containers.append \
-                (WP_Container
+                ( WP_Container
                     ( db.cost_center, cc
+                    , 'cost_center' in self.columns
                     , [(w, 1) for w in db.time_wp.find (cost_center = cc)]
                     )
                 )
@@ -394,7 +398,12 @@ class Summary_Report :
         for ccg in ccgs :
             ccs     = db.cost_center.find (cost_center_group = ccg)
             ccs     = dict ([(c, 1) for c in ccs])
-            wp_containers.append (WP_Container (db.cost_center_group, ccg))
+            wp_containers.append \
+                ( WP_Container 
+                    ( db.cost_center_group, ccg
+                    , 'cost_center_group' in self.columns
+                    )
+                )
             for cc in ccs :
                 wps = dict ([(w,1) for w in db.time_wp.find (cost_center = cc)])
                 wp_containers [-1].update (wps)
@@ -419,7 +428,13 @@ class Summary_Report :
         # append only wps where somebody actually booked on
         wps         = dict ([(tr.wp.id, 1) for tr in time_recs])
         for w in wps.iterkeys () :
-            wp_containers.append (WP_Container (db.time_wp, w, ((w, 1),)))
+            wp_containers.append \
+                ( WP_Container 
+                    ( db.time_wp, w
+                    , 'time_wp' in self.columns
+                    , ((w, 1),)
+                    )
+                )
 
         # Build time containers
         rep_types  = filterspec.get ('summary_type', ('1', '2', '3'))
@@ -493,28 +508,21 @@ class Summary_Report :
         line = []
         line.append (formatter (_ ('Container')))
         line.append (formatter (_ ('time')))
-        for u in self.usernames :
-            line.append (formatter (u))
+        if 'user' in self.columns :
+            for u in self.usernames :
+                line.append (formatter (u))
         line.append (formatter (_ ('Sum')))
         return line
     # end def header_line
-
-    def as_html (self) :
-        s = self.html_output = ['']
-        s.append ('<table class="list" border="1">')
-        self.html_line (self.header_line (self.html_header_item))
-        self._output   (self.html_line, self.html_item)
-        s.append ("</table>")
-        return '\n'.join (s)
-    # end def as_html
 
     def _output_line (self, wpc, type, idx, formatter) :
         line = []
         tc   = self.time_containers [type][idx]
         line.append (formatter (wpc))
         line.append (formatter (tc))
-        for u in self.usernames :
-            line.append (formatter (tc.get (wpc, u, '')))
+        if 'user' in self.columns :
+            for u in self.usernames :
+                line.append (formatter (tc.get (wpc, u, '')))
         line.append (formatter (tc.get (wpc)))
         return line
     # end def _output_line
@@ -537,13 +545,23 @@ class Summary_Report :
                     except IndexError :
                         continue
                     if d >= tc.end :
-                        line_formatter \
-                            (self._output_line 
-                                (wpc, tcp, tc_pointers [tcp], item_formatter)
-                            )
+                        if wpc.visible :
+                            line_formatter \
+                                ( self._output_line 
+                                  (wpc, tcp, tc_pointers [tcp], item_formatter)
+                                )
                         tc_pointers [tcp] += 1
                 d = d + Interval ('1d')
     # end def _output
+
+    def as_html (self) :
+        s = self.html_output = ['']
+        s.append ('<table class="list" border="1">')
+        self.html_line (self.header_line (self.html_header_item))
+        self._output   (self.html_line, self.html_item)
+        s.append ("</table>")
+        return '\n'.join (s)
+    # end def as_html
 
     def as_csv (self) :
         io             = StringIO ()
