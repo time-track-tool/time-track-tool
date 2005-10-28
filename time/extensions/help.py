@@ -336,7 +336,9 @@ helptext = \
            booked at
         ''' + date_text
     , ""'valid_to'                   :
-      ""'''Expiration date for %(Classname)s.''' + date_text
+      ""'''Expiration date for %(Classname)s. Note that the date given
+           here is *not* itself part of the validity time.
+        ''' + date_text
     , ""'week'                       :
       ""'''Week for time tracking, this is an alternative for specifying
            a date range: just enter the week number here (for the

@@ -377,6 +377,7 @@ class Summary_Report :
         if not columns :
             columns   = db.summary_report.getprops ().keys ()
         self.columns  = dict ([(c, True) for c in columns])
+        accepted      = db.daily_record_status.lookup ('accepted')
 
         #print filterspec
         start, end  = date_range (db, filterspec)
@@ -386,21 +387,54 @@ class Summary_Report :
         if sv :
             svu     = db.user.find (supervisor = sv)
         users       = dict ([(u, 1) for u in users + svu]).keys ()
-        if not users :
+        olo_or_dept = False
+        drecs       = {}
+        for cl in 'department', 'org_location' :
+            spec = dict ([(s, 1) for s in filterspec.get (cl, [])])
+            if spec :
+                olo_or_dept = True
+                udrs        = []
+                for i in db.user_dynamic.find (** {cl : spec}) :
+                    ud = db.user_dynamic.getnode (i)
+                    if  (   ud.valid_from < end
+                        and (not ud.valid_to or ud.valid_to > start)
+                        ) :
+                        udrs.append (ud)
+                for ud in udrs :
+                    udstart = max (ud.valid_from, start)
+                    if ud.valid_to :
+                        udend = min (ud.valid_to - Interval ('1d'), end)
+                    else :
+                        udend = end
+                    assert (udstart < udend)
+                    drs = db.daily_record.filter \
+                        ( None, dict 
+                            ( user   = ud.user
+                            , date   = pretty_range (udstart, udend)
+                            , status = accepted
+                            )
+                        )
+                    edr = Extended_Daily_Record
+                    drs = [edr (db, d, sup_users) for d in drs]
+                    drecs.update (dict ([(d.id, d) for d in drs]))
+
+        if not users and not olo_or_dept :
             valid   = db.user_status.lookup ('valid')
             users   = db.user.find (status = valid)
-        # FIXME: get user_dynamic records for all dept and org_locs
-        # then compute the daily_records that match.
-        dr          = db.daily_record.filter \
-            ( None, dict 
-                ( user   = users
-                , date   = pretty_range (start, end)
-                , status = db.daily_record_status.lookup ('accepted')
+        print users, start, end, accepted
+        dr          = []
+        if users :
+            dr = db.daily_record.filter \
+                ( None, dict 
+                    ( user   = users
+                    , date   = pretty_range (start, end)
+                    , status = accepted
+                    )
                 )
-            )
         #print "n_dr:", len (dr)
         dr          = dict \
             ([(d, Extended_Daily_Record (db, d, sup_users)) for d in dr])
+        dr.update (drecs)
 
         wp          = dict ([(w, 1) for w in filterspec.get ('time_wp', [])])
 
