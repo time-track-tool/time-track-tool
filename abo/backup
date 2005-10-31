@@ -2,6 +2,7 @@
 
 TRACKER=/data/roundup/abo
 BACKUPDIR=/data/roundup/backup
+ROUNDUP_ADMIN=roundup-admin
 
 ### WARNING ###
 ### WARNING ###
@@ -24,12 +25,16 @@ if [ ${TRACKER} == ${RESTORE} ] ; then
 fi
 
 dir=${BACKUPDIR}/backup-$(date +%a)
-echo Backing up to $dir
+echo Backing up ${TRACKER} to $dir
 rm -rf $dir
 mkdir $dir
 
-roundup-admin -i $TRACKER export $dir
+${ROUNDUP_ADMIN} -i $TRACKER export $dir
 
-roundup-admin -i $RESTORE init xyzzy
-roundup-admin -i $RESTORE import $dir
-
+if [ -n "$RESTORE" ] ; then
+	echo Restoring from $dir to $RESTORE
+	cp $TRACKER/db/backend_name $RESTORE/db
+	${ROUNDUP_ADMIN} -i $RESTORE init xyzzy
+	cp $TRACKER/db/backend_name $RESTORE/db
+	${ROUNDUP_ADMIN} -i $RESTORE import $dir
+fi
