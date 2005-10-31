@@ -36,6 +36,7 @@ if [ -n "$RESTORE" ] ; then
     echo Restoring from $dir to $RESTORE
     cp $TRACKER/db/backend_name $RESTORE/db
     echo y | $ROUNDUP_ADMIN -i $RESTORE init ${RESTOREPW}
+    cp $TRACKER/db/backend_name $RESTORE/db
     $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
 
