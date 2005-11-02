@@ -423,7 +423,7 @@ class Summary_Report :
         if not users and not olo_or_dept :
             valid   = db.user_status.lookup ('valid')
             users   = db.user.find (status = valid)
-        print users, start, end, status
+        #print users, start, end, status
         dr          = []
         if users :
             dr = db.daily_record.filter \
