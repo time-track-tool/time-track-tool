@@ -549,6 +549,7 @@ summary_report = Class \
     , time_project          = Link      ("time_project")
     , summary_type          = Link      ("summary_type")
     , summary               = Boolean   ()
+    , status                = Link      ("daily_record_status")
     )
 
 # FileClass automatically gets these properties:

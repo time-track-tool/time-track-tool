@@ -20,23 +20,27 @@
  ; uid             python: db._db.getuid ()
  ; default_query   string::action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; default_queries python:
-   { 'cost_center'  : ':columns=id,name,status,organisation&'
-                      ':sort=name&:group=cost_center_group&'
-                      ':filter=status&:pagesize=20&:startwith=0&status=5,1,2,4'
-   , 'daily_record' : ':columns=id,user,date,status&:sort=-id&'
-                      ':filter=user,date&:pagesize=20&:startwith=0&'
-                      'date=.-1d%%3B.%%2B1d&user=%s' % uid
-   , 'time_project' : ':columns=name,responsible,organisation,department'
-                      ',status&:sort=name&:filter=status&:pagesize=20&'
-                      ':startwith=0&status=1,2'
-   , 'time_wp'      : ':columns=name,wp_no,responsible,project,time_start'
-                      ',time_end,cost_center&:sort=name&:filter=bookers&'
-                      ':pagesize=20&:startwith=0&bookers=%s' % uid
-   , 'user'         : ':columns=lastname,firstname,nickname,username'
-                      ',phone,room,position,supervisor&:sort=lastname&'
-                      ':filter=status&:pagesize=200&:startwith=0&status=1'
-   , 'user_dynamic' : ':columns=id,user,valid_from,org_location&:sort=-id&'
-                      ':pagesize=20&:startwith=0'
+   { 'cost_center'    : ':columns=id,name,status,organisation&'
+                        ':sort=name&:group=cost_center_group&'
+                        ':filter=status&:pagesize=20&:startwith=0&'
+                        'status=5,1,2,4'
+   , 'daily_record'   : ':columns=id,user,date,status&:sort=-id&'
+                        ':filter=user,date&:pagesize=20&:startwith=0&'
+                        'date=.-1d%%3B.%%2B1d&user=%s' % uid
+   , 'time_project'   : ':columns=name,responsible,organisation,department'
+                        ',status&:sort=name&:filter=status&:pagesize=20&'
+                        ':startwith=0&status=1,2'
+   , 'time_wp'        : ':columns=name,wp_no,responsible,project,time_start'
+                        ',time_end,cost_center&:sort=name&:filter=bookers&'
+                        ':pagesize=20&:startwith=0&bookers=%s' % uid
+   , 'user'           : ':columns=lastname,firstname,nickname,username'
+                        ',phone,room,position,supervisor&:sort=lastname&'
+                        ':filter=status&:pagesize=200&:startwith=0&status=1'
+   , 'user_dynamic'   : ':columns=id,user,valid_from,org_location&:sort=-id&'
+                        ':pagesize=20&:startwith=0'
+   , 'public_holiday' : ':columns=id,name,description,date,locations,is_half&'
+                        ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
+                        'date=.%3B'
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit')

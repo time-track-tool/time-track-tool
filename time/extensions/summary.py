@@ -378,6 +378,8 @@ class Summary_Report :
             columns   = db.summary_report.getprops ().keys ()
         self.columns  = dict ([(c, True) for c in columns])
         accepted      = db.daily_record_status.lookup ('accepted')
+        submitted     = db.daily_record_status.lookup ('submitted')
+        status        = filterspec.get ('status', [accepted, submitted])
 
         #print filterspec
         start, end  = date_range (db, filterspec)
@@ -411,7 +413,7 @@ class Summary_Report :
                         ( None, dict 
                             ( user   = ud.user
                             , date   = pretty_range (udstart, udend)
-                            , status = accepted
+                            , status = status
                             )
                         )
                     edr = Extended_Daily_Record
@@ -421,14 +423,14 @@ class Summary_Report :
         if not users and not olo_or_dept :
             valid   = db.user_status.lookup ('valid')
             users   = db.user.find (status = valid)
-        print users, start, end, accepted
+        print users, start, end, status
         dr          = []
         if users :
             dr = db.daily_record.filter \
                 ( None, dict 
                     ( user   = users
                     , date   = pretty_range (start, end)
-                    , status = accepted
+                    , status = status
                     )
                 )
         #print "n_dr:", len (dr)
