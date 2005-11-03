@@ -137,7 +137,9 @@ def audit_user_fields(db, cl, nodeid, new_values):
         ls = Date (ls) # trigger date-spec error if this fails.
     if 'supervisor' in new_values :
         sv  = new_values ['supervisor']
-        svs = [ nodeid ]
+        svs = []
+        if nodeid :
+            svs.append (nodeid)
         while sv :
             if sv in svs :
                 raise Reject, \
