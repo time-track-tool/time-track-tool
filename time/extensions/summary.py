@@ -229,8 +229,9 @@ class Time_Container (Container) :
     """
     def __init__ (self, start, end) :
         self.__super.__init__ ()
-        self.start = start
-        self.end   = end
+        self.start    = start
+        self.end      = end
+        self.sort_end = end
     # end def __init__
 
     def __repr__ (self) :
@@ -288,6 +289,11 @@ class Month_Container (Time_Container) :
 
 class Range_Container (Time_Container) :
     """ Contains the whole selected time-range """
+    def __init__ (self, * args, ** kw) :
+        self.__super.__init__ (* args, ** kw)
+        self.sort_end = self.end + Interval ('1m')
+    # end def __init__
+
     def __str__ (self) :
         return "%s;%s" % (self.start.pretty (ymd), self.end.pretty (ymd))
     # end def __str__
@@ -529,9 +535,11 @@ class Summary_Report :
                     ( db.time_wp, w
                     , 'time_wp' in self.columns
                     , [''
-                      , ( 'Cost Center %s'
-                        % db.cost_center.get
-                          (db.time_wp.get (w, 'cost_center'), 'name')
+                      , ( '%s %s'
+                        % ( _ ('cost_center')
+                          , db.cost_center.get
+                            (db.time_wp.get (w, 'cost_center'), 'name')
+                          )
                         )
                       ]['cost_center' in self.columns]
                     , ((w, 1),)
@@ -551,10 +559,7 @@ class Summary_Report :
                     try :
                         cont.append (time_container_classes [t] (d))
                     except TypeError :
-                        cont.append \
-                            ( time_container_classes [t]
-                                (start, end + Interval ('1m'))
-                            )
+                        cont.append (time_container_classes [t] (start, end))
             d = d + Interval ('1d')
         wp_containers.sort ()
         # invert wp_containers
@@ -638,7 +643,7 @@ class Summary_Report :
     def _output (self, line_formatter, item_formatter) :
         start = self.start + Interval ('1d')
         end   = max \
-            ([self.time_containers [i][-1].end
+            ([self.time_containers [i][-1].sort_end
               for i in self.time_containers.keys ()
             ])
         for wpc in self.wp_containers :
@@ -652,7 +657,7 @@ class Summary_Report :
                         tc = self.time_containers [tcp][tc_pointers [tcp]]
                     except IndexError :
                         continue
-                    if d >= tc.end :
+                    if d >= tc.sort_end :
                         if wpc.visible :
                             line_formatter \
                                 ( self._output_line 
