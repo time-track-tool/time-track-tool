@@ -12,8 +12,12 @@
  <tal:block metal:fill-slot="content">
   <tal:block tal:condition="context/is_view_ok"
    tal:define=
-   " pending python: utils.approvals_pending
-             (db, request, request.filterspec ['user'] or [])
+   " users   python:
+             (  'user' in request.filterspec and request.filterspec ['user']
+             or []
+             )
+   ; pending python: utils.approvals_pending
+             (db, request, users)
    ; users   python:utils.sorted
              ([db._db.user.getnode (u) for u in pending.keys ()], ('username',))
    ">
