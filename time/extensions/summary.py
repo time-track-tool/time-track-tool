@@ -32,6 +32,7 @@
 import sys
 import os
 import csv
+import cgi
 try :
     from cStringIO import StringIO
 except ImportError :
@@ -133,7 +134,8 @@ class Extended_WP (Extended_Node) :
         the work package: own records (is_own = True) are records wich
         may be unconditionally viewed by the user. This is the case if
         the user is responsible for the wp or if he is responsible or
-        deputy for the project of the WP.
+        deputy for the project of the WP or if he is in the nosy list
+        for the project.
     """
     def __init__ (self, db, wpid) :
         self.node         = db.time_wp.getnode  (wpid)
@@ -141,8 +143,14 @@ class Extended_WP (Extended_Node) :
         uid               = db.getuid ()
         p_owner           = db.time_project.get (self.project, 'responsible')
         p_deputy          = db.time_project.get (self.project, 'deputy')
+        p_nosy            = dict \
+            ([(i, 1) for i in db.time_project.get (self.project, 'nosy')])
         self.is_own       = \
-            (uid == self.responsible or uid == p_owner or uid == p_deputy)
+            (  uid == self.responsible
+            or uid == p_owner
+            or uid == p_deputy
+            or uid in p_nosy
+            )
     # end def __init__
 
     def __cmp__ (self, other) :
@@ -209,6 +217,10 @@ class Container (autosuper) :
             return self.sums [key]
         return default
     # end def get
+
+    def as_html (self) :
+        return cgi.escape (str (self))
+    # end def as_html
 # end class Container
 
 class Time_Container (Container) :
@@ -277,7 +289,7 @@ class Month_Container (Time_Container) :
 class Range_Container (Time_Container) :
     """ Contains the whole selected time-range """
     def __str__ (self) :
-        return _ ("All")
+        return "%s;%s" % (self.start.pretty (ymd), self.end.pretty (ymd))
     # end def __str__
 # end class Range_Container
 
@@ -325,13 +337,15 @@ class Sum_Container (Comparable_Container, dict) :
 # end class Sum_Container
 
 class WP_Container (Comparable_Container, dict) :
-    def __init__ (self, klass, id, visible = True, * args, ** kw) :
+    def __init__ \
+        (self, klass, id, visible = True, verbname = '', * args, ** kw) :
         self.__super.__init__ (* args, ** kw)
         self.klass     = klass
         self.classname = klass.classname
         self.id        = id
         self.visible   = visible
         self.name      = klass.get (id, 'name')
+        self.verbname  = verbname
 
         if klass.classname == 'time_wp' :
             self.sortkey = 30
@@ -346,8 +360,15 @@ class WP_Container (Comparable_Container, dict) :
     # end def __repr__
 
     def __str__ (self) :
-        return "%s %s" % (_ (self.classname), self.name)
+        return "%s %s %s" % (_ (self.classname), self.name, self.verbname)
     # end def __str__
+
+    def as_html (self) :
+        return "%s %s %s" % \
+            ( cgi.escape (_ (self.classname)).replace (' ', '&nbsp;')
+            , cgi.escape (self.name).replace          (' ', '&nbsp;')
+            , cgi.escape (self.verbname).replace      (' ', '&nbsp;')
+            )
 
     def __hash__ (self) :
         return hash ((self.__class__, self.classname, self.id))
@@ -421,8 +442,7 @@ class Summary_Report :
                     drecs.update (dict ([(d.id, d) for d in drs]))
 
         if not users and not olo_or_dept :
-            valid   = db.user_status.lookup ('valid')
-            users   = db.user.find (status = valid)
+            users   = db.user.getnodeids () # also invalid users!
         #print users, start, end, status
         dr          = []
         if users :
@@ -508,6 +528,12 @@ class Summary_Report :
                 ( WP_Container 
                     ( db.time_wp, w
                     , 'time_wp' in self.columns
+                    , [''
+                      , ( 'Cost Center %s'
+                        % db.cost_center.get
+                          (db.time_wp.get (w, 'cost_center'), 'name')
+                        )
+                      ]['cost_center' in self.columns]
                     , ((w, 1),)
                     )
                 )
@@ -561,7 +587,7 @@ class Summary_Report :
             return "   <td/>"
         if isinstance (item, type (0.0)) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
-        return ('  <td>%s</td>' % str (item))
+        return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
 
     def html_header_item (self, item) :
