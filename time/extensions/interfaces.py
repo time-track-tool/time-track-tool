@@ -319,7 +319,9 @@ def approval_for (db) :
     approve_for = []
     for u in clearer_for :
         approve_for.extend (db.user.find (supervisor = u))
-    return dict ([(a, 1) for a in approve_for])
+    aprv = dict ([(a, 1) for a in approve_for])
+    if uid in aprv : del aprv [uid]
+    return aprv
 # end def approval_for
 
 def welcome (db) :

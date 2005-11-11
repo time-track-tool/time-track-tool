@@ -83,7 +83,8 @@ def user_supervisor_for (db, uid = None) :
     users             = db.user.find (supervisor = sv)
     trans_users       = []
     for u in users :
-        trans_users.extend (user_supervisor_for (db, u))
+        if u != uid :
+            trans_users.extend (user_supervisor_for (db, u))
     sup_cache [uid] = dict ([(u, 1) for u in users + trans_users])
     return sup_cache [uid]
 # end def user_supervisor_for
