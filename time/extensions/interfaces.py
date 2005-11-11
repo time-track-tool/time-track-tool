@@ -310,7 +310,10 @@ def approval_for (db) :
     except AttributeError :
         pass
     uid = db.getuid ()
-    clearer_for = db.user.find (clearance_by = uid)
+    clearer_for = db.user.find   (clearance_by = uid)
+    subst       = db.user.filter \
+        (None, {'substitute' : uid, 'subst_active' : True})
+    clearer_for.extend (subst)
     if not db.user.get (uid, 'clearance_by') :
         clearer_for.append (uid)
     approve_for = []

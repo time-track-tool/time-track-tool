@@ -1,323 +1,325 @@
-<tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title" tal:content="Classname" />
-<span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
- Time-Tracking for
- <span tal:condition="python:db._db.user.get
-  (request.filterspec ['user'][0], 'firstname')">
-  <span tal:replace="python: db._db.user.get
-   (request.filterspec ['user'][0], 'firstname')" i18n:name="firstname"/>
-  <span tal:replace="python: db._db.user.get
-   (request.filterspec ['user'][0], 'lastname')"  i18n:name="lastname"/>
- </span>
- <span tal:condition="python:not db._db.user.get
-   (request.filterspec ['user'][0], 'firstname')"
-  tal:replace="python: db._db.user.get
-   (request.filterspec ['user'][0], 'username')" i18n:name="username">
- </span>
-</span>
+<tal:block tal:define="user python:
+   (  'user' in request.filterspec and request.filterspec ['user'][0]
+   or db._db.getuid ()
+   )">
+ <tal:block metal:use-macro="templates/page/macros/icing">
+  <title metal:fill-slot="head_title" tal:content="Classname" />
+  <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+   Time-Tracking for
+   <span tal:condition="python:db._db.user.get (user, 'firstname')">
+    <span tal:replace="python: db._db.user.get (user, 'firstname')"
+     i18n:name="firstname"/>
+    <span tal:replace="python: db._db.user.get (user, 'lastname')"
+     i18n:name="lastname"/>
+   </span>
+   <span tal:condition="python:not db._db.user.get (user, 'firstname')"
+    tal:replace="python: db._db.user.get (user, 'username')"
+    i18n:name="username">
+   </span>
+  </span>
 
-<tal:block metal:fill-slot="create_or_query">
- <tal:block 
-  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
-</tal:block>
-
-<tal:block metal:fill-slot="content">
- <tal:block tal:define=
-  " batch   request/batch
-  ; pdict   python: utils.properties_dict (db, context)
-  ; pdict   python: dict
-    ( user   = utils.ExtProperty (utils, pdict ['user'],   multiselect = 1)
-    , date   = utils.ExtProperty (utils, pdict ['date'])
-    , status = utils.ExtProperty (utils, pdict ['status'], multiselect = 1)
-    )
-  ; props   python: pdict.itervalues ()
-  ; edit_ok python: (  db._db.getuid () == request.filterspec ['user'][0]
-                    or utils.user_has_role 
-                       (db._db, db._db.getuid (), 'controlling')
-                    )
-  " tal:condition="context/is_view_ok">
-  <tal:block tal:condition="not:context/is_view_ok">
-   You are not allowed to view this page.
+  <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
   </tal:block>
 
-  <form method="POST" tal:attributes="action request/classname"
-   name="edit_daily_record">
+  <tal:block metal:fill-slot="content">
    <tal:block tal:define=
-    "batch        request/batch;
-     is_open      python:utils.batch_has_status (batch, 'open');
-     is_submitted python:utils.batch_has_status (batch, 'submitted');
-    ">
-    <table class="list">
-     <tr class="time-nav">
-      <th colspan="6">
-       <table class="list">
-        <tr class="time-nav" tal:define="date python:pdict ['date']">
-         <th>
-          <a tal:attributes="href python:utils.prev_week (db, request)">
-           &lt;&lt;&nbsp;previous
-          </a>
-         </th>
-         <th>
-           <input type="hidden" name="@sort"     value="date">
-           <input type="hidden" name="@group"    value="user">
-           <input type="hidden" name="@filter"   value="date,user">
-           <input type="hidden" name="@action"   value="daily_record_edit_action">
-           <input type="hidden" name="@template" value="edit">
-           <input type="hidden" name="@pagesize"
-            tal:attributes="value python:request.form.getvalue ('@pagesize')
-            or '50'">
-           <input type="hidden" name="@startwith"
-            tal:attributes="value python:request.form.getvalue ('@startwith')
-            or '0'">
-           <input type="hidden" name="user"
-            tal:attributes="value python:request.form.getvalue ('user') or nothing">
-           &nbsp;
-         </th>
-         <th>&nbsp;</th>
-         <th style="text-align:right;"
-             tal:content="structure
-                 python:utils.fieldname ('daily_record', 'week', endswith = ':')"/>
-         <th>
-           <input type="text" size="7" name="weekno"
-            onChange="document.forms.edit_daily_record ['@action'].value =
-                'weekno_action';
-              document.edit_daily_record.submit ();">
-         </th>
-         <th style="text-align:right;"
-          tal:content="structure
-              python: utils.fieldname ('daily_record', 'date', endswith = ':')"/>
-         <th>
-          <input type="text" size="22"
-           tal:define="value python:request.form.getvalue(date.selname) or nothing"
-           tal:attributes="value python:date.pretty_ids (value)
-                          ;name  python:date.selname
-                          "
-           onChange="document.forms.edit_daily_record ['@action'].value =
-                'daily_record_edit_action';
-              document.edit_daily_record.submit ();">
-         </th>
-         <th>&nbsp;</th>
-         <th>&nbsp;</th>
-         <th>
-          <a tal:attributes="href python:utils.next_week (db, request)">
-           next&nbsp;&gt;&gt;
-          </a>
-         </th>
-        </tr>
-       </table>
-      </th>
-      <th tal:condition="python:edit_ok and is_open" colspan="2"/>
-      <th tal:condition="python:edit_ok and is_open" style="text-align:left">
-       <input type="button" value=" Save " i18n:attributes="value"
-        onClick="document.forms.edit_daily_record ['@action'].value =
-            'daily_record_edit_action';
-          document.edit_daily_record.submit ();">
-      </th>
-     </tr>
+    " batch   request/batch
+    ; pdict   python: utils.properties_dict (db, context)
+    ; pdict   python: dict
+      ( user   = utils.ExtProperty (utils, pdict ['user'],   multiselect = 1)
+      , date   = utils.ExtProperty (utils, pdict ['date'])
+      , status = utils.ExtProperty (utils, pdict ['status'], multiselect = 1)
+      )
+    ; props   python: pdict.itervalues ()
+    ; edit_ok python: (  db._db.getuid () == user
+                      or utils.user_has_role 
+                         (db._db, db._db.getuid (), 'controlling')
+                      )
+    " tal:condition="context/is_view_ok">
+    <tal:block tal:condition="not:context/is_view_ok">
+     You are not allowed to view this page.
+    </tal:block>
 
-     <tal:block tal:condition="context/is_view_ok">
-      <tr>
-       <th tal:content="structure python:utils.fieldname
-           ('time_record', 'start',         endswith = '')" class="nb"/>
-       <th class="nb"/>
-       <th tal:content="structure python:utils.fieldname
-           ('time_record', 'end',           endswith = '')"
-        style="text-align:right"/>
-       <th tal:content="structure python:utils.fieldname
-           ('time_record', 'duration',      endswith = '')" colspan="2"/>
-       <th tal:content="structure python:utils.fieldname
-           ('time_record', 'wp',            endswith = '')"/>
-       <th tal:content="structure python:utils.fieldname
-           ('time_record', 'time_activity', endswith = '')" colspan="2"/>
-       <th tal:content="structure python:utils.fieldname
-           ('time_record', 'work_location', endswith = '')"/>
-       <th tal:condition="is_open"
-           tal:content="structure python:utils.fieldname
-           ('time_record', 'dist',          endswith = '')"/>
-      </tr>
-      <tal:block tal:repeat="i batch">
-       <tal:block
-        tal:condition="i/is_view_ok"
-        tal:define=
-         "cls       python:['normal','alt'][repeat['i'].index%2]
-         ;idx       python:repeat['i'].index + 1
-         ;editable  python: edit_ok and str (i.status) == 'open'
-         ;w_allowed python:utils.weekend_allowed (db._db, i)
-         ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
-         ;allowed   python: (w_allowed or not is_wend) and edit_ok
-         ;wps       python:utils.sorted 
-                              (utils.work_packages (db, i), ('project', 'name'))
-         ">
-        <tr tal:attributes="class cls">
-         <td class="subhead-nb" width="1%"
-          tal:content="structure python:i.date.pretty ('%a')"/>
-         <td class="subhead" colspan="2" width="1%"
-          tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
-         <td tal:content="python: utils.daysum (db._db, i.id, format = '%.2f')"
-          style="text-align:right;" class="subhead-nb"/>
-         <td/>
-         <td class="subhead"
-          tal:content="structure python:pdict ['status'].colonfield (i)"/>
-         <td class="subhead" colspan="2"/>
-         <td class="subhead"/>
-         <td tal:condition="is_open"/>
+    <form method="POST" tal:attributes="action request/classname"
+     name="edit_daily_record">
+     <tal:block tal:define=
+      "batch        request/batch;
+       is_open      python:utils.batch_has_status (batch, 'open');
+       is_submitted python:utils.batch_has_status (batch, 'submitted');
+      ">
+      <table class="list">
+       <tr class="time-nav">
+        <th colspan="6">
+         <table class="list">
+          <tr class="time-nav" tal:define="date python:pdict ['date']">
+           <th>
+            <a tal:attributes="href python:utils.prev_week (db, request)">
+             &lt;&lt;&nbsp;previous
+            </a>
+           </th>
+           <th>
+             <input type="hidden" name="@sort"     value="date">
+             <input type="hidden" name="@group"    value="user">
+             <input type="hidden" name="@filter"   value="date,user">
+             <input type="hidden" name="@action"   value="daily_record_edit_action">
+             <input type="hidden" name="@template" value="edit">
+             <input type="hidden" name="@pagesize"
+              tal:attributes="value python:request.form.getvalue ('@pagesize')
+              or '50'">
+             <input type="hidden" name="@startwith"
+              tal:attributes="value python:request.form.getvalue ('@startwith')
+              or '0'">
+             <input type="hidden" name="user"
+              tal:attributes="value python:request.form.getvalue ('user') or nothing">
+             &nbsp;
+           </th>
+           <th>&nbsp;</th>
+           <th style="text-align:right;"
+               tal:content="structure
+                   python:utils.fieldname ('daily_record', 'week', endswith = ':')"/>
+           <th>
+             <input type="text" size="7" name="weekno"
+              onChange="document.forms.edit_daily_record ['@action'].value =
+                  'weekno_action';
+                document.edit_daily_record.submit ();">
+           </th>
+           <th style="text-align:right;"
+            tal:content="structure
+                python: utils.fieldname ('daily_record', 'date', endswith = ':')"/>
+           <th>
+            <input type="text" size="22"
+             tal:define="value python:request.form.getvalue(date.selname) or nothing"
+             tal:attributes="value python:date.pretty_ids (value)
+                            ;name  python:date.selname
+                            "
+             onChange="document.forms.edit_daily_record ['@action'].value =
+                  'daily_record_edit_action';
+                document.edit_daily_record.submit ();">
+           </th>
+           <th>&nbsp;</th>
+           <th>&nbsp;</th>
+           <th>
+            <a tal:attributes="href python:utils.next_week (db, request)">
+             next&nbsp;&gt;&gt;
+            </a>
+           </th>
+          </tr>
+         </table>
+        </th>
+        <th tal:condition="python:edit_ok and is_open" colspan="2"/>
+        <th tal:condition="python:edit_ok and is_open" style="text-align:left">
+         <input type="button" value=" Save " i18n:attributes="value"
+          onClick="document.forms.edit_daily_record ['@action'].value =
+              'daily_record_edit_action';
+            document.edit_daily_record.submit ();">
+        </th>
+       </tr>
+
+       <tal:block tal:condition="context/is_view_ok">
+        <tr>
+         <th tal:content="structure python:utils.fieldname
+             ('time_record', 'start',         endswith = '')" class="nb"/>
+         <th class="nb"/>
+         <th tal:content="structure python:utils.fieldname
+             ('time_record', 'end',           endswith = '')"
+          style="text-align:right"/>
+         <th tal:content="structure python:utils.fieldname
+             ('time_record', 'duration',      endswith = '')" colspan="2"/>
+         <th tal:content="structure python:utils.fieldname
+             ('time_record', 'wp',            endswith = '')"/>
+         <th tal:content="structure python:utils.fieldname
+             ('time_record', 'time_activity', endswith = '')" colspan="2"/>
+         <th tal:content="structure python:utils.fieldname
+             ('time_record', 'work_location', endswith = '')"/>
+         <th tal:condition="is_open"
+             tal:content="structure python:utils.fieldname
+             ('time_record', 'dist',          endswith = '')"/>
         </tr>
-        <tal:block tal:repeat="r python: utils.sorted
-         (i ['time_record'], ('start','wp'))">
-         <tr tal:attributes="class cls"
-          tal:define="dur python: utils.ExtProperty
-           ( utils, r.duration, item = r, editable = editable, fieldwidth = 5
-           , format = '%.2f'
-           )
-          ">
-          <tal:block tal:repeat="pn python: [('start', 2),('end', 1)]">
-           <td tal:define="gen python: r [pn [0] + '_generated']"
-            tal:attributes="class python: ['generated',''][not gen] + pn [0]
-                           ;colspan python: pn [1]
-                           "
-            tal:content="structure python: 
-             [ ''
-             , utils.ExtProperty
-               (utils, r [pn [0]], item = r, editable = editable, fieldwidth = 5)
-               .as_listentry ()
-             ][not gen or editable]"/>
-          </tal:block>
-          <td tal:content="structure dur/as_listentry"
-           style="text-align:right;" class="nb" />
-          <td style="text-align:right;">
-           <span tal:condition="editable"
-            title="Mark line for deletion by removing duration">
-            <img src="@@file/del.png" alt="D" border="0"
-             tal:attributes="onclick
-              python:dur.del_link (form='edit_daily_record')">
-           </span>
-          </td>
-          <td>
-           <select tal:condition="editable"
-            tal:attributes="name python:'time_record%s@wp'%r.id">
-            <option tal:attributes="selected not:r/wp/id" value="-1">
-             - no selection -
-            </option>
-            <option tal:repeat="wp wps" tal:attributes=
-                "value wp/id
-                ;selected python:wp.id == r.wp.id
-                "
-              tal:content="python:' '.join
-               ([str (wp [i]) for i in 'project','wp_no','name'])"/>
-           </select>
-           <span tal:condition="not:editable" tal:content="structure python:
-            '&nbsp;'.join
-             ([utils.ExtProperty
-               (utils, i [0], item = i [1], lnkattr = i [2]).as_listentry ()
-               for i in ((r.wp.project,r.wp,None),(r.wp,r,'wp_no'),(r.wp,r,None))
-             ])
-            "/>
-          </td>
-          <td class="nb" tal:content="structure python: utils.ExtProperty
-           (utils, r.time_activity, item = r, editable = editable).menu ()"/>
-          <td style="text-align:right;"
-           tal:condition="python:editable or r.comment"
-           tal:content="structure python: utils.ExtProperty
-           (utils, r.comment, item = r, editable = editable)
-           .comment_edit (form='edit_daily_record')"/>
-          <td tal:condition="python: not editable and not r.comment"/>
-          <td tal:content="structure python: utils.ExtProperty
-           (utils, r.work_location, item = r, editable = editable).menu ()"/>
-          <td tal:condition="python:is_open">
-           <tal:block tal:condition="editable"
-            tal:replace="structure python: utils.ExtProperty
-            (utils, r.dist, item = r, editable = editable, fieldwidth = 5)
-            .as_listentry ()"/>
-          </td>
-         </tr>
-        </tal:block>
-        <tr tal:condition="python: editable and allowed"
-            tal:attributes="class cls">
+        <tal:block tal:repeat="i batch">
          <tal:block
-          tal:repeat="pn python:[('start',2),('end',1)]">
-          <td tal:content="structure python:utils.new_property
-           (context, db, 'time_record', -idx, pn [0]).field (5)"
-           tal:attributes="colspan python: pn [1]
-                          ;class   python: pn [0]
-                          "/>
+          tal:condition="i/is_view_ok"
+          tal:define=
+           "cls       python:['normal','alt'][repeat['i'].index%2]
+           ;idx       python:repeat['i'].index + 1
+           ;editable  python: edit_ok and str (i.status) == 'open'
+           ;w_allowed python:utils.weekend_allowed (db._db, i)
+           ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
+           ;allowed   python: (w_allowed or not is_wend) and edit_ok
+           ;wps       python:utils.sorted 
+                                (utils.work_packages (db, i), ('project', 'name'))
+           ">
+          <tr tal:attributes="class cls">
+           <td class="subhead-nb" width="1%"
+            tal:content="structure python:i.date.pretty ('%a')"/>
+           <td class="subhead" colspan="2" width="1%"
+            tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
+           <td tal:content="python: utils.daysum (db._db, i.id, format = '%.2f')"
+            style="text-align:right;" class="subhead-nb"/>
+           <td/>
+           <td class="subhead"
+            tal:content="structure python:pdict ['status'].colonfield (i)"/>
+           <td class="subhead" colspan="2"/>
+           <td class="subhead"/>
+           <td tal:condition="is_open"/>
+          </tr>
+          <tal:block tal:repeat="r python: utils.sorted
+           (i ['time_record'], ('start','wp'))">
+           <tr tal:attributes="class cls"
+            tal:define="dur python: utils.ExtProperty
+             ( utils, r.duration, item = r, editable = editable, fieldwidth = 5
+             , format = '%.2f'
+             )
+            ">
+            <tal:block tal:repeat="pn python: [('start', 2),('end', 1)]">
+             <td tal:define="gen python: r [pn [0] + '_generated']"
+              tal:attributes="class python: ['generated',''][not gen] + pn [0]
+                             ;colspan python: pn [1]
+                             "
+              tal:content="structure python: 
+               [ ''
+               , utils.ExtProperty
+                 (utils, r [pn [0]], item = r, editable = editable, fieldwidth = 5)
+                 .as_listentry ()
+               ][not gen or editable]"/>
+            </tal:block>
+            <td tal:content="structure dur/as_listentry"
+             style="text-align:right;" class="nb" />
+            <td style="text-align:right;">
+             <span tal:condition="editable"
+              title="Mark line for deletion by removing duration">
+              <img src="@@file/del.png" alt="D" border="0"
+               tal:attributes="onclick
+                python:dur.del_link (form='edit_daily_record')">
+             </span>
+            </td>
+            <td>
+             <select tal:condition="editable"
+              tal:attributes="name python:'time_record%s@wp'%r.id">
+              <option tal:attributes="selected not:r/wp/id" value="-1">
+               - no selection -
+              </option>
+              <option tal:repeat="wp wps" tal:attributes=
+                  "value wp/id
+                  ;selected python:wp.id == r.wp.id
+                  "
+                tal:content="python:' '.join
+                 ([str (wp [i]) for i in 'project','wp_no','name'])"/>
+             </select>
+             <span tal:condition="not:editable" tal:content="structure python:
+              '&nbsp;'.join
+               ([utils.ExtProperty
+                 (utils, i [0], item = i [1], lnkattr = i [2]).as_listentry ()
+                 for i in ((r.wp.project,r.wp,None),(r.wp,r,'wp_no'),(r.wp,r,None))
+               ])
+              "/>
+            </td>
+            <td class="nb" tal:content="structure python: utils.ExtProperty
+             (utils, r.time_activity, item = r, editable = editable).menu ()"/>
+            <td style="text-align:right;"
+             tal:condition="python:editable or r.comment"
+             tal:content="structure python: utils.ExtProperty
+             (utils, r.comment, item = r, editable = editable)
+             .comment_edit (form='edit_daily_record')"/>
+            <td tal:condition="python: not editable and not r.comment"/>
+            <td tal:content="structure python: utils.ExtProperty
+             (utils, r.work_location, item = r, editable = editable).menu ()"/>
+            <td tal:condition="python:is_open">
+             <tal:block tal:condition="editable"
+              tal:replace="structure python: utils.ExtProperty
+              (utils, r.dist, item = r, editable = editable, fieldwidth = 5)
+              .as_listentry ()"/>
+            </td>
+           </tr>
+          </tal:block>
+          <tr tal:condition="python: editable and allowed"
+              tal:attributes="class cls">
+           <tal:block
+            tal:repeat="pn python:[('start',2),('end',1)]">
+            <td tal:content="structure python:utils.new_property
+             (context, db, 'time_record', -idx, pn [0]).field (5)"
+             tal:attributes="colspan python: pn [1]
+                            ;class   python: pn [0]
+                            "/>
+           </tal:block>
+           <td style="text-align:right;" class="nb"
+            tal:content="structure python:utils.new_property
+             (context, db, 'time_record', -idx, 'duration').field (5)"/>
+           <td/>
+           <td>
+            <select
+             tal:attributes="name python:'time_record-%d@wp'%idx">
+             <option selected="selected" value="-1">- no selection -</option>
+             <option tal:repeat="wp wps" tal:attributes="value wp/id"
+              tal:content="python:' '.join
+                ([str (wp [i]) for i in 'project','wp_no','name'])"/>
+            </select>
+           </td>
+           <td class="nb" tal:content="structure python:utils.new_property
+              (context, db, 'time_record', -idx, 'time_activity').menu ()"/>
+           <td style="text-align:right;"
+            tal:content="structure python:utils.comment_edit
+              ('time_record', 'time_record-%d@comment'%idx
+              , form='edit_daily_record'
+              , title=i18n.gettext ('comment')
+              , editable=editable
+              )">
+           </td>
+           <td tal:content="structure python:utils.new_property
+              (context, db, 'time_record', -idx, 'work_location').menu ()"/>
+           <td/>
+           <input type="hidden"
+            tal:attributes="name  python:'time_record-%d@daily_record'%idx
+                           ;value python:i.id
+                           "/>
+          </tr>
+          <tr tal:condition="python:utils.is_end_of_week (i.date)">
+           <td class="subhead-nb"/>
+           <td class="subhead" colspan="2" style="text-align:right;"
+            tal:content="python:'Week %s:' % utils.weekno (i.date)"/>
+           <td style="text-align:right;" class="subhead-nb"
+            tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
+           <td/>
+           <td/><td colspan="2"/><td/><td tal:condition="is_open"/>
+          </tr>
          </tal:block>
-         <td style="text-align:right;" class="nb"
-          tal:content="structure python:utils.new_property
-           (context, db, 'time_record', -idx, 'duration').field (5)"/>
-         <td/>
-         <td>
-          <select
-           tal:attributes="name python:'time_record-%d@wp'%idx">
-           <option selected="selected" value="-1">- no selection -</option>
-           <option tal:repeat="wp wps" tal:attributes="value wp/id"
-            tal:content="python:' '.join
-              ([str (wp [i]) for i in 'project','wp_no','name'])"/>
-          </select>
+        </tal:block>
+        <tr tal:condition="python:edit_ok and (is_open or is_submitted)">
+         <td colspan="6"/>
+         <td colspan="2" tal:condition="is_open">
+          <tal:block tal:replace="structure python:utils.button_submit_to
+           (db, user, request.filterspec ['date'])"/>
          </td>
-         <td class="nb" tal:content="structure python:utils.new_property
-            (context, db, 'time_record', -idx, 'time_activity').menu ()"/>
-         <td style="text-align:right;"
-          tal:content="structure python:utils.comment_edit
-            ('time_record', 'time_record-%d@comment'%idx
-            , form='edit_daily_record'
-            , title=i18n.gettext ('comment')
-            , editable=editable
-            )">
+         <td colspan="2" tal:condition="python: not is_open and is_submitted">
+          <tal:block tal:replace="structure python:utils.button_action
+           (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))"/>
          </td>
-         <td tal:content="structure python:utils.new_property
-            (context, db, 'time_record', -idx, 'work_location').menu ()"/>
+         <td tal:condition="is_open">
+          <input type="button" value=" Save " i18n:attributes="value"
+           onClick="document.forms.edit_daily_record ['@action'].value =
+               'daily_record_edit_action';
+             document.edit_daily_record.submit ();">
+         </td>
          <td/>
-         <input type="hidden"
-          tal:attributes="name  python:'time_record-%d@daily_record'%idx
-                         ;value python:i.id
-                         "/>
         </tr>
-        <tr tal:condition="python:utils.is_end_of_week (i.date)">
-         <td class="subhead-nb"/>
-         <td class="subhead" colspan="2" style="text-align:right;"
-          tal:content="python:'Week %s:' % utils.weekno (i.date)"/>
-         <td style="text-align:right;" class="subhead-nb"
-          tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
-         <td/>
-         <td/><td colspan="2"/><td/><td tal:condition="is_open"/>
+        <tr tal:condition="python: is_submitted and user in approval_for">
+         <td colspan="6"/>
+         <td colspan="2">
+          <tal:block tal:replace="structure python:utils.button_action
+           (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
+         </td>
+         <td tal:condition="not:is_open">
+          <tal:block tal:replace="structure python:utils.button_action
+           (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
+         </td>
         </tr>
        </tal:block>
-      </tal:block>
-      <tr tal:condition="python:edit_ok and (is_open or is_submitted)">
-       <td colspan="6"/>
-       <td colspan="2" tal:condition="is_open">
-        <tal:block tal:replace="structure python:utils.button_submit_to
-         (db, request.filterspec ['user'][0], request.filterspec ['date'])"/>
-       </td>
-       <td colspan="2" tal:condition="python: not is_open and is_submitted">
-        <tal:block tal:replace="structure python:utils.button_action
-         (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))"/>
-       </td>
-       <td tal:condition="is_open">
-        <input type="button" value=" Save " i18n:attributes="value"
-         onClick="document.forms.edit_daily_record ['@action'].value =
-             'daily_record_edit_action';
-           document.edit_daily_record.submit ();">
-       </td>
-       <td/>
-      </tr>
-      <tr tal:condition="python:
-       is_submitted and request.filterspec ['user'][0] in approval_for">
-       <td colspan="6"/>
-       <td colspan="2">
-        <tal:block tal:replace="structure python:utils.button_action
-         (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
-       </td>
-       <td tal:condition="not:is_open">
-        <tal:block tal:replace="structure python:utils.button_action
-         (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
-       </td>
-      </tr>
+      </table>
      </tal:block>
-    </table>
-   </tal:block>
-  </form>
+    </form>
 
+   </tal:block>
+  </tal:block>
  </tal:block>
-</tal:block>
 </tal:block>
