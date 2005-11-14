@@ -574,7 +574,8 @@ class Summary_Report :
         tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
         for t in time_recs :
             for tcp in tc_pointers.iterkeys () :
-                while t.date >= time_containers [tcp][tc_pointers [tcp]].end :
+                p = tc_pointers [tcp]
+                while t.date >= time_containers [tcp][p].sort_end :
                     tc_pointers [tcp] += 1
                 tc = time_containers [tcp][tc_pointers [tcp]]
                 for wpc in containers_by_wp [t.wp.id] :
