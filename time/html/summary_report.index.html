@@ -38,6 +38,8 @@
       (utils, pdict ['summary_type'],      multiselect = 1)
     , summary           = utils.ExtProperty
       (utils, pdict ['summary'])
+    , show_empty        = utils.ExtProperty
+      (utils, pdict ['show_empty'])
     , status            = utils.ExtProperty
       (utils, pdict ['status'],            multiselect = 1)
     );
@@ -53,7 +55,7 @@
       ; propkeys       python:
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
         , 'time_project', 'time_wp_group', 'cost_center', 'cost_center_group'
-        , 'summary_type', 'status'
+        , 'summary_type', 'status', 'show_empty'
         )
       ; sprops         python: [props [p] for p in propkeys]
       ; multi_props    python: [p for p in sprops if p.multiselect]

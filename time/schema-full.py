@@ -550,6 +550,7 @@ summary_report = Class \
     , summary_type          = Link      ("summary_type")
     , summary               = Boolean   ()
     , status                = Link      ("daily_record_status")
+    , show_empty            = Boolean   ()
     )
 
 # FileClass automatically gets these properties:

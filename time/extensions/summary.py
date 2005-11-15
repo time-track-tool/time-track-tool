@@ -33,6 +33,7 @@ import sys
 import os
 import csv
 import cgi
+import time
 try :
     from cStringIO import StringIO
 except ImportError :
@@ -394,21 +395,24 @@ class Summary_Report :
             db = db._db
         except AttributeError :
             pass
-        filterspec    = request.filterspec
-        sort_by       = request.sort
-        group_by      = request.group
-        columns       = request.columns
-        now           = Date ('.')
+        filterspec      = request.filterspec
+        sort_by         = request.sort
+        group_by        = request.group
+        columns         = request.columns
+        now             = Date ('.')
         assert (request.classname == 'summary_report')
-        sup_users     = user_supervisor_for (db)
-        wp_containers = []
+        sup_users       = user_supervisor_for (db)
+        wp_containers   = []
         if not columns :
-            columns   = db.summary_report.getprops ().keys ()
-        self.columns  = dict ([(c, True) for c in columns])
-        accepted      = db.daily_record_status.lookup ('accepted')
-        submitted     = db.daily_record_status.lookup ('submitted')
-        status        = filterspec.get ('status', [accepted, submitted])
+            columns     = db.summary_report.getprops ().keys ()
+        self.columns    = dict ([(c, True) for c in columns])
+        status          = filterspec.get \
+            ('status', db.daily_record_status.getnodeids ())
+        timestamp       = time.time ()
+        show_empty      = filterspec.get ('show_empty', 'no')
+        self.show_empty = show_empty == 'yes'
 
+        #print "time", timestamp
         #print filterspec
         start, end  = date_range (db, filterspec)
         users       = filterspec.get ('user', [])
@@ -448,6 +452,7 @@ class Summary_Report :
                     drs = [edr (db, d, sup_users) for d in drs]
                     drecs.update (dict ([(d.id, d) for d in drs]))
 
+        #print "after departments:", time.time () - timestamp
         if not users and not olo_or_dept :
             users   = db.user.getnodeids () # also invalid users!
         #print users, start, end, status
@@ -460,12 +465,15 @@ class Summary_Report :
                     , status = status
                     )
                 )
-        #print "n_dr:", len (dr)
+        #print "n_dr:", len (dr), time.time () - timestamp
         dr          = dict \
             ([(d, Extended_Daily_Record (db, d, sup_users)) for d in dr])
+        #print "after users:", time.time () - timestamp
         dr.update (drecs)
+        #print "after dr.update:", time.time () - timestamp
 
         wp          = dict ([(w, 1) for w in filterspec.get ('time_wp', [])])
+        #print "native wp", len (wp), time.time () - timestamp
 
         wpgs        = filterspec.get ('time_wp_group',     [])
         for wpg in wpgs :
@@ -473,30 +481,39 @@ class Summary_Report :
                 ( WP_Container
                     ( db.time_wp_group, wpg
                     , 'time_wp_group' in self.columns
+                    , ''
                     , [(w, 1) for w in db.time_wp_group.get (wpg, 'wps')]
                     )
                 )
             wp.update (wp_containers [-1])
+        #print "wpgs", len (wp), time.time () - timestamp
         projects    = filterspec.get ('time_project',      [])
+        #print projects
         for p in projects :
+            #print p, db.time_wp.find (project = p)
             wp_containers.append \
                 ( WP_Container
                     ( db.time_project, p
                     , 'time_project' in self.columns
+                    , ''
                     , [(w, 1) for w in db.time_wp.find (project = p)]
                     )
                 )
+            #print wp_containers [-1]
             wp.update (wp_containers [-1])
+        #print "projects", len (wp), time.time () - timestamp
         ccs         = filterspec.get ('cost_center',       [])
         for cc in ccs :
             wp_containers.append \
                 ( WP_Container
                     ( db.cost_center, cc
                     , 'cost_center' in self.columns
+                    , ''
                     , [(w, 1) for w in db.time_wp.find (cost_center = cc)]
                     )
                 )
             wp.update (wp_containers [-1])
+        #print "ccs", len (wp), time.time () - timestamp
         ccgs        = filterspec.get ('cost_center_group', [])
         for ccg in ccgs :
             ccs     = db.cost_center.find (cost_center_group = ccg)
@@ -511,21 +528,35 @@ class Summary_Report :
                 wps = dict ([(w,1) for w in db.time_wp.find (cost_center = cc)])
                 wp_containers [-1].update (wps)
             wp.update (wp_containers [-1])
-        if not wp :
+        #print "ccgs", len (wp), time.time () - timestamp
+        if  (    not wp
+            and 'time_wp'           not in filterspec
+            and 'time_wp_group'     not in filterspec
+            and 'time_project'      not in filterspec
+            and 'cost_center'       not in filterspec
+            and 'cost_center_group' not in filterspec
+            ) :
             wp = dict ([(w, 1) for w in db.time_wp.getnodeids ()])
+        #print "wp-default", len (wp), time.time () - timestamp
         #print "n_wp:", len (wp)
         work_pkg    = dict ([(w, Extended_WP (db, w)) for w in wp.iterkeys ()])
+        #print "ext wp", time.time () - timestamp
         time_recs   = []
-        if dr :
+        # 276 sec: (4.6 min) (for Decos: ~ 250 sec)
+        if dr and wp :
             time_recs = [Extended_Time_Record (db, t, dr, work_pkg)
                          for t in db.time_record.find
                           (daily_record = dr, wp = work_pkg)
                         ]
+        #print "ext time_recs", len (time_recs), time.time () - timestamp
         time_recs   = [t for t in time_recs if t.is_own]
+        #print "own time_recs", len (time_recs), time.time () - timestamp
         #print "n_tr:", len (time_recs)
         time_recs.sort ()
+        #print "srt time_recs", len (time_recs), time.time () - timestamp
         usernames   = dict ([(tr.username, 1) for tr in time_recs]).keys ()
         usernames.sort ()
+        #print "sorted usernames", time.time () - timestamp
         #print usernames
         
         # append only wps where somebody actually booked on
@@ -546,11 +577,13 @@ class Summary_Report :
                     , ((w, 1),)
                     )
                 )
+        #print "filtered wps", time.time () - timestamp
         wp_containers.append \
             (Sum_Container (_ ('Sum'), 'summary' in self.columns, wps))
 
         # Build time containers
-        rep_types  = filterspec.get ('summary_type', ('1', '2', '3'))
+        rep_types  = filterspec.get \
+            ('summary_type', db.summary_type.getnodeids ())
         rep_types  = [db.summary_type.get (i, 'name') for i in rep_types]
         time_containers = dict ([(t, []) for t in rep_types])
         d = start
@@ -562,7 +595,9 @@ class Summary_Report :
                     except TypeError :
                         cont.append (time_container_classes [t] (start, end))
             d = d + Interval ('1d')
+        #print "time containers", time.time () - timestamp
         wp_containers.sort ()
+        #print "sorted wp containers", time.time () - timestamp
         # invert wp_containers
         containers_by_wp = {}
         for wc in wp_containers :
@@ -571,6 +606,7 @@ class Summary_Report :
                     containers_by_wp [w].append (wc)
                 else :
                     containers_by_wp [w]      = [wc]
+        #print "inverted wp containers", time.time () - timestamp
         tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
         for t in time_recs :
             for tcp in tc_pointers.iterkeys () :
@@ -583,6 +619,7 @@ class Summary_Report :
                 for wpc in containers_by_wp [t.wp.id] :
                     tc. add (wpc, t)
                     wpc.add (tc,  t)
+        #print "SUMs built", time.time () - timestamp
         self.wps             = wps
         self.usernames       = usernames
         self.start           = start
@@ -592,7 +629,7 @@ class Summary_Report :
     # end def __init__
 
     def html_item (self, item) :
-        if not item :
+        if not item and not isinstance (item, dict) :
             return "   <td/>"
         if isinstance (item, type (0.0)) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
@@ -610,7 +647,7 @@ class Summary_Report :
     # end def html_line
 
     def csv_item (self, item) :
-        if not item :
+        if not item and not isinstance (item, dict) :
             return ''
         if isinstance (item, type (0.0)) :
             return '%2.02f' % item
@@ -662,9 +699,9 @@ class Summary_Report :
                     except IndexError :
                         continue
                     if d >= tc.sort_end :
-                        if wpc.visible :
+                        if wpc.visible  and (self.show_empty or tc.get (wpc)) :
                             line_formatter \
-                                ( self._output_line 
+                                ( self._output_line
                                   (wpc, tcp, tc_pointers [tcp], item_formatter)
                                 )
                         tc_pointers [tcp] += 1

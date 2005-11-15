@@ -795,12 +795,7 @@
        <th style="text-align:right;"
            tal:content="python:prop.label+':'"></th>
        <td>
-        <input type="text"
-               size="40"
-               tal:define="value python:request.form.getvalue(prop.selname) or nothing"
-               tal:attributes="value python:prop.pretty_ids (value)
-                              ;name  python:prop.selname
-                              ">
+        <tal:block tal:replace="structure python:prop.search_input (request)"/>
         <span tal:condition="python:prop.lnkname"
           tal:replace="structure python:db[prop.lnkname].classhelp
            ( properties=prop.classhelp_properties ('description', 'status', 'responsible')

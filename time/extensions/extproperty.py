@@ -34,8 +34,10 @@
 #    ««revision-date»»···
 #--
 
-from roundup.cgi.templating         import MultilinkHTMLProperty, propclasses
-from roundup.cgi.templating         import DateHTMLProperty, MissingValue
+from roundup.cgi.templating         import MultilinkHTMLProperty     \
+                                         , BooleanHTMLProperty       \
+                                         , DateHTMLProperty          \
+                                         , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
 
@@ -359,6 +361,27 @@ class ExtProperty :
     def _propstring (self) :
         return "%s%s@%s" % (self.classname, self.item.id, self.name)
     # end def _propstring
+
+    def search_input (self, request) :
+        value = request.form.getvalue (self.selname) or ''
+        if isinstance (self.hprop, BooleanHTMLProperty) :
+            value = value == 'yes'
+            return \
+                ( """<input type="radio" name="%s" value="yes"%s>%s"""
+                  """<input type="radio" name="%s" value="no"%s>%s"""
+                % ( self.selname
+                  , ['', ' checked="checked"'] [    value]
+                  , self.pretty ('Yes')
+                  , self.selname
+                  , ['', ' checked="checked"'] [not value]
+                  , self.pretty ('No')
+                  )
+                )
+        return \
+            ( """<input type="text" size="40" value="%s" name="%s">"""
+            % (self.pretty_ids (value), self.selname)
+            )
+    # end def search_input
 
     def del_link (self, form) :
         """Generate a javascript delete link for the current item, to be
