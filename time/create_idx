@@ -1,0 +1,5 @@
+create index _daily_record_date_idx on _daily_record ( _date ) ;
+create index _daily_record_user_idx on _daily_record ( _user ) ;
+create index _time_record_wp_idx on _time_record ( _wp ) ;
+create index _time_record_daily_record_idx on _time_record ( _daily_record ) ;
+create index _time_record_wp_daily_record_idx on _time_record ( _wp, _daily_record ) ;
