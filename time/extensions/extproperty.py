@@ -121,44 +121,46 @@ class ExtProperty :
         ( self
         , utils
         , prop
-        , item         = None
-        , selname      = None
-        , label        = None
-        , lnkcls       = None
-        , lnkattr      = None
-        , multiselect  = None
-        , is_label     = None
-        , editable     = None
-        , searchable   = None # usually computed, override with False
-        , pretty       = _    # optional pretty-printing function
-        , linkclass    = None # optional function for getting css class
-        , do_classhelp = None
-        , fieldwidth   = None
-        , format       = None
-        , help_props   = None
+        , item          = None
+        , selname       = None
+        , label         = None
+        , lnkcls        = None
+        , lnkattr       = None
+        , multiselect   = None
+        , is_label      = None
+        , editable      = None
+        , searchable    = None # usually computed, override with False
+        , pretty        = _    # optional pretty-printing function
+        , linkclass     = None # optional function for getting css class
+        , do_classhelp  = None
+        , fieldwidth    = None
+        , format        = None
+        , help_props    = None
+        , bool_tristate = True
         ) :
-        self.utils        = utils
-        self.prop         = prop
-        self.item         = item
-        self.classname    = prop._classname
-        self.klass        = prop._db.getclass (self.classname)
-        self.name         = prop._name
-        self.selname      = selname
-        self.label        = label
-        self.lnkcls       = lnkcls
-        self.lnkname      = None
-        self.lnkattr      = lnkattr
-        self.multiselect  = multiselect
-        self.is_label     = is_label
-        self.pretty       = pretty or _
-        self.get_linkcls  = linkclass
-        self.editable     = editable
-        self.key          = None
-        self.searchable   = searchable
-        self.do_classhelp = do_classhelp
-        self.fieldwidth   = fieldwidth
-        self.format       = format
-        self.help_props   = help_props or []
+        self.utils         = utils
+        self.prop          = prop
+        self.item          = item
+        self.classname     = prop._classname
+        self.klass         = prop._db.getclass (self.classname)
+        self.name          = prop._name
+        self.selname       = selname
+        self.label         = label
+        self.lnkcls        = lnkcls
+        self.lnkname       = None
+        self.lnkattr       = lnkattr
+        self.multiselect   = multiselect
+        self.is_label      = is_label
+        self.pretty        = pretty or _
+        self.get_linkcls   = linkclass
+        self.editable      = editable
+        self.key           = None
+        self.searchable    = searchable
+        self.do_classhelp  = do_classhelp
+        self.fieldwidth    = fieldwidth
+        self.format        = format
+        self.help_props    = help_props or []
+        self.bool_tristate = bool_tristate
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :
                 self.get_linkcls = self.utils.linkclass
@@ -365,18 +367,28 @@ class ExtProperty :
     def search_input (self, request) :
         value = request.form.getvalue (self.selname) or ''
         if isinstance (self.hprop, BooleanHTMLProperty) :
-            value = value == 'yes'
-            return \
-                ( """<input type="radio" name="%s" value="yes"%s>%s"""
+            yvalue = value == 'yes'
+            nvalue = value == 'no'
+            s = [ """<input type="radio" name="%s" value="yes"%s>%s"""
                   """<input type="radio" name="%s" value="no"%s>%s"""
                 % ( self.selname
-                  , ['', ' checked="checked"'] [    value]
+                  , ['', ' checked="checked"'] [yvalue]
                   , self.pretty ('Yes')
                   , self.selname
-                  , ['', ' checked="checked"'] [not value]
+                  , ['', ' checked="checked"'] [nvalue]
                   , self.pretty ('No')
                   )
-                )
+                ,
+                ]
+            if self.bool_tristate :
+                s.append \
+                    ( """<input type="radio" name="%s" value=""%s>%s"""
+                    % ( self.selname
+                      , ['', ' checked="checked"'] [not (yvalue or nvalue)]
+                      , self.pretty ("Don't care")
+                      )
+                    )
+            return ''.join (s)
         return \
             ( """<input type="text" size="40" value="%s" name="%s">"""
             % (self.pretty_ids (value), self.selname)

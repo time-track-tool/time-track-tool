@@ -39,7 +39,7 @@
     , summary           = utils.ExtProperty
       (utils, pdict ['summary'])
     , show_empty        = utils.ExtProperty
-      (utils, pdict ['show_empty'])
+      (utils, pdict ['show_empty'], bool_tristate = False)
     , status            = utils.ExtProperty
       (utils, pdict ['status'],            multiselect = 1)
     );
