@@ -452,7 +452,7 @@ class Summary_Report :
                     drs = [edr (db, d, sup_users) for d in drs]
                     drecs.update (dict ([(d.id, d) for d in drs]))
 
-        #print "after departments:", time.time () - timestamp
+        print "after departments:", time.time () - timestamp
         if not users and not olo_or_dept :
             users   = db.user.getnodeids () # also invalid users!
         #print users, start, end, status
@@ -465,15 +465,15 @@ class Summary_Report :
                     , status = status
                     )
                 )
-        #print "n_dr:", len (dr), time.time () - timestamp
+        print "n_dr:", len (dr), time.time () - timestamp
         dr          = dict \
             ([(d, Extended_Daily_Record (db, d, sup_users)) for d in dr])
-        #print "after users:", time.time () - timestamp
+        print "after users:", time.time () - timestamp
         dr.update (drecs)
-        #print "after dr.update:", time.time () - timestamp
+        print "after dr.update:", time.time () - timestamp
 
         wp          = dict ([(w, 1) for w in filterspec.get ('time_wp', [])])
-        #print "native wp", len (wp), time.time () - timestamp
+        print "native wp", len (wp), time.time () - timestamp
 
         wpgs        = filterspec.get ('time_wp_group',     [])
         for wpg in wpgs :
@@ -486,7 +486,7 @@ class Summary_Report :
                     )
                 )
             wp.update (wp_containers [-1])
-        #print "wpgs", len (wp), time.time () - timestamp
+        print "wpgs", len (wp), time.time () - timestamp
         projects    = filterspec.get ('time_project',      [])
         #print projects
         for p in projects :
@@ -501,7 +501,7 @@ class Summary_Report :
                 )
             #print wp_containers [-1]
             wp.update (wp_containers [-1])
-        #print "projects", len (wp), time.time () - timestamp
+        print "projects", len (wp), time.time () - timestamp
         ccs         = filterspec.get ('cost_center',       [])
         for cc in ccs :
             wp_containers.append \
@@ -513,7 +513,7 @@ class Summary_Report :
                     )
                 )
             wp.update (wp_containers [-1])
-        #print "ccs", len (wp), time.time () - timestamp
+        print "ccs", len (wp), time.time () - timestamp
         ccgs        = filterspec.get ('cost_center_group', [])
         for ccg in ccgs :
             ccs     = db.cost_center.find (cost_center_group = ccg)
@@ -528,7 +528,7 @@ class Summary_Report :
                 wps = dict ([(w,1) for w in db.time_wp.find (cost_center = cc)])
                 wp_containers [-1].update (wps)
             wp.update (wp_containers [-1])
-        #print "ccgs", len (wp), time.time () - timestamp
+        print "ccgs", len (wp), time.time () - timestamp
         if  (    not wp
             and 'time_wp'           not in filterspec
             and 'time_wp_group'     not in filterspec
@@ -537,10 +537,10 @@ class Summary_Report :
             and 'cost_center_group' not in filterspec
             ) :
             wp = dict ([(w, 1) for w in db.time_wp.getnodeids ()])
-        #print "wp-default", len (wp), time.time () - timestamp
+        print "wp-default", len (wp), time.time () - timestamp
         #print "n_wp:", len (wp)
         work_pkg    = dict ([(w, Extended_WP (db, w)) for w in wp.iterkeys ()])
-        #print "ext wp", time.time () - timestamp
+        print "ext wp", time.time () - timestamp
         time_recs   = []
         # 276 sec: (4.6 min) (for Decos: ~ 250 sec)
         if dr and wp :
@@ -548,15 +548,15 @@ class Summary_Report :
                          for t in db.time_record.find
                           (daily_record = dr, wp = work_pkg)
                         ]
-        #print "ext time_recs", len (time_recs), time.time () - timestamp
+        print "ext time_recs", len (time_recs), time.time () - timestamp
         time_recs   = [t for t in time_recs if t.is_own]
-        #print "own time_recs", len (time_recs), time.time () - timestamp
+        print "own time_recs", len (time_recs), time.time () - timestamp
         #print "n_tr:", len (time_recs)
         time_recs.sort ()
-        #print "srt time_recs", len (time_recs), time.time () - timestamp
+        print "srt time_recs", len (time_recs), time.time () - timestamp
         usernames   = dict ([(tr.username, 1) for tr in time_recs]).keys ()
         usernames.sort ()
-        #print "sorted usernames", time.time () - timestamp
+        print "sorted usernames", time.time () - timestamp
         #print usernames
         
         # append only wps where somebody actually booked on
@@ -577,7 +577,7 @@ class Summary_Report :
                     , ((w, 1),)
                     )
                 )
-        #print "filtered wps", time.time () - timestamp
+        print "filtered wps", time.time () - timestamp
         wp_containers.append \
             (Sum_Container (_ ('Sum'), 'summary' in self.columns, wps))
 
@@ -595,9 +595,9 @@ class Summary_Report :
                     except TypeError :
                         cont.append (time_container_classes [t] (start, end))
             d = d + Interval ('1d')
-        #print "time containers", time.time () - timestamp
+        print "time containers", time.time () - timestamp
         wp_containers.sort ()
-        #print "sorted wp containers", time.time () - timestamp
+        print "sorted wp containers", time.time () - timestamp
         # invert wp_containers
         containers_by_wp = {}
         for wc in wp_containers :
@@ -606,7 +606,7 @@ class Summary_Report :
                     containers_by_wp [w].append (wc)
                 else :
                     containers_by_wp [w]      = [wc]
-        #print "inverted wp containers", time.time () - timestamp
+        print "inverted wp containers", time.time () - timestamp
         tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
         for t in time_recs :
             for tcp in tc_pointers.iterkeys () :
@@ -619,7 +619,7 @@ class Summary_Report :
                 for wpc in containers_by_wp [t.wp.id] :
                     tc. add (wpc, t)
                     wpc.add (tc,  t)
-        #print "SUMs built", time.time () - timestamp
+        print "SUMs built", time.time () - timestamp
         self.wps             = wps
         self.usernames       = usernames
         self.start           = start
