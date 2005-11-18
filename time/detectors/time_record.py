@@ -163,7 +163,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
 
          - From open to submitted by user or by HR
          - From submitted to accepted by supervisor or by HR
-         - From submitted to open     by supervisor or by HR
+         - From submitted to open     by supervisor or by HR or by user
          - From accepted  to open     by HR
     """
     for i in 'user', 'date' :

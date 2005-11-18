@@ -33,10 +33,13 @@
       , status = utils.ExtProperty (utils, pdict ['status'], multiselect = 1)
       )
     ; props   python: pdict.itervalues ()
+    ; uid     python: db._db.getuid    ()
     ; edit_ok python: (  db._db.getuid () == user
-                      or utils.user_has_role 
-                         (db._db, db._db.getuid (), 'controlling')
+                      or utils.user_has_role (db._db, uid, 'controlling')
                       )
+    ; is_hr   python: utils.user_has_role (db._db, uid, 'hr')
+    ; mod_ok  python: edit_ok or is_hr
+    ; aprv_ok python: is_hr or user in approval_for
     " tal:condition="context/is_view_ok">
     <tal:block tal:condition="not:context/is_view_ok">
      You are not allowed to view this page.
@@ -48,6 +51,7 @@
       "batch        request/batch;
        is_open      python:utils.batch_has_status (batch, 'open');
        is_submitted python:utils.batch_has_status (batch, 'submitted');
+       is_accepted  python:utils.batch_has_status (batch, 'accepted');
       ">
       <table class="list">
        <tr class="time-nav">
@@ -133,7 +137,7 @@
              ('time_record', 'time_activity', endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
              ('time_record', 'work_location', endswith = '')"/>
-         <th tal:condition="is_open"
+         <th tal:condition="python:is_open and edit_ok"
              tal:content="structure python:utils.fieldname
              ('time_record', 'dist',          endswith = '')"/>
         </tr>
@@ -148,21 +152,21 @@
            ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
            ;allowed   python: (w_allowed or not is_wend) and edit_ok
            ;wps       python:utils.sorted 
-                                (utils.work_packages (db, i), ('project', 'name'))
+                             (utils.work_packages (db, i), ('project', 'name'))
            ">
           <tr tal:attributes="class cls">
            <td class="subhead-nb" width="1%"
             tal:content="structure python:i.date.pretty ('%a')"/>
            <td class="subhead" colspan="2" width="1%"
             tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
-           <td tal:content="python: utils.daysum (db._db, i.id, format = '%.2f')"
+           <td tal:content="python:utils.daysum (db._db, i.id, format = '%.2f')"
             style="text-align:right;" class="subhead-nb"/>
            <td/>
            <td class="subhead"
             tal:content="structure python:pdict ['status'].colonfield (i)"/>
            <td class="subhead" colspan="2"/>
            <td class="subhead"/>
-           <td tal:condition="is_open"/>
+           <td tal:condition="python:is_open and edit_ok"/>
           </tr>
           <tal:block tal:repeat="r python: utils.sorted
            (i ['time_record'], ('start','wp'))">
@@ -225,7 +229,7 @@
             <td tal:condition="python: not editable and not r.comment"/>
             <td tal:content="structure python: utils.ExtProperty
              (utils, r.work_location, item = r, editable = editable).menu ()"/>
-            <td tal:condition="python:is_open">
+            <td tal:condition="python:is_open and edit_ok">
              <tal:block tal:condition="editable"
               tal:replace="structure python: utils.ExtProperty
               (utils, r.dist, item = r, editable = editable, fieldwidth = 5)
@@ -281,29 +285,38 @@
            <td style="text-align:right;" class="subhead-nb"
             tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
            <td/>
-           <td/><td colspan="2"/><td/><td tal:condition="is_open"/>
+           <td/><td colspan="2"/><td/>
+           <td tal:condition="python:is_open and edit_ok"/>
           </tr>
          </tal:block>
         </tal:block>
-        <tr tal:condition="python:edit_ok and (is_open or is_submitted)">
+        <tr tal:condition="python:mod_ok">
          <td colspan="6"/>
-         <td colspan="2" tal:condition="is_open">
-          <tal:block tal:replace="structure python:utils.button_submit_to
-           (db, user, request.filterspec ['date'])"/>
+         <td colspan="2">
+          <tal:block tal:condition="is_open">
+           tal:replace="structure python:utils.button_submit_to
+           (db, user, request.filterspec ['date'])">
+          </tal:block>
+          <tal:block tal:condition="python:
+           not is_open and
+            (  (not is_hr and is_submitted)
+            or (    is_hr and is_accepted)
+            )"
+           tal:replace="structure python:utils.button_action
+            (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))">
+          </tal:block>
          </td>
-         <td colspan="2" tal:condition="python: not is_open and is_submitted">
-          <tal:block tal:replace="structure python:utils.button_action
-           (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))"/>
-         </td>
-         <td tal:condition="is_open">
-          <input type="button" value=" Save " i18n:attributes="value"
-           onClick="document.forms.edit_daily_record ['@action'].value =
-               'daily_record_edit_action';
-             document.edit_daily_record.submit ();">
+         <td>
+          <tal:block tal:condition="python:is_open and edit_ok">
+           <input type="button" value=" Save " i18n:attributes="value"
+            onClick="document.forms.edit_daily_record ['@action'].value =
+                'daily_record_edit_action';
+              document.edit_daily_record.submit ();">
+          </tal:block>
          </td>
          <td/>
         </tr>
-        <tr tal:condition="python: is_submitted and user in approval_for">
+        <tr tal:condition="python: is_submitted and aprv_ok">
          <td colspan="6"/>
          <td colspan="2">
           <tal:block tal:replace="structure python:utils.button_action
