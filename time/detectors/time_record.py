@@ -174,6 +174,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
 
          - From open to submitted by user or by HR
          - From submitted to accepted by supervisor or by HR
+           but don't allow accepting own records
          - From submitted to open     by supervisor or by HR or by user
          - From accepted  to open     by HR
     """
@@ -208,6 +209,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
                   )
                or (   status == 'accepted'  and old_status == 'submitted'
                   and (is_hr or may_give_clearance)
+                  and user != uid
                   )
                or (   status == 'open'      and old_status == 'submitted'
                   and (is_hr or user == uid or may_give_clearance)

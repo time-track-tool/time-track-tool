@@ -93,3 +93,11 @@ Auswertungen
   angenommen werden, soll bei der Auswertung berücksichtigt werden und
   nicht beim Eintragen der Stunden, mit einer entsprechenden Flag.
   Sollte einfach umzusetzen sein, da auf das WP Reisezeit gebucht wird.
+
+
+- Bug Time-Maske: May not approve own records -> should only get "Edit
+  again" instead of "Accept/Deny"
+  - detector: don't allow approval of own recs
+  -> change detector first, test, fix mask
+- Travel: compute a final duration after submit of record. Final
+  duration is stored in time_record.

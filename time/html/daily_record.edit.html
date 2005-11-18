@@ -39,7 +39,7 @@
                       )
     ; is_hr   python: utils.user_has_role (db._db, uid, 'hr')
     ; mod_ok  python: edit_ok or is_hr
-    ; aprv_ok python: is_hr or user in approval_for
+    ; aprv_ok python: user != uid and (is_hr or user in approval_for)
     " tal:condition="context/is_view_ok">
     <tal:block tal:condition="not:context/is_view_ok">
      You are not allowed to view this page.
@@ -298,7 +298,7 @@
            (db, user, request.filterspec ['date'])">
           </tal:block>
           <tal:block tal:condition="python:
-           not is_open and not is_hr and is_submitted"
+           not is_open and is_submitted and not aprv_ok"
            tal:replace="structure python:utils.button_action
             (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))">
           </tal:block>
