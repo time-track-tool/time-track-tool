@@ -293,7 +293,7 @@
         <tr tal:condition="python:mod_ok">
          <td colspan="6"/>
          <td colspan="2">
-          <tal:block tal:condition="is_open">
+          <tal:block tal:condition="is_open"
            tal:replace="structure python:utils.button_submit_to
            (db, user, request.filterspec ['date'])">
           </tal:block>
