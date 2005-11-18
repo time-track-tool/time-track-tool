@@ -89,6 +89,8 @@ def time_records_consistent (db, cl, nodeid) :
         + check that there is a lunch break of at least .5 hours if user
           worked for more than 6 hours and durations_allowed is not
           specified
+        + Travel times (either wp has travel flag or time_activity has
+          travel flag) are excempt from work-time and lunch break checks
     """
     date     = cl.get (nodeid, 'date')
     sdate    = date.pretty (common.ymd)
@@ -104,9 +106,18 @@ def time_records_consistent (db, cl, nodeid) :
         [db.time_record.getnode (i) for i in db.time_record.filter
          (None, dict (daily_record = nodeid), sort = ('+', 'start'))
         ]
-    nonempty = []
+    trec_notravel   = []
+    need_break_recs = []
     for tr in trec :
-        tr_pr = pretty_time_record (tr, date, uname)
+        tr_pr  = pretty_time_record (tr, date, uname)
+        act    = tr.time_activity
+        wp     = tr.wp
+        travel = \
+            (  act and db.time_activity.get (act, 'travel')
+            or wp  and db.time_wp.get       (wp,  'travel')
+            )
+        if not travel :
+            trec_notravel.append (tr)
         if not tr.wp :
             msgs.append ("%(tr_pr)s: No work package" % locals ())
             durations_allowed = dynamic.durations_allowed
@@ -117,10 +128,10 @@ def time_records_consistent (db, cl, nodeid) :
                 )
         if not durations_allowed and not tr.start :
             msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
-        if tr.start :
-            nonempty.append (tr)
-    for i in range (len (nonempty) - 1) :
-        tr    = (nonempty [i], nonempty [i + 1])
+        if tr.start and not travel :
+            need_break_recs.append (tr)
+    for i in range (len (need_break_recs) - 1) :
+        tr    = (need_break_recs [i], need_break_recs [i + 1])
         start = [t.start for t in tr]
         end   = [t.end   for t in tr]
         tr_pr = ', '.join ([pretty_time_record (t, date, uname) for t in tr])
@@ -128,7 +139,7 @@ def time_records_consistent (db, cl, nodeid) :
             msgs.append ("%(tr_pr)s overlap" % locals ())
     tr_pr = "%s, %s:" % (uname, sdate)
     if dynamic.daily_worktime :
-        work = reduce (add, [t.duration for t in trec], 0)
+        work = reduce (add, [t.duration for t in trec_notravel], 0)
         if work > dynamic.daily_worktime :
             msgs.append \
                 ( "%(tr_pr)s Overall work-time more than %s hours: %s"
@@ -137,7 +148,7 @@ def time_records_consistent (db, cl, nodeid) :
     if not dynamic.durations_allowed :
         nobreak  = 0
         last_end = None
-        for tr in nonempty :
+        for tr in need_break_recs :
             start   = Date (tr.start, offset = 0)
             if last_end and (start - last_end).as_seconds () >= 30 * 60 :
                 nobreak  = tr.duration
@@ -368,7 +379,8 @@ def check_generated (new_values) :
 def new_time_record (db, cl, nodeid, new_values) :
     """ auditor on time_record
     """
-    uid = db.getuid ()
+    uid    = db.getuid ()
+    travel = False
     for i in 'daily_record', :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
@@ -410,7 +422,12 @@ def new_time_record (db, cl, nodeid, new_values) :
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
     if 'wp' in new_values and new_values ['wp'] :
-        correct_work_location (db, new_values ['wp'], new_values)
+        wp = new_values ['wp']
+        correct_work_location (db, wp, new_values)
+        travel = travel or db.time_wp.get (wp, 'travel')
+    if 'time_activity' in new_values and new_values ['time_activity'] :
+        act    = new_values ['time_activity']
+        travel = travel or db.time_activity.get (act, 'travel')
     duration = new_values.get ('duration', None)
     ls       = Date (db.user.get (dr.user, 'lunch_start'))
     ls.year  = dr.date.year
@@ -420,7 +437,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     hours    = int (ld)
     minutes  = (ld - hours) * 60
     le       = ls + Interval ('%d:%d' % (hours, minutes))
-    if duration > 6 and start and dstart < ls and dend > ls :
+    if not travel and duration > 6 and start and dstart < ls and dend > ls :
         newrec  = { 'daily_record' : new_values ['daily_record']
                   , 'start'        : le.pretty (hour_format) 
                   }

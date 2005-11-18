@@ -379,6 +379,14 @@ class Daily_Record_Deny (Daily_Record_Change_State) :
     # end def handle
 # end class Daily_Record_Deny
 
+class Daily_Record_Reopen (Daily_Record_Change_State) :
+    def handle (self) :
+        self.state_from = self.db.daily_record_status.lookup ('accepted')
+        self.state_to   = self.db.daily_record_status.lookup ('open')
+        return self.__super.handle ()
+    # end def handle
+# end class Daily_Record_Reopen
+
 def approvals_pending (db, request, userlist) :
     try :
         db  = db._db
@@ -466,6 +474,7 @@ def init (instance) :
     actn ('daily_record_submit',      Daily_Record_Submit)
     actn ('daily_record_approve',     Daily_Record_Approve)
     actn ('daily_record_deny',        Daily_Record_Deny)
+    actn ('daily_record_reopen',      Daily_Record_Reopen)
     actn ('weekno_action',            Weekno_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)

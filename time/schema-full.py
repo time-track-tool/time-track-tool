@@ -353,6 +353,7 @@ time_wp = Class \
     , bookers               = Multilink ("user")
     , durations_allowed     = Boolean   ()
     , cost_center           = Link      ("cost_center")
+    , travel                = Boolean   ()
     )
 
 work_location = Class \
@@ -403,6 +404,7 @@ time_activity = Class \
     , ''"time_activity"
     , name                  = String    ()
     , description           = String    ()
+    , travel                = Boolean   ()
     )
 time_activity.setkey ("name")
 

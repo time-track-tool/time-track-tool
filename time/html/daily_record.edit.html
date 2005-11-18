@@ -298,12 +298,14 @@
            (db, user, request.filterspec ['date'])">
           </tal:block>
           <tal:block tal:condition="python:
-           not is_open and
-            (  (not is_hr and is_submitted)
-            or (    is_hr and is_accepted)
-            )"
+           not is_open and not is_hr and is_submitted"
            tal:replace="structure python:utils.button_action
             (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))">
+          </tal:block>
+          <tal:block tal:condition="python:
+           not is_open and is_hr and is_accepted"
+           tal:replace="structure python:utils.button_action
+            (request.filterspec ['date'], 'reopen', i18n.gettext ('edit again'))">
           </tal:block>
          </td>
          <td>

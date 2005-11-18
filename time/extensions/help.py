@@ -50,6 +50,11 @@ daily_hours = \
       '''
 work_loc = \
     ""'''Location where you worked.'''
+travel = \
+      ""'''Flag to indicate travel. In the Time mask no lunchbreak will
+           be computed. Even if enabled, no maximum work hours will be
+           enforced for this %(Classname)s.
+        '''
 
 helptext = \
     { ""'active'                     :
@@ -321,6 +326,12 @@ helptext = \
       ""'''Time zone of this %(Classname)s -- this is a numeric hour offset'''
     , ""'title'                      :
       ""'''Title of this %(Classname)s'''
+    , ""'travel'                     : travel
+    , ""'time_wp.travel'             : travel +
+      ""''' In addition in reports the times booked will be halved (if
+           exceeding the expected work hours and the person is not
+           marked "travel_full" in the dynamic user data)
+        '''
     , ""'type'                       :
       ""'''Mime type of this file'''
     , ""'url'                        :
