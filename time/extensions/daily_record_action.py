@@ -56,15 +56,18 @@ try :
     from common             import pretty_range, week_from_date, ymd \
                                  , date_range, weekno_from_day       \
                                  , from_week_number
-    from user_dynamic       import get_user_dynamic
+    from user_dynamic       import get_user_dynamic, day_work_hours \
+                                 , round_daily_work_hours
 except ImportError :
-    week_from_date   = None
-    ymd              = None
-    pretty_range     = None
-    get_user_dynamic = None
-    date_range       = None
-    weekno_from_day  = None
-    from_week_number = None
+    week_from_date         = None
+    ymd                    = None
+    pretty_range           = None
+    get_user_dynamic       = None
+    day_work_hours         = None
+    date_range             = None
+    weekno_from_day        = None
+    from_week_number       = None
+    round_daily_work_hours = None
 
 class _autosuper (type) :
     def __init__ (cls, name, bases, dict) :
@@ -110,18 +113,6 @@ def next_week (db, request) :
         ''' % date
 # end def next_week
 
-def day_work_hours (dynuser, date) :
-    """ Compute hours for a holiday etc from the date """
-    wday  = gmtime (date.timestamp ())[6]
-    field = 'hours_' + ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'][wday]
-    hours = dynuser [field]
-    if hours :
-        return hours
-    if wday in (5, 6) or not dynuser.weekly_hours :
-        return 0
-    return dynuser.weekly_hours / 5.
-# end def day_work_hours
-
 def try_create_public_holiday (db, daily_record, date, user) :
     dyn = get_user_dynamic (db, user, date)
     wh  = day_work_hours   (dyn, date)
@@ -140,7 +131,7 @@ def try_create_public_holiday (db, daily_record, date, user) :
                 comment = '\n'.join ((holiday.name, holiday.description))
                 if holiday.is_half :
                     wh = wh / 2.
-                wh = int (wh * 4. + .5) / 4.
+                wh = round_daily_work_hours (wh)
                 db.time_record.create \
                     ( daily_record  = daily_record
                     , duration      = wh
@@ -462,11 +453,13 @@ def is_end_of_week (date) :
 
 def init (instance) :
     global pretty_range, week_from_date, ymd, get_user_dynamic, date_range
-    global weekno_from_day, from_week_number
+    global weekno_from_day, from_week_number, day_work_hours
+    global round_daily_work_hours
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from common       import pretty_range, week_from_date, ymd, date_range \
                            , weekno_from_day, from_week_number
-    from user_dynamic import get_user_dynamic
+    from user_dynamic import get_user_dynamic, day_work_hours \
+                           , round_daily_work_hours
     del sys.path [0]
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)

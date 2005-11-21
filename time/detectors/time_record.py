@@ -386,7 +386,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
-    for i in 'dist', :
+    for i in 'dist', 'tr_duration' :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
     check_generated (new_values)
@@ -576,6 +576,8 @@ def check_time_record (db, cl, nodeid, new_values) :
         del new_values ['dist']
     if wp :
         correct_work_location (db, wp, new_values)
+    if 'tr_duration' not in new_values :
+        new_values ['tr_duration'] = None
 # end def check_time_record
 
 def check_for_retire (db, cl, nodeid, old_values) :

@@ -140,6 +140,11 @@ helptext = \
            specifying "Start" 10:00 and "Duration" 8 will result in an
            "End" time of 18:30.
         '''
+    , ""'tr_duration'                :
+      ""'''Work duration in minutes including special travel computation:
+           travel times will be halved if exceeding the maximum work
+           hours.
+        '''
     , ""'user_dynamic.durations_allowed' : durations
     , ""'vacation_remaining'         :
       ""'''Remaining vacation for this user at the start of a dynamic

@@ -392,6 +392,7 @@ time_record = Class \
     , start_generated       = Boolean   ()
     , end_generated         = Boolean   ()
     , duration              = Number    ()
+    , tr_duration           = Number    ()
     , wp                    = Link      ("time_wp",       do_journal = "no")
     , time_activity         = Link      ("time_activity", do_journal = "no")
     , work_location         = Link      ("work_location", do_journal = "no")
