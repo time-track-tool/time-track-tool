@@ -318,13 +318,13 @@
          </td>
          <td/>
         </tr>
-        <tr tal:condition="python: is_submitted and aprv_ok">
+        <tr tal:condition="python: not is_open and is_submitted and aprv_ok">
          <td colspan="6"/>
          <td colspan="2">
           <tal:block tal:replace="structure python:utils.button_action
            (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
          </td>
-         <td tal:condition="not:is_open">
+         <td>
           <tal:block tal:replace="structure python:utils.button_action
            (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
          </td>
