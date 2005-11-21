@@ -392,7 +392,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     check_generated (new_values)
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     uname    = db.user.get (dr.user, 'username')
-    if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
+    if (dr.status != db.daily_record_status.lookup ('open') and uid != '1') :
         raise Reject, _ ('Editing of time records only for status "open"')
     if  (   uid != dr.user
         and not common.user_has_role (db, uid, 'controlling')
@@ -467,7 +467,9 @@ def check_time_record (db, cl, nodeid, new_values) :
         return
     check_generated (new_values)
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
-    if status != db.daily_record_status.lookup ('open') :
+    if  (   status != db.daily_record_status.lookup ('open')
+        and new_values.keys () != ['tr_duration']
+        ) :
         raise Reject, _ ('Editing of time records only for status "open"')
     drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
