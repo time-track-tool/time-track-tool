@@ -62,6 +62,11 @@
       (classname, 'max_hours')"/>
      <td tal:content="structure python:context.max_hours.field ()"/>
     </tr>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'op_project')"/>
+     <td tal:content="structure python:context.op_project.field ()"/>
+    <tr>
+    </tr>
    </tal:block>
   </tal:block>
   <tal:block tal:define="wps python:db.time_wp.filter

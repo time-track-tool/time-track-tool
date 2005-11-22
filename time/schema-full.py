@@ -336,6 +336,7 @@ time_project = Class \
     , work_location         = Link      ("work_location")
     , max_hours             = Number    ()
     , nosy                  = Multilink ("user")
+    , op_project            = Boolean   ()
     )
 time_project.setkey ("name")
 

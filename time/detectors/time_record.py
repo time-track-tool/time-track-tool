@@ -141,9 +141,10 @@ def time_records_consistent (db, cl, nodeid) :
     if dynamic.daily_worktime :
         work = reduce (add, [t.duration for t in trec_notravel], 0)
         if work > dynamic.daily_worktime :
+            dwt = dynamic.daily_worktime
             msgs.append \
-                ( "%(tr_pr)s Overall work-time more than %s hours: %s"
-                % (daily_worktime, work)
+                ( "%(tr_pr)s Work-time more than %(dwt)s hours: %(work)s"
+                % locals ()
                 )
     if not dynamic.durations_allowed :
         nobreak  = 0

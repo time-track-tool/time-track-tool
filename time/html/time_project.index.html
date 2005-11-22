@@ -23,6 +23,7 @@
     , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['max_hours'])
     , utils.ExtProperty (utils, pdict ['nosy'],          multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['op_project'])
     );
    "
   tal:condition="context/is_view_ok">

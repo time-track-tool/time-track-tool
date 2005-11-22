@@ -113,6 +113,8 @@ helptext = \
     , ""'date'                       :
       ""'''Date of this %(Classname)s.<br>''' + date_text
     , ""'daily_hours'                : daily_hours
+    , ""'daily_worktime'             :
+      ""'''Maximum time a person may book for a single day.'''
     , ""'department'                 :
       ""'''Department in which the %(Classname)s is based, e.g., SW, Sales.'''
     , ""'deputy'                     :
@@ -228,6 +230,10 @@ helptext = \
       ""'''Nickname (or short name) for this %(Classname)s, e.g., rsc'''
     , ""'nosy'                       :
       ""'''People receiving announcements (messages) for %(Classname)s'''
+    , ""'op_project'                 :
+      ""'''Flag if this %(Classname)s is a real project or just used for
+           time tracking.
+        '''
     , ""'opt_reviewers'              :
       ""'''Optional reviewers for this %(Classname)s'''
     , ""'order'                      :
