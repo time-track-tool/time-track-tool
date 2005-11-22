@@ -43,12 +43,12 @@
                         'date=.%3B'
    }
  ; menu_tracker  python:
-   ( ( ('review',         'Edit')
-     , ('meeting',        'Edit')
-     , ('release',        'Edit')
-     , ('feature',        'Edit')
-     , ('defect',         'Edit')
-     , ('user',           'Create')
+   ( ( ('review',         'Edit',   '?@template=item')
+     , ('meeting',        'Edit',   '?@template=item')
+     , ('release',        'Edit',   '?@template=item')
+     , ('feature',        'Edit',   '?@template=item')
+     , ('defect',         'Edit',   '?@template=item')
+     , ('user',           'Create', '?@template=item')
      )
    , ( ('action_item',    'View')
      , ('announcement',   'View')
@@ -62,28 +62,28 @@
      )
    )
  ; menu_time     python:
-   ( ( ('cost_center',         'Edit')
-     , ('cost_center_group',   'Edit')
-     , ('cost_center_status',  'Edit')
-     , ('daily_record',         None)
-     , ('daily_record_status', 'Edit')
-     , ('department',          'Edit')
-     , ('user_dynamic',        'Edit')
-     , ('location',            'Edit')
-     , ('meeting_room',        'Edit')
-     , ('org_location',        'Edit')
-     , ('organisation',        'Edit')
-     , ('position',            'Edit')
-     , ('room',                'Edit')
-     , ('time_activity',       'Edit')
-     , ('time_project',        'Edit')
-     , ('time_project_status', 'Edit')
-     , ('time_record',          None)
-     , ('time_wp_group',       'Edit')
-     , ('time_wp',              None)
-     , ('user',                'Create')
-     , ('work_location',       'Edit')
-     , ('public_holiday',      'Edit')
+   ( ( ('cost_center',         'Edit',   '?@template=item')
+     , ('cost_center_group',   'Edit',   '?@template=item')
+     , ('cost_center_status',  'Edit',   '?@template=item')
+     , ('daily_record',         None,    '?@template=item')
+     , ('daily_record_status', 'Edit',   '?@template=item')
+     , ('department',          'Edit',   '?@template=item')
+     , ('user_dynamic',        'Edit',   '?@template=item')
+     , ('location',            'Edit',   '?@template=item')
+     , ('meeting_room',        'Edit',   '?@template=item')
+     , ('org_location',        'Edit',   '?@template=item')
+     , ('organisation',        'Edit',   '?@template=item')
+     , ('position',            'Edit',   '?@template=item')
+     , ('room',                'Edit',   '?@template=item')
+     , ('time_activity',       'Edit',   '?@template=item')
+     , ('time_project',        'Edit',   '?@template=item&op_project=True')
+     , ('time_project_status', 'Edit',   '?@template=item')
+     , ('time_record',          None,    '?@template=item')
+     , ('time_wp_group',       'Edit',   '?@template=item')
+     , ('time_wp',              None,    '?@template=item')
+     , ('user',                'Create', '?@template=item')
+     , ('work_location',       'Edit',   '?@template=item')
+     , ('public_holiday',      'Edit',   '?@template=item')
      )
    , ( ('cost_center',    'View', '')
      , ('daily_record',   'View', 'controlling,hr')
@@ -275,7 +275,7 @@
    <option value="">-- Create / Update --</option>
    <tal:block tal:repeat="k python:utils.sorted (klasses, (0,), i18n.gettext)">
     <option tal:condition="python:request.user.hasPermission(k [1], k [0])"
-            tal:attributes="value python:k[0] + '?@template=item'"
+            tal:attributes="value python:k[0] + k[2]"
             tal:content="python:i18n.gettext (k[0])" />
    </tal:block>
   </select>
