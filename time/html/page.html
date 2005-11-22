@@ -27,6 +27,15 @@
    , 'daily_record'   : ':columns=id,user,date,status&:sort=-id&'
                         ':filter=user,date&:pagesize=20&:startwith=0&'
                         'date=.-1d%%3B.%%2B1d&user=%s' % uid
+   , 'public_holiday' : ':columns=id,name,description,date,locations,is_half&'
+                        ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
+                        'date=.%3B'
+   , 'summary_report' : ':columns=user,time_wp,summary&'
+                        ':filter=user,summary_type,status,date,show_empty&'
+                        ':pagesize=50&:startwith=0&status=3,1,2&'
+                        'date=%s%%3B.&summary_type=2,4&user=%s&'
+                        'show_empty=yes' % 
+                        (utils.monthstart_twoweeksago (), uid)
    , 'time_project'   : ':columns=name,responsible,organisation,department'
                         ',status&:sort=name&:filter=status&:pagesize=20&'
                         ':startwith=0&status=1,2'
@@ -38,9 +47,6 @@
                         ':filter=status&:pagesize=200&:startwith=0&status=1'
    , 'user_dynamic'   : ':columns=id,user,valid_from,org_location&:sort=-id&'
                         ':pagesize=20&:startwith=0'
-   , 'public_holiday' : ':columns=id,name,description,date,locations,is_half&'
-                        ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
-                        'date=.%3B'
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit',   '?@template=item')
@@ -65,7 +71,7 @@
    ( ( ('cost_center',         'Edit',   '?@template=item')
      , ('cost_center_group',   'Edit',   '?@template=item')
      , ('cost_center_status',  'Edit',   '?@template=item')
-     , ('daily_record',         None,    '?@template=item')
+     , ('daily_record',         None,    '')
      , ('daily_record_status', 'Edit',   '?@template=item')
      , ('department',          'Edit',   '?@template=item')
      , ('user_dynamic',        'Edit',   '?@template=item')
@@ -78,12 +84,13 @@
      , ('time_activity',       'Edit',   '?@template=item')
      , ('time_project',        'Edit',   '?@template=item&op_project=True')
      , ('time_project_status', 'Edit',   '?@template=item')
-     , ('time_record',          None,    '?@template=item')
+     , ('time_record',          None,    '')
      , ('time_wp_group',       'Edit',   '?@template=item')
-     , ('time_wp',              None,    '?@template=item')
+     , ('time_wp',              None,    '')
      , ('user',                'Create', '?@template=item')
      , ('work_location',       'Edit',   '?@template=item')
      , ('public_holiday',      'Edit',   '?@template=item')
+     , ('summary_report',      None,     '')
      )
    , ( ('cost_center',    'View', '')
      , ('daily_record',   'View', 'controlling,hr')
@@ -93,6 +100,7 @@
      , ('time_wp_group',  'View', '')
      , ('public_holiday', 'View')
      , ('user',           'View')
+     , ('summary_report', 'View')
      )
    )
  ; menu_type     python:

@@ -413,4 +413,25 @@ def weekno_from_day (date) :
     return int ((yday2 - yday1) / 7 + 1)
 # end def weekno_from_day
 
+def monthstart_twoweeksago (date = '.') :
+    """return the last month start from at least two weeks ago as a
+       roundup date string. We need this for some default queries that
+       need a date range.
+
+       >>> monthstart_twoweeksago ('2005-01-01')
+       '2004-12-01'
+       >>> monthstart_twoweeksago ('2005-11-22')
+       '2005-11-01'
+       >>> monthstart_twoweeksago ('2005-11-13')
+       '2005-10-01'
+       >>> monthstart_twoweeksago ('2005-11-14')
+       '2005-10-01'
+       >>> monthstart_twoweeksago ('2005-11-15')
+       '2005-11-01'
+    """
+    d = Date (date) - Interval ('14d')
+    d.day = 1
+    return d.pretty (ymd)
+# end def monthstart_twoweeksago
+
 ### __END__
