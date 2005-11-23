@@ -245,7 +245,7 @@ class Time_Container (Container) :
     __str__ = __repr__
 
     def __hash__ (self) :
-        return hash (str (self))
+        return hash (repr (self))
     # end def __hash__
 # end class Time_Container
 
@@ -323,6 +323,14 @@ class Comparable_Container (Container, dict) :
             or cmp (self.name, other.name)
             )
     # end def __cmp__
+
+    def add_plan (self, date, duration) :
+        key = date.pretty (ymd)
+        if key not in self.sums :
+            self.sums [key]  = duration
+        else :
+            self.sums [key] += duration
+    # end def add_plan
 
 # end class Comparable_Container
 
@@ -415,9 +423,11 @@ class Summary_Report :
         self.show_empty = show_empty == 'yes'
         travel_act      = db.time_activity.filter (None, {'travel' : True})
         travel_act      = dict ([(a, 1) for a in travel_act])
+        self.show_plan  = 'planned_effort' in self.columns
 
         #print "time", timestamp
         #print filterspec
+        print self.columns, self.show_plan
         start, end  = date_range (db, filterspec)
         users       = filterspec.get ('user', [])
         sv          = dict ([(i, 1) for i in filterspec.get ('supervisor', [])])
@@ -427,6 +437,7 @@ class Summary_Report :
         users       = dict ([(u, 1) for u in users + svu]).keys ()
         olo_or_dept = False
         drecs       = {}
+        org_dep_usr = {}
         for cl in 'department', 'org_location' :
             spec = dict ([(s, 1) for s in filterspec.get (cl, [])])
             if spec :
@@ -438,6 +449,7 @@ class Summary_Report :
                         and (not ud.valid_to or ud.valid_to > start)
                         ) :
                         udrs.append (ud)
+                        org_dep_usr [ud.user] = 1
                 for ud in udrs :
                     udstart = max (ud.valid_from, start)
                     if ud.valid_to :
@@ -472,9 +484,14 @@ class Summary_Report :
         #print "n_dr:", len (dr), time.time () - timestamp
         dr          = dict \
             ([(d, Extended_Daily_Record (db, d, sup_users)) for d in dr])
-        #print "after users:", time.time () - timestamp
+        print "after users:", time.time () - timestamp
         dr.update (drecs)
-        #print "after dr.update:", time.time () - timestamp
+        print "after dr.update:", time.time () - timestamp
+        self.dr_by_user_date = dict \
+            ([((str (v.user), v.date.pretty (ymd)), v)
+              for v in dr.itervalues ()
+            ])
+        print "after dr_dat_usr:", time.time () - timestamp
 
         trvl_tr     = db.time_record.find \
             (daily_record = dr, time_activity = travel_act)
@@ -574,7 +591,12 @@ class Summary_Report :
         #print "own time_recs", len (time_recs), time.time () - timestamp
         time_recs.sort ()
         #print "srt time_recs", len (time_recs), time.time () - timestamp
-        usernames   = dict ([(tr.username, 1) for tr in time_recs]).keys ()
+        if self.show_empty :
+            usrs      = users + org_dep_usr.keys ()
+            usernames = dict ([(db.user.get (u, 'username'), 1) for u in usrs])
+            usernames = usernames.keys ()
+        else :
+            usernames = dict ([(tr.username, 1) for tr in time_recs]).keys ()
         usernames.sort ()
         #print "sorted usernames", time.time () - timestamp
         #print usernames
@@ -628,6 +650,7 @@ class Summary_Report :
                     containers_by_wp [w]      = [wc]
         #print "inverted wp containers", time.time () - timestamp
         tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
+
         for t in time_recs :
             for tcp in tc_pointers.iterkeys () :
                 while \
@@ -639,7 +662,22 @@ class Summary_Report :
                 for wpc in containers_by_wp [t.wp.id] :
                     tc. add (wpc, t)
                     wpc.add (tc,  t)
-        #print "SUMs built", time.time () - timestamp
+
+        print "SUMs built", time.time () - timestamp
+        if self.show_plan :
+            for w in work_pkg.itervalues () :
+                # We need an end to compute the planned effort in an
+                # interval...
+                if not w.time_end or not w.planned_effort :
+                    continue
+                d = max (start,                   w.time_start)
+                e = min (end + Interval ('1d'),   w.time_end)
+                effort_perday = w.planned_effort / (e - d).get_tuple [3]
+                while d < e :
+                    for c in containers_by_wp [w] :
+                        c.add_plan (d, effort_perday)
+                    d = d + Interval ('1d')
+            print "Effort built", time.time () - timestamp
         self.wps             = wps
         self.usernames       = usernames
         self.start           = start

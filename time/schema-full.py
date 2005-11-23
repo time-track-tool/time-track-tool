@@ -555,6 +555,7 @@ summary_report = Class \
     , summary               = Boolean   ()
     , status                = Link      ("daily_record_status")
     , show_empty            = Boolean   ()
+    , planned_effort        = Number    ()
     )
 
 # FileClass automatically gets these properties:
