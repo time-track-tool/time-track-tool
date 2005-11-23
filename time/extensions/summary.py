@@ -155,6 +155,11 @@ class Extended_WP (Extended_Node) :
             or uid == p_deputy
             or uid in p_nosy
             )
+        self.effort_perday = 0
+        if self.time_start and self.time_end and self.planned_effort :
+            s                  = Date (str (self.time_start))
+            e                  = Date (str (self.time_end))
+            self.effort_perday = self.planned_effort / (e - s).get_tuple () [3]
     # end def __init__
 
     def __cmp__ (self, other) :
@@ -201,26 +206,40 @@ class Extended_Time_Record (Extended_Node) :
 
 class Container (autosuper) :
     def __init__ (self, * args, ** kw) :
-        self.sums = {}
+        self.sums  = {}
+        self.plans = {}
         self.__super.__init__ (* args, ** kw)
     # end def __init__
 
-    def add (self, other_container, tr) :
+    def add_sum (self, other_container, tr) :
         for key in other_container, (other_container, tr.username) :
             if key not in self.sums :
                 self.sums [key]  = tr.tr_duration or tr.duration
             else :
                 self.sums [key] += tr.tr_duration or tr.duration
-    # end def add
+    # end def add_sum
 
-    def get (self, other_container, username = None, default = None) :
+    def add_plan (self, other_container, duration) :
+        if other_container not in self.plans :
+            self.plans [other_container]  = duration
+        else :
+            self.plans [other_container] += duration
+    # end def add_plan
+
+    def get_sum (self, other_container, username = None, default = None) :
         key = other_container
         if username :
             key = (other_container, username)
         if key in self.sums :
             return self.sums [key]
         return default
-    # end def get
+    # end def get_sum
+
+    def get_plan (self, other_container, default = None) :
+        if other_container in self.plans :
+            return self.plans [other_container]
+        return default
+    # end def get_plan
 
     def as_html (self) :
         return cgi.escape (str (self))
@@ -323,14 +342,6 @@ class Comparable_Container (Container, dict) :
             or cmp (self.name, other.name)
             )
     # end def __cmp__
-
-    def add_plan (self, date, duration) :
-        key = date.pretty (ymd)
-        if key not in self.sums :
-            self.sums [key]  = duration
-        else :
-            self.sums [key] += duration
-    # end def add_plan
 
 # end class Comparable_Container
 
@@ -648,36 +659,34 @@ class Summary_Report :
                     containers_by_wp [w].append (wc)
                 else :
                     containers_by_wp [w]      = [wc]
-        #print "inverted wp containers", time.time () - timestamp
+        print "inverted wp containers", time.time () - timestamp
         tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
 
-        for t in time_recs :
+        d    = start
+        tidx = 0
+        while d <= end :
             for tcp in tc_pointers.iterkeys () :
-                while \
-                    (  t.date
-                    >= time_containers [tcp][tc_pointers [tcp]].sort_end
-                    ) :
+                while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
                     tc_pointers [tcp] += 1
                 tc = time_containers [tcp][tc_pointers [tcp]]
-                for wpc in containers_by_wp [t.wp.id] :
-                    tc. add (wpc, t)
-                    wpc.add (tc,  t)
-
+                if self.show_plan :
+                    for w in work_pkg.itervalues () :
+                        if  (   w.effort_perday
+                            and d >= w.time_start and d < w.time_end
+                            ) :
+                            for wc in containers_by_wp [w.id] :
+                                wc.add_plan (tc, w.effort_perday)
+                                tc.add_plan (wc, w.effort_perday)
+            while tidx < len (time_recs) and time_recs [tidx].date == d :
+                t  = time_recs [tidx]
+                for tcp in tc_pointers.iterkeys () :
+                    tc = time_containers [tcp][tc_pointers [tcp]]
+                    for wpc in containers_by_wp [t.wp.id] :
+                        tc. add_sum (wpc, t)
+                        wpc.add_sum (tc,  t)
+                tidx += 1
+            d = d + Interval ('1d')
         print "SUMs built", time.time () - timestamp
-        if self.show_plan :
-            for w in work_pkg.itervalues () :
-                # We need an end to compute the planned effort in an
-                # interval...
-                if not w.time_end or not w.planned_effort :
-                    continue
-                d = max (start,                   w.time_start)
-                e = min (end + Interval ('1d'),   w.time_end)
-                effort_perday = w.planned_effort / (e - d).get_tuple [3]
-                while d < e :
-                    for c in containers_by_wp [w] :
-                        c.add_plan (d, effort_perday)
-                    d = d + Interval ('1d')
-            print "Effort built", time.time () - timestamp
         self.wps             = wps
         self.usernames       = usernames
         self.start           = start
@@ -687,7 +696,7 @@ class Summary_Report :
     # end def __init__
 
     def html_item (self, item) :
-        if not item and not isinstance (item, dict) :
+        if not item and not isinstance (item, dict) and not item == 0 :
             return "   <td/>"
         if isinstance (item, type (0.0)) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
@@ -705,7 +714,7 @@ class Summary_Report :
     # end def html_line
 
     def csv_item (self, item) :
-        if not item and not isinstance (item, dict) :
+        if not item and not isinstance (item, dict) and not item == 0 :
             return ''
         if isinstance (item, type (0.0)) :
             return '%2.02f' % item
@@ -724,6 +733,9 @@ class Summary_Report :
             for u in self.usernames :
                 line.append (formatter (u))
         line.append (formatter (_ ('Sum')))
+        if self.show_plan :
+            for i in 'planned_effort', '%', 'remaining' :
+                line.append (formatter (_ (i)))
         return line
     # end def header_line
 
@@ -734,8 +746,18 @@ class Summary_Report :
         line.append (formatter (tc))
         if 'user' in self.columns :
             for u in self.usernames :
-                line.append (formatter (tc.get (wpc, u, '')))
-        line.append (formatter (tc.get (wpc)))
+                line.append (formatter (tc.get_sum (wpc, u, '')))
+        sum = tc.get_sum (wpc, default = 0.0)
+        line.append (formatter (sum))
+        if self.show_plan :
+            plan = tc.get_plan (wpc)
+            line.append (formatter (plan))
+            if plan :
+                line.append (formatter (sum * 100. / plan))
+                line.append (formatter (plan - sum))
+            else :
+                line.append (formatter (None))
+                line.append (formatter (None))
         return line
     # end def _output_line
 

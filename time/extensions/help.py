@@ -251,8 +251,9 @@ helptext = \
            external phone number.
         '''
     , ""'planned_effort'             :
-      ""'''Effort for the %(Classname)s in person-days; as it is stated
-           in the Project Evaluation Sheet.
+      ""'''Effort for %(Classname)s in person-hours; as it is stated
+           in the Project Evaluation Sheet. Warning: This used to be in
+           person days, so you have to convert old values to hours!
         '''
     , ""'private_for'                :
       ""'''Flag if this is a private %(Classname)s'''
