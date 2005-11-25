@@ -324,6 +324,11 @@ helptext = \
       ""'''Short summary of this message (usually first line)'''
     , ""'superior'                   :
       ""'''Supervisor for %(Classname)s'''
+    , ""'supp_weekly_hours'          :
+      ""'''Weekly hours including the agreed supplementary hours (e.g.
+           45h), Format: xx.xx. Please round to whole quarters of an hour
+           (e.g. 0.5 means a half-hour).
+        '''
     , ""'team_members'               :
       ""'''Persons who are assigned to the project and are allowed
            to book their effort on this project

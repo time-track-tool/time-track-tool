@@ -55,6 +55,7 @@
          , 'travel_full'
          , 'vacation_yearly'
          , 'weekly_hours'
+         , 'supp_weekly_hours'
          , 'hours_mon'
          , 'hours_tue'
          , 'hours_wed'
@@ -115,9 +116,14 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'daily_worktime')"/>
       <td tal:content="structure python:context.daily_worktime.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'weekly_hours')"/>
       <td tal:content="structure python:context.weekly_hours.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'supp_weekly_hours')"/>
+      <td tal:content="structure python:context.supp_weekly_hours.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

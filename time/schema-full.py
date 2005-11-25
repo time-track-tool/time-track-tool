@@ -519,6 +519,7 @@ user_dynamic = Class \
     , vacation_yearly       = Number    ()
     , daily_worktime        = Number    ()
     , weekly_hours          = Number    ()
+    , supp_weekly_hours     = Number    ()
     , hours_mon             = Number    ()
     , hours_tue             = Number    ()
     , hours_wed             = Number    ()

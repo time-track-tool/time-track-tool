@@ -32,7 +32,7 @@
       <span tal:replace="structure context/wps/field"/>
       <span tal:condition="context/wps/is_edit_ok"
             tal:replace="structure python:db.time_wp.classhelp
-            ( 'id,name,wp_no,project'
+            ( 'id,name,wp_no,project,cost_center'
             , sort='project'
             , property='wps'
             , width='600'
