@@ -262,7 +262,8 @@ helptext = \
            PSTN.
         '''
     , ""'project'                    :
-      ""'''%(Classname)s is part of a Project. With the Project name a
+      ""'''%(Classname)s is part of a Time Category. With the Time
+           Category name a
            %(Classname)s can be clearly  identified
         '''
     , ""'qa_representative'          :
