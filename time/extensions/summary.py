@@ -159,7 +159,9 @@ class Extended_WP (Extended_Node) :
         if self.time_start and self.time_end and self.planned_effort :
             s                  = Date (str (self.time_start))
             e                  = Date (str (self.time_end))
-            self.effort_perday = self.planned_effort / (e - s).get_tuple () [3]
+            days               = (e - s).get_tuple () [3]
+            if days :
+                self.effort_perday = self.planned_effort / days
     # end def __init__
 
     def __cmp__ (self, other) :
