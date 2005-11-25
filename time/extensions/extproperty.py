@@ -321,7 +321,7 @@ class ExtProperty :
     # end def colonlabel
 
     def colonfield (self, item = None) :
-        return """%s&nbsp;%s""" % (self.colonlabel, self.as_listentry (item))
+        return """%s&nbsp;%s""" % (self.colonlabel (), self.as_listentry (item))
     # end def colonfield
 
     def classhelp_properties (self, *propnames) :
