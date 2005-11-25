@@ -99,6 +99,7 @@ td.date, th.date {
   white-space: nowrap;
 }
 
+
 p.ok-message {
   background-color: #22bb22;
   padding: 5px;
@@ -124,6 +125,10 @@ ul.search-checkboxes > li {
     padding-right: .5em;
 }
 
+
+table.searchform th a[href]:hover.header { color: #333 }
+table.searchform th a[href]:link.header  { color: #333 }
+table.searchform th a[href].header       { color: #333 }
 
 /* style for forms */
 table.form {

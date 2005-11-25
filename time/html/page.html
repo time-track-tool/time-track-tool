@@ -678,7 +678,7 @@
   <tal:block metal:define-slot="search_variables"/>
   <input type="hidden" name=":action" value="search">
   <input type="hidden" name=":startwith" tal:attributes="value request/startwith">
-  <table border="0" bgcolor="#e0c0c0">
+  <table border="0" bgcolor="#e0c0c0" class="searchform">
    <tr>
     <th bgcolor="#C08080" i18n:translate="" colspan="2">
      Query
@@ -748,9 +748,10 @@
       </tr>
      </table>
    <tal:block tal:repeat="prop multi_props">
-     <table border="0" bgcolor="#e0c0c0" align="left">
+     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
       <tr>
-       <th style="text-align:left;" tal:content="python:prop.label+':'"></th>
+       <th style="text-align:left;"
+        tal:content="structure python:prop.colonlabel()"/>
       </tr>
       <tr>
        <td style="text-align:center;">
@@ -802,7 +803,7 @@
    <tal:block tal:repeat="prop nomulti_props">
       <tr>
        <th style="text-align:right;"
-           tal:content="python:prop.label+':'"></th>
+           tal:content="structure python:prop.colonlabel()"></th>
        <td>
         <tal:block tal:replace="structure python:prop.search_input (request)"/>
         <span tal:condition="python:prop.lnkname"
