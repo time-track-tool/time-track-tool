@@ -784,7 +784,9 @@ class Summary_Report :
                     except IndexError :
                         continue
                     if d >= tc.sort_end :
-                        if wpc.visible  and (self.show_empty or tc.get (wpc)) :
+                        if  (   wpc.visible
+                            and (self.show_empty or tc.get_sum (wpc))
+                            ) :
                             line_formatter \
                                 ( self._output_line
                                   (wpc, tcp, tc_pointers [tcp], item_formatter)
