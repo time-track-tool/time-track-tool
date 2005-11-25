@@ -845,6 +845,7 @@ class_field_perms = \
         , "title"
         )
       )
+    , ( "user", "View", ["Controlling"], ( "roles"))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
@@ -855,6 +856,7 @@ class_field_perms = \
         , "title", "username"
         )
       )
+    , ( "time_wp", "Edit", ["Controlling"], ( "project",))
     ]
 
 roles = \
@@ -972,7 +974,7 @@ p = db.security.addPermission \
     , check       = own_user_record
     , description = "User is allowed to edit (some of) their own user details"
     , properties  = \
-        ( 'password', 'firstname', 'lastname', 'realname', 'private_phone'
+        ( 'password', 'realname', 'phone', 'private_phone', 'external_phone'
         , 'substitute', 'subst_active', 'title', 'queries'
         , 'lunch_start', 'lunch_duration', 'room', 'timezone'
         )

@@ -68,7 +68,7 @@
   <th tal:content="structure python:utils.fieldname('user', 'confirm')" />
   <td tal:content="structure context/password/confirm"></td>
  </tr>
- <tr tal:condition="python:request.user.hasPermission('Web Roles')">
+ <tr tal:condition="context/roles/is_view_ok">
   <th tal:content="structure python:utils.fieldname('user', 'roles')" />
   <td>
    <input tal:condition="context/id"
