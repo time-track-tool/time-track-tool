@@ -673,6 +673,9 @@ class Summary_Report :
                 tc = time_containers [tcp][tc_pointers [tcp]]
                 if self.show_plan :
                     for w in work_pkg.itervalues () :
+                        # wp may not be viewable due to permissions
+                        if w not in containers_by_wp :
+                            continue
                         if  (   w.effort_perday
                             and d >= w.time_start and d < w.time_end
                             ) :
