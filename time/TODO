@@ -25,24 +25,7 @@ Abwesenheitsmeldung -> später
 - Button für Abwesenheitsmeldung abschicken soll "Absence notification"
   heissen. (Telefonat MMA 19.9.)
 
-Feiertage:
-- Es gibt fixe Feiertage (wie 25. u. 26. 12.) die in jedem Jahr gleich
-  bleiben und solche die man jährlich einmal eingeben muss.
-  ???
-- (Meeting 15.6.) Public Holiday will be entered in a general company
-  wide calendar and entered automatically into ZET.
-
-- Vorschläge für Begrüßungstext:
-  - (Mail 19.9.) MMA: "Time is of the essence."
-  - (Mail 19.9.) MMA: "Make the most of your time."
-  -> Soll ein File von HR änderbar sein.
-
 Allgemein Datenbankschema, Verhalten
-- Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
-  + Datenexport für LDAP
-- Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
-  die den User darauf hinweist wie er es per Email wieder deaktiviert.
-  (Mail MMA 25.8.)
 - Verständigung über Email (Mail MMA, 21.7.): Um 2 Uhr morgens prüfen,
   ob für einen User Submissions offen stehen, die des approvals harren.
   Falls ja, kurze Mail mit dem Titel "You have n TTT submission
@@ -67,37 +50,13 @@ Datenkonversion:
 - restliche erfasste Daten 2005
 
 Auswertungen
-- (Meeting 15.7.) Es soll möglich sein, nach Department bzw.
-  Vorgesetzten auszuwerten
-- (Meeting 7.7.) Einführen einer User Group um nach (u.a. temporären)
-  Gruppen auswerten zu können
-- (Meeting 7.7.) Auswertung nach usern
-  - Name
-  - User Group
-  - Department
-    Keine Subdepartments, diese werden über User Group definiert
-  - Supervisor
-    Department und Supervisor sind nicht immer identisch
-  - Company
-- (Meeting 7.7.) Auswertung Projects
-  - CC-Group
-  - Kostenstellen
-  - WP
-  - WP-Groups
-- (Meeting 7.7.) Diese beiden Auswertungen (Projects und Users) sollen
-  in verschiedenen Richtungen kombinierbar sein.
-- Soll/Ist Vergleich (geplante vs. tatsächliche Aufwände) soll möglich
-  sein (Telefonat MMA 19.9.)
-- Reisezeit: halb (siehe Flag travel_full in dynamischen Userdaten)
-  (Meeting 15.9.): Reisezeiten -- Special ob halbe oder nicht halbe Std.
-  angenommen werden, soll bei der Auswertung berücksichtigt werden und
-  nicht beim Eintragen der Stunden, mit einer entsprechenden Flag.
-  Sollte einfach umzusetzen sein, da auf das WP Reisezeit gebucht wird.
+- Auswahl nach user group: Brauchen wir die?
 
+Phase III:
+- Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
+  die den User darauf hinweist wie er es per Email wieder deaktiviert.
+  (Mail MMA 25.8.)
 
-- Bug Time-Maske: May not approve own records -> should only get "Edit
-  again" instead of "Accept/Deny"
-  - detector: don't allow approval of own recs
-  -> change detector first, test, fix mask
-- Travel: compute a final duration after submit of record. Final
-  duration is stored in time_record.
+IT:
+- Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
+  + Datenexport für LDAP
