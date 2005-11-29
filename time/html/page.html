@@ -808,10 +808,12 @@
         <tal:block tal:replace="structure python:prop.search_input (request)"/>
         <span tal:condition="python:prop.lnkname"
           tal:replace="structure python:db[prop.lnkname].classhelp
-           ( properties=prop.classhelp_properties ('description', 'status', 'responsible')
+           ( properties=prop.classhelp_properties
+             ('description', 'status', 'responsible')
            , property=prop.selname
            , form='query'
            , pagesize=500
+           , filter=prop.help_filter
            )"/>
        </td>
       </tr>

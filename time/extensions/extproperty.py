@@ -136,6 +136,7 @@ class ExtProperty :
         , fieldwidth    = None
         , format        = None
         , help_props    = None
+        , help_filter   = None
         , bool_tristate = True
         ) :
         self.utils         = utils
@@ -160,6 +161,7 @@ class ExtProperty :
         self.fieldwidth    = fieldwidth
         self.format        = format
         self.help_props    = help_props or []
+        self.help_filter   = help_filter
         self.bool_tristate = bool_tristate
         if not self.get_linkcls :
             if hasattr (self.utils, 'linkclass') :

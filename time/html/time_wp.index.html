@@ -20,7 +20,11 @@
     , utils.ExtProperty (utils, pdict ['time_start'])
     , utils.ExtProperty (utils, pdict ['time_end'])
     , utils.ExtProperty (utils, pdict ['planned_effort'])
-    , utils.ExtProperty (utils, pdict ['bookers'])
+    , utils.ExtProperty
+        ( utils, pdict ['bookers']
+        , help_props  = ['firstname', 'lastname']
+        , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
+        )
     , utils.ExtProperty (utils, pdict ['cost_center'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['durations_allowed'])
     , utils.ExtProperty (utils, pdict ['travel'])
