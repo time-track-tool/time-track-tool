@@ -11,12 +11,27 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
+    ( utils.ExtProperty
+        ( utils, pdict ['organisation']
+        , lnkattr     = 'id'
+        , selname     = 'organisation_id'
+        , searchable  = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['cost_center_group']
+        , lnkattr     = 'id'
+        , selname     = 'cost_center_group_id'
+        , searchable  = False
+        )
+    , utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['name'])
     , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['status'],            multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['cost_center_group'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['organisation'],      multiselect = 1)
+    , utils.ExtProperty
+        (utils, pdict ['status'],            multiselect = 1)
+    , utils.ExtProperty
+        (utils, pdict ['cost_center_group'], multiselect = 1)
+    , utils.ExtProperty
+        (utils, pdict ['organisation'],      multiselect = 1)
     );
    "
   tal:condition="context/is_view_ok">

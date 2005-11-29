@@ -153,7 +153,7 @@ class ExtProperty :
         self.multiselect   = multiselect
         self.is_label      = is_label
         self.pretty        = pretty or _
-        self.get_linkcls   = linkclass
+        self.get_cssclass  = linkclass
         self.editable      = editable
         self.key           = None
         self.searchable    = searchable
@@ -163,11 +163,11 @@ class ExtProperty :
         self.help_props    = help_props or []
         self.help_filter   = help_filter
         self.bool_tristate = bool_tristate
-        if not self.get_linkcls :
+        if not self.get_cssclass :
             if hasattr (self.utils, 'linkclass') :
-                self.get_linkcls = self.utils.linkclass
+                self.get_cssclass = self.utils.linkclass
             else :
-                self.get_linkcls = lambda a : ""
+                self.get_cssclass = lambda a : ""
         if hasattr (prop._prop, 'classname') :
             self.lnkname = prop._prop.classname
             self.lnkcls  = prop._db.getclass (self.lnkname)
@@ -218,6 +218,8 @@ class ExtProperty :
             return self.hprop.pretty (format)
         elif self.format :
             return self.format % self.item [self.name]
+        if self.lnkattr :
+            return str (self.item [self.lnkattr])
         return str (self.hprop)
     # end def formatted
 
@@ -251,18 +253,28 @@ class ExtProperty :
             magic: If prop consists of a path across several other Link
             properties, we dereference the whole prop list.
             Returns the new ExtProperty.
+            There is a special case for 'id': The 'id' will not return a
+            HTMLProperty but a python string. Therefore we return the
+            labelprop and set the lnkattr to 'id'.
         """
         p = hprop or self.hprop
 
+        if self.lnkattr == 'id' :
+            return self.__class__ \
+                ( self.utils, p [self.lnkcls.labelprop ()]
+                , item = p
+                , pretty = self.pretty
+                , linkclass = self.get_cssclass
+                , lnkattr = 'id'
+                )
         for i in self.lnkattr.split ('.') :
             last_p = p
             p      = p [i]
         return self.__class__ \
-            ( self.utils
-            , p
+            ( self.utils, p
             , item = last_p
             , pretty = self.pretty
-            , linkclass = self.get_linkcls
+            , linkclass = self.get_cssclass
             )
     # end def deref
 
@@ -293,7 +305,7 @@ class ExtProperty :
         if not self.classname :
             return ""
         return """<a class="%s" href="%s%s">%s</a>%s""" \
-            % ( self.get_linkcls (i)
+            % ( self.get_cssclass (i)
               , self.classname
               , i.id
               , self.formatted ()

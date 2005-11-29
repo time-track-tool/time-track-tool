@@ -20,7 +20,8 @@
  ; uid             python: db._db.getuid ()
  ; default_query   string::action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; default_queries python:
-   { 'cost_center'    : ':columns=id,name,status,organisation&'
+   { 'cost_center'    : ':columns=organisation_id,cost_center_group_id'
+                        ',id,name,status,organisation&'
                         ':sort=name&:group=cost_center_group&'
                         ':filter=status&:pagesize=20&:startwith=0&'
                         'status=5,1,2,4'
