@@ -24,6 +24,11 @@ Abwesenheitsmeldung -> später
   können, alle anderen Daten sollen verborgen sein.
 - Button für Abwesenheitsmeldung abschicken soll "Absence notification"
   heissen. (Telefonat MMA 19.9.)
+- Button beim User "Notify absence" (neues TODO von Barbara), bei
+  Vorgesetzten an der selben Stelle "accept absence", Ort in Maske:
+  links unter "Start/End", Farbe wie die anderen.
+- Office absence notification für andere Mitarbeiter per Email? Message
+  mit festgelegtem Format.
 
 Allgemein Datenbankschema, Verhalten
 - Verständigung über Email (Mail MMA, 21.7.): Um 2 Uhr morgens prüfen,
@@ -45,12 +50,32 @@ Urlaub:
 - Es soll einen Vacation Report geben der Auskunft über genommenen und
   übriggebliebenen Urlaub liefert. (Telefonat MMA 19.9.)
 - Jahresurlaub in vacation_yearly in dyn. Userdaten
+- wichtig ist die Auswertung per auswählbarem Datum (z.B. 31.12.) für
+  die Urlaubsrückstellungen sowie um zu checken, ob Urlaub schon
+  angemeldet ist, detto Auswertung der genommenen Urlaubstage.
+  -> alles in einer Auswertung??
 
 Datenkonversion:
 - restliche erfasste Daten 2005
 
 Auswertungen
 - Auswahl nach user group: Brauchen wir die?
+- Negativreports: Report über alle user die noch keine Daten in die
+  aktuellen Zeiträume eingetragen haben. Leere Felder brauchen ein
+  Zeichen: entschieden wurde "-" (zu checken ob das einen Fehler in
+  Excel gibt).
+- Einführung von "Report types"
+- Mimos (Nach Supervisor, Department) weekly hours mit overtime müssen
+  auch drin sein, ditto actual hours nach Summe, gegliedert nach open,
+  submitted, approved; Differenz zu required (weekly hours) und actual
+  sowie required und weekly hours with overtime.
+  Berechtigungen: HR alles, Controlling NEIN, Supervisor seine Leute,
+  (department manager macht die Query sehr langsam)
+- Sort soll dazukommen, 4h Aufwand (user nach unten wp nach rechts)
+- Abwesenheit
+- Time-Table (Abwesenheiten in der Zukunft) mit Klassifizierung der
+  absences (krank, Urlaub, Reise, notified, accepted)
+
 
 Phase III:
 - Email bei Aktivierung des Substitutes (Substitue Active wird "yes")
@@ -60,3 +85,5 @@ Phase III:
 IT:
 - Diverse zusätzliche Felder für Account-Verwaltung LDAP für IT
   + Datenexport für LDAP
+
+Intranet-Einbindung Bernhard
