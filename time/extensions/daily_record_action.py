@@ -49,6 +49,7 @@ from roundup                import hyperdb
 from time                   import gmtime
 from copy                   import copy
 from operator               import add
+from rsclib.autosuper       import autosuper
 
 # Hack: We want to import this from the conversion functions, too.
 # But in the conversion the init routine is not called.
@@ -68,18 +69,6 @@ except ImportError :
     weekno_from_day        = None
     from_week_number       = None
     round_daily_work_hours = None
-
-class _autosuper (type) :
-    def __init__ (cls, name, bases, dict) :
-        super   (_autosuper, cls).__init__ (name, bases, dict)
-        setattr (cls, "_%s__super" % name, super (cls))
-    # end def __init__
-# end class _autosuper
-
-class autosuper (object) :
-    __metaclass__ = _autosuper
-    pass
-# end class autosuper
 
 def prev_week (db, request) :
     try :

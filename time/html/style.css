@@ -278,6 +278,10 @@ table.list td.end {
   text-align: right;
 }
 
+table.list td.missing {
+  background-color: yellow;
+}
+
 table.list tr.time-nav th {
   border-style: hidden;
   text-align: center;

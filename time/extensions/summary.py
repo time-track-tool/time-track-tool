@@ -43,6 +43,8 @@ from roundup.date                   import Date, Interval
 from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
+from rsclib.autosuper               import autosuper
+from rsclib.PM_Value                import PM_Value
 
 _      = lambda x : x
 
@@ -58,18 +60,6 @@ except ImportError :
     date_range         = None
     weekno_from_day    = None
     update_tr_duration = None
-
-class _autosuper (type) :
-    def __init__ (cls, name, bases, dict) :
-        super   (_autosuper, cls).__init__ (name, bases, dict)
-        setattr (cls, "_%s__super" % name, super (cls))
-    # end def __init__
-# end class _autosuper
-
-class autosuper (object) :
-    __metaclass__ = _autosuper
-    pass
-# end class autosuper
 
 sup_cache = {}
 def user_supervisor_for (db, uid = None) :
@@ -101,6 +91,13 @@ class Extended_Node (autosuper) :
             return result
         raise AttributeError, name
     # end def __getattr__
+
+    def __repr__ (self) :
+        return "%s (%s)" % (self.__class__.__name__, repr (self.name))
+    # end def __repr__
+
+    __str__ = __repr__
+
 # end class Extended_Node
 
 class Extended_Daily_Record (Extended_Node) :
@@ -119,6 +116,7 @@ class Extended_Daily_Record (Extended_Node) :
     def __init__ (self, db, drid, supervised_users) :
         self.node         = db.daily_record.getnode (drid)
         self.username     = db.user.get (self.user, 'username')
+        self.name         = self.username
         uid               = db.getuid ()
         self.is_own       = \
             (  user_has_role (db, uid, 'HR', 'Controlling')
@@ -214,18 +212,21 @@ class Container (autosuper) :
     # end def __init__
 
     def add_sum (self, other_container, tr) :
-        for key in other_container, (other_container, tr.username) :
-            if key not in self.sums :
-                self.sums [key]  = tr.tr_duration or tr.duration
-            else :
-                self.sums [key] += tr.tr_duration or tr.duration
+        self.add_user_sum \
+            (other_container, tr.username, tr.tr_duration or tr.duration)
     # end def add_sum
+
+    def add_user_sum (self, other_container, username, sum) :
+        for key in other_container, (other_container, username) :
+            if key not in self.sums :
+                self.sums [key] = PM_Value (0)
+            self.sums [key] += sum
+    # end def add_user_sum
 
     def add_plan (self, other_container, duration) :
         if other_container not in self.plans :
-            self.plans [other_container]  = duration
-        else :
-            self.plans [other_container] += duration
+            self.plans [other_container] = PM_Value (0)
+        self.plans [other_container] += PM_Value (duration, not duration)
     # end def add_plan
 
     def get_sum (self, other_container, username = None, default = None) :
@@ -501,7 +502,7 @@ class Summary_Report :
         dr.update (drecs)
         print "after dr.update:", time.time () - timestamp
         self.dr_by_user_date = dict \
-            ([((str (v.user), v.date.pretty (ymd)), v)
+            ([((str (v.username), v.date.pretty (ymd)), v)
               for v in dr.itervalues ()
             ])
         print "after dr_dat_usr:", time.time () - timestamp
@@ -666,22 +667,26 @@ class Summary_Report :
 
         d    = start
         tidx = 0
+        print self.dr_by_user_date
         while d <= end :
             for tcp in tc_pointers.iterkeys () :
                 while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
                     tc_pointers [tcp] += 1
                 tc = time_containers [tcp][tc_pointers [tcp]]
-                if self.show_plan :
-                    for w in work_pkg.itervalues () :
-                        # wp may not be viewable due to permissions
-                        if w not in containers_by_wp :
-                            continue
-                        if  (   w.effort_perday
-                            and d >= w.time_start and d < w.time_end
-                            ) :
-                            for wc in containers_by_wp [w.id] :
-                                wc.add_plan (tc, w.effort_perday)
-                                tc.add_plan (wc, w.effort_perday)
+                for w in work_pkg.itervalues () :
+                    # wp may not be viewable due to permissions
+                    if w.id not in containers_by_wp :
+                        continue
+                    for wc in containers_by_wp [w.id] :
+                        wc.add_plan (tc, w.effort_perday)
+                        tc.add_plan (wc, w.effort_perday)
+                        for u in usernames :
+                            if (u, d.pretty (ymd)) not in self.dr_by_user_date :
+                                val = PM_Value (0, 1)
+                                wc.add_user_sum (tc, u, val)
+                                tc.add_user_sum (wc, u, val)
+                            else :
+                                print "Found:", u, d
             while tidx < len (time_recs) and time_recs [tidx].date == d :
                 t  = time_recs [tidx]
                 for tcp in tc_pointers.iterkeys () :
@@ -703,7 +708,12 @@ class Summary_Report :
     def html_item (self, item) :
         if not item and not isinstance (item, dict) and not item == 0 :
             return "   <td/>"
-        if isinstance (item, type (0.0)) :
+        if isinstance (item, PM_Value) :
+            return \
+                ('  <td %sstyle="text-align:right;">%2.02f</td>'
+                % (['class="missing" ', ''][not item.missing], item)
+                )
+        if isinstance (item, type (0.0)) or isinstance (item, PM_Value) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
@@ -721,6 +731,10 @@ class Summary_Report :
     def csv_item (self, item) :
         if not item and not isinstance (item, dict) and not item == 0 :
             return ''
+        if isinstance (item, PM_Value) :
+            if item.missing and not item :
+                return "-"
+            return '%2.02f' % item
         if isinstance (item, type (0.0)) :
             return '%2.02f' % item
         return str (item)
@@ -752,7 +766,7 @@ class Summary_Report :
         if 'user' in self.columns :
             for u in self.usernames :
                 line.append (formatter (tc.get_sum (wpc, u, '')))
-        sum = tc.get_sum (wpc, default = 0.0)
+        sum = tc.get_sum (wpc, default = PM_Value (0.0))
         line.append (formatter (sum))
         if self.show_plan :
             plan = tc.get_plan (wpc)
@@ -761,8 +775,8 @@ class Summary_Report :
                 line.append (formatter (sum * 100. / plan))
                 line.append (formatter (plan - sum))
             else :
-                line.append (formatter (None))
-                line.append (formatter (None))
+                line.append (formatter (PM_Value (0, plan.missing)))
+                line.append (formatter (PM_Value (0, plan.missing)))
         return line
     # end def _output_line
 
