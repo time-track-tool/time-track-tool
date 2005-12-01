@@ -709,6 +709,8 @@ class Summary_Report :
         if not item and not isinstance (item, dict) and not item == 0 :
             return "   <td/>"
         if isinstance (item, PM_Value) :
+            if item.missing and not item :
+                return ('  <td class="missing"/>')
             return \
                 ('  <td %sstyle="text-align:right;">%2.02f</td>'
                 % (['class="missing" ', ''][not item.missing], item)
@@ -775,8 +777,9 @@ class Summary_Report :
                 line.append (formatter (sum * 100. / plan))
                 line.append (formatter (plan - sum))
             else :
-                line.append (formatter (PM_Value (0, plan.missing)))
-                line.append (formatter (PM_Value (0, plan.missing)))
+                missing = plan is None or plan.missing
+                line.append (formatter (PM_Value (0, missing)))
+                line.append (formatter (PM_Value (0, missing)))
         return line
     # end def _output_line
 
