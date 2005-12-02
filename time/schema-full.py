@@ -243,6 +243,7 @@ organisation = Class \
     , mail_domain           = String    ()
     , valid_from            = Date      ()
     , valid_to              = Date      ()
+    , domain_part           = String    ()
     , messages              = Multilink ("msg")
     )
 organisation.setkey ("name")
@@ -253,6 +254,7 @@ location = Class \
     , name                  = String    ()
     , address               = String    ()
     , country               = String    ()
+    , domain_part           = String    ()
     )
 location.setkey ("name")
 
@@ -263,6 +265,8 @@ org_location = Class \
     , phone                 = String    ()
     , organisation          = Link      ("organisation")
     , location              = Link      ("location")
+    , smb_domain            = Link      ("smb_domain")
+    , ip_subnet             = Multilink ("ip_subnet")
     )
 org_location.setkey ("name")
 
@@ -495,6 +499,25 @@ user = Class \
     , lunch_start           = String    ()
     , lunch_duration        = Number    ()
     , sex                   = Link      ("sex")
+    , is_lotus_user         = Boolean   ()
+    , has_account           = Boolean   ()
+    , group                 = Link      ("group")
+    , secondary_groups      = Multilink ("group")
+    , uid                   = Number    ()
+    , home_directory        = String    ()
+    , login_shell           = String    ()
+    , kickoff_time          = Date      ()
+    , pwd_last_set          = Date      ()
+    , pwd_can_change        = Date      ()
+    , samba_home_drive      = String    ()
+    , samba_home_path       = String    ()
+    , samba_profile_path    = String    ()
+    , samba_logon_script    = String    ()
+    , samba_pwd_mustchange  = Date      ()
+    , samba_pwd_can_change  = Date      ()
+    , samba_lm_password     = String    ()
+    , samba_nt_password     = String    ()
+    , user_password         = String    ()
     # XXX: add wiki page url in the web-template based on firstname &
     #      lastname -> why not compute this on the fly (RSC)
     # Note: email adresses could get set automatically by a detector on
@@ -558,6 +581,91 @@ summary_report = Class \
     , show_empty            = Boolean   ()
     , planned_effort        = Number    ()
     )
+
+network_interface = Class \
+    ( db
+    , ''"network_interface"
+    , mac                   = String    ()
+    , card_type             = String    ()
+    , description           = String    ()
+    , machine               = Link      ("machine")
+    )
+network_interface.setkey ("mac")
+
+machine = Class \
+    ( db
+    , ''"machine"
+    , inventory_no          = String    ()
+    , link_field            = String    ()
+    , description           = String    ()
+    , owner                 = Link      ("user")
+    , operating_system      = Multilink ("operating_system")
+    , smb_name              = String    ()
+    )
+machine.setkey ("inventory_no")
+
+operating_system = Class \
+    ( db
+    , ''"operating_system"
+    , name_version          = String    ()
+    , description           = String    ()
+    )
+operating_system.setkey ("name_version")
+
+network_address = Class \
+    ( db
+    , ''"machine_address"
+    , ip                    = String    ()
+    , org_location          = Link      ("org_location")
+    , use_dhcp              = Boolean   ()
+    , network_interface     = Link      ("network_interface")
+    )
+network_address.setkey ("ip")
+
+ip_subnet = Class \
+    ( db
+    , ''"ip_subnet"
+    , ip                    = String    ()
+    , netmask               = Number    ()
+    )
+
+machine_name = Class \
+    ( db
+    , ''"machine_name"
+    , name                  = String    ()
+    , is_a_record           = Boolean   ()
+    , network_address       = Multilink ("network_address")
+    , do_reverse_mapping    = Boolean   ()
+    )
+machine_name.setkey ("name")
+
+group = Class \
+    ( db
+    , ''"group"
+    , name                  = String    ()
+    , description           = String    ()
+    , gid                   = Number    ()
+    )
+group.setkey ("name")
+
+alias = Class \
+    ( db
+    , ''"alias"
+    , name                  = String    ()
+    , description           = String    ()
+    , alias_to_alias        = Multilink ("alias")
+    , alias_to_user         = Multilink ("user")
+    )
+alias.setkey ("name")
+
+smb_domain = Class \
+    ( db
+    , ''"smb_domain"
+    , name                  = String    ()
+    , description           = String    ()
+    , sid                   = String    ()
+    )
+smb_domain.setkey ("name")
 
 # FileClass automatically gets these properties:
 #   content = String()    [saved to disk in <tracker home>/db/files/]

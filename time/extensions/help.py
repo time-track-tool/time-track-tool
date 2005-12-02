@@ -69,6 +69,12 @@ helptext = \
       ""'''Date of last change'''
     , ""'actor'                      :
       ""'''Person who has done the last change'''
+    , ""'alias'                      :
+      ""'''Email alias'''
+    , ""'alias_to_alias'             :
+      ""'''Other aliases this %(Classname)s maps to'''
+    , ""'alias_to_user'              :
+      ""'''List of users this %(Classname)s maps to'''
     , ""'alternate_addresses'        :
       ""'''Alternate email addresses for this user, one per line'''
     , ""'announcements'              :
@@ -88,6 +94,8 @@ helptext = \
       ""'''User is allowed to book time records during the validity span
            of the given %(Classname)s
         '''
+    , ""'card_type'                  :
+      ""'''Type of this %(Classname)s'''
     , ""'clearance_by'               :
       ""'''Usually the supervisor of a person approves
            time records. This can be delegated using this attribute. It
@@ -136,6 +144,17 @@ helptext = \
            This mechanism works after you press "Save" and will split a
            single time record into two if necessary.
         '''
+    , ""'do_reverse_mapping'         :
+      ""'''Flag if a reverse DNS entry should be created for this
+           %(Classname)s -- should usually be enabled. If a
+           %(Classname)s has multiple A-Records (which is bad style to
+           say the least) this flag must be set for only one of the
+           multiple A-Records.
+        '''
+    , ""'domain_part'                :
+      ""'''Part of a domain name. The domain name is built by
+           concatenation the names of the Organisation and the Location.
+        '''
     , ""'duration'                   :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
            allowed, e.g., 7.10 is not allowed. The duration is created
@@ -145,24 +164,6 @@ helptext = \
            consult your user preferences and add the lunch break, e.g.
            specifying "Start" 10:00 and "Duration" 8 will result in an
            "End" time of 18:30.
-        '''
-    , ""'tr_duration'                :
-      ""'''Work duration in minutes including special travel computation:
-           travel times will be halved if exceeding the maximum work
-           hours.
-        '''
-    , ""'user_dynamic.durations_allowed' : durations
-    , ""'vacation_remaining'         :
-      ""'''Remaining vacation for this user at the start of a dynamic
-           user data record.
-        '''
-    , ""'vacation_yearly'            :
-      ""'''Yearly vacation for this user: This is the amount of vacation
-           that is added for each year.
-        '''
-    , ""'wp.durations_allowed'       : durations +
-      ""'''This is mainly used for special %(Classname)ss, like,
-           e.g., vacation.
         '''
     , ""'email'                      :
       ""'''Email address for this %(Classname)s'''
@@ -189,6 +190,14 @@ helptext = \
       ""'''Date of final meeting for this %(Classname)s.''' + date_text
     , ""'firstname'                  :
       ""'''First name for this user, e.g., Ralf'''
+    , ""'gid'                        :
+      ""'''Numeric group ID'''
+    , ""'group'                      :
+      ""'''UNIX Group for this %(Classname)s'''
+    , ""'has_account'                :
+      ""'''Enabled if this %(Classname)s has an account'''
+    , ""'home_directory'             :
+      ""'''UNIX home directory for %(Classname)s'''
     , ""'hours_mon'                  : daily_hours
     , ""'hours_tue'                  : daily_hours
     , ""'hours_wed'                  : daily_hours
@@ -204,18 +213,48 @@ helptext = \
       ""'''Initials of this %(Classname)s'''
     , ""'inreplyto'                  :
       ""'''In Reply To field if this %(Classname)s was received by email'''
+    , ""'inventory_no'               :
+      ""'''Unique number or name for this %(Classname)s, preferrably the
+           inventory number for asset tracking
+        '''
+    , ""'ip'                         :
+      ""'''Internet protocol address of this %(Classname)s'''
+    , ""'ip_subnet'                  :
+      ""'''Internet protocol subnet'''
+    , ""'is_a_record'                :
+      ""'''Flag if this %(Classname)s is a DNS A-Record (if unset it is
+           a CNAME)
+        '''
     , ""'is_alias'                   :
       ""'''No real user but only an email alias'''
+    , ""'is_lotus_user'              :
+      ""'''Enable this if the %(Classname)s uses Lotus Notes for mail'''
     , ""'klass'                      :
       ""'''Class for this query'''
+    , ""'kickoff_time'               :
+      ""'''Windows time that user will automatically logged out'''
     , ""'lastname'                   :
       ""'''Last name for this user, e.g., Schlatterbeck'''
+    , ""'link_field'                 :
+      ""'''Auxiliary field for use with other software, e.g., asset
+           tracking
+        '''
     , ""'location'                   :
       ""'''Location of %(Classname)s, e.g., Vienna HQ.'''
+    , ""'login_shell'                :
+      ""'''UNIX login shell for %(Classname)s'''
     , ""'lunch_duration'             :
       ""'''Preference for time tracking, duration of lunch break in hours'''
     , ""'lunch_start'                :
       ""'''Preference for time tracking, start of lunch break'''
+    , ""'mac'                        :
+      ""'''MAC Address (medium access control layer) e.g. ethernet
+           hardware address
+        '''
+    , ""'machine'                    :
+      ""'''A machine connected to the network to which this
+           %(Classname)s belongs
+        '''
     , ""'manager'                    :
       ""'''Responsible person of the %(Classname)s'''
     , ""'max_hours'                  :
@@ -230,6 +269,20 @@ helptext = \
       ""'''New message or notice for %(Classname)s'''
     , ""'name'                       :
       ""'''Unique %(Classname)s name'''
+    , ""'name_version'               :
+      ""'''Unique name of this %(Classname)s, including the version
+           number
+        '''
+    , ""'netmask'                    :
+      ""'''IP net mask for this %(Classname)s'''
+    , ""'network_address'            :
+      ""'''Address in the network, including but not limited to IP
+           address
+        '''
+    , ""'network_interface'          :
+      ""'''Hardware unit to connect to the network. Can be part of the
+           motherboard or can be a separate unit
+        '''
     , ""'nickname'                   :
       ""'''Nickname (or short name) for this %(Classname)s, e.g., rsc'''
     , ""'nosy'                       :
@@ -244,10 +297,19 @@ helptext = \
       ""'''Items are ordered by this property in drop-down boxes etc.'''
     , ""'organisation'               :
       ""'''Organisation in which the %(Classname)s is based, e.g., TTTech.'''
+    , ""'org_location'               :
+      ""'''Organisation and location of this %(Classname)s, cartesian
+           product of organisation and location -- only the combinations
+           that really exist are stored in the database of course.
+        '''
     , ""'organisation_id'            :
       ""'''ID of this record, automatically generated by the system.
            Cannot be changed by the user.
         '''
+    , ""'owner'                      :
+      ""'''User/Owner of this %(Classname)s'''
+    , ""'operating_system'           :
+      ""'''Operating System running on this %(Classname)s'''
     , ""'password'                   :
       ""'''Password for this %(Classname)s'''
     , ""'peer_reviewers'             :
@@ -273,6 +335,14 @@ helptext = \
       ""'''%(Classname)s is part of a Time Category. With the Time
            Category name a
            %(Classname)s can be clearly  identified
+        '''
+    , ""'pwd_can_change'             :
+      ""'''Earliest time the user may change the password next time.
+           set by the system to pwd_last_set if nothing else is enabled.
+        '''
+    , ""'pwd_last_set'               :
+      ""'''Time-stamp the password was last changed, automatically
+           computed by the system
         '''
     , ""'qa_representative'          :
       ""'''Representative from the QA department for this %(Classname)s'''
@@ -306,6 +376,40 @@ helptext = \
         '''
     , ""'room'                       :
       ""'''Room number'''
+    , ""'samba_home_drive'           :
+      ""'''Home drive for %(Classname)s in Windows'''
+    , ""'samba_home_path'            :
+      ""'''Path to %(Classname)ss home directory'''
+    , ""'samba_lm_password'          :
+      ""'''Samba LAN Manager password -- automatically computed when a
+           new password is entered
+        '''
+    , ""'samba_logon_script'         :
+      ""'''Logon script for %(Classname)s'''
+    , ""'samba_nt_password'          :
+      ""'''Samba NT password -- automatically computed when a
+           new password is entered
+        '''
+    , ""'samba_profile_path'         :
+      ""'''Path to profile for %(Classname)s'''
+    , ""'samba_pwd_must_change'      :
+      ""'''Latest time the user must change the password next time.
+           set by the system to end of the epoch if nothing else is enabled.
+        '''
+    , ""'samba_pwd_can_change'       :
+      ""'''Earliest time the user may change the password next time.
+           set by the system to pwd_last_set if nothing else is enabled.
+        '''
+    , ""'secondary_groups'           :
+      ""'''secondary UNIX Groups for this %(Classname)s'''
+    , ""'sid'                        :
+      ""'''Samba unique ID but without the last part used for user id or
+           group id information
+        '''
+    , ""'smb_domain'                 :
+      ""'''Samba domain for this %(Classname)s'''
+    , ""'smb_name'                   :
+      ""'''Samba name for this %(Classname)s in the samba domain'''
     , ""'start'                      :
       ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
            be specified except for absences like e.g. holidays or sick
@@ -358,16 +462,40 @@ helptext = \
            exceeding the expected work hours and the person is not
            marked "travel_full" in the dynamic user data)
         '''
+    , ""'tr_duration'                :
+      ""'''Work duration in minutes including special travel computation:
+           travel times will be halved if exceeding the maximum work
+           hours.
+        '''
     , ""'type'                       :
       ""'''Mime type of this file'''
+    , ""'uid'                        :
+      ""'''Numeric user ID'''
     , ""'url'                        :
       ""'''Web-Link for this %(Classname)s'''
+    , ""'use_dhcp'                   :
+      ""'''Flag if this %(Classname)s should be served by the DHCP
+           server
+        '''
+    , ""'user_dynamic.durations_allowed' : durations
+    , ""'user_password'              :
+      ""'''UNIX user password, automaticall set by the system when a
+           new password is entered
+        '''
     , ""'user.address'               :
       ""'''Primary email address for this user'''
     , ""'user.title'                 :
       ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
     , ""'username'                   :
       ""'''Login-name for this %(Classname)s, e.g., schlatterbeck'''
+    , ""'vacation_remaining'         :
+      ""'''Remaining vacation for this user at the start of a dynamic
+           user data record.
+        '''
+    , ""'vacation_yearly'            :
+      ""'''Yearly vacation for this user: This is the amount of vacation
+           that is added for each year.
+        '''
     , ""'valid_from'                 :
       ""'''Creation date, or date since when this %(Classname)s can be
            booked at
@@ -386,14 +514,18 @@ helptext = \
       ""'''Flag if booking on weekends is allowed for this %(Classname)s.'''
     , ""'weekly_hours'               :
       ""'''Expected weekly work-time for %(Classname)s.'''
-    , ""'wp_no'                      :
-      ""'''Work package number in the project. Number must be unique for
-           the project and cannot be changed after assignment.
-        '''
     , ""'wp'                         :
       ""'''Only work packages where you have permission to register show
            here. If you miss one, please contact the responsible project
            manager
+        '''
+    , ""'wp_no'                      :
+      ""'''Work package number in the project. Number must be unique for
+           the project and cannot be changed after assignment.
+        '''
+    , ""'wp.durations_allowed'       : durations +
+      ""'''This is mainly used for special %(Classname)ss, like,
+           e.g., vacation.
         '''
     , ""'wps'                        :
       ""'''For a better handling of the work load of a project it is
