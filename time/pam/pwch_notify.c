@@ -37,7 +37,7 @@ PAM_EXTERN int pam_sm_chauthtok
         syslog (LOG_ERR, "pwch_notify: error in args, invalid port");
         return PAM_TRY_AGAIN;
     }
-    port = (in_port_t) lport;
+    port = htons ((in_port_t) lport);
     if (!(flags & PAM_UPDATE_AUTHTOK))
     {
         return PAM_SUCCESS;
@@ -47,7 +47,7 @@ PAM_EXTERN int pam_sm_chauthtok
         syslog (LOG_ERR, "pwch_notify: cannot get username");
         return PAM_AUTHTOK_ERR;
     }
-    syslog (LOG_DEBUG, "Name: %s", uname);
+    syslog (LOG_DEBUG, "pwch_notify: Name: %s", uname);
     if (NULL == (hp = gethostbyname (argv [0])))
     {
         syslog (LOG_ERR, "pwch_notify: unknown host: %s", argv [0]);
@@ -67,7 +67,7 @@ PAM_EXTERN int pam_sm_chauthtok
         syslog (LOG_ERR, "pwch_notify: connect: %s", strerror (errno));
         return PAM_AUTHTOK_ERR;
     }
-    if (NULL == (fp = fdopen (sock, "rw")))
+    if (NULL == (fp = fdopen (sock, "w+")))
     {
         syslog (LOG_ERR, "pwch_notify: fdopen: %s", strerror (errno));
         return PAM_AUTHTOK_ERR;
@@ -80,5 +80,6 @@ PAM_EXTERN int pam_sm_chauthtok
         return PAM_AUTHTOK_ERR;
     }
     (void) fclose (fp);
+    syslog (LOG_DEBUG, "pwch_notify: end", strerror (errno));
     return PAM_SUCCESS;
 }
