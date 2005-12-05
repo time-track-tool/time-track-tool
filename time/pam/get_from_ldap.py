@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import sys
-import os
 from traceback import format_tb
 from syslog    import syslog, openlog, LOG_INFO, LOG_ERR, LOG_DEBUG \
                     , LOG_AUTH, setlogmask, LOG_UPTO
@@ -9,7 +8,7 @@ from roundup   import instance
 
 tracker = instance.open ('/home/ralf/roundup/tttech')
 db      = tracker.open ('admin')
-openlog    ('get_from_ldap (%s)' % os.getpid (), LOG_DEBUG, LOG_AUTH)
+openlog    ('get_from_ldap', LOG_DEBUG, LOG_AUTH)
 setlogmask (LOG_UPTO (LOG_INFO)) # set to LOG_DEBUG if needed
 syslog     (LOG_DEBUG, "started")
 
