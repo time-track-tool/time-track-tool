@@ -301,7 +301,7 @@ class Month_Container (Time_Container) :
         nmonth = day.month + 1
         nyear  = year
         if nmonth > 12 :
-            month = 1
+            nmonth = 1
             nyear = year + 1
         fmt = '%4s-%s-01'
         self.__super.__init__ \
@@ -441,7 +441,7 @@ class Summary_Report :
 
         #print "time", timestamp
         #print filterspec
-        print self.columns, self.show_plan
+        #print self.columns, self.show_plan
         start, end  = date_range (db, filterspec)
         users       = filterspec.get ('user', [])
         sv          = dict ([(i, 1) for i in filterspec.get ('supervisor', [])])
@@ -498,14 +498,14 @@ class Summary_Report :
         #print "n_dr:", len (dr), time.time () - timestamp
         dr          = dict \
             ([(d, Extended_Daily_Record (db, d, sup_users)) for d in dr])
-        print "after users:", time.time () - timestamp
+        #print "after users:", time.time () - timestamp
         dr.update (drecs)
-        print "after dr.update:", time.time () - timestamp
+        #print "after dr.update:", time.time () - timestamp
         self.dr_by_user_date = dict \
             ([((str (v.username), v.date.pretty (ymd)), v)
               for v in dr.itervalues ()
             ])
-        print "after dr_dat_usr:", time.time () - timestamp
+        #print "after dr_dat_usr:", time.time () - timestamp
 
         trvl_tr     = db.time_record.find \
             (daily_record = dr, time_activity = travel_act)
@@ -662,12 +662,11 @@ class Summary_Report :
                     containers_by_wp [w].append (wc)
                 else :
                     containers_by_wp [w]      = [wc]
-        print "inverted wp containers", time.time () - timestamp
+        #print "inverted wp containers", time.time () - timestamp
         tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
 
         d    = start
         tidx = 0
-        print self.dr_by_user_date
         while d <= end :
             for tcp in tc_pointers.iterkeys () :
                 while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
@@ -685,8 +684,6 @@ class Summary_Report :
                                 val = PM_Value (0, 1)
                                 wc.add_user_sum (tc, u, val)
                                 tc.add_user_sum (wc, u, val)
-                            else :
-                                print "Found:", u, d
             while tidx < len (time_recs) and time_recs [tidx].date == d :
                 t  = time_recs [tidx]
                 for tcp in tc_pointers.iterkeys () :
@@ -696,7 +693,7 @@ class Summary_Report :
                         wpc.add_sum (tc,  t)
                 tidx += 1
             d = d + Interval ('1d')
-        print "SUMs built", time.time () - timestamp
+        #print "SUMs built", time.time () - timestamp
         self.wps             = wps
         self.usernames       = usernames
         self.start           = start
