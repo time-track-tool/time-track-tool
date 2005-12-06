@@ -79,13 +79,13 @@ KEYS = \
     }
 
 config     = Config ()
-tracker    = instance.open (config.TRACKER)
-db         = tracker.open  (config.ROUNDUP_USER)
 openlog    (config.LOG_PREFIX, 0, config.LOG_FACILITY)
 setlogmask (LOG_UPTO (config.LOGLEVEL))
 syslog     (LOG_DEBUG, "started")
 try :
-    ld = ldap.initialize (config.URL)
+    tracker = instance.open (config.TRACKER)
+    db      = tracker.open  (config.ROUNDUP_USER)
+    ld      = ldap.initialize (config.URL)
     ld.simple_bind_s (config.BIND_DN, config.BIND_PW)
 except StandardError, cause :
     log_traceback (cause)
