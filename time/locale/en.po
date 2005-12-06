@@ -2204,38 +2204,38 @@ msgstr "Workpackage"
 msgid "defect"
 msgstr "Defect"
 
-#~ msgid "machine_address"
-#~ msgstr "Machine address"
+msgid "machine_address"
+msgstr "Machine address"
 
-#~ msgid "subject"
-#~ msgstr "Subject"
+msgid "subject"
+msgstr "Subject"
 
-#~ msgid "superior"
-#~ msgstr "Superior"
+msgid "superior"
+msgstr "Superior"
 
-#~ msgid "team_members"
-#~ msgstr "Team members"
+msgid "team_members"
+msgstr "Team members"
 
-#~ msgid "time_project.status"
-#~ msgstr "Status"
+msgid "time_project.status"
+msgstr "Status"
 
-#~ msgid "time_wp.travel"
-#~ msgstr "Travel WP"
+msgid "time_wp.travel"
+msgstr "Travel WP"
 
-#~ msgid "user_dynamic.durations_allowed"
-#~ msgstr "Durations allowed"
+msgid "user_dynamic.durations_allowed"
+msgstr "Durations allowed"
 
-#~ msgid "user.address"
-#~ msgstr "Email"
+msgid "user.address"
+msgstr "Email"
 
-#~ msgid "user.title"
-#~ msgstr "Title"
+msgid "user.title"
+msgstr "Title"
 
-#~ msgid "week"
-#~ msgstr "Week"
+msgid "week"
+msgstr "Week"
 
-#~ msgid "wp.durations_allowed"
-#~ msgstr "Durations allowed"
+msgid "wp.durations_allowed"
+msgstr "Durations allowed"
 
-#~ msgid "time_project.work_location"
-#~ msgstr "Mandatory work location"
+msgid "time_project.work_location"
+msgstr "Mandatory work location"
