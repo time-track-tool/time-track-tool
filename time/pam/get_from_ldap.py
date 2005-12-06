@@ -96,8 +96,8 @@ for line in sys.stdin :
     syslog (LOG_DEBUG, "name=%s" % name)
     try :
         u = db.user.getnode (db.user.lookup (name))
-        syslog (LOG_INFO, "updating: %s" % u.realname)
         if u.sync_with_ldap :
+            syslog (LOG_INFO, "updating: %s" % u.realname)
             k     = KEYS.keys ()
             scope = ldap.SCOPE_SUBTREE
             lu    = ld.search_s (config.BASEDN, scope, 'uid=%s' % name, k)
@@ -120,6 +120,8 @@ for line in sys.stdin :
                         pw = Password (encrypted = pw)
                         db.user.set (u.id, password = pw)
             db.commit ()
+        else :
+            syslog (LOG_INFO, "NOT updating: %s" % u.realname)
     except StandardError, cause :
         log_traceback (cause)
 syslog (LOG_DEBUG, "end")
