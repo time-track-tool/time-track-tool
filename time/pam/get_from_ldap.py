@@ -1,26 +1,35 @@
 #!/usr/bin/python
 
-# Config:
-URL    = 'ldap://localhost:3890/'
-BASEDN = 'dc=tttech,dc=com'
-BIND_DN = 'uid=tracker,ou=Users,ou=vie,ou=at,' \
-          'ou=tttech,o=ttt,dc=tttech,dc=com'
-BIND_DN = ''
-BIND_PW = ''
-MODE    = {'once' : True, 'always' : True}
 
 import sys
 import ldap
-from traceback        import format_tb
-from time             import gmtime
-from syslog           import syslog, openlog, LOG_INFO, LOG_ERR, LOG_DEBUG \
-                           , LOG_AUTH, setlogmask, LOG_UPTO
-from roundup          import instance
-from roundup.date     import Date
-from roundup.password import Password
+from traceback          import format_tb
+from time               import gmtime
+from syslog             import syslog, openlog, LOG_INFO, LOG_ERR, LOG_DEBUG \
+                             , LOG_AUTH, setlogmask, LOG_UPTO
+from rsclib.config_file import Config_File
+from rsclib.autosuper   import autosuper
+from roundup            import instance
+from roundup.date       import Date
+from roundup.password   import Password
 
-ld = ldap.initialize (URL)
-ld.simple_bind_s (BIND_DN, BIND_PW)
+class Config (Config_File, autosuper) :
+    def __init__ (self, config = 'from_ldap', path = '/etc/roundup') :
+        self.__super.__init__ \
+            ( path, config
+            , URL          = 'ldap://localhost:389/'
+            , BASEDN       = 'dc=example,dc=com'
+            , BIND_DN      = ''
+            , BIND_PW      = ''
+            , LOGLEVEL     = LOG_INFO # set to LOG_DEBUG if needed
+            , LOG_FACILITY = LOG_AUTH
+            , LOG_PREFIX   = 'get_from_ldap'
+            , MODE         = {'always' : True}
+            , TRACKER      = '/roundup/example'
+            , ROUNDUP_USER = 'admin'
+            )
+    # end def __init__
+# end class Config
 
 def datecvt (s) :
     return Date (gmtime (int (s)))
@@ -63,11 +72,14 @@ KEYS = \
     , 'userPassword'       : ('always',  str,     'user_password')
     }
 
-tracker = instance.open ('/home/ralf/roundup/tttech')
-db      = tracker.open ('admin')
-openlog    ('get_from_ldap', LOG_DEBUG, LOG_AUTH)
-setlogmask (LOG_UPTO (LOG_INFO)) # set to LOG_DEBUG if needed
-syslog     (LOG_DEBUG, "started")
+config           = Config ()
+tracker          = instance.open (config.TRACKER)
+db               = tracker.open  (config.ROUNDUP_USER)
+openlog          (config.LOG_PREFIX, 0, config.LOG_FACILITY)
+setlogmask       (LOG_UPTO (config.LOGLEVEL))
+syslog           (LOG_DEBUG, "started")
+ld               = ldap.initialize (config.URL)
+ld.simple_bind_s (config.BIND_DN, config.BIND_PW)
 
 for line in sys.stdin :
     name = line.strip ()
@@ -76,8 +88,9 @@ for line in sys.stdin :
         u = db.user.getnode (db.user.lookup (name))
         syslog (LOG_INFO, "updating: %s" % u.realname)
         if u.sync_with_ldap :
-            k = KEYS.keys ()
-            lu = ld.search_s (BASEDN, ldap.SCOPE_SUBTREE, 'uid=%s' % name, k)
+            k     = KEYS.keys ()
+            scope = ldap.SCOPE_SUBTREE
+            lu    = ld.search_s (config.BASEDN, scope, 'uid=%s' % name, k)
             if len (lu) > 1 :
                 dn = ' '.join ([l [0] for l in lu])
                 syslog (LOG_ERR, 'more than one user: %s' % dn)
@@ -90,7 +103,7 @@ for line in sys.stdin :
                 mode, func, param = v
                 if k in lu :
                     syslog (LOG_INFO, "%s: %s" % (k, lu [k]))
-                    if callable (func) and mode in MODE :
+                    if callable (func) and mode in config.MODE :
                         db.user.set (u.id, ** {param : func (lu [k][0])})
                     if k == 'userPassword' :
                         pw = lu [k][0].replace ('{CRYPT}', '{crypt}')
