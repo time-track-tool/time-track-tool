@@ -952,7 +952,10 @@ classes = \
     ]
 
 class_field_perms = \
-    [ ( "user", "Edit", ["Admin", "HR", "IT"]
+    [ ( "org_location", "Edit", ["IT"]
+      , ("smb_domain",)
+      )
+    , ( "user", "Edit", ["Admin", "HR", "IT"]
       , ( "address"
         , "alternate_addresses"
         , "nickname"
