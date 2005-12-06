@@ -246,7 +246,7 @@ helptext = \
     , ""'mac'                        :
       ""'''MAC Address (medium access control layer) e.g. ethernet
            hardware address. Should be six hex-numbers separated by
-           colons, e.g. \"10:0:0:0:0:0\".
+           colons, e.g. "10:0:0:0:0:0".
         '''
     , ""'machine'                    :
       ""'''A machine connected to the network to which this
@@ -342,7 +342,7 @@ helptext = \
     , ""'realname'                   :
       ''"""Real name for this %(Classname)s -- automatically generated
            by the system from first and last name. Needed by roundup
-           internally. (More specifically by roundupdp.py's send_message
+           internally. (More specifically by roundupdp.py\'s send_message
            -- which is used e.g. by the nosyreactor)
         """
     , ""'recipients'                 :
@@ -402,7 +402,7 @@ helptext = \
            automatically computed by the system
         '''
     , ""'shadow_expire'              :
-      ""'''Date at which the users's account expires and will no longer
+      ""'''Date at which the users\'s account expires and will no longer
            be accessible.
         '''
     , ""'shadow_inactive'            :
@@ -505,7 +505,7 @@ helptext = \
       ""'''Web-Link for this %(Classname)s'''
     , ""'use_dhcp'                   :
       ""'''Flag if this %(Classname)s should be served by the DHCP
-           server
+           server.
         '''
     , ""'use_in_ln'                  :
       ""'''This %(Classname)s should be used with Lotus Notes (e.g.,
@@ -514,8 +514,8 @@ helptext = \
         '''
     , ""'user_dynamic.durations_allowed' : durations
     , ""'user_password'              :
-      ""'''UNIX user password, automaticall set by the system when a
-           new password is entered
+      ""'''UNIX user password, automatically set by the system when a
+           new password is entered.
         '''
     , ""'user.address'               :
       ""'''Primary email address for this user'''
