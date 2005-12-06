@@ -107,6 +107,37 @@ def new_network_address (db, cl, nodeid, new_values) :
     check_ip_olo (db, new_values ['ip'], new_values ['org_location'])
 # end def new_network_address
 
+def reject_invalid_mac (mac) :
+    octets = mac.split (':')
+    if len (octets) != 6 :
+        raise Reject, _ ('Invalid MAC "%(mac)s": must contain 6 octets') \
+            % locals ()
+    for o in octets :
+        on = None
+        try :
+            on = int (o, 16)
+        except ValueError :
+            pass
+        if on is None or on < 0 or on > 255 :
+            raise Reject, _ ('Invalid MAC "%(mac)s": invalid octet "%(o)s"') \
+                % locals ()
+# end def reject_invalid_mac
+
+def check_network_interface (db, cl, nodeid, new_values) :
+    for i in 'mac', :
+        if i in new_values and not new_values [i] :
+            raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
+    mac = new_values.get ('mac', cl.get (nodeid, 'mac'))
+    reject_invalid_mac (mac)
+# end def check_network_interface
+
+def new_network_interface (db, cl, nodeid, new_values) :
+    for i in 'mac', :
+        if i not in new_values :
+            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    reject_invalid_mac (new_values ['mac'])
+# end def new_network_interface
+
 def check_nw_adr_location (db, adr) :
     locations = {}
     for a in adr :
@@ -233,18 +264,20 @@ def init (db) :
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.alias.audit           ("create", new_alias)
-    db.alias.audit           ("set",    check_alias)
-    db.group.audit           ("create", new_group)
-    db.group.audit           ("set",    check_group)
-    db.ip_subnet.audit       ("create", new_ip_subnet)
-    db.ip_subnet.audit       ("set",    check_ip_subnet)
-    db.machine_name.audit    ("create", new_machine_name)
-    db.machine_name.audit    ("set",    check_machine_name)
-    db.smb_domain.audit      ("create", new_smb_domain)
-    db.smb_domain.audit      ("set",    check_smb_domain)
-    db.network_address.audit ("create", new_network_address)
-    db.network_address.audit ("set",    check_network_address)
+    db.alias.audit             ("create", new_alias)
+    db.alias.audit             ("set",    check_alias)
+    db.group.audit             ("create", new_group)
+    db.group.audit             ("set",    check_group)
+    db.ip_subnet.audit         ("create", new_ip_subnet)
+    db.ip_subnet.audit         ("set",    check_ip_subnet)
+    db.machine_name.audit      ("create", new_machine_name)
+    db.machine_name.audit      ("set",    check_machine_name)
+    db.smb_domain.audit        ("create", new_smb_domain)
+    db.smb_domain.audit        ("set",    check_smb_domain)
+    db.network_address.audit   ("create", new_network_address)
+    db.network_address.audit   ("set",    check_network_address)
+    db.network_interface.audit ("create", new_network_interface)
+    db.network_interface.audit ("set",    check_network_interface)
 # end def init
 
 ### __END__ time_project

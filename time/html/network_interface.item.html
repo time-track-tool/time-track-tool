@@ -35,16 +35,64 @@
      <th tal:content="structure python:utils.fieldname
          (classname, 'machine')"/>
      <td>
-      <tal:block tal:content="structure context/machine/field"/>
-      <tal:block tal:replace="structure python:db.machine.classhelp
+      <tal:block tal:condition="context/is_edit_ok"
+       tal:content="structure context/machine/field"/>
+      <tal:block tal:condition="context/is_edit_ok"
+       tal:replace="structure python:db.machine.classhelp
        ( 'inventory_no,owner,description,smb_name'
        , property='machine&amp;:type=link'
        , width='600'
        , pagesize=1000
        )"/>
+      <tal:block tal:condition="context/id"
+       tal:content="structure python:utils.ExtProperty
+        ( utils
+        , context.machine.inventory_no
+        , item=context.machine
+        ).formatlink ()"/>
      </td>
     </tr>
    </tal:block>
+  </tal:block>
+  <tal:block tal:condition="context/id"
+   tal:define="nas python:db.network_address.filter
+    (None, {'network_interface' : context.id})">
+   <table class="files">
+    <tr tal:define="cond python: bool
+        (   context.id
+        and context.is_edit_ok ()
+        and db.network_address.is_edit_ok ()
+        )">
+     <th class="header" i18n:translate=""
+      tal:attributes="colspan python: 3 - cond">
+      Network Addresses
+     </th>
+     <td class="header" tal:condition="cond">
+      <a i18n:translate="" tal:attributes="href python:
+       'network_address?:template=item&' + '&'.join
+        ([ '%s=%s' % (i [0], i [1]) for i in
+          [ ('network_interface', context.mac)
+          , ('use_dhcp',          True)
+          ]
+         ]
+        )">
+       new network_address
+      </a>
+     </td>
+    </tr>
+    <tr tal:define="n python:'network_address'">
+     <th tal:content="structure python:utils.fieldname (n, 'ip')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'org_location')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'use_dhcp')"/>
+    </tr>
+    <tr tal:repeat="na nas">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, na.ip, item=na).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, na.org_location.name, item=na.org_location).formatlink ()"/>
+     <td tal:content="na/use_dhcp"/>
+    </tr>
+   </table>
   </tal:block>
  </tal:block>
 </tal:block>

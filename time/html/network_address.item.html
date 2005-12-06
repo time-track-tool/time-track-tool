@@ -25,13 +25,21 @@
      <th tal:content="structure python:utils.fieldname
          (classname, 'network_interface')"/>
      <td>
-      <tal:block tal:content="structure context/network_interface/field"/>
-      <tal:block tal:replace="structure python:db.network_interface.classhelp
+      <tal:block tal:condition="context/is_edit_ok"
+       tal:content="structure context/network_interface/field"/>
+      <tal:block tal:condition="context/is_edit_ok"
+       tal:replace="structure python:db.network_interface.classhelp
        ( 'mac,description'
        , property='network_interface&amp;:type=link'
        , width='600'
        , pagesize=1000
        )"/>
+      <tal:block tal:condition="context/id"
+       tal:content="structure python:utils.ExtProperty
+        ( utils
+        , context.network_interface.mac
+        , item=context.network_interface
+        ).formatlink ()"/>
      </td>
     </tr>
     <tr>

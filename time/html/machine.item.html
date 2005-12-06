@@ -55,5 +55,43 @@
     </tr>
    </tal:block>
   </tal:block>
+  <tal:block tal:condition="context/id"
+   tal:define="ifs python:db.network_interface.filter
+    (None, {'machine' : context.id})">
+   <table class="files">
+    <tr tal:define="cond python: bool
+        (   context.id
+        and context.is_edit_ok ()
+        and db.network_interface.is_edit_ok ()
+        )">
+     <th class="header" i18n:translate=""
+      tal:attributes="colspan python: 3 - cond">
+      Network Interfaces
+     </th>
+     <td class="header" tal:condition="cond">
+      <a i18n:translate="" tal:attributes="href python:
+       'network_interface?:template=item&' + '&'.join
+        ([ '%s=%s' % (i [0], i [1]) for i in
+          [ ('machine', context.inventory_no)
+          ]
+         ]
+        )">
+       new network_interface
+      </a>
+     </td>
+    </tr>
+    <tr tal:define="ni python:'network_interface'">
+     <th tal:content="structure python:utils.fieldname (ni, 'mac')"/>
+     <th tal:content="structure python:utils.fieldname (ni, 'card_type')"/>
+     <th tal:content="structure python:utils.fieldname (ni, 'description')"/>
+    </tr>
+    <tr tal:repeat="i ifs">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, i.mac, item=i).formatlink ()"/>
+     <td tal:content="i/card_type"/>
+     <td tal:content="i/description"/>
+    </tr>
+   </table>
+  </tal:block>
  </tal:block>
 </tal:block>

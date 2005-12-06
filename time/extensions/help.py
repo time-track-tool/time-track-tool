@@ -245,7 +245,8 @@ helptext = \
       ""'''Preference for time tracking, start of lunch break'''
     , ""'mac'                        :
       ""'''MAC Address (medium access control layer) e.g. ethernet
-           hardware address
+           hardware address. Should be six hex-numbers separated by
+           colons, e.g. \"10:0:0:0:0:0\".
         '''
     , ""'machine'                    :
       ""'''A machine connected to the network to which this
