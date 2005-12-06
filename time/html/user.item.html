@@ -60,11 +60,11 @@
   <th tal:content="structure python:utils.fieldname('user', 'title')" />
   <td tal:content="structure context/title/field"></td>
  </tr>
- <tr tal:condition="context/is_edit_ok">
+ <tr tal:condition="python:context.is_edit_ok() and not context.sync_with_ldap">
   <th tal:content="structure python:utils.fieldname('user', 'password')" />
   <td tal:content="structure context/password/field"></td>
  </tr>
- <tr tal:condition="context/is_edit_ok">
+ <tr tal:condition="python:context.is_edit_ok() and not context.sync_with_ldap">
   <th tal:content="structure python:utils.fieldname('user', 'confirm')" />
   <td tal:content="structure context/password/confirm"></td>
  </tr>
@@ -166,6 +166,147 @@
   <th tal:content="structure
       python:utils.fieldname ('user', 'lunch_duration')"/>
   <td tal:content="structure context/lunch_duration/field"></td>
+ </tr>
+ <tr tal:condition="context/sync_with_ldap/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'sync_with_ldap')"/>
+  <td tal:content="structure context/sync_with_ldap/field"></td>
+ </tr>
+ <tr tal:condition="context/is_lotus_user/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'is_lotus_user')"/>
+  <td tal:content="structure context/is_lotus_user/field"></td>
+ </tr>
+ <tr tal:condition="context/group/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'group')"/>
+  <td>
+   <tal:block tal:replace="structure context/group/field"/>
+   <tal:block tal:replace="structure python:db.group.classhelp
+    ( 'name,description'
+    , property='group&amp;:type=link'
+    , width='600'
+    , pagesize=1000 
+    )"/>
+  </td>
+ </tr>
+ <tr tal:condition="context/secondary_groups/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'secondary_groups')"/>
+  <td>
+   <tal:block tal:content="structure context/secondary_groups/field"/>
+   <tal:block tal:replace="structure python:db.group.classhelp
+    ( 'name,description'
+    , property='secondary_groups'
+    , width='600'
+    , pagesize=1000 
+    )"/>
+  </td>
+ </tr>
+ <tr tal:condition="context/uid/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'uid')"/>
+  <td tal:content="structure context/uid/field"></td>
+ </tr>
+ <tr tal:condition="context/home_directory/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'home_directory')"/>
+  <td tal:content="structure context/home_directory/field"></td>
+ </tr>
+ <tr tal:condition="context/login_shell/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'login_shell')"/>
+  <td tal:content="structure context/login_shell/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_home_drive/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_home_drive')"/>
+  <td tal:content="structure context/samba_home_drive/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_home_path/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_home_path')"/>
+  <td tal:content="structure context/samba_home_path/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_kickoff_time/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_kickoff_time')"/>
+  <td tal:content="structure context/samba_kickoff_time/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_logon_script/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_logon_script')"/>
+  <td tal:content="structure context/samba_logon_script/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_profile_path/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_profile_path')"/>
+  <td tal:content="structure context/samba_profile_path/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_pwd_can_change/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_pwd_can_change')"/>
+  <td tal:content="structure context/samba_pwd_can_change/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_pwd_last_set/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_pwd_last_set')"/>
+  <td tal:content="structure context/samba_pwd_last_set/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_pwd_must_change/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_pwd_must_change')"/>
+  <td tal:content="structure context/samba_pwd_must_change/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_used/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_used')"/>
+  <td tal:content="structure context/shadow_used/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_last_change/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_last_change')"/>
+  <td tal:content="structure context/shadow_last_change/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_min/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_min')"/>
+  <td tal:content="structure context/shadow_min/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_max/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_max')"/>
+  <td tal:content="structure context/shadow_max/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_warning/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_warning')"/>
+  <td tal:content="structure context/shadow_warning/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_inactive/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_inactive')"/>
+  <td tal:content="structure context/shadow_inactive/field"></td>
+ </tr>
+ <tr tal:condition="context/shadow_expire/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'shadow_expire')"/>
+  <td tal:content="structure context/shadow_expire/field"></td>
+ </tr>
+ <tr tal:condition="context/samba_nt_password/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_nt_password')"/>
+  <td tal:content="structure context/samba_nt_password"></td>
+ </tr>
+ <tr tal:condition="context/samba_lm_password/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'samba_lm_password')"/>
+  <td tal:content="structure context/samba_lm_password"></td>
+ </tr>
+ <tr tal:condition="context/user_password/is_view_ok">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'user_password')"/>
+  <td tal:content="structure context/user_password"></td>
  </tr>
  <tr tal:condition="context/pictures/is_edit_ok">
   <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>

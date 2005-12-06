@@ -266,7 +266,6 @@ org_location = Class \
     , organisation          = Link      ("organisation")
     , location              = Link      ("location")
     , smb_domain            = Link      ("smb_domain")
-    , ip_subnet             = Multilink ("ip_subnet")
     )
 org_location.setkey ("name")
 
@@ -500,24 +499,30 @@ user = Class \
     , lunch_duration        = Number    ()
     , sex                   = Link      ("sex")
     , is_lotus_user         = Boolean   ()
-    , has_account           = Boolean   ()
+    , sync_with_ldap        = Boolean   ()
     , group                 = Link      ("group")
     , secondary_groups      = Multilink ("group")
-    , uid                   = Number    ()
-    , home_directory        = String    ()
-    , login_shell           = String    ()
-    , kickoff_time          = Date      ()
-    , pwd_last_set          = Date      ()
-    , pwd_can_change        = Date      ()
-    , samba_home_drive      = String    ()
-    , samba_home_path       = String    ()
-    , samba_profile_path    = String    ()
-    , samba_logon_script    = String    ()
-    , samba_pwd_mustchange  = Date      ()
-    , samba_pwd_can_change  = Date      ()
-    , samba_lm_password     = String    ()
-    , samba_nt_password     = String    ()
+    , uid                   = Number    () #
+    , home_directory        = String    () #
+    , login_shell           = String    () #
+    , samba_home_drive      = String    () #
+    , samba_home_path       = String    () #
+    , samba_kickoff_time    = Date      () #
+    , samba_lm_password     = String    () #
+    , samba_logon_script    = String    () #
+    , samba_nt_password     = String    () #
+    , samba_profile_path    = String    () #
+    , samba_pwd_can_change  = Date      () #
+    , samba_pwd_last_set    = Date      () #
+    , samba_pwd_must_change = Date      () #
     , user_password         = String    ()
+    , shadow_last_change    = Date      ()
+    , shadow_min            = Number    ()
+    , shadow_max            = Number    ()
+    , shadow_warning        = Number    ()
+    , shadow_inactive       = Number    ()
+    , shadow_expire         = Date      ()
+    , shadow_used           = Boolean   ()
     # XXX: add wiki page url in the web-template based on firstname &
     #      lastname -> why not compute this on the fly (RSC)
     # Note: email adresses could get set automatically by a detector on
@@ -614,7 +619,7 @@ operating_system.setkey ("name_version")
 
 network_address = Class \
     ( db
-    , ''"machine_address"
+    , ''"network_address"
     , ip                    = String    ()
     , org_location          = Link      ("org_location")
     , use_dhcp              = Boolean   ()
@@ -627,6 +632,7 @@ ip_subnet = Class \
     , ''"ip_subnet"
     , ip                    = String    ()
     , netmask               = Number    ()
+    , org_location          = Link      ("org_location")
     )
 
 machine_name = Class \
@@ -655,6 +661,7 @@ alias = Class \
     , description           = String    ()
     , alias_to_alias        = Multilink ("alias")
     , alias_to_user         = Multilink ("user")
+    , use_in_ln             = Boolean   ()
     )
 alias.setkey ("name")
 
@@ -932,6 +939,16 @@ classes = \
     , ("time_wp"             , ["User"],             ["Project"         ])
     , ("user_dynamic"        , ["HR","Controlling"], ["HR"              ])
     , ("work_location"       , ["User"],             ["Controlling"     ])
+    # System-Management classes
+    , ("network_interface"   , ["IT", "ITView"],     ["IT"     ])
+    , ("machine"             , ["IT", "ITView"],     ["IT"     ])
+    , ("operating_system"    , ["IT", "ITView"],     ["IT"     ])
+    , ("network_address"     , ["IT", "ITView"],     ["IT"     ])
+    , ("ip_subnet"           , ["IT", "ITView"],     ["IT"     ])
+    , ("machine_name"        , ["IT", "ITView"],     ["IT"     ])
+    , ("group"               , ["IT", "ITView"],     ["IT"     ])
+    , ("alias"               , ["IT", "ITView"],     ["IT"     ])
+    , ("smb_domain"          , ["IT", "ITView"],     ["IT"     ])
     ]
 
 class_field_perms = \
@@ -940,7 +957,6 @@ class_field_perms = \
         , "alternate_addresses"
         , "nickname"
         , "password"
-        , "roles"
         , "timezone"
         , "username"
         )
@@ -950,7 +966,18 @@ class_field_perms = \
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "phone", "pictures", "position", "private_phone", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title"
+        , "title", "roles"
+        )
+      )
+    , ( "user", "Edit", ["IT"]
+      , ( "is_lotus_user", "sync_with_ldap", "group"
+        , "secondary_groups", "uid", "home_directory", "login_shell"
+        , "samba_home_drive", "samba_home_path", "samba_kickoff_time"
+        , "samba_lm_password", "samba_logon_script", "samba_nt_password"
+        , "samba_profile_path", "samba_pwd_can_change", "samba_pwd_last_set"
+        , "samba_pwd_must_change", "user_password", "shadow_last_change"
+        , "shadow_min", "shadow_max", "shadow_warning", "shadow_inactive"
+        , "shadow_expire", "shadow_used"
         )
       )
     , ( "user", "View", ["Controlling"], ( "roles"))
@@ -961,7 +988,8 @@ class_field_perms = \
         , "lunch_duration", "lunch_start", "nickname", "password", "phone"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username"
+        , "title", "username", "home_directory", "login_shell"
+        , "samba_home_drive", "samba_home_path"
         )
       )
     , ( "time_wp", "Edit", ["Controlling"], ( "project",))
@@ -978,6 +1006,7 @@ roles = \
     , ("Controlling"   , "Controlling"                   )
     , ("IT"            , "IT-Department"                 )
     , ("Project"       , "Project Office"                )
+    , ("ITView"        , "View but not change IT data"   )
     ]
 
 for name, desc in roles :

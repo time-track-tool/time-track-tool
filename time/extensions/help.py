@@ -194,8 +194,6 @@ helptext = \
       ""'''Numeric group ID'''
     , ""'group'                      :
       ""'''UNIX Group for this %(Classname)s'''
-    , ""'has_account'                :
-      ""'''Enabled if this %(Classname)s has an account'''
     , ""'home_directory'             :
       ""'''UNIX home directory for %(Classname)s'''
     , ""'hours_mon'                  : daily_hours
@@ -231,8 +229,6 @@ helptext = \
       ""'''Enable this if the %(Classname)s uses Lotus Notes for mail'''
     , ""'klass'                      :
       ""'''Class for this query'''
-    , ""'kickoff_time'               :
-      ""'''Windows time that user will automatically logged out'''
     , ""'lastname'                   :
       ""'''Last name for this user, e.g., Schlatterbeck'''
     , ""'link_field'                 :
@@ -336,14 +332,6 @@ helptext = \
            Category name a
            %(Classname)s can be clearly  identified
         '''
-    , ""'pwd_can_change'             :
-      ""'''Earliest time the user may change the password next time.
-           set by the system to pwd_last_set if nothing else is enabled.
-        '''
-    , ""'pwd_last_set'               :
-      ""'''Time-stamp the password was last changed, automatically
-           computed by the system
-        '''
     , ""'qa_representative'          :
       ""'''Representative from the QA department for this %(Classname)s'''
     , ""'queries'                    :
@@ -380,6 +368,8 @@ helptext = \
       ""'''Home drive for %(Classname)s in Windows'''
     , ""'samba_home_path'            :
       ""'''Path to %(Classname)ss home directory'''
+    , ""'samba_kickoff_time'         :
+      ""'''Windows time that user will automatically logged out'''
     , ""'samba_lm_password'          :
       ""'''Samba LAN Manager password -- automatically computed when a
            new password is entered
@@ -392,16 +382,51 @@ helptext = \
         '''
     , ""'samba_profile_path'         :
       ""'''Path to profile for %(Classname)s'''
-    , ""'samba_pwd_must_change'      :
-      ""'''Latest time the user must change the password next time.
-           set by the system to end of the epoch if nothing else is enabled.
-        '''
     , ""'samba_pwd_can_change'       :
       ""'''Earliest time the user may change the password next time.
            set by the system to pwd_last_set if nothing else is enabled.
         '''
+    , ""'samba_pwd_last_set'         :
+      ""'''Time-stamp the password was last changed, automatically
+           computed by the system
+        '''
+    , ""'samba_pwd_must_change'      :
+      ""'''Latest time the user must change the password next time.
+           set by the system to end of the epoch if nothing else is enabled.
+        '''
     , ""'secondary_groups'           :
       ""'''secondary UNIX Groups for this %(Classname)s'''
+    , ""'shadow_last_change'         :
+      ""'''Time-stamp the shadow password was last changed,
+           automatically computed by the system
+        '''
+    , ""'shadow_expire'              :
+      ""'''Date at which the users's account expires and will no longer
+           be accessible.
+        '''
+    , ""'shadow_inactive'            :
+      ""'''Number of days of inactivity after a password has expired
+           before the account is locked. Note that when the password has
+           expired the user is required to change it before login is
+           possible. If no login occurs for a certain time, the account
+           can be disabled with this setting.
+        '''
+    , ""'shadow_max'                 :
+      ""'''Maximum days after last change when the shadow password must
+           be changed again.
+        '''
+    , ""'shadow_min'                 :
+      ""'''Minimum days after last change when the shadow password may
+           be changed again.
+        '''
+    , ""'shadow_used'                :
+      ""'''Flag if shadow information should be generated, will be
+           translated to LDAP shadowFlag.
+        '''
+    , ""'shadow_warning'             :
+      ""'''Early warning in days before the user is required to change
+           the password.
+        '''
     , ""'sid'                        :
       ""'''Samba unique ID but without the last part used for user id or
            group id information
@@ -414,12 +439,6 @@ helptext = \
       ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
            be specified except for absences like e.g. holidays or sick
            leave.
-        '''
-    , ""'time_project.status'        :
-      ""'''Status of this %(Classname)s. Note that this status is only
-           used for determining if new work packages may be created for
-           this %(Classname)s -- it is not used during time recording
-           for determining if the user may book on a work package.
         '''
     , ""'status'                     :
       ""'''Status of this %(Classname)s'''
@@ -442,6 +461,10 @@ helptext = \
            45h), Format: xx.xx. Please round to whole quarters of an hour
            (e.g. 0.5 means a half-hour).
         '''
+    , ""'sync_with_ldap'             :
+      ""'''Enabled if this %(Classname)s should be synched with ldap --
+           when the user changes PW via PAM, the pw in roundup will be
+           changed, too (if the daemon is running)'''
     , ""'team_members'               :
       ""'''Persons who are assigned to the project and are allowed
            to book their effort on this project
@@ -452,6 +475,12 @@ helptext = \
       ""'''Date when %(Classname)s officially starts'''
     , ""'time_end'                   :
       ""'''Date when %(Classname)s is officially closed'''
+    , ""'time_project.status'        :
+      ""'''Status of this %(Classname)s. Note that this status is only
+           used for determining if new work packages may be created for
+           this %(Classname)s -- it is not used during time recording
+           for determining if the user may book on a work package.
+        '''
     , ""'timezone'                   :
       ""'''Time zone of this %(Classname)s -- this is a numeric hour offset'''
     , ""'title'                      :
@@ -476,6 +505,11 @@ helptext = \
     , ""'use_dhcp'                   :
       ""'''Flag if this %(Classname)s should be served by the DHCP
            server
+        '''
+    , ""'use_in_ln'                  :
+      ""'''This %(Classname)s should be used with Lotus Notes (e.g.,
+           no delivery to a program, etc. that is only possible with
+           a real MTA)
         '''
     , ""'user_dynamic.durations_allowed' : durations
     , ""'user_password'              :
