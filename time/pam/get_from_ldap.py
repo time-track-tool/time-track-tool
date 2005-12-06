@@ -46,6 +46,12 @@ def gid (s) :
     return g
 # end def gid
 
+def log_traceback (cause) :
+    syslog (LOG_ERR, str (cause))
+    for l in format_tb (sys.exc_info()[2]) :
+        syslog (LOG_DEBUG, l)
+# end def log_traceback
+
 KEYS = \
     { 'uid'                : ('never',   None,    None)
     , 'gidNumber'          : ('once',    gid,     'group')
@@ -72,14 +78,18 @@ KEYS = \
     , 'userPassword'       : ('always',  str,     'user_password')
     }
 
-config           = Config ()
-tracker          = instance.open (config.TRACKER)
-db               = tracker.open  (config.ROUNDUP_USER)
-openlog          (config.LOG_PREFIX, 0, config.LOG_FACILITY)
-setlogmask       (LOG_UPTO (config.LOGLEVEL))
-syslog           (LOG_DEBUG, "started")
-ld               = ldap.initialize (config.URL)
-ld.simple_bind_s (config.BIND_DN, config.BIND_PW)
+config     = Config ()
+tracker    = instance.open (config.TRACKER)
+db         = tracker.open  (config.ROUNDUP_USER)
+openlog    (config.LOG_PREFIX, 0, config.LOG_FACILITY)
+setlogmask (LOG_UPTO (config.LOGLEVEL))
+syslog     (LOG_DEBUG, "started")
+try :
+    ld = ldap.initialize (config.URL)
+    ld.simple_bind_s (config.BIND_DN, config.BIND_PW)
+except StandardError, cause :
+    log_traceback (cause)
+    sys.exit (23)
 
 for line in sys.stdin :
     name = line.strip ()
@@ -102,7 +112,7 @@ for line in sys.stdin :
             for k, v in KEYS.iteritems () :
                 mode, func, param = v
                 if k in lu :
-                    syslog (LOG_INFO, "%s: %s" % (k, lu [k]))
+                    syslog (LOG_DEBUG, "%s: %s" % (k, lu [k]))
                     if callable (func) and mode in config.MODE :
                         db.user.set (u.id, ** {param : func (lu [k][0])})
                     if k == 'userPassword' :
@@ -111,7 +121,5 @@ for line in sys.stdin :
                         db.user.set (u.id, password = pw)
             db.commit ()
     except StandardError, cause :
-        syslog (LOG_ERR, str (cause))
-        for l in format_tb (sys.exc_info()[2]) :
-            syslog (LOG_DEBUG, l)
+        log_traceback (cause)
 syslog (LOG_DEBUG, "end")
