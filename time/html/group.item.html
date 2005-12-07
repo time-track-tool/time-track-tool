@@ -33,6 +33,12 @@
      <td tal:content="structure python:context.description.field (60)"
       colspan="3"/>
     </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'org_location')"/>
+     <td tal:content="structure python:context.org_location.menu ()"
+      colspan="3"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>

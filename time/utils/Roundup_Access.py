@@ -37,7 +37,7 @@ import ldif
 from cStringIO        import StringIO
 from roundup.date     import Date
 from roundup          import instance
-from roundup.hyperdb  import Date, Link, Multilink
+from roundup.hyperdb  import Link, Multilink
 
 class Roundup_Access (object) :
     """ Wrapper class that gets a handle to the roundup instance and
@@ -88,7 +88,8 @@ class Roundup_Access (object) :
             try :
                 value = self.node [name]
             except KeyError, cause :
-                raise AttributeError, cause
+                raise AttributeError, "%s%s: %s" \
+                    % (self.node.cl.classname, self.id, cause)
             prop = self.node.cl.properties [name]
             if prop.__class__ == Link :
                 value = self.master.class_from_rupname (prop.classname) (value)
@@ -107,15 +108,42 @@ class Roundup_Access (object) :
             entry  = { 'objectClass' : self.object_class }
             writer = ldif.LDIFWriter (strio)
             for ldn, name in self.ldif_map :
-                attr = getattr (self, name)
+                try :
+                    attr = getattr (self, name)
+                except AttributeError :
+                    attr = None
                 if isinstance (attr, Date) :
                     attr = attr.timestamp ()
-                entry [ldn] = [str (attr)]
+                if isinstance (attr, float) :
+                    attr = long (attr)
+                if isinstance (attr, list) :
+                    entry [ldn] = attr
+                elif attr is not None :
+                    entry [ldn] = [str (attr)]
             writer.unparse (self.dn (), entry)
             return strio.getvalue ()
         # end def as_ldif
 
+        zero       = 0
+        endofepoch = 0x7FFFFFFF
+
     # end class Roundup
+
+    class Group (Roundup) :
+        """
+            Encapsulate the roundup group class. Includes LDIF export.
+        """
+
+        def _sid (self) :
+            return ''.join \
+                (( self.org_location.smb_domain.sid
+                 , '-'
+                 , str (self.gid * 2 + 1001)
+                ))
+        # end def _sid
+        sid = property (_sid)
+
+    # end class Group
 
     class User (Roundup) :
         """
@@ -123,20 +151,45 @@ class Roundup_Access (object) :
         """
 
         ldif_map = \
-            [ ('cn',              'username')
-            , ('sn',              'realname')
-            , ('telephoneNumber', 'phone')
-            , ('description',     'realname')
-            , ('displayName',     'realname')
-            , ('initials',        'nickname')
-            , ('mail',            'address')
-            , ('uid',             'username')
-            , ('uidNumber',       'uid')
-            , ('gidNumber',       'gid')
-            , ('homeDirectory',   'home_directory')
-            , ('loginShell',      'login_shell')
-            , ('gecos',           'gecos')
+            [ ('cn',                   'username')
+            , ('sn',                   'realname')
+            , ('telephoneNumber',      'phone')
+            , ('description',          'realname')
+            , ('displayName',          'realname')
+            , ('initials',             'nickname')
+            , ('mail',                 'address')
+            , ('uid',                  'username')
+            , ('uidNumber',            'uid')
+            , ('gidNumber',            'gid')
+            , ('homeDirectory',        'home_directory')
+            , ('loginShell',           'login_shell')
+            , ('gecos',                'gecos')
+            , ('mailLocalAddress',     'mail_addresses')
+            , ('sambaAcctFlags',       'samba_acct_flags')
+            , ('sambaHomeDrive',       'samba_home_drive')
+            , ('sambaHomePath',        'samba_home_path')
+            , ('sambaKickoffTime',     'samba_kickoff_time')
+            , ('sambaLMPassword',      'samba_lm_password')
+            , ('sambaLogoffTime',      'endofepoch')
+            , ('sambaLogonScript',     'samba_logon_script')
+            , ('sambaLogonTime',       'zero')
+            , ('sambaNTPassword',      'samba_nt_password')
+            , ('sambaPrimaryGroupSID', 'group_sid')
+            , ('sambaProfilePath',     'samba_profile_path')
+            , ('sambaPwdCanChange',    'samba_pwd_can_change')
+            , ('sambaPwdLastSet',      'samba_pwd_last_set')
+            , ('sambaPwdMustChange',   'samba_pwd_must_change')
+            , ('sambaSID',             'sid')
+            , ('shadowExpire',         'shadow_expire')
+            , ('shadowFlag',           'shadow_used')
+            , ('shadowInactive',       'shadow_inactive')
+            , ('shadowLastChange',     'shadow_last_change')
+            , ('shadowMax',            'shadow_max')
+            , ('shadowMin',            'shadow_min')
+            , ('shadowWarning',        'shadow_warning')
             ]
+
+        samba_acct_flags = '[U]'
 
         object_class = \
             [ 'top'
@@ -157,19 +210,36 @@ class Roundup_Access (object) :
         # end def _gid
         gid = property (_gid)
 
-        def _uid (self) :
-            return int (self.node.uid)
-        # end def _uid
-        uid = property (_uid)
+        def _mail_addresses (self) :
+            return [self.username, self.nickname]
+        # end def _mail_addresses
+        mail_addresses = property (_mail_addresses)
+
+        def _sid (self) :
+            return ''.join \
+                (( self.user_dynamic.org_location.smb_domain.sid
+                 , '-'
+                 , str (self.uid * 2 + 1000)
+                ))
+        # end def _sid
+        sid = property (_sid)
+
+        def _group_sid (self) :
+            return self.group.sid
+        # end def _group_sid
+        group_sid = property (_group_sid)
+
+        _cache_ud = None
 
         def _user_dynamic (self) :
+            if self._cache_ud : return self._cache_ud
             date = '.'
             dyn  = get_user_dynamic (self.db, self.id, date)
             if not dyn :
                 raise AttributeError, "No valid dynamic user record for %s %s" \
                     % (self.username, date.pretty (ymd))
-            dyn = self.master.User_dynamic (dyn.id)
-            return dyn
+            self._cache_ud = self.master.User_dynamic (dyn.id)
+            return self._cache_ud
         # end def _user_dynamic
 
         user_dynamic = property (_user_dynamic)

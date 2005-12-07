@@ -15,6 +15,7 @@
      , utils.ExtProperty (utils, pdict ['name'])
      , utils.ExtProperty (utils, pdict ['gid'])
      , utils.ExtProperty (utils, pdict ['description'])
+     , utils.ExtProperty (utils, pdict ['org_location'], multiselect = 1)
      );
     "
    tal:condition="context/is_view_ok">

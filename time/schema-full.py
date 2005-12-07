@@ -651,6 +651,7 @@ group = Class \
     , name                  = String    ()
     , description           = String    ()
     , gid                   = Number    ()
+    , org_location          = Link      ("org_location")
     )
 group.setkey ("name")
 
