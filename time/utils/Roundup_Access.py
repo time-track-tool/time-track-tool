@@ -45,6 +45,7 @@ class Roundup_Access (object) :
     """
 
     def __init__ (self, basedn, path, user = 'admin') :
+        global ymd, get_user_dynamic
         self.tracker = instance.open (path)
         self.db      = self.tracker.open (user)
         self.basedn  = basedn
@@ -105,9 +106,11 @@ class Roundup_Access (object) :
             strio  = StringIO ()
             entry  = { 'objectClass' : self.object_class }
             writer = ldif.LDIFWriter (strio)
-            for ldn, name in self.ldif_map.iteritems () :
+            for ldn, name in self.ldif_map :
                 attr = getattr (self, name)
-                entry [ldn] = [attr]
+                if isinstance (attr, Date) :
+                    attr = attr.timestamp ()
+                entry [ldn] = [str (attr)]
             writer.unparse (self.dn (), entry)
             return strio.getvalue ()
         # end def as_ldif
@@ -144,37 +147,49 @@ class Roundup_Access (object) :
             , 'shadowAccount'
             ]
 
-        def gid (self) :
-            return self.db.group.get (self.group, 'gid')
-        # end def gid
+        def _gecos (self) :
+            return ','.join ((self.realname, self.phone))
+        # end def _gecos
+        gecos = property (_gecos)
 
-        def gecos (self) :
-            return ','.join (self.realname, self.phone)
-        # end def gecos
+        def _gid (self) :
+            return int (self.group.gid)
+        # end def _gid
+        gid = property (_gid)
 
-        def _cache_dynuser (self, date = Date ('.')) :
-            if hasattr (self, '_user_dynamic') :
-                return
-            date = Date ('.')
-            dyn  = self._user_dynamic = get_user_dynamic (self.db, self.id, date)
+        def _uid (self) :
+            return int (self.node.uid)
+        # end def _uid
+        uid = property (_uid)
+
+        def _user_dynamic (self) :
+            date = '.'
+            dyn  = get_user_dynamic (self.db, self.id, date)
             if not dyn :
-                raise KeyError, "No valid dynamic user record for %s %s" \
+                raise AttributeError, "No valid dynamic user record for %s %s" \
                     % (self.username, date.pretty (ymd))
-            olo = self.db.org_location.getnode (dyn.org_location)
-            org = self.db.organisation.getnode (olo.organisation)
-            loc = self.db.org_location.getnode (olo.location)
-            self._org_location = olo
-            self._organisation = org
-            self._location     = loc
-        # end def _cache_dynuser
+            dyn = self.master.User_dynamic (dyn.id)
+            return dyn
+        # end def _user_dynamic
+
+        user_dynamic = property (_user_dynamic)
 
         def orgpath (self) :
-            self.organisation
+            olo = self.user_dynamic.org_location
+            return sum \
+                ( [x.domain_part.split ('.') for x in
+                    (olo.location, olo.organisation)
+                  ]
+                , []
+                )
         # end def orgpath
 
         def dn (self) :
-            return "uid=%s,ou=Users,ou=%s,ou=%s,ou=%s,o=%s,%s" \
-                % (self.username, self.basedn)
+            op     = self.orgpath ()
+            org_dn = ["ou=%s" % p for p in op [:-1]]
+            org_dn.append ("o=%s" % op [-1])
+            return "uid=%s,%s,ou=Users,%s" \
+                % (self.username, ','.join (org_dn), self.basedn)
         # end def dn
 
     # end class User
