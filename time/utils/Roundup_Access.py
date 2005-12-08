@@ -110,7 +110,7 @@ class Roundup_Access (object) :
             for ldn, name in self.ldif_map :
                 try :
                     attr = getattr (self, name)
-                except AttributeError :
+                except AttributeError, cause :
                     attr = None
                 if isinstance (attr, Date) :
                     attr = attr.timestamp ()
@@ -129,19 +129,78 @@ class Roundup_Access (object) :
 
     # end class Roundup
 
+    class Alias (Roundup) :
+        """
+            Encapsulate the roundup alias class. Includes LDIF export.
+        """
+
+        ldif_map = \
+            [ ('cn',                   'name')
+            , ('mailLocalAddress',     'name')
+            , ('description',          'description')
+            #, ('mailHost',             'tttech.com')
+            #, ('mailRoutingAddress',   'name@domino01.vie.at.tttech.ttt')
+            ]
+
+        object_class = \
+            [ 'organizationalRole'
+            , 'inetLocalMailRecipient'
+            ]
+        """
+        dn =
+        cn=root,ou=MailGroups,ou=vie,ou=at,ou=TTTech,o=ttt,dc=tttech,dc=com
+        """
+
+    # end class Alias
+
     class Group (Roundup) :
         """
             Encapsulate the roundup group class. Includes LDIF export.
         """
 
+        ldif_map = \
+            [ ('cn',                   'name')
+            , ('description',          'description')
+            , ('displayName',          'name')
+            , ('gidNumber',            'gid')
+            , ('memberUid',            'members')
+            , ('sambaGroupType',       'samba_group_type')
+            , ('sambaSID',             'sid')
+            ]
+
+        object_class = \
+            [ 'posixGroup'
+            , 'sambaGroupMapping'
+            ]
+
         def _sid (self) :
             return ''.join \
                 (( self.org_location.smb_domain.sid
                  , '-'
-                 , str (self.gid * 2 + 1001)
+                 , str (int (self.gid * 2 + 1001))
                 ))
         # end def _sid
         sid = property (_sid)
+
+        samba_group_type = 2
+
+        def dn (self) :
+            op     = self.org_location.orgpath ()
+            org_dn = ["ou=%s" % p for p in op [:-1]]
+            org_dn.append ("o=%s" % op [-1])
+            return "cn=%s,ou=Groups,%s,%s" \
+                % (self.name, ','.join (org_dn), self.basedn)
+        # end def dn
+
+        def _members (self) :
+            users = dict \
+                ([(i, 1) for i in self.db.user.find (group = self.id)])
+            aux = self.db.user.find (secondary_groups = self.id)
+            if aux :
+                users.update ([(i, 1) for i in aux])
+            return [self.db.user.get (u, 'username') for u in users.iterkeys ()]
+        # end def _members
+        members = property (_members)
 
     # end class Group
 
@@ -219,7 +278,7 @@ class Roundup_Access (object) :
             return ''.join \
                 (( self.user_dynamic.org_location.smb_domain.sid
                  , '-'
-                 , str (self.uid * 2 + 1000)
+                 , str (int (self.uid * 2 + 1000))
                 ))
         # end def _sid
         sid = property (_sid)
@@ -244,18 +303,8 @@ class Roundup_Access (object) :
 
         user_dynamic = property (_user_dynamic)
 
-        def orgpath (self) :
-            olo = self.user_dynamic.org_location
-            return sum \
-                ( [x.domain_part.split ('.') for x in
-                    (olo.location, olo.organisation)
-                  ]
-                , []
-                )
-        # end def orgpath
-
         def dn (self) :
-            op     = self.orgpath ()
+            op     = self.user_dynamic.org_location.orgpath ()
             org_dn = ["ou=%s" % p for p in op [:-1]]
             org_dn.append ("o=%s" % op [-1])
             return "uid=%s,%s,ou=Users,%s" \
@@ -263,3 +312,21 @@ class Roundup_Access (object) :
         # end def dn
 
     # end class User
+
+    class Org_location (Roundup) :
+        """
+            Encapsulate the roundup org_location class.
+            Include dn orgpath computation needed for dn computation in
+            other classes.
+        """
+
+        def orgpath (self) :
+            return sum \
+                ( [x.domain_part.split ('.') for x in
+                    (self.location, self.organisation)
+                  ]
+                , []
+                )
+        # end def orgpath
+
+    # end class Org_location
