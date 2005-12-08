@@ -127,11 +127,24 @@ class Roundup_Access (object) :
         zero       = 0
         endofepoch = 0x7FFFFFFF
 
+        def dn (self) :
+            op     = self.org_location.orgpath ()
+            org_dn = ["ou=%s" % p for p in op [:-1]]
+            org_dn.append ("o=%s" % op [-1])
+            label  = getattr (self, self.cl.labelprop ())
+            ou     = ''
+            if self.ou :
+                ou = ",ou=%s" % self.ou
+            return "%s=%s%s,%s,%s" \
+                % (self.dnname, label, ou, ','.join (org_dn), self.basedn)
+        # end def dn
+
     # end class Roundup
 
     class Alias (Roundup) :
         """
             Encapsulate the roundup alias class. Includes LDIF export.
+            cn=root,ou=MailGroups,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
 
         ldif_map = \
@@ -146,16 +159,15 @@ class Roundup_Access (object) :
             [ 'organizationalRole'
             , 'inetLocalMailRecipient'
             ]
-        """
-        dn =
-        cn=root,ou=MailGroups,ou=vie,ou=at,ou=TTTech,o=ttt,dc=tttech,dc=com
-        """
+        ou     = 'MailGroups'
+        dnname = 'cn'
 
     # end class Alias
 
     class Group (Roundup) :
         """
             Encapsulate the roundup group class. Includes LDIF export.
+            cn=..,ou=Groups,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
 
         ldif_map = \
@@ -173,6 +185,9 @@ class Roundup_Access (object) :
             , 'sambaGroupMapping'
             ]
 
+        ou     = 'Groups'
+        dnname = 'cn'
+
         def _sid (self) :
             return ''.join \
                 (( self.org_location.smb_domain.sid
@@ -183,14 +198,6 @@ class Roundup_Access (object) :
         sid = property (_sid)
 
         samba_group_type = 2
-
-        def dn (self) :
-            op     = self.org_location.orgpath ()
-            org_dn = ["ou=%s" % p for p in op [:-1]]
-            org_dn.append ("o=%s" % op [-1])
-            return "cn=%s,ou=Groups,%s,%s" \
-                % (self.name, ','.join (org_dn), self.basedn)
-        # end def dn
 
         def _members (self) :
             users = dict \
@@ -204,9 +211,28 @@ class Roundup_Access (object) :
 
     # end class Group
 
+    class Smb_domain (Roundup) :
+        """
+            Encapsulate the roundup smb_domain class. Includes LDIF export.
+            sambaDomainName=..,ou=vie,ou=at,ou=company,o=org,BASEDN
+        """
+        ldif_map = \
+            [ ('sambaDomainName',         'name')
+            , ('sambaSID',                'sid')
+            , ('sambaAlgorithmicRidBase', 'rid_base')
+            ]
+
+        object_class = ['sambaDomain']
+        rid_base     = 1000
+        ou           = None
+        dnname       = 'sambaDomainName'
+
+    # end class Smb_domain
+
     class User (Roundup) :
         """
             Encapsulate the roundup user class. Includes LDIF export.
+            uid=..,ou=Users,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
 
         ldif_map = \
@@ -259,6 +285,9 @@ class Roundup_Access (object) :
             , 'shadowAccount'
             ]
 
+        ou           = 'Users'
+        dnname       = 'uid'
+
         def _gecos (self) :
             return ','.join ((self.realname, self.phone))
         # end def _gecos
@@ -300,16 +329,12 @@ class Roundup_Access (object) :
             self._cache_ud = self.master.User_dynamic (dyn.id)
             return self._cache_ud
         # end def _user_dynamic
-
         user_dynamic = property (_user_dynamic)
 
-        def dn (self) :
-            op     = self.user_dynamic.org_location.orgpath ()
-            org_dn = ["ou=%s" % p for p in op [:-1]]
-            org_dn.append ("o=%s" % op [-1])
-            return "uid=%s,%s,ou=Users,%s" \
-                % (self.username, ','.join (org_dn), self.basedn)
-        # end def dn
+        def _org_location (self) :
+            return self.user_dynamic.org_location
+        # end def _org_location
+        org_location = property (_org_location)
 
     # end class User
 
