@@ -30,6 +30,8 @@
    , 'daily_record'   : ':columns=id,user,date,status&:sort=-id&'
                         ':filter=user,date&:pagesize=20&:startwith=0&'
                         'date=.-1d%%3B.%%2B1d&user=%s' % uid
+   , 'group'          : ':columns=name,gid,description,org_location&'
+                        ':sort=-id&:pagesize=500&:startwith=0'
    , 'public_holiday' : ':columns=id,name,description,date,locations,is_half&'
                         ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
                         'date=.%3B'

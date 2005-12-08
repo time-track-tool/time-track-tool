@@ -235,6 +235,12 @@ helptext = \
       ""'''Enable this if the %(Classname)s uses Lotus Notes for mail'''
     , ""'klass'                      :
       ""'''Class for this query'''
+    , ""'last_gid'                   :
+      ""'''Last used gid in this %(Classname)s'''
+    , ""'last_machine_uid'           :
+      ""'''Last used machine uid in this %(Classname)s'''
+    , ""'last_uid'                   :
+      ""'''Last used uid in this %(Classname)s'''
     , ""'lastname'                   :
       ""'''Last name for this user, e.g., Schlatterbeck'''
     , ""'link_field'                 :

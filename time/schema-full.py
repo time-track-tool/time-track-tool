@@ -679,7 +679,11 @@ smb_domain = Class \
     , private_gid_range     = String    ()
     , machine_uid_range     = String    ()
     , gid_range             = String    ()
-    , machine_group         = Link      ("group")
+    , machine_group         = Number    ()
+    , last_uid              = Number    ()
+    , last_gid              = Number    ()
+    , last_machine_uid      = Number    ()
+    , org_location          = Link      ("org_location")
     )
 smb_domain.setkey ("name")
 
