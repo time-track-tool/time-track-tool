@@ -49,7 +49,7 @@ msgstr ""
 #: ../locale/attr.py:666 ../locale/attr.py:692 ../schema.py:263 attr.py:237
 #: attr.py:250 attr.py:324 attr.py:491 attr.py:666 attr.py:692
 msgid "org_location"
-msgstr "Organisaton/Location"
+msgstr "Organisation/Location"
 
 #: ../detectors/nwm.py:147 ../extensions/help.py:285 ../locale/attr.py:280
 #: ../schema.py:624 attr.py:280
