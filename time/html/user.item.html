@@ -52,6 +52,18 @@
   <th tal:content="structure python:utils.fieldname('user', 'sex')" />
   <td tal:content="structure context/sex/menu"></td>
  </tr>
+ <tal:block tal:condition="context/id">
+ <tr tal:define="
+   ud python:utils.get_user_dynamic (db._db, context.id, '.')"
+  tal:condition="python:db.user_dynamic.is_view_ok () and ud">
+  <th i18n:translate="">user_dynamic</th>
+  <td>
+    <a tal:attributes="href python:'user_dynamic%s' % ud.id">
+    dynamic user record
+    </a>
+  </td>
+ </tr>
+ </tal:block>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'status')" />
   <td tal:content="structure context/status/menu"></td>
@@ -76,6 +88,26 @@
    <input name="roles" tal:condition="not:context/id"
           tal:attributes="value db/config/NEW_WEB_USER_ROLES">
   </td>
+ </tr>
+ <tr>
+  <th tal:content="structure python:utils.fieldname('user', 'org_location')" />
+  <td tal:condition="not:context/id"
+   tal:content="structure context/org_location/menu"/>
+  <td tal:condition="context/id"
+   tal:content="structure python:utils.ExtProperty
+    ( utils, context.org_location.name
+    , item = context.org_location
+    ).formatlink ()"/>
+ </tr>
+ <tr>
+  <th tal:content="structure python:utils.fieldname('user', 'department')" />
+  <td tal:condition="not:context/id"
+   tal:content="structure context/department/menu"/>
+  <td tal:condition="context/id"
+   tal:content="structure python:utils.ExtProperty
+    ( utils, context.department.name
+    , item = context.department
+    ).formatlink ()"/>
  </tr>
  <tr>
   <th tal:content="structure python:utils.fieldname('user', 'phone')" />

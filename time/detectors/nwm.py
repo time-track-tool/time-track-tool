@@ -214,37 +214,48 @@ def check_group (db, cl, nodeid, new_values) :
     for i in 'name', 'gid' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
+    if 'gid' in new_values :
+        common.check_unique (_, cl, nodeid, 'gid', new_values ['gid'])
 # end def check_group
 
 def new_group (db, cl, nodeid, new_values) :
     for i in 'name', 'gid' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.check_unique (_, cl, nodeid, 'gid', new_values ['gid'])
 # end def new_group
 
 def check_smb_domain (db, cl, nodeid, new_values) :
     for i in 'name', 'sid' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
+    if 'sid' in new_values :
+        common.check_unique (_, cl, nodeid, 'sid', new_values ['sid'])
 # end def check_smb_domain
 
 def new_smb_domain (db, cl, nodeid, new_values) :
     for i in 'name', 'sid' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.check_unique (_, cl, nodeid, 'sid', new_values ['sid'])
 # end def new_smb_domain
 
 def check_alias (db, cl, nodeid, new_values) :
     for i in 'name', :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
-    alias_to_alias = new_values.get \
-        ('alias_to_alias', cl.get (nodeid, 'alias_to_alias'))
-    alias_to_user  = new_values.get \
-        ('alias_to_user',  cl.get (nodeid, 'alias_to_user'))
-    if not (alias_to_alias or alias_to_user) :
+    name = new_values.get ('name',           cl.get (nodeid, 'name'))
+    a2a  = new_values.get ('alias_to_alias', cl.get (nodeid, 'alias_to_alias'))
+    a2u  = new_values.get ('alias_to_user',  cl.get (nodeid, 'alias_to_user'))
+    if not (a2a or a2u) :
         raise Reject, _ ("Either %s or %s must be defined") \
-            % ('alias_to_alias', 'alias_to_user')
+            % (_ ('alias_to_alias'), _ ('alias_to_user'))
+    if 'alias_to_alias' in new_values :
+        new_values ['alias_to_alias'] = common.sort_uniq (a2a)
+    if 'alias_to_user'  in new_values :
+        new_values ['alias_to_user']  = common.sort_uniq (a2u)
+    if 'name' in new_values or 'alias_to_alias' in new_values :
+        common.check_loop (_, cl, nodeid, 'alias_to_alias', a2a)
 # end def check_alias
 
 def new_alias (db, cl, nodeid, new_values) :
@@ -254,13 +265,20 @@ def new_alias (db, cl, nodeid, new_values) :
     if not ('alias_to_alias' in new_values or 'alias_to_user' in new_values) :
         raise Reject, _ ("Either %s or %s must be defined") \
             % ('alias_to_alias', 'alias_to_user')
+    if 'alias_to_alias' in new_values :
+        a2a = new_values ['alias_to_alias']
+        new_values ['alias_to_alias'] = common.sort_uniq (a2a)
+        common.check_loop (_, cl, nodeid, 'alias_to_alias', a2a)
+    if 'alias_to_user'  in new_values :
+        a2u = new_values ['alias_to_user']
+        new_values ['alias_to_user']  = common.sort_uniq (a2u)
 # end def new_alias
 
 def init (db) :
     import sys, os
     global common, _
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    common = __import__ ('common', globals (), locals ())
+    import common
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

@@ -36,6 +36,7 @@ from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
 from roundup.date       import Date, Interval, Range
 from time               import gmtime
+from roundup.hyperdb    import String, Link, Multilink
 
 ymd = '%Y-%m-%d'
 
@@ -95,6 +96,104 @@ def check_name_len (_, name) :
         raise Reject, \
             _ ('Name "%(name)s" too long (> 25 characters)') % locals ()
 # end def name_len
+
+def check_unique (_, cl, id, attr, value) :
+    search = cl.filter (None, {attr : value})
+    found  = False
+    # strings do a substring search.
+    if isinstance (cl.properties [attr], String) :
+        for s in search :
+            if cl.get (s, attr) == value :
+                found = True
+                break
+    else :
+        l     = len (search)
+        found = l > 1 or (l == 1 and search [0] != id)
+    if found :
+        pattr = _ (attr)
+        raise Reject, _ ("Duplicate Attribute %(pattr)s=%(value)s") % locals ()
+# end def check_unique
+
+def sort_uniq (list) :
+    d = dict ([(x, 1) for x in list])
+    k = d.keys ()
+    k.sort ()
+    return k
+# end def sort_uniq
+
+def check_loop (_, cl, id, prop, attr, ids = []) :
+    is_multi = isinstance (cl.properties [prop], Multilink)
+    assert (is_multi or isinstance (cl.properties [prop], Link))
+    label = cl.labelprop ()
+    if id :
+        ids.append (id)
+    if attr :
+        if not is_multi :
+            attr = [attr]
+        for a in attr :
+            if a in ids :
+                raise Reject, _ ("%s loop: %s") % \
+                    (_ (prop), ','.join ([cl.get (i, label) for i in ids]))
+            check_loop (_, cl, a, prop, cl.get (a, prop), ids)
+            ids.pop ()
+# end def check_loop
+
+char_table = \
+    { 'ä'.decode ('latin1') : 'ae'
+    , 'ö'.decode ('latin1') : 'oe'
+    , 'ü'.decode ('latin1') : 'ue'
+    , 'ß'.decode ('latin1') : 'ss'
+    , 'Ä'.decode ('latin1') : 'ae'
+    , 'Ö'.decode ('latin1') : 'oe'
+    , 'Ü'.decode ('latin1') : 'ue'
+    , ' '.decode ('latin1') : '.'
+    }
+for j in 'abcdefghijklmnopqrstuvwxyz' :
+    char_table [j]          = j
+    char_table [j.upper ()] = j
+
+def tolower_ascii (name) :
+    """ Compute lowercase value from name suitable for email address
+    >>> tolower_ascii ('Ralf Schlatterbeck')
+    'ralf.schlatterbeck'
+    >>> tolower_ascii ('Günther Umläütß'.decode ('latin1').encode ('utf-8'))
+    'guenther.umlaeuetss'
+    """
+    n = []
+    for i in name.decode ('utf-8') :
+        n.extend (list (char_table.get (i, '')))
+    return ''.join (n)
+# end def tolower_ascii
+
+
+def uniq (_, cl, id, attr, nick) :
+    """ Function for regression-testing new_nickname
+    """
+    rej = { 'gst' : 1, 'gsr' : 1 }
+    if nick in rej :
+        raise Reject, "BLA"
+# end def uniq
+
+def new_nickname (_, cl, nodeid, lfn, lln, uniq = check_unique) :
+    """ Compute a new nickname that does not collide with an existing
+        one.
+        >>> new_nickname (None, None, None, 'guenther', 'stdl', uniq)
+        'gsd'
+        >>> new_nickname (None, None, None, 'guenther', 'st', uniq)
+        'ust'
+    """
+    for f in lfn :
+        for l1 in lln [:-1] :
+            for l2 in lln [1:] :
+                nick = ''.join ((f, l1, l2))
+                try :
+                    uniq (_, cl, nodeid, 'nickname', nick)
+                    uniq (_, cl, nodeid, 'username', nick)
+                    return nick
+                except Reject :
+                    pass
+    return None
+# end def new_nickname
 
 def user_has_role (db, uid, * role) :
     roles = db.user.get (uid, 'roles')

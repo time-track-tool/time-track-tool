@@ -85,23 +85,10 @@ Phase III:
 
 IT:
 - Datenexport für LDAP
-- Loop-Check für Aliase
-- Automatisch Generierung des Kürzels mit Collision Check auf 
-  - andere Kürzel
-  - Usernamen (es gibt dreibuchstabige Nachnamen!)
 - Neuer User: automatisch UID-Generierung (oder force per Handeingabe),
   Check auf Kollision
-- Group: Muss wohl auch einen Link auf org_location haben?! Sonst wissen
-  wir nicht den DN
-  - Duplicate-Check auf numeric GID
-- Samba Domain:
-  - no duplicate sid
-  - add machine which is pdc
 - org_location
   - last gid
-  - gid ranges
   - last uid
-  - uid ranges
-  - machine uid ranges ?
 
 Intranet-Einbindung Bernhard

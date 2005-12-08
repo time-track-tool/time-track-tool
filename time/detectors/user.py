@@ -28,7 +28,8 @@ from roundup.cgi.TranslationService import get_translation
 from tempfile                       import mkstemp
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
-_ = lambda x : x
+_      = lambda x : x
+common = None
 
 USER_SINGLE = """
 <tal:block metal:define-macro="%(macro_name)s">
@@ -91,22 +92,13 @@ for (i = 0; i < select_box.length; i++)
 
 OPTION_FMT = """  <option value="%s">%s</option>"""
 
-def audit_user_fields(db, cl, nodeid, new_values):
+def common_user_checks (db, cl, nodeid, new_values) :
     ''' Make sure user properties are valid.
         - email address has no spaces in it
         - roles specified exist
-
-        TODO:
-        - email address matches TTTspec (and optionally auto-generate)
-          - firstname.lastname@tttech.com
-          - lastname@tttech.com
-          - (fla@tttech.com) # not implemented
-
-
     '''
     if new_values.has_key('address') and ' ' in new_values['address']:
         raise ValueError, 'Email address must not contain spaces'
-
     if new_values.has_key('roles'):
         roles = new_values ['roles'].strip ()
         if roles :
@@ -114,13 +106,16 @@ def audit_user_fields(db, cl, nodeid, new_values):
             for rolename in roles:
                 if not db.security.role.has_key(rolename):
                     raise ValueError, 'Role "%s" does not exist'%rolename
-
     # automatic setting of realname
-    if (new_values.has_key ("firstname") \
-        or new_values.has_key ("lastname")) \
-        and nodeid :
-        fn = new_values.get ("firstname", cl.get (nodeid, "firstname"))
-        ln = new_values.get ("lastname" , cl.get (nodeid, "lastname" ))
+    n = 'firstname'
+    fn = new_values.get (n, None) or cl.get (nodeid, n) or ''
+    n = 'lastname'
+    ln = new_values.get (n, None) or cl.get (nodeid, n) or ''
+    if  (   (  new_values.has_key ("firstname")
+            or new_values.has_key ("lastname")
+            )
+        and nodeid
+        ) :
         realname = " ".join ((fn, ln))
         new_values ["realname"] = realname
     if 'lunch_duration' in new_values :
@@ -136,18 +131,78 @@ def audit_user_fields(db, cl, nodeid, new_values):
         ls = new_values ['lunch_start']
         ls = Date (ls) # trigger date-spec error if this fails.
     if 'supervisor' in new_values :
-        sv  = new_values ['supervisor']
-        svs = []
-        if nodeid :
-            svs.append (nodeid)
-        while sv :
-            if sv in svs :
-                raise Reject, \
-                    ( _ ("Supervisor loop: %s")
-                    % ','.join ([db.user.get (u, 'username') for u in svs])
-                    )
-            svs.append (sv)
-            sv = db.user.get (sv, 'supervisor')
+        common.check_loop \
+            (_, cl, nodeid, 'supervisor', new_values ['supervisor'])
+    for a in 'uid', 'nickname' :
+        if a in new_values :
+            v = new_values [a]
+            common.check_unique (_, cl, nodeid, a, v)
+            if a == 'nickname' :
+                common.check_unique (_, cl, nodeid, 'username', v)
+    if 'username' in new_values :
+        common.check_unique (_, cl, nodeid, 'nickname', new_values ['username'])
+# end def common_user_checks
+
+def create_dynuser (db, cl, nodeid, new_values) :
+    db.user_dynamic.create \
+        ( user         = nodeid
+        , valid_from   = Date ('.')
+        , org_location = cl.get (nodeid, 'org_location')
+        , department   = cl.get (nodeid, 'department')
+        )
+# end def create_dynuser
+
+def new_user (db, cl, nodeid, new_values) :
+    for i in 'firstname', 'lastname', 'org_location', 'department' :
+        if i not in new_values :
+            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+
+    fn    = new_values ['firstname']
+    ln    = new_values ['lastname']
+    lfn   = common.tolower_ascii (fn)
+    lln   = common.tolower_ascii (ln)
+    id    = nodeid
+    olo   = new_values ['org_location']
+    valid = db.user_status.lookup ('valid')
+    if 'status' not in new_values :
+        new_values ['status'] = valid
+    status = new_values ['status']
+    if  ('nickname' not in new_values and status == valid) :
+        nick = common.new_nickname (_, cl, nodeid, lfn, lln)
+        if nick :
+            new_values ['nickname'] = nick
+    nickname   = new_values ['nickname']
+    org        = db.org_location.get (olo, 'organisation')
+    maildomain = db.organisation.get (org, 'mail_domain')
+
+    # defaults:
+    if 'address' not in new_values :
+        new_values ['address'] = '@'.join (('.'.join ((lfn, lln)), maildomain))
+    if 'alternate_addresses' not in new_values :
+        new_values ['alternate_addresses'] = '\n'.join \
+            (['@'.join ((i, maildomain)) for i in (nickname, lln) if i])
+    if 'lunch_duration' not in new_values :
+        new_values ['lunch_duration'] = .5
+    if 'lunch_start'    not in new_values :
+        new_values ['lunch_start'] = '12:00'
+    common_user_checks (db, cl, nodeid, new_values)
+# end def new_user
+
+def audit_user_fields(db, cl, nodeid, new_values):
+    for n in \
+        ( 'firstname'
+        , 'lastname'
+        , 'lunch_duration'
+        , 'lunch_start'
+        , 'shadow_inactive'
+        , 'shadow_max'
+        , 'shadow_min'
+        , 'shadow_warning'
+        , 'uid'
+        ) :
+        if n in new_values and new_values [n] is None and cl.get (nodeid, n) :
+            raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
+    common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
 def update_userlist_html (db, cl, nodeid, old_values) :
@@ -210,17 +265,20 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 # end def update_userlist_html
 
 def check_retire (db, cl, nodeid, old_values) :
-    raise Reject, _ ("Not allowed to retire a user")
+    pass
+    #raise Reject, _ ("Not allowed to retire a user")
 # end def check_retire
 
 def init (db) :
-    global _
+    global _, common
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    import common
     # fire before changes are made
     db.user.audit("set"   , audit_user_fields)
-    db.user.audit("create", audit_user_fields)
+    db.user.audit("create", new_user)
     db.user.react("create", update_userlist_html)
+    db.user.react("create", create_dynuser)
     db.user.react("set"   , update_userlist_html)
     db.user.audit("retire", check_retire)
 

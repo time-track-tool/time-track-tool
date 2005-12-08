@@ -89,15 +89,20 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     for i in 'valid_from', 'org_location', 'department' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be empty" % {'attr' : _ (i)}
-    user       = new_values.get ('user',       cl.get (nodeid, 'user'))
-    valid_from = new_values.get ('valid_from', cl.get (nodeid, 'valid_from'))
-    valid_to   = new_values.get ('valid_to',   cl.get (nodeid, 'valid_to'))
-    if 'valid_from' in new_values or 'valid_to' in new_values :
-        new_values ['valid_from'], new_values ['valid_to'] = \
-            check_ranges (cl, nodeid, user, valid_from, valid_to)
+    user     = new_values.get ('user',         cl.get (nodeid, 'user'))
+    val_from = new_values.get ('valid_from',   cl.get (nodeid, 'valid_from'))
+    val_to   = new_values.get ('valid_to',     cl.get (nodeid, 'valid_to'))
+    olo      = new_values.get ('org_location', cl.get (nodeid, 'org_location'))
+    dept     = new_values.get ('department',   cl.get (nodeid, 'department'))
+    if 'org_location' in new_values or 'department' in new_values :
+        db.user.set (user, org_location = olo, department = dept)
+    if 'val_from' in new_values or 'val_to' in new_values :
+        new_values ['val_from'], new_values ['val_to'] = \
+            check_ranges (cl, nodeid, user, val_from, val_to)
     for i in 'vacation_yearly', 'vacation_remaining' :
         check_vacation (i, new_values)
 # end def check_user_dynamic
+
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
     for i in \
@@ -108,11 +113,14 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         ) :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
-    if 'durations_allowed' not in new_values :
-        new_values ['durations_allowed'] = False
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)
+    olo        = new_values ['org_location']
+    dept       = new_values ['department']
+    db.user.set (user, org_location = olo, department = dept)
+    if 'durations_allowed' not in new_values :
+        new_values ['durations_allowed'] = False
     new_values ['valid_from'], new_values ['valid_to'] = \
         check_ranges (cl, nodeid, user, valid_from, valid_to)
     for i in 'vacation_yearly', 'vacation_remaining' :

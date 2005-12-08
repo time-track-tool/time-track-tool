@@ -51,10 +51,14 @@ daily_hours = \
 work_loc = \
     ""'''Location where you worked.'''
 travel = \
-      ""'''Flag to indicate travel. In the Time mask no lunchbreak will
-           be computed. Even if enabled, no maximum work hours will be
-           enforced for this %(Classname)s.
-        '''
+    ""'''Flag to indicate travel. In the Time mask no lunchbreak will
+         be computed. Even if enabled, no maximum work hours will be
+         enforced for this %(Classname)s.
+      '''
+range_description = \
+    ""'''as a comma-separated list of ranges (a special case of a range
+         is just one number), e.g., 1-100,300-500
+      '''
 
 helptext = \
     { ""'active'                     :
@@ -192,6 +196,8 @@ helptext = \
       ""'''First name for this user, e.g., Ralf'''
     , ""'gid'                        :
       ""'''Numeric group ID'''
+    , ""'gid_range'                  :
+      ""'''Allowed range of group ids''' + range_description
     , ""'group'                      :
       ""'''UNIX Group for this %(Classname)s'''
     , ""'home_directory'             :
@@ -252,6 +258,10 @@ helptext = \
       ""'''A machine connected to the network to which this
            %(Classname)s belongs
         '''
+    , ""'machine_group'              :
+      ""'''Group for pseudo-accounts for machines (used for Samba)'''
+    , ""'machine_uid_range'          :
+      ""'''Allowed range of user ids for machines''' + range_description
     , ""'manager'                    :
       ""'''Responsible person of the %(Classname)s'''
     , ""'max_hours'                  :
@@ -324,6 +334,8 @@ helptext = \
         '''
     , ""'private_for'                :
       ""'''Flag if this is a private %(Classname)s'''
+    , ""'private_gid_range'          :
+      ""'''Allowed range of group ids for users''' + range_description
     , ""'private_phone'              :
       ""'''Privat phone number. Always as a full number valid on the
            PSTN.
@@ -501,6 +513,8 @@ helptext = \
       ""'''Mime type of this file'''
     , ""'uid'                        :
       ""'''Numeric user ID'''
+    , ""'uid_range'                  :
+      ""'''Allowed range of user ids''' + range_description
     , ""'url'                        :
       ""'''Web-Link for this %(Classname)s'''
     , ""'use_dhcp'                   :

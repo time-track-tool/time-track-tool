@@ -369,3 +369,4 @@ def init (instance) :
     reg ("user_has_role",                user_has_role)
     reg ("welcome",                      welcome)
     reg ("monthstart_twoweeksago",       monthstart_twoweeksago)
+    reg ("get_user_dynamic",             get_user_dynamic)

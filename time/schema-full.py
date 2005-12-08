@@ -523,6 +523,8 @@ user = Class \
     , shadow_inactive       = Number    ()
     , shadow_expire         = Date      ()
     , shadow_used           = Boolean   ()
+    , org_location          = Link      ("org_location")
+    , department            = Link      ("department")
     # XXX: add wiki page url in the web-template based on firstname &
     #      lastname -> why not compute this on the fly (RSC)
     # Note: email adresses could get set automatically by a detector on
@@ -672,6 +674,12 @@ smb_domain = Class \
     , name                  = String    ()
     , description           = String    ()
     , sid                   = String    ()
+    , pdc                   = Link      ("machine")
+    , uid_range             = String    ()
+    , private_gid_range     = String    ()
+    , machine_uid_range     = String    ()
+    , gid_range             = String    ()
+    , machine_group         = Link      ("group")
     )
 smb_domain.setkey ("name")
 
