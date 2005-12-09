@@ -32,11 +32,16 @@
 #    ««revision-date»»···
 #--
 #
-from roundup import roundupdb, hyperdb
-from roundup.exceptions import Reject
-from roundup.date       import Date, Interval, Range
-from time               import gmtime
-from roundup.hyperdb    import String, Link, Multilink
+from   roundup import roundupdb, hyperdb
+from   roundup.exceptions import Reject
+from   roundup.date       import Date, Interval, Range
+from   time               import gmtime
+from   roundup.hyperdb    import String, Link, Multilink
+
+from   _TFL               import TFL
+import _TFL._Meta.Object
+import _TFL.Numeric_Interval
+import _TFL.Interval_Set
 
 ymd = '%Y-%m-%d'
 
@@ -137,6 +142,27 @@ def check_loop (_, cl, id, prop, attr, ids = []) :
             check_loop (_, cl, a, prop, cl.get (a, prop), ids)
             ids.pop ()
 # end def check_loop
+
+def interval_set_from_string (interval_string) :
+    intervals = []
+    for i in interval_string.split (',') :
+        bounds = i.split ('-')
+        if len (bounds) == 1 :
+            bounds = (bounds [0], bounds [0])
+        intervals.append (TFL.Numeric_Interval (* bounds))
+    return TFL.Interval_Set (* intervals)
+# end def check_in_interval_set
+
+def next_uid_or_gid (last, interval_string) :
+    last = last or 0
+    iset = interval_set_from_string (interval_string)
+    return iset.next_point (last + 1)
+# end def next_uid_or_gid
+
+def uid_or_gid_in_range (id, interval_string) :
+    iset = interval_set_from_string (interval_string)
+    return iset.contains_point (id)
+# end def uid_or_gid_in_range
 
 char_table = \
     { 'ä'.decode ('latin1') : 'ae'

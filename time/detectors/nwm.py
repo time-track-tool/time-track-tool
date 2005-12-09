@@ -31,6 +31,7 @@
 
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+from operator                       import or_
 
 _      = lambda x : x
 common = None
@@ -210,19 +211,38 @@ def new_ip_subnet (db, cl, nodeid, new_values) :
     check_duplicate_ip_subnet (cl, nodeid, ip, mask)
 # end def new_ip_subnet
 
+def check_and_update_gid (_, db, cl, nodeid, sd, gid) :
+    is_other  = common.uid_or_gid_in_range (gid, sd.gid_range)
+    is_person = common.uid_or_gid_in_range (gid, sd.private_gid_range)
+    if not is_other and not is_person and gid != sd.machine_group :
+        gname  = _ ('gid')
+        sdname = _ ('smb_domain')
+        raise Reject, _("Invalid %(gname)s: %(gid)s for %(sdname)s") % locals ()
+    common.check_unique (_, cl, nodeid, 'gid', gid)
+    if is_other :
+        db.smb_domain.set (sd.id, last_gid = max (gid, sd.last_gid))
+# end def check_and_update_gid
+
 def check_group (db, cl, nodeid, new_values) :
-    for i in 'name', 'gid' :
+    for i in 'name', 'gid', 'org_location' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
+    ol = new_values.get ('org_location', cl.get (nodeid, 'org_location'))
     if 'gid' in new_values :
-        common.check_unique (_, cl, nodeid, 'gid', new_values ['gid'])
+        gid = new_values ['gid']
+        sd  = db.smb_domain.getnode (db.org_location.get (ol, 'smb_domain'))
+        check_and_update_gid (_, db, cl, nodeid, sd, gid)
 # end def check_group
 
 def new_group (db, cl, nodeid, new_values) :
-    for i in 'name', 'gid' :
+    for i in 'name', 'org_location' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
-    common.check_unique (_, cl, nodeid, 'gid', new_values ['gid'])
+    si = db.org_location.get   (new_values ['org_location'], 'smb_domain')
+    sd = db.smb_domain.getnode (si)
+    if 'gid' not in new_values :
+        new_values ['gid'] = common.next_uid_or_gid (sd.last_gid, sd.gid_range)
+    check_and_update_gid (_, db, cl, nodeid, sd, new_values ['gid'])
 # end def new_group
 
 def check_smb_domain (db, cl, nodeid, new_values) :
@@ -274,6 +294,49 @@ def new_alias (db, cl, nodeid, new_values) :
         new_values ['alias_to_user']  = common.sort_uniq (a2u)
 # end def new_alias
 
+smb_attributes = 'smb_name', 'machine_uid', 'smb_domain'
+
+def reduce_or (* args) :
+    return reduce (lambda a, b : a or b, args)
+# end def reduce_or
+
+def new_machine (db, cl, nodeid, new_values) :
+    sd = None
+    if 'smb_domain' in new_values and 'machine_uid' not in new_values :
+        sd = db.smb_domain.getnode (new_values ['smb_domain'])
+        new_values ['machine_uid'] = common.next_uid_or_gid \
+            (sd.last_machine_uid, sd.machine_uid_range)
+    if reduce_or (* (a in newvalues for a in smb_attributes)) :
+        for i in smb_attributes :
+            if i not in new_values :
+                raise Reject, _ ("All of %s must be specified") \
+                    % ', '.join (_ (i) for i in smb_attributes)
+    if sd :
+        db.smb_domain.set \
+            ( sd.id
+            , last_machine_uid = max
+                (sd.last_machine_uid, new_values ['machine_uid'])
+            )
+# end def new_machine
+
+def check_machine (db, cl, nodeid, new_values) :
+    smb_attr_values = {}
+    for a in smb_attributes :
+        smb_attr_values [a] = new_values.get (a, cl.get (nodeid, a))
+    if reduce_or (* (smb_attr_values [a] for a in smb_attributes)) :
+        for i in smb_attributes :
+            if not smb_attr_values [i] :
+                raise Reject, _ ("All of %s must be specified") \
+                    % ', '.join (_ (i) for i in smb_attributes)
+    if 'machine_uid' in new_values :
+        sd = db.smb_domain.getnode (new_values ['smb_domain'])
+        db.smb_domain.set \
+            ( sd.id
+            , last_machine_uid = max
+                (sd.last_machine_uid, new_values ['machine_uid'])
+            )
+# end def check_machine
+
 def init (db) :
     import sys, os
     global common, _
@@ -288,14 +351,16 @@ def init (db) :
     db.group.audit             ("set",    check_group)
     db.ip_subnet.audit         ("create", new_ip_subnet)
     db.ip_subnet.audit         ("set",    check_ip_subnet)
+    db.machine.audit           ("create", new_machine)
+    db.machine.audit           ("set",    check_machine)
     db.machine_name.audit      ("create", new_machine_name)
     db.machine_name.audit      ("set",    check_machine_name)
-    db.smb_domain.audit        ("create", new_smb_domain)
-    db.smb_domain.audit        ("set",    check_smb_domain)
     db.network_address.audit   ("create", new_network_address)
     db.network_address.audit   ("set",    check_network_address)
     db.network_interface.audit ("create", new_network_interface)
     db.network_interface.audit ("set",    check_network_interface)
+    db.smb_domain.audit        ("create", new_smb_domain)
+    db.smb_domain.audit        ("set",    check_smb_domain)
 # end def init
 
 ### __END__ time_project

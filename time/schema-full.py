@@ -608,6 +608,8 @@ machine = Class \
     , owner                 = Link      ("user")
     , operating_system      = Multilink ("operating_system")
     , smb_name              = String    ()
+    , machine_uid           = Number    ()
+    , smb_domain            = Link      ("smb_domain")
     )
 machine.setkey ("inventory_no")
 

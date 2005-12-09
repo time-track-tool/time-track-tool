@@ -85,18 +85,6 @@ Phase III:
 
 IT:
 - Datenexport für LDAP
-- Neuer User: automatisch UID-Generierung (oder force per Handeingabe),
-  - Check auf Kollision UID
-  - auto-create new group (if user valid)
-- Auto-create uid for new smb machine
-  - smb machine needs an uid?!
-  - smb machine needs link to smb domain for machine gid?
-  - consistency: either all or nothing of smb attributes
-- org_location
-  - last gid
-  - last uid
-  - last machine_uid
-  - code for maintaining counters
 - nice to have:
   - list of machine names for hw address
   - list of machine names for machine

@@ -141,6 +141,19 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 common.check_unique (_, cl, nodeid, 'username', v)
     if 'username' in new_values :
         common.check_unique (_, cl, nodeid, 'nickname', new_values ['username'])
+    status = new_values.get ('status', None) or cl.get (nodeid, 'status')
+    valid  = db.user_status.lookup ('valid')
+    if 'uid' in new_values :
+        uid     = new_values ['uid']
+        uidname = _ ('uid')
+        if status != valid :
+            raise Reject, 'May not change %(uidname)s for invalid user' \
+                % locals ()
+        olo = new_values ['org_location'] or db.cl.get (nodeid, 'org_location')
+        sd  = db.smb_domain.getnode (db.org_location.get (olo, 'smb_domain'))
+        if not common.uid_or_gid_in_range (uid, sd.uid_range) :
+            raise Reject, _("Invalid %(uidname)s: %(uid)s") % locals ()
+        db.smb_domain.set (sd.id, last_uid = max (uid, sd.last_uid))
 # end def common_user_checks
 
 def create_dynuser (db, cl, nodeid, new_values) :
@@ -172,19 +185,33 @@ def new_user (db, cl, nodeid, new_values) :
         if nick :
             new_values ['nickname'] = nick
     nickname   = new_values ['nickname']
-    org        = db.org_location.get (olo, 'organisation')
-    maildomain = db.organisation.get (org, 'mail_domain')
+    org        = db.org_location.get   (olo, 'organisation')
+    maildomain = db.organisation.get   (org, 'mail_domain')
+    sd         = db.smb_domain.getnode (db.org_location.get (olo, 'smb_domain'))
+    username   = new_values ['username']
 
     # defaults:
-    if 'address' not in new_values :
-        new_values ['address'] = '@'.join (('.'.join ((lfn, lln)), maildomain))
-    if 'alternate_addresses' not in new_values :
-        new_values ['alternate_addresses'] = '\n'.join \
-            (['@'.join ((i, maildomain)) for i in (nickname, lln) if i])
-    if 'lunch_duration' not in new_values :
-        new_values ['lunch_duration'] = .5
-    if 'lunch_start'    not in new_values :
-        new_values ['lunch_start'] = '12:00'
+    if new_values ['status'] == valid :
+        if 'address' not in new_values :
+            new_values ['address'] = \
+                '@'.join (('.'.join ((lfn, lln)), maildomain))
+        if 'alternate_addresses' not in new_values :
+            new_values ['alternate_addresses'] = '\n'.join \
+                (['@'.join ((i, maildomain)) for i in (nickname, lln) if i])
+        if 'lunch_duration' not in new_values :
+            new_values ['lunch_duration'] = .5
+        if 'lunch_start'    not in new_values :
+            new_values ['lunch_start'] = '12:00'
+        if 'uid'            not in new_values :
+            new_values ['uid'] = common.next_uid_or_gid \
+                (sd.last_uid, sd.uid_range)
+            uid = new_values ['uid']
+            if 'group' not in new_values :
+                new_values ['group'] = db.group.create \
+                    ( name         = username
+                    , gid          = uid
+                    , org_location = olo
+                    )
     common_user_checks (db, cl, nodeid, new_values)
 # end def new_user
 
@@ -200,8 +227,16 @@ def audit_user_fields(db, cl, nodeid, new_values):
         , 'shadow_warning'
         , 'uid'
         ) :
-        if n in new_values and new_values [n] is None and cl.get (nodeid, n) :
+        if n in new_values and new_values [n] is None :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
+    status = new_values.get ('status', cl.get (nodeid, 'status'))
+    if status == db.user_status.lookup ('valid') :
+        for n in \
+            ( 'org_location'
+            , 'department'
+            ) :
+            if n in new_values and new_values [n] is None :
+                raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
     common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 

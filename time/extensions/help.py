@@ -266,6 +266,8 @@ helptext = \
         '''
     , ""'machine_group'              :
       ""'''Group for pseudo-accounts for machines (used for Samba)'''
+    , ""'machine_uid'                :
+      ""'''Numeric user id for this samba machine.'''
     , ""'machine_uid_range'          :
       ""'''Allowed range of user ids for machines''' + range_description
     , ""'manager'                    :

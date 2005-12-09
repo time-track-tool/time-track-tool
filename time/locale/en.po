@@ -2679,3 +2679,6 @@ msgstr "Workpackage"
 #: ../schema.py:815
 msgid "defect"
 msgstr "Defect"
+
+msgid "machine_uid"
+msgstr "Machine UID"
