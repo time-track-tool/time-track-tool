@@ -52,39 +52,12 @@ def reject_invalid_ip (ip) :
                 % locals ()
 # end def reject_invalid_ip
 
-def ip_as_number (ip, mask = 32) :
-    """ Compute the IP address as a numeric quantity from an ip address
-        string and an optional integer netmask.
-        >>> ip_as_number ('10.100.10.0')
-        174328320L
-        >>> ip_as_number ('10.100.10.0', 24)
-        174328320L
-        >>> ip_as_number ('10.100.10.5', 24)
-        174328320L
-        >>> ip_as_number ('10.100.10.5', 16)
-        174325760L
-        >>> ip_as_number ('10.100.0.0', 16)
-        174325760L
-        >>> ip_as_number ('10.100.0.0')
-        174325760L
-    """
-    number = 0L
-    mask   = long (mask)
-    mask   = ((1L << mask) - 1L) << (32L - mask)
-    for octet in ip.split ('.') :
-        number <<= 8L
-        number  |= long (octet)
-    return number & mask
-# end def ip_as_number
-
 def check_ip_olo (db, ip, olo) :
     reject_invalid_ip (ip)
     sn = db.ip_subnet.find (org_location = olo)
     for sn_id in sn :
         subnet = db.ip_subnet.getnode (sn_id)
-        if  (  ip_as_number (subnet.ip, subnet.netmask)
-            == ip_as_number (ip,        subnet.netmask)
-            ) :
+        if common.ip_in_subnet (ip, subnet.ip, subnet.netmask) :
             return
     olo_name = db.org_location.get (olo, 'name')
     ip_sn    = _ ('ip_subnet')
@@ -228,9 +201,7 @@ def check_duplicate_ip_subnet (cl, nodeid, ip, mask) :
         ips    = cl.getnode (sn_id)
         o_ip   = ips.ip
         o_mask = ips.netmask
-        if  (  ip_as_number (ip,   mask) == ip_as_number (o_ip,   mask)
-            or ip_as_number (ip, o_mask) == ip_as_number (o_ip, o_mask)
-            ) :
+        if  (common.subnets_overlap (ip, mask, o_ip, o_mask)) :
             raise Reject, \
                 ( ("%(n)s %(ip)s %(mask)s overlaps with %(o_ip)s %(o_mask)s")
                 % locals ()

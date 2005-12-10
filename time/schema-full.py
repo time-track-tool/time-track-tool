@@ -987,7 +987,7 @@ classes = \
 
 class_field_perms = \
     [ ( "org_location", "Edit", ["IT"]
-      , ("smb_domain",)
+      , ("smb_domain", "dhcp_server")
       )
     , ( "user", "Edit", ["Admin", "HR", "IT"]
       , ( "address"

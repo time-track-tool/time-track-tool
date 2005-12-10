@@ -33,6 +33,7 @@
 import os
 import sys
 import ldif
+import textwrap
 
 from cStringIO        import StringIO
 from roundup.date     import Date
@@ -45,13 +46,15 @@ class Roundup_Access (object) :
     """
 
     def __init__ (self, path, basedn, user = 'admin') :
-        global ymd, get_user_dynamic
+        global ymd, get_user_dynamic, common
         self.tracker = instance.open (path)
         self.db      = self.tracker.open (user)
         self.basedn  = basedn
         sys.path.insert (1, os.path.join (path, 'lib'))
-        from common       import ymd
         from user_dynamic import get_user_dynamic
+        import common
+        ymd = common.ymd
+        self.common  = common
         del sys.path [1]
         for rupname in self.db.getclasses () :
             classname = self._classname (rupname)
@@ -90,6 +93,7 @@ class Roundup_Access (object) :
             except KeyError, cause :
                 raise AttributeError, "%s%s: %s" \
                     % (self.node.cl.classname, self.id, cause)
+            if value is None : return value
             prop = self.node.cl.properties [name]
             if prop.__class__ == Link :
                 value = self.master.class_from_rupname (prop.classname) (value)
@@ -98,8 +102,8 @@ class Roundup_Access (object) :
                 newval = []
                 cls    = self.master.class_from_rupname (prop.classname)
                 for v in value :
-                    newvalue.append (cls (v))
-                value = newvalue
+                    newval.append (cls (v))
+                value = newval
             return value
         # end def __getattr__
 
@@ -128,7 +132,7 @@ class Roundup_Access (object) :
         endofepoch = 0x7FFFFFFF
 
         def dn (self) :
-            op     = self.org_location.orgpath ()
+            op     = self.org_location.orgpath
             org_dn = ["ou=%s" % p for p in op [:-1]]
             org_dn.append ("o=%s" % op [-1])
             label  = getattr (self, self.cl.labelprop ())
@@ -345,20 +349,182 @@ class Roundup_Access (object) :
             other classes.
         """
 
-        def orgpath (self) :
+        def _orgpath (self) :
             return sum \
                 ( [x.domain_part.split ('.') for x in
                     (self.location, self.organisation)
                   ]
                 , []
                 )
-        # end def orgpath
+        # end def _orgpath
+        orgpath = property (_orgpath)
 
         def _ip_subnet (self) :
-            sn = self.db.ip_subnet.filter (org_location = self.id)
-            sn = (self.master.Ip_subnet (i) for i in sn)
+            sn = self.db.ip_subnet.find (org_location = self.id)
+            sn = [self.master.Ip_subnet (i) for i in sn]
+            return sn
         # end def _ip_subnet
         ip_subnet = property (_ip_subnet)
 
+        def _domain (self) :
+            return '.'.join (self.orgpath)
+        # end def _domain
+        domain = property (_domain)
+
+        def dhcp_header (self) :
+            return textwrap.dedent \
+                (("""
+                     #####################################################
+                     # dhcpd.conf created: %s
+                     # Configuration file for ISC dhcpd
+                     # THIS FILE WAS AUTOMATICALLY GENERATED - DO NOT EDIT
+                     #####################################################
+                     
+                     authoritative;
+                     option domain-name "%s";
+                     server-name "%s.%s";
+                     
+                  """)
+                % ( Date ('.').pretty ('%Y-%m-%d %H:%M:%S')
+                  , self.domain
+                  , self.dhcp_server.name
+                  , self.domain
+                  )
+                )
+        # end def dhcp_header
+
+        def as_dhcp (self) :
+            dhcp = [self.dhcp_header ()]
+            for sn in self.ip_subnet :
+                dhcp.append (sn.as_dhcp ())
+            return '\n'.join (dhcp)
+        # end def as_dhcp
+
     # end class Org_location
+
+    class Ip_subnet (Roundup) :
+
+        def _ip_netmask (self) :
+            return common.subnet_mask (self.netmask)
+        # end def _ip_netmask
+        ip_netmask = property (_ip_netmask)
+
+        def _ip_broadcast (self) :
+            return common.broadcast_address (self.ip, self.netmask)
+        # end def _ip_broadcast
+        ip_broadcast = property (_ip_broadcast)
+
+        def _ip_subnet (self) :
+            num_ip = common.ip_as_number (self.ip, self.netmask)
+            return common.numeric_ip_to_string (num_ip)
+        # end def _ip_subnet
+        ip_subnet = property (_ip_subnet)
+
+        def _domain (self) :
+            return '.'.join (self.org_location.orgpath)
+        # end def _domain
+        domain = property (_domain)
+
+        def _samba_name_servers (self) :
+            sd  = self.org_location.smb_domain
+            if sd :
+                r = []
+                for n in sd.netbios_ns :
+                    r.append ('.'.join ((n.name, self.domain)))
+            return []
+        # end def _samba_name_servers
+        samba_name_servers = property (_samba_name_servers)
+
+        def _samba_dd_server (self) :
+            sd  = self.org_location.smb_domain
+            if sd :
+                n = sd.netbios_dd
+                if n :
+                    return '.'.join ((n.name, self.domain))
+            return None
+        # end def _samba_dd_server
+        samba_dd_server = property (_samba_dd_server)
+
+        def ip_addresses (self) :
+            ips = self.db.network_address.find \
+                (org_location = self.org_location.id)
+            ips = (self.master.Network_address (i) for i in ips)
+            return \
+                (i for i in ips
+                 if common.ip_in_subnet (i.ip, self.ip, self.netmask)
+                )
+
+        # end def ip_addresses
+
+        dhcp_options = \
+            [ ('subnet-mask',          'ip_subnet')
+            , ('broadcast-address',    'ip_broadcast')
+            , ('routers',              'routers')
+            , ('domain-name-servers',  'dns_servers')
+            , ('netbios-name-servers', 'samba_name_servers')
+            , ('netbios-dd-server',    'samba_dd_server')
+            ]
+
+        def as_dhcp (self) :
+            dhcp = []
+            dhcp.append \
+                ('subnet %s netmask %s' % (self.ip_subnet, self.ip_netmask))
+            dhcp.append ('{')
+            if self.default_lease_time :
+                dhcp.append \
+                    ('    default-lease-time %d;' % self.default_lease_time)
+            if self.max_lease_time :
+                dhcp.append ('    max-lease-time %d;' % self.max_lease_time)
+            for opt in self.dhcp_options :
+                attr = getattr (self, opt [1])
+                if attr :
+                    arg = attr
+                    if isinstance (attr, list) :
+                        arg = ', '.join (attr)
+                    dhcp.append ('    option %s %s;' % (opt [0], arg))
+            if self.dhcp_range :
+                dhcp.append ('    range %s;' % self.dhcp_range)
+            dhcp.append ('')
+            for na in self.ip_addresses () :
+                ni   = na.network_interface
+                mn   = na.machine_name
+                name = mn.name or na.ip
+                if not na.use_dhcp or not ni :
+                    continue
+                dhcp.append ('    # %s' % ni.description)
+                dhcp.append ('    %s' % name)
+                dhcp.append ('    {')
+                dhcp.append ('        hardware ethernet %s;' % ni.mac)
+                if mn :
+                    dhcp.append \
+                        ('        fixed-address %s.%s;'
+                        % (mn.name, self.org_location.domain)
+                        )
+                    dhcp.append ('        option host-name "%s";' % mn.name)
+                else :
+                    dhcp.append ('        fixed-address %s;' % na.ip)
+                dhcp.append ('    }')
+                dhcp.append ('')
+            dhcp.append ('}')
+            return '\n'.join (dhcp)
+        # end def as_dhcp
+
+    # end class Ip_subnet
+
+    class Network_address (Roundup) :
+        """
+            Encapsulate the roundup network_address class.
+        """
+
+        def _machine_name (self) :
+            machines = self.db.machine_name.filter \
+                ( None
+                , dict (network_address = self.id, do_reverse_mapping = True)
+                )
+            if machines : return self.master.Machine_name (machines [0])
+            return None
+        # end def _machine_name
+        machine_name = property (_machine_name)
+
+    # end class Network_address
 # end class Roundup_Access
