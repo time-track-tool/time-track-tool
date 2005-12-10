@@ -14,7 +14,8 @@
      ( utils.ExtProperty (utils, pdict ['id'])
      , utils.ExtProperty (utils, pdict ['name'])
      , utils.ExtProperty (utils, pdict ['network_address'])
-     , utils.ExtProperty (utils, pdict ['is_a_record'])
+     , utils.ExtProperty (utils, pdict ['machine_name'],    multiselect = 1)
+     , utils.ExtProperty (utils, pdict ['dns_record_type'], multiselect = 1)
      , utils.ExtProperty (utils, pdict ['do_reverse_mapping'])
      );
     "

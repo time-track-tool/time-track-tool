@@ -266,6 +266,7 @@ org_location = Class \
     , organisation          = Link      ("organisation")
     , location              = Link      ("location")
     , smb_domain            = Link      ("smb_domain")
+    , dhcp_server           = Link      ("machine_name")
     )
 org_location.setkey ("name")
 
@@ -637,15 +638,29 @@ ip_subnet = Class \
     , ip                    = String    ()
     , netmask               = Number    ()
     , org_location          = Link      ("org_location")
+    , routers               = Multilink ("machine_name")
+    , dns_servers           = Multilink ("machine_name")
+    , dhcp_range            = String    ()
+    , default_lease_time    = Number    ()
+    , max_lease_time        = Number    ()
     )
+
+dns_record_type = Class \
+    ( db
+    , ''"dns_record_type"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+dns_record_type.setkey ("name")
 
 machine_name = Class \
     ( db
     , ''"machine_name"
     , name                  = String    ()
-    , is_a_record           = Boolean   ()
     , network_address       = Multilink ("network_address")
+    , machine_name          = Multilink ("machine_name")
     , do_reverse_mapping    = Boolean   ()
+    , dns_record_type       = Link      ("dns_record_type")
     )
 machine_name.setkey ("name")
 
@@ -686,6 +701,9 @@ smb_domain = Class \
     , last_gid              = Number    ()
     , last_machine_uid      = Number    ()
     , org_location          = Link      ("org_location")
+    , netbios_ns            = Multilink ("machine_name")
+    , netbios_dd            = Link      ("machine_name")
+    , netbios_nodetype      = String    ()
     )
 smb_domain.setkey ("name")
 
@@ -955,14 +973,15 @@ classes = \
     , ("user_dynamic"        , ["HR","Controlling"], ["HR"              ])
     , ("work_location"       , ["User"],             ["Controlling"     ])
     # System-Management classes
-    , ("network_interface"   , ["IT", "ITView"],     ["IT"     ])
-    , ("machine"             , ["IT", "ITView"],     ["IT"     ])
-    , ("operating_system"    , ["IT", "ITView"],     ["IT"     ])
-    , ("network_address"     , ["IT", "ITView"],     ["IT"     ])
-    , ("ip_subnet"           , ["IT", "ITView"],     ["IT"     ])
-    , ("machine_name"        , ["IT", "ITView"],     ["IT"     ])
-    , ("group"               , ["IT", "ITView"],     ["IT"     ])
     , ("alias"               , ["IT", "ITView"],     ["IT"     ])
+    , ("dns_record_type"     , ["IT", "ITView"],     ["Admin"  ])
+    , ("group"               , ["IT", "ITView"],     ["IT"     ])
+    , ("ip_subnet"           , ["IT", "ITView"],     ["IT"     ])
+    , ("machine"             , ["IT", "ITView"],     ["IT"     ])
+    , ("machine_name"        , ["IT", "ITView"],     ["IT"     ])
+    , ("network_address"     , ["IT", "ITView"],     ["IT"     ])
+    , ("network_interface"   , ["IT", "ITView"],     ["IT"     ])
+    , ("operating_system"    , ["IT", "ITView"],     ["IT"     ])
     , ("smb_domain"          , ["IT", "ITView"],     ["IT"     ])
     ]
 

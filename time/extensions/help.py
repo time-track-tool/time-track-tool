@@ -137,6 +137,8 @@ helptext = \
       ""'''Substitute for the responsible Person of %(Classname)s'''
     , ""'description'                :
       ""'''Verbose description of %(Classname)s'''
+    , ""'dhcp_server'                :
+      ""'''DHCP Server for this %(Classname)s'''
     , ""'dist'                       :
       ""'''Distribute: In a first step you can enter Start and End time
            for each day or the hours you worked during the day. In a
@@ -148,12 +150,19 @@ helptext = \
            This mechanism works after you press "Save" and will split a
            single time record into two if necessary.
         '''
+    , ""'dns_record_type'            :
+      ""'''Type of DNS record generated. If the $(Classname)s points to
+           another %(Classname)s a CNAME is generated, otherwise an
+           A-record is assumed. If no DNS information should be
+           generated, this field should be set to "invalid".
+           This field is auto-generated if left empty.
+        '''
     , ""'do_reverse_mapping'         :
       ""'''Flag if a reverse DNS entry should be created for this
            %(Classname)s -- should usually be enabled. If a
            %(Classname)s has multiple A-Records (which is bad style to
            say the least) this flag must be set for only one of the
-           multiple A-Records.
+           multiple A-Records. The flag is ignored for CNAME records.
         '''
     , ""'domain_part'                :
       ""'''Part of a domain name. The domain name is built by
@@ -225,10 +234,6 @@ helptext = \
       ""'''Internet protocol address of this %(Classname)s'''
     , ""'ip_subnet'                  :
       ""'''Internet protocol subnet'''
-    , ""'is_a_record'                :
-      ""'''Flag if this %(Classname)s is a DNS A-Record (if unset it is
-           a CNAME)
-        '''
     , ""'is_alias'                   :
       ""'''No real user but only an email alias'''
     , ""'is_lotus_user'              :
@@ -266,6 +271,8 @@ helptext = \
         '''
     , ""'machine_group'              :
       ""'''Group for pseudo-accounts for machines (used for Samba)'''
+    , ""'machine_name'               :
+      ""'''Link to another %(Classname)s -- converted to a CNAME.'''
     , ""'machine_uid'                :
       ""'''Numeric user id for this samba machine.'''
     , ""'machine_uid_range'          :

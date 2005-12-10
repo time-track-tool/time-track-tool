@@ -139,17 +139,61 @@ def new_network_interface (db, cl, nodeid, new_values) :
     reject_invalid_mac (new_values ['mac'])
 # end def new_network_interface
 
-def check_nw_adr_location (db, adr) :
+def check_machine_alias (db, mn) :
+    olos = {}
+    if not mn :
+        return
+    for id in mn :
+        m = db.machine_name.getnode (id)
+        if  (  m.dns_record_type == db.dns_record_type.lookup ('CNAME')
+            or m.machine_name
+            ) :
+            raise Reject, _ ("Machine names may not point to other CNAMEs")
+        for na_id in m.network_address :
+            na = db.network_address.getnode (na_id)
+            if na.org_location in olos :
+                olon = _ ('org_location')
+                polo = db.org_location.get (na.org_location, 'name')
+                ip   = na.ip
+                raise Reject, _ ("Duplicate %(olon)s %(polo)s in %(ip)s") \
+                    % locals ()
+            olos [na.org_location] = na.ip
+# end def check_machine_alias
+
+def check_nw_adr_location (db, id, adr, mn, drt, new_values) :
+    na       = _ ('network_address')
+    olo      = _ ('org_location')
+    mnn      = _ ('machine_name')
+    drtn     = _ ('dns_record_type')
+    invalid  = db.dns_record_type.lookup ('invalid')
+    a_rec    = db.dns_record_type.lookup ('A')
+    cname    = db.dns_record_type.lookup ('CNAME')
+    if adr and mn :
+        raise Reject, _ ("Only one of %(na)s and %(mnn)s may be given") \
+            % locals ()
     locations = {}
     for a in adr :
         l = db.network_address.get (a, 'org_location')
         if l in locations :
-            olo      = _ ('org_location')
-            na       = _ ('network_address')
             olo_name = db.org_location.get (l, 'name')
             raise Reject, _ ("Duplicate %(olo)s for %(na)s: %(olo_name)s") \
                 % locals ()
         locations [l] = True
+    check_machine_alias (db, mn)
+    if id :
+        for alias in db.machine_name.find (machine_name = id) :
+            check_machine_alias (db, alias)
+    if  (   ('network_address' in new_values or 'machine_name' in new_values)
+        and not 'dns_record_type' in new_values
+        and drt != invalid
+        ) :
+        drt =  [a_rec, cname]['machine_name' in new_values]
+        new_values ['dns_record_type'] = drt
+    if drt != invalid :
+        if mn and drt != cname :
+            raise Reject, _ ("For %(mnn)s, %(drtn)s must be CNAME") % locals ()
+        if adr and drt != a_rec :
+            raise Reject, _ ("For %(na)s, %(drtn)s must be CNAME")  % locals ()
 # end def check_nw_adr_location
 
 def check_machine_name (db, cl, nodeid, new_values) :
@@ -157,7 +201,9 @@ def check_machine_name (db, cl, nodeid, new_values) :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
     adr = new_values.get ('network_address', cl.get (nodeid, 'network_address'))
-    check_nw_adr_location (db, adr)
+    mn  = new_values.get ('machine_name',    cl.get (nodeid, 'machine_name'))
+    drt = new_values.get ('dns_record_type', cl.get (nodeid, 'dns_record_type'))
+    check_nw_adr_location (db, nodeid, adr, mn, drt, new_values)
 # end def check_machine_name
 
 def new_machine_name (db, cl, nodeid, new_values) :
@@ -165,7 +211,9 @@ def new_machine_name (db, cl, nodeid, new_values) :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     adr = new_values.get ('network_address', [])
-    check_nw_adr_location (db, adr)
+    mn  = new_values.get ('machine_name',    None)
+    drt = new_values.get ('dns_record_type', None)
+    check_nw_adr_location (db, nodeid, adr, mn, drt, new_values)
 # end def new_machine_name
 
 def check_netmask (mask) :

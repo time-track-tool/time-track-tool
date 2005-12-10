@@ -88,5 +88,19 @@ IT:
 - nice to have:
   - list of machine names for hw address
   - list of machine names for machine
+- name server info
+- DHCP:
+  Attributes of org_loc ??
+  - dns servers -> machine_name
+  - routers
+  smb_domain:
+  - netbios name servers
+  - netbios dd servers
+  - netbios node-type
+
+  - subnet mask         -> from ip_subnet, create for each group
+                           separately
+  - default lease time  -> cfg-file
+  - max lease time      -> cfg-file
 
 Intranet-Einbindung Bernhard

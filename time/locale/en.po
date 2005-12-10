@@ -19,6 +19,12 @@ msgstr ""
 msgid "Invalid IP \"%(ip)s\": must contain 4 octets"
 msgstr ""
 
+msgid "dns_record_type"
+msgstr "DNS record type"
+
+msgid "dhcp_server"
+msgstr "DHCP server"
+
 #: ../detectors/nwm.py:50
 #, python-format
 msgid "Invalid IP \"%(ip)s\": invalid octet \"%(o)s\""

@@ -38,8 +38,23 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'is_a_record')"/>
-     <td tal:content="structure python:context.is_a_record.field ()"/>
+         (classname, 'machine_name')"/>
+     <td colspan="3">
+      <tal:block
+       tal:content="structure python:context.machine_name.field (50)"/>
+      <tal:block tal:replace="structure python:db.machine_name.classhelp
+       ( 'name,network_address'
+       , property='machine_name'
+       , width='600'
+       , filter='dns_record_type=%s' % db._db.dns_record_type.lookup ('A')
+       , pagesize=1000
+       )"/>
+     </td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'dns_record_type')"/>
+     <td tal:content="structure python:context.dns_record_type.menu ()"/>
      <th tal:content="structure python:utils.fieldname
          (classname, 'do_reverse_mapping')"/>
      <td tal:content="structure python:context.do_reverse_mapping.field ()"/>

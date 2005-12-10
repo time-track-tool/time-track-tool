@@ -32,6 +32,9 @@
                         'date=.-1d%%3B.%%2B1d&user=%s' % uid
    , 'group'          : ':columns=name,gid,description,org_location&'
                         ':sort=-id&:pagesize=500&:startwith=0'
+   , 'machine_name'   : ':columns=id,name,network_address,machine_name,'
+                        'dns_record_type,do_reverse_mapping&:sort=name&'
+                        ':pagesize=20&:startwith=0'
    , 'public_holiday' : ':columns=id,name,description,date,locations,is_half&'
                         ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
                         'date=.%3B'
@@ -98,6 +101,7 @@
      , ('summary_report',      None,     '')
      , ('network_interface',   'Edit',   '?@template=item')
      , ('machine',             'Edit',   '?@template=item')
+     , ('dns_record_type',     'Edit',   '?@template=item')
      , ('operating_system',    'View',   '?@template=item')
      , ('ip_subnet',           'View',   '?@template=item')
      , ('network_address',     'Edit',   '?@template=item&use_dhcp=True')

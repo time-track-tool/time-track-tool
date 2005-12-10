@@ -334,3 +334,8 @@ summary_type = db.summary_type
 summary_type.create (name = "day",   order = 1)
 summary_type.create (name = "week",  order = 2)
 summary_type.create (name = "month", order = 3)
+
+dns_record_type = db.dns_record_type
+dns_record_type.create (name = "invalid",   description = "don't use")
+dns_record_type.create (name = "A",         description = "A record")
+dns_record_type.create (name = "CNAME",     description = "CNAME record")

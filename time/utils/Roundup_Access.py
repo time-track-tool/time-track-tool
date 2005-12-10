@@ -44,7 +44,7 @@ class Roundup_Access (object) :
         includes code and classes from there.
     """
 
-    def __init__ (self, basedn, path, user = 'admin') :
+    def __init__ (self, path, basedn, user = 'admin') :
         global ymd, get_user_dynamic
         self.tracker = instance.open (path)
         self.db      = self.tracker.open (user)
@@ -354,4 +354,11 @@ class Roundup_Access (object) :
                 )
         # end def orgpath
 
+        def _ip_subnet (self) :
+            sn = self.db.ip_subnet.filter (org_location = self.id)
+            sn = (self.master.Ip_subnet (i) for i in sn)
+        # end def _ip_subnet
+        ip_subnet = property (_ip_subnet)
+
     # end class Org_location
+# end class Roundup_Access
