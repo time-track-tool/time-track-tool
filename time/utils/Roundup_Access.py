@@ -202,6 +202,12 @@ class Roundup_Access (object) :
         # end def _member
         member = property (_member)
 
+        def _mail (self) :
+            return '@'.join \
+                ((self.name, self.org_location.organisation.mail_domain))
+        # end def _mail
+        mail = property (_mail)
+
     # end class Alias
 
     class Group (Roundup) :
