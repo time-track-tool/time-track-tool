@@ -32,6 +32,8 @@
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
    , 'group'           : ':columns=name,gid,description,org_location&'
                          ':sort=-id&:pagesize=500&:startwith=0'
+   , 'machine'         : ':columns=inventory_no,description,owner,smb_name&'
+                         ':sort=inventory_no&:pagesize=20&:startwith=0'
    , 'machine_name'    : ':columns=id,name,network_address,machine_name,'
                          'dns_record_type,do_reverse_mapping&:sort=name&'
                          ':pagesize=20&:startwith=0'

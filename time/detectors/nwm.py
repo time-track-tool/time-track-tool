@@ -336,6 +336,7 @@ def new_machine (db, cl, nodeid, new_values) :
             , last_machine_uid = max
                 (sd.last_machine_uid, new_values ['machine_uid'])
             )
+    common.check_unique (_, cl, nodeid, 'smb_name', new_values ['smb_name'])
 # end def new_machine
 
 def check_machine (db, cl, nodeid, new_values) :
@@ -354,6 +355,8 @@ def check_machine (db, cl, nodeid, new_values) :
             , last_machine_uid = max
                 (sd.last_machine_uid, new_values ['machine_uid'])
             )
+    if 'smb_name' in new_values :
+        common.check_unique (_, cl, nodeid, 'smb_name', new_values ['smb_name'])
 # end def check_machine
 
 def init (db) :
