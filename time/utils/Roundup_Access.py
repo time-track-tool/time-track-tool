@@ -191,14 +191,16 @@ class Roundup_Access (object) :
             return "cn=%s" % self.name
         # end def dn
 
-        def member (self) :
+        def _member (self) :
             m = []
             for a in self.alias_to_alias :
                 m.append ("cn=%s" % a.name)
             for u in self.alias_to_user :
                 m.append \
                     ("cn=%s,%s" % (u.username, self.org_location.domino_dn))
-        # end def member
+            return m
+        # end def _member
+        member = property (_member)
 
     # end class Alias
 
