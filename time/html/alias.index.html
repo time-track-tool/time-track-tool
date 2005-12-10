@@ -19,6 +19,7 @@
          , help_props = ['firstname', 'lastname']
          )
      , utils.ExtProperty (utils, pdict ['description'])
+     , utils.ExtProperty (utils, pdict ['org_location'], multiselect = 1)
      , utils.ExtProperty (utils, pdict ['use_in_ln'])
      );
     "

@@ -102,21 +102,31 @@ def check_name_len (_, name) :
             _ ('Name "%(name)s" too long (> 25 characters)') % locals ()
 # end def name_len
 
-def check_unique (_, cl, id, attr, value) :
-    search = cl.filter (None, {attr : value})
-    found  = False
+def is_matching_result (cl, kw, search_result) :
+    for k, v in kw.iteritems () :
+        if isinstance (cl.properties [k], String) :
+            if cl.get (search_result, k) != v :
+                return False
+        else :
+            l     = len (search_result)
+            found = l > 1 or (l == 1 and search_result [0] != id)
+            if not found : return False
+    return True
+# end def is_matching_result
+
+def check_unique (_, cl, id, ** kw) :
+    search = cl.filter (None, kw)
     # strings do a substring search.
-    if isinstance (cl.properties [attr], String) :
-        for s in search :
-            if cl.get (s, attr) == value :
-                found = True
-                break
-    else :
-        l     = len (search)
-        found = l > 1 or (l == 1 and search [0] != id)
-    if found :
-        pattr = _ (attr)
-        raise Reject, _ ("Duplicate Attribute %(pattr)s=%(value)s") % locals ()
+    for s in search :
+        print "before mat"
+        if is_matching_result (cl, kw, s) :
+            print "in mat"
+            r = []
+            for k, v in kw.iteritems () :
+                attr, val = (_ (i) for i in (k, v))
+                r.append ("%(attr)s=%(val)s" % locals ())
+            raise Reject, _ ("Duplicate: %s") % ', '.join (r)
+        print "after mat"
 # end def check_unique
 
 def sort_uniq (list) :

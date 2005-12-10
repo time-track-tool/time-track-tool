@@ -82,9 +82,12 @@ class Roundup_Access (object) :
             for roundup and ldif export.
         """
 
-        def __init__ (self, id) :
-            self.node   = self.cl.getnode (id)
-            self.id     = id
+        def __init__ (self, id_or_key) :
+            try :
+                self.id = int (id_or_key)
+            except ValueError :
+                self.id = self.cl.lookup (id_or_key)
+            self.node   = self.cl.getnode (self.id)
         # end def __init__
 
         def __getattr__ (self, name) :
@@ -153,28 +156,49 @@ class Roundup_Access (object) :
         # end def _label
         label    = ldif_key = property (_label)
 
+        def filter (self, *args, **kw) :
+            return (self.__class__ (i) for i in self.node.filter (*args, **kw))
+        # end def filter
+
+        def find (self, *args, **kw) :
+            return (self.__class__ (i) for i in self.node.find (*args, **kw))
+        # end def filter
+
     # end class Roundup
 
     class Alias (Roundup) :
         """
             Encapsulate the roundup alias class. Includes LDIF export.
-            cn=root,ou=MailGroups,ou=vie,ou=at,ou=company,o=org,BASEDN
+            cn=sales (the name of the alias)
         """
 
         ldif_map = \
             [ ('cn',                   'name')
-            , ('mailLocalAddress',     'name')
-            , ('description',          'description')
-            #, ('mailHost',             'tttech.com')
-            #, ('mailRoutingAddress',   'name@domino01.vie.at.tttech.ttt')
+            , ('mail',                 'mail')
+            , ('grouptype',            'grouptype')
+            , ('member',               'member')
             ]
 
         object_class = \
-            [ 'organizationalRole'
-            , 'inetLocalMailRecipient'
+            [ 'top'
+            , 'dominoGroup'
+            , 'groupOfNames'
             ]
-        ou     = 'MailGroups'
-        dnname = 'cn'
+
+        grouptype = 0
+
+        def dn (self) :
+            return "cn=%s" % self.name
+        # end def dn
+
+        def member (self) :
+            m = []
+            for a in self.alias_to_alias :
+                m.append ("cn=%s" % a.name)
+            for u in self.alias_to_user :
+                m.append \
+                    ("cn=%s,%s" % (u.username, self.org_location.domino_dn))
+        # end def member
 
     # end class Alias
 
@@ -273,9 +297,8 @@ class Roundup_Access (object) :
         samba_dd_server = property (_samba_dd_server)
 
         def ip_addresses (self) :
-            ips = self.db.network_address.find \
+            ips = self.master.Network_address.find \
                 (org_location = self.org_location.id)
-            ips = (self.master.Network_address (i) for i in ips)
             return \
                 (i for i in ips
                  if common.ip_in_subnet (i.ip, self.ip, self.netmask)
@@ -445,8 +468,7 @@ class Roundup_Access (object) :
         orgpath = property (_orgpath)
 
         def _ip_subnet (self) :
-            sn = self.db.ip_subnet.find (org_location = self.id)
-            sn = [self.master.Ip_subnet (i) for i in sn]
+            sn = self.master.Ip_subnet.find (org_location = self.id)
             return sn
         # end def _ip_subnet
         ip_subnet = property (_ip_subnet)

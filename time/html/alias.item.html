@@ -28,6 +28,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'org_location')"/>
+     <td tal:content="structure python:context.org_location.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'alias_to_user')"/>
      <td>
       <tal:block tal:content="structure context/alias_to_user/field"/>
@@ -46,7 +51,7 @@
      <td>
       <tal:block tal:content="structure context/alias_to_alias/field"/>
       <tal:block tal:replace="structure python:db.alias.classhelp
-       ( 'name,description'
+       ( 'id,name,org_location,description'
        , property='alias_to_alias'
        , width='600'
        , pagesize=1000

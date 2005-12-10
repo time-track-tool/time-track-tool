@@ -682,8 +682,8 @@ alias = Class \
     , alias_to_alias        = Multilink ("alias")
     , alias_to_user         = Multilink ("user")
     , use_in_ln             = Boolean   ()
+    , org_location          = Link      ("org_location")
     )
-alias.setkey ("name")
 
 smb_domain = Class \
     ( db

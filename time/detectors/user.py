@@ -136,11 +136,11 @@ def common_user_checks (db, cl, nodeid, new_values) :
     for a in 'uid', 'nickname' :
         if a in new_values :
             v = new_values [a]
-            common.check_unique (_, cl, nodeid, a, v)
+            common.check_unique (_, cl, nodeid, ** dict (a, v))
             if a == 'nickname' :
-                common.check_unique (_, cl, nodeid, 'username', v)
+                common.check_unique (_, cl, nodeid, username = v)
     if 'username' in new_values :
-        common.check_unique (_, cl, nodeid, 'nickname', new_values ['username'])
+        common.check_unique (_, cl, nodeid, nickname = new_values ['username'])
     status = new_values.get ('status', None) or cl.get (nodeid, 'status')
     valid  = db.user_status.lookup ('valid')
     if 'uid' in new_values :

@@ -237,7 +237,7 @@ def check_and_update_gid (_, db, cl, nodeid, sd, gid) :
         gname  = _ ('gid')
         sdname = _ ('smb_domain')
         raise Reject, _("Invalid %(gname)s: %(gid)s for %(sdname)s") % locals ()
-    common.check_unique (_, cl, nodeid, 'gid', gid)
+    common.check_unique (_, cl, nodeid, gid = gid)
     if is_other :
         db.smb_domain.set (sd.id, last_gid = max (gid, sd.last_gid))
 # end def check_and_update_gid
@@ -269,23 +269,39 @@ def check_smb_domain (db, cl, nodeid, new_values) :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
     if 'sid' in new_values :
-        common.check_unique (_, cl, nodeid, 'sid', new_values ['sid'])
+        common.check_unique (_, cl, nodeid, sid = new_values ['sid'])
 # end def check_smb_domain
 
 def new_smb_domain (db, cl, nodeid, new_values) :
     for i in 'name', 'sid' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
-    common.check_unique (_, cl, nodeid, 'sid', new_values ['sid'])
+    common.check_unique (_, cl, nodeid, sid = new_values ['sid'])
 # end def new_smb_domain
 
+def check_alias_consistency (cl, name, olo, a2a) :
+    for a in a2a :
+        if cl.get (a, 'org_location') != olo :
+            on  = _ ('org_location')
+            a2  = cl.get (a, 'name')
+            raise Reject, _ ("%(on)s must match for alias: %(name)s->%(a2)s") \
+                % locals ()
+# end def check_alias_consistency
+
+def reject_if_alias_has_depends (cl, id, msg) :
+    if cl.find (alias_to_alias = id) :
+        raise Reject, msg
+# end def reject_if_alias_has_depends
+
 def check_alias (db, cl, nodeid, new_values) :
-    for i in 'name', :
+    for i in 'name', 'org_location' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
     name = new_values.get ('name',           cl.get (nodeid, 'name'))
     a2a  = new_values.get ('alias_to_alias', cl.get (nodeid, 'alias_to_alias'))
     a2u  = new_values.get ('alias_to_user',  cl.get (nodeid, 'alias_to_user'))
+    olo  = new_values.get ('org_location',   cl.get (nodeid, 'org_location'))
+    olon = _ ('org_location')
     if not (a2a or a2u) :
         raise Reject, _ ("Either %s or %s must be defined") \
             % (_ ('alias_to_alias'), _ ('alias_to_user'))
@@ -293,20 +309,37 @@ def check_alias (db, cl, nodeid, new_values) :
         new_values ['alias_to_alias'] = common.sort_uniq (a2a)
     if 'alias_to_user'  in new_values :
         new_values ['alias_to_user']  = common.sort_uniq (a2u)
+    if 'org_location' in new_values and a2a :
+        check_alias_consistency (cl, name, olo, a2a)
+        reject_if_alias_has_depends \
+            ( cl, nodeid
+            , _ ("May not change %(olon)s if dependencies exist") % locals ()
+            )
+    if 'name' in new_values or 'org_location' in new_values :
+        common.check_unique (_, cl, nodeid, name = name, org_location = olo)
     if 'name' in new_values or 'alias_to_alias' in new_values :
         common.check_loop (_, cl, nodeid, 'alias_to_alias', a2a)
 # end def check_alias
 
+def check_alias_retire (db, cl, nodeid, dummy) :
+    reject_if_alias_has_depends \
+        (cl, nodeid, _ ("May not retire if dependencies exist"))
+# end def check_alias_retire
+
 def new_alias (db, cl, nodeid, new_values) :
-    for i in 'name', :
+    for i in 'name', 'org_location' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
     if not ('alias_to_alias' in new_values or 'alias_to_user' in new_values) :
         raise Reject, _ ("Either %s or %s must be defined") \
             % ('alias_to_alias', 'alias_to_user')
+    name = new_values ['name']
+    olo  = new_values ['org_location']
+    common.check_unique (_, cl, nodeid, name = name, org_location = olo)
     if 'alias_to_alias' in new_values :
         a2a = new_values ['alias_to_alias']
         new_values ['alias_to_alias'] = common.sort_uniq (a2a)
+        check_alias_consistency (cl, name, olo, a2a)
         common.check_loop (_, cl, nodeid, 'alias_to_alias', a2a)
     if 'alias_to_user'  in new_values :
         a2u = new_values ['alias_to_user']
@@ -336,7 +369,7 @@ def new_machine (db, cl, nodeid, new_values) :
             , last_machine_uid = max
                 (sd.last_machine_uid, new_values ['machine_uid'])
             )
-    common.check_unique (_, cl, nodeid, 'smb_name', new_values ['smb_name'])
+    common.check_unique (_, cl, nodeid, smb_name = new_values ['smb_name'])
 # end def new_machine
 
 def check_machine (db, cl, nodeid, new_values) :
@@ -356,7 +389,7 @@ def check_machine (db, cl, nodeid, new_values) :
                 (sd.last_machine_uid, new_values ['machine_uid'])
             )
     if 'smb_name' in new_values :
-        common.check_unique (_, cl, nodeid, 'smb_name', new_values ['smb_name'])
+        common.check_unique (_, cl, nodeid, smb_name = new_values ['smb_name'])
 # end def check_machine
 
 def init (db) :
