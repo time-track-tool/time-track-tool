@@ -69,7 +69,7 @@ class Roundup_Access (object) :
     # end def __init__
 
     def _classname (self, rupname) :
-        return rupname [0].upper () + rupname [1:]
+        return '_'.join (r [0].upper () + r [1:] for r in rupname.split ('_'))
     # end def _classname
 
     def class_from_rupname (self, rupname) :
@@ -257,7 +257,7 @@ class Roundup_Access (object) :
 
     # end class Group
 
-    class Ip_subnet (Roundup) :
+    class Ip_Subnet (Roundup) :
         """
             Encapsulate the roundup ip_subnet class. Includes DHCP
             generation.
@@ -305,7 +305,7 @@ class Roundup_Access (object) :
         samba_dd_server = property (_samba_dd_server)
 
         def ip_addresses (self) :
-            ips = self.master.Network_address.find \
+            ips = self.master.Network_Address.find \
                 (org_location = self.org_location.id)
             return \
                 (i for i in ips
@@ -367,7 +367,7 @@ class Roundup_Access (object) :
             return '\n'.join (dhcp)
         # end def as_dhcp
 
-    # end class Ip_subnet
+    # end class Ip_Subnet
 
     class Machine (Roundup) :
         """
@@ -440,7 +440,7 @@ class Roundup_Access (object) :
 
     # end class Machine
 
-    class Machine_name (Roundup) :
+    class Machine_Name (Roundup) :
         """
             Encapsulate the roundup machine_name class. Includes DNS
             generation.
@@ -452,8 +452,11 @@ class Roundup_Access (object) :
             dns = []
             h = "%-40s IN %5s " % (self.name, self.dns_record_type.name)
             for n in self.network_address :
-                if n.org_location.id == olo.id :
-                    dns.append ("%s%s" % (h, n.ip))
+                if n.org_location.id != olo.id :
+                    continue
+                if n.network_interface :
+                    dns.append (n.network_interface.as_dns_comment ())
+                dns.append ("%s%s" % (h, n.ip))
                 cname_id = self.db.dns_record_type.lookup ('CNAME')
                 for m in self.filter \
                     ( None, dict
@@ -472,7 +475,7 @@ class Roundup_Access (object) :
                             na = n
                             break
                 if na :
-                    dns.append ('%s%s.%s' % (h, m.name, olo.domain))
+                    dns.append ('%s%s.%s.' % (h, m.name, olo.domain))
                 else :
                     return None
             return '\n'.join (d for d in dns if d)
@@ -482,9 +485,9 @@ class Roundup_Access (object) :
             return (self.dns_record_type.name != 'invalid')
         # end def is_valid
 
-    # end class Machine_name
+    # end class Machine_Name
 
-    class Network_address (Roundup) :
+    class Network_Address (Roundup) :
         """
             Encapsulate the roundup network_address class.
         """
@@ -494,14 +497,60 @@ class Roundup_Access (object) :
                 ( None
                 , dict (network_address = self.id, do_reverse_mapping = True)
                 )
-            if machines : return self.master.Machine_name (machines [0])
+            if machines : return self.master.Machine_Name (machines [0])
             return None
         # end def _machine_name
         machine_name = property (_machine_name)
 
-    # end class Network_address
+        def as_dns (self, n_octets) :
+            mn = self.master.Machine_Name.filter \
+                ( None, dict
+                    ( network_address    = self.id
+                    , dns_record_type    = self.db.dns_record_type.lookup ('A')
+                    , do_reverse_mapping = True
+                    )
+                )
+            m = None
+            # search should return at most one element:
+            for t in range (2) :
+                try :
+                    m = mn.next ()
+                    assert (t == 0)
+                except StopIteration :
+                    pass
+            if m :
+                dns = []
+                if self.network_interface :
+                    dns.append (self.network_interface.as_dns_comment ())
+                dns.append \
+                    ("%-16s IN PTR %s.%s." % \
+                        ( '.'.join 
+                            ([r for r in reversed (self.ip.split ('.'))]
+                             [0:n_octets]
+                            )
+                        , m.name
+                        , self.org_location.domain
+                        )
+                    )
+                return '\n'.join (dns)
+            return None
+        # end def as_dns
 
-    class Org_location (Roundup) :
+    # end class Network_Address
+
+    class Network_Interface (Roundup) :
+        """
+            Encapsulate the roundup org_location class.
+            Auxiliary infos for DNS generation.
+        """
+
+        def as_dns_comment (self) :
+            return '\n'.join ('; %s' % d for d in self.description.split ('\n'))
+        # end def as_dns_comment
+
+    # end class Network_Interface
+
+    class Org_Location (Roundup) :
         """
             Encapsulate the roundup org_location class.
             Include dn orgpath computation needed for dn computation in
@@ -520,7 +569,7 @@ class Roundup_Access (object) :
         orgpath = property (_orgpath)
 
         def _ip_subnet (self) :
-            sn = self.master.Ip_subnet.find (org_location = self.id)
+            sn = self.master.Ip_Subnet.find (org_location = self.id)
             return sn
         # end def _ip_subnet
         ip_subnet = property (_ip_subnet)
@@ -559,9 +608,9 @@ class Roundup_Access (object) :
             return '\n'.join (dhcp)
         # end def as_dhcp
 
-    # end class Org_location
+    # end class Org_Location
 
-    class Smb_domain (Roundup) :
+    class Smb_Domain (Roundup) :
         """
             Encapsulate the roundup smb_domain class. Includes LDIF export.
             sambaDomainName=..,ou=vie,ou=at,ou=company,o=org,BASEDN
@@ -577,7 +626,7 @@ class Roundup_Access (object) :
         ou           = None
         dnname       = 'sambaDomainName'
 
-    # end class Smb_domain
+    # end class Smb_Domain
 
     class User (Roundup) :
         """
@@ -676,7 +725,7 @@ class Roundup_Access (object) :
             if not dyn :
                 raise AttributeError, "No valid dynamic user record for %s %s" \
                     % (self.username, date.pretty (ymd))
-            self._cache_ud = self.master.User_dynamic (dyn.id)
+            self._cache_ud = self.master.User_Dynamic (dyn.id)
             return self._cache_ud
         # end def _user_dynamic
         user_dynamic = property (_user_dynamic)
