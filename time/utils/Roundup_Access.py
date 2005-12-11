@@ -467,15 +467,15 @@ class Roundup_Access (object) :
                     ) :
                     dns.append (m.as_dns (olo))
             if self.machine_name :
-                na = None
+                mn = None
                 for m in self.machine_name :
                     if not m.is_valid () : continue
                     for n in m.network_address :
                         if n.org_location.id == olo.id :
-                            na = n
+                            mn = m
                             break
-                if na :
-                    dns.append ('%s%s.%s.' % (h, m.name, olo.domain))
+                if mn :
+                    dns.append ('%s%s.%s.' % (h, mn.name, olo.domain))
                 else :
                     return None
             return '\n'.join (d for d in dns if d)
