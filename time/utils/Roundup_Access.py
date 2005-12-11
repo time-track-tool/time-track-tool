@@ -156,13 +156,13 @@ class Roundup_Access (object) :
         # end def _label
         label    = ldif_key = property (_label)
 
-        def filter (self, *args, **kw) :
-            return (self.__class__ (i) for i in self.node.filter (*args, **kw))
-        # end def filter
+        def filter (cls, *args, **kw) :
+            return (cls (i) for i in cls.cl.filter (*args, **kw))
+        filter = classmethod (filter)
 
-        def find (self, *args, **kw) :
-            return (self.__class__ (i) for i in self.node.find (*args, **kw))
-        # end def filter
+        def find (cls, *args, **kw) :
+            return (cls (i) for i in cls.cl.find (*args, **kw))
+        find = classmethod (find)
 
     # end class Roundup
 
@@ -440,6 +440,50 @@ class Roundup_Access (object) :
 
     # end class Machine
 
+    class Machine_name (Roundup) :
+        """
+            Encapsulate the roundup machine_name class. Includes DNS
+            generation.
+        """
+        
+        def as_dns (self, olo) :
+            if  not self.is_valid () :
+                return None
+            dns = []
+            h = "%-40s IN %5s " % (self.name, self.dns_record_type.name)
+            for n in self.network_address :
+                if n.org_location.id == olo.id :
+                    dns.append ("%s%s" % (h, n.ip))
+                cname_id = self.db.dns_record_type.lookup ('CNAME')
+                for m in self.filter \
+                    ( None, dict
+                        ( machine_name    = self.id
+                        , dns_record_type = cname_id
+                        )
+                    , sort = ('+', 'name')
+                    ) :
+                    dns.append (m.as_dns (olo))
+            if self.machine_name :
+                na = None
+                for m in self.machine_name :
+                    if not m.is_valid () : continue
+                    for n in m.network_address :
+                        if n.org_location.id == olo.id :
+                            na = n
+                            break
+                if na :
+                    dns.append ('%s%s.%s' % (h, m.name, olo.domain))
+                else :
+                    return None
+            return '\n'.join (d for d in dns if d)
+        # end def as_dns
+
+        def is_valid (self) :
+            return (self.dns_record_type.name != 'invalid')
+        # end def is_valid
+
+    # end class Machine_name
+
     class Network_address (Roundup) :
         """
             Encapsulate the roundup network_address class.
@@ -500,7 +544,7 @@ class Roundup_Access (object) :
                      server-name "%s.%s";
                      
                   """)
-                % ( Date ('.').pretty ('%Y-%m-%d %H:%M:%S')
+                % ( self.now.pretty ('%Y-%m-%d %H:%M:%S')
                   , self.domain
                   , self.dhcp_server.name
                   , self.domain
