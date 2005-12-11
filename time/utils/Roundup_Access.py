@@ -367,6 +367,17 @@ class Roundup_Access (object) :
             return '\n'.join (dhcp)
         # end def as_dhcp
 
+        def as_dns (self) :
+            dns = []
+            oct = int (self.netmask + 7) / 8
+            na  = self.master.Network_Address.find \
+                (org_location = self.org_location.id)
+            for n in na :
+                if common.ip_in_subnet (n.ip, self.ip, self.netmask) :
+                    dns.append (n.as_dns (oct))
+            return "\n".join (d for d in dns if d)
+        # end def as_dns
+
     # end class Ip_Subnet
 
     class Machine (Roundup) :
