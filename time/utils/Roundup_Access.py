@@ -84,7 +84,7 @@ class Roundup_Access (object) :
 
         def __init__ (self, id_or_key) :
             try :
-                self.id = int (id_or_key)
+                self.id = str (int (id_or_key))
             except ValueError :
                 self.id = self.cl.lookup (id_or_key)
             self.node   = self.cl.getnode (self.id)
@@ -494,8 +494,11 @@ class Roundup_Access (object) :
 
         def _machine_name (self) :
             machines = self.db.machine_name.filter \
-                ( None
-                , dict (network_address = self.id, do_reverse_mapping = True)
+                ( None, dict
+                    ( network_address    = self.id
+                    , dns_record_type    = self.db.dns_record_type.lookup ('A')
+                    , do_reverse_mapping = True
+                    )
                 )
             if machines : return self.master.Machine_Name (machines [0])
             return None
@@ -503,22 +506,7 @@ class Roundup_Access (object) :
         machine_name = property (_machine_name)
 
         def as_dns (self, n_octets) :
-            mn = self.master.Machine_Name.filter \
-                ( None, dict
-                    ( network_address    = self.id
-                    , dns_record_type    = self.db.dns_record_type.lookup ('A')
-                    , do_reverse_mapping = True
-                    )
-                )
-            m = None
-            # search should return at most one element:
-            for t in range (2) :
-                try :
-                    m = mn.next ()
-                    assert (t == 0)
-                except StopIteration :
-                    pass
-            if m :
+            if self.machine_name :
                 dns = []
                 if self.network_interface :
                     dns.append (self.network_interface.as_dns_comment ())
@@ -528,7 +516,7 @@ class Roundup_Access (object) :
                             ([r for r in reversed (self.ip.split ('.'))]
                              [0:n_octets]
                             )
-                        , m.name
+                        , self.machine_name.name
                         , self.org_location.domain
                         )
                     )
@@ -607,6 +595,15 @@ class Roundup_Access (object) :
                 dhcp.append (sn.as_dhcp ())
             return '\n'.join (dhcp)
         # end def as_dhcp
+
+        def as_dns (self) :
+            na  = self.master.Network_Address.find (org_location = self.id)
+            dns = []
+            for n in na :
+                if not n.machine_name : continue
+                dns.append (n.machine_name.as_dns (self))
+            return "\n".join (d for d in dns if d)
+        # end def as_dns
 
     # end class Org_Location
 
