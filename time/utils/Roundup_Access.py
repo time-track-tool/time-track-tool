@@ -260,7 +260,7 @@ class Roundup_Access (object) :
     class Ip_Subnet (Roundup) :
         """
             Encapsulate the roundup ip_subnet class. Includes DHCP
-            generation.
+            and DNS generation (DNS produces reverse DNS records).
         """
 
         def _ip_netmask (self) :
@@ -454,7 +454,7 @@ class Roundup_Access (object) :
     class Machine_Name (Roundup) :
         """
             Encapsulate the roundup machine_name class. Includes DNS
-            generation.
+            generation (forward DNS records).
         """
         
         def as_dns (self, olo) :
@@ -500,7 +500,8 @@ class Roundup_Access (object) :
 
     class Network_Address (Roundup) :
         """
-            Encapsulate the roundup network_address class.
+            Encapsulate the roundup network_address class. Includes DNS
+            generation (Reverse DNS records).
         """
 
         def _machine_name (self) :
@@ -554,7 +555,8 @@ class Roundup_Access (object) :
             Encapsulate the roundup org_location class.
             Include dn orgpath computation needed for dn computation in
             other classes.
-            Include DHCP generation.
+            Include DHCP and DNS generation (the latter produces forward
+            DNS records).
         """
 
         def _orgpath (self) :
