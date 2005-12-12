@@ -136,7 +136,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
     for a in 'uid', 'nickname' :
         if a in new_values :
             v = new_values [a]
-            common.check_unique (_, cl, nodeid, ** dict (a, v))
+            common.check_unique (_, cl, nodeid, ** {a : v})
             if a == 'nickname' :
                 common.check_unique (_, cl, nodeid, username = v)
     if 'username' in new_values :
@@ -227,7 +227,7 @@ def audit_user_fields(db, cl, nodeid, new_values):
         , 'shadow_warning'
         , 'uid'
         ) :
-        if n in new_values and new_values [n] is None :
+        if n in new_values and new_values [n] is None and cl.get (nodeid, n) :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
     status = new_values.get ('status', cl.get (nodeid, 'status'))
     if status == db.user_status.lookup ('valid') :
