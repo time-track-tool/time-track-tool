@@ -645,6 +645,7 @@ ip_subnet = Class \
     , default_lease_time    = Number    ()
     , max_lease_time        = Number    ()
     )
+ip_subnet.setlabelprop ('ip')
 
 dns_record_type = Class \
     ( db
@@ -653,6 +654,14 @@ dns_record_type = Class \
     , description           = String    ()
     )
 dns_record_type.setkey ("name")
+
+# This should really be two separate classes. But roundup does not allow
+# subclassing for this -- we need machine_name pointers in other records
+# that can either be an A-Record or a CNAME. This is currently not
+# possible with two classes.
+# Another solution would be something that can either point to an
+# A-Record or to a CNAME. Maybe call this machine_name, too. But that
+# would get really complicated.
 
 machine_name = Class \
     ( db

@@ -7,7 +7,7 @@ from traceback          import format_tb
 from time               import gmtime
 from syslog             import syslog, openlog, LOG_INFO, LOG_ERR, LOG_DEBUG \
                              , LOG_AUTH, setlogmask, LOG_UPTO
-from rsclib.config_file import Config_File
+from rsclib.Config_File import Config_File
 from rsclib.autosuper   import autosuper
 from roundup            import instance
 from roundup.date       import Date

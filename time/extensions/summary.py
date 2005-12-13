@@ -44,7 +44,7 @@ from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from rsclib.autosuper               import autosuper
-from rsclib.pm_value                import PM_Value
+from rsclib.PM_Value                import PM_Value
 
 _      = lambda x : x
 

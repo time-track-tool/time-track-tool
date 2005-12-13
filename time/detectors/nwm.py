@@ -32,6 +32,7 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from operator                       import or_
+from rsclib.IP4_Address             import IP4_Address
 
 _      = lambda x : x
 common = None
@@ -57,7 +58,7 @@ def check_ip_olo (db, ip, olo) :
     sn = db.ip_subnet.find (org_location = olo)
     for sn_id in sn :
         subnet = db.ip_subnet.getnode (sn_id)
-        if common.ip_in_subnet (ip, subnet.ip, subnet.netmask) :
+        if IP4_Address (ip) in IP4_Address (subnet.ip, subnet.netmask) :
             return
     olo_name = db.org_location.get (olo, 'name')
     ip_sn    = _ ('ip_subnet')
@@ -201,7 +202,7 @@ def check_duplicate_ip_subnet (cl, nodeid, ip, mask) :
         ips    = cl.getnode (sn_id)
         o_ip   = ips.ip
         o_mask = ips.netmask
-        if  (common.subnets_overlap (ip, mask, o_ip, o_mask)) :
+        if IP4_Address (ip, mask).overlaps (IP4_Address (o_ip, o_mask)) :
             raise Reject, \
                 ( ("%(n)s %(ip)s %(mask)s overlaps with %(o_ip)s %(o_mask)s")
                 % locals ()
