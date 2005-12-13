@@ -35,10 +35,12 @@ import sys
 import ldif
 import textwrap
 
-from cStringIO        import StringIO
-from roundup.date     import Date
-from roundup          import instance
-from roundup.hyperdb  import Link, Multilink
+from cStringIO          import StringIO
+from rsclib.autosuper   import autosuper
+from rsclib.IP4_Address import IP4_Address
+from roundup.date       import Date
+from roundup            import instance
+from roundup.hyperdb    import Link, Multilink
 
 class Roundup_Access (object) :
     """ Wrapper class that gets a handle to the roundup instance and
@@ -76,7 +78,7 @@ class Roundup_Access (object) :
         return getattr (self, self._classname (rupname))
     # end def class_from_rupname
 
-    class Roundup (object) :
+    class Roundup (autosuper) :
         """
             Base class to encapsulate a roundup Class. With access functions
             for roundup and ldif export.
@@ -263,19 +265,23 @@ class Roundup_Access (object) :
             and DNS generation (DNS produces reverse DNS records).
         """
 
+        def __init__ (self, * args, ** kw) :
+            self.__super.__init__ (* args, ** kw)
+            self.ip = IP4_Address (self.ip, self.netmask)
+        # end def __init__
+
         def _ip_netmask (self) :
-            return common.subnet_mask (self.netmask)
+            return self.ip.subnet_mask ()
         # end def _ip_netmask
         ip_netmask = property (_ip_netmask)
 
         def _ip_broadcast (self) :
-            return common.broadcast_address (self.ip, self.netmask)
+            return self.ip.broadcast_address ()
         # end def _ip_broadcast
         ip_broadcast = property (_ip_broadcast)
 
         def _ip_subnet (self) :
-            num_ip = common.ip_as_number (self.ip, self.netmask)
-            return common.numeric_ip_to_string (num_ip)
+            return self.ip.__class__ (self.ip.ip)
         # end def _ip_subnet
         ip_subnet = property (_ip_subnet)
 
@@ -304,15 +310,11 @@ class Roundup_Access (object) :
         # end def _samba_dd_server
         samba_dd_server = property (_samba_dd_server)
 
-        def ip_addresses (self) :
-            ips = self.master.Network_Address.find \
+        def network_address_iter (self) :
+            na = self.master.Network_Address.find \
                 (org_location = self.org_location.id)
-            return \
-                (i for i in ips
-                 if common.ip_in_subnet (i.ip, self.ip, self.netmask)
-                )
-
-        # end def ip_addresses
+            return (i for i in na if i.ip in self.ip)
+        # end def network_address_iter
 
         dhcp_options = \
             [ ('subnet-mask',          'ip_subnet')
@@ -343,7 +345,7 @@ class Roundup_Access (object) :
             if self.dhcp_range :
                 dhcp.append ('    range %s;' % self.dhcp_range)
             dhcp.append ('')
-            for na in self.ip_addresses () :
+            for na in self.network_address_iter () :
                 ni   = na.network_interface
                 mn   = na.machine_name
                 name = mn.name or na.ip
@@ -372,9 +374,8 @@ class Roundup_Access (object) :
             oct = int (self.netmask + 7) / 8
             na  = self.master.Network_Address.find \
                 (org_location = self.org_location.id)
-            for n in na :
-                if common.ip_in_subnet (n.ip, self.ip, self.netmask) :
-                    dns.append (n.as_dns (oct))
+            for n in self.network_address_iter () :
+                dns.append (n.as_dns (oct))
             return "\n".join (d for d in dns if d)
         # end def as_dns
 
@@ -504,6 +505,11 @@ class Roundup_Access (object) :
             generation (Reverse DNS records).
         """
 
+        def __init__ (self, * args, ** kw) :
+            self.__super.__init__ (* args, ** kw)
+            self.ip = IP4_Address (self.ip)
+        # end def __init__
+
         def _machine_name (self) :
             machines = self.db.machine_name.filter \
                 ( None, dict
@@ -525,7 +531,7 @@ class Roundup_Access (object) :
                 dns.append \
                     ("%-16s IN PTR %s.%s." % \
                         ( '.'.join 
-                            ([r for r in reversed (self.ip.split ('.'))]
+                            ([r for r in reversed (str (self.ip).split ('.'))]
                              [0:n_octets]
                             )
                         , self.machine_name.name
