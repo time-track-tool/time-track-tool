@@ -22,6 +22,9 @@ msgstr ""
 msgid "dns_record_type"
 msgstr "DNS record type"
 
+msgid "domino_dn"
+msgstr "Domino DN"
+
 msgid "dhcp_server"
 msgstr "DHCP server"
 

@@ -267,6 +267,7 @@ org_location = Class \
     , location              = Link      ("location")
     , smb_domain            = Link      ("smb_domain")
     , dhcp_server           = Link      ("machine_name")
+    , domino_dn             = String    ()
     )
 org_location.setkey ("name")
 
@@ -986,8 +987,14 @@ classes = \
     ]
 
 class_field_perms = \
-    [ ( "org_location", "Edit", ["IT"]
-      , ("smb_domain", "dhcp_server")
+    [ ( "location", "Edit", ["IT"]
+      , ("domain_part",)
+      )
+    , ( "org_location", "Edit", ["IT"]
+      , ("smb_domain", "dhcp_server", "domino_dn")
+      )
+    , ( "organisation", "Edit", ["IT"]
+      , ("domain_part",)
       )
     , ( "user", "Edit", ["Admin", "HR", "IT"]
       , ( "address"

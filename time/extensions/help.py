@@ -168,6 +168,10 @@ helptext = \
       ""'''Part of a domain name. The domain name is built by
            concatenation the names of the Organisation and the Location.
         '''
+    , ""'domino_dn'                  :
+      ""'''Distinguished name for Domino users -- needed for alias
+           generation.
+        '''
     , ""'duration'                   :
       ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
            allowed, e.g., 7.10 is not allowed. The duration is created
