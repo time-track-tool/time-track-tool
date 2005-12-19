@@ -118,15 +118,12 @@ def check_unique (_, cl, id, ** kw) :
     search = cl.filter (None, kw)
     # strings do a substring search.
     for s in search :
-        print "before mat"
         if is_matching_result (cl, kw, s) :
-            print "in mat"
             r = []
             for k, v in kw.iteritems () :
                 attr, val = (_ (i) for i in (k, v))
                 r.append ("%(attr)s=%(val)s" % locals ())
             raise Reject, _ ("Duplicate: %s") % ', '.join (r)
-        print "after mat"
 # end def check_unique
 
 def sort_uniq (list) :

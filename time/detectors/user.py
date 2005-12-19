@@ -166,6 +166,9 @@ def create_dynuser (db, cl, nodeid, new_values) :
 # end def create_dynuser
 
 def new_user (db, cl, nodeid, new_values) :
+    # No checks for special accounts:
+    if new_values.get ('username', None) in ['admin', 'anonymous'] :
+        return
     for i in 'firstname', 'lastname', 'org_location', 'department' :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
