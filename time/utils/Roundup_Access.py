@@ -348,7 +348,7 @@ class Roundup_Access (object) :
             for na in self.network_address_iter () :
                 ni   = na.network_interface
                 mn   = na.machine_name
-                name = mn.name or na.ip
+                name = (mn and mn.name) or na.ip
                 if not na.use_dhcp or not ni :
                     continue
                 dhcp.append ('    # %s' % ni.description)
@@ -380,77 +380,6 @@ class Roundup_Access (object) :
         # end def as_dns
 
     # end class Ip_Subnet
-
-    class Machine (Roundup) :
-        """
-            Encapsulate the roundup machine class. Include LDIF export.
-            uid=smbname$,ou=Computers,ou=vie,ou=at,ou=company,o=org,BASEDN
-        """
-
-        ldif_map = \
-            [ ('cn',                   'smb_name')         #
-            , ('sn',                   'smb_name')         #
-            , ('description',          'description')      #
-            , ('displayName',          'smb_name')         #
-            , ('uid',                  'smb_name')         #
-            , ('uidNumber',            'machine_uid')      #
-            , ('gidNumber',            'gid')
-            , ('homeDirectory',        'home_directory')   #
-            , ('loginShell',           'login_shell')      #
-            , ('sambaSID',             'sid')              #
-            , ('sambaPwdLastSet',      'now')              #
-            , ('sambaPwdCanChange',    'zero')             #
-            , ('sambaPwdMustChange',   'endofepoch')       #
-            , ('sambaAcctFlags',       'samba_acct_flags') #
-            , ('sambaPrimaryGroupSID', 'group_sid')
-            ]
-
-        object_class = \
-            [ 'top'
-            , 'inetOrgPerson'
-            , 'posixAccount'
-            , 'sambaSamAccount'
-            ]
-        ou               = 'Computers'
-        dnname           = 'uid'
-        home_directory   = '/dev/null'
-        login_shell      = '/bin/false'
-        samba_acct_flags = '[S]'
-
-        def _group_sid (self) :
-            return ''.join \
-                (( self.smb_domain.sid
-                 , '-'
-                 , str (int (self.gid * 2 + 1001))
-                ))
-        # end def _group_sid
-        group_sid = property (_group_sid)
-
-        def _gid (self) :
-            return self.smb_domain.machine_group
-        # end def _gid
-        gid = property (_gid)
-
-        def _ldif_key (self) :
-            return self.smb_name
-        # end def _ldif_key
-        ldif_key = property (_ldif_key)
-
-        def _org_location (self) :
-            return self.smb_domain.org_location
-        # end def _org_location
-        org_location = property (_org_location)
-
-        def _sid (self) :
-            return ''.join \
-                (( self.smb_domain.sid
-                 , '-'
-                 , str (int (self.machine_uid * 2 + 1000))
-                ))
-        # end def _sid
-        sid = property (_sid)
-
-    # end class Machine
 
     class Machine_Name (Roundup) :
         """
@@ -643,6 +572,76 @@ class Roundup_Access (object) :
         dnname       = 'sambaDomainName'
 
     # end class Smb_Domain
+
+    class Smb_Machine (Roundup) :
+        """
+            Encapsulate the roundup smb_machine class. Include LDIF export.
+            uid=smbname$,ou=Computers,ou=vie,ou=at,ou=company,o=org,BASEDN
+        """
+
+        ldif_map = \
+            [ ('cn',                   'name')         #
+            , ('sn',                   'name')         #
+            , ('displayName',          'name')         #
+            , ('uid',                  'name')         #
+            , ('uidNumber',            'machine_uid')      #
+            , ('gidNumber',            'gid')
+            , ('homeDirectory',        'home_directory')   #
+            , ('loginShell',           'login_shell')      #
+            , ('sambaSID',             'sid')              #
+            , ('sambaPwdLastSet',      'now')              #
+            , ('sambaPwdCanChange',    'zero')             #
+            , ('sambaPwdMustChange',   'endofepoch')       #
+            , ('sambaAcctFlags',       'samba_acct_flags') #
+            , ('sambaPrimaryGroupSID', 'group_sid')
+            ]
+
+        object_class = \
+            [ 'top'
+            , 'inetOrgPerson'
+            , 'posixAccount'
+            , 'sambaSamAccount'
+            ]
+        ou               = 'Computers'
+        dnname           = 'uid'
+        home_directory   = '/dev/null'
+        login_shell      = '/bin/false'
+        samba_acct_flags = '[S]'
+
+        def _group_sid (self) :
+            return ''.join \
+                (( self.smb_domain.sid
+                 , '-'
+                 , str (int (self.gid * 2 + 1001))
+                ))
+        # end def _group_sid
+        group_sid = property (_group_sid)
+
+        def _gid (self) :
+            return self.smb_domain.machine_group
+        # end def _gid
+        gid = property (_gid)
+
+        def _ldif_key (self) :
+            return self.name
+        # end def _ldif_key
+        ldif_key = property (_ldif_key)
+
+        def _org_location (self) :
+            return self.smb_domain.org_location
+        # end def _org_location
+        org_location = property (_org_location)
+
+        def _sid (self) :
+            return ''.join \
+                (( self.smb_domain.sid
+                 , '-'
+                 , str (int (self.machine_uid * 2 + 1000))
+                ))
+        # end def _sid
+        sid = property (_sid)
+
+    # end class Smb_Machine
 
     class User (Roundup) :
         """

@@ -364,7 +364,8 @@ def check_smb_machine (db, cl, nodeid, new_values) :
     for i in 'smb_domain', 'machine_name', 'machine_uid' :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
-    sd = db.smb_domain.getnode (new_values ['smb_domain'])
+    sd_id = new_values.get ('smb_domain', cl.get (nodeid, 'smb_domain'))
+    sd    = db.smb_domain.getnode (sd_id)
     if 'machine_uid' in new_values :
         db.smb_domain.set \
             ( sd.id
