@@ -299,6 +299,24 @@ helptext = \
       ""'''Unique name of this %(Classname)s, including the version
            number
         '''
+    , ""'netbios_dd'                 :
+      ""'''Netbios datagram distribution server (NBDD) option for DHCP
+           config. Specifies list of servers in order of preference.
+        '''
+    , ""'netbios_ns'                 :
+      ""'''Netbios name server (NBNS) option for DHCP config. Specifies
+           list of servers in order of preference. Netbios name service
+           is more commonly referred to as WINS.
+        '''
+    , ""'netbios_nodetype'           :
+      ""'''The Netbios node type option allows NetBIOS over TCP/IP
+           clients which are configurable to be configured as described
+           in RFC 1001/1002. The value is specified as a single octet
+           which identifies the client type. Possible types are:
+           1: B-node: Broadcast - no WINS, 2: P-node: Peer - WINS only,
+           4: M-node: Mixed - broadcast, then WINS, 8: H-node: Hybrid -
+           WINS, then broadcast. (taken from dhcp-options manual page)
+        '''
     , ""'netmask'                    :
       ""'''IP net mask for this %(Classname)s'''
     , ""'network_address'            :

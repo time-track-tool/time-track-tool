@@ -292,23 +292,31 @@ class Roundup_Access (object) :
 
         def _samba_name_servers (self) :
             sd  = self.org_location.smb_domain
+            r   = []
             if sd :
-                r = []
                 for n in sd.netbios_ns :
                     r.append ('.'.join ((n.name, self.domain)))
-            return []
+            return r
         # end def _samba_name_servers
         samba_name_servers = property (_samba_name_servers)
 
         def _samba_dd_server (self) :
             sd  = self.org_location.smb_domain
+            r   = []
             if sd :
-                n = sd.netbios_dd
-                if n :
-                    return '.'.join ((n.name, self.domain))
-            return None
+                for n in sd.netbios_dd :
+                    r.append ('.'.join ((n.name, self.domain)))
+            return r
         # end def _samba_dd_server
         samba_dd_server = property (_samba_dd_server)
+
+        def _netbios_nodetype (self) :
+            sd = self.org_location.smb_domain
+            if sd :
+                return sd.netbios_nodetype
+            return None
+        # end def _netbios_nodetype
+        netbios_nodetype = property (_netbios_nodetype)
 
         def network_address_iter (self) :
             na = self.master.Network_Address.find \
@@ -323,6 +331,7 @@ class Roundup_Access (object) :
             , ('domain-name-servers',  'dns_servers')
             , ('netbios-name-servers', 'samba_name_servers')
             , ('netbios-dd-server',    'samba_dd_server')
+            , ('netbios-node-type',    'netbios_nodetype')
             ]
 
         def as_dhcp (self) :

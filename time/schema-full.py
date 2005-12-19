@@ -719,7 +719,7 @@ smb_domain = Class \
     , last_machine_uid      = Number    ()
     , org_location          = Link      ("org_location")
     , netbios_ns            = Multilink ("machine_name")
-    , netbios_dd            = Link      ("machine_name")
+    , netbios_dd            = Multilink ("machine_name")
     , netbios_nodetype      = String    ()
     )
 smb_domain.setkey ("name")
@@ -1000,6 +1000,7 @@ classes = \
     , ("network_interface"   , ["IT", "ITView"],     ["IT"     ])
     , ("operating_system"    , ["IT", "ITView"],     ["IT"     ])
     , ("smb_domain"          , ["IT", "ITView"],     ["IT"     ])
+    , ("smb_machine"         , ["IT", "ITView"],     ["IT"     ])
     ]
 
 class_field_perms = \
