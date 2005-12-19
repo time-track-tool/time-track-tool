@@ -1041,7 +1041,7 @@ class_field_perms = \
         , "shadow_expire", "shadow_used"
         )
       )
-    , ( "user", "View", ["Controlling"], ( "roles"))
+    , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
