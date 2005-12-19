@@ -609,11 +609,18 @@ machine = Class \
     , description           = String    ()
     , owner                 = Link      ("user")
     , operating_system      = Multilink ("operating_system")
-    , smb_name              = String    ()
-    , machine_uid           = Number    ()
-    , smb_domain            = Link      ("smb_domain")
     )
 machine.setkey ("inventory_no")
+
+smb_machine = Class \
+    ( db
+    , ''"smb_machine"
+    , name                  = String    ()
+    , machine_uid           = Number    ()
+    , smb_domain            = Link      ("smb_domain")
+    , machine_name          = Link      ("machine_name")
+    )
+smb_machine.setkey ("name")
 
 operating_system = Class \
     ( db

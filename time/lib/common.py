@@ -154,22 +154,53 @@ def check_loop (_, cl, id, prop, attr, ids = []) :
 # end def check_loop
 
 def interval_set_from_string (interval_string) :
+    """
+        >>> interval_set_from_string ('200-300,500-700')
+        Interval_Set ((200, 300), (500, 700))
+        >>> interval_set_from_string ('30000-39999')
+        Interval_Set ((30000, 39999))
+        >>> interval_set_from_string ('300-399, 7000-7999')
+        Interval_Set ((300, 399), (7000, 7999))
+    """
     intervals = []
     for i in interval_string.split (',') :
         bounds = i.split ('-')
         if len (bounds) == 1 :
             bounds = (bounds [0], bounds [0])
+        bounds = (long (b) for b in bounds)
         intervals.append (TFL.Numeric_Interval (* bounds))
     return TFL.Interval_Set (* intervals)
 # end def check_in_interval_set
 
 def next_uid_or_gid (last, interval_string) :
-    last = last or 0
+    """
+        >>> next_uid_or_gid (1, '1-2')
+        2L
+        >>> next_uid_or_gid (30000, '30000-39999')
+        30001L
+        >>> next_uid_or_gid (399, '300-399, 7000-7999')
+        7000L
+    """
+    last = long (last) or 0L
     iset = interval_set_from_string (interval_string)
-    return iset.next_point (last + 1)
+    return iset.next_point_up (last + 1)
 # end def next_uid_or_gid
 
 def uid_or_gid_in_range (id, interval_string) :
+    """
+        >>> uid_or_gid_in_range (2, '47-99')
+        False
+        >>> uid_or_gid_in_range (46, '47-99')
+        False
+        >>> uid_or_gid_in_range (100, '47-99')
+        False
+        >>> uid_or_gid_in_range (47, '47-99')
+        True
+        >>> uid_or_gid_in_range (49, '47-99')
+        True
+        >>> uid_or_gid_in_range (99, '47-99')
+        True
+    """
     iset = interval_set_from_string (interval_string)
     return iset.contains_point (id)
 # end def uid_or_gid_in_range
@@ -202,10 +233,11 @@ def tolower_ascii (name) :
 # end def tolower_ascii
 
 
-def uniq (_, cl, id, attr, nick) :
+def uniq (_, cl, id, ** kw) :
     """ Function for regression-testing new_nickname
     """
-    rej = { 'gst' : 1, 'gsr' : 1 }
+    rej  = { 'gst' : 1, 'gsr' : 1 }
+    nick = kw ['nick']
     if nick in rej :
         raise Reject, "BLA"
 # end def uniq
@@ -223,8 +255,8 @@ def new_nickname (_, cl, nodeid, lfn, lln, uniq = check_unique) :
             for l2 in lln [1:] :
                 nick = ''.join ((f, l1, l2))
                 try :
-                    uniq (_, cl, nodeid, 'nickname', nick)
-                    uniq (_, cl, nodeid, 'username', nick)
+                    uniq (_, cl, nodeid, nickname = nick)
+                    uniq (_, cl, nodeid, username = nick)
                     return nick
                 except Reject :
                     pass

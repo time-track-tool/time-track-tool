@@ -48,21 +48,6 @@
          (classname, 'operating_system')"/>
      <td tal:content="structure python:context.operating_system.menu (height=5)"/>
     </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'smb_domain')"/>
-     <td tal:content="structure python:context.smb_domain.menu ()"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'smb_name')"/>
-     <td tal:content="structure python:context.smb_name.field (60)"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'machine_uid')"/>
-     <td tal:content="structure python:context.machine_uid.field ()"/>
-    </tr>
    </tal:block>
   </tal:block>
   <tal:block tal:condition="context/id"

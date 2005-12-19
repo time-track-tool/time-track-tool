@@ -1,0 +1,51 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+   <tal:block metal:fill-slot="ttt_issue_content">
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'machine_uid')"/>
+     <td tal:content="structure python:context.machine_uid.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'smb_domain')"/>
+     <td tal:content="structure python:context.smb_domain.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'machine_name')"/>
+     <td>
+      <tal:block tal:replace="structure context/machine_name/field"/>
+      <tal:block tal:replace="structure python:db.machine_name.classhelp
+       ( 'name,dns_record_type'
+       , property='machine_name&amp;:type=link'
+       , width='600'
+       , sort='name'
+       , pagesize=1000
+       )"/>
+     </td>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

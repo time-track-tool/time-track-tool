@@ -347,51 +347,31 @@ def new_alias (db, cl, nodeid, new_values) :
         new_values ['alias_to_user']  = common.sort_uniq (a2u)
 # end def new_alias
 
-smb_attributes = 'smb_name', 'machine_uid', 'smb_domain'
-
-def reduce_or (* args) :
-    return reduce (lambda a, b : a or b, args)
-# end def reduce_or
-
-def new_machine (db, cl, nodeid, new_values) :
-    sd = None
+def new_smb_machine (db, cl, nodeid, new_values) :
+    for i in 'smb_domain', 'machine_name' :
+        if i not in new_values :
+            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    sd = db.smb_domain.getnode (new_values ['smb_domain'])
     if 'smb_domain' in new_values and 'machine_uid' not in new_values :
-        sd = db.smb_domain.getnode (new_values ['smb_domain'])
         new_values ['machine_uid'] = common.next_uid_or_gid \
             (sd.last_machine_uid, sd.machine_uid_range)
-    if reduce_or (* (a in newvalues for a in smb_attributes)) :
-        for i in smb_attributes :
-            if i not in new_values :
-                raise Reject, _ ("All of %s must be specified") \
-                    % ', '.join (_ (i) for i in smb_attributes)
-    if sd :
-        db.smb_domain.set \
-            ( sd.id
-            , last_machine_uid = max
-                (sd.last_machine_uid, new_values ['machine_uid'])
-            )
-    common.check_unique (_, cl, nodeid, smb_name = new_values ['smb_name'])
-# end def new_machine
+    mu = new_values ['machine_uid']
+    common.check_unique (_, cl, nodeid, machine_uid = mu)
+    db.smb_domain.set (sd.id, last_machine_uid = max (sd.last_machine_uid, mu))
+# end def new_smb_machine
 
-def check_machine (db, cl, nodeid, new_values) :
-    smb_attr_values = {}
-    for a in smb_attributes :
-        smb_attr_values [a] = new_values.get (a, cl.get (nodeid, a))
-    if reduce_or (* (smb_attr_values [a] for a in smb_attributes)) :
-        for i in smb_attributes :
-            if not smb_attr_values [i] :
-                raise Reject, _ ("All of %s must be specified") \
-                    % ', '.join (_ (i) for i in smb_attributes)
+def check_smb_machine (db, cl, nodeid, new_values) :
+    for i in 'smb_domain', 'machine_name', 'machine_uid' :
+        if i in new_values and not new_values [i] :
+            raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
+    sd = db.smb_domain.getnode (new_values ['smb_domain'])
     if 'machine_uid' in new_values :
-        sd = db.smb_domain.getnode (new_values ['smb_domain'])
         db.smb_domain.set \
             ( sd.id
             , last_machine_uid = max
                 (sd.last_machine_uid, new_values ['machine_uid'])
             )
-    if 'smb_name' in new_values :
-        common.check_unique (_, cl, nodeid, smb_name = new_values ['smb_name'])
-# end def check_machine
+# end def check_smb_machine
 
 def init (db) :
     import sys, os
@@ -407,8 +387,6 @@ def init (db) :
     db.group.audit             ("set",    check_group)
     db.ip_subnet.audit         ("create", new_ip_subnet)
     db.ip_subnet.audit         ("set",    check_ip_subnet)
-    db.machine.audit           ("create", new_machine)
-    db.machine.audit           ("set",    check_machine)
     db.machine_name.audit      ("create", new_machine_name)
     db.machine_name.audit      ("set",    check_machine_name)
     db.network_address.audit   ("create", new_network_address)
@@ -417,6 +395,8 @@ def init (db) :
     db.network_interface.audit ("set",    check_network_interface)
     db.smb_domain.audit        ("create", new_smb_domain)
     db.smb_domain.audit        ("set",    check_smb_domain)
+    db.smb_machine.audit       ("create", new_smb_machine)
+    db.smb_machine.audit       ("set",    check_smb_machine)
 # end def init
 
 ### __END__ time_project
