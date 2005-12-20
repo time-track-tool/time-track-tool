@@ -54,7 +54,7 @@
  </tr>
  <tal:block tal:condition="context/id">
  <tr tal:define="
-   ud python:utils.get_user_dynamic (db._db, context.id, '.')"
+   ud python:utils.act_or_latest_user_dynamic (db._db, context.id)"
   tal:condition="python:db.user_dynamic.is_view_ok () and ud">
   <th i18n:translate="">user_dynamic</th>
   <td>

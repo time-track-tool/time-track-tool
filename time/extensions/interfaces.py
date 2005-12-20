@@ -45,11 +45,14 @@ from roundup                        import date as r_date
 from copy                           import copy
 from xml.sax.saxutils               import escape
 
-_                      = lambda x : x
-get_user_dynamic       = None
-clearance_by           = None
-user_has_role          = None
-monthstart_twoweeksago = None
+_                          = lambda x : x
+get_user_dynamic           = None
+next_user_dynamic          = None
+prev_user_dynamic          = None
+act_or_latest_user_dynamic = None
+clearance_by               = None
+user_has_role              = None
+monthstart_twoweeksago     = None
 
 def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
@@ -343,9 +346,11 @@ def welcome (db) :
 def init (instance) :
     import sys, os
     global _, get_user_dynamic, clearance_by, user_has_role
-    global monthstart_twoweeksago
+    global monthstart_twoweeksago, act_or_latest_user_dynamic
+    global prev_user_dynamic, next_user_dynamic
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
-    from user_dynamic import get_user_dynamic
+    from user_dynamic import get_user_dynamic, act_or_latest_user_dynamic
+    from user_dynamic import next_user_dynamic, prev_user_dynamic
     from common       import clearance_by
     from common       import user_has_role, monthstart_twoweeksago
     del (sys.path [0])
@@ -370,3 +375,6 @@ def init (instance) :
     reg ("welcome",                      welcome)
     reg ("monthstart_twoweeksago",       monthstart_twoweeksago)
     reg ("get_user_dynamic",             get_user_dynamic)
+    reg ("next_user_dynamic",            next_user_dynamic)
+    reg ("prev_user_dynamic",            prev_user_dynamic)
+    reg ("act_or_latest_user_dynamic",   act_or_latest_user_dynamic)

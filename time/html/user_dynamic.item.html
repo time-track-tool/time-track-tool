@@ -26,6 +26,20 @@
    <tal:block metal:use-macro="templates/page/macros/ttt_issue">
     <tal:block metal:fill-slot="ttt_issue_content">
      <tr>
+      <td align="right" tal:define="prev python:utils.prev_user_dynamic (db, context)">
+       <a tal:condition="prev"
+          tal:attributes="href string:user_dynamic${prev/id}">
+        &lt;&lt;&nbsp;
+       </a>
+      </td>
+      <td align="left" tal:define="next python:utils.next_user_dynamic (db, context)">
+       <a tal:condition="next"
+          tal:attributes="href string:user_dynamic${next/id}">
+        &gt;&gt;
+       </a>
+      </td>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'user')"/>
       <td tal:condition="not:context/id">

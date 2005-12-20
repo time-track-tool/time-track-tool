@@ -31,7 +31,7 @@
 
 from roundup.date import Date
 from time         import gmtime
-
+from bisect       import bisect_left
 
 dynamic = {} # cache
 
@@ -61,6 +61,43 @@ def get_user_dynamic (db, user, date) :
             break
     return None
 # end def get_user_dynamic
+
+def _find_user_dynamic (db, user, id = 0) :
+    ids = db.user_dynamic.filter \
+        ( None, dict (user = user)
+        , sort  = ('-', 'valid_to')
+        , group = ('+', 'valid_from')
+        )
+    for i in range (len (ids)) :
+        if ids [i] == id :
+            return ids, i
+    return ids, len (ids)
+# end def _find_user_dynamic
+
+def next_user_dynamic (db, dynuser) :
+    ids, idx = _find_user_dynamic (db._db, dynuser.user.id, dynuser.id)
+    idx += 1
+    if idx >= len (ids) : 
+        return None
+    return db._db.user_dynamic.getnode (ids [idx])
+# end def next_user_dynamic
+
+def prev_user_dynamic (db, dynuser) :
+    ids, idx = _find_user_dynamic (db._db, dynuser.user.id, dynuser.id)
+    idx -= 1
+    if idx < 0 :
+        return None
+    return db._db.user_dynamic.getnode (ids [idx])
+# end def prev_user_dynamic
+
+def act_or_latest_user_dynamic (db, user) :
+    ud = get_user_dynamic (db, user, Date ('.'))
+    if not ud :
+        ids, idx = _find_user_dynamic (db, user)
+        if ids :
+            ud = db.user_dynamic.getnode (ids [-1])
+    return ud
+# end def act_or_latest_user_dynamic
 
 def day_work_hours (dynuser, date) :
     """ Compute hours for a holiday etc from the date """
