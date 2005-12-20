@@ -272,6 +272,11 @@ position = db.getclass ("position")
 for _position in positions :
     position.create (position = _position)
 
+# user status must come first.
+user_status = db.getclass ('user_status')
+user_status.create (name = "valid",    description = "Valid user")
+user_status.create (name = "obsolete", description = "No longer valid")
+
 # users
 # create the two default users
 user = db.getclass ('user')
@@ -325,10 +330,6 @@ work_location.create \
 sex = db.getclass ('sex')
 sex.create (name = "female")
 sex.create (name = "male")
-
-user_status = db.getclass ('user_status')
-user_status.create (name = "valid",    description = "Valid user")
-user_status.create (name = "obsolete", description = "No longer @TTTech")
 
 summary_type = db.summary_type
 summary_type.create (name = "day",   order = 1)
