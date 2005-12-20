@@ -363,7 +363,7 @@ class ExtProperty :
     # end def classhelp_properties
 
     def pretty_ids (self, idstring) :
-        if not idstring or not self.lnkcls :
+        if not idstring or idstring == '-1' or not self.lnkcls :
             return idstring
         key = self.lnkcls.getkey ()
         if not key :
