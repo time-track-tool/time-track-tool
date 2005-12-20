@@ -55,7 +55,7 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
             if (   valid_to
                and valid_from <= rvalid_from
                and valid_to   >  rvalid_from
-               ) :
+               ) or valid_from == rvalid_from :
                 raise Reject, \
                     ( "%(valid_from)s;%(valid_to)s overlaps with "
                       "%(rvalid_from)s;"
@@ -96,8 +96,8 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     dept     = new_values.get ('department',   cl.get (nodeid, 'department'))
     if 'org_location' in new_values or 'department' in new_values :
         db.user.set (user, org_location = olo, department = dept)
-    if 'val_from' in new_values or 'val_to' in new_values :
-        new_values ['val_from'], new_values ['val_to'] = \
+    if 'valid_from' in new_values or 'valid_to' in new_values :
+        new_values ['valid_from'], new_values ['valid_to'] = \
             check_ranges (cl, nodeid, user, val_from, val_to)
     for i in 'vacation_yearly', 'vacation_remaining' :
         check_vacation (i, new_values)
@@ -143,7 +143,7 @@ def close_existing (db, cl, nodeid, old_values) :
         if dr == nodeid :
             continue
         r = cl.getnode (dr)
-        if not r.valid_to and current.valid_from >= r.valid_from:
+        if not r.valid_to and current.valid_from >= r.valid_from :
             cl.set (dr, valid_to = current.valid_from)
             break
 # end def close_existing
