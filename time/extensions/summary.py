@@ -507,8 +507,10 @@ class Summary_Report :
             ])
         #print "after dr_dat_usr:", time.time () - timestamp
 
-        trvl_tr     = db.time_record.find \
-            (daily_record = dr, time_activity = travel_act)
+        trvl_tr     = []
+        if dr :
+            trvl_tr = db.time_record.find \
+                (daily_record = dr, time_activity = travel_act)
         trvl_dr     = {}
         for trid in trvl_tr :
             t = db.time_record.getnode (trid)
