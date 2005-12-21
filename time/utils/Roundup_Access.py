@@ -33,6 +33,7 @@
 import os
 import sys
 import ldif
+import ldap
 import textwrap
 
 from cStringIO          import StringIO
@@ -41,6 +42,10 @@ from rsclib.IP4_Address import IP4_Address
 from roundup.date       import Date
 from roundup            import instance
 from roundup.hyperdb    import Link, Multilink
+from ldap               import modlist
+from ldap               import filter as ldapfilter
+
+escape = ldapfilter.escape_filter_chars
 
 class Roundup_Access (object) :
     """ Wrapper class that gets a handle to the roundup instance and
@@ -84,6 +89,19 @@ class Roundup_Access (object) :
             for roundup and ldif export.
         """
 
+        zero       = 0
+        endofepoch = 0x7FFFFFFF
+
+        def _label (self) :
+            return getattr (self, self.cl.labelprop ())
+        # end def _label
+        label    = ldif_key = property (_label)
+
+        def _now (self) :
+            return Date ('.')
+        # end def _now
+        now = property (_now)
+
         def __init__ (self, id_or_key) :
             try :
                 self.id = str (int (id_or_key))
@@ -91,6 +109,78 @@ class Roundup_Access (object) :
                 self.id = self.cl.lookup (id_or_key)
             self.node   = self.cl.getnode (self.id)
         # end def __init__
+
+        def as_ldap_entry (self) :
+            entry  = { 'objectClass' : self.object_class }
+            for ldn, name in self.ldif_map.iteritems () :
+                try :
+                    attr = getattr (self, name)
+                except AttributeError, cause :
+                    attr = None
+                if isinstance (attr, Date) :
+                    attr = attr.timestamp ()
+                if isinstance (attr, float) :
+                    attr = long (attr)
+                if isinstance (attr, list) :
+                    entry [ldn] = attr
+                elif attr is not None :
+                    entry [ldn] = [str (attr)]
+            return entry
+        # end def as_ldap_entry
+
+        def as_ldap_modlist (self, url, basedn, binddn, bindpw) :
+            ld = ldap.initialize (url)
+            ld.simple_bind_s (binddn, bindpw)
+            sk = self.ldap_search_key ()
+            lu = ld.search_s \
+                (basedn, ldap.SCOPE_SUBTREE, sk, self.ldif_map.keys ())
+            if len (lu) > 1 :
+                raise ValueError, "More than one entry found for %s" % sk
+            if not lu :
+                return modlist.addModlist (self.as_ldap_entry ())
+            print (lu, (self.dn (), self.as_ldap_entry ()))
+            return modlist.modifyModlist \
+                (lu [0], (self.dn (), self.as_ldap_entry ()))
+        # end def as_ldap_modlist
+
+        def as_ldif (self) :
+            strio  = StringIO ()
+            writer = ldif.LDIFWriter (strio)
+            entry  = self.as_ldap_entry ()
+            writer.unparse (self.dn (), entry)
+            return strio.getvalue ()
+        # end def as_ldif
+
+        def dnname_ou (self, ou = None) :
+            if ou is None :
+                ou = ''
+                if self.ou :
+                    ou = ",ou=%s" % self.ou
+            return "%s=%s%s" % (self.dnname, self.ldif_key, ou)
+        # end def dnname_ou
+
+        def dn (self) :
+            op     = self.org_location.orgpath
+            org_dn = ["ou=%s" % p for p in op [:-1]]
+            org_dn.append ("o=%s" % op [-1])
+            return "%s,%s,%s" \
+                % (self.dnname_ou (), ','.join (org_dn), self.basedn)
+        # end def dn
+
+        def filter (cls, *args, **kw) :
+            return (cls (i) for i in cls.cl.filter (*args, **kw))
+        filter = classmethod (filter)
+
+        def find (cls, *args, **kw) :
+            return (cls (i) for i in cls.cl.find (*args, **kw))
+        find = classmethod (find)
+
+        def ldap_search_key (self) :
+            return ldapfilter.filter_format \
+                ( '(&(%s)(objectClass=%%s))' % escape (self.dnname_ou (''))
+                , (self.object_class [0],)
+                )
+        # end def ldap_search_key
 
         def __getattr__ (self, name) :
             try :
@@ -112,60 +202,6 @@ class Roundup_Access (object) :
             return value
         # end def __getattr__
 
-        def as_ldif (self) :
-            strio  = StringIO ()
-            entry  = { 'objectClass' : self.object_class }
-            writer = ldif.LDIFWriter (strio)
-            for ldn, name in self.ldif_map :
-                try :
-                    attr = getattr (self, name)
-                except AttributeError, cause :
-                    attr = None
-                if isinstance (attr, Date) :
-                    attr = attr.timestamp ()
-                if isinstance (attr, float) :
-                    attr = long (attr)
-                if isinstance (attr, list) :
-                    entry [ldn] = attr
-                elif attr is not None :
-                    entry [ldn] = [str (attr)]
-            writer.unparse (self.dn (), entry)
-            return strio.getvalue ()
-        # end def as_ldif
-
-        zero       = 0
-        endofepoch = 0x7FFFFFFF
-
-        def _now (self) :
-            return Date ('.')
-        # end def _now
-        now = property (_now)
-
-        def dn (self) :
-            op     = self.org_location.orgpath
-            org_dn = ["ou=%s" % p for p in op [:-1]]
-            org_dn.append ("o=%s" % op [-1])
-            ou     = ''
-            if self.ou :
-                ou = ",ou=%s" % self.ou
-            label  = self.ldif_key
-            return "%s=%s%s,%s,%s" \
-                % (self.dnname, label, ou, ','.join (org_dn), self.basedn)
-        # end def dn
-
-        def _label (self) :
-            return getattr (self, self.cl.labelprop ())
-        # end def _label
-        label    = ldif_key = property (_label)
-
-        def filter (cls, *args, **kw) :
-            return (cls (i) for i in cls.cl.filter (*args, **kw))
-        filter = classmethod (filter)
-
-        def find (cls, *args, **kw) :
-            return (cls (i) for i in cls.cl.find (*args, **kw))
-        find = classmethod (find)
-
     # end class Roundup
 
     class Alias (Roundup) :
@@ -174,12 +210,12 @@ class Roundup_Access (object) :
             cn=sales (the name of the alias)
         """
 
-        ldif_map = \
-            [ ('cn',                   'name')
-            , ('mail',                 'mail')
-            , ('grouptype',            'grouptype')
-            , ('member',               'member')
-            ]
+        ldif_map = dict \
+            (( ('cn',                   'name')
+            ,  ('mail',                 'mail')
+            ,  ('grouptype',            'grouptype')
+            ,  ('member',               'member')
+            ))
 
         object_class = \
             [ 'top'
@@ -218,15 +254,15 @@ class Roundup_Access (object) :
             cn=..,ou=Groups,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
 
-        ldif_map = \
-            [ ('cn',                   'name')
-            , ('description',          'description')
-            , ('displayName',          'name')
-            , ('gidNumber',            'gid')
-            , ('memberUid',            'members')
-            , ('sambaGroupType',       'samba_group_type')
-            , ('sambaSID',             'sid')
-            ]
+        ldif_map = dict \
+            (( ('cn',                   'name')
+            ,  ('description',          'description')
+            ,  ('displayName',          'name')
+            ,  ('gidNumber',            'gid')
+            ,  ('memberUid',            'members')
+            ,  ('sambaGroupType',       'samba_group_type')
+            ,  ('sambaSID',             'sid')
+            ))
 
         object_class = \
             [ 'posixGroup'
@@ -569,11 +605,11 @@ class Roundup_Access (object) :
             Encapsulate the roundup smb_domain class. Includes LDIF export.
             sambaDomainName=..,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
-        ldif_map = \
-            [ ('sambaDomainName',         'name')
-            , ('sambaSID',                'sid')
-            , ('sambaAlgorithmicRidBase', 'rid_base')
-            ]
+        ldif_map = dict \
+            (( ('sambaDomainName',         'name')
+            ,  ('sambaSID',                'sid')
+            ,  ('sambaAlgorithmicRidBase', 'rid_base')
+            ))
 
         object_class = ['sambaDomain']
         rid_base     = 1000
@@ -588,22 +624,22 @@ class Roundup_Access (object) :
             uid=smbname$,ou=Computers,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
 
-        ldif_map = \
-            [ ('cn',                   'name')         #
-            , ('sn',                   'name')         #
-            , ('displayName',          'name')         #
-            , ('uid',                  'name')         #
-            , ('uidNumber',            'machine_uid')      #
-            , ('gidNumber',            'gid')
-            , ('homeDirectory',        'home_directory')   #
-            , ('loginShell',           'login_shell')      #
-            , ('sambaSID',             'sid')              #
-            , ('sambaPwdLastSet',      'now')              #
-            , ('sambaPwdCanChange',    'zero')             #
-            , ('sambaPwdMustChange',   'endofepoch')       #
-            , ('sambaAcctFlags',       'samba_acct_flags') #
-            , ('sambaPrimaryGroupSID', 'group_sid')
-            ]
+        ldif_map = dict \
+            (( ('cn',                   'name')
+            ,  ('sn',                   'name')
+            ,  ('displayName',          'name')
+            ,  ('uid',                  'name')
+            ,  ('uidNumber',            'machine_uid')
+            ,  ('gidNumber',            'gid')
+            ,  ('homeDirectory',        'home_directory')
+            ,  ('loginShell',           'login_shell')
+            ,  ('sambaSID',             'sid')
+            ,  ('sambaPwdLastSet',      'now')
+            ,  ('sambaPwdCanChange',    'zero')
+            ,  ('sambaPwdMustChange',   'endofepoch')
+            ,  ('sambaAcctFlags',       'samba_acct_flags')
+            ,  ('sambaPrimaryGroupSID', 'group_sid')
+            ))
 
         object_class = \
             [ 'top'
@@ -658,44 +694,44 @@ class Roundup_Access (object) :
             uid=..,ou=Users,ou=vie,ou=at,ou=company,o=org,BASEDN
         """
 
-        ldif_map = \
-            [ ('cn',                   'username')
-            , ('sn',                   'realname')
-            , ('telephoneNumber',      'phone')
-            , ('description',          'realname')
-            , ('displayName',          'realname')
-            , ('initials',             'nickname')
-            , ('mail',                 'address')
-            , ('uid',                  'username')
-            , ('uidNumber',            'uid')
-            , ('gidNumber',            'gid')
-            , ('homeDirectory',        'home_directory')
-            , ('loginShell',           'login_shell')
-            , ('gecos',                'gecos')
-            , ('mailLocalAddress',     'mail_addresses')
-            , ('sambaAcctFlags',       'samba_acct_flags')
-            , ('sambaHomeDrive',       'samba_home_drive')
-            , ('sambaHomePath',        'samba_home_path')
-            , ('sambaKickoffTime',     'samba_kickoff_time')
-            , ('sambaLMPassword',      'samba_lm_password')
-            , ('sambaLogoffTime',      'endofepoch')
-            , ('sambaLogonScript',     'samba_logon_script')
-            , ('sambaLogonTime',       'zero')
-            , ('sambaNTPassword',      'samba_nt_password')
-            , ('sambaPrimaryGroupSID', 'group_sid')
-            , ('sambaProfilePath',     'samba_profile_path')
-            , ('sambaPwdCanChange',    'samba_pwd_can_change')
-            , ('sambaPwdLastSet',      'samba_pwd_last_set')
-            , ('sambaPwdMustChange',   'samba_pwd_must_change')
-            , ('sambaSID',             'sid')
-            , ('shadowExpire',         'shadow_expire')
-            , ('shadowFlag',           'shadow_used')
-            , ('shadowInactive',       'shadow_inactive')
-            , ('shadowLastChange',     'shadow_last_change')
-            , ('shadowMax',            'shadow_max')
-            , ('shadowMin',            'shadow_min')
-            , ('shadowWarning',        'shadow_warning')
-            ]
+        ldif_map = dict \
+            (( ('cn',                   'username')
+            ,  ('sn',                   'realname')
+            ,  ('telephoneNumber',      'phone')
+            ,  ('description',          'realname')
+            ,  ('displayName',          'realname')
+            ,  ('initials',             'nickname')
+            ,  ('mail',                 'address')
+            ,  ('uid',                  'username')
+            ,  ('uidNumber',            'uid')
+            ,  ('gidNumber',            'gid')
+            ,  ('homeDirectory',        'home_directory')
+            ,  ('loginShell',           'login_shell')
+            ,  ('gecos',                'gecos')
+            ,  ('mailLocalAddress',     'mail_addresses')
+            ,  ('sambaAcctFlags',       'samba_acct_flags')
+            ,  ('sambaHomeDrive',       'samba_home_drive')
+            ,  ('sambaHomePath',        'samba_home_path')
+            ,  ('sambaKickoffTime',     'samba_kickoff_time')
+            ,  ('sambaLMPassword',      'samba_lm_password')
+            ,  ('sambaLogoffTime',      'endofepoch')
+            ,  ('sambaLogonScript',     'samba_logon_script')
+            ,  ('sambaLogonTime',       'zero')
+            ,  ('sambaNTPassword',      'samba_nt_password')
+            ,  ('sambaPrimaryGroupSID', 'group_sid')
+            ,  ('sambaProfilePath',     'samba_profile_path')
+            ,  ('sambaPwdCanChange',    'samba_pwd_can_change')
+            ,  ('sambaPwdLastSet',      'samba_pwd_last_set')
+            ,  ('sambaPwdMustChange',   'samba_pwd_must_change')
+            ,  ('sambaSID',             'sid')
+            ,  ('shadowExpire',         'shadow_expire')
+            ,  ('shadowFlag',           'shadow_used')
+            ,  ('shadowInactive',       'shadow_inactive')
+            ,  ('shadowLastChange',     'shadow_last_change')
+            ,  ('shadowMax',            'shadow_max')
+            ,  ('shadowMin',            'shadow_min')
+            ,  ('shadowWarning',        'shadow_warning')
+            ))
 
         samba_acct_flags = '[U]'
 
