@@ -149,11 +149,13 @@ class Roundup_Access (object) :
                 return self._ldif \
                     (self.dn (), modlist.addModlist (self.as_ldap_entry ()))
             ret = []
+            dn  = self.dn ().split (',')
             if self.dn () != lu[0][0] :
                 ret.append ('dn: %s' % lu[0][0])
                 ret.append ('changetype: modrdn')
-                ret.append ('newrdn: %s' % self.dn ())
+                ret.append ('newrdn: %s' % dn [0])
                 ret.append ('deleteoldrdn: 1')
+                ret.append ('newSuperior: %s' % ','.join (dn [1:]))
                 ret.append ('')
             ret.append \
                 ( self._ldif 
