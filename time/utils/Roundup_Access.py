@@ -128,28 +128,41 @@ class Roundup_Access (object) :
             return entry
         # end def as_ldap_entry
 
-        def as_ldap_modlist (self, url, basedn, binddn, bindpw) :
+        def as_ldif (self) :
+            return self._ldif (self.dn (), self.as_ldap_entry ())
+        # end def as_ldif
+
+        def as_replog (self, url, basedn, binddn, bindpw) :
             ld = ldap.initialize (url)
             ld.simple_bind_s (binddn, bindpw)
             sk = self.ldap_search_key ()
             lu = ld.search_s \
-                (basedn, ldap.SCOPE_SUBTREE, sk, self.ldif_map.keys ())
+                ( basedn
+                , ldap.SCOPE_SUBTREE
+                , sk
+                , self.ldif_map.keys () + self.object_class
+                )
+            print lu
             if len (lu) > 1 :
                 raise ValueError, "More than one entry found for %s" % sk
             if not lu :
-                return modlist.addModlist (self.as_ldap_entry ())
-            print (lu, (self.dn (), self.as_ldap_entry ()))
-            return modlist.modifyModlist \
-                (lu [0], (self.dn (), self.as_ldap_entry ()))
-        # end def as_ldap_modlist
-
-        def as_ldif (self) :
-            strio  = StringIO ()
-            writer = ldif.LDIFWriter (strio)
-            entry  = self.as_ldap_entry ()
-            writer.unparse (self.dn (), entry)
-            return strio.getvalue ()
-        # end def as_ldif
+                return self._ldif \
+                    (self.dn (), modlist.addModlist (self.as_ldap_entry ()))
+            ret = []
+            if self.dn () != lu[0][0] :
+                ret.append ('dn: %s' % lu[0][0])
+                ret.append ('changetype: modrdn')
+                ret.append ('newrdn: %s' % self.dn ())
+                ret.append ('deleteoldrdn: 1')
+                ret.append ('')
+            ret.append \
+                ( self._ldif 
+                    ( self.dn ()
+                    , modlist.modifyModlist (lu [0][1], self.as_ldap_entry ())
+                    )
+                )
+            return '\n'.join (ret)
+        # end def as_replog
 
         def dnname_ou (self, ou = None) :
             if ou is None :
@@ -181,6 +194,13 @@ class Roundup_Access (object) :
                 , (self.object_class [0],)
                 )
         # end def ldap_search_key
+
+        def _ldif (self, dn, entry) :
+            strio  = StringIO ()
+            writer = ldif.LDIFWriter (strio)
+            writer.unparse (dn, entry)
+            return strio.getvalue ()
+        # end def _ldif
 
         def __getattr__ (self, name) :
             try :
@@ -218,11 +238,12 @@ class Roundup_Access (object) :
             ))
 
         object_class = \
-            [ 'top'
-            , 'dominoGroup'
+            [ 'dominoGroup'
             , 'groupOfNames'
+            , 'top'
             ]
 
+        dnname = 'cn'
         grouptype = 0
 
         def dn (self) :
@@ -642,10 +663,10 @@ class Roundup_Access (object) :
             ))
 
         object_class = \
-            [ 'top'
+            [ 'posixAccount'
             , 'inetOrgPerson'
-            , 'posixAccount'
             , 'sambaSamAccount'
+            , 'top'
             ]
         ou               = 'Computers'
         dnname           = 'uid'
@@ -696,19 +717,17 @@ class Roundup_Access (object) :
 
         ldif_map = dict \
             (( ('cn',                   'username')
-            ,  ('sn',                   'realname')
-            ,  ('telephoneNumber',      'phone')
             ,  ('description',          'realname')
             ,  ('displayName',          'realname')
-            ,  ('initials',             'nickname')
-            ,  ('mail',                 'address')
-            ,  ('uid',                  'username')
-            ,  ('uidNumber',            'uid')
+            ,  ('gecos',                'gecos')
             ,  ('gidNumber',            'gid')
             ,  ('homeDirectory',        'home_directory')
+            ,  ('initials',             'nickname')
             ,  ('loginShell',           'login_shell')
-            ,  ('gecos',                'gecos')
+            ,  ('mail',                 'address')
+            ,  ('mailHost',             'mail_host')
             ,  ('mailLocalAddress',     'mail_addresses')
+            ,  ('mailRoutingAddress',   'mail_routing_address')
             ,  ('sambaAcctFlags',       'samba_acct_flags')
             ,  ('sambaHomeDrive',       'samba_home_drive')
             ,  ('sambaHomePath',        'samba_home_path')
@@ -731,17 +750,22 @@ class Roundup_Access (object) :
             ,  ('shadowMax',            'shadow_max')
             ,  ('shadowMin',            'shadow_min')
             ,  ('shadowWarning',        'shadow_warning')
+            ,  ('sn',                   'realname')
+            ,  ('telephoneNumber',      'phone')
+            ,  ('uidNumber',            'uid')
+            ,  ('uid',                  'username')
+            ,  ('userPassword',         'user_password')
             ))
 
         samba_acct_flags = '[U]'
 
         object_class = \
-            [ 'top'
-            , 'inetOrgPerson'
-            , 'posixAccount'
+            [ 'posixAccount'
             , 'inetLocalMailRecipient'
+            , 'inetOrgPerson'
             , 'sambaSamAccount'
             , 'shadowAccount'
+            , 'top'
             ]
 
         ou           = 'Users'
@@ -758,9 +782,19 @@ class Roundup_Access (object) :
         gid = property (_gid)
 
         def _mail_addresses (self) :
-            return [self.username, self.nickname]
+            return [self.address.split ('@')[0], self.username, self.nickname]
         # end def _mail_addresses
         mail_addresses = property (_mail_addresses)
+
+        def _mail_host (self) :
+            return self.address.split ('@')[1]
+        # end def _mail_host
+        mail_host = property (_mail_host)
+
+        def _mail_routing_address (self) :
+            return '@'.join ((self.username, self.mail_host))
+        # end def _mail_routing_address
+        mail_routing_address = property (_mail_routing_address)
 
         def _sid (self) :
             return ''.join \
