@@ -410,7 +410,7 @@ def new_time_record (db, cl, nodeid, new_values) :
             raise Reject, _ \
                 ("No dynamic user data for %(uname)s, %(date)s") % locals ()
     else :
-        if not dynamic.booking_allowed :
+        if not dynamic.booking_allowed and uid != '1' :
             raise Reject, _ \
                 ("Booking not allowed for %(uname)s, %(date)s") % locals ()
         if not dynamic.weekend_allowed and uid != '1' :
