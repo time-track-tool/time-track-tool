@@ -39,8 +39,8 @@
            tal:content="python:i18n.gettext (itemkey)" />
        <td class="item">
         <a tal:attributes="name itemkey"
-           tal:content="structure python:i18n.gettext
-           (utils.helptext [itemkey]) % {'Classname' : Classname}" />
+           tal:content="structure python:
+            utils.helptext (itemkey) % {'Classname' : Classname}" />
        </td>
       </tr>
      </table>
