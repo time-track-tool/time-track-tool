@@ -180,7 +180,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
          - From accepted  to open     by HR
     """
     for i in 'user', 'date' :
-        if i in new_values :
+        if i in new_values and db.getuid () != '1' :
             raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
     if i in ('status',) :
         if i in new_values and not new_values [i] :
