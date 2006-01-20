@@ -268,7 +268,7 @@ def audit_superseder (db, cl, nodeid, new_values) :
     new_sup = new_values.get ("superseder")
     cd_id   = db.defect_status.lookup ("closed-duplicate")
     if new_sup == nodeid :
-        raise Reject, "Cant set superseder to yourself"
+        raise Reject, "Can't set superseder to yourself"
     if not new_sup and cl.get (nodeid, "superseder") :
         raise Reject, "You are not allowed to remove the superseder"
     if new_values.get ("status", None) == cd_id and not new_sup :

@@ -1,0 +1,108 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:1
+    ; has_resp            python:0
+    ; required_attributes string:title
+    ">
+   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+    <tal:block metal:fill-slot="ttt_issue_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'category')"/>
+      <td tal:content="structure python:context.category.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'deadline')"/>
+      <td tal:content="structure python:context.deadline.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'status')"/>
+      <td tal:content="structure python:context.status.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'it_prio')"/>
+      <td tal:content="structure python:context.it_prio.menu ()"/>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'responsible')"/>
+      <td>
+       <tal:block tal:replace="structure python:context.responsible.field ()"/>
+       <tal:block tal:replace="structure python:db.user.classhelp
+             ( 'username,firstname,lastname'
+             , property='responsible&amp;:type=link'
+             , width='600'
+             , pagesize=500
+             )"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'stakeholder')"/>
+      <td>
+       <tal:block tal:define=
+            "name      python:'stakeholder';
+             form      string:itemSynopsis;
+             dont_care string:- no selection -;
+             selected  context/stakeholder/id | string:0;
+            ">
+        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+       </tal:block>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'it_project')"/>
+      <td tal:content="structure python:context.it_project.field ()"/>
+     </tr>
+     <tr>
+      <td>
+      <td colspan=3 tal:condition="context/it_project">
+       <a tal:attributes="href string:it_project${context/it_project/id}">
+        <span tal:content="context/it_project/id"/>
+        (<span tal:content="context/it_project/it_prio"/>
+        <span tal:content="context/it_project/responsible/username"/>)
+        <span tal:content="context/it_project/title"/>
+       </a>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'superseder')"/>
+      <td tal:content="structure python:context.superseder.field ()"/>
+     </tr>
+     <tr tal:repeat="sup context/superseder">
+      <td>
+      <td colspan=3>
+       <a tal:attributes="href string:it_issue${sup/id}">
+        <span tal:content="sup/id"/>
+        (<span tal:content="sup/it_prio"/>
+        <span tal:content="sup/responsible/username"/>)
+        <span tal:content="sup/title"/>
+       </a>
+      </td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

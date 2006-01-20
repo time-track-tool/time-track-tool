@@ -141,8 +141,6 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 common.check_unique (_, cl, nodeid, username = v)
     if 'username' in new_values :
         common.check_unique (_, cl, nodeid, nickname = new_values ['username'])
-    status = new_values.get ('status', None) or cl.get (nodeid, 'status')
-    valid  = db.user_status.lookup ('valid')
     if 'uid' in new_values :
         uid     = new_values ['uid']
         uidname = _ ('uid')
@@ -166,8 +164,12 @@ def create_dynuser (db, cl, nodeid, new_values) :
 # end def create_dynuser
 
 def new_user (db, cl, nodeid, new_values) :
+    valid = db.user_status.lookup ('valid')
     # No checks for special accounts:
     if new_values.get ('username', None) in ['admin', 'anonymous'] :
+        return
+    # status set to a value different from valid: no checks
+    if new_values.get ('status', valid) != valid :
         return
     for i in 'firstname', 'lastname', 'org_location', 'department' :
         if i not in new_values :
@@ -179,7 +181,6 @@ def new_user (db, cl, nodeid, new_values) :
     lln   = common.tolower_ascii (ln)
     id    = nodeid
     olo   = new_values ['org_location']
-    valid = db.user_status.lookup ('valid')
     if 'status' not in new_values :
         new_values ['status'] = valid
     status = new_values ['status']
@@ -240,7 +241,7 @@ def audit_user_fields(db, cl, nodeid, new_values):
             ) :
             if n in new_values and new_values [n] is None :
                 raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
-    common_user_checks (db, cl, nodeid, new_values)
+        common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
 def update_userlist_html (db, cl, nodeid, old_values) :

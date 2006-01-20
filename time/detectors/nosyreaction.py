@@ -78,7 +78,7 @@ def determineNewMessages(cl, nodeid, oldvalues):
     return messages
 
 def updatenosy(db, cl, nodeid, newvalues):
-    '''Update the nosy list for changes to the assignedto
+    '''Update the nosy list for changes to the responsible
     '''
     # nodeid will be None if this is a new node
     current = {}
@@ -103,16 +103,17 @@ def updatenosy(db, cl, nodeid, newvalues):
             if not current.has_key(value):
                 current[value] = 1
 
-    # add assignedto(s) to the nosy list
-    if newvalues.has_key('assignedto') and newvalues['assignedto'] is not None:
-        propdef = cl.getprops()
-        if isinstance(propdef['assignedto'], hyperdb.Link):
-            assignedto_ids = [newvalues['assignedto']]
-        elif isinstance(propdef['assignedto'], hyperdb.Multilink):
-            assignedto_ids = newvalues['assignedto']
-        for assignedto_id in assignedto_ids:
-            if not current.has_key(assignedto_id):
-                current[assignedto_id] = 1
+    # add responsible(s) etc. to the nosy list
+    for k in 'responsible', 'stakeholder' :
+        if newvalues.has_key(k) and newvalues[k] is not None:
+            propdef = cl.getprops()
+            if isinstance(propdef[k], hyperdb.Link):
+                assignedto_ids = [newvalues[k]]
+            elif isinstance(propdef[k], hyperdb.Multilink):
+                assignedto_ids = newvalues[k]
+            for assignedto_id in assignedto_ids:
+                if not current.has_key(assignedto_id):
+                    current[assignedto_id] = 1
 
     # see if there's any new messages - if so, possibly add the author and
     # recipient to the nosy
@@ -157,11 +158,14 @@ def init(db):
                    , "defect"
                    , "meeting"
                    , "action_item"
+                   , "it_issue"
+                   , "it_project"
                    ]
     for klass in nosy_classes :
-#        eval ("db.%s.react('create', nosyreaction)" % klass)
-#        eval ("db.%s.react('set'   , nosyreaction)" % klass)
+        #eval ("db.%s.react('create', nosyreaction)" % klass)
+        #eval ("db.%s.react('set'   , nosyreaction)" % klass)
         eval ("db.%s.audit('create', updatenosy  )" % klass)
         eval ("db.%s.audit('set'   , updatenosy  )" % klass)
 
 # vim: set filetype=python ts=4 sw=4 et si
+#SHA: 4edb2ed32a6d616c10f440cf443082a148e06751

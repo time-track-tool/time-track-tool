@@ -922,6 +922,66 @@ TTT_Issue_Class \
     , line_number           = String    ()
     )
 
+it_issue_status = Class \
+    ( db
+    , ''"it_issue_status"
+    , name                  = String    ()
+    , description           = String    ()
+    , transitions           = Multilink ("it_issue_status")
+    , order                 = Number    ()
+    )
+it_issue_status.setkey ("name")
+
+it_project_status = Class \
+    ( db
+    , ''"it_project_status"
+    , name                  = String    ()
+    , description           = String    ()
+    , transitions           = Multilink ("it_project_status")
+    , order                 = Number    ()
+    )
+it_project_status.setkey ("name")
+
+it_category = Class \
+    ( db
+    , ''"it_category"
+    , name                  = String    ()
+    , description           = String    ()
+    )
+it_category.setkey ("name")
+
+it_prio = Class \
+    ( db
+    , ''"it_prio"
+    , name                  = String    ()
+    , order                 = Number    ()
+    )
+it_prio.setkey ("name")
+
+TTT_Issue_Class \
+    ( db
+    , ''"it_project"
+    , status                = Link      ("it_project_status")
+    , it_prio               = Link      ("it_prio")
+    , category              = Link      ("it_category")
+    , stakeholder           = Link      ("user")
+    , deadline              = Date      ()
+    , files                 = Multilink ("file")
+    )
+
+TTT_Issue_Class \
+    ( db
+    , ''"it_issue"
+    , status                = Link      ("it_issue_status")
+    , it_prio               = Link      ("it_prio")
+    , category              = Link      ("it_category")
+    , stakeholder           = Link      ("user")
+    , deadline              = Date      ()
+    , files                 = Multilink ("file")
+    , it_project            = Link      ("it_project")
+    , superseder            = Multilink ("it_issue")
+    )
+
 #
 # SECURITY SETTINGS
 #
@@ -1001,6 +1061,13 @@ classes = \
     , ("operating_system"    , ["IT", "ITView"],     ["IT"     ])
     , ("smb_domain"          , ["IT", "ITView"],     ["IT"     ])
     , ("smb_machine"         , ["IT", "ITView"],     ["IT"     ])
+    # IT-Tracker classes
+    , ("it_category"         , ["User"        ],     ["IT"     ])
+    , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
+    , ("it_issue"            , ["User"        ],     ["User"   ])
+    , ("it_prio"             , ["User"        ],     ["Admin"  ])
+    , ("it_project"          , ["IT", "ITView"],     ["IT"     ])
+    , ("it_project_status"   , ["User"        ],     ["Admin"  ])
     ]
 
 class_field_perms = \

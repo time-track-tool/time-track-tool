@@ -340,3 +340,46 @@ dns_record_type = db.dns_record_type
 dns_record_type.create (name = "invalid",   description = "don't use")
 dns_record_type.create (name = "A",         description = "A record")
 dns_record_type.create (name = "CNAME",     description = "CNAME record")
+
+def gen_status (cls, list) :
+    for order, name, desc, trans in list :
+        cls.create \
+            ( name         = name
+            , order        = order
+            , description  = desc
+            )
+    for order, name, desc, trans in list :
+        id = cls.lookup (name)
+        if trans :
+            trans_ids = [cls.lookup (t) for t in trans]
+            cls.set (id, transitions = trans_ids)
+
+its = [ (1, "new",      "Has just been reported"
+        , ("open", "feedback", "closed")
+        )
+      , (2, "open",     "Not resolved"
+        , ("feedback", "closed")
+        )
+      , (3, "feedback", "Need feedback from another person"
+        , ("open", "closed")
+        )
+      , (4, "closed",   "Closed"
+        , ("feedback", "open")
+        )
+      ]
+gen_status (db.getclass ("it_issue_status"), its)
+
+its = [ (1, "open",      "Not yet resolved", ("closed", ))
+      , (2, "closed",    "Resolved",         ("open", ))
+      ]
+gen_status (db.getclass ("it_project_status"), its)
+
+db.it_category.create (name = 'helpdesk', description = 'Helpdesk Issues')
+
+db.it_prio.create (name = "nice to have",                        order = 1)
+db.it_prio.create (name = "assistance",                          order = 2)
+db.it_prio.create (name = "one person, important for project",   order = 3)
+db.it_prio.create (name = "many persons, important for project", order = 4)
+db.it_prio.create (name = "showstopper for one person",          order = 5)
+db.it_prio.create (name = "showstopper for many persons",        order = 6)
+db.it_prio.create (name = "unknown",                             order = 7)

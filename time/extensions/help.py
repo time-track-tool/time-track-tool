@@ -38,27 +38,35 @@ else :
     date_help  = Date.__doc__ 
     range_help = Range.__doc__
 
-date_text = "<br><br>Ranges are used for searching dates: A range ".join \
-    ((date_help, range_help))
-durations = \
-    ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 daily_hours = \
     ""'''Expected daily work-time for %(Classname)s for each day of
          the week. If nothing is specified, the average of Weekly
          hours is taken. The field is mainly needed for part-time
          employees with irregular work time.
       '''
-work_loc = \
-    ""'''Location where you worked.'''
+date_text = "<br><br>Ranges are used for searching dates: A range ".join \
+    ((date_help, range_help))
+durations = \
+    ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
+leave_empty = \
+    ""'''Leave this field empty if unsure.'''
+multiple_allowed = \
+    ""'''Multiple %(Classname)s entries are allowed.'''
+range_description = \
+    ""'''as a comma-separated list of ranges (a special case of a range
+         is just one number), e.g., 1-100,300-500
+      '''
+superseder = \
+    ""'''This %(Classname)s has been closed as a duplicate against
+         another %(Classname)s.
+      '''
 travel = \
     ""'''Flag to indicate travel. In the Time mask no lunchbreak will
          be computed. Even if enabled, no maximum work hours will be
          enforced for this %(Classname)s.
       '''
-range_description = \
-    ""'''as a comma-separated list of ranges (a special case of a range
-         is just one number), e.g., 1-100,300-500
-      '''
+work_loc = \
+    ""'''Location where you worked.'''
 
 _helptext = \
     { ""'active'                     :
@@ -103,6 +111,10 @@ _helptext = \
       ]
     , ""'card_type'                  :
       [""'''Type of this %(Classname)s''']
+    , ""'category'                   :
+      [ ""'''Category of %(Classname)s.'''
+      , leave_empty
+      ]
     , ""'clearance_by'               :
       [ ""'''Usually the supervisor of a person approves
              time records. This can be delegated using this attribute. It
@@ -141,6 +153,10 @@ _helptext = \
     , ""'daily_hours'                : [daily_hours]
     , ""'daily_worktime'             :
       [""'''Maximum time a person may book for a single day.''']
+    , ""'defect.superseder'          :
+      [superseder]
+    , ""'deadline'                   :
+      [""'''Planned time by which this %(Classname)s should be done.''']
     , ""'department'                 :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
     , ""'deputy'                     :
@@ -266,6 +282,14 @@ _helptext = \
       [""'''No real user but only an email alias''']
     , ""'is_lotus_user'              :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
+    , ""'it_issue.superseder'        :
+      [superseder, multiple_allowed]
+    , ""'it_prio'                    :
+      [ ""'''Priority for this %(Classname)s.'''
+      , leave_empty
+      ]
+    , ""'it_project'                 :
+      [""'''Optional IT Project to which this %(Classname)s belongs''']
     , ""'klass'                      :
       [""'''Class for this query''']
     , ""'last_gid'                   :
@@ -547,6 +571,14 @@ _helptext = \
       [""'''Samba domain for this %(Classname)s''']
     , ""'smb_name'                   :
       [""'''Samba name for this %(Classname)s in the samba domain''']
+    , ""'stakeholder'                :
+      [ ""'''Person by/for whom this %(Classname)s was raised. Usually
+             defaults to the creator of the %(Classname)s, but can be
+             overridden (e.g. when the IT-Department documents an issue
+             that came in via telephone).
+          '''
+      , leave_empty
+      ]
     , ""'start'                      :
       [ ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
              be specified except for absences like e.g. holidays or sick
@@ -613,6 +645,8 @@ _helptext = \
              marked "travel_full" in the dynamic user data)
           '''
       ]  
+    , ""'transitions'                :
+      [""'''Allowed transitions to other states''']
     , ""'tr_duration'                :
       [ ""'''Work duration in minutes including special travel computation:
              travel times will be halved if exceeding the maximum work
