@@ -463,6 +463,11 @@
 
    <tr metal:use-macro="templates/page/macros/message_box" />
 
+   <tr tal:condition="has_files">
+    <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
+    <td><input type="file" name="@file" size="40"/></td>
+   </tr>
+
    <tr tal:condition="context/is_edit_ok">
     <th></th>
     <td colspan="3">
@@ -483,6 +488,16 @@
 
  <table metal:use-macro="templates/page/macros/note_required" />
  <table metal:use-macro="templates/page/macros/message_display" />
+ <table tal:condition="has_files" class="files">
+  <tr>
+   <th colspan="3" class="header">Files</th>
+  </tr>
+  <tr>
+   <td colspan="3">
+    <tal:block metal:use-macro="templates/page/macros/file_list"/>
+   </td>
+  </tr>
+ </table>
 </td>
 
 <tal:block metal:define-macro="message_box">
@@ -563,8 +578,7 @@
  </tal:block>
 </tal:block>
 
-<!-- the following lists a nice list of files plus file upload form -->
-<tal:block metal:define-macro="ttt_issue_files">
+<tal:block metal:define-macro="file_list">
  <!-- list of files -->
  <table class="files" tal:condition="context/files">
   <tr>
@@ -584,7 +598,11 @@
    <td tal:content="file/type" />
   </tr>
  </table>
- <!-- add new file -->
+</tal:block>
+
+<!-- the following lists a nice list of files plus file upload form -->
+<tal:block metal:define-macro="ttt_issue_files">
+ <tal:block metal:use-macro="templates/page/macros/file_list"/>
  <input type="file" name="@file" size="40">
 </tal:block>
 

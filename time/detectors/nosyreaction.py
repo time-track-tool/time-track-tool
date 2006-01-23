@@ -105,7 +105,7 @@ def updatenosy(db, cl, nodeid, newvalues):
 
     # add responsible(s) etc. to the nosy list
     for k in 'responsible', 'stakeholder' :
-        if newvalues.has_key(k) and newvalues[k] is not None:
+        if newvalues.get(k, None):
             propdef = cl.getprops()
             if isinstance(propdef[k], hyperdb.Link):
                 assignedto_ids = [newvalues[k]]
@@ -162,10 +162,10 @@ def init(db):
                    , "it_project"
                    ]
     for klass in nosy_classes :
-        #eval ("db.%s.react('create', nosyreaction)" % klass)
-        #eval ("db.%s.react('set'   , nosyreaction)" % klass)
-        eval ("db.%s.audit('create', updatenosy  )" % klass)
-        eval ("db.%s.audit('set'   , updatenosy  )" % klass)
+        cl = db.getclass (klass)
+        cl.react('create', nosyreaction)
+        cl.react('set'   , nosyreaction)
+        cl.audit('create', updatenosy)
+        cl.audit('set'   , updatenosy)
 
 # vim: set filetype=python ts=4 sw=4 et si
-#SHA: 4edb2ed32a6d616c10f440cf443082a148e06751

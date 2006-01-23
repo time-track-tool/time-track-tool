@@ -37,6 +37,8 @@ from roundup.cgi.TranslationService import get_translation
 
 
 def new_it (db, cl, nodeid, new_values) :
+    if 'messages'    not in new_values :
+        raise Reject, _ ("New %s requires a message") % _ (cl.classname)
     new_values ['status'] = '1'
     if 'category'    not in new_values :
         new_values ['category'] = '1'

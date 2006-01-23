@@ -1064,7 +1064,7 @@ classes = \
     # IT-Tracker classes
     , ("it_category"         , ["User"        ],     ["IT"     ])
     , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
-    , ("it_issue"            , ["User"        ],     ["User"   ])
+    , ("it_issue"            , ["IT", "ITView"],     ["IT"     ])
     , ("it_prio"             , ["User"        ],     ["Admin"  ])
     , ("it_project"          , ["IT", "ITView"],     ["IT"     ])
     , ("it_project_status"   , ["User"        ],     ["Admin"  ])
