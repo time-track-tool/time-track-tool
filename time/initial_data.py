@@ -276,6 +276,7 @@ for _position in positions :
 user_status = db.getclass ('user_status')
 user_status.create (name = "valid",    description = "Valid user")
 user_status.create (name = "obsolete", description = "No longer valid")
+user_status.create (name = "system",   description = "Needed by system")
 
 # users
 # create the two default users

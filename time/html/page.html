@@ -456,7 +456,8 @@
              , property='nosy'
              , width='600'
              , pagesize=500
-             , filter='status=%s' % db._db.user_status.lookup ('valid')
+             , filter='status=%s' % ','.join
+               (db._db.user_status.lookup (i) for i in ('valid', 'system'))
              )"></span><br>
     </td>
    </tr>

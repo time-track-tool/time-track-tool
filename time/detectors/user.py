@@ -286,8 +286,10 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     # all users (incl. mail alias users)
     # RSC: now there are no mail alias users -- and we don't want
     # invalid users here, so use the same filterspec.
+    status   = [db.user_status.lookup (s) for s in 'valid', 'system']
+    print status
     users    = cl.filter ( None # full text search
-                         , filterspec = {"status" : ['1']}
+                         , filterspec = {"status" : status}
                          , sort       = ("+", "username")
                          )
     if users :
