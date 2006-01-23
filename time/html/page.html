@@ -489,7 +489,7 @@
 
  <table metal:use-macro="templates/page/macros/note_required" />
  <table metal:use-macro="templates/page/macros/message_display" />
- <table tal:condition="has_files" class="files">
+ <table tal:condition="python: has_files and context.files" class="files">
   <tr>
    <th colspan="3" class="header">Files</th>
   </tr>
