@@ -32,6 +32,10 @@
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
    , 'group'           : ':columns=name,gid,description,org_location&'
                          ':sort=-id&:pagesize=500&:startwith=0'
+   , 'it_issue'        : ':columns=id,title,responsible,stakeholder,it_prio&'
+                         ':sort=-id&:group=status&:filter=stakeholder,status&'
+                         ':pagesize=50&:startwith=0&'
+                         'status=1,2,3&stakeholder=%s' % uid
    , 'machine'         : ':columns=inventory_no,description,owner,smb_name&'
                          ':sort=inventory_no&:pagesize=20&:startwith=0'
    , 'machine_name'    : ':columns=id,name,network_address,machine_name,'

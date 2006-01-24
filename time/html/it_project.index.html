@@ -23,6 +23,10 @@
     , utils.ExtProperty (utils, pdict ['it_prio'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['category'],    multiselect = 1)
     , utils.ExtProperty (utils, pdict ['deadline'])
+    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty (utils, pdict ['actor'])
+    , utils.ExtProperty (utils, pdict ['activity'])
     );
    "
   tal:condition="context/is_view_ok">
