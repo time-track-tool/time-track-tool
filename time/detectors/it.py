@@ -88,7 +88,7 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     for cls in db.it_issue, db.it_project :
-        cls.audit     ("create", new_it)
+        cls.audit     ("create", new_it, priority = 50)
         cls.audit     ("set",    check_it)
     db.it_issue.audit ("create", audit_superseder)
     db.it_issue.audit ("set",    audit_superseder)
