@@ -97,6 +97,12 @@ def common_user_checks (db, cl, nodeid, new_values) :
         - email address has no spaces in it
         - roles specified exist
     '''
+    olo = new_values.get ('org_location') or cl.get (nodeid, 'org_location')
+    if not olo :
+        dyn = get_user_dynamic (db, nodeid, Date ('.'))
+        if dyn :
+            olo = new_values ['org_location'] = dyn.org_location
+            new_values ['department']         = dyn.department
     if new_values.has_key('address') and ' ' in new_values['address']:
         raise ValueError, 'Email address must not contain spaces'
     if new_values.has_key('roles'):
@@ -141,10 +147,12 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 common.check_unique (_, cl, nodeid, username = v)
     if 'username' in new_values :
         common.check_unique (_, cl, nodeid, nickname = new_values ['username'])
-    if 'uid' in new_values :
+    if 'uid' in new_values and new_values ['uid'] :
+        if not olo :
+            raise Reject, _("%s specified for user without %s") \
+                % (_('uid'), _('org_location'))
         uid     = new_values ['uid']
         uidname = _ ('uid')
-        olo = new_values ['org_location'] or db.cl.get (nodeid, 'org_location')
         sd  = db.smb_domain.getnode (db.org_location.get (olo, 'smb_domain'))
         if not common.uid_or_gid_in_range (uid, sd.uid_range) :
             raise Reject, _("Invalid %(uidname)s: %(uid)s") % locals ()
@@ -307,10 +315,11 @@ def check_retire (db, cl, nodeid, old_values) :
 # end def check_retire
 
 def init (db) :
-    global _, common
+    global _, common, get_user_dynamic
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     import common
+    from user_dynamic import get_user_dynamic
     # fire before changes are made
     db.user.audit("set"   , audit_user_fields)
     db.user.audit("create", new_user)
