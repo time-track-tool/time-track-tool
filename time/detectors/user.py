@@ -144,9 +144,6 @@ def common_user_checks (db, cl, nodeid, new_values) :
     if 'uid' in new_values :
         uid     = new_values ['uid']
         uidname = _ ('uid')
-        if status != valid :
-            raise Reject, 'May not change %(uidname)s for invalid user' \
-                % locals ()
         olo = new_values ['org_location'] or db.cl.get (nodeid, 'org_location')
         sd  = db.smb_domain.getnode (db.org_location.get (olo, 'smb_domain'))
         if not common.uid_or_gid_in_range (uid, sd.uid_range) :
