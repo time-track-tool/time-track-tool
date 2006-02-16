@@ -484,6 +484,7 @@ def check_time_record (db, cl, nodeid, new_values) :
     ta       = 'time_activity'
     location = new_values.get (wl,             cl.get (nodeid, wl))
     activity = new_values.get (ta,             cl.get (nodeid, ta))
+    comment  = new_values.get ('comment',      cl.get (nodeid, 'comment'))
     check_start_end_duration \
         (date, start, end, duration, new_values, dist = dist)
     if not location :
@@ -498,6 +499,7 @@ def check_time_record (db, cl, nodeid, new_values) :
                 , wp            = wp
                 , time_activity = activity
                 , work_location = location
+                , comment       = comment
                 )
             start_generated = new_values.get \
                 ('start_generated', cl.get (nodeid, 'start_generated'))
@@ -507,9 +509,10 @@ def check_time_record (db, cl, nodeid, new_values) :
                 newrec     ['start_generated'] = start_generated
                 new_values ['start_generated'] = True
             cl.create (** newrec)
-            if 'wp' in new_values :
-                del new_values ['wp']
-                wp = cl.get (nodeid, 'wp')
+            for attr in 'wp', 'time_activity', 'work_location', 'comment' :
+                if attr in new_values :
+                    del new_values [attr]
+            wp = cl.get (nodeid, 'wp')
         elif dist == duration :
             # Nothing to do -- just set new wp
             pass
