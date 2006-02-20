@@ -499,8 +499,9 @@ def check_time_record (db, cl, nodeid, new_values) :
                 , wp            = wp
                 , time_activity = activity
                 , work_location = location
-                , comment       = comment
                 )
+            if comment :
+                newrec ['comment'] = comment
             start_generated = new_values.get \
                 ('start_generated', cl.get (nodeid, 'start_generated'))
             if (start) :
