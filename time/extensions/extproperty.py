@@ -63,7 +63,11 @@ def properties_dict (db, context) :
 def menu_or_field (prop) :
     if hasattr (prop._prop, 'classname') :
         return prop.menu (height=5)
-    return prop.field (60)
+    try :
+        return prop.field (60)
+    except TypeError :
+        pass
+    return prop.field ()
 # end def menu_or_field
 
 dwidth  = 550
