@@ -384,7 +384,7 @@ class Roundup_Access (object) :
         # end def network_address_iter
 
         dhcp_options = \
-            [ ('subnet-mask',          'ip_subnet')
+            [ ('subnet-mask',          'ip_netmask')
             , ('broadcast-address',    'ip_broadcast')
             , ('routers',              'routers')
             , ('domain-name-servers',  'dns_servers')
@@ -408,7 +408,11 @@ class Roundup_Access (object) :
                 if attr :
                     arg = attr
                     if isinstance (attr, list) :
-                        arg = ', '.join (attr)
+                        if isinstance (attr [0], str) :
+                            arg = ', '.join (attr)
+                        else :
+                            arg = ', '.join \
+                                ('.'.join ((a.name, self.domain)) for a in attr)
                     dhcp.append ('    option %s %s;' % (opt [0], arg))
             if self.dhcp_range :
                 dhcp.append ('    range %s;' % self.dhcp_range)
