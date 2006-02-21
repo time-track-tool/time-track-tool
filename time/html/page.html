@@ -44,6 +44,8 @@
    , 'network_address' : ':columns=ip,org_location,use_dhcp,network_interface&'
                          ':sort=ip&:group=org_location&:pagesize=20&'
                          ':startwith=0'
+   , 'network_interface':':columns=id,mac,card_type,description,machine&'
+                         ':sort=-id&:pagesize=2000&:startwith=0'
    , 'public_holiday'  : ':columns=id,name,description,date,locations,is_half&'
                          ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
                          'date=.%3B'
