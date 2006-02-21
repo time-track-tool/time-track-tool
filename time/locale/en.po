@@ -950,7 +950,7 @@ msgstr ""
 #: ../extensions/help.py:252 ../locale/attr.py:742 ../schema.py:686
 #: attr.py:742
 msgid "group"
-msgstr "Group"
+msgstr "UNIX-Group"
 
 #: ../extensions/help.py:253
 msgid "UNIX Group for this %(Classname)s"
