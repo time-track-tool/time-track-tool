@@ -175,13 +175,16 @@ def check_nw_adr_location (db, id, adr, mn, drt, new_values) :
             raise Reject, _ ("For %(na)s, %(drtn)s must be CNAME")  % locals ()
 # end def check_nw_adr_location
 
+def namecheck (name) :
+    if not name or name_re_start.match (name) or name_re.search (name) :
+        raise Reject, 'Illegal name: "%(name)s"' % locals ()
+# end def namecheck
+
 def check_machine_name (db, cl, nodeid, new_values) :
     for i in 'name', :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
-    name = new_values.get ('name', cl.get (nodeid, 'name'))
-    if not name or name_re_start.match (name) or name_re.search (name) :
-        raise Reject, 'Illegal name: "%(name)s"' % locals ()
+    namecheck (new_values.get ('name', cl.get (nodeid, 'name')))
     adr = new_values.get ('network_address', cl.get (nodeid, 'network_address'))
     mn  = new_values.get ('machine_name',    cl.get (nodeid, 'machine_name'))
     drt = new_values.get ('dns_record_type', cl.get (nodeid, 'dns_record_type'))
@@ -192,6 +195,7 @@ def new_machine_name (db, cl, nodeid, new_values) :
     for i in 'name', :
         if i not in new_values :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    namecheck (new_values ['name'])
     adr = new_values.get ('network_address', [])
     mn  = new_values.get ('machine_name',    None)
     drt = new_values.get ('dns_record_type', None)
