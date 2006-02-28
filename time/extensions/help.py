@@ -157,12 +157,21 @@ _helptext = \
       [superseder]
     , ""'deadline'                   :
       [""'''Planned time by which this %(Classname)s should be done.''']
+    , ""'default_lease_time'         :
+      [""'''Default DHCP lease time for %(Classname)s''']
     , ""'department'                 :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
     , ""'deputy'                     :
       [""'''Substitute for the responsible Person of %(Classname)s''']
     , ""'description'                :
       [""'''Verbose description of %(Classname)s''']
+    , ""'dhcp_range'                 :
+      [""'''Range of dynamic IP addresses for %(Classname)s -- used
+            when generating DHCP configuration. Format: Two IP addresses in
+            dot notation separated by a dot. Example:
+            10.100.99.20&nbsp;10.100.99.250
+         '''
+      ]
     , ""'dhcp_server'                :
       [""'''DHCP Server for this %(Classname)s''']
     , ""'dist'                       :
@@ -183,6 +192,11 @@ _helptext = \
              A-record is assumed. If no DNS information should be
              generated, this field should be set to "invalid".
              This field is auto-generated if left empty.
+          '''
+      ]
+    , ""'dns_servers'                :
+      [ ""'''DNS Servers for this %(Classname)s, used when generating
+             the DHCP configuration.
           '''
       ]
     , ""'do_reverse_mapping'         :
@@ -341,6 +355,8 @@ _helptext = \
              you can book on this %(Classname)s for a single day.
           '''
       ]
+    , ""'max_lease_time'             :
+      [""'''Maximum DHCP lease time for %(Classname)s''']
     , ""'messageid'                  :
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                   :
@@ -376,7 +392,7 @@ _helptext = \
           '''
       ]
     , ""'netmask'                    :
-      [""'''IP net mask for this %(Classname)s''']
+      [""'''IP net mask for this %(Classname)s, a number (e.g., 16).''']
     , ""'network_address'            :
       [ ""'''Address in the network, including but not limited to IP
              address
@@ -487,6 +503,8 @@ _helptext = \
       ]
     , ""'room'                       :
       [""'''Room number''']
+    , ""'routers'                    :
+      [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
     , ""'samba_home_drive'           :
       [""'''Home drive for %(Classname)s in Windows''']
     , ""'samba_home_path'            :

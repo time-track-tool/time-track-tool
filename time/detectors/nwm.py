@@ -29,6 +29,8 @@
 #    Detectors for classes needed for network management
 #
 
+import re
+
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from operator                       import or_
@@ -36,6 +38,9 @@ from rsclib.IP4_Address             import IP4_Address
 
 _      = lambda x : x
 common = None
+
+name_re_start = re.compile (r"[^a-z]")
+name_re       = re.compile (r"[^\-a-z0-9]")
 
 def reject_invalid_ip (ip) :
     octets = ip.split ('.')
@@ -174,6 +179,9 @@ def check_machine_name (db, cl, nodeid, new_values) :
     for i in 'name', :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (i)}
+    name = new_values.get ('name', cl.get (nodeid, 'name'))
+    if not name or name_re_start.match (name) or name_re.search (name) :
+        raise Reject, 'Illegal name: "%(name)s"' % locals ()
     adr = new_values.get ('network_address', cl.get (nodeid, 'network_address'))
     mn  = new_values.get ('machine_name',    cl.get (nodeid, 'machine_name'))
     drt = new_values.get ('dns_record_type', cl.get (nodeid, 'dns_record_type'))

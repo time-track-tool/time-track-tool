@@ -2699,7 +2699,7 @@ msgstr "DNS servers"
 
 #: ../locale/attr.py:255 attr.py:255
 msgid "max_lease_time"
-msgstr ""
+msgstr "maximum DHCP lease time"
 
 #: ../locale/attr.py:257 attr.py:257
 msgid "routers"
@@ -2711,7 +2711,7 @@ msgstr "DHCP range"
 
 #: ../locale/attr.py:264 attr.py:264
 msgid "default_lease_time"
-msgstr ""
+msgstr "default DHCP lease time"
 
 #: ../locale/attr.py:334 attr.py:334
 msgid "country"
