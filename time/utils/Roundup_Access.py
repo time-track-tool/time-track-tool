@@ -424,7 +424,7 @@ class Roundup_Access (object) :
                 if not na.use_dhcp or not ni :
                     continue
                 dhcp.append ('    # %s' % ni.description)
-                dhcp.append ('    %s' % name)
+                dhcp.append ('    host %s' % name)
                 dhcp.append ('    {')
                 dhcp.append ('        hardware ethernet %s;' % ni.mac)
                 if mn :
