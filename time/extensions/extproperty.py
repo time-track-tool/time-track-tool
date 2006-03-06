@@ -453,7 +453,7 @@ def new_property (context, db, classname, id, propname) :
 # end def new_property
 
 def init (instance) :
-    from urllib import quote
+    from urllib import quote as urlquote
     global _
     _ = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
@@ -463,5 +463,5 @@ def init (instance) :
     instance.registerUtil ('menu_or_field',     menu_or_field)
     instance.registerUtil ('new_property',      new_property)
     instance.registerUtil ('comment_edit',      comment_edit)
-    instance.registerUtil ('quote',             quote)
+    instance.registerUtil ('urlquote',          urlquote)
 # end def init

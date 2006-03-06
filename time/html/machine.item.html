@@ -66,8 +66,8 @@
      <td class="header" tal:condition="cond">
       <a i18n:translate="" tal:attributes="href python:
        'network_interface?:template=item&' + '&'.join
-        ([ '%s=%s' % (i [0], i [1]) for i in
-          [ ('machine', context.inventory_no)
+        ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+          [ ('machine', context.id)
           ]
          ]
         )">

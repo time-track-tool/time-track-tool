@@ -39,7 +39,7 @@
        tal:content="structure context/machine/field"/>
       <tal:block tal:condition="context/is_edit_ok"
        tal:replace="structure python:db.machine.classhelp
-       ( 'inventory_no,owner,description,smb_name'
+       ( 'inventory_no,owner,description'
        , property='machine&amp;:type=link'
        , width='600'
        , pagesize=1000
