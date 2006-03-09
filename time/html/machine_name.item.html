@@ -26,7 +26,7 @@
          (classname, 'network_address')"/>
      <td colspan="3">
       <tal:block
-       tal:content="structure python:context.network_address.field (50)"/>
+       tal:content="structure python:context.network_address.field (size=50)"/>
       <tal:block tal:replace="structure python:db.network_address.classhelp
        ( 'ip,org_location'
        , property='network_address'
@@ -41,7 +41,7 @@
          (classname, 'machine_name')"/>
      <td colspan="3">
       <tal:block
-       tal:content="structure python:context.machine_name.field (50)"/>
+       tal:content="structure python:context.machine_name.field (size=50)"/>
       <tal:block tal:replace="structure python:db.machine_name.classhelp
        ( 'name,network_address'
        , property='machine_name'

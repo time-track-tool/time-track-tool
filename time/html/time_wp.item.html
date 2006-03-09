@@ -24,7 +24,7 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'description')"/>
-     <td tal:content="structure python:context.description.field (60)"
+     <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
     <tr tal:define="cc_status python:db._db.cost_center_status.filter
@@ -36,7 +36,8 @@
          (status = cc_status)"/>
       <tal:block tal:replace="structure python:db.cost_center.classhelp
             ( 'id,name,description'
-            , property='cost_center&amp;:type=link'
+            , property='cost_center'
+            , inputtype='radio'
             , width='600'
             , pagesize=500
             )"/>
@@ -49,7 +50,8 @@
       <span tal:condition="context/project/is_edit_ok"
        tal:replace="structure python:db.time_project.classhelp
             ( 'name,description'
-            , property='project&amp;:type=link'
+            , property='project'
+            , inputtype='radio'
             , width='600'
             , pagesize=500
             )"/>

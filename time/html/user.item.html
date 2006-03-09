@@ -216,7 +216,8 @@
    <tal:block tal:replace="structure context/group/field"/>
    <tal:block tal:replace="structure python:db.group.classhelp
     ( 'name,description'
-    , property='group&amp;:type=link'
+    , property='group'
+    , inputtype='radio'
     , width='600'
     , pagesize=1000 
     )"/>

@@ -30,7 +30,8 @@
       <tal:block tal:condition="context/is_edit_ok"
        tal:replace="structure python:db.network_interface.classhelp
        ( 'mac,description'
-       , property='network_interface&amp;:type=link'
+       , property='network_interface'
+       , inputtype='radio'
        , width='600'
        , pagesize=1000
        )"/>

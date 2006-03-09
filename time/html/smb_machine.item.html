@@ -38,7 +38,8 @@
       <tal:block tal:replace="structure context/machine_name/field"/>
       <tal:block tal:replace="structure python:db.machine_name.classhelp
        ( 'name,dns_record_type'
-       , property='machine_name&amp;:type=link'
+       , property='machine_name'
+       , inputtype='radio'
        , width='600'
        , sort='name'
        , pagesize=1000

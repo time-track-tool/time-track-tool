@@ -64,7 +64,7 @@ def menu_or_field (prop) :
     if hasattr (prop._prop, 'classname') :
         return prop.menu (height=5)
     try :
-        return prop.field (60)
+        return prop.field (size=60)
     except TypeError :
         pass
     return prop.field ()

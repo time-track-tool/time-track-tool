@@ -994,43 +994,44 @@ TTT_Issue_Class \
 #        only)
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("department"          , ["User"], ["Controlling"     ])
-    , ("file"                , ["User"], ["User"            ])
-    , ("location"            , ["User"], ["HR"              ])
-    , ("meeting_room"        , ["User"], ["HR"              ])
-    , ("msg"                 , ["User"], ["User"            ])
-    , ("organisation"        , ["User"], ["HR","Controlling"])
-    , ("org_location"        , ["User"], ["HR"              ])
-    , ("position"            , ["User"], ["HR"              ])
-    , ("query"               , ["User"], ["User"            ])
-    , ("room"                , ["User"], ["HR"              ])
-    , ("sex"                 , ["User"], ["Admin"           ])
+    [ ("department"          , ["User"],  ["Controlling"     ])
+    , ("file"                , ["User"],  ["User"            ])
+    , ("location"            , ["User"],  ["HR"              ])
+    , ("meeting_room"        , ["User"],  ["HR"              ])
+    , ("msg"                 , ["User"],  ["User"            ])
+    , ("organisation"        , ["User"],  ["HR","Controlling"])
+    , ("org_location"        , ["User"],  ["HR"              ])
+    , ("position"            , ["User"],  ["HR"              ])
+# Will have special handling for queries
+    , ("query"               , ["Admin"], ["Admin"            ])
+    , ("room"                , ["User"],  ["HR"              ])
+    , ("sex"                 , ["User"],  ["Admin"           ])
 #   , ("user"                , See below -- individual fields)
-    , ("user_status"         , ["User"], ["Admin"           ])
+    , ("user_status"         , ["User"],  ["Admin"           ])
     # Issue Tracker classes:
     # no permission for now -- once we roll this out we want it enabled.
-    #, ("action_item"         , ["User"], ["User"            ])
-    #, ("action_item_status"  , ["User"], ["Admin"           ])
-    #, ("announcement"        , ["User"], ["User"            ])
-    #, ("comment"             , ["User"], ["User"            ])
-    #, ("comment_status"      , ["User"], ["Admin"           ])
-    #, ("defect"              , ["User"], ["User"            ])
-    #, ("defect_status"       , ["User"], ["Admin"           ])
-    #, ("document"            , ["User"], ["User"            ])
-    #, ("document_status"     , ["User"], ["Admin"           ])
-    #, ("document_type"       , ["User"], ["Admin"           ])
-    #, ("feature"             , ["User"], ["Releasemanager"  ])
-    #, ("feature_status"      , ["User"], ["Admin"           ])
-    #, ("meeting"             , ["User"], ["Admin"           ])
-    #, ("milestone"           , ["User"], ["Releasemanager"  ])
-    #, ("product"             , ["User"], ["Admin"           ])
-    #, ("release"             , ["User"], ["Releasemanager"  ])
-    #, ("review"              , ["User"], ["User"            ])
-    #, ("review_status"       , ["User"], ["Admin"           ])
-    #, ("severity"            , ["User"], ["Admin"           ])
-    #, ("task"                , ["User"], ["User"            ])
-    #, ("task_kind"           , ["User"], ["Admin"           ])
-    #, ("task_status"         , ["User"], ["Admin"           ])
+    #, ("action_item"         , ["User"],  ["User"            ])
+    #, ("action_item_status"  , ["User"],  ["Admin"           ])
+    #, ("announcement"        , ["User"],  ["User"            ])
+    #, ("comment"             , ["User"],  ["User"            ])
+    #, ("comment_status"      , ["User"],  ["Admin"           ])
+    #, ("defect"              , ["User"],  ["User"            ])
+    #, ("defect_status"       , ["User"],  ["Admin"           ])
+    #, ("document"            , ["User"],  ["User"            ])
+    #, ("document_status"     , ["User"],  ["Admin"           ])
+    #, ("document_type"       , ["User"],  ["Admin"           ])
+    #, ("feature"             , ["User"],  ["Releasemanager"  ])
+    #, ("feature_status"      , ["User"],  ["Admin"           ])
+    #, ("meeting"             , ["User"],  ["Admin"           ])
+    #, ("milestone"           , ["User"],  ["Releasemanager"  ])
+    #, ("product"             , ["User"],  ["Admin"           ])
+    #, ("release"             , ["User"],  ["Releasemanager"  ])
+    #, ("review"              , ["User"],  ["User"            ])
+    #, ("review_status"       , ["User"],  ["Admin"           ])
+    #, ("severity"            , ["User"],  ["Admin"           ])
+    #, ("task"                , ["User"],  ["User"            ])
+    #, ("task_kind"           , ["User"],  ["Admin"           ])
+    #, ("task_status"         , ["User"],  ["Admin"           ])
     # Time-Tracking classes
     # For daily_record, time_record, additional restrictions apply
     , ("cost_center"         , ["User"],             ["Controlling"     ])
@@ -1289,6 +1290,38 @@ p = db.security.addPermission \
     , klass       = 'time_record'
     , check       = approval_for_time_record
     , description = 'Supervisor may see time record'
+    )
+db.security.addPermissionToRole('User', p)
+
+### Query permissions ###
+def view_query (db, userid, itemid) :
+    private_for = db.query.get (itemid, 'private_for')
+    if not private_for : return True
+    return userid == private_for
+# end def view_query
+
+def edit_query(db, userid, itemid):
+    return userid == db.query.get(itemid, 'creator')
+# end def edit_query
+
+p = db.security.addPermission \
+    ( name        = 'View'
+    , klass       = 'query'
+    , check       = view_query
+    , description = "User is allowed to view their own and public queries"
+    )
+db.security.addPermissionToRole('User', p)
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'query'
+    , check       = edit_query
+    , description = "User is allowed to edit their queries"
+    )
+db.security.addPermissionToRole('User', p)
+p = db.security.addPermission \
+    ( name        = 'Create'
+    , klass       = 'query'
+    , description = "User is allowed to create queries"
     )
 db.security.addPermissionToRole('User', p)
 

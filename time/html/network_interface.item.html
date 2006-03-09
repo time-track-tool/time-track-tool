@@ -24,12 +24,12 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'card_type')"/>
-     <td tal:content="structure python:context.card_type.field (60)"/>
+     <td tal:content="structure python:context.card_type.field (size=60)"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'description')"/>
-     <td tal:content="structure python:context.description.field (60)"/>
+     <td tal:content="structure python:context.description.field (size=60)"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
@@ -40,7 +40,8 @@
       <tal:block tal:condition="context/is_edit_ok"
        tal:replace="structure python:db.machine.classhelp
        ( 'inventory_no,owner,description'
-       , property='machine&amp;:type=link'
+       , property='machine'
+       , inputtype='radio'
        , width='600'
        , pagesize=1000
        )"/>

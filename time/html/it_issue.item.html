@@ -50,7 +50,8 @@
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:db.user.classhelp
              ( 'username,firstname,lastname'
-             , property='responsible&amp;:type=link'
+             , property='responsible'
+             , inputtype='radio'
              , width='600'
              , pagesize=500
              )"/>

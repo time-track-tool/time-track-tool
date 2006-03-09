@@ -24,7 +24,7 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'description')"/>
-     <td tal:content="structure python:context.description.field (60)"/>
+     <td tal:content="structure python:context.description.field (size=60)"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname (classname, 'owner')"/>
@@ -32,7 +32,8 @@
       <tal:block tal:replace="structure context/owner/field"/>
       <tal:block tal:replace="structure python:db.user.classhelp
        ( 'username,firstname,lastname'
-       , property='owner&amp;:type=link'
+       , property='owner'
+       , inputtype='radio'
        , width='600'
        , pagesize=1000
        )"/>
@@ -41,7 +42,7 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'link_field')"/>
-     <td tal:content="structure python:context.link_field.field (60)"/>
+     <td tal:content="structure python:context.link_field.field (size=60)"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
