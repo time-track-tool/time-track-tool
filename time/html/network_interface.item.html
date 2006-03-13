@@ -71,7 +71,7 @@
      <td class="header" tal:condition="cond">
       <a i18n:translate="" tal:attributes="href python:
        'network_address?:template=item&' + '&'.join
-        ([ '%s=%s' % (i [0], i [1]) for i in
+        ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
           [ ('network_interface', context.mac)
           , ('use_dhcp',          True)
           ]

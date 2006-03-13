@@ -60,7 +60,7 @@
       <td tal:condition="python:context.id and not context.valid_to">
        <a i18n:translate="" tal:attributes="href python:
        'user_dynamic?:template=item&' + '&'.join
-       ([ '%s=%s' % (i, context [i]) for i in
+       ([ '%s=%s' % (i, utils.urlquote (str (context [i]))) for i in
          [ 'user'
          , 'booking_allowed'
          , 'durations_allowed'
