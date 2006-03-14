@@ -42,11 +42,11 @@
              <td>
                  <input tal:attributes=
                   "type  python: ('checkbox','radio')
-                   [(  (   ':type' in request.form
-                       and request.form [':type'].value
+                   [(  (   'type' in request.form
+                       and request.form ['type'].value
                        )
                     or ''
-                    ) == 'link'
+                    ) == 'radio'
                    ]
                   ;value attr
                   ;id    string:id_$attr"
