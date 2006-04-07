@@ -62,8 +62,8 @@ def check_it (db, cl, nodeid, new_values) :
     if new_values.get ('responsible', None) == db.user.lookup ('helpdesk') :
         raise Reject, _ ("User may not be set to helpdesk")
 
-    if not commono.user_has_role (db, db.getuid (), 'IT') :
-        allowed = {'messages' : 1, 'nosy' : 1}
+    if not common.user_has_role (db, db.getuid (), 'IT') :
+        allowed = {'messages' : 1, 'nosy' : 1, 'files' : 1}
         for prop in new_values.iterkeys () :
             if prop not in allowed :
                 raise Reject, _ ('Not allowed to edit %(prop)s' % locals ())

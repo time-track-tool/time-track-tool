@@ -1067,13 +1067,16 @@ classes = \
     , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
     , ("it_issue"            , ["User"        ],     ["User"   ])
     , ("it_prio"             , ["User"        ],     ["Admin"  ])
-    , ("it_project"          , ["User"        ],     ["User"   ])
+    , ("it_project"          , ["User"        ],     ["IT"     ])
     , ("it_project_status"   , ["User"        ],     ["Admin"  ])
     ]
 
 class_field_perms = \
     [ ( "location", "Edit", ["IT"]
       , ("domain_part",)
+      )
+    , ( "it_project",   "Edit", ["User"]
+      , ("messages",)
       )
     , ( "org_location", "Edit", ["IT"]
       , ("smb_domain", "dhcp_server", "domino_dn")
