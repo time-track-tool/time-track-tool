@@ -1076,7 +1076,7 @@ class_field_perms = \
       , ("domain_part",)
       )
     , ( "it_project",   "Edit", ["User"]
-      , ("messages",)
+      , ("messages", 'files')
       )
     , ( "org_location", "Edit", ["IT"]
       , ("smb_domain", "dhcp_server", "domino_dn")
