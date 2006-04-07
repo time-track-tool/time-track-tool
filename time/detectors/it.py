@@ -34,9 +34,11 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+common = None
 
 
 def new_it (db, cl, nodeid, new_values) :
+    user_has_role = common.user_has_role
     if 'messages'    not in new_values :
         raise Reject, _ ("New %s requires a message") % _ (cl.classname)
     new_values ['status'] = '1'
@@ -48,6 +50,9 @@ def new_it (db, cl, nodeid, new_values) :
         new_values ['stakeholder'] = db.getuid ()
     if 'it_prio'     not in new_values :
         new_values ['it_prio'] = db.it_prio.lookup ('unknown')
+    # Don't allow non-it users to create a project
+    if cl is db.it_project and not user_has_role (db, db.getuid (), 'IT') :
+        raise Reject, _ ('Not allowed to create new %s') % _ ('it_project')
 # end def new_it
 
 def check_it (db, cl, nodeid, new_values) :
@@ -57,6 +62,11 @@ def check_it (db, cl, nodeid, new_values) :
     if new_values.get ('responsible', None) == db.user.lookup ('helpdesk') :
         raise Reject, _ ("User may not be set to helpdesk")
 
+    if not commono.user_has_role (db, db.getuid (), 'IT') :
+        allowed = {'messages' : 1, 'nosy' : 1}
+        for prop in new_values.iterkeys () :
+            if prop not in allowed :
+                raise Reject, _ ('Not allowed to edit %(prop)s' % locals ())
     if 'status' in new_values :
         rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
         if rsp  == db.user.lookup ('helpdesk') :
@@ -84,9 +94,10 @@ def audit_superseder (db, cl, nodeid, new_values) :
 # end def audit_superseder
 
 def init (db) :
-    global _
+    global _, common
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    import common
     for cls in db.it_issue, db.it_project :
         cls.audit     ("create", new_it, priority = 50)
         cls.audit     ("set",    check_it)

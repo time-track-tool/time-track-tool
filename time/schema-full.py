@@ -1067,7 +1067,7 @@ classes = \
     , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
     , ("it_issue"            , ["User"        ],     ["User"   ])
     , ("it_prio"             , ["User"        ],     ["Admin"  ])
-    , ("it_project"          , ["IT", "ITView"],     ["IT"     ])
+    , ("it_project"          , ["User"        ],     ["User"   ])
     , ("it_project_status"   , ["User"        ],     ["Admin"  ])
     ]
 
