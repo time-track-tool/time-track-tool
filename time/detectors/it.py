@@ -65,7 +65,9 @@ def check_it (db, cl, nodeid, new_values) :
     if not common.user_has_role (db, db.getuid (), 'IT') :
         allowed = {'messages' : 1, 'nosy' : 1, 'files' : 1}
         for prop in new_values.iterkeys () :
-            if prop not in allowed :
+            if prop == 'title' :
+                del new_values ['title']
+            elif prop not in allowed :
                 raise Reject, _ ('Not allowed to edit %(prop)s' % locals ())
     if 'status' in new_values :
         rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
