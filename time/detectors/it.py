@@ -64,7 +64,8 @@ def check_it (db, cl, nodeid, new_values) :
 
     if not common.user_has_role (db, db.getuid (), 'IT') :
         allowed = {'messages' : 1, 'nosy' : 1, 'files' : 1}
-        for prop in new_values.iterkeys () :
+        # Don't use iterkeys () here, we change the dict.
+        for prop in new_values.keys () :
             if prop == 'title' :
                 del new_values ['title']
             elif prop not in allowed :
