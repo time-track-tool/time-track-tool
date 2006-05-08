@@ -66,8 +66,9 @@
 
 import sys, os
 sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+sys.path.insert (0, os.path.join (db.config.HOME, 'schema'))
 from common import clearance_by
-del sys.path [0]
+del sys.path [0:1]
 
 class TTT_Issue_Class (Class, IssueClass) :
     """extends the IssueClass with some parameters common to all issues here
