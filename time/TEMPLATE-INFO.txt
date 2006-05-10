@@ -1,7 +1,6 @@
-Name: time
-Description: 
-             Modular tracker for Time-Tracking, absence/vacation
-             information for the users and other features. Features can
-             individually be turned on and off by customizing the
-             includes in schema.py
-Intended-For: Time-Tracking, IT-Issue tracking and others.
+Name: time-todo
+Description: Modular tracker for Time-Tracking, absence/vacation
+ information for the users and other features. Features can individually be
+ turned on and off by customizing the includes in schema.py
+Intended-for: Time-Tracking, IT-Issue tracking and others.
+Path: /home/ralf/roundup/todo

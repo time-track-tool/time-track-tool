@@ -23,11 +23,10 @@
 #
 #++
 # Name
-#    schema-full
+#    schema-it
 #
 # Purpose
-#    Specify the DB-Schema for a tracker including all parts,
-#    time-tracking, it-issue tracking, ...
+#    Specify the DB-Schema for a simple IT issue tracker.
 #    Link this file to schema.py
 #--
 #
@@ -42,12 +41,7 @@ from common import clearance_by
 schemas = \
     ( 'schemadef'
     , 'ext_issue'
-    , 'company'
-    , 'complex'
     , 'it_tracker'
-    , 'nwm'
-    , 'severity'
-    , 'time_tracker'
     )
 
 # Class automatically gets these properties:
@@ -114,11 +108,7 @@ for s in schemas :
 
 del sys.path [0:1]
 
-Department_Class = vars ['Department_Class']
-Department_Class (db, ''"department")
-
-User_Class = vars ['User_Class']
-User_Class \
+Class \
     ( db
     , ''"user"
     , username              = String    ()
@@ -149,7 +139,7 @@ classes = \
     ]
 
 prop_perms = \
-    [ ( "user", "Edit", ["Admin", "HR", "IT"]
+    [ ( "user", "Edit", ["Admin"]
       , ( "address"
         , "alternate_addresses"
         , "nickname"
@@ -158,7 +148,7 @@ prop_perms = \
         , "username"
         )
       )
-    , ( "user", "Edit", ["Admin", "HR"]
+    , ( "user", "Edit", ["Admin"]
       , ( "clearance_by", "external_phone", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "phone", "pictures", "position", "private_phone", "realname"
@@ -166,18 +156,6 @@ prop_perms = \
         , "title", "roles"
         )
       )
-    , ( "user", "Edit", ["IT"]
-      , ( "is_lotus_user", "sync_with_ldap", "group"
-        , "secondary_groups", "uid", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path", "samba_kickoff_time"
-        , "samba_lm_password", "samba_logon_script", "samba_nt_password"
-        , "samba_profile_path", "samba_pwd_can_change", "samba_pwd_last_set"
-        , "samba_pwd_must_change", "user_password", "shadow_last_change"
-        , "shadow_min", "shadow_max", "shadow_warning", "shadow_inactive"
-        , "shadow_expire", "shadow_used"
-        )
-      )
-    , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
@@ -230,7 +208,7 @@ db.security.addPermissionToRole ('User', 'Web Access')
 db.security.addPermissionToRole ('User', 'Email Access')
 
 # editing of roles:
-for r in "Admin", "HR", "IT" :
+for r in "Admin", :
     db.security.addPermissionToRole (r, 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
