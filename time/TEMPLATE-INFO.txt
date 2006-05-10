@@ -1,11 +1,7 @@
-Name: tttech
-Description: This is a specialised tracker that is used here at tttech
-             to not only track bugs and change requests, but furthermore
-             alos do release planning and controlling in a convienient
-             matter. Additionally, the Time-Tracking and absence/vacation
-             information for the users is also done with this tracker.
-             The tracker consists of a total of XXX classes and has several
-             differnet state machines implemented for the different classes.
-             I dont think this will be usable for anyone outside tttech, but
-             it's a nice example to show you the flexibility of roundup.
-Intended-For: Experienced Project Planners - maybe ;)
+Name: time
+Description: 
+             Modular tracker for Time-Tracking, absence/vacation
+             information for the users and other features. Features can
+             individually be turned on and off by customizing the
+             includes in schema.py
+Intended-For: Time-Tracking, IT-Issue tracking and others.
