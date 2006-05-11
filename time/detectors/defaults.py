@@ -119,7 +119,6 @@ def init (db) :
             d = 'default_%s'    % (f,)
             try :
                 name  = (n for n in (s, d) if n in globals ()).next ()
-                print cname, name
                 klass = db.getclass (cname)
                 klass.audit ("create", globals () [name])
             except StopIteration :

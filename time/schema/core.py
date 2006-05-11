@@ -99,9 +99,11 @@ def security (db, ** kw) :
         issue, file and message to regular users now
     """
 
+    # Will have special handling for queries, see below
     #     classname        allowed to view   /  edit
     classes = \
         [ ("user_status"         , ["User"],  ["Admin"           ])
+        , ("query"               , ["Admin"], ["Admin"           ])
         ]
 
     schemadef.register_class_permissions (db, classes, [])

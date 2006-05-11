@@ -340,6 +340,9 @@ def init \
         , line_number           = String    ()
         )
 
+# end def init
+
+def security (db, **kw) :
     #
     # SECURITY SETTINGS
     #
@@ -418,4 +421,4 @@ def init \
                    ]
 
     ext_issue.register_nosy_classes (db, nosy_classes)
-# end def init
+# end def security

@@ -64,8 +64,6 @@ del sys.path [0:1]
 classes = \
     [ ("file"                , ["User"],  ["User"            ])
     , ("msg"                 , ["User"],  ["User"            ])
-# Will have special handling for queries, see below
-    , ("query"               , ["Admin"], ["Admin"           ])
     ]
 
 prop_perms = \

@@ -56,7 +56,6 @@ schemas = \
 importer = schemadef.Importer (globals (), schemas)
 del sys.path [0:1]
 
-Department_Class = vars ['Department_Class']
 Department_Class (db, ''"department")
 
 #
@@ -71,8 +70,6 @@ Department_Class (db, ''"department")
 classes = \
     [ ("file"                , ["User"],  ["User"            ])
     , ("msg"                 , ["User"],  ["User"            ])
-# Will have special handling for queries, see below
-    , ("query"               , ["Admin"], ["Admin"           ])
     ]
 
 prop_perms = \
