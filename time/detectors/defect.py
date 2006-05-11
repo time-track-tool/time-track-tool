@@ -316,6 +316,8 @@ def react_on_closed (db, cl, nodeid, old_values) :
 # end def react_on_closed
 
 def init (db) :
+    if 'defect' not in db.classes :
+        return
     import sys, os
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     common = __import__ ('common', globals (), locals ())

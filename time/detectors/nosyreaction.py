@@ -162,10 +162,11 @@ def init(db):
                    , "it_project"
                    ]
     for klass in nosy_classes :
+        if klass not in db.classes :
+            continue
         cl = db.getclass (klass)
         cl.react('create', nosyreaction)
         cl.react('set'   , nosyreaction)
         cl.audit('create', updatenosy)
         cl.audit('set'   , updatenosy)
 
-# vim: set filetype=python ts=4 sw=4 et si

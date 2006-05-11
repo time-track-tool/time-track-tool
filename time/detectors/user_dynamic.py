@@ -149,6 +149,8 @@ def close_existing (db, cl, nodeid, old_values) :
 # end def close_existing
 
 def init (db) :
+    if 'user_dynamic' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

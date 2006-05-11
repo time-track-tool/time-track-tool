@@ -598,6 +598,8 @@ def check_retire (db, cl, nodeid, dummy) :
 # end def check_retire
 
 def init (db) :
+    if 'time_record' not in db.classes :
+        return
     import sys, os
     global _, common, get_user_dynamic
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))

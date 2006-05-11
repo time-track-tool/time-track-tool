@@ -152,6 +152,8 @@ def move_defects (db, cl, nodeid, old_values) :
 # end def move_defects
 
 def init (db) :
+    if 'feature' not in db.classes :
+        return
     import sys, os
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     common = __import__ ('common', globals (), locals ())

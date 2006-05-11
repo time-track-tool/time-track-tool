@@ -6,6 +6,7 @@
  ; classname       context/_classname|db/user/_classname
  ; Classname       python: i18n.gettext (classname)
  ; klass           python: db [classname] or default
+ ; bclass          python: db._db.getclass (classname) or default
  ; is_user         python: uname != 'anonymous'
  ; lbl             klass/_klass/labelprop
  ; labelprop       python: (lbl,'lastname')
@@ -63,9 +64,24 @@
    , 'time_wp'         : ':columns=name,wp_no,responsible,project,time_start'
                          ',time_end,cost_center&:sort=name&:filter=bookers&'
                          ':pagesize=20&:startwith=0&bookers=%s' % uid
-   , 'user'            : ':columns=lastname,firstname,nickname,username'
-                         ',phone,room,position,supervisor&:sort=lastname&'
+   , 'user'            : ':columns=%s&:sort=%s&'
                          ':filter=status&:pagesize=200&:startwith=0&status=1'
+                          % ( ','.join
+                              (n for n in 
+                               ( 'lastname'
+                               , 'firstname'
+                               , 'nickname'
+                               , 'username'
+                               , 'phone'
+                               , 'room'
+                               , 'position'
+                               , 'supervisor'
+                               )
+                              if n in db._db.user.properties
+                              )
+                            , ['username', 'lastname']
+                              ['lastname' in db._db.user.properties]
+                            )
    , 'user_dynamic'    : ':columns=id,user,valid_from,org_location&:sort=-id&'
                          ':pagesize=20&:startwith=0'
    }
@@ -240,7 +256,10 @@
 -->
     <!-- time-tracking for current daily_record selection or current week -->
     <td class="sidebar"
-     tal:condition="python:db._db.user_dynamic.find (user = request.user.id)">
+     tal:condition="python:
+      (   'user_dynamic' in db._db.classes
+      and db._db.user_dynamic.find (user = request.user.id)
+      )">
      <span class="classblock">
       <a tal:attributes="href python:
        [ 'daily_record?:action=daily_record_action&:template=edit'
@@ -340,7 +359,11 @@
   <select name="create_new"
           onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
    <option value="">-- Create / Update --</option>
-   <tal:block tal:repeat="k python:utils.sorted (klasses, (0,), i18n.gettext)">
+   <tal:block tal:repeat="k python:
+    utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
+                 , (0,)
+                 , i18n.gettext
+                 )">
     <option tal:condition="python:request.user.hasPermission(k [1], k [0])
                                   and k [3]"
             tal:attributes="value python:k[0] + k[2]"
@@ -359,7 +382,11 @@
    <option value="">-- View / Query --</option>
    <option value="query?@template=edit">Manage Queries</option>
    <tal:block
-    tal:repeat="k python:utils.sorted (klasses, (0,), i18n.gettext)">
+    tal:repeat="k python:
+     utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
+                  , (0,)
+                  , i18n.gettext
+                  )">
      <tal:block tal:define=
        " name  python:i18n.gettext (k [0])
        ; klass python:k [0]

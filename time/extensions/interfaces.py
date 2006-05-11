@@ -286,19 +286,15 @@ def work_packages (db, daily_record) :
     return x
 # end def work_packages
 
-def sorted (vals, keys, fun = str) :
-    """ Sort given values by given keys. Should be optimized to use key
-        sorting (available in python 2.4) and fuction "sorted".
+def u_sorted (vals, keys, fun = str) :
+    """ Sort given values by given keys.
         The function "fun" is tricky. If you want to sort numerically,
         use "int" here, but i18n.gettext is also nice for sorting by
         translated values...
     """
-    keyfun = lambda x, y : \
-        cmp ([fun (x [k]) for k in keys], [fun (y [k]) for k in keys])
-    vals   = [v for v in vals]
-    vals.sort (keyfun)
-    return vals
-# end def sorted
+    key    = lambda x : [fun (x [k]) for k in keys]
+    return sorted (vals, key = key)
+# end def u_sorted
 
 def weekend_allowed (db, daily_record) :
     user, date = [str (daily_record [i]) for i in 'user', 'date']
@@ -367,7 +363,7 @@ def init (instance) :
     reg ("button_action",                button_action)
     reg ("batch_has_status",             batch_has_status)
     reg ("work_packages",                work_packages)
-    reg ("sorted",                       sorted)
+    reg ("sorted",                       u_sorted)
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)
     reg ("clearance_by",                 clearance_by)
@@ -378,3 +374,4 @@ def init (instance) :
     reg ("next_user_dynamic",            next_user_dynamic)
     reg ("prev_user_dynamic",            prev_user_dynamic)
     reg ("act_or_latest_user_dynamic",   act_or_latest_user_dynamic)
+#SHA: 03387ec5a7fcc4963b4aef0670b8c74d4573c53e

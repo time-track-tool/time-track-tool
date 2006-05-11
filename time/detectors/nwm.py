@@ -387,6 +387,8 @@ def check_smb_machine (db, cl, nodeid, new_values) :
 # end def check_smb_machine
 
 def init (db) :
+    if 'alias' not in db.classes :
+        return
     import sys, os
     global common, _
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))

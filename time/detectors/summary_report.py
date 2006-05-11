@@ -39,6 +39,8 @@ def new_summary_report (db, cl, nodeid, new_values) :
 # end def new_summary_report
 
 def init (db) :
+    if 'summary_report' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

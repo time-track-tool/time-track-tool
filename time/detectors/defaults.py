@@ -111,18 +111,19 @@ def default_action_item_status (db, cl, nodeid, new_values) :
 # end def default_action_item_status
 
 def init (db) :
-    db.action_item.audit ("create", default_responsible       )
-    db.document.audit    ("create", default_responsible       )
-    db.release.audit     ("create", default_responsible       )
-    db.feature.audit     ("create", default_responsible       )
-    db.task.audit        ("create", default_responsible       )
-    db.defect.audit      ("create", default_defect_responsible)
-    db.action_item.audit ("create", default_action_item_status)
-    db.feature.audit     ("create", default_feature_status    )
-    db.task.audit        ("create", default_task_status       )
-    db.defect.audit      ("create", default_defect_status     )
-    db.defect.audit      ("create", default_defect_nosy       )
-    db.document.audit    ("create", default_document_title    )
+    cnames  = 'action_item', 'document', 'release', 'feature', 'task', 'defect'
+    cnames  = [c for c in cnames if c in db.classes]
+    for cname in cnames :
+        for f in 'responsible', 'status', 'nosy', 'title' :
+            s = 'default_%s_%s' % (cname, f)
+            d = 'default_%s'    % (f,)
+            try :
+                name  = (n for n in (s, d) if n in globals ()).next ()
+                print cname, name
+                klass = db.getclass (cname)
+                klass.audit ("create", globals () [name])
+            except StopIteration :
+                pass
 # end def init
 
 ### __END__ defaults

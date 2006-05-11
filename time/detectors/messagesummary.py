@@ -15,5 +15,3 @@ def summarygenerator(db, cl, nodeid, newvalues):
 def init(db):
     # fire before changes are made
     db.msg.audit('create', summarygenerator)
-
-# vim: set filetype=python ts=4 sw=4 et si

@@ -69,31 +69,54 @@ def own_user_record (db, userid, itemid) :
     return userid == itemid
 # end def own_user_record
 
-def init (db, Class, ** kw) :
-    class Ext_Class (Class) :
-        """ create a class with some default attributes
-            Note: inheritance methodology stolen from
-            roundup/backends/back_anydbm.py's IssueClass ;-)
-        """
+class Importer (object) :
+    def __init__ (self, globals, schemas) :
+        self.modules = {}
+        self.globals = globals
+        self.schemas = schemas
+        Class = globals ['Class']
 
-        def __init__ (self, db, classname, ** properties) :
-            for k, v in self.default_properties.iteritems () :
-                properties.setdefault (k, v)
-            Class.__init__ (self, db, classname, ** properties)
-        # end def __init__
-
-        def update_properties (self, ** properties) :
-            """ We expect this method to be called *after* having
-                initialised all objects of derived classes. So we may
-                already have an initialised self.default_properties and
-                we only update those properties that are not already
-                present (it's more efficient to update the properties
-                parameter with the already existing default_properties).
+        class Ext_Class (Class) :
+            """ create a class with some default attributes
+                Note: inheritance methodology stolen from
+                roundup/backends/back_anydbm.py's IssueClass ;-)
             """
-            props                   = getattr (self, 'default_properties', {})
-            properties.update       (props)
-            self.default_properties = properties
-        # end def update_properties
-    # end class Ext_Class
-    return dict (Ext_Class = Ext_Class)
-# end def init
+
+            def __init__ (self, db, classname, ** properties) :
+                for k, v in self.default_properties.iteritems () :
+                    properties.setdefault (k, v)
+                Class.__init__ (self, db, classname, ** properties)
+            # end def __init__
+
+            def update_properties (self, ** properties) :
+                """ We expect this method to be called *after* having
+                    initialised all objects of derived classes. So we may
+                    already have an initialised self.default_properties and
+                    we only update those properties that are not already
+                    present (it's more efficient to update the properties
+                    parameter with the already existing default_properties).
+                """
+                props = getattr (self, 'default_properties', {})
+                properties.update       (props)
+                self.default_properties = properties
+            # end def update_properties
+        # end class Ext_Class
+        globals ['Ext_Class'] = Ext_Class
+
+        for s in schemas :
+            m = __import__ (s)
+            globals [s] = m
+            if hasattr (m, 'init') :
+                v = m.init (** globals)
+                if v :
+                    globals.update (v)
+            self.modules [s] = m
+    # end def __init__
+
+    def update_security (self) :
+        for s in self.schemas :
+            m = self.modules [s]
+            if hasattr (m, 'security') :
+                m.security (** self.globals)
+    # end def update_security
+# end class Importer

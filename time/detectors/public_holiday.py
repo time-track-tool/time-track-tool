@@ -47,6 +47,8 @@ def new_public_holiday (db, cl, nodeid, new_values) :
 # end def new_public_holiday
 
 def init (db) :
+    if 'public_holiday' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
@@ -54,4 +56,3 @@ def init (db) :
     db.public_holiday.audit  ("set",    check_public_holiday)
 # end def init
 
-### __END__ public_holiday

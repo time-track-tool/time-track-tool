@@ -136,6 +136,8 @@ def update_feature_test_ok (db, cl, nodeid, old_values) :
 # end def update_feature_test_ok
 
 def init (db) :
+    if 'task' not in db.classes :
+        return
     import sys, os
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     common = __import__ ('common', globals (), locals ())

@@ -81,6 +81,8 @@ def new_time_wp (db, cl, nodeid, new_values) :
 # end def new_time_wp
 
 def init (db) :
+    if 'time_wp' not in db.classes :
+        return
     import sys, os
     global common, _
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))

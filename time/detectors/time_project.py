@@ -65,6 +65,8 @@ def new_time_project (db, cl, nodeid, new_values) :
 # end def new_time_project
 
 def init (db) :
+    if 'time_project' not in db.classes :
+        return
     import sys, os
     global common, _
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))

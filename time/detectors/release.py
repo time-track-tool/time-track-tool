@@ -122,6 +122,8 @@ def backlink_documents (db, cl, nodeid, old_values) :
 # end def backlink_documents
 
 def init (db) :
+    if 'release' not in db.classes :
+        return
     db.release.audit   ("create", add_milestones)
     db.release.react   ("create", update_milestones)
     db.release.react   ("set"   , backlink_documents)
@@ -129,5 +131,3 @@ def init (db) :
 # end def init
 
 ### __END__ release
-
-

@@ -148,6 +148,8 @@ def new_comment (db, cl, nodeid, new_values) :
 
 
 def init (db) :
+    if 'review' not in db.classes :
+        return
     # fire before changes are made
     db.review.audit       ("set"   , update_nosy_review)
     db.review.audit       ("create", update_nosy_review)
@@ -157,6 +159,3 @@ def init (db) :
     db.comment.audit      ("create", new_comment)
 
 ### __END__ review
-
-
-#SHA: a4905d2eff5c50717fb7571c19803004e809ad1d

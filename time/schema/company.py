@@ -126,7 +126,6 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( nickname              = String    ()
-                , status                = Link      ("user_status")
                 , firstname             = String    ()
                 , lastname              = String    ()
                 , external_phone        = String    ()
@@ -182,14 +181,6 @@ def init \
         )
     sex.setkey ("name")
 
-    user_status = Class \
-        ( db
-        , ''"user_status"
-        , name                  = String    ()
-        , description           = String    ()
-        )
-    user_status.setkey ("name")
-
     return export
 # end def init
 
@@ -216,7 +207,6 @@ def security (db, ** kw) :
         , ("room"                , ["User"],  ["HR"              ])
         , ("sex"                 , ["User"],  ["Admin"           ])
     #   , ("user"                , See below -- individual fields)
-        , ("user_status"         , ["User"],  ["Admin"           ])
         ]
 
     prop_perms = \
@@ -242,3 +232,4 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole('User', p)
 # end def security
+#SHA: 278a4e39c4fdd8a8bbd0545c36aa83385ea39dc6

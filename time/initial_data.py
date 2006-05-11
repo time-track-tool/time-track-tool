@@ -28,13 +28,11 @@
 #--
 #
 
-classes = dict ((c, 1) for c in db.getclasses ())
-
 # init values
 
 # task_status
 # order, name, abbreviation, transitions, description
-if 'task_status' in classes :
+if 'task_status' in db.classes :
     tasks = [ ("1", "issued"              , "issu", ("started", )
               , "Waiting to get started")
             , ("2", "started"             , "star", ("available", "suspended")
@@ -64,7 +62,7 @@ if 'task_status' in classes :
             trans_ids = [task_status.lookup (t) for t in trans]
             task_status.set (id, transitions = trans_ids)
 
-if 'document_status' in classes :
+if 'document_status' in db.classes :
     # document_status
     # order, name, abbr, transitions, description
     docs = [ ("1", "issued"              , "issu", ("started", )
@@ -90,7 +88,7 @@ if 'document_status' in classes :
             trans_ids = [document_status.lookup (t) for t in trans]
             document_status.set (id, transitions = trans_ids)
 
-if 'task_kind' in classes :
+if 'task_kind' in db.classes :
     # task_kind
     kinds = [ ("1", "srd"                  , "Software Requirements Document")
             , ("2", "sdd"                  , "Software Design Document"      )
@@ -105,7 +103,7 @@ if 'task_kind' in classes :
                          , description = desc
                          )
 
-if 'feature_status' in classes :
+if 'feature_status' in db.classes :
     # feature_status
     # order, name, abbreviation, transitions, description
     fss = [ ("1", "raised"   , "rais", ("suspended", "rejected") # "open" automatically
@@ -135,7 +133,7 @@ if 'feature_status' in classes :
             trans_ids = [feature_status.lookup (t) for t in trans]
             feature_status.set (id, transitions = trans_ids)
 
-if 'action_item_status' in classes :
+if 'action_item_status' in db.classes :
     # action_item_status
     # order, name, description
     ais = [ ("1", "open"  , "The Action-Item is open"  )
@@ -145,7 +143,7 @@ if 'action_item_status' in classes :
     for order, name, desc in ais :
         ai.create (name = name, description = desc, order = order)
 
-if 'review_status' in classes :
+if 'review_status' in db.classes :
     # review_status
     # order, name, description
     rs = [ ("1", "open"  , "The Review is open"  )
@@ -155,7 +153,7 @@ if 'review_status' in classes :
     for order, name, desc in rs :
         r.create (name = name, description = desc, order = order)
 
-if 'comment_status' in classes :
+if 'comment_status' in db.classes :
     # comment_status
     # order, name, description, transitions
     cs = [ ("1", "assigned", "The Comment just got reported"
@@ -182,7 +180,7 @@ if 'comment_status' in classes :
             trans_ids = [comment_status.lookup (t) for t in trans]
             comment_status.set (id, transitions = trans_ids)
 
-if 'defect_status' in classes :
+if 'defect_status' in db.classes :
     # defect_status:
     # order, name, abbreviation, cert, description, cert_trans, trans
     dss = [ ("1", "assigned"        , "assi", False
@@ -238,7 +236,7 @@ if 'defect_status' in classes :
             trans_ids = [defect_status.lookup (t) for t in trans]
             defect_status.set (id, transitions = trans_ids)
 
-if 'document_type' in classes :
+if 'document_type' in db.classes :
     # document_type
     # order, name, description
     dts = [ ("1", "ES" , "Evaluation Sheet"             )
@@ -249,7 +247,7 @@ if 'document_type' in classes :
     for order, name, desc in dts :
         doc_type.create (name = name, description = desc, order = order)
 
-if 'severity' in classes :
+if 'severity' in db.classes :
     # severity
     # order, name
     ss = [ ("1", "showstopper")
@@ -260,7 +258,7 @@ if 'severity' in classes :
     for order, name in ss :
         severity.create (name = name, order = order)
 
-if 'user_status' in classes :
+if 'user_status' in db.classes :
     # user status must come first.
     user_status = db.getclass ('user_status')
     user_status.create (name = "valid",    description = "Valid user")
@@ -270,16 +268,25 @@ if 'user_status' in classes :
 # users
 # create the two default users
 user = db.getclass ('user')
-user.create ( username = "admin"
-            , password = adminpw
-            , address  = db.config.ADMIN_EMAIL
-            , roles    = "Admin"
-            )
-user.create ( username = "anonymous"
-            , roles    = "Anonymous"
-            )
+user.create \
+    ( username = "admin"
+    , password = adminpw
+    , address  = db.config.ADMIN_EMAIL
+    , roles    = "Admin"
+    )
+user.create \
+    ( username = "anonymous"
+    , roles    = "Anonymous"
+    )
+if 'it_issue' in db.classes :
+    user.create \
+        ( username = "helpdesk"
+        , address  = db.config.ADMIN_EMAIL
+        , status   = db.user_status.lookup ('system')
+        )
 
-if 'daily_record_status' in classes :
+
+if 'daily_record_status' in db.classes :
     daily_record_status = db.getclass ('daily_record_status')
     daily_record_status.create \
         ( name        = "open"
@@ -294,7 +301,7 @@ if 'daily_record_status' in classes :
         , description = "Accepted by supervisor"
         )
 
-if 'work_location' in classes :
+if 'work_location' in db.classes :
     work_location = db.getclass ('work_location')
     work_location.create \
         ( code = "on site"
@@ -319,18 +326,18 @@ if 'work_location' in classes :
         , description = "Abwesend"
         )
 
-if 'sex' in classes :
+if 'sex' in db.classes :
     sex = db.getclass ('sex')
     sex.create (name = "female")
     sex.create (name = "male")
 
-if 'summary_type' in classes :
+if 'summary_type' in db.classes :
     summary_type = db.summary_type
     summary_type.create (name = "day",   order = 1)
     summary_type.create (name = "week",  order = 2)
     summary_type.create (name = "month", order = 3)
 
-if 'dns_record_type' in classes :
+if 'dns_record_type' in db.classes :
     dns_record_type = db.dns_record_type
     dns_record_type.create (name = "invalid",   description = "don't use")
     dns_record_type.create (name = "A",         description = "A record")
@@ -349,7 +356,7 @@ def gen_status (cls, list) :
             trans_ids = [cls.lookup (t) for t in trans]
             cls.set (id, transitions = trans_ids)
 
-if 'it_issue_status' in classes :
+if 'it_issue_status' in db.classes :
     its = [ (1, "new",      "Has just been reported"
             , ("open", "feedback", "closed")
             )
@@ -365,16 +372,16 @@ if 'it_issue_status' in classes :
           ]
     gen_status (db.getclass ("it_issue_status"), its)
 
-if 'it_project_status' in classes :
+if 'it_project_status' in db.classes :
     its = [ (1, "open",      "Not yet resolved", ("closed", ))
           , (2, "closed",    "Resolved",         ("open", ))
           ]
     gen_status (db.getclass ("it_project_status"), its)
 
-if 'it_category' in classes :
+if 'it_category' in db.classes :
     db.it_category.create (name = 'helpdesk', description = 'Helpdesk Issues')
 
-if 'it_prio' in classes :
+if 'it_prio' in db.classes :
     db.it_prio.create (name = "nice to have",                        order = 1)
     db.it_prio.create (name = "assistance",                          order = 2)
     db.it_prio.create (name = "one person, important for project",   order = 3)

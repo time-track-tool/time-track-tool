@@ -97,6 +97,8 @@ def audit_superseder (db, cl, nodeid, new_values) :
 # end def audit_superseder
 
 def init (db) :
+    if 'it_issue' not in db.classes :
+        return
     global _, common
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

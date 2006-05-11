@@ -61,5 +61,7 @@ def init (db) :
 
     status_classes = ['it_issue', 'it_project']
     for cl in status_classes :
+        if cl not in db.classes :
+            continue
         db.getclass (cl).audit ("set", check_status)
 # end def init
