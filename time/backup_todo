@@ -31,6 +31,8 @@ rm -rf $dir
 mkdir $dir
 
 $ROUNDUP_ADMIN -i $TRACKER export $dir
+cp $TRACKER/config.ini $dir
+cp $RESTORE/config.ini $dir/config.ini.restore
 
 if [ -n "$RESTORE" ] ; then
     echo Restoring from $dir to $RESTORE
