@@ -45,10 +45,9 @@ import schemadef
 schemas = \
     ( 'ext_issue'
     , 'company'
-    , 'complex'
+    , 'issue'
     , 'it_tracker'
     , 'nwm'
-    , 'severity'
     , 'time_tracker'
     , 'core'
     )

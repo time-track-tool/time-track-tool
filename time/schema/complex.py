@@ -45,6 +45,15 @@ def init \
     , Number
     , ** kw
     ) :
+
+    severity = Class \
+        ( db
+        , ''"severity"
+        , name                  = String    ()
+        , order                 = String    ()
+        )
+    severity.setkey ("name")
+
     milestone_class = Class \
         ( db
         , ''"milestone"

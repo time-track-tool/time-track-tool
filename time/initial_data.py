@@ -389,3 +389,54 @@ if 'it_prio' in db.classes :
     db.it_prio.create (name = "showstopper for one person",          order = 5)
     db.it_prio.create (name = "showstopper for many persons",        order = 6)
     db.it_prio.create (name = "unknown",                             order = 7)
+
+if 'area' in db.classes :
+    db.area.create (name = "SW",  description = "Software")
+    db.area.create (name = "HW",  description = "Hardware")
+    db.area.create (name = "Doc", description = "Documentation")
+    db.area.create (name = "IT",  description = "Information Technology")
+
+if 'kind' in db.classes :
+    db.kind.create \
+        ( name        = "Bug"
+        , description = "A defect in the software"
+        )
+    db.kind.create \
+        ( name        = "Change-Request"
+        , description = "New functionality requested"
+        )
+    db.kind.create \
+        ( name        = "Wart"
+        , description = "Broken Window hindering development"
+        )
+    db.kind.create \
+        ( name        = "Support"
+        , description = "Support item"
+        )
+    db.kind.create \
+        ( name        = "Mistaken"
+        , description = "Misunderstanding on reporter's side"
+        )
+    db.kind.create \
+        ( name        = "Obsolete"
+        , description = "No longer relevant"
+        )
+
+if 'msg_keyword' in db.classes :
+    db.msg_keyword.create \
+        ( name        = "Reporting"
+        , description = "Relevant for reporting to management"
+        )
+    db.msg_keyword.create \
+        ( name        = "Design"
+        , description = "Documentation of Design"
+        )
+
+if 'status' in db.classes :
+    db.status.create (name = "open",      order = '1')
+    db.status.create (name = "feedback",  order = '2')
+    db.status.create (name = "analyzed",  order = '3')
+    db.status.create (name = "testing",   order = '4')
+    db.status.create (name = "suspended", order = '5')
+    db.status.create (name = "closed",    order = '6')
+

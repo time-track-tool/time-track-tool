@@ -76,16 +76,15 @@ class Importer (object) :
         self.schemas = schemas
         Class = globals ['Class']
 
-        class Ext_Class (Class) :
+        class Ext_Mixin :
             """ create a class with some default attributes
                 Note: inheritance methodology stolen from
                 roundup/backends/back_anydbm.py's IssueClass ;-)
             """
 
-            def __init__ (self, db, classname, ** properties) :
+            def __init__ (self, db, properties) :
                 for k, v in self.default_properties.iteritems () :
                     properties.setdefault (k, v)
-                Class.__init__ (self, db, classname, ** properties)
             # end def __init__
 
             def update_properties (self, ** properties) :
@@ -100,8 +99,18 @@ class Importer (object) :
                 properties.update       (props)
                 self.default_properties = properties
             # end def update_properties
+        # end class Ext_Mixin
+
+        class Ext_Class (Class, Ext_Mixin) :
+            def __init__ (self, db, classname, ** properties) :
+                Ext_Mixin.__init__ (self, db, properties)
+                Class.__init__     (self, db, classname, ** properties)
+            # end def __init__
         # end class Ext_Class
+
         globals ['Ext_Class'] = Ext_Class
+        globals ['Ext_Mixin'] = Ext_Mixin
+        globals ['Msg_Class'] = globals ['FileClass']
 
         for s in schemas :
             m = __import__ (s)

@@ -33,7 +33,17 @@
 import schemadef
 
 def init \
-    (db, Class, FileClass, String, Password, Date, Link, Multilink, ** kw) :
+    ( db
+    , Class
+    , FileClass
+    , Msg_Class
+    , String
+    , Password
+    , Date
+    , Link
+    , Multilink
+    , ** kw
+    ) :
     # FileClass automatically gets these properties:
     #   content = String()    [saved to disk in <tracker home>/db/files/]
     #   (it also gets the Class properties creation, activity and creator)
@@ -44,7 +54,7 @@ def init \
         , type                  = String    ()
         )
 
-    FileClass \
+    Msg_Class \
         ( db
         , ''"msg"
         , date                  = Date      ()
