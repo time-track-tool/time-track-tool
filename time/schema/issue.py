@@ -92,18 +92,18 @@ def init \
 
     issue = IssueClass \
         ( db, "issue"
-        , responsible         = Link      ("user")
-        , keywords            = Multilink ("keyword")
+        , responsible         = Link      ("user",        do_journal = 'no')
+        , keywords            = Multilink ("keyword",     do_journal = 'no')
         , priority            = Number    ()
         , effective_prio      = Number    ()
-        , status              = Link      ("status")
+        , status              = Link      ("status",      do_journal = 'no')
         , closed              = Date      ()
         , release             = String    (indexme = 'no')
         , fixed_in            = String    (indexme = 'no')
         , files_affected      = String    (indexme = 'no')
-        , category            = Link      ("category")
-        , kind                = Link      ("kind")
-        , area                = Link      ("area")
+        , category            = Link      ("category",    do_journal = 'no')
+        , kind                = Link      ("kind",        do_journal = 'no')
+        , area                = Link      ("area",        do_journal = 'no')
         , depends             = Multilink ("issue")
         , needs               = Multilink ("issue")
         , effort              = String    (indexme = 'no')
@@ -124,7 +124,7 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( header      = String    (indexme = 'no')
-                , keywords    = Multilink ("msg_keyword")
+                , keywords    = Multilink ("msg_keyword", do_journal = 'no')
                 , subject     = String    (indexme = 'no')
                 )
             Ext_Mixin.__init__ (self, db, properties)
