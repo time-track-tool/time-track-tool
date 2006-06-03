@@ -50,8 +50,9 @@ def init \
     FileClass \
         ( db
         , ''"file"
-        , name                  = String    ()
-        , type                  = String    ()
+        , name                  = String    (indexme = 'no')
+        , type                  = String    (indexme = 'no')
+        , content               = String    (indexme = 'no')
         )
 
     Msg_Class \
@@ -59,13 +60,14 @@ def init \
         , ''"msg"
         , date                  = Date      ()
         , files                 = Multilink ("file")
-        # Note: below fields are used by roundup internally (obviously by the
-        #       mail-gateway)
+        # Note: fields below are used by roundup internally (obviously
+        #       by the mail-gateway)
         , author                = Link      ("user", do_journal='no')
         , recipients            = Multilink ("user", do_journal='no')
-        , summary               = String    ()
-        , messageid             = String    ()
-        , inreplyto             = String    ()
+        , summary               = String    (indexme = 'no')
+        , messageid             = String    (indexme = 'no')
+        , inreplyto             = String    (indexme = 'no')
+        , content               = String    (indexme = 'no')
         )
 
     query = Class \

@@ -48,15 +48,15 @@ def init \
     ) :
     area = Class \
         ( db, "area"
-        , name                = String    ()
-        , description         = String    ()
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
         )
     area.setkey ("name")
 
     category = Class \
         ( db, "category"
-        , name                = String    ()
-        , description         = String    ()
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
         , responsible         = Link      ("user")
         , nosy                = Multilink ("user")
         )
@@ -64,29 +64,29 @@ def init \
 
     kind = Class \
         ( db, "kind"
-        , name                = String    ()
-        , description         = String    ()
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
         )
     kind.setkey ("name")
 
     keyword = Class \
         ( db, "keyword"
-        , name                = String    ()
-        , description         = String    ()
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
         )
     keyword.setkey ("name")
 
     stat = Class \
         ( db, "status"
-        , name                = String    ()
-        , order               = String    ()
+        , name                = String    (indexme = 'no')
+        , order               = String    (indexme = 'no')
         )
     stat.setkey ("name")
 
     msg_keyword = Class \
         ( db, "msg_keyword"
-        , name                = String    ()
-        , description         = String    ()
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
         )
     msg_keyword.setkey("name")
 
@@ -98,15 +98,15 @@ def init \
         , effective_prio      = Number    ()
         , status              = Link      ("status")
         , closed              = Date      ()
-        , release             = String    ()
-        , fixed_in            = String    ()        # was Release-Note in gnats
-        , files_affected      = String    ()
+        , release             = String    (indexme = 'no')
+        , fixed_in            = String    (indexme = 'no')
+        , files_affected      = String    (indexme = 'no')
         , category            = Link      ("category")
         , kind                = Link      ("kind")
         , area                = Link      ("area")
         , depends             = Multilink ("issue")
         , needs               = Multilink ("issue")
-        , effort              = String    ()
+        , effort              = String    (indexme = 'no')
         , deadline            = Date      ()
         , earliest_start      = Date      ()
         , planned_begin       = Date      ()
@@ -123,9 +123,9 @@ def init \
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( header      = String    ()
+                ( header      = String    (indexme = 'no')
                 , keywords    = Multilink ("msg_keyword")
-                , subject     = String    ()
+                , subject     = String    (indexme = 'no')
                 )
             Ext_Mixin.__init__ (self, db, properties)
             Cls.__init__       (self, db, classname, ** properties)
