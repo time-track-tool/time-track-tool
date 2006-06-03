@@ -46,10 +46,11 @@ def init \
     Ext_Issue_Class \
         ( db
         , ''"it_issue"
-        , status                = Link      ("it_issue_status")
-        , it_prio               = Link      ("it_prio")
-        , category              = Link      ("it_category")
-        , stakeholder           = Link      ("user")
+        , status                = Link      ("it_issue_status",
+                                                            do_journal='no')
+        , it_prio               = Link      ("it_prio",     do_journal='no')
+        , category              = Link      ("it_category", do_journal='no')
+        , stakeholder           = Link      ("user",        do_journal='no')
         , deadline              = Date      ()
         , files                 = Multilink ("file")
         , it_project            = Link      ("it_project")
@@ -77,10 +78,11 @@ def init \
     Ext_Issue_Class \
         ( db
         , ''"it_project"
-        , status                = Link      ("it_project_status")
-        , it_prio               = Link      ("it_prio")
-        , category              = Link      ("it_category")
-        , stakeholder           = Link      ("user")
+        , status                = Link      ("it_project_status",
+                                                            do_journal = 'no')
+        , it_prio               = Link      ("it_prio",     do_journal = 'no')
+        , category              = Link      ("it_category", do_journal = 'no')
+        , stakeholder           = Link      ("user",        do_journal = 'no')
         , deadline              = Date      ()
         , files                 = Multilink ("file")
         )
