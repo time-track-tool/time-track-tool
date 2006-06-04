@@ -14,6 +14,7 @@
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
  ; has_files       python: 'files'       in props
+ ; want_files      python: True
  ; has_resp        python: 'responsible' in props
  ; has_nosy        python: 'nosy'        in props
  ; use_labelprop   python: 1
@@ -516,7 +517,7 @@
 
    <tr metal:use-macro="templates/page/macros/message_box" />
 
-   <tr tal:condition="has_files">
+   <tr tal:condition="python:has_files and want_files">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
     <td><input type="file" name="@file" size="40"/></td>
    </tr>

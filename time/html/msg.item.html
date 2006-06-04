@@ -1,70 +1,66 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title"> 
-<span tal:condition="context/id" tal:replace="string:${Classname}:
-${context/id} angelegt von ${context/creator}" />
-<tal:x tal:condition="not:context/id">Neue Notiz</tal:x> 
-</title> 
-<span metal:fill-slot="body_title" tal:omit-tag="python:1"
-      tal:content="python:i18n.gettext (context._classname)"></span>
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
 
-<tal:block metal:fill-slot="create_or_query">
- <tal:block 
-  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
-</tal:block>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
 
-<td class="content" metal:fill-slot="content">
-<table class="form">
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
- <td tal:content="context/author"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'recipients')"/>
- <td tal:content="context/recipients"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
- <td tal:content="context/date"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'subject')"/>
- <td tal:content="context/subject"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'summary')"/>
- <td tal:content="context/summary"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'messageid')"/>
- <td tal:content="context/messageid"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'inreplyto')"/>
- <td tal:content="context/inreplyto"/>
-</tr>
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'keywords')"/>
- <td tal:content="structure python:context.keywords.menu (height = 5)"/>
-</tr>
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="want_files python:False">
+   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+    <tal:block metal:fill-slot="ttt_issue_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
+      <td tal:content="context/author"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'recipients')"/>
+      <td tal:content="context/recipients"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
+      <td tal:content="context/date"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'subject')"/>
+      <td tal:content="context/subject"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'summary')"/>
+      <td tal:content="context/summary"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'messageid')"/>
+      <td tal:content="context/messageid"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'inreplyto')"/>
+      <td tal:content="context/inreplyto"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'keywords')"/>
+      <td tal:content="structure python:context.keywords.menu (height = 5)"/>
+     </tr>
 
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'header')"/>
- <td><pre tal:content="context/header/plain"/></td>
-</tr>
-</table>
-
-<table class="messages">
- <tr>
-  <th colspan=2 class="header"
-   tal:content="structure python:utils.fieldname (classname, 'content')">
-  </th>
- </tr>
- <tr>
-  <td class="content" colspan=2><pre tal:content="structure context/content/hyperlinked"></pre></td>
- </tr>
-</table>
-
-<tal:block tal:replace="structure context/history" />
-</td>
-
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'header')"/>
+      <td><pre tal:content="context/header/plain"/></td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
 </tal:block>
