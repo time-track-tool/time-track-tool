@@ -40,7 +40,8 @@
        <td class="item">
         <a tal:attributes="name itemkey"
            tal:content="structure python:
-            utils.helptext (itemkey) % {'Classname' : Classname}" />
+            utils.helptext (itemkey) % 
+             {'Classname' : Classname, 'Property' : itemkey}" />
        </td>
       </tr>
      </table>

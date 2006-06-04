@@ -14,20 +14,42 @@ ${context/id} angelegt von ${context/creator}" />
 
 <td class="content" metal:fill-slot="content">
 <table class="form">
-
 <tr>
- <th tal:content="structure python:utils.fieldname (classname, 'author')"></th>
- <td tal:content="context/author"></td>
+ <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
+ <td tal:content="context/author"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'recipients')"/>
+ <td tal:content="context/recipients"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
+ <td tal:content="context/date"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'subject')"/>
+ <td tal:content="context/subject"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'summary')"/>
+ <td tal:content="context/summary"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'messageid')"/>
+ <td tal:content="context/messageid"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'inreplyto')"/>
+ <td tal:content="context/inreplyto"/>
+</tr>
+<tr>
+ <th tal:content="structure python:utils.fieldname (classname, 'keywords')"/>
+ <td tal:content="structure python:context.keywords.menu (height = 5)"/>
 </tr>
 
 <tr>
- <th tal:content="structure python:utils.fieldname (classname, 'recipients')"></th>
- <td tal:content="context/recipients"></td>
-</tr>
-
-<tr>
- <th tal:content="structure python:utils.fieldname (classname, 'date')"></th>
- <td tal:content="context/date"></td>
+ <th tal:content="structure python:utils.fieldname (classname, 'header')"/>
+ <td><pre tal:content="context/header/plain"/></td>
 </tr>
 </table>
 

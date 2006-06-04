@@ -46,12 +46,24 @@ daily_hours = \
       '''
 date_text = "<br><br>Ranges are used for searching dates: A range ".join \
     ((date_help, range_help))
+deadline = \
+    ""'''Planned time by which this %(Classname)s should be done.'''
 durations = \
     ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 leave_empty = \
     ""'''Leave this field empty if unsure.'''
+keywords = \
+    ""'''Some %(Property)s for tagging your issue -- can be useful
+         for querying.
+      '''
+miss_text = \
+    ""'''If you miss an %(Property)s here, feel free to vote for it with
+         an IT-Issue in category roundup.
+      '''
 multiple_allowed = \
     ""'''Multiple %(Classname)s entries are allowed.'''
+priority = \
+    ""'''Priority for this %(Classname)s.'''
 range_description = \
     ""'''as a comma-separated list of ranges (a special case of a range
          is just one number), e.g., 1-100,300-500
@@ -71,6 +83,10 @@ work_loc = \
 _helptext = \
     { ""'active'                     :
       [""'''Set if this %(Classname)s is active.''']
+    , ""'area'                       :
+      [""'''Where this issue belongs to.'''
+      , miss_text
+      ]
     , ""'time_project_status.active' :
       [ ""'''Set if this %(Classname)s is active. This determines if new
              work packages may be created for a project with this activity
@@ -112,7 +128,12 @@ _helptext = \
     , ""'card_type'                  :
       [""'''Type of this %(Classname)s''']
     , ""'category'                   :
-      [ ""'''Category of %(Classname)s.'''
+      [ ""'''Category of %(Classname)s. Where this %(Classname)s belongs
+             to. Each category has a Category-Responsible who is
+             responsible directly after creation if not specified
+             otherwise.
+          '''
+      , miss_text
       , leave_empty
       ]
     , ""'clearance_by'               :
@@ -122,8 +143,18 @@ _helptext = \
              all people whose supervisor this is.
           '''
       ]
+    , ""'closed'                    :
+      [""'''When this %(Classname)s was closed. Automatically set by
+            Roundup.
+         '''
+      ]
     , ""'company'                    :
       [""'''Company for %(Classname)s''']
+    , ""'composed_of'                :
+      [""'''Set automagically by roundup on %(Classname)ss being Part of
+            another %(Classname)s.
+         '''
+      ]
     , ""'confirm'                    :
       [ ""'''Confirm the password here: first password and this entry
              must match.
@@ -156,11 +187,21 @@ _helptext = \
     , ""'defect.superseder'          :
       [superseder]
     , ""'deadline'                   :
-      [""'''Planned time by which this %(Classname)s should be done.''']
+      [deadline]
     , ""'default_lease_time'         :
       [""'''Default DHCP lease time for %(Classname)s''']
     , ""'department'                 :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
+    , ""'depends'                    :
+      [""'''A comma seperated list of %(Classname)s IDs this
+            %(Classname)s depends on. This information is used for the
+            planning process and should only contain the IDs of the
+            issues this issue needs in order to be worked on, e.g., we
+            actually need a specification before we can start to work on
+            it. If you have some dependencies here, the depending
+            %(Classname)ss are hyperlinked.
+         '''
+      ]
     , ""'deputy'                     :
       [""'''Substitute for the responsible Person of %(Classname)s''']
     , ""'description'                :
@@ -228,6 +269,27 @@ _helptext = \
              "End" time of 18:30.
           '''
       ]
+    , ""'earliest_start'             :
+      [""'''When this %(Classname)s can be started to work on. Used to
+            specify external dependencies (e.g., availability of
+            hardware). 
+         '''
+      ]
+    , ""'effort'                     :
+      [ ""'''The estimated effort this work package has. This should be
+             a fair estimation done by the Responsible of the
+             %(Classname)s. Be sure to set it for Change-Requests
+             because otherwise one (1!) day will be used as a rough
+             guess for the planning procedure -- which -- in most
+             circumstances -- will NOT be sufficient. The format is
+             checked and should be *a number* followed by either *P* or
+             *M* which stands for *People* or *Man*, directly followed
+             by *D*, *W*, or *M* for *Day*, *Week*, or *Month*,
+             respectively. Optionally the person who estimated can be
+             specified in parenthesis, e.g, *15 PD (priesch)* means: 15
+             PeopleDays estimated by priesch.
+          '''
+      ]
     , ""'email'                      :
       [""'''Email address for this %(Classname)s''']
     , ""'end'                        :
@@ -251,12 +313,40 @@ _helptext = \
       [""'''Add an new file for %(Classname)s''']
     , ""'files'                      :
       [""'''Files for %(Classname)s''']
+    , ""'files_affected'             :
+      [""'''The %(Property)s entry field is used to identify which
+            file(s) has/have been changed during the modifications
+            requested by the current issue, containing the unique
+            filename and path and the new version. The CVS output from
+            the command *VCFiltered_Commit* shall be used to fill in
+            this field!
+
+            Example: Consider changed files *os_start.c*, *os_start.h*,
+            and *os_version.c* in *projects/SW/external/ttpos/src/os*,
+            resulting in *TTP-OS Version 4.5.23*. The entry to
+            %(Property)s shall look like::
+
+             VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c
+             VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h
+             VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version.c
+         '''
+      ]
     , ""'final_meeting_date'         :
       [ ""'''Date of final meeting for this %(Classname)s.'''
       , date_text
       ]
     , ""'firstname'                  :
       [""'''First name for this user, e.g., Ralf''']
+    , ""'fixed_in'                   :
+      [""'''Provide the version number where you fixed it. Is needed
+            when you change the status to testing.
+            The %(Property)s field contains the build version of the
+            complete artefact. In the Example from Files affected the
+            entry for %(Property)s shall look like::
+      
+              TTP-OS 4.5.23
+         '''
+      ]
     , ""'gid'                        :
       [""'''Numeric group ID''']
     , ""'gid_range'                  :
@@ -296,14 +386,32 @@ _helptext = \
       [""'''No real user but only an email alias''']
     , ""'is_lotus_user'              :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
+    , ""'issue.deadline'             :
+      [ deadline
+      , ""'''Should only be entered on Top-Level workpackages which are
+             either one single task of work or composed of one or more
+             subpackages. It should definitely NOT be used to force
+             dependencies of work packages (e.g. start b after a has
+             finished on a given date)!!! -- This is done automatically
+             by the planning tool via the Depends and Part Of fields.
+          '''
+      ]
     , ""'it_issue.superseder'        :
       [superseder, multiple_allowed]
     , ""'it_prio'                    :
-      [ ""'''Priority for this %(Classname)s.'''
+      [ priority
       , leave_empty
       ]
     , ""'it_project'                 :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
+    , ""'keywords'                   :
+      [keywords]
+    , ""'kind'                       :
+      [""'''What this issue actually is. Be sure to exactly distinguish
+            between what is actually a Bug (it is not working as
+            expected) and a Change-Request!
+         '''
+      ]
     , ""'klass'                      :
       [""'''Class for this query''']
     , ""'last_gid'                   :
@@ -363,6 +471,8 @@ _helptext = \
       [""'''List of messages for %(Classname)s''']
     , ""'msg'                        :
       [""'''New message or notice for %(Classname)s''']
+    , ""'msg_keywords'               :
+      [keywords]
     , ""'name'                       :
       [""'''Unique %(Classname)s name''']
     , ""'name_version'               :
@@ -433,6 +543,16 @@ _helptext = \
       [""'''User/Owner of this %(Classname)s''']
     , ""'operating_system'           :
       [""'''Operating System running on this %(Classname)s''']
+    , ""'part_of'                    :
+      [""'''If you have a Top-Level work package which consists of other
+            work packages, you should enter the parent work package
+            here. This information is needed for the planning process in
+            order to define what %(Classname)ss compose a larger
+            project, e.g., Define one Top-Level work package Some New
+            Feature which is composed of Design, Build Hardware, Write
+            Software, Put all parts together, and Test.
+         '''
+      ]
     , ""'password'                   :
       [""'''Password for this %(Classname)s''']
     , ""'peer_reviewers'             :
@@ -448,6 +568,14 @@ _helptext = \
       [ ""'''Effort for %(Classname)s in person-hours; as it is stated
              in the Project Evaluation Sheet. Warning: This used to be in
              person days, so you have to convert old values to hours!
+          '''
+      ]
+    , ""'priority'                   :
+      [ priority
+      , ""'''Should be set between 0 and 100. For the planning process
+             only issues above a specified priority level are taken into
+             account. On creation of a new issue, the priority is
+             automatically set to 100.
           '''
       ]
     , ""'private_for'                :
@@ -482,6 +610,11 @@ _helptext = \
       ]
     , ""'recipients'                 :
       [""'''Only set if message was received via email.''']
+    , ""'release'                    :
+      [ ""'''The %(Property)s this %(Classname)s belongs to -- if
+             available (e.g. 4.3.72 for TTP-Plan).
+          '''
+      ]
     , ""'remove'                     :
       [ ""'''Remove attached item. Will not remove item from the database,
              it can usually still be downloaded via the History button.
@@ -604,7 +737,11 @@ _helptext = \
           '''
       ]
     , ""'status'                     :
-      [""'''Status of this %(Classname)s''']
+      [""'''Status of this %(Classname)s. Automatically set on a new
+            %(Classname)s if not set. There are constraints on status
+            transitions.
+         '''
+      ]
     , ""'subject'                    :
       [""'''Short identification of this message''']
     , ""'substitute'                 :
@@ -654,7 +791,10 @@ _helptext = \
     , ""'timezone'                   :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                      :
-      [""'''Title of this %(Classname)s''']
+      [""'''Title of this %(Classname)s -- an intuitive one-line
+            description of %(Classname)s
+         '''
+      ]
     , ""'travel'                     : [travel]
     , ""'time_wp.travel'             : 
       [ travel

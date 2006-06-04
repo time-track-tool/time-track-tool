@@ -1,0 +1,67 @@
+<tal:block metal:define-macro="issue_list">
+    <!-- issues: list of issues -->
+    <!-- expand_var: name of cgi variable to use for expand/collapse all -->
+    <span tal:condition="issues"
+          tal:define="items        issues;
+                      indent       python:0;">
+      <tal:block metal:use-macro="templates/issue/macros/rec_issue_list" />
+    </span>
+</tal:block>
+
+<tal:block metal:define-macro="rec_issue_list">
+     <tal:block tal:define="items python:reversed 
+      ( sorted
+       ( [i for i in items
+          if i.status.plain () != 'closed' or not hide
+         ]
+       , key = lambda x : (str (x.status), x.id)
+       )
+      )">
+      <tal:block metal:use-macro="templates/issue/macros/rec_issue_loop" />
+     </tal:block>
+</tal:block>
+
+<tal:block metal:define-macro="rec_issue_loop">
+ <tal:block tal:repeat="item items">
+  <nobr><span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
+   <a tal:attributes="href string:issue${item/id};
+                      class item/status"
+      tal:content="structure python:
+       '<code>%s</code> (<code>%s, %s</code>): %s' %
+        ( str (item.id)
+        , item.status.plain () [0].upper ()
+        , item.responsible.nickname.plain ().lower ()
+        , utils.truncate_chars (item.title.plain (), 40, '...')
+        )"/>
+  </nobr>
+  <br>
+  <tal:block tal:condition="python:expand and item.composed_of"
+   tal:define =
+    " indent python:indent + 1
+    ; items  python:sorted
+       ( [i for i in item.composed_of
+          if i.status.plain () != 'closed' or not hide
+         ]
+       , key = lambda x : str (x.status)
+       )">
+   <tal:block metal:use-macro="templates/issue/macros/rec_issue_list"/>
+  </tal:block>
+ </tal:block>
+</tal:block>
+
+<tal:block metal:define-macro="expandable_entity">
+ <a tal:content="python:text [path (attr)]"
+  tal:attributes="href python:'issue%s?%s' %
+   ( context.id
+   , '&'.join 
+     (['%s=%s' % (x, (lambda a, b : [a, int (not a)][b])(path (x), x == attr))
+       for x in
+        ( 'expand_composed_of'
+        , 'expand_superseder'
+        , 'expand_depends'
+        , 'expand_needs'
+        , 'show_closed'
+        )
+     ])
+   )"/>
+</tal:block>

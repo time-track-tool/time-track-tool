@@ -17,10 +17,19 @@ a[href]:hover { color:blue; text-decoration: underline; }
 a[href]:link  { color:blue; text-decoration: none; }
 a[href]       { color:blue; text-decoration: none; }
 
-a.closed[href]:hover                { color:green; text-decoration: underline; }
-a.closed[href]:link, a.closed[href] { color:green; text-decoration: none; }
-a.open[href]:hover                  { color:red;   text-decoration: underline; }
-a.open[href]:link, a.open[href]     { color:red;   text-decoration: none; }
+a.closed[href]:hover                    { color:blue;  text-decoration: line-through; }
+a.closed[href]:link, a.closed[href]     { color:blue;  text-decoration: line-through; }
+a.analyzed[href]:hover                  { color:red;   text-decoration: underline; }
+a.analyzed[href]:link, a.analyzed[href] { color:red;   text-decoration: none; }
+a.feedback[href]:hover                  { color:red;   text-decoration: underline; }
+a.feedback[href]:link, a.feedback[href] { color:red;   text-decoration: none; }
+a.open[href]:hover                      { color:red;   text-decoration: underline; }
+a.open[href]:link, a.open[href]         { color:red;   text-decoration: none; }
+a.testing[href]:hover                   { color:green; text-decoration: underline; }
+a.testing[href]:link, a.testing[href]   { color:green; text-decoration: none; }
+a.suspended[href]:hover                 { color:blue;  text-decoration: line-through; }
+a.suspended[href]:link, a.open[href]    { color:blue;  text-decoration: line-through; }
+
 a.run[href]:hover                   { color:green; text-decoration: underline; }
 a.run[href]:link, a.run[href]       { color:green; text-decoration: none; }
 a.canc[href]:hover                  { color:blue;  text-decoration: underline; }

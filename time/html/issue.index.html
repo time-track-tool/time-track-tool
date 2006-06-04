@@ -1,0 +1,54 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title" tal:content="Classname" />
+
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['category'],    multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['title'])
+    , utils.ExtProperty (utils, pdict ['area'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['kind'],        multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['responsible'])
+    , utils.ExtProperty (utils, pdict ['deadline'])
+    , utils.ExtProperty (utils, pdict ['earliest_start'])
+    , utils.ExtProperty (utils, pdict ['effort'])
+    , utils.ExtProperty (utils, pdict ['priority'])
+    , utils.ExtProperty (utils, pdict ['effective_prio'])
+    , utils.ExtProperty (utils, pdict ['depends'])
+    , utils.ExtProperty (utils, pdict ['release'])
+    , utils.ExtProperty (utils, pdict ['composed_of'])
+    , utils.ExtProperty (utils, pdict ['part_of'])
+    , utils.ExtProperty (utils, pdict ['fixed_in'])
+    , utils.ExtProperty (utils, pdict ['superseder'])
+    , utils.ExtProperty
+        ( utils, pdict ['nosy']
+        , help_props  = ['firstname', 'lastname']
+        , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
+        )
+    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty (utils, pdict ['planned_begin'])
+    , utils.ExtProperty (utils, pdict ['planned_end'])
+    , utils.ExtProperty (utils, pdict ['cur_est_begin'])
+    , utils.ExtProperty (utils, pdict ['cur_est_end'])
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty (utils, pdict ['activity'])
+    , utils.ExtProperty (utils, pdict ['closed'])
+    , utils.ExtProperty (utils, pdict ['keywords'],    multiselect = 1)
+    );
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>
