@@ -146,6 +146,7 @@ def security (db, ** kw) :
         , ("keyword",     ["User"], ["Issue_Admin"])
         , ("kind",        ["User"], ["Issue_Admin"])
         , ("msg_keyword", ["User"], ["Issue_Admin"])
+        , ("status",      ["User"], ["Issue_Admin"])
         ]
 
     schemadef.register_roles             (db, roles)

@@ -31,6 +31,7 @@
 #
 
 from roundup.hyperdb import Class
+from common          import clearance_by
 import schemadef
 
 def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
