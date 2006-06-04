@@ -35,16 +35,18 @@
         )"/>
   </nobr>
   <br>
-  <tal:block tal:condition="python:expand and item.composed_of"
-   tal:define =
-    " indent python:indent + 1
-    ; items  python:sorted
-       ( [i for i in item.composed_of
-          if i.status.plain () != 'closed' or not hide
-         ]
-       , key = lambda x : str (x.status)
-       )">
-   <tal:block metal:use-macro="templates/issue/macros/rec_issue_list"/>
+  <tal:block tal:condition="python:expand and item.composed_of">
+   <tal:block
+    tal:define =
+     " indent python:indent + 1
+     ; items  python:sorted
+        ( [i for i in item.composed_of
+           if not hide or i.status.plain () != 'closed'
+          ]
+        , key = lambda x : (str (x.status), x.id)
+        )">
+    <tal:block metal:use-macro="templates/issue/macros/rec_issue_list"/>
+   </tal:block>
   </tal:block>
  </tal:block>
 </tal:block>
