@@ -111,6 +111,8 @@ def msg_check (db, cl, nodeid, newvalues) :
             raise ValueError, Nasty_msg % "message"
 
 def init (db) :
+    if 'issue' not in db.classes :
+        return
     db.issue.audit ("create", title_create_check)
     db.issue.audit ("set",    title_check)
     db.issue.audit ("create", msg_check)

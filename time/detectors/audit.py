@@ -129,9 +129,8 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         nosy.remove (None)
     newvalues ["nosy"] = nosy
 
-    # Set `status` strictly to "open" and priority by default to 1.
+    # Set `status` strictly to "open"
     newvalues ["status"]   = db.status.lookup ("open")
-    newvalues ["priority"] = newvalues.get ("priority", 1)
 
     # It is meaningless to create obsolete or mistaken issues.
     kind_name = db.kind.get (kind, "name")
@@ -365,6 +364,8 @@ def part_of_changed (db, cl, nodeid, newvalues) :
 # end def part_of_changed
 
 def init (db) :
+    if 'issue' not in db.classes :
+        return
     db.issue.audit ("create", limit_new_entry)
     db.issue.audit ("set",    limit_transitions)
     db.issue.audit ("set",    part_of_changed)

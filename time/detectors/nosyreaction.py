@@ -53,7 +53,8 @@ def nosyreaction(db, cl, nodeid, oldvalues):
     # send a copy of all new messages to the nosy list
     for msgid in determineNewMessages(cl, nodeid, oldvalues):
         try:
-            cl.nosymessage(nodeid, msgid, oldvalues)
+            pass
+            #cl.nosymessage(nodeid, msgid, oldvalues)
         except roundupdb.MessageSendError, message:
             raise roundupdb.DetectorError, message
 
@@ -82,6 +83,7 @@ def updatenosy(db, cl, nodeid, newvalues):
     '''
     # nodeid will be None if this is a new node
     current = {}
+    oldnosy = []
     if nodeid is None:
         ok = ('new', 'yes')
     else:
@@ -89,10 +91,11 @@ def updatenosy(db, cl, nodeid, newvalues):
         # old node, get the current values from the node if they haven't
         # changed
         if not newvalues.has_key('nosy'):
-            nosy = cl.get(nodeid, 'nosy')
+            oldnosy = nosy = cl.get(nodeid, 'nosy')
             for value in nosy:
                 if not current.has_key(value):
                     current[value] = 1
+    oldnosy.sort ()
 
     # if the nosy list changed in this transaction, init from the new value
     if newvalues.has_key('nosy'):
@@ -154,7 +157,9 @@ def updatenosy(db, cl, nodeid, newvalues):
             if db.security.hasPermission ('Nosy', x, 'issue')
         ]
     newnosy.sort ()
-    newvalues['nosy'] = current.keys()
+    # only set if really changed
+    if oldnosy != newnosy :
+        newvalues ['nosy'] = newnosy
 
 def init(db):
     nosy_classes = [ "action_item"

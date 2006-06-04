@@ -37,6 +37,8 @@ def add_files (db, cl, nodeid, newvalues) :
     newvalues ["files"] = files.keys ()
 
 def init (db) :
+    if 'issue' not in db.classes :
+        return
     db.issue.audit ("create", add_files)
     db.issue.audit ("set",    add_files)
 # end def init

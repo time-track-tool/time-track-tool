@@ -133,10 +133,11 @@ def sort_uniq (list) :
     return k
 # end def sort_uniq
 
-def check_loop (_, cl, id, prop, attr, ids = []) :
+def check_loop (_, cl, id, prop, attr, labelprop = None, ids = []) :
     is_multi = isinstance (cl.properties [prop], Multilink)
     assert (is_multi or isinstance (cl.properties [prop], Link))
-    label = cl.labelprop ()
+    if not labelprop :
+        labelprop = cl.labelprop ()
     if id :
         ids.append (id)
     if attr :
@@ -144,9 +145,9 @@ def check_loop (_, cl, id, prop, attr, ids = []) :
             attr = [attr]
         for a in attr :
             if a in ids :
-                raise Reject, _ ("%s loop: %s") % \
-                    (_ (prop), ','.join ([cl.get (i, label) for i in ids]))
-            check_loop (_, cl, a, prop, cl.get (a, prop), ids)
+                raise Reject, _ ('"%s" loop: %s') % \
+                    (_ (prop), ','.join ([cl.get (i, labelprop) for i in ids]))
+            check_loop (_, cl, a, prop, cl.get (a, prop), labelprop, ids)
             ids.pop ()
 # end def check_loop
 
