@@ -147,19 +147,26 @@ def updatenosy(db, cl, nodeid, newvalues):
                 for recipient in msg.get(msgid, 'recipients'):
                     current[recipient] = 1
 
-    # that's it, save off the new nosy list
+    # that's it, save off the new nosy list -- filter out those users
+    # that do not have the 'Nosy' permission.
+    newnosy = \
+        [ x for x in current.keys ()
+            if db.security.hasPermission ('Nosy', x, 'issue')
+        ]
+    newnosy.sort ()
     newvalues['nosy'] = current.keys()
 
 def init(db):
-    nosy_classes = [ "document"
-                   , "release"
-                   , "feature"
-                   , "task"
+    nosy_classes = [ "action_item"
                    , "defect"
-                   , "meeting"
-                   , "action_item"
+                   , "document"
+                   , "feature"
+                   , "issue"
                    , "it_issue"
                    , "it_project"
+                   , "meeting"
+                   , "release"
+                   , "task"
                    ]
     for klass in nosy_classes :
         if klass not in db.classes :
