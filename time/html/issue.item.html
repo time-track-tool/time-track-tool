@@ -1,0 +1,235 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:1
+    ; has_resp            python:0
+    ; required_attributes string:title
+    ; show_closed         request/form/show_closed/value | string:0
+    ; show_closed         python:int (show_closed)
+    ; expand_composed_of  request/form/expand_composed_of/value | string:0
+    ; expand_composed_of  python:int (expand_composed_of)
+    ; expand_superseder   request/form/expand_superseder/value | string:0
+    ; expand_superseder   python:int (expand_superseder)
+    ; expand_depends      request/form/expand_depends/value | string:0
+    ; expand_depends      python:int (expand_depends)
+    ; expand_needs        request/form/expand_needs/value | string:0
+    ; expand_needs        python:int (expand_needs)
+    ; expand_text         python:['(expand)', '(collapse)']
+    ; hide_text           python:['(show closed)', '(hide closed)']
+    ">
+   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
+    <tal:block metal:fill-slot="ttt_issue_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'category')"/>
+      <td tal:content="structure python:context.category.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'release')"/>
+      <td tal:content="structure python:context.release.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'area')"/>
+      <td tal:content="structure python:context.area.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'deadline')"/>
+      <td tal:content="structure python:context.deadline.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'kind')"/>
+      <td tal:content="structure python:context.kind.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'earliest_start')"/>
+      <td tal:content="structure python:context.earliest_start.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'status')"/>
+      <td tal:content="structure python:context.status.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'keywords')"/>
+      <td tal:content="structure python:context.keywords.menu (height = 3)"/>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'responsible')"/>
+      <td>
+       <tal:block tal:replace="structure python:context.responsible.field ()"/>
+       <tal:block tal:replace="structure python:db.user.classhelp
+             ( 'username,firstname,lastname'
+             , property='responsible'
+             , inputtype='radio'
+             , width='600'
+             , pagesize=500
+             )"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'effort')"/>
+      <td tal:content="structure python:context.effort.field (size = 15)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'priority')"/>
+      <td>
+       <table border=0 cellpadding=0 cellspacing=0>
+        <tr>
+         <td tal:content="structure python:context.priority.field (size = 7)"/>
+         <th tal:content="structure python:utils.fieldname
+            (classname, 'effective_prio')"/>
+         <td tal:content="context/effective_prio/plain"/>
+        </tr>
+       </table>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'planned_begin')"/>
+      <td> 
+       <nobr tal:condition="context/planned_begin/plain"
+             tal:content="structure python:'%s .. %s'
+             % ( context.planned_begin.pretty (format = utils.ymd)
+               , context.planned_end.pretty   (format = utils.ymd)
+               ) "/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'part_of')"/>
+      <td tal:content="structure python:context.part_of.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'cur_est_begin')"/>
+      <td> 
+       <nobr tal:condition="context/cur_est_begin/plain"
+             tal:content="structure python:'%s .. %s'
+             % ( context.cur_est_begin.pretty (format = utils.ymd)
+               , context.cur_est_end.pretty   (format = utils.ymd)
+               ) "/>
+      </td>
+     </tr>
+     <tr>
+      <th/>
+      <td tal:condition="context/part_of/plain">
+       <font size="-1" tal:define=
+        " issues python:[context.part_of]
+        ; expand python:False
+        ; hide   python:False
+        ">
+        <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+       </font>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'superseder')"/>
+      <td>
+       <span tal:content="structure python:context.superseder.field ()"/>
+       <span tal:condition="context/superseder/plain"
+        tal:define="attr string:expand_superseder; text expand_text">
+        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+        <br>
+        <font size="-1" tal:define=
+         " issues context/superseder/reverse
+         ; expand python:False
+         ; hide   python:False
+         ">
+         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+        </font>
+       </span>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'depends')"/>
+      <td>
+       <span tal:content="structure python:context.depends.field ()"/>
+       <span tal:condition="context/depends/plain"
+        tal:define="attr string:expand_depends; text expand_text">
+        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+        <br>
+        <font size="-1" tal:define=
+         " issues context/depends/reverse
+         ; expand python:False
+         ; hide   python:False
+         ">
+         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+        </font>
+       </span>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'composed_of')"/>
+      <td>
+       <tal:block tal:condition="context/composed_of/plain">
+        <tal:block tal:define="attr string:expand_composed_of; text expand_text">
+         <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+        </tal:block>
+        <tal:block tal:define="attr string:show_closed; text hide_text">
+         <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+        </tal:block>
+        <br>
+        <font size="-1" tal:define=
+         " issues context/composed_of/reverse
+         ; expand expand_composed_of
+         ; hide   not:show_closed
+         ">
+         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+        </font>
+       </tal:block>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'needs')"/>
+      <td>
+       <span tal:content="structure python:context.needs.field ()"/>
+       <span tal:condition="context/needs/plain"
+        tal:define="attr string:expand_needs; text expand_text">
+        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+        <br>
+        <font size="-1" tal:define=
+         " issues context/needs/reverse
+         ; expand python:False
+         ; hide   python:False
+         ">
+         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+        </font>
+       </span>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'fixed_in')"/>
+      <td tal:content="structure python:context.fixed_in.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'closed')"/>
+      <td tal:content="context/closed/plain"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'files_affected')"/>
+      <td colspan="3">
+       <textarea tal:content="context/files_affected"
+        name="files_affected" wrap="hard" rows="2" cols="65"/>
+      </td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
