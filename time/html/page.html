@@ -37,9 +37,9 @@
    , 'group'           : ':columns=name,gid,description,org_location&'
                          ':sort=-id&:pagesize=500&:startwith=0'
    , 'issue'           : ':columns=id,category,title,area,kind,status,'
-                         'composed_of,part_of&:filter=status,responsible&'
-                         ':pagesize=50&:startwith=0&status=1,2,3,4,5&'
-                         'responsible=%s' % uid
+                         'composed_of.id,part_of.id&'
+                         ':filter=status,responsible&:pagesize=50&'
+                         ':startwith=0&status=1,2,3,4,5&responsible=%s' % uid
    , 'it_issue'        : ':columns=id,title,responsible,stakeholder,it_prio&'
                          ':sort=-id&:group=status&:filter=stakeholder,status&'
                          ':pagesize=50&:startwith=0&'

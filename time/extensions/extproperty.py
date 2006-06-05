@@ -149,7 +149,10 @@ class ExtProperty :
         self.classname     = prop._classname
         self.klass         = prop._db.getclass (self.classname)
         self.name          = prop._name
+        self.i18nlabel     = selname
         self.selname       = selname
+        if selname :
+            self.selname   = selname.replace ('++', '.')
         self.label         = label
         self.lnkcls        = lnkcls
         self.lnkname       = None
@@ -182,9 +185,10 @@ class ExtProperty :
                 l = self.lnkattr.split ('.')
                 if len (l) > 1 :
                     self.selname = l [-2]
+            self.i18nlabel = self.selname
         if not self.label :
-            if self.selname :
-                self.label = self.pretty (self.selname)
+            if self.i18nlabel :
+                self.label = self.pretty (self.i18nlabel)
             else :
                 self.label = ''
         if self.lnkname and not self.lnkattr :
@@ -211,7 +215,8 @@ class ExtProperty :
             self.hprop = item [self.name]
     # end def _set_item
 
-    def formatted (self) :
+    def formatted (self, item = None) :
+        self._set_item (item)
         if self.hprop is None or isinstance (self.hprop, MissingValue) :
             return ""
         elif isinstance (self.hprop, DateHTMLProperty) :
@@ -232,21 +237,23 @@ class ExtProperty :
         return self.lnkattr and not self.key
     # end def need_lookup
 
-    def as_listentry (self, item = None, add_hidden = False) :
+    def as_listentry (self, item = None, add_hidden = False, as_link = True) :
         self._set_item (item)
         if self.editable and self.item [self.name].is_edit_ok () :
             return self.editfield ()
         if self.is_label :
-            return self.formatlink (add_hidden = add_hidden)
+            return self.formatlink (add_hidden = add_hidden, as_link = as_link)
         elif self.lnkname :
             if isinstance (self.hprop, MultilinkHTMLProperty) :
                 hprops = [i for i in self.hprop]
                 return ", ".join \
-                    ([self.deref (p).formatlink (add_hidden = add_hidden)
+                    ([self.deref (p).formatlink
+                      (add_hidden = add_hidden, as_link = as_link)
                       for p in hprops
                     ])
             else :
-                return self.deref ().formatlink (add_hidden = add_hidden)
+                return self.deref ().formatlink \
+                    (add_hidden = add_hidden, as_link = as_link)
         else :
             return self.formatted ()
     # end def as_listentry
@@ -294,18 +301,19 @@ class ExtProperty :
         return self.key == self.lnkattr
     # def sortable
 
-    def formatlink (self, item = None, add_hidden = False) :
+    def formatlink (self, item = None, add_hidden = False, as_link = True) :
         """
-            Render my property of an item as a link to this item. We get
-            the item. The name of the item and its id are computed.
+            Render my property of an item as a link to this item (unless
+            as_link is False). We get the item. The name of the item and
+            its id are computed.
         """
+        i = item or self.item
+        if not i.is_view_ok () or not as_link :
+            return self.formatted ()
         hidden = ""
         if add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
                 % (self.classname, str (self.hprop))
-        i = item or self.item
-        if not i.is_view_ok () :
-            return self.formatted ()
         if not self.classname :
             return ""
         return """<a class="%s" href="%s%s">%s</a>%s""" \
