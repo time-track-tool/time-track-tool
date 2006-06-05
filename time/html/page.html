@@ -957,10 +957,11 @@
                         document.forms ['query'].elements ['queryid'].value = '';">
        </td>
       </tr>
-      <tr tal:define="queryid   request/form/queryid/value | nothing;
-                      new_query request/form/new_query/value | nothing;
-                      u_q       python:[q.id for q in request.user.queries];
-                      bla       python:u_q.sort(lambda l, r:cmp(int(l), int(r)))">
+      <tr tal:define="
+        queryid   request/form/queryid/value | nothing;
+        new_query request/form/new_query/value | nothing;
+        u_q       python:sorted ([q.id for q in request.user.queries]);
+        ">
       <th style="text-align:right;">This query's name:</th>
        <td tal:define="queryid python:new_query and (u_q and u_q.pop()) or queryid">
         <input type="hidden" name="queryid" tal:attributes="value queryid | nothing">
