@@ -951,10 +951,10 @@
        <th></th>
        <td>
         <input type="submit"
-               value="Update view"
-               onClick="document.forms ['query'].elements ['@queryname'].value = '';
-                        document.forms ['query'].elements ['new_query'].value = '';
-                        document.forms ['query'].elements ['queryid'].value = '';">
+         value="Update view"
+         onClick="document.forms ['query'].elements ['@queryname'].value = '';
+                  document.forms ['query'].elements ['new_query'].value = '';
+                  document.forms ['query'].elements ['queryid'].value = '';">
        </td>
       </tr>
       <tr tal:define="
@@ -968,13 +968,17 @@
         <span tal:condition="queryid">
          <span tal:condition="python:queryid in request.user.queries">
           <input type="hidden" name="@queryname">
+          <input type="hidden" name="@old-queryname">
           <input type="text"
                 name="_queryname"
                 tal:attributes="value request/form/@queryname/value | default">
           <input type="submit"
-                 value="Update view & store this query"
-                 onClick="document.forms ['query'].elements ['@queryname'].value =
-                          document.forms ['query'].elements ['_queryname'].value;">(If you change the name, you create a new query!!!)
+           value="Update view & store this query"
+           onClick="document.forms ['query'].elements ['@queryname'].value =
+                    document.forms ['query'].elements ['_queryname'].value;
+                    document.forms ['query'].elements ['@old-queryname'].value =
+                    document.forms ['query'].elements ['_queryname'].value;
+                    ">(If you change the name, you create a new query!!!)
          </span>
          <span tal:condition="python:queryid not in request.user.queries">
           <input type="text"
