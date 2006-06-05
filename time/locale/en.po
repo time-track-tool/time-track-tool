@@ -2787,7 +2787,7 @@ msgstr "Eff. Priority"
 
 #: ../locale/attr.py:55 ../schema/it_tracker.py:40 attr.py:55
 msgid "it_category"
-msgstr "Category"
+msgstr "IT-Category"
 
 #: ../locale/attr.py:58 ../schema/it_tracker.py:48 attr.py:58
 msgid "it_issue"
