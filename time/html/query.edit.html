@@ -1,8 +1,11 @@
-<!-- dollarId: user.item,v 1.7 2002/08/16 04:29:04 richard Exp dollar-->
 <tal:block metal:use-macro="templates/page/macros/icing">
  <title metal:fill-slot="head_title">
   "Your Queries" Editing - <span tal:replace="config/TRACKER_NAME" />
  </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1">
   "Your Queries" Editing
  </span>
@@ -68,3 +71,4 @@
   </form>
  </td>
 </tal:block>
+<!-- SHA: 4609cc5d3d29f83e7708ade94073e819ae9c2a67 -->
