@@ -72,7 +72,7 @@ def update_children (db, cl, nodeid, old_values) :
                 cl.set (child, effective_prio = 0)
 # end def update_children
 
-def update_container_status (cl, id, new_values = {}) :
+def update_container_status (db, cl, id, new_values = {}) :
     """ Check status of a container -- if all sub-issues are closed and
         the container is open, we have to update. Same if one sub-issue
         is open and the container is closed.
@@ -105,12 +105,12 @@ def update_container_status (cl, id, new_values = {}) :
 def status_updated (db, cl, nodeid, old_values) :
     parent = cl.get (nodeid, 'part_of')
     if parent and 'status' in old_values :
-        update_container_status (cl, parent)
+        update_container_status (db, cl, parent)
 # end def status_updated
 
 def composed_of_updated (db, cl, nodeid, new_values) :
     if 'composed_of' in new_values :
-        update_container_status (cl, nodeid, new_values)
+        update_container_status (db, cl, nodeid, new_values)
 # end def composed_of_updated
 
 def init (db) :

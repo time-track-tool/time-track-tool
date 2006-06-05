@@ -343,11 +343,11 @@ def init (instance) :
     import sys, os
     global _, get_user_dynamic, clearance_by, user_has_role
     global monthstart_twoweeksago, act_or_latest_user_dynamic
-    global prev_user_dynamic, next_user_dynamic
+    global prev_user_dynamic, next_user_dynamic, ymd
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from user_dynamic import get_user_dynamic, act_or_latest_user_dynamic
     from user_dynamic import next_user_dynamic, prev_user_dynamic
-    from common       import clearance_by
+    from common       import clearance_by, ymd
     from common       import user_has_role, monthstart_twoweeksago
     del (sys.path [0])
     _   = get_translation \
@@ -374,4 +374,4 @@ def init (instance) :
     reg ("next_user_dynamic",            next_user_dynamic)
     reg ("prev_user_dynamic",            prev_user_dynamic)
     reg ("act_or_latest_user_dynamic",   act_or_latest_user_dynamic)
-#SHA: 03387ec5a7fcc4963b4aef0670b8c74d4573c53e
+    reg ("ymd",                          ymd)
