@@ -19,7 +19,10 @@
        tal:content="Classname"></span>
 
  <tal:block metal:fill-slot="content">
-  <tal:block tal:define="want_files python:False">
+  <tal:block tal:define=
+   "want_files    python:False
+   ;use_labelprop python:False
+   ">
    <tal:block metal:use-macro="templates/page/macros/ttt_issue">
     <tal:block metal:fill-slot="ttt_issue_content">
      <tr>
@@ -59,8 +62,20 @@
       <th tal:content="structure python:utils.fieldname (classname, 'header')"/>
       <td><pre tal:content="context/header/plain"/></td>
      </tr>
+
     </tal:block>
    </tal:block>
   </tal:block>
+  <table class="messages">
+   <tr>
+    <th class="header" tal:content="structure python:utils.fieldname
+        (classname, 'content')"/>
+   </tr>
+   <tr>
+    <td class="content" colspan=2>
+     <pre tal:content="python:utils.soft_wrap(context.content.plain(),80)"/>
+    </td>
+   </tr>
+  </table>
  </tal:block>
 </tal:block>

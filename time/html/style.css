@@ -355,8 +355,12 @@ table.messages th {
 }
 
 table.messages th a[href]:hover.header { color: black }
-table.messages th a[href]:link.header { color: black }
-table.messages th a[href].header { color: black }
+table.messages th a[href]:link.header  { color: black }
+table.messages th a[href].header       { color: black }
+
+table.messages th.header a[href]:hover { color: #707040; }
+table.messages th.header a[href]:link  { color: #707040; }
+table.messages th.header a[href]       { color: #707040; }
 
 table.messages td {
   font-family: monospace;
