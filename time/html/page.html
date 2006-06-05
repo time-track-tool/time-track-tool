@@ -165,6 +165,7 @@
      , ('status',              'Edit',   '?@template=item', 1)
      , ('msg_keyword',         'Edit',   '?@template=item', 1)
      , ('issue',               'Edit',   '?@template=item', 1)
+     , ('query',               'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',       'View', '')
      , ('daily_record',      'View', 'controlling,hr')
@@ -188,7 +189,7 @@
      )
    )
  ; menu_type     python:
-    dict ([(k [0],menu_time) for k in menu_time [0]])
+    dict ([(k [0],menu_tracker) for k in menu_tracker [0]])
 ">
  <head>
   <title metal:define-slot="head_title">
@@ -446,7 +447,7 @@
      This creates the menu items used in Tracker classes as default
 -->
 <tal:block metal:define-macro="create_or_query_new_tracker_item">
- <tal:block tal:define="menu python:menu_type.get (classname, menu_tracker)">
+ <tal:block tal:define="menu python:menu_type.get (classname, menu_time)">
   <tal:block tal:define="klasses python: menu [0]">
    <td metal:use-macro="templates/page/macros/create_new" />
   </tal:block>
