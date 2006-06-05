@@ -1,0 +1,130 @@
+#! /usr/bin/python
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
+# ****************************************************************************
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# ****************************************************************************
+#
+#++
+# Name
+#    issue
+#
+# Purpose
+#    Detectors for issue -- used to be done in a nightly check, but
+#    since we have a parallel database now we can run them immediately.
+#
+#--
+#
+
+from roundup                        import roundupdb, hyperdb
+from roundup.exceptions             import Reject
+from roundup.cgi.TranslationService import get_translation
+common = None
+
+def loopchecks (db, cl, nodeid, new_values) :
+    for propname in 'superseder', 'part_of', 'needs', 'depends' :
+        if propname in new_values :
+            value = new_values [propname]
+            common.check_loop (_, cl, nodeid, propname, value, 'id')
+# end def loopchecks
+
+def update_eff_prio (db, cl, nodeid, new_values) :
+    # Default for priority
+    if not nodeid :
+        new_values ["priority"] = new_values.get ("priority", 1)
+    closed = db.status.lookup ('closed')
+    if (  'priority'       in new_values
+       or 'effective_prio' in new_values
+       or 'status'         in new_values
+       ) :
+        prio = new_values.get ('priority', None) or cl.get (nodeid, 'priority')
+        part = new_values.get ('part_of',  None) or cl.get (nodeid, 'part_of')
+        new_values ['effective_prio'] = prio
+        if part :
+            pprio = cl.get (part, 'effective_prio')
+            if pprio > prio :
+                new_values ['effective_prio'] = pprio
+        #print "update_eff_prio:", nodeid, new_values ['effective_prio']
+# end def update_eff_prio
+
+def update_children (db, cl, nodeid, old_values) :
+    if 'effective_prio' in old_values :
+        #print "update_children:", old_values ['effective_prio']
+        closed = db.status.lookup ('closed')
+        for child in cl.get (nodeid, 'composed_of') :
+            if cl.get (child, 'status') != closed :
+                cl.set (child, effective_prio = 0)
+# end def update_children
+
+def update_container_status (cl, id, new_values = {}) :
+    """ Check status of a container -- if all sub-issues are closed and
+        the container is open, we have to update. Same if one sub-issue
+        is open and the container is closed.
+    """
+    closed      = True
+    stat_closed = db.status.lookup ('closed')
+    stat_open   = db.status.lookup ('open')
+    composed_of = \
+        (new_values.get ('composed_of', None) or cl.get (id, 'composed_of'))
+    if not composed_of :
+        return # not a container
+    for child in composed_of :
+        if cl.get (child, 'status') != stat_closed :
+            closed = False
+    status = cl.get (id, 'status')
+    if status == stat_closed :
+        if not closed :
+            if new_values :
+                new_values ['status'] = stat_open
+            else :
+                cl.set (id, status = stat_open)
+    else :
+        if closed :
+            if new_values :
+                new_values ['status'] = stat_closed
+            else :
+                cl.set (id, status = stat_closed)
+# end def update_container_status
+
+def status_updated (db, cl, nodeid, old_values) :
+    parent = cl.get (nodeid, 'part_of')
+    if parent and 'status' in old_values :
+        update_container_status (cl, parent)
+# end def status_updated
+
+def composed_of_updated (db, cl, nodeid, new_values) :
+    if 'composed_of' in new_values :
+        update_container_status (cl, nodeid, new_values)
+# end def composed_of_updated
+
+def init (db) :
+    if 'issue' not in db.classes :
+        return
+    global _, common
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    import common
+    db.issue.audit ("set",    loopchecks)
+    db.issue.audit ("create", loopchecks)
+    db.issue.audit ("set",    update_eff_prio)
+    db.issue.audit ("create", update_eff_prio)
+    db.issue.react ("set",    update_children)
+    db.issue.react ("set",    status_updated)
+    db.issue.audit ("set",    composed_of_updated, priority = 200)
+# end def init
