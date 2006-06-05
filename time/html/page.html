@@ -36,6 +36,10 @@
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
    , 'group'           : ':columns=name,gid,description,org_location&'
                          ':sort=-id&:pagesize=500&:startwith=0'
+   , 'issue'           : ':columns=id,category,title,area,kind,status,'
+                         'composed_of,part_of&:filter=status,responsible&'
+                         ':pagesize=50&:startwith=0&status=1,2,3,4,5&'
+                         'responsible=%s' % uid
    , 'it_issue'        : ':columns=id,title,responsible,stakeholder,it_prio&'
                          ':sort=-id&:group=status&:filter=stakeholder,status&'
                          ':pagesize=50&:startwith=0&'
@@ -180,6 +184,7 @@
      , ('smb_machine',       'View')
      , ('it_issue',          'View')
      , ('it_project',        'View')
+     , ('issue',             'View')
      )
    )
  ; menu_type     python:
@@ -417,13 +422,13 @@
          >  Global Queries</option>
          <tal:block tal:condition="request/user/queries">
           <option tal:define="
-             queries python:db.query.filter
+             queries python:[q for q in db.query.filter
               (filterspec=
                { 'private_for':request.user.id
                , 'klass':klass
                , 'id':[q.id for q in request.user.queries]
                }
-              )"
+              ) if q.klass == klass]"
            tal:repeat="q queries"
            tal:attributes="
              value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
