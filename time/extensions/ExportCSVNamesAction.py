@@ -113,11 +113,14 @@ class Export_CSV_Names (Action) :
         # end def repr_link
 
         def repr_extprop (col) :
-            parts = col.split ('.', 1)
+            parts   = col.split ('.', 1)
+            lnkattr = None
+            if len (parts) > 1 :
+                lnkattr = parts [1]
             prop  = htcls [parts [0]]
             ep = ExtProperty \
                 ( None, prop
-                , lnkattr = parts [1]
+                , lnkattr = lnkattr
                 , selname = '++'.join (parts)
                 , pretty  = str
                 )
@@ -132,6 +135,8 @@ class Export_CSV_Names (Action) :
         for col in columns :
             represent [col] = self.repr_str
             if '.' in col :
+                represent [col] = repr_extprop (col)
+            elif isinstance (props [col], hyperdb.Multilink) :
                 represent [col] = repr_extprop (col)
             elif isinstance (props [col], hyperdb.Link) :
                 cn = props [col].classname
