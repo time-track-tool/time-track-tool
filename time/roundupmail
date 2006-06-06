@@ -5,19 +5,22 @@ import sys
 import stat
 
 normpath = os.path.normpath
+options  = []
 l        = len (sys.argv)
-if l < 3 or l > 4 :
+if l < 3 :
     print >> sys.stderr \
-          , "Usage: %s <tracker> <user:password@server> [lockfile]" \
+          , "Usage: %s <tracker> <user:password@server> [lockfile] [options]" \
           % sys.argv [0]
     sys.exit (23)
+if l > 4 :
+    options = sys.argv [4:]
 
 lockfile = normpath ('/var/run/roundup/mailgw.lock')
 if l > 3 :
     lockfile = sys.argv [3]
 tracker  = sys.argv [1]
 server   = sys.argv [2]
-mailgw   = 'roundup-mailgw %s pop %s' % (tracker, server)
+mailgw   = 'roundup-mailgw %s %s pop %s' % (' '.join (options), tracker, server)
 
 # Note: There is still a race condition if you call this script almost
 # at the same time. Under normal circumstances (called via cron once a
