@@ -60,7 +60,7 @@
     );
    props python:
     [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
-     if k [0] in db._db.user.properties
+     if k [0] in db._db.user.properties or k [0] == 'id'
     ]
    "
   tal:condition="context/is_view_ok">
@@ -70,4 +70,3 @@
  </tal:block>
 </tal:block>
 </tal:block>
-<!-- SHA: b9c0b410b381a1984813f749882b429ae9dace2d -->
