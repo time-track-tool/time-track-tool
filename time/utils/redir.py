@@ -1,4 +1,4 @@
-#!/usr/bin/python2.4
+#!/usr/local/bin/python
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
@@ -52,7 +52,7 @@ class Handler (BaseHTTPRequestHandler) :
     # end def do_GET
 # end class Handler
 
-httpd = HTTPServer (('', 9090), Handler)
+httpd = HTTPServer (('', 8080), Handler)
 httpd.serve_forever()
 
 #print 'Content-Type: text/plain\n\n'
