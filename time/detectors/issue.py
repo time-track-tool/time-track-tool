@@ -54,7 +54,9 @@ def update_eff_prio (db, cl, nodeid, new_values) :
        or 'status'         in new_values
        ) :
         prio = new_values.get ('priority', None) or cl.get (nodeid, 'priority')
-        part = new_values.get ('part_of',  None) or cl.get (nodeid, 'part_of')
+        part = new_values.get ('part_of',  None)
+        if not part and nodeid :
+            part = cl.get (nodeid, 'part_of')
         new_values ['effective_prio'] = prio
         if part :
             pprio = cl.get (part, 'effective_prio')
