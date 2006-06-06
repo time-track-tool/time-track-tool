@@ -27,7 +27,16 @@
     <tal:block metal:fill-slot="ttt_issue_content">
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
-      <td tal:content="context/author"/>
+      <td>
+       <span tal:content="structure context/author/field"/>
+       <tal:block tal:replace="structure python:db.user.classhelp
+             ( 'username,firstname,lastname'
+             , property='author'
+             , inputtype='radio'
+             , width='600'
+             , pagesize=500
+             )"/>
+      </td>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'recipients')"/>

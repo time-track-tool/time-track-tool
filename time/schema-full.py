@@ -65,10 +65,12 @@ Department_Class (db, ''"department")
 # Assign the access and edit Permissions for issue, file and message
 # to regular users now
 
+importer.update_security ()
+
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file"                , ["User"],  ["User"            ])
-    , ("msg"                 , ["User"],  ["User"            ])
+    [ ("file"                , ["User"],  ["User"                      ])
+    , ("msg"                 , ["User"],  ["IT", "Admin", "Issue_Admin"])
     ]
 
 prop_perms = \
@@ -115,6 +117,7 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
+db.security.addPermissionToRole ('User', 'Create', 'msg') 
 
 # editing of roles:
 for r in "Admin", "HR", "IT" :
@@ -124,4 +127,3 @@ for r in "Admin", "HR", "IT" :
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
 
-importer.update_security ()
