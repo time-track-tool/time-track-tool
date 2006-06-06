@@ -38,6 +38,7 @@
                          ':sort=-id&:pagesize=500&:startwith=0'
    , 'issue'           : ':columns=id,category,title,area,kind,status,'
                          'composed_of.id,part_of.id&'
+                         ':sort=category&:group=-effective_prio&'
                          ':filter=status,responsible&:pagesize=50&'
                          ':startwith=0&status=1,2,3,4,5&responsible=%s' % uid
    , 'it_issue'        : ':columns=id,title,responsible,stakeholder,it_prio&'
