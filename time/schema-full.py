@@ -71,6 +71,7 @@ importer.update_security ()
 classes = \
     [ ("file"                , ["User"],  ["User"                      ])
     , ("msg"                 , ["User"],  ["IT", "Admin", "Issue_Admin"])
+    , ("query"               , [      ],  ["HR", "Controlling", "Admin"])
     ]
 
 prop_perms = \
@@ -118,6 +119,8 @@ prop_perms = \
 
 schemadef.register_class_permissions (db, classes, prop_perms)
 db.security.addPermissionToRole ('User', 'Create', 'msg') 
+# the following is further checked in an auditor:
+db.security.addPermissionToRole ('User', 'Create', 'time_wp') 
 
 # editing of roles:
 for r in "Admin", "HR", "IT" :
