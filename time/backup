@@ -17,7 +17,7 @@ ROUNDUP_ADMIN=/roundup/sw/python/bin/roundup-admin
 ### WARNING ###
 ### WARNING ###
 ### WARNING ###
-RESTORE=/roundup/tracker/xyzzy
+#RESTORE=/roundup/tracker/xyzzy
 RESTOREPW="xyzzy"
 
 if [ ${TRACKER} == ${RESTORE} ] ; then
