@@ -69,9 +69,9 @@ importer.update_security ()
 
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file"                , ["User"],  ["User"                      ])
-    , ("msg"                 , ["User"],  ["IT", "Admin", "Issue_Admin"])
-    , ("query"               , [      ],  ["HR", "Controlling", "Admin"])
+    [ ("file"                , ["User"],               ["User"             ])
+    , ("msg"                 , ["User"],               ["IT", "Issue_Admin"])
+    , ("query"               , ["HR", "Controlling"],  ["HR", "Controlling"])
     ]
 
 prop_perms = \
