@@ -25,14 +25,14 @@
     , utils.ExtProperty (utils, pdict ['effective_prio'])
     , utils.ExtProperty (utils, pdict ['depends'])
     , utils.ExtProperty (utils, pdict ['release'])
-    , utils.ExtProperty (utils, pdict ['composed_of'])
+    , utils.ExtProperty (utils, pdict ['composed_of'], searchable = 1)
     , utils.ExtProperty
         ( utils, pdict ['composed_of']
         , lnkattr     = 'id'
         , selname     = 'composed_of++id'
         , searchable  = False
         )
-    , utils.ExtProperty (utils, pdict ['part_of'])
+    , utils.ExtProperty (utils, pdict ['part_of'],     searchable = 1)
     , utils.ExtProperty
         ( utils, pdict ['part_of']
         , lnkattr     = 'id'
