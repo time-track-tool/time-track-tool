@@ -27,10 +27,19 @@
   <form method="POST" onSubmit="return submit_once()" action="query"
         enctype="multipart/form-data" tal:condition="context/is_edit_ok">
 
-   <table class="list"
-          tal:define="uid        request/user/id;
-                      mine       request/user/queries;
-                      can_public python:request.user.hasPermission ('May Public Queries', 'query')">
+   <table class="list" tal:define=
+    " uid        request/user/id
+    ; mine       request/user/queries
+    ; public     python: [q for q in
+                          db.query.filter (filterspec={'private_for':None})
+                          if q.creator != db._db.getuid ()
+                         ]
+    ; all        python: sorted ([q for q in mine] + public
+                                , key = lambda x : x.name
+                                )
+    ; can_public python:request.user.hasPermission
+                  ('May Public Queries', 'query')
+    ">
     <tr>
      <th>Query</th>
      <th>Edit</th>
@@ -38,11 +47,15 @@
      <th>&nbsp;</th>
     </tr>
 
-    <tr tal:repeat="query mine">
+    <tr tal:repeat="query all">
      <td><a tal:attributes="href string:${query/klass}?${query/url}"
             tal:content="query/name">query</a></td>
 
-     <td><a tal:attributes="href string:query${query/id}">edit</a></td>
+     <td><a tal:condition="query/is_edit_ok"
+            tal:attributes="href string:query${query/id}">
+           edit
+         </a>
+     </td>
 
      <td tal:condition="python:can_public and not query.is_retired ()">
       <select tal:attributes="name string:query${query/id}@private_for">
@@ -56,8 +69,8 @@
      <td tal:condition="query/is_retired">[query is retired]<!-- XXX: maybe offer "restore" some day --></td>
 
      <td tal:condition="not:query/is_retired">
-      <input type="button" value="Delete"
-             tal:attributes="onClick python:'''retire('%s')'''%query.id">
+      <input type="button" value="Delete" tal:condition="query/is_edit_ok"
+       tal:attributes="onClick python:'''retire('%s')'''%query.id">
      </td>
     </tr>
     <tr>
@@ -71,4 +84,3 @@
   </form>
  </td>
 </tal:block>
-<!-- SHA: 4609cc5d3d29f83e7708ade94073e819ae9c2a67 -->
