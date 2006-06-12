@@ -71,7 +71,7 @@ importer.update_security ()
 classes = \
     [ ("file"                , ["User"],               ["User"])
     , ("msg"                 , ["User"],               ["IT", "Issue_Admin"])
-    , ("query"               , ["HR", "Controlling"],  ["Controlling"])
+    , ("query"               , ["Controlling"],        ["Controlling"])
     ]
 
 prop_perms = \
