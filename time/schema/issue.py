@@ -152,4 +152,4 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, ())
     ext_issue.register_nosy_classes      (db, ['issue'])
-# end def init
+# end def security

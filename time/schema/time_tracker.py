@@ -234,6 +234,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , description           = String    ()
         )
     work_location.setkey ("code")
+# end def init
 
     #
     # SECURITY SETTINGS
@@ -243,6 +244,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
     # Assign the access and edit Permissions for issue, file and message
     # to regular users now
 
+def security (db, ** kw) :
     roles = \
         [ ("Office"        , "Member of Office"              )
         , ("HR"            , "Human Ressources team"         )
@@ -387,4 +389,4 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , description = 'Supervisor may see time record'
         )
     db.security.addPermissionToRole('User', p)
-# end def init
+# end def security
