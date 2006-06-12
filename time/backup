@@ -20,7 +20,7 @@ ROUNDUP_ADMIN=/roundup/sw/python/bin/roundup-admin
 #RESTORE=/roundup/tracker/xyzzy
 RESTOREPW="xyzzy"
 
-if [ ${TRACKER} == ${RESTORE} ] ; then
+if [ ${TRACKER} = ${RESTORE} ] ; then
     echo "READ COMMENTS. You don't want to overwrite your tracker?!"
     exit 42
 fi
