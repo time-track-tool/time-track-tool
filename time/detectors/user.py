@@ -317,6 +317,13 @@ def check_retire (db, cl, nodeid, old_values) :
     raise Reject, _ ("Not allowed to retire a user")
 # end def check_retire
 
+def obsolete_action (db, cl, nodeid, new_values) :
+    obsolete = db.user_status.lookup ('obsolete')
+    status   = new_values.get ('status', None)
+    if status == obsolete :
+        new_values ['roles'] = ''
+# end def obsolete_action
+
 def init (db) :
     global _, common, get_user_dynamic
     _   = get_translation \
@@ -331,3 +338,4 @@ def init (db) :
         db.user.react("create", create_dynuser)
     db.user.react("set"   , update_userlist_html)
     db.user.audit("retire", check_retire)
+    db.user.audit("set"   , obsolete_action)
