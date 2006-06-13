@@ -269,7 +269,7 @@ def security (db, ** kw) :
         , ("time_record"         , ["HR","Controlling"], ["HR","Controlling"])
         , ("time_wp_group"       , ["User"],             ["Project"         ])
         , ("time_wp"             , ["User"],             ["Project"         ])
-        , ("user_dynamic"        , ["HR","Controlling"], ["HR"              ])
+        , ("user_dynamic"        , ["HR"],               ["HR"              ])
         , ("work_location"       , ["User"],             ["Controlling"     ])
         ]
 
