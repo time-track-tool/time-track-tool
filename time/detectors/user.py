@@ -108,10 +108,8 @@ def common_user_checks (db, cl, nodeid, new_values) :
         fn = new_values.get (n, None) or cl.get (nodeid, n) or ''
         n = 'lastname'
         ln = new_values.get (n, None) or cl.get (nodeid, n) or ''
-        if  (   (  new_values.has_key ("firstname")
-                or new_values.has_key ("lastname")
-                )
-            and nodeid
+        if  (  new_values.has_key ("firstname")
+            or new_values.has_key ("lastname")
             ) :
             realname = " ".join ((fn, ln))
             new_values ["realname"] = realname
