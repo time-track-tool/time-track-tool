@@ -217,15 +217,8 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
 
-    for p in db.security.role ['hr'].permissions :
-        print p
-    print db.getclass ('user')
-
     # HR should be able to create new users:
     db.security.addPermissionToRole ("HR", "Create", "user")
-
-    for p in db.security.role ['hr'].permissions :
-        print p
 
     p = db.security.addPermission \
         ( name        = 'Edit'
