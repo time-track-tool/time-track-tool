@@ -1,5 +1,6 @@
 import sys
 sys.path.insert (0, '../schema')
+sys.path.insert (0, '../lib')
 
 class String :
     def __init__ (self, *v, **kw) : pass

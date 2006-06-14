@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2006-06-05 19:21+0200\n"
+"POT-Creation-Date: 2006-06-14 09:49+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgid "Machine names may not point to other CNAMEs"
 msgstr ""
 
 #: ../detectors/nwm.py:134 ../detectors/nwm.py:144 ../detectors/nwm.py:298
-#: ../detectors/nwm.py:317 ../detectors/user.py:144 ../extensions/help.py:527
+#: ../detectors/nwm.py:317 ../detectors/user.py:142 ../extensions/help.py:527
 #: ../locale/attr.py:97 ../locale/attr.py:106 ../locale/attr.py:114
 #: ../locale/attr.py:137 ../locale/attr.py:149 ../locale/attr.py:173
 #: ../locale/attr.py:223 ../locale/attr.py:296 ../locale/attr.py:563
@@ -232,7 +232,7 @@ msgid "start and end must be on same day and start <= end."
 msgstr ""
 
 #: ../detectors/time_record.py:55 ../detectors/time_record.py:62
-#: ../detectors/user.py:121
+#: ../detectors/user.py:119
 msgid "Times must be given in quarters of an hour"
 msgstr ""
 
@@ -321,30 +321,30 @@ msgstr ""
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
 
-#: ../detectors/user.py:124
+#: ../detectors/user.py:122
 msgid "Lunchbreak of more than 8 hours? Sure?"
 msgstr ""
 
-#: ../detectors/user.py:126
+#: ../detectors/user.py:124
 msgid "Lunchbreak must be at least half an hour."
 msgstr ""
 
-#: ../detectors/user.py:143
+#: ../detectors/user.py:141
 #, python-format
 msgid "%s specified for user without %s"
 msgstr ""
 
-#: ../detectors/user.py:144 ../detectors/user.py:146 ../extensions/help.py:809
+#: ../detectors/user.py:142 ../detectors/user.py:144 ../extensions/help.py:809
 #: ../locale/attr.py:532 attr.py:532
 msgid "uid"
 msgstr "User id"
 
-#: ../detectors/user.py:149
+#: ../detectors/user.py:147
 #, python-format
 msgid "Invalid %(uidname)s: %(uid)s"
 msgstr ""
 
-#: ../detectors/user.py:319
+#: ../detectors/user.py:317
 msgid "Not allowed to retire a user"
 msgstr ""
 
@@ -732,7 +732,7 @@ msgstr ""
 
 #: ../extensions/help.py:193 ../locale/attr.py:228 ../locale/attr.py:250
 #: ../locale/attr.py:302 ../locale/attr.py:552 ../locale/attr.py:586
-#: ../locale/attributes.py:40 ../schema-complex.py:58 ../schema-full.py:58
+#: ../locale/attributes.py:41 ../schema-complex.py:58 ../schema-full.py:58
 #: ../schema.py:58 attr.py:228 attr.py:250 attr.py:302 attr.py:552 attr.py:586
 msgid "department"
 msgstr "Department"
@@ -2597,7 +2597,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:62 ../html/_generic.item.html:62
-#: ../html/page.html:816
+#: ../html/page.html:817
 msgid "Download as CSV"
 msgstr ""
 
@@ -2640,6 +2640,10 @@ msgstr ""
 msgid "New ${Classname}"
 msgstr ""
 
+#: ../html/cost_center.item.html:26
+msgid "number"
+msgstr "Number"
+
 #: ../html/daily_record.approve.html:3
 msgid "Approvals pending"
 msgstr ""
@@ -2680,7 +2684,7 @@ msgstr ""
 msgid "new network_address"
 msgstr "new Network address"
 
-#: ../html/page.html:804
+#: ../html/page.html:805
 msgid "Query ${Classname}"
 msgstr ""
 
