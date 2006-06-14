@@ -24,7 +24,7 @@
    <tal:block metal:fill-slot="ttt_issue_content">
     <tr tal:condition="context/id">
      <th i18n:translate="">number</th>
-     <td colspan="3" tal:content="python:'.'.join
+     <td colspan="3" tal:content="python:'-'.join
       ((context.organisation.id
       , context.cost_center_group.id
       , context.id
