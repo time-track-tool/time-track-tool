@@ -193,6 +193,7 @@ def security (db, ** kw) :
     roles = \
         [ ("HR"            , "Human Ressources team"         )
         , ("Controlling"   , "Controlling"                   )
+        , ("Office"        , "Member of Office"              )
         ]
 
     #     classname        allowed to view   /  edit
@@ -216,8 +217,15 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
 
+    for p in db.security.role ['hr'].permissions :
+        print p
+    print db.getclass ('user')
+
     # HR should be able to create new users:
     db.security.addPermissionToRole ("HR", "Create", "user")
+
+    for p in db.security.role ['hr'].permissions :
+        print p
 
     p = db.security.addPermission \
         ( name        = 'Edit'
@@ -232,4 +240,3 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole('User', p)
 # end def security
-#SHA: 278a4e39c4fdd8a8bbd0545c36aa83385ea39dc6

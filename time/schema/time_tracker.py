@@ -246,10 +246,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
 
 def security (db, ** kw) :
     roles = \
-        [ ("Office"        , "Member of Office"              )
-        , ("HR"            , "Human Ressources team"         )
-        , ("Controlling"   , "Controlling"                   )
-        , ("Project"       , "Project Office"                )
+        [ ("Project"       , "Project Office"                )
         ]
 
     #     classname        allowed to view   /  edit
