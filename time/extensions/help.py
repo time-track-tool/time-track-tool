@@ -48,6 +48,10 @@ date_text = "<br><br>Ranges are used for searching dates: A range ".join \
     ((date_help, range_help))
 deadline = \
     ""'''Planned time by which this %(Classname)s should be done.'''
+default_hidden = \
+    ""'''Is hidden by default except for HR and office, except if the
+         user explicitly allows the number being visible.
+      '''
 durations = \
     ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 help_id = \
@@ -66,8 +70,22 @@ miss_text = \
       '''
 multiple_allowed = \
     ""'''Multiple %(Classname)s entries are allowed.'''
+extension = \
+    ""'''This is an extension number of the PBX. Can be concatenated
+         with the company prefix stored in "Organisation" to form a
+         valid external phone number.
+      '''
 priority = \
     ""'''Priority for this %(Classname)s.'''
+phone_visible = \
+    ""'''If you set this option to "YES", all time tracker users can see
+         your private number. If set to "No", the number will not be
+         accessible for the other time tracker users except HR and
+         office. (Please be aware that you do not have to give
+         information about any private phone number at all!)
+      '''
+pstn_number = \
+    ""'''Is always a full number valid on the PSTN.'''
 range_description = \
     ""'''as a comma-separated list of ranges (a special case of a range
          is just one number), e.g., 1-100,300-500
@@ -303,11 +321,10 @@ _helptext = \
           '''
       ]
     , ""'external_phone'             :
-      [ ""'''Short mobile or external phone number, e.g., 6142.
-             Can be concatenated with
-             the company prefix stored in "Organisation" to form a valid
-             external phone number.
+      [ ""'''Long mobile or external phone number, not an extension
+             number, e.g. number at a customer side.
           '''
+      , pstn_number
       ]
     , ""'add_file'                   :
       [""'''Add an new file for %(Classname)s''']
@@ -369,6 +386,10 @@ _helptext = \
       [""'''Initials of this %(Classname)s''']
     , ""'inreplyto'                  :
       [""'''In Reply To field if this %(Classname)s was received by email''']
+    , ""'internal_phone'             :
+      [ ""'''Short mobile or external phone number, e.g., 6142.'''
+      , extension
+      ]
     , ""'inventory_no'               :
       [ ""'''Unique number or name for this %(Classname)s, preferrably the
              inventory number for asset tracking
@@ -551,10 +572,13 @@ _helptext = \
     , ""'peer_reviewers'             :
       [""'''Peer reviewers for this %(Classname)s''']
     , ""'phone'                      :
-      [ ""'''Short phone number (suffix) only, e.g., 42.
-             Can be concatenated with
-             the company prefix stored in "Organisation" to form a valid
-             external phone number.
+      [ ""'''Short phone number (suffix) only, e.g., 42.'''
+      , extension
+      ]
+    , ""'org_location.phone'         :
+      [ ""'''Telephone-Network prefix of Telephone number for company
+             without direct inbound dialling suffix (aka extension)
+             number
           '''
       ]
     , ""'planned_effort'             :
@@ -577,11 +601,18 @@ _helptext = \
       [ ""'''Allowed range of group ids for users'''
       , range_description
       ]
-    , ""'private_phone'              :
-      [ ""'''Privat phone number. Always as a full number valid on the
-             PSTN.
-          '''
+    , ""'private_mobile'             :
+      [ ""'''Private mobile phone number.'''
+      , pstn_number
+      , default_hidden
       ]
+    , ""'private_mobile_visible'     : [ phone_visible ]
+    , ""'private_phone'              :
+      [ ""'''Private phone number except mobile.'''
+      , pstn_number
+      , default_hidden
+      ]
+    , ""'private_phone_visible'      : [ phone_visible ]
     , ""'project'                    :
       [ ""'''%(Classname)s is part of a Time Category. With the Time
              Category name a
@@ -592,6 +623,12 @@ _helptext = \
       [""'''Representative from the QA department for this %(Classname)s''']
     , ""'queries'                    :
       [""'''Queries for this %(Classname)s''']
+    , ""'quick_dialling'             :
+      [ ""'''Quick dialling number, e.g., for the mobile phone of the
+             user. Example: 6042
+          '''
+      , extension
+      ]
     , ""'recorder'                   :
       [""'''Person responsible for recording findings''']
     , ""'realname'                   :

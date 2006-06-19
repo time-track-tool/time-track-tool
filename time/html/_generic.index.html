@@ -31,7 +31,7 @@
 >
  <tr>
   <tal:block tal:repeat="prop props">
-   <th tal:content="python:i18n.gettext (prop._name)"></th>
+   <th tal:content="structure python:utils.fieldname (classname, prop._name)"/>
   </tal:block>
  </tr>
  <tr tal:repeat="item items">
@@ -47,7 +47,7 @@
    </tal:block>
    <tal:block tal:condition="python:prop._name not in linkprops">
     <td tal:content="structure python:utils.ExtProperty
-        (utils, prop, item = item).as_listentry ()"></td>
+        (utils, prop, item = item).as_listentry ()"/>
    </tal:block>
   </tal:block>
  </tr>
@@ -70,7 +70,8 @@
 
 <form method="POST" onSubmit="return submit_once()"
       enctype="multipart/form-data" tal:condition="context/is_view_ok"
-      tal:attributes="action context/designator">
+      tal:attributes="action context/designator"
+      name="itemSynopsis">
 
 <input type="hidden" name="@template" value="item">
 
@@ -78,9 +79,9 @@
 
  <tal:block tal:repeat="prop props">
   <tr tal:condition="python:prop._name not in ('id','date','author')">
-   <th tal:content="structure python:utils.fieldname (classname, prop._name)"></th>
-   <td tal:content="structure python:utils.menu_or_field (context[prop._name])">
-   </td>
+   <th tal:content="structure python:utils.fieldname (classname, prop._name)"/>
+   <td tal:content="structure python:utils.ExtProperty
+       (utils, prop, item = context).menu_or_field (db)"/>
   </tr>
  </tal:block>
  <tr metal:use-macro="templates/page/macros/message_box" />

@@ -549,6 +549,10 @@ table.otherinfo th {
   text-align: left;
 }
 
+table.otherinfo th a[href]:hover        { color: #333; }
+table.otherinfo th a[href]:link         { color: #333; }
+table.otherinfo th a[href]              { color: #333; }
+
 table.otherinfo th.header2 {
   vertical-align: top;
 }

@@ -121,13 +121,31 @@
   <th tal:content="structure python:utils.fieldname('user', 'phone')" />
   <td tal:content="structure context/phone/field"></td>
  </tr>
+ <tr tal:condition="python:'quick_dialling' in bclass.properties">
+  <th tal:content="structure python:utils.fieldname('user', 'quick_dialling')"/>
+  <td tal:content="structure context/quick_dialling/field"></td>
+ </tr>
+ <tr tal:condition="python:'internal_phone' in bclass.properties">
+  <th tal:content="structure python:utils.fieldname('user', 'internal_phone')"/>
+  <td tal:content="structure context/internal_phone/field"></td>
+ </tr>
  <tr tal:condition="python:'external_phone' in bclass.properties">
   <th tal:content="structure python:utils.fieldname('user', 'external_phone')"/>
   <td tal:content="structure context/external_phone/field"></td>
  </tr>
  <tr tal:condition="python:'private_phone' in bclass.properties">
   <th tal:content="structure python:utils.fieldname('user', 'private_phone')"/>
-  <td tal:content="structure context/private_phone/field"></td>
+  <td tal:content="structure context/private_phone/field"/>
+  <th tal:content="structure python:utils.fieldname
+   ('user', 'private_phone_visible')"/>
+  <td tal:content="structure context/private_phone_visible/field"/>
+ </tr>
+ <tr tal:condition="python:'private_mobile' in bclass.properties">
+  <th tal:content="structure python:utils.fieldname('user', 'private_mobile')"/>
+  <td tal:content="structure context/private_mobile/field"/>
+  <th tal:content="structure python:utils.fieldname
+   ('user', 'private_mobile_visible')"/>
+  <td tal:content="structure context/private_mobile_visible/field"/>
  </tr>
  <tr tal:condition="python:'room' in bclass.properties">
   <th tal:content="structure python:utils.fieldname('user', 'room')"/>

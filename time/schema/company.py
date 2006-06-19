@@ -125,25 +125,30 @@ def init \
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( nickname              = String    ()
-                , firstname             = String    ()
-                , lastname              = String    ()
-                , external_phone        = String    ()
-                , private_phone         = String    ()
-                , supervisor            = Link      ("user")
-                , substitute            = Link      ("user")
-                , subst_active          = Boolean   ()
-                , clearance_by          = Link      ("user")
-                , room                  = Link      ("room")
-                , title                 = String    ()
-                , position              = Link      ("position")
-                , job_description       = String    ()
-                , pictures              = Multilink ("file")
-                , lunch_start           = String    ()
-                , lunch_duration        = Number    ()
-                , sex                   = Link      ("sex")
-                , org_location          = Link      ("org_location")
-                , department            = Link      ("department")
+                ( nickname               = String    ()
+                , firstname              = String    ()
+                , lastname               = String    ()
+                , quick_dialling         = String    ()
+                , internal_phone         = String    ()
+                , external_phone         = String    ()
+                , private_phone          = String    ()
+                , private_phone_visible  = Boolean   ()
+                , private_mobile         = String    ()
+                , private_mobile_visible = Boolean   ()
+                , supervisor             = Link      ("user")
+                , substitute             = Link      ("user")
+                , subst_active           = Boolean   ()
+                , clearance_by           = Link      ("user")
+                , room                   = Link      ("room")
+                , title                  = String    ()
+                , position               = Link      ("position")
+                , job_description        = String    ()
+                , pictures               = Multilink ("file")
+                , lunch_start            = String    ()
+                , lunch_duration         = Number    ()
+                , sex                    = Link      ("sex")
+                , org_location           = Link      ("org_location")
+                , department             = Link      ("department")
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ('username')
@@ -156,6 +161,7 @@ def init \
         , ''"meeting_room"
         , name                  = String    ()
         , room                  = Link      ("room")
+        , phone                 = String    ()
         )
     meeting_room.setkey ("name")
 
@@ -227,9 +233,40 @@ def security (db, ** kw) :
         , description = "User is allowed to edit (some of) their own user details"
         , properties  = \
             ( 'password', 'realname', 'phone', 'private_phone', 'external_phone'
+            , 'quick_dialling', 'internal_phone', 'private_mobile'
+            , 'private_phone_visible', 'private_mobile_visible'
             , 'substitute', 'subst_active', 'title', 'queries'
             , 'lunch_start', 'lunch_duration', 'room', 'timezone'
             )
         )
     db.security.addPermissionToRole('User', p)
+
+    def private_phone_ok (db, userid, itemid) :
+        """Determine whether the user wants private number to be accessed"""
+        return db.user.get (itemid, 'private_phone_visible')
+    # end def private_phone_ok
+
+    def private_mobile_ok (db, userid, itemid) :
+        """Determine whether the user wants private mobile to be accessed"""
+        return db.user.get (itemid, 'private_mobile_visible')
+    # end def private_phone_ok
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user'
+        , check       = private_phone_ok
+        , description = "User wants private phone accessible"
+        , properties  = ('private_phone', )
+        )
+    db.security.addPermissionToRole('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user'
+        , check       = private_mobile_ok
+        , description = "User wants private mobile accessible"
+        , properties  = ('private_mobile', )
+        )
+    db.security.addPermissionToRole('User', p)
+
 # end def security

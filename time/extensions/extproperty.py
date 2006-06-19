@@ -60,16 +60,6 @@ def properties_dict (db, context) :
     return props
 # end def properties_dict
 
-def menu_or_field (prop) :
-    if hasattr (prop._prop, 'classname') :
-        return prop.menu (height=5)
-    try :
-        return prop.field (size=60)
-    except TypeError :
-        pass
-    return prop.field ()
-# end def menu_or_field
-
 dwidth  = 550
 dheight = 220
 #dwidth  = 460
@@ -337,6 +327,34 @@ class ExtProperty :
             % self.item [self.name].field (size = self.fieldwidth)
     # end def editfield
 
+    def menu_or_field (self, db) :
+        prop = self.hprop
+        if hasattr (prop._prop, 'classname') :
+            if prop._prop.classname == 'user' :
+                    print self.selname, self.name, self.classname
+                    return ' '.join \
+                        (( prop.field (size = 60)
+                        ,  db.user.classhelp \
+                            ( 'username,lastname,firstname,nickname'
+                            , property=self.selname
+                            , inputtype='%s' % ('radio', 'checkbox')
+                              [isinstance (self.hprop, MultilinkHTMLProperty)]
+                            , width='600'
+                            , pagesize=500
+                            , filter='status=%s' % ','.join
+                               (db._db.user_status.lookup (i)
+                                for i in ('valid', 'system')
+                               )
+                            )
+                        ))
+            return prop.menu (height=5)
+        try :
+            return prop.field (size=60)
+        except TypeError :
+            pass
+        return prop.field ()
+    # end def menu_or_field
+
     def colonlabel (self) :
         return ("""<a class="header" title="Help for %s" """
                 """href="javascript:help_window"""
@@ -468,7 +486,6 @@ def init (instance) :
     instance.registerUtil ('ExtProperty',       ExtProperty)
     instance.registerUtil ('sorted_properties', sorted_properties)
     instance.registerUtil ('properties_dict',   properties_dict)
-    instance.registerUtil ('menu_or_field',     menu_or_field)
     instance.registerUtil ('new_property',      new_property)
     instance.registerUtil ('comment_edit',      comment_edit)
     instance.registerUtil ('urlquote',          urlquote)

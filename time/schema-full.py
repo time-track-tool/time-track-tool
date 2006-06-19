@@ -88,9 +88,13 @@ prop_perms = \
       , ( "clearance_by", "external_phone", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "phone", "pictures", "position", "private_phone", "realname"
+        , 'quick_dialling', 'internal_phone', 'private_mobile'
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
         , "title", "roles"
         )
+      )
+    , ( "user", "Edit", ["Office"]
+      , ( "private_mobile", "private_phone" )
       )
     , ( "user", "Edit", ["IT"]
       , ( "is_lotus_user", "sync_with_ldap", "group"
@@ -108,6 +112,8 @@ prop_perms = \
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
         , "external_phone", "firstname", "job_description", "lastname"
+        , "quick_dialling", "internal_phone"
+        , "private_phone_visible", "private_mobile_visible"
         , "lunch_duration", "lunch_start", "nickname", "password", "phone"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
