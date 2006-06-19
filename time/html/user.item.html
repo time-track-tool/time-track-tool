@@ -225,6 +225,11 @@
       python:utils.fieldname ('user', 'lunch_duration')"/>
   <td tal:content="structure context/lunch_duration/field"></td>
  </tr>
+ <tr tal:condition="python:'tt_lines' in bclass.properties">
+  <th tal:content="structure
+      python:utils.fieldname ('user', 'tt_lines')"/>
+  <td tal:content="structure context/tt_lines/field"></td>
+ </tr>
  <tal:block tal:condition="python:'sync_with_ldap' in bclass.properties">
   <tr tal:condition="context/sync_with_ldap/is_view_ok">
    <th tal:content="structure

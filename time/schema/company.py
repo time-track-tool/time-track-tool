@@ -146,6 +146,7 @@ def init \
                 , pictures               = Multilink ("file")
                 , lunch_start            = String    ()
                 , lunch_duration         = Number    ()
+                , tt_lines               = Number    ()
                 , sex                    = Link      ("sex")
                 , org_location           = Link      ("org_location")
                 , department             = Link      ("department")
@@ -237,6 +238,7 @@ def security (db, ** kw) :
             , 'private_phone_visible', 'private_mobile_visible'
             , 'substitute', 'subst_active', 'title', 'queries'
             , 'lunch_start', 'lunch_duration', 'room', 'timezone'
+            , 'tt_lines'
             )
         )
     db.security.addPermissionToRole('User', p)

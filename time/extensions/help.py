@@ -841,6 +841,11 @@ _helptext = \
              hours.
           '''
       ]
+    , ""'tt_lines'                   :
+      [""'''Number of new lines (per day) in time-tracker (minimum: 1,
+            maximum: 5).
+         '''
+      ]
     , ""'type'                       :
       [""'''Mime type of this file''']
     , ""'uid'                        :

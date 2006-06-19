@@ -90,7 +90,7 @@ prop_perms = \
         , "phone", "pictures", "position", "private_phone", "realname"
         , 'quick_dialling', 'internal_phone', 'private_mobile'
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles"
+        , "title", "roles", "tt_lines"
         )
       )
     , ( "user", "Edit", ["Office"]
@@ -118,7 +118,7 @@ prop_perms = \
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path"
+        , "samba_home_drive", "samba_home_path", "tt_lines"
         )
       )
     ]

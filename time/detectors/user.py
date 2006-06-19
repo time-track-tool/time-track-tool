@@ -125,6 +125,12 @@ def common_user_checks (db, cl, nodeid, new_values) :
     if 'lunch_start' in new_values :
         ls = new_values ['lunch_start']
         ls = Date (ls) # trigger date-spec error if this fails.
+    if 'tt_lines' in new_values :
+        ttl = new_values ['tt_lines']
+        if ttl < 1 :
+            new_values ['tt_lines'] = 1
+        if ttl > 5 :
+            new_values ['tt_lines'] = 5
     if 'supervisor' in new_values :
         common.check_loop \
             (_, cl, nodeid, 'supervisor', new_values ['supervisor'])
@@ -172,6 +178,8 @@ def new_user (db, cl, nodeid, new_values) :
     for i in 'firstname', 'lastname', 'org_location', 'department' :
         if i not in new_values and i in cl.properties :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    if 'tt_lines' not in new_values :
+        new_values ['tt_lines'] = 1
 
     id    = nodeid
     if 'firstname' in cl.properties :
