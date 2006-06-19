@@ -126,6 +126,14 @@ def time_records_consistent (db, cl, nodeid) :
                 (  dynamic.durations_allowed
                 or db.time_wp.get (tr.wp, 'durations_allowed')
                 )
+            pr        = db.time_wp.get      (tr.wp, 'project')
+            max_hours = db.time_project.get (pr,    'max_hours')
+            if max_hours is not None :
+                if tr.duration > max_hours :
+                    msgs.append \
+                        ( "%(tr_pr)s: Duration must not exceed %(max_hours)s"
+                        % locals ()
+                        )
         if not durations_allowed and not tr.start :
             msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
         if tr.start and not travel :
