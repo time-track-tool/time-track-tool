@@ -25,7 +25,8 @@
  <tal:block tal:repeat="item items">
   <nobr><span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
    <a tal:attributes="href string:issue${item/id};
-                      class item/status"
+                      class item/status;
+                      title python:item.title.plain ()"
       tal:content="structure python:
        '<code>%s</code> (<code>%s, %s</code>): %s' %
         ( str (item.id)
