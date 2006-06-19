@@ -331,6 +331,21 @@ def security (db, ** kw) :
         return userid == project.responsible or userid == project.deputy
     # end def ok_work_package
 
+    def time_project_responsible_and_open (db, userid, itemid) :
+        """ Check if the user is responsible for the given time_project
+            if yes *and* the time_project is in status open, the user
+            may edit several fields.
+        """
+        if int (itemid) < 0 :
+            return False
+        ownerid = db.time_project.get (itemid, 'responsible')
+        open    = db.time_project_status.lookup ('Open')
+        status  = db.time_project.get (itemid, 'status')
+        if ownerid == userid and status == open :
+            return True
+        return False
+    # end def time_project_responsible_and_open
+
     def approval_for_time_record (db, userid, itemid) :
         """Viewing is allowed by the supervisor or the person to whom
            approvals are delegated.
@@ -347,7 +362,7 @@ def security (db, ** kw) :
         , check       = ok_work_package
         , description = "User is allowed to edit (some of) their own user wps"
         , properties  = \
-            ( 'responsible', 'description', 'cost_center'
+            ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
             )
         )
@@ -358,7 +373,16 @@ def security (db, ** kw) :
         , klass       = 'time_wp'
         , check       = is_project_owner_of_wp
         , description = "User is allowed to edit name and wp_no"
-        , properties  = ('name', 'wp_no')
+        , properties  = ('name', 'responsible', 'wp_no', 'cost_center')
+        )
+    db.security.addPermissionToRole('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_project'
+        , check       = time_project_responsible_and_open
+        , description = "User is allowed to edit some fields"
+        , properties  = ('deputy', 'description', 'planned_effort', 'nosy')
         )
     db.security.addPermissionToRole('User', p)
 
