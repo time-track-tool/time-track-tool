@@ -36,12 +36,12 @@
         )"/>
   </nobr>
   <br>
-  <tal:block tal:condition="python:expand and item.composed_of">
+  <tal:block tal:condition="python:expand and item [attr]">
    <tal:block
     tal:define =
      " indent python:indent + 1
      ; items  python:sorted
-        ( [i for i in item.composed_of
+        ( [i for i in utils.prop_as_array (item [attr])
            if not hide or i.status.plain () != 'closed'
           ]
         , key = lambda x : (str (x.status), x.id)
@@ -60,7 +60,7 @@
      (['%s=%s' % (x, (lambda a, b : [a, int (not a)][b])(path (x), x == attr))
        for x in
         ( 'expand_composed_of'
-        , 'expand_superseder'
+        , 'expand_part_of'
         , 'expand_depends'
         , 'expand_needs'
         , 'show_closed'

@@ -98,6 +98,12 @@ def comment_edit \
            )
 # end def comment_edit
 
+def prop_as_array (prop) :
+    if isinstance (prop, MultilinkHTMLProperty) :
+        return prop
+    return [prop]
+# end def prop_as_array
+
 class ExtProperty :
     """
         An extended HTML property.
@@ -489,4 +495,5 @@ def init (instance) :
     instance.registerUtil ('new_property',      new_property)
     instance.registerUtil ('comment_edit',      comment_edit)
     instance.registerUtil ('urlquote',          urlquote)
+    instance.registerUtil ('prop_as_array',     prop_as_array)
 # end def init

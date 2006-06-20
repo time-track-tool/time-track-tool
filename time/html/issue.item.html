@@ -27,8 +27,8 @@
     ; show_closed         python:int (show_closed)
     ; expand_composed_of  request/form/expand_composed_of/value | string:0
     ; expand_composed_of  python:int (expand_composed_of)
-    ; expand_superseder   request/form/expand_superseder/value | string:0
-    ; expand_superseder   python:int (expand_superseder)
+    ; expand_part_of      request/form/expand_part_of/value | string:0
+    ; expand_part_of      python:int (expand_part_of)
     ; expand_depends      request/form/expand_depends/value | string:0
     ; expand_depends      python:int (expand_depends)
     ; expand_needs        request/form/expand_needs/value | string:0
@@ -114,7 +114,13 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'part_of')"/>
-      <td tal:content="structure python:context.part_of.field ()"/>
+      <td>
+       <span tal:content="structure python:context.part_of.field ()"/>
+       <tal:block tal:condition="context/part_of/plain"
+        tal:define="attr string:expand_part_of; text expand_text">
+        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+       </tal:block>
+      </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'cur_est_begin')"/>
       <td> 
@@ -130,7 +136,8 @@
       <td tal:condition="context/part_of/plain">
        <font size="-1" tal:define=
         " issues python:[context.part_of]
-        ; expand python:False
+        ; attr   python:'part_of'
+        ; expand expand_part_of
         ; hide   python:False
         ">
         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
@@ -148,7 +155,8 @@
         <br>
         <font size="-1" tal:define=
          " issues context/superseder/reverse
-         ; expand python:False
+         ; attr   python:'superseder'
+         ; expand python:True
          ; hide   python:False
          ">
          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
@@ -165,7 +173,8 @@
         <br>
         <font size="-1" tal:define=
          " issues context/depends/reverse
-         ; expand python:False
+         ; attr   python:'depends'
+         ; expand expand_depends
          ; hide   python:False
          ">
          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
@@ -187,6 +196,7 @@
         <br>
         <font size="-1" tal:define=
          " issues context/composed_of/reverse
+         ; attr   python:'composed_of'
          ; expand expand_composed_of
          ; hide   not:show_closed
          ">
@@ -204,7 +214,8 @@
         <br>
         <font size="-1" tal:define=
          " issues context/needs/reverse
-         ; expand python:False
+         ; attr   python:'needs'
+         ; expand expand_needs
          ; hide   python:False
          ">
          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
