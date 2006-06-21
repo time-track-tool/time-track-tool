@@ -22,7 +22,7 @@
       <tr tal:repeat="itemkey itemkeys">
        <th class="index">&nbsp;</th>
        <th class="index">
-        <a tal:attributes="href string:#${itemkey}"
+        <a tal:attributes="href python:'#%s' % (itemkey.split ('.')[-1])"
            tal:content="structure python:i18n.gettext (itemkey)">
         </a>
        </th>
@@ -38,10 +38,10 @@
        <th class="header2" nowrap
            tal:content="python:i18n.gettext (itemkey)" />
        <td class="item">
-        <a tal:attributes="name itemkey"
+        <a tal:attributes="name python:itemkey.split ('.')[-1]"
            tal:content="structure python:
             utils.helptext (itemkey) % 
-             {'Classname' : Classname, 'Property' : itemkey}" />
+             {'Classname' : Classname, 'Property' : i18n.gettext (itemkey)}" />
        </td>
       </tr>
      </table>

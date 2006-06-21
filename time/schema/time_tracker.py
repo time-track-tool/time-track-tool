@@ -111,6 +111,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , summary               = Boolean   ()
         , status                = Link      ("daily_record_status")
         , show_empty            = Boolean   ()
+        , show_all_users        = Boolean   ()
         , planned_effort        = Number    ()
         )
 

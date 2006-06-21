@@ -39,7 +39,9 @@
     , summary           = utils.ExtProperty
       (utils, pdict ['summary'])
     , show_empty        = utils.ExtProperty
-      (utils, pdict ['show_empty'], bool_tristate = False)
+      (utils, pdict ['show_empty'],     bool_tristate = False)
+    , show_all_users    = utils.ExtProperty
+      (utils, pdict ['show_all_users'], bool_tristate = False)
     , status            = utils.ExtProperty
       (utils, pdict ['status'],            multiselect = 1)
     , planned_effort    = utils.ExtProperty
@@ -59,7 +61,7 @@
       ; propkeys       python:
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
         , 'time_project', 'time_wp_group', 'cost_center', 'cost_center_group'
-        , 'summary_type', 'status', 'show_empty'
+        , 'summary_type', 'status', 'show_empty', 'show_all_users'
         )
       ; sprops         python: [props [p] for p in propkeys]
       ; multi_props    python: [p for p in sprops if p.multiselect]

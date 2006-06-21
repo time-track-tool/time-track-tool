@@ -851,9 +851,10 @@
    </tr>
    <tr>
     <td colspan="2">
-     <table border="0" bgcolor="#e0c0c0" align="left">
+     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
       <tr>
-       <th style="text-align:left;">View:</th>
+       <th style="text-align:left;" tal:content="structure python:
+         utils.fieldname (classname, 'VIEW', endswith=':', htmlcls='header')"/>
       </tr>
       <tr>
        <!-- View -->

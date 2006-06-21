@@ -51,7 +51,7 @@ _      = lambda x : x
 try :
     from common       import pretty_range, week_from_date, ymd, user_has_role \
                            , date_range, weekno_from_day
-    from user_dynamic import update_tr_duration
+    from user_dynamic import update_tr_duration, get_user_dynamic
 except ImportError :
     ymd                = None
     pretty_range       = None
@@ -60,6 +60,7 @@ except ImportError :
     date_range         = None
     weekno_from_day    = None
     update_tr_duration = None
+    get_user_dynamic   = None
 
 sup_cache = {}
 def user_supervisor_for (db, uid = None) :
@@ -71,14 +72,14 @@ def user_supervisor_for (db, uid = None) :
         uid = db.getuid ()
     if uid in sup_cache :
         return sup_cache [uid]
-    sv                = dict ([(u, 1) for u in db.user.find (substitute = uid)])
+    sv                = dict ((u, 1) for u in db.user.find (substitute = uid))
     sv [uid]          = 1
     users             = db.user.find (supervisor = sv)
     trans_users       = []
     for u in users :
         if u != uid :
             trans_users.extend (user_supervisor_for (db, u))
-    sup_cache [uid] = dict ([(u, 1) for u in users + trans_users])
+    sup_cache [uid] = dict ((u, 1) for u in users + trans_users)
     return sup_cache [uid]
 # end def user_supervisor_for
 
@@ -153,14 +154,24 @@ class Extended_WP (Extended_Node) :
             or uid == p_deputy
             or uid in p_nosy
             )
-        self.effort_perday = 0
-        if self.time_start and self.time_end and self.planned_effort :
-            s                  = Date (str (self.time_start))
-            e                  = Date (str (self.time_end))
+        self.effort_perday = PM_Value (0, 1)
+        if  (   self.time_start and self.time_end
+            and self.planned_effort is not None
+            ) :
+            self.start = s     = Date (str (self.time_start))
+            self.end   = e     = Date (str (self.time_end))
             days               = (e - s).get_tuple () [3]
             if days :
-                self.effort_perday = self.planned_effort / days
+                self.effort_perday = PM_Value (self.planned_effort / days)
     # end def __init__
+
+    def effort (self, date) :
+        if not self.effort_perday.missing :
+            if self.start <= date <= self.end :
+                return self.effort_perday
+            return PM_Value (0)
+        return self.effort_perday
+    # end def effort
 
     def __cmp__ (self, other) :
         return \
@@ -429,14 +440,16 @@ class Summary_Report :
         wp_containers   = []
         if not columns :
             columns     = db.summary_report.getprops ().keys ()
-        self.columns    = dict ([(c, True) for c in columns])
+        self.columns    = dict ((c, True) for c in columns)
         status          = filterspec.get \
             ('status', db.daily_record_status.getnodeids ())
         timestamp       = time.time ()
-        show_empty      = filterspec.get ('show_empty', 'no')
+        show_empty      = filterspec.get ('show_empty',     'no')
+        show_all_users  = filterspec.get ('show_all_users', 'no')
         self.show_empty = show_empty == 'yes'
+        show_all_users  = self.show_all_users = show_all_users == 'yes'
         travel_act      = db.time_activity.filter (None, {'travel' : True})
-        travel_act      = dict ([(a, 1) for a in travel_act])
+        travel_act      = dict ((a, 1) for a in travel_act)
         self.show_plan  = 'planned_effort' in self.columns
 
         #print "time", timestamp
@@ -444,16 +457,16 @@ class Summary_Report :
         #print self.columns, self.show_plan
         start, end  = date_range (db, filterspec)
         users       = filterspec.get ('user', [])
-        sv          = dict ([(i, 1) for i in filterspec.get ('supervisor', [])])
+        sv          = dict ((i, 1) for i in filterspec.get ('supervisor', []))
         svu         = []
         if sv :
             svu     = db.user.find (supervisor = sv)
-        users       = dict ([(u, 1) for u in users + svu]).keys ()
+        users       = dict ((u, 1) for u in users + svu).keys ()
         olo_or_dept = False
         drecs       = {}
         org_dep_usr = {}
         for cl in 'department', 'org_location' :
-            spec = dict ([(s, 1) for s in filterspec.get (cl, [])])
+            spec = dict ((s, 1) for s in filterspec.get (cl, []))
             if spec :
                 olo_or_dept = True
                 udrs        = []
@@ -480,7 +493,7 @@ class Summary_Report :
                         )
                     edr = Extended_Daily_Record
                     drs = [edr (db, d, sup_users) for d in drs]
-                    drecs.update (dict ([(d.id, d) for d in drs]))
+                    drecs.update (dict ((d.id, d) for d in drs))
 
         #print "after departments:", time.time () - timestamp
         if not users and not olo_or_dept :
@@ -497,14 +510,14 @@ class Summary_Report :
                 )
         #print "n_dr:", len (dr), time.time () - timestamp
         dr          = dict \
-            ([(d, Extended_Daily_Record (db, d, sup_users)) for d in dr])
+            ((d, Extended_Daily_Record (db, d, sup_users)) for d in dr)
         #print "after users:", time.time () - timestamp
         dr.update (drecs)
         #print "after dr.update:", time.time () - timestamp
         self.dr_by_user_date = dict \
-            ([((str (v.username), v.date.pretty (ymd)), v)
-              for v in dr.itervalues ()
-            ])
+            (((str (v.username), v.date.pretty (ymd)), v)
+             for v in dr.itervalues ()
+            )
         #print "after dr_dat_usr:", time.time () - timestamp
 
         trvl_tr     = []
@@ -526,7 +539,7 @@ class Summary_Report :
             db.commit ()
         #print "trv daily_recs", len (trvl_dr), time.time () - timestamp
 
-        wp          = dict ([(w, 1) for w in filterspec.get ('time_wp', [])])
+        wp          = dict ((w, 1) for w in filterspec.get ('time_wp', []))
         #print "native wp", len (wp), time.time () - timestamp
 
         wpgs        = filterspec.get ('time_wp_group',     [])
@@ -571,7 +584,7 @@ class Summary_Report :
         ccgs        = filterspec.get ('cost_center_group', [])
         for ccg in ccgs :
             ccs     = db.cost_center.find (cost_center_group = ccg)
-            ccs     = dict ([(c, 1) for c in ccs])
+            ccs     = dict ((c, 1) for c in ccs)
             wp_containers.append \
                 ( WP_Container 
                     ( db.cost_center_group, ccg
@@ -579,7 +592,7 @@ class Summary_Report :
                     )
                 )
             for cc in ccs :
-                wps = dict ([(w,1) for w in db.time_wp.find (cost_center = cc)])
+                wps = dict ((w,1) for w in db.time_wp.find (cost_center = cc))
                 wp_containers [-1].update (wps)
             wp.update (wp_containers [-1])
         #print "ccgs", len (wp), time.time () - timestamp
@@ -590,18 +603,20 @@ class Summary_Report :
             and 'cost_center'       not in filterspec
             and 'cost_center_group' not in filterspec
             ) :
-            wp = dict ([(w, 1) for w in db.time_wp.getnodeids ()])
+            wp = dict ((w, 1) for w in db.time_wp.getnodeids ())
         #print "wp-default", len (wp), time.time () - timestamp
         #print "n_wp:", len (wp)
-        work_pkg    = dict ([(w, Extended_WP (db, w)) for w in wp.iterkeys ()])
+        work_pkg    = dict ((w, Extended_WP (db, w)) for w in wp.iterkeys ())
         #print "ext wp", time.time () - timestamp
         time_recs   = []
         # 276 sec: (4.6 min) (for Decos: ~ 250 sec)
         if dr and wp :
-            time_recs = [Extended_Time_Record (db, t, dr, work_pkg)
-                         for t in db.time_record.find
-                          (daily_record = dr, wp = work_pkg)
-                        ]
+            time_recs = []
+            for d in dr.itervalues () :
+                for t in d.time_record :
+                    if db.time_record.get (t, 'wp') in work_pkg :
+                        tr = Extended_Time_Record (db, t, dr, work_pkg)
+                        time_recs.append (tr)
         #print "ext time_recs", len (time_recs), time.time () - timestamp
         time_recs   = [t for t in time_recs if t.is_own]
         #print "own time_recs", len (time_recs), time.time () - timestamp
@@ -609,16 +624,32 @@ class Summary_Report :
         #print "srt time_recs", len (time_recs), time.time () - timestamp
         if self.show_empty :
             usrs      = users + org_dep_usr.keys ()
-            usernames = dict ([(db.user.get (u, 'username'), 1) for u in usrs])
+            usernames = dict ((db.user.get (u, 'username'), 1) for u in usrs)
             usernames = usernames.keys ()
         else :
-            usernames = dict ([(tr.username, 1) for tr in time_recs]).keys ()
+            usernames = dict ((tr.username, 1) for tr in time_recs).keys ()
+        #print "         usernames", time.time () - timestamp
+        uids_by_name  = dict ((u, db.user.lookup (u)) for u in usernames)
+        # filter out users without a dyn user record in our date range
+        #print usernames
+        if not self.show_all_users :
+            users = []
+            for u in usernames :
+                d   = start
+                while d <= end :
+                    if get_user_dynamic (db, uids_by_name [u], d) :
+                        users.append (u)
+                        break
+                    d = d + Interval ('1d')
+            usernames = users
+
+        #print "filtered usernames", time.time () - timestamp
         usernames.sort ()
-        #print "sorted usernames", time.time () - timestamp
+        #print "sorted   usernames", time.time () - timestamp
         #print usernames
         
         # append only wps where somebody actually booked on
-        wps         = dict ([(tr.wp.id, 1) for tr in time_recs])
+        wps         = dict ((tr.wp.id, 1) for tr in time_recs)
         for w in wps.iterkeys () :
             wp_containers.append \
                 ( WP_Container 
@@ -641,9 +672,9 @@ class Summary_Report :
 
         # Build time containers
         rep_types  = filterspec.get \
-            ('summary_type', db.summary_type.getnodeids ())
+            ('summary_type', [db.summary_type.lookup ('range')])
         rep_types  = [db.summary_type.get (i, 'name') for i in rep_types]
-        time_containers = dict ([(t, []) for t in rep_types])
+        time_containers = dict ((t, []) for t in rep_types)
         d = start
         while d <= end :
             for t, cont in time_containers.iteritems () :
@@ -654,6 +685,7 @@ class Summary_Report :
                         cont.append (time_container_classes [t] (start, end))
             d = d + Interval ('1d')
         #print "time containers", time.time () - timestamp
+        wp_containers = [w for w in wp_containers if w.visible]
         wp_containers.sort ()
         #print "sorted wp containers", time.time () - timestamp
         # invert wp_containers
@@ -665,27 +697,37 @@ class Summary_Report :
                 else :
                     containers_by_wp [w]      = [wc]
         #print "inverted wp containers", time.time () - timestamp
-        tc_pointers = dict ([(i, 0) for i in time_containers.iterkeys ()])
+        tc_pointers = dict ((i, 0) for i in time_containers.iterkeys ())
+        #print "after tc_pointers", time.time () - timestamp
 
-        d    = start
-        tidx = 0
+        d        = start
+        tidx     = 0
+        invalid  = PM_Value (0, 1)
+        # wp may not be viewable due to permissions
+        valid_wp = \
+            [w for w in work_pkg.itervalues () if w.id in containers_by_wp]
         while d <= end :
+            no_daily_record = \
+                [u for u in usernames
+                 if (   (u, d.pretty (ymd)) not in self.dr_by_user_date
+                    and (  self.show_all_users
+                        or get_user_dynamic (db, uids_by_name [u], d)
+                        )
+                    )
+                ]
+            #print "user", len (no_daily_record), time.time () - timestamp
             for tcp in tc_pointers.iterkeys () :
                 while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
                     tc_pointers [tcp] += 1
                 tc = time_containers [tcp][tc_pointers [tcp]]
-                for w in work_pkg.itervalues () :
-                    # wp may not be viewable due to permissions
-                    if w.id not in containers_by_wp :
-                        continue
+                for w in valid_wp :
                     for wc in containers_by_wp [w.id] :
-                        wc.add_plan (tc, w.effort_perday)
-                        tc.add_plan (wc, w.effort_perday)
-                        for u in usernames :
-                            if (u, d.pretty (ymd)) not in self.dr_by_user_date :
-                                val = PM_Value (0, 1)
-                                wc.add_user_sum (tc, u, val)
-                                tc.add_user_sum (wc, u, val)
+                        wc.add_plan (tc, w.effort (d))
+                        tc.add_plan (wc, w.effort (d))
+                        for u in no_daily_record :
+                            wc.add_user_sum (tc, u, invalid)
+                            tc.add_user_sum (wc, u, invalid)
+            #print "plan", time.time () - timestamp
             while tidx < len (time_recs) and time_recs [tidx].date == d :
                 t  = time_recs [tidx]
                 for tcp in tc_pointers.iterkeys () :
@@ -695,6 +737,7 @@ class Summary_Report :
                         wpc.add_sum (tc,  t)
                 tidx += 1
             d = d + Interval ('1d')
+            #print "1d", time.time () - timestamp
         #print "SUMs built", time.time () - timestamp
         self.wps             = wps
         self.usernames       = usernames
@@ -846,13 +889,13 @@ class csv_summary_report (Action) :
 
 def init (instance) :
     global _, ymd, pretty_range, week_from_date, user_has_role, date_range
-    global weekno_from_day, update_tr_duration
+    global weekno_from_day, update_tr_duration, get_user_dynamic
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     from common import pretty_range, week_from_date, ymd, user_has_role \
                      , date_range, weekno_from_day
-    from user_dynamic import update_tr_duration
+    from user_dynamic import update_tr_duration, get_user_dynamic
     del sys.path [0]
     util   = instance.registerUtil
     util   ('Summary_Report',     Summary_Report)

@@ -362,6 +362,8 @@ class ExtProperty :
     # end def menu_or_field
 
     def colonlabel (self) :
+        return self.utils.fieldname \
+            (self.classname, self.selname, self.name, ':', 'header')
         return ("""<a class="header" title="Help for %s" """
                 """href="javascript:help_window"""
                 """('%s?:template=property_help#%s', '500', '400')">"""
