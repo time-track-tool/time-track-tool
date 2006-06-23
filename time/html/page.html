@@ -586,7 +586,8 @@
 <tal:block metal:define-macro="message_display">
  <table class="messages" tal:condition="python:has_msgs and context.messages">
   <tr>
-   <th colspan="3" class="header">Messages</th>
+   <th colspan="3" class="header" tal:content="structure python:
+     utils.fieldname (classname, 'messages')"/>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
   <tr>

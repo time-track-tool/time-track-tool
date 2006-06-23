@@ -498,7 +498,15 @@ _helptext = \
     , ""'messageid'                  :
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                   :
-      [""'''List of messages for %(Classname)s''']
+      [""'''List of messages for %(Classname)s. Note that during
+            conversion from the old roundup tracker all existing
+            messages numbered 1-73815 were renumbered with an offset of
+            3287 resulting in the message range 3288-77102 in the
+            current tracker. All messages or other documentation
+            referring to message numbers in the range 1-73815 will need
+            to consider this offset.
+         '''
+      ]
     , ""'msg'                        :
       [""'''New message or notice for %(Classname)s''']
     , ""'msg_keywords'               :
