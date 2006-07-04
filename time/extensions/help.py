@@ -416,6 +416,12 @@ _helptext = \
       [""'''No real user but only an email alias''']
     , ""'is_lotus_user'              :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
+    , ""'is_public_holiday'          :
+      [""'''Flag for public holiday %(Classname)s -- set this if you
+            want work packages of this %(Classname)s to be used in
+            automatic public holiday computation.
+         '''
+      ]
     , ""'issue.deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are
@@ -553,6 +559,12 @@ _helptext = \
       ]
     , ""'nickname'                   :
       [""'''Nickname (or short name) for this %(Classname)s, e.g., rsc''']
+    , ""'no_overtime'                :
+      [""'''This flag makes sure that not more than the employee's
+            normal working time can be registered under this
+            %(Classname)s
+         '''
+      ]
     , ""'nosy'                       :
       [""'''People receiving announcements (messages) for %(Classname)s''']
     , ""'op_project'                 :

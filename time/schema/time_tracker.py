@@ -147,6 +147,8 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , max_hours             = Number    ()
         , nosy                  = Multilink ("user")
         , op_project            = Boolean   ()
+        , no_overtime           = Boolean   ()
+        , is_public_holiday     = Boolean   ()
         )
     time_project.setkey ("name")
 

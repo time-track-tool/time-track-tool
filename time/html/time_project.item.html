@@ -62,10 +62,18 @@
       (classname, 'max_hours')"/>
      <td tal:content="structure python:context.max_hours.field ()"/>
     </tr>
+    <tr>
      <th tal:content="structure python:utils.fieldname
       (classname, 'op_project')"/>
      <td tal:content="structure python:context.op_project.field ()"/>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'no_overtime')"/>
+     <td tal:content="structure python:context.no_overtime.field ()"/>
+    </tr>
     <tr>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'is_public_holiday')"/>
+     <td tal:content="structure python:context.is_public_holiday.field ()"/>
     </tr>
    </tal:block>
   </tal:block>

@@ -24,6 +24,8 @@
     , utils.ExtProperty (utils, pdict ['max_hours'])
     , utils.ExtProperty (utils, pdict ['nosy'],          multiselect = 1)
     , utils.ExtProperty (utils, pdict ['op_project'])
+    , utils.ExtProperty (utils, pdict ['no_overtime'])
+    , utils.ExtProperty (utils, pdict ['is_public_holiday'])
     );
    "
   tal:condition="context/is_view_ok">

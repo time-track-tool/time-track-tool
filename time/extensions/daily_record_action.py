@@ -110,24 +110,34 @@ def try_create_public_holiday (db, daily_record, date, user) :
         hol = db.public_holiday.filter \
             (None, {'date' : pretty_range (date, date), 'locations' : loc})
         if hol and wh :
+            wp  = None
             try :
-                prj = db.time_project.lookup ('Public Holiday')
-            except KeyError :
-                return
-            wp  = db.time_wp.filter (None, dict (project = prj, bookers = user))
-            if wp :
-                holiday = db.public_holiday.getnode (hol [0])
-                comment = '\n'.join ((holiday.name, holiday.description))
-                if holiday.is_half :
-                    wh = wh / 2.
-                wh = round_daily_work_hours (wh)
-                db.time_record.create \
-                    ( daily_record  = daily_record
-                    , duration      = wh
-                    , wp            = wp [0]
-                    , comment       = comment
-                    , work_location = db.work_location.lookup ('off')
-                    )
+                ok  = db.time_project_status.lookup ('Open')
+                prj = db.time_project.filter \
+                    (None, dict (is_public_holiday = True, status = ok))
+                wps = db.time_wp.filter \
+                    (None, dict (project = prj, bookers = user))
+                for wpid in wps :
+                    w = db.time_wp.getnode (wpid)
+                    if  (   w.time_start <= date
+                        and (not w.time_end or date < w.time_end)
+                        ) :
+                        wp = wpid
+                        break
+            except (IndexError, KeyError) :
+                pass
+            holiday = db.public_holiday.getnode (hol [0])
+            comment = '\n'.join ((holiday.name, holiday.description))
+            if holiday.is_half :
+                wh = wh / 2.
+            wh = round_daily_work_hours (wh)
+            db.time_record.create \
+                ( daily_record  = daily_record
+                , duration      = wh
+                , wp            = wp
+                , comment       = comment
+                , work_location = db.work_location.lookup ('off')
+                )
 # end def try_create_public_holiday
 
 class Daily_Record_Common (Action, autosuper) :
