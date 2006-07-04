@@ -42,6 +42,7 @@ from operator                       import add
 from time                           import gmtime
 
 get_user_dynamic = None
+day_work_hours   = None
 common           = None
 _                = lambda x : x
 
@@ -91,6 +92,8 @@ def time_records_consistent (db, cl, nodeid) :
           specified
         + Travel times (either wp has travel flag or time_activity has
           travel flag) are excempt from work-time and lunch break checks
+        + no_overtime flag in time_project: check if really no overtime
+          booked
     """
     date     = cl.get (nodeid, 'date')
     sdate    = date.pretty (common.ymd)
@@ -128,12 +131,19 @@ def time_records_consistent (db, cl, nodeid) :
                 )
             pr        = db.time_wp.get      (tr.wp, 'project')
             max_hours = db.time_project.get (pr,    'max_hours')
+            no_over   = db.time_project.get (pr,    'no_overtime')
             if max_hours is not None :
                 if tr.duration > max_hours :
                     msgs.append \
                         ( "%(tr_pr)s: Duration must not exceed %(max_hours)s"
                         % locals ()
                         )
+            max_hours = day_work_hours (dynamic, date)
+            if no_over and tr.duration > max_hours :
+                msgs.append \
+                    ( "%(tr_pr)s: Duration must not exceed %(max_hours)s"
+                    % locals ()
+                    )
         if not durations_allowed and not tr.start :
             msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
         if tr.start and not travel :
@@ -609,9 +619,9 @@ def init (db) :
     if 'time_record' not in db.classes :
         return
     import sys, os
-    global _, common, get_user_dynamic
+    global _, common, get_user_dynamic, day_work_hours
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    from user_dynamic import get_user_dynamic
+    from user_dynamic import get_user_dynamic, day_work_hours
     import common
     del (sys.path [0])
     _   = get_translation \
