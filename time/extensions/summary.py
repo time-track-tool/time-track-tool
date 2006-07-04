@@ -425,7 +425,7 @@ class Summary_Report :
           - no daily record found -- involves checking dynamic user data
         FIXME: Check where we need naive dates...
     """
-    def __init__ (self, db, request) :
+    def __init__ (self, db, request, is_csv = False) :
         try :
             db = db._db
         except AttributeError :
@@ -446,8 +446,11 @@ class Summary_Report :
         timestamp       = time.time ()
         show_empty      = filterspec.get ('show_empty',     'no')
         show_all_users  = filterspec.get ('show_all_users', 'no')
+        show_missing    = filterspec.get ('show_missing',   'no')
         self.show_empty = show_empty == 'yes'
         show_all_users  = self.show_all_users = show_all_users == 'yes'
+        self.show_empty = show_empty == 'yes'
+        show_missing    = show_missing == 'yes' and not is_csv
         travel_act      = db.time_activity.filter (None, {'travel' : True})
         travel_act      = dict ((a, 1) for a in travel_act)
         self.show_plan  = 'planned_effort' in self.columns
@@ -707,27 +710,34 @@ class Summary_Report :
         valid_wp = \
             [w for w in work_pkg.itervalues () if w.id in containers_by_wp]
         while d <= end :
-            no_daily_record = \
-                [u for u in usernames
-                 if (   (u, d.pretty (ymd)) not in self.dr_by_user_date
-                    and (  self.show_all_users
-                        or get_user_dynamic (db, uids_by_name [u], d)
+            if show_missing :
+                no_daily_record = \
+                    [u for u in usernames
+                     if (   (u, d.pretty (ymd)) not in self.dr_by_user_date
+                        and (  self.show_all_users
+                            or get_user_dynamic (db, uids_by_name [u], d)
+                            )
                         )
-                    )
-                ]
-            #print "user", len (no_daily_record), time.time () - timestamp
-            for tcp in tc_pointers.iterkeys () :
-                while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
-                    tc_pointers [tcp] += 1
-                tc = time_containers [tcp][tc_pointers [tcp]]
-                for w in valid_wp :
-                    for wc in containers_by_wp [w.id] :
-                        wc.add_plan (tc, w.effort (d))
-                        tc.add_plan (wc, w.effort (d))
-                        for u in no_daily_record :
-                            wc.add_user_sum (tc, u, invalid)
-                            tc.add_user_sum (wc, u, invalid)
-            #print "plan", time.time () - timestamp
+                    ]
+                #print "user", len (no_daily_record), time.time () - timestamp
+            if self.show_plan or show_missing :
+                for tcp in tc_pointers.iterkeys () :
+                    while \
+                        (  d
+                        >= time_containers [tcp][tc_pointers [tcp]].sort_end
+                        ) :
+                        tc_pointers [tcp] += 1
+                    tc = time_containers [tcp][tc_pointers [tcp]]
+                    for w in valid_wp :
+                        for wc in containers_by_wp [w.id] :
+                            if self.show_plan :
+                                wc.add_plan (tc, w.effort (d))
+                                tc.add_plan (wc, w.effort (d))
+                            if show_missing :
+                                for u in no_daily_record :
+                                    wc.add_user_sum (tc, u, invalid)
+                                    tc.add_user_sum (wc, u, invalid)
+                #print "plan", time.time () - timestamp
             while tidx < len (time_recs) and time_recs [tidx].date == d :
                 t  = time_recs [tidx]
                 for tcp in tc_pointers.iterkeys () :
@@ -882,7 +892,7 @@ class csv_summary_report (Action) :
         if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
             # all done, return a dummy string
             return 'dummy'
-        summary                   = Summary_Report (self.db, request)
+        summary = Summary_Report (self.db, request, is_csv = True)
         return summary.as_csv ()
     # end def handle
 # end class csv_summary_report

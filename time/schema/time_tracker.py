@@ -113,6 +113,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , show_empty            = Boolean   ()
         , show_all_users        = Boolean   ()
         , planned_effort        = Number    ()
+        , show_missing          = Boolean   ()
         )
 
     summary_type = Class \
