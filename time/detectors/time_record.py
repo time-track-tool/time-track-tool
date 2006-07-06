@@ -488,6 +488,7 @@ def check_time_record (db, cl, nodeid, new_values) :
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     if  (   status != db.daily_record_status.lookup ('open')
         and new_values.keys () != ['tr_duration']
+        and db.getuid () != '1'
         ) :
         raise Reject, _ ('Editing of time records only for status "open"')
     drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
