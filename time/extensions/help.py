@@ -777,7 +777,8 @@ _helptext = \
           '''
       ]
     , ""'show_all_users'             :
-      [ ""'''If selected the result will also include users that do not
+      [ ""'''If this option is selected, the result will also include
+             users that do not
              have a valid dynamic user record in the selected time
              range. If selected, users without a dynamic user record
              will be colored yellow for missing entries in the time
@@ -787,16 +788,16 @@ _helptext = \
     , ""'show_empty'                 :
       [ ""'''If selected the result will also show empty records.''' ]
     , ""'show_missing'               :
-      [ ""'''If selected the result will contain colored fields where
-             some values may be missing. Missing values can result from,
-             e.g., the user not having finished entering his/her time
-             records, or not the time records not yet being accepted by
-             the supervisor (if you're searching for time records in
-             category "accepted"). Note that you pay a huge performance
-             penalty for this information: For each day, each work
-             package and each user in the query we have to look for
-             possibly missing values! So it's a good idea to only
-             display small time-ranges with this option turned on.
+      [ ""'''If this option is selected, the result will contain colored
+             fields where some values may be missing. Missing values can
+             result from, e.g., the user not having finished entering
+             his/her time records, or the time records not yet being
+             accepted by the supervisor (if you're searching for time
+             records in category "accepted"). Note that you pay a huge
+             performance penalty for this information: For each day,
+             each work package and each user in the query we have to
+             look for possibly missing values! So it's a good idea to
+             only display small time-ranges with this option turned on.
           '''
       ]
     , ""'sid'                        :
