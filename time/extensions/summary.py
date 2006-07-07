@@ -720,14 +720,11 @@ class Summary_Report :
                         )
                     ]
                 #print "user", len (no_daily_record), time.time () - timestamp
-            if self.show_plan or show_missing :
-                for tcp in tc_pointers.iterkeys () :
-                    while \
-                        (  d
-                        >= time_containers [tcp][tc_pointers [tcp]].sort_end
-                        ) :
-                        tc_pointers [tcp] += 1
-                    tc = time_containers [tcp][tc_pointers [tcp]]
+            for tcp in tc_pointers.iterkeys () :
+                while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
+                    tc_pointers [tcp] += 1
+                tc = time_containers [tcp][tc_pointers [tcp]]
+                if self.show_plan or show_missing :
                     for w in valid_wp :
                         for wc in containers_by_wp [w.id] :
                             if self.show_plan :
