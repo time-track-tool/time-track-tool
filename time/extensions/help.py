@@ -955,7 +955,8 @@ _helptext = \
       ]
     , ""'tt_lines'                   :
       [""'''Number of new lines (per day) in time-tracker (minimum: 1,
-            maximum: 5).
+            maximum: 5). This is not yet working, the logic behind it is
+            not yet implemented. See also it_issue884.
          '''
       ]
     , ""'type'                       :
