@@ -115,6 +115,13 @@ def composed_of_updated (db, cl, nodeid, new_values) :
         update_container_status (db, cl, nodeid, new_values)
 # end def composed_of_updated
 
+def check_container_statuschange (db, cl, nodeid, new_values) :
+    composed_of = \
+        new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
+    if composed_of and 'status' in new_values :
+        raise Reject, _ ("You may not change container status")
+# end def check_container_statuschange
+
 def init (db) :
     if 'issue' not in db.classes :
         return
@@ -128,5 +135,6 @@ def init (db) :
     db.issue.audit ("create", update_eff_prio)
     db.issue.react ("set",    update_children)
     db.issue.react ("set",    status_updated)
-    db.issue.audit ("set",    composed_of_updated, priority = 200)
+    db.issue.audit ("set",    composed_of_updated,          priority = 200)
+    db.issue.react ("set",    check_container_statuschange, priority =  90)
 # end def init
