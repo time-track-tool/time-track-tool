@@ -136,5 +136,5 @@ def init (db) :
     db.issue.react ("set",    update_children)
     db.issue.react ("set",    status_updated)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
-    db.issue.react ("set",    check_container_statuschange, priority =  90)
+    #db.issue.react ("set",    check_container_statuschange, priority =  90)
 # end def init
