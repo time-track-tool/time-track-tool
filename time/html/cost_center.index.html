@@ -13,14 +13,12 @@
    props python:
     ( utils.ExtProperty
         ( utils, pdict ['organisation']
-        , lnkattr     = 'id'
-        , selname     = 'organisation++id'
+        , searchname  = 'organisation.id'
         , searchable  = False
         )
     , utils.ExtProperty
         ( utils, pdict ['cost_center_group']
-        , lnkattr     = 'id'
-        , selname     = 'cost_center_group++id'
+        , searchname  = 'cost_center_group.id'
         , searchable  = False
         )
     , utils.ExtProperty (utils, pdict ['id'])

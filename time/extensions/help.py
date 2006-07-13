@@ -114,54 +114,54 @@ view = \
       '''
 
 _helptext = \
-    { ""'VIEW'                       : [ view ]
-    , ""'active'                     :
+    { ""'VIEW'                        : [ view ]
+    , ""'active'                      :
       [""'''Set if this %(Classname)s is active.''']
-    , ""'area'                       :
+    , ""'area'                        :
       [""'''Where this issue belongs to.'''
       , miss_text
       ]
-    , ""'time_project_status.active' :
+    , ""'time_project_status++active' :
       [ ""'''Set if this %(Classname)s is active. This determines if new
              work packages may be created for a project with this activity
              status. If a status is marked active, new work packages may
              be created for a project with this status.
           '''
       ]
-    , ""'activity'                   :
+    , ""'activity'                    :
       [""'''Date of last change''']
-    , ""'actor'                      :
+    , ""'actor'                       :
       [""'''Person who has done the last change''']
-    , ""'alias'                      :
+    , ""'alias'                       :
       [""'''Email alias''']
-    , ""'alias_to_alias'             :
+    , ""'alias_to_alias'              :
       [""'''Other aliases this %(Classname)s maps to''']
-    , ""'alias_to_user'              :
+    , ""'alias_to_user'               :
       [""'''List of users this %(Classname)s maps to''']
-    , ""'alternate_addresses'        :
+    , ""'alternate_addresses'         :
       [""'''Alternate email addresses for this user, one per line''']
-    , ""'announcements'              :
+    , ""'announcements'               :
       [""'''Announcements for this %(Classname)s''']
-    , ""'add_announcement'           :
+    , ""'add_announcement'            :
       [""'''Mail out an announcement for another review step''']
-    , ""'author'                     :
+    , ""'author'                      :
       [""'''Author of this %(Classname)s''']
-    , ""'authors'                    :
+    , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
-    , ""'bookers'                    :
+    , ""'bookers'                     :
       [ ""'''Users who may book on this %(Classname)s. If nothing is
              selected here, all users may book on this %(Classname)s (e.g.,
              jour fixe).
           '''
       ]
-    , ""'booking_allowed'            :
+    , ""'booking_allowed'             :
       [ ""'''User is allowed to book time records during the validity span
              of the given %(Classname)s
           '''
       ]
-    , ""'card_type'                  :
+    , ""'card_type'                   :
       [""'''Type of this %(Classname)s''']
-    , ""'category'                   :
+    , ""'category'                    :
       [ ""'''Category of %(Classname)s. Where this %(Classname)s belongs
              to. Each category has a Category-Responsible who is
              responsible directly after creation if not specified
@@ -170,59 +170,59 @@ _helptext = \
       , miss_text
       , leave_empty
       ]
-    , ""'clearance_by'               :
+    , ""'clearance_by'                :
       [ ""'''Usually the supervisor of a person approves
              time records. This can be delegated using this attribute. It
              specifies the person who approves time records for
              all people whose supervisor this is.
           '''
       ]
-    , ""'closed'                    :
+    , ""'closed'                      :
       [""'''When this %(Classname)s was closed. Automatically set by
             Roundup.
          '''
       ]
-    , ""'company'                    :
+    , ""'company'                     :
       [""'''Company for %(Classname)s''']
-    , ""'composed_of'                :
+    , ""'composed_of'                 :
       [""'''Set automagically by roundup on %(Classname)ss being Part of
             another %(Classname)s.
          '''
       ]
-    , ""'composed_of++id'            : [help_id]
-    , ""'confirm'                    :
+    , ""'composed_of.id'              : [help_id]
+    , ""'confirm'                     :
       [ ""'''Confirm the password here: first password and this entry
              must match.
           '''
       ]
-    , ""'content'                    : [""'''Content of %(Classname)s''']
-    , ""'cost_center_group++id'      : [help_id]
-    , ""'cost_center_status'         :
+    , ""'content'                     : [""'''Content of %(Classname)s''']
+    , ""'cost_center_group.id'        : [help_id]
+    , ""'cost_center_status'          :
       [""'''Specifies the Phase the Cost Center is in''']
-    , ""'creation'                   :
+    , ""'creation'                    :
       [""'''Record creation date''']
-    , ""'creator'                    :
+    , ""'creator'                     :
       [""'''Person who created this record''']
-    , ""'cut_off_date'               :
+    , ""'cut_off_date'                :
       [ ""'''Date until when this %(Classname)s must be finished.'''
       , date_text
       ]
-    , ""'date'                       :
+    , ""'date'                        :
       [ ""'''Date of this %(Classname)s.<br>'''
       , date_text
       ]
-    , ""'daily_hours'                : [daily_hours]
-    , ""'daily_worktime'             :
+    , ""'daily_hours'                 : [daily_hours]
+    , ""'daily_worktime'              :
       [""'''Maximum time a person may book for a single day.''']
-    , ""'defect.superseder'          :
+    , ""'defect++superseder'          :
       [superseder]
-    , ""'deadline'                   :
+    , ""'deadline'                    :
       [deadline]
-    , ""'default_lease_time'         :
+    , ""'default_lease_time'          :
       [""'''Default DHCP lease time for %(Classname)s''']
-    , ""'department'                 :
+    , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
-    , ""'depends'                    :
+    , ""'depends'                     :
       [""'''A comma seperated list of %(Classname)s IDs this
             %(Classname)s depends on. This information is used for the
             planning process and should only contain the IDs of the
@@ -232,20 +232,20 @@ _helptext = \
             %(Classname)ss are hyperlinked.
          '''
       ]
-    , ""'deputy'                     :
+    , ""'deputy'                      :
       [""'''Substitute for the responsible Person of %(Classname)s''']
-    , ""'description'                :
+    , ""'description'                 :
       [""'''Verbose description of %(Classname)s''']
-    , ""'dhcp_range'                 :
+    , ""'dhcp_range'                  :
       [""'''Range of dynamic IP addresses for %(Classname)s -- used
             when generating DHCP configuration. Format: Two IP addresses in
             dot notation separated by a dot. Example:
             10.100.99.20&nbsp;10.100.99.250
          '''
       ]
-    , ""'dhcp_server'                :
+    , ""'dhcp_server'                 :
       [""'''DHCP Server for this %(Classname)s''']
-    , ""'dist'                       :
+    , ""'dist'                        :
       [ ""'''Distribute: In a first step you can enter Start and End time
              for each day or the hours you worked during the day. In a
              second step you can distribute these hours to the different
@@ -257,7 +257,7 @@ _helptext = \
              single time record into two if necessary.
           '''
       ]
-    , ""'dns_record_type'            :
+    , ""'dns_record_type'             :
       [ ""'''Type of DNS record generated. If the $(Classname)s points to
              another %(Classname)s a CNAME is generated, otherwise an
              A-record is assumed. If no DNS information should be
@@ -265,12 +265,12 @@ _helptext = \
              This field is auto-generated if left empty.
           '''
       ]
-    , ""'dns_servers'                :
+    , ""'dns_servers'                 :
       [ ""'''DNS Servers for this %(Classname)s, used when generating
              the DHCP configuration.
           '''
       ]
-    , ""'do_reverse_mapping'         :
+    , ""'do_reverse_mapping'          :
       [ ""'''Flag if a reverse DNS entry should be created for this
              %(Classname)s -- should usually be enabled. If a
              %(Classname)s has multiple A-Records (which is bad style to
@@ -278,17 +278,17 @@ _helptext = \
              multiple A-Records. The flag is ignored for CNAME records.
           '''
       ]
-    , ""'domain_part'                :
+    , ""'domain_part'                 :
       [ ""'''Part of a domain name. The domain name is built by
              concatenation the names of the Organisation and the Location.
           '''
       ]
-    , ""'domino_dn'                  :
+    , ""'domino_dn'                   :
       [ ""'''Distinguished name for Domino users -- needed for alias
              generation.
           '''
       ]
-    , ""'duration'                   :
+    , ""'duration'                    :
       [ ""'''Work duration in hours, e.g. 7.25 -- only quarter hours
              allowed, e.g., 7.10 is not allowed. The duration is created
              automatically by the system when you specify "Start" and
@@ -299,13 +299,13 @@ _helptext = \
              "End" time of 18:30.
           '''
       ]
-    , ""'earliest_start'             :
+    , ""'earliest_start'              :
       [""'''When this %(Classname)s can be started to work on. Used to
             specify external dependencies (e.g., availability of
             hardware). 
          '''
       ]
-    , ""'effort'                     :
+    , ""'effort'                      :
       [ ""'''The estimated effort this work package has. This should be
              a fair estimation done by the Responsible of the
              %(Classname)s. Be sure to set it for Change-Requests
@@ -320,9 +320,9 @@ _helptext = \
              PeopleDays estimated by priesch.
           '''
       ]
-    , ""'email'                      :
+    , ""'email'                       :
       [""'''Email address for this %(Classname)s''']
-    , ""'end'                        :
+    , ""'end'                         :
       [ ""'''Format xx:xx  (e.g. 17:00), is created automatically by the
              system when you specify "Start" and "Duration". Attention: If
              you specify both, "Start" and "End", with more than six hours
@@ -333,17 +333,17 @@ _helptext = \
           '''
       , green
       ]
-    , ""'external_phone'             :
+    , ""'external_phone'              :
       [ ""'''Long mobile or external phone number, not an extension
              number, e.g. number at a customer side.
           '''
       , pstn_number
       ]
-    , ""'add_file'                   :
+    , ""'add_file'                    :
       [""'''Add an new file for %(Classname)s''']
-    , ""'files'                      :
+    , ""'files'                       :
       [""'''Files for %(Classname)s''']
-    , ""'files_affected'             :
+    , ""'files_affected'              :
       [""'''The %(Property)s entry field is used to identify which
             file(s) has/have been changed during the modifications
             requested by the current issue, containing the unique
@@ -361,13 +361,13 @@ _helptext = \
              VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version.c
          '''
       ]
-    , ""'final_meeting_date'         :
+    , ""'final_meeting_date'          :
       [ ""'''Date of final meeting for this %(Classname)s.'''
       , date_text
       ]
-    , ""'firstname'                  :
+    , ""'firstname'                   :
       [""'''First name for this user, e.g., Ralf''']
-    , ""'fixed_in'                   :
+    , ""'fixed_in'                    :
       [""'''Provide the version number where you fixed it. Is needed
             when you change the status to testing.
             The %(Property)s field contains the build version of the
@@ -377,52 +377,52 @@ _helptext = \
               TTP-OS 4.5.23
          '''
       ]
-    , ""'gid'                        :
+    , ""'gid'                         :
       [""'''Numeric group ID''']
-    , ""'gid_range'                  :
+    , ""'gid_range'                   :
       [ ""'''Allowed range of group ids'''
       , range_description
       ]
-    , ""'group'                      :
+    , ""'group'                       :
       [""'''UNIX Group for this %(Classname)s''']
-    , ""'home_directory'             :
+    , ""'home_directory'              :
       [""'''UNIX home directory for %(Classname)s''']
-    , ""'hours_mon'                  : [daily_hours]
-    , ""'hours_tue'                  : [daily_hours]
-    , ""'hours_wed'                  : [daily_hours]
-    , ""'hours_thu'                  : [daily_hours]
-    , ""'hours_fri'                  : [daily_hours]
-    , ""'hours_sat'                  : [daily_hours]
-    , ""'hours_sun'                  : [daily_hours]
-    , ""'id'                         : [help_id]
-    , ""'initial'                    :
+    , ""'hours_mon'                   : [daily_hours]
+    , ""'hours_tue'                   : [daily_hours]
+    , ""'hours_wed'                   : [daily_hours]
+    , ""'hours_thu'                   : [daily_hours]
+    , ""'hours_fri'                   : [daily_hours]
+    , ""'hours_sat'                   : [daily_hours]
+    , ""'hours_sun'                   : [daily_hours]
+    , ""'id'                          : [help_id]
+    , ""'initial'                     :
       [""'''Initials of this %(Classname)s''']
-    , ""'inreplyto'                  :
+    , ""'inreplyto'                   :
       [""'''In Reply To field if this %(Classname)s was received by email''']
-    , ""'internal_phone'             :
+    , ""'internal_phone'              :
       [ ""'''Short mobile or external phone number, e.g., 6142.'''
       , extension
       ]
-    , ""'inventory_no'               :
+    , ""'inventory_no'                :
       [ ""'''Unique number or name for this %(Classname)s, preferrably the
              inventory number for asset tracking
           '''
       ]
-    , ""'ip'                         :
+    , ""'ip'                          :
       [""'''Internet protocol address of this %(Classname)s''']
-    , ""'ip_subnet'                  :
+    , ""'ip_subnet'                   :
       [""'''Internet protocol subnet''']
-    , ""'is_alias'                   :
+    , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
-    , ""'is_lotus_user'              :
+    , ""'is_lotus_user'               :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
-    , ""'is_public_holiday'          :
+    , ""'is_public_holiday'           :
       [""'''Flag for public holiday %(Classname)s -- set this if you
             want work packages of this %(Classname)s to be used in
             automatic public holiday computation.
          '''
       ]
-    , ""'issue.deadline'             :
+    , ""'issue++deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are
              either one single task of work or composed of one or more
@@ -432,78 +432,78 @@ _helptext = \
              by the planning tool via the Depends and Part Of fields.
           '''
       ]
-    , ""'it_issue.superseder'        :
+    , ""'it_issue++superseder'        :
       [superseder, multiple_allowed]
-    , ""'it_prio'                    :
+    , ""'it_prio'                     :
       [ priority
       , leave_empty
       ]
-    , ""'it_project'                 :
+    , ""'it_project'                  :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
-    , ""'keywords'                   :
+    , ""'keywords'                    :
       [keywords]
-    , ""'kind'                       :
+    , ""'kind'                        :
       [""'''What this issue actually is. Be sure to exactly distinguish
             between what is actually a Bug (it is not working as
             expected) and a Change-Request!
          '''
       ]
-    , ""'klass'                      :
+    , ""'klass'                       :
       [""'''Class for this query''']
-    , ""'last_gid'                   :
+    , ""'last_gid'                    :
       [""'''Last used gid in this %(Classname)s''']
-    , ""'last_machine_uid'           :
+    , ""'last_machine_uid'            :
       [""'''Last used machine uid in this %(Classname)s''']
-    , ""'last_uid'                   :
+    , ""'last_uid'                    :
       [""'''Last used uid in this %(Classname)s''']
-    , ""'lastname'                   :
+    , ""'lastname'                    :
       [""'''Last name for this user, e.g., Schlatterbeck''']
-    , ""'link_field'                 :
+    , ""'link_field'                  :
       [ ""'''Auxiliary field for use with other software, e.g., asset
              tracking
           '''
       ]
-    , ""'location'                   :
+    , ""'location'                    :
       [""'''Location of %(Classname)s, e.g., Vienna HQ.''']
-    , ""'login_shell'                :
+    , ""'login_shell'                 :
       [""'''UNIX login shell for %(Classname)s''']
-    , ""'lunch_duration'             :
+    , ""'lunch_duration'              :
       [""'''Preference for time tracking, duration of lunch break in hours''']
-    , ""'lunch_start'                :
+    , ""'lunch_start'                 :
       [""'''Preference for time tracking, start of lunch break''']
-    , ""'mac'                        :
+    , ""'mac'                         :
       [ ""'''MAC Address (medium access control layer) e.g. ethernet
              hardware address. Should be six hex-numbers separated by
              colons, e.g. "10:0:0:0:0:0".
           '''
       ]
-    , ""'machine'                    :
+    , ""'machine'                     :
       [ ""'''A machine connected to the network to which this
              %(Classname)s belongs
           '''
       ]
-    , ""'machine_group'              :
+    , ""'machine_group'               :
       [""'''Group for pseudo-accounts for machines (used for Samba)''']
-    , ""'machine_name'               :
+    , ""'machine_name'                :
       [""'''Link to another %(Classname)s -- converted to a CNAME.''']
-    , ""'machine_uid'                :
+    , ""'machine_uid'                 :
       [""'''Numeric user id for this samba machine.''']
-    , ""'machine_uid_range'          :
+    , ""'machine_uid_range'           :
       [ ""'''Allowed range of user ids for machines'''
       , range_description
       ]
-    , ""'manager'                    :
+    , ""'manager'                     :
       [""'''Responsible person of the %(Classname)s''']
-    , ""'max_hours'                  :
+    , ""'max_hours'                   :
       [ ""'''If given for a %(Classname)s restricts the number of hours
              you can book on this %(Classname)s for a single day.
           '''
       ]
-    , ""'max_lease_time'             :
+    , ""'max_lease_time'              :
       [""'''Maximum DHCP lease time for %(Classname)s''']
-    , ""'messageid'                  :
+    , ""'messageid'                   :
       [""'''Message-ID if this message was received via email''']
-    , ""'messages'                   :
+    , ""'messages'                    :
       [""'''List of messages for %(Classname)s. Note that during
             conversion from the old roundup tracker all existing
             messages numbered 1-73815 were renumbered with an offset of
@@ -513,29 +513,29 @@ _helptext = \
             to consider this offset.
          '''
       ]
-    , ""'msg'                        :
+    , ""'msg'                         :
       [""'''New message or notice for %(Classname)s''']
-    , ""'msg_keywords'               :
+    , ""'msg_keywords'                :
       [keywords]
-    , ""'name'                       :
+    , ""'name'                        :
       [""'''Unique %(Classname)s name''']
-    , ""'name_version'               :
+    , ""'name_version'                :
       [ ""'''Unique name of this %(Classname)s, including the version
              number
           '''
       ]
-    , ""'netbios_dd'                 :
+    , ""'netbios_dd'                  :
       [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
              config. Specifies list of servers in order of preference.
           '''
       ]
-    , ""'netbios_ns'                 :
+    , ""'netbios_ns'                  :
       [ ""'''Netbios name server (NBNS) option for DHCP config. Specifies
              list of servers in order of preference. Netbios name service
              is more commonly referred to as WINS.
           '''
       ]
-    , ""'netbios_nodetype'           :
+    , ""'netbios_nodetype'            :
       [ ""'''The Netbios node type option allows NetBIOS over TCP/IP
              clients which are configurable to be configured as described
              in RFC 1001/1002. The value is specified as a single octet
@@ -545,51 +545,51 @@ _helptext = \
              WINS, then broadcast. (taken from dhcp-options manual page)
           '''
       ]
-    , ""'netmask'                    :
+    , ""'netmask'                     :
       [""'''IP net mask for this %(Classname)s, a number (e.g., 16).''']
-    , ""'network_address'            :
+    , ""'network_address'             :
       [ ""'''Address in the network, including but not limited to IP
              address
           '''
       ]
-    , ""'network_interface'          :
+    , ""'network_interface'           :
       [ ""'''Hardware unit to connect to the network. Can be part of the
              motherboard or can be a separate unit
           '''
       ]
-    , ""'nickname'                   :
+    , ""'nickname'                    :
       [""'''Nickname (or short name) for this %(Classname)s, e.g., rsc''']
-    , ""'no_overtime'                :
-      [""'''This flag makes sure that not more than the employee's
+    , ""'no_overtime'                 :
+      [""'''This flag makes sure that not more than the employee\'s
             normal working time can be registered under this
             %(Classname)s
          '''
       ]
-    , ""'nosy'                       :
+    , ""'nosy'                        :
       [""'''People receiving announcements (messages) for %(Classname)s''']
-    , ""'op_project'                 :
+    , ""'op_project'                  :
       [ ""'''Flag if this %(Classname)s is a real project or just used for
              time tracking.
           '''
       ]
-    , ""'opt_reviewers'              :
+    , ""'opt_reviewers'               :
       [""'''Optional reviewers for this %(Classname)s''']
-    , ""'order'                      :
+    , ""'order'                       :
       [""'''Items are ordered by this property in drop-down boxes etc.''']
-    , ""'organisation'               :
+    , ""'organisation'                :
       [""'''Organisation in which the %(Classname)s is based, e.g., TTTech.''']
-    , ""'org_location'               :
+    , ""'org_location'                :
       [ ""'''Organisation and location of this %(Classname)s, cartesian
              product of organisation and location -- only the combinations
              that really exist are stored in the database of course.
           '''
       ]
-    , ""'organisation++id'           : [help_id]
-    , ""'owner'                      :
+    , ""'organisation.id'             : [help_id]
+    , ""'owner'                       :
       [""'''User/Owner of this %(Classname)s''']
-    , ""'operating_system'           :
+    , ""'operating_system'            :
       [""'''Operating System running on this %(Classname)s''']
-    , ""'part_of'                    :
+    , ""'part_of'                     :
       [""'''If you have a Top-Level work package which consists of other
             work packages, you should enter the parent work package
             here. This information is needed for the planning process in
@@ -599,28 +599,28 @@ _helptext = \
             Software, Put all parts together, and Test.
          '''
       ]
-    , ""'part_of++id'                : [help_id]
-    , ""'password'                   :
+    , ""'part_of.id'                  : [help_id]
+    , ""'password'                    :
       [""'''Password for this %(Classname)s''']
-    , ""'peer_reviewers'             :
+    , ""'peer_reviewers'              :
       [""'''Peer reviewers for this %(Classname)s''']
-    , ""'phone'                      :
+    , ""'phone'                       :
       [ ""'''Short phone number (suffix) only, e.g., 42.'''
       , extension
       ]
-    , ""'org_location.phone'         :
+    , ""'org_location++phone'         :
       [ ""'''Telephone-Network prefix of Telephone number for company
              without direct inbound dialling suffix (aka extension)
              number
           '''
       ]
-    , ""'planned_effort'             :
+    , ""'planned_effort'              :
       [ ""'''Effort for %(Classname)s in person-hours; as it is stated
              in the Project Evaluation Sheet. Warning: This used to be in
              person days, so you have to convert old values to hours!
           '''
       ]
-    , ""'priority'                   :
+    , ""'priority'                    :
       [ priority
       , ""'''Should be set between 0 and 100. For the planning process
              only issues above a specified priority level are taken into
@@ -628,127 +628,127 @@ _helptext = \
              automatically set to 100.
           '''
       ]
-    , ""'private_for'                :
+    , ""'private_for'                 :
       [""'''Flag if this is a private %(Classname)s''']
-    , ""'private_gid_range'          :
+    , ""'private_gid_range'           :
       [ ""'''Allowed range of group ids for users'''
       , range_description
       ]
-    , ""'private_mobile'             :
+    , ""'private_mobile'              :
       [ ""'''Private mobile phone number.'''
       , pstn_number
       , default_hidden
       ]
-    , ""'private_mobile_visible'     : [ phone_visible ]
-    , ""'private_phone'              :
+    , ""'private_mobile_visible'      : [ phone_visible ]
+    , ""'private_phone'               :
       [ ""'''Private phone number except mobile.'''
       , pstn_number
       , default_hidden
       ]
-    , ""'private_phone_visible'      : [ phone_visible ]
-    , ""'project'                    :
+    , ""'private_phone_visible'       : [ phone_visible ]
+    , ""'project'                     :
       [ ""'''%(Classname)s is part of a Time Category. With the Time
              Category name a
              %(Classname)s can be clearly  identified
           '''
       ]
-    , ""'qa_representative'          :
+    , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
-    , ""'queries'                    :
+    , ""'queries'                     :
       [""'''Queries for this %(Classname)s''']
-    , ""'quick_dialling'             :
+    , ""'quick_dialling'              :
       [ ""'''Quick dialling number, e.g., for the mobile phone of the
              user. Example: 6042
           '''
       , extension
       ]
-    , ""'recorder'                   :
+    , ""'recorder'                    :
       [""'''Person responsible for recording findings''']
-    , ""'realname'                   :
+    , ""'realname'                    :
       [ ''"""Real name for this %(Classname)s -- automatically generated
              by the system from first and last name. Needed by roundup
              internally. (More specifically by roundupdp.py\'s send_message
              -- which is used e.g. by the nosyreactor)
           """
       ]
-    , ""'recipients'                 :
+    , ""'recipients'                  :
       [""'''Only set if message was received via email.''']
-    , ""'release'                    :
+    , ""'release'                     :
       [ ""'''The %(Property)s this %(Classname)s belongs to -- if
              available (e.g. 4.3.72 for TTP-Plan).
           '''
       ]
-    , ""'remove'                     :
+    , ""'remove'                      :
       [ ""'''Remove attached item. Will not remove item from the database,
              it can usually still be downloaded via the History button.
           '''
       ]
-    , ""'responsible'                :
+    , ""'responsible'                 :
       [""'''Person who is responsible for the %(Classname)s''']
-    , ""'review.responsible'         :
+    , ""'review++responsible'        :
       [ ""'''Moderator for %(Classname)s -- Note: If you do not specify
              the moderator, you will get an indication that the field
              "Responsible" must be filled in -- the moderator is reponsible for
              %(Classname)s.
           '''
       ]
-    , ""'roles'                      :
+    , ""'roles'                       :
       [ ""'''Roles for this %(Classname)s -- to give the user more than
              one role, enter a comma,separated,list
           '''
       ]
-    , ""'room'                       :
+    , ""'room'                        :
       [""'''Room number''']
-    , ""'routers'                    :
+    , ""'routers'                     :
       [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
-    , ""'samba_home_drive'           :
+    , ""'samba_home_drive'            :
       [""'''Home drive for %(Classname)s in Windows''']
-    , ""'samba_home_path'            :
+    , ""'samba_home_path'             :
       [""'''Path to %(Classname)ss home directory''']
-    , ""'samba_kickoff_time'         :
+    , ""'samba_kickoff_time'          :
       [""'''Windows time that user will automatically logged out''']
-    , ""'samba_lm_password'          :
+    , ""'samba_lm_password'           :
       [ ""'''Samba LAN Manager password -- automatically computed when a
              new password is entered
           '''
       ]
-    , ""'samba_logon_script'         :
+    , ""'samba_logon_script'          :
       [""'''Logon script for %(Classname)s''']
-    , ""'samba_nt_password'          :
+    , ""'samba_nt_password'           :
       [ ""'''Samba NT password -- automatically computed when a
              new password is entered
           '''
       ]
-    , ""'samba_profile_path'         :
+    , ""'samba_profile_path'          :
       [""'''Path to profile for %(Classname)s''']
-    , ""'samba_pwd_can_change'       :
+    , ""'samba_pwd_can_change'        :
       [ ""'''Earliest time the user may change the password next time.
              set by the system to pwd_last_set if nothing else is enabled.
           '''
       ]
-    , ""'samba_pwd_last_set'         :
+    , ""'samba_pwd_last_set'          :
       [ ""'''Time-stamp the password was last changed, automatically
              computed by the system
           '''
       ]
-    , ""'samba_pwd_must_change'      :
+    , ""'samba_pwd_must_change'       :
       [ ""'''Latest time the user must change the password next time.
              set by the system to end of the epoch if nothing else is enabled.
           '''
       ]
-    , ""'secondary_groups'           :
+    , ""'secondary_groups'            :
       [""'''secondary UNIX Groups for this %(Classname)s''']
-    , ""'shadow_last_change'         :
+    , ""'shadow_last_change'          :
       [ ""'''Time-stamp the shadow password was last changed,
              automatically computed by the system
           '''
       ]
-    , ""'shadow_expire'              :
+    , ""'shadow_expire'               :
       [ ""'''Date at which the users\'s account expires and will no longer
              be accessible.
           '''
       ]
-    , ""'shadow_inactive'            :
+    , ""'shadow_inactive'             :
       [ ""'''Number of days of inactivity after a password has expired
              before the account is locked. Note that when the password has
              expired the user is required to change it before login is
@@ -756,27 +756,27 @@ _helptext = \
              can be disabled with this setting.
           '''
       ]
-    , ""'shadow_max'                 :
+    , ""'shadow_max'                  :
       [ ""'''Maximum days after last change when the shadow password must
              be changed again.
           '''
       ]
-    , ""'shadow_min'                 :
+    , ""'shadow_min'                  :
       [ ""'''Minimum days after last change when the shadow password may
              be changed again.
           '''
       ]
-    , ""'shadow_used'                :
+    , ""'shadow_used'                 :
       [ ""'''Flag if shadow information should be generated, will be
              translated to LDAP shadowFlag.
           '''
       ]
-    , ""'shadow_warning'             :
+    , ""'shadow_warning'              :
       [ ""'''Early warning in days before the user is required to change
              the password.
           '''
       ]
-    , ""'show_all_users'             :
+    , ""'show_all_users'              :
       [ ""'''If this option is selected, the result will also include
              users that do not
              have a valid dynamic user record in the selected time
@@ -785,31 +785,31 @@ _helptext = \
              range.
           '''
       ]
-    , ""'show_empty'                 :
+    , ""'show_empty'                  :
       [ ""'''If selected the result will also show empty records.''' ]
-    , ""'show_missing'               :
+    , ""'show_missing'                :
       [ ""'''If this option is selected, the result will contain colored
              fields where some values may be missing. Missing values can
              result from, e.g., the user not having finished entering
              his/her time records, or the time records not yet being
-             accepted by the supervisor (if you're searching for time
+             accepted by the supervisor (if you\'re searching for time
              records in category "accepted"). Note that you pay a huge
              performance penalty for this information: For each day,
              each work package and each user in the query we have to
-             look for possibly missing values! So it's a good idea to
+             look for possibly missing values! So it\'s a good idea to
              only display small time-ranges with this option turned on.
           '''
       ]
-    , ""'sid'                        :
+    , ""'sid'                         :
       [ ""'''Samba unique ID but without the last part used for user id or
              group id information
           '''
       ]
-    , ""'smb_domain'                 :
+    , ""'smb_domain'                  :
       [""'''Samba domain for this %(Classname)s''']
-    , ""'smb_name'                   :
+    , ""'smb_name'                    :
       [""'''Samba name for this %(Classname)s in the samba domain''']
-    , ""'stakeholder'                :
+    , ""'stakeholder'                 :
       [ ""'''Person by/for whom this %(Classname)s was raised. Usually
              defaults to the creator of the %(Classname)s, but can be
              overridden (e.g. when the IT-Department documents an issue
@@ -817,34 +817,34 @@ _helptext = \
           '''
       , leave_empty
       ]
-    , ""'start'                      :
+    , ""'start'                       :
       [ ""'''Format xx:xx (e.g. 09:00), defines your start of work. Has to
              be specified except for absences like e.g. holidays or sick
              leave.
           '''
       , green
       ]
-    , ""'status'                     :
+    , ""'status'                      :
       [""'''Status of this %(Classname)s. Automatically set on a new
             %(Classname)s if not set. There are constraints on status
             transitions.
          '''
       ]
-    , ""'subject'                    :
+    , ""'subject'                     :
       [""'''Short identification of this message''']
-    , ""'substitute'                 :
+    , ""'substitute'                  :
       [ ""'''Person who can substitute %(Classname)s for approving time
              records.
           '''
       ]
-    , ""'subst_active'               :
+    , ""'subst_active'                :
       [ ""'''This field is set to "yes" for enabling the field
              "Substitute" for delegating time record approval.
           '''
       ]
-    , ""'summary'                    :
+    , ""'summary'                     :
       [""'''Short summary of this message (usually first line)''']
-    , ""'summary_report.VIEW'        :
+    , ""'summary_report++VIEW'        :
       [ view
       , ""'''The selected items are shown in the summary report; if you
              select "summary" the report gives summaries over the chosen
@@ -852,9 +852,9 @@ _helptext = \
              time category please specify which one.
           '''
       ]
-    , ""'summary_report.cost_center' : [explicit]
-    , ""'summary_report.cost_center_group' : [explicit]
-    , ""'summary_report.date'        :
+    , ""'summary_report++cost_center' : [explicit]
+    , ""'summary_report++cost_center_group' : [explicit]
+    , ""'summary_report++date'        :
       [""'''please specify the date in this format:
             "YYYY-MM-DD;YYYY-MM-DD". The ";" means "to" ("bis" in
             german).  For today (heute) use ".". Example: March
@@ -864,12 +864,12 @@ _helptext = \
             "range".
          '''
       ]
-    , ""'summary_report.department'  :
+    , ""'summary_report++department'  :
       [""'''Selects the users according to their placement in a
             department
          '''
       ]
-    , ""'summary_report.status':
+    , ""'summary_report++status'      :
       [""'''If you choose "open, submitted and approved" yellow times
             will be those that have not yet been opened by the user.
             Empty but already opened time records will not be displayed
@@ -881,175 +881,175 @@ _helptext = \
             not approved times turn yellow.
          '''
       ]
-    , ""'summary_report.summary_type':
+    , ""'summary_report++summary_type':
       [""'''You can form sums over weeks, months and the whole time
             range you have selected.
          '''
       ]
-    , ""'summary_report.supervisor'  :
+    , ""'summary_report++supervisor'  :
       [""'''Selects the users of the chosen supervisor(s)''']
-    , ""'summary_report.time_project': [explicit]
-    , ""'summary_report.time_wp'     :
+    , ""'summary_report++time_project': [explicit]
+    , ""'summary_report++time_wp'     :
       [""'''Select individual work packages here.''']
-    , ""'summary_report.time_wp_group': [explicit]
-    , ""'summary_report.user'        :
+    , ""'summary_report++time_wp_group': [explicit]
+    , ""'summary_report++user'        :
       [""'''You will only see users for whom you have permission or the
             project times for projects you have permission for (via
             responsible, deputy or nosy)
          '''
       ]
-    , ""'superior'                   :
+    , ""'superior'                    :
       [""'''Supervisor for %(Classname)s''']
-    , ""'supp_weekly_hours'          :
+    , ""'supp_weekly_hours'           :
       [ ""'''Weekly hours including the agreed supplementary hours (e.g.
              45h), Format: xx.xx. Please round to whole quarters of an hour
              (e.g. 0.5 means a half-hour).
           '''
       ]
-    , ""'sync_with_ldap'             :
+    , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
              when the user changes PW via PAM, the pw in roundup will be
              changed, too (if the daemon is running)
           '''
       ]
-    , ""'team_members'               :
+    , ""'team_members'                :
       [ ""'''Persons who are assigned to the project and are allowed
              to book their effort on this project
           '''
       ]
-    , ""'time_activity'              :
+    , ""'time_activity'               :
       [""'''Specifies the kind of work you did (e.g. meeting, ...)''']
-    , ""'time_start'                 :
+    , ""'time_start'                  :
       [""'''Date when %(Classname)s officially starts''']
-    , ""'time_end'                   :
+    , ""'time_end'                    :
       [""'''Date when %(Classname)s is officially closed''']
-    , ""'time_project.status'        :
+    , ""'time_project++status'        :
       [ ""'''Status of this %(Classname)s. Note that this status is only
              used for determining if new work packages may be created for
              this %(Classname)s -- it is not used during time recording
              for determining if the user may book on a work package.
           '''
       ]
-    , ""'timezone'                   :
+    , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
-    , ""'title'                      :
+    , ""'title'                       :
       [""'''Title of this %(Classname)s -- an intuitive one-line
             description of %(Classname)s
          '''
       ]
-    , ""'travel'                     : [travel]
-    , ""'time_wp.travel'             : 
+    , ""'travel'                      : [travel]
+    , ""'time_wp++travel'             : 
       [ travel
       , ""''' In addition in reports the times booked will be halved (if
              exceeding the expected work hours and the person is not
              marked "travel_full" in the dynamic user data)
           '''
       ]  
-    , ""'transitions'                :
+    , ""'transitions'                 :
       [""'''Allowed transitions to other states''']
-    , ""'tr_duration'                :
+    , ""'tr_duration'                 :
       [ ""'''Work duration in minutes including special travel computation:
              travel times will be halved if exceeding the maximum work
              hours.
           '''
       ]
-    , ""'tt_lines'                   :
+    , ""'tt_lines'                    :
       [""'''Number of new lines (per day) in time-tracker (minimum: 1,
             maximum: 5). This is not yet working, the logic behind it is
             not yet implemented. See also it_issue884.
          '''
       ]
-    , ""'type'                       :
+    , ""'type'                        :
       [""'''Mime type of this file''']
-    , ""'uid'                        :
+    , ""'uid'                         :
       [""'''Numeric user ID''']
-    , ""'uid_range'                  :
+    , ""'uid_range'                   :
       [ ""'''Allowed range of user ids'''
       , range_description
       ]
-    , ""'url'                        :
+    , ""'url'                         :
       [""'''Web-Link for this %(Classname)s''']
-    , ""'use_dhcp'                   :
+    , ""'use_dhcp'                    :
       [ ""'''Flag if this %(Classname)s should be served by the DHCP
              server.
           '''
       ]
-    , ""'use_in_ln'                  :
+    , ""'use_in_ln'                   :
       [ ""'''This %(Classname)s should be used with Lotus Notes (e.g.,
              no delivery to a program, etc. that is only possible with
              a real MTA)
           '''
       ]
-    , ""'user_dynamic.durations_allowed' : [durations]
-    , ""'user_password'              :
+    , ""'user_dynamic++durations_allowed' : [durations]
+    , ""'user_password'               :
       [ ""'''UNIX user password, automatically set by the system when a
              new password is entered.
           '''
       ]
-    , ""'user.address'               :
+    , ""'user++address'               :
       [""'''Primary email address for this user''']
-    , ""'user.title'                 :
+    , ""'user++title'                 :
       [""'''Academic title of %(Classname)s, e.g., Dipl. Ing.''']
-    , ""'username'                   :
+    , ""'username'                    :
       [""'''Login-name for this %(Classname)s, e.g., schlatterbeck''']
-    , ""'vacation_remaining'         :
+    , ""'vacation_remaining'          :
       [ ""'''Remaining vacation for this user at the start of a dynamic
              user data record.
           '''
       ]
-    , ""'vacation_yearly'            :
+    , ""'vacation_yearly'             :
       [ ""'''Yearly vacation for this user: This is the amount of vacation
              that is added for each year.
           '''
       ]
-    , ""'valid_from'                 :
+    , ""'valid_from'                  :
       [ ""'''Creation date, or date since when this %(Classname)s can be
              booked at 
           '''
       , date_text
       ]
-    , ""'valid_to'                   :
+    , ""'valid_to'                    :
       [ ""'''Expiration date for %(Classname)s. Note that the date given
              here is *not* itself part of the validity time.
           '''
       , date_text
       ]
-    , ""'week'                       :
+    , ""'week'                        :
       [ ""'''Week for time tracking, this is an alternative for specifying
              a date range: just enter the week number here (for the
              current year) or YYYY/WW where YYYY is the year and WW the
              week number for that year.
           '''
       ]
-    , ""'weekend_allowed'            :
+    , ""'weekend_allowed'             :
       [""'''Flag if booking on weekends is allowed for this %(Classname)s.''']
-    , ""'weekly_hours'               :
+    , ""'weekly_hours'                :
       [""'''Expected weekly work-time for %(Classname)s.''']
-    , ""'wp'                         :
+    , ""'wp'                          :
       [ ""'''Only work packages where you have permission to register show
              here. If you miss one, please contact the responsible project
              manager
           '''
       ]
-    , ""'wp_no'                      :
+    , ""'wp_no'                       :
       [ ""'''Work package number in the project. Number must be unique for
              the project and cannot be changed after assignment.
           '''
       ]
-    , ""'wp.durations_allowed'       :
+    , ""'wp++durations_allowed'       :
       [ durations
       , ""'''This is mainly used for special %(Classname)ss, like,
              e.g., vacation.
           '''
       ]
-    , ""'wps'                        :
+    , ""'wps'                         :
       [ ""'''For a better handling of the work load of a project it is
              split in to work packages. This field defines a list of work
              packages for this %(Classname)s
           '''
       ]
-    , ""'work_location'              : [work_loc]
-    , ""'time_project.work_location' :
+    , ""'work_location'               : [work_loc]
+    , ""'time_project++work_location' :
       [ work_loc
       , ""''' If a value is given here, the work location will be
              corrected for all time records booked on work packages of
@@ -1065,7 +1065,7 @@ def combined_name (cls, attr) :
         help-texts by specifying a help-text entry with the key
         classname.attribute.
     """
-    pname = '%s.%s' % (cls, attr)
+    pname = '%s++%s' % (cls, attr)
     if pname in _helptext :
         return pname
     return attr

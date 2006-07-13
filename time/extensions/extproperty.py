@@ -40,6 +40,7 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
+from roundup.hyperdb                import Link, Multilink
 
 _ = None
 
@@ -107,31 +108,50 @@ def prop_as_array (prop) :
 class ExtProperty :
     """
         An extended HTML property.
-        name:  name of the attribute of the item to be displayed in the
-               search.
-        label: label of the field in html.
-        lnkcls, lnkattr: applies to Link and Multilink properties
-        only and give the class to which the link points and the
-        attribute to display for this class.
 
         ExtProperty items can come from the index page for
         a class (an entry in "props" for the search_display macro).
+        They are then filled with the HTMLItems resulting from the
+        search results.
+
+        utils: utils from templating, used to navigate to other functions
+        prop: The HTMLProperty
+        item: Optional parent HTMLItem, can also be added later.
+            This is the item of which the given prop is a property.
+        get_cssclass: optional function for getting css class for
+            formatting, takes the HTMLItem as single parameter
+        pretty: optional pretty-printing function (defaults to _)
+        multiselect: Show property as a multiselect in search-box
+            used by html rendering in template
+        is_labelprop: Render this property as a link to item -- usually
+            done for labelprop of item and for id
+        editable: Render property as an editable property (e.g. field)
+        add_hidden: Add a hidden attribute in addition to the link
+        searchable: Usually a safe bet if this can be searched for, can
+            be overridden when you know what you're doing.
+        
+        Internal attributes:
+        name: name of the property
+        key: key attribute
+        label: label of the field in html.
+        i18nlabel: i18n translated label
+
     """
     def __init__ \
         ( self
         , utils
         , prop
         , item          = None
-        , selname       = None
+        , searchname    = None
         , label         = None
-        , lnkcls        = None
-        , lnkattr       = None
+        , displayprop   = None
         , multiselect   = None
-        , is_label      = None
+        , is_labelprop  = None
         , editable      = None
+        , add_hidden    = False
         , searchable    = None # usually computed, override with False
-        , pretty        = _    # optional pretty-printing function
-        , linkclass     = None # optional function for getting css class
+        , pretty        = _
+        , get_cssclass  = None
         , do_classhelp  = None
         , fieldwidth    = None
         , format        = None
@@ -145,18 +165,14 @@ class ExtProperty :
         self.classname     = prop._classname
         self.klass         = prop._db.getclass (self.classname)
         self.name          = prop._name
-        self.i18nlabel     = selname
-        self.selname       = selname
-        if selname :
-            self.selname   = selname.replace ('++', '.')
+        self.add_hidden    = add_hidden
+        self.searchname    = searchname
         self.label         = label
-        self.lnkcls        = lnkcls
-        self.lnkname       = None
-        self.lnkattr       = lnkattr
+        self.displayprop   = displayprop
         self.multiselect   = multiselect
-        self.is_label      = is_label
+        self.is_labelprop  = is_labelprop
         self.pretty        = pretty or _
-        self.get_cssclass  = linkclass
+        self.get_cssclass  = get_cssclass
         self.editable      = editable
         self.key           = None
         self.searchable    = searchable
@@ -166,95 +182,106 @@ class ExtProperty :
         self.help_props    = help_props or []
         self.help_filter   = help_filter
         self.bool_tristate = bool_tristate
+        if isinstance (self.prop, MissingValue) :
+            self.name = ''
+        if not self.searchname or isinstance (searchname, MissingValue) :
+            self.searchname = self.name
+        if not self.label :
+            self.label = self.searchname
+        self.i18nlabel = self.pretty (self.label)
         if not self.get_cssclass :
-            if hasattr (self.utils, 'linkclass') :
-                self.get_cssclass = self.utils.linkclass
+            if hasattr (self.utils, 'get_cssclass') :
+                self.get_cssclass = self.utils.get_cssclass
             else :
                 self.get_cssclass = lambda a : ""
-        if hasattr (prop._prop, 'classname') :
-            self.lnkname = prop._prop.classname
-            self.lnkcls  = prop._db.getclass (self.lnkname)
-            self.key     = self.lnkcls.getkey ()
-        if not self.selname :
-            self.selname = self.name
-            if self.lnkattr :
-                l = self.lnkattr.split ('.')
-                if len (l) > 1 :
-                    self.selname = l [-2]
-            self.i18nlabel = self.selname
-        if not self.label :
-            if self.i18nlabel :
-                self.label = self.pretty (self.i18nlabel)
+        self.lnkcls = None
+
+        if self.is_link_or_multilink :
+            if self.searchname :
+                proptree = self.klass._proptree ({self.searchname : 1})
+                props = [p for p in proptree]
+                p = props [-1]
+                if not p.classname :
+                    if not self.displayprop :
+                        self.displayprop = p.name
+                    p = p.parent
+                self.lnkcls = p.cls
             else :
-                self.label = ''
-        if self.lnkname and not self.lnkattr :
-            self.lnkattr = self.lnkcls.labelprop ()
+                self.lnkcls = prop._db.getclass (prop._prop.classname)
+            self.key     = self.lnkcls.getkey ()
         if self.do_classhelp is None :
-            self.do_classhelp = self.lnkname
+            self.do_classhelp = \
+                (   self.lnkcls
+                and (  not self.displayprop
+                    or self.displayprop in ('id', self.lnkcls.labelprop ())
+                    )
+                )
+        if self.lnkcls and not self.displayprop :
+            self.displayprop = self.lnkcls.labelprop ()
         if self.searchable is None :
             self.searchable = not self.need_lookup ()
-        if (   self.is_label is None
+        if (   self.is_labelprop is None
            and (  self.name == 'id'
                or self.name == self.klass.labelprop ()
                )
            ) :
-            self.is_label = 1
+            self.is_labelprop = 1
         if self.item :
-            self.hprop = item [self.name]
-        else :
-            self.hprop = self.prop
+            self.prop = item [self.name]
     # end def __init__
+
+    def _is_link_or_multilink (self) :
+        return hasattr (self.prop._prop, 'classname')
+    is_link_or_multilink = property (_is_link_or_multilink)
 
     def _set_item (self, item = None) :
         if item :
-            self.item  = item
-            self.hprop = item [self.name]
+            self.item = item
+            self.prop = item [self.name]
     # end def _set_item
 
     def formatted (self, item = None) :
         self._set_item (item)
-        if self.hprop is None or isinstance (self.hprop, MissingValue) :
+        if self.prop is None or isinstance (self.prop, MissingValue) :
             return ""
-        elif isinstance (self.hprop, DateHTMLProperty) :
+        elif isinstance (self.prop, DateHTMLProperty) :
             if self.format :
                 format = self.format
             else :
                 format = '%Y-%m-%d'
-            return self.hprop.pretty (format)
+            return self.prop.pretty (format)
         elif self.format :
             return self.format % self.item [self.name]
-        if self.lnkattr :
-            return str (self.item [self.lnkattr])
-        return str (self.hprop)
+        if self.displayprop :
+            return str (self.item [self.displayprop])
+        return str (self.prop)
     # end def formatted
 
     def need_lookup (self) :
         """ Needs a list-lookup, because the user can't specify the key """
-        return self.lnkattr and not self.key
+        return self.displayprop and not self.key
     # end def need_lookup
 
-    def as_listentry (self, item = None, add_hidden = False, as_link = True) :
+    def as_listentry (self, item = None, as_link = True) :
         self._set_item (item)
         if self.editable and self.item [self.name].is_edit_ok () :
             return self.editfield ()
-        if self.is_label :
-            return self.formatlink (add_hidden = add_hidden, as_link = as_link)
-        elif self.lnkname :
-            if isinstance (self.hprop, MultilinkHTMLProperty) :
-                hprops = [i for i in self.hprop]
+        if self.is_labelprop :
+            return self.formatlink (as_link = as_link)
+        elif self.lnkcls :
+            if isinstance (self.prop, MultilinkHTMLProperty) :
+                props = [i for i in self.prop]
                 return ", ".join \
-                    ([self.deref (p).formatlink
-                      (add_hidden = add_hidden, as_link = as_link)
-                      for p in hprops
+                    ([self.deref (p).formatlink (as_link = as_link)
+                      for p in props
                     ])
             else :
-                return self.deref ().formatlink \
-                    (add_hidden = add_hidden, as_link = as_link)
+                return self.deref ().formatlink (as_link = as_link)
         else :
             return self.formatted ()
     # end def as_listentry
 
-    def deref (self, hprop = None) :
+    def deref (self, prop = None) :
         """
             from an item get the property prop. This does some recursive
             magic: If prop consists of a path across several other Link
@@ -262,26 +289,29 @@ class ExtProperty :
             Returns the new ExtProperty.
             There is a special case for 'id': The 'id' will not return a
             HTMLProperty but a python string. Therefore we return the
-            labelprop and set the lnkattr to 'id'.
+            labelprop and set the displayprop to 'id'.
         """
-        p = hprop or self.hprop
+        p = prop or self.prop
 
-        if self.lnkattr == 'id' :
+        if self.displayprop == 'id' :
             return self.__class__ \
                 ( self.utils, p [self.lnkcls.labelprop ()]
-                , item = p
-                , pretty = self.pretty
-                , linkclass = self.get_cssclass
-                , lnkattr = 'id'
+                , item         = p
+                , pretty       = self.pretty
+                , get_cssclass = self.get_cssclass
+                , displayprop  = 'id'
                 )
-        for i in self.lnkattr.split ('.') :
+        for i in self.searchname.split ('.')[1:] :
             last_p = p
             p      = p [i]
+        if self.displayprop and hasattr (p._prop, 'classname') :
+            last_p = p
+            p      = p [self.displayprop]
         return self.__class__ \
             ( self.utils, p
-            , item = last_p
-            , pretty = self.pretty
-            , linkclass = self.get_cssclass
+            , item         = last_p
+            , pretty       = self.pretty
+            , get_cssclass = self.get_cssclass
             )
     # end def deref
 
@@ -292,12 +322,14 @@ class ExtProperty :
             Non-Link property. It also doesn't make much sense to sort
             by Multilink.
         """
-        if isinstance (self.hprop, MultilinkHTMLProperty) :
+        if isinstance (self.prop, MultilinkHTMLProperty) :
             return False
-        return self.key == self.lnkattr
+        if '.' in self.searchname :
+            return False
+        return self.key == self.displayprop
     # def sortable
 
-    def formatlink (self, item = None, add_hidden = False, as_link = True) :
+    def formatlink (self, item = None, as_link = True) :
         """
             Render my property of an item as a link to this item (unless
             as_link is False). We get the item. The name of the item and
@@ -307,9 +339,9 @@ class ExtProperty :
         if not i.is_view_ok () or not as_link :
             return self.formatted ()
         hidden = ""
-        if add_hidden :
+        if self.add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
-                % (self.classname, str (self.hprop))
+                % (self.classname, str (self.prop))
         if not self.classname :
             return ""
         return """<a class="%s" href="%s%s">%s</a>%s""" \
@@ -322,9 +354,9 @@ class ExtProperty :
     # end def formatlink
 
     def menu (self) :
-        """ Render as menu if condition, otherwise formatlink to hprop """
+        """ Render as menu if condition, otherwise formatlink to prop """
         if self.editable :
-            return self.hprop.menu ()
+            return self.prop.menu ()
         return self.deref ().formatlink ()
     # end def menu
 
@@ -334,17 +366,16 @@ class ExtProperty :
     # end def editfield
 
     def menu_or_field (self, db) :
-        prop = self.hprop
-        if hasattr (prop._prop, 'classname') :
+        prop = self.prop
+        if self.is_link_or_multilink :
             if prop._prop.classname == 'user' :
-                    print self.selname, self.name, self.classname
                     return ' '.join \
                         (( prop.field (size = 60)
                         ,  db.user.classhelp \
                             ( 'username,lastname,firstname,nickname'
-                            , property=self.selname
+                            , property=self.searchname
                             , inputtype='%s' % ('radio', 'checkbox')
-                              [isinstance (self.hprop, MultilinkHTMLProperty)]
+                              [isinstance (self.prop, MultilinkHTMLProperty)]
                             , width='600'
                             , pagesize=500
                             , filter='status=%s' % ','.join
@@ -363,13 +394,7 @@ class ExtProperty :
 
     def colonlabel (self) :
         return self.utils.fieldname \
-            (self.classname, self.selname, self.name, ':', 'header')
-        return ("""<a class="header" title="Help for %s" """
-                """href="javascript:help_window"""
-                """('%s?:template=property_help#%s', '500', '400')">"""
-                """%s:</a>"""
-               % (self.label, self.classname, self.name, self.label)
-               )
+            (self.classname, self.label, self.label, ':', 'header')
     # end def colonlabel
 
     def colonfield (self, item = None) :
@@ -377,22 +402,23 @@ class ExtProperty :
     # end def colonfield
 
     def classhelp_properties (self, *propnames) :
+        """create list of properties for classhelp. Order matters."""
         assert (self.lnkcls)
-        if self.lnkattr == self.lnkcls.getkey () :
-            p = [self.lnkattr]
+        if self.displayprop == self.key or self.displayprop == 'id' :
+            p = [self.displayprop]
         else :
-            p = ['id', self.lnkattr]
+            p = ['id', self.displayprop]
         props = dict ([(x, 1) for x in p])
         for pn in self.help_props :
-            if (   pn in self.lnkcls.properties.keys ()
-               and pn != self.lnkattr
+            if (   pn in self.lnkcls.properties
+               and pn != self.displayprop
                and pn not in props
                ) :
                 p.append (pn)
                 props [pn] = 1
         for pn in propnames :
-            if (   pn in self.lnkcls.properties.keys ()
-               and pn != self.lnkattr
+            if (   pn in self.lnkcls.properties
+               and pn != self.displayprop
                and pn not in props
                ) :
                 p.append (pn)
@@ -401,17 +427,14 @@ class ExtProperty :
     # end def classhelp_properties
 
     def pretty_ids (self, idstring) :
-        if not idstring or idstring == '-1' or not self.lnkcls :
-            return idstring
-        key = self.lnkcls.getkey ()
-        if not key :
+        if not idstring or idstring == '-1' or not self.key :
             return idstring
         ids = idstring.split (',')
         try :
             ids = [self.lnkcls.lookup (i) for i in ids]
         except KeyError :
             pass
-        return ",".join ([self.lnkcls.get (i, key) for i in ids])
+        return ",".join ([self.lnkcls.get (i, self.key) for i in ids])
     # end def pretty_ids
 
     def _propstring (self) :
@@ -419,16 +442,16 @@ class ExtProperty :
     # end def _propstring
 
     def search_input (self, request) :
-        value = request.form.getvalue (self.selname) or ''
-        if isinstance (self.hprop, BooleanHTMLProperty) :
+        value = request.form.getvalue (self.searchname) or ''
+        if isinstance (self.prop, BooleanHTMLProperty) :
             yvalue = value == 'yes'
             nvalue = value == 'no'
             s = [ """<input type="radio" name="%s" value="yes"%s>%s"""
                   """<input type="radio" name="%s" value="no"%s>%s"""
-                % ( self.selname
+                % ( self.searchname
                   , ['', ' checked="checked"'] [yvalue]
                   , self.pretty ('Yes')
-                  , self.selname
+                  , self.searchname
                   , ['', ' checked="checked"'] [nvalue]
                   , self.pretty ('No')
                   )
@@ -437,7 +460,7 @@ class ExtProperty :
             if self.bool_tristate :
                 s.append \
                     ( """<input type="radio" name="%s" value=""%s>%s"""
-                    % ( self.selname
+                    % ( self.searchname
                       , ['', ' checked="checked"'] [not (yvalue or nvalue)]
                       , self.pretty ("Don't care")
                       )
@@ -445,7 +468,7 @@ class ExtProperty :
             return ''.join (s)
         return \
             ( """<input type="text" size="40" value="%s" name="%s">"""
-            % (self.pretty_ids (value), self.selname)
+            % (self.pretty_ids (value), self.searchname)
             )
     # end def search_input
 
@@ -470,7 +493,7 @@ class ExtProperty :
             , height
             , form     = form
             , value    = self.item [self.name]
-            , title    = self.label
+            , title    = self.i18nlabel
             , editable = self.editable
             )
     # end def comment_edit

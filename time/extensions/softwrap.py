@@ -37,9 +37,9 @@ from roundup.cgi.TranslationService import get_translation
 
 _ = str
 
-CUTOFF     = re.compile ("(.*?)(\s+\S+)$")
+CUTOFF     = re.compile (r"(.*?)(\s+\S+)$")
 NL         = re.compile ("\r?\n")
-LEADWSWORD = re.compile ('(\s*\S+)')
+LEADWSWORD = re.compile (r'(\s*\S+)')
 
 def _splitline (line, width) :
     line = line.rstrip ()

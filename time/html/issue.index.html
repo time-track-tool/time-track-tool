@@ -25,19 +25,17 @@
     , utils.ExtProperty (utils, pdict ['effective_prio'])
     , utils.ExtProperty (utils, pdict ['depends'])
     , utils.ExtProperty (utils, pdict ['release'])
-    , utils.ExtProperty (utils, pdict ['composed_of'], searchable = 1)
     , utils.ExtProperty
         ( utils, pdict ['composed_of']
-        , lnkattr     = 'id'
-        , selname     = 'composed_of++id'
-        , searchable  = False
+        , displayprop  = 'id'
+        , searchable   = True
+        , do_classhelp = False
         )
-    , utils.ExtProperty (utils, pdict ['part_of'],     searchable = 1)
     , utils.ExtProperty
         ( utils, pdict ['part_of']
-        , lnkattr     = 'id'
-        , selname     = 'part_of++id'
-        , searchable  = False
+        , displayprop  = 'id'
+        , searchable   = True
+        , do_classhelp = False
         )
     , utils.ExtProperty (utils, pdict ['fixed_in'])
     , utils.ExtProperty (utils, pdict ['superseder'])

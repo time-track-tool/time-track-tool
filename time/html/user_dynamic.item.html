@@ -54,8 +54,10 @@
       </td>
       <td tal:condition="context/id"
         tal:content="structure python:utils.ExtProperty
-         ( utils, context.user.username, item = context.user).formatlink
-           (add_hidden = True)"/>
+         ( utils, context.user.username
+         , add_hidden = True
+         , item       = context.user
+         ).formatlink ()"/>
       <th/>
       <td tal:condition="python:context.id and not context.valid_to">
        <a i18n:translate="" tal:attributes="href python:

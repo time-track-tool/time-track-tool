@@ -10,7 +10,7 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python: dict
+   myprops python: dict
     ( date              = utils.ExtProperty 
       (utils, pdict ['date'])
     , user              = utils.ExtProperty 
@@ -58,15 +58,14 @@
         [ 'user', 'time_wp', 'time_project', 'time_wp_group', 'cost_center'
         , 'cost_center_group', 'summary', 'planned_effort'
         ]
-      ; dummy python:fpkeys.sort ()
-      ; filtered_props python: [props [p] for p in fpkeys]
+      ; props python: [myprops [p] for p in sorted (fpkeys)]
       ; propkeys       python:
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
         , 'time_project', 'time_wp_group', 'cost_center', 'cost_center_group'
         , 'summary_type', 'status', 'show_all_users', 'show_empty'
         , 'show_missing'
         )
-      ; sprops         python: [props [p] for p in propkeys]
+      ; sprops         python: [myprops [p] for p in propkeys]
       ; multi_props    python: [p for p in sprops if p.multiselect]
       ; sort_props     python: []
       ; nomulti_props  python: [p for p in sprops

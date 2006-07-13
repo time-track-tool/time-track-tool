@@ -94,9 +94,10 @@
                 python: utils.fieldname ('daily_record', 'date', endswith = ':')"/>
            <th>
             <input type="text" size="22"
-             tal:define="value python:request.form.getvalue(date.selname) or nothing"
+             tal:define="value python:
+                 request.form.getvalue(date.searchname) or nothing"
              tal:attributes="value python:date.pretty_ids (value)
-                            ;name  python:date.selname
+                            ;name  python:date.searchname
                             "
              onChange="document.forms.edit_daily_record ['@action'].value =
                   'daily_record_edit_action';
@@ -214,7 +215,10 @@
              <span tal:condition="not:editable" tal:content="structure python:
               '&nbsp;'.join
                ([utils.ExtProperty
-                 (utils, i [0], item = i [1], lnkattr = i [2]).as_listentry ()
+                 ( utils, i [0]
+                 , item        = i [1]
+                 , displayprop = i [2]
+                 ).as_listentry ()
                  for i in ((r.wp.project,r.wp,None),(r.wp,r,'wp_no'),(r.wp,r,None))
                ])
               "/>

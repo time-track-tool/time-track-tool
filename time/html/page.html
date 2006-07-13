@@ -70,6 +70,7 @@
    , 'time_wp'         : ':columns=name,wp_no,responsible,project,time_start'
                          ',time_end,cost_center&:sort=name&:filter=bookers&'
                          ':pagesize=20&:startwith=0&bookers=%s' % uid
+   , 'time_record'     : ':columns=duration&:filter=wp&wp=1'
    , 'user'            : ':columns=%s&:sort=%s&'
                          ':filter=status&:pagesize=200&:startwith=0&status=1'
                           % ( ','.join
@@ -186,6 +187,7 @@
      , ('it_issue',          'View')
      , ('it_project',        'View')
      , ('issue',             'View')
+     , ('time_record',       'View')
      )
    )
  ; menu_type     python:
@@ -746,8 +748,8 @@
    <tr>
 <!-- list all properties we want to see -->
     <tal:block tal:repeat="prop props">
-     <th tal:condition="python:request.show[prop.selname]"
-         tal:content="python:prop.label"></th>
+     <th tal:condition="python:request.show[prop.searchname]"
+         tal:content="python:prop.i18nlabel"></th>
     </tal:block>
    </tr>
    <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
@@ -763,7 +765,7 @@
      <!-- all the properties: label property and id will be made a link -->
      <!-- filter out only the properties the user wants to see -->
      <tal:block tal:repeat="prop props">
-      <td tal:condition="python:request.show [prop.selname]"
+      <td tal:condition="python:request.show [prop.searchname]"
           tal:content="structure python:prop.as_listentry (i)">
       </td>
      </tal:block>
@@ -775,11 +777,9 @@
 
 <tal:block metal:define-macro="ttt_search_form">
  <tal:block tal:define=
-     " filtered_props python: [p for p in props
-                               if not p.lnkattr or not '.' in p.lnkname]
-     ; multi_props    python: [p for p in filtered_props if p.multiselect]
+     " multi_props    python: [p for p in props if p.multiselect]
      ; sort_props     python: [p for p in props if p.sortable ()]
-     ; nomulti_props  python: [p for p in filtered_props
+     ; nomulti_props  python: [p for p in props
                                if not p.multiselect and p.searchable]
      ; csv_link       python:request.indexargs_url
             (classname, {'@action':'export_csv_names'})
@@ -790,7 +790,7 @@
  </tal:block>
 </tal:block>
 
-<!-- needs filtered_props, multi_props, sort_props, nomulti_props, csv_link -->
+<!-- needs props, multi_props, sort_props, nomulti_props, csv_link -->
 <tal:block metal:define-macro="search_form">
 <!-- query specification form -->
 <form method="GET"
@@ -826,7 +826,7 @@
          <option tal:repeat="prop sort_props"
                  tal:attributes="selected python:prop.name==request.sort[1];
                                  value    python:prop.name"
-                 tal:content="python:prop.label"
+                 tal:content="python:prop.i18nlabel"
          ></option>
         </select>
         Descending:<input type="checkbox"
@@ -841,7 +841,7 @@
          <option tal:repeat="prop sort_props"
                  tal:attributes="selected python:prop.name==request.group[1];
                                  value    python:prop.name"
-                 tal:content="python:prop.label"
+                 tal:content="python:prop.i18nlabel"
          ></option>
         </select>
         Descending:<input type="checkbox"
@@ -861,10 +861,10 @@
        <!-- View -->
        <td style="text-align:center;">
         <select multiple name=":columns" size="7">
-         <option tal:repeat="prop filtered_props"
-                 tal:attributes="selected python:request.show[prop.selname];
-                                 value    python:prop.selname"
-                 tal:content="python:prop.label"></option>
+         <option tal:repeat="prop props"
+                 tal:attributes="selected python:request.show[prop.searchname];
+                                 value    python:prop.searchname"
+                 tal:content="python:prop.i18nlabel"></option>
         </select>
        </td>
       </tr>
@@ -877,37 +877,42 @@
       </tr>
       <tr>
        <td style="text-align:center;">
-        <tal:block tal:condition="python:prop.selname in
-         ['responsible', 'closer', 'deputy', 'user', 'supervisor']"
-                   tal:define="size      string:7;
-                               name      python:prop.selname;
-                               form      string:query;
-                               dont_care string:don't care;
-                               selected  python:str(request.filterspec.get(prop.selname) or [''])[1:-1]">
+        <tal:block tal:condition="python:
+         prop.lnkcls == 'user' and prop.searchname != 'nosy'"
+         tal:define=
+          "size      string:7;
+           name      python:prop.searchname;
+           form      string:query;
+           dont_care string:don't care;
+           selected python:
+            str(request.filterspec.get(prop.searchname) or [''])[1:-1]
+          ">
          <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
         </tal:block>
-        <tal:block tal:condition="python:prop.selname == 'nosy'"
-                   tal:define="size      string:7;
-                               name      python:prop.selname;
-                               form      string:query;
-                               dont_care string:don't care;
-                               selected  python:str(request.filterspec.get(prop.selname) or [''])[1:-1]">
+        <tal:block tal:condition="python:prop.searchname == 'nosy'"
+         tal:define=
+          "size      string:7;
+           name      python:prop.searchname;
+           form      string:query;
+           dont_care string:don't care;
+           selected  python:
+            str(request.filterspec.get(prop.searchname) or [''])[1:-1]
+          ">
          <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"></tal:block>
         </tal:block>
-        <tal:block tal:condition="python:prop.selname not in
-         ['responsible', 'nosy', 'closer', 'deputy', 'user', 'supervisor']">
+        <tal:block tal:condition="python:prop.lnkcls != 'user'">
          <select multiple
                  size="7"
-                 tal:attributes="name python:prop.name"
+                 tal:attributes="name python:prop.searchname"
                  tal:define="form_vals
-                   python:request.filterspec.get(prop.name) or []">
+                   python:request.filterspec.get(prop.searchname) or []">
           <option value=""
                   tal:attributes="selected not:form_vals">don't care
           </option>
-          <option tal:repeat="s python:db[prop.lnkname].list()"
+          <option tal:repeat="s python:db[prop.lnkcls.classname].list()"
                   tal:attributes="value    s/id;
                                   selected python:s.id in form_vals"
-                  tal:content="python:s[prop.lnkattr]">
+                  tal:content="python:s[prop.displayprop]">
           </option>
          </select>
         </tal:block>
@@ -928,11 +933,11 @@
            tal:content="structure python:prop.colonlabel()"></th>
        <td>
         <tal:block tal:replace="structure python:prop.search_input (request)"/>
-        <span tal:condition="python:prop.lnkname"
-          tal:replace="structure python:db[prop.lnkname].classhelp
+        <span tal:condition="python:prop.do_classhelp"
+          tal:replace="structure python:db[prop.lnkcls.classname].classhelp
            ( properties=prop.classhelp_properties
              ('description', 'status', 'responsible')
-           , property=prop.selname
+           , property=prop.searchname
            , form='query'
            , pagesize=500
            , filter=prop.help_filter

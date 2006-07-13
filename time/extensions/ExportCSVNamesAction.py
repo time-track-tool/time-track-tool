@@ -113,16 +113,16 @@ class Export_CSV_Names (Action) :
         # end def repr_link
 
         def repr_extprop (col) :
-            parts   = col.split ('.', 1)
-            lnkattr = None
+            parts       = col.split ('.', 1)
+            displayprop = None
             if len (parts) > 1 :
-                lnkattr = parts [1]
+                displayprop = parts [1]
             prop  = htcls [parts [0]]
             ep = ExtProperty \
                 ( None, prop
-                , lnkattr = lnkattr
-                , selname = '++'.join (parts)
-                , pretty  = str
+                , displayprop = displayprop
+                , searchname  = '.'.join (parts)
+                , pretty      = str
                 )
             def f (itemid, col) :
                 item = templating.HTMLItem \

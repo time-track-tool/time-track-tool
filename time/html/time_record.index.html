@@ -12,16 +12,29 @@
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['daily_record'],  lnkattr = 'user')
-    , utils.ExtProperty (utils, pdict ['daily_record'],  lnkattr = 'date')
-    , utils.ExtProperty (utils, pdict ['wp'])
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.user'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.date'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.status'
+        , searchable  = True
+        , multiselect = True
+        )
+    , utils.ExtProperty (utils, pdict ['wp'], searchable = 1)
     , utils.ExtProperty (utils, pdict ['time_activity'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['start'])
     , utils.ExtProperty (utils, pdict ['end'])
     , utils.ExtProperty (utils, pdict ['duration'])
     , utils.ExtProperty (utils, pdict ['comment'])
-    , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     );
    "
   tal:condition="context/is_view_ok">
