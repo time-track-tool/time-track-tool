@@ -37,6 +37,7 @@
 from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , BooleanHTMLProperty       \
                                          , DateHTMLProperty          \
+                                         , _HTMLItem                 \
                                          , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
@@ -129,6 +130,11 @@ class ExtProperty :
         add_hidden: Add a hidden attribute in addition to the link
         searchable: Usually a safe bet if this can be searched for, can
             be overridden when you know what you're doing.
+        displayprop: Name of the property to display. Only used
+            internally, should not be used in the external interface
+            (e.g., in a search mask) because the value will not show up
+            in the generated URL and therefore will not work in CVS
+            export.
         
         Internal attributes:
         name: name of the property
@@ -157,6 +163,7 @@ class ExtProperty :
         , format        = None
         , help_props    = None
         , help_filter   = None
+        , help_sort     = None
         , bool_tristate = True
         ) :
         self.utils         = utils
@@ -181,6 +188,7 @@ class ExtProperty :
         self.format        = format
         self.help_props    = help_props or []
         self.help_filter   = help_filter
+        self.help_sort     = help_sort
         self.bool_tristate = bool_tristate
         if isinstance (self.prop, MissingValue) :
             self.name = ''
@@ -304,7 +312,9 @@ class ExtProperty :
         for i in self.searchname.split ('.')[1:] :
             last_p = p
             p      = p [i]
-        if self.displayprop and hasattr (p._prop, 'classname') :
+        if  (   self.displayprop
+            and (isinstance (p, _HTMLItem) or hasattr (p._prop, 'classname'))
+            ) :
             last_p = p
             p      = p [self.displayprop]
         return self.__class__ \

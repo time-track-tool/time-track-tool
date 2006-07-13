@@ -27,22 +27,28 @@
     , utils.ExtProperty (utils, pdict ['release'])
     , utils.ExtProperty
         ( utils, pdict ['composed_of']
-        , displayprop  = 'id'
+        , searchable   = True
+        , do_classhelp = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['composed_of']
+        , searchname = 'composed_of.id'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['part_of']
         , searchable   = True
         , do_classhelp = False
         )
     , utils.ExtProperty
         ( utils, pdict ['part_of']
-        , displayprop  = 'id'
-        , searchable   = True
-        , do_classhelp = False
+        , searchname   = 'part_of.id'
         )
     , utils.ExtProperty (utils, pdict ['fixed_in'])
     , utils.ExtProperty (utils, pdict ['superseder'])
     , utils.ExtProperty
         ( utils, pdict ['nosy']
-        , help_props  = ['firstname', 'lastname']
-        , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
+        , help_props   = ['firstname', 'lastname']
+        , help_filter  = 'status=%s' % db._db.user_status.lookup ('valid')
         )
     , utils.ExtProperty (utils, pdict ['creator'])
     , utils.ExtProperty (utils, pdict ['planned_begin'])

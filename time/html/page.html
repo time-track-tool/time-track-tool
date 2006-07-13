@@ -45,7 +45,7 @@
                          ':sort=-id&:group=status&:filter=stakeholder,status&'
                          ':pagesize=50&:startwith=0&'
                          'status=1,2,3&stakeholder=%s' % uid
-   , 'machine'         : ':columns=inventory_no,description,owner,smb_name&'
+   , 'machine'         : ':columns=inventory_no,description,owner&'
                          ':sort=inventory_no&:pagesize=20&:startwith=0'
    , 'machine_name'    : ':columns=id,name,network_address,machine_name,'
                          'dns_record_type,do_reverse_mapping&:sort=name&'
@@ -67,10 +67,17 @@
    , 'time_project'    : ':columns=name,responsible,organisation,department'
                          ',status&:sort=name&:filter=status&:pagesize=20&'
                          ':startwith=0&status=1,2'
+   , 'time_record'     : ':columns=daily_record.user,daily_record.date,'
+                         'daily_record.status,wp,time_activity,work_location,'
+                         'duration,comment&:filter=daily_record.user,'
+                         'daily_record.date&:pagesize=50&:startwith=0&'
+                         'daily_record.user=%s&daily_record.date=.-30d%%3B.'
+                          % (uid,)
    , 'time_wp'         : ':columns=name,wp_no,responsible,project,time_start'
                          ',time_end,cost_center&:sort=name&:filter=bookers&'
                          ':pagesize=20&:startwith=0&bookers=%s' % uid
-   , 'time_record'     : ':columns=duration&:filter=wp&wp=1'
+   , 'time_wp_group'   : ':columns=id,name,description,wps&:sort=name&'
+                         ':pagesize=20&:startwith=0'
    , 'user'            : ':columns=%s&:sort=%s&'
                          ':filter=status&:pagesize=200&:startwith=0&status=1'
                           % ( ','.join
@@ -941,6 +948,7 @@
            , form='query'
            , pagesize=500
            , filter=prop.help_filter
+           , sort=prop.help_sort
            )"/>
        </td>
       </tr>

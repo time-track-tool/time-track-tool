@@ -114,14 +114,10 @@ class Export_CSV_Names (Action) :
 
         def repr_extprop (col) :
             parts       = col.split ('.', 1)
-            displayprop = None
-            if len (parts) > 1 :
-                displayprop = parts [1]
             prop  = htcls [parts [0]]
             ep = ExtProperty \
                 ( None, prop
-                , displayprop = displayprop
-                , searchname  = '.'.join (parts)
+                , searchname  = col
                 , pretty      = str
                 )
             def f (itemid, col) :
