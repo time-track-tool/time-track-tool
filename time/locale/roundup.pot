@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2006-07-08 21:20+0200\n"
+"POT-Creation-Date: 2006-07-13 22:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,6 +24,10 @@ msgstr ""
 #: ../detectors/cost_center.py:53 ../detectors/it.py:61
 #, python-format
 msgid "%(attr)s may not be undefined"
+msgstr ""
+
+#: ../detectors/issue.py:122
+msgid "You may not change container status"
 msgstr ""
 
 #: ../detectors/it.py:43
@@ -689,7 +693,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:192
-msgid "composed_of++id"
+msgid "composed_of.id"
 msgstr ""
 
 #: ../extensions/help.py:193
@@ -1739,7 +1743,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:602
-msgid "part_of++id"
+msgid "part_of.id"
 msgstr ""
 
 #: ../extensions/help.py:603 ../locale/attr.py:577 attr.py:577
@@ -2818,7 +2822,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:1051 ../locale/attr.py:250 ../locale/attr.py:263
-#: ../locale/attr.py:313 ../schema/time_tracker.py:236 attr.py:250 attr.py:263
+#: ../locale/attr.py:313 ../schema/time_tracker.py:238 attr.py:250 attr.py:263
 #: attr.py:313
 msgid "work_location"
 msgstr ""
@@ -2888,7 +2892,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:62 ../html/_generic.item.html:62
-#: ../html/page.html:818
+#: ../html/page.html:825
 msgid "Download as CSV"
 msgstr ""
 
@@ -2955,7 +2959,7 @@ msgstr ""
 msgid "Time-Tracking for <span> ${firstname} ${lastname} </span> ${username}"
 msgstr ""
 
-#: ../html/daily_record.edit.html:117 ../html/daily_record.edit.html:313
+#: ../html/daily_record.edit.html:118 ../html/daily_record.edit.html:317
 msgid " Save "
 msgstr ""
 
@@ -2975,7 +2979,7 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:806
+#: ../html/page.html:813
 msgid "Query ${Classname}"
 msgstr ""
 
@@ -3007,7 +3011,7 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
-#: ../html/user_dynamic.item.html:61
+#: ../html/user_dynamic.item.html:63
 msgid "new user_dynamic record"
 msgstr ""
 
@@ -3157,7 +3161,7 @@ msgstr ""
 msgid "supervisor"
 msgstr ""
 
-#: ../locale/attr.py:222 ../locale/attr.py:274 ../schema/time_tracker.py:184
+#: ../locale/attr.py:222 ../locale/attr.py:274 ../schema/time_tracker.py:186
 #: attr.py:222 attr.py:274
 msgid "time_wp"
 msgstr ""
@@ -3172,7 +3176,7 @@ msgstr ""
 msgid "time_project"
 msgstr ""
 
-#: ../locale/attr.py:233 ../locale/attr.py:287 ../schema/time_tracker.py:201
+#: ../locale/attr.py:233 ../locale/attr.py:287 ../schema/time_tracker.py:203
 #: attr.py:233 attr.py:287
 msgid "time_wp_group"
 msgstr ""
@@ -3198,7 +3202,7 @@ msgstr ""
 msgid "durations_allowed"
 msgstr ""
 
-#: ../locale/attr.py:291 ../schema/time_tracker.py:210 attr.py:291
+#: ../locale/attr.py:291 ../schema/time_tracker.py:212 attr.py:291
 msgid "user_dynamic"
 msgstr ""
 
@@ -3440,4 +3444,17 @@ msgstr ""
 
 #: ../locale/attr.py:604 attr.py:604
 msgid "doc_num"
+msgstr ""
+
+#.  i18n:
+#: ../schema/time_tracker.py:182
+msgid "daily_record.date"
+msgstr ""
+
+#: ../schema/time_tracker.py:182
+msgid "daily_record.status"
+msgstr ""
+
+#: ../schema/time_tracker.py:182
+msgid "daily_record.user"
 msgstr ""
