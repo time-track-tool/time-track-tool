@@ -1058,7 +1058,7 @@ _helptext = \
       ]
     }
 
-def combined_name (cls, attr) :
+def combined_name (cls, attr, name = None) :
     """ Produce a combined name of class and attribute of the class. If
         a help-text exists for the combination, return the combination,
         otherwise return only the attribute. In this way we can override
@@ -1068,6 +1068,12 @@ def combined_name (cls, attr) :
     pname = '%s++%s' % (cls, attr)
     if pname in _helptext :
         return pname
+    if name:
+        pname = '%s++%s' % (cls, name)
+        if pname in _helptext :
+            return pname
+        if name in _helptext :
+            return name
     return attr
 # end def combined_name
 
@@ -1106,10 +1112,10 @@ def help_properties (klass) :
     return [i [1] for i in p]
 # end def help_properties
 
-def fieldname (cls, name, fname = None, endswith = '&nbsp;', csscls = '') :
+def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     import sys
-    if not fname : fname = name
-    prop  = combined_name (cls, fname)
+    if not searchname : searchname = name
+    prop  = combined_name (cls, searchname, name)
     if not prop in _helptext :
         return "%s%s" % (_ (prop), endswith)
     label = _ (prop)
@@ -1118,7 +1124,7 @@ def fieldname (cls, name, fname = None, endswith = '&nbsp;', csscls = '') :
     return ("""<a %s title="Help for %s" href="javascript:help_window"""
             """('%s?:template=property_help#%s', '500', '400')">"""
             """%s%s</a>""" \
-            % (csscls, label, cls, fname, label, endswith)
+            % (csscls, label, cls, name, label, endswith)
            )
 # end def fieldname
 
@@ -1133,4 +1139,5 @@ def init (instance) :
     instance.registerUtil ('helptext',        helptext)
     instance.registerUtil ('help_properties', help_properties)
     instance.registerUtil ('fieldname',       fieldname)
+    instance.registerUtil ('combined_name',   combined_name)
 # end def init

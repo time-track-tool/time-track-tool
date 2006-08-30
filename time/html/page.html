@@ -23,6 +23,7 @@
                            )
  ; uid             python: db._db.getuid ()
  ; default_query   string::action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
+ ; n_sort          python: 2
  ; default_queries python:
    { 'alias'           : ':columns=name,alias_to_alias,alias_to_user&'
                          ':pagesize=500&:startwith=0'
@@ -762,10 +763,12 @@
    <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
    <!-- items found -->
    <tal:block tal:repeat="i batch">
-    <tr tal:condition="python:request.group[1] and
-                              batch.propchanged(request.group[1])">
-     <th tal:attributes="colspan python:len(request.columns)"
-         tal:content="python:i[request.group[1]]" class="group">
+    <tr tal:condition="python:
+      request.group and batch.propchanged(*[g[1] for g in request.group])">
+     <th tal:attributes="colspan python:len(request.columns)" class="group">
+      <tal:block tal:repeat="gr request/group">
+       <tal:block tal:content="python:i[gr[1]]"/>
+      </tal:block>
      </th>
     </tr>
     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
@@ -785,7 +788,7 @@
 <tal:block metal:define-macro="ttt_search_form">
  <tal:block tal:define=
      " multi_props    python: [p for p in props if p.multiselect]
-     ; sort_props     python: [p for p in props if p.sortable ()]
+     ; sort_props     python: [p for p in props if p.sortable]
      ; nomulti_props  python: [p for p in props
                                if not p.multiselect and p.searchable]
      ; csv_link       python:request.indexargs_url
@@ -827,34 +830,58 @@
    </tr>
    <tr tal:condition="python:sort_props">
     <td nowrap>
-      Sort by:<select name=":sort"
-                      onChange="this.form.elements[':startwith'].value='0'">
-         <option value="">- nothing -</option>
-         <option tal:repeat="prop sort_props"
-                 tal:attributes="selected python:prop.name==request.sort[1];
-                                 value    python:prop.name"
-                 tal:content="python:prop.i18nlabel"
-         ></option>
-        </select>
-        Descending:<input type="checkbox"
-                          name=":sortdir"
-                          onChange="this.form.elements[':startwith'].value='0'"
-                          tal:attributes="checked python:request.sort[0] == '-'">
-    </td>
-    <td nowrap>
-     Group by:<select name=":group"
-                        onChange="this.form.elements[':startwith'].value='0'">
-         <option value="">- nothing -</option>
-         <option tal:repeat="prop sort_props"
-                 tal:attributes="selected python:prop.name==request.group[1];
-                                 value    python:prop.name"
-                 tal:content="python:prop.i18nlabel"
-         ></option>
-        </select>
-        Descending:<input type="checkbox"
-                    name=":groupdir"
-                    onChange="this.form.elements[':startwith'].value='0'"
-                    tal:attributes="checked python:request.group[0] == '-'">
+     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
+      <tal:block tal:repeat="onum python:range(n_sort)">
+       <tr tal:define=
+           "skey python:len(request.sort)>onum and request.sort[onum]
+           ;gkey python:len(request.group)>onum and request.group[onum]
+           ">
+        <td nowrap>
+         <tal:block tal:condition="not:onum" i18n:translate="">
+             Sort on:
+         </tal:block>
+        </td>
+        <td nowrap>
+         <select tal:attributes="name python:':sort%d'%onum"
+          onChange="this.form.elements[':startwith'].value='0'">
+          <option value="">- nothing -</option>
+          <option tal:repeat="prop sort_props"
+           tal:attributes= "selected python:skey and prop.searchname==skey[1];
+                            value    python:prop.searchname"
+           tal:content="python:prop.i18nlabel"/>
+         </select>
+         Descending:
+         <input type="checkbox"
+          tal:attributes="name python:':sortdir%d'%onum
+                         ;checked python:skey and skey[0] == '-'
+                         "
+          onChange="this.form.elements[':startwith'].value='0'"/>
+        </td>
+        <td nowrap>&nbsp;</td>
+        <td nowrap>
+         <tal:block tal:condition="not:onum" i18n:translate="">
+             Group on:
+         </tal:block>
+        </td>
+        <td nowrap>
+         <select tal:attributes="name python:':group%d'%onum"
+          onChange="this.form.elements[':startwith'].value='0'">
+          <option value="">- nothing -</option>
+          <option tal:repeat="prop sort_props"
+           tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
+                            value    python:prop.searchname"
+           tal:content="python:prop.i18nlabel"/>
+         </select>
+         Descending:
+         <input type="checkbox"
+          tal:attributes="name python:':groupdir%d'%onum
+                         ;checked python:gkey and gkey[0] == '-'
+                         "
+          onChange="this.form.elements[':startwith'].value='0'"/>
+        </td>
+       </tr>
+      </tal:block>
+     </table>
     </td>
    </tr>
    <tr>

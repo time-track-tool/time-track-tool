@@ -9,6 +9,7 @@
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
   "batch request/batch;
+   n_sort python:4;
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
@@ -25,6 +26,12 @@
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']
         , searchname  = 'daily_record.status'
+        , searchable  = True
+        , multiselect = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['wp']
+        , searchname  = 'wp.project'
         , searchable  = True
         , multiselect = True
         )

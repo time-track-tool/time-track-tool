@@ -156,6 +156,7 @@ class ExtProperty :
         , editable      = None
         , add_hidden    = False
         , searchable    = None # usually computed, override with False
+        , sortable      = True
         , pretty        = _
         , get_cssclass  = None
         , do_classhelp  = None
@@ -183,6 +184,7 @@ class ExtProperty :
         self.editable      = editable
         self.key           = None
         self.searchable    = searchable
+        self.sortable      = sortable
         self.do_classhelp  = do_classhelp
         self.fieldwidth    = fieldwidth
         self.format        = format
@@ -196,7 +198,6 @@ class ExtProperty :
             self.searchname = self.name
         if not self.label :
             self.label = self.searchname
-        self.i18nlabel = self.pretty (self.label)
         if not self.get_cssclass :
             if hasattr (self.utils, 'get_cssclass') :
                 self.get_cssclass = self.utils.get_cssclass
@@ -204,6 +205,8 @@ class ExtProperty :
                 self.get_cssclass = lambda a : ""
         self.lnkcls = None
 
+        self.helpcls  = self.classname
+        self.helpname = self.name
         if self.is_link_or_multilink :
             if self.searchname :
                 proptree = self.klass._proptree ({self.searchname : 1})
@@ -214,9 +217,16 @@ class ExtProperty :
                         self.displayprop = p.name
                     p = p.parent
                 self.lnkcls = p.cls
+                if len (props) > 1:
+                    self.helpcls  = props [-2].classname
+                    self.helpname = props [-1].name
             else :
                 self.lnkcls = prop._db.getclass (prop._prop.classname)
             self.key     = self.lnkcls.getkey ()
+        self.i18nlabel = self.pretty \
+            (self.utils.combined_name
+                (self.helpcls, self.helpname, self.searchname)
+            )
         if self.do_classhelp is None :
             self.do_classhelp = \
                 (   self.lnkcls
@@ -325,20 +335,6 @@ class ExtProperty :
             )
     # end def deref
 
-    def sortable (self) :
-        """
-            Check if it's a Link and has a key property and the key
-            property is the current property -- or it's some other
-            Non-Link property. It also doesn't make much sense to sort
-            by Multilink.
-        """
-        if isinstance (self.prop, MultilinkHTMLProperty) :
-            return False
-        if '.' in self.searchname :
-            return False
-        return self.key == self.displayprop
-    # def sortable
-
     def formatlink (self, item = None, as_link = True) :
         """
             Render my property of an item as a link to this item (unless
@@ -404,7 +400,7 @@ class ExtProperty :
 
     def colonlabel (self) :
         return self.utils.fieldname \
-            (self.classname, self.label, self.label, ':', 'header')
+            (self.helpcls, self.helpname, self.label, ':', 'header')
     # end def colonlabel
 
     def colonfield (self, item = None) :
