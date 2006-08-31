@@ -96,6 +96,7 @@ def init \
         , order                 = Number    ()
         )
     it_project_status.setkey ("name")
+# end def init
 
     #
     # SECURITY SETTINGS
@@ -105,6 +106,7 @@ def init \
     # Assign the access and edit Permissions for issue, file and message
     # to regular users now
 
+def security (db, ** kw) :
     roles = \
         [ ("IT"            , "IT-Department"                 )
         , ("ITView"        , "View but not change IT data"   )
@@ -162,4 +164,4 @@ def init \
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
-# end def init
+# end def security
