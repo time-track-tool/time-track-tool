@@ -69,8 +69,10 @@
                          ',status&:sort=name&:filter=status&:pagesize=20&'
                          ':startwith=0&status=1,2'
    , 'time_record'     : ':columns=daily_record.user,daily_record.date,'
-                         'daily_record.status,wp,time_activity,work_location,'
-                         'duration,comment&:filter=daily_record.user,'
+                         'daily_record.status,wp.project,wp,time_activity,'
+                         'work_location,duration,tr_duration,comment&'
+                         ':sort=daily_record.user,daily_record.date,'
+                         'wp.project,wp&:filter=daily_record.user,'
                          'daily_record.date&:pagesize=50&:startwith=0&'
                          'daily_record.user=%s&daily_record.date=.-30d%%3B.'
                           % (uid,)
