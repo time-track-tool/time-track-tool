@@ -776,7 +776,8 @@
      <!-- filter out only the properties the user wants to see -->
      <tal:block tal:repeat="prop props">
       <td tal:condition="python:request.show [prop.searchname]"
-          tal:content="structure python:prop.as_listentry (i)">
+          tal:content="structure python:prop.as_listentry (i)"
+          tal:attributes="class python:prop.get_cssclass(i)">
       </td>
      </tal:block>
     </tr>

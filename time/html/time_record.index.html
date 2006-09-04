@@ -40,7 +40,14 @@
     , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['start'])
     , utils.ExtProperty (utils, pdict ['end'])
-    , utils.ExtProperty (utils, pdict ['duration'])
+    , utils.ExtProperty
+        ( utils, pdict ['duration']
+        , get_cssclass = utils.color_duration
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['tr_duration']
+        , get_cssclass = utils.color_duration
+        )
     , utils.ExtProperty (utils, pdict ['comment'])
     );
    "

@@ -49,6 +49,7 @@ _                          = lambda x : x
 get_user_dynamic           = None
 next_user_dynamic          = None
 prev_user_dynamic          = None
+update_tr_duration         = None
 act_or_latest_user_dynamic = None
 clearance_by               = None
 user_has_role              = None
@@ -339,14 +340,31 @@ def welcome (db) :
     return "".join ((_ ("Welcome to the "), db.config.TRACKER_NAME, '.'))
 # end def welcome
 
+def color_duration (tr) :
+    """Compute the css class for a duration or tr_duration. Note that we
+       also compute the cached value of tr_duration if not yet computed.
+    """
+    db         = tr._db
+    travel_act = db.time_activity.filter (None, {'travel' : True})
+    travel_act = dict ((a, 1) for a in travel_act)
+    if tr.time_activity and tr.time_activity.id in travel_act:
+        if not tr.tr_duration or tr.activity < tr.daily_record.activity :
+            id = tr.daily_record.id
+            update_tr_duration (db, db.daily_record.getnode (id))
+            db.commit()
+        return 'travel'
+    return ''
+# end def color_duration
+
 def init (instance) :
     import sys, os
     global _, get_user_dynamic, clearance_by, user_has_role
     global monthstart_twoweeksago, act_or_latest_user_dynamic
-    global prev_user_dynamic, next_user_dynamic, ymd
+    global prev_user_dynamic, next_user_dynamic, ymd, update_tr_duration
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from user_dynamic import get_user_dynamic, act_or_latest_user_dynamic
     from user_dynamic import next_user_dynamic, prev_user_dynamic
+    from user_dynamic import update_tr_duration
     from common       import clearance_by, ymd
     from common       import user_has_role, monthstart_twoweeksago
     del (sys.path [0])
@@ -375,3 +393,4 @@ def init (instance) :
     reg ("prev_user_dynamic",            prev_user_dynamic)
     reg ("act_or_latest_user_dynamic",   act_or_latest_user_dynamic)
     reg ("ymd",                          ymd)
+    reg ("color_duration",               color_duration)
