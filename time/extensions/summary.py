@@ -629,22 +629,22 @@ class Summary_Report :
             usrs      = users + org_dep_usr.keys ()
             usernames = dict ((db.user.get (u, 'username'), 1) for u in usrs)
             usernames = usernames.keys ()
+            # filter out users without a dyn user record in our date range
+            if not self.show_all_users :
+                users = {}
+                for u in usernames :
+                    d   = start
+                    while d <= end :
+                        if get_user_dynamic (db, uids_by_name [u], d) :
+                            users [u] = 1
+                            break
+                        d = d + Interval ('1d')
+                users.update ((tr.username, 1) for tr in time_recs).keys ()
+                usernames = users.keys ()
         else :
             usernames = dict ((tr.username, 1) for tr in time_recs).keys ()
         #print "         usernames", time.time () - timestamp
         uids_by_name  = dict ((u, db.user.lookup (u)) for u in usernames)
-        # filter out users without a dyn user record in our date range
-        #print usernames
-        if not self.show_all_users :
-            users = []
-            for u in usernames :
-                d   = start
-                while d <= end :
-                    if get_user_dynamic (db, uids_by_name [u], d) :
-                        users.append (u)
-                        break
-                    d = d + Interval ('1d')
-            usernames = users
 
         #print "filtered usernames", time.time () - timestamp
         usernames.sort ()
