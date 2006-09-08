@@ -40,6 +40,7 @@ from roundup.cgi         import templating
 from roundup             import hyperdb
 
 ExtProperty = None
+help = None
 
 import csv
 
@@ -116,7 +117,7 @@ class Export_CSV_Names (Action) :
             parts       = col.split ('.', 1)
             prop  = htcls [parts [0]]
             ep = ExtProperty \
-                ( None, prop
+                ( help, prop
                 , searchname  = col
                 , pretty      = str
                 )
@@ -155,9 +156,10 @@ class Export_CSV_Names (Action) :
 # end class Export_CSV_Names
 
 def init (instance) :
-    global ExtProperty
+    global ExtProperty, help
     sys.path.insert (0, os.path.join (instance.config.HOME, 'extensions'))
     from extproperty import ExtProperty
+    import help
     del sys.path [0]
     instance.registerAction ('export_csv_names', Export_CSV_Names)
 # end def init
