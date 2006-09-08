@@ -44,6 +44,12 @@ def loopchecks (db, cl, nodeid, new_values) :
             common.check_loop (_, cl, nodeid, propname, value, 'id')
 # end def loopchecks
 
+def forbidden_props (db, cl, nodeid, new_values) :
+    for prop in 'superseder', :
+        if prop in new_values :
+            raise Reject, _ ('New issue may not define "%s"') % _ (prop)
+# end def forbidden_props
+
 def update_eff_prio (db, cl, nodeid, new_values) :
     # Default for priority
     if not nodeid :
@@ -133,6 +139,7 @@ def init (db) :
     db.issue.audit ("create", loopchecks)
     db.issue.audit ("set",    update_eff_prio)
     db.issue.audit ("create", update_eff_prio)
+    db.issue.audit ("create", forbidden_props)
     db.issue.react ("set",    update_children)
     db.issue.react ("set",    status_updated)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
