@@ -128,6 +128,32 @@ def check_container_statuschange (db, cl, nodeid, new_values) :
         raise Reject, _ ("You may not change container status")
 # end def check_container_statuschange
 
+def check_part_of (db, cl, nodeid, new_values) :
+    if not 'part_of' in new_values :
+        return
+    obsolete = db.kind.lookup ('Obsolete')
+    mistaken = db.kind.lookup ('Mistaken')
+    part_of = cl.getnode (new_values ['part_of'])
+    if part_of.kind in (mistaken, obsolete) :
+        raise Reject, _ ("May not be part of Obsolete or Mistaken container")
+# end def check_part_of
+
+def no_autoclose_container (db, cl, nodeid, new_values) :
+    """ This won't work anyway if there are issues in the container,
+        because auto-closing will fail. Therefore not enabled currently.
+        And maybe it's a good feature after all to be able to make a
+        container obsolete and prevent that anything can be attached to
+        it after the fact.
+    """
+    if not 'kind' in new_values :
+        return
+    obsolete = db.kind.lookup ('Obsolete')
+    mistaken = db.kind.lookup ('Mistaken')
+    if new_values ['kind'] in (mistaken, obsolete) :
+        if new_values.get ('composed_of', cl.get (nodeid, 'composed_of')) :
+            raise Reject, _ ("Containers may not be Obsolete/Mistaken")
+# end def no_autoclose_container
+
 def init (db) :
     if 'issue' not in db.classes :
         return
@@ -140,8 +166,11 @@ def init (db) :
     db.issue.audit ("set",    update_eff_prio)
     db.issue.audit ("create", update_eff_prio)
     db.issue.audit ("create", forbidden_props)
+    db.issue.audit ("create", check_part_of)
+    db.issue.audit ("set",    check_part_of)
     db.issue.react ("set",    update_children)
     db.issue.react ("set",    status_updated)
+    db.issue.audit ("set",    composed_of_updated,          priority = 200)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
     #db.issue.react ("set",    check_container_statuschange, priority =  90)
 # end def init
