@@ -116,7 +116,7 @@ def security (db, ** kw) :
     classes = \
         [ ("it_category"         , ["User"        ],     ["IT"     ])
         , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
-        , ("it_issue"            , ["User"        ],     ["User"   ])
+        , ("it_issue"            , ["User"        ],     ["IT"   ])
         , ("it_prio"             , ["User"        ],     ["Admin"  ])
         , ("it_project"          , ["User"        ],     ["IT"     ])
         , ("it_project_status"   , ["User"        ],     ["Admin"  ])
@@ -126,8 +126,11 @@ def security (db, ** kw) :
         [ ( "location", "Edit", ["IT"]
           , ("domain_part",)
           )
+        , ( "it_issue",   "Edit", ["User"]
+          , ("messages", "files", "nosy")
+          )
         , ( "it_project",   "Edit", ["User"]
-          , ("messages", 'files')
+          , ("messages", "files", "nosy")
           )
         , ( "org_location", "Edit", ["IT"]
           , ("smb_domain", "dhcp_server", "domino_dn")
@@ -164,4 +167,24 @@ def security (db, ** kw) :
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
+
+    def responsible_or_stakeholder (db, userid, itemid) :
+        """Determine whether the user is responsible for or the
+           stakeholder of an issue
+        """
+        return \
+            (  db.it_issue.get (itemid, 'responsible') == userid
+            or db.it_issue.get (itemid, 'stakeholder') == userid
+            )
+    # end def responsible_or_stakeholder
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'it_issue'
+        , check       = responsible_or_stakeholder
+        , description = "Stakeholder/Responsible may edit several fields"
+        , properties  = ('deadline', 'responsible', 'status', 'title')
+        )
+    db.security.addPermissionToRole('User', p)
+
 # end def security
