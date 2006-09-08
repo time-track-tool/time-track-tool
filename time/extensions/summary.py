@@ -449,7 +449,6 @@ class Summary_Report :
         show_missing    = filterspec.get ('show_missing',   'no')
         self.show_empty = show_empty == 'yes'
         show_all_users  = self.show_all_users = show_all_users == 'yes'
-        self.show_empty = show_empty == 'yes'
         show_missing    = show_missing == 'yes' and not is_csv
         travel_act      = db.time_activity.filter (None, {'travel' : True})
         travel_act      = dict ((a, 1) for a in travel_act)
@@ -626,25 +625,28 @@ class Summary_Report :
         time_recs.sort ()
         #print "srt time_recs", len (time_recs), time.time () - timestamp
         if self.show_empty :
-            usrs      = users + org_dep_usr.keys ()
-            usernames = dict ((db.user.get (u, 'username'), 1) for u in usrs)
-            usernames = usernames.keys ()
+            usrs         = users + org_dep_usr.keys ()
+            uids_by_name = dict ((db.user.get (u, 'username'), u) for u in usrs)
             # filter out users without a dyn user record in our date range
+            # Except for those who have booked in the range
             if not self.show_all_users :
                 users = {}
-                for u in usernames :
+                for u, uid in uids_by_name.iteritems () :
                     d   = start
                     while d <= end :
-                        if get_user_dynamic (db, uids_by_name [u], d) :
-                            users [u] = 1
+                        if get_user_dynamic (db, uid, d) :
+                            users [u] = uid
                             break
                         d = d + Interval ('1d')
-                users.update ((tr.username, 1) for tr in time_recs).keys ()
-                usernames = users.keys ()
+                for tr in time_recs :
+                    u = tr.username
+                    users [u] = uids_by_name [u]
+                uids_by_name = users
+            usernames    = uids_by_name.keys ()
         else :
-            usernames = dict ((tr.username, 1) for tr in time_recs).keys ()
+            usernames    = dict ((tr.username, 1) for tr in time_recs).keys ()
+            uids_by_name = dict ((u, db.user.lookup (u)) for u in usernames)
         #print "         usernames", time.time () - timestamp
-        uids_by_name  = dict ((u, db.user.lookup (u)) for u in usernames)
 
         #print "filtered usernames", time.time () - timestamp
         usernames.sort ()
