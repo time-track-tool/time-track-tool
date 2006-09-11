@@ -259,7 +259,7 @@ def security (db, ** kw) :
         [ ("cost_center"         , ["User"],             ["Controlling"     ])
         , ("cost_center_group"   , ["User"],             ["Controlling"     ])
         , ("cost_center_status"  , ["User"],             ["Controlling"     ])
-        , ("daily_record"        , ["HR","Controlling"], ["HR","Controlling"])
+        , ("daily_record"        , ["User"],             ["HR","Controlling"])
         , ("daily_record_status" , ["User"],             ["Admin"           ])
         , ("public_holiday"      , ["User"],             ["HR","Controlling"])
         , ("summary_report"      , ["User"],             [                  ])
@@ -311,6 +311,17 @@ def security (db, ** kw) :
         ownerid = db.daily_record.get (dr, 'user')
         return userid == ownerid
     # end def own_time_record
+
+    def may_see_time_record (db, userid, itemid) :
+        """ Project owner or deputy may see time record """
+        dr      = db.time_record.get  (itemid, 'daily_record')
+        wp      = db.time_record.get  (itemid, 'wp')
+        if wp is None :
+            return False
+        prid    = db.time_wp.get (wp, 'project')
+        project = db.time_project.getnode (prid)
+        return userid == project.responsible or userid == project.deputy
+    # end def may_see_time_record
 
     def is_project_owner_of_wp (db, userid, itemid) :
         """ Check if user is owner of wp """
@@ -412,6 +423,13 @@ def security (db, ** kw) :
         , klass       = 'time_record'
         , check       = approval_for_time_record
         , description = 'Supervisor may see time record'
+        )
+    db.security.addPermissionToRole('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_record'
+        , check       = may_see_time_record
+        , description = may_see_time_record.__doc__
         )
     db.security.addPermissionToRole('User', p)
 # end def security
