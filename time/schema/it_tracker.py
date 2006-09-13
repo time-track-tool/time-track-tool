@@ -185,6 +185,8 @@ def security (db, ** kw) :
         , description = "Stakeholder/Responsible may edit several fields"
         , properties  = ('deadline', 'responsible', 'status', 'title')
         )
-    db.security.addPermissionToRole('User', p)
+    db.security.addPermissionToRole ('User', p)
+
+    db.security.addPermissionToRole ('User', 'Create', 'it_issue')
 
 # end def security
