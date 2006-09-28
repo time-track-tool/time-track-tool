@@ -53,7 +53,7 @@ def forbidden_props (db, cl, nodeid, new_values) :
 def update_eff_prio (db, cl, nodeid, new_values) :
     # Default for priority
     if not nodeid :
-        new_values ["priority"] = new_values.get ("priority", 1)
+        new_values ["priority"] = new_values.get ("priority", 0)
     closed = db.status.lookup ('closed')
     if (  'priority'       in new_values
        or 'effective_prio' in new_values
