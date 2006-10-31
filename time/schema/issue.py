@@ -44,6 +44,7 @@ def init \
     , Link
     , Multilink
     , Number
+    , Boolean
     , ** kw
     ) :
     area = Class \
@@ -59,6 +60,8 @@ def init \
         , description         = String    (indexme = 'no')
         , responsible         = Link      ("user")
         , nosy                = Multilink ("user")
+        , valid               = Boolean   ()
+        , cert_sw             = Boolean   ()
         )
     category.setkey ("name")
 
@@ -79,9 +82,27 @@ def init \
     stat = Class \
         ( db, "status"
         , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
         , order               = String    (indexme = 'no')
+        , transitions         = Multilink ("status_transition")
         )
     stat.setkey ("name")
+
+    trans = Class \
+        ( db, "status_transition"
+        , target              = Link      ("status")
+        , require_resp_change = Boolean   ()
+        , require_msg         = Boolean   ()
+        , name                = String    (indexme = 'no')
+        )
+    trans.setkey ("name")
+
+    sev = Class \
+        ( db, "severity"
+        , name                = String    (indexme = 'no')
+        , order               = Number    ()
+        )
+    sev.setkey ("name")
 
     msg_keyword = Class \
         ( db, "msg_keyword"
@@ -115,6 +136,7 @@ def init \
         , cur_est_end         = Date      () # current estimate
         , composed_of         = Multilink ("issue") # should be read only
         , part_of             = Link      ("issue") # should change composed_of
+        , severity            = Link      ("severity")
         )
 
     Cls = kw ['Msg_Class']
@@ -138,15 +160,17 @@ def security (db, ** kw) :
     roles = \
         [ ("Issue_Admin", "Admin for TTTech Issue tracker")
         ]
-    #     classname        allowed to view   /  edit
+    #     classname             allowed to view   /  edit
     classes = \
-        [ ("issue",       ["User"], ["User"])
-        , ("area",        ["User"], ["Issue_Admin"])
-        , ("category",    ["User"], ["Issue_Admin"])
-        , ("keyword",     ["User"], ["Issue_Admin"])
-        , ("kind",        ["User"], ["Issue_Admin"])
-        , ("msg_keyword", ["User"], ["Issue_Admin"])
-        , ("status",      ["User"], ["Issue_Admin"])
+        [ ("issue",             ["User"], ["User"])
+        , ("area",              ["User"], ["Issue_Admin"])
+        , ("category",          ["User"], ["Issue_Admin"])
+        , ("keyword",           ["User"], ["Issue_Admin"])
+        , ("kind",              ["User"], ["Issue_Admin"])
+        , ("msg_keyword",       ["User"], ["Issue_Admin"])
+        , ("status",            ["User"], ["Issue_Admin"])
+        , ("status_transition", ["User"], ["Issue_Admin"])
+        , ("severity",          ["User"], ["Issue_Admin"])
         ]
 
     schemadef.register_roles             (db, roles)

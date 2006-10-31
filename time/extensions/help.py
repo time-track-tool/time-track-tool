@@ -170,6 +170,12 @@ _helptext = \
       , miss_text
       , leave_empty
       ]
+    , ""'cert_sw'                     :
+      [""'''Mark this %(Classname)s as being certifyable software.
+            Certifyable software needs special handling, e.g., requires that
+            some fields like "Files affected" are filled in.
+         '''
+      ]
     , ""'clearance_by'                :
       [ ""'''Usually the supervisor of a person approves
              time records. This can be delegated using this attribute. It
@@ -446,6 +452,10 @@ _helptext = \
       [""'''What this issue actually is. Be sure to exactly distinguish
             between what is actually a Bug (it is not working as
             expected) and a Change-Request!
+            Kind "Action Item" identifies a task or activity that is
+            not directly related to a product or workpackage, it is used
+            for planning purpose. e.g. "Create the SRD for this
+            feature"
          '''
       ]
     , ""'klass'                       :
@@ -683,9 +693,13 @@ _helptext = \
              it can usually still be downloaded via the History button.
           '''
       ]
+    , ""'require_msg'                 :
+      [""'''Require a message for this %(Classname)s''']
+    , ""'require_resp_change'         :
+      [""'''Require change of responsible person for this %(Classname)s''']
     , ""'responsible'                 :
       [""'''Person who is responsible for the %(Classname)s''']
-    , ""'review++responsible'        :
+    , ""'review++responsible'         :
       [ ""'''Moderator for %(Classname)s -- Note: If you do not specify
              the moderator, you will get an indication that the field
              "Responsible" must be filled in -- the moderator is reponsible for
@@ -912,6 +926,11 @@ _helptext = \
              changed, too (if the daemon is running)
           '''
       ]
+    , ""'target'                      :
+      [ ""'''Target of this %(Classname)s, only targets explicitly
+             enabled will be allowed for status changes.
+          '''
+      ]
     , ""'team_members'                :
       [ ""'''Persons who are assigned to the project and are allowed
              to book their effort on this project
@@ -933,8 +952,10 @@ _helptext = \
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
-      [""'''Title of this %(Classname)s -- an intuitive one-line
-            description of %(Classname)s
+      [""'''Should be an intuitive one-line description of the %(Classname)s.
+            Since titles of Roundup issues are also extracted into SCI
+            documents, start with a capital letter, and type all other
+            letters in lowercase, except names and references.
          '''
       ]
     , ""'travel'                      : [travel]
@@ -1000,6 +1021,11 @@ _helptext = \
     , ""'vacation_yearly'             :
       [ ""'''Yearly vacation for this user: This is the amount of vacation
              that is added for each year.
+          '''
+      ]
+    , ""'valid'                       :
+      [ ""'''If enabled, this %(Classname)s is valid and can be
+             selected.
           '''
       ]
     , ""'valid_from'                  :

@@ -32,43 +32,6 @@ _fixed_in_patterns = \
     , re.compile (r"[bB][rR][aA][nN][cC][hH]")
     ]
 
-# <old_state> : [(<new_state>, <responsibility_change>, <require_msg>), ...]
-sm = { "open"      : [ ("analyzed",   0, 1)
-                     , ("feedback",   1, 1)
-                     , ("testing",    1, 1)
-                     , ("suspended",  0, 1)
-                     , ("closed",     0, 0) # guarded by `limit_transitions`
-                     ]
-     , "analyzed"  : [ ("open",       0, 1)
-                     , ("feedback",   1, 1)
-                     , ("testing",    1, 1)
-                     , ("suspended",  0, 1)
-                     ]
-     , "feedback"  : [ ("open",       1, 1)
-                     , ("closed",     0, 1)
-                     ]
-     , "testing"   : [ ("open",       0, 1)
-                     , ("closed",     0, 0)
-                     ]
-     , "suspended" : [ ("open",       0, 0)
-                     , ("closed",     0, 1)
-                     ]
-     , "closed"    : [ ("open",       0, 1)
-                     ]
-     }
-
-# Certified software categories which need special handling.
-cert_sw = \
-    [ "Bootloader"
-    , "Cert-Bootloader"
-    , "Cert-OS"
-    , "Cert-Verify"
-    , "Cert-Chip"
-    , "TTP-OS"
-    , "TTP-Verify"
-    , "BSP"
-    ]
-
 def union (* lists) :
     """Compute the union of lists.
     """
@@ -129,8 +92,8 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         nosy.remove (None)
     newvalues ["nosy"] = nosy
 
-    # Set `status` strictly to "open"
-    newvalues ["status"]   = db.status.lookup ("open")
+    # Set `status` strictly to "analyzing"
+    newvalues ["status"]   = db.status.lookup ("analyzing")
 
     # It is meaningless to create obsolete or mistaken issues.
     kind_name = db.kind.get (kind, "name")
@@ -140,16 +103,17 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
                       % nodeid
                       )
 
-    # Check for correct format of `effort`. (same as in `limit_transitions`)
-    effort = newvalues.get ("effort", None)
-    if effort and not _effort_regex.match (effort) :
-        raise Reject, ( "[%s] The `effort` field must have the format "
-                        "`\\d+ [PM][DWM]`, e.g. `12 PD`."
-                      % nodeid
-                      )
+    check_effort (newvalues)
     # Do not allow `files_affected` to be filled in initially.
     # XXX Maybe we need this somewhen in future.
 # end def limit_new_entry
+
+def check_effort (newvalues) :
+    effort = newvalues.get ("effort", None)
+    if effort and not _effort_regex.match (effort) :
+        raise Reject, ( "The `effort` field must have the format "
+                        "`\\d+ [PM][DWM]`, e.g. `12 PD`."
+                      )
 
 def may_not_vanish (db, cl, nodeid, newvalues) :
     """Ensure that certain fields do not vanish.
@@ -167,8 +131,7 @@ def may_not_vanish (db, cl, nodeid, newvalues) :
 # end def may_not_vanish
 
 def limit_transitions (db, cl, nodeid, newvalues) :
-    """Enforce (i.e. limit) status transitions to what is defined in the
-       state machine `sm`.
+    """Enforce (i.e. limit) status transitions
     """
     may_not_vanish (db, cl, nodeid, newvalues)
 
@@ -183,11 +146,11 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     superseder      = newvalues.get ("superseder", cl.get(nodeid,"superseder"))
     is_container    = db.issue.get  (nodeid, "composed_of")
     fixed           = newvalues.get ("fixed_in", cl.get (nodeid, "fixed_in"))
-    category        = newvalues.get ("category", cl.get (nodeid, "category"))
-    category_name   = category and db.category.get (category, "name") or ""
+    cat_id          = newvalues.get ("category", cl.get (nodeid, "category"))
+    category        = db.category.getnode (cat_id)
     affected        = newvalues.get \
         ("files_affected", cl.get (nodeid, "files_affected"))
-    effort          = newvalues.get ("effort", None)
+    effort          = newvalues.get ("effort", cl.get (nodeid, "effort"))
     msg             = newvalues.get ("messages", None)
 
     ############ complete the form ############
@@ -212,21 +175,15 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     if cur_status_name == "testing" and new_status_name == "open" :
         newvalues ["fixed_in"] = fixed = "" # active delete
 
+    check_effort (newvalues)
+
     ############ prohibit invalid changes ############
     
-    # Prohibit invalid transitions of `status`.
-    to_stati = [s for (s, r, m) in sm [cur_status_name]]
-    if  new_status != cur_status \
-    and new_status not in [db.status.lookup (s) for s in to_stati] :
-        raise Reject, ( "[%s] Transition only allowed from `%s` to one "
-                        "out of %s."
-                      % (nodeid, cur_status_name, to_stati)
-                      )
-
     # Direct close only allowed if mistaken, obsolete or duplicate,
     # or if it is a container.
-    if (cur_status_name in ["open", "feedback", "suspended"] \
-    and new_status_name == "closed") :
+    if (   cur_status_name in ["open", "feedback", "suspended"]
+       and new_status_name == "closed"
+       ) :
         if not (  kind_name in ["Mistaken", "Obsolete"]
                or superseder
                or is_container
@@ -236,32 +193,23 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                             "be a duplicate of another issue or a container."
                           % nodeid
                           )
-        if kind_name in ["Mistaken", "Obsolete"] and not (msg) :
+        if (kind_name in ["Mistaken", "Obsolete"] or superseder) and not msg :
             raise Reject, ( "[%s] A reason in `message` must be given here."
                           % nodeid
                           )
 
-    # The responsible person must change on certain transitions of `status`.
-    to_change = [s for (s, r, m) in sm [cur_status_name] if r]
-    if  new_status != cur_status \
-    and new_status in [db.status.lookup (s) for s in to_change] \
-    and old_responsible == new_responsible \
-    and not is_container :
-            raise Reject, ( "[%s] The responsible person must be changed for " 
-                            "this transition (%s to %s)."
-                          % (nodeid, cur_status_name, new_status_name)
-                          )
-
-    # A `message` must be given on certain transitions of `status`,
-    # but not for a container.
-    to_change = [s for (s, r, m) in sm [cur_status_name] if m]
-    if  not is_container \
-    and new_status != cur_status \
-    and new_status in [db.status.lookup (s) for s in to_change] \
-    and not msg :
-        raise Reject, ( "[%s] A reason in `message` must be given here."
-                      % nodeid
-                      )
+    if (cur_status_name == "analyzing" and new_status_name != "analyzing") :
+        if not kind :
+            raise Reject, "Kind must be filled in for status change"
+        if not effort :
+            raise Reject, "Effort must be filled in for status change"
+        if new_status_name == "open" :
+            if kind_name == 'Change-Request' :
+                raise Reject, "No State-change to open for Change-Request"
+            m = _effort_regex.match (effort)
+            # > 1 PD ?
+            if not m.group (2).endswith ('D') or int (m.group (1)) > 1 :
+                raise Reject, "State-change to open only for effort < 1PD"
 
     # A `message` must be given whenever `responsible` changes.
     if old_responsible != new_responsible and not msg :
@@ -296,19 +244,13 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                       % nodeid
                       )
 
-    # Check for correct format of the `effort` field.
-    if effort and not _effort_regex.match (effort) :
-        raise Reject, ( "[%s] The `effort` field must have the format "
-                        "`\\d+ [PM][DWM]`, e.g. `12 PD`."
-                      % nodeid
-                      )
-    
     # Ensure `files_affected` to be filled on certifyable products.
-    if (  (cur_status_name == "testing" and new_status_name == "closed")
-       or (cur_status_name == "open"    and new_status_name == "testing")
-       ) \
-    and category_name in cert_sw \
-    and not affected :
+    if (   (  cur_status_name == "testing" and new_status_name == "closed"
+           or cur_status_name == "open"    and new_status_name == "testing"
+           )
+       and category.cert_sw
+       and not affected
+       ) :
         raise Reject, ( "[%s] The `files_affected` field must be (or remain) "
                         "set for certified software."
                       % nodeid

@@ -46,11 +46,27 @@ def check_status (db, cl, nodeid, new_values) :
         status_cl = db.getclass (cl.properties ['status'].classname)
         n_status  = status_cl.getnode (new_values ['status'])
         o_status  = status_cl.getnode (cl.get (nodeid, 'status'))
-        if n_status.id not in o_status.transitions :
+        trans_cl  = db.getclass (status_cl.properties ['transitions'].classname)
+        extended  = trans_cl is not status_cl
+        old_resp  = cl.get (nodeid, "responsible")
+        new_resp  = new_values.get ("responsible", old_resp)
+        if extended :
+            targets = (trans_cl.getnode (t) for t in o_status.transitions)
+            targets = dict ((t.target, t) for t in targets)
+        else :
+            targets = o_status.transitions
+        if n_status.id not in targets :
             raise Reject, _ ("Invalid Status transition: %s -> %s") \
                 % (o_status.name, n_status.name)
+        need_msg = True
+        if extended :
+            target = targets [n_status.id]
+            need_msg = target.require_msg
+            if target.require_resp_change and new_resp == old_resp :
+                raise Reject, _ \
+                    ("Responsible must change for this status change")
         if 'messages' in cl.properties :
-            if not 'messages' in new_values :
+            if need_msg and not 'messages' in new_values :
                 raise Reject, _ ("State change requires a message")
 # end def check_status
 
@@ -59,9 +75,10 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    status_classes = ['it_issue', 'it_project']
+    status_classes = ['it_issue', 'it_project', 'issue']
     for cl in status_classes :
         if cl not in db.classes :
             continue
-        db.getclass (cl).audit ("set", check_status)
+        # Allow other auditors to set status before checking
+        db.getclass (cl).audit ("set", check_status, priority = 200)
 # end def init
