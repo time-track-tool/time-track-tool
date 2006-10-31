@@ -63,7 +63,7 @@ except ImportError :
     get_user_dynamic   = None
 
 sup_cache = {}
-def user_supervisor_for (db, uid = None) :
+def user_supervisor_for (db, uid = None, use_sv = True) :
     """ Recursively compute the users for which the given uid is
         supervisor. If uid in not given (None), the current database
         user is taken.
@@ -72,13 +72,16 @@ def user_supervisor_for (db, uid = None) :
         uid = db.getuid ()
     if uid in sup_cache :
         return sup_cache [uid]
-    sv                = dict ((u, 1) for u in db.user.find (substitute = uid))
+    if use_sv :
+        sv            = dict ((u, 1) for u in db.user.find (substitute = uid))
+    else :
+        sv            = {}
     sv [uid]          = 1
     users             = db.user.find (supervisor = sv)
     trans_users       = []
     for u in users :
         if u != uid :
-            trans_users.extend (user_supervisor_for (db, u))
+            trans_users.extend (user_supervisor_for (db, u, False))
     sup_cache [uid] = dict ((u, 1) for u in users + trans_users)
     return sup_cache [uid]
 # end def user_supervisor_for
