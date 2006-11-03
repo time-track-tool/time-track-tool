@@ -34,7 +34,8 @@ def register_roles (db, roles) :
        a two-element sequence with rolename and description.
     """
     for name, desc in roles :
-        db.security.addRole (name = name, description = desc)
+        if name.lower () not in db.security.role :
+            db.security.addRole (name = name, description = desc)
 # end def register_roles
 
 def register_class_permissions (db, class_perms, prop_perms) :

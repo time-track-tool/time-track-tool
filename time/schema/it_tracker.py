@@ -116,7 +116,7 @@ def security (db, ** kw) :
     classes = \
         [ ("it_category"         , ["User"        ],     ["IT"     ])
         , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
-        , ("it_issue"            , ["User"        ],     ["IT"   ])
+        , ("it_issue"            , ["User"        ],     ["IT"     ])
         , ("it_prio"             , ["User"        ],     ["Admin"  ])
         , ("it_project"          , ["User"        ],     ["IT"     ])
         , ("it_project_status"   , ["User"        ],     ["Admin"  ])
