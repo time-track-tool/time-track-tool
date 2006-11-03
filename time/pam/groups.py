@@ -51,8 +51,12 @@ def log_traceback (cause) :
         syslog (LOG_DEBUG, l)
 # end def log_traceback
 
+prefix     = 'GROUP'
+
+KEYS = ['gidNumber', 'description', 'cn']
+
 config     = Config ()
-openlog    (config.LOG_PREFIX, 0, config.LOG_FACILITY)
+openlog    (prefix, 0, config.LOG_FACILITY)
 setlogmask (LOG_UPTO (config.LOGLEVEL))
 syslog     (LOG_DEBUG, "started")
 try :
@@ -64,10 +68,15 @@ except StandardError, cause :
     log_traceback (cause)
     sys.exit (23)
 
-    try :
-        scope = ldap.SCOPE_SUBTREE
-        lu    = ld.search_s (config.BASEDN, scope)
-        print lu
-    except StandardError, cause :
-        log_traceback (cause)
+try :
+    scope = ldap.SCOPE_SUBTREE
+    basedn = config.BASEDN
+    basedn = 'dc=tttech,dc=com'
+    lu    = ld.search_s (basedn, scope, 'memberUid=*')
+    for item in lu :
+        print "--> ", item [0]
+        for k, v in item [1].iteritems () :
+            print "%s: %s" % (k, v)
+except StandardError, cause :
+    log_traceback (cause)
 syslog (LOG_DEBUG, "end")
