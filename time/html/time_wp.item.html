@@ -81,7 +81,7 @@
      <td>
       <span tal:replace="structure context/bookers/field"/>
       <span tal:replace="structure python:db.user.classhelp
-            ( 'username,firstname,lastname'
+            ( 'username,nickname,firstname,lastname'
             , property='bookers'
             , width='600'
             , filter='status=%s' % db._db.user_status.lookup ('valid')

@@ -57,8 +57,9 @@
     <td colspan="3">
      <span tal:replace="structure context/nosy/field" />
      <span tal:replace="structure python:db.user.classhelp
-         ( 'username,firstname,lastname'
+         ( 'username,nickname,firstname,lastname'
          , property='nosy'
+         , filter='status=%s' % db._db.user_status.lookup ('valid')
          , width='600'
          , pagesize=500
          )" /><br>

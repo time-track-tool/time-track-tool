@@ -85,8 +85,9 @@
       <td>
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:db.user.classhelp
-             ( 'username,firstname,lastname'
+             ( 'username,nickname,firstname,lastname'
              , property='responsible'
+             , filter='status=%s' % db._db.user_status.lookup ('valid')
              , inputtype='radio'
              , width='600'
              , pagesize=500

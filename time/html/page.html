@@ -526,7 +526,7 @@
      <span tal:replace="structure context/nosy/field"></span>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:db.user.classhelp
-             ( 'username,firstname,lastname'
+             ( 'username,nickname,firstname,lastname'
              , property='nosy'
              , width='600'
              , pagesize=500
