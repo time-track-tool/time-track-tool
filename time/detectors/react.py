@@ -65,8 +65,8 @@ def join_nosy_lists (db, cl, nodeid, oldvalues) :
 def init (db) :
     if 'issue' not in db.classes :
         return
-    db.issue.react    ("create", update_composed_of)
-    db.issue.react    ("set",    update_composed_of)
-    db.issue.react    ("set",    join_nosy_lists)
-    db.it_issue.react ("set",    join_nosy_lists)
+    db.issue.react    ("create", update_composed_of, priority = 50)
+    db.issue.react    ("set",    update_composed_of, priority = 50)
+    db.issue.react    ("set",    join_nosy_lists,    priority = 50)
+    db.it_issue.react ("set",    join_nosy_lists,    priority = 50)
 # end def init

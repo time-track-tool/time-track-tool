@@ -41,6 +41,7 @@ def check_status (db, cl, nodeid, new_values) :
         state change (Hmm: we require that the set of attached messages
         changes -- removal of msg together with a state-change is near
         to impossible in the web-interface).
+        Added: Container changes don't need a message.
     """
     if "status" in new_values :
         status_cl = db.getclass (cl.properties ['status'].classname)
@@ -65,6 +66,9 @@ def check_status (db, cl, nodeid, new_values) :
             if target.require_resp_change and new_resp == old_resp :
                 raise Reject, _ \
                     ("Responsible must change for this status change")
+        # No msg for container changes
+        if 'composed_of' in cl.properties and cl.get (nodeid, 'composed_of') :
+            need_msg = False
         if 'messages' in cl.properties :
             if need_msg and not 'messages' in new_values :
                 raise Reject, _ ("State change requires a message")
