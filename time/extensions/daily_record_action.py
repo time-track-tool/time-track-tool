@@ -40,16 +40,17 @@
 #--
 
 import os, sys
-from roundup.cgi.actions    import Action, EditItemAction
-from roundup.cgi.exceptions import Redirect
-from roundup.exceptions     import Reject
-from roundup.cgi            import templating
-from roundup.date           import Date, Interval, Range
-from roundup                import hyperdb
-from time                   import gmtime
-from copy                   import copy
-from operator               import add
-from rsclib.autosuper       import autosuper
+from roundup.cgi.actions            import Action, EditItemAction
+from roundup.cgi.exceptions         import Redirect
+from roundup.exceptions             import Reject
+from roundup.cgi                    import templating
+from roundup.date                   import Date, Interval, Range
+from roundup                        import hyperdb
+from time                           import gmtime
+from copy                           import copy
+from operator                       import add
+from rsclib.autosuper               import autosuper
+from roundup.cgi.TranslationService import get_translation
 
 # Hack: We want to import this from the conversion functions, too.
 # But in the conversion the init routine is not called.
@@ -60,6 +61,7 @@ try :
     from user_dynamic       import get_user_dynamic, day_work_hours \
                                  , round_daily_work_hours
 except ImportError :
+    _                      = lambda x : x
     week_from_date         = None
     ymd                    = None
     pretty_range           = None
@@ -81,8 +83,10 @@ def prev_week (db, request) :
     date    = pretty_range (n_start, n_end)
     return \
         '''javascript:
-            document.forms.edit_daily_record ['date'].value = '%s';
-            document.edit_daily_record.submit ();
+            if(submit_once()) {
+              document.forms.edit_daily_record ['date'].value = '%s';
+              document.edit_daily_record.submit ();
+            }
         ''' % date
 # end def prev_week
 
@@ -97,10 +101,51 @@ def next_week (db, request) :
     date    = pretty_range (n_start, n_end)
     return \
         '''javascript:
-            document.forms.edit_daily_record ['date'].value = '%s';
-            document.edit_daily_record.submit ();
+            if(submit_once()) {
+              document.forms.edit_daily_record ['date'].value = '%s';
+              document.edit_daily_record.submit ();
+            }
         ''' % date
 # end def next_week
+
+def button_submit_to (db, user, date) :
+    """ Create the submit_to button for time tracking submissions. We
+        get the supervisor of the user and check if clearance is
+        delegated.
+    """
+    db = db._db
+    supervisor = db.user.get (user,       'supervisor')
+    clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
+    nickname   = db.user.get (clearance,  'nickname').upper ()
+    return \
+        '''<input type="button" value="%s"
+            onClick="
+            if(submit_once()) {
+                document.forms.edit_daily_record ['@action'].value =
+                    'daily_record_submit';
+                document.forms.edit_daily_record ['date'].value = '%s'
+                document.edit_daily_record.submit ();
+            }
+            ">
+        ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
+# end def button_submit_to
+
+def button_action (date, action, value) :
+    """ Create a button for time-tracking actions """
+    ''"approve", ''"deny", ''"edit again"
+    #print action, value
+    return \
+        '''<input type="button" value="%s"
+            onClick="
+            if(submit_once()) {
+                document.forms.edit_daily_record ['@action'].value =
+                    'daily_record_%s';
+                document.forms.edit_daily_record ['date'].value = '%s'
+                document.edit_daily_record.submit ();
+            }
+            ">
+        ''' % (value, action, date)
+# end def button_action
 
 def try_create_public_holiday (db, daily_record, date, user) :
     dyn = get_user_dynamic (db, user, date)
@@ -451,7 +496,7 @@ def is_end_of_week (date) :
 # end def is_end_of_week
 
 def init (instance) :
-    global pretty_range, week_from_date, ymd, get_user_dynamic, date_range
+    global _, pretty_range, week_from_date, ymd, get_user_dynamic, date_range
     global weekno_from_day, from_week_number, day_work_hours
     global round_daily_work_hours
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
@@ -459,6 +504,8 @@ def init (instance) :
                            , weekno_from_day, from_week_number
     from user_dynamic import get_user_dynamic, day_work_hours \
                            , round_daily_work_hours
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     del sys.path [0]
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
@@ -471,6 +518,8 @@ def init (instance) :
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
+    util ("button_submit_to",         button_submit_to)
+    util ("button_action",            button_action)
     util ('weekno',                   weekno_from_day)
     util ('daysum',                   daysum)
     util ('weeksum',                  weeksum)

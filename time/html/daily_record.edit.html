@@ -87,7 +87,7 @@
              <input type="text" size="7" name="weekno"
               onChange="document.forms.edit_daily_record ['@action'].value =
                   'weekno_action';
-                document.edit_daily_record.submit ();">
+                if(submit_once()){document.edit_daily_record.submit ();}">
            </th>
            <th style="text-align:right;"
             tal:content="structure
@@ -101,7 +101,7 @@
                             "
              onChange="document.forms.edit_daily_record ['@action'].value =
                   'daily_record_edit_action';
-                document.edit_daily_record.submit ();">
+                if(submit_once()){document.edit_daily_record.submit ();}">
            </th>
            <th>&nbsp;</th>
            <th>&nbsp;</th>
@@ -118,7 +118,7 @@
          <input type="button" value=" Save " i18n:attributes="value"
           onClick="document.forms.edit_daily_record ['@action'].value =
               'daily_record_edit_action';
-            document.edit_daily_record.submit ();">
+            if(submit_once()){document.edit_daily_record.submit ();}">
         </th>
        </tr>
 
@@ -317,7 +317,7 @@
            <input type="button" value=" Save " i18n:attributes="value"
             onClick="document.forms.edit_daily_record ['@action'].value =
                 'daily_record_edit_action';
-              document.edit_daily_record.submit ();">
+              if (submit_once()){document.edit_daily_record.submit ();}">
           </tal:block>
          </td>
          <td/>

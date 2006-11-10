@@ -228,41 +228,6 @@ def html_calendar (request) :
     return "\n".join (res)
 # end def html_calendar
 
-def button_submit_to (db, user, date) :
-    """ Create the submit_to button for time tracking submissions. We
-        get the supervisor of the user and check if clearance is
-        delegated.
-    """
-    db = db._db
-    supervisor = db.user.get (user,       'supervisor')
-    clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
-    nickname   = db.user.get (clearance,  'nickname').upper ()
-    return \
-        '''<input type="button" value="%s"
-            onClick="
-                document.forms.edit_daily_record ['@action'].value =
-                    'daily_record_submit';
-                document.forms.edit_daily_record ['date'].value = '%s'
-                document.edit_daily_record.submit ();
-            ">
-        ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
-# end def button_submit_to
-
-def button_action (date, action, value) :
-    """ Create a button for time-tracking actions """
-    ''"approve", ''"deny", ''"edit again"
-    #print action, value
-    return \
-        '''<input type="button" value="%s"
-            onClick="
-                document.forms.edit_daily_record ['@action'].value =
-                    'daily_record_%s';
-                document.forms.edit_daily_record ['date'].value = '%s'
-                document.edit_daily_record.submit ();
-            ">
-        ''' % (value, action, date)
-# end def button_action
-
 def batch_has_status (batch, status) :
     b = copy (batch)
     for i in batch :
@@ -377,8 +342,6 @@ def init (instance) :
     reg ("time_stamp",                   time_stamp)
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
-    reg ("button_submit_to",             button_submit_to)
-    reg ("button_action",                button_action)
     reg ("batch_has_status",             batch_has_status)
     reg ("work_packages",                work_packages)
     reg ("sorted",                       u_sorted)

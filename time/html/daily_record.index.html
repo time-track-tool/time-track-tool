@@ -15,6 +15,8 @@
     , utils.ExtProperty (utils, pdict ['user'],        multiselect = 1)
     , utils.ExtProperty (utils, pdict ['date'])
     , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['required_overtime'])
+    , utils.ExtProperty (utils, pdict ['weekend_allowed'])
     );
    "
   tal:condition="context/is_view_ok">

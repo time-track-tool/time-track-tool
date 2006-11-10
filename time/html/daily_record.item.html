@@ -37,6 +37,14 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'required_overtime')"/>
+      <td tal:content="structure python:context.required_overtime.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'weekend_allowed')"/>
+      <td tal:content="structure python:context.weekend_allowed.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()" colspan="3"/>
      </tr>

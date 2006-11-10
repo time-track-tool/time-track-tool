@@ -73,6 +73,8 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , status                = Link      ( "daily_record_status"
                                             , do_journal = "no"
                                             )
+        , required_overtime     = Boolean   ()
+        , weekend_allowed       = Boolean   ()
         , time_record           = Multilink ("time_record",   do_journal = "no")
         )
 
