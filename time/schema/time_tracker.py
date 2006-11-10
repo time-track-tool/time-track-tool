@@ -261,7 +261,7 @@ def security (db, ** kw) :
         [ ("cost_center"         , ["User"],             ["Controlling"     ])
         , ("cost_center_group"   , ["User"],             ["Controlling"     ])
         , ("cost_center_status"  , ["User"],             ["Controlling"     ])
-        , ("daily_record"        , ["User"],             ["HR","Controlling"])
+        , ("daily_record"        , ["User"],             [])
         , ("daily_record_status" , ["User"],             ["Admin"           ])
         , ("public_holiday"      , ["User"],             ["HR","Controlling"])
         , ("summary_report"      , ["User"],             [                  ])
@@ -277,7 +277,15 @@ def security (db, ** kw) :
         ]
 
     prop_perms = \
-        [ ( "time_wp", "Edit", ["Controlling"], ( "project",))
+        [ ( "time_wp",      "Edit", ["Controlling"]
+          , ( "project",)
+          )
+        , ( "daily_record", "Edit", ["HR", "Controlling"]
+          , ("status", "time_record")
+          )
+        , ( "daily_record", "Edit", ["HR"]
+          , ("required_overtime", "weekend_allowed")
+          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -409,6 +417,7 @@ def security (db, ** kw) :
             , klass       = 'daily_record'
             , check       = ok_daily_record
             , description = 'User and approver may edit daily_records'
+            , properties  = ('status', 'required_overtime', 'time_record')
             )
         db.security.addPermissionToRole('User', p)
 

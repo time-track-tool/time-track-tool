@@ -398,9 +398,9 @@ class ExtProperty :
         return prop.field ()
     # end def menu_or_field
 
-    def colonlabel (self) :
+    def colonlabel (self, delimiter = ':') :
         return self.utils.fieldname \
-            (self.helpcls, self.helpname, self.label, ':', 'header')
+            (self.helpcls, self.helpname, self.label, delimiter, 'header')
     # end def colonlabel
 
     def colonfield (self, item = None) :

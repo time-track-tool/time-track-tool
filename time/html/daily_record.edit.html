@@ -31,6 +31,7 @@
       ( user   = utils.ExtProperty (utils, pdict ['user'],   multiselect = 1)
       , date   = utils.ExtProperty (utils, pdict ['date'])
       , status = utils.ExtProperty (utils, pdict ['status'], multiselect = 1)
+      , w_allo = utils.ExtProperty (utils, pdict ['weekend_allowed'])
       )
     ; props   python: pdict.itervalues ()
     ; uid     python: db._db.getuid    ()
@@ -55,7 +56,7 @@
       ">
       <table class="list">
        <tr class="time-nav">
-        <th colspan="6">
+        <th colspan="7">
          <table class="list">
           <tr class="time-nav" tal:define="date python:pdict ['date']">
            <th>
@@ -133,7 +134,7 @@
          <th tal:content="structure python:utils.fieldname
              ('time_record', 'duration',      endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'wp',            endswith = '')"/>
+             ('time_record', 'wp',            endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
              ('time_record', 'time_activity', endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
@@ -149,7 +150,8 @@
            "cls       python:['normal','alt'][repeat['i'].index%2]
            ;idx       python:repeat['i'].index + 1
            ;editable  python: edit_ok and str (i.status) == 'open'
-           ;w_allowed python:utils.weekend_allowed (db._db, i)
+           ;w_allowed python:i.weekend_allowed
+                             or utils.weekend_allowed (db._db, i)
            ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
            ;allowed   python: (w_allowed or not is_wend) and edit_ok
            ;wps       python:utils.sorted 
@@ -163,8 +165,16 @@
            <td tal:content="python:utils.daysum (db._db, i.id, format = '%.2f')"
             style="text-align:right;" class="subhead-nb"/>
            <td/>
-           <td class="subhead"
+           <td class="subhead-nb"
             tal:content="structure python:pdict ['status'].colonfield (i)"/>
+           <td class="subhead" nowrap>
+            <tal:block
+             tal:condition="python:is_wend and i.weekend_allowed.is_edit_ok ()
+                                   and str (i.status) == 'open'"
+             tal:content="structure python:
+                 pdict ['w_allo'].colonlabel (':&nbsp')
+                 + i.weekend_allowed.field ()"/>
+           </td>
            <td class="subhead" colspan="2"/>
            <td class="subhead"/>
            <td tal:condition="python:is_open and edit_ok"/>
@@ -199,7 +209,7 @@
                 python:dur.del_link (form='edit_daily_record')">
              </span>
             </td>
-            <td>
+            <td colspan="2">
              <select tal:condition="editable"
               tal:attributes="name python:'time_record%s@wp'%r.id">
               <option tal:attributes="selected not:r/wp/id" value="-1">
@@ -255,7 +265,7 @@
             tal:content="structure python:utils.new_property
              (context, db, 'time_record', -idx, 'duration').field (size=5)"/>
            <td/>
-           <td>
+           <td colspan="2">
             <select
              tal:attributes="name python:'time_record-%d@wp'%idx">
              <option selected="selected" value="-1">- no selection -</option>
@@ -289,13 +299,13 @@
            <td style="text-align:right;" class="subhead-nb"
             tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
            <td/>
-           <td/><td colspan="2"/><td/>
+           <td colspan="2"/><td colspan="2"/><td/>
            <td tal:condition="python:is_open and edit_ok"/>
           </tr>
          </tal:block>
         </tal:block>
         <tr tal:condition="python:mod_ok">
-         <td colspan="6"/>
+         <td colspan="7"/>
          <td colspan="2">
           <tal:block tal:condition="is_open"
            tal:replace="structure python:utils.button_submit_to
@@ -320,10 +330,10 @@
               if (submit_once()){document.edit_daily_record.submit ();}">
           </tal:block>
          </td>
-         <td/>
+         <td tal:condition="python:is_open and edit_ok"/>
         </tr>
         <tr tal:condition="python: not is_open and is_submitted and aprv_ok">
-         <td colspan="6"/>
+         <td colspan="7"/>
          <td colspan="2">
           <tal:block tal:replace="structure python:utils.button_action
            (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
