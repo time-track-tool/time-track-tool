@@ -22,7 +22,9 @@ import re
 if __name__ != "__main__" :
     from roundup.date import Date
 
-Reject          = ValueError # see roundup/cgi/client.py, line 698
+from roundup.exceptions             import Reject
+from roundup.cgi.TranslationService import get_translation
+
 _effort_pattern = r"(\d+) \s* ([PM][DWM]) (?:\s+ \(([^)]+)\))?"
 _effort_regex   = re.compile (_effort_pattern, re.VERBOSE)
 
@@ -118,16 +120,12 @@ def check_effort (newvalues) :
 def may_not_vanish (db, cl, nodeid, newvalues) :
     """Ensure that certain fields do not vanish.
     """
-    title       = newvalues.get ("title",       cl.get (nodeid, "title"))
-    category    = newvalues.get ("category",    cl.get (nodeid, "category"))
-    area        = newvalues.get ("area",        cl.get (nodeid, "area"))
-    kind        = newvalues.get ("kind",        cl.get (nodeid, "kind"))
-    responsible = newvalues.get ("responsible", cl.get (nodeid, "responsible"))
-    if not title or not category or not area or not kind or not responsible :
-        raise Reject, ( "[%s] The fields `title`, `category`, `area`, "
-                        "`kind` <br> and `responsible` must remain filled."
-                      % nodeid
-                      )
+    for k in 'title', 'category', 'area', 'kind', 'responsible', 'effort' :
+        old = cl.get (nodeid, k)
+        new = newvalues.get (k, old)
+        if new != old and not new :
+            raise Reject, \
+                _ ('The field "%s" must must remain filled.') % _ (k)
 # end def may_not_vanish
 
 def limit_transitions (db, cl, nodeid, newvalues) :
@@ -306,6 +304,9 @@ def part_of_changed (db, cl, nodeid, newvalues) :
 # end def part_of_changed
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'issue' not in db.classes :
         return
     db.issue.audit ("create", limit_new_entry)
