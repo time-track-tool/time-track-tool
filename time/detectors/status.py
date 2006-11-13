@@ -51,6 +51,8 @@ def check_status (db, cl, nodeid, new_values) :
         extended  = trans_cl is not status_cl
         old_resp  = cl.get (nodeid, "responsible")
         new_resp  = new_values.get ("responsible", old_resp)
+        if o_status.id == n_status.id :
+            return
         if extended :
             targets = (trans_cl.getnode (t) for t in o_status.transitions)
             targets = dict ((t.target, t) for t in targets)
