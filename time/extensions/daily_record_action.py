@@ -256,6 +256,15 @@ class Daily_Record_Action (Daily_Record_Common) :
     name           = 'daily_record_action'
 
     def handle (self) :
+        print "user:", self.user
+        uid = self.db.user.lookup (self.user)
+        if not self.db.user.get (uid, 'supervisor') :
+            f_supervisor = _ ('supervisor')
+            user         = self.user
+            msg          = _ ("No %(f_supervisor)s for %(user)s") % locals ()
+            url          = 'index?:error_message=' + msg 
+            raise Redirect, url
+
         self.create_daily_records ()
         self.request.filterspec = \
             { 'date' : pretty_range (self.start, self.end)
