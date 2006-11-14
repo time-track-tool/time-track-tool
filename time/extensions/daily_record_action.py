@@ -233,8 +233,10 @@ class Daily_Record_Common (Action, autosuper) :
         while d <= end :
             try :
                 x = self.db.daily_record.create \
-                    ( user = self.user
-                    , date = d
+                    ( user              = self.user
+                    , date              = d
+                    , weekend_allowed   = False
+                    , required_overtime = False
                     )
                 try_create_public_holiday (self.db, x, d, self.user)
                 self.db.commit ()

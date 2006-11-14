@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2006-11-14 08:05+0100\n"
+"POT-Creation-Date: 2006-11-14 11:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -815,7 +815,7 @@ msgstr ""
 msgid "Date of this %(Classname)s.<br>"
 msgstr ""
 
-#: ../extensions/help.py:220 ../extensions/help.py:1124
+#: ../extensions/help.py:220 ../extensions/help.py:1129
 msgid "daily_hours"
 msgstr ""
 
@@ -1988,7 +1988,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:691 ../extensions/help.py:1122
+#: ../extensions/help.py:691 ../extensions/help.py:1127
 msgid "remove"
 msgstr ""
 
@@ -2020,7 +2020,7 @@ msgid "required_overtime"
 msgstr ""
 
 #: ../extensions/help.py:701
-msgid "Overtime required by project for this %(Classname)s"
+msgid "Overtime preapproved by supervisor and required by project."
 msgstr ""
 
 #: ../extensions/help.py:702 ../locale/attr.py:18 ../locale/attr.py:52
@@ -2872,19 +2872,30 @@ msgstr ""
 msgid "Flag if booking on weekends is allowed for this %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:1054 ../locale/attr.py:309 attr.py:309
-msgid "weekly_hours"
+#: ../extensions/help.py:1054
+msgid "daily_record++weekend_allowed"
 msgstr ""
 
 #: ../extensions/help.py:1055
+msgid ""
+"Admits user to book work or travel time on this\n"
+"            weekend-day; should always be preapproved by supervisor.\n"
+"         "
+msgstr ""
+
+#: ../extensions/help.py:1059 ../locale/attr.py:309 attr.py:309
+msgid "weekly_hours"
+msgstr ""
+
+#: ../extensions/help.py:1060
 msgid "Expected weekly work-time for %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:1056 ../locale/attr.py:279 attr.py:279
+#: ../extensions/help.py:1061 ../locale/attr.py:279 attr.py:279
 msgid "wp"
 msgstr ""
 
-#: ../extensions/help.py:1057
+#: ../extensions/help.py:1062
 msgid ""
 "Only work packages where you have permission to register show\n"
 "             here. If you miss one, please contact the responsible project\n"
@@ -2892,33 +2903,33 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1062 ../locale/attr.py:284 attr.py:284
+#: ../extensions/help.py:1067 ../locale/attr.py:284 attr.py:284
 msgid "wp_no"
 msgstr ""
 
-#: ../extensions/help.py:1063
+#: ../extensions/help.py:1068
 msgid ""
 "Work package number in the project. Number must be unique for\n"
 "             the project and cannot be changed after assignment.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1067
+#: ../extensions/help.py:1072
 msgid "wp++durations_allowed"
 msgstr ""
 
-#: ../extensions/help.py:1069
+#: ../extensions/help.py:1074
 msgid ""
 "This is mainly used for special %(Classname)ss, like,\n"
 "             e.g., vacation.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1073 ../locale/attr.py:297 attr.py:297
+#: ../extensions/help.py:1078 ../locale/attr.py:297 attr.py:297
 msgid "wps"
 msgstr ""
 
-#: ../extensions/help.py:1074
+#: ../extensions/help.py:1079
 msgid ""
 "For a better handling of the work load of a project it is\n"
 "             split in to work packages. This field defines a list of work\n"
@@ -2926,17 +2937,17 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1079 ../locale/attr.py:259 ../locale/attr.py:272
+#: ../extensions/help.py:1084 ../locale/attr.py:259 ../locale/attr.py:272
 #: ../locale/attr.py:322 ../schema/time_tracker.py:238 attr.py:259 attr.py:272
 #: attr.py:322
 msgid "work_location"
 msgstr ""
 
-#: ../extensions/help.py:1080
+#: ../extensions/help.py:1085
 msgid "time_project++work_location"
 msgstr ""
 
-#: ../extensions/help.py:1082
+#: ../extensions/help.py:1087
 msgid ""
 " If a value is given here, the work location will be\n"
 "             corrected for all time records booked on work packages of\n"
@@ -2979,7 +2990,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:62 ../html/_generic.item.html:62
-#: ../html/page.html:834
+#: ../html/page.html:838
 msgid "Download as CSV"
 msgstr ""
 
@@ -2996,29 +3007,29 @@ msgstr ""
 msgid "Properties of ${Classname}"
 msgstr ""
 
-#: ../html/alias.item.html:7 ../html/cost_center.item.html:7
-#: ../html/daily_record.item.html:7 ../html/group.item.html:7
-#: ../html/issue.item.html:7 ../html/it_issue.item.html:7
-#: ../html/it_project.item.html:7 ../html/machine.item.html:7
-#: ../html/machine_name.item.html:7 ../html/msg.item.html:7
-#: ../html/network_address.item.html:7 ../html/network_interface.item.html:7
-#: ../html/public_holiday.item.html:7 ../html/smb_machine.item.html:7
-#: ../html/time_project.item.html:7 ../html/time_record.item.html:7
-#: ../html/time_wp.item.html:7 ../html/time_wp_group.item.html:7
-#: ../html/user_dynamic.item.html:7
+#: ../html/alias.item.html:7 ../html/category.item.html:7
+#: ../html/cost_center.item.html:7 ../html/daily_record.item.html:7
+#: ../html/group.item.html:7 ../html/issue.item.html:7
+#: ../html/it_issue.item.html:7 ../html/it_project.item.html:7
+#: ../html/machine.item.html:7 ../html/machine_name.item.html:7
+#: ../html/msg.item.html:7 ../html/network_address.item.html:7
+#: ../html/network_interface.item.html:7 ../html/public_holiday.item.html:7
+#: ../html/smb_machine.item.html:7 ../html/time_project.item.html:7
+#: ../html/time_record.item.html:7 ../html/time_wp.item.html:7
+#: ../html/time_wp_group.item.html:7 ../html/user_dynamic.item.html:7
 msgid "${classname_id} created by ${creator}"
 msgstr ""
 
-#: ../html/alias.item.html:10 ../html/cost_center.item.html:10
-#: ../html/daily_record.item.html:10 ../html/group.item.html:10
-#: ../html/issue.item.html:10 ../html/it_issue.item.html:10
-#: ../html/it_project.item.html:10 ../html/machine.item.html:10
-#: ../html/machine_name.item.html:10 ../html/msg.item.html:10
-#: ../html/network_address.item.html:10 ../html/network_interface.item.html:10
-#: ../html/public_holiday.item.html:10 ../html/smb_machine.item.html:10
-#: ../html/time_project.item.html:10 ../html/time_record.item.html:10
-#: ../html/time_wp.item.html:10 ../html/time_wp_group.item.html:10
-#: ../html/user_dynamic.item.html:10
+#: ../html/alias.item.html:10 ../html/category.item.html:10
+#: ../html/cost_center.item.html:10 ../html/daily_record.item.html:10
+#: ../html/group.item.html:10 ../html/issue.item.html:10
+#: ../html/it_issue.item.html:10 ../html/it_project.item.html:10
+#: ../html/machine.item.html:10 ../html/machine_name.item.html:10
+#: ../html/msg.item.html:10 ../html/network_address.item.html:10
+#: ../html/network_interface.item.html:10 ../html/public_holiday.item.html:10
+#: ../html/smb_machine.item.html:10 ../html/time_project.item.html:10
+#: ../html/time_record.item.html:10 ../html/time_wp.item.html:10
+#: ../html/time_wp_group.item.html:10 ../html/user_dynamic.item.html:10
 msgid "New ${Classname}"
 msgstr ""
 
@@ -3066,15 +3077,15 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:822
+#: ../html/page.html:826
 msgid "Query ${Classname}"
 msgstr ""
 
-#: ../html/page.html:846
+#: ../html/page.html:850
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:868
+#: ../html/page.html:872
 msgid "Group on:"
 msgstr ""
 

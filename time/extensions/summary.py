@@ -477,7 +477,7 @@ class Summary_Report :
                 udrs        = []
                 for i in db.user_dynamic.find (** {cl : spec}) :
                     ud = db.user_dynamic.getnode (i)
-                    if  (   ud.valid_from < end
+                    if  (   ud.valid_from <= end
                         and (not ud.valid_to or ud.valid_to > start)
                         ) :
                         udrs.append (ud)
@@ -488,7 +488,7 @@ class Summary_Report :
                         udend = min (ud.valid_to - Interval ('1d'), end)
                     else :
                         udend = end
-                    assert (udstart < udend)
+                    assert (udstart <= udend)
                     drs = db.daily_record.filter \
                         ( None, dict 
                             ( user   = ud.user

@@ -698,7 +698,7 @@ _helptext = \
     , ""'require_resp_change'         :
       [""'''Require change of responsible person for this %(Classname)s''']
     , ""'required_overtime'           :
-      [""'''Overtime required by project for this %(Classname)s''']
+      [""'''Overtime preapproved by supervisor and required by project.''']
     , ""'responsible'                 :
       [""'''Person who is responsible for the %(Classname)s''']
     , ""'review++responsible'         :
@@ -1051,6 +1051,11 @@ _helptext = \
       ]
     , ""'weekend_allowed'             :
       [""'''Flag if booking on weekends is allowed for this %(Classname)s.''']
+    , ""'daily_record++weekend_allowed' :
+      [""'''Admits user to book work or travel time on this
+            weekend-day; should always be preapproved by supervisor.
+         '''
+      ]
     , ""'weekly_hours'                :
       [""'''Expected weekly work-time for %(Classname)s.''']
     , ""'wp'                          :
@@ -1152,7 +1157,7 @@ def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     return ("""<a %s title="Help for %s" href="javascript:help_window"""
             """('%s?:template=property_help#%s', '500', '400')">"""
             """%s%s</a>""" \
-            % (csscls, label, cls, name, label, endswith)
+            % (csscls, label, cls, prop, label, endswith)
            )
 # end def fieldname
 
