@@ -295,11 +295,10 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
 
-    def ok_daily_record (db, userid, itemid) :
-        """Determine if the user owns the daily record, a negative itemid
-           indicates that the record doesn't exits yet -- we allow creation
-           in this case. Modification is also allowed by the supervisor or
-           the person to whom approvals are delegated.
+    def approver_daily_record (db, userid, itemid) :
+        """A negative itemid indicates that the record doesn't exits
+           yet -- we allow creation in this case. Modification is only
+           allowed by the supervisor.
         """
         if int (itemid) < 0 : # allow creation
             return True
@@ -307,7 +306,17 @@ def security (db, ** kw) :
         if not ownerid :
             return False
         clearance = clearance_by (db, ownerid)
-        return userid == ownerid or userid in clearance
+        return userid in clearance
+    # end def approver_daily_record
+
+    def ok_daily_record (db, userid, itemid) :
+        """Determine if the user owns the daily record, a negative itemid
+           indicates that the record doesn't exits yet -- we allow creation
+           in this case. Modification is also allowed by the supervisor or
+           the person to whom approvals are delegated.
+        """
+        ownerid   = db.daily_record.get (itemid, 'user')
+        return userid == ownerid or approver_daily_record (db, userid, itemid)
     # end def ok_daily_record
 
     def own_time_record (db, userid, itemid) :
@@ -417,7 +426,16 @@ def security (db, ** kw) :
             , klass       = 'daily_record'
             , check       = ok_daily_record
             , description = 'User and approver may edit daily_records'
-            , properties  = ('status', 'required_overtime', 'time_record')
+            , properties  = ('status', 'time_record')
+            )
+        db.security.addPermissionToRole('User', p)
+
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'daily_record'
+            , check       = approver_daily_record
+            , description = 'approver may edit daily_record.required_overtime'
+            , properties  = ('required_overtime')
             )
         db.security.addPermissionToRole('User', p)
 
