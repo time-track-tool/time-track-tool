@@ -697,6 +697,8 @@ _helptext = \
       [""'''Require a message for this %(Classname)s''']
     , ""'require_resp_change'         :
       [""'''Require change of responsible person for this %(Classname)s''']
+    , ""'required_overtime'           :
+      [""'''Overtime required by project for this %(Classname)s''']
     , ""'responsible'                 :
       [""'''Person who is responsible for the %(Classname)s''']
     , ""'review++responsible'         :

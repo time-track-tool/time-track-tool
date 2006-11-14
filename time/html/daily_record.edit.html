@@ -32,6 +32,7 @@
       , date   = utils.ExtProperty (utils, pdict ['date'])
       , status = utils.ExtProperty (utils, pdict ['status'], multiselect = 1)
       , w_allo = utils.ExtProperty (utils, pdict ['weekend_allowed'])
+      , r_over = utils.ExtProperty (utils, pdict ['required_overtime'])
       )
     ; props   python: pdict.itervalues ()
     ; uid     python: db._db.getuid    ()
@@ -167,7 +168,7 @@
            <td/>
            <td class="subhead-nb"
             tal:content="structure python:pdict ['status'].colonfield (i)"/>
-           <td class="subhead" nowrap>
+           <td nowrap>
             <tal:block
              tal:condition="python:is_wend and i.weekend_allowed.is_edit_ok ()
                                    and str (i.status) == 'open'"
@@ -175,7 +176,14 @@
                  pdict ['w_allo'].colonlabel (':&nbsp')
                  + i.weekend_allowed.field ()"/>
            </td>
-           <td class="subhead" colspan="2"/>
+           <td colspan="2" nowrap>
+            <tal:block
+             tal:condition="python:i.required_overtime.is_edit_ok ()
+                                   and str (i.status) != 'accepted'"
+             tal:content="structure python:
+                 pdict ['r_over'].colonlabel (':&nbsp')
+                 + i.required_overtime.field ()"/>
+           </td>
            <td class="subhead"/>
            <td tal:condition="python:is_open and edit_ok"/>
           </tr>
