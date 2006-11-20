@@ -178,7 +178,7 @@
            </td>
            <td colspan="2" nowrap>
             <tal:block
-             tal:condition="python:i.required_overtime.is_edit_ok ()
+             tal:condition="python:is_wend and i.required_overtime.is_edit_ok ()
                                    and str (i.status) != 'accepted'"
              tal:content="structure python:
                  pdict ['r_over'].colonlabel (':&nbsp')

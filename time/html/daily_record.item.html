@@ -39,6 +39,7 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'required_overtime')"/>
       <td tal:content="structure python:context.required_overtime.field ()"/>
+     <tr tal:condition="python:context.date.pretty ('%a') in ('Sat','Sun')">
       <th tal:content="structure python:utils.fieldname
           (classname, 'weekend_allowed')"/>
       <td tal:content="structure python:context.weekend_allowed.field ()"/>

@@ -77,6 +77,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , weekend_allowed       = Boolean   ()
         , time_record           = Multilink ("time_record",   do_journal = "no")
         )
+    daily_record.setlabelprop ('date')
 
     daily_record_status = Class \
         ( db
