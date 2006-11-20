@@ -111,6 +111,8 @@ def time_records_consistent (db, cl, nodeid) :
         ]
     trec_notravel   = []
     need_break_recs = []
+    noover_sum      = 0
+    daily_hours     = day_work_hours (dynamic, date)
     for tr in trec :
         tr_pr  = pretty_time_record (tr, date, uname)
         act    = tr.time_activity
@@ -138,12 +140,13 @@ def time_records_consistent (db, cl, nodeid) :
                         ( "%(tr_pr)s: Duration must not exceed %(max_hours)s"
                         % locals ()
                         )
-            max_hours = day_work_hours (dynamic, date)
-            if no_over and tr.duration > max_hours :
-                msgs.append \
-                    ( "%(tr_pr)s: Duration must not exceed %(max_hours)s"
-                    % locals ()
-                    )
+            if no_over :
+                noover_sum += tr.duration
+                if tr.duration > daily_hours :
+                    msgs.append \
+                        ( "%(tr_pr)s: Duration must not exceed %(daily_hours)s"
+                        % locals ()
+                        )
         if not durations_allowed and not tr.start :
             msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
         if tr.start and not travel :
@@ -156,6 +159,11 @@ def time_records_consistent (db, cl, nodeid) :
         if not (start [0] >= end [1] or start [1] >= end [0]) :
             msgs.append ("%(tr_pr)s overlap" % locals ())
     tr_pr = "%s, %s:" % (uname, sdate)
+    if noover_sum > daily_hours :
+        msgs.append \
+            ( "%(tr_pr)s Sum of no-overtime WPs must not exceed %(daily_hours)s"
+            % locals ()
+            )
     if dynamic.daily_worktime :
         work = reduce (add, [t.duration for t in trec_notravel], 0)
         if work > dynamic.daily_worktime :
@@ -431,7 +439,7 @@ def new_time_record (db, cl, nodeid, new_values) :
         if not dynamic.booking_allowed and uid != '1' :
             raise Reject, _ \
                 ("Booking not allowed for %(uname)s, %(date)s") % locals ()
-        if not dynamic.weekend_allowed and uid != '1' :
+        if not (dr.weekend_allowed or dynamic.weekend_allowed) and uid != '1' :
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6) :
                 raise Reject, _ ('No weekend booking allowed')
