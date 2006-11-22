@@ -179,7 +179,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     
     # Direct close only allowed if mistaken, obsolete or duplicate,
     # or if it is a container.
-    if (   cur_status_name in ["open", "feedback", "suspended"]
+    if (   cur_status_name in ["open", "feedback", "suspended", "analyzing"]
        and new_status_name == "closed"
        ) :
         if not (  kind_name in ["Mistaken", "Obsolete"]
