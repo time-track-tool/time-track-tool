@@ -55,7 +55,7 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
             if (   valid_to
                and valid_from <= rvalid_from
                and valid_to   >  rvalid_from
-               ) or valid_from == rvalid_from :
+               ) or (not valid_to and valid_from <= rvalid_from) :
                 raise Reject, \
                     ( "%(valid_from)s;%(valid_to)s overlaps with "
                       "%(rvalid_from)s;"
