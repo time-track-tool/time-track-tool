@@ -133,7 +133,7 @@ class ExtProperty :
         displayprop: Name of the property to display. Only used
             internally, should not be used in the external interface
             (e.g., in a search mask) because the value will not show up
-            in the generated URL and therefore will not work in CVS
+            in the generated URL and therefore will not work in CSV
             export.
         
         Internal attributes:
@@ -160,7 +160,7 @@ class ExtProperty :
         , pretty        = _
         , get_cssclass  = None
         , do_classhelp  = None
-        , fieldwidth    = None
+        , fieldwidth    = 60
         , format        = None
         , help_props    = None
         , help_filter   = None
@@ -342,12 +342,12 @@ class ExtProperty :
             its id are computed.
         """
         i = item or self.item
-        if not i.is_view_ok () or not as_link :
-            return self.formatted ()
         hidden = ""
         if self.add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
-                % (self.classname, str (self.prop))
+                % (self.searchname, str (self.prop))
+        if not i.is_view_ok () or not as_link :
+            return hidden + self.formatted ()
         if not self.classname :
             return ""
         return """<a class="%s" href="%s%s">%s</a>%s""" \
@@ -375,24 +375,24 @@ class ExtProperty :
         prop = self.prop
         if self.is_link_or_multilink :
             if prop._prop.classname == 'user' :
-                    return ' '.join \
-                        (( prop.field (size = 60)
-                        ,  db.user.classhelp \
-                            ( 'username,lastname,firstname,nickname'
-                            , property=self.searchname
-                            , inputtype='%s' % ('radio', 'checkbox')
-                              [isinstance (self.prop, MultilinkHTMLProperty)]
-                            , width='600'
-                            , pagesize=500
-                            , filter='status=%s' % ','.join
-                               (db._db.user_status.lookup (i)
-                                for i in ('valid', 'system')
-                               )
-                            )
-                        ))
+                return ' '.join \
+                    (( prop.field (size = 60)
+                    ,  db.user.classhelp \
+                        ( 'username,lastname,firstname,nickname'
+                        , property=self.searchname
+                        , inputtype='%s' % ('radio', 'checkbox')
+                          [isinstance (self.prop, MultilinkHTMLProperty)]
+                        , width='600'
+                        , pagesize=500
+                        , filter='status=%s' % ','.join
+                           (db._db.user_status.lookup (i)
+                            for i in ('valid', 'system')
+                           )
+                        )
+                    ))
             return prop.menu (height=5)
         try :
-            return prop.field (size=60)
+            return prop.field (size=self.fieldwidth)
         except TypeError :
             pass
         return prop.field ()

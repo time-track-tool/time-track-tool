@@ -19,12 +19,20 @@
        tal:content="Classname"></span>
 
  <tal:block metal:fill-slot="content">
-  <tal:block tal:define="use_labelprop python:0;required_attributes python:''">
+  <tal:block tal:define="use_labelprop python:0;
+                         required_attributes python:'date'">
    <tal:block metal:use-macro="templates/page/macros/ttt_issue">
     <tal:block metal:fill-slot="ttt_issue_content">
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
-      <td>
+      <td tal:condition="context/id"
+        tal:content="structure python:utils.ExtProperty
+         ( utils, context.user.username
+         , add_hidden = True
+         , item       = context.user
+         , searchname = 'user'
+         ).formatlink ()"/>
+      <td tal:condition="not:context/id">
        <span tal:replace="structure context/user/field"/>
        <span tal:replace="structure python:db.user.classhelp
              ( 'username,nickname,firstname,lastname'
@@ -35,24 +43,40 @@
              , pagesize=500
              )"/>
       </td>
-      <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
-      <td tal:content="structure python:context.date.field (size=20)"/>
+      <th class="required"
+          tal:content="structure python:utils.fieldname (classname, 'date')"/>
+      <td tal:content="structure python:utils.ExtProperty
+         ( utils, context.date
+         , add_hidden = True
+         , item       = context
+         , fieldwidth = 20
+         , editable = not context.id
+         ).as_listentry (as_link = False)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'required_overtime')"/>
-      <td tal:content="structure python:context.required_overtime.field ()"/>
-     </tr>
-     <tr tal:condition="python:context.date.pretty ('%a') in ('Sat','Sun')">
+            (classname, 'week_balance')"/>
+      <td tal:content="structure python:context.week_balance.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'weekend_allowed')"/>
-      <td tal:content="structure python:context.weekend_allowed.field ()"/>
+            (classname, 'week_hours')"/>
+      <td tal:content="structure python:context.week_hours.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'status')"/>
-      <td tal:content="structure python:context.status.menu ()" colspan="3"/>
+            (classname, 'period_balance')"/>
+      <td tal:content="structure python:context.period_balance.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+            (classname, 'period_hours')"/>
+      <td tal:content="structure python:context.period_hours.field ()"/>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'frozen')"/>
+      <td tal:content="structure python:context.frozen.field ()"/>
+     </tr>
+    </tal:block>
+    <tal:block metal:fill-slot="button_slot">
+     <input tal:condition="not:context/id" type="button" value="Freeze all"
+            tal:attributes="onClick python:utils.freeze_all_script ()">
     </tal:block>
    </tal:block>
   </tal:block>

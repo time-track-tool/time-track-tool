@@ -90,10 +90,13 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         if i in new_values and not new_values [i] :
             raise Reject, "%(attr)s may not be empty" % {'attr' : _ (i)}
     user     = new_values.get ('user',         cl.get (nodeid, 'user'))
-    val_from = new_values.get ('valid_from',   cl.get (nodeid, 'valid_from'))
+    old_from = cl.get (nodeid, 'valid_from')
+    val_from = new_values.get ('valid_from',   old_from)
     val_to   = new_values.get ('valid_to',     cl.get (nodeid, 'valid_to'))
     olo      = new_values.get ('org_location', cl.get (nodeid, 'org_location'))
     dept     = new_values.get ('department',   cl.get (nodeid, 'department'))
+    if frozen (db, user, old_from) :
+        raise Reject, _ ("Frozen: %(old_from)s") % locals ()
     if 'org_location' in new_values or 'department' in new_values :
         db.user.set (user, org_location = olo, department = dept)
     if 'valid_from' in new_values or 'valid_to' in new_values :
@@ -118,6 +121,8 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     valid_to   = new_values.get ('valid_to', None)
     olo        = new_values ['org_location']
     dept       = new_values ['department']
+    if frozen (db, user, valid_from) :
+        raise Reject, _ ("Frozen: %(valid_from)s") % locals ()
     db.user.set (user, org_location = olo, department = dept)
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
@@ -151,9 +156,10 @@ def close_existing (db, cl, nodeid, old_values) :
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
-    global _
+    global _, frozen
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    from freeze import frozen
     db.user_dynamic.audit  ("create", new_user_dynamic)
     db.user_dynamic.audit  ("set",    check_user_dynamic)
     db.user_dynamic.react  ("create", close_existing)

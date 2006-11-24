@@ -60,6 +60,7 @@ try :
                                  , from_week_number
     from user_dynamic       import get_user_dynamic, day_work_hours \
                                  , round_daily_work_hours
+    from freeze             import frozen, range_frozen
 except ImportError :
     _                      = lambda x : x
     week_from_date         = None
@@ -71,6 +72,8 @@ except ImportError :
     weekno_from_day        = None
     from_week_number       = None
     round_daily_work_hours = None
+    frozen                 = None
+    range_frozen           = None
 
 def prev_week (db, request) :
     try :
@@ -123,7 +126,7 @@ def button_submit_to (db, user, date) :
             if(submit_once()) {
                 document.forms.edit_daily_record ['@action'].value =
                     'daily_record_submit';
-                document.forms.edit_daily_record ['date'].value = '%s'
+                document.forms.edit_daily_record ['date'].value = '%s';
                 document.edit_daily_record.submit ();
             }
             ">
@@ -146,6 +149,32 @@ def button_action (date, action, value) :
             ">
         ''' % (value, action, date)
 # end def button_action
+
+def freeze_all_script () :
+     return \
+        '''javascript:if(submit_once()){
+             document.forms.itemSynopsis ['@action'].value = 'freeze_all';
+             alert (document.itemSynopsis ['submit']);
+             document.itemSynopsis.submit ();
+           }
+        '''
+# end def freeze_all_script
+
+def time_url (request, classname) :
+    url = 'daily_record?:action=daily_record_action&:template=edit'
+    if  (   classname == 'daily_record'
+        and request.template not in ('approve', 'edit')
+        ) :
+        url = str \
+            ( request.indexargs_url 
+              (classname, {'@action':'daily_record_action', '@template':'edit'})
+            )
+    return \
+        """javascript:if(submit_once()){
+             location.href = '%(url)s'
+           }
+        """ % locals ()
+# end def time_url
 
 def try_create_public_holiday (db, daily_record, date, user) :
     dyn = get_user_dynamic (db, user, date)
@@ -506,15 +535,33 @@ def is_end_of_week (date) :
     return wday == 6
 # end def is_end_of_week
 
+class Freeze_All_Action (Action) :
+    def handle (self) :
+        request = templating.HTMLRequest (self.client)
+        date    = Date (request.form ['date'].value)
+        if not date :
+            raise Reject, _ ("Date is required")
+        for u in self.db.user.getnodeids () :
+            dyn = get_user_dynamic (self.db, u, date)
+#           if dyn :
+#               print date, u, dyn.user, dyn.id
+#               self.db.daily_record_freeze.create \
+#                   (date = date, user = u, value = 0, frozen = 1)
+#       self.db.commit ()
+        raise Redirect, 'daily_record_freeze?date=%s' % date
+    # end def handle
+# end class Freeze_All_Action
+
 def init (instance) :
     global _, pretty_range, week_from_date, ymd, get_user_dynamic, date_range
     global weekno_from_day, from_week_number, day_work_hours
-    global round_daily_work_hours
+    global round_daily_work_hours, frozen, range_frozen
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from common       import pretty_range, week_from_date, ymd, date_range \
                            , weekno_from_day, from_week_number
     from user_dynamic import get_user_dynamic, day_work_hours \
                            , round_daily_work_hours
+    from freeze       import frozen, range_frozen
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     del sys.path [0]
@@ -526,6 +573,7 @@ def init (instance) :
     actn ('daily_record_deny',        Daily_Record_Deny)
     actn ('daily_record_reopen',      Daily_Record_Reopen)
     actn ('weekno_action',            Weekno_Action)
+    actn ('freeze_all',               Freeze_All_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
@@ -536,4 +584,8 @@ def init (instance) :
     util ('weeksum',                  weeksum)
     util ("approvals_pending",        approvals_pending)
     util ("is_end_of_week",           is_end_of_week)
+    util ("freeze_all_script",        freeze_all_script)
+    util ("frozen",                   frozen)
+    util ("range_frozen",             range_frozen)
+    util ("time_url",                 time_url)
 # end def init

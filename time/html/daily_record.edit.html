@@ -1,7 +1,5 @@
 <tal:block tal:define="user python:
-   (  'user' in request.filterspec and request.filterspec ['user'][0]
-   or db._db.getuid ()
-   )">
+   request.form.getvalue ('user') or db._db.getuid ()">
  <tal:block metal:use-macro="templates/page/macros/icing">
   <title metal:fill-slot="head_title" tal:content="Classname" />
   <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
@@ -54,12 +52,14 @@
        is_open      python:utils.batch_has_status (batch, 'open');
        is_submitted python:utils.batch_has_status (batch, 'submitted');
        is_accepted  python:utils.batch_has_status (batch, 'accepted');
+       form_date    python:request.form.getvalue ('date') or nothing;
+       frozen       python:utils.range_frozen (db._db, user, form_date);
       ">
       <table class="list">
        <tr class="time-nav">
         <th colspan="7">
          <table class="list">
-          <tr class="time-nav" tal:define="date python:pdict ['date']">
+          <tr class="time-nav" tal:define="date python:pdict ['date'];">
            <th>
             <a tal:attributes="href python:utils.prev_week (db, request)">
              &lt;&lt;&nbsp;previous
@@ -77,8 +77,7 @@
              <input type="hidden" name="@startwith"
               tal:attributes="value python:request.form.getvalue ('@startwith')
               or '0'">
-             <input type="hidden" name="user"
-              tal:attributes="value python:request.form.getvalue ('user') or nothing">
+             <input type="hidden" name="user" tal:attributes="value user">
              &nbsp;
            </th>
            <th>&nbsp;</th>
@@ -96,9 +95,7 @@
                 python: utils.fieldname ('daily_record', 'date', endswith = ':')"/>
            <th>
             <input type="text" size="22"
-             tal:define="value python:
-                 request.form.getvalue(date.searchname) or nothing"
-             tal:attributes="value python:date.pretty_ids (value)
+             tal:attributes="value python:date.pretty_ids (form_date)
                             ;name  python:date.searchname
                             "
              onChange="document.forms.edit_daily_record ['@action'].value =
@@ -116,7 +113,8 @@
          </table>
         </th>
         <th tal:condition="python:edit_ok and is_open" colspan="2"/>
-        <th tal:condition="python:edit_ok and is_open" style="text-align:left">
+        <th tal:condition="python:edit_ok and is_open and not frozen"
+            style="text-align:left">
          <input type="button" value=" Save " i18n:attributes="value"
           onClick="document.forms.edit_daily_record ['@action'].value =
               'daily_record_edit_action';
@@ -149,8 +147,10 @@
           tal:condition="i/is_view_ok"
           tal:define=
            "cls       python:['normal','alt'][repeat['i'].index%2]
+           ;frozen    python:utils.frozen (db._db, i.user.id, i.date)
            ;idx       python:repeat['i'].index + 1
-           ;editable  python: edit_ok and str (i.status) == 'open'
+           ;editable  python: edit_ok and not frozen
+                              and str (i.status) == 'open'
            ;w_allowed python:i.weekend_allowed
                              or utils.weekend_allowed (db._db, i)
            ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
@@ -165,13 +165,21 @@
             tal:content="structure python:i.date.pretty ('%Y-%m-%d')"/>
            <td tal:content="python:utils.daysum (db._db, i.id, format = '%.2f')"
             style="text-align:right;" class="subhead-nb"/>
-           <td/>
-           <td class="subhead-nb"
-            tal:content="structure python:pdict ['status'].colonfield (i)"/>
+           <td>
+           </td>
+           <td class="subhead-nb">
+             <span
+              tal:content="structure python:pdict ['status'].colonlabel ()"/>
+             <span tal:condition="frozen" title="Frozen">
+              <img src="@@file/stop.png" alt="F" border="0">
+             </span>
+             <span tal:content="structure python:
+                pdict ['status'].as_listentry (i)"/>
            <td nowrap>
             <tal:block
              tal:condition="python:is_wend and i.weekend_allowed.is_edit_ok ()
-                                   and str (i.status) == 'open'"
+                                   and str (i.status) == 'open'
+                                   and not frozen"
              tal:content="structure python:
                  pdict ['w_allo'].colonlabel (':&nbsp')
                  + i.weekend_allowed.field ()"/>
@@ -179,7 +187,8 @@
            <td colspan="2" nowrap>
             <tal:block
              tal:condition="python:is_wend and i.required_overtime.is_edit_ok ()
-                                   and str (i.status) != 'accepted'"
+                                   and str (i.status) != 'accepted'
+                                   and not frozen"
              tal:content="structure python:
                  pdict ['r_over'].colonlabel (':&nbsp')
                  + i.required_overtime.field ()"/>
@@ -315,23 +324,23 @@
         <tr tal:condition="python:mod_ok">
          <td colspan="7"/>
          <td colspan="2">
-          <tal:block tal:condition="is_open"
+          <tal:block tal:condition="python:is_open and not frozen"
            tal:replace="structure python:utils.button_submit_to
            (db, user, request.filterspec ['date'])">
           </tal:block>
           <tal:block tal:condition="python:
-           not is_open and is_submitted and not aprv_ok"
+           not is_open and is_submitted and not aprv_ok and not frozen"
            tal:replace="structure python:utils.button_action
             (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))">
           </tal:block>
           <tal:block tal:condition="python:
-           not is_open and is_hr and is_accepted"
+           not is_open and is_hr and is_accepted and not frozen"
            tal:replace="structure python:utils.button_action
             (request.filterspec ['date'], 'reopen', i18n.gettext ('edit again'))">
           </tal:block>
          </td>
          <td>
-          <tal:block tal:condition="python:is_open and edit_ok">
+          <tal:block tal:condition="python:is_open and edit_ok and not frozen">
            <input type="button" value=" Save " i18n:attributes="value"
             onClick="document.forms.edit_daily_record ['@action'].value =
                 'daily_record_edit_action';
@@ -343,11 +352,13 @@
         <tr tal:condition="python: not is_open and is_submitted and aprv_ok">
          <td colspan="7"/>
          <td colspan="2">
-          <tal:block tal:replace="structure python:utils.button_action
+          <tal:block tal:condition="not:frozen"
+           tal:replace="structure python:utils.button_action
            (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
          </td>
          <td>
-          <tal:block tal:replace="structure python:utils.button_action
+          <tal:block tal:condition="not:frozen"
+           tal:replace="structure python:utils.button_action
            (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
          </td>
         </tr>

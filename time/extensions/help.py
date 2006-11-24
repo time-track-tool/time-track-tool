@@ -132,12 +132,16 @@ _helptext = \
       [""'''Date of last change''']
     , ""'actor'                       :
       [""'''Person who has done the last change''']
+    , ""'additional_hours'            :
+      [""'''Austrian-Law: time above 38.5 hours per week''']
     , ""'alias'                       :
       [""'''Email alias''']
     , ""'alias_to_alias'              :
       [""'''Other aliases this %(Classname)s maps to''']
     , ""'alias_to_user'               :
       [""'''List of users this %(Classname)s maps to''']
+    , ""'all_in'                      :
+      [""'''If selected, the user has an all-inclusive work time contract''']
     , ""'alternate_addresses'         :
       [""'''Alternate email addresses for this user, one per line''']
     , ""'announcements'               :
@@ -599,6 +603,8 @@ _helptext = \
       [""'''User/Owner of this %(Classname)s''']
     , ""'operating_system'            :
       [""'''Operating System running on this %(Classname)s''']
+    , ""'overtime_period'             :
+      [""'''Period over which overtime is computed for a person''']
     , ""'part_of'                     :
       [""'''If you have a Top-Level work package which consists of other
             work packages, you should enter the parent work package
@@ -916,6 +922,11 @@ _helptext = \
       ]
     , ""'superior'                    :
       [""'''Supervisor for %(Classname)s''']
+    , ""'supp_per_period'           :
+      [ ""'''Supplementary hours in Overtime period. If Overtime period
+             is not specified, this field should be left empty.
+          '''
+      ]
     , ""'supp_weekly_hours'           :
       [ ""'''Weekly hours including the agreed supplementary hours (e.g.
              45h), Format: xx.xx. Please round to whole quarters of an hour
@@ -1042,6 +1053,8 @@ _helptext = \
           '''
       , date_text
       ]
+    , ""'value'                       :
+      [""'''Value of this %(Classname)s''']
     , ""'week'                        :
       [ ""'''Week for time tracking, this is an alternative for specifying
              a date range: just enter the week number here (for the

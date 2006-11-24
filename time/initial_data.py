@@ -440,3 +440,7 @@ if 'status' in db.classes :
     db.status.create (name = "suspended", order = '5')
     db.status.create (name = "closed",    order = '6')
 
+if 'overtime_period' in db.classes :
+    db.overtime_period.create (name = "month", order = 1)
+    db.overtime_period.create (name = "year",  order = 2)
+

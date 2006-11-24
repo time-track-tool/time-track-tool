@@ -32,6 +32,7 @@
 
 from roundup.hyperdb import Class
 from common          import clearance_by
+from freeze          import frozen
 import schemadef
 
 def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
@@ -78,6 +79,29 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , time_record           = Multilink ("time_record",   do_journal = "no")
         )
     daily_record.setlabelprop ('date')
+
+    daily_record_freeze = Class \
+        ( db
+        , ''"daily_record_freeze"
+        , user                  = Link      ("user",          do_journal = "no")
+        , date                  = Date      (offset = 0)
+        , frozen                = Boolean   ()
+        , week_balance          = Number    ()
+        , period_balance        = Number    ()
+        , week_hours            = Number    ()
+        , period_hours          = Number    ()
+        )
+    daily_record_freeze.setlabelprop ('date')
+
+    overtime_correction = Class \
+        ( db
+        , ''"overtime_correction"
+        , user                  = Link      ("user",          do_journal = "no")
+        , date                  = Date      (offset = 0)
+        , value                 = Number    ()
+        , comment               = String    ()
+        )
+    overtime_correction.setlabelprop ('date')
 
     daily_record_status = Class \
         ( db
@@ -208,6 +232,13 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         )
     time_wp_group.setkey ("name")
 
+    overtime_period = Class \
+        ( db
+        , ''"overtime_period"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+
     user_dynamic = Class \
         ( db
         , ''"user_dynamic"
@@ -223,6 +254,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , daily_worktime        = Number    ()
         , weekly_hours          = Number    ()
         , supp_weekly_hours     = Number    ()
+        , supp_per_period       = Number    ()
         , hours_mon             = Number    ()
         , hours_tue             = Number    ()
         , hours_wed             = Number    ()
@@ -232,6 +264,9 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , hours_sun             = Number    ()
         , org_location          = Link      ("org_location")
         , department            = Link      ("department")
+        , all_in                = Boolean   ()
+        , additional_hours      = Number    ()
+        , overtime_period       = Link      ("overtime_period")
         )
 
     work_location = Class \
@@ -259,22 +294,25 @@ def security (db, ** kw) :
     #     classname        allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ("cost_center"         , ["User"],             ["Controlling"     ])
-        , ("cost_center_group"   , ["User"],             ["Controlling"     ])
-        , ("cost_center_status"  , ["User"],             ["Controlling"     ])
+        [ ("cost_center"         , ["User"],             ["Controlling"])
+        , ("cost_center_group"   , ["User"],             ["Controlling"])
+        , ("cost_center_status"  , ["User"],             ["Controlling"])
         , ("daily_record"        , ["User"],             [])
-        , ("daily_record_status" , ["User"],             ["Admin"           ])
+        , ("daily_record_status" , ["User"],             ["Admin"])
         , ("public_holiday"      , ["User"],             ["HR","Controlling"])
-        , ("summary_report"      , ["User"],             [                  ])
-        , ("summary_type"        , ["User"],             ["Admin"           ])
-        , ("time_activity"       , ["User"],             ["Controlling"     ])
-        , ("time_project_status" , ["User"],             ["Project"         ])
-        , ("time_project"        , ["User"],             ["Project"         ])
+        , ("summary_report"      , ["User"],             [])
+        , ("summary_type"        , ["User"],             ["Admin"])
+        , ("time_activity"       , ["User"],             ["Controlling"])
+        , ("time_project_status" , ["User"],             ["Project"])
+        , ("time_project"        , ["User"],             ["Project"])
         , ("time_record"         , ["HR","Controlling"], ["HR","Controlling"])
-        , ("time_wp_group"       , ["User"],             ["Project"         ])
-        , ("time_wp"             , ["User"],             ["Project"         ])
-        , ("user_dynamic"        , ["HR"],               ["HR"              ])
-        , ("work_location"       , ["User"],             ["Controlling"     ])
+        , ("time_wp_group"       , ["User"],             ["Project"])
+        , ("time_wp"             , ["User"],             ["Project"])
+        , ("user_dynamic"        , ["HR"],               [])
+        , ("work_location"       , ["User"],             ["Controlling"])
+        , ("overtime_correction" , ["HR","Controlling"], [])
+        , ("daily_record_freeze" , ["HR","Controlling"], [])
+        , ("overtime_period" ,     ["User"],             ["Admin"])
         ]
 
     prop_perms = \
@@ -391,6 +429,28 @@ def security (db, ** kw) :
         return userid in clearance
     # end def approval_for_time_record
 
+    def overtime_thawed (db, userid, itemid) :
+        """Check that no daily_record_freeze is active at date
+        """
+        oc = db.overtime_correction.getnode (itemid)
+        return not frozen (db, oc.user, oc.date)
+    # end def overtime_thawed
+
+    def dr_freeze_thawed (db, userid, itemid) :
+        """Check that no daily_record_freeze is active at date
+        """
+        df = db.overtime_correction.getnode (itemid)
+        return not frozen (db, df.user, df.date)
+    # end def dr_freeze_thawed
+
+    def dynuser_thawed (db, userid, itemid) :
+        """Check that no daily_record_freeze is active in validity span
+           of dyn user record
+        """
+        dyn = db.user_dynamic.getnode (itemid)
+        return not frozen (db, dyn.user, dyn.valid_from)
+    # end def dynuser_thawed
+
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'time_wp'
@@ -401,7 +461,7 @@ def security (db, ** kw) :
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
             )
         )
-    db.security.addPermissionToRole('User', p)
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'Edit'
@@ -410,7 +470,7 @@ def security (db, ** kw) :
         , description = "User is allowed to edit name and wp_no"
         , properties  = ('name', 'responsible', 'wp_no', 'cost_center')
         )
-    db.security.addPermissionToRole('User', p)
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'Edit'
@@ -419,7 +479,7 @@ def security (db, ** kw) :
         , description = "User is allowed to edit some fields"
         , properties  = ('deputy', 'description', 'planned_effort', 'nosy')
         )
-    db.security.addPermissionToRole('User', p)
+    db.security.addPermissionToRole ('User', p)
 
     for perm in 'View', 'Edit' :
         p = db.security.addPermission \
@@ -429,7 +489,7 @@ def security (db, ** kw) :
             , description = 'User and approver may edit daily_records'
             , properties  = ('status', 'time_record')
             )
-        db.security.addPermissionToRole('User', p)
+        db.security.addPermissionToRole ('User', p)
 
         p = db.security.addPermission \
             ( name        = perm
@@ -438,7 +498,7 @@ def security (db, ** kw) :
             , description = 'approver may edit daily_record.required_overtime'
             , properties  = ('required_overtime')
             )
-        db.security.addPermissionToRole('User', p)
+        db.security.addPermissionToRole ('User', p)
 
         p = db.security.addPermission \
             ( name        = perm
@@ -446,7 +506,7 @@ def security (db, ** kw) :
             , check       = own_time_record
             , description = 'User may edit own time_records'
             )
-        db.security.addPermissionToRole('User', p)
+        db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'View'
@@ -454,12 +514,36 @@ def security (db, ** kw) :
         , check       = approval_for_time_record
         , description = 'Supervisor may see time record'
         )
-    db.security.addPermissionToRole('User', p)
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_record'
         , check       = may_see_time_record
         , description = may_see_time_record.__doc__
         )
-    db.security.addPermissionToRole('User', p)
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'overtime_correction'
+        , check       = overtime_thawed
+        , description = overtime_thawed.__doc__
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'overtime_correction')
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'daily_record_freeze'
+        , check       = dr_freeze_thawed
+        , description = dr_freeze_thawed.__doc__
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'daily_record_freeze')
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'user_dynamic'
+        , check       = dynuser_thawed
+        , description = dynuser_thawed.__doc__
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
 # end def security

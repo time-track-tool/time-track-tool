@@ -105,6 +105,14 @@
                             )
    , 'user_dynamic'    : ':columns=id,user,valid_from,org_location&:sort=-id&'
                          ':pagesize=20&:startwith=0'
+   , 'daily_record_freeze'
+                       : ':columns=id,user,date,value,frozen&:'
+                         'sort=-date&:filter=user&:pagesize=20&:startwith=0&'
+                         'user=%s' % uid
+   , 'overtime_correction'
+                       : ':columns=id,user,date,value,comment&:'
+                         'sort=-date&:filter=user&:pagesize=20&:startwith=0&'
+                         'user=%s' % uid
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit',   '?@template=item', 1)
@@ -183,28 +191,32 @@
      , ('issue',               'Edit',   '?@template=item', 1)
      , ('query',               'Edit',   '?@template=item', 1)
      , ('severity',            'Edit',   '?@template=item', 1)
+     , ('overtime_correction', 'Edit',   '?@template=item', 1)
+     , ('daily_record_freeze', 'Edit',   '?@template=item&frozen=1', 1)
      )
-   , ( ('cost_center',       'View', '')
-     , ('daily_record',      'View', 'controlling,hr')
-     , ('user_dynamic',      'View', '')
-     , ('time_project',      'View', '')
-     , ('time_wp',           'View', '')
-     , ('time_wp_group',     'View', '')
-     , ('public_holiday',    'View')
-     , ('user',              'View')
-     , ('summary_report',    'View')
-     , ('network_interface', 'View')
-     , ('machine',           'View')
-     , ('network_address',   'View')
-     , ('machine_name',      'View')
-     , ('group',             'View')
-     , ('alias',             'View')
-     , ('smb_machine',       'View')
-     , ('it_issue',          'View')
-     , ('it_project',        'View')
-     , ('issue',             'View')
-     , ('time_record',       'View')
-     , ('category',          'View')
+   , ( ('cost_center',         'View', '')
+     , ('daily_record',        'View', 'controlling,hr')
+     , ('user_dynamic',        'View', '')
+     , ('time_project',        'View', '')
+     , ('time_wp',             'View', '')
+     , ('time_wp_group',       'View', '')
+     , ('public_holiday',      'View')
+     , ('user',                'View')
+     , ('summary_report',      'View')
+     , ('network_interface',   'View')
+     , ('machine',             'View')
+     , ('network_address',     'View')
+     , ('machine_name',        'View')
+     , ('group',               'View')
+     , ('alias',               'View')
+     , ('smb_machine',         'View')
+     , ('it_issue',            'View')
+     , ('it_project',          'View')
+     , ('issue',               'View')
+     , ('time_record',         'View')
+     , ('category',            'View')
+     , ('overtime_correction', 'View')
+     , ('daily_record_freeze', 'View')
      )
    )
  ; menu_type     python:
@@ -294,15 +306,7 @@
       and db._db.user_dynamic.find (user = request.user.id)
       )">
      <span class="classblock">
-      <a tal:attributes="href python:
-       [ 'daily_record?:action=daily_record_action&:template=edit'
-       , str
-         ( request.indexargs_url
-          (classname, {'@action':'daily_record_action', '@template':'edit'})
-         )
-       ][   classname == 'daily_record'
-        and request.template not in ('approve','edit')
-        ]">
+      <a tal:attributes="href python:utils.time_url (request, classname)">
        Time
       </a>
      </span>
@@ -550,6 +554,7 @@
    <tr tal:condition="context/is_edit_ok">
     <th></th>
     <td colspan="3">
+     <tal:block metal:define-slot="button_slot"></tal:block>
      <tal:block tal:replace="structure context/submit"/>
      <input tal:condition="context/id"
             type="button" value="Show History"

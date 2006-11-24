@@ -44,6 +44,7 @@ from time                           import gmtime
 get_user_dynamic = None
 day_work_hours   = None
 common           = None
+frozen           = None
 _                = lambda x : x
 
 def check_timestamps (start, end, date) :
@@ -212,6 +213,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
         if i in new_values and not new_values [i] :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
     user       = cl.get (nodeid, 'user')
+    date       = cl.get (nodeid, 'date')
     uid        = db.getuid ()
     is_hr      = common.user_has_role (db, uid, 'hr')
     old_status = cl.get (nodeid, 'status')
@@ -229,6 +231,9 @@ def check_daily_record (db, cl, nodeid, new_values) :
 
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
+    if frozen (db, user, date) :
+        uname = db.user.get (user, 'username')
+        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     if status != old_status :
         if not (  (   status == 'submitted' and old_status == 'open'
                   and (is_hr or user == uid)
@@ -315,6 +320,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
     if uid != '1' and not dyn.booking_allowed :
         raise Reject, _ \
             ("Booking not allowed for %(uname)s, %(date)s") % locals ()
+    if frozen (db, user, date) :
+        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     if db.daily_record.filter \
         (None, {'date' : str (date.local (0)), 'user' : user}) :
         raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
@@ -421,6 +428,9 @@ def new_time_record (db, cl, nodeid, new_values) :
     uname    = db.user.get (dr.user, 'username')
     if (dr.status != db.daily_record_status.lookup ('open') and uid != '1') :
         raise Reject, _ ('Editing of time records only for status "open"')
+    if frozen (db, dr.user, dr.date) :
+        date = dr.date
+        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     if  (   uid != dr.user
         and not common.user_has_role (db, uid, 'controlling')
         and not common.user_has_role (db, uid, 'admin')
@@ -489,24 +499,30 @@ def check_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i in new_values :
             raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
-    # allow empty duration to delete record
-    if 'duration' in new_values and new_values ['duration'] is None :
-        return
-    check_generated (new_values)
+    drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
+    dr       = db.daily_record.getnode (drec)
+    date     = dr.date
+    user     = dr.user
+    if  (   frozen (db, user, date)
+        and new_values.keys () != ['tr_duration']
+        ) :
+        uname = db.user.get (user, 'username')
+        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     if  (   status != db.daily_record_status.lookup ('open')
         and new_values.keys () != ['tr_duration']
         and db.getuid () != '1'
         ) :
         raise Reject, _ ('Editing of time records only for status "open"')
-    drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
+    # allow empty duration to delete record
+    if 'duration' in new_values and new_values ['duration'] is None :
+        return
+    check_generated (new_values)
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
     dist     = new_values.get ('dist',         cl.get (nodeid, 'dist'))
     wp       = new_values.get ('wp',           cl.get (nodeid, 'wp'))
-    date     = db.daily_record.get (drec, 'date')
-    user     = db.daily_record.get (drec, 'user')
     wl       = 'work_location'
     ta       = 'time_activity'
     location = new_values.get (wl,             cl.get (nodeid, wl))
@@ -628,10 +644,11 @@ def init (db) :
     if 'time_record' not in db.classes :
         return
     import sys, os
-    global _, common, get_user_dynamic, day_work_hours
+    global _, common, frozen, get_user_dynamic, day_work_hours
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
     from user_dynamic import get_user_dynamic, day_work_hours
     import common
+    from freeze import frozen
     del (sys.path [0])
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
