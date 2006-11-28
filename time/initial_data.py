@@ -315,7 +315,7 @@ if 'work_location' in db.classes :
         ( code = "off-site/trav."
         , description = \
           "Travel -- Unterwegs, Dienstgang, Dienstreise "
-          "(reisend oder an einer Nicht-TTTech-Location)"
+          "(reisend oder an einer fremden Location)"
         )
     work_location.create \
         ( code = "other-TTT"

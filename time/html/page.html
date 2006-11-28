@@ -106,8 +106,10 @@
    , 'user_dynamic'    : ':columns=id,user,valid_from,org_location&:sort=-id&'
                          ':pagesize=20&:startwith=0'
    , 'daily_record_freeze'
-                       : ':columns=id,user,date,value,frozen&:'
-                         'sort=-date&:filter=user&:pagesize=20&:startwith=0&'
+                       : ':columns=id,date,week_balance,'
+                         'month_balance,year_balance,frozen&'
+                         ':sort=-date&:group=user&:filter=user&'
+                         ':pagesize=20&:startwith=0&'
                          'user=%s' % uid
    , 'overtime_correction'
                        : ':columns=id,user,date,value,comment&:'

@@ -1,10 +1,9 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +24,7 @@
 #    issue
 #
 # Purpose
-#    Schema definitions for TTTech issue tracker derived from gnats
+#    Schema definitions for issue tracker derived from gnats
 #
 #--
 #
@@ -158,7 +157,7 @@ def init \
 
 def security (db, ** kw) :
     roles = \
-        [ ("Issue_Admin", "Admin for TTTech Issue tracker")
+        [ ("Issue_Admin", "Admin for issue tracker")
         ]
     #     classname             allowed to view   /  edit
     classes = \

@@ -1,11 +1,10 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -28,10 +27,6 @@
 # Purpose
 #    Extended properties for roundup templating
 #
-# Revision Dates
-#     6-Jun-2005 (RSC) Moved from another project
-#     8-Jun-2005 (RSC) Several convenience functions added.
-#    ««revision-date»»···
 #--
 
 from roundup.cgi.templating         import MultilinkHTMLProperty     \

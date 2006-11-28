@@ -1,11 +1,10 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -29,9 +28,10 @@
 #    access routines for 'user_dynamic'
 #
 
-from roundup.date import Date
+from roundup.date import Date, Interval
 from time         import gmtime
 from bisect       import bisect_left
+from common       import ymd, next_search_date
 
 dynamic = {} # cache
 
@@ -62,40 +62,42 @@ def get_user_dynamic (db, user, date) :
     return None
 # end def get_user_dynamic
 
-def _find_user_dynamic (db, user, id = 0) :
+def first_user_dynamic (db, user, direction = '+') :
     ids = db.user_dynamic.filter \
-        ( None, dict (user = user)
-        , sort  = ('-', 'valid_to')
-        , group = ('+', 'valid_from')
+        (None, dict (user = user), group = (direction, 'valid_from'))
+    if ids :
+        return db.user_dynamic.getnode (ids [0])
+    return None
+# end def first_user_dynamic
+
+def last_user_dynamic (db, user) :
+    return first_user_dynamic (db, user, direction = '-')
+# end def last_user_dynamic
+
+def _find_user_dynamic (db, user, date, direction = '+') :
+    date = next_search_date (date, direction)
+    ids = db.user_dynamic.filter \
+        ( None, dict (user = user, valid_from = date)
+        , group = (direction, 'valid_from')
         )
-    for i in range (len (ids)) :
-        if ids [i] == id :
-            return ids, i
-    return ids, len (ids)
+    if ids :
+        return db.user_dynamic.getnode (ids [0])
+    return None
 # end def _find_user_dynamic
 
 def next_user_dynamic (db, dynuser) :
-    ids, idx = _find_user_dynamic (db._db, dynuser.user.id, dynuser.id)
-    idx += 1
-    if idx >= len (ids) : 
-        return None
-    return db._db.user_dynamic.getnode (ids [idx])
+    return _find_user_dynamic (db._db, dynuser.user.id, dynuser.valid_from)
 # end def next_user_dynamic
 
 def prev_user_dynamic (db, dynuser) :
-    ids, idx = _find_user_dynamic (db._db, dynuser.user.id, dynuser.id)
-    idx -= 1
-    if idx < 0 :
-        return None
-    return db._db.user_dynamic.getnode (ids [idx])
+    return _find_user_dynamic \
+        (db._db, dynuser.user.id, dynuser.valid_from, direction = '-')
 # end def prev_user_dynamic
 
 def act_or_latest_user_dynamic (db, user) :
     ud = get_user_dynamic (db, user, Date ('.'))
     if not ud :
-        ids, idx = _find_user_dynamic (db, user)
-        if ids :
-            ud = db.user_dynamic.getnode (ids [-1])
+        ud = last_user_dynamic (db, user)
     return ud
 # end def act_or_latest_user_dynamic
 
@@ -157,6 +159,8 @@ def update_tr_duration (db, dr)  :
        The dr must be the node from the db not just the id.
        Travel time records will have their tr_duration field updated.
     """
+    if dr.tr_duration_ok is not None :
+        return dr.tr_duration_ok
     hours   = 0.0
     hhours  = 0.0
     dyn     = get_user_dynamic (db, dr.user, dr.date) 
@@ -166,7 +170,7 @@ def update_tr_duration (db, dr)  :
         tr_full = dyn.travel_full
         wh      = round_daily_work_hours (day_work_hours (dyn, dr.date))
     trs     = []
-    trvl_tr = []
+    trvl_tr = {}
     for t in dr.time_record :
         tr     = db.time_record.getnode (t)
         trs.append (tr)
@@ -175,13 +179,82 @@ def update_tr_duration (db, dr)  :
         travel = not tr_full and act and db.time_activity.get (act, 'travel')
         if travel :
             hhours  += tr.duration / 2.
-            trvl_tr.append (tr)
+            trvl_tr [tr.id] = tr
         else :
             hhours  += tr.duration
     sum, ratio = travel_worktime (hours, hhours, wh)
-    for tr in trvl_tr :
-        tr_duration = ratio * tr.duration
+    for tr in trs :
+        if tr.id in trvl_tr :
+            tr_duration = ratio * tr.duration
+        else :
+            tr_duration = tr.duration
         if tr.tr_duration != tr_duration :
             db.time_record.set (tr.id, tr_duration = tr_duration)
+    db.daily_record.set (dr.id, tr_duration_ok = sum)
+    return sum
 # end def update_tr_duration
 
+duration_cache = {}
+
+def _durations (db, user, date) :
+    pdate = date.pretty (ymd)
+    if (user, pdate) not in duration_cache :
+        wday  = gmtime (date.timestamp ())[6]
+        dyn   = get_user_dynamic (db, user, date)
+        duration_cache [(user, pdate)] = (0, 0, 0, 0, False, False)
+        if dyn :
+            drid  = db.daily_record.filter \
+                (None, dict (user = user, date = pdate))
+            assert (len (drid) <= 1)
+            if not drid :
+                return duration_cache [(user, pdate)]
+            dr    = db.daily_record.getnode (drid [0])
+            wkend = wday in (5, 6)
+            duration_cache [(user, pdate)] = \
+                ( update_tr_duration (db, dr)
+                , day_work_hours (dyn, date)
+                , [(dyn.supp_weekly_hours or 0) / 5.0, 0][wkend]
+                , [(dyn.additional_hours  or 0) / 5.0, 0][wkend]
+                , bool (dyn.supp_weekly_hours)
+                , bool (dyn.additional_hours)
+                )
+    return duration_cache [(user, pdate)]
+# end def _durations
+
+def overtime (db, user, start, end, end_req, use_additional) :
+    overtime = 0
+    required = 0
+    worked   = 0
+    compute  = True
+    date = start
+    while date <= end_req :
+        dur     = _durations (db, user, date)
+        work    = dur [0]
+        req     = dur [1]
+        over    = dur [2]
+        do_over = dur [4]
+        if date > end :
+            work = 0
+        if use_additional :
+            over    = dur [3]
+            do_over = dur [5]
+        overtime += over
+        required += req
+        worked   += work
+        compute   = compute and do_over
+        date += Interval ('1d')
+        print worked, required, overtime, compute
+    if compute :
+        if worked > overtime :
+            return worked - overtime
+        elif worked < required :
+            return worked - required
+    return 0
+# end def overtime
+
+def invalidate_cache (user, date) :
+    pdate = date.pretty (ymd)
+    print "invalidate", user, pdate
+    if (user, pdate) in duration_cache :
+        del duration_cache [(user, pdate)]
+# end def invalidate_cache

@@ -1,7 +1,9 @@
-#!/usr/bin/python
+#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 1998 TTTech Computertechnik GmbH. All rights reserved
-# Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -23,7 +25,7 @@ import re
 
 notes_tofu = re.compile \
     (  "\n{3}"
-    + r"([^<]+[^< ])\s+<roundup@tttech.com>.*"
+    + r"([^<]+[^< ])\s+<roundup@[^>]+>.*"
     + r"Please respond to .* issue tracker\s+"
     + r"To:.*\s+[cC][cC]:.*\s+Subject.*\s+"
     + r"\1\s+<.*added the comment:"
@@ -72,11 +74,6 @@ Nasty_msg = \
    resubmit.
 """
 
-def is_tttech_address (db, author) :
-    useraddr = db.user.get (author, 'address')
-    if useraddr.find ('@tttech.com') < 0 : return 0
-    return 1
-
 def title_create_check (db, cl, nodeid, newvalues) :
     """Checks on title when creating new issue
     """
@@ -90,7 +87,6 @@ def title_check (db, cl, nodeid, newvalues) :
     """
     title_create_check (db, cl, nodeid, newvalues)
     if not newvalues.has_key ("title")          : return
-    if not is_tttech_address (db, db.getuid ()) : return
     if nasty_chars.search (newvalues ["title"].decode ('utf-8')) :
         raise ValueError, Nasty_msg % "title"
 
@@ -104,7 +100,6 @@ def msg_check (db, cl, nodeid, newvalues) :
             if msgs.has_key (m) : del (msgs [m])
     for m in msgs.keys () :
         msg = db.msg.getnode (m)
-        if not is_tttech_address (db, msg.author) : continue
         if notes_tofu.search (msg.content) :
             raise ValueError, Tofu_msg
         if nasty_chars.search (msg.content.decode ('utf-8')) :

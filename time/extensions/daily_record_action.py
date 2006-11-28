@@ -1,11 +1,10 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2005 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -60,7 +59,8 @@ try :
                                  , from_week_number
     from user_dynamic       import get_user_dynamic, day_work_hours \
                                  , round_daily_work_hours
-    from freeze             import frozen, range_frozen
+    from freeze             import frozen, range_frozen, next_dr_freeze \
+                                 , prev_dr_freeze
 except ImportError :
     _                      = lambda x : x
     week_from_date         = None
@@ -74,6 +74,8 @@ except ImportError :
     round_daily_work_hours = None
     frozen                 = None
     range_frozen           = None
+    next_dr_freeze         = None
+    prev_dr_freeze         = None
 
 def prev_week (db, request) :
     try :
@@ -154,7 +156,6 @@ def freeze_all_script () :
      return \
         '''javascript:if(submit_once()){
              document.forms.itemSynopsis ['@action'].value = 'freeze_all';
-             alert (document.itemSynopsis ['submit']);
              document.itemSynopsis.submit ();
            }
         '''
@@ -555,13 +556,15 @@ class Freeze_All_Action (Action) :
 def init (instance) :
     global _, pretty_range, week_from_date, ymd, get_user_dynamic, date_range
     global weekno_from_day, from_week_number, day_work_hours
-    global round_daily_work_hours, frozen, range_frozen
+    global round_daily_work_hours
+    global frozen, range_frozen, next_dr_freeze, prev_dr_freeze
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from common       import pretty_range, week_from_date, ymd, date_range \
                            , weekno_from_day, from_week_number
     from user_dynamic import get_user_dynamic, day_work_hours \
                            , round_daily_work_hours
-    from freeze       import frozen, range_frozen
+    from freeze       import frozen, range_frozen, next_dr_freeze \
+                           , prev_dr_freeze
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     del sys.path [0]
@@ -588,4 +591,6 @@ def init (instance) :
     util ("frozen",                   frozen)
     util ("range_frozen",             range_frozen)
     util ("time_url",                 time_url)
+    util ("next_dr_freeze",           next_dr_freeze)
+    util ("prev_dr_freeze",           prev_dr_freeze)
 # end def init

@@ -1,10 +1,9 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -33,6 +32,7 @@
 from roundup.hyperdb import Class
 from common          import clearance_by
 from freeze          import frozen
+from roundup.date    import Interval
 import schemadef
 
 def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
@@ -77,6 +77,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , required_overtime     = Boolean   ()
         , weekend_allowed       = Boolean   ()
         , time_record           = Multilink ("time_record",   do_journal = "no")
+        , tr_duration_ok        = Number    ()
         )
     daily_record.setlabelprop ('date')
 
@@ -87,9 +88,8 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , date                  = Date      (offset = 0)
         , frozen                = Boolean   ()
         , week_balance          = Number    ()
-        , period_balance        = Number    ()
-        , week_hours            = Number    ()
-        , period_hours          = Number    ()
+        , month_balance         = Number    ()
+        , year_balance          = Number    ()
         )
     daily_record_freeze.setlabelprop ('date')
 
@@ -238,6 +238,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , name                  = String    ()
         , order                 = Number    ()
         )
+    overtime_period.setkey ("name")
 
     user_dynamic = Class \
         ( db
@@ -439,9 +440,16 @@ def security (db, ** kw) :
     def dr_freeze_thawed (db, userid, itemid) :
         """Check that no daily_record_freeze is active at date
         """
-        df = db.overtime_correction.getnode (itemid)
+        df = db.daily_record_freeze.getnode (itemid)
         return not frozen (db, df.user, df.date)
     # end def dr_freeze_thawed
+
+    def dr_freeze_last_frozen (db, userid, itemid) :
+        """Check that no daily_record_freeze is active after date
+        """
+        df = db.daily_record_freeze.getnode (itemid)
+        return not frozen (db, df.user, df.date + Interval ('1d'))
+    # end def dr_freeze_last_frozen
 
     def dynuser_thawed (db, userid, itemid) :
         """Check that no daily_record_freeze is active in validity span
@@ -533,8 +541,10 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'daily_record_freeze'
-        , check       = dr_freeze_thawed
-        , description = dr_freeze_thawed.__doc__
+        , check       = dr_freeze_last_frozen
+        , description = dr_freeze_last_frozen.__doc__
+        , properties  = 
+            ('frozen', 'week_balance', 'month_balance', 'year_balance')
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'daily_record_freeze')

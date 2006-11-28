@@ -1,6 +1,9 @@
 #! /usr/bin/python
-# Copyright (C) 1998 TTTech Computertechnik GmbH. All rights reserved
-# Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
 # 
 # This program is free software; you can redistribute it and/or modify

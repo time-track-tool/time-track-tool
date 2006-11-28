@@ -1,8 +1,10 @@
+#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 TTTech Computertechnik AG. All rights reserved
-# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@mexx.mobile
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -32,6 +34,7 @@ from   roundup.exceptions import Reject
 from   roundup.date       import Date, Interval, Range
 from   time               import gmtime
 from   roundup.hyperdb    import String, Link, Multilink
+from   common             import next_search_date
 
 def frozen (db, user, date) :
     """ Get freeze-records >= date. If some are found, check if date is
@@ -53,5 +56,22 @@ def range_frozen (db, user, range) :
     return frozen (db, user, date)
 # end def range_frozen
 
+def _find_next (db, daily_record_freeze, direction = '+') :
+    user = daily_record_freeze.user.id
+    date = next_search_date (daily_record_freeze.date, direction)
+    recs = db._db.daily_record_freeze.filter \
+        (None, dict (user = user, date = date), group = [(direction, 'date')])
+    if recs :
+        return recs [0]
+    return None
+# end def _find_next
+
+def next_dr_freeze (db, daily_record_freeze) :
+    return _find_next (db, daily_record_freeze)
+# end def next_dr_freeze
+
+def prev_dr_freeze (db, daily_record_freeze) :
+    return _find_next (db, daily_record_freeze, '-')
+# end def prev_dr_freeze
 
 ### __END__

@@ -23,6 +23,22 @@
                          required_attributes python:'date'">
    <tal:block metal:use-macro="templates/page/macros/ttt_issue">
     <tal:block metal:fill-slot="ttt_issue_content">
+     <tr tal:condition="context/id">
+      <td align="right"
+       tal:define="prev python:utils.prev_dr_freeze (db, context)">
+       <a tal:condition="prev"
+          tal:attributes="href string:daily_record_freeze${prev}">
+        &lt;&lt;&nbsp;
+       </a>
+      </td>
+      <td align="left"
+       tal:define="next python:utils.next_dr_freeze (db, context)">
+       <a tal:condition="next"
+          tal:attributes="href string:daily_record_freeze${next}">
+        &gt;&gt;
+       </a>
+      </td>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
       <td tal:condition="context/id"
@@ -57,17 +73,16 @@
       <th tal:content="structure python:utils.fieldname
             (classname, 'week_balance')"/>
       <td tal:content="structure python:context.week_balance.field ()"/>
-      <th tal:content="structure python:utils.fieldname
-            (classname, 'week_hours')"/>
-      <td tal:content="structure python:context.week_hours.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-            (classname, 'period_balance')"/>
-      <td tal:content="structure python:context.period_balance.field ()"/>
+            (classname, 'month_balance')"/>
+      <td tal:content="structure python:context.month_balance.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
-            (classname, 'period_hours')"/>
-      <td tal:content="structure python:context.period_hours.field ()"/>
+            (classname, 'year_balance')"/>
+      <td tal:content="structure python:context.year_balance.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'frozen')"/>

@@ -1,8 +1,10 @@
+#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004,2005 TTTech Computertechnik AG. All rights reserved
-# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@mexx.mobile
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -25,15 +27,6 @@
 # Purpose
 #    Define utlilities used by roundup
 #
-# Revision Dates
-#    11-Oct-2004 (MPH) Creation - from default tracker's interfaces.py
-#     2-Nov-2004 (MPH) Added `calendar`
-#     1-Dec-2004 (MPH) Added `start_timer` and `time_stamp` for profiling
-#     6-Jun-2005 (RSC) Moved to extensions and reworked for new 0.8 framework
-#     8-Jun-2005 (RSC) Removed "self" (was reference to utils in old framework)
-#                      Note that the timer now needs some explicit object
-#     8-Jun-2005 (RSC) Missing import of time and calendar added.
-#    ««revision-date»»···
 #--
 #
 

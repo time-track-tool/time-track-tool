@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -214,6 +214,9 @@ def check_daily_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
     user       = cl.get (nodeid, 'user')
     date       = cl.get (nodeid, 'date')
+    if frozen (db, user, date) and new_values.keys () != ['tr_duration_ok'] :
+        uname = db.user.get (user, 'username')
+        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     uid        = db.getuid ()
     is_hr      = common.user_has_role (db, uid, 'hr')
     old_status = cl.get (nodeid, 'status')
@@ -231,9 +234,6 @@ def check_daily_record (db, cl, nodeid, new_values) :
 
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
-    if frozen (db, user, date) :
-        uname = db.user.get (user, 'username')
-        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     if status != old_status :
         if not (  (   status == 'submitted' and old_status == 'open'
                   and (is_hr or user == uid)
@@ -272,7 +272,13 @@ def update_timerecs (db, time_record_id, set_it) :
     trecs   = trecs.keys ()
     trecs.sort ()
     if trecs != trecs_o :
-        db.daily_record.set (drec_id, time_record = [str (i) for i in trecs])
+        db.daily_record.set \
+            ( drec_id
+            , time_record    = [str (i) for i in trecs]
+            , tr_duration_ok = None
+            )
+        dr = db.daily_record.getnode (drec_id)
+        invalidate_cache (dr.user, dr.date)
 # end def update_timerecs
 
 def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
@@ -329,6 +335,8 @@ def new_daily_record (db, cl, nodeid, new_values) :
     new_values ['time_record'] = []
     if 'status' not in new_values :
         new_values ['status']  = db.daily_record_status.lookup ('open')
+    new_values ['tr_duration_ok'] = None
+    invalidate_cache (user, date)
 # end def new_daily_record
 
 def check_start_end_duration \
@@ -630,10 +638,17 @@ def check_time_record (db, cl, nodeid, new_values) :
         new_values ['tr_duration'] = None
 # end def check_time_record
 
-def check_for_retire (db, cl, nodeid, old_values) :
+def check_for_retire_and_duration (db, cl, nodeid, old_values) :
     if cl.get (nodeid, 'duration') is None :
         cl.retire (nodeid)
-# end def check_for_retire
+    elif (   'duration' in old_values
+         and old_values ['duration'] != cl.get (nodeid, 'duration')
+         ) :
+        drid = cl.get (nodeid, 'daily_record')
+        db.daily_record.set (drid, tr_duration_ok = None)
+        dr = db.daily_record.getnode (drid)
+        invalidate_cache (dr.user, dr.date)
+# end def check_for_retire_and_duration
 
 def check_retire (db, cl, nodeid, dummy) :
     """ remove ourselves from the daily record """
@@ -644,9 +659,9 @@ def init (db) :
     if 'time_record' not in db.classes :
         return
     import sys, os
-    global _, common, frozen, get_user_dynamic, day_work_hours
+    global _, common, frozen, get_user_dynamic, day_work_hours, invalidate_cache
     sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    from user_dynamic import get_user_dynamic, day_work_hours
+    from user_dynamic import get_user_dynamic, day_work_hours, invalidate_cache
     import common
     from freeze import frozen
     del (sys.path [0])
@@ -655,7 +670,7 @@ def init (db) :
     db.time_record.audit  ("create", new_time_record)
     db.time_record.audit  ("set",    check_time_record)
     db.time_record.react  ("create", update_time_record_in_daily_record)
-    db.time_record.react  ("set",    check_for_retire)
+    db.time_record.react  ("set",    check_for_retire_and_duration)
     db.time_record.react  ("retire", check_retire)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)

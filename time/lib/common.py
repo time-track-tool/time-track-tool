@@ -1,8 +1,10 @@
+#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 TTTech Computertechnik AG. All rights reserved
-# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@mexx.mobile
+# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -25,11 +27,6 @@
 # Purpose
 #    Common detectors used more often
 #
-# Revision Dates
-#     9-Nov-2004 (MPH) Creation
-#     6-Apr-2005 (RSC) minor comment correction
-#                      moved to lib
-#    ««revision-date»»···
 #--
 #
 from   roundup import roundupdb, hyperdb
@@ -235,8 +232,9 @@ def uniq (_, cl, id, ** kw) :
     """ Function for regression-testing new_nickname
     """
     rej  = { 'gst' : 1, 'gsr' : 1 }
-    nick = kw ['nick']
-    if nick in rej :
+    nick = kw.get ('nickname')
+    user = kw.get ('username')
+    if nick in rej or user in rej :
         raise Reject, "BLA"
 # end def uniq
 
@@ -323,56 +321,57 @@ def pretty_range (start, end) :
 
 def first_thursday (year) :
     """ compute first thursday in the given year as a Date
-        >>> first_thursday (1998)
-        <Date 1998-01-01.00:00:0.000000>
-        >>> first_thursday ("1998")
-        <Date 1998-01-01.00:00:0.000000>
-        >>> first_thursday (1999)
-        <Date 1999-01-07.00:00:0.000000>
-        >>> first_thursday (2000)
-        <Date 2000-01-06.00:00:0.000000>
-        >>> first_thursday (2001)
-        <Date 2001-01-04.00:00:0.000000>
-        >>> first_thursday (2002)
-        <Date 2002-01-03.00:00:0.000000>
-        >>> first_thursday (2003)
-        <Date 2003-01-02.00:00:0.000000>
-        >>> first_thursday (2004)
-        <Date 2004-01-01.00:00:0.000000>
-        >>> first_thursday (2005)
-        <Date 2005-01-06.00:00:0.000000>
-        >>> first_thursday (2006)
-        <Date 2006-01-05.00:00:0.000000>
-        >>> first_thursday (2007)
-        <Date 2007-01-04.00:00:0.000000>
-        >>> first_thursday (2008)
-        <Date 2008-01-03.00:00:0.000000>
-        >>> first_thursday (2009)
-        <Date 2009-01-01.00:00:0.000000>
-        >>> first_thursday (2010)
-        <Date 2010-01-07.00:00:0.000000>
-        >>> first_thursday (2011)
-        <Date 2011-01-06.00:00:0.000000>
-        >>> first_thursday (2012)
-        <Date 2012-01-05.00:00:0.000000>
-        >>> first_thursday (2013)
-        <Date 2013-01-03.00:00:0.000000>
-        >>> first_thursday (2014)
-        <Date 2014-01-02.00:00:0.000000>
-        >>> first_thursday (2015)
-        <Date 2015-01-01.00:00:0.000000>
-        >>> first_thursday (2016)
-        <Date 2016-01-07.00:00:0.000000>
-        >>> first_thursday (2017)
-        <Date 2017-01-05.00:00:0.000000>
-        >>> first_thursday (2018)
-        <Date 2018-01-04.00:00:0.000000>
-        >>> first_thursday (2019)
-        <Date 2019-01-03.00:00:0.000000>
-        >>> first_thursday (2020)
-        <Date 2020-01-02.00:00:0.000000>
-        >>> first_thursday (2021)
-        <Date 2021-01-07.00:00:0.000000>
+        >>> f = '<Date %Y-%m-%d.%H:%M>'
+        >>> first_thursday (1998).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 1998-01-01.00:00:00>'
+        >>> first_thursday ("1998").pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 1998-01-01.00:00:00>'
+        >>> first_thursday (1999).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 1999-01-07.00:00:00>'
+        >>> first_thursday (2000).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2000-01-06.00:00:00>'
+        >>> first_thursday (2001).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2001-01-04.00:00:00>'
+        >>> first_thursday (2002).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2002-01-03.00:00:00>'
+        >>> first_thursday (2003).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2003-01-02.00:00:00>'
+        >>> first_thursday (2004).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2004-01-01.00:00:00>'
+        >>> first_thursday (2005).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2005-01-06.00:00:00>'
+        >>> first_thursday (2006).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2006-01-05.00:00:00>'
+        >>> first_thursday (2007).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2007-01-04.00:00:00>'
+        >>> first_thursday (2008).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2008-01-03.00:00:00>'
+        >>> first_thursday (2009).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2009-01-01.00:00:00>'
+        >>> first_thursday (2010).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2010-01-07.00:00:00>'
+        >>> first_thursday (2011).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2011-01-06.00:00:00>'
+        >>> first_thursday (2012).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2012-01-05.00:00:00>'
+        >>> first_thursday (2013).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2013-01-03.00:00:00>'
+        >>> first_thursday (2014).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2014-01-02.00:00:00>'
+        >>> first_thursday (2015).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2015-01-01.00:00:00>'
+        >>> first_thursday (2016).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2016-01-07.00:00:00>'
+        >>> first_thursday (2017).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2017-01-05.00:00:00>'
+        >>> first_thursday (2018).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2018-01-04.00:00:00>'
+        >>> first_thursday (2019).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2019-01-03.00:00:00>'
+        >>> first_thursday (2020).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2020-01-02.00:00:00>'
+        >>> first_thursday (2021).pretty ('<Date %Y-%m-%d.%H:%M:%S>')
+        '<Date 2021-01-07.00:00:00>'
     """
     for i in range (1, 8) :
         date = Date ('%s-01-%02d' % (year, i))
@@ -383,64 +382,65 @@ def first_thursday (year) :
 
 def from_week_number (year, week_no) :
     """ Get first thursday in year, then add days.
-        >>> from_week_number (1998, 52)
-        (<Date 1998-12-21.00:00:0.000000>, <Date 1998-12-27.00:00:0.000000>)
-        >>> from_week_number (1998, 53)
-        (<Date 1998-12-28.00:00:0.000000>, <Date 1999-01-03.00:00:0.000000>)
-        >>> from_week_number (1999,  1)
-        (<Date 1999-01-04.00:00:0.000000>, <Date 1999-01-10.00:00:0.000000>)
-        >>> from_week_number (1999, 52)
-        (<Date 1999-12-27.00:00:0.000000>, <Date 2000-01-02.00:00:0.000000>)
-        >>> from_week_number (2000,  1)
-        (<Date 2000-01-03.00:00:0.000000>, <Date 2000-01-09.00:00:0.000000>)
-        >>> from_week_number (2000, 52)
-        (<Date 2000-12-25.00:00:0.000000>, <Date 2000-12-31.00:00:0.000000>)
-        >>> from_week_number (2001,  1)
-        (<Date 2001-01-01.00:00:0.000000>, <Date 2001-01-07.00:00:0.000000>)
-        >>> from_week_number (2001, 52)
-        (<Date 2001-12-24.00:00:0.000000>, <Date 2001-12-30.00:00:0.000000>)
-        >>> from_week_number (2002,  1)
-        (<Date 2001-12-31.00:00:0.000000>, <Date 2002-01-06.00:00:0.000000>)
-        >>> from_week_number (2002, 52)
-        (<Date 2002-12-23.00:00:0.000000>, <Date 2002-12-29.00:00:0.000000>)
-        >>> from_week_number (2003,  1)
-        (<Date 2002-12-30.00:00:0.000000>, <Date 2003-01-05.00:00:0.000000>)
-        >>> from_week_number (2003, 52)
-        (<Date 2003-12-22.00:00:0.000000>, <Date 2003-12-28.00:00:0.000000>)
-        >>> from_week_number (2004,  1)
-        (<Date 2003-12-29.00:00:0.000000>, <Date 2004-01-04.00:00:0.000000>)
-        >>> from_week_number (2004, 52)
-        (<Date 2004-12-20.00:00:0.000000>, <Date 2004-12-26.00:00:0.000000>)
-        >>> from_week_number (2004, 53)
-        (<Date 2004-12-27.00:00:0.000000>, <Date 2005-01-02.00:00:0.000000>)
-        >>> from_week_number (2005,  1)
-        (<Date 2005-01-03.00:00:0.000000>, <Date 2005-01-09.00:00:0.000000>)
-        >>> from_week_number (2005, 29)
-        (<Date 2005-07-18.00:00:0.000000>, <Date 2005-07-24.00:00:0.000000>)
-        >>> from_week_number (2005, 52)
-        (<Date 2005-12-26.00:00:0.000000>, <Date 2006-01-01.00:00:0.000000>)
-        >>> from_week_number (2006,  1)
-        (<Date 2006-01-02.00:00:0.000000>, <Date 2006-01-08.00:00:0.000000>)
-        >>> from_week_number (2006, 52)
-        (<Date 2006-12-25.00:00:0.000000>, <Date 2006-12-31.00:00:0.000000>)
-        >>> from_week_number (2007,  1)
-        (<Date 2007-01-01.00:00:0.000000>, <Date 2007-01-07.00:00:0.000000>)
-        >>> from_week_number (2007, 52)
-        (<Date 2007-12-24.00:00:0.000000>, <Date 2007-12-30.00:00:0.000000>)
-        >>> from_week_number (2008,  1)
-        (<Date 2007-12-31.00:00:0.000000>, <Date 2008-01-06.00:00:0.000000>)
-        >>> from_week_number (2008, 52)
-        (<Date 2008-12-22.00:00:0.000000>, <Date 2008-12-28.00:00:0.000000>)
-        >>> from_week_number (2009,  1)
-        (<Date 2008-12-29.00:00:0.000000>, <Date 2009-01-04.00:00:0.000000>)
-        >>> from_week_number (2009, 52)
-        (<Date 2009-12-21.00:00:0.000000>, <Date 2009-12-27.00:00:0.000000>)
-        >>> from_week_number (2009, 53)
-        (<Date 2009-12-28.00:00:0.000000>, <Date 2010-01-03.00:00:0.000000>)
-        >>> from_week_number (2010,  1)
-        (<Date 2010-01-04.00:00:0.000000>, <Date 2010-01-10.00:00:0.000000>)
-        >>> from_week_number (2010, 52)
-        (<Date 2010-12-27.00:00:0.000000>, <Date 2011-01-02.00:00:0.000000>)
+        >>> f = 'Date %Y-%m-%d.%H:%M:%S'
+        >>> [d.pretty (f) for d in from_week_number (1998, 52)]
+        ['Date 1998-12-21.00:00:00', 'Date 1998-12-27.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (1998, 53)]
+        ['Date 1998-12-28.00:00:00', 'Date 1999-01-03.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (1999,  1)]
+        ['Date 1999-01-04.00:00:00', 'Date 1999-01-10.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (1999, 52)]
+        ['Date 1999-12-27.00:00:00', 'Date 2000-01-02.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2000,  1)]
+        ['Date 2000-01-03.00:00:00', 'Date 2000-01-09.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2000, 52)]
+        ['Date 2000-12-25.00:00:00', 'Date 2000-12-31.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2001,  1)]
+        ['Date 2001-01-01.00:00:00', 'Date 2001-01-07.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2001, 52)]
+        ['Date 2001-12-24.00:00:00', 'Date 2001-12-30.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2002,  1)]
+        ['Date 2001-12-31.00:00:00', 'Date 2002-01-06.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2002, 52)]
+        ['Date 2002-12-23.00:00:00', 'Date 2002-12-29.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2003,  1)]
+        ['Date 2002-12-30.00:00:00', 'Date 2003-01-05.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2003, 52)]
+        ['Date 2003-12-22.00:00:00', 'Date 2003-12-28.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2004,  1)]
+        ['Date 2003-12-29.00:00:00', 'Date 2004-01-04.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2004, 52)]
+        ['Date 2004-12-20.00:00:00', 'Date 2004-12-26.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2004, 53)]
+        ['Date 2004-12-27.00:00:00', 'Date 2005-01-02.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2005,  1)]
+        ['Date 2005-01-03.00:00:00', 'Date 2005-01-09.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2005, 29)]
+        ['Date 2005-07-18.00:00:00', 'Date 2005-07-24.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2005, 52)]
+        ['Date 2005-12-26.00:00:00', 'Date 2006-01-01.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2006,  1)]
+        ['Date 2006-01-02.00:00:00', 'Date 2006-01-08.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2006, 52)]
+        ['Date 2006-12-25.00:00:00', 'Date 2006-12-31.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2007,  1)]
+        ['Date 2007-01-01.00:00:00', 'Date 2007-01-07.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2007, 52)]
+        ['Date 2007-12-24.00:00:00', 'Date 2007-12-30.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2008,  1)]
+        ['Date 2007-12-31.00:00:00', 'Date 2008-01-06.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2008, 52)]
+        ['Date 2008-12-22.00:00:00', 'Date 2008-12-28.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2009,  1)]
+        ['Date 2008-12-29.00:00:00', 'Date 2009-01-04.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2009, 52)]
+        ['Date 2009-12-21.00:00:00', 'Date 2009-12-27.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2009, 53)]
+        ['Date 2009-12-28.00:00:00', 'Date 2010-01-03.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2010,  1)]
+        ['Date 2010-01-04.00:00:00', 'Date 2010-01-10.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2010, 52)]
+        ['Date 2010-12-27.00:00:00', 'Date 2011-01-02.00:00:00']
     """
     date = first_thursday (year)
     date = date + Interval ('%dd' % ((week_no - 1) * 7))
@@ -598,5 +598,157 @@ def monthstart_twoweeksago (date = '.') :
     d.day = 1
     return d.pretty (ymd)
 # end def monthstart_twoweeksago
+
+def is_month_end (date) :
+    """ return True if the given date is the last day of a month
+        >>> is_month_end (Date ('2006-01-31'))
+        True
+        >>> is_month_end (Date ('2006-01-30'))
+        False
+        >>> is_month_end (Date ('2006-02-28'))
+        True
+        >>> is_month_end (Date ('2007-02-28'))
+        True
+        >>> is_month_end (Date ('2008-02-28'))
+        False
+        >>> is_month_end (Date ('2008-02-29'))
+        True
+        >>> is_month_end (Date ('2004-02-28'))
+        False
+        >>> is_month_end (Date ('2004-02-29'))
+        True
+        >>> is_month_end (Date ('2000-02-28'))
+        False
+        >>> is_month_end (Date ('2000-02-29'))
+        True
+        >>> is_month_end (Date ('2006-12-31'))
+        True
+        >>> is_month_end (Date ('2006-12-30'))
+        False
+    """
+    tomorrow = date + Interval ('1d')
+    return date.month != tomorrow.month
+# end def is_month_end
+
+def start_of_month (date) :
+    """ Return date matching first of month for given date
+        >>> f = '%Y-%m-%d.%H:%M:%S'
+        >>> start_of_month (Date ('2006-01-01.23:17')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_month (Date ('2006-01-31.23:17')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_month (Date ('2006-01-17.23:17')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_month (Date ('2006-01-17.00:00')).pretty (f)
+        '2006-01-01.00:00:00'
+    """
+    date = Date (date.pretty ('%Y-%m-01'))
+    return date
+# end def start_of_month
+
+_month_lookup = \
+    {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+
+def end_of_month (date) :
+    """ Compute end of month relative to given date
+        >>> f = '%Y-%m-%d.%H:%M:%S'
+        >>> end_of_month (Date ('2006-01-31')).pretty (f)
+        '2006-01-31.00:00:00'
+        >>> end_of_month (Date ('2006-01-30')).pretty (f)
+        '2006-01-31.00:00:00'
+        >>> end_of_month (Date ('2006-02-28')).pretty (f)
+        '2006-02-28.00:00:00'
+        >>> end_of_month (Date ('2007-02-28')).pretty (f)
+        '2007-02-28.00:00:00'
+        >>> end_of_month (Date ('2008-02-28')).pretty (f)
+        '2008-02-29.00:00:00'
+        >>> end_of_month (Date ('2008-02-29')).pretty (f)
+        '2008-02-29.00:00:00'
+        >>> end_of_month (Date ('2004-02-28')).pretty (f)
+        '2004-02-29.00:00:00'
+        >>> end_of_month (Date ('2004-02-29')).pretty (f)
+        '2004-02-29.00:00:00'
+        >>> end_of_month (Date ('2000-02-28')).pretty (f)
+        '2000-02-29.00:00:00'
+        >>> end_of_month (Date ('2000-02-29')).pretty (f)
+        '2000-02-29.00:00:00'
+        >>> end_of_month (Date ('2006-12-31')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_month (Date ('2006-12-30')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_month (Date ('2006-03-01')).pretty (f)
+        '2006-03-31.00:00:00'
+        >>> end_of_month (Date ('2006-04-01')).pretty (f)
+        '2006-04-30.00:00:00'
+        >>> end_of_month (Date ('2006-05-01')).pretty (f)
+        '2006-05-31.00:00:00'
+        >>> end_of_month (Date ('2006-06-01')).pretty (f)
+        '2006-06-30.00:00:00'
+        >>> end_of_month (Date ('2006-07-01')).pretty (f)
+        '2006-07-31.00:00:00'
+        >>> end_of_month (Date ('2006-08-01')).pretty (f)
+        '2006-08-31.00:00:00'
+        >>> end_of_month (Date ('2006-09-01')).pretty (f)
+        '2006-09-30.00:00:00'
+        >>> end_of_month (Date ('2006-10-01')).pretty (f)
+        '2006-10-31.00:00:00'
+        >>> end_of_month (Date ('2006-11-01')).pretty (f)
+        '2006-11-30.00:00:00'
+        >>> for k in range (1, 13) :
+        ...     assert (is_month_end (end_of_month (Date ('2006-%02d-07' % k))))
+    """
+    if date.month != 2 :
+        return Date \
+            ( '%04d-%02d-%02d'
+            % (date.year, date.month, _month_lookup [date.month])
+            )
+    for k in 28, 29 :
+        d = Date ('%04d-%02d-%02d' % (date.year, date.month, k))
+        if is_month_end (d) :
+            return d
+    assert (0)
+# end def end_of_month
+
+def start_of_year (date) :
+    """ Return date matching first of year for given date
+        >>> f = '%Y-%m-%d.%H:%M:%S'
+        >>> start_of_year (Date ('2006-01-01.23:17')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-01-31.23:17')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-01-17.23:17')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-01-17.00:00')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-07-17.23:17:05')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-12-17.23:17:05')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-12-31.23:17:05')).pretty (f)
+        '2006-01-01.00:00:00'
+        >>> start_of_year (Date ('2006-12-31.23:59:59')).pretty (f)
+        '2006-01-01.00:00:00'
+    """
+    date = Date (date.pretty ('%Y-01-01'))
+    return date
+# end def start_of_month
+
+def next_search_date (date, direction = '+') :
+    """ Return find-pattern for date matching everything after next day
+        (or everything before previous if direction is '-')
+        >>> next_search_date (Date ('2006-01-01.23:17'))
+        '2006-01-02;'
+        >>> next_search_date (Date ('2006-01-01.23:17'), '-')
+        ';2005-12-31'
+    """
+    day  = Interval ('%s1d' % direction)
+    return (Date (date.pretty (ymd)) + day).pretty \
+        ( '%s%s%s'
+        % ( [';', ''][direction == '+']
+          , ymd
+          , [';', ''][direction != '+']
+          )
+        )
+# end def next_search_date
 
 ### __END__
