@@ -33,32 +33,30 @@ from time         import gmtime
 from bisect       import bisect_left
 from common       import ymd, next_search_date
 
-dynamic = {} # cache
+last_dynamic = None # simple one-element cache
 
 def get_user_dynamic (db, user, date) :
     """ Get a user_dynamic record by user and date.
         Return None if no record could be found.
     """
-    global dynamic
+    global last_dynamic
     user = str  (user)
     date = Date (date)
-    if user in dynamic :
-        dyn = dynamic [user]
-    else :
-        dyn = [db.user_dynamic.getnode (i) for i in db.user_dynamic.filter
-                (None, {'user' : user}, sort = ('-', 'valid_from'))
-              ]
-        dynamic [user] = dyn
-    # search linearly -- we don't expect more than say 10-30 dynamic
-    # user records per user. We dont want to have a binary search
-    # algorithm here: the first record found is probably the current one
-    # (the one with the latest start date) so we will usually match the
-    # first here if not editing old records.
-    for d in dyn :
-        if date >= d.valid_from :
-            if not d.valid_to or date < d.valid_to :
-                return d
-            break
+    if  (   last_dynamic
+        and last_dynamic.user == user
+        and last_dynamic.valid_from < date
+        and (not last_dynamic.valid_to or last_dynamic.valid_to > date)
+        ) :
+        return last_dynamic
+    print "Dynuser cache miss", user, date
+    ids = db.user_dynamic.filter \
+        ( None, dict (user = user, valid_from = date.pretty (';%Y-%m-%d'))
+        , group = ('-', 'valid_from')
+        )
+    if ids :
+        last_dynamic = db.user_dynamic.getnode (ids [0])
+        if not last_dynamic.valid_to or last_dynamic.valid_to > date :
+            return last_dynamic
     return None
 # end def get_user_dynamic
 
@@ -74,7 +72,7 @@ def last_user_dynamic (db, user) :
     return first_user_dynamic (db, user, direction = '-')
 # end def last_user_dynamic
 
-def _find_user_dynamic (db, user, date, direction = '+') :
+def find_user_dynamic (db, user, date, direction = '+') :
     date = next_search_date (date, direction)
     ids = db.user_dynamic.filter \
         ( None, dict (user = user, valid_from = date)
@@ -83,14 +81,14 @@ def _find_user_dynamic (db, user, date, direction = '+') :
     if ids :
         return db.user_dynamic.getnode (ids [0])
     return None
-# end def _find_user_dynamic
+# end def find_user_dynamic
 
 def next_user_dynamic (db, dynuser) :
-    return _find_user_dynamic (db._db, dynuser.user.id, dynuser.valid_from)
+    return find_user_dynamic (db._db, dynuser.user.id, dynuser.valid_from)
 # end def next_user_dynamic
 
 def prev_user_dynamic (db, dynuser) :
-    return _find_user_dynamic \
+    return find_user_dynamic \
         (db._db, dynuser.user.id, dynuser.valid_from, direction = '-')
 # end def prev_user_dynamic
 
@@ -235,6 +233,7 @@ def overtime (db, user, start, end, end_req, use_additional) :
         do_over = dur [4]
         if date > end :
             work = 0
+            req  = 0
         if use_additional :
             over    = dur [3]
             do_over = dur [5]
@@ -243,7 +242,6 @@ def overtime (db, user, start, end, end_req, use_additional) :
         worked   += work
         compute   = compute and do_over
         date += Interval ('1d')
-        print worked, required, overtime, compute
     if compute :
         if worked > overtime :
             return worked - overtime
@@ -254,7 +252,6 @@ def overtime (db, user, start, end, end_req, use_additional) :
 
 def invalidate_cache (user, date) :
     pdate = date.pretty (ymd)
-    print "invalidate", user, pdate
     if (user, pdate) in duration_cache :
         del duration_cache [(user, pdate)]
 # end def invalidate_cache

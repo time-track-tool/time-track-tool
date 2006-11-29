@@ -138,7 +138,6 @@ def button_submit_to (db, user, date) :
 def button_action (date, action, value) :
     """ Create a button for time-tracking actions """
     ''"approve", ''"deny", ''"edit again"
-    #print action, value
     return \
         '''<input type="button" value="%s"
             onClick="
@@ -155,11 +154,20 @@ def button_action (date, action, value) :
 def freeze_all_script () :
      return \
         '''javascript:if(submit_once()){
-             document.forms.itemSynopsis ['@action'].value = 'freeze_all';
-             document.itemSynopsis.submit ();
+            document.forms.itemSynopsis ['@action'].value = 'freeze_all';
+            document.itemSynopsis.submit ();
            }
         '''
 # end def freeze_all_script
+
+def freeze_supervisor_script () :
+     return \
+        '''javascript:if(submit_once()){
+            document.forms.itemSynopsis ['@action'].value = 'freeze_supervisor';
+            document.itemSynopsis.submit ();
+           }
+        '''
+# end def freeze_supervisor_script
 
 def time_url (request, classname) :
     url = 'daily_record?:action=daily_record_action&:template=edit'
@@ -286,7 +294,6 @@ class Daily_Record_Action (Daily_Record_Common) :
     name           = 'daily_record_action'
 
     def handle (self) :
-        print "user:", self.user
         uid = self.db.user.lookup (self.user)
         if not self.db.user.get (uid, 'supervisor') :
             f_supervisor = _ ('supervisor')
@@ -536,22 +543,82 @@ def is_end_of_week (date) :
     return wday == 6
 # end def is_end_of_week
 
-class Freeze_All_Action (Action) :
+class Freeze_Action (Action, autosuper) :
     def handle (self) :
-        request = templating.HTMLRequest (self.client)
-        date    = Date (request.form ['date'].value)
-        if not date :
+        if not self.date :
             raise Reject, _ ("Date is required")
-        for u in self.db.user.getnodeids () :
-            dyn = get_user_dynamic (self.db, u, date)
-#           if dyn :
-#               print date, u, dyn.user, dyn.id
-#               self.db.daily_record_freeze.create \
-#                   (date = date, user = u, value = 0, frozen = 1)
-#       self.db.commit ()
-        raise Redirect, 'daily_record_freeze?date=%s' % date
+        msg = []
+        for u in self.users :
+            dyn = get_user_dynamic (self.db, u, self.date)
+            if dyn :
+                try :
+                    self.db.daily_record_freeze.create \
+                        (date = self.date, user = u, frozen = 1)
+                except Reject, cause :
+                    msg.append ((str (cause), u))
+        self.db.commit ()
+        if msg :
+            msg.sort ()
+            old   = None
+            o_u   = None
+            count = 1
+            new_m = []
+            msg.append ((None, None))
+            for m, u in msg :
+                if m == old :
+                    count += 1
+                else :
+                    if old :
+                        if count > 1 :
+                            new_m.append ('%s (%d)' % (old, count))
+                        else :
+                            new_m.append \
+                                ( '%s (%s)'
+                                % (old, self.db.user.get (o_u, 'username'))
+                                )
+                    count = 1
+                    old   = m
+                    o_u   = u
+            msg = new_m [:10]
+            msg = '@ok_message=Warning: ' + '<br>Warning: '.join (msg) + '&'
+        else :
+            msg = ''
+        url = \
+            ( 'daily_record_freeze?'
+            + msg
+            + ':columns=id,date,user,frozen,'
+            + 'week_balance,month_balance,year_balance'
+            + '&:sort=user,date&:filter=date'
+            + '&:pagesize=200&:startwith=0&date=%s'
+            ) % self.date
+        raise Redirect, url
+    # end def handle
+# end class Freeze_Action
+
+class Freeze_All_Action (Freeze_Action) :
+    def handle (self) :
+        request    = templating.HTMLRequest (self.client)
+        self.date  = Date (request.form ['date'].value)
+        self.users = self.db.user.getnodeids ()
+        return self.__super.handle ()
     # end def handle
 # end class Freeze_All_Action
+
+class Freeze_Supervisor_Action (Freeze_Action) :
+    def handle (self) :
+        request   = templating.HTMLRequest (self.client)
+        self.date = Date (request.form ['date'].value)
+        user      = request.form ['user'].value
+        if not user :
+            raise Reject, _ ("Supervisor (in User field) is required")
+        try :
+            user   = self.db.user.lookup (user)
+        except KeyError :
+            raise Reject, _ ("Invalid Supervisor")
+        self.users = self.db.user.filter (None, dict (supervisor = user))
+        return self.__super.handle ()
+    # end def handle
+# end class Freeze_Supervisor_Action
 
 def init (instance) :
     global _, pretty_range, week_from_date, ymd, get_user_dynamic, date_range
@@ -577,6 +644,7 @@ def init (instance) :
     actn ('daily_record_reopen',      Daily_Record_Reopen)
     actn ('weekno_action',            Weekno_Action)
     actn ('freeze_all',               Freeze_All_Action)
+    actn ('freeze_supervisor',        Freeze_Supervisor_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
@@ -588,6 +656,7 @@ def init (instance) :
     util ("approvals_pending",        approvals_pending)
     util ("is_end_of_week",           is_end_of_week)
     util ("freeze_all_script",        freeze_all_script)
+    util ("freeze_supervisor_script", freeze_supervisor_script)
     util ("frozen",                   frozen)
     util ("range_frozen",             range_frozen)
     util ("time_url",                 time_url)
