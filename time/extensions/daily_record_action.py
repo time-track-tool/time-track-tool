@@ -625,9 +625,11 @@ def init (instance) :
     global weekno_from_day, from_week_number, day_work_hours
     global round_daily_work_hours
     global frozen, range_frozen, next_dr_freeze, prev_dr_freeze
+    global freeze_date
     sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
     from common       import pretty_range, week_from_date, ymd, date_range \
-                           , weekno_from_day, from_week_number
+                           , weekno_from_day, from_week_number \
+                           , freeze_date
     from user_dynamic import get_user_dynamic, day_work_hours \
                            , round_daily_work_hours
     from freeze       import frozen, range_frozen, next_dr_freeze \
@@ -662,4 +664,5 @@ def init (instance) :
     util ("time_url",                 time_url)
     util ("next_dr_freeze",           next_dr_freeze)
     util ("prev_dr_freeze",           prev_dr_freeze)
+    util ("freeze_date",              freeze_date)
 # end def init

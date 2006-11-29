@@ -751,4 +751,22 @@ def next_search_date (date, direction = '+') :
         )
 # end def next_search_date
 
+def _period_start_end (date, period) :
+    if period == 'week' :
+        start, end = week_from_date (date)
+        return start, date == end
+    elif period == 'month' :
+        return start_of_month (date), is_month_end (date)
+    return start_of_year (date), date.month == 12 and date.day == 31
+# end def _period_start_end
+
+def freeze_date (date, period) :
+    """ Return end of last freeze period before or at date """
+    date = Date (str (date))
+    start, is_end = _period_start_end (date, period)
+    if is_end :
+        return date
+    return start - Interval ('1d')
+# end def freeze_date
+
 ### __END__
