@@ -41,11 +41,10 @@ from roundup.cgi.TranslationService import get_translation
 from operator                       import add
 from time                           import gmtime
 
-get_user_dynamic = None
-day_work_hours   = None
-common           = None
-frozen           = None
-_                = lambda x : x
+import common
+from user_dynamic                   import get_user_dynamic, day_work_hours
+from user_dynamic                   import invalidate_cache
+from freeze                         import frozen
 
 def check_timestamps (start, end, date) :
     start.year  = end.year  = date.year
@@ -658,13 +657,7 @@ def check_retire (db, cl, nodeid, dummy) :
 def init (db) :
     if 'time_record' not in db.classes :
         return
-    import sys, os
-    global _, common, frozen, get_user_dynamic, day_work_hours, invalidate_cache
-    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    from user_dynamic import get_user_dynamic, day_work_hours, invalidate_cache
-    import common
-    from freeze import frozen
-    del (sys.path [0])
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_record.audit  ("create", new_time_record)

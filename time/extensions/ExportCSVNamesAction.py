@@ -32,11 +32,12 @@
 #    ««revision-date»»···
 #--
 
-import sys
-import os
 from roundup.cgi.actions import Action
 from roundup.cgi         import templating
 from roundup             import hyperdb
+
+import help
+from extproperty         import ExtProperty
 
 ExtProperty = None
 help = None
@@ -155,10 +156,5 @@ class Export_CSV_Names (Action) :
 # end class Export_CSV_Names
 
 def init (instance) :
-    global ExtProperty, help
-    sys.path.insert (0, os.path.join (instance.config.HOME, 'extensions'))
-    from extproperty import ExtProperty
-    import help
-    del sys.path [0]
     instance.registerAction ('export_csv_names', Export_CSV_Names)
 # end def init

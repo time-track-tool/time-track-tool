@@ -34,10 +34,16 @@ from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Interval
-from common                         import ymd, week_from_date, is_month_end \
-                                         , start_of_month, start_of_year     \
-                                         , is_month_end, end_of_month        \
-                                         , pretty_range, freeze_date
+
+from common                         import ymd, week_from_date, is_month_end
+from common                         import start_of_month, start_of_year
+from common                         import is_month_end, end_of_month
+from common                         import pretty_range, freeze_date
+from freeze                         import frozen
+from user_dynamic                   import get_user_dynamic, overtime
+from user_dynamic                   import first_user_dynamic
+from user_dynamic                   import last_user_dynamic, find_user_dynamic
+
 day  = Interval ('1d')
 
 def check_editable (db, cl, nodeid, new_values, date = None) :
@@ -177,14 +183,9 @@ def check_overtime (db, cl, nodeid, new_values) :
 def init (db) :
     if 'daily_record_freeze' not in db.classes :
         return
-    global _, frozen, get_user_dynamic, overtime, first_user_dynamic \
-         , last_user_dynamic, find_user_dynamic
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    from freeze       import frozen
-    from user_dynamic import get_user_dynamic, overtime \
-                           , first_user_dynamic, last_user_dynamic \
-                           , find_user_dynamic
     db.daily_record_freeze.audit ("create", new_freeze_record)
     db.daily_record_freeze.audit ("set",    check_freeze_record)
     db.overtime_correction.audit ("create", new_overtime)

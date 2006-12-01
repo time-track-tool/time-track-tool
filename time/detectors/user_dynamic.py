@@ -32,7 +32,7 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
-_ = lambda x : x
+from freeze import frozen
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -82,6 +82,10 @@ def check_vacation (attr, new_values) :
                 _ ( "%(attr)s must be positive or empty") % locals ()
 # end def check_vacation
 
+def check_overtime_parameters (db, cl, nodeid, new_values) :
+    pass
+# end def check_overtime_parameters
+
 def check_user_dynamic (db, cl, nodeid, new_values) :
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
@@ -102,6 +106,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
             check_ranges (cl, nodeid, user, val_from, val_to)
+    check_overtime_parameters (db, cl, nodeid, new_values)
     for i in 'vacation_yearly', 'vacation_remaining' :
         check_vacation (i, new_values)
 # end def check_user_dynamic
@@ -130,6 +135,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         check_ranges (cl, nodeid, user, valid_from, valid_to)
     for i in 'vacation_yearly', 'vacation_remaining' :
         check_vacation (i, new_values)
+    check_overtime_parameters (db, cl, nodeid, new_values)
     # FIXME: Todo: compute remaining vacation from old dyn record and
     # all time tracking data for this user.
     # No: if vacation data is missing look up backwards until a vacation
@@ -156,10 +162,9 @@ def close_existing (db, cl, nodeid, old_values) :
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
-    global _, frozen
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    from freeze import frozen
     db.user_dynamic.audit  ("create", new_user_dynamic)
     db.user_dynamic.audit  ("set",    check_user_dynamic)
     db.user_dynamic.react  ("create", close_existing)

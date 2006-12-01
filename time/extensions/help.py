@@ -1158,7 +1158,6 @@ def help_properties (klass) :
 # end def help_properties
 
 def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
-    import sys
     if not searchname : searchname = name
     prop  = combined_name (cls, searchname, name)
     if not prop in _helptext :

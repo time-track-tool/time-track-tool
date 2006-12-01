@@ -38,7 +38,6 @@
 #
 #--
 
-import os, sys
 from roundup.cgi.actions            import Action, EditItemAction
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
@@ -50,32 +49,13 @@ from copy                           import copy
 from operator                       import add
 from rsclib.autosuper               import autosuper
 from roundup.cgi.TranslationService import get_translation
-
-# Hack: We want to import this from the conversion functions, too.
-# But in the conversion the init routine is not called.
-try :
-    from common             import pretty_range, week_from_date, ymd \
-                                 , date_range, weekno_from_day       \
-                                 , from_week_number
-    from user_dynamic       import get_user_dynamic, day_work_hours \
-                                 , round_daily_work_hours
-    from freeze             import frozen, range_frozen, next_dr_freeze \
-                                 , prev_dr_freeze
-except ImportError :
-    _                      = lambda x : x
-    week_from_date         = None
-    ymd                    = None
-    pretty_range           = None
-    get_user_dynamic       = None
-    day_work_hours         = None
-    date_range             = None
-    weekno_from_day        = None
-    from_week_number       = None
-    round_daily_work_hours = None
-    frozen                 = None
-    range_frozen           = None
-    next_dr_freeze         = None
-    prev_dr_freeze         = None
+from common                         import pretty_range, freeze_date
+from common                         import week_from_date, ymd, date_range
+from common                         import  weekno_from_day, from_week_number
+from user_dynamic                   import get_user_dynamic, day_work_hours
+from user_dynamic                   import round_daily_work_hours
+from freeze                         import frozen, range_frozen, next_dr_freeze
+from freeze                         import prev_dr_freeze
 
 def prev_week (db, request) :
     try :
@@ -621,22 +601,9 @@ class Freeze_Supervisor_Action (Freeze_Action) :
 # end class Freeze_Supervisor_Action
 
 def init (instance) :
-    global _, pretty_range, week_from_date, ymd, get_user_dynamic, date_range
-    global weekno_from_day, from_week_number, day_work_hours
-    global round_daily_work_hours
-    global frozen, range_frozen, next_dr_freeze, prev_dr_freeze
-    global freeze_date
-    sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
-    from common       import pretty_range, week_from_date, ymd, date_range \
-                           , weekno_from_day, from_week_number \
-                           , freeze_date
-    from user_dynamic import get_user_dynamic, day_work_hours \
-                           , round_daily_work_hours
-    from freeze       import frozen, range_frozen, next_dr_freeze \
-                           , prev_dr_freeze
+    global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
-    del sys.path [0]
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)

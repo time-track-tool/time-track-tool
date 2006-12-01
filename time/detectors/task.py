@@ -36,7 +36,8 @@
 #
 from roundup import roundupdb, hyperdb
 from roundup.exceptions import Reject
-common = None
+
+import common
 
 def add_task (db, cl, nodeid, new_values) :
     """auditor for task.create:
@@ -140,11 +141,6 @@ def update_feature_test_ok (db, cl, nodeid, old_values) :
 def init (db) :
     if 'task' not in db.classes :
         return
-    import sys, os
-    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    common = __import__ ('common', globals (), locals ())
-    del (sys.path [0])
-
     db.task.audit ("create", add_task              )
     db.task.audit ("set"   , audit_task_status     )
     db.task.react ("set"   , update_feature_status )

@@ -34,8 +34,8 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-common = None
 
+import common
 
 def new_it (db, cl, nodeid, new_values) :
     user_has_role = common.user_has_role
@@ -99,10 +99,9 @@ def audit_superseder (db, cl, nodeid, new_values) :
 def init (db) :
     if 'it_issue' not in db.classes :
         return
-    global _, common
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    import common
     for cls in db.it_issue, db.it_project :
         cls.audit     ("create", new_it, priority = 50)
         cls.audit     ("set",    check_it)

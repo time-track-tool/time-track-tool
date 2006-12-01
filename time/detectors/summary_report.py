@@ -32,8 +32,6 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
-_      = lambda x : x
-
 def new_summary_report (db, cl, nodeid, new_values) :
     raise Reject, _ ("No %s may be created" % _ ('summary_report'))
 # end def new_summary_report

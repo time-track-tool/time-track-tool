@@ -36,8 +36,7 @@ from roundup.cgi.TranslationService import get_translation
 from operator                       import or_
 from rsclib.IP4_Address             import IP4_Address
 
-_      = lambda x : x
-common = None
+import common
 
 name_re_start = re.compile (r"[^a-z]")
 name_re       = re.compile (r"[^\-a-z0-9]")
@@ -389,11 +388,7 @@ def check_smb_machine (db, cl, nodeid, new_values) :
 def init (db) :
     if 'alias' not in db.classes :
         return
-    import sys, os
-    global common, _
-    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    import common
-    del (sys.path [0])
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.alias.audit             ("create", new_alias)

@@ -32,8 +32,7 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
-_      = lambda x : x
-common = None
+import common
 
 def check_duplicate_field_value (cl, project, field, value) :
     ids     = cl.filter (None, {field : value, 'project' : project})
@@ -83,11 +82,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
 def init (db) :
     if 'time_wp' not in db.classes :
         return
-    import sys, os
-    global common, _
-    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    import common
-    del (sys.path [0])
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_wp.audit  ("create", new_time_wp)

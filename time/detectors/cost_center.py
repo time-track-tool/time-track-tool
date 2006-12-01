@@ -34,8 +34,8 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-common = None
 
+import common
 
 def new_cc (db, cl, nodeid, new_values) :
     for i in 'cost_center_group', 'organisation' :
@@ -56,10 +56,9 @@ def check_cc (db, cl, nodeid, new_values) :
 def init (db) :
     if 'cost_center' not in db.classes :
         return
-    global _, common
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    import common
     db.cost_center.audit     ("create", new_cc)
     db.cost_center.audit     ("set",    check_cc)
 # end def init

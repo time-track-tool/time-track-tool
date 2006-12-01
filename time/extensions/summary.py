@@ -28,8 +28,6 @@
 #    Time-tracking summary reports
 #
 
-import sys
-import os
 import csv
 import cgi
 import time
@@ -45,7 +43,10 @@ from roundup.cgi.actions            import Action
 from rsclib.autosuper               import autosuper
 from rsclib.PM_Value                import PM_Value
 
-_      = lambda x : x
+from common                         import pretty_range, week_from_date, ymd
+from common                         import user_has_role, date_range
+from common                         import weekno_from_day
+from user_dynamic                   import update_tr_duration, get_user_dynamic
 
 try :
     from common       import pretty_range, week_from_date, ymd, user_has_role \
@@ -899,15 +900,9 @@ class csv_summary_report (Action) :
 # end class csv_summary_report
 
 def init (instance) :
-    global _, ymd, pretty_range, week_from_date, user_has_role, date_range
-    global weekno_from_day, update_tr_duration, get_user_dynamic
-    sys.path.insert (0, os.path.join (instance.config.HOME, 'lib'))
+    global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
-    from common import pretty_range, week_from_date, ymd, user_has_role \
-                     , date_range, weekno_from_day
-    from user_dynamic import update_tr_duration, get_user_dynamic
-    del sys.path [0]
     util   = instance.registerUtil
     util   ('Summary_Report',     Summary_Report)
     action = instance.registerAction

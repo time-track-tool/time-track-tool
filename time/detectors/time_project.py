@@ -32,8 +32,7 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
-_      = lambda x : x
-common = None
+import common
 
 def check_time_project (db, cl, nodeid, new_values) :
     for i in 'wp_no', 'project' :
@@ -67,11 +66,7 @@ def new_time_project (db, cl, nodeid, new_values) :
 def init (db) :
     if 'time_project' not in db.classes :
         return
-    import sys, os
-    global common, _
-    sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-    common = __import__ ('common', globals (), locals ())
-    del (sys.path [0])
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_project.audit  ("create", new_time_project)

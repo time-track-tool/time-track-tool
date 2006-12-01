@@ -35,7 +35,8 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-common = None
+
+import common
 
 def loopchecks (db, cl, nodeid, new_values) :
     for propname in 'superseder', 'part_of', 'needs', 'depends' :
@@ -159,10 +160,9 @@ def no_autoclose_container (db, cl, nodeid, new_values) :
 def init (db) :
     if 'issue' not in db.classes :
         return
-    global _, common
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    import common
     db.issue.audit ("set",    loopchecks)
     db.issue.audit ("create", loopchecks)
     db.issue.audit ("set",    update_eff_prio)

@@ -35,8 +35,9 @@ from roundup.cgi.TranslationService import get_translation
 from tempfile                       import mkstemp
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
-_      = lambda x : x
-common = None
+
+import common
+from user_dynamic                   import get_user_dynamic
 
 USER_SINGLE = """
 <tal:block metal:define-macro="%(macro_name)s">
@@ -351,11 +352,9 @@ def obsolete_action (db, cl, nodeid, new_values) :
 # end def obsolete_action
 
 def init (db) :
-    global _, common, get_user_dynamic
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    import common
-    from user_dynamic import get_user_dynamic
     # fire before changes are made
     db.user.audit("set"   , audit_user_fields)
     db.user.audit("create", new_user)
