@@ -525,8 +525,9 @@ def is_end_of_week (date) :
 
 class Freeze_Action (Action, autosuper) :
     def handle (self) :
-        if not self.date :
+        if not self.request.form ['date'].value :
             raise Reject, _ ("Date is required")
+        self.date  = Date (request.form ['date'].value)
         msg = []
         for u in self.users :
             dyn = get_user_dynamic (self.db, u, self.date)
@@ -577,18 +578,16 @@ class Freeze_Action (Action, autosuper) :
 
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
-        request    = templating.HTMLRequest (self.client)
-        self.date  = Date (request.form ['date'].value)
-        self.users = self.db.user.getnodeids ()
+        self.request = templating.HTMLRequest (self.client)
+        self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle
 # end class Freeze_All_Action
 
 class Freeze_Supervisor_Action (Freeze_Action) :
     def handle (self) :
-        request   = templating.HTMLRequest (self.client)
-        self.date = Date (request.form ['date'].value)
-        user      = request.form ['user'].value
+        self.request = templating.HTMLRequest (self.client)
+        user         = self.request.form ['user'].value
         if not user :
             raise Reject, _ ("Supervisor (in User field) is required")
         try :
