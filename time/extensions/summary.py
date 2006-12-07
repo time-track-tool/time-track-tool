@@ -407,14 +407,74 @@ class WP_Container (Comparable_Container, dict) :
     # end def __hash__
 # end class WP_Container
 
-class Summary_Report :
+class _Report (autosuper) :
+    def html_item (self, item) :
+        if not item and not isinstance (item, dict) and not item == 0 :
+            return "   <td/>"
+        if isinstance (item, PM_Value) :
+            if item.missing and not item :
+                return ('  <td class="missing"/>')
+            return \
+                ('  <td %sstyle="text-align:right;">%2.02f</td>'
+                % (['class="missing" ', ''][not item.missing], item)
+                )
+        if isinstance (item, type (0.0)) or isinstance (item, PM_Value) :
+            return ('  <td style="text-align:right;">%2.02f</td>' % item)
+        return ('  <td>%s</td>' % item.as_html ())
+    # end def html_item
+
+    def html_header_item (self, item) :
+        return ('  <th>%s</th>' % str (item))
+    # end def html_header_item
+
+    def html_line (self, items) :
+        items.insert (0, " <tr>")
+        items.append (" </tr>")
+        self.html_output.extend (items)
+    # end def html_line
+
+    def csv_item (self, item) :
+        if not item and not isinstance (item, dict) and not item == 0 :
+            return ''
+        if isinstance (item, PM_Value) :
+            if item.missing and not item :
+                return "-"
+            return '%2.02f' % item
+        if isinstance (item, type (0.0)) :
+            return '%2.02f' % item
+        return str (item)
+    # end def csv_item
+
+    def csv_line (self, items) :
+        self.csvwriter.writerow (items)
+    # end def csv_line
+
+    def as_html (self) :
+        s = self.html_output = ['']
+        s.append ('<table class="list" border="1">')
+        self.html_line (self.header_line (self.html_header_item))
+        self._output   (self.html_line, self.html_item)
+        s.append ("</table>")
+        return '\n'.join (s)
+    # end def as_html
+
+    def as_csv (self) :
+        io             = StringIO ()
+        self.csvwriter = csv.writer (io, dialect = 'excel', delimiter = ',')
+        self.csv_line (self.header_line (self.csv_item))
+        self._output  (self.csv_line, self.csv_item)
+        return io.getvalue ()
+    # end def as_csv
+# end class _Report
+
+class Summary_Report (_Report) :
     """ TODO:
         - special colors for 
           - daily record not yet accepted
           - no daily record found -- involves checking dynamic user data
         FIXME: Check where we need naive dates...
     """
-    def __init__ (self, db, request, is_csv = False) :
+    def __init__ (self, db, request, utils, is_csv = False) :
         try :
             db = db._db
         except AttributeError :
@@ -745,47 +805,6 @@ class Summary_Report :
         self.wp_containers   = wp_containers
     # end def __init__
 
-    def html_item (self, item) :
-        if not item and not isinstance (item, dict) and not item == 0 :
-            return "   <td/>"
-        if isinstance (item, PM_Value) :
-            if item.missing and not item :
-                return ('  <td class="missing"/>')
-            return \
-                ('  <td %sstyle="text-align:right;">%2.02f</td>'
-                % (['class="missing" ', ''][not item.missing], item)
-                )
-        if isinstance (item, type (0.0)) or isinstance (item, PM_Value) :
-            return ('  <td style="text-align:right;">%2.02f</td>' % item)
-        return ('  <td>%s</td>' % item.as_html ())
-    # end def html_item
-
-    def html_header_item (self, item) :
-        return ('  <th>%s</th>' % str (item))
-    # end def html_header_item
-
-    def html_line (self, items) :
-        items.insert (0, " <tr>")
-        items.append (" </tr>")
-        self.html_output.extend (items)
-    # end def html_line
-
-    def csv_item (self, item) :
-        if not item and not isinstance (item, dict) and not item == 0 :
-            return ''
-        if isinstance (item, PM_Value) :
-            if item.missing and not item :
-                return "-"
-            return '%2.02f' % item
-        if isinstance (item, type (0.0)) :
-            return '%2.02f' % item
-        return str (item)
-    # end def csv_item
-
-    def csv_line (self, items) :
-        self.csvwriter.writerow (items)
-    # end def csv_line
-
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('Container')))
@@ -851,49 +870,80 @@ class Summary_Report :
                         tc_pointers [tcp] += 1
                 d = d + Interval ('1d')
     # end def _output
-
-    def as_html (self) :
-        s = self.html_output = ['']
-        s.append ('<table class="list" border="1">')
-        self.html_line (self.header_line (self.html_header_item))
-        self._output   (self.html_line, self.html_item)
-        s.append ("</table>")
-        return '\n'.join (s)
-    # end def as_html
-
-    def as_csv (self) :
-        io             = StringIO ()
-        self.csvwriter = csv.writer (io, dialect = 'excel', delimiter = ',')
-        self.csv_line (self.header_line (self.csv_item))
-        self._output  (self.csv_line, self.csv_item)
-        return io.getvalue ()
-    # end def as_csv
 # end class Summary_Report
 
-class Staff_Report :
-    def __init__ (self, db, request, is_csv = False) :
+class Staff_Report (_Report) :
+    def __init__ (self, db, request, utils, is_csv = False) :
+        self.db      = db
         try :
             db = db._db
         except AttributeError :
             pass
-        filterspec      = request.filterspec
-        sort_by         = request.sort
-        group_by        = request.group
-        columns         = request.columns
+        self.request = request
+        self.utils   = utils
+        filterspec   = request.filterspec
+        status       = filterspec.get \
+            ('status', db.daily_record_status.getnodeids ())
+        users        = filterspec.get ('user', [])
+        sv           = dict ((i, 1) for i in filterspec.get ('supervisor', []))
+        svu          = []
+        if sv :
+            svu      = db.user.find (supervisor = sv)
+        users        = dict ((u, 1) for u in users + svu)
+        start, end   = date_range (db, filterspec)
+        found_users  = bool (users)
+        for cl in 'department', 'org_location' :
+            spec = filterspec.get (cl, [])
+            if spec :
+                found_users = True
+                for i in db.user_dynamic.filter \
+                    ( None
+                    , {cl : spec, 'valid_from' : end.pretty (';%Y-%m-%d')}
+                    ) :
+                    ud = db.user_dynamic.getnode (i)
+                    if  (   ud.valid_from <= end
+                        and (not ud.valid_to or ud.valid_to > end)
+                        ) :
+                        users [ud.user] = 1
+        if not found_users :
+            users = dict ((i, 1) for i in db.user.getnodeids ())
+        all_in = filterspec.get ('all_in')
+        if all_in is not None :
+            all_in = all_in == 'yes'
+        for u in users.keys () :
+            dyn_e = get_user_dynamic (db, u, end)
+            dyn_s = get_user_dynamic (db, u, start)
+            if  (  not dyn_e
+                or not dyn_s
+                or all_in is not None and all_in != bool (dyn_e.all_in)
+                ) :
+                del users [u]
+        self.users = sorted \
+            ( users.keys ()
+            , key = lambda x : db.user.get (x, 'username')
+            )
     # end def __init__
 
-    def as_html (self) :
-        return ''
-    # end def as_html
+    def header_line (self, formatter) :
+        line = []
+        line.append (formatter (_ ('user')))
+        return line
+    # end def header_line
 
-    def as_csv (self) :
-        return ''
-    # end def as_html
+    def _output (self, line_formatter, item_formatter) :
+        for u in self.users :
+            item  = self.db.user.getItem (u)
+            uname = item.username
+            user  = self.utils.ExtProperty (self.utils, uname, item = item)
+            line_formatter ([item_formatter (user)])
+    # end def _output
+
 # end class Staff_Report
 
 class CSV_Report (Action, autosuper) :
     def handle (self) :
-        request                   = templating.HTMLRequest (self.client)
+        request                   = templating.HTMLRequest     (self.client)
+        self.utils                = templating.TemplatingUtils (self.client)
         h                         = self.client.additional_headers
         h ['Content-Type']        = 'text/csv'
         h ['Content-Disposition'] = 'inline; filename=summary.csv'
@@ -901,7 +951,7 @@ class CSV_Report (Action, autosuper) :
         if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
             # all done, return a dummy string
             return 'dummy'
-        report = self.report_class (self.db, request, is_csv = True)
+        report = self.report_class (self.db, request, utils, is_csv = True)
         return report.as_csv ()
     # end def handle
 # end class CSV_Report

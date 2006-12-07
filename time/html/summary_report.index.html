@@ -47,7 +47,7 @@
     , planned_effort    = utils.ExtProperty
       (utils, pdict ['planned_effort'])
     );
-    sr   python: utils.Summary_Report (db, request)
+    sr   python: utils.Summary_Report (db, request, utils)
    "
   tal:condition="context/is_view_ok">
   <tal:block tal:replace="structure python:sr.as_html ()"/>

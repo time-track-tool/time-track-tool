@@ -48,7 +48,6 @@ def get_user_dynamic (db, user, date) :
         and (not last_dynamic.valid_to or last_dynamic.valid_to > date)
         ) :
         return last_dynamic
-    print "Dynuser cache miss", user, date
     ids = db.user_dynamic.filter \
         ( None, dict (user = user, valid_from = date.pretty (';%Y-%m-%d'))
         , group = ('-', 'valid_from')

@@ -294,6 +294,8 @@ class ExtProperty :
             return self.formatted ()
     # end def as_listentry
 
+    as_html = as_listentry
+
     def deref (self, prop = None) :
         """
             from an item get the property prop. This does some recursive

@@ -16,16 +16,18 @@
       ( date              = utils.ExtProperty 
         (utils, pdict ['date'])
       , user              = utils.ExtProperty 
-        (utils, pdict ['user'],              multiselect = 1)
+        (utils, pdict ['user'])
       , department        = utils.ExtProperty
         (utils, pdict ['department'],        multiselect = 1)
+      , org_location      = utils.ExtProperty
+        (utils, pdict ['org_location'],      multiselect = 1)
       , supervisor        = utils.ExtProperty
-        (utils, pdict ['supervisor'],        multiselect = 1)
+        (utils, pdict ['supervisor'])
       , status            = utils.ExtProperty
         (utils, pdict ['status'],            multiselect = 1)
       , all_in            = utils.ExtProperty (utils, pdict ['all_in'])
       );
-      sr   python: utils.Staff_Report (db, request)
+      sr   python: utils.Staff_Report (db, request, utils)
      "
     tal:condition="context/is_view_ok">
     <tal:block tal:replace="structure python:sr.as_html ()"/>
@@ -33,7 +35,9 @@
         " fpkeys python: []
         ; props python: [myprops [p] for p in sorted (fpkeys)]
         ; propkeys       python:
-          ('date', 'user', 'department', 'supervisor', 'status', 'all_in')
+          ( 'date', 'user', 'department', 'org_location'
+          , 'supervisor', 'status', 'all_in'
+          )
         ; sprops         python: [myprops [p] for p in propkeys]
         ; multi_props    python: [p for p in sprops if p.multiselect]
         ; sort_props     python: []
