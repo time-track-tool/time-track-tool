@@ -2,9 +2,9 @@
 
  <title metal:fill-slot="head_title">
   <span tal:condition="context/id"
-        tal:replace="string:Action Item: ${context/id} by ${context/creator}"></span>
+        tal:replace="string:Action Item: ${context/id} by ${context/creator}"/>
   <span tal:condition="not:context/id"
-        tal:replace="string:Create New Action Item"></span>
+        tal:replace="string:Create New Action Item"/>
  </title>
 
  <tal:block metal:fill-slot="create_or_query">

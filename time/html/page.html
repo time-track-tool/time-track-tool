@@ -5,6 +5,7 @@
    uname           python: str (request.user.username)
  ; classname       context/_classname|db/user/_classname
  ; Classname       python: i18n.gettext (classname)
+ ; head_title      Classname
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
  ; is_user         python: uname != 'anonymous'
@@ -226,7 +227,7 @@
 ">
  <head>
   <title metal:define-slot="head_title">
-   <span tal:replace="Classname"/>
+   <span tal:replace="head_title"/>
   </title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
   <link rel="stylesheet" type="text/css" href="@@file/style.css">
@@ -285,14 +286,6 @@
   <table bgcolor="#eeeeee"
    tal:condition="python:request.user.username!='anonymous'">
    <tr>
-<!-- home -->
-<!--
-    <td class="sidebar">
-     <span class="classblock">
-      <a tal:attributes="href config/TRACKER_WEB">Home</a>
-     </span>
-    </td>
--->
 
 <!-- create new / query -->
     <tal:block metal:define-slot="create_or_query" />
@@ -365,7 +358,7 @@
    tal:condition="python:request.user.username!='anonymous'">
    <h3>
     <span metal:define-slot="body_title">
-     <span tal:replace="Classname"/>
+     <span tal:replace="head_title"/>
     </span>
    </h3>
   </tal:block>
@@ -830,7 +823,7 @@
    <tr>
     <th bgcolor="#C08080" i18n:translate="" colspan="2">
      Query
-     <span tal:replace="Classname" i18n:name="Classname"/>
+     <span tal:replace="head_title" i18n:name="title"/>
     </th>
    </tr>
 
