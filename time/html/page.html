@@ -818,7 +818,10 @@
       tal:attributes="action request/classname">
   <tal:block metal:define-slot="search_variables"/>
   <input type="hidden" name=":action" value="search">
-  <input type="hidden" name=":startwith" tal:attributes="value request/startwith">
+  <input type="hidden" name=":startwith"
+   tal:attributes="value request/startwith">
+  <input type="hidden" name=":template"
+   tal:attributes="value python:request.template or 'index'">
   <table border="0" bgcolor="#e0c0c0" class="searchform">
    <tr>
     <th bgcolor="#C08080" i18n:translate="" colspan="2">
@@ -896,7 +899,8 @@
    </tr>
    <tr>
     <td colspan="2">
-     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
+     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform"
+      tal:condition="props">
       <tr>
        <th style="text-align:left;" tal:content="structure python:
          utils.fieldname (classname, 'VIEW', endswith=':', csscls='header')"/>

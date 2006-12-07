@@ -1,0 +1,53 @@
+<tal:block tal:define="Title python:i18n.gettext ('Staff Report');">
+ <tal:block metal:use-macro="templates/page/macros/icing">
+  <title metal:fill-slot="head_title" tal:content="Title"/>
+  <span metal:fill-slot="body_title" tal:content="Title"/>
+
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+  <tal:block metal:fill-slot="content">
+   <tal:block tal:define=
+    "batch request/batch;
+     pdict python: utils.properties_dict (db, context);
+     myprops python: dict
+      ( date              = utils.ExtProperty 
+        (utils, pdict ['date'])
+      , user              = utils.ExtProperty 
+        (utils, pdict ['user'],              multiselect = 1)
+      , department        = utils.ExtProperty
+        (utils, pdict ['department'],        multiselect = 1)
+      , supervisor        = utils.ExtProperty
+        (utils, pdict ['supervisor'],        multiselect = 1)
+      , status            = utils.ExtProperty
+        (utils, pdict ['status'],            multiselect = 1)
+      , all_in            = utils.ExtProperty (utils, pdict ['all_in'])
+      );
+      sr   python: utils.Staff_Report (db, request)
+     "
+    tal:condition="context/is_view_ok">
+    <tal:block tal:replace="structure python:sr.as_html ()"/>
+    <tal:block tal:define=
+        " fpkeys python: []
+        ; props python: [myprops [p] for p in sorted (fpkeys)]
+        ; propkeys       python:
+          ('date', 'user', 'department', 'supervisor', 'status', 'all_in')
+        ; sprops         python: [myprops [p] for p in propkeys]
+        ; multi_props    python: [p for p in sprops if p.multiselect]
+        ; sort_props     python: []
+        ; nomulti_props  python: [p for p in sprops
+                                  if not p.multiselect and p.searchable]
+        ; csv_link       python:request.indexargs_url
+               (classname, {'@action':'csv_staff_report'})
+        ; do_fulltext    python: False
+        ; do_pagesize    python: False
+        ; head_title     Title
+        ">
+     <tal:block metal:use-macro="templates/page/macros/search_form"/>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

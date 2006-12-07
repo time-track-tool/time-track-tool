@@ -48,20 +48,6 @@ from common                         import user_has_role, date_range
 from common                         import weekno_from_day
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 
-try :
-    from common       import pretty_range, week_from_date, ymd, user_has_role \
-                           , date_range, weekno_from_day
-    from user_dynamic import update_tr_duration, get_user_dynamic
-except ImportError :
-    ymd                = None
-    pretty_range       = None
-    week_from_date     = None
-    user_has_role      = None
-    date_range         = None
-    weekno_from_day    = None
-    update_tr_duration = None
-    get_user_dynamic   = None
-
 sup_cache = {}
 def user_supervisor_for (db, uid = None, use_sv = True) :
     """ Recursively compute the users for which the given uid is
@@ -884,7 +870,28 @@ class Summary_Report :
     # end def as_csv
 # end class Summary_Report
 
-class csv_summary_report (Action) :
+class Staff_Report :
+    def __init__ (self, db, request, is_csv = False) :
+        try :
+            db = db._db
+        except AttributeError :
+            pass
+        filterspec      = request.filterspec
+        sort_by         = request.sort
+        group_by        = request.group
+        columns         = request.columns
+    # end def __init__
+
+    def as_html (self) :
+        return ''
+    # end def as_html
+
+    def as_csv (self) :
+        return ''
+    # end def as_html
+# end class Staff_Report
+
+class CSV_Report (Action, autosuper) :
     def handle (self) :
         request                   = templating.HTMLRequest (self.client)
         h                         = self.client.additional_headers
@@ -894,10 +901,18 @@ class csv_summary_report (Action) :
         if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
             # all done, return a dummy string
             return 'dummy'
-        summary = Summary_Report (self.db, request, is_csv = True)
-        return summary.as_csv ()
+        report = self.report_class (self.db, request, is_csv = True)
+        return report.as_csv ()
     # end def handle
-# end class csv_summary_report
+# end class CSV_Report
+
+class CSV_Summary_Report (CSV_Report) :
+    report_class = Summary_Report
+# end class CSV_Summary_Report
+
+class CSV_Staff_Report (CSV_Report) :
+    report_class = Staff_Report
+# end class CSV_Staff_Report
 
 def init (instance) :
     global _
@@ -905,6 +920,8 @@ def init (instance) :
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     util   = instance.registerUtil
     util   ('Summary_Report',     Summary_Report)
+    util   ('Staff_Report',       Staff_Report)
     action = instance.registerAction
-    action ('csv_summary_report', csv_summary_report)
+    action ('csv_summary_report', CSV_Summary_Report)
+    action ('csv_staff_report',   CSV_Staff_Report)
 # end def init
