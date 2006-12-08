@@ -36,7 +36,7 @@
         ; props python: [myprops [p] for p in sorted (fpkeys)]
         ; propkeys       python:
           ( 'date', 'user', 'department', 'org_location'
-          , 'supervisor', 'status', 'all_in'
+          , 'supervisor', 'all_in'
           )
         ; sprops         python: [myprops [p] for p in propkeys]
         ; multi_props    python: [p for p in sprops if p.multiselect]
