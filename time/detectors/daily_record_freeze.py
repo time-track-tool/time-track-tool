@@ -35,14 +35,9 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Interval
 
-from common                         import ymd, week_from_date, is_month_end
-from common                         import start_of_month, start_of_year
-from common                         import is_month_end, end_of_month
-from common                         import pretty_range, freeze_date
 from freeze                         import frozen
-from user_dynamic                   import get_user_dynamic, overtime
-from user_dynamic                   import first_user_dynamic
-from user_dynamic                   import last_user_dynamic, find_user_dynamic
+from user_dynamic                   import get_user_dynamic
+from user_dynamic                   import compute_balance
 
 day  = Interval ('1d')
 
@@ -55,65 +50,6 @@ def check_editable (db, cl, nodeid, new_values, date = None) :
     if not get_user_dynamic (db, user, date) :
         raise Reject, _ ("No dyn. user rec for %(user)s %(date)s") % locals ()
 # end def check_editable
-
-def end_of_period (date, period) :
-    if period == 'week' :
-        start, end = week_from_date (date)
-        return end
-    if period == 'year' :
-        return Date ('%s-12-31' % date.year)
-    return end_of_month (date)
-# end def end_of_period
-
-def compute_balance (db, user, date, period) :
-    print "compute_balance", user, date, period
-    end            = freeze_date (date, period)
-    use_additional = period != 'week'
-    id = db.daily_record_freeze.filter \
-        ( None
-        , dict (user = user, date = (date - day).pretty (';%Y-%m-%d'))
-        , group = [('-', 'date')]
-        )
-    if id :
-        prev = db.daily_record_freeze.getnode (id [0])
-        p_balance = prev [period + '_balance']
-        p_end     = freeze_date (prev.date, period)
-        p_date    = p_end + day # start at day after last period ends
-        if p_date >= end :
-            return p_balance
-    else :
-        dyn       = last_user_dynamic  (db, user)
-        assert (not dyn.valid_to or dyn.valid_to >= date)
-        fdyn      = dyn = first_user_dynamic (db, user)
-        # loop over dyn recs until we find a hole or have reached the
-        # freeze date. The first dyn record that reaches the freeze date
-        # without a hole in between is our candidate.
-        while dyn.valid_to and dyn.valid_to <= date :
-            ldyn = dyn
-            dyn  = find_user_dynamic \
-                (db, dyn.user, dyn.valid_from, direction = '+')
-            if dyn.valid_from > ldyn.valid_to :
-                fdyn = dyn
-        dyn = fdyn
-        p_date    = dyn.valid_from
-        print "p_date", p_date, end, end_of_period (p_date, period), period
-        p_balance = 0
-        if p_date > end :
-            return 0
-    print user, date, p_date, end, period
-    assert (p_date < end)
-    corr = db.overtime_correction.filter \
-        (None, dict (date = pretty_range (p_date, end)))
-    for c in corr :
-        p_balance += db.overtime_correction.get (c, 'value')
-    while p_date < end :
-        eop = end_of_period (p_date, period)
-        print "overtime:", user, p_date, eop, period
-        p_balance += overtime (db, user, p_date, eop, eop, use_additional)
-        p_date = eop + day
-    assert (p_date == end + day)
-    return p_balance
-# end def compute_balance
 
 def check_thawed_records (db, user, date) :
     cl     = db.daily_record_freeze

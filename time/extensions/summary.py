@@ -47,6 +47,7 @@ from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
 from common                         import weekno_from_day
 from user_dynamic                   import update_tr_duration, get_user_dynamic
+from user_dynamic                   import compute_balance
 
 sup_cache = {}
 def user_supervisor_for (db, uid = None, use_sv = True) :
@@ -891,6 +892,8 @@ class Staff_Report (_Report) :
             svu      = db.user.find (supervisor = sv)
         users        = dict ((u, 1) for u in users + svu)
         start, end   = date_range (db, filterspec)
+        self.start   = start
+        self.end     = end
         found_users  = bool (users)
         for cl in 'department', 'org_location' :
             spec = filterspec.get (cl, [])
@@ -922,20 +925,27 @@ class Staff_Report (_Report) :
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
             )
+        values = dict ((u, {}) for u in self.users)
     # end def __init__
 
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('user')))
+        line.append (formatter (_ ('balance_start')))
+        line.append (formatter (_ ('balance_end')))
         return line
     # end def header_line
 
     def _output (self, line_formatter, item_formatter) :
         for u in self.users :
+            line  = []
             item  = self.db.user.getItem (u)
             uname = item.username
             user  = self.utils.ExtProperty (self.utils, uname, item = item)
-            line_formatter ([item_formatter (user)])
+            line.append (item_formatter (user))
+            line.append (item_formatter (compute_balance (self.db._db, u, self.start, 'week', True)))
+            line.append (item_formatter (compute_balance (self.db._db, u, self.end, 'week', True)))
+            line_formatter (line)
     # end def _output
 
 # end class Staff_Report

@@ -769,4 +769,13 @@ def freeze_date (date, period) :
     return start - Interval ('1d')
 # end def freeze_date
 
+def end_of_period (date, period) :
+    if period == 'week' :
+        start, end = week_from_date (date)
+        return end
+    if period == 'year' :
+        return Date ('%s-12-31' % date.year)
+    return end_of_month (date)
+# end def end_of_period
+
 ### __END__

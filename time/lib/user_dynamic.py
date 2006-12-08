@@ -28,11 +28,15 @@
 #    access routines for 'user_dynamic'
 #
 
+import sys
+
 from roundup.date import Date, Interval
 from time         import gmtime
 from bisect       import bisect_left
-from common       import ymd, next_search_date
+from common       import ymd, next_search_date, end_of_period, freeze_date
+from common       import pretty_range
 
+day          = Interval ('1d')
 last_dynamic = None # simple one-element cache
 
 def get_user_dynamic (db, user, date) :
@@ -191,6 +195,50 @@ def update_tr_duration (db, dr)  :
     return sum
 # end def update_tr_duration
 
+daily_record_cache = {}
+dr_user_date       = {}
+
+def _update_empty_dr (user, date, next) :
+    d = next
+    while d <= date :
+        daily_record_cache [(user, d.pretty (ymd))] = None
+        d = d + day
+# end def _update_empty_dr
+
+def get_daily_record (db, user, date) :
+    """ Use caching: prefetch all records from given date until now and
+        store them. Use a per-user cache of the earliest dr found.
+    """
+    pdate = date.pretty (ymd)
+    date  = Date (pdate)
+    now   = Date (Date ('.').pretty (ymd))
+    if (user, pdate) not in daily_record_cache :
+        if date < now :
+            start = date
+            end   = now
+        else :
+            start = now
+            end   = date
+        if user in dr_user_date :
+            s, e = dr_user_date [user]
+            assert (start < s or end > e)
+            if start > s :
+                start = e + day
+            if end < e :
+                end = s - day
+        range = pretty_range (start, end)
+        drs = db.daily_record.filter \
+            (None, dict (user = user, date = range), sort = ('+', 'date'))
+        next = start
+        for drid in drs :
+            dr = db.daily_record.getnode (drid)
+            _update_empty_dr (user, dr.date, next)
+            daily_record_cache [(user, dr.date.pretty (ymd))] = dr
+            next = dr.date + day
+        _update_empty_dr (user, end, next)
+    return daily_record_cache [(user, pdate)]
+# end def get_daily_record
+
 duration_cache = {}
 
 def _durations (db, user, date) :
@@ -200,12 +248,9 @@ def _durations (db, user, date) :
         dyn   = get_user_dynamic (db, user, date)
         duration_cache [(user, pdate)] = (0, 0, 0, 0, False, False)
         if dyn :
-            drid  = db.daily_record.filter \
-                (None, dict (user = user, date = pdate))
-            assert (len (drid) <= 1)
-            if not drid :
+            dr = get_daily_record (db, user, date)
+            if not dr :
                 return duration_cache [(user, pdate)]
-            dr    = db.daily_record.getnode (drid [0])
             wkend = wday in (5, 6)
             duration_cache [(user, pdate)] = \
                 ( update_tr_duration (db, dr)
@@ -254,3 +299,57 @@ def invalidate_cache (user, date) :
     if (user, pdate) in duration_cache :
         del duration_cache [(user, pdate)]
 # end def invalidate_cache
+
+def compute_balance (db, user, date, period, sharp_end = False) :
+    #print "compute_balance", user, date, period
+    day            = Interval ('1d')
+    end            = freeze_date (date, period)
+    use_additional = period != 'week'
+    id = db.daily_record_freeze.filter \
+        ( None
+        , dict (user = user, date = (date - day).pretty (';%Y-%m-%d'))
+        , group = [('-', 'date')]
+        )
+    if id :
+        prev = db.daily_record_freeze.getnode (id [0])
+        p_balance = prev [period + '_balance']
+        p_end     = freeze_date (prev.date, period)
+        p_date    = p_end + day # start at day after last period ends
+        if p_date >= end :
+            return p_balance
+    else :
+        dyn       = last_user_dynamic  (db, user)
+        assert (not dyn.valid_to or dyn.valid_to >= date)
+        fdyn      = dyn = first_user_dynamic (db, user)
+        # loop over dyn recs until we find a hole or have reached the
+        # freeze date. The first dyn record that reaches the freeze date
+        # without a hole in between is our candidate.
+        while dyn.valid_to and dyn.valid_to <= date :
+            ldyn = dyn
+            dyn  = find_user_dynamic \
+                (db, dyn.user, dyn.valid_from, direction = '+')
+            if dyn.valid_from > ldyn.valid_to :
+                fdyn = dyn
+        dyn = fdyn
+        p_date    = dyn.valid_from
+        #print "p_date", p_date, end, end_of_period (p_date, period), period
+        p_balance = 0
+        if p_date > end :
+            return 0
+    #print user, date, p_date, end, period
+    assert (p_date < end)
+    corr = db.overtime_correction.filter \
+        (None, dict (user = user, date = pretty_range (p_date, end)))
+    for c in corr :
+        p_balance += db.overtime_correction.get (c, 'value') or 0
+    while p_date < end :
+        eop = end_of_period (p_date, period)
+        p_balance += overtime (db, user, p_date, eop, eop, use_additional)
+        p_date = eop + day
+    assert (p_date == end + day)
+    eop = end_of_period (date, period)
+    if sharp_end and date != eop :
+        p_balance += overtime (db, user, p_date, date, eop, use_additional)
+    return p_balance
+# end def compute_balance
+
