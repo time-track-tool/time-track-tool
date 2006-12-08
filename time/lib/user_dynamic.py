@@ -241,36 +241,40 @@ def get_daily_record (db, user, date) :
 
 duration_cache = {}
 
-def _durations (db, user, date) :
+def durations (db, user, date) :
     pdate = date.pretty (ymd)
     if (user, pdate) not in duration_cache :
         wday  = gmtime (date.timestamp ())[6]
         dyn   = get_user_dynamic (db, user, date)
-        duration_cache [(user, pdate)] = (0, 0, 0, 0, False, False)
+        duration_cache [(user, pdate)] = [0, 0, 0, 0, False, False, None, None]
         if dyn :
-            dr = get_daily_record (db, user, date)
-            if not dr :
-                return duration_cache [(user, pdate)]
             wkend = wday in (5, 6)
             duration_cache [(user, pdate)] = \
-                ( update_tr_duration (db, dr)
+                [ 0
                 , day_work_hours (dyn, date)
                 , [(dyn.supp_weekly_hours or 0) / 5.0, 0][wkend]
                 , [(dyn.additional_hours  or 0) / 5.0, 0][wkend]
                 , bool (dyn.supp_weekly_hours)
                 , bool (dyn.additional_hours)
-                )
+                , None
+                , None
+                ]
+            dr = get_daily_record (db, user, date)
+            if dr :
+                duration_cache [(user, pdate)][0] = update_tr_duration (db, dr)
+                duration_cache [(user, pdate)][6] = dr.status
+                duration_cache [(user, pdate)][7] = dr.required_overtime
     return duration_cache [(user, pdate)]
-# end def _durations
+# end def durations
 
-def overtime (db, user, start, end, end_req, use_additional) :
+def overtime (db, user, start, end, end_ov, use_additional) :
     overtime = 0
     required = 0
     worked   = 0
     compute  = True
     date = start
-    while date <= end_req :
-        dur     = _durations (db, user, date)
+    while date <= end_ov :
+        dur     = durations (db, user, date)
         work    = dur [0]
         req     = dur [1]
         over    = dur [2]

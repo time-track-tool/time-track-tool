@@ -47,7 +47,9 @@ from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
 from common                         import weekno_from_day
 from user_dynamic                   import update_tr_duration, get_user_dynamic
-from user_dynamic                   import compute_balance
+from user_dynamic                   import compute_balance, durations
+
+day = Interval ('1d')
 
 sup_cache = {}
 def user_supervisor_for (db, uid = None, use_sv = True) :
@@ -419,7 +421,7 @@ class _Report (autosuper) :
                 ('  <td %sstyle="text-align:right;">%2.02f</td>'
                 % (['class="missing" ', ''][not item.missing], item)
                 )
-        if isinstance (item, type (0.0)) or isinstance (item, PM_Value) :
+        if isinstance (item, type (0.0)) or isinstance (item, type (0)) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
@@ -873,13 +875,55 @@ class Summary_Report (_Report) :
     # end def _output
 # end class Summary_Report
 
+class Overtime_Corrections :
+    def __init__ (self) :
+        self.items = []
+    # end def __init__
+
+    def append (self, item) :
+        self.items.append (item)
+    # end def append
+
+    def as_html (self) :
+        return ' + '.join (i.as_html () for i in self.items)
+    # end def as_html
+
+    def __repr__ (self) :
+        return ' + '.join (str (i) for i in self.items)
+    # end def __repr__
+# end class Overtime_Corrections
+
 class Staff_Report (_Report) :
+    fields = \
+        ( ""'balance_week_start'
+        , ""'balance_week_end'
+        , ""'overtime_period'
+        , ""'balance_period_start'
+        , ""'balance_period_end'
+        , ""'actual_open'
+        , ""'actual_submitted'
+        , ""'actual_accepted'
+        , ""'actual_all'
+        , ""'required'
+        , ""'overtime_correction'
+        )
+    hr_fields = \
+        ( ""'overtime_additional'
+        , ""'overtime_supplementary'
+        , ""'required_overtime'
+        )
     def __init__ (self, db, request, utils, is_csv = False) :
-        self.db      = db
+        self.htmldb  = db
         try :
             db = db._db
         except AttributeError :
             pass
+        self.db      = db
+        self.uid     = db.getuid ()
+        stati        = (db.daily_record_status.getnode (i)
+                        for i in db.daily_record_status.getnodeids ()
+                       )
+        status_map   = dict ((i.id, i.name) for i in stati)
         self.request = request
         self.utils   = utils
         filterspec   = request.filterspec
@@ -919,32 +963,119 @@ class Staff_Report (_Report) :
             if  (  not dyn_e
                 or not dyn_s
                 or all_in is not None and all_in != bool (dyn_e.all_in)
+                or not self.permission_ok (u)
                 ) :
                 del users [u]
         self.users = sorted \
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
             )
-        values = dict ((u, {}) for u in self.users)
+        self.values = values = {}
+        for u in self.users :
+            dyn        = get_user_dynamic (db, u, end)
+            values [u] = {}
+            values [u]['balance_week_start'] = compute_balance \
+                (db, u, start, 'week', True)
+            values [u]['balance_week_end']   = compute_balance \
+                (db, u, end,   'week', True)
+            period = dyn.overtime_period
+            values [u]['overtime_period'] = period or ''
+            if period :
+                values [u]['balance_period_start'] = compute_balance \
+                    (db, u, start, period, True)
+                values [u]['balance_period_end']   = compute_balance \
+                    (db, u, end,   period, True)
+            else :
+                values [u]['balance_period_start'] = ''
+                values [u]['balance_period_end']   = ''
+            ov = db.overtime_correction.filter \
+                (None, dict (user = u, date = pretty_range (start, end)))
+            try :
+                ovs = Overtime_Corrections ()
+                for x in ov :
+                    item  = self.htmldb.overtime_correction.getItem (x)
+                    value = item.value
+                    ep    = self.utils.ExtProperty
+                    ovs.append \
+                        ( ep
+                            ( self.utils, value
+                            , item         = item
+                            , is_labelprop = True
+                            )
+                        )
+                values [u]['overtime_correction'] = ovs
+            except AttributeError :
+                values [u]['overtime_correction'] = ' + '.join \
+                    (str (db.overtime_correction.get (i, 'value')) for i in ov)
+            d = start
+            values [u]['actual_all']             = 0
+            values [u]['actual_open']            = 0
+            values [u]['actual_submitted']       = 0
+            values [u]['actual_accepted']        = 0
+            values [u]['required']               = 0
+            values [u]['overtime_additional']    = 0
+            values [u]['overtime_supplementary'] = 0
+            values [u]['required_overtime']      = 0
+            while d <= end :
+                act, req, sup, add, sup_v, add_v, st, ovr = durations (db, u, d)
+                assert (not act or st)
+                values [u]['actual_all'] += act
+                if st :
+                    f = 'actual_' + status_map [st]
+                    values [u][f] += act
+                values [u]['required'] += req
+                d = d + day
+                if add_v :
+                    if act > add :
+                        values [u]['overtime_additional']    += act - add
+                    if act < req :
+                        values [u]['overtime_additional']    -= req - act
+                if sup_v :
+                    if act > sup :
+                        values [u]['overtime_supplementary'] += act - sup
+                    if act < req :
+                        values [u]['overtime_supplementary'] -= req - act
+                    if ovr and act > sup :
+                        values [u]['required_overtime'] += act - sup
+        db.commit () # commit cached daily_record values
     # end def __init__
+
+    def permission_ok (self, user) :
+        if user == self.uid :
+            return True
+        if user_has_role (self.db, self.uid, 'HR') :
+            return True
+        if self.db.user.get (user, 'supervisor') == self.uid :
+            return True
+        return False
+    # end def permission_ok
 
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('user')))
-        line.append (formatter (_ ('balance_start')))
-        line.append (formatter (_ ('balance_end')))
+        for f in self.fields :
+            line.append (formatter (_ (f)))
+        if False and user_has_role (self.db, self.uid, 'HR') :
+            for f in self.hr_fields :
+                line.append (formatter (_ (f)))
         return line
     # end def header_line
 
     def _output (self, line_formatter, item_formatter) :
         for u in self.users :
             line  = []
-            item  = self.db.user.getItem (u)
-            uname = item.username
-            user  = self.utils.ExtProperty (self.utils, uname, item = item)
+            try :
+                item  = self.htmldb.user.getItem (u)
+                uname = item.username
+                user  = self.utils.ExtProperty (self.utils, uname, item = item)
+            except AttributeError :
+                user  = self.db.user.get (u, 'username')
             line.append (item_formatter (user))
-            line.append (item_formatter (compute_balance (self.db._db, u, self.start, 'week', True)))
-            line.append (item_formatter (compute_balance (self.db._db, u, self.end, 'week', True)))
+            for f in self.fields :
+                line.append (item_formatter (self.values [u][f]))
+            if False and user_has_role (self.db, self.uid, 'HR') :
+                for f in self.hr_fields :
+                    line.append (item_formatter (self.values [u][f]))
             line_formatter (line)
     # end def _output
 
@@ -961,7 +1092,7 @@ class CSV_Report (Action, autosuper) :
         if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
             # all done, return a dummy string
             return 'dummy'
-        report = self.report_class (self.db, request, utils, is_csv = True)
+        report = self.report_class (self.db, request, self.utils, is_csv = True)
         return report.as_csv ()
     # end def handle
 # end class CSV_Report
