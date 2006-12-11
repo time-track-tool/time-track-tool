@@ -32,17 +32,14 @@
 #    ««revision-date»»···
 #--
 
+import csv
+
 from roundup.cgi.actions import Action
 from roundup.cgi         import templating
 from roundup             import hyperdb
 
 import help
 from extproperty         import ExtProperty
-
-ExtProperty = None
-help = None
-
-import csv
 
 class Export_CSV_Names (Action) :
     name = 'export'
