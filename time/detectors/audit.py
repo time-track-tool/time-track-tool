@@ -198,7 +198,10 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                           % nodeid
                           )
 
-    if (cur_status_name == "analyzing" and new_status_name != "analyzing") :
+    if  (   cur_status_name == "analyzing"
+        and new_status_name != "analyzing"
+        and not is_container
+        ) :
         if not kind :
             raise Reject, "Kind must be filled in for status change"
         if not effort :
