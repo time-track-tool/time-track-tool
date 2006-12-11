@@ -38,7 +38,6 @@ from roundup.cgi.actions import Action
 from roundup.cgi         import templating
 from roundup             import hyperdb
 
-import help
 from extproperty         import ExtProperty
 
 class Export_CSV_Names (Action) :
@@ -63,7 +62,8 @@ class Export_CSV_Names (Action) :
     def handle (self) :
         ''' Export the specified search query as CSV. '''
         # figure the request
-        request    = templating.HTMLRequest (self.client)
+        request    = templating.HTMLRequest     (self.client)
+        self.utils = templating.TemplatingUtils (self.client)
         filterspec = request.filterspec
         sort       = request.sort
         group      = request.group
@@ -114,7 +114,7 @@ class Export_CSV_Names (Action) :
             parts       = col.split ('.', 1)
             prop  = htcls [parts [0]]
             ep = ExtProperty \
-                ( help, prop
+                ( self.utils, prop
                 , searchname  = col
                 , pretty      = str
                 )
