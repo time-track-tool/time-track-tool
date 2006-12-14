@@ -32,7 +32,8 @@
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
-from freeze import frozen
+from freeze       import frozen
+from user_dynamic import last_user_dynamic
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -99,9 +100,17 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     val_to   = new_values.get ('valid_to',     cl.get (nodeid, 'valid_to'))
     olo      = new_values.get ('org_location', cl.get (nodeid, 'org_location'))
     dept     = new_values.get ('department',   cl.get (nodeid, 'department'))
-    if frozen (db, user, old_from) :
+    if  (   frozen (db, user, old_from)
+        and (  new_values.keys () != ['valid_to']
+            or not val_to
+            or frozen (db, user, val_to)
+            )
+        ) :
         raise Reject, _ ("Frozen: %(old_from)s") % locals ()
-    if 'org_location' in new_values or 'department' in new_values :
+    last = last_user_dynamic (db, user)
+    if  (   ('org_location' in new_values or 'department' in new_values)
+        and (not val_to or last.id == nodeid or last.valid_from < val_from)
+        ) :
         db.user.set (user, org_location = olo, department = dept)
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
@@ -128,7 +137,9 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     dept       = new_values ['department']
     if frozen (db, user, valid_from) :
         raise Reject, _ ("Frozen: %(valid_from)s") % locals ()
-    db.user.set (user, org_location = olo, department = dept)
+    last = last_user_dynamic (db, user)
+    if not valid_to or not last or last.valid_from < valid_from :
+        db.user.set (user, org_location = olo, department = dept)
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
     new_values ['valid_from'], new_values ['valid_to'] = \
