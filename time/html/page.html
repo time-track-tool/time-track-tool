@@ -686,32 +686,6 @@
  <input type="file" name="@file" size="40">
 </tal:block>
 
-<tal:block metal:define-macro="ttt_issue_pdf_files">
- <!-- list of files -->
- <table class="files" tal:condition="context/files">
-  <tr>
-   <th>File name</th>
-   <th>Uploaded</th>
-   <th>Type</th>
-  </tr>
-  <tr tal:repeat="file context/files">
-   <td>
-    <a tal:attributes="href file/download_url"
-       tal:content="file/name">dld link</a>
-   </td>
-   <td>
-    <span tal:content="file/creator">creator's name</span>,
-    <span tal:content="file/creation">creation date</span>
-   </td>
-   <td tal:content="file/type" />
-  </tr>
- </table>
- <!-- add new file -->
- <input type="file" name="pdf_file-1@content" size="40">
- <input type="hidden" name="@link@files" value="pdf_file-1">
-</tal:block>
-
-
 <!-- the following is used to have those nifty index/search form on one page -->
 <!-- the caller needs to define a list of tuples for the properties: -->
 <!--  props = (("<name to display>", "<designator>"), ...) -->

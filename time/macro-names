@@ -31,12 +31,14 @@ TTT-specific
 - ttt_simple_list        used by announcement, review
 - file_list              used by ttt_issue only
 - ttt_issue_files        used in various macros
-- ttt_issue_pdf_files    unused
+
 - ttt_search_nav         used by ttt_search_results only
 - ttt_search_results     used by most templates
 - ttt_search_form        used by most templates
 - search_form            used only by summary_report templates and
                          ttt_search_form
+
++ ttt_issue_pdf_files    unused
 
 ABO
 ---
@@ -47,14 +49,16 @@ ABO
 - formatted_class        used by most templates
 
 - issue_files            used by and letter.item and tmplate.item
-- ttt_issue_pdf_files    unused
+
 - ttt_search_nav         used by search_display only
 - search_display         used by most templates
 - search_form            used by most templates
-- search_input           unused
-- search_popup           unused
-- search_select          unused
-- search_checkboxes      unused
-- column_input           unused
-- sort_input             unused
-- group_input            unused
+
++ ttt_issue_pdf_files    unused
++ search_input           unused
++ search_popup           unused
++ search_select          unused
++ search_checkboxes      unused
++ column_input           unused
++ sort_input             unused
++ group_input            unused
