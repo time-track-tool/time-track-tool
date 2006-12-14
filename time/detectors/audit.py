@@ -222,30 +222,24 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                       )
 
     # Check if the `fixed_in` field is filled in when moving to `testing`.
-    if new_status_name == "testing" and not fixed :
-        raise Reject, ( "[%s] The `fixed_in` field must be set for "
-                        "a transition to `testing`."
+    if  (   new_status_name in ("testing", "closed")
+        and not fixed
+        and kind_name not in ('Mistaken', 'Obsolete')
+        and not superseder
+        and not is_container
+        ) :
+        raise Reject, ( "[%s] The 'fixed_in' field must be set for "
+                        "a transition to 'testing' or 'closed'."
                       % nodeid
                       )
 
-    # Check that fixed_in does not contain illegal pattern when moving
-    # to testing or moving to closed.
-    if (  (cur_status_name == "testing" and new_status_name == "closed")
-       or (cur_status_name == "open"    and new_status_name == "testing")
-       ) :
+    # Check that fixed_in does not contain illegal pattern
+    if 'fixed_in' in newvalues and fixed :
         for p in _fixed_in_patterns :
             if p.search (fixed) :
                 raise Reject, ( "[%s] %s is not allowed for the fixed_in field"
                               % (nodeid, fixed)
                               )
-
-    # Ensure the info in which version a bug was fixed keeps alive.
-    if  cur_status_name == "testing" \
-    and new_status_name == "closed" \
-    and not fixed :
-        raise Reject, ( "[%s] The `fixed_in` field must be (or remain) set."
-                      % nodeid
-                      )
 
     # Ensure `files_affected` to be filled on certifyable products.
     if (   (  cur_status_name == "testing" and new_status_name == "closed"
