@@ -441,34 +441,7 @@
  <input type="file" name="@file" size="40">
 </tal:block>
 
-<tal:block metal:define-macro="ttt_issue_pdf_files">
- <!-- list of files -->
- <table class="files" tal:condition="context/files">
-  <tr>
-   <th>File name</th>
-   <th>Uploaded</th>
-   <th>Type</th>
-  </tr>
-  <tr tal:repeat="file context/files">
-   <td>
-    <a tal:attributes="href file/download_url"
-       tal:content="file/name">dld link</a>
-   </td>
-   <td>
-    <span tal:content="file/creator">creator's name</span>,
-    <span tal:content="file/creation">creation date</span>
-   </td>
-   <td tal:content="file/type" />
-  </tr>
- </table>
- <!-- add new file -->
- <input type="file" name="pdf_file-1@content" size="40">
- <input type="hidden" name="@link@files" value="pdf_file-1">
-</tal:block>
-
-
 <!-- the following is used to have those nifty index/search form on one page -->
-
 <tal:block metal:define-macro="ttt_search_nav">
 <!-- previous / next links -->
    <tr>
@@ -724,82 +697,6 @@
      </table>
     </td>
    </tr>
-
-
   </table>
 </form>
 </tal:block>
-
-<!-- begin not used stuff from above -->
-<!-- END -->
-
-
-<!--
-The following macros are intended to be used in search pages.
-
-The invoking context must define a "name" variable which names the
-property being searched.
-
-See issue.search.html in the classic template for examples.
--->
-<td metal:define-macro="search_input">
-  <input tal:attributes="value python:request.form.getvalue(name) or nothing;
-                         name name">
-</td>
-
-<td metal:define-macro="search_popup">
-  <!--
-    context needs to specify the popup "columns" as a comma-separated
-    string (eg. "id,title" or "id,name,description") as well as name
-  -->
-  <input tal:attributes="value python:request.form.getvalue(name) or nothing;
-                         name name">
-  <span tal:replace="structure python:db.issue.classhelp(columns,
-                                      property=name)" />
-</td>
-
-<td metal:define-macro="search_select">
-  <select tal:attributes="name name"
-          tal:define="value python:request.form.getvalue(name)">
-    <option value="">nicht suchen</option>
-    <tal:block metal:define-slot="extra_options"></tal:block>
-    <option value="">------------</option>
-    <option tal:repeat="s python:db[db_klass].list()"
-            tal:attributes="value s/id; selected python:value == s.id"
-            tal:content="python:s[db_content]"></option>
-  </select>
-</td>
-
-<td metal:define-macro="search_checkboxes">
- <ul class="search-checkboxes"
-     tal:define="value python:request.form.getvalue(name)">
- <li tal:repeat="s python:db[db_klass].list()">
-  <input type="checkbox" tal:attributes="name name; id string:name-${s/id};
-    value s/id; checked python:value == s.id" />
-  <label tal:attributes="for string:$name-${s/id}" tal:content="s/name" />
- </li>
- <li metal:define-slot="no_value_item">
-  <input type="checkbox" value="-1" tal:attributes="name name;
-     id string:$name--1; checked python:value == '-1'" />
-  <label tal:attributes="for string:$name--1">no value</label>
- </li>
- </ul>
-</td>
-
-<td metal:define-macro="column_input">
-  <input type="checkbox" name="@columns"
-         tal:attributes="value name;
-                         checked python:name in cols">
-</td>
-
-<td metal:define-macro="sort_input">
-  <input type="radio" name="@sort"
-         tal:attributes="value name;
-                         checked python:name == sort_on">
-</td>
-
-<td metal:define-macro="group_input">
-  <input type="radio" name="@group"
-         tal:attributes="value name;
-                         checked python:name == group_on">
-</td>
