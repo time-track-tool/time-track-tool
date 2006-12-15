@@ -977,14 +977,14 @@ class Staff_Report (_Report) :
             values [u]['balance_week_start'] = compute_balance \
                 (db, u, start - day, 'week', True)
             values [u]['balance_week_end']   = compute_balance \
-                (db, u, end,   'week', True)
+                (db, u, end,         'week', True)
             period = dyn.overtime_period
             values [u]['overtime_period'] = period or ''
             if period :
                 values [u]['balance_period_start'] = compute_balance \
-                    (db, u, start, period, True)
+                    (db, u, start - day, period, True)
                 values [u]['balance_period_end']   = compute_balance \
-                    (db, u, end,   period, True)
+                    (db, u, end,         period, True)
             else :
                 values [u]['balance_period_start'] = ''
                 values [u]['balance_period_end']   = ''

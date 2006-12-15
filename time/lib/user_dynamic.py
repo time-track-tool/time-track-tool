@@ -314,7 +314,10 @@ def compute_balance \
     use_additional = period != 'week'
     id = db.daily_record_freeze.filter \
         ( None
-        , dict (user = user, date = (eop - day).pretty (';%Y-%m-%d'))
+        , dict ( user   = user
+               , date   = (eop - day).pretty (';%Y-%m-%d')
+               , frozen = True
+               )
         , group = [('-', 'date')]
         )
     if id :
