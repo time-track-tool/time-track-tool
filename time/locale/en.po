@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2006-11-28 10:48+0100\n"
+"POT-Creation-Date: 2006-12-15 09:27+0100\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,56 +29,52 @@ msgstr ""
 msgid "%(attr)s may not be undefined"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:47
+#: ../detectors/daily_record_freeze.py:49
 #, python-format
 msgid "Already frozen: %(date)s"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:49
+#: ../detectors/daily_record_freeze.py:51
 #, python-format
 msgid "No dyn. user rec for %(user)s %(date)s"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:93
+#: ../detectors/daily_record_freeze.py:60
 #, python-format
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:108
-#: ../detectors/daily_record_freeze.py:126 ../detectors/time_record.py:214
+#: ../detectors/daily_record_freeze.py:68
+#: ../detectors/daily_record_freeze.py:86 ../detectors/time_record.py:213
 #, python-format
 msgid "%(attr)s must be set"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:135
-#: ../detectors/daily_record_freeze.py:156
+#: ../detectors/daily_record_freeze.py:95
+#: ../detectors/daily_record_freeze.py:112
 #, python-format
 msgid "%(attr)s must not be changed"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:146
-msgid "Changing values only when thawed"
-msgstr ""
-
-#: ../detectors/daily_record_freeze.py:159
+#: ../detectors/daily_record_freeze.py:115
 #, python-format
 msgid "%(attr)s must remain filled"
 msgstr ""
 
-#: ../detectors/issue.py:50
+#: ../detectors/issue.py:51
 #, python-format
 msgid "New issue may not define \"%s\""
 msgstr ""
 
-#: ../detectors/issue.py:130
+#: ../detectors/issue.py:131
 msgid "You may not change container status"
 msgstr ""
 
-#: ../detectors/issue.py:140
+#: ../detectors/issue.py:141
 msgid "May not be part of Obsolete or Mistaken container"
 msgstr ""
 
-#: ../detectors/issue.py:156
+#: ../detectors/issue.py:157
 msgid "Containers may not be Obsolete/Mistaken"
 msgstr ""
 
@@ -136,42 +132,42 @@ msgstr "Duplicate of"
 msgid "Can't set %s to yourself"
 msgstr ""
 
-#: ../detectors/nwm.py:48
+#: ../detectors/nwm.py:47
 #, python-format
 msgid "Invalid IP \"%(ip)s\": must contain 4 octets"
 msgstr ""
 
-#: ../detectors/nwm.py:57
+#: ../detectors/nwm.py:56
 #, python-format
 msgid "Invalid IP \"%(ip)s\": invalid octet \"%(o)s\""
 msgstr ""
 
-#: ../detectors/nwm.py:69 ../detectors/nwm.py:213 ../extensions/help.py:422
+#: ../detectors/nwm.py:68 ../detectors/nwm.py:212 ../extensions/help.py:422
 #: ../locale/attr.py:120 ../schema/nwm.py:116 attr.py:120
 msgid "ip_subnet"
 msgstr "IP subnet"
 
-#: ../detectors/nwm.py:70
+#: ../detectors/nwm.py:69
 #, python-format
 msgid "IP %(ip)s does not match any %(ip_sn)s of %(olo_name)s"
 msgstr ""
 
-#: ../detectors/nwm.py:93
+#: ../detectors/nwm.py:92
 #, python-format
 msgid "Invalid MAC \"%(mac)s\": must contain 6 octets"
 msgstr ""
 
-#: ../detectors/nwm.py:102
+#: ../detectors/nwm.py:101
 #, python-format
 msgid "Invalid MAC \"%(mac)s\": invalid octet \"%(o)s\""
 msgstr ""
 
-#: ../detectors/nwm.py:130
+#: ../detectors/nwm.py:129
 msgid "Machine names may not point to other CNAMEs"
 msgstr ""
 
-#: ../detectors/nwm.py:134 ../detectors/nwm.py:144 ../detectors/nwm.py:298
-#: ../detectors/nwm.py:317 ../detectors/user.py:166 ../extensions/help.py:594
+#: ../detectors/nwm.py:133 ../detectors/nwm.py:143 ../detectors/nwm.py:297
+#: ../detectors/nwm.py:316 ../detectors/user.py:167 ../extensions/help.py:594
 #: ../locale/attr.py:107 ../locale/attr.py:116 ../locale/attr.py:124
 #: ../locale/attr.py:147 ../locale/attr.py:159 ../locale/attr.py:183
 #: ../locale/attr.py:234 ../locale/attr.py:310 ../locale/attr.py:579
@@ -180,94 +176,94 @@ msgstr ""
 msgid "org_location"
 msgstr "Organisation/Location"
 
-#: ../detectors/nwm.py:137
+#: ../detectors/nwm.py:136
 #, python-format
 msgid "Duplicate %(olon)s %(polo)s in %(ip)s"
 msgstr ""
 
-#: ../detectors/nwm.py:143 ../extensions/help.py:563 ../locale/attr.py:143
+#: ../detectors/nwm.py:142 ../extensions/help.py:563 ../locale/attr.py:143
 #: ../locale/attr.py:146 ../schema/nwm.py:166 attr.py:143 attr.py:146
 msgid "network_address"
 msgstr "Network address"
 
-#: ../detectors/nwm.py:145 ../extensions/help.py:500 ../locale/attr.py:140
+#: ../detectors/nwm.py:144 ../extensions/help.py:500 ../locale/attr.py:140
 #: ../locale/attr.py:142 ../locale/attr.py:193 ../schema/nwm.py:155
 #: attr.py:140 attr.py:142 attr.py:193
 msgid "machine_name"
 msgstr "Machine name"
 
-#: ../detectors/nwm.py:146 ../extensions/help.py:269 ../locale/attr.py:112
+#: ../detectors/nwm.py:145 ../extensions/help.py:269 ../locale/attr.py:112
 #: ../locale/attr.py:144 ../schema/nwm.py:98 attr.py:112 attr.py:144
 msgid "dns_record_type"
 msgstr "DNS record type"
 
-#: ../detectors/nwm.py:151
+#: ../detectors/nwm.py:150
 #, python-format
 msgid "Only one of %(na)s and %(mnn)s may be given"
 msgstr ""
 
-#: ../detectors/nwm.py:158
+#: ../detectors/nwm.py:157
 #, python-format
 msgid "Duplicate %(olo)s for %(na)s: %(olo_name)s"
 msgstr ""
 
-#: ../detectors/nwm.py:173
+#: ../detectors/nwm.py:172
 #, python-format
 msgid "For %(mnn)s, %(drtn)s must be CNAME"
 msgstr ""
 
-#: ../detectors/nwm.py:175
+#: ../detectors/nwm.py:174
 #, python-format
 msgid "For %(na)s, %(drtn)s must be CNAME"
 msgstr ""
 
-#: ../detectors/nwm.py:207
+#: ../detectors/nwm.py:206
 #, python-format
 msgid "Invalid netmask: %(mask)s"
 msgstr ""
 
-#: ../detectors/nwm.py:250 ../extensions/help.py:389 ../locale/attr.py:117
+#: ../detectors/nwm.py:249 ../extensions/help.py:389 ../locale/attr.py:117
 #: attr.py:117
 msgid "gid"
 msgstr "Group id"
 
-#: ../detectors/nwm.py:251 ../extensions/help.py:829 ../locale/attr.py:166
+#: ../detectors/nwm.py:250 ../extensions/help.py:829 ../locale/attr.py:166
 #: ../locale/attr.py:175 ../locale/attr.py:194 ../schema/nwm.py:208
 #: attr.py:166 attr.py:175 attr.py:194
 msgid "smb_domain"
 msgstr "Samba domain"
 
-#: ../detectors/nwm.py:252
+#: ../detectors/nwm.py:251
 #, python-format
 msgid "Invalid %(gname)s: %(gid)s for %(sdname)s"
 msgstr ""
 
-#: ../detectors/nwm.py:300
+#: ../detectors/nwm.py:299
 #, python-format
 msgid "%(on)s must match for alias: %(name)s->%(a2)s"
 msgstr ""
 
-#: ../detectors/nwm.py:319 ../detectors/nwm.py:347
+#: ../detectors/nwm.py:318 ../detectors/nwm.py:346
 #, python-format
 msgid "Either %s or %s must be defined"
 msgstr ""
 
-#: ../detectors/nwm.py:320 ../extensions/help.py:138 ../locale/attr.py:108
+#: ../detectors/nwm.py:319 ../extensions/help.py:138 ../locale/attr.py:108
 #: attr.py:108
 msgid "alias_to_alias"
 msgstr "Alias to alias"
 
-#: ../detectors/nwm.py:320 ../extensions/help.py:140 ../locale/attr.py:110
+#: ../detectors/nwm.py:319 ../extensions/help.py:140 ../locale/attr.py:110
 #: attr.py:110
 msgid "alias_to_user"
 msgstr "Alias to user"
 
-#: ../detectors/nwm.py:329
+#: ../detectors/nwm.py:328
 #, python-format
 msgid "May not change %(olon)s if dependencies exist"
 msgstr ""
 
-#: ../detectors/nwm.py:339
+#: ../detectors/nwm.py:338
 msgid "May not retire if dependencies exist"
 msgstr ""
 
@@ -284,187 +280,195 @@ msgstr ""
 msgid "State change requires a message"
 msgstr ""
 
-#: ../detectors/summary_report.py:38
+#: ../detectors/summary_report.py:36
 #, python-format
 msgid "No %s may be created"
 msgstr ""
 
-#: ../detectors/summary_report.py:38 ../locale/attr.py:226
-#: ../schema/time_tracker.py:135 attr.py:226
+#: ../detectors/summary_report.py:36 ../locale/attr.py:226
+#: ../schema/time_tracker.py:126 attr.py:226
 msgid "summary_report"
 msgstr "Summary Report"
 
-#: ../detectors/time_record.py:55
+#: ../detectors/time_record.py:54
 msgid "start and end must be on same day and start <= end."
 msgstr ""
 
-#: ../detectors/time_record.py:57 ../detectors/time_record.py:64
-#: ../detectors/user.py:137
+#: ../detectors/time_record.py:56 ../detectors/time_record.py:63
+#: ../detectors/user.py:138
 msgid "Times must be given in quarters of an hour"
 msgstr ""
 
-#: ../detectors/time_record.py:62
+#: ../detectors/time_record.py:61
 msgid "No negative times are allowed"
 msgstr ""
 
-#: ../detectors/time_record.py:66
+#: ../detectors/time_record.py:65
 #, python-format
 msgid "Duration must not exceed %s hours"
 msgstr ""
 
-#: ../detectors/time_record.py:211 ../detectors/time_record.py:509
+#: ../detectors/time_record.py:210 ../detectors/time_record.py:508
 #, python-format
 msgid "%(attr)s may not be changed"
 msgstr ""
 
-#: ../detectors/time_record.py:236 ../detectors/time_record.py:330
-#: ../detectors/time_record.py:441 ../detectors/time_record.py:518
+#: ../detectors/time_record.py:218 ../detectors/time_record.py:329
+#: ../detectors/time_record.py:440 ../detectors/time_record.py:517
 #, python-format
 msgid "Frozen: %(uname)s, %(date)s"
 msgstr ""
 
-#: ../detectors/time_record.py:254
+#: ../detectors/time_record.py:253
 #, python-format
 msgid "Denied state change: %(old_status)s->%(status)s"
 msgstr ""
 
-#: ../detectors/time_record.py:304 ../detectors/time_record.py:362
-#: ../detectors/time_record.py:430
+#: ../detectors/time_record.py:303 ../detectors/time_record.py:361
+#: ../detectors/time_record.py:429
 #, python-format
 msgid "%(attr)s must be specified"
 msgstr ""
 
-#: ../detectors/time_record.py:311
+#: ../detectors/time_record.py:310
 msgid "Only user and Controlling may create daily records"
 msgstr ""
 
-#: ../detectors/time_record.py:314 ../detectors/time_record.py:318
-#: ../detectors/time_record.py:433
+#: ../detectors/time_record.py:313 ../detectors/time_record.py:317
+#: ../detectors/time_record.py:432
 #, python-format
 msgid "%(attr)s must not be specified"
 msgstr ""
 
-#: ../detectors/time_record.py:325 ../detectors/time_record.py:455
+#: ../detectors/time_record.py:324 ../detectors/time_record.py:454
 #, python-format
 msgid "No dynamic user data for %(uname)s, %(date)s"
 msgstr ""
 
-#: ../detectors/time_record.py:328 ../detectors/time_record.py:459
+#: ../detectors/time_record.py:327 ../detectors/time_record.py:458
 #, python-format
 msgid "Booking not allowed for %(uname)s, %(date)s"
 msgstr ""
 
-#: ../detectors/time_record.py:333
+#: ../detectors/time_record.py:332
 #, python-format
 msgid "Duplicate record: date = %(date)s, user = %(user)s"
 msgstr ""
 
-#: ../detectors/time_record.py:364
+#: ../detectors/time_record.py:363
 msgid "Either specify duration or start/end"
 msgstr ""
 
-#: ../detectors/time_record.py:375
+#: ../detectors/time_record.py:374
 #, python-format
 msgid "%s: You specified new values for %s but no duration"
 msgstr ""
 
-#: ../detectors/time_record.py:438 ../detectors/time_record.py:524
+#: ../detectors/time_record.py:437 ../detectors/time_record.py:523
 msgid "Editing of time records only for status \"open\""
 msgstr ""
 
-#: ../detectors/time_record.py:463
+#: ../detectors/time_record.py:462
 msgid "No weekend booking allowed"
 msgstr ""
 
-#: ../detectors/time_record.py:544
+#: ../detectors/time_record.py:543
 msgid "Distribution: WP must be given"
 msgstr ""
 
-#: ../detectors/time_record.py:598
+#: ../detectors/time_record.py:597
 msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
-#: ../detectors/time_wp.py:44
+#: ../detectors/time_wp.py:43
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
 
-#: ../detectors/user.py:140
+#: ../detectors/user.py:141
 msgid "Lunchbreak of more than 8 hours? Sure?"
 msgstr ""
 
-#: ../detectors/user.py:142
+#: ../detectors/user.py:143
 msgid "Lunchbreak must be at least half an hour."
 msgstr ""
 
-#: ../detectors/user.py:165
+#: ../detectors/user.py:166
 #, python-format
 msgid "%s specified for user without %s"
 msgstr ""
 
-#: ../detectors/user.py:166 ../detectors/user.py:168 ../extensions/help.py:997
+#: ../detectors/user.py:167 ../detectors/user.py:169 ../extensions/help.py:997
 #: ../locale/attr.py:546 attr.py:546
 msgid "uid"
 msgstr "User id"
 
-#: ../detectors/user.py:171
+#: ../detectors/user.py:172
 #, python-format
 msgid "Invalid %(uidname)s: %(uid)s"
 msgstr ""
 
-#: ../detectors/user.py:343
+#: ../detectors/user.py:344
 msgid "Not allowed to retire a user"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:67
+#: ../detectors/user_dynamic.py:68
 #, python-format
 msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:82
+#: ../detectors/user_dynamic.py:83
 #, python-format
 msgid "%(attr)s must be positive or empty"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:99
+#: ../detectors/user_dynamic.py:109
 #, python-format
 msgid "Frozen: %(old_from)s"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:125
+#: ../detectors/user_dynamic.py:139
+#, python-format
 msgid "Frozen: %(valid_from)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:135
+#: ../extensions/daily_record_action.py:115
 #, python-format
 msgid "Submit to %(nickname)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:139
+#: ../extensions/daily_record_action.py:119
 msgid "approve"
 msgstr "Approve"
 
-#: ../extensions/daily_record_action.py:140
+#: ../extensions/daily_record_action.py:120
 msgid "deny"
 msgstr "Deny"
 
-#. print action, value
-#: ../extensions/daily_record_action.py:140
+#: ../extensions/daily_record_action.py:120
 msgid "edit again"
 msgstr "Edit again"
 
-#: ../extensions/daily_record_action.py:293 ../locale/attr.py:228
+#: ../extensions/daily_record_action.py:279 ../locale/attr.py:228
 #: ../locale/attr.py:545 attr.py:228 attr.py:545
 msgid "supervisor"
 msgstr "Supervisor"
 
-#: ../extensions/daily_record_action.py:295
+#: ../extensions/daily_record_action.py:281
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:545
+#: ../extensions/daily_record_action.py:529
 msgid "Date is required"
+msgstr ""
+
+#: ../extensions/daily_record_action.py:592
+msgid "Supervisor (in User field) is required"
+msgstr ""
+
+#: ../extensions/daily_record_action.py:596
+msgid "Invalid Supervisor"
 msgstr ""
 
 #: ../extensions/help.py:41
@@ -1860,7 +1864,8 @@ msgstr "Operating system"
 msgid "Operating System running on this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:605 ../schema/time_tracker.py:246
+#: ../extensions/help.py:605 ../extensions/summary.py:906
+#: ../schema/time_tracker.py:238
 msgid "overtime_period"
 msgstr "Overtime period"
 
@@ -2102,7 +2107,7 @@ msgstr "require responsible change"
 msgid "Require change of responsible person for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:705
+#: ../extensions/help.py:705 ../extensions/summary.py:913
 msgid "required_overtime"
 msgstr "Req. overtime"
 
@@ -2684,7 +2689,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:951 ../locale/attr.py:247 ../locale/attr.py:274
-#: ../schema/time_tracker.py:165 attr.py:247 attr.py:274
+#: ../schema/time_tracker.py:157 attr.py:247 attr.py:274
 msgid "time_activity"
 msgstr "Activity"
 
@@ -3044,7 +3049,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:1096 ../locale/attr.py:259 ../locale/attr.py:272
-#: ../locale/attr.py:322 ../schema/time_tracker.py:284 attr.py:259 attr.py:272
+#: ../locale/attr.py:322 ../schema/time_tracker.py:276 attr.py:259 attr.py:272
 #: attr.py:322
 msgid "work_location"
 msgstr "Work location"
@@ -3061,27 +3066,81 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/interfaces.py:298
+#: ../extensions/interfaces.py:295
 msgid "Welcome to the "
 msgstr ""
 
-#: ../extensions/summary.py:667 ../locale/attr.py:197 ../locale/attr.py:240
+#: ../extensions/summary.py:717 ../locale/attr.py:197 ../locale/attr.py:240
 #: ../locale/attr.py:294 ../schema/time_tracker.py:41 attr.py:197 attr.py:240
 #: attr.py:294
 msgid "cost_center"
 msgstr "Cost Center"
 
-#: ../extensions/summary.py:678 ../extensions/summary.py:809
+#: ../extensions/summary.py:728 ../extensions/summary.py:818
 msgid "Sum"
 msgstr ""
 
-#: ../extensions/summary.py:804
+#: ../extensions/summary.py:813
 msgid "Container"
 msgstr "Level"
 
-#: ../extensions/summary.py:805
+#: ../extensions/summary.py:814
 msgid "time"
 msgstr "Time Period"
+
+#: ../extensions/summary.py:898
+msgid "balance_week_start"
+msgstr "Balance Start"
+
+#: ../extensions/summary.py:899
+msgid "actual_open"
+msgstr "Actual open"
+
+#: ../extensions/summary.py:900
+msgid "actual_submitted"
+msgstr "Actual submitted"
+
+#: ../extensions/summary.py:901
+msgid "actual_accepted"
+msgstr "Actual accepted"
+
+#: ../extensions/summary.py:902
+msgid "actual_all"
+msgstr "Actual all"
+
+#: ../extensions/summary.py:903
+msgid "required"
+msgstr ""
+
+#: ../extensions/summary.py:904 ../schema/time_tracker.py:98
+msgid "overtime_correction"
+msgstr "Overtime correction"
+
+#: ../extensions/summary.py:905
+msgid "balance_week_end"
+msgstr "Balance End"
+
+#: ../extensions/summary.py:907
+msgid "balance_period_start"
+msgstr "Balance Period Start"
+
+#: ../extensions/summary.py:908
+msgid "balance_period_end"
+msgstr "Balance Period End"
+
+#: ../extensions/summary.py:911
+msgid "overtime_additional"
+msgstr "Overtime additional"
+
+#: ../extensions/summary.py:912
+msgid "overtime_supplementary"
+msgstr "Overtime supplementary"
+
+#: ../extensions/summary.py:1055 ../locale/attr.py:215 ../locale/attr.py:243
+#: ../locale/attr.py:313 ../locale/attr.py:542 ../schema/core.py:84
+#: attr.py:215 attr.py:243 attr.py:313 attr.py:542
+msgid "user"
+msgstr "User"
 
 #: ../html/_generic.history.html:15
 msgid "History for ${designator} - ${label}"
@@ -3091,16 +3150,16 @@ msgstr ""
 msgid "History for ${label}"
 msgstr ""
 
-#: ../html/_generic.index.html:59 ../html/_generic.item.html:59
+#: ../html/_generic.index.html:55 ../html/_generic.item.html:55
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
-#: ../html/_generic.index.html:62 ../html/_generic.item.html:62
-#: ../html/page.html:844
+#: ../html/_generic.index.html:58 ../html/_generic.item.html:58
+#: ../html/page.html:815
 msgid "Download as CSV"
 msgstr ""
 
-#: ../html/_generic.index.html:100 ../html/_generic.item.html:100
+#: ../html/_generic.index.html:96 ../html/_generic.item.html:96
 #: ../html/user.item.html:395
 msgid "History"
 msgstr ""
@@ -3146,19 +3205,19 @@ msgstr ""
 msgid "number"
 msgstr "Number"
 
-#: ../html/daily_record.approve.html:3
+#: ../html/daily_record.approve.html:2
 msgid "Approvals pending"
 msgstr ""
 
-#: ../html/daily_record.approve.html:26 ../html/user.item.html:6
+#: ../html/daily_record.approve.html:25 ../html/user.item.html:6
 msgid "User"
 msgstr "User"
 
-#: ../html/daily_record.approve.html:27
+#: ../html/daily_record.approve.html:26
 msgid "Week"
 msgstr ""
 
-#: ../html/daily_record.approve.html:43
+#: ../html/daily_record.approve.html:42
 msgid "You have no pending submitted records."
 msgstr ""
 
@@ -3168,6 +3227,12 @@ msgstr ""
 
 #: ../html/daily_record.edit.html:118 ../html/daily_record.edit.html:344
 msgid " Save "
+msgstr ""
+
+#: ../html/daily_record_freeze.item.html:78
+#: ../html/daily_record_freeze.item.html:88
+#: ../html/daily_record_freeze.item.html:98
+msgid "Valid on"
 msgstr ""
 
 #: ../html/machine.item.html:64
@@ -3186,15 +3251,15 @@ msgstr ""
 msgid "new network_address"
 msgstr "new Network address"
 
-#: ../html/page.html:832
-msgid "Query ${Classname}"
+#: ../html/page.html:803
+msgid "Query ${title}"
 msgstr ""
 
-#: ../html/page.html:856
+#: ../html/page.html:827
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:878
+#: ../html/page.html:849
 msgid "Group on:"
 msgstr ""
 
@@ -3349,22 +3414,16 @@ msgstr "Cost Center Group"
 msgid "daily_record"
 msgstr "Daily Record"
 
-#: ../locale/attr.py:215 ../locale/attr.py:243 ../locale/attr.py:313
-#: ../locale/attr.py:542 ../schema/core.py:84 attr.py:215 attr.py:243
-#: attr.py:313 attr.py:542
-msgid "user"
-msgstr "User"
-
-#: ../locale/attr.py:216 ../locale/attr.py:270 ../schema/time_tracker.py:203
+#: ../locale/attr.py:216 ../locale/attr.py:270 ../schema/time_tracker.py:195
 #: attr.py:216 attr.py:270
 msgid "time_record"
 msgstr "Time Record"
 
-#: ../locale/attr.py:217 ../schema/time_tracker.py:117 attr.py:217
+#: ../locale/attr.py:217 ../schema/time_tracker.py:108 attr.py:217
 msgid "daily_record_status"
 msgstr "Daily Record Status"
 
-#: ../locale/attr.py:220 ../schema/time_tracker.py:125 attr.py:220
+#: ../locale/attr.py:220 ../schema/time_tracker.py:116 attr.py:220
 msgid "public_holiday"
 msgstr "Public Holiday"
 
@@ -3376,27 +3435,27 @@ msgstr "Half day"
 msgid "locations"
 msgstr "Locations"
 
-#: ../locale/attr.py:231 ../locale/attr.py:283 ../schema/time_tracker.py:220
+#: ../locale/attr.py:231 ../locale/attr.py:283 ../schema/time_tracker.py:212
 #: attr.py:231 attr.py:283
 msgid "time_wp"
 msgstr "Work package"
 
-#: ../locale/attr.py:236 ../locale/attr.py:244 ../schema/time_tracker.py:157
+#: ../locale/attr.py:236 ../locale/attr.py:244 ../schema/time_tracker.py:149
 #: attr.py:236 attr.py:244
 msgid "summary_type"
 msgstr "Summary type"
 
-#: ../locale/attr.py:241 ../locale/attr.py:251 ../schema/time_tracker.py:174
+#: ../locale/attr.py:241 ../locale/attr.py:251 ../schema/time_tracker.py:166
 #: attr.py:241 attr.py:251
 msgid "time_project"
 msgstr "Time Category"
 
-#: ../locale/attr.py:242 ../locale/attr.py:296 ../schema/time_tracker.py:237
+#: ../locale/attr.py:242 ../locale/attr.py:296 ../schema/time_tracker.py:229
 #: attr.py:242 attr.py:296
 msgid "time_wp_group"
 msgstr "Work package group"
 
-#: ../locale/attr.py:266 ../schema/time_tracker.py:194 attr.py:266
+#: ../locale/attr.py:266 ../schema/time_tracker.py:186 attr.py:266
 msgid "time_project_status"
 msgstr "Time Category Status"
 
@@ -3417,7 +3476,7 @@ msgstr ""
 msgid "durations_allowed"
 msgstr "Durations allowed"
 
-#: ../locale/attr.py:300 ../schema/time_tracker.py:254 attr.py:300
+#: ../locale/attr.py:300 ../schema/time_tracker.py:246 attr.py:300
 msgid "user_dynamic"
 msgstr "Dynamic User Data"
 
@@ -3664,10 +3723,6 @@ msgstr "Document number"
 #: ../schema/time_tracker.py:86
 msgid "daily_record_freeze"
 msgstr "Daily Record freeze"
-
-#: ../schema/time_tracker.py:107
-msgid "overtime_correction"
-msgstr "Overtime correction"
 
 #~ msgid "daily_record.date"
 #~ msgstr "Date"

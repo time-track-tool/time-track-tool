@@ -896,16 +896,16 @@ class Overtime_Corrections :
 class Staff_Report (_Report) :
     fields = \
         ( ""'balance_week_start'
-        , ""'balance_week_end'
-        , ""'overtime_period'
-        , ""'balance_period_start'
-        , ""'balance_period_end'
         , ""'actual_open'
         , ""'actual_submitted'
         , ""'actual_accepted'
         , ""'actual_all'
         , ""'required'
         , ""'overtime_correction'
+        , ""'balance_week_end'
+        , ""'overtime_period'
+        , ""'balance_period_start'
+        , ""'balance_period_end'
         )
     hr_fields = \
         ( ""'overtime_additional'
