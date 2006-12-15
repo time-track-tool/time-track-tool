@@ -975,7 +975,7 @@ class Staff_Report (_Report) :
             dyn        = get_user_dynamic (db, u, end)
             values [u] = {}
             values [u]['balance_week_start'] = compute_balance \
-                (db, u, start, 'week', True)
+                (db, u, start - day, 'week', True)
             values [u]['balance_week_end']   = compute_balance \
                 (db, u, end,   'week', True)
             period = dyn.overtime_period

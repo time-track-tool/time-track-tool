@@ -77,7 +77,8 @@ def new_freeze_record (db, cl, nodeid, new_values) :
     for p in periods :
         attr = p + '_balance'
         if attr not in new_values or new_values [attr] is None :
-            new_values [attr] = compute_balance (db, user, date, p)
+            new_values [attr] = compute_balance \
+                (db, user, date, p, not_after = True)
 # end def new_freeze_record
 
 def new_overtime (db, cl, nodeid, new_values) :
@@ -103,7 +104,8 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     for p in periods :
         attr = p + '_balance'
         if attr in new_values and new_values [attr] is None :
-            new_values [attr] = compute_balance (db, user, date, p)
+            new_values [attr] = compute_balance \
+                (db, user, date, p, not_after = True)
 # end def check_freeze_record
 
 def check_overtime (db, cl, nodeid, new_values) :

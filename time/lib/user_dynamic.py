@@ -304,11 +304,13 @@ def invalidate_cache (user, date) :
         del duration_cache [(user, pdate)]
 # end def invalidate_cache
 
-def compute_balance (db, user, date, period, sharp_end = False) :
-    print "compute_balance", user, date, period
+def compute_balance \
+    (db, user, date, period, sharp_end = False, not_after = False) :
     day            = Interval ('1d')
     end            = freeze_date   (date, period)
     eop            = end_of_period (date + day, period)
+    if not_after :
+        eop        = date
     use_additional = period != 'week'
     id = db.daily_record_freeze.filter \
         ( None
@@ -320,10 +322,6 @@ def compute_balance (db, user, date, period, sharp_end = False) :
         p_balance = prev [period + '_balance']
         p_end     = freeze_date (prev.date, period)
         p_date    = p_end + day # start at day after last period ends
-        print "p_balance", p_balance
-        if p_date >= end :
-            print "return p_balance", p_balance
-            return p_balance
     else :
         dyn       = last_user_dynamic  (db, user)
         assert (not dyn.valid_to or dyn.valid_to >= date)
@@ -339,12 +337,9 @@ def compute_balance (db, user, date, period, sharp_end = False) :
                 fdyn = dyn
         dyn = fdyn
         p_date    = dyn.valid_from
-        #print "p_date", p_date, end, end_of_period (p_date, period), period
         p_balance = 0
         if p_date > end :
             return 0
-    #print user, date, p_date, end, period
-    assert (p_date < end)
     corr = db.overtime_correction.filter \
         (None, dict (user = user, date = pretty_range (p_date, end)))
     for c in corr :
@@ -355,10 +350,8 @@ def compute_balance (db, user, date, period, sharp_end = False) :
         p_date = eop + day
     assert (p_date == end + day)
     eop = end_of_period (date, period)
-    print "before", p_balance
     if sharp_end and date != eop :
         p_balance += overtime (db, user, p_date, date, eop, use_additional)
-    print "after", p_balance
     return p_balance
 # end def compute_balance
 
