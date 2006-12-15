@@ -305,13 +305,14 @@ def invalidate_cache (user, date) :
 # end def invalidate_cache
 
 def compute_balance (db, user, date, period, sharp_end = False) :
-    #print "compute_balance", user, date, period
+    print "compute_balance", user, date, period
     day            = Interval ('1d')
-    end            = freeze_date (date, period)
+    end            = freeze_date   (date, period)
+    eop            = end_of_period (date + day, period)
     use_additional = period != 'week'
     id = db.daily_record_freeze.filter \
         ( None
-        , dict (user = user, date = (date - day).pretty (';%Y-%m-%d'))
+        , dict (user = user, date = (eop - day).pretty (';%Y-%m-%d'))
         , group = [('-', 'date')]
         )
     if id :
@@ -319,7 +320,9 @@ def compute_balance (db, user, date, period, sharp_end = False) :
         p_balance = prev [period + '_balance']
         p_end     = freeze_date (prev.date, period)
         p_date    = p_end + day # start at day after last period ends
+        print "p_balance", p_balance
         if p_date >= end :
+            print "return p_balance", p_balance
             return p_balance
     else :
         dyn       = last_user_dynamic  (db, user)
@@ -352,8 +355,10 @@ def compute_balance (db, user, date, period, sharp_end = False) :
         p_date = eop + day
     assert (p_date == end + day)
     eop = end_of_period (date, period)
+    print "before", p_balance
     if sharp_end and date != eop :
         p_balance += overtime (db, user, p_date, date, eop, use_additional)
+    print "after", p_balance
     return p_balance
 # end def compute_balance
 
