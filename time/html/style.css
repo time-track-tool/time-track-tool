@@ -328,6 +328,14 @@ table.list td a[href]:hover.header { color: #404070 }
 table.list td a[href]:link.header  { color: #404070 }
 table.list td a[href].header       { color: #404070 }
 
+table.list td a[href]:hover.done   { color: green }
+table.list td a[href]:link.done    { color: green }
+table.list td a[href].done         { color: green }
+
+table.list td a[href]:hover.todo   { color: red }
+table.list td a[href]:link.todo    { color: red }
+table.list td a[href].todo         { color: red }
+
 table.list td.subhead a[href]:hover { font-weight: normal }
 table.list td.subhead a[href]:link  { font-weight: normal }
 table.list td.subhead a[href]       { font-weight: normal }

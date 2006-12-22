@@ -447,126 +447,126 @@ def from_week_number (year, week_no) :
     return week_from_date (date)
 # end def from_week_number
 
-def weekno_from_day (date) :
+def weekno_year_from_day (date) :
     """ Compute the week number from the given date
-        >>> weekno_from_day (Date ('2005-08-26'))
-        34
-        >>> weekno_from_day (Date ("1998-12-21"))
-        52
-        >>> weekno_from_day (Date ("1998-12-27"))
-        52
-        >>> weekno_from_day (Date ("1998-12-28"))
-        53
-        >>> weekno_from_day (Date ("1999-01-03"))
-        53
-        >>> weekno_from_day (Date ("1999-01-04"))
-        1
-        >>> weekno_from_day (Date ("1999-01-10"))
-        1
-        >>> weekno_from_day (Date ("1999-12-27"))
-        52
-        >>> weekno_from_day (Date ("2000-01-02"))
-        52
-        >>> weekno_from_day (Date ("2000-01-03"))
-        1
-        >>> weekno_from_day (Date ("2000-01-09"))
-        1
-        >>> weekno_from_day (Date ("2000-12-25"))
-        52
-        >>> weekno_from_day (Date ("2000-12-31"))
-        52
-        >>> weekno_from_day (Date ("2001-01-01"))
-        1
-        >>> weekno_from_day (Date ("2001-01-07"))
-        1
-        >>> weekno_from_day (Date ("2001-12-24"))
-        52
-        >>> weekno_from_day (Date ("2001-12-30"))
-        52
-        >>> weekno_from_day (Date ("2001-12-31"))
-        1
-        >>> weekno_from_day (Date ("2002-01-06"))
-        1
-        >>> weekno_from_day (Date ("2002-12-23"))
-        52
-        >>> weekno_from_day (Date ("2002-12-29"))
-        52
-        >>> weekno_from_day (Date ("2002-12-30"))
-        1
-        >>> weekno_from_day (Date ("2003-01-05"))
-        1
-        >>> weekno_from_day (Date ("2003-12-22"))
-        52
-        >>> weekno_from_day (Date ("2003-12-28"))
-        52
-        >>> weekno_from_day (Date ("2003-12-29"))
-        1
-        >>> weekno_from_day (Date ("2004-01-04"))
-        1
-        >>> weekno_from_day (Date ("2004-12-20"))
-        52
-        >>> weekno_from_day (Date ("2004-12-26"))
-        52
-        >>> weekno_from_day (Date ("2004-12-27"))
-        53
-        >>> weekno_from_day (Date ("2005-01-02"))
-        53
-        >>> weekno_from_day (Date ("2005-01-03"))
-        1
-        >>> weekno_from_day (Date ("2005-01-09"))
-        1
-        >>> weekno_from_day (Date ("2005-07-18"))
-        29
-        >>> weekno_from_day (Date ("2005-07-24"))
-        29
-        >>> weekno_from_day (Date ("2005-12-26"))
-        52
-        >>> weekno_from_day (Date ("2006-01-01"))
-        52
-        >>> weekno_from_day (Date ("2006-01-02"))
-        1
-        >>> weekno_from_day (Date ("2006-01-08"))
-        1
-        >>> weekno_from_day (Date ("2006-12-25"))
-        52
-        >>> weekno_from_day (Date ("2006-12-31"))
-        52
-        >>> weekno_from_day (Date ("2007-01-01"))
-        1
-        >>> weekno_from_day (Date ("2007-01-07"))
-        1
-        >>> weekno_from_day (Date ("2007-12-24"))
-        52
-        >>> weekno_from_day (Date ("2007-12-30"))
-        52
-        >>> weekno_from_day (Date ("2007-12-31"))
-        1
-        >>> weekno_from_day (Date ("2008-01-06"))
-        1
-        >>> weekno_from_day (Date ("2008-12-22"))
-        52
-        >>> weekno_from_day (Date ("2008-12-28"))
-        52
-        >>> weekno_from_day (Date ("2008-12-29"))
-        1
-        >>> weekno_from_day (Date ("2009-01-04"))
-        1
-        >>> weekno_from_day (Date ("2009-12-21"))
-        52
-        >>> weekno_from_day (Date ("2009-12-27"))
-        52
-        >>> weekno_from_day (Date ("2009-12-28"))
-        53
-        >>> weekno_from_day (Date ("2010-01-03"))
-        53
-        >>> weekno_from_day (Date ("2010-01-04"))
-        1
-        >>> weekno_from_day (Date ("2010-01-10"))
-        1
-        >>> weekno_from_day (Date ("2010-12-27"))
-        52
-        >>> weekno_from_day (Date ("2011-01-02"))
-        52
+        >>> weekno_year_from_day (Date ('2005-08-26'))
+        (34, 2005)
+        >>> weekno_year_from_day (Date ("1998-12-21"))
+        (52, 1998)
+        >>> weekno_year_from_day (Date ("1998-12-27"))
+        (52, 1998)
+        >>> weekno_year_from_day (Date ("1998-12-28"))
+        (53, 1998)
+        >>> weekno_year_from_day (Date ("1999-01-03"))
+        (53, 1998)
+        >>> weekno_year_from_day (Date ("1999-01-04"))
+        (1, 1999)
+        >>> weekno_year_from_day (Date ("1999-01-10"))
+        (1, 1999)
+        >>> weekno_year_from_day (Date ("1999-12-27"))
+        (52, 1999)
+        >>> weekno_year_from_day (Date ("2000-01-02"))
+        (52, 1999)
+        >>> weekno_year_from_day (Date ("2000-01-03"))
+        (1, 2000)
+        >>> weekno_year_from_day (Date ("2000-01-09"))
+        (1, 2000)
+        >>> weekno_year_from_day (Date ("2000-12-25"))
+        (52, 2000)
+        >>> weekno_year_from_day (Date ("2000-12-31"))
+        (52, 2000)
+        >>> weekno_year_from_day (Date ("2001-01-01"))
+        (1, 2001)
+        >>> weekno_year_from_day (Date ("2001-01-07"))
+        (1, 2001)
+        >>> weekno_year_from_day (Date ("2001-12-24"))
+        (52, 2001)
+        >>> weekno_year_from_day (Date ("2001-12-30"))
+        (52, 2001)
+        >>> weekno_year_from_day (Date ("2001-12-31"))
+        (1, 2002)
+        >>> weekno_year_from_day (Date ("2002-01-06"))
+        (1, 2002)
+        >>> weekno_year_from_day (Date ("2002-12-23"))
+        (52, 2002)
+        >>> weekno_year_from_day (Date ("2002-12-29"))
+        (52, 2002)
+        >>> weekno_year_from_day (Date ("2002-12-30"))
+        (1, 2003)
+        >>> weekno_year_from_day (Date ("2003-01-05"))
+        (1, 2003)
+        >>> weekno_year_from_day (Date ("2003-12-22"))
+        (52, 2003)
+        >>> weekno_year_from_day (Date ("2003-12-28"))
+        (52, 2003)
+        >>> weekno_year_from_day (Date ("2003-12-29"))
+        (1, 2004)
+        >>> weekno_year_from_day (Date ("2004-01-04"))
+        (1, 2004)
+        >>> weekno_year_from_day (Date ("2004-12-20"))
+        (52, 2004)
+        >>> weekno_year_from_day (Date ("2004-12-26"))
+        (52, 2004)
+        >>> weekno_year_from_day (Date ("2004-12-27"))
+        (53, 2004)
+        >>> weekno_year_from_day (Date ("2005-01-02"))
+        (53, 2004)
+        >>> weekno_year_from_day (Date ("2005-01-03"))
+        (1, 2005)
+        >>> weekno_year_from_day (Date ("2005-01-09"))
+        (1, 2005)
+        >>> weekno_year_from_day (Date ("2005-07-18"))
+        (29, 2005)
+        >>> weekno_year_from_day (Date ("2005-07-24"))
+        (29, 2005)
+        >>> weekno_year_from_day (Date ("2005-12-26"))
+        (52, 2005)
+        >>> weekno_year_from_day (Date ("2006-01-01"))
+        (52, 2005)
+        >>> weekno_year_from_day (Date ("2006-01-02"))
+        (1, 2006)
+        >>> weekno_year_from_day (Date ("2006-01-08"))
+        (1, 2006)
+        >>> weekno_year_from_day (Date ("2006-12-25"))
+        (52, 2006)
+        >>> weekno_year_from_day (Date ("2006-12-31"))
+        (52, 2006)
+        >>> weekno_year_from_day (Date ("2007-01-01"))
+        (1, 2007)
+        >>> weekno_year_from_day (Date ("2007-01-07"))
+        (1, 2007)
+        >>> weekno_year_from_day (Date ("2007-12-24"))
+        (52, 2007)
+        >>> weekno_year_from_day (Date ("2007-12-30"))
+        (52, 2007)
+        >>> weekno_year_from_day (Date ("2007-12-31"))
+        (1, 2008)
+        >>> weekno_year_from_day (Date ("2008-01-06"))
+        (1, 2008)
+        >>> weekno_year_from_day (Date ("2008-12-22"))
+        (52, 2008)
+        >>> weekno_year_from_day (Date ("2008-12-28"))
+        (52, 2008)
+        >>> weekno_year_from_day (Date ("2008-12-29"))
+        (1, 2009)
+        >>> weekno_year_from_day (Date ("2009-01-04"))
+        (1, 2009)
+        >>> weekno_year_from_day (Date ("2009-12-21"))
+        (52, 2009)
+        >>> weekno_year_from_day (Date ("2009-12-27"))
+        (52, 2009)
+        >>> weekno_year_from_day (Date ("2009-12-28"))
+        (53, 2009)
+        >>> weekno_year_from_day (Date ("2010-01-03"))
+        (53, 2009)
+        >>> weekno_year_from_day (Date ("2010-01-04"))
+        (1, 2010)
+        >>> weekno_year_from_day (Date ("2010-01-10"))
+        (1, 2010)
+        >>> weekno_year_from_day (Date ("2010-12-27"))
+        (52, 2010)
+        >>> weekno_year_from_day (Date ("2011-01-02"))
+        (52, 2010)
     """
     date   = Date (str (date))
     wday   = gmtime (date.timestamp ())[6]
@@ -575,8 +575,8 @@ def weekno_from_day (date) :
     d      = first_thursday (date.year)
     yday1  = gmtime (d.timestamp    ())[7]
     assert ((yday2 - yday1) % 7 == 0)
-    return int ((yday2 - yday1) / 7 + 1)
-# end def weekno_from_day
+    return int ((yday2 - yday1) / 7 + 1), int (date.year)
+# end def weekno_year_from_day
 
 def monthstart_twoweeksago (date = '.') :
     """return the last month start from at least two weeks ago as a

@@ -45,7 +45,7 @@ from rsclib.PM_Value                import PM_Value
 
 from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
-from common                         import weekno_from_day
+from common                         import weekno_year_from_day
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
 
@@ -292,8 +292,7 @@ class Week_Container (Time_Container) :
     # end def __init__
 
     def __str__ (self) :
-        return "WW %s/%s" % \
-            (weekno_from_day (self.start), self.start.pretty ('%Y'))
+        return "WW %s/%s" % weekno_year_from_day (self.start)
     # end def __str__
 # end class Week_Container
 
@@ -903,7 +902,9 @@ class Staff_Report (_Report) :
         , ""'required'
         , ""'overtime_correction'
         , ""'balance_week_end'
-        , ""'overtime_period'
+        )
+    period_fields = \
+        ( ""'overtime_period'
         , ""'balance_period_start'
         , ""'balance_period_end'
         )
@@ -970,7 +971,8 @@ class Staff_Report (_Report) :
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
             )
-        self.values = values = {}
+        self.values      = values = {}
+        self.need_period = False
         for u in self.users :
             dyn        = get_user_dynamic (db, u, end)
             values [u] = {}
@@ -981,6 +983,7 @@ class Staff_Report (_Report) :
             period = dyn.overtime_period
             values [u]['overtime_period'] = period or ''
             if period :
+                self.need_period = True
                 values [u]['balance_period_start'] = compute_balance \
                     (db, u, start - day, period, True)
                 values [u]['balance_period_end']   = compute_balance \
@@ -1055,6 +1058,9 @@ class Staff_Report (_Report) :
         line.append (formatter (_ ('user')))
         for f in self.fields :
             line.append (formatter (_ (f)))
+        if self.need_period :
+            for f in self.period_fields :
+                line.append (formatter (_ (f)))
         if False and user_has_role (self.db, self.uid, 'HR') :
             for f in self.hr_fields :
                 line.append (formatter (_ (f)))

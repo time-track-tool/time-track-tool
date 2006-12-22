@@ -38,22 +38,26 @@
 #
 #--
 
+from time                           import gmtime
+from copy                           import copy
+from operator                       import add
+from rsclib.autosuper               import autosuper
+
 from roundup.cgi.actions            import Action, EditItemAction
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
 from roundup.date                   import Date, Interval, Range
 from roundup                        import hyperdb
-from time                           import gmtime
-from copy                           import copy
-from operator                       import add
-from rsclib.autosuper               import autosuper
 from roundup.cgi.TranslationService import get_translation
+
 from common                         import pretty_range, freeze_date
 from common                         import week_from_date, ymd, date_range
-from common                         import  weekno_from_day, from_week_number
+from common                         import weekno_year_from_day
+from common                         import from_week_number
 from user_dynamic                   import get_user_dynamic, day_work_hours
-from user_dynamic                   import round_daily_work_hours
+from user_dynamic                   import round_daily_work_hours, day
+from user_dynamic                   import last_user_dynamic
 from freeze                         import frozen, range_frozen, next_dr_freeze
 from freeze                         import prev_dr_freeze
 
@@ -460,23 +464,38 @@ def approvals_pending (db, request, userlist) :
     spec      = copy (request.filterspec)
     filter    = request.filterspec
     editdict  = {':template' : 'edit', ':filter' : 'user,date'}
+    now       = Date ('.')
     for u in userlist :
-        p_user = db.daily_record.find (user = u, status = submitted)
-        if p_user :
-            pending [u] = {}
+        find_user   = dict (user = u, status = submitted)
+        fdate       = None
+        last_frozen = db.daily_record_freeze.filter \
+            ( None
+            , dict (user = u, date = now.pretty (';%Y-%m-%d'), frozen = True)
+            , group = [('-', 'date')]
+            )
+        if last_frozen :
+            fdate = db.daily_record_freeze.get (last_frozen [0], 'date') + day
+            find_user ['date'] = fdate.pretty ('%Y-%m-%d;')
+        dr_per_user = db.daily_record.filter (None, find_user)
+        pending [u] = {}
+        if dr_per_user :
             earliest = latest = None
-            for p in p_user :
+            for p in dr_per_user :
                 date = db.daily_record.get (p, 'date')
-                week = int (weekno_from_day (date))
+                week, year = weekno_year_from_day (date)
                 if not earliest or date < earliest :
                     earliest = date
                 if not latest   or date > latest :
                     latest   = date
-                filter ['date'] = pretty_range (* week_from_date (date))
+                start, end = week_from_date (date)
+                if fdate and start < fdate :
+                    start = fdate
+                filter ['date'] = pretty_range (start, end)
                 filter ['user'] = u
-                pending [u][week] = \
+                pending [u][(year, week)] = \
                     [ None
                     , request.indexargs_url ('', editdict)
+                    , 'todo'
                     ]
             interval = latest - earliest
             for k in pending [u].iterkeys () :
@@ -485,6 +504,24 @@ def approvals_pending (db, request, userlist) :
                     pending [u][k][0] = request.indexargs_url ('', editdict)
                 else :
                     pending [u][k][0] = pending [u][k][1]
+        else :
+            dyn = last_user_dynamic (db, u)
+            if not dyn :
+                print u, "no dyn"
+            if dyn and (not dyn.valid_to or not fdate or dyn.valid_to > fdate) :
+                date = now
+                if dyn.valid_to and dyn.valid_to < date :
+                    date = dyn.valid_to
+                week, year = weekno_year_from_day (date)
+                start, end = week_from_date (date)
+                if fdate and start < fdate :
+                    start = fdate
+                if dyn.valid_to and dyn.valid_to < end :
+                    end   = dyn.valid_to
+                filter ['date'] = pretty_range (start, end)
+                filter ['user'] = u
+                url = request.indexargs_url ('', editdict)
+                pending [u][(year, week)] = [url, url, 'done']
     request.filterspec = spec
     return pending
 # end def approvals_pending
@@ -618,7 +655,7 @@ def init (instance) :
     util ('prev_week',                prev_week)
     util ("button_submit_to",         button_submit_to)
     util ("button_action",            button_action)
-    util ('weekno',                   weekno_from_day)
+    util ('weekno_year',              weekno_year_from_day)
     util ('daysum',                   daysum)
     util ('weeksum',                  weeksum)
     util ("approvals_pending",        approvals_pending)
