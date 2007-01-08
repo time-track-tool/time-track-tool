@@ -115,7 +115,9 @@ def common_user_checks (db, cl, nodeid, new_values) :
     if new_values.has_key('address') and ' ' in new_values['address']:
         raise ValueError, 'Email address must not contain spaces'
     if new_values.has_key('roles'):
-        roles = new_values ['roles'].strip ()
+        roles = new_values ['roles']
+        if roles :
+            roles = roles.strip ()
         if roles :
             roles = [x.lower().strip() for x in roles.split(',')]
             for rolename in roles:
