@@ -961,11 +961,9 @@ class Staff_Report (_Report) :
         if all_in is not None :
             all_in = all_in == 'yes'
         for u in users.keys () :
-            dyn_e = get_user_dynamic (db, u, end)
-            dyn_s = get_user_dynamic (db, u, start)
-            if  (  not dyn_e
-                or not dyn_s
-                or all_in is not None and all_in != bool (dyn_e.all_in)
+            dyn = get_user_dynamic (db, u, end)
+            if  (  not dyn
+                or all_in is not None and all_in != bool (dyn.all_in)
                 or not self.permission_ok (u)
                 ) :
                 del users [u]
@@ -982,9 +980,10 @@ class Staff_Report (_Report) :
                 (db, u, start - day, 'week', True)
             values [u]['balance_week_end']   = compute_balance \
                 (db, u, end,         'week', True)
-            period = db.overtime_period.get (dyn.overtime_period, 'name')
-            values [u]['overtime_period'] = period or ''
-            if period :
+            values [u]['overtime_period'] = ''
+            if dyn.overtime_period :
+                period = db.overtime_period.get (dyn.overtime_period, 'name')
+                values [u]['overtime_period'] = period
                 self.need_period = True
                 values [u]['balance_period_start'] = compute_balance \
                     (db, u, start - day, period, True)
