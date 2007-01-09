@@ -422,6 +422,8 @@ class _Report (autosuper) :
                 )
         if isinstance (item, type (0.0)) or isinstance (item, type (0)) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
+        if isinstance (item, str) :
+            return ('  <td>%s</td>' % item)
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
 
@@ -980,7 +982,7 @@ class Staff_Report (_Report) :
                 (db, u, start - day, 'week', True)
             values [u]['balance_week_end']   = compute_balance \
                 (db, u, end,         'week', True)
-            period = dyn.overtime_period
+            period = db.overtime_period.get (dyn.overtime_period, 'name')
             values [u]['overtime_period'] = period or ''
             if period :
                 self.need_period = True
@@ -1079,6 +1081,9 @@ class Staff_Report (_Report) :
             line.append (item_formatter (user))
             for f in self.fields :
                 line.append (item_formatter (self.values [u][f]))
+            if self.need_period :
+                for f in self.period_fields :
+                    line.append (item_formatter (self.values [u][f]))
             if False and user_has_role (self.db, self.uid, 'HR') :
                 for f in self.hr_fields :
                     line.append (item_formatter (self.values [u][f]))
