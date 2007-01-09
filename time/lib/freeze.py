@@ -43,6 +43,7 @@ def frozen (db, user, date) :
     f = db.daily_record_freeze.filter \
         ( None
         , dict (user = user, date = date.pretty ('%Y-%m-%d;'), frozen = True)
+        , group = [('+', 'date')]
         )
     return f
 # end def frozen

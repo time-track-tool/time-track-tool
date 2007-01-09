@@ -560,6 +560,42 @@ def is_end_of_week (date) :
     return wday == 6
 # end def is_end_of_week
 
+dynuser_copyfields = \
+     [ 'user'
+     , 'booking_allowed'
+     , 'durations_allowed'
+     , 'daily_worktime'
+     , 'weekend_allowed'
+     , 'travel_full'
+     , 'vacation_yearly'
+     , 'weekly_hours'
+     , 'supp_weekly_hours'
+     , 'supp_per_period'
+     , 'hours_mon'
+     , 'hours_tue'
+     , 'hours_wed'
+     , 'hours_thu'
+     , 'hours_fri'
+     , 'hours_sat'
+     , 'hours_sun'
+     , 'org_location'
+     , 'department'
+     , 'all_in'
+     , 'additional_hours'
+     , 'overtime_period'
+     ]
+
+def dynuser_half_frozen (db, dyn) :
+    userid   = dyn.user.id
+    val_from = dyn.valid_from._value
+    val_to   = dyn.valid_to._value
+    return \
+        (   frozen (db, userid, val_from)
+        and val_to
+        and not frozen (db, userid, val_to - day)
+        )
+# end def dynuser_half_frozen
+
 class Freeze_Action (Action, autosuper) :
     def handle (self) :
         if not self.request.form ['date'].value :
@@ -636,6 +672,43 @@ class Freeze_Supervisor_Action (Freeze_Action) :
     # end def handle
 # end class Freeze_Supervisor_Action
 
+class Split_Dynamic_User_Action (Action) :
+    """ Get date of last freeze-record and split dynamic user record
+        around the freeze date. A precondition is that the dyn user
+        record is half-frozen, i.e., the valid_from is frozen and the
+        valid_to is not.
+    """
+    def handle (self) :
+        self.request = templating.HTMLRequest (self.client)
+        assert \
+            (   self.request.classname
+            and self.request.classname == 'user_dynamic'
+            and self.client.nodeid
+            )
+        id       = self.client.nodeid
+        dyn      = self.db.user_dynamic.getnode (id)
+        fields   = dynuser_copyfields + ['valid_to']
+        param    = dict ((i, dyn [i]) for i in fields)
+        frozen   = self.db.daily_record_freeze.filter \
+            ( None
+            , dict 
+                ( user   = dyn.user
+                , date   = pretty_range (dyn.valid_from, dyn.valid_to - day)
+                , frozen = True
+                )
+            , group = [('-', 'date')]
+            )
+        assert (frozen)
+        frozen               = self.db.daily_record_freeze.getnode (frozen [0])
+        splitdate            = frozen.date + day
+        self.db.user_dynamic.set (id, valid_to = splitdate)
+        param ['valid_from'] = splitdate
+        newid                = self.db.user_dynamic.create (** param)
+        self.db.commit ()
+        raise Redirect, 'user_dynamic%s' % newid
+    # end def handle
+# end class Split_Dynamic_User_Action
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -650,6 +723,7 @@ def init (instance) :
     actn ('weekno_action',            Weekno_Action)
     actn ('freeze_all',               Freeze_All_Action)
     actn ('freeze_supervisor',        Freeze_Supervisor_Action)
+    actn ('split_dynamic_user',       Split_Dynamic_User_Action)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
@@ -668,4 +742,6 @@ def init (instance) :
     util ("next_dr_freeze",           next_dr_freeze)
     util ("prev_dr_freeze",           prev_dr_freeze)
     util ("freeze_date",              freeze_date)
+    util ("dynuser_half_frozen",      dynuser_half_frozen)
+    util ("dynuser_copyfields",       dynuser_copyfields)
 # end def init
