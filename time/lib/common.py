@@ -762,7 +762,10 @@ def _period_start_end (date, period) :
 
 def freeze_date (date, period) :
     """ Return end of last freeze period before or at date """
-    date = Date (str (date))
+    try :
+        date = Date (date._value)
+    except AttributeError :
+        pass
     start, is_end = _period_start_end (date, period)
     if is_end :
         return date
