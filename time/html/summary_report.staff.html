@@ -25,6 +25,11 @@
         (utils, pdict ['supervisor'])
       , status            = utils.ExtProperty
         (utils, pdict ['status'],            multiselect = 1)
+      , summary_type      = utils.ExtProperty
+        ( utils, pdict ['summary_type']
+        , multiselect = 1
+        , filter      = dict (is_staff = True)
+        )
       , all_in            = utils.ExtProperty (utils, pdict ['all_in'])
       );
       sr   python: utils.Staff_Report (db, request, utils)
@@ -36,7 +41,7 @@
         ; props python: [myprops [p] for p in sorted (fpkeys)]
         ; propkeys       python:
           ( 'date', 'user', 'department', 'org_location'
-          , 'supervisor', 'all_in'
+          , 'supervisor', 'all_in', 'summary_type'
           )
         ; sprops         python: [myprops [p] for p in propkeys]
         ; multi_props    python: [p for p in sprops if p.multiselect]

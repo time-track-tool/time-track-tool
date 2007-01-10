@@ -130,7 +130,11 @@ class ExtProperty :
             (e.g., in a search mask) because the value will not show up
             in the generated URL and therefore will not work in CSV
             export.
-        
+        filter: A dictionary of properties / values to filter on when
+            displaying a menu (in a search mask) or help.
+        help_filter: deprecated, a string of property/value pairs
+            usually computed from filter and used in classhelp
+
         Internal attributes:
         name: name of the property
         key: key attribute
@@ -157,6 +161,7 @@ class ExtProperty :
         , do_classhelp  = None
         , fieldwidth    = 60
         , format        = None
+        , filter        = None
         , help_props    = None
         , help_filter   = None
         , help_sort     = None
@@ -183,6 +188,7 @@ class ExtProperty :
         self.do_classhelp  = do_classhelp
         self.fieldwidth    = fieldwidth
         self.format        = format
+        self.filter        = filter
         self.help_props    = help_props or []
         self.help_filter   = help_filter
         self.help_sort     = help_sort
@@ -198,6 +204,15 @@ class ExtProperty :
                 self.get_cssclass = self.utils.get_cssclass
             else :
                 self.get_cssclass = lambda a : ""
+        if not self.filter :
+            self.filter = {}
+        if not self.help_filter and self.filter :
+            f = []
+            for k, v in self.filter.iteritems () :
+                if isinstance (v, list) :
+                    v = ','.join (str (v))
+                f.append ((k, v))
+            self.help_filter = ' '.join ('%s=%s' % (k, v) for k, v in f)
         self.lnkcls = None
 
         self.helpcls  = self.classname

@@ -931,10 +931,15 @@
           <option value=""
                   tal:attributes="selected not:form_vals">don't care
           </option>
-          <option tal:repeat="s python:db[prop.lnkcls.classname].list()"
-                  tal:attributes="value    s/id;
-                                  selected python:s.id in form_vals"
-                  tal:content="python:s[prop.displayprop]">
+          <option
+           tal:repeat="s python: db[prop.lnkcls.classname].filter
+               ( filterspec = prop.filter
+               , group      = [('+', prop.lnkcls.orderprop ())]
+               )"
+           tal:attributes=
+               "value    s/id;
+                selected python:s.id in form_vals"
+           tal:content="python:s[prop.displayprop]">
           </option>
          </select>
         </tal:block>
