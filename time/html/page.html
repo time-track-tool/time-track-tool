@@ -23,7 +23,7 @@
                            and utils.approval_for (db)
                            )
  ; uid             python: db._db.getuid ()
- ; default_query   string::action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
+ ; default_query   string::action=searchwithtemplate&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; n_sort          python: 2
  ; default_queries python:
    { 'alias'           : ':columns=name,alias_to_alias,alias_to_user&'
@@ -791,7 +791,7 @@
       name="query"
       tal:attributes="action request/classname">
   <tal:block metal:define-slot="search_variables"/>
-  <input type="hidden" name=":action" value="search">
+  <input type="hidden" name=":action" value="searchwithtemplate">
   <input type="hidden" name=":startwith"
    tal:attributes="value request/startwith">
   <input type="hidden" name=":template"

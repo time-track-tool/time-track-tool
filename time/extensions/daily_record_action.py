@@ -43,7 +43,7 @@ from copy                           import copy
 from operator                       import add
 from rsclib.autosuper               import autosuper
 
-from roundup.cgi.actions            import Action, EditItemAction
+from roundup.cgi.actions            import Action, EditItemAction, SearchAction
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
@@ -709,6 +709,15 @@ class Split_Dynamic_User_Action (Action) :
     # end def handle
 # end class Split_Dynamic_User_Action
 
+class SearchActionWithTemplate(SearchAction):
+    def getCurrentURL (self, req) :
+        template = self.getFromForm ('template')
+        if template :
+            return req.indexargs_url ('', {'@template' : template}) [1:]
+        return req.indexargs_url('', {})[1:]
+    # end def getCurrentURL
+# end class SearchActionWithTemplate
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -724,6 +733,7 @@ def init (instance) :
     actn ('freeze_all',               Freeze_All_Action)
     actn ('freeze_supervisor',        Freeze_Supervisor_Action)
     actn ('split_dynamic_user',       Split_Dynamic_User_Action)
+    actn ('searchwithtemplate',       SearchActionWithTemplate)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
