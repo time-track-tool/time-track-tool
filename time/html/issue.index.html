@@ -22,8 +22,17 @@
     , utils.ExtProperty (utils, pdict ['effort'])
     , utils.ExtProperty (utils, pdict ['priority'])
     , utils.ExtProperty (utils, pdict ['effective_prio'])
-    , utils.ExtProperty (utils, pdict ['depends'])
     , utils.ExtProperty (utils, pdict ['release'])
+    , utils.ExtProperty
+        ( utils, pdict ['depends']
+        , searchable   = True
+        , sortable     = False
+        , do_classhelp = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['depends']
+        , searchname   = 'depends.id'
+        )
     , utils.ExtProperty
         ( utils, pdict ['composed_of']
         , searchable   = True
