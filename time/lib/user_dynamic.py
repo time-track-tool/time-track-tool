@@ -278,7 +278,7 @@ def overtime (db, user, start, end, end_ov, use_additional) :
     over_per = 0
     while date <= end_ov :
         dur      = durations (db, user, date)
-        over_per = dur [8]
+        over_per = dur [8] or 0
         work     = dur [0]
         req      = dur [1]
         over     = dur [2]
