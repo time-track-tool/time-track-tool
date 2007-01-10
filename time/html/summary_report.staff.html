@@ -18,7 +18,10 @@
       , user              = utils.ExtProperty 
         (utils, pdict ['user'])
       , department        = utils.ExtProperty
-        (utils, pdict ['department'],        multiselect = 1)
+        ( utils, pdict ['department']
+        , multiselect = 1
+        , filter      = dict (valid_from = utils.until_now ())
+        )
       , org_location      = utils.ExtProperty
         (utils, pdict ['org_location'],      multiselect = 1)
       , supervisor        = utils.ExtProperty
