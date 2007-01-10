@@ -1073,7 +1073,7 @@ class Staff_Report (_Report) :
         container ['overtime_supplementary'] = 0
         container ['required_overtime']      = 0
         while d <= end :
-            act, req, sup, add, sup_v, add_v, st, ovr = durations (db, u, d)
+            act, req, sup, add, sup_v, add_v, st, ovr, op = durations (db, u, d)
             assert (not act or st)
             container ['actual_all'] += act
             if st :

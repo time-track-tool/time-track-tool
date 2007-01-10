@@ -3300,9 +3300,8 @@ msgid "new user_dynamic record"
 msgstr "New Dynamic User Data"
 
 #: ../html/user_dynamic.item.html:75
-#, fuzzy
 msgid "split user_dynamic record"
-msgstr "New Dynamic User Data"
+msgstr "Split frozen dynamic user data"
 
 #: ../lib/common.py:99
 #, python-format
