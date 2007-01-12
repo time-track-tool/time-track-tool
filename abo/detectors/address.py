@@ -34,7 +34,7 @@ def fix_adr_type (db, cl, nodeid, new_values) :
             if t in adr_type_dict :
                 del adr_type_dict [t]
         for abo in abos :
-            if not abo ['end'] or abo ['end'] < Date ('.') :
+            if not abo ['end'] or abo ['end'] > Date ('.') :
                 abotype = db.abo_price.get (abo ['aboprice'], 'abotype')
                 adrtype = db.abo_type.get  (abotype, 'adr_type')
                 assert (adrtype)
