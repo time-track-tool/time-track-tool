@@ -20,6 +20,7 @@
 
 from roundup.exceptions import Reject
 from roundup.date       import Date
+from roundup.rup_utils  import translate
 
 def fix_adr_type (db, cl, nodeid, new_values) :
     if 'adr_type' in new_values :
@@ -61,9 +62,16 @@ def check_missing (db, cl, nodeid, new_values) :
         raise Reject, _ (''"Country must be set")
 # end def check_missing
 
+def lookalike_computation (db, cl, nodeid, new_values) :
+    if 'firstname' in new_values or 'lastname' in new_values :
+        new_values ['lookalike_name'] = translate (firstname + ' ' + lastname)
+# end def lookalike_computation
+
 def init (db) :
     db.address.audit ("create", set_adr_defaults)
     db.address.audit ("create", fix_adr_type)
     db.address.audit ("set",    fix_adr_type)
+    db.address.audit ("create", lookalike_computation)
+    db.address.audit ("set",    lookalike_computation)
     db.address.audit ("set",    check_missing)
 # end def init

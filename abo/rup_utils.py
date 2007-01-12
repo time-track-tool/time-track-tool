@@ -37,3 +37,35 @@ def abo_max_invoice (db, abo) :
 
 def uni (x) :
     return x.decode ("latin1").encode ("utf-8")
+
+translation_table = {}
+translation_table.update (dict ([(k, ord ('A')) for k in range (192, 198)]))
+translation_table [198] = 'AE'.decode ('latin-1')
+translation_table [199] = ord ('C')
+translation_table.update (dict ([(k, ord ('E')) for k in range (200, 204)]))
+translation_table.update (dict ([(k, ord ('I')) for k in range (204, 208)]))
+translation_table [208] = ord ('D')
+translation_table [209] = ord ('N')
+translation_table.update (dict ([(k, ord ('O')) for k in range (210, 215)]))
+translation_table.update (dict ([(k, ord ('U')) for k in range (217, 221)]))
+translation_table [221] = ord ('Y')
+translation_table [223] = 'ss'.decode ('latin-1')
+translation_table.update (dict ([(k, ord ('a')) for k in range (224, 230)]))
+translation_table [230] = 'ae'.decode ('latin-1')
+translation_table [231] = ord ('c')
+translation_table.update (dict ([(k, ord ('e')) for k in range (232, 236)]))
+translation_table.update (dict ([(k, ord ('i')) for k in range (236, 240)]))
+translation_table [240] = ord ('d')
+translation_table [241] = ord ('n')
+translation_table.update (dict ([(k, ord ('o')) for k in range (242, 247)]))
+translation_table.update (dict ([(k, ord ('u')) for k in range (249, 253)]))
+translation_table [253] = ord ('y')
+translation_table [255] = ord ('y')
+
+def translate (x) :
+    """ Translate utf-8 string to lookalike utf-8 string without accents
+
+        >>> translate (uni ('äöüÄÖÜß'))
+        'aouAOUss'
+    """
+    return x.decode ('utf-8').translate (translation_table).encode ('utf-8')
