@@ -56,8 +56,8 @@ def repr_str (x) :
 
 def repr_country (x) :
     x = x.strip ()
-    if x is None or not x :
-        return 'CH'
+    if x == 'CH' :
+        return ''
     return repr_str (x)
 # end def repr_country
 
@@ -102,6 +102,7 @@ class Export_CSV_Names (Action, autosuper) :
     print_head     = True
     filename       = 'query.csv'
     delimiter      = '\t'
+    quoting        = csv.QUOTE_MINIMAL
 
     def _setup (self, request, props) :
         columns    = request.columns
@@ -131,7 +132,7 @@ class Export_CSV_Names (Action, autosuper) :
     def build_repr (self) :
         """ Figure out Link columns and build representation methods for them
         """
-        represent = {}
+        self.represent = {}
 
         for col in self.columns :
             self.represent [col] = repr_str
@@ -139,7 +140,7 @@ class Export_CSV_Names (Action, autosuper) :
                 self.represent [col] = repr_code (col, self.adr_types)
             elif col.startswith ('function.') :
                 self.represent [col] = repr_func (col)
-            elif isinstance (props [col], hyperdb.Link) :
+            elif isinstance (self.props [col], hyperdb.Link) :
                 cn = self.props [col].classname
                 cl = self.db.getclass (cn)
                 pr = cl.getprops ()
@@ -183,6 +184,7 @@ class Export_CSV_Names (Action, autosuper) :
             ( io
             , dialect   = 'excel'
             , delimiter = self.delimiter
+	    , quoting   = self.quoting
             )
         if self.print_head :
             writer.writerow (self.columns)
@@ -205,6 +207,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
 
     print_head = False
     filename   = 'ZFABO.CSV'
+    quoting    = csv.QUOTE_NONE
 
     def _setup (self, request, props) :
         self.columns = \
