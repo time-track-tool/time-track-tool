@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-07-29 18:15+0200\n"
+"POT-Creation-Date: 2007-01-12 14:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,6 +80,10 @@ msgstr ""
 
 #: ../detectors/abo_type.py:42
 msgid "Selected address types must be in type category \"ABO\""
+msgstr ""
+
+#: ../detectors/address.py:56 ../detectors/address.py:61
+msgid "Country must be set"
 msgstr ""
 
 #: ../detectors/adr_type_cat.py:29 ../detectors/adr_type_cat.py:37
@@ -1012,19 +1016,19 @@ msgstr ""
 msgid "changed"
 msgstr ""
 
-#: ../html/page.html:479
+#: ../html/page.html:452
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:496
+#: ../html/page.html:469
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:501
+#: ../html/page.html:474
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:664 ../html/user.index.html:33
+#: ../html/page.html:637 ../html/user.index.html:33
 msgid "Download as CSV"
 msgstr ""
 

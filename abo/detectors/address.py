@@ -19,6 +19,7 @@
 # ****************************************************************************
 
 from roundup.exceptions import Reject
+from roundup.date       import Date
 
 def fix_adr_type (db, cl, nodeid, new_values) :
     if 'adr_type' in new_values :
@@ -33,7 +34,7 @@ def fix_adr_type (db, cl, nodeid, new_values) :
             if t in adr_type_dict :
                 del adr_type_dict [t]
         for abo in abos :
-            if not abo ['end'] :
+            if not abo ['end'] or abo ['end'] < Date ('.') :
                 abotype = db.abo_price.get (abo ['aboprice'], 'abotype')
                 adrtype = db.abo_type.get  (abotype, 'adr_type')
                 assert (adrtype)
@@ -51,10 +52,18 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
        and 'firstname'   in new_values and new_values ['firstname']
        ) :
         new_values ['initial'] = new_values ['firstname'][0].upper () + '.'
+    if 'country' not in new_values :
+        raise Reject, _ (''"Country must be set")
 # end def set_adr_defaults
+
+def check_missing (db, cl, nodeid, new_values) :
+    if 'country' in new_values and not new_values ['country'] :
+        raise Reject, _ (''"Country must be set")
+# end def check_missing
 
 def init (db) :
     db.address.audit ("create", set_adr_defaults)
     db.address.audit ("create", fix_adr_type)
-    db.address.audit ("set", fix_adr_type)
+    db.address.audit ("set",    fix_adr_type)
+    db.address.audit ("set",    check_missing)
 # end def init
