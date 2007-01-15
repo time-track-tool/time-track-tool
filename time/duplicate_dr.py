@@ -1,11 +1,16 @@
 from roundup           import date
 from roundup           import instance
-tracker = instance.open ('/roundup/tracker/ttt')
-db      = tracker.open ('admin')
+tracker  = instance.open ('/roundup/tracker/ttt')
+db       = tracker.open ('admin')
+monthd   = [21,28,31,30,31,30,31,31,30,31,30,31]
 
-user    = db.user.lookup ('prammer')
+user     = '21' #db.user.lookup ('ionescu')
+daystart = 20
+month    = 11
+
 for j in range (7) :
-    i = '2006-04-%s' % (j + 10)
+    max = monthd [month -1] + 1
+    i = '2006-%s-%s' % ((j + daystart) / max + month, j + daystart)
     dr = db.daily_record.filter \
         (None, dict (date = '%s;%s' % (i, i), user = user))
     for d in dr :
@@ -13,4 +18,3 @@ for j in range (7) :
         tr = db.time_record.find (daily_record = dict (((d, 1),)))
         dv = db.daily_record.getnode (d)
         print d, tr, dv.user, dv.date, dv.status, dv.time_record
-
