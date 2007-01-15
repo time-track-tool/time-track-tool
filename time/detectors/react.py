@@ -31,7 +31,7 @@ def union (* lists) :
     tab = {}
     for l in lists :
         tab.update ((x, 1) for x in l)
-    return tab.keys ()
+    return sorted (tab.keys ())
 # end def union
 
 def update_composed_of (db, cl, nodeid, oldvalues) :
@@ -41,7 +41,7 @@ def update_composed_of (db, cl, nodeid, oldvalues) :
     container = cl.get (nodeid, "part_of")
     if container :
         old_parts = sorted (db.issue.get (container, "composed_of"))
-        new_parts = sorted (union (old_parts, [str(nodeid)]))
+        new_parts = union (old_parts, [str(nodeid)])
         # only set if parts really have changed
         if old_parts != new_parts :
             db.issue.set (container, composed_of = new_parts)
@@ -55,10 +55,7 @@ def join_nosy_lists (db, cl, nodeid, oldvalues) :
     superseders = cl.get (nodeid, "superseder") 
     for ss in superseders :
         ss_nosy_old = sorted (cl.get (ss, "nosy"))
-        ss_nosy_new = sorted (filter \
-            ( lambda x : db.security.hasPermission ('Nosy', x, cl.classname)
-            , union (ss_nosy_old, my_nosy)
-            ))
+        ss_nosy_new = union (ss_nosy_old, my_nosy)
         # only set if list really has changed
         if ss_nosy_old != ss_nosy_new :
             cl.set (ss, nosy = ss_nosy_new)
