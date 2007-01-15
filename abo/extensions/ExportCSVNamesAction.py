@@ -136,9 +136,7 @@ class Export_CSV_Names (Action, autosuper) :
 
         for col in self.columns :
             self.represent [col] = repr_str
-            if col == 'code' :
-                self.represent [col] = repr_code (col, self.adr_types)
-            elif col.startswith ('function.') :
+            if col.startswith ('function.') :
                 self.represent [col] = repr_func (col)
             elif isinstance (self.props [col], hyperdb.Link) :
                 cn = self.props [col].classname
@@ -229,6 +227,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     def build_repr (self) :
         self.__super.build_repr ()
         self.represent ['country'] = repr_country
+        self.represent ['code']    = repr_code ('address', self.adr_types)
     # end def build_repr
 
 # end class Export_Addresses
