@@ -54,14 +54,14 @@ def join_nosy_lists (db, cl, nodeid, oldvalues) :
     my_nosy     = cl.get (nodeid, "nosy")
     superseders = cl.get (nodeid, "superseder") 
     for ss in superseders :
-        ss_nosy_old = sorted (db.issue.get (ss, "nosy"))
+        ss_nosy_old = sorted (cl.get (ss, "nosy"))
         ss_nosy_new = sorted (filter \
-            ( lambda x : db.security.hasPermission ('Nosy', x, 'issue')
+            ( lambda x : db.security.hasPermission ('Nosy', x, cl.classname)
             , union (ss_nosy_old, my_nosy)
             ))
         # only set if list really has changed
         if ss_nosy_old != ss_nosy_new :
-            db.issue.set (ss, nosy = ss_nosy_new)
+            cl.set (ss, nosy = ss_nosy_new)
 # end def join_nosy_lists
 
 def init (db) :
