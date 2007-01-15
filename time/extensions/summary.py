@@ -602,23 +602,10 @@ class Summary_Report (_Report) :
             )
         #print "after dr_dat_usr:", time.time () - timestamp
 
-        trvl_tr     = []
-        if dr :
-            trvl_tr = db.time_record.find \
-                (daily_record = dr, time_activity = travel_act)
-        trvl_dr     = {}
-        for trid in trvl_tr :
-            t = db.time_record.getnode (trid)
-            if  (  t.time_activity not in travel_act
-                or t.tr_duration and t.activity > dr [t.daily_record].activity
-                ) :
-                continue
-            trvl_dr [t.daily_record] = dr [t.daily_record]
-        if trvl_dr :
-            for d in trvl_dr.itervalues () :
-                #print "update"
-                update_tr_duration (db, d)
-            db.commit ()
+        trvl_tr     = {}
+        for d in dr.itervalues () :
+            update_tr_duration (db, d)
+        db.commit ()
         #print "trv daily_recs", len (trvl_dr), time.time () - timestamp
 
         wp          = dict ((w, 1) for w in filterspec.get ('time_wp', []))
