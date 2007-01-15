@@ -712,7 +712,7 @@ class Split_Dynamic_User_Action (Action) :
 class SearchActionWithTemplate(SearchAction):
     def getCurrentURL (self, req) :
         template = self.getFromForm ('template')
-        if template :
+        if template and template != 'index' :
             return req.indexargs_url ('', {'@template' : template}) [1:]
         return req.indexargs_url('', {})[1:]
     # end def getCurrentURL

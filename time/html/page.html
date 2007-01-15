@@ -436,7 +436,7 @@
              (filterspec={'private_for':None, 'klass':klass})"
           tal:repeat="q queries"
           tal:attributes="
-            value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+           value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
           tal:content="structure string:&nbsp;&nbsp;${q/name}"
          >  Global Queries</option>
          <tal:block tal:condition="request/user/queries">
@@ -450,7 +450,7 @@
               ) if q.klass == klass]"
            tal:repeat="q queries"
            tal:attributes="
-             value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+            value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
            tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
           >    Private Queries</option>
          </tal:block>
