@@ -10,8 +10,7 @@
  ; bclass          python: db._db.getclass (classname) or default
  ; is_user         python: uname != 'anonymous'
  ; lbl             klass/_klass/labelprop
- ; labelprop       python: (lbl,'lastname')
-                           [lbl == 'title' and hasattr (context, 'lastname')]
+ ; labelprop       klass/_klass/labelprop
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
  ; has_files       python: 'files'       in props
@@ -235,14 +234,14 @@
  </head>
  <body class="body">
   <table class="body" align="center" valign="middle"
-   tal:condition="python:request.user.username=='anonymous'">
+   tal:condition="not:is_user">
    <tr>
 <!-- login -->
     <td>
 <form method="POST" name="login_form" tal:attributes="action request/base">
      <table class="form">
       <tr>
-       <td colspan="2" align="center">Welcome to
+       <td colspan="2" align="center">Welcome:
         <br><tal:block tal:replace="config/TRACKER_NAME"/><br>
         <font size="-2">
          Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.
@@ -264,9 +263,6 @@
       <tr>
        <td colspan="2" align="center">
         <input type="submit" name="@action" value="Login">
-<!-- XXX: needs some cleanup in this logic and also in the referring template
-        <a href="user?@template=forgotten">Forgot your password?</a>
--->
        </td>
       </tr>
      </table>
@@ -283,8 +279,7 @@
 
 <!-- menubar -->
 <form name="menubar">
-  <table bgcolor="#eeeeee"
-   tal:condition="python:request.user.username!='anonymous'">
+  <table bgcolor="#eeeeee" tal:condition="is_user">
    <tr>
 
 <!-- create new / query -->
@@ -354,8 +349,7 @@
 </form>
 
 <!-- body_title -->
-  <tal:block
-   tal:condition="python:request.user.username!='anonymous'">
+  <tal:block tal:condition="is_user">
    <h3>
     <span metal:define-slot="body_title">
      <span tal:replace="head_title"/>
@@ -374,7 +368,7 @@
      tal:content   = "structure m">error</p>
 
 <!-- page content -->
-  <tal:block tal:condition="python:request.user.username!='anonymous'">
+  <tal:block tal:condition="is_user">
    <span class="content" metal:define-slot="content"></span>
   </tal:block>
 
