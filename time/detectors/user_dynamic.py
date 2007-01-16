@@ -33,7 +33,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 from freeze       import frozen
-from user_dynamic import last_user_dynamic
+from user_dynamic import last_user_dynamic, day
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -100,12 +100,16 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     val_to   = new_values.get ('valid_to',     cl.get (nodeid, 'valid_to'))
     olo      = new_values.get ('org_location', cl.get (nodeid, 'org_location'))
     dept     = new_values.get ('department',   cl.get (nodeid, 'department'))
+    # Note: The valid_to date is *not* part of the validity interval of
+    # the user_dynamic record. So when checking for frozen status we
+    # can allow exactly the valid_to date.
     if  (   frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
             or frozen (db, user, val_to)
             )
         ) :
+        print user, val_to, day, val_to - day, new_values.keys ()
         raise Reject, _ ("Frozen: %(old_from)s") % locals ()
     last = last_user_dynamic (db, user)
     if  (   ('org_location' in new_values or 'department' in new_values)

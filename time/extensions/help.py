@@ -241,6 +241,7 @@ _helptext = \
             %(Classname)ss are hyperlinked.
          '''
       ]
+    , ""'depends.id'                  : [help_id]
     , ""'deputy'                      :
       [""'''Substitute for the responsible Person of %(Classname)s''']
     , ""'description'                 :

@@ -22,7 +22,7 @@
                            and utils.approval_for (db)
                            )
  ; uid             python: db._db.getuid ()
- ; default_query   string::action=search&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
+ ; default_query   string::action=searchwithtemplate&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; n_sort          python: 2
  ; default_queries python:
    { 'alias'           : ':columns=name,alias_to_alias,alias_to_user&'
@@ -430,7 +430,7 @@
              (filterspec={'private_for':None, 'klass':klass})"
           tal:repeat="q queries"
           tal:attributes="
-            value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+           value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
           tal:content="structure string:&nbsp;&nbsp;${q/name}"
          >  Global Queries</option>
          <tal:block tal:condition="request/user/queries">
@@ -444,7 +444,7 @@
               ) if q.klass == klass]"
            tal:repeat="q queries"
            tal:attributes="
-             value string:${klass}?@template=index&@queryname=${q/name}&queryid=${q/id}&${q/url}"
+            value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
            tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
           >    Private Queries</option>
          </tal:block>
@@ -785,7 +785,7 @@
       name="query"
       tal:attributes="action request/classname">
   <tal:block metal:define-slot="search_variables"/>
-  <input type="hidden" name=":action" value="search">
+  <input type="hidden" name=":action" value="searchwithtemplate">
   <input type="hidden" name=":startwith"
    tal:attributes="value request/startwith">
   <input type="hidden" name=":template"
@@ -925,10 +925,15 @@
           <option value=""
                   tal:attributes="selected not:form_vals">don't care
           </option>
-          <option tal:repeat="s python:db[prop.lnkcls.classname].list()"
-                  tal:attributes="value    s/id;
-                                  selected python:s.id in form_vals"
-                  tal:content="python:s[prop.displayprop]">
+          <option
+           tal:repeat="s python: db[prop.lnkcls.classname].filter
+               ( filterspec = prop.filter
+               , group      = [('+', prop.lnkcls.orderprop ())]
+               )"
+           tal:attributes=
+               "value    s/id;
+                selected python:s.id in form_vals"
+           tal:content="python:s[prop.displayprop]">
           </option>
          </select>
         </tal:block>

@@ -310,9 +310,9 @@
                            "/>
           </tr>
           <tr tal:condition="python:utils.is_end_of_week (i.date)">
-           <td class="subhead-nb"/>
-           <td class="subhead" colspan="2" style="text-align:right;"
-            tal:content="python:'Week %s:' % utils.weekno (i.date)"/>
+           <td class="subhead" colspan="3" style="text-align:right;"
+            tal:content="python:
+             'Week %s/%s:' % tuple (reversed (utils.weekno_year (i.date)))"/>
            <td style="text-align:right;" class="subhead-nb"
             tal:content="python:utils.weeksum (db._db, i.id, format = '%.2f')"/>
            <td/>

@@ -16,14 +16,26 @@
     , utils.ExtProperty (utils, pdict ['kind'],        multiselect = 1)
     , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['severity'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['responsible'])
+    , utils.ExtProperty
+        ( utils, pdict ['responsible']
+        , help_props   = ['firstname', 'lastname']
+        )
     , utils.ExtProperty (utils, pdict ['deadline'])
     , utils.ExtProperty (utils, pdict ['earliest_start'])
     , utils.ExtProperty (utils, pdict ['effort'])
     , utils.ExtProperty (utils, pdict ['priority'])
     , utils.ExtProperty (utils, pdict ['effective_prio'])
-    , utils.ExtProperty (utils, pdict ['depends'])
     , utils.ExtProperty (utils, pdict ['release'])
+    , utils.ExtProperty
+        ( utils, pdict ['depends']
+        , searchable   = True
+        , sortable     = False
+        , do_classhelp = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['depends']
+        , searchname   = 'depends.id'
+        )
     , utils.ExtProperty
         ( utils, pdict ['composed_of']
         , searchable   = True
@@ -48,9 +60,12 @@
     , utils.ExtProperty
         ( utils, pdict ['nosy']
         , help_props   = ['firstname', 'lastname']
-        , help_filter  = 'status=%s' % db._db.user_status.lookup ('valid')
+        , filter       = dict (status = db._db.user_status.lookup ('valid'))
         )
-    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty
+        ( utils, pdict ['creator']
+        , help_props   = ['firstname', 'lastname']
+        )
     , utils.ExtProperty (utils, pdict ['planned_begin'])
     , utils.ExtProperty (utils, pdict ['planned_end'])
     , utils.ExtProperty (utils, pdict ['cur_est_begin'])
@@ -63,7 +78,7 @@
    "
   tal:condition="context/is_view_ok">
 
-  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/ttt_search_results"/>
   <tal:block metal:use-macro="templates/page/macros/ttt_search_form"/>
  </tal:block>
 </tal:block>

@@ -333,9 +333,10 @@ if 'sex' in db.classes :
 
 if 'summary_type' in db.classes :
     summary_type = db.summary_type
-    summary_type.create (name = "day",   order = 1)
-    summary_type.create (name = "week",  order = 2)
-    summary_type.create (name = "month", order = 3)
+    summary_type.create (name = "day",   is_staff = False, order = 1)
+    summary_type.create (name = "week",  is_staff = True,  order = 2)
+    summary_type.create (name = "month", is_staff = True,  order = 3)
+    summary_type.create (name = "range", is_staff = True,  order = 4)
 
 if 'dns_record_type' in db.classes :
     dns_record_type = db.dns_record_type

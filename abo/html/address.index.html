@@ -45,6 +45,7 @@
      , utils.ExtProperty (utils, pdict ['adr_type'], filter=filt)
      , utils.ExtProperty (utils, pdict ['valid'], multiselect = 1)
      , utils.ExtProperty (utils, pdict ['invoices'], do_classhelp = False)
+     , utils.ExtProperty (utils, pdict ['lookalike_name'])
      )
    "
    tal:condition="context/is_view_ok">

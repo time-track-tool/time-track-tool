@@ -53,6 +53,12 @@
           (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()" colspan="3"/>
      </tr>
+     <tr tal:condition="python: True or db._db.getuid () == 1">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'tr_duration_ok')"/>
+      <td tal:content="structure python:context.tr_duration_ok.field ()"
+          colspan="3"/>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

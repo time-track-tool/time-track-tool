@@ -88,6 +88,7 @@ address = Class \
     , valid               = Link      ("valid")
     , letters             = Multilink ("letter")
     , invoices            = Multilink ("invoice")
+    , lookalike_name      = String    ()
     )
 
 adr_type = Class \

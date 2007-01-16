@@ -45,7 +45,7 @@ from rsclib.PM_Value                import PM_Value
 
 from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
-from common                         import weekno_from_day
+from common                         import weekno_year_from_day, end_of_period
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
 
@@ -261,6 +261,7 @@ class Time_Container (Container) :
         self.start    = start
         self.end      = end
         self.sort_end = end
+        self.dict     = {}
     # end def __init__
 
     def __repr__ (self) :
@@ -272,6 +273,32 @@ class Time_Container (Container) :
     def __hash__ (self) :
         return hash (repr (self))
     # end def __hash__
+
+    def __setitem__ (self, name, value) :
+        self.dict [name] = value
+    # end def __setitem__
+
+    def __getitem__ (self, name) :
+        return self.dict [name]
+    # end def __getitem__
+
+    def __delitem__ (self, name) :
+        del self.dict [name]
+    # end def __delitem__
+
+    def __iter__ (self) :
+        return self.dict.iterkeys ()
+    # end def __iter__
+    iterkeys = __iter__
+
+    def iteritems (self) :
+        return self.dict.iteritems ()
+    # end def iteritems
+
+    def __contains__ (self, name) :
+        return name in self.dict
+    # end def __contains__
+
 # end class Time_Container
 
 class Day_Container (Time_Container) :
@@ -292,8 +319,7 @@ class Week_Container (Time_Container) :
     # end def __init__
 
     def __str__ (self) :
-        return "WW %s/%s" % \
-            (weekno_from_day (self.start), self.start.pretty ('%Y'))
+        return "WW %s/%s" % weekno_year_from_day (self.start)
     # end def __str__
 # end class Week_Container
 
@@ -423,6 +449,8 @@ class _Report (autosuper) :
                 )
         if isinstance (item, type (0.0)) or isinstance (item, type (0)) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
+        if isinstance (item, str) :
+            return ('  <td>%s</td>' % item)
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
 
@@ -574,23 +602,10 @@ class Summary_Report (_Report) :
             )
         #print "after dr_dat_usr:", time.time () - timestamp
 
-        trvl_tr     = []
-        if dr :
-            trvl_tr = db.time_record.find \
-                (daily_record = dr, time_activity = travel_act)
-        trvl_dr     = {}
-        for trid in trvl_tr :
-            t = db.time_record.getnode (trid)
-            if  (  t.time_activity not in travel_act
-                or t.tr_duration and t.activity > dr [t.daily_record].activity
-                ) :
-                continue
-            trvl_dr [t.daily_record] = dr [t.daily_record]
-        if trvl_dr :
-            for d in trvl_dr.itervalues () :
-                #print "update"
-                update_tr_duration (db, d)
-            db.commit ()
+        trvl_tr     = {}
+        for d in dr.itervalues () :
+            update_tr_duration (db, d)
+        db.commit ()
         #print "trv daily_recs", len (trvl_dr), time.time () - timestamp
 
         wp          = dict ((w, 1) for w in filterspec.get ('time_wp', []))
@@ -903,7 +918,9 @@ class Staff_Report (_Report) :
         , ""'required'
         , ""'overtime_correction'
         , ""'balance_week_end'
-        , ""'overtime_period'
+        )
+    period_fields = \
+        ( ""'overtime_period'
         , ""'balance_period_start'
         , ""'balance_period_end'
         )
@@ -912,6 +929,7 @@ class Staff_Report (_Report) :
         , ""'overtime_supplementary'
         , ""'required_overtime'
         )
+
     def __init__ (self, db, request, utils, is_csv = False) :
         self.htmldb  = db
         try :
@@ -923,7 +941,7 @@ class Staff_Report (_Report) :
         stati        = (db.daily_record_status.getnode (i)
                         for i in db.daily_record_status.getnodeids ()
                        )
-        status_map   = dict ((i.id, i.name) for i in stati)
+        self.stati   = dict ((i.id, i.name) for i in stati)
         self.request = request
         self.utils   = utils
         filterspec   = request.filterspec
@@ -939,6 +957,9 @@ class Staff_Report (_Report) :
         self.start   = start
         self.end     = end
         found_users  = bool (users)
+        st           = filterspec.get \
+            ('summary_type', [db.summary_type.lookup ('range')])
+        sum_types    = dict ((db.summary_type.get (i, 'name'), 1) for i in st)
         for cl in 'department', 'org_location' :
             spec = filterspec.get (cl, [])
             if spec :
@@ -958,11 +979,9 @@ class Staff_Report (_Report) :
         if all_in is not None :
             all_in = all_in == 'yes'
         for u in users.keys () :
-            dyn_e = get_user_dynamic (db, u, end)
-            dyn_s = get_user_dynamic (db, u, start)
-            if  (  not dyn_e
-                or not dyn_s
-                or all_in is not None and all_in != bool (dyn_e.all_in)
+            dyn = get_user_dynamic (db, u, end)
+            if  (  not dyn
+                or all_in is not None and all_in != bool (dyn.all_in)
                 or not self.permission_ok (u)
                 ) :
                 del users [u]
@@ -970,74 +989,97 @@ class Staff_Report (_Report) :
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
             )
-        self.values = values = {}
+        self.values      = values = {}
+        self.need_period = False
         for u in self.users :
             dyn        = get_user_dynamic (db, u, end)
-            values [u] = {}
-            values [u]['balance_week_start'] = compute_balance \
-                (db, u, start - day, 'week', True)
-            values [u]['balance_week_end']   = compute_balance \
-                (db, u, end,         'week', True)
-            period = dyn.overtime_period
-            values [u]['overtime_period'] = period or ''
-            if period :
-                values [u]['balance_period_start'] = compute_balance \
-                    (db, u, start - day, period, True)
-                values [u]['balance_period_end']   = compute_balance \
-                    (db, u, end,         period, True)
-            else :
-                values [u]['balance_period_start'] = ''
-                values [u]['balance_period_end']   = ''
-            ov = db.overtime_correction.filter \
-                (None, dict (user = u, date = pretty_range (start, end)))
-            try :
-                ovs = Overtime_Corrections ()
-                for x in ov :
-                    item  = self.htmldb.overtime_correction.getItem (x)
-                    value = item.value
-                    ep    = self.utils.ExtProperty
-                    ovs.append \
-                        ( ep
-                            ( self.utils, value
-                            , item         = item
-                            , is_labelprop = True
-                            )
-                        )
-                values [u]['overtime_correction'] = ovs
-            except AttributeError :
-                values [u]['overtime_correction'] = ' + '.join \
-                    (str (db.overtime_correction.get (i, 'value')) for i in ov)
-            d = start
-            values [u]['actual_all']             = 0
-            values [u]['actual_open']            = 0
-            values [u]['actual_submitted']       = 0
-            values [u]['actual_accepted']        = 0
-            values [u]['required']               = 0
-            values [u]['overtime_additional']    = 0
-            values [u]['overtime_supplementary'] = 0
-            values [u]['required_overtime']      = 0
-            while d <= end :
-                act, req, sup, add, sup_v, add_v, st, ovr = durations (db, u, d)
-                assert (not act or st)
-                values [u]['actual_all'] += act
-                if st :
-                    f = 'actual_' + status_map [st]
-                    values [u][f] += act
-                values [u]['required'] += req
-                d = d + day
-                if add_v :
-                    if act > add :
-                        values [u]['overtime_additional']    += act - add
-                    if act < req :
-                        values [u]['overtime_additional']    -= req - act
-                if sup_v :
-                    if act > sup :
-                        values [u]['overtime_supplementary'] += act - sup
-                    if act < req :
-                        values [u]['overtime_supplementary'] -= req - act
-                    if ovr and act > sup :
-                        values [u]['required_overtime'] += act - sup
+            values [u] = []
+            for period in 'week', 'month', 'range' :
+                if period not in sum_types :
+                    continue
+                if period == 'range' :
+                    container = time_container_classes [period] (start, end)
+                    values [u].append   (container)
+                    self.fill_container (container, u, dyn, start, end)
+                else :
+                    date = start
+                    while date < end :
+                        eop       = end_of_period (date, period)
+                        container = time_container_classes [period] (date)
+                        values [u].append   (container)
+                        self.fill_container (container, u, dyn, date, eop)
+                        date      = eop + day
         db.commit () # commit cached daily_record values
+    # end def __init__
+
+    def fill_container (self, container, user, dyn, start, end) :
+        db = self.db
+        u  = user
+        container ['balance_week_start'] = compute_balance \
+            (db, u, start - day, 'week', True)
+        container ['balance_week_end']   = compute_balance \
+            (db, u, end,         'week', True)
+        container ['overtime_period'] = ''
+        if dyn.overtime_period :
+            period = db.overtime_period.get (dyn.overtime_period, 'name')
+            container ['overtime_period'] = period
+            self.need_period = True
+            container ['balance_period_start'] = compute_balance \
+                (db, u, start - day, period, True)
+            container ['balance_period_end']   = compute_balance \
+                (db, u, end,         period, True)
+        else :
+            container ['balance_period_start'] = ''
+            container ['balance_period_end']   = ''
+        ov = db.overtime_correction.filter \
+            (None, dict (user = u, date = pretty_range (start, end)))
+        try :
+            ovs = Overtime_Corrections ()
+            for x in ov :
+                item  = self.htmldb.overtime_correction.getItem (x)
+                value = item.value
+                ep    = self.utils.ExtProperty
+                ovs.append \
+                    ( ep
+                        ( self.utils, value
+                        , item         = item
+                        , is_labelprop = True
+                        )
+                    )
+            container ['overtime_correction'] = ovs
+        except AttributeError :
+            container ['overtime_correction'] = ' + '.join \
+                (str (db.overtime_correction.get (i, 'value')) for i in ov)
+        d = start
+        container ['actual_all']             = 0
+        container ['actual_open']            = 0
+        container ['actual_submitted']       = 0
+        container ['actual_accepted']        = 0
+        container ['required']               = 0
+        container ['overtime_additional']    = 0
+        container ['overtime_supplementary'] = 0
+        container ['required_overtime']      = 0
+        while d <= end :
+            act, req, sup, add, sup_v, add_v, st, ovr, op = durations (db, u, d)
+            assert (not act or st)
+            container ['actual_all'] += act
+            if st :
+                f = 'actual_' + self.stati [st]
+                container [f] += act
+            container ['required'] += req
+            d = d + day
+            if add_v :
+                if act > add :
+                    container ['overtime_additional']    += act - add
+                if act < req :
+                    container ['overtime_additional']    -= req - act
+            if sup_v :
+                if act > sup :
+                    container ['overtime_supplementary'] += act - sup
+                if act < req :
+                    container ['overtime_supplementary'] -= req - act
+                if ovr and act > sup :
+                    container ['required_overtime'] += act - sup
     # end def __init__
 
     def permission_ok (self, user) :
@@ -1053,8 +1095,12 @@ class Staff_Report (_Report) :
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('user')))
+        line.append (formatter (_ ('time')))
         for f in self.fields :
             line.append (formatter (_ (f)))
+        if self.need_period :
+            for f in self.period_fields :
+                line.append (formatter (_ (f)))
         if False and user_has_role (self.db, self.uid, 'HR') :
             for f in self.hr_fields :
                 line.append (formatter (_ (f)))
@@ -1063,20 +1109,25 @@ class Staff_Report (_Report) :
 
     def _output (self, line_formatter, item_formatter) :
         for u in self.users :
-            line  = []
             try :
                 item  = self.htmldb.user.getItem (u)
                 uname = item.username
                 user  = self.utils.ExtProperty (self.utils, uname, item = item)
             except AttributeError :
                 user  = self.db.user.get (u, 'username')
-            line.append (item_formatter (user))
-            for f in self.fields :
-                line.append (item_formatter (self.values [u][f]))
-            if False and user_has_role (self.db, self.uid, 'HR') :
-                for f in self.hr_fields :
-                    line.append (item_formatter (self.values [u][f]))
-            line_formatter (line)
+            for container in self.values [u] :
+                line  = []
+                line.append (item_formatter (user))
+                line.append (item_formatter (container))
+                for f in self.fields :
+                    line.append (item_formatter (container [f]))
+                if self.need_period :
+                    for f in self.period_fields :
+                        line.append (item_formatter (container [f]))
+                if False and user_has_role (self.db, self.uid, 'HR') :
+                    for f in self.hr_fields :
+                        line.append (item_formatter (container [f]))
+                line_formatter (line)
     # end def _output
 
 # end class Staff_Report

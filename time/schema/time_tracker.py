@@ -148,6 +148,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         ( db
         , ''"summary_type"
         , name                  = String    ()
+        , is_staff              = Boolean   ()
         , order                 = Number    ()
         )
     summary_type.setkey ("name")

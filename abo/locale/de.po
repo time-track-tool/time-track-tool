@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2005-07-29 18:15+0200\n"
+"POT-Creation-Date: 2007-01-12 14:10+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -81,6 +81,10 @@ msgstr "Laufzeit muss ganzzahlig sein"
 #: ../detectors/abo_type.py:42
 msgid "Selected address types must be in type category \"ABO\""
 msgstr "Ausgewählte Adresstypen müssen in der Kategorie \"ABO\" sein."
+
+#: ../detectors/address.py:56 ../detectors/address.py:61
+msgid "Country must be set"
+msgstr "Land muss gesetzt sein"
 
 #: ../detectors/adr_type_cat.py:29 ../detectors/adr_type_cat.py:37
 msgid ""
@@ -928,18 +932,16 @@ msgid "You can only download letters"
 msgstr "Nur Briefe können heruntergeladen werden"
 
 #: ../extensions/mark_invoices.py:386
-#, fuzzy
 msgid "You can only download templates for an address"
-msgstr "Nur Briefe können heruntergeladen werden"
+msgstr "Vorlagen können nur für Adressen heruntergeladen werden"
 
 #: ../extensions/mark_invoices.py:395
-#, fuzzy, python-format
 msgid "No files for %(tmplate)s"
-msgstr "Dateien für %(Classname)s"
+msgstr "Keine Dateien für %(tmplate)s"
 
 #: ../html/_generic.help.html:8
 msgid "${property} help"
-msgstr ""
+msgstr "Hilfe für ${property}"
 
 #: ../html/_generic.help.html:30
 msgid " Cancel "
@@ -1051,19 +1053,19 @@ msgstr "Dateiname"
 msgid "changed"
 msgstr "geändert"
 
-#: ../html/page.html:479
+#: ../html/page.html:452
 msgid "&lt;&lt;&nbsp;previous"
 msgstr "&lt;&lt;&nbsp;zurück"
 
-#: ../html/page.html:496
+#: ../html/page.html:469
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr "${start} - ${end} von gesamt ${length}"
 
-#: ../html/page.html:501
+#: ../html/page.html:474
 msgid "next&nbsp;&gt;&gt;"
 msgstr "vorwärts&nbsp;&gt;&gt;"
 
-#: ../html/page.html:664 ../html/user.index.html:33
+#: ../html/page.html:637 ../html/user.index.html:33
 msgid "Download as CSV"
 msgstr "Als CSV laden"
 

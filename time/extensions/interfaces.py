@@ -34,7 +34,7 @@ import calendar
 import time
 import os
 from roundup.cgi.TranslationService import get_translation
-from roundup                        import date as r_date
+from roundup.date                   import Date, Interval
 from copy                           import copy
 from xml.sax.saxutils               import escape
 
@@ -49,7 +49,7 @@ def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
     suitable for passing in to forms that need this date.
     """
-    d   = date.Date ('00:00', -db._db.getUserTimezone ())
+    d   = Date ('00:00', -db._db.getUserTimezone ())
     return d.pretty ('%Y-%m-%d.%H:%M:%S')
 # end def correct_midnight_date_string
 
@@ -57,11 +57,11 @@ def rough_date_diff (left, right, format = "%Y-%m-%d") :
     """returns the interval between the two dates left - right.
     format is used for the granularity when interpreting the two values.
 
-    left and right need to be date.Date values.
-    format needs to be a date.Date parseable format.
+    left and right need to be Date values.
+    format needs to be a Date parseable format.
     """
-    l_d = date.Date (left.pretty (format))
-    r_d = date.Date (right.pretty (format))
+    l_d = Date (left.pretty (format))
+    r_d = Date (right.pretty (format))
     return l_d - r_d
 # end def rough_date_diff
 
@@ -136,17 +136,17 @@ def html_calendar (request) :
     template  = request.form.getfirst ("@template", "calendar")
     form      = request.form.getfirst ("form")
     property  = request.form.getfirst ("property")
-    curr_date = r_date.Date (date_str) # to highlight
-    display   = r_date.Date (display)  # to show
+    curr_date = Date (date_str) # to highlight
+    display   = Date (display)  # to show
     year      = display.year
     month     = display.month
     day       = display.day
 
     # for navigation
-    date_prev_month = display + r_date.Interval ("-1m")
-    date_next_month = display + r_date.Interval ("+1m")
-    date_prev_year  = display + r_date.Interval ("-1y")
-    date_next_year  = display + r_date.Interval ("+1y")
+    date_prev_month = display + Interval ("-1m")
+    date_next_month = display + Interval ("+1m")
+    date_prev_year  = display + Interval ("-1y")
+    date_next_year  = display + Interval ("+1y")
 
     res      = []
     res.append ("""<table class="calendar">""")
@@ -311,6 +311,14 @@ def color_duration (tr) :
     return ''
 # end def color_duration
 
+def now () :
+    return Date ('.')
+# end def now
+
+def until_now () :
+    return now ().pretty (';%Y-%-m-%d')
+# end def until_now
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -337,3 +345,5 @@ def init (instance) :
     reg ("act_or_latest_user_dynamic",   act_or_latest_user_dynamic)
     reg ("ymd",                          ymd)
     reg ("color_duration",               color_duration)
+    reg ("now",                          now)
+    reg ("until_now",                    until_now)

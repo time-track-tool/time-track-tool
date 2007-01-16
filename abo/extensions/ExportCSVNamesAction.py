@@ -29,16 +29,17 @@
 #    Action for exporting current query as CSV (comma separated values)
 #--
 
+import csv
+import re
+
+from rsclib.autosuper    import autosuper
 from roundup.cgi.actions import Action
-from roundup.cgi import templating
-from roundup import hyperdb
+from roundup.cgi         import templating
+from roundup             import hyperdb
 try :
     from cStringIO import StringIO
 except ImportError :
     from StringIO  import StringIO
-
-import csv
-import re
 
 def repr_date (x) :
     if x is None :
@@ -53,9 +54,16 @@ def repr_str (x) :
     return str (x).decode ('utf-8').encode ('latin1')
 # end def repr_str
 
+def repr_country (x) :
+    x = x.strip ()
+    if x == 'CH' :
+        return ''
+    return repr_str (x)
+# end def repr_country
+
 def repr_link (cls, cols) :
     def f (x) :
-        if x == None :
+        if x is None :
             return ""
         else :
             s = " ".join ([str (cls.get (x, col)) for col in cols])
@@ -88,12 +96,13 @@ def repr_code (cls, adr_types) :
     return f
 # end def repr_code
 
-class Export_CSV_Names (Action) :
+class Export_CSV_Names (Action, autosuper) :
     name           = 'export'
     permissionType = 'View'
     print_head     = True
     filename       = 'query.csv'
     delimiter      = '\t'
+    quoting        = csv.QUOTE_MINIMAL
 
     def _setup (self, request, props) :
         columns    = request.columns
@@ -120,6 +129,28 @@ class Export_CSV_Names (Action) :
         return col
     # end def _attr
 
+    def build_repr (self) :
+        """ Figure out Link columns and build representation methods for them
+        """
+        self.represent = {}
+
+        for col in self.columns :
+            self.represent [col] = repr_str
+            if col.startswith ('function.') :
+                self.represent [col] = repr_func (col)
+            elif isinstance (self.props [col], hyperdb.Link) :
+                cn = self.props [col].classname
+                cl = self.db.getclass (cn)
+                pr = cl.getprops ()
+                if 'lastname' in pr and cl.labelprop () != 'username' :
+                    self.represent [col] = repr_link \
+                        (cl, ('firstname', 'lastname'))
+                else :
+                    self.represent [col] = repr_link (cl, (cl.labelprop (),))
+            elif isinstance (self.props [col], hyperdb.Date) :
+                self.represent [col] = repr_date
+    # end def build_repr
+
     def handle (self) :
         ''' Export the specified search query as CSV. '''
         # figure the request
@@ -128,8 +159,8 @@ class Export_CSV_Names (Action) :
         sort       = request.sort
         group      = request.group
         klass      = self.db.getclass (request.classname)
-        props      = klass.getprops ()
-        self._setup (request, props)
+        self.props = klass.getprops ()
+        self._setup (request, self.props)
 
         typecat        = self.db.adr_type_cat.lookup ('ABO')
         self.adr_types = dict \
@@ -151,34 +182,17 @@ class Export_CSV_Names (Action) :
             ( io
             , dialect   = 'excel'
             , delimiter = self.delimiter
+	    , quoting   = self.quoting
             )
         if self.print_head :
             writer.writerow (self.columns)
 
-        # Figure out Link columns
-        represent = {}
-
-        for col in self.columns :
-            represent [col] = repr_str
-            if col == 'code' :
-                represent [col] = repr_code (col, self.adr_types)
-            elif col.startswith ('function.') :
-                represent [col] = repr_func (col)
-            elif isinstance (props [col], hyperdb.Link) :
-                cn = props [col].classname
-                cl = self.db.getclass (cn)
-                pr = cl.getprops ()
-                if 'lastname' in pr and cl.labelprop () != 'username' :
-                    represent [col] = repr_link (cl, ('firstname', 'lastname'))
-                else :
-                    represent [col] = repr_link (cl, (cl.labelprop (),))
-            elif isinstance (props [col], hyperdb.Date) :
-                represent [col] = repr_date
+        self.build_repr ()
 
         # and search
         for itemid in klass.filter (self.matches, filterspec, sort, group) :
             writer.writerow \
-                ( [represent [col] (klass.get (itemid, self._attr (col)))
+                ( [self.represent [col] (klass.get (itemid, self._attr (col)))
                    for col in self.columns
                   ]
                 )
@@ -191,6 +205,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
 
     print_head = False
     filename   = 'ZFABO.CSV'
+    quoting    = csv.QUOTE_NONE
 
     def _setup (self, request, props) :
         self.columns = \
@@ -208,6 +223,12 @@ class Export_CSV_Addresses (Export_CSV_Names) :
             ]
         self.matches = None
     # end def _setup
+
+    def build_repr (self) :
+        self.__super.build_repr ()
+        self.represent ['country'] = repr_country
+        self.represent ['code']    = repr_code ('address', self.adr_types)
+    # end def build_repr
 
 # end class Export_Addresses
 

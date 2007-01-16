@@ -38,22 +38,26 @@
 #
 #--
 
-from roundup.cgi.actions            import Action, EditItemAction
+from time                           import gmtime
+from copy                           import copy
+from operator                       import add
+from rsclib.autosuper               import autosuper
+
+from roundup.cgi.actions            import Action, EditItemAction, SearchAction
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
 from roundup.date                   import Date, Interval, Range
 from roundup                        import hyperdb
-from time                           import gmtime
-from copy                           import copy
-from operator                       import add
-from rsclib.autosuper               import autosuper
 from roundup.cgi.TranslationService import get_translation
+
 from common                         import pretty_range, freeze_date
 from common                         import week_from_date, ymd, date_range
-from common                         import  weekno_from_day, from_week_number
+from common                         import weekno_year_from_day
+from common                         import from_week_number
 from user_dynamic                   import get_user_dynamic, day_work_hours
-from user_dynamic                   import round_daily_work_hours
+from user_dynamic                   import round_daily_work_hours, day
+from user_dynamic                   import last_user_dynamic
 from freeze                         import frozen, range_frozen, next_dr_freeze
 from freeze                         import prev_dr_freeze
 
@@ -460,23 +464,38 @@ def approvals_pending (db, request, userlist) :
     spec      = copy (request.filterspec)
     filter    = request.filterspec
     editdict  = {':template' : 'edit', ':filter' : 'user,date'}
+    now       = Date ('.')
     for u in userlist :
-        p_user = db.daily_record.find (user = u, status = submitted)
-        if p_user :
-            pending [u] = {}
+        find_user   = dict (user = u, status = submitted)
+        fdate       = None
+        last_frozen = db.daily_record_freeze.filter \
+            ( None
+            , dict (user = u, date = now.pretty (';%Y-%m-%d'), frozen = True)
+            , group = [('-', 'date')]
+            )
+        if last_frozen :
+            fdate = db.daily_record_freeze.get (last_frozen [0], 'date') + day
+            find_user ['date'] = fdate.pretty ('%Y-%m-%d;')
+        dr_per_user = db.daily_record.filter (None, find_user)
+        pending [u] = {}
+        if dr_per_user :
             earliest = latest = None
-            for p in p_user :
+            for p in dr_per_user :
                 date = db.daily_record.get (p, 'date')
-                week = int (weekno_from_day (date))
+                week, year = weekno_year_from_day (date)
                 if not earliest or date < earliest :
                     earliest = date
                 if not latest   or date > latest :
                     latest   = date
-                filter ['date'] = pretty_range (* week_from_date (date))
+                start, end = week_from_date (date)
+                if fdate and start < fdate :
+                    start = fdate
+                filter ['date'] = pretty_range (start, end)
                 filter ['user'] = u
-                pending [u][week] = \
+                pending [u][(year, week)] = \
                     [ None
                     , request.indexargs_url ('', editdict)
+                    , 'todo'
                     ]
             interval = latest - earliest
             for k in pending [u].iterkeys () :
@@ -485,6 +504,24 @@ def approvals_pending (db, request, userlist) :
                     pending [u][k][0] = request.indexargs_url ('', editdict)
                 else :
                     pending [u][k][0] = pending [u][k][1]
+        else :
+            dyn = last_user_dynamic (db, u)
+            if not dyn :
+                print u, "no dyn"
+            if dyn and (not dyn.valid_to or not fdate or dyn.valid_to > fdate) :
+                date = now
+                if dyn.valid_to and dyn.valid_to < date :
+                    date = dyn.valid_to
+                week, year = weekno_year_from_day (date)
+                start, end = week_from_date (date)
+                if fdate and start < fdate :
+                    start = fdate
+                if dyn.valid_to and dyn.valid_to < end :
+                    end   = dyn.valid_to
+                filter ['date'] = pretty_range (start, end)
+                filter ['user'] = u
+                url = request.indexargs_url ('', editdict)
+                pending [u][(year, week)] = [url, url, 'done']
     request.filterspec = spec
     return pending
 # end def approvals_pending
@@ -522,6 +559,42 @@ def is_end_of_week (date) :
     wday = gmtime (date.timestamp ())[6]
     return wday == 6
 # end def is_end_of_week
+
+dynuser_copyfields = \
+     [ 'user'
+     , 'booking_allowed'
+     , 'durations_allowed'
+     , 'daily_worktime'
+     , 'weekend_allowed'
+     , 'travel_full'
+     , 'vacation_yearly'
+     , 'weekly_hours'
+     , 'supp_weekly_hours'
+     , 'supp_per_period'
+     , 'hours_mon'
+     , 'hours_tue'
+     , 'hours_wed'
+     , 'hours_thu'
+     , 'hours_fri'
+     , 'hours_sat'
+     , 'hours_sun'
+     , 'org_location'
+     , 'department'
+     , 'all_in'
+     , 'additional_hours'
+     , 'overtime_period'
+     ]
+
+def dynuser_half_frozen (db, dyn) :
+    userid   = dyn.user.id
+    val_from = dyn.valid_from._value
+    val_to   = dyn.valid_to._value
+    return \
+        (   frozen (db, userid, val_from)
+        and val_to
+        and not frozen (db, userid, val_to - day)
+        )
+# end def dynuser_half_frozen
 
 class Freeze_Action (Action, autosuper) :
     def handle (self) :
@@ -599,6 +672,52 @@ class Freeze_Supervisor_Action (Freeze_Action) :
     # end def handle
 # end class Freeze_Supervisor_Action
 
+class Split_Dynamic_User_Action (Action) :
+    """ Get date of last freeze-record and split dynamic user record
+        around the freeze date. A precondition is that the dyn user
+        record is half-frozen, i.e., the valid_from is frozen and the
+        valid_to is not.
+    """
+    def handle (self) :
+        self.request = templating.HTMLRequest (self.client)
+        assert \
+            (   self.request.classname
+            and self.request.classname == 'user_dynamic'
+            and self.client.nodeid
+            )
+        id       = self.client.nodeid
+        dyn      = self.db.user_dynamic.getnode (id)
+        fields   = dynuser_copyfields + ['valid_to']
+        param    = dict ((i, dyn [i]) for i in fields)
+        frozen   = self.db.daily_record_freeze.filter \
+            ( None
+            , dict 
+                ( user   = dyn.user
+                , date   = pretty_range (dyn.valid_from, dyn.valid_to - day)
+                , frozen = True
+                )
+            , group = [('-', 'date')]
+            )
+        assert (frozen)
+        frozen               = self.db.daily_record_freeze.getnode (frozen [0])
+        splitdate            = frozen.date + day
+        self.db.user_dynamic.set (id, valid_to = splitdate)
+        param ['valid_from'] = splitdate
+        newid                = self.db.user_dynamic.create (** param)
+        self.db.commit ()
+        raise Redirect, 'user_dynamic%s' % newid
+    # end def handle
+# end class Split_Dynamic_User_Action
+
+class SearchActionWithTemplate(SearchAction):
+    def getCurrentURL (self, req) :
+        template = self.getFromForm ('template')
+        if template and template != 'index' :
+            return req.indexargs_url ('', {'@template' : template}) [1:]
+        return req.indexargs_url('', {})[1:]
+    # end def getCurrentURL
+# end class SearchActionWithTemplate
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -613,12 +732,14 @@ def init (instance) :
     actn ('weekno_action',            Weekno_Action)
     actn ('freeze_all',               Freeze_All_Action)
     actn ('freeze_supervisor',        Freeze_Supervisor_Action)
+    actn ('split_dynamic_user',       Split_Dynamic_User_Action)
+    actn ('searchwithtemplate',       SearchActionWithTemplate)
     util = instance.registerUtil
     util ('next_week',                next_week)
     util ('prev_week',                prev_week)
     util ("button_submit_to",         button_submit_to)
     util ("button_action",            button_action)
-    util ('weekno',                   weekno_from_day)
+    util ('weekno_year',              weekno_year_from_day)
     util ('daysum',                   daysum)
     util ('weeksum',                  weeksum)
     util ("approvals_pending",        approvals_pending)
@@ -631,4 +752,6 @@ def init (instance) :
     util ("next_dr_freeze",           next_dr_freeze)
     util ("prev_dr_freeze",           prev_dr_freeze)
     util ("freeze_date",              freeze_date)
+    util ("dynuser_half_frozen",      dynuser_half_frozen)
+    util ("dynuser_copyfields",       dynuser_copyfields)
 # end def init
