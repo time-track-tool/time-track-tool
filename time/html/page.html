@@ -27,6 +27,7 @@
  ; n_sort          python: 2
  ; tplate_args     python: {}
  ; msg_box_height  python: 8
+ ; may_remove_msgs python: False
  ; default_queries python:
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
                          'end,subscriber,payer&@sort=-id&@pagesize=20&'
@@ -699,7 +700,7 @@
 <tal:block metal:define-macro="message_display">
  <table class="messages" tal:condition="python:has_msgs and context.messages">
   <tr>
-   <th colspan="3" class="header" tal:content="structure python:
+   <th colspan="4" class="header" tal:content="structure python:
      utils.fieldname (classname, 'messages')"/>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
@@ -708,6 +709,12 @@
           tal:content="string:msg${msg/id}"></a></th>
    <th tal:content="string:Author: ${msg/author}">author</th>
    <th tal:content="string:Date: ${msg/date}">date</th>
+   <th>
+    <a i18n:translate="" tal:condition="may_remove_msgs" tal:attributes="href
+       string:${classname}${context/id}?remove:messages=${msg/id}&:action=edit"
+     remove
+    </a>
+   </th>
 <!--
    <th>
     <form style="padding:0" tal:condition="context/is_edit_ok"
@@ -720,7 +727,7 @@
 -->
   </tr>
   <tr>
-   <td colspan="3" class="content">
+   <td colspan="4" class="content">
     <pre tal:content="structure msg/content/hyperlinked">content</pre>
    </td>
   </tr>
@@ -838,10 +845,10 @@
 <!-- list all properties we want to see -->
     <tal:block tal:repeat="prop props">
      <th tal:condition="python:request.show[prop.searchname]"
-         tal:content="python:prop.i18nlabel"></th>
+         tal:content="python:prop.i18nlabel"/>
     </tal:block>
    </tr>
-   <tal:block metal:use-macro="templates/page/macros/search_nav"></tal:block>
+   <tal:block metal:use-macro="templates/page/macros/search_nav"/>
    <!-- items found -->
    <tal:block tal:repeat="i batch">
     <tr tal:condition="python:
