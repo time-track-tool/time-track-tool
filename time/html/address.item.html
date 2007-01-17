@@ -46,7 +46,8 @@
       <span class="classblock"
        tal:condition="python:request.user.hasPermission ('Edit','letter')">
        <a i18n:translate=""
-          tal:attributes="href string:letter?:template=item&address=${context/id}">
+          tal:attributes="href
+          string:letter?:template=item&address=${context/id}">
         New Letter for
         <tal:block i18n:name="lastname" tal:replace="context/lastname"/>
        </a>
@@ -56,131 +57,133 @@
  </tal:block>
 
  <tal:block metal:fill-slot="content">
-  <tal:block metal:use-macro="templates/page/macros/formatted_class">
-   <tal:block metal:fill-slot="formatted_class_content">
-    <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'salutation')"/>
-     <td tal:content="structure context/salutation/field"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'title')"/>
-     <td tal:content="structure context/title/field"/>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'lettertitle')"/>
-     <td tal:content="structure context/lettertitle/field"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'firstname')"/>
-     <td>
-      <table border="0" cellspacing="0" cellpadding="0">
-       <tr>
-        <td tal:content="structure python:context.firstname.field (size=24)"/>
-        <td tal:content="structure python:context.initial.field (size=3)"/>
-       </tr>
-      </table>
-     </td>
-     <th tal:content="structure python:utils.fieldname(classname, 'lastname')"
-         class="required"/>
-     <td tal:content="structure context/lastname/field"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'country')"
-         class="required"/>
-     <td>
-      <table border="0" cellspacing="0" cellpadding="0">
-       <tr>
-        <td tal:content="structure python:context.country.field (size=4)"/>
-        <td>&nbsp</td>
-        <th tal:content="structure python:utils.fieldname
-            (classname, 'postalcode')" class="required"/>
-        <td tal:content="structure python:context.postalcode.field (size=10)"/>
-       </tr>
-      </table>
-     </td>
-     <th tal:content="structure python:utils.fieldname(classname, 'city')"
-         class="required"/>
-     <td tal:content="structure context/city/field"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'street')"
-         class="required"/>
-     <td tal:content="structure context/street/field"/>
-     <th tal:content="structure python:utils.fieldname(classname, 'email')"/>
-     <td tal:content="structure context/email/field"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'function')"/>
-     <td>
-      <textarea tal:content="context/function/plain"
-                name="function"
-                wrap="hard"
-                rows="3"
-                cols="30">
-      </textarea>
-     </td>
-     <th tal:content="structure python:utils.fieldname(classname, 'phone')"/>
-     <td>
-      <textarea tal:content="context/phone/plain"
-                name="phone"
-                wrap="hard"
-                rows="3"
-                cols="30">
-      </textarea>
-     </td>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname(classname, 'adr_type')"/>
-     <td tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
-      <span tal:content="structure context/adr_type/field"/>
-      <span tal:replace="structure python:db.adr_type.classhelp
-           ( properties='code,description'
-           , property='adr_type'
-           , filter='typecat=%s' % tc
-           , pagesize=500
-           , sort='code'
-           )"/>
-     </td>
-     <th tal:content="structure python:utils.fieldname(classname, 'fax')"/>
-     <td tal:content="structure context/fax/field"/>
-    </tr>
-    <tr>
-     <th/><td/>
-     <th tal:content="structure python:utils.fieldname(classname, 'valid')"/>
-     <td tal:content="structure context/valid/menu"/>
-    </tr>
-    <tr tal:condition="context/id">
-     <th tal:content="structure python:utils.fieldname(classname, 'abos')"/>
-     <td align="top">
-      <table border="0" cellspacing="0" cellpadding="0">
-       <tr tal:repeat="abo context/abos">
-        <td>
-         <a tal:attributes="href string:abo${abo/id}
-                           ;class python:utils.linkclass (abo)
-                           "
-            tal:content="abo/aboprice">
-         </a>
-        </td>
-       </tr>
-      </table>
-     </td>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'payed_abos')"/>
-     <td align="top">
-      <table border="0" cellspacing="0" cellpadding="0">
-       <tr tal:repeat="abo context/payed_abos">
-        <td>
-         <a tal:attributes="href  string:abo${abo/id}
-                           ;class python:utils.linkclass (abo)
-                           "
-            tal:content="abo/aboprice">
-         </a>
-        </td>
-       </tr>
-      </table>
-     </td>
-    </tr>
+  <tal:block tal:define="use_labelprop python:0">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'salutation')"/>
+      <td tal:content="structure context/salutation/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'title')"/>
+      <td tal:content="structure context/title/field"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'lettertitle')"/>
+      <td tal:content="structure context/lettertitle/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'firstname')"/>
+      <td>
+       <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td tal:content="structure python:context.firstname.field (size=24)"/>
+         <td tal:content="structure python:context.initial.field (size=3)"/>
+        </tr>
+       </table>
+      </td>
+      <th tal:content="structure python:utils.fieldname(classname, 'lastname')"
+          class="required"/>
+      <td tal:content="structure context/lastname/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'country')"
+          class="required"/>
+      <td>
+       <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td tal:content="structure python:context.country.field (size=4)"/>
+         <td>&nbsp</td>
+         <th tal:content="structure python:utils.fieldname
+             (classname, 'postalcode')" class="required"/>
+         <td tal:content="structure python:context.postalcode.field (size=10)"/>
+        </tr>
+       </table>
+      </td>
+      <th tal:content="structure python:utils.fieldname(classname, 'city')"
+          class="required"/>
+      <td tal:content="structure context/city/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'street')"
+          class="required"/>
+      <td tal:content="structure context/street/field"/>
+      <th tal:content="structure python:utils.fieldname(classname, 'email')"/>
+      <td tal:content="structure context/email/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'function')"/>
+      <td>
+       <textarea tal:content="context/function/plain"
+                 name="function"
+                 wrap="hard"
+                 rows="3"
+                 cols="30">
+       </textarea>
+      </td>
+      <th tal:content="structure python:utils.fieldname(classname, 'phone')"/>
+      <td>
+       <textarea tal:content="context/phone/plain"
+                 name="phone"
+                 wrap="hard"
+                 rows="3"
+                 cols="30">
+       </textarea>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'adr_type')"/>
+      <td tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
+       <span tal:content="structure context/adr_type/field"/>
+       <span tal:replace="structure python:db.adr_type.classhelp
+            ( properties='code,description'
+            , property='adr_type'
+            , filter='typecat=%s' % tc
+            , pagesize=500
+            , sort='code'
+            )"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname(classname, 'fax')"/>
+      <td tal:content="structure context/fax/field"/>
+     </tr>
+     <tr>
+      <th/><td/>
+      <th tal:content="structure python:utils.fieldname(classname, 'valid')"/>
+      <td tal:content="structure context/valid/menu"/>
+     </tr>
+     <tr tal:condition="context/id">
+      <th tal:content="structure python:utils.fieldname(classname, 'abos')"/>
+      <td align="top">
+       <table border="0" cellspacing="0" cellpadding="0">
+        <tr tal:repeat="abo context/abos">
+         <td>
+          <a tal:attributes="href string:abo${abo/id}
+                            ;class python:utils.linkclass (abo)
+                            "
+             tal:content="abo/aboprice">
+          </a>
+         </td>
+        </tr>
+       </table>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'payed_abos')"/>
+      <td align="top">
+       <table border="0" cellspacing="0" cellpadding="0">
+        <tr tal:repeat="abo context/payed_abos">
+         <td>
+          <a tal:attributes="href  string:abo${abo/id}
+                            ;class python:utils.linkclass (abo)
+                            "
+             tal:content="abo/aboprice">
+          </a>
+         </td>
+        </tr>
+       </table>
+      </td>
+     </tr>
+    </tal:block>
    </tal:block>
   </tal:block>
  </tal:block>

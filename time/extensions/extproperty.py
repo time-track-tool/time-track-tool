@@ -159,7 +159,7 @@ class ExtProperty :
         , pretty        = _
         , get_cssclass  = None
         , do_classhelp  = None
-        , fieldwidth    = 60
+        , fieldwidth    = 30
         , format        = None
         , filter        = None
         , help_props    = None

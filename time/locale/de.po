@@ -4054,11 +4054,11 @@ msgstr "Rechnung"
 
 #: ../locale/attr.py:605 attr.py:605
 msgid "balance_open"
-msgstr ""
+msgstr "Offen"
 
 #: ../locale/attr.py:608 attr.py:608
 msgid "bookentry"
-msgstr "Buchungseintrag"
+msgstr "Buchung am"
 
 #: ../locale/attr.py:609 attr.py:609
 msgid "send_it"
@@ -4086,7 +4086,7 @@ msgstr "BelegNr"
 
 #: ../locale/attr.py:619 attr.py:619
 msgid "period_start"
-msgstr "Start der Periode"
+msgstr "Datum von"
 
 #: ../locale/attr.py:620 ../schema/abo.py:141 attr.py:620
 msgid "invoice_no"
