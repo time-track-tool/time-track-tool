@@ -366,7 +366,7 @@
      </span>
 
      <!-- custom classes with "New" Button -->
-     <tal:block tal:repeat="c python:['abo','address','adr_type','tmplate']">
+     <tal:block tal:repeat="c python:['address']">
         <tal:block tal:condition="python:request.user.hasPermission('View', c)">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
