@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-17 12:18+0100\n"
+"POT-Creation-Date: 2007-01-17 17:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3092,6 +3092,10 @@ msgid ""
 "          "
 msgstr ""
 
+#: ../extensions/interfaces.py:86
+msgid "(cal)"
+msgstr ""
+
 #: ../extensions/interfaces.py:295
 msgid "Welcome to the "
 msgstr ""
@@ -3183,7 +3187,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:58 ../html/_generic.item.html:58
-#: ../html/page.html:858
+#: ../html/page.html:914
 msgid "Download as CSV"
 msgstr ""
 
@@ -3318,56 +3322,125 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:278
+#: ../html/page.html:279
 msgid "Welcome:"
 msgstr ""
 
-#: ../html/page.html:283
+#: ../html/page.html:284
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
-#: ../html/page.html:290
+#: ../html/page.html:291
 msgid "Login:"
 msgstr ""
 
-#: ../html/page.html:294
+#: ../html/page.html:295
 msgid "Password:"
 msgstr ""
 
-#: ../html/page.html:298
+#: ../html/page.html:299
 msgid "Remember me?:"
 msgstr ""
 
-#: ../html/page.html:362
+#: ../html/page.html:363
 msgid "User&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:426
+#: ../html/page.html:428
 msgid "-- Create / Update --"
 msgstr ""
 
-#: ../html/page.html:447
+#: ../html/page.html:449
 msgid "-- View / Query --"
 msgstr ""
 
-#: ../html/page.html:449
+#: ../html/page.html:451
 msgid "Manage Queries"
 msgstr ""
 
-#: ../html/page.html:752
+#: ../html/page.html:591
+msgid "Show History"
+msgstr ""
+
+#: ../html/page.html:655
+msgid ""
+"Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
+msgstr ""
+
+#: ../html/page.html:692
+msgid "Note:&nbsp;"
+msgstr ""
+
+#: ../html/page.html:693
+msgid "highlighted"
+msgstr ""
+
+#: ../html/page.html:694
+msgid "&nbsp;fields are required."
+msgstr ""
+
+#: ../html/page.html:807
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:846
-msgid "Query ${title}"
+#: ../html/page.html:900
+msgid "Query"
 msgstr ""
 
-#: ../html/page.html:870
+#: ../html/page.html:901
+msgid "<span>x</span> ${title}"
+msgstr ""
+
+#: ../html/page.html:907
+msgid "View"
+msgstr ""
+
+#: ../html/page.html:910
+msgid "items per page"
+msgstr ""
+
+#: ../html/page.html:924
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:892
+#: ../html/page.html:931 ../html/page.html:953
+msgid "- nothing -"
+msgstr ""
+
+#: ../html/page.html:937 ../html/page.html:959
+msgid "Descending:"
+msgstr ""
+
+#: ../html/page.html:946
 msgid "Group on:"
+msgstr ""
+
+#: ../html/page.html:1071
+msgid "Search full text:"
+msgstr ""
+
+#: ../html/page.html:1076
+msgid "(Searches also in messages)"
+msgstr ""
+
+#: ../html/page.html:1083
+msgid "Update view"
+msgstr ""
+
+#: ../html/page.html:1094
+msgid "This query's name:"
+msgstr ""
+
+#: ../html/page.html:1104
+msgid "Update view & store this query"
+msgstr ""
+
+#: ../html/page.html:1111
+msgid "(If you change the name, you create a new query!!!)"
+msgstr ""
+
+#: ../html/page.html:1120 ../html/page.html:1129
+msgid "Update view & store NEW query"
 msgstr ""
 
 #: ../html/time_project.item.html:95
@@ -3390,12 +3463,16 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: ../html/user.item.html:15
-msgid "<span>x</span> User x"
+#: ../html/user.item.html:14
+msgid "<span>x</span> User"
 msgstr ""
 
-#: ../html/user.item.html:15
-msgid "Editing"
+#: ../html/user.item.html:97
+msgid "(comma-separated values)"
+msgstr ""
+
+#: ../html/user.item.html:206
+msgid "default:"
 msgstr ""
 
 #: ../html/user_dynamic.item.html:64

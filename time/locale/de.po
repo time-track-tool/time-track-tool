@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-17 12:18+0100\n"
+"POT-Creation-Date: 2007-01-17 17:16+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -600,7 +600,7 @@ msgstr ""
 
 #: ../extensions/help.py:116
 msgid "VIEW"
-msgstr ""
+msgstr "Felder"
 
 #: ../extensions/help.py:117 ../locale/attr.py:208 ../locale/attr.py:213
 #: ../locale/attr.py:288 attr.py:208 attr.py:213 attr.py:288
@@ -3108,6 +3108,10 @@ msgid ""
 "          "
 msgstr ""
 
+#: ../extensions/interfaces.py:86
+msgid "(cal)"
+msgstr "(Kalender)"
+
 #: ../extensions/interfaces.py:295
 msgid "Welcome to the "
 msgstr "Willkommen zur "
@@ -3201,7 +3205,7 @@ msgstr ""
 "klicken."
 
 #: ../html/_generic.index.html:58 ../html/_generic.item.html:58
-#: ../html/page.html:858
+#: ../html/page.html:914
 msgid "Download as CSV"
 msgstr "Als CSV laden"
 
@@ -3219,14 +3223,12 @@ msgid "Properties of ${Classname}"
 msgstr "Eigenschaften von ${Classname}"
 
 #: ../html/address.index.html:7
-#, fuzzy
 msgid "export addresses"
-msgstr "Netzwerk-Adressen"
+msgstr "Versand-Export"
 
 #: ../html/address.item.html:20
-#, fuzzy
 msgid "-- tmplates --"
-msgstr "Vorlage"
+msgstr "-- Vorlagen --"
 
 #: ../html/address.item.html:38
 msgid "New Subscription for ${lastname}"
@@ -3312,9 +3314,8 @@ msgid "mark"
 msgstr "markieren"
 
 #: ../html/invoice.send.html:46
-#, fuzzy
 msgid "unmark"
-msgstr "markieren"
+msgstr "Markierung aufheben"
 
 #: ../html/invoice.send.html:56
 msgid "generate invoices"
@@ -3340,57 +3341,128 @@ msgstr "Netzwerk-Adressen"
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:278
+#: ../html/page.html:279
 msgid "Welcome:"
 msgstr "Willkommen zur"
 
-#: ../html/page.html:283
+#: ../html/page.html:284
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr "<b>Cookies</b> und <b>JavaScript</b> müssen eingeschaltet sein."
 
-#: ../html/page.html:290
+#: ../html/page.html:291
 msgid "Login:"
 msgstr "Login:"
 
-#: ../html/page.html:294
+#: ../html/page.html:295
 msgid "Password:"
 msgstr "Passwort:"
 
-#: ../html/page.html:298
+#: ../html/page.html:299
 msgid "Remember me?:"
 msgstr "Dauerhaftes Login?:"
 
-#: ../html/page.html:362
+#: ../html/page.html:363
 msgid "User&nbsp;List"
 msgstr "Benutzerliste"
 
-#: ../html/page.html:426
+#: ../html/page.html:428
 msgid "-- Create / Update --"
 msgstr "-- Anlegen / Ändern --"
 
-#: ../html/page.html:447
+#: ../html/page.html:449
 msgid "-- View / Query --"
 msgstr "-- Abfragen --"
 
-#: ../html/page.html:449
+#: ../html/page.html:451
 msgid "Manage Queries"
 msgstr "Meine Abfragen"
 
-#: ../html/page.html:752
+#: ../html/page.html:591
+msgid "Show History"
+msgstr "Liste der Änderungen"
+
+#: ../html/page.html:655
+msgid ""
+"Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
+msgstr ""
+"Angelegt ${creation} von ${creator}, zuletzt geändert ${activity} von "
+"${actor}."
+
+#: ../html/page.html:692
+msgid "Note:&nbsp;"
+msgstr "Hinweis:&nbsp;"
+
+#: ../html/page.html:693
+msgid "highlighted"
+msgstr "fettgedruckte"
+
+#: ../html/page.html:694
+msgid "&nbsp;fields are required."
+msgstr "&nbsp;Felder müssen ausgefüllt werden"
+
+#: ../html/page.html:807
 msgid "Sorry, no results found"
+msgstr "Keine Suchergebnisse"
+
+#: ../html/page.html:900
+msgid "Query"
+msgstr "Abfrage"
+
+#: ../html/page.html:901
+msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:846
-msgid "Query ${title}"
-msgstr ""
+#: ../html/page.html:907
+msgid "View"
+msgstr "Zeige"
 
-#: ../html/page.html:870
+#: ../html/page.html:910
+msgid "items per page"
+msgstr "Datensätze pro Seite"
+
+#: ../html/page.html:924
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:892
+#: ../html/page.html:931 ../html/page.html:953
+msgid "- nothing -"
+msgstr "- keine -"
+
+#: ../html/page.html:937 ../html/page.html:959
+msgid "Descending:"
+msgstr "Absteigend:"
+
+#: ../html/page.html:946
 msgid "Group on:"
 msgstr ""
+
+#: ../html/page.html:1071
+msgid "Search full text:"
+msgstr "Volltextsuche:"
+
+#: ../html/page.html:1076
+msgid "(Searches also in messages)"
+msgstr "(Sucht auch in Notizen)"
+
+#: ../html/page.html:1083
+msgid "Update view"
+msgstr "Neu anzeigen"
+
+#: ../html/page.html:1094
+msgid "This query's name:"
+msgstr "Name dieser Abfrage:"
+
+#: ../html/page.html:1104
+msgid "Update view & store this query"
+msgstr "Abfrage speichern & neu anzeigen"
+
+#: ../html/page.html:1111
+msgid "(If you change the name, you create a new query!!!)"
+msgstr "(Änderung des Namens speichert eine neue Abfrage!!!)"
+
+#: ../html/page.html:1120 ../html/page.html:1129
+msgid "Update view & store NEW query"
+msgstr "NEUE Abfrage speichern & neu anzeigen"
 
 #: ../html/time_project.item.html:95
 msgid "Current Work Package(s)"
@@ -3412,13 +3484,17 @@ msgstr "Neuer User"
 msgid "New"
 msgstr ""
 
-#: ../html/user.item.html:15
-msgid "<span>x</span> User x"
+#: ../html/user.item.html:14
+msgid "<span>x</span> User"
 msgstr ""
 
-#: ../html/user.item.html:15
-msgid "Editing"
-msgstr ""
+#: ../html/user.item.html:97
+msgid "(comma-separated values)"
+msgstr "(Komma-getrennte Liste)"
+
+#: ../html/user.item.html:206
+msgid "default:"
+msgstr "Voreinstellung:"
 
 #: ../html/user_dynamic.item.html:64
 msgid "new user_dynamic record"
@@ -3463,9 +3539,8 @@ msgid "keyword"
 msgstr ""
 
 #: ../locale/attr.py:33 attr.py:33
-#, fuzzy
 msgid "status_transition"
-msgstr "Übergänge"
+msgstr "Statusübergang"
 
 #: ../locale/attr.py:38 ../locale/attr.py:54 ../locale/attr.py:353
 #: ../locale/attr.py:496 ../locale/attr.py:541 ../schema/complex.py:50
@@ -3478,9 +3553,8 @@ msgid "msg_keyword"
 msgstr ""
 
 #: ../locale/attr.py:44 attr.py:44
-#, fuzzy
 msgid "issue"
-msgstr "IT Issue"
+msgstr "Issue"
 
 #: ../locale/attr.py:47 ../locale/attr.py:457 ../locale/attr.py:477 attr.py:47
 #: attr.py:457 attr.py:477
@@ -3489,13 +3563,11 @@ msgstr ""
 
 #: ../locale/attr.py:49 ../locale/attr.py:465 ../locale/attr.py:483 attr.py:49
 #: attr.py:465 attr.py:483
-#, fuzzy
 msgid "planned_end"
-msgstr "Datum bis"
+msgstr "Geplantes Ende bis"
 
 #: ../locale/attr.py:53 ../locale/attr.py:461 ../locale/attr.py:481 attr.py:53
 #: attr.py:461 attr.py:481
-#, fuzzy
 msgid "needs"
 msgstr "hängt ab von"
 
@@ -3542,9 +3614,8 @@ msgid "mail_domain"
 msgstr ""
 
 #: ../locale/attr.py:193 attr.py:193
-#, fuzzy
 msgid "pdc"
-msgstr "Produkt"
+msgstr "PDC"
 
 #: ../locale/attr.py:196 ../schema/nwm.py:230 attr.py:196
 msgid "smb_machine"
@@ -3566,7 +3637,6 @@ msgid "time_record"
 msgstr ""
 
 #: ../locale/attr.py:222 attr.py:222
-#, fuzzy
 msgid "tr_duration_ok"
 msgstr "Dauer incl. Reisezeit"
 
@@ -3579,9 +3649,8 @@ msgid "month_balance"
 msgstr ""
 
 #: ../locale/attr.py:226 attr.py:226
-#, fuzzy
 msgid "frozen"
-msgstr "offen"
+msgstr "eingefroren"
 
 #: ../locale/attr.py:227 attr.py:227
 msgid "year_balance"
@@ -3609,9 +3678,8 @@ msgid "is_half"
 msgstr ""
 
 #: ../locale/attr.py:243 attr.py:243
-#, fuzzy
 msgid "locations"
-msgstr "Ort"
+msgstr "Orte"
 
 #: ../locale/attr.py:250 ../locale/attr.py:304 ../schema/time_tracker.py:213
 #: attr.py:250 attr.py:304
@@ -3650,9 +3718,8 @@ msgid "start_generated"
 msgstr ""
 
 #: ../locale/attr.py:307 ../locale/attr.py:334 attr.py:307 attr.py:334
-#, fuzzy
 msgid "durations_allowed"
-msgstr "Dauer"
+msgstr "Dauer erlaubt"
 
 #: ../locale/attr.py:324 ../schema/time_tracker.py:247 attr.py:324
 msgid "user_dynamic"
@@ -3685,9 +3752,8 @@ msgstr ""
 
 #: ../locale/attr.py:364 ../locale/attr.py:374 ../locale/attr.py:382
 #: ../locale/attr.py:401 attr.py:364 attr.py:374 attr.py:382 attr.py:401
-#, fuzzy
 msgid "abbreviation"
-msgstr "Erstellt am"
+msgstr "Abkürzung"
 
 #: ../locale/attr.py:369 ../schema/complex.py:83 attr.py:369
 msgid "task_kind"
@@ -3706,9 +3772,8 @@ msgid "cert"
 msgstr ""
 
 #: ../locale/attr.py:384 attr.py:384
-#, fuzzy
 msgid "cert_transitions"
-msgstr "Übergänge"
+msgstr "CERT Übergänge"
 
 #: ../locale/attr.py:387 ../schema/complex.py:116 attr.py:387
 msgid "action_item_status"
@@ -3753,9 +3818,8 @@ msgid "document"
 msgstr ""
 
 #: ../locale/attr.py:442 attr.py:442
-#, fuzzy
 msgid "documents"
-msgstr "Kommentar"
+msgstr "Dokumente"
 
 #: ../locale/attr.py:443 attr.py:443
 msgid "features"
@@ -3791,9 +3855,8 @@ msgid "actual_begin"
 msgstr ""
 
 #: ../locale/attr.py:464 attr.py:464
-#, fuzzy
 msgid "tasks"
-msgstr "Netz-Maske"
+msgstr "Aufgaben"
 
 #: ../locale/attr.py:466 ../locale/attr.py:489 attr.py:466 attr.py:489
 msgid "defects"
@@ -3801,35 +3864,31 @@ msgstr ""
 
 #: ../locale/attr.py:470 ../schema/complex.py:257 attr.py:470
 msgid "task"
-msgstr ""
+msgstr "Aufgabe"
 
 #: ../locale/attr.py:474 attr.py:474
-#, fuzzy
 msgid "estimated_begin"
-msgstr "Datum bis"
+msgstr "Geschätzter Startzeitpunkt"
 
 #: ../locale/attr.py:484 attr.py:484
-#, fuzzy
 msgid "estimated_end"
-msgstr "Datum bis"
+msgstr "Geschätzter Endzeitpunkt"
 
 #: ../locale/attr.py:490 ../schema/complex.py:278 attr.py:490
 msgid "defect"
 msgstr ""
 
 #: ../locale/attr.py:491 attr.py:491
-#, fuzzy
 msgid "closer"
-msgstr "geschlossen"
+msgstr "Schliessender Benutzer"
 
 #: ../locale/attr.py:494 attr.py:494
 msgid "belongs_to_task"
 msgstr ""
 
 #: ../locale/attr.py:495 attr.py:495
-#, fuzzy
 msgid "found_in_release"
-msgstr "Release"
+msgstr "Gefunden in Release"
 
 #: ../locale/attr.py:498 attr.py:498
 msgid "solved_in_release"
@@ -3863,19 +3922,16 @@ msgid "announcement"
 msgstr ""
 
 #: ../locale/attr.py:535 attr.py:535
-#, fuzzy
 msgid "comments"
-msgstr "Kommentar"
+msgstr "Kommentare"
 
 #: ../locale/attr.py:540 attr.py:540
-#, fuzzy
 msgid "line_number"
-msgstr "Nummer"
+msgstr "Zeilennummer"
 
 #: ../locale/attr.py:543 attr.py:543
-#, fuzzy
 msgid "file_name"
-msgstr "Vorname"
+msgstr "Dateiname"
 
 #: ../locale/attr.py:549 ../locale/attr.py:610 ../schema/abo.py:39 attr.py:549
 #: attr.py:610
@@ -3895,9 +3951,8 @@ msgid "invoices"
 msgstr "Rechnungen"
 
 #: ../locale/attr.py:555 ../locale/attr.py:611 attr.py:555 attr.py:611
-#, fuzzy
 msgid "subscriber"
-msgstr "Vertretung aktiv"
+msgstr "Abonnent"
 
 #: ../locale/attr.py:556 ../locale/attr.py:561 ../locale/attr.py:613
 #: attr.py:556 attr.py:561 attr.py:613
@@ -3936,9 +3991,8 @@ msgid "adr_type"
 msgstr "Typ"
 
 #: ../locale/attr.py:567 attr.py:567
-#, fuzzy
 msgid "period"
-msgstr "Datum bis"
+msgstr "Laufzeit"
 
 #: ../locale/attr.py:568 ../locale/attr.py:626 ../schema/abo.py:153
 #: attr.py:568 attr.py:626
@@ -3946,9 +4000,8 @@ msgid "invoice_template"
 msgstr "Rechnungsvorlage"
 
 #: ../locale/attr.py:572 attr.py:572
-#, fuzzy
 msgid "function"
-msgstr "Länge der Mittagspause"
+msgstr "Funktion"
 
 #: ../locale/attr.py:573 attr.py:573
 msgid "city"
@@ -3967,18 +4020,16 @@ msgid "abos"
 msgstr "Abos"
 
 #: ../locale/attr.py:587 attr.py:587
-#, fuzzy
 msgid "street"
-msgstr "Start"
+msgstr "Straße"
 
 #: ../locale/attr.py:589 attr.py:589
 msgid "postalcode"
 msgstr "PLZ"
 
 #: ../locale/attr.py:590 attr.py:590
-#, fuzzy
 msgid "lettertitle"
-msgstr "Brief"
+msgstr "Brieftitel"
 
 #: ../locale/attr.py:591 attr.py:591
 msgid "salutation"
@@ -4006,18 +4057,16 @@ msgid "balance_open"
 msgstr ""
 
 #: ../locale/attr.py:608 attr.py:608
-#, fuzzy
 msgid "bookentry"
-msgstr "zugelassene Benutzer"
+msgstr "Buchungseintrag"
 
 #: ../locale/attr.py:609 attr.py:609
 msgid "send_it"
 msgstr "senden?"
 
 #: ../locale/attr.py:614 attr.py:614
-#, fuzzy
 msgid "last_sent"
-msgstr "Mahnstufe"
+msgstr "zuletzt versendet"
 
 #: ../locale/attr.py:615 attr.py:615
 msgid "n_sent"
@@ -4036,9 +4085,8 @@ msgid "receipt_no"
 msgstr "BelegNr"
 
 #: ../locale/attr.py:619 attr.py:619
-#, fuzzy
 msgid "period_start"
-msgstr "Frühester Start"
+msgstr "Start der Periode"
 
 #: ../locale/attr.py:620 ../schema/abo.py:141 attr.py:620
 msgid "invoice_no"
@@ -4049,9 +4097,8 @@ msgid "open"
 msgstr "offen"
 
 #: ../locale/attr.py:622 attr.py:622
-#, fuzzy
 msgid "payment"
-msgstr "Abteilung"
+msgstr "Zahlung"
 
 #: ../locale/attr.py:627 ../locale/attr.py:638 ../locale/attr.py:661
 #: ../schema/abo.py:176 attr.py:627 attr.py:638 attr.py:661
@@ -4063,9 +4110,8 @@ msgid "invoice_level"
 msgstr "Mahnstufe"
 
 #: ../locale/attr.py:630 attr.py:630
-#, fuzzy
 msgid "interval"
-msgstr "Initialen"
+msgstr "Intervall"
 
 #: ../locale/attr.py:631 ../schema/abo.py:166 attr.py:631
 msgid "letter"
@@ -4084,9 +4130,8 @@ msgid "query"
 msgstr "Abfrage"
 
 #: ../locale/attr.py:677 attr.py:677
-#, fuzzy
 msgid "job_description"
-msgstr "Beschreibung"
+msgstr "Stellenbeschreibung"
 
 #: ../locale/attr.py:688 attr.py:688
 msgid "pictures"
@@ -4383,23 +4428,8 @@ msgstr ""
 #~ msgid "next &gt;&gt;"
 #~ msgstr "vorwärts &gt;&gt;"
 
-#~ msgid "history"
-#~ msgstr "Liste der Änderungen"
-
-#~ msgid "Note:&nbsp;"
-#~ msgstr "Hinweis:&nbsp;"
-
-#~ msgid "highlighted"
-#~ msgstr "fettgedruckte"
-
-#~ msgid "&nbsp;fields are required."
-#~ msgstr "&nbsp;Felder müssen ausgefüllt werden"
-
 #~ msgid "Messages"
 #~ msgstr "Notizen"
-
-#~ msgid "changed"
-#~ msgstr "geändert"
 
 #~ msgid "&lt;&lt;&nbsp;previous"
 #~ msgstr "&lt;&lt;&nbsp;zurück"
@@ -4409,9 +4439,6 @@ msgstr ""
 
 #~ msgid "next&nbsp;&gt;&gt;"
 #~ msgstr "vorwärts&nbsp;&gt;&gt;"
-
-#~ msgid "Query"
-#~ msgstr "Abfrage"
 
 #~ msgid "New Subscription"
 #~ msgstr "Neues Abo"

@@ -12,7 +12,6 @@
 <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
   <span tal:condition="not:context/id" i18n:translate="">New</span>
   User<span tal:replace="context/id" />
-   <tal:x tal:condition="context/is_edit_ok" i18n:translate="">Editing</tal:x>
 </span>
 
 <tal:block metal:fill-slot="create_or_query">
@@ -95,6 +94,7 @@
           tal:replace="structure context/roles/field">
    <input name="roles" tal:condition="not:context/id"
           tal:attributes="value db/config/NEW_WEB_USER_ROLES">
+   <span i18n:translate="">(comma-separated values)</span>
   </td>
  </tr>
  <tr tal:condition="python:'org_location' in bclass.properties">
@@ -203,8 +203,8 @@
   <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
   <td>
    <input tal:replace="structure context/timezone/field">
-   default: 
-   <span tal:replace="db/config/DEFAULT_TIMEZONE" />
+   <span i18n:translate="">default:</span>
+   <span tal:replace="db/config/DEFAULT_TIMEZONE"/>
   </td>
  </tr>
  <tr>

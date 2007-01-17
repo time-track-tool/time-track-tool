@@ -26,6 +26,7 @@
  ; default_query   string::action=searchwithtemplate&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; n_sort          python: 2
  ; tplate_args     python: {}
+ ; msg_box_height  python: 8
  ; default_queries python:
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
                          'end,subscriber,payer&@sort=-id&@pagesize=20&'
@@ -384,6 +385,7 @@
      </span>
     </td>
    </tr>
+   <tal:block metal:define-slot="menu_slot"/>
   </table>
 </form>
 
@@ -526,12 +528,11 @@
        onSubmit="return submit_once()"
        name="itemSynopsis"
        enctype="multipart/form-data"
-       tal:condition="context/is_view_ok"
        tal:attributes="action context/designator">
 
   <input type="hidden" name="@template" value="item">
 
-  <table class="form" border="0">
+  <table class="form" border="0" style="border-spacing:0px">
    <tr tal:condition="use_labelprop">
     <th class="required"
      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
@@ -552,17 +553,17 @@
                             form      string:itemSynopsis;
                             dont_care string:don't care;
                             selected  context/responsible/id | string:0">
-      <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      <tal:block metal:use-macro="templates/userlist/macros/user"/>
      </tal:block>
     </td>
    </tr>
 
-   <tal:block metal:define-slot="formatted_class_content"></tal:block>
+   <tal:block metal:define-slot="formatted_class_content"/>
 
    <tr tal:condition="has_nosy">
-    <th tal:content="structure python:utils.fieldname(classname, 'nosy')"></th>
+    <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
     <td colspan="3">
-     <span tal:replace="structure context/nosy/field"></span>
+     <span tal:replace="structure context/nosy/field"/>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:db.user.classhelp
              ( 'username,nickname,firstname,lastname'
@@ -571,11 +572,11 @@
              , pagesize=500
              , filter='status=%s' % ','.join
                (db._db.user_status.lookup (i) for i in ('valid', 'system'))
-             )"></span><br>
+             )"/><br>
     </td>
    </tr>
 
-   <tr metal:use-macro="templates/page/macros/message_box" />
+   <tr metal:use-macro="templates/page/macros/message_box"/>
 
    <tr tal:condition="python:has_files and want_files">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
@@ -585,20 +586,77 @@
    <tr tal:condition="context/is_edit_ok">
     <th></th>
     <td colspan="3">
-     <tal:block metal:define-slot="button_slot"></tal:block>
+     <tal:block metal:define-slot="button_slot"/>
      <tal:block tal:replace="structure context/submit"/>
      <input tal:condition="context/id"
             type="button" value="Show History"
+            i18n:attributes="value"
             tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
     </td>
    </tr>
+   <tr tal:condition="has_invoices">
+    <th style="text-align:left" class="required"
+     tal:content="structure python:utils.fieldname(classname, 'invoices')"
+     tal:condition="context/invoices" />
+   </tr>
+   <tal:block tal:repeat="inv context/invoices/reverse"
+    tal:condition="has_invoices">
+    <tr>
+     <th tal:content="structure python:
+      utils.fieldname ('invoice','invoice_no')"/>
+     <td tal:content="structure python:''.join
+         (( utils.ExtProperty
+            (utils, inv.invoice_no, item = inv).as_listentry ()
+         ,
+         ))"/>
+     <th tal:content="structure python:
+      utils.fieldname ('invoice', 'period', 'period_start')"/>
+     <td tal:content="structure python:''.join
+         (( utils.ExtProperty
+            (utils, inv.period_start, item = inv).as_listentry ()
+         , '-'
+         ,  utils.ExtProperty
+            (utils, inv.period_end,   item = inv).as_listentry ()
+         ))"/>
+    </tr>
+   </tal:block>
+   <tr tal:condition="python:has_letters and context.letters">
+    <th style="text-align:left" class="required"
+     tal:content="structure python:utils.fieldname (classname, 'letters')"/>
+   </tr>
+   <tal:block tal:repeat="ltr context/letters/reverse"
+    tal:condition="has_letters">
+    <tr>
+     <th tal:content="structure python:utils.fieldname ('letter','date')"/>
+     <td tal:content="structure python:''.join
+         (( utils.ExtProperty
+            (utils, ltr.date,    item = ltr, is_label = 1).as_listentry ()
+          , '&nbsp;'
+          , '--'
+          , '&nbsp;'
+          , utils.letter_link (request, ltr.id)
+         ))"/>
+     <th tal:content="structure python:utils.fieldname ('letter', 'subject')"/>
+     <td tal:content="structure python:''.join
+         ((  utils.ExtProperty
+            (utils, ltr.subject, item = ltr, is_label = 1).as_listentry ()
+          ,
+         ))"/>
+    </tr>
+   </tal:block>
   </table>
-  <p tal:condition="context/id" tal:content="structure string:Created on
-    <b>${context/creation}</b> by <b>${context/creator}</b>, last
-    changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
-
+  <p tal:condition="context/id" i18n:translate="">
+   Created on
+   <b i18n:name="creation" tal:content="python:context.creation.pretty
+      (utils.ymd)"/> by
+   <b i18n:name="creator"  tal:content="context/creator"/>, last changed
+   <b i18n:name="activity" tal:content="python:context.activity.pretty
+      (utils.ymd)"/> by
+   <b i18n:name="actor"    tal:content="context/actor"/>.
+  </p>
   <input type="hidden" name="@required"
          tal:attributes="value required_attributes | labelprop">
+
  </form>
 
  <table metal:use-macro="templates/page/macros/note_required" />
@@ -620,10 +678,10 @@
    <th tal:content="structure python:utils.fieldname(classname,'msg')" />
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
+              tal:attributes="rows msg_box_height"
               name="@note"
               wrap="hard"
-              rows="8"
-              cols="80"></textarea>
+              cols="80"/>
    </td>
   </tr>
 </tal:block>
@@ -631,9 +689,9 @@
 <tal:block metal:define-macro="note_required">
  <table class="form" tal:condition="not:context/id">
  <tr>
-  <td>Note:&nbsp;</td>
-  <th class="required">highlighted</th>
-  <td>&nbsp;fields are required.</td>
+  <td i18n:translate="">Note:&nbsp;</td>
+  <th class="required" i18n:translate="">highlighted</th>
+  <td i18n:translate="">&nbsp;fields are required.</td>
  </tr>
  </table>
 </tal:block>
@@ -838,81 +896,77 @@
    tal:attributes="value python:request.template or 'index'">
   <table border="0" bgcolor="#e0c0c0" class="searchform">
    <tr>
-    <th bgcolor="#C08080" i18n:translate="" colspan="2">
-     Query
+    <th bgcolor="#C08080" i18n:translate="" colspan="5">
+     <span i18n:translate="">Query</span>
      <span tal:replace="head_title" i18n:name="title"/>
     </th>
    </tr>
 
    <tr>
-    <td tal:condition="do_pagesize">
-     View
+    <td tal:condition="do_pagesize" colspan="2">
+     <span i18n:translate="">View</span>
      <input type="text" size="4" name=":pagesize"
             tal:attributes="value request/pagesize">
-      items per page
+     <span i18n:translate="">items per page</span>
     </td>
-    <td>
+    <td/>
+    <td style="text-align:right;" colspan="2">
      <a tal:attributes="href csv_link" i18n:translate="">Download as CSV</a>
     </td>
    </tr>
-   <tr tal:condition="python:sort_props">
-    <td colspan="2" nowrap>
-     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
-      <tal:block tal:repeat="onum python:range(n_sort)">
-       <tr tal:define=
-           "skey python:len(request.sort)>onum and request.sort[onum]
-           ;gkey python:len(request.group)>onum and request.group[onum]
-           ">
-        <td nowrap>
-         <tal:block tal:condition="not:onum" i18n:translate="">
-             Sort on:
-         </tal:block>
-        </td>
-        <td nowrap>
-         <select tal:attributes="name python:':sort%d'%onum"
-          onChange="this.form.elements[':startwith'].value='0'">
-          <option value="">- nothing -</option>
-          <option tal:repeat="prop sort_props"
-           tal:attributes= "selected python:skey and prop.searchname==skey[1];
-                            value    python:prop.searchname"
-           tal:content="python:prop.i18nlabel"/>
-         </select>
-         Descending:
-         <input type="checkbox"
-          tal:attributes="name python:':sortdir%d'%onum
-                         ;checked python:skey and skey[0] == '-'
-                         "
-          onChange="this.form.elements[':startwith'].value='0'"/>
-        </td>
-        <td nowrap>&nbsp;</td>
-        <td nowrap>
-         <tal:block tal:condition="not:onum" i18n:translate="">
-             Group on:
-         </tal:block>
-        </td>
-        <td nowrap>
-         <select tal:attributes="name python:':group%d'%onum"
-          onChange="this.form.elements[':startwith'].value='0'">
-          <option value="">- nothing -</option>
-          <option tal:repeat="prop sort_props"
-           tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
-                            value    python:prop.searchname"
-           tal:content="python:prop.i18nlabel"/>
-         </select>
-         Descending:
-         <input type="checkbox"
-          tal:attributes="name python:':groupdir%d'%onum
-                         ;checked python:gkey and gkey[0] == '-'
-                         "
-          onChange="this.form.elements[':startwith'].value='0'"/>
-        </td>
-       </tr>
+   <tal:block tal:repeat="onum python:range(n_sort)"
+    tal:condition="python:sort_props">
+    <tr tal:define=
+        "skey python:len(request.sort)>onum and request.sort[onum]
+        ;gkey python:len(request.group)>onum and request.group[onum]
+        ">
+     <td nowrap>
+      <tal:block tal:condition="not:onum" i18n:translate="">
+          Sort on:
       </tal:block>
-     </table>
-    </td>
-   </tr>
+     </td>
+     <td nowrap>
+      <select tal:attributes="name python:':sort%d'%onum"
+       onChange="this.form.elements[':startwith'].value='0'">
+       <option value="" i18n:translate="">- nothing -</option>
+       <option tal:repeat="prop sort_props"
+        tal:attributes= "selected python:skey and prop.searchname==skey[1];
+                         value    python:prop.searchname"
+        tal:content="python:prop.i18nlabel"/>
+      </select>
+      <span i18n:translate="">Descending:</span>
+      <input type="checkbox"
+       tal:attributes="name python:':sortdir%d'%onum
+                      ;checked python:skey and skey[0] == '-'
+                      "
+       onChange="this.form.elements[':startwith'].value='0'"/>
+     </td>
+     <td nowrap>&nbsp;</td>
+     <td nowrap>
+      <tal:block tal:condition="not:onum" i18n:translate="">
+          Group on:
+      </tal:block>
+     </td>
+     <td nowrap>
+      <select tal:attributes="name python:':group%d'%onum"
+       onChange="this.form.elements[':startwith'].value='0'">
+       <option value="" i18n:translate="">- nothing -</option>
+       <option tal:repeat="prop sort_props"
+        tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
+                         value    python:prop.searchname"
+        tal:content="python:prop.i18nlabel"/>
+      </select>
+      <span i18n:translate="">Descending:</span>
+      <input type="checkbox"
+       tal:attributes="name python:':groupdir%d'%onum
+                      ;checked python:gkey and gkey[0] == '-'
+                      "
+       onChange="this.form.elements[':startwith'].value='0'"/>
+     </td>
+    </tr>
+   </tal:block>
    <tr>
-    <td colspan="2">
+    <td colspan="5">
      <table border="0" bgcolor="#e0c0c0" align="left" class="searchform"
       tal:condition="props">
       <tr>
@@ -991,7 +1045,7 @@
    </tr>
 
    <tr>
-    <td colspan="2">
+    <td colspan="5">
      <table border="0" bgcolor="#e0c0c0">
       <!-- fill in text entry fields -->
    <tal:block tal:repeat="prop nomulti_props">
@@ -1014,20 +1068,19 @@
       </tr>
    </tal:block>
       <tr tal:condition="do_fulltext">
-       <th style="text-align:right;">Search full text:</th>
-       <td><input type="text"
-                  size="40"
-                  name=":search_text"
-                  onChange="this.form.elements[':startwith'].value='0'"
-                  tal:attributes="value request/form/:search_text/value | nothing">
-       (Searches also in messages)</td>
+       <th style="text-align:right;" i18n:translate="">Search full text:</th>
+       <td>
+        <input type="text" size="40" name=":search_text"
+         onChange="this.form.elements[':startwith'].value='0'"
+         tal:attributes="value request/form/:search_text/value | nothing">
+        <span i18n:translate="">(Searches also in messages)</span>
+       </td>
       </tr>
 <!-- submit button -->
       <tr>
        <th></th>
        <td>
-        <input type="submit"
-         value="Update view"
+        <input type="submit" i18n:attributes="value" value="Update view"
          onClick="document.forms ['query'].elements ['@queryname'].value = '';
                   document.forms ['query'].elements ['new_query'].value = '';
                   document.forms ['query'].elements ['queryid'].value = '';">
@@ -1038,7 +1091,7 @@
         new_query request/form/new_query/value | nothing;
         u_q       python:sorted ([q.id for q in request.user.queries]);
         ">
-      <th style="text-align:right;">This query's name:</th>
+      <th style="text-align:right;" i18n:translate="">This query's name:</th>
        <td tal:define="queryid python:new_query and (u_q and u_q.pop()) or queryid">
         <input type="hidden" name="queryid" tal:attributes="value queryid | nothing">
         <span tal:condition="queryid">
@@ -1048,20 +1101,23 @@
           <input type="text"
                 name="_queryname"
                 tal:attributes="value request/form/@queryname/value | default">
-          <input type="submit"
+          <input type="submit" i18n:attributes="value"
            value="Update view & store this query"
            onClick="document.forms ['query'].elements ['@queryname'].value =
                     document.forms ['query'].elements ['_queryname'].value;
                     document.forms ['query'].elements ['@old-queryname'].value =
                     document.forms ['query'].elements ['_queryname'].value;
-                    ">(If you change the name, you create a new query!!!)
+                    ">
+          <span i18n:translate="">
+            (If you change the name, you create a new query!!!)
+          </span>
          </span>
          <span tal:condition="python:queryid not in request.user.queries">
           <input type="text"
                  name="@queryname"
                  onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
           <input type="hidden" name="new_query" value="">
-          <input type="submit"
+          <input type="submit" i18n:attributes="value"
                  value="Update view & store NEW query">
          </span>
         </span>
@@ -1070,7 +1126,7 @@
                 name="@queryname"
                 onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
          <input type="hidden" name="new_query" value="">
-         <input type="submit"
+         <input type="submit" i18n:attributes="value"
                 value="Update view & store NEW query">
         </span>
        </td>

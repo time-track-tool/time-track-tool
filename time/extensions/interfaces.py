@@ -83,7 +83,7 @@ def date_help \
     , item
     , width    = 300
     , height   = 200
-    , label    = "(cal)"
+    , label    = ''"(cal)"
     , form     = "itemSynopsis"
     ) :
     """dump out the link to a calendar pop-up window
