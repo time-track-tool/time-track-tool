@@ -7,6 +7,10 @@
   </span>
   <span tal:condition="not:context/id" tal:replace="string:Neues Abo"></span>
  </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
        tal:content="Classname"></span>
  <tal:block metal:fill-slot="menu_slot">
