@@ -19,8 +19,8 @@
                                                                     , sort       = ( '+', 'id'    )
                                                                     );">
 
-  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-   <tal:block metal:fill-slot="ttt_issue_content">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
 
     <tr>
      <th class="required" 
@@ -111,7 +111,7 @@
      <td colspan="3" class="task_list">
       <tal:block tal:define="items announcements;
                              klassname string:announcement;">
-       <tal:block metal:use-macro="templates/page/macros/ttt_simple_list"/>
+       <tal:block metal:use-macro="templates/page/macros/simple_list"/>
       </tal:block>
      </td>
     </tr>
@@ -159,7 +159,7 @@
      <th tal:content="structure python:utils.fieldname
       (classname, 'files')" />
      <td colspan="3">
-      <tal:block metal:use-macro="templates/page/macros/ttt_issue_files"/>
+      <tal:block metal:use-macro="templates/page/macros/formatted_class_files"/>
      </td>
     </tr>
 

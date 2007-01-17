@@ -515,13 +515,10 @@
  </tal:block>
 </tal:block>
 
-<!-- the following macro is used for all pages which display a TTT_Issue_Class item. -->
+<!-- the following macro is used for all pages which display a
+     class that needs some more formatting -->
 
-<!-- ttt_issue is now a misnomer. Generalized this to fit most classes
-     by checking availability of certain attributes.
-     But I didn't want to change many *.item.html so the name sticks.
--->
-<td metal:define-macro="ttt_issue">
+<td metal:define-macro="formatted_class">
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
  You are not allowed to view this page.
  </span>
@@ -560,7 +557,7 @@
     </td>
    </tr>
 
-   <tal:block metal:define-slot="ttt_issue_content"></tal:block>
+   <tal:block metal:define-slot="formatted_class_content"></tal:block>
 
    <tr tal:condition="has_nosy">
     <th tal:content="structure python:utils.fieldname(classname, 'nosy')"></th>
@@ -680,7 +677,7 @@
 <!-- status/name, status/abbreviation, title, responsible -->
 <!-- status should map a ${klassname}_${item/status}_${postfix} a.href class in style.css -->
 <!--   where postfix will be "${item/test_ok|nothing}" -->
-<tal:block metal:define-macro="ttt_task_list">
+<tal:block metal:define-macro="task_list">
  <tal:block tal:repeat="item items"
             tal:define="postfix item/test_ok|python:''">
   <a tal:attributes="href item/designator;
@@ -689,7 +686,7 @@
  </tal:block>
 </tal:block>
 
-<tal:block metal:define-macro="ttt_simple_list">
+<tal:block metal:define-macro="simple_list">
  <tal:block tal:repeat="item items">
   <a tal:attributes="href item/designator;
                      class string:${klassname}_${item/status}"
@@ -720,7 +717,7 @@
 </tal:block>
 
 <!-- the following lists a nice list of files plus file upload form -->
-<tal:block metal:define-macro="ttt_issue_files">
+<tal:block metal:define-macro="formatted_class_files">
  <tal:block metal:use-macro="templates/page/macros/file_list"/>
  <input type="file" name="@file" size="40">
 </tal:block>
@@ -729,7 +726,7 @@
 <!-- the caller needs to define a list of tuples for the properties: -->
 <!--  props = (("<name to display>", "<designator>"), ...) -->
 
-<tal:block metal:define-macro="ttt_search_nav">
+<tal:block metal:define-macro="search_nav">
 <!-- previous / next links -->
    <tr>
     <th tal:attributes="colspan python:len(request.columns)">
@@ -765,13 +762,13 @@
 </tal:block>
 
 <!--
- the next two ttt_search_display and ttt_search_form needs the following variables set up
- as follows:
+ the next two search_results and simple_search_form needs the following
+ variables set up as follows:
  props: a tuple (or list) of ExtProperty objects. See extensions/extproperty.py
 -->
 
 <!-- display the search results -->
-<tal:block metal:define-macro="ttt_search_results">
+<tal:block metal:define-macro="search_results">
  <tal:block tal:condition="not:context/is_view_ok">
   You are not allowed to view this page.
  </tal:block>
@@ -786,7 +783,7 @@
          tal:content="python:prop.i18nlabel"></th>
     </tal:block>
    </tr>
-   <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
+   <tal:block metal:use-macro="templates/page/macros/search_nav"></tal:block>
    <!-- items found -->
    <tal:block tal:repeat="i batch">
     <tr tal:condition="python:
@@ -812,7 +809,7 @@
  </tal:block>
 </tal:block>
 
-<tal:block metal:define-macro="ttt_search_form">
+<tal:block metal:define-macro="simple_search_form">
  <tal:block tal:define=
      " multi_props    python: [p for p in props if p.multiselect]
      ; sort_props     python: [p for p in props if p.sortable]

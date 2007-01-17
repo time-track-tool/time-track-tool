@@ -24,8 +24,8 @@
     ; has_resp            python:0
     ; required_attributes string:title
     ">
-   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-    <tal:block metal:fill-slot="ttt_issue_content">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>

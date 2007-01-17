@@ -20,8 +20,8 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define="use_labelprop python:False">
-  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-   <tal:block metal:fill-slot="ttt_issue_content">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
     <tr tal:condition="python:
      (   path ('context/id')
      and path ('context/cost_center_group')

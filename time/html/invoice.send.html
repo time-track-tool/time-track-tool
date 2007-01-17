@@ -113,7 +113,7 @@
   tal:condition="context/is_view_ok">
 
   <form method="POST" tal:attributes="action request/classname">
-  <tal:block metal:use-macro="templates/page/macros/search_display"></tal:block>
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
   <p>
   <input type="submit" value=" Speichern ">
   <input type="hidden" name="@action" value="edit">

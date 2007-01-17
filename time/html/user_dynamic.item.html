@@ -23,8 +23,8 @@
     " use_labelprop       python:0
     ; required_attributes string:user
     ">
-   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-    <tal:block metal:fill-slot="ttt_issue_content">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
      <tr tal:condition="context/id">
       <td align="right" tal:define="prev python:utils.prev_user_dynamic (db, context)">
        <a tal:condition="prev"

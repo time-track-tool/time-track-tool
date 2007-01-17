@@ -24,8 +24,8 @@
    ;use_labelprop       python:False
    ;required_attributes python:'author'
    ">
-   <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-    <tal:block metal:fill-slot="ttt_issue_content">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
       <td>

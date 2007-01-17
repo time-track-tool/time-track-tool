@@ -48,51 +48,52 @@ To check:
   -> maybe even don't register checks if attributes aren't there.
   -> much work should have been done for it tracker
 
-- Also check migration to new roundup for abo
-- Check some permission things in ttt that are solved in abo
++ Also check migration to new roundup for abo
++ Check some permission things in ttt that are solved in abo
 
 page.html
 =========
 
-formatted_class in abo is ttt_issue in ttt
--> Problems with shared templates (file)
++ formatted_class in abo is ttt_issue in ttt
+  -> Problems with shared templates (file)
 
-Must hack icing (and formatted_classs / ttt_issue) and
-create_or_query_new_tracker_item to work with both templates.
-Probably need to set variables before expanding icing.
-Need to factor out all stuff that is specific to the individual
-templates in icing (probably only the status line).
++ Must hack icing (and formatted_classs / ttt_issue) and
+  create_or_query_new_tracker_item to work with both templates.
+  Probably need to set variables before expanding icing.  Need to factor
+  out all stuff that is specific to the individual templates in icing
+  (probably only the status line).
 
 TTT
 ---
 
-- icing
++ icing
 
 TTT-specific
 ++++++++++++
 
-- create_new    only used by create_or_query_new_tracker_item
-- select_query  only used by create_or_query_new_tracker_item
-- create_or_query_new_tracker_item
++ create_new    only used by create_or_query_new_tracker_item
++ select_query  only used by create_or_query_new_tracker_item
++ create_or_query_new_tracker_item
   uses create_new and select_query  used by most templates
   -> Problem for home, file and probably other shared templates
 
-- ttt_issue              used by most templates
-- message_box            used by ttt_issue and generic template
-- note_required          used by ttt_issue and generic template
-- message_display        used by ttt_issue and generic template
-The three below are factored from ttt_issue for generic template --
-should be used in abo too.
++ ttt_issue              used by most templates
++ message_box            used by ttt_issue and generic template
++ note_required          used by ttt_issue and generic template
++ message_display        used by ttt_issue and generic template
 
-- ttt_task_list          used by feature, release, task item-templates
-- ttt_simple_list        used by announcement, review
-- file_list              used by ttt_issue only
-- ttt_issue_files        used in various macros
++ The three below are factored from ttt_issue for generic template --
+  should be used in abo too.
 
-- ttt_search_nav         used by ttt_search_results only
-- ttt_search_results     used by most templates
-- ttt_search_form        used by most templates
-- search_form            used only by summary_report templates and
++ ttt_task_list          used by feature, release, task item-templates
++ ttt_simple_list        used by announcement, review
++ file_list              used by ttt_issue only
++ ttt_issue_files        used in various macros
+
++ ttt_search_nav         used by ttt_search_results only
++ ttt_search_results     used by most templates
++ ttt_search_form        used by most templates
++ search_form            used only by summary_report templates and
                          ttt_search_form
 
 + ttt_issue_pdf_files    unused
@@ -100,16 +101,16 @@ should be used in abo too.
 ABO
 ---
 
-- icing
-- query_list             used by icing
++ icing
++ query_list             used by icing
 
-- formatted_class        used by most templates
++ formatted_class        used by most templates
 
 - issue_files            used by and letter.item and tmplate.item
 
-- ttt_search_nav         used by search_display only
-- search_display         used by most templates
-- search_form            used by most templates
++ ttt_search_nav         used by search_display only
++ search_display         used by most templates
++ search_form            used by most templates
 
 + ttt_issue_pdf_files    unused
 + search_input           unused
