@@ -1,27 +1,27 @@
 To check:
 =========
 
-- html/page.html
-- html/home.html
++ html/page.html -- looks quite good now
++ html/home.html
 + html/style.css   - use ttt version (only additions)
 - html/file.item.html
 + html/_generic.collision.html -- identical
-- html/_generic.help.html
++ html/_generic.help.html -- use ttt version: we use new help-stuff too
 + html/_generic.history.html -- use ttt version and translate History to Verlauf
 - html/_generic.index.html
-  - Additional macros factored from ttt_issue in ttt version
-  - export csv in ttt version
-  - more parameters in ttt version
-  - more exceptions in ttt version (messages, files): but *can* display
+  + Additional macros factored from ttt_issue in ttt version
+  + export csv in ttt version
+  + more parameters in ttt version
+  + more exceptions in ttt version (messages, files): but *can* display
     messages and files with factored macros from ttt_issue
   - adr_type_cat.lookup stuff in abo
   - special hack for filter for adr_type attribute
   -> maybe create own template for classes that have adr_type attribute??
 + html/_generic.property_help.html -- ttt version for newer help version
-- html/query.edit.html -- much work?
++ html/query.edit.html -- much work?
 - html/query.item.html -- only in abo -- minimal version
-- html/user.index.html
-- html/user.item.html
++ html/user.index.html
++ html/user.item.html
 + html/user.register -- remove from abo
 + html/Makefile -- identical
 - extensions/extproperty.py
@@ -40,13 +40,13 @@ To check:
   - hmm maybe rename one of those: don't seem to have much in common
 - extensions/ExportCSVNamesAction.py
 - locale (!)
-  -> merge
+  +> merge
   -> check against merged templates that everything is in german that
      has to be
-- detectors: user (!) only in ttt
-  -> make checks specific to existing attributes of user
-  -> maybe even don't register checks if attributes aren't there.
-  -> much work should have been done for it tracker
++ detectors: user (!) only in ttt
+  +> make checks specific to existing attributes of user
+  +> maybe even don't register checks if attributes aren't there.
+  +> much work should have been done for it tracker
 
 + Also check migration to new roundup for abo
 + Check some permission things in ttt that are solved in abo

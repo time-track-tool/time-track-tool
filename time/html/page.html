@@ -218,6 +218,18 @@
      , ('severity',            'Edit',   '?@template=item', 1)
      , ('overtime_correction', 'Edit',   '?@template=item', 1)
      , ('daily_record_freeze', 'Edit',   '?@template=item&frozen=1', 1)
+     , ('abo',                 'Edit',   '?@template=item', 1)
+     , ('abo_type',            'Edit',   '?@template=item', 1)
+     , ('address',             'Edit',   '?@template=item', 1)
+     , ('valid',               'Edit',   '?@template=item', 1)
+     , ('abo_price',           'Edit',   '?@template=item', 1)
+     , ('invoice',             'Edit',   '?@template=item', 1)
+     , ('invoice',             'Edit',   '?@template=item', 1)
+     , ('invoice_group',       'Edit',   '?@template=item', 1)
+     , ('invoice_template',    'Edit',   '?@template=item', 1)
+     , ('adr_type',            'Edit',   '?@template=item', 1)
+     , ('adr_type_cat',        'Edit',   '?@template=item', 1)
+     , ('currency',            'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',         'View', '',               ('',''))
      , ('daily_record',        'View', 'controlling,hr', ('',''))
@@ -711,7 +723,7 @@
    <th tal:content="string:Date: ${msg/date}">date</th>
    <th>
     <a i18n:translate="" tal:condition="may_remove_msgs" tal:attributes="href
-       string:${classname}${context/id}?remove:messages=${msg/id}&:action=edit"
+       string:${classname}${context/id}?remove:messages=${msg/id}&:action=edit">
      remove
     </a>
    </th>
