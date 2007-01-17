@@ -10,6 +10,7 @@ Link = Multilink = Password = Date = Boolean = Number = String
 class Security :
     def addRole (*v, **kw) : pass
     addPermission = addPermissionToRole = addRole
+    role = ''
 
 class DB :
     security = Security ()
@@ -34,6 +35,7 @@ schemas = \
     , 'nwm'
     , 'time_tracker'
     , 'complex'
+    , 'abo'
     , 'core'
     )
 importer = schemadef.Importer (globals (), schemas)

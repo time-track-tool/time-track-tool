@@ -9,10 +9,11 @@
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
  ; is_user         python: uname != 'anonymous'
- ; lbl             klass/_klass/labelprop
  ; labelprop       klass/_klass/labelprop
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
+ ; has_invoices    python: 'invoices'    in props
+ ; has_letters     python: 'letters'     in props
  ; has_files       python: 'files'       in props
  ; want_files      python: True
  ; has_resp        python: 'responsible' in props
@@ -24,69 +25,89 @@
  ; uid             python: db._db.getuid ()
  ; default_query   string::action=searchwithtemplate&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; n_sort          python: 2
+ ; tplate_args     python: {}
  ; default_queries python:
-   { 'alias'           : ':columns=name,alias_to_alias,alias_to_user&'
-                         ':pagesize=500&:startwith=0'
-   , 'cost_center'     : ':columns=organisation_id,cost_center_group_id'
+   { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
+                         'end,subscriber,payer&@sort=-id&@pagesize=20&'
+                         '@startwith=0'
+   , 'address'         : '@action=search&@startwith=0&@pagesize=20&'
+                         '@sort=id&@sortdir=on&@group=&'
+                         '@columns=salutation,title,id,lastname,firstname,'
+                         'country,street,postalcode,city&valid=1&'
+                         'adr_type=ZFW&@search_text=&@queryname='
+   , 'adr_type'        : '@action=search&@columns=id,code,description,typecat&'
+                         '@sort=code&@filter=typecat&@pagesize=50&'
+                         '@startwith=0&typecat=%s' %
+                         (   'adr_type_cat' in props
+                         and ','.join (db._db.adr_type_cat.getnodeids ())
+                         )
+   , 'alias'           : '@columns=name,alias_to_alias,alias_to_user&'
+                         '@pagesize=500&@startwith=0'
+   , 'cost_center'     : '@columns=organisation_id,cost_center_group_id'
                          ',id,name,status,organisation&'
-                         ':sort=name&:group=cost_center_group&'
-                         ':filter=status&:pagesize=20&:startwith=0&'
+                         '@sort=name&@group=cost_center_group&'
+                         '@filter=status&@pagesize=20&@startwith=0&'
                          'status=5,1,2,4'
-   , 'category'        : ':columns=name,description,responsible,nosy,'
-                         'valid,cert_sw&:sort=name&:filter=valid&'
-                         ':pagesize=200&:startwith=0&valid=yes'
-   , 'daily_record'    : ':columns=id,user,date,status&:sort=-id&'
-                         ':filter=user,date&:pagesize=20&:startwith=0&'
+   , 'category'        : '@columns=name,description,responsible,nosy,'
+                         'valid,cert_sw&@sort=name&@filter=valid&'
+                         '@pagesize=200&@startwith=0&valid=yes'
+   , 'daily_record'    : '@columns=id,user,date,status&@sort=-id&'
+                         '@filter=user,date&@pagesize=20&@startwith=0&'
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
-   , 'group'           : ':columns=name,gid,description,org_location&'
-                         ':sort=-id&:pagesize=500&:startwith=0'
-   , 'issue'           : ':columns=id,category,title,area,kind,status,'
+   , 'group'           : '@columns=name,gid,description,org_location&'
+                         '@sort=-id&@pagesize=500&@startwith=0'
+   , 'invoice'         : '@action=search&@columns=invoice_no,'
+                         'period_start,period_end,amount,currency,'
+                         'balance_open,n_sent,payer,subscriber,abo&'
+                         '@sort=-period_start&@filter=open&'
+                         '@pagesize=50&@startwith=0&open=1'
+   , 'issue'           : '@columns=id,category,title,area,kind,status,'
                          'composed_of.id,part_of.id&'
-                         ':sort=category&:group=-effective_prio&'
-                         ':filter=status,responsible&:pagesize=50&'
-                         ':startwith=0&status=1,2,3,4,5,7&responsible=%s' % uid
-   , 'it_issue'        : ':columns=id,title,responsible,stakeholder,it_prio&'
-                         ':sort=-id&:group=status&:filter=stakeholder,status&'
-                         ':pagesize=50&:startwith=0&'
+                         '@sort=category&@group=-effective_prio&'
+                         '@filter=status,responsible&@pagesize=50&'
+                         '@startwith=0&status=1,2,3,4,5,7&responsible=%s' % uid
+   , 'it_issue'        : '@columns=id,title,responsible,stakeholder,it_prio&'
+                         '@sort=-id&@group=status&@filter=stakeholder,status&'
+                         '@pagesize=50&@startwith=0&'
                          'status=1,2,3&stakeholder=%s' % uid
-   , 'machine'         : ':columns=inventory_no,description,owner&'
-                         ':sort=inventory_no&:pagesize=20&:startwith=0'
-   , 'machine_name'    : ':columns=id,name,network_address,machine_name,'
-                         'dns_record_type,do_reverse_mapping&:sort=name&'
-                         ':pagesize=20&:startwith=0'
-   , 'network_address' : ':columns=ip,org_location,use_dhcp,network_interface&'
-                         ':sort=ip&:group=org_location&:pagesize=20&'
-                         ':startwith=0'
-   , 'network_interface':':columns=id,mac,card_type,description,machine&'
-                         ':sort=-id&:pagesize=2000&:startwith=0'
-   , 'public_holiday'  : ':columns=id,name,description,date,locations,is_half&'
-                         ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
+   , 'machine'         : '@columns=inventory_no,description,owner&'
+                         '@sort=inventory_no&@pagesize=20&@startwith=0'
+   , 'machine_name'    : '@columns=id,name,network_address,machine_name,'
+                         'dns_record_type,do_reverse_mapping&@sort=name&'
+                         '@pagesize=20&@startwith=0'
+   , 'network_address' : '@columns=ip,org_location,use_dhcp,network_interface&'
+                         '@sort=ip&@group=org_location&@pagesize=20&'
+                         '@startwith=0'
+   , 'network_interface':'@columns=id,mac,card_type,description,machine&'
+                         '@sort=-id&@pagesize=2000&@startwith=0'
+   , 'public_holiday'  : '@columns=id,name,description,date,locations,is_half&'
+                         '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                          'date=.%3B'
-   , 'summary_report'  : ':columns=user,time_wp,summary&'
-                         ':filter=user,summary_type,status,date,show_empty,'
+   , 'summary_report'  : '@columns=user,time_wp,summary&'
+                         '@filter=user,summary_type,status,date,show_empty,'
                          'show_all_users,show_missing&'
-                         ':pagesize=50&:startwith=0&status=3,1,2&'
+                         '@pagesize=50&@startwith=0&status=3,1,2&'
                          'date=%s%%3B.&summary_type=2,4&user=%s&'
                          'show_empty=no&show_all_users=no&show_missing=no' % 
                          (utils.monthstart_twoweeksago (), uid)
-   , 'time_project'    : ':columns=name,responsible,organisation,department'
-                         ',status&:sort=name&:filter=status&:pagesize=20&'
-                         ':startwith=0&status=1,2'
-   , 'time_record'     : ':columns=daily_record.user,daily_record.date,'
+   , 'time_project'    : '@columns=name,responsible,organisation,department'
+                         ',status&@sort=name&@filter=status&@pagesize=20&'
+                         '@startwith=0&status=1,2'
+   , 'time_record'     : '@columns=daily_record.user,daily_record.date,'
                          'daily_record.status,wp.project,wp,time_activity,'
                          'work_location,duration,tr_duration,comment&'
-                         ':sort=daily_record.user,daily_record.date,'
-                         'wp.project,wp&:filter=daily_record.user,'
-                         'daily_record.date&:pagesize=50&:startwith=0&'
+                         '@sort=daily_record.user,daily_record.date,'
+                         'wp.project,wp&@filter=daily_record.user,'
+                         'daily_record.date&@pagesize=50&@startwith=0&'
                          'daily_record.user=%s&daily_record.date=.-30d%%3B.'
                           % (uid,)
-   , 'time_wp'         : ':columns=name,wp_no,responsible,project,time_start'
-                         ',time_end,cost_center&:sort=name&:filter=bookers&'
-                         ':pagesize=20&:startwith=0&bookers=%s' % uid
-   , 'time_wp_group'   : ':columns=id,name,description,wps&:sort=name&'
-                         ':pagesize=20&:startwith=0'
-   , 'user'            : ':columns=%s&:sort=%s&'
-                         ':filter=status&:pagesize=200&:startwith=0&status=1'
+   , 'time_wp'         : '@columns=name,wp_no,responsible,project,time_start'
+                         ',time_end,cost_center&@sort=name&@filter=bookers&'
+                         '@pagesize=20&@startwith=0&bookers=%s' % uid
+   , 'time_wp_group'   : '@columns=id,name,description,wps&@sort=name&'
+                         '@pagesize=20&@startwith=0'
+   , 'user'            : '@columns=%s&@sort=%s&'
+                         '@filter=status&@pagesize=200&@startwith=0&status=1'
                           % ( ','.join
                               (n for n in 
                                ( 'lastname'
@@ -103,17 +124,17 @@
                             , ['username', 'lastname']
                               ['lastname' in db._db.user.properties]
                             )
-   , 'user_dynamic'    : ':columns=id,user,valid_from,org_location&:sort=-id&'
-                         ':pagesize=20&:startwith=0'
+   , 'user_dynamic'    : '@columns=id,user,valid_from,org_location&@sort=-id&'
+                         '@pagesize=20&@startwith=0'
    , 'daily_record_freeze'
-                       : ':columns=id,date,week_balance,'
+                       : '@columns=id,date,week_balance,'
                          'month_balance,year_balance,frozen&'
-                         ':sort=-date&:group=user&:filter=user&'
-                         ':pagesize=20&:startwith=0&'
+                         '@sort=-date&@group=user&@filter=user&'
+                         '@pagesize=20&@startwith=0&'
                          'user=%s' % uid
    , 'overtime_correction'
-                       : ':columns=id,user,date,value,comment&:'
-                         'sort=-date&:filter=user&:pagesize=20&:startwith=0&'
+                       : '@columns=id,user,date,value,comment&'
+                         '@sort=-date&@filter=user&@pagesize=20&@startwith=0&'
                          'user=%s' % uid
    }
  ; menu_tracker  python:
@@ -196,29 +217,41 @@
      , ('overtime_correction', 'Edit',   '?@template=item', 1)
      , ('daily_record_freeze', 'Edit',   '?@template=item&frozen=1', 1)
      )
-   , ( ('cost_center',         'View', '')
-     , ('daily_record',        'View', 'controlling,hr')
-     , ('user_dynamic',        'View', '')
-     , ('time_project',        'View', '')
-     , ('time_wp',             'View', '')
-     , ('time_wp_group',       'View', '')
-     , ('public_holiday',      'View')
-     , ('user',                'View')
-     , ('summary_report',      'View')
-     , ('network_interface',   'View')
-     , ('machine',             'View')
-     , ('network_address',     'View')
-     , ('machine_name',        'View')
-     , ('group',               'View')
-     , ('alias',               'View')
-     , ('smb_machine',         'View')
-     , ('it_issue',            'View')
-     , ('it_project',          'View')
-     , ('issue',               'View')
-     , ('time_record',         'View')
-     , ('category',            'View')
-     , ('overtime_correction', 'View')
-     , ('daily_record_freeze', 'View')
+   , ( ('cost_center',         'View', '',               ('',''))
+     , ('daily_record',        'View', 'controlling,hr', ('',''))
+     , ('user_dynamic',        'View', '',               ('',''))
+     , ('time_project',        'View', '',               ('',''))
+     , ('time_wp',             'View', '',               ('',''))
+     , ('time_wp_group',       'View', '',               ('',''))
+     , ('public_holiday',      'View', '',               ('',''))
+     , ('user',                'View', '',               ('',''))
+     , ('summary_report',      'View', '',               ('',''))
+     , ('network_interface',   'View', '',               ('',''))
+     , ('machine',             'View', '',               ('',''))
+     , ('network_address',     'View', '',               ('',''))
+     , ('machine_name',        'View', '',               ('',''))
+     , ('group',               'View', '',               ('',''))
+     , ('alias',               'View', '',               ('',''))
+     , ('smb_machine',         'View', '',               ('',''))
+     , ('it_issue',            'View', '',               ('',''))
+     , ('it_project',          'View', '',               ('',''))
+     , ('issue',               'View', '',               ('',''))
+     , ('time_record',         'View', '',               ('',''))
+     , ('category',            'View', '',               ('',''))
+     , ('overtime_correction', 'View', '',               ('',''))
+     , ('daily_record_freeze', 'View', '',               ('',''))
+     , ('abo',                 'View', '',               ('',''))
+     , ('abo_type',            'View', '',               ('',''))
+     , ('address',             'View', '',               ('',''))
+     , ('valid',               'View', '',               ('',''))
+     , ('abo_price',           'View', '',               ('',''))
+     , ('invoice',             'View', '', ('generate invoices','send'))
+     , ('invoice',             'View', '',               ('',''))
+     , ('invoice_group',       'View', '',               ('',''))
+     , ('invoice_template',    'View', '',               ('',''))
+     , ('adr_type',            'View', '',               ('',''))
+     , ('adr_type_cat',        'View', '',               ('',''))
+     , ('currency',            'View', '',               ('',''))
      )
    )
  ; menu_type     python:
@@ -241,23 +274,28 @@
 <form method="POST" name="login_form" tal:attributes="action request/base">
      <table class="form">
       <tr>
-       <td colspan="2" align="center">Welcome:
-        <br><tal:block tal:replace="config/TRACKER_NAME"/><br>
+       <td colspan="2" align="center">
+        <span i18n:translate="">Welcome:</span>
+        <br>
+        <tal:block tal:replace="config/TRACKER_NAME"/>
+        <br>
         <font size="-2">
+         <span i18n:translate="">
          Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.
+         </span>
         </font>
        </td>
       </tr>
       <tr>
-       <th>Login:</th>
+       <th i18n:translate="">Login:</th>
        <td><input size="15" name="__login_name"></td>
       </tr>
       <tr>
-       <th>Password:</th>
+       <th i18n:translate="">Password:</th>
        <td><input size="15" type="password" name="__login_password"></td>
       </tr>
       <tr>
-       <th>Remember me?:</th>
+       <th i18n:translate="">Remember me?:</th>
        <td><input type="checkbox" name="remember" id="remember"></td>
       </tr>
       <tr>
@@ -323,7 +361,8 @@
      <span class="classblock">
       <a tal:condition="python:request.user.hasPermission('View', 'user')
                             or request.user.hasPermission('Edit', 'user')"
-         tal:attributes="href python: 'user?' + default_queries ['user']">
+         tal:attributes="href python: 'user?' + default_queries ['user']"
+         i18n:translate="">
          User&nbsp;List
       </a>
      </span>
@@ -384,7 +423,7 @@
  <span class="classblock">
   <select name="create_new"
           onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
-   <option value="">-- Create / Update --</option>
+   <option value="" i18n:translate="">-- Create / Update --</option>
    <tal:block tal:repeat="k python:
     utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
                  , (0,)
@@ -405,50 +444,56 @@
        >
   <select name="query"
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-   <option value="">-- View / Query --</option>
-   <option value="query?@template=edit">Manage Queries</option>
+   <option value="" i18n:translate="">-- View / Query --
+   </option>
+   <option value="query?@template=edit" i18n:translate="">Manage Queries
+   </option>
    <tal:block
-    tal:repeat="k python:
-     utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
-                  , (0,)
-                  , i18n.gettext
-                  )">
+    tal:repeat="k python: sorted
+        ( [k for k in klasses if k [0] in db._db.classes]
+        , key = lambda x, y = i18n.gettext : y (x [3][0] or x [0])
+        )">
      <tal:block tal:define=
-       " name  python:i18n.gettext (k [0])
-       ; klass python:k [0]
-       ; perm  python:k [1]
-       ; role  python: (('',k [-1])[len (k) > 2]).split (',')
+       " name   python: i18n.gettext (k [3][0] or k [0])
+       ; klass  python: k [0]
+       ; perm   python: k [1]
+       ; role   python: k [2].split (',')
+       ; tplate python: ('&@template=%s' % k [3][1], '') [not k [3][1]]
+       ; qkey   python: k [3][1] or 'index'
        " tal:condition="python:
           (   request.user.hasPermission (perm, klass)
           and (not role [0] or utils.user_has_role (db._db, uid, *role))
           )">
-         <option tal:attributes="value python:
-          klass + '?' + default_queries.get (klass, default_query)"
+         <option tal:attributes="value python: '%s?%s%s' %
+          (klass, default_queries.get (klass, default_query), tplate)"
           tal:content="name"/>
          <option tal:define="
             queries python:db.query.filter
-             (filterspec={'private_for':None, 'klass':klass})"
+             (filterspec = dict
+              (private_for = None, klass = klass, tmplate = qkey)
+             )"
           tal:repeat="q queries"
           tal:attributes="
-           value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
+           value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${tplate}${q/url}"
           tal:content="structure string:&nbsp;&nbsp;${q/name}"
          >  Global Queries</option>
          <tal:block tal:condition="request/user/queries">
           <option tal:define="
              queries python:[q for q in db.query.filter
-              (filterspec=
-               { 'private_for':request.user.id
-               , 'klass':klass
-               , 'id':[q.id for q in request.user.queries]
-               }
+              (filterspec = dict
+               ( private_for = request.user.id
+               , klass       = klass
+               , id          = [q.id for q in request.user.queries]
+               , tmplate     = qkey
+               )
               ) if q.klass == klass]"
            tal:repeat="q queries"
            tal:attributes="
-            value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
+            value
+            string:${klass}?@queryname=${q/name}&queryid=${q/id}&${tplate}${q/url}"
            tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
           >    Private Queries</option>
          </tal:block>
-
      </tal:block>
    </tal:block>
   </select>
@@ -703,7 +748,11 @@
                                  )"
            >
        </th>
-       <th tal:condition="not:batch/sequence_length"><nobr>Sorry, no results found</nobr></th>
+       <th tal:condition="not:batch/sequence_length">
+        <nobr i18n:translate="">
+        Sorry, no results found
+        </nobr>
+       </th>
        <th class="right">
         <a tal:define="next batch/next"
            tal:condition="next"
