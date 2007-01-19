@@ -26,23 +26,6 @@ from roundup.cgi.TranslationService import get_translation
 
 _ = None
 
-def propsort (p1, p2) :
-    return cmp (_ (p1._name), _ (p2._name))
-# end def propsort
-
-def sorted_properties (db, context) :
-    props = db [context._classname].properties ()
-    props.sort (propsort)
-    return props
-# end def sorted_properties
-
-def properties_dict (db, context) :
-    props = {}
-    for prop in db [context._classname].properties () :
-        props [prop._name] = prop
-    return props
-# end def properties_dict
-
 def letter_link (request, id) :
     return """<a href="%s">%s</a>""" \
         % ( request.indexargs_url
@@ -55,36 +38,9 @@ def letter_link (request, id) :
           )
 # end def letter_link
 
-formattable = \
-    [ ('end',  'canc', 'run')
-    , ('open', 'open', 'closed')
-    ]
-def linkclass (item) :
-    """
-        returns css link-class: for "end" date we need a special
-        color code for marking abos that no longer valid.
-    """
-    for i, t, f in formattable :
-        try :
-            return (t, f) [not item [i]]
-        except KeyError :
-            pass
-    return ''
-# end def linkclass
-
-def menu_or_field (prop, filter = {}) :
-    if hasattr (prop._prop, 'classname') :
-        return prop.menu (height=5, **filter)
-    return prop.field ()
-# end def menu_or_field
-
 def init (instance) :
     global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerUtil
-    reg ('sorted_properties', sorted_properties)
-    reg ('properties_dict',   properties_dict)
     reg ('letter_link',       letter_link)
-    reg ('linkclass',         linkclass)
-    reg ('menu_or_field',     menu_or_field)

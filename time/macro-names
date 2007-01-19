@@ -19,7 +19,8 @@ To check:
   -> maybe create own template for classes that have adr_type attribute??
 + html/_generic.property_help.html -- ttt version for newer help version
 + html/query.edit.html -- much work?
-- html/query.item.html -- only in abo -- minimal version
++ html/query.item.html -- only in abo -- minimal version
+  Doesn't work in new system.
 + html/user.index.html
 + html/user.item.html
 + html/user.register -- remove from abo
@@ -28,6 +29,19 @@ To check:
   - use the newer ttt thing
   - check what that means for templates (!)
   -> search for all occurences of ExtProperty
+  - attributes:
+    - selname   -> searchname
+    - is_label  -> is_labelprop
+    - linkclass -> get_cssclass
+    - linkcls   -> should not be used anymore (linkname)
+    - linkattr  -> should not be used anymore (displayprop or searchname)
+                   - external interface: dotted form 'name1.name2.name3'
+                     is now handed over as searchname instead of
+                     linkattr
+  - external interface
+    - sortable is now an attribute not a method
+  - menu_or_field was a standalone function is now a method of
+    extproperty
 - extensions/help.py
   - Merge after having both in alphabetical order (user.address in abo
     is in wrong order for example)
@@ -106,7 +120,9 @@ ABO
 
 + formatted_class        used by most templates
 
-- issue_files            used by and letter.item and tmplate.item
++ issue_files            used by and letter.item and tmplate.item
+                         -> obsolete, new macros automagicalle determine
+                            if files should be displayed for attaching
 
 + ttt_search_nav         used by search_display only
 + search_display         used by most templates

@@ -101,6 +101,23 @@ def prop_as_array (prop) :
     return [prop]
 # end def prop_as_array
 
+formattable = \
+    [ ('end',  'canc', 'run')
+    , ('open', 'open', 'closed')
+    ]
+def get_cssclass (item) :
+    """
+        returns css link-class: for "end" date we need a special
+        color code for marking abos that are no longer valid.
+    """
+    for i, t, f in formattable :
+        try :
+            return (t, f) [not item [i]]
+        except KeyError :
+            pass
+    return ''
+# end def get_cssclass
+
 class ExtProperty :
     """
         An extended HTML property.
@@ -157,7 +174,7 @@ class ExtProperty :
         , searchable    = None # usually computed, override with False
         , sortable      = True
         , pretty        = _
-        , get_cssclass  = None
+        , get_cssclass  = get_cssclass
         , do_classhelp  = None
         , fieldwidth    = 30
         , format        = None
