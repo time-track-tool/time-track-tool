@@ -173,6 +173,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , messages            = Multilink ("msg")
         , invoice             = Link      ("invoice")
         )
+    letter.setlabelprop ('subject')
 
     tmplate = Class \
         ( db, ''"tmplate"

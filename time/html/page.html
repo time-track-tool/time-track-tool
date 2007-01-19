@@ -72,6 +72,8 @@
                          '@sort=-id&@group=status&@filter=stakeholder,status&'
                          '@pagesize=50&@startwith=0&'
                          'status=1,2,3&stakeholder=%s' % uid
+   , 'letter'          : '@columns=id,subject,date,address&:sort=-date&'
+                         ':pagesize=20&:startwith=0'
    , 'machine'         : '@columns=inventory_no,description,owner&'
                          '@sort=inventory_no&@pagesize=20&@startwith=0'
    , 'machine_name'    : '@columns=id,name,network_address,machine_name,'
