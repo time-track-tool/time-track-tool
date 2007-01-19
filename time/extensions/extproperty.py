@@ -147,6 +147,11 @@ class ExtProperty :
             (e.g., in a search mask) because the value will not show up
             in the generated URL and therefore will not work in CSV
             export.
+            Testcases:
+            abo.setlabelprop ('id')
+            and
+            abo.setlabelprop ('abotype')
+            must both work.
         filter: A dictionary of properties / values to filter on when
             displaying a menu (in a search mask) or help.
         help_filter: deprecated, a string of property/value pairs
@@ -210,6 +215,7 @@ class ExtProperty :
         self.help_filter   = help_filter
         self.help_sort     = help_sort
         self.bool_tristate = bool_tristate
+        self.propname      = displayprop
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -242,8 +248,8 @@ class ExtProperty :
                 props = [p for p in proptree]
                 p = props [-1]
                 if not p.classname :
-                    if not self.displayprop :
-                        self.displayprop = p.name
+                    if not self.propname :
+                        self.propname = p.name
                     p = p.parent
                 self.lnkcls = p.cls
                 if len (props) > 1:
@@ -259,12 +265,12 @@ class ExtProperty :
         if self.do_classhelp is None :
             self.do_classhelp = \
                 (   self.lnkcls
-                and (  not self.displayprop
-                    or self.displayprop in ('id', self.lnkcls.labelprop ())
+                and (  not self.propname
+                    or self.propname in ('id', self.lnkcls.labelprop ())
                     )
                 )
-        if self.lnkcls and not self.displayprop :
-            self.displayprop = self.lnkcls.labelprop ()
+        if self.lnkcls and not self.propname :
+            self.propname = self.lnkcls.labelprop ()
         if self.searchable is None :
             self.searchable = not self.need_lookup ()
         if (   self.is_labelprop is None
@@ -304,7 +310,7 @@ class ExtProperty :
 
     def need_lookup (self) :
         """ Needs a list-lookup, because the user can't specify the key """
-        return self.displayprop and not self.key
+        return self.propname and not self.key
     # end def need_lookup
 
     def as_listentry (self, item = None, as_link = True) :
@@ -340,7 +346,7 @@ class ExtProperty :
         """
         p = prop or self.prop
 
-        if self.displayprop == 'id' :
+        if self.propname == 'id' :
             lp = self.lnkcls.labelprop ()
             if lp == 'id' :
                 lp = 'creation'
@@ -354,11 +360,11 @@ class ExtProperty :
         for i in self.searchname.split ('.')[1:] :
             last_p = p
             p      = p [i]
-        if  (   self.displayprop
+        if  (   self.propname
             and (isinstance (p, _HTMLItem) or hasattr (p._prop, 'classname'))
             ) :
             last_p = p
-            p      = p [self.displayprop]
+            p      = p [self.propname]
         return self.__class__ \
             ( self.utils, p
             , item         = last_p
@@ -442,21 +448,21 @@ class ExtProperty :
     def classhelp_properties (self, *propnames) :
         """create list of properties for classhelp. Order matters."""
         assert (self.lnkcls)
-        if self.displayprop == self.key or self.displayprop == 'id' :
-            p = [self.displayprop]
+        if self.propname == self.key or self.propname == 'id' :
+            p = [self.propname]
         else :
-            p = ['id', self.displayprop]
+            p = ['id', self.propname]
         props = dict ([(x, 1) for x in p])
         for pn in self.help_props :
             if (   pn in self.lnkcls.properties
-               and pn != self.displayprop
+               and pn != self.propname
                and pn not in props
                ) :
                 p.append (pn)
                 props [pn] = 1
         for pn in propnames :
             if (   pn in self.lnkcls.properties
-               and pn != self.displayprop
+               and pn != self.propname
                and pn not in props
                ) :
                 p.append (pn)

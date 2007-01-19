@@ -46,7 +46,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , messages            = Multilink ("msg")
         , invoices            = Multilink ("invoice")
         )
-    abo.setlabelprop (''"id")
+    abo.setlabelprop (''"aboprice")
 
     abo_price = Class \
         ( db, ''"abo_price"
