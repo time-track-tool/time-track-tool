@@ -834,17 +834,25 @@
      <table width="100%">
       <tr class="navigation">
        <th class="left">
-        <a tal:define="prev batch/previous"
-           tal:condition="prev"
-           tal:attributes="href python:str(request.indexargs_href(request.classname,
-           {':startwith':prev.first, ':pagesize':prev.size}))">&lt;&lt;&nbsp;previous</a></th>
-       <th tal:condition="batch/sequence_length"
-           tal:content="structure python:'<nobr>showing %d - %d of %d in total</nobr>'
-                               % ( batch.start
-                                 , batch.start + batch.length - 1
-                                 , batch.sequence_length
-                                 )"
-           >
+        <a tal:define="prev batch/previous" tal:condition="prev"
+           i18n:translate=""
+           tal:attributes="href python:
+               str ( request.indexargs_href
+                     ( request.classname
+                     , {':startwith':prev.first, ':pagesize':prev.size}
+                     )
+                   )">
+           &lt;&lt;&nbsp;previous
+        </a>
+       </th>
+       <th tal:condition="batch/sequence_length">
+        <nobr i18n:translate="">
+            showing <span tal:replace="batch/start" i18n:name="start"/>
+            - <span tal:replace="python:batch.start + batch.length -1"
+                    i18n:name="end"/>
+            of <span tal:replace="batch/sequence_length" i18n:name="length"/>
+            in total
+        </nobr>
        </th>
        <th tal:condition="not:batch/sequence_length">
         <nobr i18n:translate="">
@@ -852,10 +860,17 @@
         </nobr>
        </th>
        <th class="right">
-        <a tal:define="next batch/next"
-           tal:condition="next"
-           tal:attributes="href python:str(request.indexargs_href(request.classname,
-           {':startwith':next.first, ':pagesize':next.size}))">next&nbsp;&gt;&gt;</a></th>
+        <a tal:define="next batch/next" tal:condition="next"
+           i18n:translate=""
+           tal:attributes="href python:
+               str ( request.indexargs_href
+                     ( request.classname
+                     , {':startwith':next.first, ':pagesize':next.size}
+                   )
+                  )">
+           next&nbsp;&gt;&gt;
+        </a>
+       </th>
       </tr>
      </table>
     </th>

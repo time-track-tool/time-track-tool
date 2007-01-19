@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-17 17:16+0100\n"
+"POT-Creation-Date: 2007-01-19 10:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -432,6 +432,10 @@ msgstr ""
 #: ../detectors/user_dynamic.py:143
 #, python-format
 msgid "Frozen: %(valid_from)s"
+msgstr ""
+
+#: ../extensions/abo.py:37
+msgid "Download&nbsp;letter"
 msgstr ""
 
 #: ../extensions/daily_record_action.py:119
@@ -1323,7 +1327,7 @@ msgstr ""
 msgid "hours_sun"
 msgstr ""
 
-#: ../extensions/help.py:407
+#: ../extensions/help.py:407 ../schema/abo.py:49
 msgid "id"
 msgstr ""
 
@@ -1677,9 +1681,9 @@ msgstr ""
 #: ../locale/attr.py:602 ../locale/attr.py:625 ../locale/attr.py:629
 #: ../locale/attr.py:640 ../locale/attr.py:643 ../locale/attr.py:647
 #: ../locale/attr.py:664 ../locale/attr.py:729 ../locale/attr.py:733
-#: ../schema/abo.py:58 ../schema/abo.py:69 ../schema/abo.py:117
-#: ../schema/abo.py:148 ../schema/abo.py:159 ../schema/abo.py:181
-#: ../schema/abo.py:189 attr.py:4 attr.py:9 attr.py:11 attr.py:14 attr.py:21
+#: ../schema/abo.py:59 ../schema/abo.py:70 ../schema/abo.py:118
+#: ../schema/abo.py:149 ../schema/abo.py:160 ../schema/abo.py:182
+#: ../schema/abo.py:190 attr.py:4 attr.py:9 attr.py:11 attr.py:14 attr.py:21
 #: attr.py:24 attr.py:27 attr.py:32 attr.py:36 attr.py:40 attr.py:43 attr.py:71
 #: attr.py:89 attr.py:92 attr.py:108 attr.py:115 attr.py:118 attr.py:123
 #: attr.py:136 attr.py:149 attr.py:164 attr.py:173 attr.py:195 attr.py:200
@@ -2943,7 +2947,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:1039 ../locale/attr.py:19 ../locale/attr.py:576
-#: ../locale/attr.py:641 ../schema/abo.py:185 attr.py:19 attr.py:576
+#: ../locale/attr.py:641 ../schema/abo.py:186 attr.py:19 attr.py:576
 #: attr.py:641
 msgid "valid"
 msgstr ""
@@ -3187,7 +3191,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:58 ../html/_generic.item.html:58
-#: ../html/page.html:914
+#: ../html/page.html:972
 msgid "Download as CSV"
 msgstr ""
 
@@ -3208,15 +3212,15 @@ msgstr ""
 msgid "export addresses"
 msgstr ""
 
-#: ../html/address.item.html:20
+#: ../html/address.item.html:24
 msgid "-- tmplates --"
 msgstr ""
 
-#: ../html/address.item.html:38
+#: ../html/address.item.html:43
 msgid "New Subscription for ${lastname}"
 msgstr ""
 
-#: ../html/address.item.html:46
+#: ../html/address.item.html:52
 msgid "New Letter for ${lastname}"
 msgstr ""
 
@@ -3286,7 +3290,7 @@ msgstr ""
 msgid "Welcome"
 msgstr ""
 
-#: ../html/invoice.item.html:18
+#: ../html/invoice.item.html:22
 msgid "Generate single invoice"
 msgstr ""
 
@@ -3322,124 +3326,144 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:279
+#: ../html/page.html:294
 msgid "Welcome:"
 msgstr ""
 
-#: ../html/page.html:284
+#: ../html/page.html:299
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
-#: ../html/page.html:291
+#: ../html/page.html:306
 msgid "Login:"
 msgstr ""
 
-#: ../html/page.html:295
+#: ../html/page.html:310
 msgid "Password:"
 msgstr ""
 
-#: ../html/page.html:299
+#: ../html/page.html:314
 msgid "Remember me?:"
 msgstr ""
 
-#: ../html/page.html:363
+#: ../html/page.html:350
+msgid "Time"
+msgstr ""
+
+#: ../html/page.html:359
+msgid "Approval"
+msgstr ""
+
+#: ../html/page.html:405
 msgid "User&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:428
+#: ../html/page.html:465
 msgid "-- Create / Update --"
 msgstr ""
 
-#: ../html/page.html:449
+#: ../html/page.html:486
 msgid "-- View / Query --"
 msgstr ""
 
-#: ../html/page.html:451
+#: ../html/page.html:488
 msgid "Manage Queries"
 msgstr ""
 
-#: ../html/page.html:591
+#: ../html/page.html:628
 msgid "Show History"
 msgstr ""
 
-#: ../html/page.html:655
+#: ../html/page.html:692
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
-#: ../html/page.html:692
+#: ../html/page.html:729
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:693
+#: ../html/page.html:730
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:694
+#: ../html/page.html:731
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:807
+#: ../html/page.html:837
+msgid "&lt;&lt;&nbsp;previous"
+msgstr ""
+
+#: ../html/page.html:853
+msgid "showing ${start} - ${end} of ${length} in total"
+msgstr ""
+
+#: ../html/page.html:858
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:900
+#: ../html/page.html:863
+msgid "next&nbsp;&gt;&gt;"
+msgstr ""
+
+#: ../html/page.html:958
 msgid "Query"
 msgstr ""
 
-#: ../html/page.html:901
+#: ../html/page.html:959
 msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:907
+#: ../html/page.html:965
 msgid "View"
 msgstr ""
 
-#: ../html/page.html:910
+#: ../html/page.html:968
 msgid "items per page"
 msgstr ""
 
-#: ../html/page.html:924
+#: ../html/page.html:982
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:931 ../html/page.html:953
+#: ../html/page.html:989 ../html/page.html:1011
 msgid "- nothing -"
 msgstr ""
 
-#: ../html/page.html:937 ../html/page.html:959
+#: ../html/page.html:995 ../html/page.html:1017
 msgid "Descending:"
 msgstr ""
 
-#: ../html/page.html:946
+#: ../html/page.html:1004
 msgid "Group on:"
 msgstr ""
 
-#: ../html/page.html:1071
+#: ../html/page.html:1129
 msgid "Search full text:"
 msgstr ""
 
-#: ../html/page.html:1076
+#: ../html/page.html:1134
 msgid "(Searches also in messages)"
 msgstr ""
 
-#: ../html/page.html:1083
+#: ../html/page.html:1141
 msgid "Update view"
 msgstr ""
 
-#: ../html/page.html:1094
+#: ../html/page.html:1152
 msgid "This query's name:"
 msgstr ""
 
-#: ../html/page.html:1104
+#: ../html/page.html:1162
 msgid "Update view & store this query"
 msgstr ""
 
-#: ../html/page.html:1111
+#: ../html/page.html:1169
 msgid "(If you change the name, you create a new query!!!)"
 msgstr ""
 
-#: ../html/page.html:1120 ../html/page.html:1129
+#: ../html/page.html:1178 ../html/page.html:1187
 msgid "Update view & store NEW query"
 msgstr ""
 
@@ -3583,7 +3607,7 @@ msgid "country"
 msgstr ""
 
 #: ../locale/attr.py:137 ../locale/attr.py:571 ../locale/attr.py:635
-#: ../locale/attr.py:707 ../schema/abo.py:72 attr.py:137 attr.py:571
+#: ../locale/attr.py:707 ../schema/abo.py:73 attr.py:137 attr.py:571
 #: attr.py:635 attr.py:707
 msgid "address"
 msgstr ""
@@ -3709,7 +3733,7 @@ msgid "travel_full"
 msgstr ""
 
 #: ../locale/attr.py:351 ../locale/attr.py:594 ../locale/attr.py:598
-#: ../schema/abo.py:110 attr.py:351 attr.py:594 attr.py:598
+#: ../schema/abo.py:111 attr.py:351 attr.py:594 attr.py:598
 msgid "code"
 msgstr ""
 
@@ -3942,17 +3966,17 @@ msgstr ""
 msgid "aboprice"
 msgstr ""
 
-#: ../locale/attr.py:558 ../schema/abo.py:51 attr.py:558
+#: ../locale/attr.py:558 ../schema/abo.py:52 attr.py:558
 msgid "abo_price"
 msgstr ""
 
 #: ../locale/attr.py:559 ../locale/attr.py:604 ../locale/attr.py:623
-#: ../schema/abo.py:144 attr.py:559 attr.py:604 attr.py:623
+#: ../schema/abo.py:145 attr.py:559 attr.py:604 attr.py:623
 msgid "invoice_group"
 msgstr ""
 
 #: ../locale/attr.py:560 ../locale/attr.py:600 ../locale/attr.py:612
-#: ../schema/abo.py:113 attr.py:560 attr.py:600 attr.py:612
+#: ../schema/abo.py:114 attr.py:560 attr.py:600 attr.py:612
 msgid "currency"
 msgstr ""
 
@@ -3960,12 +3984,12 @@ msgstr ""
 msgid "abotype"
 msgstr ""
 
-#: ../locale/attr.py:564 ../schema/abo.py:61 attr.py:564
+#: ../locale/attr.py:564 ../schema/abo.py:62 attr.py:564
 msgid "abo_type"
 msgstr ""
 
 #: ../locale/attr.py:565 ../locale/attr.py:574 ../locale/attr.py:593
-#: ../schema/abo.py:98 attr.py:565 attr.py:574 attr.py:593
+#: ../schema/abo.py:99 attr.py:565 attr.py:574 attr.py:593
 msgid "adr_type"
 msgstr ""
 
@@ -3973,7 +3997,7 @@ msgstr ""
 msgid "period"
 msgstr ""
 
-#: ../locale/attr.py:568 ../locale/attr.py:626 ../schema/abo.py:153 attr.py:568
+#: ../locale/attr.py:568 ../locale/attr.py:626 ../schema/abo.py:154 attr.py:568
 #: attr.py:626
 msgid "invoice_template"
 msgstr ""
@@ -4022,11 +4046,11 @@ msgstr ""
 msgid "typecat"
 msgstr ""
 
-#: ../locale/attr.py:597 ../schema/abo.py:106 attr.py:597
+#: ../locale/attr.py:597 ../schema/abo.py:107 attr.py:597
 msgid "adr_type_cat"
 msgstr ""
 
-#: ../locale/attr.py:603 ../locale/attr.py:634 ../schema/abo.py:120 attr.py:603
+#: ../locale/attr.py:603 ../locale/attr.py:634 ../schema/abo.py:121 attr.py:603
 #: attr.py:634
 msgid "invoice"
 msgstr ""
@@ -4067,7 +4091,7 @@ msgstr ""
 msgid "period_start"
 msgstr ""
 
-#: ../locale/attr.py:620 ../schema/abo.py:141 attr.py:620
+#: ../locale/attr.py:620 ../schema/abo.py:142 attr.py:620
 msgid "invoice_no"
 msgstr ""
 
@@ -4080,7 +4104,7 @@ msgid "payment"
 msgstr ""
 
 #: ../locale/attr.py:627 ../locale/attr.py:638 ../locale/attr.py:661
-#: ../schema/abo.py:176 attr.py:627 attr.py:638 attr.py:661
+#: ../schema/abo.py:177 attr.py:627 attr.py:638 attr.py:661
 msgid "tmplate"
 msgstr ""
 
@@ -4092,7 +4116,7 @@ msgstr ""
 msgid "interval"
 msgstr ""
 
-#: ../locale/attr.py:631 ../schema/abo.py:166 attr.py:631
+#: ../locale/attr.py:631 ../schema/abo.py:167 attr.py:631
 msgid "letter"
 msgstr ""
 
