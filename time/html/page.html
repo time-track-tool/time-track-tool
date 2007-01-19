@@ -40,7 +40,7 @@
    , 'adr_type'        : '@action=search&@columns=id,code,description,typecat&'
                          '@sort=code&@filter=typecat&@pagesize=50&'
                          '@startwith=0&typecat=%s' %
-                         (   'adr_type_cat' in props
+                         (   'adr_type_cat' in db._db.classes
                          and ','.join (db._db.adr_type_cat.getnodeids ())
                          )
    , 'alias'           : '@columns=name,alias_to_alias,alias_to_user&'
