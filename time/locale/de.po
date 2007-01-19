@@ -7,12 +7,67 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-19 10:21+0100\n"
+"POT-Creation-Date: 2007-01-19 17:34+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "Restart of subscription only within two months"
+msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
+
+msgid "Restart of subscription only within last period"
+msgstr "Wiederaufnahme Abo nur innerhalb letzter Periode"
+
+msgid "Termination with deletion only for unpayed subscriptions"
+msgstr "Storno mit Löschen nur für unbezahlte neue Abos"
+
+msgid "Termination: end must be greater or equal to start time"
+msgstr "Storno: Endzeit muss größer/gleich Startzeit sein"
+
+msgid "\"%(attr)s\" may not be filled in"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+msgid "\"%(attr)s\" must be filled in"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
+msgid "invoice is marked"
+msgstr "Rechnung ist markiert"
+
+msgid "\"end\" (close subscription) only +/- one month"
+msgstr "\"Storniert per\" (Storno) nur +/- ein Monat"
+
+msgid "\"%(attr)s\" may not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+msgid "\"%(attr)s\" may not be zero"
+msgstr "\"%(attr)s\" darf nicht Null werden"
+
+msgid "Open/change only for valid subscription"
+msgstr "Wiederaufnahme/Änderung nur für gültige Abos"
+
+msgid ""
+"\"end\" may only be changed for last invoice period: %(period_start)s-%"
+"(period_end)s"
+msgstr ""
+"\"Storniert per\" darf nur im Bereich der letzten Rechnungsperiode geändert "
+"werden: %(period_start)s-%(period_end)s"
+
+msgid "\"%(attr)s\" must be greater or equal to zero"
+msgstr "\"%(attr)s\" muss größer/gleich Null sein"
+
+msgid "period must be an integer"
+msgstr "Laufzeit muss ganzzahlig sein"
+
+msgid "Country must be set"
+msgstr "Land muss gesetzt sein"
+
+msgid ""
+"address type category \"ABO\" is used by the system and may not be changed."
+msgstr ""
+"Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf nicht geändert "
+"werden."
 
 #, python-format
 msgid "The field \"%s\" must must remain filled."
@@ -49,6 +104,31 @@ msgstr "\"%(attr)s\" darf nicht geändert werden"
 #, python-format
 msgid "%(attr)s must remain filled"
 msgstr "\"%(attr)s\" muss ausgefüllt bleiben"
+
+msgid "\"%(attr)s\" must not be filled in"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+msgid "\"%(attr)s\" must not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+msgid "no change of closed subscription"
+msgstr "Kein Buchen bei storniertem Abo"
+
+msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
+msgstr "\"Zahlung\", \"Offen\", \"Betrag\": nur Zahlen erlaubt"
+
+msgid "amount may not be changed after payment"
+msgstr "Betrag darf nach Zahlung nicht mehr geändert werden"
+
+#, python-format
+msgid "inconsistency of payment:%s and balance_open:%s"
+msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
+
+msgid "payment may not exceed balance_open"
+msgstr "Zahlung darf Betrag nicht übersteigen"
+
+msgid "\"%(attr)s\" may not be deleted"
+msgstr "\"%(attr)s\" darf nicht gelöscht werden"
 
 #, python-format
 msgid "New issue may not define \"%s\""
@@ -2347,6 +2427,30 @@ msgstr "(Kalender)"
 msgid "Welcome to the "
 msgstr "Willkommen zur "
 
+#, python-format
+msgid "No invoice_template defined for all invoices: %s"
+msgstr "Es ist nicht für jede Rechnung eine Vorlage definiert: %s"
+
+#, python-format
+msgid "No matching invoice_template for invoice %s"
+msgstr "Keine Rechnungsvorlage für Rechnung %s"
+
+msgid "You can only mark invoices"
+msgstr "Nur Rechnungen können markiert werden"
+
+msgid "invoices are already marked"
+msgstr "Rechnungen sind schon markiert"
+
+msgid "You can only download letters"
+msgstr "Nur Briefe können heruntergeladen werden"
+
+msgid "You can only download templates for an address"
+msgstr "Vorlagen können nur für Adressen heruntergeladen werden"
+
+#, python-format
+msgid "No files for %(tmplate)s"
+msgstr "Keine Dateien für %(tmplate)s"
+
 msgid "cost_center"
 msgstr "Kostenstelle"
 
@@ -3088,67 +3192,8 @@ msgstr "Benutzerstatus"
 msgid "doc_num"
 msgstr ""
 
-#~ msgid "Restart of subscription only within two months"
-#~ msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
-
-#~ msgid "Restart of subscription only within last period"
-#~ msgstr "Wiederaufnahme Abo nur innerhalb letzter Periode"
-
-#~ msgid "Termination with deletion only for unpayed subscriptions"
-#~ msgstr "Storno mit Löschen nur für unbezahlte neue Abos"
-
-#~ msgid "Termination: end must be greater or equal to start time"
-#~ msgstr "Storno: Endzeit muss größer/gleich Startzeit sein"
-
-#~ msgid "\"%(attr)s\" may not be filled in"
-#~ msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
-
-#~ msgid "invoice is marked"
-#~ msgstr "Rechnung ist markiert"
-
-#~ msgid "\"end\" (close subscription) only +/- one month"
-#~ msgstr "\"Storniert per\" (Storno) nur +/- ein Monat"
-
-#~ msgid "\"%(attr)s\" may not be zero"
-#~ msgstr "\"%(attr)s\" darf nicht Null werden"
-
-#~ msgid "Open/change only for valid subscription"
-#~ msgstr "Wiederaufnahme/Änderung nur für gültige Abos"
-
-#~ msgid ""
-#~ "\"end\" may only be changed for last invoice period: %(period_start)s-%"
-#~ "(period_end)s"
-#~ msgstr ""
-#~ "\"Storniert per\" darf nur im Bereich der letzten Rechnungsperiode "
-#~ "geändert werden: %(period_start)s-%(period_end)s"
-
-#~ msgid "period must be an integer"
-#~ msgstr "Laufzeit muss ganzzahlig sein"
-
 #~ msgid "Selected address types must be in type category \"ABO\""
 #~ msgstr "Ausgewählte Adresstypen müssen in der Kategorie \"ABO\" sein."
-
-#~ msgid "Country must be set"
-#~ msgstr "Land muss gesetzt sein"
-
-#~ msgid ""
-#~ "address type category \"ABO\" is used by the system and may not be "
-#~ "changed."
-#~ msgstr ""
-#~ "Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf nicht "
-#~ "geändert werden."
-
-#~ msgid "no change of closed subscription"
-#~ msgstr "Kein Buchen bei storniertem Abo"
-
-#~ msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
-#~ msgstr "\"Zahlung\", \"Offen\", \"Betrag\": nur Zahlen erlaubt"
-
-#~ msgid "inconsistency of payment:%s and balance_open:%s"
-#~ msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
-
-#~ msgid "payment may not exceed balance_open"
-#~ msgstr "Zahlung darf Betrag nicht übersteigen"
 
 #~ msgid "Subscription to which this invoice belongs"
 #~ msgstr "Abo zu dieser Rechnung"
@@ -3334,27 +3379,6 @@ msgstr ""
 
 #~ msgid "Status of this address"
 #~ msgstr "Gültigkeits-Status dieser Adresse"
-
-#~ msgid "No invoice_template defined for all invoices: %s"
-#~ msgstr "Es ist nicht für jede Rechnung eine Vorlage definiert: %s"
-
-#~ msgid "No matching invoice_template for invoice %s"
-#~ msgstr "Keine Rechnungsvorlage für Rechnung %s"
-
-#~ msgid "You can only mark invoices"
-#~ msgstr "Nur Rechnungen können markiert werden"
-
-#~ msgid "invoices are already marked"
-#~ msgstr "Rechnungen sind schon markiert"
-
-#~ msgid "You can only download letters"
-#~ msgstr "Nur Briefe können heruntergeladen werden"
-
-#~ msgid "You can only download templates for an address"
-#~ msgstr "Vorlagen können nur für Adressen heruntergeladen werden"
-
-#~ msgid "No files for %(tmplate)s"
-#~ msgstr "Keine Dateien für %(tmplate)s"
 
 #~ msgid "${property} help"
 #~ msgstr "Hilfe für ${property}"

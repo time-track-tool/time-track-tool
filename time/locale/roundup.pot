@@ -8,13 +8,84 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-19 10:21+0100\n"
+"POT-Creation-Date: 2007-01-19 17:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../detectors/abo_checks.py:33
+msgid "Restart of subscription only within two months"
+msgstr ""
+
+#: ../detectors/abo_checks.py:34
+msgid "Restart of subscription only within last period"
+msgstr ""
+
+#: ../detectors/abo_checks.py:35
+msgid "Termination with deletion only for unpayed subscriptions"
+msgstr ""
+
+#: ../detectors/abo_checks.py:36
+msgid "Termination: end must be greater or equal to start time"
+msgstr ""
+
+#: ../detectors/abo_checks.py:37
+msgid "\"%(attr)s\" may not be filled in"
+msgstr ""
+
+#: ../detectors/abo_checks.py:38 ../detectors/abo_type.py:34
+#: ../detectors/invoice.py:31 ../detectors/invoice_template.py:30
+#: ../detectors/letter.py:30
+#, python-format
+msgid "\"%(attr)s\" must be filled in"
+msgstr ""
+
+#: ../detectors/abo_checks.py:39
+msgid "invoice is marked"
+msgstr ""
+
+#: ../detectors/abo_checks.py:40
+msgid "\"end\" (close subscription) only +/- one month"
+msgstr ""
+
+#: ../detectors/abo_checks.py:41 ../detectors/letter.py:45
+#, python-format
+msgid "\"%(attr)s\" may not be changed"
+msgstr ""
+
+#: ../detectors/abo_checks.py:42
+msgid "\"%(attr)s\" may not be zero"
+msgstr ""
+
+#: ../detectors/abo_checks.py:43
+msgid "Open/change only for valid subscription"
+msgstr ""
+
+#: ../detectors/abo_checks.py:44
+msgid ""
+"\"end\" may only be changed for last invoice period: %(period_start)s-%"
+"(period_end)s"
+msgstr ""
+
+#: ../detectors/abo_checks.py:46
+msgid "\"%(attr)s\" must be greater or equal to zero"
+msgstr ""
+
+#: ../detectors/abo_type.py:37
+msgid "period must be an integer"
+msgstr ""
+
+#: ../detectors/address.py:57 ../detectors/address.py:62
+msgid "Country must be set"
+msgstr ""
+
+#: ../detectors/adr_type_cat.py:29 ../detectors/adr_type_cat.py:37
+msgid ""
+"address type category \"ABO\" is used by the system and may not be changed."
+msgstr ""
 
 #: ../detectors/audit.py:130
 #, python-format
@@ -61,6 +132,42 @@ msgstr ""
 #: ../detectors/daily_record_freeze.py:117
 #, python-format
 msgid "%(attr)s must remain filled"
+msgstr ""
+
+#: ../detectors/invoice.py:44
+#, python-format
+msgid "\"%(attr)s\" must not be filled in"
+msgstr ""
+
+#: ../detectors/invoice.py:87
+#, python-format
+msgid "\"%(attr)s\" must not be changed"
+msgstr ""
+
+#: ../detectors/invoice.py:98
+msgid "no change of closed subscription"
+msgstr ""
+
+#: ../detectors/invoice.py:101
+msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
+msgstr ""
+
+#: ../detectors/invoice.py:104
+msgid "amount may not be changed after payment"
+msgstr ""
+
+#: ../detectors/invoice.py:107
+#, python-format
+msgid "inconsistency of payment:%s and balance_open:%s"
+msgstr ""
+
+#: ../detectors/invoice.py:114
+msgid "payment may not exceed balance_open"
+msgstr ""
+
+#: ../detectors/invoice_template.py:39 ../detectors/letter.py:49
+#, python-format
+msgid "\"%(attr)s\" may not be deleted"
 msgstr ""
 
 #: ../detectors/issue.py:51
@@ -1327,7 +1434,7 @@ msgstr ""
 msgid "hours_sun"
 msgstr ""
 
-#: ../extensions/help.py:407 ../schema/abo.py:49
+#: ../extensions/help.py:407
 msgid "id"
 msgstr ""
 
@@ -1693,8 +1800,8 @@ msgstr ""
 #: ../locale/attr.py:641 ../locale/attr.py:644 ../locale/attr.py:648
 #: ../locale/attr.py:665 ../locale/attr.py:730 ../locale/attr.py:734
 #: ../schema/abo.py:59 ../schema/abo.py:70 ../schema/abo.py:119
-#: ../schema/abo.py:150 ../schema/abo.py:161 ../schema/abo.py:183
-#: ../schema/abo.py:191 attr.py:4 attr.py:9 attr.py:11 attr.py:14 attr.py:21
+#: ../schema/abo.py:150 ../schema/abo.py:161 ../schema/abo.py:184
+#: ../schema/abo.py:192 attr.py:4 attr.py:9 attr.py:11 attr.py:14 attr.py:21
 #: attr.py:24 attr.py:27 attr.py:32 attr.py:36 attr.py:40 attr.py:43 attr.py:71
 #: attr.py:89 attr.py:92 attr.py:108 attr.py:115 attr.py:118 attr.py:123
 #: attr.py:136 attr.py:149 attr.py:164 attr.py:173 attr.py:195 attr.py:200
@@ -2958,7 +3065,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:1044 ../locale/attr.py:19 ../locale/attr.py:579
-#: ../locale/attr.py:642 ../schema/abo.py:187 attr.py:19 attr.py:579
+#: ../locale/attr.py:642 ../schema/abo.py:188 attr.py:19 attr.py:579
 #: attr.py:642
 msgid "valid"
 msgstr ""
@@ -3115,6 +3222,37 @@ msgstr ""
 msgid "Welcome to the "
 msgstr ""
 
+#: ../extensions/mark_invoices.py:63
+#, python-format
+msgid "No invoice_template defined for all invoices: %s"
+msgstr ""
+
+#: ../extensions/mark_invoices.py:70
+#, python-format
+msgid "No matching invoice_template for invoice %s"
+msgstr ""
+
+#: ../extensions/mark_invoices.py:86
+msgid "You can only mark invoices"
+msgstr ""
+
+#: ../extensions/mark_invoices.py:157
+msgid "invoices are already marked"
+msgstr ""
+
+#: ../extensions/mark_invoices.py:358
+msgid "You can only download letters"
+msgstr ""
+
+#: ../extensions/mark_invoices.py:386
+msgid "You can only download templates for an address"
+msgstr ""
+
+#: ../extensions/mark_invoices.py:395
+#, python-format
+msgid "No files for %(tmplate)s"
+msgstr ""
+
 #: ../extensions/summary.py:732 ../locale/attr.py:201 ../locale/attr.py:260
 #: ../locale/attr.py:315 ../schema/time_tracker.py:41 attr.py:201 attr.py:260
 #: attr.py:315
@@ -3202,7 +3340,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:58 ../html/_generic.item.html:58
-#: ../html/page.html:972
+#: ../html/page.html:973
 msgid "Download as CSV"
 msgstr ""
 
@@ -3305,19 +3443,19 @@ msgstr ""
 msgid "Generate single invoice"
 msgstr ""
 
-#: ../html/invoice.send.html:36
+#: ../html/invoice.send.html:37
 msgid "mark"
 msgstr ""
 
-#: ../html/invoice.send.html:46
+#: ../html/invoice.send.html:47
 msgid "unmark"
 msgstr ""
 
-#: ../html/invoice.send.html:56
+#: ../html/invoice.send.html:57
 msgid "generate invoices"
 msgstr ""
 
-#: ../html/invoice.send.html:66
+#: ../html/invoice.send.html:67
 msgid "mark as sent"
 msgstr ""
 
@@ -3337,144 +3475,144 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:294
+#: ../html/page.html:296
 msgid "Welcome:"
 msgstr ""
 
-#: ../html/page.html:299
+#: ../html/page.html:301
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
-#: ../html/page.html:306
+#: ../html/page.html:308
 msgid "Login:"
 msgstr ""
 
-#: ../html/page.html:310
+#: ../html/page.html:312
 msgid "Password:"
 msgstr ""
 
-#: ../html/page.html:314
+#: ../html/page.html:316
 msgid "Remember me?:"
 msgstr ""
 
-#: ../html/page.html:350
+#: ../html/page.html:352
 msgid "Time"
 msgstr ""
 
-#: ../html/page.html:359
+#: ../html/page.html:361
 msgid "Approval"
 msgstr ""
 
-#: ../html/page.html:405
+#: ../html/page.html:407
 msgid "User&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:465
+#: ../html/page.html:467
 msgid "-- Create / Update --"
 msgstr ""
 
-#: ../html/page.html:486
+#: ../html/page.html:487
 msgid "-- View / Query --"
 msgstr ""
 
-#: ../html/page.html:488
+#: ../html/page.html:489
 msgid "Manage Queries"
 msgstr ""
 
-#: ../html/page.html:628
+#: ../html/page.html:629
 msgid "Show History"
 msgstr ""
 
-#: ../html/page.html:692
+#: ../html/page.html:693
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
-#: ../html/page.html:729
+#: ../html/page.html:730
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:730
+#: ../html/page.html:731
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:731
+#: ../html/page.html:732
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:837
+#: ../html/page.html:838
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:853
+#: ../html/page.html:854
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:858
+#: ../html/page.html:859
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:863
+#: ../html/page.html:864
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:958
+#: ../html/page.html:959
 msgid "Query"
 msgstr ""
 
-#: ../html/page.html:959
+#: ../html/page.html:960
 msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:965
+#: ../html/page.html:966
 msgid "View"
 msgstr ""
 
-#: ../html/page.html:968
+#: ../html/page.html:969
 msgid "items per page"
 msgstr ""
 
-#: ../html/page.html:982
+#: ../html/page.html:983
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:989 ../html/page.html:1011
+#: ../html/page.html:990 ../html/page.html:1012
 msgid "- nothing -"
 msgstr ""
 
-#: ../html/page.html:995 ../html/page.html:1017
+#: ../html/page.html:996 ../html/page.html:1018
 msgid "Descending:"
 msgstr ""
 
-#: ../html/page.html:1004
+#: ../html/page.html:1005
 msgid "Group on:"
 msgstr ""
 
-#: ../html/page.html:1129
+#: ../html/page.html:1130
 msgid "Search full text:"
 msgstr ""
 
-#: ../html/page.html:1134
+#: ../html/page.html:1135
 msgid "(Searches also in messages)"
 msgstr ""
 
-#: ../html/page.html:1141
+#: ../html/page.html:1142
 msgid "Update view"
 msgstr ""
 
-#: ../html/page.html:1152
+#: ../html/page.html:1153
 msgid "This query's name:"
 msgstr ""
 
-#: ../html/page.html:1162
+#: ../html/page.html:1163
 msgid "Update view & store this query"
 msgstr ""
 
-#: ../html/page.html:1169
+#: ../html/page.html:1170
 msgid "(If you change the name, you create a new query!!!)"
 msgstr ""
 
-#: ../html/page.html:1178 ../html/page.html:1187
+#: ../html/page.html:1179 ../html/page.html:1188
 msgid "Update view & store NEW query"
 msgstr ""
 
@@ -3973,7 +4111,7 @@ msgstr ""
 msgid "amount"
 msgstr ""
 
-#: ../locale/attr.py:557 attr.py:557
+#: ../locale/attr.py:557 ../schema/abo.py:49 attr.py:557
 msgid "aboprice"
 msgstr ""
 
@@ -4115,7 +4253,7 @@ msgid "payment"
 msgstr ""
 
 #: ../locale/attr.py:628 ../locale/attr.py:639 ../locale/attr.py:662
-#: ../schema/abo.py:178 attr.py:628 attr.py:639 attr.py:662
+#: ../schema/abo.py:179 attr.py:628 attr.py:639 attr.py:662
 msgid "tmplate"
 msgstr ""
 
