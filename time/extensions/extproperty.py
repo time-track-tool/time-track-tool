@@ -172,7 +172,7 @@ class ExtProperty :
         , editable      = None
         , add_hidden    = False
         , searchable    = None # usually computed, override with False
-        , sortable      = True
+        , sortable      = None
         , pretty        = _
         , get_cssclass  = get_cssclass
         , do_classhelp  = None
@@ -210,6 +210,8 @@ class ExtProperty :
         self.help_filter   = help_filter
         self.help_sort     = help_sort
         self.bool_tristate = bool_tristate
+        if self.sortable is None :
+            self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
             self.name = ''
         if not self.searchname or isinstance (searchname, MissingValue) :

@@ -92,6 +92,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , valid               = Link      ("valid")
         , letters             = Multilink ("letter")
         , invoices            = Multilink ("invoice")
+        , lookalike_name      = String    (indexme = do_index)
         )
     address.setlabelprop ('lastname')
 

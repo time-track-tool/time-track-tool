@@ -481,6 +481,11 @@ _helptext = \
       [""'''Location of %(Classname)s, e.g., Vienna HQ.''']
     , ""'login_shell'                 :
       [""'''UNIX login shell for %(Classname)s''']
+    , ""'lookalike_name'              :
+      [""'''Search for similar names: only non-accented characters are
+            possible when searching
+         '''
+      ]
     , ""'lunch_duration'              :
       [""'''Preference for time tracking, duration of lunch break in hours''']
     , ""'lunch_start'                 :
