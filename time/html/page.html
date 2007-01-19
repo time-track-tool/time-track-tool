@@ -466,10 +466,9 @@
           onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
    <option value="" i18n:translate="">-- Create / Update --</option>
    <tal:block tal:repeat="k python:
-    utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
-                 , (0,)
-                 , i18n.gettext
-                 )">
+    sorted ( [k for k in klasses if k [0] in db._db.classes]
+           , key = lambda x, y = i18n.gettext : y (x [0]).lower ()
+           )">
     <option tal:condition="python:request.user.hasPermission(k [1], k [0])
                                   and k [3]"
             tal:attributes="value python:k[0] + k[2]"
@@ -492,7 +491,7 @@
    <tal:block
     tal:repeat="k python: sorted
         ( [k for k in klasses if k [0] in db._db.classes]
-        , key = lambda x, y = i18n.gettext : y (x [3][0] or x [0])
+        , key = lambda x, y = i18n.gettext : y (x [3][0] or x [0]).lower ()
         )">
      <tal:block tal:define=
        " name   python: i18n.gettext (k [3][0] or k [0])
