@@ -291,16 +291,14 @@ class ExtProperty :
         self._set_item (item)
         if self.prop is None or isinstance (self.prop, MissingValue) :
             return ""
-        elif isinstance (self.prop, DateHTMLProperty) :
-            if self.format :
-                format = self.format
-            else :
-                format = '%Y-%m-%d'
-            return self.prop.pretty (format)
-        elif self.format :
-            return self.format % self.item [self.name]
         if self.displayprop :
-            return str (self.item [self.displayprop])
+            format = self.format or '%s'
+            return format % str (self.item [self.displayprop])
+        if isinstance (self.prop, DateHTMLProperty) :
+            format = self.format or '%Y-%m-%d'
+            return self.prop.pretty (format)
+        if self.format :
+            return self.format % self.item [self.name]
         return str (self.prop)
     # end def formatted
 
@@ -343,8 +341,11 @@ class ExtProperty :
         p = prop or self.prop
 
         if self.displayprop == 'id' :
+            lp = self.lnkcls.labelprop ()
+            if lp == 'id' :
+                lp = 'creation'
             return self.__class__ \
-                ( self.utils, p [self.lnkcls.labelprop ()]
+                ( self.utils, p [lp]
                 , item         = p
                 , pretty       = self.pretty
                 , get_cssclass = self.get_cssclass

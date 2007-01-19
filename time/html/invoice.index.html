@@ -1,53 +1,57 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title">
- <span tal:replace="string:Abfrage ${Classname}" />
-</title>
-<span metal:fill-slot="body_title" tal:omit-tag="python:1"
-      tal:content="string:Abfrage ${Classname}"></span>
+ <title metal:fill-slot="head_title">
+  <span tal:replace="string:Abfrage ${Classname}"/>
+ </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="string:Abfrage ${Classname}"/>
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
 
-<tal:block metal:fill-slot="content">
- <tal:block tal:define=
-  "batch request/batch;
-   pdict python: utils.properties_dict (db, context);
-   ep    python: utils.ExtProperty;
-   props python:
-    ( ep (utils, pdict ['id'])
-    , ep (utils, pdict ['invoice_no'])
-    , ep (utils, pdict ['period_start'])
-    , ep (utils, pdict ['period_end'])
-    , ep (utils, pdict ['amount'])
-    , ep (utils, pdict ['currency'], multiselect = 1)
-    , ep (utils, pdict ['balance_open'])
-    , ep (utils, pdict ['payment'])
-    , ep (utils, pdict ['open'])
-    , ep (utils, pdict ['n_sent'])
-    , ep (utils, pdict ['send_it'])
-    , ep (utils, pdict ['last_sent'])
-    , ep (utils, pdict ['date_payed'])
-    , ep (utils, pdict ['bookentry'])
-    , ep (utils, pdict ['receipt_no'])
-    , ep (utils, pdict ['payer'],      lnkattr = 'lastname')
-    , ep (utils, pdict ['subscriber'], lnkattr = 'lastname')
-    , ep (utils, pdict ['abo'])
-    , ep (utils, pdict ['invoice_group'], multiselect = 1)
-    );
-  "
-  tal:condition="context/is_view_ok">
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+   "batch request/batch;
+    pdict python: utils.properties_dict (db, context);
+    ep    python: utils.ExtProperty;
+    props python:
+     ( ep (utils, pdict ['id'])
+     , ep (utils, pdict ['invoice_no'])
+     , ep (utils, pdict ['period_start'])
+     , ep (utils, pdict ['period_end'])
+     , ep (utils, pdict ['amount'])
+     , ep (utils, pdict ['currency'],      multiselect = 1)
+     , ep (utils, pdict ['balance_open'])
+     , ep (utils, pdict ['payment'])
+     , ep (utils, pdict ['open'])
+     , ep (utils, pdict ['n_sent'])
+     , ep (utils, pdict ['send_it'])
+     , ep (utils, pdict ['last_sent'])
+     , ep (utils, pdict ['date_payed'])
+     , ep (utils, pdict ['bookentry'])
+     , ep (utils, pdict ['receipt_no'])
+     , ep (utils, pdict ['payer'])
+     , ep (utils, pdict ['subscriber'])
+     , ep (utils, pdict ['abo'])
+     , ep (utils, pdict ['invoice_group'], multiselect = 1)
+     );
+   "
+   tal:condition="context/is_view_ok">
 
-  <form method="POST" tal:attributes="action request/classname">
-  <tal:block metal:use-macro="templates/page/macros/search_results"/>
-  <p>
-  <input type="hidden" name="@action" value="edit">
-  <tal:block replace="structure request/indexargs_form" />
-  </p>
-  </form>
+   <form method="POST" tal:attributes="action request/classname">
+    <tal:block metal:use-macro="templates/page/macros/search_results"/>
+    <p>
+    <input type="hidden" name="@action" value="edit">
+    <tal:block replace="structure request/indexargs_form"/>
+    </p>
+   </form>
 
-  <tal:block metal:use-macro="templates/page/macros/simple_search_form">
-   <tal:block metal:fill-slot="query_title">
-    <tal:block tal:replace="python:'Abfrage ' + Classname">
+   <tal:block metal:use-macro="templates/page/macros/simple_search_form">
+    <tal:block metal:fill-slot="query_title">
+     <tal:block tal:replace="python:'Abfrage ' + Classname">
+     </tal:block>
     </tal:block>
    </tal:block>
   </tal:block>
  </tal:block>
-</tal:block>
 </tal:block>
