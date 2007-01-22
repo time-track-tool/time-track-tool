@@ -163,6 +163,10 @@ table.form th a:link {
   white-space: nowrap;
 }
 
+table.form th a[href]:hover { color: #338 }
+table.form th a[href]:link  { color: #338 }
+table.form th a[href]       { color: #338 }
+
 table.form th.header {
   font-weight: bold;
   background-color: #eef;

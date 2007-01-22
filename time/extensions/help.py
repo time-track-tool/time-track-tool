@@ -37,6 +37,8 @@ else :
     date_help  = Date.__doc__ 
     range_help = Range.__doc__
 
+academic_title = \
+    ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
 daily_hours = \
     ""'''Expected daily work-time for %(Classname)s for each day of
          the week. If nothing is specified, the average of Weekly
@@ -95,6 +97,16 @@ range_description = \
     ""'''as a comma-separated list of ranges (a special case of a range
          is just one number), e.g., 1-100,300-500
       '''
+realname_automatic = \
+    ''""" -- automatically generated
+         by the system from first and last name. Needed by roundup
+         internally. (Roundup uses this as the sender name when
+         sending messages via email)
+     """
+status = \
+    ""'''Status of this %(Classname)s. Automatically set on a new
+         %(Classname)s if not set.
+      '''
 superseder = \
     ""'''This %(Classname)s has been closed as a duplicate against
          another %(Classname)s.
@@ -150,8 +162,7 @@ _helptext = \
       [""'''Address for this letter''']
     , ""'address++valid'              :
       ""'''Status of this address'''
-    , ""'address++title'              :
-      ""'''Title of the person belonging to this %(Classname)s'''
+    , ""'address++title'              : [academic_title]
     , ""'adr_type_cat.code'           :
       [""'''Code of this %(Classname)s. The address type category with
            code "ABO" is special: It is used by the system for marking
@@ -789,13 +800,7 @@ _helptext = \
       , extension
       ]
     , ""'realname'                    :
-      [ ""'''Real name for this %(Classname)s'''
-      , ''""" -- automatically generated
-             by the system from first and last name. Needed by roundup
-             internally. (Roundup uses this as the sender name when
-             sending messages via email)
-          """
-      ]
+      [""'''Real name for this %(Classname)s''', realname_automatic]
     , ""'receipt_no'                  :
       [""'''Unique identification of this payment''']
     , ""'recipients'                  :
@@ -969,10 +974,8 @@ _helptext = \
       , green
       ]
     , ""'status'                      :
-      [""'''Status of this %(Classname)s. Automatically set on a new
-            %(Classname)s if not set. There are constraints on status
-            transitions.
-         '''
+      [ status
+      , ""'''There are constraints on status transitions.'''
       ]
     , ""'street'                      :
       [""'''Street for this %(Classname)s''']
@@ -1162,8 +1165,8 @@ _helptext = \
       ]
     , ""'user++address'               :
       [""'''Primary email address for this user''']
-    , ""'user++title'                 :
-      [""'''Academic title of %(Classname)s, e.g., Dipl. Ing.''']
+    , ""'user++status'                : [status]
+    , ""'user++title'                 : [academic_title]
     , ""'username'                    :
       [""'''Login-name for this %(Classname)s, e.g., schlatterbeck''']
     , ""'vacation_remaining'          :
