@@ -20,7 +20,8 @@
 
 from roundup.exceptions import Reject
 from roundup.date       import Date
-from roundup.rup_utils  import translate
+
+from rup_utils          import translate
 
 def fix_adr_type (db, cl, nodeid, new_values) :
     if 'adr_type' in new_values :

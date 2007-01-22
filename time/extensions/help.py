@@ -114,25 +114,54 @@ view = \
 
 _helptext = \
     { ""'VIEW'                        : [ view ]
+    , ""'abo'                         :
+      [""'''Subscription to which this invoice belongs''']
+    , ""'abo++end'                    :
+      [""'''Date when this subscription ends''']
+    , ""'aboprice'                    :
+      [""'''Price and currency for this subscription''']
+    , ""'abos'                        :
+      [""'''Subscriptions for this %(Classname)s''']
+    , ""'abotype'                     :
+      [""'''Type of this subscription''']
+    , ""'abo_type.adr_type'           :
+      [""'''Type of Address -- this field indicates the address type to
+           be used for marking addresses that should be exported for
+           sending. When a new subsription is generated this type will
+           be automatically added to the subscriber. When cancelling a
+           subscription, this type will be deleted from the subscriber.
+           Note that only address types can be selected here for which
+           the address type category is "ABO".
+        '''
+      ]
     , ""'active'                      :
       [""'''Set if this %(Classname)s is active.''']
-    , ""'area'                        :
-      [""'''Where this issue belongs to.'''
-      , miss_text
-      ]
-    , ""'time_project_status++active' :
-      [ ""'''Set if this %(Classname)s is active. This determines if new
-             work packages may be created for a project with this activity
-             status. If a status is marked active, new work packages may
-             be created for a project with this status.
-          '''
-      ]
     , ""'activity'                    :
       [""'''Date of last change''']
     , ""'actor'                       :
       [""'''Person who has done the last change''']
+    , ""'add_announcement'            :
+      [""'''Mail out an announcement for another review step''']
+    , ""'add_file'                    :
+      [""'''Add a new file for %(Classname)s''']
     , ""'additional_hours'            :
       [""'''Austrian-Law: time above 38.5 hours per week''']
+    , ""'address'                     :
+      [""'''Address for this letter''']
+    , ""'address++valid'              :
+      ""'''Status of this address'''
+    , ""'address++title'              :
+      ""'''Title of the person belonging to this %(Classname)s'''
+    , ""'adr_type_cat.code'           :
+      [""'''Code of this %(Classname)s. The address type category with
+           code "ABO" is special: It is used by the system for marking
+           all address types that are used for marking subscribers
+           addresses of running abos. Therefore the address type
+           category with code "ABO" may not be deleted or changed.
+        '''
+      ]
+    , ""'adr_type'                    :
+      [""'''Type of Address''']
     , ""'alias'                       :
       [""'''Email alias''']
     , ""'alias_to_alias'              :
@@ -143,14 +172,24 @@ _helptext = \
       [""'''If selected, the user has an all-inclusive work time contract''']
     , ""'alternate_addresses'         :
       [""'''Alternate email addresses for this user, one per line''']
+    , ""'amount'                      :
+      [""'''Amount this subscription costs''']
     , ""'announcements'               :
       [""'''Announcements for this %(Classname)s''']
-    , ""'add_announcement'            :
-      [""'''Mail out an announcement for another review step''']
+    , ""'area'                        :
+      [""'''Where this issue belongs to.'''
+      , miss_text
+      ]
     , ""'author'                      :
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'balance_open'                :
+      [""'''Open amount not yet payed''']
+    , ""'begin'                       :
+      [""'''Begin of period''']
+    , ""'bookentry'                   :
+      [""'''Date when the payment was booked''']
     , ""'bookers'                     :
       [ ""'''Users who may book on this %(Classname)s. If nothing is
              selected here, all users may book on this %(Classname)s (e.g.,
@@ -179,6 +218,8 @@ _helptext = \
             some fields like "Files affected" are filled in.
          '''
       ]
+    , ""'city'                        :
+      [""'''City where this person lives''']
     , ""'clearance_by'                :
       [ ""'''Usually the supervisor of a person approves
              time records. This can be delegated using this attribute. It
@@ -191,6 +232,8 @@ _helptext = \
             Roundup.
          '''
       ]
+    , ""'code'                        :
+      [""'''Code of this %(Classname)s''']
     , ""'company'                     :
       [""'''Company for %(Classname)s''']
     , ""'composed_of'                 :
@@ -208,10 +251,11 @@ _helptext = \
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
       [""'''Specifies the Phase the Cost Center is in''']
-    , ""'creation'                    :
-      [""'''Record creation date''']
-    , ""'creator'                     :
-      [""'''Person who created this record''']
+    , ""'country'                     : [""'''Country for this address''']
+    , ""'creation'                    : [""'''Record creation date''']
+    , ""'creator'                     : [""'''Person who created this record''']
+    , ""'currency'                    :
+      [""'''Currency for this %(Classname)s''']
     , ""'cut_off_date'                :
       [ ""'''Date until when this %(Classname)s must be finished.'''
       , date_text
@@ -220,6 +264,8 @@ _helptext = \
       [ ""'''Date of this %(Classname)s.<br>'''
       , date_text
       ]
+    , ""'date_payed'                  :
+      [""'''Date when this %(Classname)s was payed''']
     , ""'daily_hours'                 : [daily_hours]
     , ""'daily_worktime'              :
       [""'''Maximum time a person may book for a single day.''']
@@ -349,8 +395,8 @@ _helptext = \
           '''
       , pstn_number
       ]
-    , ""'add_file'                    :
-      [""'''Add an new file for %(Classname)s''']
+    , ""'fax'                         :
+      [""'''FAX number for this %(Classname)s''']
     , ""'files'                       :
       [""'''Files for %(Classname)s''']
     , ""'files_affected'              :
@@ -376,7 +422,7 @@ _helptext = \
       , date_text
       ]
     , ""'firstname'                   :
-      [""'''First name for this user, e.g., Ralf''']
+      [""'''First name for this %(Classname)s, e.g., Ralf''']
     , ""'fixed_in'                    :
       [""'''Provide the version number where you fixed it. Is needed
             when you change the status to testing.
@@ -386,6 +432,11 @@ _helptext = \
       
               TTP-OS 4.5.23
          '''
+      ]
+    , ""'function'            :
+      [""'''Multiline field for this %(Classname)s, will be printed on an
+           address label
+        '''
       ]
     , ""'gid'                         :
       [""'''Numeric group ID''']
@@ -413,11 +464,32 @@ _helptext = \
       [ ""'''Short mobile or external phone number, e.g., 6142.'''
       , extension
       ]
+    , ""'interval'                    :
+      [""'''Interval for sending out an invoice in months. If the
+           invoice_level is non-zero, the distance in months since the
+           last invoice sent.
+        '''
+      ]
     , ""'inventory_no'                :
       [ ""'''Unique number or name for this %(Classname)s, preferrably the
              inventory number for asset tracking
           '''
       ]
+    , ""'invoice'                     :
+      [""'''Link to invoice for this %(Classname)s''']
+    , ""'invoice_group'               :
+      [""'''Link to invoice_group for this %(Classname)s''']
+    , ""'invoice_level'               :
+      [""'''When the customer has received more invoices than this number
+           indicates, an invoice of this type is sent.
+        '''
+      ]
+    , ""'invoice_no'                  :
+      [""'''Unique number for this invoice, generated by the system''']
+    , ""'invoice_template'            :
+      [""'''An OpenOffice file used as a template for this type of invoice''']
+    , ""'invoices'                    :
+      [""'''List of invoices for this %(Classname)s''']
     , ""'ip'                          :
       [""'''Internet protocol address of this %(Classname)s''']
     , ""'ip_subnet'                   :
@@ -468,10 +540,21 @@ _helptext = \
       [""'''Last used gid in this %(Classname)s''']
     , ""'last_machine_uid'            :
       [""'''Last used machine uid in this %(Classname)s''']
+    , ""'last_sent'                   :
+      [""'''Date when an invoice was last sent''']
     , ""'last_uid'                    :
       [""'''Last used uid in this %(Classname)s''']
     , ""'lastname'                    :
-      [""'''Last name for this user, e.g., Schlatterbeck''']
+      [""'''Last name for this %(Classname)s, e.g., Schlatterbeck''']
+    , ""'letter'                      :
+      [""'''Download of letter -- usually this will open the letter in
+           OpenOffice
+        '''
+      ]
+    , ""'letters'                     :
+      [""'''List of letters for this %(Classname)s''']
+    , ""'lettertitle'                 :
+      [""'''Title of this person used in a letter''']
     , ""'link_field'                  :
       [ ""'''Auxiliary field for use with other software, e.g., asset
              tracking
@@ -523,7 +606,8 @@ _helptext = \
     , ""'messageid'                   :
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                    :
-      [""'''List of messages for %(Classname)s. Note that during
+      [""'''List of messages for %(Classname)s.'''
+      ,""''' Note that during
             conversion from the old roundup tracker all existing
             messages numbered 1-73815 were renumbered with an offset of
             3287 resulting in the message range 3288-77102 in the
@@ -536,6 +620,8 @@ _helptext = \
       [""'''New message or notice for %(Classname)s''']
     , ""'msg_keywords'                :
       [keywords]
+    , ""'n_sent'                      :
+      [""'''Number of times this invoice was sent''']
     , ""'name'                        :
       [""'''Unique %(Classname)s name''']
     , ""'name_version'                :
@@ -591,6 +677,11 @@ _helptext = \
              time tracking.
           '''
       ]
+    , ""'open'                        :
+      [""'''Indicates if this %(Classname)s is still open. Automatically
+            maintained by the system
+        '''
+      ]
     , ""'opt_reviewers'               :
       [""'''Optional reviewers for this %(Classname)s''']
     , ""'order'                       :
@@ -601,6 +692,12 @@ _helptext = \
       [ ""'''Organisation and location of this %(Classname)s, cartesian
              product of organisation and location -- only the combinations
              that really exist are stored in the database of course.
+          '''
+      ]
+    , ""'org_location++phone'         :
+      [ ""'''Telephone-Network prefix of Telephone number for company
+             without direct inbound dialling suffix (aka extension)
+             number
           '''
       ]
     , ""'organisation.id'             : [help_id]
@@ -623,17 +720,23 @@ _helptext = \
     , ""'part_of.id'                  : [help_id]
     , ""'password'                    :
       [""'''Password for this %(Classname)s''']
+    , ""'payed_abos'                  :
+      [""'''Subscriptions for which this %(Classname)s is paying''']
+    , ""'payer'                       :
+      [""'''Address which is paying for this subscription''']
+    , ""'payment'                     :
+      [""'''Amount of payment received for this invoice''']
     , ""'peer_reviewers'              :
       [""'''Peer reviewers for this %(Classname)s''']
+    , ""'period'                      :
+      [""'''Subscription period in months.''']
+    , ""'period_end'                  :
+      [""'''Date when this invoice period ends''']
+    , ""'period_start'                :
+      [""'''Date when this invoice period starts''']
     , ""'phone'                       :
       [ ""'''Short phone number (suffix) only, e.g., 42.'''
       , extension
-      ]
-    , ""'org_location++phone'         :
-      [ ""'''Telephone-Network prefix of Telephone number for company
-             without direct inbound dialling suffix (aka extension)
-             number
-          '''
       ]
     , ""'planned_effort'              :
       [ ""'''Effort for %(Classname)s in person-hours; as it is stated
@@ -641,6 +744,8 @@ _helptext = \
              person days, so you have to convert old values to hours!
           '''
       ]
+    , ""'postalcode'                  :
+      [""'''Postal code for this %(Classname)s ''']
     , ""'priority'                    :
       [ priority
       , ""'''Should be set between 0 and 100. For the planning process
@@ -683,17 +788,20 @@ _helptext = \
           '''
       , extension
       ]
-    , ""'recorder'                    :
-      [""'''Person responsible for recording findings''']
     , ""'realname'                    :
-      [ ''"""Real name for this %(Classname)s -- automatically generated
+      [ ""'''Real name for this %(Classname)s'''
+      , ''""" -- automatically generated
              by the system from first and last name. Needed by roundup
-             internally. (More specifically by roundupdp.py\'s send_message
-             -- which is used e.g. by the nosyreactor)
+             internally. (Roundup uses this as the sender name when
+             sending messages via email)
           """
       ]
+    , ""'receipt_no'                  :
+      [""'''Unique identification of this payment''']
     , ""'recipients'                  :
       [""'''Only set if message was received via email.''']
+    , ""'recorder'                    :
+      [""'''Person responsible for recording findings''']
     , ""'release'                     :
       [ ""'''The %(Property)s this %(Classname)s belongs to -- if
              available (e.g. 4.3.72 for TTP-Plan).
@@ -728,6 +836,8 @@ _helptext = \
       [""'''Room number''']
     , ""'routers'                     :
       [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
+    , ""'salutation'                  :
+      [""'''Salutation used for printing an address''']
     , ""'samba_home_drive'            :
       [""'''Home drive for %(Classname)s in Windows''']
     , ""'samba_home_path'             :
@@ -765,6 +875,13 @@ _helptext = \
       ]
     , ""'secondary_groups'            :
       [""'''secondary UNIX Groups for this %(Classname)s''']
+    , ""'send_it'                     :
+      [ ""'''Flag indicating if this invoice should be sent. If not set,
+             this invoice will disappear from the current list of invoices. It
+             is not sent when generating invoices and is not marked when sent
+             invoices are marked.
+          '''
+      ]
     , ""'shadow_last_change'          :
       [ ""'''Time-stamp the shadow password was last changed,
              automatically computed by the system
@@ -857,8 +974,12 @@ _helptext = \
             transitions.
          '''
       ]
+    , ""'street'                      :
+      [""'''Street for this %(Classname)s''']
     , ""'subject'                     :
       [""'''Short identification of this message''']
+    , ""'subscriber'                  :
+      [""'''Subscriber of this subscription''']
     , ""'substitute'                  :
       [ ""'''Person who can substitute %(Classname)s for approving time
              records.
@@ -967,6 +1088,13 @@ _helptext = \
              for determining if the user may book on a work package.
           '''
       ]
+    , ""'time_project_status++active' :
+      [ ""'''Set if this %(Classname)s is active. This determines if new
+             work packages may be created for a project with this activity
+             status. If a status is marked active, new work packages may
+             be created for a project with this status.
+          '''
+      ]
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
@@ -974,6 +1102,11 @@ _helptext = \
             Since titles of Roundup issues are also extracted into SCI
             documents, start with a capital letter, and type all other
             letters in lowercase, except names and references.
+         '''
+      ]
+    , ""'tmplate'                     :
+      [ ""'''Used for writing letters (and invoices if selected as an
+            invoice template)
          '''
       ]
     , ""'travel'                      : [travel]
@@ -1000,6 +1133,8 @@ _helptext = \
       ]
     , ""'type'                        :
       [""'''Mime type of this file''']
+    , ""'typecat'             :
+      [""'''Category of this %(Classname)s''']
     , ""'uid'                         :
       [""'''Numeric user ID''']
     , ""'uid_range'                   :

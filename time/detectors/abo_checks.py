@@ -19,10 +19,11 @@
 # ****************************************************************************
 
 from time                           import localtime
-from roundup.rup_utils              import abo_max_invoice
 from roundup.date                   import Date, Interval
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+
+from rup_utils                      import abo_max_invoice
 
 month  = Interval ('1m')
 month2 = Interval ('2m')

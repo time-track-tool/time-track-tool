@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-19 17:34+0100\n"
+"POT-Creation-Date: 2007-01-22 10:13+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,6 +29,7 @@ msgstr "Storno: Endzeit muss größer/gleich Startzeit sein"
 msgid "\"%(attr)s\" may not be filled in"
 msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
 
+#, python-format
 msgid "\"%(attr)s\" must be filled in"
 msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
@@ -38,6 +39,7 @@ msgstr "Rechnung ist markiert"
 msgid "\"end\" (close subscription) only +/- one month"
 msgstr "\"Storniert per\" (Storno) nur +/- ein Monat"
 
+#, python-format
 msgid "\"%(attr)s\" may not be changed"
 msgstr "\"%(attr)s\" darf nicht geändert werden"
 
@@ -105,9 +107,11 @@ msgstr "\"%(attr)s\" darf nicht geändert werden"
 msgid "%(attr)s must remain filled"
 msgstr "\"%(attr)s\" muss ausgefüllt bleiben"
 
+#, python-format
 msgid "\"%(attr)s\" must not be filled in"
 msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
 
+#, python-format
 msgid "\"%(attr)s\" must not be changed"
 msgstr "\"%(attr)s\" darf nicht geändert werden"
 
@@ -127,6 +131,7 @@ msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
 msgid "payment may not exceed balance_open"
 msgstr "Zahlung darf Betrag nicht übersteigen"
 
+#, python-format
 msgid "\"%(attr)s\" may not be deleted"
 msgstr "\"%(attr)s\" darf nicht gelöscht werden"
 
@@ -541,28 +546,61 @@ msgstr ""
 msgid "VIEW"
 msgstr "Felder"
 
+msgid "abo"
+msgstr "Abo"
+
+msgid "Subscription to which this invoice belongs"
+msgstr "Abo zu dieser Rechnung"
+
+msgid "abo++end"
+msgstr ""
+
+msgid "Date when this subscription ends"
+msgstr "Datum wann dieses Abo endet"
+
+msgid "aboprice"
+msgstr "Preis"
+
+msgid "Price and currency for this subscription"
+msgstr "Preis und Währung für dieses Abo"
+
+msgid "abos"
+msgstr "Abos"
+
+msgid "Subscriptions for this %(Classname)s"
+msgstr "Abos für diese(n) %(Classname)s"
+
+msgid "abotype"
+msgstr "Abotyp"
+
+msgid "Type of this subscription"
+msgstr "Typ dieses Abos"
+
+msgid "abo_type.adr_type"
+msgstr "Typ"
+
+msgid ""
+"Type of Address -- this field indicates the address type to\n"
+"           be used for marking addresses that should be exported for\n"
+"           sending. When a new subsription is generated this type will\n"
+"           be automatically added to the subscriber. When cancelling a\n"
+"           subscription, this type will be deleted from the subscriber.\n"
+"           Note that only address types can be selected here for which\n"
+"           the address type category is \"ABO\".\n"
+"        "
+msgstr ""
+"Typ dieser Adresse -- dieses Feld bezeichnet den \"Typ\" welcher für das "
+"Markieren von Adressen für den Versand verwendet werden soll. Beim Anlegen "
+"eines neuen Abos wird automatisch der Typ bei der Abonnenten-Adresse "
+"eingetragen. Beim Stornieren eines Abos wird der Typ automatisch in der "
+"Abonnenten-Adresse gelöscht. Bitte beachten: Nur Adress-Typen die zur Typ-"
+"Kategorie \"ABO\" gehören, dürfen hier ausgewählt werden."
+
 msgid "active"
 msgstr "aktiv"
 
 msgid "Set if this %(Classname)s is active."
 msgstr "Gesetzt, falls diese %(Classname)s aktiv ist"
-
-msgid "area"
-msgstr ""
-
-msgid "Where this issue belongs to."
-msgstr ""
-
-msgid "time_project_status++active"
-msgstr ""
-
-msgid ""
-"Set if this %(Classname)s is active. This determines if new\n"
-"             work packages may be created for a project with this activity\n"
-"             status. If a status is marked active, new work packages may\n"
-"             be created for a project with this status.\n"
-"          "
-msgstr ""
 
 msgid "activity"
 msgstr "letzte Änderung"
@@ -576,11 +614,63 @@ msgstr "geändert von"
 msgid "Person who has done the last change"
 msgstr "Person welche die letzte Änderung durchgeführt hat"
 
+msgid "add_announcement"
+msgstr ""
+
+msgid "Mail out an announcement for another review step"
+msgstr ""
+
+msgid "add_file"
+msgstr "Datei anfügen"
+
+msgid "Add a new file for %(Classname)s"
+msgstr "Datei für %(Classname)s anfügen"
+
 msgid "additional_hours"
 msgstr ""
 
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
+
+msgid "address"
+msgstr "Adresse"
+
+msgid "Address for this letter"
+msgstr "Adresse zu diesem Brief"
+
+msgid "address++valid"
+msgstr "gültig"
+
+msgid "Status of this address"
+msgstr "Gültigkeits-Status dieser Adresse"
+
+msgid "address++title"
+msgstr "Titel"
+
+msgid "Title of the person belonging to this %(Classname)s"
+msgstr "Titel der Person für diese %(Classname)s"
+
+msgid "adr_type_cat.code"
+msgstr "Code"
+
+msgid ""
+"Code of this %(Classname)s. The address type category with\n"
+"           code \"ABO\" is special: It is used by the system for marking\n"
+"           all address types that are used for marking subscribers\n"
+"           addresses of running abos. Therefore the address type\n"
+"           category with code \"ABO\" may not be deleted or changed.\n"
+"        "
+msgstr ""
+"Code für diese %(Classname)s. Die Typ-Kategorie mit dem Code \"ABO\" wird "
+"vom System zum Markieren von Adress-Typen verwendet, die zur Markierung von "
+"Abonnenten-Adressen von laufenden Abos dienen.  Daher darf die Typ-Kategorie "
+"\"ABO\" weder verändert noch gelöscht werden."
+
+msgid "adr_type"
+msgstr "Typ"
+
+msgid "Type of Address"
+msgstr "Typ dieser Adresse"
 
 msgid "alias"
 msgstr "Alias"
@@ -606,16 +696,22 @@ msgstr "zusätzliche Adressen"
 msgid "Alternate email addresses for this user, one per line"
 msgstr "Alternative Email-Adressen für diesen Benutzer, eine pro Zeile"
 
+msgid "amount"
+msgstr "Betrag"
+
+msgid "Amount this subscription costs"
+msgstr "Betrag den dieses Abo kostet"
+
 msgid "announcements"
 msgstr ""
 
 msgid "Announcements for this %(Classname)s"
 msgstr "Ankündigungen für %(Classname)s"
 
-msgid "add_announcement"
+msgid "area"
 msgstr ""
 
-msgid "Mail out an announcement for another review step"
+msgid "Where this issue belongs to."
 msgstr ""
 
 msgid "author"
@@ -629,6 +725,24 @@ msgstr "Autoren"
 
 msgid "Authors of the artefact of this %(Classname)s"
 msgstr "Autoren des Artefakts für diese %(Classname)s"
+
+msgid "balance_open"
+msgstr "Offen"
+
+msgid "Open amount not yet payed"
+msgstr "Noch nicht bezahlter Betrag"
+
+msgid "begin"
+msgstr "Beginn"
+
+msgid "Begin of period"
+msgstr "Start der Rechnungsperiode"
+
+msgid "bookentry"
+msgstr "Buchung am"
+
+msgid "Date when the payment was booked"
+msgstr "Datum des Erfassens der Zahlung"
 
 msgid "bookers"
 msgstr "zugelassene Benutzer"
@@ -677,6 +791,12 @@ msgid ""
 "         "
 msgstr ""
 
+msgid "city"
+msgstr "Ort"
+
+msgid "City where this person lives"
+msgstr "Ort/Stadt wo diese Person lebt"
+
 msgid "clearance_by"
 msgstr ""
 
@@ -696,6 +816,12 @@ msgid ""
 "            Roundup.\n"
 "         "
 msgstr ""
+
+msgid "code"
+msgstr "Code"
+
+msgid "Code of this %(Classname)s"
+msgstr "Code für diese %(Classname)s"
 
 msgid "company"
 msgstr ""
@@ -741,17 +867,29 @@ msgstr ""
 msgid "Specifies the Phase the Cost Center is in"
 msgstr ""
 
-msgid "creation"
-msgstr "Erstellt am"
+msgid "Country for this address"
+msgstr "Land dieser Adresse"
+
+msgid "country"
+msgstr "Land"
 
 msgid "Record creation date"
 msgstr ""
 
-msgid "creator"
-msgstr "Erstellt von"
+msgid "creation"
+msgstr "Erstellt am"
 
 msgid "Person who created this record"
 msgstr "Person die diesen Datensatz erstmalig angelegt hat"
+
+msgid "creator"
+msgstr "Erstellt von"
+
+msgid "currency"
+msgstr "Währung"
+
+msgid "Currency for this %(Classname)s"
+msgstr "Währung für %(Classname)s"
 
 msgid "cut_off_date"
 msgstr ""
@@ -764,6 +902,12 @@ msgstr "Datum"
 
 msgid "Date of this %(Classname)s.<br>"
 msgstr "Datum für %(Classname)s.<br>"
+
+msgid "date_payed"
+msgstr "Bezahlt am"
+
+msgid "Date when this %(Classname)s was payed"
+msgstr "Datum des Bezahlens dieser %(Classname)s"
 
 msgid "daily_hours"
 msgstr ""
@@ -980,11 +1124,11 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "add_file"
-msgstr "Datei anfügen"
+msgid "fax"
+msgstr "Fax"
 
-msgid "Add an new file for %(Classname)s"
-msgstr "Datei für %(Classname)s anfügen"
+msgid "FAX number for this %(Classname)s"
+msgstr "FAX Nummer für diese %(Classname)s"
 
 msgid "files"
 msgstr "Dateien"
@@ -1024,8 +1168,8 @@ msgstr "Datum der Abschlussbesprechung für %(Classname)s"
 msgid "firstname"
 msgstr "Vorname"
 
-msgid "First name for this user, e.g., Ralf"
-msgstr "Vorname für diesen Benutzer, z. B. Ralf"
+msgid "First name for this %(Classname)s, e.g., Ralf"
+msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf"
 
 msgid "fixed_in"
 msgstr ""
@@ -1040,6 +1184,16 @@ msgid ""
 "              TTP-OS 4.5.23\n"
 "         "
 msgstr ""
+
+msgid "function"
+msgstr "Funktion"
+
+msgid ""
+"Multiline field for this %(Classname)s, will be printed on an\n"
+"           address label\n"
+"        "
+msgstr ""
+"Mehrzeiliges Feld für diese %(Classname)s, wird auf Adressetiketten gedruckt."
 
 msgid "Numeric group ID"
 msgstr ""
@@ -1104,6 +1258,19 @@ msgstr "Interne Durchwahl"
 msgid "Short mobile or external phone number, e.g., 6142."
 msgstr ""
 
+msgid "interval"
+msgstr "Intervall"
+
+msgid ""
+"Interval for sending out an invoice in months. If the\n"
+"           invoice_level is non-zero, the distance in months since the\n"
+"           last invoice sent.\n"
+"        "
+msgstr ""
+"Intervall nach dem eine Rechnung/Mahnung verschickt wird in Monaten. Falls "
+"die Mahnstufe größer als Null ist, der Abstand zur letzten Rechnung/Mahnung "
+"in Monaten"
+
 msgid "inventory_no"
 msgstr "Inventarnummer"
 
@@ -1112,6 +1279,50 @@ msgid ""
 "             inventory number for asset tracking\n"
 "          "
 msgstr ""
+
+msgid "invoice"
+msgstr "Rechnung"
+
+msgid "Link to invoice for this %(Classname)s"
+msgstr "Verbindung zur Rechnung für %(Classname)s"
+
+msgid "invoice_group"
+msgstr "Rechnungsgruppe"
+
+msgid "Link to invoice_group for this %(Classname)s"
+msgstr "Verbindung zur Rechnungsgruppe für %(Classname)s"
+
+msgid "invoice_level"
+msgstr "Mahnstufe"
+
+msgid ""
+"When the customer has received more invoices than this number\n"
+"           indicates, an invoice of this type is sent.\n"
+"        "
+msgstr ""
+"Falls ein Kunde mehr Rechnungen/Mahnungen als diese Zahl erhalten hat, wird "
+"dieser Typ von Rechnung/Mahnung verwendet"
+
+msgid "invoice_no"
+msgstr "RgNr"
+
+msgid "Unique number for this invoice, generated by the system"
+msgstr ""
+"Eindeutige Nummer dieser Rechnung. Wird vom System automatisch erzeugt."
+
+msgid "invoice_template"
+msgstr "Rechnungsvorlage"
+
+msgid "An OpenOffice file used as a template for this type of invoice"
+msgstr ""
+"Eine OpenOffice Datei welche als Schablone für diesen Rechnungstyp verwendet "
+"wird"
+
+msgid "invoices"
+msgstr "Rechnungen"
+
+msgid "List of invoices for this %(Classname)s"
+msgstr "Liste der Rechnungen für %(Classname)s"
 
 msgid "ip"
 msgstr ""
@@ -1198,6 +1409,12 @@ msgstr ""
 msgid "Last used machine uid in this %(Classname)s"
 msgstr "Zuletzt benuzte Maschinen UID für diese %(Classname)s"
 
+msgid "last_sent"
+msgstr "zuletzt versendet"
+
+msgid "Date when an invoice was last sent"
+msgstr "Datum des letzten Versendens einer Rechnung/Mahnung"
+
 msgid "last_uid"
 msgstr ""
 
@@ -1207,8 +1424,31 @@ msgstr "Zuletzt benutzte UID für diese %(Classname)s"
 msgid "lastname"
 msgstr "Nachname"
 
-msgid "Last name for this user, e.g., Schlatterbeck"
+msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
+msgstr "Nachname für diesen %(Classname)s, z.B., Schlatterbeck"
+
+msgid "letter"
+msgstr "Brief"
+
+msgid ""
+"Download of letter -- usually this will open the letter in\n"
+"           OpenOffice\n"
+"        "
 msgstr ""
+"Laden des Briefes -- normalerweise wird damit der Brief mit OpenOffice "
+"geöffnet"
+
+msgid "letters"
+msgstr "Briefe"
+
+msgid "List of letters for this %(Classname)s"
+msgstr "Verzeichnis der Briefe für diese %(Classname)s"
+
+msgid "lettertitle"
+msgstr "Brieftitel"
+
+msgid "Title of this person used in a letter"
+msgstr "Titel dieser Person, Verwendung in der Brief-Anrede"
 
 msgid "link_field"
 msgstr ""
@@ -1324,8 +1564,11 @@ msgstr "Eindeutige ID falls diese Nachricht per Email empfangen wurde"
 msgid "messages"
 msgstr "Notizen"
 
+msgid "List of messages for %(Classname)s."
+msgstr "Verzeichnis der Notizen zu %(Classname)s"
+
 msgid ""
-"List of messages for %(Classname)s. Note that during\n"
+" Note that during\n"
 "            conversion from the old roundup tracker all existing\n"
 "            messages numbered 1-73815 were renumbered with an offset of\n"
 "            3287 resulting in the message range 3288-77102 in the\n"
@@ -1343,6 +1586,12 @@ msgstr "Feld für Notizen zu %(Classname)s"
 
 msgid "msg_keywords"
 msgstr ""
+
+msgid "n_sent"
+msgstr "Mahnstufe"
+
+msgid "Number of times this invoice was sent"
+msgstr "Anzahl der Rechnungen/Mahnungen welche schon verschickt wurden"
 
 msgid "name"
 msgstr "Name"
@@ -1446,6 +1695,17 @@ msgstr ""
 "Hinweis, ob %(Classname)s ein projekt ist oder nur für die Zeiterfassung "
 "benötigt wird"
 
+msgid "open"
+msgstr "offen"
+
+msgid ""
+"Indicates if this %(Classname)s is still open. Automatically\n"
+"            maintained by the system\n"
+"        "
+msgstr ""
+"Beschreibt, ob diese Rechnung noch offen ist. Wird automatisch vom System "
+"verwaltet."
+
 msgid "opt_reviewers"
 msgstr ""
 
@@ -1469,6 +1729,16 @@ msgid ""
 "Organisation and location of this %(Classname)s, cartesian\n"
 "             product of organisation and location -- only the combinations\n"
 "             that really exist are stored in the database of course.\n"
+"          "
+msgstr ""
+
+msgid "org_location++phone"
+msgstr "Telefon"
+
+msgid ""
+"Telephone-Network prefix of Telephone number for company\n"
+"             without direct inbound dialling suffix (aka extension)\n"
+"             number\n"
 "          "
 msgstr ""
 
@@ -1516,27 +1786,53 @@ msgstr "Passwort"
 msgid "Password for this %(Classname)s"
 msgstr "Passwort für %(Classname)s"
 
+msgid "payed_abos"
+msgstr "Zahler für"
+
+msgid "Subscriptions for which this %(Classname)s is paying"
+msgstr "Abos für welche diese %(Classname)s bezahlt"
+
+msgid "payer"
+msgstr "Zahler"
+
+msgid "Address which is paying for this subscription"
+msgstr "Adresse welche für dieses Abo bezahlt"
+
+msgid "payment"
+msgstr "Zahlung"
+
+msgid "Amount of payment received for this invoice"
+msgstr "Betrag der bereits bezahlt wurde"
+
 msgid "peer_reviewers"
 msgstr ""
 
 msgid "Peer reviewers for this %(Classname)s"
 msgstr "Reviewer für %(Classname)s"
 
+msgid "period"
+msgstr "Laufzeit"
+
+msgid "Subscription period in months."
+msgstr "Rechnungsperiode in Monaten"
+
+msgid "period_end"
+msgstr "Datum bis"
+
+msgid "Date when this invoice period ends"
+msgstr "Datum wann diese Rechnungsperiode endet"
+
+msgid "period_start"
+msgstr "Datum von"
+
+msgid "Date when this invoice period starts"
+msgstr "Datum wann diese Rechnungsperiode beginnt"
+
 msgid "phone"
 msgstr "Telefon"
 
 msgid "Short phone number (suffix) only, e.g., 42."
-msgstr ""
-
-msgid "org_location++phone"
-msgstr ""
-
-msgid ""
-"Telephone-Network prefix of Telephone number for company\n"
-"             without direct inbound dialling suffix (aka extension)\n"
-"             number\n"
-"          "
-msgstr ""
+msgstr "Telefonnummer(n)"
 
 msgid "planned_effort"
 msgstr ""
@@ -1547,6 +1843,12 @@ msgid ""
 "             person days, so you have to convert old values to hours!\n"
 "          "
 msgstr ""
+
+msgid "postalcode"
+msgstr "PLZ"
+
+msgid "Postal code for this %(Classname)s "
+msgstr "Postleitzahl für diese %(Classname)s"
 
 msgid "priority"
 msgstr "Priorität"
@@ -1620,28 +1922,37 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "recorder"
-msgstr "Aufzeichnung von"
-
-msgid "Person responsible for recording findings"
-msgstr ""
-
 msgid "realname"
 msgstr "Name"
 
+msgid "Real name for this %(Classname)s"
+msgstr "Vor- und Nachname für %(Classname)s"
+
 msgid ""
-"Real name for this %(Classname)s -- automatically generated\n"
+" -- automatically generated\n"
 "             by the system from first and last name. Needed by roundup\n"
-"             internally. (More specifically by roundupdp.py's send_message\n"
-"             -- which is used e.g. by the nosyreactor)\n"
+"             internally. (Roundup uses this as the sender name when\n"
+"             sending messages via email)\n"
 "          "
 msgstr ""
+
+msgid "receipt_no"
+msgstr "BelegNr"
+
+msgid "Unique identification of this payment"
+msgstr "Eindeutige Identifikation für diese Zahlung"
 
 msgid "recipients"
 msgstr "Empfänger"
 
 msgid "Only set if message was received via email."
 msgstr "Nur gesetzt, wenn diese Notiz per Email empfangen wurde"
+
+msgid "recorder"
+msgstr "Aufzeichnung von"
+
+msgid "Person responsible for recording findings"
+msgstr ""
 
 #.  just to show something in the pop-up, gets set to the last reached milestone
 msgid "release"
@@ -1706,6 +2017,8 @@ msgid ""
 "             one role, enter a comma,separated,list\n"
 "          "
 msgstr ""
+"Rollen für %(Classname)s -- falls mehr als eine Rolle vergeben wird, sind "
+"die Rollen durch Komma,zu,trennen."
 
 msgid "room"
 msgstr ""
@@ -1718,6 +2031,12 @@ msgstr "Router"
 
 msgid "Routers for this %(Classname)s, used in DHCP configuration."
 msgstr "Router für %(Classname)s, wird für DHCP Konfiguration benötigt"
+
+msgid "salutation"
+msgstr "Anrede"
+
+msgid "Salutation used for printing an address"
+msgstr "Anrede für diese Adresse"
 
 msgid "samba_home_drive"
 msgstr ""
@@ -1802,6 +2121,22 @@ msgstr ""
 
 msgid "secondary UNIX Groups for this %(Classname)s"
 msgstr "Sekundäre UNIX-Gruppen für %(Classname)s"
+
+msgid "send_it"
+msgstr "senden?"
+
+msgid ""
+"Flag indicating if this invoice should be sent. If not set,\n"
+"             this invoice will disappear from the current list of invoices. "
+"It\n"
+"             is not sent when generating invoices and is not marked when "
+"sent\n"
+"             invoices are marked.\n"
+"          "
+msgstr ""
+"Hinweis, ob diese Rechnung versendet werden soll. Falls nicht gesetzt, "
+"verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese Rechnung "
+"weder versendet, noch als gesendet markiert."
 
 msgid "shadow_last_change"
 msgstr "Datum der letzten Änderung des Shadow-Passworts"
@@ -1954,11 +2289,23 @@ msgid ""
 "         "
 msgstr ""
 
+msgid "street"
+msgstr "Straße"
+
+msgid "Street for this %(Classname)s"
+msgstr "Straße für diese %(Classname)s"
+
 msgid "subject"
 msgstr "Betreff"
 
 msgid "Short identification of this message"
 msgstr "Kurz-Identifikation für diese Notiz"
+
+msgid "subscriber"
+msgstr "Abonnent"
+
+msgid "Subscriber of this subscription"
+msgstr "Abonnent für dieses Abo"
 
 msgid "substitute"
 msgstr "Vertretung"
@@ -2159,6 +2506,17 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "time_project_status++active"
+msgstr ""
+
+msgid ""
+"Set if this %(Classname)s is active. This determines if new\n"
+"             work packages may be created for a project with this activity\n"
+"             status. If a status is marked active, new work packages may\n"
+"             be created for a project with this status.\n"
+"          "
+msgstr ""
+
 msgid "timezone"
 msgstr "Zeitzone"
 
@@ -2175,6 +2533,17 @@ msgid ""
 "            letters in lowercase, except names and references.\n"
 "         "
 msgstr ""
+
+msgid "tmplate"
+msgstr "Vorlage"
+
+msgid ""
+"Used for writing letters (and invoices if selected as an\n"
+"            invoice template)\n"
+"         "
+msgstr ""
+"Wird zum Erzeugen von Briefen verwendet (oder für Rechnungen falls als "
+"Rechnungsvorlage ausgewählt)"
 
 msgid "travel"
 msgstr ""
@@ -2220,6 +2589,12 @@ msgstr "Typ"
 
 msgid "Mime type of this file"
 msgstr "MIME Typ dieser Datei (Systeminformation)"
+
+msgid "typecat"
+msgstr "Typ Kategorie"
+
+msgid "Category of this %(Classname)s"
+msgstr "Kategorie für %(Classname)s"
 
 msgid "Numeric user ID"
 msgstr ""
@@ -2282,7 +2657,7 @@ msgid "Academic title of %(Classname)s, e.g., Dipl. Ing."
 msgstr ""
 
 msgid "username"
-msgstr "Benutzer Name"
+msgstr "Login Name"
 
 msgid "Login-name for this %(Classname)s, e.g., schlatterbeck"
 msgstr "Login-Name für diesen %(Classname)s, z.B. schlatterbeck"
@@ -2801,12 +3176,6 @@ msgstr ""
 msgid "it_project_status"
 msgstr ""
 
-msgid "country"
-msgstr "Land"
-
-msgid "address"
-msgstr "Adresse"
-
 msgid "mail_domain"
 msgstr ""
 
@@ -2890,9 +3259,6 @@ msgstr "Dynamische Benutzerdaten"
 
 msgid "travel_full"
 msgstr ""
-
-msgid "code"
-msgstr "Code"
 
 msgid "milestone"
 msgstr ""
@@ -3039,137 +3405,14 @@ msgstr "Zeilennummer"
 msgid "file_name"
 msgstr "Dateiname"
 
-msgid "abo"
-msgstr "Abo"
-
-msgid "begin"
-msgstr "Beginn"
-
-msgid "payer"
-msgstr "Zahler"
-
-msgid "invoices"
-msgstr "Rechnungen"
-
-msgid "subscriber"
-msgstr "Abonnent"
-
-msgid "amount"
-msgstr "Betrag"
-
-msgid "aboprice"
-msgstr "Preis"
-
 msgid "abo_price"
 msgstr "Preis"
-
-msgid "invoice_group"
-msgstr "Rechnungsgruppe"
-
-msgid "currency"
-msgstr "Währung"
-
-msgid "abotype"
-msgstr "Abotyp"
 
 msgid "abo_type"
 msgstr "Abotyp"
 
-msgid "adr_type"
-msgstr "Typ"
-
-msgid "period"
-msgstr "Laufzeit"
-
-msgid "invoice_template"
-msgstr "Rechnungsvorlage"
-
-msgid "letters"
-msgstr "Briefe"
-
-msgid "street"
-msgstr "Straße"
-
-msgid "salutation"
-msgstr "Anrede"
-
-msgid "city"
-msgstr "Ort"
-
-msgid "function"
-msgstr "Funktion"
-
-msgid "fax"
-msgstr "Fax"
-
-msgid "postalcode"
-msgstr "PLZ"
-
-msgid "lettertitle"
-msgstr "Brieftitel"
-
-msgid "payed_abos"
-msgstr "Zahler für"
-
-msgid "abos"
-msgstr "Abos"
-
-msgid "typecat"
-msgstr "Typ Kategorie"
-
 msgid "adr_type_cat"
 msgstr "Typ Kategorie"
-
-msgid "invoice"
-msgstr "Rechnung"
-
-msgid "balance_open"
-msgstr "Offen"
-
-msgid "bookentry"
-msgstr "Buchung am"
-
-msgid "send_it"
-msgstr "senden?"
-
-msgid "last_sent"
-msgstr "zuletzt versendet"
-
-msgid "n_sent"
-msgstr "Mahnstufe"
-
-msgid "date_payed"
-msgstr "Bezahlt am"
-
-msgid "period_end"
-msgstr "Datum bis"
-
-msgid "receipt_no"
-msgstr "BelegNr"
-
-msgid "period_start"
-msgstr "Datum von"
-
-msgid "invoice_no"
-msgstr "RgNr"
-
-msgid "open"
-msgstr "offen"
-
-msgid "payment"
-msgstr "Zahlung"
-
-msgid "tmplate"
-msgstr "Vorlage"
-
-msgid "invoice_level"
-msgstr "Mahnstufe"
-
-msgid "interval"
-msgstr "Intervall"
-
-msgid "letter"
-msgstr "Brief"
 
 msgid "file"
 msgstr "Datei"
@@ -3195,77 +3438,8 @@ msgstr ""
 #~ msgid "Selected address types must be in type category \"ABO\""
 #~ msgstr "Ausgewählte Adresstypen müssen in der Kategorie \"ABO\" sein."
 
-#~ msgid "Subscription to which this invoice belongs"
-#~ msgstr "Abo zu dieser Rechnung"
-
-#~ msgid "Price and currency for this subscription"
-#~ msgstr "Preis und Währung für dieses Abo"
-
-#~ msgid "Type of this subscription"
-#~ msgstr "Typ dieses Abos"
-
-#~ msgid "abo_type.adr_type"
-#~ msgstr "Typ"
-
-#~ msgid ""
-#~ "Type of Address -- this field indicates the address type to\n"
-#~ "           be used for marking addresses that should be exported for\n"
-#~ "           sending. When a new subsription is generated this type will\n"
-#~ "           be automatically added to the subscriber. When cancelling a\n"
-#~ "           subscription, this type will be deleted from the subscriber.\n"
-#~ "           Note that only address types can be selected here for which\n"
-#~ "           the address type category is \"ABO\".\n"
-#~ "        "
-#~ msgstr ""
-#~ "Typ dieser Adresse -- dieses Feld bezeichnet den \"Typ\" welcher für das "
-#~ "Markieren von Adressen für den Versand verwendet werden soll. Beim "
-#~ "Anlegen eines neuen Abos wird automatisch der Typ bei der Abonnenten-"
-#~ "Adresse eingetragen. Beim Stornieren eines Abos wird der Typ automatisch "
-#~ "in der Abonnenten-Adresse gelöscht. Bitte beachten: Nur Adress-Typen die "
-#~ "zur Typ-Kategorie \"ABO\" gehören, dürfen hier ausgewählt werden."
-
-#~ msgid "Address for this letter"
-#~ msgstr "Adresse zu diesem Brief"
-
-#~ msgid "adr_type_cat.code"
-#~ msgstr "Code"
-
-#~ msgid ""
-#~ "Code of this %(Classname)s. The address type category with\n"
-#~ "           code \"ABO\" is special: It is used by the system for marking\n"
-#~ "           all address types that are used for marking subscribers\n"
-#~ "           addresses of running abos. Therefore the address type\n"
-#~ "           category with code \"ABO\" may not be deleted or changed.\n"
-#~ "        "
-#~ msgstr ""
-#~ "Code für diese %(Classname)s. Die Typ-Kategorie mit dem Code \"ABO\" wird "
-#~ "vom System zum Markieren von Adress-Typen verwendet, die zur Markierung "
-#~ "von Abonnenten-Adressen von laufenden Abos dienen.  Daher darf die Typ-"
-#~ "Kategorie \"ABO\" weder verändert noch gelöscht werden."
-
-#~ msgid "Type of Address"
-#~ msgstr "Typ dieser Adresse"
-
-#~ msgid "Amount this subscription costs"
-#~ msgstr "Betrag den dieses Abo kostet"
-
 #~ msgid "Author of this message"
 #~ msgstr "Autor dieser Notiz"
-
-#~ msgid "Open amount not yet payed"
-#~ msgstr "Noch nicht bezahlter Betrag"
-
-#~ msgid "Begin of period"
-#~ msgstr "Start der Rechnungsperiode"
-
-#~ msgid "Date when the payment was booked"
-#~ msgstr "Datum des Erfassens der Zahlung"
-
-#~ msgid "City where this person lives"
-#~ msgstr "Ort/Stadt wo diese Person lebt"
-
-#~ msgid "Country for this address"
-#~ msgstr "Land dieser Adresse"
 
 #~ msgid "Date of creation of this record"
 #~ msgstr "Datum des Anlegens von diesem Datensatz"
@@ -3273,112 +3447,8 @@ msgstr ""
 #~ msgid "Currency for this price"
 #~ msgstr "Währung zu diesem Preis"
 
-#~ msgid "Date when this subscription ends"
-#~ msgstr "Datum wann dieses Abo endet"
-
-#~ msgid ""
-#~ "Interval for sending out an invoice in months. If the\n"
-#~ "           invoice_level is non-zero, the distance in months since the\n"
-#~ "           last invoice sent.\n"
-#~ "        "
-#~ msgstr ""
-#~ "Intervall nach dem eine Rechnung/Mahnung verschickt wird in Monaten. "
-#~ "Falls die Mahnstufe größer als Null ist, der Abstand zur letzten Rechnung/"
-#~ "Mahnung in Monaten"
-
-#~ msgid "Link to invoice_group for this %(Classname)s"
-#~ msgstr "Verbindung zur Rechnungsgruppe für %(Classname)s"
-
-#~ msgid ""
-#~ "When the customer has received more invoices than this number\n"
-#~ "           indicates, an invoice of this type is sent.\n"
-#~ "        "
-#~ msgstr ""
-#~ "Falls ein Kunde mehr Rechnungen/Mahnungen als diese Zahl erhalten hat, "
-#~ "wird dieser Typ von Rechnung/Mahnung verwendet"
-
-#~ msgid "Unique number for this invoice, generated by the system"
-#~ msgstr ""
-#~ "Eindeutige Nummer dieser Rechnung. Wird vom System automatisch erzeugt."
-
-#~ msgid "An OpenOffice file used as a template for this type of invoice"
-#~ msgstr ""
-#~ "Eine OpenOffice Datei welche als Schablone für diesen Rechnungstyp "
-#~ "verwendet wird"
-
-#~ msgid "List of invoices for this %(Classname)s"
-#~ msgstr "Liste der Rechnungen für %(Classname)s"
-
-#~ msgid "Date when an invoice was last sent"
-#~ msgstr "Datum des letzten Versendens einer Rechnung/Mahnung"
-
-#~ msgid ""
-#~ "Download of letter -- usually this will open the letter in\n"
-#~ "           OpenOffice\n"
-#~ "        "
-#~ msgstr ""
-#~ "Laden des Briefes -- normalerweise wird damit der Brief mit OpenOffice "
-#~ "geöffnet"
-
-#~ msgid "Title of this person used in a letter"
-#~ msgstr "Titel dieser Person, Verwendung in der Brief-Anrede"
-
-#~ msgid "Number of times this invoice was sent"
-#~ msgstr "Anzahl der Rechnungen/Mahnungen welche schon verschickt wurden"
-
-#~ msgid "Address which is paying for this subscription"
-#~ msgstr "Adresse welche für dieses Abo bezahlt"
-
-#~ msgid "Amount of payment received for this invoice"
-#~ msgstr "Betrag der bereits bezahlt wurde"
-
-#~ msgid "Subscription period in months."
-#~ msgstr "Rechnungsperiode in Monaten"
-
-#~ msgid "Date when this invoice period ends"
-#~ msgstr "Datum wann diese Rechnungsperiode endet"
-
-#~ msgid "Date when this invoice period starts"
-#~ msgstr "Datum wann diese Rechnungsperiode beginnt"
-
 #~ msgid "Phone number(s) "
 #~ msgstr "Telefonnummer(n)"
-
-#~ msgid "Postal code for this %(Classname)s "
-#~ msgstr "Postleitzahl für diese %(Classname)s"
-
-#~ msgid "Unique identification of this payment"
-#~ msgstr "Eindeutige Identifikation für diese Zahlung"
-
-#~ msgid "Salutation used for printing an address"
-#~ msgstr "Anrede für diese Adresse"
-
-#~ msgid ""
-#~ "Flag indicating if this invoice should be sent. If not set,\n"
-#~ "           this invoice will disappear from the current list of invoices. "
-#~ "It\n"
-#~ "           is not sent when generating invoices and is not marked when "
-#~ "sent\n"
-#~ "           invoices are marked.\n"
-#~ "        "
-#~ msgstr ""
-#~ "Hinweis, ob diese Rechnung versendet werden soll. Falls nicht gesetzt, "
-#~ "verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese "
-#~ "Rechnung weder versendet, noch als gesendet markiert."
-
-#~ msgid "Subscriber of this subscription"
-#~ msgstr "Abonnent für dieses Abo"
-
-#~ msgid ""
-#~ "Used for writing letters (and invoices if selected as an\n"
-#~ "           invoice template)\n"
-#~ "        "
-#~ msgstr ""
-#~ "Wird zum Erzeugen von Briefen verwendet (oder für Rechnungen falls als "
-#~ "Rechnungsvorlage ausgewählt)"
-
-#~ msgid "Status of this address"
-#~ msgstr "Gültigkeits-Status dieser Adresse"
 
 #~ msgid "${property} help"
 #~ msgstr "Hilfe für ${property}"

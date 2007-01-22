@@ -19,9 +19,10 @@
 # ****************************************************************************
 
 from roundup.exceptions             import Reject
-from roundup.rup_utils              import abo_max_invoice
 from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
+
+from rup_utils                      import abo_max_invoice
 
 _ = lambda x : x
 
