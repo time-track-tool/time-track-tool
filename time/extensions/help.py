@@ -793,6 +793,8 @@ _helptext = \
       ]
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
+    , ""'query++tmplate'              :
+      [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :
       [""'''Queries for this %(Classname)s''']
     , ""'quick_dialling'              :

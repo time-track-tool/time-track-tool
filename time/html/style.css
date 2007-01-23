@@ -571,4 +571,5 @@ table.otherinfo th a[href]              { color: #333; }
 
 table.otherinfo th.header2 {
   vertical-align: top;
+  padding-right: 1em
 }
