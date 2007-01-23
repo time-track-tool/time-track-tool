@@ -506,7 +506,7 @@ class ExtProperty :
                     ( """<input type="radio" name="%s" value=""%s>%s"""
                     % ( self.searchname
                       , ['', ' checked="checked"'] [not (yvalue or nvalue)]
-                      , self.pretty ("Don't care")
+                      , self.pretty (''"Don't care")
                       )
                     )
             return ''.join (s)

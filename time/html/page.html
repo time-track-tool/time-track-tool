@@ -62,7 +62,7 @@
                          'period_start,period_end,amount,currency,'
                          'balance_open,n_sent,payer,subscriber,abo&'
                          '@sort=-period_start&@filter=open&'
-                         '@pagesize=50&@startwith=0&open=1'
+                         '@pagesize=50&@startwith=0&open=yes'
    , 'issue'           : '@columns=id,category,title,area,kind,status,'
                          'composed_of.id,part_of.id&'
                          '@sort=category&@group=-effective_prio&'
@@ -110,6 +110,7 @@
                          '@pagesize=20&@startwith=0&bookers=%s' % uid
    , 'time_wp_group'   : '@columns=id,name,description,wps&@sort=name&'
                          '@pagesize=20&@startwith=0'
+   , 'tmplate'         : '@columns=id,name&@sort=name&@pagesize=20&@startwith=0'
    , 'user'            : '@columns=%s&@sort=%s&'
                          '@filter=status&@pagesize=200&@startwith=0&status=1'
                           % ( ','.join
@@ -587,10 +588,11 @@
      tal:content="structure python:utils.fieldname(classname, 'responsible')">
     </th>
     <td colspan="3">
-     <tal:block tal:define="name      string:responsible;
-                            form      string:itemSynopsis;
-                            dont_care string:don't care;
-                            selected  context/responsible/id | string:0">
+     <tal:block tal:define=
+        "name      string:responsible;
+         form      string:itemSynopsis;
+         dont_care python:i18n.gettext ('''- don't care -''');
+         selected  context/responsible/id | string:0">
       <tal:block metal:use-macro="templates/userlist/macros/user"/>
      </tal:block>
     </td>
@@ -1058,8 +1060,8 @@
           "size      string:7;
            name      python:prop.searchname;
            form      string:query;
-           dont_care string:don't care;
-           selected python:
+           dont_care python:i18n.gettext ('''- don't care -''');
+           selected  python:
             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
           ">
          <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
@@ -1069,7 +1071,7 @@
           "size      string:7;
            name      python:prop.searchname;
            form      string:query;
-           dont_care string:don't care;
+           dont_care python:i18n.gettext ('''- don't care -''');
            selected  python:
             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
           ">
@@ -1081,9 +1083,8 @@
                  tal:attributes="name python:prop.searchname"
                  tal:define="form_vals
                    python:request.filterspec.get(prop.searchname) or []">
-          <option value=""
-                  tal:attributes="selected not:form_vals">don't care
-          </option>
+          <option value="" i18n:translate=""
+                  tal:attributes="selected not:form_vals">- don't care -</option>
           <option
            tal:repeat="s python: db[prop.lnkcls.classname].filter
                ( filterspec = prop.filter

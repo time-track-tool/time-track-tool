@@ -39,6 +39,14 @@ else :
 
 academic_title = \
     ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
+code = ""'''Code of this %(Classname)s.'''
+adr_type_cat_code = \
+    ""'''The address type category with
+         code "ABO" is special: It is used by the system for marking all
+         address types that are used for marking subscribers addresses
+         of running abos. Therefore the address type category with code
+         "ABO" may not be deleted or changed.
+      '''
 daily_hours = \
     ""'''Expected daily work-time for %(Classname)s for each day of
          the week. If nothing is specified, the average of Weekly
@@ -136,7 +144,7 @@ _helptext = \
       [""'''Subscriptions for this %(Classname)s''']
     , ""'abotype'                     :
       [""'''Type of this subscription''']
-    , ""'abo_type.adr_type'           :
+    , ""'abo_type++adr_type'          :
       [""'''Type of Address -- this field indicates the address type to
            be used for marking addresses that should be exported for
            sending. When a new subsription is generated this type will
@@ -163,14 +171,8 @@ _helptext = \
     , ""'address++valid'              :
       ""'''Status of this address'''
     , ""'address++title'              : [academic_title]
-    , ""'adr_type_cat.code'           :
-      [""'''Code of this %(Classname)s. The address type category with
-           code "ABO" is special: It is used by the system for marking
-           all address types that are used for marking subscribers
-           addresses of running abos. Therefore the address type
-           category with code "ABO" may not be deleted or changed.
-        '''
-      ]
+    , ""'adr_type_cat.code'           : [code, adr_type_cat_code]
+    , ""'adr_type_cat++code'          : [code, adr_type_cat_code]
     , ""'adr_type'                    :
       [""'''Type of Address''']
     , ""'alias'                       :
@@ -1309,10 +1311,10 @@ def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     label = _ (prop)
     if csscls :
         csscls = 'class="%s"' % csscls
-    return ("""<a %s title="Help for %s" href="javascript:help_window"""
-            """('%s?:template=property_help#%s', '500', '400')">"""
-            """%s%s</a>""" \
-            % (csscls, label, cls, prop, label, endswith)
+    return (_ (''"""<a %s title=\"Help for %s\" href=\"javascript:help_window"""
+               """('%s?:template=property_help#%s', '500', '400')\">"""
+               """%s%s</a>""" \
+              ) % (csscls, label, cls, prop, label, endswith)
            )
 # end def fieldname
 
