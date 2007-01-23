@@ -17,8 +17,8 @@ a[href]:hover { color:blue; text-decoration: underline; }
 a[href]:link  { color:blue; text-decoration: none; }
 a[href]       { color:blue; text-decoration: none; }
 
-a.closed[href]:hover                      { color:blue;  text-decoration: line-through; }
-a.closed[href]:link, a.closed[href]       { color:blue;  text-decoration: line-through; }
+a.closed[href]:hover                      { color:green; text-decoration: underline; }
+a.closed[href]:link, a.closed[href]       { color:green; text-decoration: none; }
 a.analyzed[href]:hover                    { color:red;   text-decoration: underline; }
 a.analyzed[href]:link, a.analyzed[href]   { color:red;   text-decoration: none; }
 a.feedback[href]:hover                    { color:red;   text-decoration: underline; }
@@ -189,6 +189,7 @@ table.form td {
   color: #333;
   empty-cells: show;
   vertical-align: top;
+  padding-right: 1em
 }
 
 table.form td.optional {

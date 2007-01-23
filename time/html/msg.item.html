@@ -41,35 +41,41 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'recipients')"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'recipients')"/>
       <td tal:content="context/recipients"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
       <td tal:content="context/date"/>
      </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'subject')"/>
+     <tr tal:condition="python:'subject' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'subject')"/>
       <td tal:content="context/subject"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'summary')"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'summary')"/>
       <td tal:content="context/summary"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'messageid')"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'messageid')"/>
       <td tal:content="context/messageid"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'inreplyto')"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'inreplyto')"/>
       <td tal:content="context/inreplyto"/>
      </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'keywords')"/>
+     <tr tal:condition="python:'keywords' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'keywords')"/>
       <td tal:content="structure python:context.keywords.menu (height = 5)"/>
      </tr>
 
-     <tr>
+     <tr tal:condition="python:'header' in bclass.properties">
       <th tal:content="structure python:utils.fieldname (classname, 'header')"/>
       <td><pre tal:content="context/header/plain"/></td>
      </tr>

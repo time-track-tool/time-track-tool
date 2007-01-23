@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-2007 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -26,78 +26,138 @@
 #
 # Purpose
 #    Action for exporting current query as CSV (comma separated values)
-#
-# Revision Dates
-#     6-Jun-2005 (RSC) Moved from another project
-#    ««revision-date»»···
 #--
 
 import csv
+import re
+try :
+    from cStringIO import StringIO
+except ImportError :
+    from StringIO  import StringIO
 
 from roundup.cgi.actions import Action
 from roundup.cgi         import templating
 from roundup             import hyperdb
 
+from rsclib.autosuper    import autosuper
+
 from extproperty         import ExtProperty
 
-class Export_CSV_Names (Action) :
+class Repr (autosuper) :
+    def __init__ (self, klass) :
+        self.klass = klass
+    # end def __init__
+
+    def __call__ (self, itemid, col, x = None) :
+        if x is None :
+            self.setup (itemid, col)
+        if self.x is None :
+            return ""
+    # end def __call__
+
+    def setup (self, itemid, col) :
+        self.x = self.klass.get (itemid, col)
+    # end def setup
+# end class Repr
+
+class Repr_Date (Repr) :
+    def __call__ (self, itemid, col) :
+        self.__super.__call__ (itemid, col)
+        return self.x.pretty ('%Y-%m-%d')
+    # end def __call__
+# end class Repr_Date
+
+class Repr_Str (Repr) :
+    def __call__ (self, itemid, col, x = None) :
+        self.__super.__call__ (itemid, col, x)
+        return str (self.x).decode ('utf-8').encode ('latin1')
+    # end def __call__
+# end class Repr_Str
+
+class Repr_Country (Repr_Str) :
+    def __call__ (self, itemid, col) :
+        self.setup (itemid, col)
+        x = self.x.strip ()
+        if x == 'CH' :
+            return ''
+        self.__super.__call__ (itemid, col, x)
+    # end def __call__
+# end class Repr_Country
+
+def repr_link (cls, cols) :
+    class Repr_Link (Repr) :
+        def __call__ (self, itemid, col) :
+            self.__super.__call__ (itemid, col)
+            s = " ".join (str (cls.get (x, c)) for c in cols)
+            return s.decode ('utf-8').encode ('latin1')
+        # end def __call__
+    # end class Repr_Link
+    return Repr_Link ()
+# end def repr_link
+
+def repr_func (klass, col) :
+    idx = int (col.split ('.', 1)[1])
+    class Repr_Func (Repr_Str) :
+        def __call__ (self, itemid, col) :
+            self.setup (itemid, 'function')
+            try :
+                self.__super.__call__ \
+                    (itemid, 'function', self.x.split ('\n', 2) [idx])
+            except AttributeError :
+                pass
+            except IndexError :
+                return ""
+            return self.__super.__call__ (itemid, col, self.x)
+        # end def __call__
+    # end class Repr_Func
+    return Repr_Func (klass)
+# end def repr_func
+
+def repr_code (klass, adr_types) :
+    class Repr_Code (Repr) :
+        def __call__ (self, itemid, col) :
+            self.setup (itemid, 'adr_type')
+            if self.x is None :
+                return "0"
+            for t in self.x :
+                if t in adr_types :
+                    return "A"
+            return "0"
+        # end def __call__
+    # end class Repr_Code
+    return Repr_Code (klass)
+# end def repr_code
+
+class Export_CSV_Names (Action, autosuper) :
     name = 'export'
     permissionType = 'View'
+    print_head     = True
+    filename       = 'query.csv'
+    delimiter      = '\t'
+    quoting        = csv.QUOTE_MINIMAL
 
-    def repr_date (self, itemid, col) :
-        x = self.klass.get (itemid, col)
-        if x is None :
-            return ""
-        else :
-            return x.pretty ('%Y-%m-%d')
-    # end def repr_date
-
-    def repr_str (self, itemid, col) :
-        x = self.klass.get (itemid, col)
-        if x is None :
-            return ""
-        return str (x).decode ('utf-8').encode ('latin1')
-    # end def repr_str
-
-    def handle (self) :
-        ''' Export the specified search query as CSV. '''
-        # figure the request
-        request    = templating.HTMLRequest     (self.client)
-        self.utils = templating.TemplatingUtils (self.client)
-        filterspec = request.filterspec
-        sort       = request.sort
-        group      = request.group
+    def _setup (self, request) :
         columns    = request.columns
-        klass      = self.klass = self.db.getclass (request.classname)
-        props      = klass.getprops ()
-        htcls      = templating.HTMLClass (self.client, request.classname)
         if not columns :
-            columns = props.keys ()
+            columns = self.props.keys ()
             columns.sort ()
-
         # full-text search
         if request.search_text :
             matches = self.db.indexer.search \
                 (re.findall (r'\b\w{2,25}\b', request.search_text), klass)
         else :
             matches = None
+        self.columns = columns
+        self.matches = matches
+    # end def _setup
 
-        h                        = self.client.additional_headers
-        h ['Content-Type']       = 'text/csv'
-        # some browsers will honor the filename here...
-        h ['Content-Disposition'] = 'inline; filename=query.csv'
+    def build_repr (self) :
+        """ Figure out Link columns and build representation methods for them
+        """
+        self.represent = {}
 
-        self.client.header ()
-
-        if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
-            # all done, return a dummy string
-            return 'dummy'
-
-        writer = csv.writer (self.client.request.wfile)
-        writer.writerow (columns)
-
-        # Figure out Link columns
-        represent = {}
+        repr_date    = Repr_Date    (self.klass)
+        repr_str     = Repr_Str     (self.klass)
 
         def repr_link (cls, cols) :
             def f (itemid, col) :
@@ -111,9 +171,9 @@ class Export_CSV_Names (Action) :
         # end def repr_link
 
         def repr_extprop (col) :
-            parts       = col.split ('.', 1)
-            prop  = htcls [parts [0]]
-            ep = ExtProperty \
+            parts = col.split ('.', 1)
+            prop  = self.htcls [parts [0]]
+            ep    = ExtProperty \
                 ( self.utils, prop
                 , searchname  = col
                 , pretty      = str
@@ -126,32 +186,109 @@ class Export_CSV_Names (Action) :
             return f
         # end def repr_extprop
 
-        for col in columns :
-            represent [col] = self.repr_str
-            if '.' in col :
-                represent [col] = repr_extprop (col)
-            elif isinstance (props [col], hyperdb.Multilink) :
-                represent [col] = repr_extprop (col)
-            elif isinstance (props [col], hyperdb.Link) :
-                cn = props [col].classname
+        for col in self.columns :
+            self.represent [col] = repr_str
+            if col.startswith ('function.') :
+                self.represent [col] = repr_func (self.klass, col)
+            elif '.' in col :
+                self.represent [col] = repr_extprop (col)
+            elif col not in self.props :
+                print "oops:", col
+                pass
+            elif isinstance (self.props [col], hyperdb.Link) :
+                cn = self.props [col].classname
                 cl = self.db.getclass (cn)
                 pr = cl.getprops ()
                 if 'lastname' in pr and cl.labelprop () != 'username' :
-                    represent [col] = repr_link (cl, ('firstname', 'lastname'))
+                    self.represent [col] = repr_link \
+                        (cl, ('firstname', 'lastname'))
                 else :
-                    represent [col] = repr_link (cl, (cl.labelprop (),))
-            elif isinstance (props [col], hyperdb.Date) :
-                represent [col] = self.repr_date
+                    self.represent [col] = repr_link (cl, (cl.labelprop (),))
+            elif isinstance (self.props [col], hyperdb.Date) :
+                self.represent [col] = repr_date
+    # end def build_repr
+
+    def handle (self) :
+        ''' Export the specified search query as CSV. '''
+        # figure the request
+        request    = templating.HTMLRequest     (self.client)
+        self.utils = templating.TemplatingUtils (self.client)
+        filterspec = request.filterspec
+        sort       = request.sort
+        group      = request.group
+        klass      = self.klass = self.db.getclass (request.classname)
+        self.props = klass.getprops ()
+        self.htcls = templating.HTMLClass (self.client, request.classname)
+        self._setup (request)
+
+        h                        = self.client.additional_headers
+        h ['Content-Type']       = 'text/csv'
+        # some browsers will honor the filename here...
+        h ['Content-Disposition'] = 'inline; filename=%s' % self.filename
+
+        self.client.header ()
+
+        if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
+            # all done, return a dummy string
+            return 'dummy'
+
+        io = StringIO ()
+        writer = csv.writer \
+            ( io
+            , dialect   = 'excel'
+            , delimiter = self.delimiter
+            , quoting   = self.quoting
+            )
+        if self.print_head :
+            writer.writerow (self.columns)
+
+        self.build_repr ()
 
         # and search
-        for itemid in klass.filter (matches, filterspec, sort, group) :
-            writer.writerow ([represent [col] (itemid, col)
-                for col in columns])
-
-        return '\n'
+        for itemid in klass.filter (self.matches, filterspec, sort, group) :
+            writer.writerow \
+                ([self.represent [col] (itemid, col) for col in self.columns])
+        return io.getvalue ()
     # end def handle
 # end class Export_CSV_Names
 
+class Export_CSV_Addresses (Export_CSV_Names) :
+
+    print_head = False
+    filename   = 'ZFABO.CSV'
+    quoting    = csv.QUOTE_NONE
+
+    def _setup (self, request) :
+        self.columns = \
+            [ 'title'
+            , 'firstname'
+            , 'lastname'
+            , 'function.0'
+            , 'function.1'
+            , 'function.2'
+            , 'street'
+            , 'country'
+            , 'postalcode'
+            , 'city'
+            , 'code'
+            ]
+        self.matches = None
+    # end def _setup
+
+    def build_repr (self) :
+        self.__super.build_repr ()
+        tc             = self.db.adr_type_cat.lookup ('ABO')
+        self.adr_types = dict.fromkeys (self.db.adr_type.find (typecat = tc), 1)
+        self.represent ['country'] = Repr_Country (self.klass)
+        print self.represent ['code']
+        self.represent ['code']    = repr_code (self.klass, self.adr_types)
+        print self.represent ['code']
+        print "done"
+    # end def build_repr
+
+# end class Export_Addresses
+
 def init (instance) :
-    instance.registerAction ('export_csv_names', Export_CSV_Names)
+    instance.registerAction ('export_csv_names',     Export_CSV_Names)
+    instance.registerAction ('export_csv_addresses', Export_CSV_Addresses)
 # end def init

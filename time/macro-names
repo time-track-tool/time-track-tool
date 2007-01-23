@@ -4,19 +4,19 @@ To check:
 + html/page.html -- looks quite good now
 + html/home.html
 + html/style.css   - use ttt version (only additions)
-- html/file.item.html
++ html/file.item.html
 + html/_generic.collision.html -- identical
 + html/_generic.help.html -- use ttt version: we use new help-stuff too
 + html/_generic.history.html -- use ttt version and translate History to Verlauf
-- html/_generic.index.html
++ html/_generic.index.html
   + Additional macros factored from ttt_issue in ttt version
   + export csv in ttt version
   + more parameters in ttt version
   + more exceptions in ttt version (messages, files): but *can* display
     messages and files with factored macros from ttt_issue
-  - adr_type_cat.lookup stuff in abo
-  - special hack for filter for adr_type attribute
-  -> maybe create own template for classes that have adr_type attribute??
+  + adr_type_cat.lookup stuff in abo
+  + special hack for filter for adr_type attribute
+  +> maybe create own template for classes that have adr_type attribute??
 + html/_generic.property_help.html -- ttt version for newer help version
 + html/query.edit.html -- much work?
 + html/query.item.html -- only in abo -- minimal version
@@ -25,37 +25,37 @@ To check:
 + html/user.item.html
 + html/user.register -- remove from abo
 + html/Makefile -- identical
-- extensions/extproperty.py
-  - use the newer ttt thing
-  - check what that means for templates (!)
-  -> search for all occurences of ExtProperty
-  - attributes:
-    - selname   -> searchname
-    - is_label  -> is_labelprop
-    - linkclass -> get_cssclass
-    - linkcls   -> should not be used anymore (linkname)
-    - linkattr  -> should not be used anymore (displayprop or searchname)
-                   - external interface: dotted form 'name1.name2.name3'
++ extensions/extproperty.py
+  + use the newer ttt thing
+  + check what that means for templates (!)
+  +> search for all occurences of ExtProperty
+  + attributes:
+    + selname   -> searchname
+    + is_label  -> is_labelprop
+    + linkclass -> get_cssclass
+    + linkcls   -> should not be used anymore (linkname)
+    + linkattr  -> should not be used anymore (displayprop or searchname)
+                   + external interface: dotted form 'name1.name2.name3'
                      is now handed over as searchname instead of
                      linkattr
-  - external interface
-    - sortable is now an attribute not a method
-  - menu_or_field was a standalone function is now a method of
+  + external interface
+    + sortable is now an attribute not a method
+  + menu_or_field was a standalone function is now a method of
     extproperty
-- extensions/help.py
-  - Merge after having both in alphabetical order (user.address in abo
++ extensions/help.py
+  + Merge after having both in alphabetical order (user.address in abo
     is in wrong order for example)
-  - combined_name uses '++' instead of '.' in ttt
-    -> needs to be reflected in help-text
-  - merge special cases in help_properties (letter/daily_record etc)
-  - generally ttt is newer
-- extensions/interfaces
-  - remove ttt specific stuff (user_dynamic, common imports)
-  - hmm maybe rename one of those: don't seem to have much in common
+  + combined_name uses '++' instead of '.' in ttt
+    +> needs to be reflected in help-text
+  + merge special cases in help_properties (letter/daily_record etc)
+  + generally ttt is newer
++ extensions/interfaces
+  + remove ttt specific stuff (user_dynamic, common imports)
+  + hmm maybe rename one of those: don't seem to have much in common
 - extensions/ExportCSVNamesAction.py
-- locale (!)
++ locale (!)
   +> merge
-  -> check against merged templates that everything is in german that
+  +> check against merged templates that everything is in german that
      has to be
 + detectors: user (!) only in ttt
   +> make checks specific to existing attributes of user
@@ -69,7 +69,7 @@ page.html
 =========
 
 + formatted_class in abo is ttt_issue in ttt
-  -> Problems with shared templates (file)
+  +> Problems with shared templates (file)
 
 + Must hack icing (and formatted_classs / ttt_issue) and
   create_or_query_new_tracker_item to work with both templates.

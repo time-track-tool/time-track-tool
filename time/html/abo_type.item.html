@@ -1,0 +1,47 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+
+ <title metal:fill-slot="head_title">
+  <span tal:condition="context/id"
+        tal:replace="string:${Classname}: ${context/id} angelegt von
+                     ${context/creator}"/>
+  <span tal:condition="not:context/id" tal:replace="string:Vorlage"/>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"/>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:1">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'description')"/>
+      <td colspan="3"
+          tal:content="structure python:context.description.field (size=60)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'period')"/>
+      <td tal:content="structure context/period/field"/>
+      <th tal:content="structure python:utils.fieldname(classname, 'order')"/>
+      <td tal:content="structure context/order/field"/>
+     </tr>
+     <tr tal:define="tc python:db._db.adr_type_cat.lookup ('ABO')">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'adr_type')"/>
+      <td tal:content="structure python:context.adr_type.menu (typecat = tc)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'invoice_template')"/>
+      <td tal:content="structure
+      python:context.invoice_template.menu(height=5)"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

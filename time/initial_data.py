@@ -445,3 +445,16 @@ if 'overtime_period' in db.classes :
     db.overtime_period.create (name = "month", order = 1)
     db.overtime_period.create (name = "year",  order = 2)
 
+if 'currency' in db.classes :
+    currency = db.getclass ('currency')
+    currency.create (name = 'CHF', description = 'Schweizer Franken')
+    currency.create (name = 'EUR', description = 'Euro')
+    currency.create (name = 'GBP', description = 'Britische Pfund')
+    currency.create (name = 'USD', description = 'US-Dollar')
+
+if 'valid' in db.classes :
+    valid = db.getclass ('valid')
+    valid.create \
+        ( name = uni ('gültig')
+        , description = uni ('Gültige Adresse')
+        )

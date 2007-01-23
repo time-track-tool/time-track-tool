@@ -443,7 +443,7 @@ msgid "Academic title of %(Classname)s, e.g., Dipl. Ing."
 msgstr ""
 
 msgid "Code of this %(Classname)s."
-msgstr "Code für diese %(Classname)s."
+msgstr "Code für diese(n) %(Classname)s."
 
 msgid ""
 "The address type category with\n"
@@ -1473,7 +1473,7 @@ msgid "List of letters for this %(Classname)s"
 msgstr "Verzeichnis der Briefe für diese %(Classname)s"
 
 msgid "lettertitle"
-msgstr "Brieftitel"
+msgstr "Brief-Titel"
 
 msgid "Title of this person used in a letter"
 msgstr "Titel dieser Person, Verwendung in der Brief-Anrede"

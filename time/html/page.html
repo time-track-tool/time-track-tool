@@ -32,6 +32,9 @@
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
                          'end,subscriber,payer&@sort=-id&@pagesize=20&'
                          '@startwith=0'
+   , 'abo_type'        : ':columns=name,description,period,order,adr_type,'
+                         'invoice_template&:sort=order&:pagesize=20&'
+                         ':startwith=0'
    , 'address'         : '@action=search&@startwith=0&@pagesize=20&'
                          '@sort=id&@sortdir=on&@group=&'
                          '@columns=salutation,title,id,lastname,firstname,'
@@ -666,10 +669,10 @@
    <tal:block tal:repeat="ltr context/letters/reverse"
     tal:condition="has_letters">
     <tr>
-     <th tal:content="structure python:utils.fieldname ('letter','date')"/>
+     <th tal:content="structure python:utils.fieldname ('letter','period')"/>
      <td tal:content="structure python:''.join
          (( utils.ExtProperty
-            (utils, ltr.date,    item = ltr, is_label = 1).as_listentry ()
+            (utils, ltr.date, item = ltr, is_labelprop = 1).as_listentry ()
           , '&nbsp;'
           , '--'
           , '&nbsp;'
@@ -678,7 +681,7 @@
      <th tal:content="structure python:utils.fieldname ('letter', 'subject')"/>
      <td tal:content="structure python:''.join
          ((  utils.ExtProperty
-            (utils, ltr.subject, item = ltr, is_label = 1).as_listentry ()
+            (utils, ltr.subject, item = ltr).as_listentry ()
           ,
          ))"/>
     </tr>

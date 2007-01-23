@@ -565,4 +565,5 @@ def init (instance) :
     instance.registerUtil ('comment_edit',      comment_edit)
     instance.registerUtil ('urlquote',          urlquote)
     instance.registerUtil ('prop_as_array',     prop_as_array)
+    instance.registerUtil ('get_cssclass',      get_cssclass)
 # end def init
