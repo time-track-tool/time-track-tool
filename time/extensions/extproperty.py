@@ -235,7 +235,7 @@ class ExtProperty :
             f = []
             for k, v in self.filter.iteritems () :
                 if isinstance (v, list) :
-                    v = ','.join (str (v))
+                    v = ','.join (str (k) for k in v)
                 f.append ((k, v))
             self.help_filter = ' '.join ('%s=%s' % (k, v) for k, v in f)
         self.lnkcls = None
