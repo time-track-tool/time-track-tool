@@ -77,15 +77,15 @@ class Repr_Country (Repr_Str) :
     # end def conv
 # end class Repr_Country
 
-def repr_link (cls, cols) :
+def repr_link (klass, cls, cols) :
     class Repr_Link (Repr_Str) :
-        def conv (x) :
+        def conv (self, x) :
             if x :
                 x = " ".join (str (cls.get (x, c)) for c in cols)
             return self.__super.conv (x)
         # end def conv
     # end class Repr_Link
-    return Repr_Link (cls)
+    return Repr_Link (klass)
 # end def repr_link
 
 def repr_func (klass, col) :
@@ -185,9 +185,10 @@ class Export_CSV_Names (Action, autosuper) :
                 pr = cl.getprops ()
                 if 'lastname' in pr and cl.labelprop () != 'username' :
                     self.represent [col] = repr_link \
-                        (cl, ('firstname', 'lastname'))
+                        (self.klass, cl, ('firstname', 'lastname'))
                 else :
-                    self.represent [col] = repr_link (cl, (cl.labelprop (),))
+                    self.represent [col] = repr_link \
+                        (self.klass, cl, (cl.labelprop (),))
             elif isinstance (self.props [col], hyperdb.Date) :
                 self.represent [col] = repr_date
     # end def build_repr
