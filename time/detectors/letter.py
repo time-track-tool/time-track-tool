@@ -55,6 +55,8 @@ def check_letter (db, cl, nodeid, new_values) :
 # end def check_letter
 
 def init (db) :
+    if 'letter' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

@@ -388,6 +388,7 @@ def check_smb_machine (db, cl, nodeid, new_values) :
 def init (db) :
     if 'alias' not in db.classes :
         return
+    assert (common.TFL is not None)
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

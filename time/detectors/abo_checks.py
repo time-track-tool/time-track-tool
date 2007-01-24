@@ -191,6 +191,8 @@ def update_adr_type_in_address (db, cl, nodeid, oldvalues) :
 # end def update_adr_type_in_address
 
 def init (db) :
+    if 'abo' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

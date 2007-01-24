@@ -43,6 +43,8 @@ def check (db, cl, nodeid, new_values) :
 # end def check
 
 def init (db) :
+    if 'abo_type' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

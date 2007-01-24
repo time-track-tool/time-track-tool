@@ -138,6 +138,8 @@ def create_new_invoice (db, cl, nodeid, oldvalues) :
 # end def create_new_invoice
 
 def init (db) :
+    if 'invoice' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

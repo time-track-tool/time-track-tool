@@ -40,6 +40,8 @@ def iv_template_ok (db, cl, nodeid, new_values) :
 # end def iv_template_ok
 
 def init (db) :
+    if 'invoice_template' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

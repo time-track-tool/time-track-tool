@@ -69,6 +69,8 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 # end def lookalike_computation
 
 def init (db) :
+    if 'address' not in db.classes :
+        return
     db.address.audit ("create", set_adr_defaults)
     db.address.audit ("create", fix_adr_type)
     db.address.audit ("set",    fix_adr_type)

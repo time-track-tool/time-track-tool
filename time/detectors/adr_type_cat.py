@@ -40,6 +40,8 @@ def retire_check (db, cl, nodeid, new_values) :
 # end def retire_check
 
 def init (db) :
+    if 'adr_type_cat' not in db.classes :
+        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
