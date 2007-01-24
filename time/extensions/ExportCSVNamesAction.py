@@ -77,6 +77,14 @@ class Repr_Country (Repr_Str) :
     # end def conv
 # end class Repr_Country
 
+class Repr_Multilink (Repr_Str) :
+    def conv (self, x) :
+        if x :
+            x = ','.join (x)
+        return self.__super.conv (x)
+    # end def conv
+# end class Repr_Multilink
+
 def repr_link (klass, cls, cols) :
     class Repr_Link (Repr_Str) :
         def conv (self, x) :
@@ -132,15 +140,15 @@ class Export_CSV_Names (Action, autosuper) :
     delimiter      = '\t'
     quoting        = csv.QUOTE_MINIMAL
 
-    def _setup (self, request) :
-        columns    = request.columns
+    def _setup (self) :
+        columns    = self.request.columns
         if not columns :
             columns = self.props.keys ()
             columns.sort ()
         # full-text search
-        if request.search_text :
+        if self.request.search_text :
             matches = self.db.indexer.search \
-                (re.findall (r'\b\w{2,25}\b', request.search_text), klass)
+                (re.findall (r'\b\w{2,25}\b', self.request.search_text), klass)
         else :
             matches = None
         self.columns = columns
@@ -152,8 +160,9 @@ class Export_CSV_Names (Action, autosuper) :
         """
         self.represent = {}
 
-        repr_date    = Repr_Date    (self.klass)
-        repr_str     = Repr_Str     (self.klass)
+        repr_date      = Repr_Date      (self.klass)
+        repr_str       = Repr_Str       (self.klass)
+        repr_multilink = Repr_Multilink (self.klass)
 
         def repr_extprop (col) :
             parts = col.split ('.', 1)
@@ -165,7 +174,7 @@ class Export_CSV_Names (Action, autosuper) :
                 )
             def f (itemid, col) :
                 item = templating.HTMLItem \
-                    (self.client, request.classname, itemid)
+                    (self.client, self.request.classname, itemid)
                 return ep.as_listentry (item = item, as_link = False)
             # end def f
             return f
@@ -189,6 +198,8 @@ class Export_CSV_Names (Action, autosuper) :
                 else :
                     self.represent [col] = repr_link \
                         (self.klass, cl, (cl.labelprop (),))
+            elif isinstance (self.props [col], hyperdb.Multilink) :
+                self.represent [col] = repr_multilink
             elif isinstance (self.props [col], hyperdb.Date) :
                 self.represent [col] = repr_date
     # end def build_repr
@@ -196,7 +207,7 @@ class Export_CSV_Names (Action, autosuper) :
     def handle (self) :
         ''' Export the specified search query as CSV. '''
         # figure the request
-        request    = templating.HTMLRequest     (self.client)
+        request    = self.request = templating.HTMLRequest     (self.client)
         self.utils = templating.TemplatingUtils (self.client)
         filterspec = request.filterspec
         sort       = request.sort
@@ -204,7 +215,7 @@ class Export_CSV_Names (Action, autosuper) :
         klass      = self.klass = self.db.getclass (request.classname)
         self.props = klass.getprops ()
         self.htcls = templating.HTMLClass (self.client, request.classname)
-        self._setup (request)
+        self._setup ()
 
         h                        = self.client.additional_headers
         h ['Content-Type']       = 'text/csv'
@@ -243,7 +254,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     filename   = 'ZFABO.CSV'
     quoting    = csv.QUOTE_NONE
 
-    def _setup (self, request) :
+    def _setup (self) :
         self.columns = \
             [ 'title'
             , 'firstname'
