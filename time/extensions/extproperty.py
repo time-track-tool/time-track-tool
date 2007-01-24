@@ -327,6 +327,7 @@ class ExtProperty :
                       for p in props
                     ])
             else :
+                print self.prop.__class__, self.prop
                 return self.deref ().formatlink (as_link = as_link)
         else :
             return self.formatted ()
@@ -364,6 +365,12 @@ class ExtProperty :
             and (isinstance (p, _HTMLItem) or hasattr (p._prop, 'classname'))
             ) :
             last_p = p
+            print self.propname, p, p.__class__
+            # TODO: Handle multilinks in the transitive search
+            # this will also be needed in callers of deref, e.g.,
+            # formatlink etc... they need to be aware that the result
+            # can be a list. The resulting deref is probably a recursive
+            # function.
             p      = p [self.propname]
         return self.__class__ \
             ( self.utils, p

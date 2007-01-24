@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-23 12:22+0100\n"
+"POT-Creation-Date: 2007-01-24 10:44+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -442,6 +442,12 @@ msgstr "Nicht suchen"
 msgid "Academic title of %(Classname)s, e.g., Dipl. Ing."
 msgstr ""
 
+msgid "Status of this address"
+msgstr "Gültigkeits-Status dieser Adresse"
+
+msgid "Type of Address"
+msgstr "Typ dieser Adresse"
+
 msgid "Code of this %(Classname)s."
 msgstr "Code für diese(n) %(Classname)s."
 
@@ -485,6 +491,16 @@ msgid ""
 "      "
 msgstr ""
 
+msgid ""
+"This is an extension number of the PBX. Can be concatenated\n"
+"         with the company prefix stored in \"Organisation\" to form a\n"
+"         valid external phone number.\n"
+"      "
+msgstr " "
+
+msgid "First name for this %(Classname)s, e.g., Ralf"
+msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf"
+
 msgid "Green start/end times have been created by the distribute function."
 msgstr ""
 
@@ -496,8 +512,19 @@ msgstr ""
 "ID dieses Datensatzes, wird automatisch vom System erzeugt und kann vom "
 "Benutzer nicht geändert werden."
 
+msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
+msgstr "Nachname für diesen %(Classname)s, z.B., Schlatterbeck"
+
 msgid "Leave this field empty if unsure."
 msgstr ""
+
+msgid ""
+"Search for similar names: only non-accented characters are\n"
+"         possible when searching\n"
+"      "
+msgstr ""
+"Suche nach ähnlicher Schreibweise: Nur nicht-akzentuierte Zeichen verwenden "
+"(keine Umlaute)"
 
 msgid ""
 "Some %(Property)s for tagging your issue -- can be useful\n"
@@ -513,13 +540,6 @@ msgstr ""
 
 msgid "Multiple %(Classname)s entries are allowed."
 msgstr ""
-
-msgid ""
-"This is an extension number of the PBX. Can be concatenated\n"
-"         with the company prefix stored in \"Organisation\" to form a\n"
-"         valid external phone number.\n"
-"      "
-msgstr " "
 
 msgid "Priority for this %(Classname)s."
 msgstr "Priorität für %(Classname)s"
@@ -621,16 +641,16 @@ msgid "abo_type++adr_type"
 msgstr "Typ"
 
 msgid ""
-"Type of Address -- this field indicates the address type to\n"
-"           be used for marking addresses that should be exported for\n"
-"           sending. When a new subsription is generated this type will\n"
-"           be automatically added to the subscriber. When cancelling a\n"
-"           subscription, this type will be deleted from the subscriber.\n"
-"           Note that only address types can be selected here for which\n"
-"           the address type category is \"ABO\".\n"
-"        "
+"-- this field indicates the address type to\n"
+"             be used for marking addresses that should be exported for\n"
+"             sending. When a new subsription is generated this type will\n"
+"             be automatically added to the subscriber. When cancelling a\n"
+"             subscription, this type will be deleted from the subscriber.\n"
+"             Note that only address types can be selected here for which\n"
+"             the address type category is \"ABO\".\n"
+"          "
 msgstr ""
-"Typ dieser Adresse -- dieses Feld bezeichnet den \"Typ\" welcher für das "
+"-- dieses Feld bezeichnet den \"Typ\" welcher für das "
 "Markieren von Adressen für den Versand verwendet werden soll. Beim Anlegen "
 "eines neuen Abos wird automatisch der Typ bei der Abonnenten-Adresse "
 "eingetragen. Beim Stornieren eines Abos wird der Typ automatisch in der "
@@ -682,9 +702,6 @@ msgstr "Adresse zu diesem Brief"
 msgid "address++valid"
 msgstr "gültig"
 
-msgid "Status of this address"
-msgstr "Gültigkeits-Status dieser Adresse"
-
 msgid "address++title"
 msgstr "Titel"
 
@@ -696,9 +713,6 @@ msgstr "Code"
 
 msgid "adr_type"
 msgstr "Typ"
-
-msgid "Type of Address"
-msgstr "Typ dieser Adresse"
 
 msgid "alias"
 msgstr "Alias"
@@ -1196,9 +1210,6 @@ msgstr "Datum der Abschlussbesprechung für %(Classname)s"
 msgid "firstname"
 msgstr "Vorname"
 
-msgid "First name for this %(Classname)s, e.g., Ralf"
-msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf"
-
 msgid "fixed_in"
 msgstr ""
 
@@ -1452,9 +1463,6 @@ msgstr "Zuletzt benutzte UID für diese %(Classname)s"
 msgid "lastname"
 msgstr "Nachname"
 
-msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
-msgstr "Nachname für diesen %(Classname)s, z.B., Schlatterbeck"
-
 msgid "letter"
 msgstr "Brief"
 
@@ -1501,14 +1509,6 @@ msgstr "UNIX Login-Shell für %(Classname)s"
 
 msgid "lookalike_name"
 msgstr "Ähnlichkeitssuche"
-
-msgid ""
-"Search for similar names: only non-accented characters are\n"
-"            possible when searching\n"
-"         "
-msgstr ""
-"Suche nach ähnlicher Schreibweise: Nur nicht-akzentuierte Zeichen verwenden "
-"(keine Umlaute)"
 
 msgid "lunch_duration"
 msgstr "Länge der Mittagspause"
@@ -2328,6 +2328,36 @@ msgstr "Abonnent"
 
 msgid "Subscriber of this subscription"
 msgstr "Abonnent für dieses Abo"
+
+msgid "subscriber.firstname"
+msgstr "Abonnent/Vorname"
+
+msgid "subscriber.lastname"
+msgstr "Abonnent/Nachname"
+
+msgid "subscriber.lookalike_name"
+msgstr "Abonnent/Ähnlichkeitssuche"
+
+msgid "subscriber.valid"
+msgstr "Abonnent/gültig"
+
+msgid "subscriber.adr_type"
+msgstr "Abonnent/Typ"
+
+msgid "payer.firstname"
+msgstr "Zahler/Vorname"
+
+msgid "payer.lastname"
+msgstr "Zahler/Nachname"
+
+msgid "payer.lookalike_name"
+msgstr "Zahler/Ähnlichkeitssuche"
+
+msgid "payer.valid"
+msgstr "Zahler/gültig"
+
+msgid "payer.adr_type"
+msgstr "Zahler/Typ"
 
 msgid "substitute"
 msgstr "Vertretung"

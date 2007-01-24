@@ -174,7 +174,7 @@
         <tr tal:repeat="abo context/payed_abos">
          <td>
           <a tal:attributes="href  string:abo${abo/id}
-                            ;class python:utils.linkclass (abo)
+                            ;class python:utils.get_cssclass (abo)
                             "
              tal:content="abo/aboprice">
           </a>

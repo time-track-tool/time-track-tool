@@ -30,8 +30,8 @@
  ; may_remove_msgs python: False
  ; default_queries python:
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
-                         'end,subscriber,payer&@sort=-id&@pagesize=20&'
-                         '@startwith=0'
+                         'end,subscriber.lastname,payer.lastname&'
+                         '@sort=-id&@pagesize=20&@startwith=0'
    , 'abo_type'        : ':columns=name,description,period,order,adr_type,'
                          'invoice_template&:sort=order&:pagesize=20&'
                          ':startwith=0'

@@ -19,8 +19,48 @@
     , utils.ExtProperty (utils, pdict ['amount'])
     , utils.ExtProperty (utils, pdict ['begin'])
     , utils.ExtProperty (utils, pdict ['end'])
-    , utils.ExtProperty (utils, pdict ['subscriber'])
-    , utils.ExtProperty (utils, pdict ['payer'])
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.firstname'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.lastname'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.lookalike_name'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.valid'
+        , searchable  = True
+        , multiselect = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.firstname'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.lastname'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.lookalike_name'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.valid'
+        , searchable  = True
+        , multiselect = True
+        )
     , utils.ExtProperty (utils, pdict ['invoices'], do_classhelp = False)
     );
   "
