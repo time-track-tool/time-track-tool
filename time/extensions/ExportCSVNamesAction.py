@@ -43,93 +43,89 @@ from rsclib.autosuper    import autosuper
 
 from extproperty         import ExtProperty
 
-class Repr (autosuper) :
+class Repr_Str (autosuper) :
     def __init__ (self, klass) :
         self.klass = klass
     # end def __init__
 
+    def conv (self, x) :
+        return str (x).decode ('utf-8').encode ('latin1')
+    # end def conv
+
     def __call__ (self, itemid, col, x = None) :
         if x is None :
-            self.setup (itemid, col)
-        if self.x is None :
-            return ""
+            x = self.klass.get (itemid, col)
+        x = x or ""
+        return self.conv (x)
     # end def __call__
-
-    def setup (self, itemid, col) :
-        self.x = self.klass.get (itemid, col)
-    # end def setup
 # end class Repr
 
-class Repr_Date (Repr) :
-    def __call__ (self, itemid, col) :
-        self.__super.__call__ (itemid, col)
-        return self.x.pretty ('%Y-%m-%d')
-    # end def __call__
+class Repr_Date (Repr_Str) :
+    def conv (self, x) :
+        if x :
+            return x.pretty ('%Y-%m-%d')
+        return self.__super.conv (x)
+    # end def conv
 # end class Repr_Date
 
-class Repr_Str (Repr) :
-    def __call__ (self, itemid, col, x = None) :
-        self.__super.__call__ (itemid, col, x)
-        return str (self.x).decode ('utf-8').encode ('latin1')
-    # end def __call__
-# end class Repr_Str
-
 class Repr_Country (Repr_Str) :
-    def __call__ (self, itemid, col) :
-        self.setup (itemid, col)
-        x = self.x.strip ()
+    def conv (self, x) :
+        x = x.strip ()
         if x == 'CH' :
             return ''
-        self.__super.__call__ (itemid, col, x)
-    # end def __call__
+        return self.__super.conv (x)
+    # end def conv
 # end class Repr_Country
 
 def repr_link (cls, cols) :
-    class Repr_Link (Repr) :
-        def __call__ (self, itemid, col) :
-            self.__super.__call__ (itemid, col)
-            s = " ".join (str (cls.get (x, c)) for c in cols)
-            return s.decode ('utf-8').encode ('latin1')
-        # end def __call__
+    class Repr_Link (Repr_Str) :
+        def conv (x) :
+            if x :
+                x = " ".join (str (cls.get (x, c)) for c in cols)
+            return self.__super.conv (x)
+        # end def conv
     # end class Repr_Link
-    return Repr_Link ()
+    return Repr_Link (cls)
 # end def repr_link
 
 def repr_func (klass, col) :
     idx = int (col.split ('.', 1)[1])
     class Repr_Func (Repr_Str) :
         def __call__ (self, itemid, col) :
-            self.setup (itemid, 'function')
+            return self.__super.__call__ (itemid, 'function')
+        # end def __call__
+
+        def conv (self, x) :
             try :
-                self.__super.__call__ \
-                    (itemid, 'function', self.x.split ('\n', 2) [idx])
+                return self.__super.conv (x.split ('\n') [idx])
             except AttributeError :
                 pass
             except IndexError :
                 return ""
-            return self.__super.__call__ (itemid, col, self.x)
-        # end def __call__
+            return self.__super.conv (x)
+        # end def conv
     # end class Repr_Func
     return Repr_Func (klass)
 # end def repr_func
 
 def repr_code (klass, adr_types) :
-    class Repr_Code (Repr) :
+    class Repr_Code (Repr_Str) :
         def __call__ (self, itemid, col) :
-            self.setup (itemid, 'adr_type')
-            if self.x is None :
-                return "0"
-            for t in self.x :
+            return self.__super.__call__ (itemid, 'adr_type')
+        # end def __call__
+
+        def conv (self, x) :
+            for t in x :
                 if t in adr_types :
                     return "A"
             return "0"
-        # end def __call__
+        # end def conv
     # end class Repr_Code
     return Repr_Code (klass)
 # end def repr_code
 
 class Export_CSV_Names (Action, autosuper) :
-    name = 'export'
+    name           = 'export'
     permissionType = 'View'
     print_head     = True
     filename       = 'query.csv'
@@ -159,17 +155,6 @@ class Export_CSV_Names (Action, autosuper) :
         repr_date    = Repr_Date    (self.klass)
         repr_str     = Repr_Str     (self.klass)
 
-        def repr_link (cls, cols) :
-            def f (itemid, col) :
-                x = self.klass.get (itemid, col)
-                if x == None :
-                    return ""
-                else :
-                    s = " ".join ([str (cls.get (x, col)) for col in cols])
-                    return s.decode ('utf-8').encode ('latin1')
-            return f
-        # end def repr_link
-
         def repr_extprop (col) :
             parts = col.split ('.', 1)
             prop  = self.htcls [parts [0]]
@@ -193,7 +178,6 @@ class Export_CSV_Names (Action, autosuper) :
             elif '.' in col :
                 self.represent [col] = repr_extprop (col)
             elif col not in self.props :
-                print "oops:", col
                 pass
             elif isinstance (self.props [col], hyperdb.Link) :
                 cn = self.props [col].classname
@@ -280,10 +264,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
         tc             = self.db.adr_type_cat.lookup ('ABO')
         self.adr_types = dict.fromkeys (self.db.adr_type.find (typecat = tc), 1)
         self.represent ['country'] = Repr_Country (self.klass)
-        print self.represent ['code']
         self.represent ['code']    = repr_code (self.klass, self.adr_types)
-        print self.represent ['code']
-        print "done"
     # end def build_repr
 
 # end class Export_Addresses

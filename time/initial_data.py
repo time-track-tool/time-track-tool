@@ -29,6 +29,7 @@
 #
 
 # init values
+from rup_utils import uni
 
 # task_status
 # order, name, abbreviation, transitions, description
