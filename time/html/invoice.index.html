@@ -31,38 +31,40 @@
      , ep (utils, pdict ['bookentry'])
      , ep (utils, pdict ['receipt_no'])
      , ep ( utils, pdict ['subscriber']
-          , searchname  = 'subscriber.firstname'
-          , searchable  = True
+          , searchname   = 'subscriber.firstname'
+          , searchable   = True
           )
      , ep ( utils, pdict ['subscriber']
-          , searchname  = 'subscriber.lastname'
-          , searchable  = True
+          , searchname   = 'subscriber.lastname'
+          , searchable   = True
+          , do_classhelp = False
           )
      , ep ( utils, pdict ['subscriber']
-          , searchname  = 'subscriber.lookalike_name'
-          , searchable  = True
+          , searchname   = 'subscriber.lookalike_name'
+          , searchable   = True
           )
      , ep ( utils, pdict ['subscriber']
-          , searchname  = 'subscriber.valid'
-          , searchable  = True
-          , multiselect = True
+          , searchname   = 'subscriber.valid'
+          , searchable   = True
+          , multiselect  = True
           )
      , ep ( utils, pdict ['payer']
-          , searchname  = 'payer.firstname'
-          , searchable  = True
+          , searchname   = 'payer.firstname'
+          , searchable   = True
           )
      , ep ( utils, pdict ['payer']
-          , searchname  = 'payer.lastname'
-          , searchable  = True
+          , searchname   = 'payer.lastname'
+          , searchable   = True
+          , do_classhelp = False
           )
      , ep ( utils, pdict ['payer']
-          , searchname  = 'payer.lookalike_name'
-          , searchable  = True
+          , searchname   = 'payer.lookalike_name'
+          , searchable   = True
           )
      , ep ( utils, pdict ['payer']
-          , searchname  = 'payer.valid'
-          , searchable  = True
-          , multiselect = True
+          , searchname   = 'payer.valid'
+          , searchable   = True
+          , multiselect  = True
           )
      , ep (utils, pdict ['abo'])
      , ep (utils, pdict ['invoice_group'], multiselect = 1)
