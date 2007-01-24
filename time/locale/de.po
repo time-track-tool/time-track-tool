@@ -2330,34 +2330,34 @@ msgid "Subscriber of this subscription"
 msgstr "Abonnent für dieses Abo"
 
 msgid "subscriber.firstname"
-msgstr "Abonnent/Vorname"
+msgstr "Abonnent Vorname"
 
 msgid "subscriber.lastname"
-msgstr "Abonnent/Nachname"
+msgstr "Abonnent Nachname"
 
 msgid "subscriber.lookalike_name"
-msgstr "Abonnent/Ähnlichkeitssuche"
+msgstr "Abonnent Ähnlichkeitssuche"
 
 msgid "subscriber.valid"
-msgstr "Abonnent/gültig"
+msgstr "Abonnent gültig"
 
 msgid "subscriber.adr_type"
-msgstr "Abonnent/Typ"
+msgstr "Abonnent Typ"
 
 msgid "payer.firstname"
-msgstr "Zahler/Vorname"
+msgstr "Zahler Vorname"
 
 msgid "payer.lastname"
-msgstr "Zahler/Nachname"
+msgstr "Zahler Nachname"
 
 msgid "payer.lookalike_name"
-msgstr "Zahler/Ähnlichkeitssuche"
+msgstr "Zahler Ähnlichkeitssuche"
 
 msgid "payer.valid"
-msgstr "Zahler/gültig"
+msgstr "Zahler gültig"
 
 msgid "payer.adr_type"
-msgstr "Zahler/Typ"
+msgstr "Zahler Typ"
 
 msgid "substitute"
 msgstr "Vertretung"

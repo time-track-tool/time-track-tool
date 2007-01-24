@@ -30,8 +30,40 @@
      , ep (utils, pdict ['date_payed'])
      , ep (utils, pdict ['bookentry'])
      , ep (utils, pdict ['receipt_no'])
-     , ep (utils, pdict ['payer'])
-     , ep (utils, pdict ['subscriber'])
+     , ep ( utils, pdict ['subscriber']
+          , searchname  = 'subscriber.firstname'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['subscriber']
+          , searchname  = 'subscriber.lastname'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['subscriber']
+          , searchname  = 'subscriber.lookalike_name'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['subscriber']
+          , searchname  = 'subscriber.valid'
+          , searchable  = True
+          , multiselect = True
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname  = 'payer.firstname'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname  = 'payer.lastname'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname  = 'payer.lookalike_name'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname  = 'payer.valid'
+          , searchable  = True
+          , multiselect = True
+          )
      , ep (utils, pdict ['abo'])
      , ep (utils, pdict ['invoice_group'], multiselect = 1)
      );
