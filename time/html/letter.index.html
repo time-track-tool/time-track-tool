@@ -17,7 +17,27 @@
      ( utils.ExtProperty (utils, pdict ['id'])
      , utils.ExtProperty (utils, pdict ['subject'])
      , utils.ExtProperty (utils, pdict ['date'])
-     , utils.ExtProperty (utils, pdict ['address'])
+     , utils.ExtProperty
+         ( utils, pdict ['address']
+         , searchname  = 'address.firstname'
+         , searchable  = True
+         )
+     , utils.ExtProperty
+         ( utils, pdict ['address']
+         , searchname  = 'address.lastname'
+         , searchable  = True
+         )
+     , utils.ExtProperty
+         ( utils, pdict ['address']
+         , searchname  = 'address.lookalike_name'
+         , searchable  = True
+         )
+     , utils.ExtProperty
+         ( utils, pdict ['address']
+         , searchname  = 'address.valid'
+         , searchable  = True
+         , multiselect = True
+         )
      );
    "
    tal:condition="context/is_view_ok">
