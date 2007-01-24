@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-24 10:44+0100\n"
+"POT-Creation-Date: 2007-01-24 18:22+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -650,12 +650,12 @@ msgid ""
 "             the address type category is \"ABO\".\n"
 "          "
 msgstr ""
-"-- dieses Feld bezeichnet den \"Typ\" welcher für das "
-"Markieren von Adressen für den Versand verwendet werden soll. Beim Anlegen "
-"eines neuen Abos wird automatisch der Typ bei der Abonnenten-Adresse "
-"eingetragen. Beim Stornieren eines Abos wird der Typ automatisch in der "
-"Abonnenten-Adresse gelöscht. Bitte beachten: Nur Adress-Typen die zur Typ-"
-"Kategorie \"ABO\" gehören, dürfen hier ausgewählt werden."
+"-- dieses Feld bezeichnet den \"Typ\" welcher für das Markieren von Adressen "
+"für den Versand verwendet werden soll. Beim Anlegen eines neuen Abos wird "
+"automatisch der Typ bei der Abonnenten-Adresse eingetragen. Beim Stornieren "
+"eines Abos wird der Typ automatisch in der Abonnenten-Adresse gelöscht. "
+"Bitte beachten: Nur Adress-Typen die zur Typ-Kategorie \"ABO\" gehören, "
+"dürfen hier ausgewählt werden."
 
 msgid "active"
 msgstr "aktiv"
@@ -1826,6 +1826,21 @@ msgstr "Zahler"
 msgid "Address which is paying for this subscription"
 msgstr "Adresse welche für dieses Abo bezahlt"
 
+msgid "payer.firstname"
+msgstr "Zahler Vorname"
+
+msgid "payer.lastname"
+msgstr "Zahler Nachname"
+
+msgid "payer.lookalike_name"
+msgstr "Zahler Ähnlichkeitssuche"
+
+msgid "payer.valid"
+msgstr "Zahler gültig"
+
+msgid "payer.adr_type"
+msgstr "Zahler Typ"
+
 msgid "payment"
 msgstr "Zahlung"
 
@@ -2343,21 +2358,6 @@ msgstr "Abonnent gültig"
 
 msgid "subscriber.adr_type"
 msgstr "Abonnent Typ"
-
-msgid "payer.firstname"
-msgstr "Zahler Vorname"
-
-msgid "payer.lastname"
-msgstr "Zahler Nachname"
-
-msgid "payer.lookalike_name"
-msgstr "Zahler Ähnlichkeitssuche"
-
-msgid "payer.valid"
-msgstr "Zahler gültig"
-
-msgid "payer.adr_type"
-msgstr "Zahler Typ"
 
 msgid "substitute"
 msgstr "Vertretung"
@@ -2937,6 +2937,24 @@ msgstr ""
 msgid "user"
 msgstr "Benutzer"
 
+msgid "${property} help - ${tracker}"
+msgstr ""
+
+msgid " Cancel "
+msgstr ""
+
+msgid " Apply "
+msgstr ""
+
+msgid "&lt;&lt; previous"
+msgstr "&lt;&lt;&nbsp;zurück"
+
+msgid "${start}..${end} out of ${total}"
+msgstr "${start} - ${end} von gesamt ${length}"
+
+msgid "next &gt;&gt;"
+msgstr "vorwärts&nbsp;&gt;&gt;"
+
 msgid "History for ${designator} - ${label}"
 msgstr ""
 
@@ -3142,6 +3160,30 @@ msgstr "(Änderung des Namens speichert eine neue Abfrage!!!)"
 
 msgid "Update view & store NEW query"
 msgstr "NEUE Abfrage speichern & neu anzeigen"
+
+msgid "\"My Queries\" Editing - ${tracker}"
+msgstr "\"Meine Abfragen\" bearbeiten - ${tracker}"
+
+msgid "\"My Queries\" Editing"
+msgstr "\"Meine Abfragen\" bearbeiten"
+
+msgid "You are not allowed to edit queries."
+msgstr ""
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Public ?"
+msgstr "öffentlich"
+
+msgid "edit"
+msgstr "bearbeiten"
+
+msgid "Delete"
+msgstr "löschen"
+
+msgid "Save Selection"
+msgstr "Auswahl speichern"
 
 msgid "Current Work Package(s)"
 msgstr ""
@@ -3497,39 +3539,3 @@ msgstr "Benutzerstatus"
 
 msgid "doc_num"
 msgstr ""
-
-#~ msgid "Title of the person belonging to this %(Classname)s"
-#~ msgstr "Titel der Person für diese %(Classname)s"
-
-#~ msgid "Selected address types must be in type category \"ABO\""
-#~ msgstr "Ausgewählte Adresstypen müssen in der Kategorie \"ABO\" sein."
-
-#~ msgid "Author of this message"
-#~ msgstr "Autor dieser Notiz"
-
-#~ msgid "Date of creation of this record"
-#~ msgstr "Datum des Anlegens von diesem Datensatz"
-
-#~ msgid "Currency for this price"
-#~ msgstr "Währung zu diesem Preis"
-
-#~ msgid "Phone number(s) "
-#~ msgstr "Telefonnummer(n)"
-
-#~ msgid "${property} help"
-#~ msgstr "Hilfe für ${property}"
-
-#~ msgid "&lt;&lt; previous"
-#~ msgstr "&lt;&lt; zurück"
-
-#~ msgid "${start}..${end} out of ${total}"
-#~ msgstr "${start} - ${end} von gesamt ${total}"
-
-#~ msgid "next &gt;&gt;"
-#~ msgstr "vorwärts &gt;&gt;"
-
-#~ msgid "Messages"
-#~ msgstr "Notizen"
-
-#~ msgid "New Subscription"
-#~ msgstr "Neues Abo"

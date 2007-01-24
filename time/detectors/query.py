@@ -31,14 +31,38 @@
 #--
 #
 
+from cgi    import parse_qs
+from urllib import urlencode
+
+def fix_url_and_template (new_values, url) :
+    tmplate = new_values.get ('tmplate')
+    deleted = False
+    print "url before:", url
+    if url :
+        urldict = parse_qs (url)
+        print urldict
+        for k in '@:' :
+            key = k + 'template'
+            if key in urldict :
+                tmplate = tmplate or urldict [key]
+                del urldict [key]
+                deleted = True
+        if deleted :
+            new_values ['url'] = urlencode (urldict)
+            print "url after:", new_values ['url']
+    return tmplate or 'index'
+# end def fix_url_and_template
+
 def new_query (db, cl, nodeid, new_values) :
-    if 'template' not in new_values :
-        new_values ['tmplate'] = 'index'
+    url = new_values.get ('url')
+    new_values ['tmplate'] = fix_url_and_template (new_values, url)
 # end def new_query
 
 def check_query (db, cl, nodeid, new_values) :
+    url     = new_values.get       ('url', cl.get (nodeid, 'url'))
+    tmplate = fix_url_and_template (new_values, url)
     if 'template' in new_values and not new_values ['template'] :
-        new_values ['tmplate'] = 'index'
+        new_values ['tmplate'] = tmplate
 # end def check_query
 
 def init (db) :
