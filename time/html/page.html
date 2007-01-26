@@ -8,7 +8,7 @@
  ; head_title      Classname
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
- ; is_user         python: uname != 'anonymous'
+ ; is_user         python: request.user.username!='anonymous'
  ; labelprop       klass/_klass/labelprop
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
@@ -375,7 +375,10 @@
 
      <!-- custom classes with "New" Button -->
      <tal:block tal:repeat="c python:['address']">
-        <tal:block tal:condition="python:request.user.hasPermission('View', c)">
+        <tal:block tal:condition="python:
+          (   'address' in db._db.classes
+          and request.user.hasPermission('View', c)
+          )">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('View', c) or
                                    request.user.hasPermission('Edit', c)"
@@ -394,8 +397,10 @@
 
      <!-- other custom classes with special template -->
      <tal:block tal:repeat="c python:[('invoice','send')]">
-        <tal:block
-         tal:condition="python:request.user.hasPermission('Edit', c [0])">
+        <tal:block tal:condition="python:
+          (   'invoice' in db._db.classes
+          and  request.user.hasPermission('Edit', c [0])
+          )">
          <span class="classblock">
           <a tal:condition="python:request.user.hasPermission('Edit', c [0])"
              tal:attributes=

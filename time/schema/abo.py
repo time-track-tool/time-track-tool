@@ -220,8 +220,7 @@ def security (db, ** kw) :
         , ("tmplate"           , ["User"],    ["Abo", "Invoice"           ])
         , ("valid"             , ["User"],    ["Admin"                    ])
         ]
-    prop_perms = [("user", "View", ["Anonymous"] , ("username",))]
 
     schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, prop_perms)
+    schemadef.register_class_permissions (db, classes, [])
 # end def security
