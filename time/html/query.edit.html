@@ -1,18 +1,19 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
- <title metal:fill-slot="head_title">
-  "Your Queries" Editing - <span tal:replace="config/TRACKER_NAME" />
+ <title metal:fill-slot="head_title" i18n:translate="">
+  "My Queries" Editing - 
+  <span tal:replace="config/TRACKER_NAME" i18n:name="tracker"/>
  </title>
  <tal:block metal:fill-slot="create_or_query">
    <tal:block
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
  </tal:block>
- <span metal:fill-slot="body_title" tal:omit-tag="python:1">
-  "Your Queries" Editing
+ <span metal:fill-slot="body_title" i18n:translate="" tal:omit-tag="python:1">
+  "My Queries" Editing
  </span>
 
  <td class="content" metal:fill-slot="content">
 
-  <span tal:condition="not:context/is_edit_ok">
+  <span tal:condition="not:context/is_edit_ok" i18n:translate="">
   You are not allowed to edit queries.
   </span>
 
@@ -41,17 +42,18 @@
                   ('May Public Queries', 'query')
     ">
     <tr>
-     <th>Query</th>
-     <th>Edit</th>
-     <th tal:condition="can_public">Public ?</th>
+     <th i18n:translate="">Query</th>
+     <th i18n:translate="">Edit</th>
+     <th i18n:translate="" tal:condition="can_public">Public ?</th>
      <th>&nbsp;</th>
     </tr>
 
     <tr tal:repeat="query all">
-     <td><a tal:attributes="href string:${query/klass}?${query/url}"
+     <td><a tal:attributes=
+            "href string:${query/klass}?@template=${query/tmplate}&${query/url}"
             tal:content="query/name">query</a></td>
 
-     <td><a tal:condition="query/is_edit_ok"
+     <td><a tal:condition="query/is_edit_ok" i18n:translate=""
             tal:attributes="href string:query${query/id}">
            edit
          </a>
@@ -69,7 +71,8 @@
      <td tal:condition="query/is_retired">[query is retired]<!-- XXX: maybe offer "restore" some day --></td>
 
      <td tal:condition="not:query/is_retired">
-      <input type="button" value="Delete" tal:condition="query/is_edit_ok"
+      <input type="button" i18n:attributes="value" value="Delete"
+       tal:condition="query/is_edit_ok"
        tal:attributes="onClick python:'''retire('%s')'''%query.id">
      </td>
     </tr>
@@ -77,7 +80,7 @@
      <td tal:attributes="colspan python:[3,4][can_public and 1 or 0]">
       <input type="hidden" name="@action" value="edit">
       <input type="hidden" name="@template" value="edit">
-      <input type="submit" value="Save Selection">
+      <input type="submit" value="Save Selection" i18n:attributes="value">
      </td>
     </tr>
    </table>

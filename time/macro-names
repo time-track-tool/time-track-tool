@@ -1,98 +1,113 @@
 To check:
 =========
 
-- html/page.html
-- html/home.html
++ html/page.html -- looks quite good now
++ html/home.html
 + html/style.css   - use ttt version (only additions)
-- html/file.item.html
++ html/file.item.html
 + html/_generic.collision.html -- identical
-- html/_generic.help.html
++ html/_generic.help.html -- use ttt version: we use new help-stuff too
 + html/_generic.history.html -- use ttt version and translate History to Verlauf
-- html/_generic.index.html
-  - Additional macros factored from ttt_issue in ttt version
-  - export csv in ttt version
-  - more parameters in ttt version
-  - more exceptions in ttt version (messages, files): but *can* display
++ html/_generic.index.html
+  + Additional macros factored from ttt_issue in ttt version
+  + export csv in ttt version
+  + more parameters in ttt version
+  + more exceptions in ttt version (messages, files): but *can* display
     messages and files with factored macros from ttt_issue
-  - adr_type_cat.lookup stuff in abo
-  - special hack for filter for adr_type attribute
-  -> maybe create own template for classes that have adr_type attribute??
+  + adr_type_cat.lookup stuff in abo
+  + special hack for filter for adr_type attribute
+  +> maybe create own template for classes that have adr_type attribute??
 + html/_generic.property_help.html -- ttt version for newer help version
-- html/query.edit.html -- much work?
-- html/query.item.html -- only in abo -- minimal version
-- html/user.index.html
-- html/user.item.html
++ html/query.edit.html -- much work?
++ html/query.item.html -- only in abo -- minimal version
+  Doesn't work in new system.
++ html/user.index.html
++ html/user.item.html
 + html/user.register -- remove from abo
 + html/Makefile -- identical
-- extensions/extproperty.py
-  - use the newer ttt thing
-  - check what that means for templates (!)
-  -> search for all occurences of ExtProperty
-- extensions/help.py
-  - Merge after having both in alphabetical order (user.address in abo
++ extensions/extproperty.py
+  + use the newer ttt thing
+  + check what that means for templates (!)
+  +> search for all occurences of ExtProperty
+  + attributes:
+    + selname   -> searchname
+    + is_label  -> is_labelprop
+    + linkclass -> get_cssclass
+    + linkcls   -> should not be used anymore (linkname)
+    + linkattr  -> should not be used anymore (displayprop or searchname)
+                   + external interface: dotted form 'name1.name2.name3'
+                     is now handed over as searchname instead of
+                     linkattr
+  + external interface
+    + sortable is now an attribute not a method
+  + menu_or_field was a standalone function is now a method of
+    extproperty
++ extensions/help.py
+  + Merge after having both in alphabetical order (user.address in abo
     is in wrong order for example)
-  - combined_name uses '++' instead of '.' in ttt
-    -> needs to be reflected in help-text
-  - merge special cases in help_properties (letter/daily_record etc)
-  - generally ttt is newer
-- extensions/interfaces
-  - remove ttt specific stuff (user_dynamic, common imports)
-  - hmm maybe rename one of those: don't seem to have much in common
+  + combined_name uses '++' instead of '.' in ttt
+    +> needs to be reflected in help-text
+  + merge special cases in help_properties (letter/daily_record etc)
+  + generally ttt is newer
++ extensions/interfaces
+  + remove ttt specific stuff (user_dynamic, common imports)
+  + hmm maybe rename one of those: don't seem to have much in common
 - extensions/ExportCSVNamesAction.py
-- locale (!)
-  -> merge
-  -> check against merged templates that everything is in german that
++ locale (!)
+  +> merge
+  +> check against merged templates that everything is in german that
      has to be
-- detectors: user (!) only in ttt
-  -> make checks specific to existing attributes of user
-  -> maybe even don't register checks if attributes aren't there.
-  -> much work should have been done for it tracker
++ detectors: user (!) only in ttt
+  +> make checks specific to existing attributes of user
+  +> maybe even don't register checks if attributes aren't there.
+  +> much work should have been done for it tracker
 
-- Also check migration to new roundup for abo
-- Check some permission things in ttt that are solved in abo
++ Also check migration to new roundup for abo
++ Check some permission things in ttt that are solved in abo
 
 page.html
 =========
 
-formatted_class in abo is ttt_issue in ttt
--> Problems with shared templates (file)
++ formatted_class in abo is ttt_issue in ttt
+  +> Problems with shared templates (file)
 
-Must hack icing (and formatted_classs / ttt_issue) and
-create_or_query_new_tracker_item to work with both templates.
-Probably need to set variables before expanding icing.
-Need to factor out all stuff that is specific to the individual
-templates in icing (probably only the status line).
++ Must hack icing (and formatted_classs / ttt_issue) and
+  create_or_query_new_tracker_item to work with both templates.
+  Probably need to set variables before expanding icing.  Need to factor
+  out all stuff that is specific to the individual templates in icing
+  (probably only the status line).
 
 TTT
 ---
 
-- icing
++ icing
 
 TTT-specific
 ++++++++++++
 
-- create_new    only used by create_or_query_new_tracker_item
-- select_query  only used by create_or_query_new_tracker_item
-- create_or_query_new_tracker_item
++ create_new    only used by create_or_query_new_tracker_item
++ select_query  only used by create_or_query_new_tracker_item
++ create_or_query_new_tracker_item
   uses create_new and select_query  used by most templates
   -> Problem for home, file and probably other shared templates
 
-- ttt_issue              used by most templates
-- message_box            used by ttt_issue and generic template
-- note_required          used by ttt_issue and generic template
-- message_display        used by ttt_issue and generic template
-The three below are factored from ttt_issue for generic template --
-should be used in abo too.
++ ttt_issue              used by most templates
++ message_box            used by ttt_issue and generic template
++ note_required          used by ttt_issue and generic template
++ message_display        used by ttt_issue and generic template
 
-- ttt_task_list          used by feature, release, task item-templates
-- ttt_simple_list        used by announcement, review
-- file_list              used by ttt_issue only
-- ttt_issue_files        used in various macros
++ The three below are factored from ttt_issue for generic template --
+  should be used in abo too.
 
-- ttt_search_nav         used by ttt_search_results only
-- ttt_search_results     used by most templates
-- ttt_search_form        used by most templates
-- search_form            used only by summary_report templates and
++ ttt_task_list          used by feature, release, task item-templates
++ ttt_simple_list        used by announcement, review
++ file_list              used by ttt_issue only
++ ttt_issue_files        used in various macros
+
++ ttt_search_nav         used by ttt_search_results only
++ ttt_search_results     used by most templates
++ ttt_search_form        used by most templates
++ search_form            used only by summary_report templates and
                          ttt_search_form
 
 + ttt_issue_pdf_files    unused
@@ -100,16 +115,18 @@ should be used in abo too.
 ABO
 ---
 
-- icing
-- query_list             used by icing
++ icing
++ query_list             used by icing
 
-- formatted_class        used by most templates
++ formatted_class        used by most templates
 
-- issue_files            used by and letter.item and tmplate.item
++ issue_files            used by and letter.item and tmplate.item
+                         -> obsolete, new macros automagicalle determine
+                            if files should be displayed for attaching
 
-- ttt_search_nav         used by search_display only
-- search_display         used by most templates
-- search_form            used by most templates
++ ttt_search_nav         used by search_display only
++ search_display         used by most templates
++ search_form            used by most templates
 
 + ttt_issue_pdf_files    unused
 + search_input           unused

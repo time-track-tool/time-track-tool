@@ -83,7 +83,7 @@ def date_help \
     , item
     , width    = 300
     , height   = 200
-    , label    = "(cal)"
+    , label    = ''"(cal)"
     , form     = "itemSynopsis"
     ) :
     """dump out the link to a calendar pop-up window
@@ -292,7 +292,7 @@ def welcome (db) :
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass
-    return "".join ((_ ("Welcome to the "), db.config.TRACKER_NAME, '.'))
+    return "".join ((_ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
 # end def welcome
 
 def color_duration (tr) :

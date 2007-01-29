@@ -1,0 +1,3541 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Ralf Schlatterbeck
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: abo\n"
+"Report-Msgid-Bugs-To: rsc@runtux.com\n"
+"POT-Creation-Date: 2007-01-24 18:22+0100\n"
+"PO-Revision-Date: 2005-06-13 11:50+CEST\n"
+"Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Restart of subscription only within two months"
+msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
+
+msgid "Restart of subscription only within last period"
+msgstr "Wiederaufnahme Abo nur innerhalb letzter Periode"
+
+msgid "Termination with deletion only for unpayed subscriptions"
+msgstr "Storno mit Löschen nur für unbezahlte neue Abos"
+
+msgid "Termination: end must be greater or equal to start time"
+msgstr "Storno: Endzeit muss größer/gleich Startzeit sein"
+
+msgid "\"%(attr)s\" may not be filled in"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+#, python-format
+msgid "\"%(attr)s\" must be filled in"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
+msgid "invoice is marked"
+msgstr "Rechnung ist markiert"
+
+msgid "\"end\" (close subscription) only +/- one month"
+msgstr "\"Storniert per\" (Storno) nur +/- ein Monat"
+
+#, python-format
+msgid "\"%(attr)s\" may not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+msgid "\"%(attr)s\" may not be zero"
+msgstr "\"%(attr)s\" darf nicht Null werden"
+
+msgid "Open/change only for valid subscription"
+msgstr "Wiederaufnahme/Änderung nur für gültige Abos"
+
+msgid ""
+"\"end\" may only be changed for last invoice period: %(period_start)s-%"
+"(period_end)s"
+msgstr ""
+"\"Storniert per\" darf nur im Bereich der letzten Rechnungsperiode geändert "
+"werden: %(period_start)s-%(period_end)s"
+
+msgid "\"%(attr)s\" must be greater or equal to zero"
+msgstr "\"%(attr)s\" muss größer/gleich Null sein"
+
+msgid "period must be an integer"
+msgstr "Laufzeit muss ganzzahlig sein"
+
+msgid "Country must be set"
+msgstr "Land muss gesetzt sein"
+
+msgid ""
+"address type category \"ABO\" is used by the system and may not be changed."
+msgstr ""
+"Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf nicht geändert "
+"werden."
+
+#, python-format
+msgid "The field \"%s\" must must remain filled."
+msgstr ""
+
+#, python-format
+msgid "New %s requires a %s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be undefined"
+msgstr "\"%(attr)s\" darf nicht gelöscht werden"
+
+#, python-format
+msgid "Already frozen: %(date)s"
+msgstr ""
+
+#, python-format
+msgid "No dyn. user rec for %(user)s %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Thawed freeze records before %(date)s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be set"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
+#, python-format
+msgid "%(attr)s must not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#, python-format
+msgid "%(attr)s must remain filled"
+msgstr "\"%(attr)s\" muss ausgefüllt bleiben"
+
+#, python-format
+msgid "\"%(attr)s\" must not be filled in"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+#, python-format
+msgid "\"%(attr)s\" must not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+msgid "no change of closed subscription"
+msgstr "Kein Buchen bei storniertem Abo"
+
+msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
+msgstr "\"Zahlung\", \"Offen\", \"Betrag\": nur Zahlen erlaubt"
+
+msgid "amount may not be changed after payment"
+msgstr "Betrag darf nach Zahlung nicht mehr geändert werden"
+
+#, python-format
+msgid "inconsistency of payment:%s and balance_open:%s"
+msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
+
+msgid "payment may not exceed balance_open"
+msgstr "Zahlung darf Betrag nicht übersteigen"
+
+#, python-format
+msgid "\"%(attr)s\" may not be deleted"
+msgstr "\"%(attr)s\" darf nicht gelöscht werden"
+
+#, python-format
+msgid "New issue may not define \"%s\""
+msgstr ""
+
+msgid "You may not change container status"
+msgstr "Container Status darf nicht geändert werden"
+
+msgid "May not be part of Obsolete or Mistaken container"
+msgstr ""
+
+msgid "Containers may not be Obsolete/Mistaken"
+msgstr ""
+
+#, python-format
+msgid "New %s requires a message"
+msgstr ""
+
+#, python-format
+msgid "Not allowed to create new %s"
+msgstr ""
+
+msgid "it_project"
+msgstr ""
+
+msgid "User may not be set to helpdesk"
+msgstr ""
+
+#, python-format
+msgid "Not allowed to edit %(prop)s"
+msgstr ""
+
+msgid "Must change user, \"helpdesk\" is not allowed"
+msgstr ""
+
+#, python-format
+msgid "Must change %s, \"unknown\" is not allowed"
+msgstr ""
+
+msgid "it_prio"
+msgstr "IT-Priorität"
+
+#, python-format
+msgid "May not set %s on new issue"
+msgstr ""
+
+msgid "superseder"
+msgstr ""
+
+#, python-format
+msgid "Can't set %s to yourself"
+msgstr ""
+
+#, python-format
+msgid "Invalid IP \"%(ip)s\": must contain 4 octets"
+msgstr ""
+
+#, python-format
+msgid "Invalid IP \"%(ip)s\": invalid octet \"%(o)s\""
+msgstr ""
+
+msgid "ip_subnet"
+msgstr "IP-Subnetz"
+
+#, python-format
+msgid "IP %(ip)s does not match any %(ip_sn)s of %(olo_name)s"
+msgstr ""
+
+#, python-format
+msgid "Invalid MAC \"%(mac)s\": must contain 6 octets"
+msgstr ""
+
+#, python-format
+msgid "Invalid MAC \"%(mac)s\": invalid octet \"%(o)s\""
+msgstr ""
+
+msgid "Machine names may not point to other CNAMEs"
+msgstr ""
+
+msgid "org_location"
+msgstr "Organisation/Ort"
+
+#, python-format
+msgid "Duplicate %(olon)s %(polo)s in %(ip)s"
+msgstr ""
+
+msgid "network_address"
+msgstr "Netzwerkadresse"
+
+msgid "machine_name"
+msgstr "Maschinenname"
+
+msgid "dns_record_type"
+msgstr "DNS-Typ"
+
+#, python-format
+msgid "Only one of %(na)s and %(mnn)s may be given"
+msgstr ""
+
+#, python-format
+msgid "Duplicate %(olo)s for %(na)s: %(olo_name)s"
+msgstr ""
+
+#, python-format
+msgid "For %(mnn)s, %(drtn)s must be CNAME"
+msgstr ""
+
+#, python-format
+msgid "For %(na)s, %(drtn)s must be CNAME"
+msgstr ""
+
+#, python-format
+msgid "Invalid netmask: %(mask)s"
+msgstr ""
+
+msgid "gid"
+msgstr "group ID"
+
+msgid "smb_domain"
+msgstr ""
+
+#, python-format
+msgid "Invalid %(gname)s: %(gid)s for %(sdname)s"
+msgstr ""
+
+#, python-format
+msgid "%(on)s must match for alias: %(name)s->%(a2)s"
+msgstr ""
+
+#, python-format
+msgid "Either %s or %s must be defined"
+msgstr ""
+
+msgid "alias_to_alias"
+msgstr ""
+
+msgid "alias_to_user"
+msgstr "Alias für Benutzer"
+
+#, python-format
+msgid "May not change %(olon)s if dependencies exist"
+msgstr ""
+
+msgid "May not retire if dependencies exist"
+msgstr ""
+
+#, python-format
+msgid "Invalid Status transition: %s -> %s"
+msgstr ""
+
+msgid "Responsible must change for this status change"
+msgstr ""
+
+msgid "State change requires a message"
+msgstr ""
+
+#, python-format
+msgid "No %s may be created"
+msgstr ""
+
+msgid "summary_report"
+msgstr "Zusammenfassung"
+
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+msgid "No negative times are allowed"
+msgstr ""
+
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must not be specified"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
+
+#, python-format
+msgid "Duplicate %(field)s \"%(value)s\""
+msgstr ""
+
+msgid "Lunchbreak of more than 8 hours? Sure?"
+msgstr ""
+
+msgid "Lunchbreak must be at least half an hour."
+msgstr ""
+
+#, python-format
+msgid "%s specified for user without %s"
+msgstr ""
+
+msgid "uid"
+msgstr "Benutzerkennung"
+
+#, python-format
+msgid "Invalid %(uidname)s: %(uid)s"
+msgstr ""
+
+msgid "Not allowed to retire a user"
+msgstr ""
+
+#, python-format
+msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be positive or empty"
+msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
+
+#, python-format
+msgid "Frozen: %(old_from)s"
+msgstr ""
+
+#, python-format
+msgid "Frozen: %(valid_from)s"
+msgstr ""
+
+msgid "Download&nbsp;letter"
+msgstr "Brief&nbsp;laden"
+
+#, python-format
+msgid "Submit to %(nickname)s"
+msgstr ""
+
+msgid "approve"
+msgstr "genehmigen"
+
+msgid "deny"
+msgstr ""
+
+msgid "edit again"
+msgstr ""
+
+msgid "supervisor"
+msgstr "Vorgesetzter"
+
+#, python-format
+msgid "No %(f_supervisor)s for %(user)s"
+msgstr ""
+
+msgid "Date is required"
+msgstr ""
+
+msgid "Supervisor (in User field) is required"
+msgstr ""
+
+msgid "Invalid Supervisor"
+msgstr ""
+
+msgid "Don't care"
+msgstr "Nicht suchen"
+
+msgid "Academic title of %(Classname)s, e.g., Dipl. Ing."
+msgstr ""
+
+msgid "Status of this address"
+msgstr "Gültigkeits-Status dieser Adresse"
+
+msgid "Type of Address"
+msgstr "Typ dieser Adresse"
+
+msgid "Code of this %(Classname)s."
+msgstr "Code für diese(n) %(Classname)s."
+
+msgid ""
+"The address type category with\n"
+"         code \"ABO\" is special: It is used by the system for marking all\n"
+"         address types that are used for marking subscribers addresses\n"
+"         of running abos. Therefore the address type category with code\n"
+"         \"ABO\" may not be deleted or changed.\n"
+"      "
+msgstr ""
+"Die Typ-Kategorie mit dem Code \"ABO\" wird vom System zum Markieren von "
+"Adress-Typen verwendet, die zur Markierung von Abonnenten-Adressen von "
+"laufenden Abos dienen.  Daher darf die Typ-Kategorie \"ABO\" weder verändert "
+"noch gelöscht werden."
+
+msgid ""
+"Expected daily work-time for %(Classname)s for each day of\n"
+"         the week. If nothing is specified, the average of Weekly\n"
+"         hours is taken. The field is mainly needed for part-time\n"
+"         employees with irregular work time.\n"
+"      "
+msgstr ""
+
+msgid "Planned time by which this %(Classname)s should be done."
+msgstr "Geplante Zeit wann %(Classname)s erledigt wird"
+
+msgid ""
+"Is hidden by default except for HR and office, except if the\n"
+"         user explicitly allows the number being visible.\n"
+"      "
+msgstr ""
+
+msgid "Flag if booking of durations is allowed for this %(Classname)s."
+msgstr ""
+"Hinweis, ob Buchungen von Zeitdauern für diese %(Classname)s erlaubt ist"
+
+msgid ""
+"Only an explicitly chosen %(Property)s (or several) appear in\n"
+"         the report when you also choose %(Property)s in View\n"
+"      "
+msgstr ""
+
+msgid ""
+"This is an extension number of the PBX. Can be concatenated\n"
+"         with the company prefix stored in \"Organisation\" to form a\n"
+"         valid external phone number.\n"
+"      "
+msgstr " "
+
+msgid "First name for this %(Classname)s, e.g., Ralf"
+msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf"
+
+msgid "Green start/end times have been created by the distribute function."
+msgstr ""
+
+msgid ""
+"ID of this record, automatically generated by the system.\n"
+"         Cannot be changed by the user.\n"
+"      "
+msgstr ""
+"ID dieses Datensatzes, wird automatisch vom System erzeugt und kann vom "
+"Benutzer nicht geändert werden."
+
+msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
+msgstr "Nachname für diesen %(Classname)s, z.B., Schlatterbeck"
+
+msgid "Leave this field empty if unsure."
+msgstr ""
+
+msgid ""
+"Search for similar names: only non-accented characters are\n"
+"         possible when searching\n"
+"      "
+msgstr ""
+"Suche nach ähnlicher Schreibweise: Nur nicht-akzentuierte Zeichen verwenden "
+"(keine Umlaute)"
+
+msgid ""
+"Some %(Property)s for tagging your issue -- can be useful\n"
+"         for querying.\n"
+"      "
+msgstr ""
+
+msgid ""
+"If you miss an %(Property)s here, feel free to vote for it with\n"
+"         an IT-Issue in category roundup.\n"
+"      "
+msgstr ""
+
+msgid "Multiple %(Classname)s entries are allowed."
+msgstr ""
+
+msgid "Priority for this %(Classname)s."
+msgstr "Priorität für %(Classname)s"
+
+msgid ""
+"If you set this option to \"YES\", all time tracker users can see\n"
+"         your private number. If set to \"No\", the number will not be\n"
+"         accessible for the other time tracker users except HR and\n"
+"         office. (Please be aware that you do not have to give\n"
+"         information about any private phone number at all!)\n"
+"      "
+msgstr ""
+
+msgid "Is always a full number valid on the PSTN."
+msgstr ""
+
+msgid ""
+"as a comma-separated list of ranges (a special case of a range\n"
+"         is just one number), e.g., 1-100,300-500\n"
+"      "
+msgstr ""
+
+msgid ""
+" -- automatically generated\n"
+"         by the system from first and last name. Needed by roundup\n"
+"         internally. (Roundup uses this as the sender name when\n"
+"         sending messages via email)\n"
+"     "
+msgstr " "
+
+msgid ""
+"Status of this %(Classname)s. Automatically set on a new\n"
+"         %(Classname)s if not set.\n"
+"      "
+msgstr ""
+"Status für \"%(Classname)s\". Wird für neue(n) %(Classname)s automatisch "
+"gesetzt falls nicht angegeben."
+
+msgid ""
+"This %(Classname)s has been closed as a duplicate against\n"
+"         another %(Classname)s.\n"
+"      "
+msgstr ""
+
+msgid ""
+"Flag to indicate travel. In the Time mask no lunchbreak will\n"
+"         be computed. Even if enabled, no maximum work hours will be\n"
+"         enforced for this %(Classname)s.\n"
+"      "
+msgstr ""
+
+msgid "Location where you worked."
+msgstr ""
+
+msgid ""
+"The \"View\" selector is visible in the search form for\n"
+"         %(Classname)s. Select here which columns you want to view in\n"
+"         the results.\n"
+"      "
+msgstr ""
+"Das Auswahlfeld \"Felder\" wird in der Suchmaske für %(Classname)s "
+"angezeigt. Hier können Sie auswählen, welche Spalten in der Darstellung der "
+"Ergebnisse angezeigt werden sollen."
+
+msgid "VIEW"
+msgstr "Felder"
+
+msgid "abo"
+msgstr "Abo"
+
+msgid "Subscription to which this invoice belongs"
+msgstr "Abo zu dieser Rechnung"
+
+msgid "abo++end"
+msgstr "Storniert per"
+
+msgid "Date when this subscription ends"
+msgstr "Datum wann dieses Abo endet"
+
+msgid "aboprice"
+msgstr "Preis"
+
+msgid "Price and currency for this subscription"
+msgstr "Preis und Währung für dieses Abo"
+
+msgid "abos"
+msgstr "Abos"
+
+msgid "Subscriptions for this %(Classname)s"
+msgstr "Abos für diese(n) %(Classname)s"
+
+msgid "abotype"
+msgstr "Abotyp"
+
+msgid "Type of this subscription"
+msgstr "Typ dieses Abos"
+
+msgid "abo_type++adr_type"
+msgstr "Typ"
+
+msgid ""
+"-- this field indicates the address type to\n"
+"             be used for marking addresses that should be exported for\n"
+"             sending. When a new subsription is generated this type will\n"
+"             be automatically added to the subscriber. When cancelling a\n"
+"             subscription, this type will be deleted from the subscriber.\n"
+"             Note that only address types can be selected here for which\n"
+"             the address type category is \"ABO\".\n"
+"          "
+msgstr ""
+"-- dieses Feld bezeichnet den \"Typ\" welcher für das Markieren von Adressen "
+"für den Versand verwendet werden soll. Beim Anlegen eines neuen Abos wird "
+"automatisch der Typ bei der Abonnenten-Adresse eingetragen. Beim Stornieren "
+"eines Abos wird der Typ automatisch in der Abonnenten-Adresse gelöscht. "
+"Bitte beachten: Nur Adress-Typen die zur Typ-Kategorie \"ABO\" gehören, "
+"dürfen hier ausgewählt werden."
+
+msgid "active"
+msgstr "aktiv"
+
+msgid "Set if this %(Classname)s is active."
+msgstr "Gesetzt, falls diese %(Classname)s aktiv ist"
+
+msgid "activity"
+msgstr "letzte Änderung"
+
+msgid "Date of last change"
+msgstr "Datum der letzten Änderung"
+
+msgid "actor"
+msgstr "geändert von"
+
+msgid "Person who has done the last change"
+msgstr "Person welche die letzte Änderung durchgeführt hat"
+
+msgid "add_announcement"
+msgstr ""
+
+msgid "Mail out an announcement for another review step"
+msgstr ""
+
+msgid "add_file"
+msgstr "Datei anfügen"
+
+msgid "Add a new file for %(Classname)s"
+msgstr "Datei für %(Classname)s anfügen"
+
+msgid "additional_hours"
+msgstr ""
+
+msgid "Austrian-Law: time above 38.5 hours per week"
+msgstr ""
+
+msgid "address"
+msgstr "Adresse"
+
+msgid "Address for this letter"
+msgstr "Adresse zu diesem Brief"
+
+msgid "address++valid"
+msgstr "gültig"
+
+msgid "address++title"
+msgstr "Titel"
+
+msgid "adr_type_cat.code"
+msgstr "Code"
+
+msgid "adr_type_cat++code"
+msgstr "Code"
+
+msgid "adr_type"
+msgstr "Typ"
+
+msgid "alias"
+msgstr "Alias"
+
+msgid "Email alias"
+msgstr ""
+
+msgid "Other aliases this %(Classname)s maps to"
+msgstr "Andere Aliase für diese %(Classname)s"
+
+msgid "List of users this %(Classname)s maps to"
+msgstr "Liste der Benutzer für diese %(Classname)s"
+
+msgid "all_in"
+msgstr ""
+
+msgid "If selected, the user has an all-inclusive work time contract"
+msgstr ""
+
+msgid "alternate_addresses"
+msgstr "zusätzliche Adressen"
+
+msgid "Alternate email addresses for this user, one per line"
+msgstr "Alternative Email-Adressen für diesen Benutzer, eine pro Zeile"
+
+msgid "amount"
+msgstr "Betrag"
+
+msgid "Amount this subscription costs"
+msgstr "Betrag den dieses Abo kostet"
+
+msgid "announcements"
+msgstr ""
+
+msgid "Announcements for this %(Classname)s"
+msgstr "Ankündigungen für %(Classname)s"
+
+msgid "area"
+msgstr ""
+
+msgid "Where this issue belongs to."
+msgstr ""
+
+msgid "author"
+msgstr "Autor"
+
+msgid "Author of this %(Classname)s"
+msgstr "Autor von %(Classname)s"
+
+msgid "authors"
+msgstr "Autoren"
+
+msgid "Authors of the artefact of this %(Classname)s"
+msgstr "Autoren des Artefakts für diese %(Classname)s"
+
+msgid "balance_open"
+msgstr "Offen"
+
+msgid "Open amount not yet payed"
+msgstr "Noch nicht bezahlter Betrag"
+
+msgid "begin"
+msgstr "Beginn"
+
+msgid "Begin of period"
+msgstr "Start der Rechnungsperiode"
+
+msgid "bookentry"
+msgstr "Buchung am"
+
+msgid "Date when the payment was booked"
+msgstr "Datum des Erfassens der Zahlung"
+
+msgid "bookers"
+msgstr "zugelassene Benutzer"
+
+msgid ""
+"Users who may book on this %(Classname)s. If nothing is\n"
+"             selected here, all users may book on this %(Classname)s (e.g.,\n"
+"             jour fixe).\n"
+"          "
+msgstr ""
+
+msgid "booking_allowed"
+msgstr ""
+
+msgid ""
+"User is allowed to book time records during the validity span\n"
+"             of the given %(Classname)s\n"
+"          "
+msgstr ""
+
+msgid "card_type"
+msgstr "Kartentyp"
+
+msgid "Type of this %(Classname)s"
+msgstr "Typ für diese %(Classname)s"
+
+msgid "category"
+msgstr "Kategorie"
+
+msgid ""
+"Category of %(Classname)s. Where this %(Classname)s belongs\n"
+"             to. Each category has a Category-Responsible who is\n"
+"             responsible directly after creation if not specified\n"
+"             otherwise.\n"
+"          "
+msgstr ""
+
+msgid "cert_sw"
+msgstr ""
+
+msgid ""
+"Mark this %(Classname)s as being certifyable software.\n"
+"            Certifyable software needs special handling, e.g., requires "
+"that\n"
+"            some fields like \"Files affected\" are filled in.\n"
+"         "
+msgstr ""
+
+msgid "city"
+msgstr "Ort"
+
+msgid "City where this person lives"
+msgstr "Ort/Stadt wo diese Person lebt"
+
+msgid "clearance_by"
+msgstr ""
+
+msgid ""
+"Usually the supervisor of a person approves\n"
+"             time records. This can be delegated using this attribute. It\n"
+"             specifies the person who approves time records for\n"
+"             all people whose supervisor this is.\n"
+"          "
+msgstr ""
+
+msgid "closed"
+msgstr "geschlossen"
+
+msgid ""
+"When this %(Classname)s was closed. Automatically set by\n"
+"            Roundup.\n"
+"         "
+msgstr ""
+
+msgid "code"
+msgstr "Code"
+
+msgid "Code of this %(Classname)s"
+msgstr "Code für diese %(Classname)s."
+
+msgid "company"
+msgstr ""
+
+msgid "Company for %(Classname)s"
+msgstr "Firma für %(Classname)s"
+
+msgid "composed_of"
+msgstr ""
+
+msgid ""
+"Set automagically by roundup on %(Classname)ss being Part of\n"
+"            another %(Classname)s.\n"
+"         "
+msgstr ""
+
+msgid "composed_of.id"
+msgstr ""
+
+msgid "confirm"
+msgstr "Wiederholung Passwort"
+
+msgid ""
+"Confirm the password here: first password and this entry\n"
+"             must match.\n"
+"          "
+msgstr ""
+"Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
+"müssen übereinstimmen."
+
+msgid "Content of %(Classname)s"
+msgstr "Inhalt dieser %(Classname)s"
+
+msgid "content"
+msgstr "Inhalt"
+
+msgid "cost_center_group.id"
+msgstr ""
+
+msgid "cost_center_status"
+msgstr ""
+
+msgid "Specifies the Phase the Cost Center is in"
+msgstr ""
+
+msgid "Country for this address"
+msgstr "Land dieser Adresse"
+
+msgid "country"
+msgstr "Land"
+
+msgid "Record creation date"
+msgstr "Erstellungsdatum des Datensatzes"
+
+msgid "creation"
+msgstr "Erstellt am"
+
+msgid "Person who created this record"
+msgstr "Person die diesen Datensatz erstmalig angelegt hat"
+
+msgid "creator"
+msgstr "Erstellt von"
+
+msgid "currency"
+msgstr "Währung"
+
+msgid "Currency for this %(Classname)s"
+msgstr "Währung für %(Classname)s"
+
+msgid "cut_off_date"
+msgstr ""
+
+msgid "Date until when this %(Classname)s must be finished."
+msgstr "Datum bis zu dem diese %(Classname)s fertiggestellt sein muss"
+
+msgid "date"
+msgstr "Datum"
+
+msgid "Date of this %(Classname)s.<br>"
+msgstr "Datum für %(Classname)s.<br>"
+
+msgid "date_payed"
+msgstr "Bezahlt am"
+
+msgid "Date when this %(Classname)s was payed"
+msgstr "Datum des Bezahlens dieser %(Classname)s"
+
+msgid "daily_hours"
+msgstr ""
+
+msgid "daily_worktime"
+msgstr ""
+
+msgid "Maximum time a person may book for a single day."
+msgstr ""
+
+msgid "defect++superseder"
+msgstr ""
+
+msgid "deadline"
+msgstr "Zieldatum"
+
+msgid "default_lease_time"
+msgstr ""
+
+msgid "Default DHCP lease time for %(Classname)s"
+msgstr "Standard DHCP Lease-Zeit für %(Classname)s"
+
+msgid "department"
+msgstr "Abteilung"
+
+msgid "Department in which the %(Classname)s is based, e.g., SW, Sales."
+msgstr ""
+
+msgid "depends"
+msgstr "hängt ab von"
+
+msgid ""
+"A comma seperated list of %(Classname)s IDs this\n"
+"            %(Classname)s depends on. This information is used for the\n"
+"            planning process and should only contain the IDs of the\n"
+"            issues this issue needs in order to be worked on, e.g., we\n"
+"            actually need a specification before we can start to work on\n"
+"            it. If you have some dependencies here, the depending\n"
+"            %(Classname)ss are hyperlinked.\n"
+"         "
+msgstr ""
+
+msgid "depends.id"
+msgstr ""
+
+msgid "deputy"
+msgstr ""
+
+msgid "Substitute for the responsible Person of %(Classname)s"
+msgstr "Vertretung der verantwortlichen Person für diese %(Classname)s"
+
+msgid "description"
+msgstr "Beschreibung"
+
+msgid "Verbose description of %(Classname)s"
+msgstr "Ausführliche Beschreibung von %(Classname)s"
+
+msgid "dhcp_range"
+msgstr ""
+
+msgid ""
+"Range of dynamic IP addresses for %(Classname)s -- used\n"
+"            when generating DHCP configuration. Format: Two IP addresses in\n"
+"            dot notation separated by a dot. Example:\n"
+"            10.100.99.20&nbsp;10.100.99.250\n"
+"         "
+msgstr ""
+
+msgid "dhcp_server"
+msgstr ""
+
+msgid "DHCP Server for this %(Classname)s"
+msgstr "DHCP Server für diese %(Classname)s"
+
+msgid "dist"
+msgstr ""
+
+msgid ""
+"Distribute: In a first step you can enter Start and End time\n"
+"             for each day or the hours you worked during the day. In a\n"
+"             second step you can distribute these hours to the different\n"
+"             work packages you worked on during the week by entering the\n"
+"             work package and the number of hours into the \"Distr.\" "
+"field.\n"
+"             The remaining hours will be distributed to your time records\n"
+"             which don't have a work package associated.\n"
+"             This mechanism works after you press \"Save\" and will split a\n"
+"             single time record into two if necessary.\n"
+"          "
+msgstr ""
+
+msgid ""
+"Type of DNS record generated. If the $(Classname)s points to\n"
+"             another %(Classname)s a CNAME is generated, otherwise an\n"
+"             A-record is assumed. If no DNS information should be\n"
+"             generated, this field should be set to \"invalid\".\n"
+"             This field is auto-generated if left empty.\n"
+"          "
+msgstr ""
+
+msgid "dns_servers"
+msgstr ""
+
+msgid ""
+"DNS Servers for this %(Classname)s, used when generating\n"
+"             the DHCP configuration.\n"
+"          "
+msgstr ""
+
+msgid "do_reverse_mapping"
+msgstr ""
+
+msgid ""
+"Flag if a reverse DNS entry should be created for this\n"
+"             %(Classname)s -- should usually be enabled. If a\n"
+"             %(Classname)s has multiple A-Records (which is bad style to\n"
+"             say the least) this flag must be set for only one of the\n"
+"             multiple A-Records. The flag is ignored for CNAME records.\n"
+"          "
+msgstr ""
+
+msgid "domain_part"
+msgstr ""
+
+msgid ""
+"Part of a domain name. The domain name is built by\n"
+"             concatenation the names of the Organisation and the Location.\n"
+"          "
+msgstr ""
+
+msgid "domino_dn"
+msgstr ""
+
+msgid ""
+"Distinguished name for Domino users -- needed for alias\n"
+"             generation.\n"
+"          "
+msgstr ""
+
+msgid "duration"
+msgstr "Dauer"
+
+msgid ""
+"Work duration in hours, e.g. 7.25 -- only quarter hours\n"
+"             allowed, e.g., 7.10 is not allowed. The duration is created\n"
+"             automatically by the system when you specify \"Start\" and\n"
+"             \"End\". Attention: If you specify both, \"Start\" and "
+"\"Duration\"\n"
+"             with a duration of more than six hours, the system will\n"
+"             consult your user preferences and add the lunch break, e.g.\n"
+"             specifying \"Start\" 10:00 and \"Duration\" 8 will result in "
+"an\n"
+"             \"End\" time of 18:30.\n"
+"          "
+msgstr ""
+
+msgid "earliest_start"
+msgstr "Frühester Start"
+
+msgid ""
+"When this %(Classname)s can be started to work on. Used to\n"
+"            specify external dependencies (e.g., availability of\n"
+"            hardware). \n"
+"         "
+msgstr ""
+
+msgid "effort"
+msgstr ""
+
+msgid ""
+"The estimated effort this work package has. This should be\n"
+"             a fair estimation done by the Responsible of the\n"
+"             %(Classname)s. Be sure to set it for Change-Requests\n"
+"             because otherwise one (1!) day will be used as a rough\n"
+"             guess for the planning procedure -- which -- in most\n"
+"             circumstances -- will NOT be sufficient. The format is\n"
+"             checked and should be *a number* followed by either *P* or\n"
+"             *M* which stands for *People* or *Man*, directly followed\n"
+"             by *D*, *W*, or *M* for *Day*, *Week*, or *Month*,\n"
+"             respectively. Optionally the person who estimated can be\n"
+"             specified in parenthesis, e.g, *15 PD (priesch)* means: 15\n"
+"             PeopleDays estimated by priesch.\n"
+"          "
+msgstr ""
+
+msgid "email"
+msgstr "Email"
+
+msgid "Email address for this %(Classname)s"
+msgstr "Email Adresse für diese %(Classname)s"
+
+msgid "end"
+msgstr "Storniert per"
+
+msgid ""
+"Format xx:xx  (e.g. 17:00), is created automatically by the\n"
+"             system when you specify \"Start\" and \"Duration\". Attention: "
+"If\n"
+"             you specify both, \"Start\" and \"End\", with more than six "
+"hours\n"
+"             in between, the system will consult your user preferences and\n"
+"             subtract the lunch break, e.g. specifying \"Start\" 10:00 and\n"
+"             \"End\" 18:00 will result in a duration of 7.5 hours (because\n"
+"             half an hour lunch break was subtracted).\n"
+"          "
+msgstr ""
+
+msgid "external_phone"
+msgstr ""
+
+msgid ""
+"Long mobile or external phone number, not an extension\n"
+"             number, e.g. number at a customer side.\n"
+"          "
+msgstr ""
+
+msgid "fax"
+msgstr "Fax"
+
+msgid "FAX number for this %(Classname)s"
+msgstr "FAX Nummer für diese %(Classname)s"
+
+msgid "files"
+msgstr "Dateien"
+
+msgid "Files for %(Classname)s"
+msgstr "Dateien für %(Classname)s"
+
+msgid "files_affected"
+msgstr ""
+
+msgid ""
+"The %(Property)s entry field is used to identify which\n"
+"            file(s) has/have been changed during the modifications\n"
+"            requested by the current issue, containing the unique\n"
+"            filename and path and the new version. The CVS output from\n"
+"            the command *VCFiltered_Commit* shall be used to fill in\n"
+"            this field!\n"
+"\n"
+"            Example: Consider changed files *os_start.c*, *os_start.h*,\n"
+"            and *os_version.c* in *projects/SW/external/ttpos/src/os*,\n"
+"            resulting in *TTP-OS Version 4.5.23*. The entry to\n"
+"            %(Property)s shall look like::\n"
+"\n"
+"             VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c\n"
+"             VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h\n"
+"             VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version."
+"c\n"
+"         "
+msgstr ""
+
+msgid "final_meeting_date"
+msgstr ""
+
+msgid "Date of final meeting for this %(Classname)s."
+msgstr "Datum der Abschlussbesprechung für %(Classname)s"
+
+msgid "firstname"
+msgstr "Vorname"
+
+msgid "fixed_in"
+msgstr ""
+
+msgid ""
+"Provide the version number where you fixed it. Is needed\n"
+"            when you change the status to testing.\n"
+"            The %(Property)s field contains the build version of the\n"
+"            complete artefact. In the Example from Files affected the\n"
+"            entry for %(Property)s shall look like::\n"
+"      \n"
+"              TTP-OS 4.5.23\n"
+"         "
+msgstr ""
+
+msgid "function"
+msgstr "Funktion"
+
+msgid ""
+"Multiline field for this %(Classname)s, will be printed on an\n"
+"           address label\n"
+"        "
+msgstr ""
+"Mehrzeiliges Feld für diese %(Classname)s, wird auf Adressetiketten gedruckt."
+
+msgid "Numeric group ID"
+msgstr ""
+
+msgid "gid_range"
+msgstr ""
+
+msgid "Allowed range of group ids"
+msgstr ""
+
+msgid "group"
+msgstr ""
+
+msgid "UNIX Group for this %(Classname)s"
+msgstr "UNIX Gruppe für diese %(Classname)s"
+
+msgid "home_directory"
+msgstr ""
+
+msgid "UNIX home directory for %(Classname)s"
+msgstr "UNIX Heimatverzeichnis für diese %(Classname)s"
+
+msgid "hours_mon"
+msgstr ""
+
+msgid "hours_tue"
+msgstr ""
+
+msgid "hours_wed"
+msgstr ""
+
+msgid "hours_thu"
+msgstr ""
+
+msgid "hours_fri"
+msgstr ""
+
+msgid "hours_sat"
+msgstr ""
+
+msgid "hours_sun"
+msgstr ""
+
+msgid "id"
+msgstr "ID"
+
+msgid "initial"
+msgstr "Initialen"
+
+msgid "Initials of this %(Classname)s"
+msgstr "Initialen für diese %(Classname)s"
+
+msgid "inreplyto"
+msgstr "Antwort auf"
+
+msgid "In Reply To field if this %(Classname)s was received by email"
+msgstr "Nur verwendet, wenn diese %(Classname)s per Email empfangen wurde."
+
+msgid "internal_phone"
+msgstr "Interne Durchwahl"
+
+msgid "Short mobile or external phone number, e.g., 6142."
+msgstr ""
+
+msgid "interval"
+msgstr "Intervall"
+
+msgid ""
+"Interval for sending out an invoice in months. If the\n"
+"           invoice_level is non-zero, the distance in months since the\n"
+"           last invoice sent.\n"
+"        "
+msgstr ""
+"Intervall nach dem eine Rechnung/Mahnung verschickt wird in Monaten. Falls "
+"die Mahnstufe größer als Null ist, der Abstand zur letzten Rechnung/Mahnung "
+"in Monaten"
+
+msgid "inventory_no"
+msgstr "Inventarnummer"
+
+msgid ""
+"Unique number or name for this %(Classname)s, preferrably the\n"
+"             inventory number for asset tracking\n"
+"          "
+msgstr ""
+
+msgid "invoice"
+msgstr "Rechnung"
+
+msgid "Link to invoice for this %(Classname)s"
+msgstr "Verbindung zur Rechnung für %(Classname)s"
+
+msgid "invoice_group"
+msgstr "Rechnungsgruppe"
+
+msgid "Link to invoice_group for this %(Classname)s"
+msgstr "Verbindung zur Rechnungsgruppe für %(Classname)s"
+
+msgid "invoice_level"
+msgstr "Mahnstufe"
+
+msgid ""
+"When the customer has received more invoices than this number\n"
+"           indicates, an invoice of this type is sent.\n"
+"        "
+msgstr ""
+"Falls ein Kunde mehr Rechnungen/Mahnungen als diese Zahl erhalten hat, wird "
+"dieser Typ von Rechnung/Mahnung verwendet"
+
+msgid "invoice_no"
+msgstr "RgNr"
+
+msgid "Unique number for this invoice, generated by the system"
+msgstr ""
+"Eindeutige Nummer dieser Rechnung. Wird vom System automatisch erzeugt."
+
+msgid "invoice_template"
+msgstr "Rechnungsvorlage"
+
+msgid "An OpenOffice file used as a template for this type of invoice"
+msgstr ""
+"Eine OpenOffice Datei welche als Schablone für diesen Rechnungstyp verwendet "
+"wird"
+
+msgid "invoices"
+msgstr "Rechnungen"
+
+msgid "List of invoices for this %(Classname)s"
+msgstr "Liste der Rechnungen für %(Classname)s"
+
+msgid "ip"
+msgstr ""
+
+msgid "Internet protocol address of this %(Classname)s"
+msgstr "Internet Protokoll Adresse für diese %(Classname)s"
+
+msgid "Internet protocol subnet"
+msgstr ""
+
+msgid "is_alias"
+msgstr ""
+
+msgid "No real user but only an email alias"
+msgstr ""
+
+msgid "is_lotus_user"
+msgstr ""
+
+msgid "Enable this if the %(Classname)s uses Lotus Notes for mail"
+msgstr ""
+
+msgid "is_public_holiday"
+msgstr ""
+
+msgid ""
+"Flag for public holiday %(Classname)s -- set this if you\n"
+"            want work packages of this %(Classname)s to be used in\n"
+"            automatic public holiday computation.\n"
+"         "
+msgstr ""
+
+msgid "issue++deadline"
+msgstr ""
+
+msgid ""
+"Should only be entered on Top-Level workpackages which are\n"
+"             either one single task of work or composed of one or more\n"
+"             subpackages. It should definitely NOT be used to force\n"
+"             dependencies of work packages (e.g. start b after a has\n"
+"             finished on a given date)!!! -- This is done automatically\n"
+"             by the planning tool via the Depends and Part Of fields.\n"
+"          "
+msgstr ""
+
+msgid "it_issue++superseder"
+msgstr ""
+
+msgid "Optional IT Project to which this %(Classname)s belongs"
+msgstr "Optionales IT Projekt zu welchem diese %(Classname)s gehört"
+
+msgid "keywords"
+msgstr ""
+
+msgid "kind"
+msgstr "Art"
+
+msgid ""
+"What this issue actually is. Be sure to exactly distinguish\n"
+"            between what is actually a Bug (it is not working as\n"
+"            expected) and a Change-Request!\n"
+"            Kind \"Action Item\" identifies a task or activity that is\n"
+"            not directly related to a product or workpackage, it is used\n"
+"            for planning purpose. e.g. \"Create the SRD for this\n"
+"            feature\"\n"
+"         "
+msgstr ""
+
+msgid "klass"
+msgstr "Klasse"
+
+msgid "Class for this query"
+msgstr "Klasse dieser Abfrage"
+
+msgid "last_gid"
+msgstr ""
+
+msgid "Last used gid in this %(Classname)s"
+msgstr "Zuletzt benutzte Gruppen-ID für %(Classname)s"
+
+msgid "last_machine_uid"
+msgstr ""
+
+msgid "Last used machine uid in this %(Classname)s"
+msgstr "Zuletzt benuzte Maschinen UID für diese %(Classname)s"
+
+msgid "last_sent"
+msgstr "zuletzt versendet"
+
+msgid "Date when an invoice was last sent"
+msgstr "Datum des letzten Versendens einer Rechnung/Mahnung"
+
+msgid "last_uid"
+msgstr ""
+
+msgid "Last used uid in this %(Classname)s"
+msgstr "Zuletzt benutzte UID für diese %(Classname)s"
+
+msgid "lastname"
+msgstr "Nachname"
+
+msgid "letter"
+msgstr "Brief"
+
+msgid ""
+"Download of letter -- usually this will open the letter in\n"
+"           OpenOffice\n"
+"        "
+msgstr ""
+"Laden des Briefes -- normalerweise wird damit der Brief mit OpenOffice "
+"geöffnet"
+
+msgid "letters"
+msgstr "Briefe"
+
+msgid "List of letters for this %(Classname)s"
+msgstr "Verzeichnis der Briefe für diese %(Classname)s"
+
+msgid "lettertitle"
+msgstr "Brief-Titel"
+
+msgid "Title of this person used in a letter"
+msgstr "Titel dieser Person, Verwendung in der Brief-Anrede"
+
+msgid "link_field"
+msgstr ""
+
+msgid ""
+"Auxiliary field for use with other software, e.g., asset\n"
+"             tracking\n"
+"          "
+msgstr ""
+
+msgid "location"
+msgstr "Ort"
+
+msgid "Location of %(Classname)s, e.g., Vienna HQ."
+msgstr ""
+
+msgid "login_shell"
+msgstr ""
+
+msgid "UNIX login shell for %(Classname)s"
+msgstr "UNIX Login-Shell für %(Classname)s"
+
+msgid "lookalike_name"
+msgstr "Ähnlichkeitssuche"
+
+msgid "lunch_duration"
+msgstr "Länge der Mittagspause"
+
+msgid "Preference for time tracking, duration of lunch break in hours"
+msgstr ""
+
+msgid "lunch_start"
+msgstr ""
+
+msgid "Preference for time tracking, start of lunch break"
+msgstr ""
+
+msgid "mac"
+msgstr ""
+
+msgid ""
+"MAC Address (medium access control layer) e.g. ethernet\n"
+"             hardware address. Should be six hex-numbers separated by\n"
+"             colons, e.g. \"10:0:0:0:0:0\".\n"
+"          "
+msgstr ""
+
+msgid "machine"
+msgstr ""
+
+msgid ""
+"A machine connected to the network to which this\n"
+"             %(Classname)s belongs\n"
+"          "
+msgstr ""
+
+msgid "machine_group"
+msgstr "Maschinengruppe"
+
+msgid "Group for pseudo-accounts for machines (used for Samba)"
+msgstr ""
+
+msgid "Link to another %(Classname)s -- converted to a CNAME."
+msgstr ""
+
+msgid "machine_uid"
+msgstr ""
+
+msgid "Numeric user id for this samba machine."
+msgstr ""
+
+msgid "machine_uid_range"
+msgstr ""
+
+msgid "Allowed range of user ids for machines"
+msgstr ""
+
+msgid "manager"
+msgstr ""
+
+msgid "Responsible person of the %(Classname)s"
+msgstr "Verantwortliche Person für %(Classname)s"
+
+msgid "max_hours"
+msgstr ""
+
+msgid ""
+"If given for a %(Classname)s restricts the number of hours\n"
+"             you can book on this %(Classname)s for a single day.\n"
+"          "
+msgstr ""
+
+msgid "max_lease_time"
+msgstr ""
+
+msgid "Maximum DHCP lease time for %(Classname)s"
+msgstr "Maximale DHCP Lease-Zeit für %(Classname)s"
+
+msgid "messageid"
+msgstr "Message-ID"
+
+msgid "Message-ID if this message was received via email"
+msgstr "Eindeutige ID falls diese Nachricht per Email empfangen wurde"
+
+msgid "messages"
+msgstr "Notizen"
+
+msgid "List of messages for %(Classname)s."
+msgstr "Verzeichnis der Notizen zu %(Classname)s"
+
+msgid ""
+" Note that during\n"
+"            conversion from the old roundup tracker all existing\n"
+"            messages numbered 1-73815 were renumbered with an offset of\n"
+"            3287 resulting in the message range 3288-77102 in the\n"
+"            current tracker. All messages or other documentation\n"
+"            referring to message numbers in the range 1-73815 will need\n"
+"            to consider this offset.\n"
+"         "
+msgstr " "
+
+msgid "msg"
+msgstr "Notiz"
+
+msgid "New message or notice for %(Classname)s"
+msgstr "Feld für Notizen zu %(Classname)s"
+
+msgid "msg_keywords"
+msgstr ""
+
+msgid "n_sent"
+msgstr "Mahnstufe"
+
+msgid "Number of times this invoice was sent"
+msgstr "Anzahl der Rechnungen/Mahnungen welche schon verschickt wurden"
+
+msgid "name"
+msgstr "Name"
+
+msgid "Unique %(Classname)s name"
+msgstr "Eindeutiger Name für %(Classname)s"
+
+msgid "name_version"
+msgstr ""
+
+msgid ""
+"Unique name of this %(Classname)s, including the version\n"
+"             number\n"
+"          "
+msgstr "Eindeutiger name für diese %(Classname)s, inklusive Versionsnummer"
+
+msgid "netbios_dd"
+msgstr ""
+
+msgid ""
+"Netbios datagram distribution server (NBDD) option for DHCP\n"
+"             config. Specifies list of servers in order of preference.\n"
+"          "
+msgstr ""
+
+msgid "netbios_ns"
+msgstr ""
+
+msgid ""
+"Netbios name server (NBNS) option for DHCP config. Specifies\n"
+"             list of servers in order of preference. Netbios name service\n"
+"             is more commonly referred to as WINS.\n"
+"          "
+msgstr ""
+
+msgid "netbios_nodetype"
+msgstr ""
+
+msgid ""
+"The Netbios node type option allows NetBIOS over TCP/IP\n"
+"             clients which are configurable to be configured as described\n"
+"             in RFC 1001/1002. The value is specified as a single octet\n"
+"             which identifies the client type. Possible types are:\n"
+"             1: B-node: Broadcast - no WINS, 2: P-node: Peer - WINS only,\n"
+"             4: M-node: Mixed - broadcast, then WINS, 8: H-node: Hybrid -\n"
+"             WINS, then broadcast. (taken from dhcp-options manual page)\n"
+"          "
+msgstr ""
+
+msgid "netmask"
+msgstr "Netz-Maske"
+
+msgid "IP net mask for this %(Classname)s, a number (e.g., 16)."
+msgstr "IP Netz-Maske für diese %(Classname)s, eine Zahl (z.B. 16)"
+
+msgid ""
+"Address in the network, including but not limited to IP\n"
+"             address\n"
+"          "
+msgstr ""
+
+msgid "network_interface"
+msgstr ""
+
+msgid ""
+"Hardware unit to connect to the network. Can be part of the\n"
+"             motherboard or can be a separate unit\n"
+"          "
+msgstr ""
+
+msgid "nickname"
+msgstr "Spitzname"
+
+msgid "Nickname (or short name) for this %(Classname)s, e.g., rsc"
+msgstr "Spitzname (oder Kurzname) für %(Classname)s, z.B. rsc"
+
+msgid "no_overtime"
+msgstr ""
+
+msgid ""
+"This flag makes sure that not more than the employee's\n"
+"            normal working time can be registered under this\n"
+"            %(Classname)s\n"
+"         "
+msgstr ""
+
+msgid "nosy"
+msgstr ""
+
+msgid "People receiving announcements (messages) for %(Classname)s"
+msgstr "Personen die Ankündigungen (Notizen) zu %(Classname)s erhalten"
+
+msgid "op_project"
+msgstr ""
+
+msgid ""
+"Flag if this %(Classname)s is a real project or just used for\n"
+"             time tracking.\n"
+"          "
+msgstr ""
+"Hinweis, ob %(Classname)s ein projekt ist oder nur für die Zeiterfassung "
+"benötigt wird"
+
+msgid "open"
+msgstr "offen"
+
+msgid ""
+"Indicates if this %(Classname)s is still open. Automatically\n"
+"            maintained by the system\n"
+"        "
+msgstr ""
+"Beschreibt, ob diese Rechnung noch offen ist. Wird automatisch vom System "
+"verwaltet."
+
+msgid "opt_reviewers"
+msgstr ""
+
+msgid "Optional reviewers for this %(Classname)s"
+msgstr "Optionale Reviewer für %(Classname)s"
+
+msgid "order"
+msgstr "Sortiernummer"
+
+msgid "Items are ordered by this property in drop-down boxes etc."
+msgstr ""
+"Datensätze werden nach dieser Eigenschaft sortiert, z.B. in Auswahlboxen o.ä."
+
+msgid "organisation"
+msgstr "Organisation"
+
+msgid "Organisation in which the %(Classname)s is based."
+msgstr "Organisation zu welcher %(Classname)s gehört"
+
+msgid ""
+"Organisation and location of this %(Classname)s, cartesian\n"
+"             product of organisation and location -- only the combinations\n"
+"             that really exist are stored in the database of course.\n"
+"          "
+msgstr ""
+
+msgid "org_location++phone"
+msgstr "Telefon"
+
+msgid ""
+"Telephone-Network prefix of Telephone number for company\n"
+"             without direct inbound dialling suffix (aka extension)\n"
+"             number\n"
+"          "
+msgstr ""
+
+msgid "organisation.id"
+msgstr ""
+
+msgid "owner"
+msgstr "Eigentümer"
+
+msgid "User/Owner of this %(Classname)s"
+msgstr "Benutzer/Eigentümer für %(Classname)s"
+
+msgid "operating_system"
+msgstr ""
+
+msgid "Operating System running on this %(Classname)s"
+msgstr "Betriebssystem dieser %(Classname)s"
+
+msgid "overtime_period"
+msgstr ""
+
+msgid "Period over which overtime is computed for a person"
+msgstr ""
+
+msgid "part_of"
+msgstr ""
+
+msgid ""
+"If you have a Top-Level work package which consists of other\n"
+"            work packages, you should enter the parent work package\n"
+"            here. This information is needed for the planning process in\n"
+"            order to define what %(Classname)ss compose a larger\n"
+"            project, e.g., Define one Top-Level work package Some New\n"
+"            Feature which is composed of Design, Build Hardware, Write\n"
+"            Software, Put all parts together, and Test.\n"
+"         "
+msgstr ""
+
+msgid "part_of.id"
+msgstr ""
+
+msgid "password"
+msgstr "Passwort"
+
+msgid "Password for this %(Classname)s"
+msgstr "Passwort für %(Classname)s"
+
+msgid "payed_abos"
+msgstr "Zahler für"
+
+msgid "Subscriptions for which this %(Classname)s is paying"
+msgstr "Abos für welche diese %(Classname)s bezahlt"
+
+msgid "payer"
+msgstr "Zahler"
+
+msgid "Address which is paying for this subscription"
+msgstr "Adresse welche für dieses Abo bezahlt"
+
+msgid "payer.firstname"
+msgstr "Zahler Vorname"
+
+msgid "payer.lastname"
+msgstr "Zahler Nachname"
+
+msgid "payer.lookalike_name"
+msgstr "Zahler Ähnlichkeitssuche"
+
+msgid "payer.valid"
+msgstr "Zahler gültig"
+
+msgid "payer.adr_type"
+msgstr "Zahler Typ"
+
+msgid "payment"
+msgstr "Zahlung"
+
+msgid "Amount of payment received for this invoice"
+msgstr "Betrag der bereits bezahlt wurde"
+
+msgid "peer_reviewers"
+msgstr ""
+
+msgid "Peer reviewers for this %(Classname)s"
+msgstr "Reviewer für %(Classname)s"
+
+msgid "period"
+msgstr "Laufzeit"
+
+msgid "Subscription period in months."
+msgstr "Rechnungsperiode in Monaten"
+
+msgid "period_end"
+msgstr "Datum bis"
+
+msgid "Date when this invoice period ends"
+msgstr "Datum wann diese Rechnungsperiode endet"
+
+msgid "period_start"
+msgstr "Datum von"
+
+msgid "Date when this invoice period starts"
+msgstr "Datum wann diese Rechnungsperiode beginnt"
+
+msgid "phone"
+msgstr "Telefon"
+
+msgid "Short phone number (suffix) only, e.g., 42."
+msgstr "Telefonnummer(n)"
+
+msgid "planned_effort"
+msgstr ""
+
+msgid ""
+"Effort for %(Classname)s in person-hours; as it is stated\n"
+"             in the Project Evaluation Sheet. Warning: This used to be in\n"
+"             person days, so you have to convert old values to hours!\n"
+"          "
+msgstr ""
+
+msgid "postalcode"
+msgstr "PLZ"
+
+msgid "Postal code for this %(Classname)s "
+msgstr "Postleitzahl für diese %(Classname)s"
+
+msgid "priority"
+msgstr "Priorität"
+
+msgid ""
+"Should be set between 0 and 100. For the planning process\n"
+"             only issues above a specified priority level are taken into\n"
+"             account. On creation of a new issue, the priority is\n"
+"             automatically set to 100.\n"
+"          "
+msgstr ""
+
+msgid "private_for"
+msgstr "privat von"
+
+msgid "Flag if this is a private %(Classname)s"
+msgstr "Hinweis, ob dies eine private %(Classname)s ist"
+
+msgid "private_gid_range"
+msgstr "privater GID Bereich"
+
+msgid "Allowed range of group ids for users"
+msgstr ""
+
+msgid "private_mobile"
+msgstr "privates Mobiltelefon"
+
+msgid "Private mobile phone number."
+msgstr ""
+
+msgid "private_mobile_visible"
+msgstr ""
+
+msgid "private_phone"
+msgstr "private Telefonnummer"
+
+msgid "Private phone number except mobile."
+msgstr ""
+
+msgid "private_phone_visible"
+msgstr ""
+
+msgid "project"
+msgstr ""
+
+msgid ""
+"%(Classname)s is part of a Time Category. With the Time\n"
+"             Category name a\n"
+"             %(Classname)s can be clearly  identified\n"
+"          "
+msgstr ""
+
+msgid "qa_representative"
+msgstr ""
+
+msgid "Representative from the QA department for this %(Classname)s"
+msgstr "Repräsentant der QA Abteilung für %(Classname)s"
+
+msgid "query++tmplate"
+msgstr "HTML-Vorlage"
+
+msgid "HTML-template that is used for this %(Classname)s"
+msgstr "HTML-Vorlage welche für diese %(Classname)s benutzt wird"
+
+msgid "queries"
+msgstr "Abfragen"
+
+msgid "Queries for this %(Classname)s"
+msgstr "Abfragen für %(Classname)s"
+
+msgid "quick_dialling"
+msgstr ""
+
+msgid ""
+"Quick dialling number, e.g., for the mobile phone of the\n"
+"             user. Example: 6042\n"
+"          "
+msgstr ""
+
+msgid "realname"
+msgstr "Name"
+
+msgid "Real name for this %(Classname)s"
+msgstr "Vor- und Nachname für %(Classname)s"
+
+msgid "receipt_no"
+msgstr "BelegNr"
+
+msgid "Unique identification of this payment"
+msgstr "Eindeutige Identifikation für diese Zahlung"
+
+msgid "recipients"
+msgstr "Empfänger"
+
+msgid "Only set if message was received via email."
+msgstr "Nur gesetzt, wenn diese Notiz per Email empfangen wurde"
+
+msgid "recorder"
+msgstr "Aufzeichnung von"
+
+msgid "Person responsible for recording findings"
+msgstr ""
+
+#.  just to show something in the pop-up, gets set to the last reached milestone
+msgid "release"
+msgstr "Release"
+
+msgid ""
+"The %(Property)s this %(Classname)s belongs to -- if\n"
+"             available (e.g. 4.3.72 for TTP-Plan).\n"
+"          "
+msgstr ""
+
+msgid "remove"
+msgstr "löschen"
+
+msgid ""
+"Remove attached item. Will not remove item from the database,\n"
+"             it can usually still be downloaded via the History button.\n"
+"          "
+msgstr ""
+
+msgid "require_msg"
+msgstr ""
+
+msgid "Require a message for this %(Classname)s"
+msgstr "Benötige eine Notizen zu %(Classname)s"
+
+msgid "require_resp_change"
+msgstr ""
+
+msgid "Require change of responsible person for this %(Classname)s"
+msgstr "Verantwortliche Person für %(Classname)s muss geändert werden"
+
+msgid "required_overtime"
+msgstr "angeordnete Überstunden"
+
+msgid "Overtime preapproved by supervisor and required by project."
+msgstr ""
+
+msgid "responsible"
+msgstr ""
+
+msgid "Person who is responsible for the %(Classname)s"
+msgstr "Verantwortliche Person für dieses %(Classname)s"
+
+msgid "review++responsible"
+msgstr ""
+
+msgid ""
+"Moderator for %(Classname)s -- Note: If you do not specify\n"
+"             the moderator, you will get an indication that the field\n"
+"             \"Responsible\" must be filled in -- the moderator is "
+"reponsible for\n"
+"             %(Classname)s.\n"
+"          "
+msgstr ""
+
+msgid "roles"
+msgstr "Rollen"
+
+msgid ""
+"Roles for this %(Classname)s -- to give the user more than\n"
+"             one role, enter a comma,separated,list\n"
+"          "
+msgstr ""
+"Rollen für %(Classname)s -- falls mehr als eine Rolle vergeben wird, sind "
+"die Rollen durch Komma,zu,trennen."
+
+msgid "room"
+msgstr ""
+
+msgid "Room number"
+msgstr ""
+
+msgid "routers"
+msgstr "Router"
+
+msgid "Routers for this %(Classname)s, used in DHCP configuration."
+msgstr "Router für %(Classname)s, wird für DHCP Konfiguration benötigt"
+
+msgid "salutation"
+msgstr "Anrede"
+
+msgid "Salutation used for printing an address"
+msgstr "Anrede für diese Adresse"
+
+msgid "samba_home_drive"
+msgstr ""
+
+msgid "Home drive for %(Classname)s in Windows"
+msgstr "Heimatverzeichnis für %(Classname)s in Windows"
+
+msgid "samba_home_path"
+msgstr ""
+
+msgid "Path to %(Classname)ss home directory"
+msgstr "Pfad zu %(Classname)ss Heimatverzeichnis"
+
+msgid "samba_kickoff_time"
+msgstr ""
+
+msgid "Windows time that user will automatically logged out"
+msgstr ""
+
+msgid "samba_lm_password"
+msgstr "Samba LanManager Passwort"
+
+msgid ""
+"Samba LAN Manager password -- automatically computed when a\n"
+"             new password is entered\n"
+"          "
+msgstr ""
+
+msgid "samba_logon_script"
+msgstr ""
+
+msgid "Logon script for %(Classname)s"
+msgstr "Logon-Script für diese(n) %(Classname)s"
+
+msgid "samba_nt_password"
+msgstr "Samba NT Passwort"
+
+msgid ""
+"Samba NT password -- automatically computed when a\n"
+"             new password is entered\n"
+"          "
+msgstr ""
+
+msgid "samba_profile_path"
+msgstr ""
+
+msgid "Path to profile for %(Classname)s"
+msgstr "Pfad zum Profile für %(Classname)s"
+
+msgid "samba_pwd_can_change"
+msgstr ""
+
+msgid ""
+"Earliest time the user may change the password next time.\n"
+"             set by the system to pwd_last_set if nothing else is enabled.\n"
+"          "
+msgstr ""
+
+msgid "samba_pwd_last_set"
+msgstr ""
+
+msgid ""
+"Time-stamp the password was last changed, automatically\n"
+"             computed by the system\n"
+"          "
+msgstr ""
+"Zeitstempel wann das Passwort zuletzt geändert wurde. Wird automatisch vom "
+"System verwaltet."
+
+msgid "samba_pwd_must_change"
+msgstr ""
+
+msgid ""
+"Latest time the user must change the password next time.\n"
+"             set by the system to end of the epoch if nothing else is "
+"enabled.\n"
+"          "
+msgstr ""
+
+msgid "secondary_groups"
+msgstr ""
+
+msgid "secondary UNIX Groups for this %(Classname)s"
+msgstr "Sekundäre UNIX-Gruppen für %(Classname)s"
+
+msgid "send_it"
+msgstr "senden?"
+
+msgid ""
+"Flag indicating if this invoice should be sent. If not set,\n"
+"             this invoice will disappear from the current list of invoices. "
+"It\n"
+"             is not sent when generating invoices and is not marked when "
+"sent\n"
+"             invoices are marked.\n"
+"          "
+msgstr ""
+"Hinweis, ob diese Rechnung versendet werden soll. Falls nicht gesetzt, "
+"verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese Rechnung "
+"weder versendet, noch als gesendet markiert."
+
+msgid "shadow_last_change"
+msgstr "Datum der letzten Änderung des Shadow-Passworts"
+
+msgid ""
+"Time-stamp the shadow password was last changed,\n"
+"             automatically computed by the system\n"
+"          "
+msgstr ""
+
+msgid "shadow_expire"
+msgstr ""
+
+msgid ""
+"Date at which the users's account expires and will no longer\n"
+"             be accessible.\n"
+"          "
+msgstr ""
+
+msgid "shadow_inactive"
+msgstr ""
+
+msgid ""
+"Number of days of inactivity after a password has expired\n"
+"             before the account is locked. Note that when the password has\n"
+"             expired the user is required to change it before login is\n"
+"             possible. If no login occurs for a certain time, the account\n"
+"             can be disabled with this setting.\n"
+"          "
+msgstr ""
+
+msgid "shadow_max"
+msgstr ""
+
+msgid ""
+"Maximum days after last change when the shadow password must\n"
+"             be changed again.\n"
+"          "
+msgstr ""
+
+msgid "shadow_min"
+msgstr ""
+
+msgid ""
+"Minimum days after last change when the shadow password may\n"
+"             be changed again.\n"
+"          "
+msgstr ""
+
+msgid "shadow_used"
+msgstr ""
+
+msgid ""
+"Flag if shadow information should be generated, will be\n"
+"             translated to LDAP shadowFlag.\n"
+"          "
+msgstr ""
+
+msgid "shadow_warning"
+msgstr ""
+
+msgid ""
+"Early warning in days before the user is required to change\n"
+"             the password.\n"
+"          "
+msgstr ""
+
+msgid "show_all_users"
+msgstr ""
+
+msgid ""
+"If this option is selected, the result will also include\n"
+"             users that do not\n"
+"             have a valid dynamic user record in the selected time\n"
+"             range. If selected, users without a dynamic user record\n"
+"             will be colored yellow for missing entries in the time\n"
+"             range.\n"
+"          "
+msgstr ""
+
+msgid "show_empty"
+msgstr ""
+
+msgid "If selected the result will also show empty records."
+msgstr ""
+
+msgid "show_missing"
+msgstr ""
+
+msgid ""
+"If this option is selected, the result will contain colored\n"
+"             fields where some values may be missing. Missing values can\n"
+"             result from, e.g., the user not having finished entering\n"
+"             his/her time records, or the time records not yet being\n"
+"             accepted by the supervisor (if you're searching for time\n"
+"             records in category \"accepted\"). Note that you pay a huge\n"
+"             performance penalty for this information: For each day,\n"
+"             each work package and each user in the query we have to\n"
+"             look for possibly missing values! So it's a good idea to\n"
+"             only display small time-ranges with this option turned on.\n"
+"          "
+msgstr ""
+
+msgid "sid"
+msgstr "SID"
+
+msgid ""
+"Samba unique ID but without the last part used for user id or\n"
+"             group id information\n"
+"          "
+msgstr ""
+
+msgid "Samba domain for this %(Classname)s"
+msgstr "Samba Domain für %(Classname)s"
+
+msgid "smb_name"
+msgstr "SMB-Name"
+
+msgid "Samba name for this %(Classname)s in the samba domain"
+msgstr "Samba Name für %(Classname)s in der Samba Domain"
+
+msgid "stakeholder"
+msgstr ""
+
+msgid ""
+"Person by/for whom this %(Classname)s was raised. Usually\n"
+"             defaults to the creator of the %(Classname)s, but can be\n"
+"             overridden (e.g. when the IT-Department documents an issue\n"
+"             that came in via telephone).\n"
+"          "
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+msgid ""
+"Format xx:xx (e.g. 09:00), defines your start of work. Has to\n"
+"             be specified except for absences like e.g. holidays or sick\n"
+"             leave.\n"
+"          "
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "There are constraints on status transitions."
+msgstr ""
+
+msgid "street"
+msgstr "Straße"
+
+msgid "Street for this %(Classname)s"
+msgstr "Straße für diese %(Classname)s"
+
+msgid "subject"
+msgstr "Betreff"
+
+msgid "Short identification of this message"
+msgstr "Kurz-Identifikation für diese Notiz"
+
+msgid "subscriber"
+msgstr "Abonnent"
+
+msgid "Subscriber of this subscription"
+msgstr "Abonnent für dieses Abo"
+
+msgid "subscriber.firstname"
+msgstr "Abonnent Vorname"
+
+msgid "subscriber.lastname"
+msgstr "Abonnent Nachname"
+
+msgid "subscriber.lookalike_name"
+msgstr "Abonnent Ähnlichkeitssuche"
+
+msgid "subscriber.valid"
+msgstr "Abonnent gültig"
+
+msgid "subscriber.adr_type"
+msgstr "Abonnent Typ"
+
+msgid "substitute"
+msgstr "Vertretung"
+
+msgid ""
+"Person who can substitute %(Classname)s for approving time\n"
+"             records.\n"
+"          "
+msgstr ""
+
+msgid "subst_active"
+msgstr "Vertretung aktiv"
+
+msgid ""
+"This field is set to \"yes\" for enabling the field\n"
+"             \"Substitute\" for delegating time record approval.\n"
+"          "
+msgstr ""
+
+msgid "summary"
+msgstr "Zusammenfassung"
+
+msgid "Short summary of this message (usually first line)"
+msgstr "Kurze Zusammenfassung (normalerweise die erste Zeile) für diese Notiz"
+
+msgid "summary_report++VIEW"
+msgstr ""
+
+msgid ""
+"The selected items are shown in the summary report; if you\n"
+"             select \"summary\" the report gives summaries over the chosen\n"
+"             summary type (e.g. weekly, monthly sums); if you select\n"
+"             time category please specify which one.\n"
+"          "
+msgstr ""
+
+msgid "summary_report++cost_center"
+msgstr ""
+
+msgid "summary_report++cost_center_group"
+msgstr ""
+
+msgid "summary_report++date"
+msgstr ""
+
+msgid ""
+"please specify the date in this format:\n"
+"            \"YYYY-MM-DD;YYYY-MM-DD\". The \";\" means \"to\" (\"bis\" in\n"
+"            german).  For today (heute) use \".\". Example: March\n"
+"            2006 is specified as \"2006-03-01;2006-03-31\". From the\n"
+"            beginning of 2006 until now would be \"2006-01-01;.\". If you\n"
+"            need the sum of the chosen period select Summary Type\n"
+"            \"range\".\n"
+"         "
+msgstr ""
+
+msgid "summary_report++department"
+msgstr ""
+
+msgid ""
+"Selects the users according to their placement in a\n"
+"            department\n"
+"         "
+msgstr ""
+
+msgid "summary_report++status"
+msgstr ""
+
+msgid ""
+"If you choose \"open, submitted and approved\" yellow times\n"
+"            will be those that have not yet been opened by the user.\n"
+"            Empty but already opened time records will not be displayed\n"
+"            in yellow. If you choose open, all other time records\n"
+"            (submitted and approved as well as not yet opened time\n"
+"            records) are displayed in yellow. If you choose submitted\n"
+"            all time records that are not submitted (but maybe open or\n"
+"            approved) are displayed in yellow. If you choose approved\n"
+"            not approved times turn yellow.\n"
+"         "
+msgstr ""
+
+msgid "summary_report++summary_type"
+msgstr ""
+
+msgid ""
+"You can form sums over weeks, months and the whole time\n"
+"            range you have selected.\n"
+"         "
+msgstr ""
+
+msgid "summary_report++supervisor"
+msgstr ""
+
+msgid "Selects the users of the chosen supervisor(s)"
+msgstr ""
+
+msgid "summary_report++time_project"
+msgstr ""
+
+msgid "summary_report++time_wp"
+msgstr ""
+
+msgid "Select individual work packages here."
+msgstr ""
+
+msgid "summary_report++time_wp_group"
+msgstr ""
+
+msgid "summary_report++user"
+msgstr ""
+
+msgid ""
+"You will only see users for whom you have permission or the\n"
+"            project times for projects you have permission for (via\n"
+"            responsible, deputy or nosy)\n"
+"         "
+msgstr ""
+
+msgid "superior"
+msgstr "Vorgesetzter"
+
+msgid "Supervisor for %(Classname)s"
+msgstr "Vorgesetzter für %(Classname)s"
+
+msgid "supp_per_period"
+msgstr ""
+
+msgid ""
+"Supplementary hours in Overtime period. If Overtime period\n"
+"             is not specified, this field should be left empty.\n"
+"          "
+msgstr ""
+
+msgid "supp_weekly_hours"
+msgstr ""
+
+msgid ""
+"Weekly hours including the agreed supplementary hours (e.g.\n"
+"             45h), Format: xx.xx. Please round to whole quarters of an hour\n"
+"             (e.g. 0.5 means a half-hour).\n"
+"          "
+msgstr ""
+
+msgid "sync_with_ldap"
+msgstr ""
+
+msgid ""
+"Enabled if this %(Classname)s should be synched with ldap --\n"
+"             when the user changes PW via PAM, the pw in roundup will be\n"
+"             changed, too (if the daemon is running)\n"
+"          "
+msgstr ""
+
+msgid "target"
+msgstr "Ziel"
+
+msgid ""
+"Target of this %(Classname)s, only targets explicitly\n"
+"             enabled will be allowed for status changes.\n"
+"          "
+msgstr ""
+
+msgid "team_members"
+msgstr ""
+
+msgid ""
+"Persons who are assigned to the project and are allowed\n"
+"             to book their effort on this project\n"
+"          "
+msgstr ""
+
+msgid "time_activity"
+msgstr "Aktivität"
+
+msgid "Specifies the kind of work you did (e.g. meeting, ...)"
+msgstr ""
+
+msgid "time_start"
+msgstr "Datum von"
+
+msgid "Date when %(Classname)s officially starts"
+msgstr "Start-Datum für diese %(Classname)s"
+
+msgid "time_end"
+msgstr "Datum bis"
+
+msgid "Date when %(Classname)s is officially closed"
+msgstr "Datum wann dieses %(Classname)s geschlossen wurde"
+
+msgid "time_project++status"
+msgstr ""
+
+msgid ""
+"Status of this %(Classname)s. Note that this status is only\n"
+"             used for determining if new work packages may be created for\n"
+"             this %(Classname)s -- it is not used during time recording\n"
+"             for determining if the user may book on a work package.\n"
+"          "
+msgstr ""
+
+msgid "time_project_status++active"
+msgstr ""
+
+msgid ""
+"Set if this %(Classname)s is active. This determines if new\n"
+"             work packages may be created for a project with this activity\n"
+"             status. If a status is marked active, new work packages may\n"
+"             be created for a project with this status.\n"
+"          "
+msgstr ""
+
+msgid "timezone"
+msgstr "Zeitzone"
+
+msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
+msgstr "Zeitzone für %(Classname)s -- numerischer Zeit-Offset in Stunden"
+
+msgid "title"
+msgstr "Titel"
+
+msgid ""
+"Should be an intuitive one-line description of the %(Classname)s.\n"
+"            Since titles of Roundup issues are also extracted into SCI\n"
+"            documents, start with a capital letter, and type all other\n"
+"            letters in lowercase, except names and references.\n"
+"         "
+msgstr ""
+
+msgid "tmplate"
+msgstr "Vorlage"
+
+msgid ""
+"Used for writing letters (and invoices if selected as an\n"
+"            invoice template)\n"
+"         "
+msgstr ""
+"Wird zum Erzeugen von Briefen verwendet (oder für Rechnungen falls als "
+"Rechnungsvorlage ausgewählt)"
+
+msgid "travel"
+msgstr ""
+
+msgid "time_wp++travel"
+msgstr ""
+
+msgid ""
+" In addition in reports the times booked will be halved (if\n"
+"             exceeding the expected work hours and the person is not\n"
+"             marked \"travel_full\" in the dynamic user data)\n"
+"          "
+msgstr ""
+
+msgid "transitions"
+msgstr "Übergänge"
+
+msgid "Allowed transitions to other states"
+msgstr ""
+
+msgid "tr_duration"
+msgstr "Dauer incl. Reisezeit"
+
+msgid ""
+"Work duration in minutes including special travel computation:\n"
+"             travel times will be halved if exceeding the maximum work\n"
+"             hours.\n"
+"          "
+msgstr ""
+
+msgid "tt_lines"
+msgstr "Zeilen in Zeiterfassung"
+
+msgid ""
+"Number of new lines (per day) in time-tracker (minimum: 1,\n"
+"            maximum: 5). This is not yet working, the logic behind it is\n"
+"            not yet implemented. See also it_issue884.\n"
+"         "
+msgstr ""
+
+msgid "type"
+msgstr "Typ"
+
+msgid "Mime type of this file"
+msgstr "MIME Typ dieser Datei (Systeminformation)"
+
+msgid "typecat"
+msgstr "Typ Kategorie"
+
+msgid "Category of this %(Classname)s"
+msgstr "Kategorie für %(Classname)s"
+
+msgid "Numeric user ID"
+msgstr ""
+
+msgid "uid_range"
+msgstr ""
+
+msgid "Allowed range of user ids"
+msgstr ""
+
+msgid "url"
+msgstr "URL"
+
+msgid "Web-Link for this %(Classname)s"
+msgstr "Web-Link für %(Classname)s"
+
+msgid "use_dhcp"
+msgstr ""
+
+msgid ""
+"Flag if this %(Classname)s should be served by the DHCP\n"
+"             server.\n"
+"          "
+msgstr "Hinweis ob %(Classname)s vom DHCP Server bedient werden soll"
+
+msgid "use_in_ln"
+msgstr ""
+
+msgid ""
+"This %(Classname)s should be used with Lotus Notes (e.g.,\n"
+"             no delivery to a program, etc. that is only possible with\n"
+"             a real MTA)\n"
+"          "
+msgstr ""
+
+msgid "user_dynamic++durations_allowed"
+msgstr ""
+
+msgid "user_password"
+msgstr "Benutzer-Passwort"
+
+msgid ""
+"UNIX user password, automatically set by the system when a\n"
+"             new password is entered.\n"
+"          "
+msgstr ""
+"UNIX Benutzer-Passwort, wird automatisch vom System gesetzt wenn der "
+"Benutzer das Passwort ändert."
+
+msgid "user++address"
+msgstr "Email"
+
+msgid "Primary email address for this user"
+msgstr "Primäre Email Adresse für diesen %(Classname)s"
+
+msgid "user++status"
+msgstr "Benutzerstatus"
+
+msgid "user++title"
+msgstr "Titel"
+
+msgid "username"
+msgstr "Login Name"
+
+msgid "Login-name for this %(Classname)s, e.g., schlatterbeck"
+msgstr "Login-Name für diesen %(Classname)s, z.B. schlatterbeck"
+
+msgid "vacation_remaining"
+msgstr ""
+
+msgid ""
+"Remaining vacation for this user at the start of a dynamic\n"
+"             user data record.\n"
+"          "
+msgstr ""
+
+msgid "vacation_yearly"
+msgstr ""
+
+msgid ""
+"Yearly vacation for this user: This is the amount of vacation\n"
+"             that is added for each year.\n"
+"          "
+msgstr ""
+
+msgid "valid"
+msgstr "gültig"
+
+msgid ""
+"If enabled, this %(Classname)s is valid and can be\n"
+"             selected.\n"
+"          "
+msgstr "Falls gesetzt, ist %(Classname)s gültig und kann ausgewählt werden."
+
+msgid "valid_from"
+msgstr "gültig seit"
+
+msgid ""
+"Creation date, or date since when this %(Classname)s can be\n"
+"             booked at \n"
+"          "
+msgstr ""
+
+msgid "valid_to"
+msgstr "gültig bis"
+
+msgid ""
+"Expiration date for %(Classname)s. Note that the date given\n"
+"             here is *not* itself part of the validity time.\n"
+"          "
+msgstr ""
+
+msgid "value"
+msgstr "Wert"
+
+msgid "Value of this %(Classname)s"
+msgstr "Wert für diese %(Classname)s"
+
+msgid "week"
+msgstr ""
+
+msgid ""
+"Week for time tracking, this is an alternative for specifying\n"
+"             a date range: just enter the week number here (for the\n"
+"             current year) or YYYY/WW where YYYY is the year and WW the\n"
+"             week number for that year.\n"
+"          "
+msgstr ""
+
+msgid "weekend_allowed"
+msgstr ""
+
+msgid "Flag if booking on weekends is allowed for this %(Classname)s."
+msgstr "Hinweis ob Buchungen am Wochenende für %(Classname)s erlaubt ist."
+
+msgid "daily_record++weekend_allowed"
+msgstr ""
+
+msgid ""
+"Admits user to book work or travel time on this\n"
+"            weekend-day; should always be preapproved by supervisor.\n"
+"         "
+msgstr ""
+
+msgid "weekly_hours"
+msgstr ""
+
+msgid "Expected weekly work-time for %(Classname)s."
+msgstr "Erwartete Wochen-Arbeitszeit für %(Classname)s"
+
+msgid "wp"
+msgstr ""
+
+msgid ""
+"Only work packages where you have permission to register show\n"
+"             here. If you miss one, please contact the responsible project\n"
+"             manager\n"
+"          "
+msgstr ""
+
+msgid "wp_no"
+msgstr ""
+
+msgid ""
+"Work package number in the project. Number must be unique for\n"
+"             the project and cannot be changed after assignment.\n"
+"          "
+msgstr ""
+
+msgid "wp++durations_allowed"
+msgstr ""
+
+msgid ""
+"This is mainly used for special %(Classname)ss, like,\n"
+"             e.g., vacation.\n"
+"          "
+msgstr ""
+
+msgid "wps"
+msgstr ""
+
+msgid ""
+"For a better handling of the work load of a project it is\n"
+"             split in to work packages. This field defines a list of work\n"
+"             packages for this %(Classname)s\n"
+"          "
+msgstr ""
+
+msgid "work_location"
+msgstr ""
+
+msgid "time_project++work_location"
+msgstr ""
+
+msgid ""
+" If a value is given here, the work location will be\n"
+"             corrected for all time records booked on work packages of\n"
+"             this project.\n"
+"          "
+msgstr ""
+
+#, python-format
+msgid ""
+"<a %s title=\"Help for %s\" href=\"javascript:help_window('%s?:"
+"template=property_help#%s', '500', '400')\">%s%s</a>"
+msgstr ""
+"<a %s title=\"Hilfe für %s\" href=\"javascript:help_window('%s?:"
+"template=property_help#%s', '500', '400')\">%s%s</a>"
+
+msgid "(cal)"
+msgstr "(Kalender)"
+
+msgid "Welcome to the "
+msgstr "Willkommen zur "
+
+#, python-format
+msgid "No invoice_template defined for all invoices: %s"
+msgstr "Es ist nicht für jede Rechnung eine Vorlage definiert: %s"
+
+#, python-format
+msgid "No matching invoice_template for invoice %s"
+msgstr "Keine Rechnungsvorlage für Rechnung %s"
+
+msgid "You can only mark invoices"
+msgstr "Nur Rechnungen können markiert werden"
+
+msgid "invoices are already marked"
+msgstr "Rechnungen sind schon markiert"
+
+msgid "You can only download letters"
+msgstr "Nur Briefe können heruntergeladen werden"
+
+msgid "You can only download templates for an address"
+msgstr "Vorlagen können nur für Adressen heruntergeladen werden"
+
+#, python-format
+msgid "No files for %(tmplate)s"
+msgstr "Keine Dateien für %(tmplate)s"
+
+msgid "cost_center"
+msgstr "Kostenstelle"
+
+msgid "Sum"
+msgstr "Summe"
+
+msgid "Container"
+msgstr ""
+
+msgid "time"
+msgstr "Zeit"
+
+msgid "balance_week_start"
+msgstr ""
+
+msgid "actual_open"
+msgstr ""
+
+msgid "actual_submitted"
+msgstr ""
+
+msgid "actual_accepted"
+msgstr ""
+
+msgid "actual_all"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "overtime_correction"
+msgstr ""
+
+msgid "balance_week_end"
+msgstr ""
+
+msgid "balance_period_start"
+msgstr ""
+
+msgid "balance_period_end"
+msgstr ""
+
+msgid "overtime_additional"
+msgstr ""
+
+msgid "overtime_supplementary"
+msgstr ""
+
+msgid "user"
+msgstr "Benutzer"
+
+msgid "${property} help - ${tracker}"
+msgstr ""
+
+msgid " Cancel "
+msgstr ""
+
+msgid " Apply "
+msgstr ""
+
+msgid "&lt;&lt; previous"
+msgstr "&lt;&lt;&nbsp;zurück"
+
+msgid "${start}..${end} out of ${total}"
+msgstr "${start} - ${end} von gesamt ${length}"
+
+msgid "next &gt;&gt;"
+msgstr "vorwärts&nbsp;&gt;&gt;"
+
+msgid "History for ${designator} - ${label}"
+msgstr ""
+
+msgid "History for ${label}"
+msgstr "Liste der Änderungen von ${label}"
+
+msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
+msgstr ""
+"Zum Editieren von ${Classname} auf das Feld unter &quot;${labelprop}&quot; "
+"klicken."
+
+msgid "Download as CSV"
+msgstr "Als CSV laden"
+
+msgid "History"
+msgstr "Liste der Änderungen"
+
+msgid "Help for ${Classname}"
+msgstr "Hilfe für ${Classname}"
+
+msgid "Properties of ${Classname}"
+msgstr "Eigenschaften von ${Classname}"
+
+msgid "export addresses"
+msgstr "Versand-Export"
+
+msgid "-- tmplates --"
+msgstr "-- Vorlagen --"
+
+msgid "New Subscription for ${lastname}"
+msgstr "Neues Abo für ${lastname}"
+
+msgid "New Letter for ${lastname}"
+msgstr "Neuer Brief für ${lastname}"
+
+msgid "${classname_id} created by ${creator}"
+msgstr ""
+
+msgid "New ${Classname}"
+msgstr "Neue ${Classname}"
+
+msgid "number"
+msgstr "Nummer"
+
+msgid "Approvals pending"
+msgstr ""
+
+msgid "User"
+msgstr "Benutzer"
+
+msgid "Week"
+msgstr ""
+
+msgid "You have no pending submitted records."
+msgstr ""
+
+msgid "Time-Tracking for <span> ${firstname} ${lastname} </span> ${username}"
+msgstr ""
+
+msgid " Save "
+msgstr ""
+
+msgid "Valid on"
+msgstr "gültig ab"
+
+msgid "Welcome"
+msgstr "Willkommen"
+
+msgid "Generate single invoice"
+msgstr "Einzel-Rechnung erzeugen"
+
+msgid "mark"
+msgstr "markieren"
+
+msgid "unmark"
+msgstr "Markierung aufheben"
+
+msgid "generate invoices"
+msgstr "Rechnungen erzeugen"
+
+msgid "mark as sent"
+msgstr "als gesendet markieren"
+
+msgid "Network Interfaces"
+msgstr ""
+
+msgid "new network_interface"
+msgstr ""
+
+msgid "Network Addresses"
+msgstr "Netzwerk-Adressen"
+
+msgid "new network_address"
+msgstr ""
+
+msgid "Welcome:"
+msgstr "Willkommen zur"
+
+msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
+msgstr "<b>Cookies</b> und <b>JavaScript</b> müssen eingeschaltet sein."
+
+msgid "Login:"
+msgstr "Login:"
+
+msgid "Password:"
+msgstr "Passwort:"
+
+msgid "Remember me?:"
+msgstr "Dauerhaftes Login?:"
+
+msgid "Time"
+msgstr "Zeit"
+
+msgid "Approval"
+msgstr "Genehmigung"
+
+msgid "User&nbsp;List"
+msgstr "Benutzerliste"
+
+msgid "-- Create / Update --"
+msgstr "-- Anlegen / Ändern --"
+
+msgid "-- View / Query --"
+msgstr "-- Abfragen --"
+
+msgid "Manage Queries"
+msgstr "Meine Abfragen"
+
+msgid "Show History"
+msgstr "Liste der Änderungen"
+
+msgid ""
+"Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
+msgstr ""
+"Angelegt ${creation} von ${creator}, zuletzt geändert ${activity} von "
+"${actor}."
+
+msgid "Note:&nbsp;"
+msgstr "Hinweis:&nbsp;"
+
+msgid "highlighted"
+msgstr "fettgedruckte"
+
+msgid "&nbsp;fields are required."
+msgstr "&nbsp;Felder müssen ausgefüllt werden"
+
+msgid "&lt;&lt;&nbsp;previous"
+msgstr "&lt;&lt;&nbsp;zurück"
+
+msgid "showing ${start} - ${end} of ${length} in total"
+msgstr "${start} - ${end} von gesamt ${length}"
+
+msgid "Sorry, no results found"
+msgstr "Keine Suchergebnisse"
+
+msgid "next&nbsp;&gt;&gt;"
+msgstr "vorwärts&nbsp;&gt;&gt;"
+
+msgid "Query"
+msgstr "Abfrage"
+
+msgid "<span>x</span> ${title}"
+msgstr ""
+
+msgid "View"
+msgstr "Zeige"
+
+msgid "items per page"
+msgstr "Datensätze pro Seite"
+
+msgid "Sort on:"
+msgstr ""
+
+msgid "- nothing -"
+msgstr "- keine -"
+
+msgid "Descending:"
+msgstr "Absteigend:"
+
+msgid "Group on:"
+msgstr ""
+
+msgid "- don't care -"
+msgstr "- nicht suchen -"
+
+msgid "Search full text:"
+msgstr "Volltextsuche:"
+
+msgid "(Searches also in messages)"
+msgstr "(Sucht auch in Notizen)"
+
+msgid "Update view"
+msgstr "Neu anzeigen"
+
+msgid "This query's name:"
+msgstr "Name dieser Abfrage:"
+
+msgid "Update view & store this query"
+msgstr "Abfrage speichern & neu anzeigen"
+
+msgid "(If you change the name, you create a new query!!!)"
+msgstr "(Änderung des Namens speichert eine neue Abfrage!!!)"
+
+msgid "Update view & store NEW query"
+msgstr "NEUE Abfrage speichern & neu anzeigen"
+
+msgid "\"My Queries\" Editing - ${tracker}"
+msgstr "\"Meine Abfragen\" bearbeiten - ${tracker}"
+
+msgid "\"My Queries\" Editing"
+msgstr "\"Meine Abfragen\" bearbeiten"
+
+msgid "You are not allowed to edit queries."
+msgstr ""
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Public ?"
+msgstr "öffentlich"
+
+msgid "edit"
+msgstr "bearbeiten"
+
+msgid "Delete"
+msgstr "löschen"
+
+msgid "Save Selection"
+msgstr "Auswahl speichern"
+
+msgid "Current Work Package(s)"
+msgstr ""
+
+msgid "new time_wp"
+msgstr ""
+
+msgid "Comment editing"
+msgstr ""
+
+msgid "New User"
+msgstr "Neuer User"
+
+msgid "New"
+msgstr ""
+
+msgid "<span>x</span> User"
+msgstr ""
+
+msgid "(comma-separated values)"
+msgstr "(Komma-getrennte Liste)"
+
+msgid "default:"
+msgstr "Voreinstellung:"
+
+msgid "new user_dynamic record"
+msgstr ""
+
+msgid "split user_dynamic record"
+msgstr ""
+
+#, python-format
+msgid "Name \"%(name)s\" too long (> 25 characters)"
+msgstr ""
+
+#, python-format
+msgid "Duplicate: %s"
+msgstr ""
+
+#, python-format
+msgid "\"%s\" loop: %s"
+msgstr ""
+
+msgid "meeting_room"
+msgstr ""
+
+msgid "position"
+msgstr "Position"
+
+msgid "sex"
+msgstr ""
+
+msgid "keyword"
+msgstr ""
+
+msgid "status_transition"
+msgstr "Statusübergang"
+
+msgid "severity"
+msgstr ""
+
+msgid "msg_keyword"
+msgstr ""
+
+msgid "issue"
+msgstr "Issue"
+
+msgid "planned_begin"
+msgstr ""
+
+msgid "planned_end"
+msgstr "Geplantes Ende bis"
+
+msgid "needs"
+msgstr "hängt ab von"
+
+msgid "cur_est_end"
+msgstr ""
+
+msgid "cur_est_begin"
+msgstr ""
+
+msgid "effective_prio"
+msgstr ""
+
+msgid "it_category"
+msgstr "IT Kategorie"
+
+msgid "it_issue"
+msgstr "IT Issue"
+
+msgid "it_issue_status"
+msgstr ""
+
+msgid "it_project_status"
+msgstr ""
+
+msgid "mail_domain"
+msgstr ""
+
+msgid "pdc"
+msgstr "PDC"
+
+msgid "smb_machine"
+msgstr ""
+
+msgid "cost_center_group"
+msgstr "Kostenstellengruppe"
+
+msgid "daily_record"
+msgstr ""
+
+msgid "time_record"
+msgstr ""
+
+msgid "tr_duration_ok"
+msgstr "Dauer incl. Reisezeit"
+
+msgid "daily_record_freeze"
+msgstr ""
+
+msgid "month_balance"
+msgstr ""
+
+msgid "frozen"
+msgstr "eingefroren"
+
+msgid "year_balance"
+msgstr ""
+
+msgid "week_balance"
+msgstr ""
+
+msgid "comment"
+msgstr "Kommentar"
+
+msgid "daily_record_status"
+msgstr ""
+
+msgid "public_holiday"
+msgstr ""
+
+msgid "is_half"
+msgstr ""
+
+msgid "locations"
+msgstr "Orte"
+
+msgid "time_wp"
+msgstr ""
+
+msgid "summary_type"
+msgstr "Typ der Zusammenfassung"
+
+msgid "time_project"
+msgstr "Projekt"
+
+msgid "time_wp_group"
+msgstr "Arbeitspaket-Gruppe"
+
+msgid "is_staff"
+msgstr ""
+
+msgid "time_project_status"
+msgstr ""
+
+msgid "end_generated"
+msgstr ""
+
+msgid "start_generated"
+msgstr ""
+
+msgid "durations_allowed"
+msgstr "Dauer erlaubt"
+
+msgid "user_dynamic"
+msgstr "Dynamische Benutzerdaten"
+
+msgid "travel_full"
+msgstr ""
+
+msgid "milestone"
+msgstr ""
+
+msgid "planned"
+msgstr ""
+
+msgid "reached"
+msgstr ""
+
+msgid "task_status"
+msgstr ""
+
+msgid "abbreviation"
+msgstr "Abkürzung"
+
+msgid "task_kind"
+msgstr ""
+
+msgid "feature_status"
+msgstr ""
+
+msgid "defect_status"
+msgstr ""
+
+msgid "cert"
+msgstr ""
+
+msgid "cert_transitions"
+msgstr "CERT Übergänge"
+
+msgid "action_item_status"
+msgstr ""
+
+msgid "review_status"
+msgstr ""
+
+msgid "comment_status"
+msgstr ""
+
+msgid "document_status"
+msgstr ""
+
+msgid "document_type"
+msgstr ""
+
+msgid "product"
+msgstr "Produkt"
+
+msgid "certifiable"
+msgstr ""
+
+msgid "meeting"
+msgstr ""
+
+msgid "action_item"
+msgstr ""
+
+msgid "document"
+msgstr ""
+
+msgid "documents"
+msgstr "Dokumente"
+
+msgid "features"
+msgstr ""
+
+msgid "bugs"
+msgstr ""
+
+msgid "milestones"
+msgstr ""
+
+msgid "planned_fixes"
+msgstr ""
+
+msgid "feature"
+msgstr ""
+
+msgid "actual_end"
+msgstr ""
+
+msgid "test_ok"
+msgstr ""
+
+msgid "actual_begin"
+msgstr ""
+
+msgid "tasks"
+msgstr "Aufgaben"
+
+msgid "defects"
+msgstr ""
+
+msgid "task"
+msgstr "Aufgabe"
+
+msgid "estimated_begin"
+msgstr "Geschätzter Startzeitpunkt"
+
+msgid "estimated_end"
+msgstr "Geschätzter Endzeitpunkt"
+
+msgid "defect"
+msgstr ""
+
+msgid "closer"
+msgstr "Schliessender Benutzer"
+
+msgid "belongs_to_task"
+msgstr ""
+
+msgid "found_in_release"
+msgstr "Gefunden in Release"
+
+msgid "solved_in_release"
+msgstr ""
+
+msgid "belongs_to_feature"
+msgstr ""
+
+msgid "estimated_effort"
+msgstr ""
+
+msgid "version"
+msgstr ""
+
+msgid "fixed_until"
+msgstr ""
+
+#.  `moderator` is implemented with `responsible`
+msgid "review"
+msgstr ""
+
+msgid "announcement"
+msgstr ""
+
+msgid "comments"
+msgstr "Kommentare"
+
+msgid "line_number"
+msgstr "Zeilennummer"
+
+msgid "file_name"
+msgstr "Dateiname"
+
+msgid "abo_price"
+msgstr "Preis"
+
+msgid "abo_type"
+msgstr "Abotyp"
+
+msgid "adr_type_cat"
+msgstr "Typ Kategorie"
+
+msgid "file"
+msgstr "Datei"
+
+msgid "header"
+msgstr ""
+
+msgid "query"
+msgstr "Abfrage"
+
+msgid "job_description"
+msgstr "Stellenbeschreibung"
+
+msgid "pictures"
+msgstr ""
+
+msgid "user_status"
+msgstr "Benutzerstatus"
+
+msgid "doc_num"
+msgstr ""

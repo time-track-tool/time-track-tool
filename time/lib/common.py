@@ -35,10 +35,14 @@ from   roundup.date       import Date, Interval, Range
 from   time               import gmtime
 from   roundup.hyperdb    import String, Link, Multilink
 
-from   _TFL               import TFL
-import _TFL._Meta.Object
-import _TFL.Numeric_Interval
-import _TFL.Interval_Set
+TFL = None
+try :
+    from   _TFL               import TFL
+    import _TFL._Meta.Object
+    import _TFL.Numeric_Interval
+    import _TFL.Interval_Set
+except ImportError :
+    pass
 
 ymd = '%Y-%m-%d'
 
@@ -165,7 +169,7 @@ def interval_set_from_string (interval_string) :
         bounds = (long (b) for b in bounds)
         intervals.append (TFL.Numeric_Interval (* bounds))
     return TFL.Interval_Set (* intervals)
-# end def check_in_interval_set
+# end def interval_set_from_string
 
 def next_uid_or_gid (last, interval_string) :
     """

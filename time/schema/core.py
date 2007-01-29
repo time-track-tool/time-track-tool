@@ -76,6 +76,7 @@ def init \
         , name                  = String    ()
         , url                   = String    ()
         , private_for           = Link      ('user')
+        , tmplate               = String    ()
         )
 
     User_Class = kw.get ('User_Class', Class)

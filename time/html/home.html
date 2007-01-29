@@ -1,5 +1,5 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
- <title metal:fill-slot="head_title">Welcome</title>
+ <title metal:fill-slot="head_title" i18n:translate="">Welcome</title>
  <tal:block metal:fill-slot="create_or_query">
   <tal:block 
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
@@ -11,4 +11,3 @@
   <tal:block tal:replace="structure python: utils.welcome (db._db)"/>
  </td>
 </tal:block>
-

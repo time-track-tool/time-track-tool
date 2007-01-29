@@ -16,8 +16,8 @@
  <tal:block tal:define="responsible_required string:required;
                         required_attributes string:title,responsible,status;">
 
-  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-   <tal:block metal:fill-slot="ttt_issue_content">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
 
     <tr>
      <th class="required">Severity</th>

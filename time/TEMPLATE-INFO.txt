@@ -1,6 +1,8 @@
-Name: time-todo
+Name: time-todo-abo
 Description: Modular tracker for Time-Tracking, absence/vacation
- information for the users and other features. Features can individually be
+ information for the users and other features. It also implements a
+ newspaper subscription tracker with customer database, tracking of
+ invoices, etc. Features can individually be
  turned on and off by customizing the includes in schema.py
-Intended-for: Time-Tracking, IT-Issue tracking and others.
-Path: /home/ralf/roundup/todo
+Intended-for: Time-Tracking, IT-Issue tracking, Subscription tracking
+ and others.

@@ -8,12 +8,12 @@
  ; head_title      Classname
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
- ; is_user         python: uname != 'anonymous'
- ; lbl             klass/_klass/labelprop
- ; labelprop       python: (lbl,'lastname')
-                           [lbl == 'title' and hasattr (context, 'lastname')]
+ ; is_user         python: request.user.username!='anonymous'
+ ; labelprop       klass/_klass/labelprop
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
+ ; has_invoices    python: 'invoices'    in props
+ ; has_letters     python: 'letters'     in props
  ; has_files       python: 'files'       in props
  ; want_files      python: True
  ; has_resp        python: 'responsible' in props
@@ -25,69 +25,98 @@
  ; uid             python: db._db.getuid ()
  ; default_query   string::action=searchwithtemplate&:startwith=0&:pagesize=20&:sort=id&:sortdir=on&:columns=id,title,responsible
  ; n_sort          python: 2
+ ; tplate_args     python: {}
+ ; msg_box_height  python: 8
+ ; may_remove_msgs python: False
  ; default_queries python:
-   { 'alias'           : ':columns=name,alias_to_alias,alias_to_user&'
-                         ':pagesize=500&:startwith=0'
-   , 'cost_center'     : ':columns=organisation_id,cost_center_group_id'
+   { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
+                         'end,subscriber.lastname,payer.lastname&'
+                         '@sort=-id&@pagesize=20&@startwith=0'
+   , 'abo_type'        : '@columns=name,description,period,order,adr_type,'
+                         'invoice_template&@sort=order&@pagesize=20&'
+                         '@startwith=0'
+   , 'address'         : '@action=search&@startwith=0&@pagesize=20&'
+                         '@sort=id&@sortdir=on&@group=&'
+                         '@columns=salutation,title,id,lastname,firstname,'
+                         'country,street,postalcode,city&valid=1&'
+                         'adr_type=ZFW&@search_text=&@queryname='
+   , 'adr_type'        : '@action=search&@columns=id,code,description,typecat&'
+                         '@sort=code&@filter=typecat&@pagesize=50&'
+                         '@startwith=0&typecat=%s' %
+                         (   'adr_type_cat' in db._db.classes
+                         and ','.join (db._db.adr_type_cat.getnodeids ())
+                         )
+   , 'alias'           : '@columns=name,alias_to_alias,alias_to_user&'
+                         '@pagesize=500&@startwith=0'
+   , 'cost_center'     : '@columns=organisation_id,cost_center_group_id'
                          ',id,name,status,organisation&'
-                         ':sort=name&:group=cost_center_group&'
-                         ':filter=status&:pagesize=20&:startwith=0&'
+                         '@sort=name&@group=cost_center_group&'
+                         '@filter=status&@pagesize=20&@startwith=0&'
                          'status=5,1,2,4'
-   , 'category'        : ':columns=name,description,responsible,nosy,'
-                         'valid,cert_sw&:sort=name&:filter=valid&'
-                         ':pagesize=200&:startwith=0&valid=yes'
-   , 'daily_record'    : ':columns=id,user,date,status&:sort=-id&'
-                         ':filter=user,date&:pagesize=20&:startwith=0&'
+   , 'category'        : '@columns=name,description,responsible,nosy,'
+                         'valid,cert_sw&@sort=name&@filter=valid&'
+                         '@pagesize=200&@startwith=0&valid=yes'
+   , 'daily_record'    : '@columns=id,user,date,status&@sort=-id&'
+                         '@filter=user,date&@pagesize=20&@startwith=0&'
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
-   , 'group'           : ':columns=name,gid,description,org_location&'
-                         ':sort=-id&:pagesize=500&:startwith=0'
-   , 'issue'           : ':columns=id,category,title,area,kind,status,'
+   , 'group'           : '@columns=name,gid,description,org_location&'
+                         '@sort=-id&@pagesize=500&@startwith=0'
+   , 'invoice'         : '@action=search&@columns=invoice_no,'
+                         'period_start,period_end,amount,currency,'
+                         'balance_open,n_sent,payer.lastname,'
+                         'subscriber.lastname,abo&'
+                         '@sort=-period_start&@filter=open&'
+                         '@pagesize=50&@startwith=0&open=yes'
+   , 'issue'           : '@columns=id,category,title,area,kind,status,'
                          'composed_of.id,part_of.id&'
-                         ':sort=category&:group=-effective_prio&'
-                         ':filter=status,responsible&:pagesize=50&'
-                         ':startwith=0&status=1,2,3,4,5,7&responsible=%s' % uid
-   , 'it_issue'        : ':columns=id,title,responsible,stakeholder,it_prio&'
-                         ':sort=-id&:group=status&:filter=stakeholder,status&'
-                         ':pagesize=50&:startwith=0&'
+                         '@sort=category&@group=-effective_prio&'
+                         '@filter=status,responsible&@pagesize=50&'
+                         '@startwith=0&status=1,2,3,4,5,7&responsible=%s' % uid
+   , 'it_issue'        : '@columns=id,title,responsible,stakeholder,it_prio&'
+                         '@sort=-id&@group=status&@filter=stakeholder,status&'
+                         '@pagesize=50&@startwith=0&'
                          'status=1,2,3&stakeholder=%s' % uid
-   , 'machine'         : ':columns=inventory_no,description,owner&'
-                         ':sort=inventory_no&:pagesize=20&:startwith=0'
-   , 'machine_name'    : ':columns=id,name,network_address,machine_name,'
-                         'dns_record_type,do_reverse_mapping&:sort=name&'
-                         ':pagesize=20&:startwith=0'
-   , 'network_address' : ':columns=ip,org_location,use_dhcp,network_interface&'
-                         ':sort=ip&:group=org_location&:pagesize=20&'
-                         ':startwith=0'
-   , 'network_interface':':columns=id,mac,card_type,description,machine&'
-                         ':sort=-id&:pagesize=2000&:startwith=0'
-   , 'public_holiday'  : ':columns=id,name,description,date,locations,is_half&'
-                         ':sort=date&:filter=date&:pagesize=20&:startwith=0&'
+   , 'letter'          : '@columns=id,subject,date,address.lastname&'
+                         '@sort=-date&@pagesize=20&@startwith=0'
+   , 'machine'         : '@columns=inventory_no,description,owner&'
+                         '@sort=inventory_no&@pagesize=20&@startwith=0'
+   , 'machine_name'    : '@columns=id,name,network_address,machine_name,'
+                         'dns_record_type,do_reverse_mapping&@sort=name&'
+                         '@pagesize=20&@startwith=0'
+   , 'network_address' : '@columns=ip,org_location,use_dhcp,network_interface&'
+                         '@sort=ip&@group=org_location&@pagesize=20&'
+                         '@startwith=0'
+   , 'network_interface':'@columns=id,mac,card_type,description,machine&'
+                         '@sort=-id&@pagesize=2000&@startwith=0'
+   , 'public_holiday'  : '@columns=id,name,description,date,locations,is_half&'
+                         '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                          'date=.%3B'
-   , 'summary_report'  : ':columns=user,time_wp,summary&'
-                         ':filter=user,summary_type,status,date,show_empty,'
+   , 'summary_report'  : '@columns=user,time_wp,summary&'
+                         '@filter=user,summary_type,status,date,show_empty,'
                          'show_all_users,show_missing&'
-                         ':pagesize=50&:startwith=0&status=3,1,2&'
+                         '@pagesize=50&@startwith=0&status=3,1,2&'
                          'date=%s%%3B.&summary_type=2,4&user=%s&'
                          'show_empty=no&show_all_users=no&show_missing=no' % 
                          (utils.monthstart_twoweeksago (), uid)
-   , 'time_project'    : ':columns=name,responsible,organisation,department'
-                         ',status&:sort=name&:filter=status&:pagesize=20&'
-                         ':startwith=0&status=1,2'
-   , 'time_record'     : ':columns=daily_record.user,daily_record.date,'
+   , 'time_project'    : '@columns=name,responsible,organisation,department'
+                         ',status&@sort=name&@filter=status&@pagesize=20&'
+                         '@startwith=0&status=1,2'
+   , 'time_record'     : '@columns=daily_record.user,daily_record.date,'
                          'daily_record.status,wp.project,wp,time_activity,'
                          'work_location,duration,tr_duration,comment&'
-                         ':sort=daily_record.user,daily_record.date,'
-                         'wp.project,wp&:filter=daily_record.user,'
-                         'daily_record.date&:pagesize=50&:startwith=0&'
+                         '@sort=daily_record.user,daily_record.date,'
+                         'wp.project,wp&@filter=daily_record.user,'
+                         'daily_record.date&@pagesize=50&@startwith=0&'
                          'daily_record.user=%s&daily_record.date=.-30d%%3B.'
                           % (uid,)
-   , 'time_wp'         : ':columns=name,wp_no,responsible,project,time_start'
-                         ',time_end,cost_center&:sort=name&:filter=bookers&'
-                         ':pagesize=20&:startwith=0&bookers=%s' % uid
-   , 'time_wp_group'   : ':columns=id,name,description,wps&:sort=name&'
-                         ':pagesize=20&:startwith=0'
-   , 'user'            : ':columns=%s&:sort=%s&'
-                         ':filter=status&:pagesize=200&:startwith=0&status=1'
+   , 'time_wp'         : '@columns=name,wp_no,responsible,project,time_start'
+                         ',time_end,cost_center&@sort=name&@filter=bookers&'
+                         '@pagesize=20&@startwith=0&bookers=%s' % uid
+   , 'time_wp_group'   : '@columns=id,name,description,wps&@sort=name&'
+                         '@pagesize=20&@startwith=0'
+   , 'tmplate'         : '@columns=id,name&@sort=name&@pagesize=20&@startwith=0'
+   , 'user'            : '@columns=%s&@sort=%s&'
+                         '@filter=status&@pagesize=200&@startwith=0&status=1'
                           % ( ','.join
                               (n for n in 
                                ( 'lastname'
@@ -104,17 +133,17 @@
                             , ['username', 'lastname']
                               ['lastname' in db._db.user.properties]
                             )
-   , 'user_dynamic'    : ':columns=id,user,valid_from,org_location&:sort=-id&'
-                         ':pagesize=20&:startwith=0'
+   , 'user_dynamic'    : '@columns=id,user,valid_from,org_location&@sort=-id&'
+                         '@pagesize=20&@startwith=0'
    , 'daily_record_freeze'
-                       : ':columns=id,date,week_balance,'
+                       : '@columns=id,date,week_balance,'
                          'month_balance,year_balance,frozen&'
-                         ':sort=-date&:group=user&:filter=user&'
-                         ':pagesize=20&:startwith=0&'
+                         '@sort=-date&@group=user&@filter=user&'
+                         '@pagesize=20&@startwith=0&'
                          'user=%s' % uid
    , 'overtime_correction'
-                       : ':columns=id,user,date,value,comment&:'
-                         'sort=-date&:filter=user&:pagesize=20&:startwith=0&'
+                       : '@columns=id,user,date,value,comment&'
+                         '@sort=-date&@filter=user&@pagesize=20&@startwith=0&'
                          'user=%s' % uid
    }
  ; menu_tracker  python:
@@ -196,30 +225,55 @@
      , ('severity',            'Edit',   '?@template=item', 1)
      , ('overtime_correction', 'Edit',   '?@template=item', 1)
      , ('daily_record_freeze', 'Edit',   '?@template=item&frozen=1', 1)
+     , ('abo',                 'Edit',   '?@template=item', 1)
+     , ('abo_type',            'Edit',   '?@template=item', 1)
+     , ('address',             'Edit',   '?@template=item', 1)
+     , ('valid',               'Edit',   '?@template=item', 1)
+     , ('abo_price',           'Edit',   '?@template=item', 1)
+     , ('invoice_group',       'Edit',   '?@template=item', 1)
+     , ('invoice_template',    'Edit',   '?@template=item', 1)
+     , ('adr_type',            'Edit',   '?@template=item', 1)
+     , ('adr_type_cat',        'Edit',   '?@template=item', 1)
+     , ('currency',            'Edit',   '?@template=item', 1)
+     , ('tmplate',             'Edit',   '?@template=item', 1)
      )
-   , ( ('cost_center',         'View', '')
-     , ('daily_record',        'View', 'controlling,hr')
-     , ('user_dynamic',        'View', '')
-     , ('time_project',        'View', '')
-     , ('time_wp',             'View', '')
-     , ('time_wp_group',       'View', '')
-     , ('public_holiday',      'View')
-     , ('user',                'View')
-     , ('summary_report',      'View')
-     , ('network_interface',   'View')
-     , ('machine',             'View')
-     , ('network_address',     'View')
-     , ('machine_name',        'View')
-     , ('group',               'View')
-     , ('alias',               'View')
-     , ('smb_machine',         'View')
-     , ('it_issue',            'View')
-     , ('it_project',          'View')
-     , ('issue',               'View')
-     , ('time_record',         'View')
-     , ('category',            'View')
-     , ('overtime_correction', 'View')
-     , ('daily_record_freeze', 'View')
+   , ( ('cost_center',         'View', '',               ('',''))
+     , ('daily_record',        'View', 'controlling,hr', ('',''))
+     , ('user_dynamic',        'View', '',               ('',''))
+     , ('time_project',        'View', '',               ('',''))
+     , ('time_wp',             'View', '',               ('',''))
+     , ('time_wp_group',       'View', '',               ('',''))
+     , ('public_holiday',      'View', '',               ('',''))
+     , ('user',                'View', '',               ('',''))
+     , ('summary_report',      'View', '',               ('',''))
+     , ('network_interface',   'View', '',               ('',''))
+     , ('machine',             'View', '',               ('',''))
+     , ('network_address',     'View', '',               ('',''))
+     , ('machine_name',        'View', '',               ('',''))
+     , ('group',               'View', '',               ('',''))
+     , ('alias',               'View', '',               ('',''))
+     , ('smb_machine',         'View', '',               ('',''))
+     , ('it_issue',            'View', '',               ('',''))
+     , ('it_project',          'View', '',               ('',''))
+     , ('issue',               'View', '',               ('',''))
+     , ('time_record',         'View', '',               ('',''))
+     , ('category',            'View', '',               ('',''))
+     , ('overtime_correction', 'View', '',               ('',''))
+     , ('daily_record_freeze', 'View', '',               ('',''))
+     , ('abo',                 'View', '',               ('',''))
+     , ('abo_type',            'View', '',               ('',''))
+     , ('address',             'View', '',               ('',''))
+     , ('valid',               'View', '',               ('',''))
+     , ('abo_price',           'View', '',               ('',''))
+     , ('invoice',             'View', '', ('generate invoices','send'))
+     , ('invoice',             'View', '',               ('',''))
+     , ('invoice_group',       'View', '',               ('',''))
+     , ('invoice_template',    'View', '',               ('',''))
+     , ('adr_type',            'View', '',               ('',''))
+     , ('adr_type_cat',        'View', '',               ('',''))
+     , ('currency',            'View', '',               ('',''))
+     , ('tmplate',             'View', '',               ('',''))
+     , ('letter',              'View', '',               ('',''))
      )
    )
  ; menu_type     python:
@@ -235,38 +289,40 @@
  </head>
  <body class="body">
   <table class="body" align="center" valign="middle"
-   tal:condition="python:request.user.username=='anonymous'">
+   tal:condition="not:is_user">
    <tr>
 <!-- login -->
     <td>
 <form method="POST" name="login_form" tal:attributes="action request/base">
      <table class="form">
       <tr>
-       <td colspan="2" align="center">Welcome to
-        <br><tal:block tal:replace="config/TRACKER_NAME"/><br>
+       <td colspan="2" align="center">
+        <span i18n:translate="">Welcome:</span>
+        <br>
+        <tal:block tal:replace="config/TRACKER_NAME"/>
+        <br>
         <font size="-2">
+         <span i18n:translate="">
          Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.
+         </span>
         </font>
        </td>
       </tr>
       <tr>
-       <th>Login:</th>
+       <th i18n:translate="">Login:</th>
        <td><input size="15" name="__login_name"></td>
       </tr>
       <tr>
-       <th>Password:</th>
+       <th i18n:translate="">Password:</th>
        <td><input size="15" type="password" name="__login_password"></td>
       </tr>
       <tr>
-       <th>Remember me?:</th>
+       <th i18n:translate="">Remember me?:</th>
        <td><input type="checkbox" name="remember" id="remember"></td>
       </tr>
       <tr>
        <td colspan="2" align="center">
         <input type="submit" name="@action" value="Login">
-<!-- XXX: needs some cleanup in this logic and also in the referring template
-        <a href="user?@template=forgotten">Forgot your password?</a>
--->
        </td>
       </tr>
      </table>
@@ -283,79 +339,106 @@
 
 <!-- menubar -->
 <form name="menubar">
-  <table bgcolor="#eeeeee"
-   tal:condition="python:request.user.username!='anonymous'">
+  <table bgcolor="#eeeeee" tal:condition="is_user">
    <tr>
 
-<!-- create new / query -->
+    <!-- create new / query -->
     <tal:block metal:define-slot="create_or_query" />
 
-<!-- template specific menues -->
-<!--
-    <tal:block metal:define-slot="menubar"></tal:block>
--->
+    <!-- template specific menues -->
     <!-- time-tracking for current daily_record selection or current week -->
-    <td class="sidebar"
-     tal:condition="python:
+    <td class="sidebar">
+     <span tal:condition="python:
       (   'user_dynamic' in db._db.classes
       and db._db.user_dynamic.find (user = request.user.id)
       )">
-     <span class="classblock">
-      <a tal:attributes="href python:utils.time_url (request, classname)">
-       Time
-      </a>
+      <span class="classblock">
+       <a i18n:translate=""
+          tal:attributes="href python:utils.time_url (request, classname)">
+        Time
+       </a>
+      </span>
      </span>
-    </td>
 
-    <!-- approval if user can approve records -->
-    <td class="sidebar"
-     tal:condition="approval_for">
-     <span class="classblock">
-      <a tal:attributes="href python:
-       [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
-         % ','.join (approval_for.keys ())
-       , str (request.indexargs_url (classname, {'@template':'approve'}))
-       ][   classname == 'daily_record'
-        and request.template not in ('approve','edit')
-        ]">
-       Approval
-      </a>
+     <!-- approval if user can approve records -->
+     <span tal:condition="approval_for" class="classblock">
+       <a i18n:translate="" tal:attributes="href python:
+        [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
+          % ','.join (approval_for.keys ())
+        , str (request.indexargs_url (classname, {'@template':'approve'}))
+        ][   classname == 'daily_record'
+         and request.template not in ('approve','edit')
+         ]">
+        Approval
+       </a>
      </span>
-    </td>
 
-<!-- user list -->
-    <td class="sidebar">
+     <!-- custom classes with "New" Button -->
+     <tal:block tal:repeat="c python:['address']">
+        <tal:block tal:condition="python:
+          (   'address' in db._db.classes
+          and request.user.hasPermission('View', c)
+          )">
+         <span class="classblock">
+          <a tal:condition="python:request.user.hasPermission('View', c) or
+                                   request.user.hasPermission('Edit', c)"
+             tal:attributes="href python:
+                 '%s?%s' % (c, default_queries.get (c, ''))"
+             tal:content="python:i18n.gettext (c)">xyzzy</a>
+          <span
+            tal:condition="python:request.user.hasPermission('Edit', c)"
+          >
+             /
+             <a tal:attributes="href string:${c}?:template=item">Neu</a>
+          </span>
+         </span>
+        </tal:block>
+     </tal:block>
+
+     <!-- other custom classes with special template -->
+     <tal:block tal:repeat="c python:[('invoice','send')]">
+        <tal:block tal:condition="python:
+          (   'invoice' in db._db.classes
+          and  request.user.hasPermission('Edit', c [0])
+          )">
+         <span class="classblock">
+          <a tal:condition="python:request.user.hasPermission('Edit', c [0])"
+             tal:attributes=
+              "href python:'%s?%s&@template=%s' %
+                (c [0], default_queries.get (c [0], ''), c [1])"
+             tal:content="python:i18n.gettext (c [0])">xyzzy</a>
+         </span>
+        </tal:block>
+     </tal:block>
+
+     <!-- user list -->
      <span class="classblock">
       <a tal:condition="python:request.user.hasPermission('View', 'user')
                             or request.user.hasPermission('Edit', 'user')"
-         tal:attributes="href python: 'user?' + default_queries ['user']">
+         tal:attributes="href python: 'user?' + default_queries ['user']"
+         i18n:translate="">
          User&nbsp;List
       </a>
      </span>
-    </td>
 
-<!-- username -> link to own profile -->
-    <td class="sidebar">
+     <!-- username -> link to own profile -->
      <span class="classblock">
       <a tal:attributes="href string:user${request/user/id}"
          tal:content="string:${request/user/username}"></a>
      </span>
-    </td>
 
-<!-- logout -->
-    <td class="sidebar">
+     <!-- logout -->
      <span class="classblock">
       <a tal:attributes="href python:request.indexargs_href
          ('', {'@action':'logout'})">Logout</a>
      </span>
-    </td>
    </tr>
+   <tal:block metal:define-slot="menu_slot"/>
   </table>
 </form>
 
 <!-- body_title -->
-  <tal:block
-   tal:condition="python:request.user.username!='anonymous'">
+  <tal:block tal:condition="is_user">
    <h3>
     <span metal:define-slot="body_title">
      <span tal:replace="head_title"/>
@@ -374,7 +457,7 @@
      tal:content   = "structure m">error</p>
 
 <!-- page content -->
-  <tal:block tal:condition="python:request.user.username!='anonymous'">
+  <tal:block tal:condition="is_user">
    <span class="content" metal:define-slot="content"></span>
   </tal:block>
 
@@ -390,12 +473,11 @@
  <span class="classblock">
   <select name="create_new"
           onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
-   <option value="">-- Create / Update --</option>
+   <option value="" i18n:translate="">-- Create / Update --</option>
    <tal:block tal:repeat="k python:
-    utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
-                 , (0,)
-                 , i18n.gettext
-                 )">
+    sorted ( [k for k in klasses if k [0] in db._db.classes]
+           , key = lambda x, y = i18n.gettext : y (x [0]).lower ()
+           )">
     <option tal:condition="python:request.user.hasPermission(k [1], k [0])
                                   and k [3]"
             tal:attributes="value python:k[0] + k[2]"
@@ -411,50 +493,56 @@
        >
   <select name="query"
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
-   <option value="">-- View / Query --</option>
-   <option value="query?@template=edit">Manage Queries</option>
+   <option value="" i18n:translate="">-- View / Query --
+   </option>
+   <option value="query?@template=edit" i18n:translate="">Manage Queries
+   </option>
    <tal:block
-    tal:repeat="k python:
-     utils.sorted ( [k for k in klasses if k [0] in db._db.classes]
-                  , (0,)
-                  , i18n.gettext
-                  )">
+    tal:repeat="k python: sorted
+        ( [k for k in klasses if k [0] in db._db.classes]
+        , key = lambda x, y = i18n.gettext : y (x [3][0] or x [0]).lower ()
+        )">
      <tal:block tal:define=
-       " name  python:i18n.gettext (k [0])
-       ; klass python:k [0]
-       ; perm  python:k [1]
-       ; role  python: (('',k [-1])[len (k) > 2]).split (',')
+       " name   python: i18n.gettext (k [3][0] or k [0])
+       ; klass  python: k [0]
+       ; perm   python: k [1]
+       ; role   python: k [2].split (',')
+       ; tplate python: ('&@template=%s' % k [3][1], '') [not k [3][1]]
+       ; qkey   python: k [3][1] or 'index'
        " tal:condition="python:
           (   request.user.hasPermission (perm, klass)
           and (not role [0] or utils.user_has_role (db._db, uid, *role))
           )">
-         <option tal:attributes="value python:
-          klass + '?' + default_queries.get (klass, default_query)"
+         <option tal:attributes="value python: '%s?%s%s' %
+          (klass, default_queries.get (klass, default_query), tplate)"
           tal:content="name"/>
          <option tal:define="
             queries python:db.query.filter
-             (filterspec={'private_for':None, 'klass':klass})"
+             (filterspec = dict
+              (private_for = None, klass = klass, tmplate = qkey)
+             )"
           tal:repeat="q queries"
           tal:attributes="
-           value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
+           value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${tplate}${q/url}"
           tal:content="structure string:&nbsp;&nbsp;${q/name}"
          >  Global Queries</option>
          <tal:block tal:condition="request/user/queries">
           <option tal:define="
              queries python:[q for q in db.query.filter
-              (filterspec=
-               { 'private_for':request.user.id
-               , 'klass':klass
-               , 'id':[q.id for q in request.user.queries]
-               }
+              (filterspec = dict
+               ( private_for = request.user.id
+               , klass       = klass
+               , id          = [q.id for q in request.user.queries]
+               , tmplate     = qkey
+               )
               ) if q.klass == klass]"
            tal:repeat="q queries"
            tal:attributes="
-            value string:${klass}?@queryname=${q/name}&queryid=${q/id}&${q/url}"
+            value
+            string:${klass}?@queryname=${q/name}&queryid=${q/id}&${tplate}${q/url}"
            tal:content="structure string:&nbsp;&nbsp;&nbsp;&nbsp;${q/name}"
           >    Private Queries</option>
          </tal:block>
-
      </tal:block>
    </tal:block>
   </select>
@@ -476,13 +564,10 @@
  </tal:block>
 </tal:block>
 
-<!-- the following macro is used for all pages which display a TTT_Issue_Class item. -->
+<!-- the following macro is used for all pages which display a
+     class that needs some more formatting -->
 
-<!-- ttt_issue is now a misnomer. Generalized this to fit most classes
-     by checking availability of certain attributes.
-     But I didn't want to change many *.item.html so the name sticks.
--->
-<td metal:define-macro="ttt_issue">
+<td metal:define-macro="formatted_class">
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
  You are not allowed to view this page.
  </span>
@@ -490,12 +575,11 @@
        onSubmit="return submit_once()"
        name="itemSynopsis"
        enctype="multipart/form-data"
-       tal:condition="context/is_view_ok"
        tal:attributes="action context/designator">
 
   <input type="hidden" name="@template" value="item">
 
-  <table class="form" border="0">
+  <table class="form" border="0" style="border-spacing:0px">
    <tr tal:condition="use_labelprop">
     <th class="required"
      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
@@ -512,21 +596,22 @@
      tal:content="structure python:utils.fieldname(classname, 'responsible')">
     </th>
     <td colspan="3">
-     <tal:block tal:define="name      string:responsible;
-                            form      string:itemSynopsis;
-                            dont_care string:don't care;
-                            selected  context/responsible/id | string:0">
-      <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+     <tal:block tal:define=
+        "name      string:responsible;
+         form      string:itemSynopsis;
+         dont_care python:i18n.gettext ('''- don't care -''');
+         selected  context/responsible/id | string:0">
+      <tal:block metal:use-macro="templates/userlist/macros/user"/>
      </tal:block>
     </td>
    </tr>
 
-   <tal:block metal:define-slot="ttt_issue_content"></tal:block>
+   <tal:block metal:define-slot="formatted_class_content"/>
 
    <tr tal:condition="has_nosy">
-    <th tal:content="structure python:utils.fieldname(classname, 'nosy')"></th>
+    <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
     <td colspan="3">
-     <span tal:replace="structure context/nosy/field"></span>
+     <span tal:replace="structure context/nosy/field"/>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:db.user.classhelp
              ( 'username,nickname,firstname,lastname'
@@ -535,11 +620,11 @@
              , pagesize=500
              , filter='status=%s' % ','.join
                (db._db.user_status.lookup (i) for i in ('valid', 'system'))
-             )"></span><br>
+             )"/><br>
     </td>
    </tr>
 
-   <tr metal:use-macro="templates/page/macros/message_box" />
+   <tr metal:use-macro="templates/page/macros/message_box"/>
 
    <tr tal:condition="python:has_files and want_files">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
@@ -549,20 +634,77 @@
    <tr tal:condition="context/is_edit_ok">
     <th></th>
     <td colspan="3">
-     <tal:block metal:define-slot="button_slot"></tal:block>
+     <tal:block metal:define-slot="button_slot"/>
      <tal:block tal:replace="structure context/submit"/>
      <input tal:condition="context/id"
             type="button" value="Show History"
+            i18n:attributes="value"
             tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
     </td>
    </tr>
+   <tr tal:condition="has_invoices">
+    <th style="text-align:left" class="required"
+     tal:content="structure python:utils.fieldname(classname, 'invoices')"
+     tal:condition="context/invoices" />
+   </tr>
+   <tal:block tal:repeat="inv context/invoices/reverse"
+    tal:condition="has_invoices">
+    <tr>
+     <th tal:content="structure python:
+      utils.fieldname ('invoice','invoice_no')"/>
+     <td tal:content="structure python:''.join
+         (( utils.ExtProperty
+            (utils, inv.invoice_no, item = inv).as_listentry ()
+         ,
+         ))"/>
+     <th tal:content="structure python:
+      utils.fieldname ('invoice', 'period', 'period_start')"/>
+     <td tal:content="structure python:''.join
+         (( utils.ExtProperty
+            (utils, inv.period_start, item = inv).as_listentry ()
+         , '-'
+         ,  utils.ExtProperty
+            (utils, inv.period_end,   item = inv).as_listentry ()
+         ))"/>
+    </tr>
+   </tal:block>
+   <tr tal:condition="python:has_letters and context.letters">
+    <th style="text-align:left" class="required"
+     tal:content="structure python:utils.fieldname (classname, 'letters')"/>
+   </tr>
+   <tal:block tal:repeat="ltr context/letters/reverse"
+    tal:condition="has_letters">
+    <tr>
+     <th tal:content="structure python:utils.fieldname ('letter','period')"/>
+     <td tal:content="structure python:''.join
+         (( utils.ExtProperty
+            (utils, ltr.date, item = ltr, is_labelprop = 1).as_listentry ()
+          , '&nbsp;'
+          , '--'
+          , '&nbsp;'
+          , utils.letter_link (request, ltr.id)
+         ))"/>
+     <th tal:content="structure python:utils.fieldname ('letter', 'subject')"/>
+     <td tal:content="structure python:''.join
+         ((  utils.ExtProperty
+            (utils, ltr.subject, item = ltr).as_listentry ()
+          ,
+         ))"/>
+    </tr>
+   </tal:block>
   </table>
-  <p tal:condition="context/id" tal:content="structure string:Created on
-    <b>${context/creation}</b> by <b>${context/creator}</b>, last
-    changed <b>${context/activity}</b> by <b>${context/actor}</b>."></p>
-
+  <p tal:condition="context/id" i18n:translate="">
+   Created on
+   <b i18n:name="creation" tal:content="python:context.creation.pretty
+      (utils.ymd)"/> by
+   <b i18n:name="creator"  tal:content="context/creator"/>, last changed
+   <b i18n:name="activity" tal:content="python:context.activity.pretty
+      (utils.ymd)"/> by
+   <b i18n:name="actor"    tal:content="context/actor"/>.
+  </p>
   <input type="hidden" name="@required"
          tal:attributes="value required_attributes | labelprop">
+
  </form>
 
  <table metal:use-macro="templates/page/macros/note_required" />
@@ -584,10 +726,10 @@
    <th tal:content="structure python:utils.fieldname(classname,'msg')" />
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
+              tal:attributes="rows msg_box_height"
               name="@note"
               wrap="hard"
-              rows="8"
-              cols="80"></textarea>
+              cols="80"/>
    </td>
   </tr>
 </tal:block>
@@ -595,9 +737,9 @@
 <tal:block metal:define-macro="note_required">
  <table class="form" tal:condition="not:context/id">
  <tr>
-  <td>Note:&nbsp;</td>
-  <th class="required">highlighted</th>
-  <td>&nbsp;fields are required.</td>
+  <td i18n:translate="">Note:&nbsp;</td>
+  <th class="required" i18n:translate="">highlighted</th>
+  <td i18n:translate="">&nbsp;fields are required.</td>
  </tr>
  </table>
 </tal:block>
@@ -605,7 +747,7 @@
 <tal:block metal:define-macro="message_display">
  <table class="messages" tal:condition="python:has_msgs and context.messages">
   <tr>
-   <th colspan="3" class="header" tal:content="structure python:
+   <th colspan="4" class="header" tal:content="structure python:
      utils.fieldname (classname, 'messages')"/>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
@@ -614,6 +756,12 @@
           tal:content="string:msg${msg/id}"></a></th>
    <th tal:content="string:Author: ${msg/author}">author</th>
    <th tal:content="string:Date: ${msg/date}">date</th>
+   <th>
+    <a i18n:translate="" tal:condition="may_remove_msgs" tal:attributes="href
+       string:${classname}${context/id}?remove:messages=${msg/id}&:action=edit">
+     remove
+    </a>
+   </th>
 <!--
    <th>
     <form style="padding:0" tal:condition="context/is_edit_ok"
@@ -626,7 +774,7 @@
 -->
   </tr>
   <tr>
-   <td colspan="3" class="content">
+   <td colspan="4" class="content">
     <pre tal:content="structure msg/content/hyperlinked">content</pre>
    </td>
   </tr>
@@ -641,7 +789,7 @@
 <!-- status/name, status/abbreviation, title, responsible -->
 <!-- status should map a ${klassname}_${item/status}_${postfix} a.href class in style.css -->
 <!--   where postfix will be "${item/test_ok|nothing}" -->
-<tal:block metal:define-macro="ttt_task_list">
+<tal:block metal:define-macro="task_list">
  <tal:block tal:repeat="item items"
             tal:define="postfix item/test_ok|python:''">
   <a tal:attributes="href item/designator;
@@ -650,7 +798,7 @@
  </tal:block>
 </tal:block>
 
-<tal:block metal:define-macro="ttt_simple_list">
+<tal:block metal:define-macro="simple_list">
  <tal:block tal:repeat="item items">
   <a tal:attributes="href item/designator;
                      class string:${klassname}_${item/status}"
@@ -681,7 +829,7 @@
 </tal:block>
 
 <!-- the following lists a nice list of files plus file upload form -->
-<tal:block metal:define-macro="ttt_issue_files">
+<tal:block metal:define-macro="formatted_class_files">
  <tal:block metal:use-macro="templates/page/macros/file_list"/>
  <input type="file" name="@file" size="40">
 </tal:block>
@@ -690,31 +838,50 @@
 <!-- the caller needs to define a list of tuples for the properties: -->
 <!--  props = (("<name to display>", "<designator>"), ...) -->
 
-<tal:block metal:define-macro="ttt_search_nav">
+<tal:block metal:define-macro="search_nav">
 <!-- previous / next links -->
    <tr>
     <th tal:attributes="colspan python:len(request.columns)">
      <table width="100%">
       <tr class="navigation">
        <th class="left">
-        <a tal:define="prev batch/previous"
-           tal:condition="prev"
-           tal:attributes="href python:str(request.indexargs_href(request.classname,
-           {':startwith':prev.first, ':pagesize':prev.size}))">&lt;&lt;&nbsp;previous</a></th>
-       <th tal:condition="batch/sequence_length"
-           tal:content="structure python:'<nobr>showing %d - %d of %d in total</nobr>'
-                               % ( batch.start
-                                 , batch.start + batch.length - 1
-                                 , batch.sequence_length
-                                 )"
-           >
+        <a tal:define="prev batch/previous" tal:condition="prev"
+           i18n:translate=""
+           tal:attributes="href python:
+               str ( request.indexargs_href
+                     ( request.classname
+                     , {':startwith':prev.first, ':pagesize':prev.size}
+                     )
+                   )">
+           &lt;&lt;&nbsp;previous
+        </a>
        </th>
-       <th tal:condition="not:batch/sequence_length"><nobr>Sorry, no results found</nobr></th>
+       <th tal:condition="batch/sequence_length">
+        <nobr i18n:translate="">
+            showing <span tal:replace="batch/start" i18n:name="start"/>
+            - <span tal:replace="python:batch.start + batch.length -1"
+                    i18n:name="end"/>
+            of <span tal:replace="batch/sequence_length" i18n:name="length"/>
+            in total
+        </nobr>
+       </th>
+       <th tal:condition="not:batch/sequence_length">
+        <nobr i18n:translate="">
+        Sorry, no results found
+        </nobr>
+       </th>
        <th class="right">
-        <a tal:define="next batch/next"
-           tal:condition="next"
-           tal:attributes="href python:str(request.indexargs_href(request.classname,
-           {':startwith':next.first, ':pagesize':next.size}))">next&nbsp;&gt;&gt;</a></th>
+        <a tal:define="next batch/next" tal:condition="next"
+           i18n:translate=""
+           tal:attributes="href python:
+               str ( request.indexargs_href
+                     ( request.classname
+                     , {':startwith':next.first, ':pagesize':next.size}
+                   )
+                  )">
+           next&nbsp;&gt;&gt;
+        </a>
+       </th>
       </tr>
      </table>
     </th>
@@ -722,13 +889,13 @@
 </tal:block>
 
 <!--
- the next two ttt_search_display and ttt_search_form needs the following variables set up
- as follows:
+ the next two search_results and simple_search_form needs the following
+ variables set up as follows:
  props: a tuple (or list) of ExtProperty objects. See extensions/extproperty.py
 -->
 
 <!-- display the search results -->
-<tal:block metal:define-macro="ttt_search_results">
+<tal:block metal:define-macro="search_results">
  <tal:block tal:condition="not:context/is_view_ok">
   You are not allowed to view this page.
  </tal:block>
@@ -740,10 +907,10 @@
 <!-- list all properties we want to see -->
     <tal:block tal:repeat="prop props">
      <th tal:condition="python:request.show[prop.searchname]"
-         tal:content="python:prop.i18nlabel"></th>
+         tal:content="python:prop.i18nlabel"/>
     </tal:block>
    </tr>
-   <tal:block metal:use-macro="templates/page/macros/ttt_search_nav"></tal:block>
+   <tal:block metal:use-macro="templates/page/macros/search_nav"/>
    <!-- items found -->
    <tal:block tal:repeat="i batch">
     <tr tal:condition="python:
@@ -769,7 +936,7 @@
  </tal:block>
 </tal:block>
 
-<tal:block metal:define-macro="ttt_search_form">
+<tal:block metal:define-macro="simple_search_form">
  <tal:block tal:define=
      " multi_props    python: [p for p in props if p.multiselect]
      ; sort_props     python: [p for p in props if p.sortable]
@@ -798,81 +965,77 @@
    tal:attributes="value python:request.template or 'index'">
   <table border="0" bgcolor="#e0c0c0" class="searchform">
    <tr>
-    <th bgcolor="#C08080" i18n:translate="" colspan="2">
-     Query
+    <th bgcolor="#C08080" i18n:translate="" colspan="5">
+     <span i18n:translate="">Query</span>
      <span tal:replace="head_title" i18n:name="title"/>
     </th>
    </tr>
 
    <tr>
-    <td tal:condition="do_pagesize">
-     View
+    <td tal:condition="do_pagesize" colspan="2">
+     <span i18n:translate="">View</span>
      <input type="text" size="4" name=":pagesize"
             tal:attributes="value request/pagesize">
-      items per page
+     <span i18n:translate="">items per page</span>
     </td>
-    <td>
+    <td/>
+    <td style="text-align:right;" colspan="2">
      <a tal:attributes="href csv_link" i18n:translate="">Download as CSV</a>
     </td>
    </tr>
-   <tr tal:condition="python:sort_props">
-    <td colspan="2" nowrap>
-     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
-      <tal:block tal:repeat="onum python:range(n_sort)">
-       <tr tal:define=
-           "skey python:len(request.sort)>onum and request.sort[onum]
-           ;gkey python:len(request.group)>onum and request.group[onum]
-           ">
-        <td nowrap>
-         <tal:block tal:condition="not:onum" i18n:translate="">
-             Sort on:
-         </tal:block>
-        </td>
-        <td nowrap>
-         <select tal:attributes="name python:':sort%d'%onum"
-          onChange="this.form.elements[':startwith'].value='0'">
-          <option value="">- nothing -</option>
-          <option tal:repeat="prop sort_props"
-           tal:attributes= "selected python:skey and prop.searchname==skey[1];
-                            value    python:prop.searchname"
-           tal:content="python:prop.i18nlabel"/>
-         </select>
-         Descending:
-         <input type="checkbox"
-          tal:attributes="name python:':sortdir%d'%onum
-                         ;checked python:skey and skey[0] == '-'
-                         "
-          onChange="this.form.elements[':startwith'].value='0'"/>
-        </td>
-        <td nowrap>&nbsp;</td>
-        <td nowrap>
-         <tal:block tal:condition="not:onum" i18n:translate="">
-             Group on:
-         </tal:block>
-        </td>
-        <td nowrap>
-         <select tal:attributes="name python:':group%d'%onum"
-          onChange="this.form.elements[':startwith'].value='0'">
-          <option value="">- nothing -</option>
-          <option tal:repeat="prop sort_props"
-           tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
-                            value    python:prop.searchname"
-           tal:content="python:prop.i18nlabel"/>
-         </select>
-         Descending:
-         <input type="checkbox"
-          tal:attributes="name python:':groupdir%d'%onum
-                         ;checked python:gkey and gkey[0] == '-'
-                         "
-          onChange="this.form.elements[':startwith'].value='0'"/>
-        </td>
-       </tr>
+   <tal:block tal:repeat="onum python:range(n_sort)"
+    tal:condition="python:sort_props">
+    <tr tal:define=
+        "skey python:len(request.sort)>onum and request.sort[onum]
+        ;gkey python:len(request.group)>onum and request.group[onum]
+        ">
+     <td nowrap>
+      <tal:block tal:condition="not:onum" i18n:translate="">
+          Sort on:
       </tal:block>
-     </table>
-    </td>
-   </tr>
+     </td>
+     <td nowrap>
+      <select tal:attributes="name python:':sort%d'%onum"
+       onChange="this.form.elements[':startwith'].value='0'">
+       <option value="" i18n:translate="">- nothing -</option>
+       <option tal:repeat="prop sort_props"
+        tal:attributes= "selected python:skey and prop.searchname==skey[1];
+                         value    python:prop.searchname"
+        tal:content="python:prop.i18nlabel"/>
+      </select>
+      <span i18n:translate="">Descending:</span>
+      <input type="checkbox"
+       tal:attributes="name python:':sortdir%d'%onum
+                      ;checked python:skey and skey[0] == '-'
+                      "
+       onChange="this.form.elements[':startwith'].value='0'"/>
+     </td>
+     <td nowrap>&nbsp;</td>
+     <td nowrap>
+      <tal:block tal:condition="not:onum" i18n:translate="">
+          Group on:
+      </tal:block>
+     </td>
+     <td nowrap>
+      <select tal:attributes="name python:':group%d'%onum"
+       onChange="this.form.elements[':startwith'].value='0'">
+       <option value="" i18n:translate="">- nothing -</option>
+       <option tal:repeat="prop sort_props"
+        tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
+                         value    python:prop.searchname"
+        tal:content="python:prop.i18nlabel"/>
+      </select>
+      <span i18n:translate="">Descending:</span>
+      <input type="checkbox"
+       tal:attributes="name python:':groupdir%d'%onum
+                      ;checked python:gkey and gkey[0] == '-'
+                      "
+       onChange="this.form.elements[':startwith'].value='0'"/>
+     </td>
+    </tr>
+   </tal:block>
    <tr>
-    <td colspan="2">
+    <td colspan="5">
      <table border="0" bgcolor="#e0c0c0" align="left" class="searchform"
       tal:condition="props">
       <tr>
@@ -905,8 +1068,8 @@
           "size      string:7;
            name      python:prop.searchname;
            form      string:query;
-           dont_care string:don't care;
-           selected python:
+           dont_care python:i18n.gettext ('''- don't care -''');
+           selected  python:
             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
           ">
          <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
@@ -916,7 +1079,7 @@
           "size      string:7;
            name      python:prop.searchname;
            form      string:query;
-           dont_care string:don't care;
+           dont_care python:i18n.gettext ('''- don't care -''');
            selected  python:
             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
           ">
@@ -928,9 +1091,8 @@
                  tal:attributes="name python:prop.searchname"
                  tal:define="form_vals
                    python:request.filterspec.get(prop.searchname) or []">
-          <option value=""
-                  tal:attributes="selected not:form_vals">don't care
-          </option>
+          <option value="" i18n:translate=""
+                  tal:attributes="selected not:form_vals">- don't care -</option>
           <option
            tal:repeat="s python: db[prop.lnkcls.classname].filter
                ( filterspec = prop.filter
@@ -939,7 +1101,7 @@
            tal:attributes=
                "value    s/id;
                 selected python:s.id in form_vals"
-           tal:content="python:s[prop.displayprop]">
+           tal:content="python:s[prop.propname]">
           </option>
          </select>
         </tal:block>
@@ -951,7 +1113,7 @@
    </tr>
 
    <tr>
-    <td colspan="2">
+    <td colspan="5">
      <table border="0" bgcolor="#e0c0c0">
       <!-- fill in text entry fields -->
    <tal:block tal:repeat="prop nomulti_props">
@@ -974,20 +1136,19 @@
       </tr>
    </tal:block>
       <tr tal:condition="do_fulltext">
-       <th style="text-align:right;">Search full text:</th>
-       <td><input type="text"
-                  size="40"
-                  name=":search_text"
-                  onChange="this.form.elements[':startwith'].value='0'"
-                  tal:attributes="value request/form/:search_text/value | nothing">
-       (Searches also in messages)</td>
+       <th style="text-align:right;" i18n:translate="">Search full text:</th>
+       <td>
+        <input type="text" size="40" name=":search_text"
+         onChange="this.form.elements[':startwith'].value='0'"
+         tal:attributes="value request/form/:search_text/value | nothing">
+        <span i18n:translate="">(Searches also in messages)</span>
+       </td>
       </tr>
 <!-- submit button -->
       <tr>
        <th></th>
        <td>
-        <input type="submit"
-         value="Update view"
+        <input type="submit" i18n:attributes="value" value="Update view"
          onClick="document.forms ['query'].elements ['@queryname'].value = '';
                   document.forms ['query'].elements ['new_query'].value = '';
                   document.forms ['query'].elements ['queryid'].value = '';">
@@ -998,7 +1159,7 @@
         new_query request/form/new_query/value | nothing;
         u_q       python:sorted ([q.id for q in request.user.queries]);
         ">
-      <th style="text-align:right;">This query's name:</th>
+      <th style="text-align:right;" i18n:translate="">This query's name:</th>
        <td tal:define="queryid python:new_query and (u_q and u_q.pop()) or queryid">
         <input type="hidden" name="queryid" tal:attributes="value queryid | nothing">
         <span tal:condition="queryid">
@@ -1008,20 +1169,23 @@
           <input type="text"
                 name="_queryname"
                 tal:attributes="value request/form/@queryname/value | default">
-          <input type="submit"
+          <input type="submit" i18n:attributes="value"
            value="Update view & store this query"
            onClick="document.forms ['query'].elements ['@queryname'].value =
                     document.forms ['query'].elements ['_queryname'].value;
                     document.forms ['query'].elements ['@old-queryname'].value =
                     document.forms ['query'].elements ['_queryname'].value;
-                    ">(If you change the name, you create a new query!!!)
+                    ">
+          <span i18n:translate="">
+            (If you change the name, you create a new query!!!)
+          </span>
          </span>
          <span tal:condition="python:queryid not in request.user.queries">
           <input type="text"
                  name="@queryname"
                  onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
           <input type="hidden" name="new_query" value="">
-          <input type="submit"
+          <input type="submit" i18n:attributes="value"
                  value="Update view & store NEW query">
          </span>
         </span>
@@ -1030,7 +1194,7 @@
                 name="@queryname"
                 onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
          <input type="hidden" name="new_query" value="">
-         <input type="submit"
+         <input type="submit" i18n:attributes="value"
                 value="Update view & store NEW query">
         </span>
        </td>

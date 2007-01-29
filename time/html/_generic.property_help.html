@@ -7,6 +7,10 @@
    Help for
   <span tal:replace="Classname" i18n:name="Classname" />
  </span>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
  <td class="content" metal:fill-slot="content">
  <b tal:condition="python:0" tal:content="context/designator"></b>
 

@@ -101,6 +101,23 @@ def prop_as_array (prop) :
     return [prop]
 # end def prop_as_array
 
+formattable = \
+    [ ('end',  'canc', 'run')
+    , ('open', 'open', 'closed')
+    ]
+def get_cssclass (item) :
+    """
+        returns css link-class: for "end" date we need a special
+        color code for marking abos that are no longer valid.
+    """
+    for i, t, f in formattable :
+        try :
+            return (t, f) [not item [i]]
+        except KeyError :
+            pass
+    return ''
+# end def get_cssclass
+
 class ExtProperty :
     """
         An extended HTML property.
@@ -130,6 +147,11 @@ class ExtProperty :
             (e.g., in a search mask) because the value will not show up
             in the generated URL and therefore will not work in CSV
             export.
+            Testcases:
+            abo.setlabelprop ('id')
+            and
+            abo.setlabelprop ('abotype')
+            must both work.
         filter: A dictionary of properties / values to filter on when
             displaying a menu (in a search mask) or help.
         help_filter: deprecated, a string of property/value pairs
@@ -155,11 +177,11 @@ class ExtProperty :
         , editable      = None
         , add_hidden    = False
         , searchable    = None # usually computed, override with False
-        , sortable      = True
+        , sortable      = None
         , pretty        = _
-        , get_cssclass  = None
+        , get_cssclass  = get_cssclass
         , do_classhelp  = None
-        , fieldwidth    = 60
+        , fieldwidth    = 30
         , format        = None
         , filter        = None
         , help_props    = None
@@ -193,6 +215,9 @@ class ExtProperty :
         self.help_filter   = help_filter
         self.help_sort     = help_sort
         self.bool_tristate = bool_tristate
+        self.propname      = displayprop
+        if self.sortable is None :
+            self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
             self.name = ''
         if not self.searchname or isinstance (searchname, MissingValue) :
@@ -210,7 +235,7 @@ class ExtProperty :
             f = []
             for k, v in self.filter.iteritems () :
                 if isinstance (v, list) :
-                    v = ','.join (str (v))
+                    v = ','.join (str (k) for k in v)
                 f.append ((k, v))
             self.help_filter = ' '.join ('%s=%s' % (k, v) for k, v in f)
         self.lnkcls = None
@@ -223,8 +248,8 @@ class ExtProperty :
                 props = [p for p in proptree]
                 p = props [-1]
                 if not p.classname :
-                    if not self.displayprop :
-                        self.displayprop = p.name
+                    if not self.propname :
+                        self.propname = p.name
                     p = p.parent
                 self.lnkcls = p.cls
                 if len (props) > 1:
@@ -240,12 +265,12 @@ class ExtProperty :
         if self.do_classhelp is None :
             self.do_classhelp = \
                 (   self.lnkcls
-                and (  not self.displayprop
-                    or self.displayprop in ('id', self.lnkcls.labelprop ())
+                and (  not self.propname
+                    or self.propname in ('id', self.lnkcls.labelprop ())
                     )
                 )
-        if self.lnkcls and not self.displayprop :
-            self.displayprop = self.lnkcls.labelprop ()
+        if self.lnkcls and not self.propname :
+            self.propname = self.lnkcls.labelprop ()
         if self.searchable is None :
             self.searchable = not self.need_lookup ()
         if (   self.is_labelprop is None
@@ -272,22 +297,20 @@ class ExtProperty :
         self._set_item (item)
         if self.prop is None or isinstance (self.prop, MissingValue) :
             return ""
-        elif isinstance (self.prop, DateHTMLProperty) :
-            if self.format :
-                format = self.format
-            else :
-                format = '%Y-%m-%d'
-            return self.prop.pretty (format)
-        elif self.format :
-            return self.format % self.item [self.name]
         if self.displayprop :
-            return str (self.item [self.displayprop])
+            format = self.format or '%s'
+            return format % str (self.item [self.displayprop])
+        if isinstance (self.prop, DateHTMLProperty) :
+            format = self.format or '%Y-%m-%d'
+            return self.prop.pretty (format)
+        if self.format :
+            return self.format % self.item [self.name]
         return str (self.prop)
     # end def formatted
 
     def need_lookup (self) :
         """ Needs a list-lookup, because the user can't specify the key """
-        return self.displayprop and not self.key
+        return self.propname and not self.key
     # end def need_lookup
 
     def as_listentry (self, item = None, as_link = True) :
@@ -323,9 +346,12 @@ class ExtProperty :
         """
         p = prop or self.prop
 
-        if self.displayprop == 'id' :
+        if self.propname == 'id' :
+            lp = self.lnkcls.labelprop ()
+            if lp == 'id' :
+                lp = 'creation'
             return self.__class__ \
-                ( self.utils, p [self.lnkcls.labelprop ()]
+                ( self.utils, p [lp]
                 , item         = p
                 , pretty       = self.pretty
                 , get_cssclass = self.get_cssclass
@@ -334,11 +360,16 @@ class ExtProperty :
         for i in self.searchname.split ('.')[1:] :
             last_p = p
             p      = p [i]
-        if  (   self.displayprop
+        if  (   self.propname
             and (isinstance (p, _HTMLItem) or hasattr (p._prop, 'classname'))
             ) :
             last_p = p
-            p      = p [self.displayprop]
+            # TODO: Handle multilinks in the transitive search
+            # this will also be needed in callers of deref, e.g.,
+            # formatlink etc... they need to be aware that the result
+            # can be a list. The resulting deref is probably a recursive
+            # function.
+            p      = p [self.propname]
         return self.__class__ \
             ( self.utils, p
             , item         = last_p
@@ -422,21 +453,21 @@ class ExtProperty :
     def classhelp_properties (self, *propnames) :
         """create list of properties for classhelp. Order matters."""
         assert (self.lnkcls)
-        if self.displayprop == self.key or self.displayprop == 'id' :
-            p = [self.displayprop]
+        if self.propname == self.key or self.propname == 'id' :
+            p = [self.propname]
         else :
-            p = ['id', self.displayprop]
+            p = ['id', self.propname]
         props = dict ([(x, 1) for x in p])
         for pn in self.help_props :
             if (   pn in self.lnkcls.properties
-               and pn != self.displayprop
+               and pn != self.propname
                and pn not in props
                ) :
                 p.append (pn)
                 props [pn] = 1
         for pn in propnames :
             if (   pn in self.lnkcls.properties
-               and pn != self.displayprop
+               and pn != self.propname
                and pn not in props
                ) :
                 p.append (pn)
@@ -480,7 +511,7 @@ class ExtProperty :
                     ( """<input type="radio" name="%s" value=""%s>%s"""
                     % ( self.searchname
                       , ['', ' checked="checked"'] [not (yvalue or nvalue)]
-                      , self.pretty ("Don't care")
+                      , self.pretty (''"Don't care")
                       )
                     )
             return ''.join (s)
@@ -539,4 +570,5 @@ def init (instance) :
     instance.registerUtil ('comment_edit',      comment_edit)
     instance.registerUtil ('urlquote',          urlquote)
     instance.registerUtil ('prop_as_array',     prop_as_array)
+    instance.registerUtil ('get_cssclass',      get_cssclass)
 # end def init

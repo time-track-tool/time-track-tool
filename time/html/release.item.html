@@ -13,8 +13,8 @@
  </tal:block>
 
  <tal:block metal:fill-slot="content">
-  <tal:block metal:use-macro="templates/page/macros/ttt_issue">
-   <tal:block metal:fill-slot="ttt_issue_content">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
     <tr tal:condition="context/id">
      <th>Milestones</th>
      <td>
@@ -63,7 +63,7 @@
      <th>Documents</th>
      <td class="task_list">
       <tal:block tal:define="klassname string:task">
-       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+       <tal:block metal:use-macro="templates/page/macros/task_list"/>
       </tal:block>
 
       <table tal:condition="python:context.is_edit_ok ()
@@ -96,7 +96,7 @@
                                    , sort       = ( '+', 'id'     )
                                    );
                              klassname string:feature">
-       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+       <tal:block metal:use-macro="templates/page/macros/task_list"/>
       </tal:block>
      </td>
     </tr>
@@ -110,7 +110,7 @@
                                   , sort       = ( '+', 'id'     )
                                   );
                              klassname string:defect">
-       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+       <tal:block metal:use-macro="templates/page/macros/task_list"/>
       </tal:block>
      </td>
     </tr>
@@ -124,7 +124,7 @@
                                   , sort       = ( '+', 'id'     )
                                   );
                              klassname string:defect">
-       <tal:block metal:use-macro="templates/page/macros/ttt_task_list"/>
+       <tal:block metal:use-macro="templates/page/macros/task_list"/>
       </tal:block>
      </td>
     </tr>
@@ -134,4 +134,3 @@
  </tal:block>
 
 </tal:block>
-<!-- SHA: d5ce980b50d64d0f89632542fa06c258bc8efbeb -->
