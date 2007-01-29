@@ -37,10 +37,10 @@ from urllib import urlencode, unquote_plus
 def fix_url_and_template (new_values, url) :
     tmplate = new_values.get ('tmplate')
     deleted = False
-    print "url before:", url
+    #print "url before:", url
     if url :
         urldict = parse_qs (url)
-        print urldict
+        #print urldict
         for k in '@:' :
             key = k + 'template'
             if key in urldict :
@@ -51,8 +51,8 @@ def fix_url_and_template (new_values, url) :
             for k, v in urldict.iteritems () :
                 urldict [k] = ','.join (v)
             new_values ['url'] = unquote_plus (urlencode (urldict))
-            print "url after:", new_values ['url']
-    print "tmplate:", tmplate or 'index'
+            #print "url after:", new_values ['url']
+    #print "tmplate:", tmplate or 'index'
     return tmplate or 'index'
 # end def fix_url_and_template
 
