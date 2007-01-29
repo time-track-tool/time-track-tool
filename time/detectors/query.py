@@ -32,7 +32,7 @@
 #
 
 from cgi    import parse_qs
-from urllib import urlencode
+from urllib import urlencode, unquote_plus
 
 def fix_url_and_template (new_values, url) :
     tmplate = new_values.get ('tmplate')
@@ -44,12 +44,15 @@ def fix_url_and_template (new_values, url) :
         for k in '@:' :
             key = k + 'template'
             if key in urldict :
-                tmplate = tmplate or urldict [key]
+                tmplate = tmplate or urldict [key][0]
                 del urldict [key]
                 deleted = True
         if deleted :
-            new_values ['url'] = urlencode (urldict)
+            for k, v in urldict.iteritems () :
+                urldict [k] = ','.join (v)
+            new_values ['url'] = unquote_plus (urlencode (urldict))
             print "url after:", new_values ['url']
+    print "tmplate:", tmplate or 'index'
     return tmplate or 'index'
 # end def fix_url_and_template
 
@@ -61,7 +64,7 @@ def new_query (db, cl, nodeid, new_values) :
 def check_query (db, cl, nodeid, new_values) :
     url     = new_values.get       ('url', cl.get (nodeid, 'url'))
     tmplate = fix_url_and_template (new_values, url)
-    if 'template' in new_values and not new_values ['template'] :
+    if 'tmplate' in new_values and not new_values ['tmplate'] :
         new_values ['tmplate'] = tmplate
 # end def check_query
 
