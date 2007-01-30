@@ -115,7 +115,7 @@
    , 'time_wp_group'   : '@columns=id,name,description,wps&@sort=name&'
                          '@pagesize=20&@startwith=0'
    , 'tmplate'         : '@columns=id,name&@sort=name&@pagesize=20&@startwith=0'
-   , 'user'            : '@columns=%s&@sort=%s&'
+   , 'user'            : '@columns=%s%s&@sort=%s&'
                          '@filter=status&@pagesize=200&@startwith=0&status=1'
                           % ( ','.join
                               (n for n in 
@@ -130,6 +130,8 @@
                                )
                               if n in db._db.user.properties
                               )
+                            , ['', ',realname']
+                              ['lastname' not in db._db.user.properties]
                             , ['username', 'lastname']
                               ['lastname' in db._db.user.properties]
                             )
