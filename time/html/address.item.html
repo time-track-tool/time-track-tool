@@ -12,7 +12,7 @@
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
  </tal:block>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:content="Classname"></span>
+       tal:content="Classname"/>
  <tal:block metal:fill-slot="menu_slot">
    <tr tal:condition="context/id">
      <td class="sidebar" nowrap colspan="2"
@@ -134,16 +134,6 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname(classname, 'adr_type')"/>
-      <td tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
-       <span tal:content="structure context/adr_type/field"/>
-       <span tal:replace="structure python:db.adr_type.classhelp
-            ( properties='code,description'
-            , property='adr_type'
-            , filter='typecat=%s' % tc
-            , pagesize=500
-            , sort='code'
-            )"/>
-      </td>
       <th tal:content="structure python:utils.fieldname(classname, 'fax')"/>
       <td tal:content="structure context/fax/field"/>
      </tr>

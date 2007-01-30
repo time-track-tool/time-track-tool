@@ -28,6 +28,18 @@
  ; tplate_args     python: {}
  ; msg_box_height  python: 8
  ; may_remove_msgs python: False
+ ; typecat         python:
+   (   'adr_type_cat' in db._db.classes
+   and ','.join (db._db.adr_type_cat.getnodeids ())
+   )
+ ; abo_typecat     python:
+   (   'adr_type_cat' in db._db.classes
+   and db._db.adr_type_cat.lookup ('ABO')
+   )
+ ; abo_adrtype     python:
+   (   'adr_type_cat' in db._db.classes
+   and ','.join (db.adr_type.filter (filterspec = dict (typecat = abo_typecat)))
+   )
  ; default_queries python:
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
                          'end,subscriber.lastname,payer.lastname&'
@@ -38,14 +50,12 @@
    , 'address'         : '@action=search&@startwith=0&@pagesize=20&'
                          '@sort=id&@sortdir=on&@group=&'
                          '@columns=salutation,title,id,lastname,firstname,'
-                         'country,street,postalcode,city&valid=1&'
-                         'adr_type=ZFW&@search_text=&@queryname='
+                         'country,street,postalcode,city&valid=1'
+                         '%s&@search_text=&@queryname=' %
+                         ['', '&adr_type=%s' % abo_adrtype][bool (abo_adrtype)]
    , 'adr_type'        : '@action=search&@columns=id,code,description,typecat&'
                          '@sort=code&@filter=typecat&@pagesize=50&'
-                         '@startwith=0&typecat=%s' %
-                         (   'adr_type_cat' in db._db.classes
-                         and ','.join (db._db.adr_type_cat.getnodeids ())
-                         )
+                         '@startwith=0&typecat=%s' % typecat
    , 'alias'           : '@columns=name,alias_to_alias,alias_to_user&'
                          '@pagesize=500&@startwith=0'
    , 'cost_center'     : '@columns=organisation_id,cost_center_group_id'
