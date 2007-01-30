@@ -38,7 +38,9 @@
    )
  ; abo_adrtype     python:
    (   'adr_type_cat' in db._db.classes
-   and ','.join (db.adr_type.filter (filterspec = dict (typecat = abo_typecat)))
+   and ','.join (str (i) for i in
+                 db.adr_type.filter (filterspec = dict (typecat = abo_typecat))
+                )
    )
  ; default_queries python:
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
