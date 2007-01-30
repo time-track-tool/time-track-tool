@@ -38,7 +38,7 @@
    )
  ; abo_adrtype     python:
    (   'adr_type_cat' in db._db.classes
-   and ','.join (str (i) for i in
+   and ','.join (str (i.code) for i in
                  db.adr_type.filter (filterspec = dict (typecat = abo_typecat))
                 )
    )
