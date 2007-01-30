@@ -199,7 +199,7 @@ def new_user (db, cl, nodeid, new_values) :
     for i in 'firstname', 'lastname', 'org_location', 'department' :
         if i not in new_values and i in cl.properties :
             raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
-    if 'tt_lines' not in new_values :
+    if 'tt_lines' in cl.properties and 'tt_lines' not in new_values :
         new_values ['tt_lines'] = 1
 
     id    = nodeid
