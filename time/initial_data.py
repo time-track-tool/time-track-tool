@@ -459,3 +459,6 @@ if 'valid' in db.classes :
         ( name = uni ('gültig')
         , description = uni ('Gültige Adresse')
         )
+
+if 'adr_type_cat' in db.classes :
+    db.adr_type_cat.create (code = 'ABO', description = 'Laufende Abos')
