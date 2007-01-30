@@ -203,22 +203,24 @@ def security (db, ** kw) :
         ]
 
     classes = \
-        [ ("abo_price"         , ["User"],    ["Product"                  ])
-        , ("abo_type"          , ["User"],    ["Product", "Abo", "Invoice"])
-        , ("abo"               , ["User"],    ["Abo"                      ])
-        , ("address"           , ["User"],    ["User"                     ])
-        , ("adr_type"          , ["User"],    ["Type"                     ])
-        , ("adr_type_cat"      , ["User"],    ["Type"                     ])
-        , ("currency"          , ["User"],    ["Product"                  ])
-        , ("file"              , ["User"],    ["User"                     ])
-        , ("invoice_group"     , ["User"],    ["Invoice"                  ])
-        , ("invoice_template"  , ["User"],    ["Invoice"                  ])
-        , ("invoice"           , ["Invoice"], ["Invoice"                  ])
-        , ("letter"            , ["User"],    ["Abo"                      ])
-        , ("msg"               , ["User"],    ["User"                     ])
-        , ("query"             , ["User"],    ["User"                     ])
-        , ("tmplate"           , ["User"],    ["Abo", "Invoice"           ])
-        , ("valid"             , ["User"],    ["Admin"                    ])
+        [ ("abo_price"         , ["User"],    ["Product"])
+        , ("abo_type"          , ["Abo", "Product", "Invoice"],
+                                              ["Product", "Abo", "Invoice"])
+        , ("abo"               , ["Abo", "Product", "Invoice"],
+                                              ["Abo"])
+        , ("address"           , ["User"],    ["User"])
+        , ("adr_type"          , ["User"],    ["Type"])
+        , ("adr_type_cat"      , ["User"],    ["Type"])
+        , ("currency"          , ["User"],    ["Product"])
+        , ("file"              , ["User"],    ["User"])
+        , ("invoice_group"     , ["Invoice"], ["Invoice"])
+        , ("invoice_template"  , ["Invoice"], ["Invoice"])
+        , ("invoice"           , ["Invoice"], ["Invoice"])
+        , ("letter"            , ["User"],    ["Abo"])
+        , ("msg"               , ["User"],    ["User"])
+        , ("query"             , ["User"],    ["User"])
+        , ("tmplate"           , ["User"],    ["Abo", "Invoice"])
+        , ("valid"             , ["User"],    ["Admin"])
         ]
 
     schemadef.register_roles             (db, roles)
