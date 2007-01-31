@@ -154,7 +154,10 @@
       <td tal:content="structure context/valid/menu"/>
      </tr>
      <tr tal:condition="context/id">
-      <th tal:content="structure python:utils.fieldname(classname, 'abos')"/>
+      <th>
+       <span tal:condition="context/abos"
+             tal:content="structure python:utils.fieldname(classname, 'abos')"/>
+      </th>
       <td align="top">
        <table border="0" cellspacing="0" cellpadding="0">
         <tr tal:repeat="abo context/abos">
@@ -168,8 +171,11 @@
         </tr>
        </table>
       </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'payed_abos')"/>
+      <th>
+       <span tal:condition="context/payed_abos"
+             tal:content="structure python:utils.fieldname
+             (classname, 'payed_abos')"/>
+      </th>
       <td align="top">
        <table border="0" cellspacing="0" cellpadding="0">
         <tr tal:repeat="abo context/payed_abos">
