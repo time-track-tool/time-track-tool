@@ -65,6 +65,13 @@ def check_missing (db, cl, nodeid, new_values) :
 
 def lookalike_computation (db, cl, nodeid, new_values) :
     if 'firstname' in new_values or 'lastname' in new_values :
+        firstname = new_values.get ('firstname')
+        lastname  = new_values.get ('lastname')
+        if nodeid :
+            if not firstname :
+                firstname = cl.get (nodeid, 'firstname')
+            if not lastname :
+                lastname  = cl.get (nodeid, 'lastname')
         new_values ['lookalike_name'] = translate (firstname + ' ' + lastname)
 # end def lookalike_computation
 
