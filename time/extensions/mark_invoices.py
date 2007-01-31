@@ -23,18 +23,22 @@
 # $Id$
 
 from cStringIO                      import StringIO
+from os.path                        import splitext
+
 from roundup.cgi.actions            import Action
 from roundup.cgi                    import templating
 from roundup                        import hyperdb
 from roundup.date                   import Date, Interval
-from ooopy.OOoPy                    import OOoPy
-from ooopy.Transformer              import Transformer, autosuper
-from ooopy.Transforms               import renumber_all, get_meta, set_meta
 from roundup.cgi.exceptions         import Redirect
 from roundup.cgi.TranslationService import get_translation
-from os.path                        import splitext
 
-import ooopy.Transforms as Transforms
+try :
+    import ooopy.Transforms as Transforms
+    from ooopy.OOoPy                    import OOoPy
+    from ooopy.Transformer              import Transformer, autosuper
+    from ooopy.Transforms               import renumber_all, get_meta, set_meta
+except ImportError :
+    from rsclib.autosuper               import autosuper
 
 Reject = ValueError
 _      = None
