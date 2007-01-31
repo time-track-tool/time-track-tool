@@ -1,7 +1,7 @@
 #!/bin/sh
 
-TRACKER=/var/lib/tracker/todo
-BACKUPDIR=/var/lib/tracker/backup/todo
+TRACKER=/var/lib/tracker/address
+BACKUPDIR=/var/lib/tracker/backup/address
 ROUNDUP_ADMIN=/usr/local/bin/roundup-admin
 
 ### WARNING ###
@@ -17,7 +17,7 @@ ROUNDUP_ADMIN=/usr/local/bin/roundup-admin
 ### WARNING ###
 ### WARNING ###
 ### WARNING ###
-RESTORE=/var/lib/tracker/todo_restore
+RESTORE=/var/lib/tracker/adr_restore
 RESTOREPW="xyzzy"
 
 if [ ${TRACKER} == ${RESTORE} ] ; then
