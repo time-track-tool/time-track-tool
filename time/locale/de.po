@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-02-01 15:36+0100\n"
+"POT-Creation-Date: 2007-02-01 20:58+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -811,11 +811,17 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "card_type"
-msgstr "Kartentyp"
+msgid "Date of birth"
+msgstr "Geburtsdatum"
+
+msgid "born"
+msgstr "geboren am"
 
 msgid "Type of this %(Classname)s"
 msgstr "Typ für diese %(Classname)s"
+
+msgid "card_type"
+msgstr "Kartentyp"
 
 msgid "category"
 msgstr "Kategorie"
@@ -863,9 +869,9 @@ msgid ""
 "When this %(Classname)s was closed. Automatically set by\n"
 "             Roundup.\n"
 "          "
-msgstr
-"Zeitpunkt, wann dieses %(Classname)s geschlossen wurde. Wird "
-"automatisch vom System gesetzt"
+msgstr ""
+"Zeitpunkt, wann dieses %(Classname)s geschlossen wurde. Wird automatisch vom "
+"System gesetzt"
 
 msgid "code"
 msgstr "Code"
@@ -1219,6 +1225,12 @@ msgstr "Datum der Abschlussbesprechung für %(Classname)s"
 msgid "firstname"
 msgstr "Vorname"
 
+msgid "Date of first contact"
+msgstr "Datum des ersten Kontakts"
+
+msgid "first_date"
+msgstr "Erstkontakt"
+
 msgid "fixed_in"
 msgstr ""
 
@@ -1454,6 +1466,12 @@ msgstr "Klasse"
 
 msgid "Class for this query"
 msgstr "Klasse dieser Abfrage"
+
+msgid "Date of last contact"
+msgstr "Datum des letzten Kontakts (Ausscheidedatum)"
+
+msgid "last_date"
+msgstr "Letztkontakt"
 
 msgid "last_gid"
 msgstr ""
@@ -1759,8 +1777,8 @@ msgid ""
 "             maintained by the system\n"
 "         "
 msgstr ""
-"Beschreibt, ob diese %(Classname)s noch offen ist. Wird automatisch vom"
-" System verwaltet."
+"Beschreibt, ob diese %(Classname)s noch offen ist. Wird automatisch vom "
+"System verwaltet."
 
 msgid "opt_reviewers"
 msgstr ""
@@ -3591,3 +3609,6 @@ msgstr "Benutzerstatus"
 
 msgid "doc_num"
 msgstr ""
+
+msgid "legalclient"
+msgstr "Klient"

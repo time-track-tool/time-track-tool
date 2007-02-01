@@ -224,8 +224,8 @@ _helptext          = \
              of the given %(Classname)s
           '''
       ]
-    , ""'card_type'                   :
-      [""'''Type of this %(Classname)s''']
+    , ""'born'                        : [""'''Date of birth''']
+    , ""'card_type'                   : [""'''Type of this %(Classname)s''']
     , ""'category'                    :
       [ ""'''Category of %(Classname)s. Where this %(Classname)s belongs
              to. Each category has a Category-Responsible who is
@@ -445,6 +445,7 @@ _helptext          = \
       , date_text
       ]
     , ""'firstname'                   : [firstname]
+    , ""'first_date'                  : [ ""'''Date of first contact''']
     , ""'fixed_in'                    :
       [ ""'''Provide the version number where you fixed it. Is needed
              when you change the status to testing.
@@ -564,6 +565,7 @@ _helptext          = \
       ]
     , ""'klass'                       :
       [""'''Class for this query''']
+    , ""'last_date'                   : [ ""'''Date of last contact''']
     , ""'last_gid'                    :
       [""'''Last used gid in this %(Classname)s''']
     , ""'last_machine_uid'            :
