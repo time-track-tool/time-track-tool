@@ -200,7 +200,7 @@ _helptext          = \
     , ""'announcements'               :
       [""'''Announcements for this %(Classname)s''']
     , ""'area'                        :
-      [""'''Where this issue belongs to.'''
+      [ ""'''Where this issue belongs to.'''
       , miss_text
       ]
     , ""'author'                      :
@@ -236,10 +236,10 @@ _helptext          = \
       , leave_empty
       ]
     , ""'cert_sw'                     :
-      [""'''Mark this %(Classname)s as being certifyable software.
-            Certifyable software needs special handling, e.g., requires that
-            some fields like "Files affected" are filled in.
-         '''
+      [ ""'''Mark this %(Classname)s as being certifyable software.
+             Certifyable software needs special handling, e.g., requires that
+             some fields like "Files affected" are filled in.
+          '''
       ]
     , ""'city'                        :
       [""'''City where this person lives''']
@@ -251,18 +251,18 @@ _helptext          = \
           '''
       ]
     , ""'closed'                      :
-      [""'''When this %(Classname)s was closed. Automatically set by
-            Roundup.
-         '''
+      [ ""'''When this %(Classname)s was closed. Automatically set by
+             Roundup.
+          '''
       ]
     , ""'code'                        :
       [""'''Code of this %(Classname)s''']
     , ""'company'                     :
       [""'''Company for %(Classname)s''']
     , ""'composed_of'                 :
-      [""'''Set automagically by roundup on %(Classname)ss being Part of
-            another %(Classname)s.
-         '''
+      [ ""'''Set automagically by roundup on %(Classname)ss being Part of
+             another %(Classname)s.
+          '''
       ]
     , ""'composed_of.id'              : [help_id]
     , ""'confirm'                     :
@@ -301,14 +301,14 @@ _helptext          = \
     , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
     , ""'depends'                     :
-      [""'''A comma seperated list of %(Classname)s IDs this
-            %(Classname)s depends on. This information is used for the
-            planning process and should only contain the IDs of the
-            issues this issue needs in order to be worked on, e.g., we
-            actually need a specification before we can start to work on
-            it. If you have some dependencies here, the depending
-            %(Classname)ss are hyperlinked.
-         '''
+      [ ""'''A comma seperated list of %(Classname)s IDs this
+             %(Classname)s depends on. This information is used for the
+             planning process and should only contain the IDs of the
+             issues this issue needs in order to be worked on, e.g., we
+             actually need a specification before we can start to work on
+             it. If you have some dependencies here, the depending
+             %(Classname)ss are hyperlinked.
+          '''
       ]
     , ""'depends.id'                  : [help_id]
     , ""'deputy'                      :
@@ -316,11 +316,11 @@ _helptext          = \
     , ""'description'                 :
       [""'''Verbose description of %(Classname)s''']
     , ""'dhcp_range'                  :
-      [""'''Range of dynamic IP addresses for %(Classname)s -- used
-            when generating DHCP configuration. Format: Two IP addresses in
-            dot notation separated by a dot. Example:
-            10.100.99.20&nbsp;10.100.99.250
-         '''
+      [ ""'''Range of dynamic IP addresses for %(Classname)s -- used
+             when generating DHCP configuration. Format: Two IP addresses in
+             dot notation separated by a dot. Example:
+             10.100.99.20&nbsp;10.100.99.250
+          '''
       ]
     , ""'dhcp_server'                 :
       [""'''DHCP Server for this %(Classname)s''']
@@ -379,10 +379,10 @@ _helptext          = \
           '''
       ]
     , ""'earliest_start'              :
-      [""'''When this %(Classname)s can be started to work on. Used to
-            specify external dependencies (e.g., availability of
-            hardware). 
-         '''
+      [ ""'''When this %(Classname)s can be started to work on. Used to
+             specify external dependencies (e.g., availability of
+             hardware). 
+          '''
       ]
     , ""'effort'                      :
       [ ""'''The estimated effort this work package has. This should be
@@ -423,22 +423,22 @@ _helptext          = \
     , ""'files'                       :
       [""'''Files for %(Classname)s''']
     , ""'files_affected'              :
-      [""'''The %(Property)s entry field is used to identify which
-            file(s) has/have been changed during the modifications
-            requested by the current issue, containing the unique
-            filename and path and the new version. The CVS output from
-            the command *VCFiltered_Commit* shall be used to fill in
-            this field!
-
-            Example: Consider changed files *os_start.c*, *os_start.h*,
-            and *os_version.c* in *projects/SW/external/ttpos/src/os*,
-            resulting in *TTP-OS Version 4.5.23*. The entry to
-            %(Property)s shall look like::
-
-             VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c
-             VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h
-             VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version.c
-         '''
+      [ ""'''The %(Property)s entry field is used to identify which
+             file(s) has/have been changed during the modifications
+             requested by the current issue, containing the unique
+             filename and path and the new version. The CVS output from
+             the command *VCFiltered_Commit* shall be used to fill in
+             this field!
+ 
+             Example: Consider changed files *os_start.c*, *os_start.h*,
+             and *os_version.c* in *projects/SW/external/ttpos/src/os*,
+             resulting in *TTP-OS Version 4.5.23*. The entry to
+             %(Property)s shall look like::
+ 
+              VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c
+              VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h
+              VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version.c
+          '''
       ]
     , ""'final_meeting_date'          :
       [ ""'''Date of final meeting for this %(Classname)s.'''
@@ -446,19 +446,25 @@ _helptext          = \
       ]
     , ""'firstname'                   : [firstname]
     , ""'fixed_in'                    :
-      [""'''Provide the version number where you fixed it. Is needed
-            when you change the status to testing.
-            The %(Property)s field contains the build version of the
-            complete artefact. In the Example from Files affected the
-            entry for %(Property)s shall look like::
-      
-              TTP-OS 4.5.23
-         '''
+      [ ""'''Provide the version number where you fixed it. Is needed
+             when you change the status to testing.
+             The %(Property)s field contains the build version of the
+             complete artefact. In the Example from Files affected the
+             entry for %(Property)s shall look like::
+       
+               TTP-OS 4.5.23
+          '''
+      ]
+    , ""'frozen'              :
+      [ ""'''If this is set to "yes", all time records up to this date
+             as well as the dynamic user data up to this date cannot be
+             changed any more.
+          '''
       ]
     , ""'function'            :
-      [""'''Multiline field for this %(Classname)s, will be printed on an
-           address label
-        '''
+      [ ""'''Multiline field for this %(Classname)s, will be printed on an
+            address label
+         '''
       ]
     , ""'gid'                         :
       [""'''Numeric group ID''']
@@ -487,10 +493,10 @@ _helptext          = \
       , extension
       ]
     , ""'interval'                    :
-      [""'''Interval for sending out an invoice in months. If the
-           invoice_level is non-zero, the distance in months since the
-           last invoice sent.
-        '''
+      [ ""'''Interval for sending out an invoice in months. If the
+            invoice_level is non-zero, the distance in months since the
+            last invoice sent.
+         '''
       ]
     , ""'inventory_no'                :
       [ ""'''Unique number or name for this %(Classname)s, preferrably the
@@ -502,9 +508,9 @@ _helptext          = \
     , ""'invoice_group'               :
       [""'''Link to invoice_group for this %(Classname)s''']
     , ""'invoice_level'               :
-      [""'''When the customer has received more invoices than this number
-           indicates, an invoice of this type is sent.
-        '''
+      [ ""'''When the customer has received more invoices than this number
+            indicates, an invoice of this type is sent.
+         '''
       ]
     , ""'invoice_no'                  :
       [""'''Unique number for this invoice, generated by the system''']
@@ -521,10 +527,10 @@ _helptext          = \
     , ""'is_lotus_user'               :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
     , ""'is_public_holiday'           :
-      [""'''Flag for public holiday %(Classname)s -- set this if you
-            want work packages of this %(Classname)s to be used in
-            automatic public holiday computation.
-         '''
+      [ ""'''Flag for public holiday %(Classname)s -- set this if you
+             want work packages of this %(Classname)s to be used in
+             automatic public holiday computation.
+          '''
       ]
     , ""'issue++deadline'             :
       [ deadline
@@ -547,14 +553,14 @@ _helptext          = \
     , ""'keywords'                    :
       [keywords]
     , ""'kind'                        :
-      [""'''What this issue actually is. Be sure to exactly distinguish
-            between what is actually a Bug (it is not working as
-            expected) and a Change-Request!
-            Kind "Action Item" identifies a task or activity that is
-            not directly related to a product or workpackage, it is used
-            for planning purpose. e.g. "Create the SRD for this
-            feature"
-         '''
+      [ ""'''What this issue actually is. Be sure to exactly distinguish
+             between what is actually a Bug (it is not working as
+             expected) and a Change-Request!
+             Kind "Action Item" identifies a task or activity that is
+             not directly related to a product or workpackage, it is used
+             for planning purpose. e.g. "Create the SRD for this
+             feature"
+          '''
       ]
     , ""'klass'                       :
       [""'''Class for this query''']
@@ -623,15 +629,20 @@ _helptext          = \
     , ""'messageid'                   :
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                    :
-      [""'''List of messages for %(Classname)s.'''
-      ,""''' Note that during
-            conversion from the old roundup tracker all existing
-            messages numbered 1-73815 were renumbered with an offset of
-            3287 resulting in the message range 3288-77102 in the
-            current tracker. All messages or other documentation
-            referring to message numbers in the range 1-73815 will need
-            to consider this offset.
-         '''
+      [ ""'''List of messages for %(Classname)s.'''
+      , ""''' Note that during
+             conversion from the old roundup tracker all existing
+             messages numbered 1-73815 were renumbered with an offset of
+             3287 resulting in the message range 3288-77102 in the
+             current tracker. All messages or other documentation
+             referring to message numbers in the range 1-73815 will need
+             to consider this offset.
+          '''
+      ]
+    , ""'month_balance'               :
+      [ ""'''Shows the overtime or flexitime balance at the last
+             month-end before (or on) the selected date.
+          '''
       ]
     , ""'msg'                         :
       [""'''New message or notice for %(Classname)s''']
@@ -682,10 +693,10 @@ _helptext          = \
     , ""'nickname'                    :
       [""'''Nickname (or short name) for this %(Classname)s, e.g., rsc''']
     , ""'no_overtime'                 :
-      [""'''This flag makes sure that not more than the employee\'s
-            normal working time can be registered under this
-            %(Classname)s
-         '''
+      [ ""'''This flag makes sure that not more than the employee\'s
+             normal working time can be registered under this
+             %(Classname)s
+          '''
       ]
     , ""'nosy'                        :
       [""'''People receiving announcements (messages) for %(Classname)s''']
@@ -695,9 +706,9 @@ _helptext          = \
           '''
       ]
     , ""'open'                        :
-      [""'''Indicates if this %(Classname)s is still open. Automatically
-            maintained by the system
-        '''
+      [ ""'''Indicates if this %(Classname)s is still open. Automatically
+             maintained by the system
+         '''
       ]
     , ""'opt_reviewers'               :
       [""'''Optional reviewers for this %(Classname)s''']
@@ -725,14 +736,14 @@ _helptext          = \
     , ""'overtime_period'             :
       [""'''Period over which overtime is computed for a person''']
     , ""'part_of'                     :
-      [""'''If you have a Top-Level work package which consists of other
-            work packages, you should enter the parent work package
-            here. This information is needed for the planning process in
-            order to define what %(Classname)ss compose a larger
-            project, e.g., Define one Top-Level work package Some New
-            Feature which is composed of Design, Build Hardware, Write
-            Software, Put all parts together, and Test.
-         '''
+      [ ""'''If you have a Top-Level work package which consists of other
+             work packages, you should enter the parent work package
+             here. This information is needed for the planning process in
+             order to define what %(Classname)ss compose a larger
+             project, e.g., Define one Top-Level work package Some New
+             Feature which is composed of Design, Build Hardware, Write
+             Software, Put all parts together, and Test.
+          '''
       ]
     , ""'part_of.id'                  : [help_id]
     , ""'password'                    :
@@ -1024,36 +1035,36 @@ _helptext          = \
     , ""'summary_report++cost_center' : [explicit]
     , ""'summary_report++cost_center_group' : [explicit]
     , ""'summary_report++date'        :
-      [""'''please specify the date in this format:
-            "YYYY-MM-DD;YYYY-MM-DD". The ";" means "to" ("bis" in
-            german).  For today (heute) use ".". Example: March
-            2006 is specified as "2006-03-01;2006-03-31". From the
-            beginning of 2006 until now would be "2006-01-01;.". If you
-            need the sum of the chosen period select Summary Type
-            "range".
-         '''
+      [ ""'''please specify the date in this format:
+             "YYYY-MM-DD;YYYY-MM-DD". The ";" means "to" ("bis" in
+             german).  For today (heute) use ".". Example: March
+             2006 is specified as "2006-03-01;2006-03-31". From the
+             beginning of 2006 until now would be "2006-01-01;.". If you
+             need the sum of the chosen period select Summary Type
+             "range".
+          '''
       ]
     , ""'summary_report++department'  :
-      [""'''Selects the users according to their placement in a
-            department
-         '''
+      [ ""'''Selects the users according to their placement in a
+             department
+          '''
       ]
     , ""'summary_report++status'      :
-      [""'''If you choose "open, submitted and approved" yellow times
-            will be those that have not yet been opened by the user.
-            Empty but already opened time records will not be displayed
-            in yellow. If you choose open, all other time records
-            (submitted and approved as well as not yet opened time
-            records) are displayed in yellow. If you choose submitted
-            all time records that are not submitted (but maybe open or
-            approved) are displayed in yellow. If you choose approved
-            not approved times turn yellow.
-         '''
+      [ ""'''If you choose "open, submitted and approved" yellow times
+             will be those that have not yet been opened by the user.
+             Empty but already opened time records will not be displayed
+             in yellow. If you choose open, all other time records
+             (submitted and approved as well as not yet opened time
+             records) are displayed in yellow. If you choose submitted
+             all time records that are not submitted (but maybe open or
+             approved) are displayed in yellow. If you choose approved
+             not approved times turn yellow.
+          '''
       ]
     , ""'summary_report++summary_type':
-      [""'''You can form sums over weeks, months and the whole time
-            range you have selected.
-         '''
+      [ ""'''You can form sums over weeks, months and the whole time
+             range you have selected.
+          '''
       ]
     , ""'summary_report++supervisor'  :
       [""'''Selects the users of the chosen supervisor(s)''']
@@ -1062,10 +1073,10 @@ _helptext          = \
       [""'''Select individual work packages here.''']
     , ""'summary_report++time_wp_group': [explicit]
     , ""'summary_report++user'        :
-      [""'''You will only see users for whom you have permission or the
-            project times for projects you have permission for (via
-            responsible, deputy or nosy)
-         '''
+      [ ""'''You will only see users for whom you have permission or the
+             project times for projects you have permission for (via
+             responsible, deputy or nosy)
+          '''
       ]
     , ""'superior'                    :
       [""'''Supervisor for %(Classname)s''']
@@ -1119,11 +1130,11 @@ _helptext          = \
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
-      [""'''Should be an intuitive one-line description of the %(Classname)s.
-            Since titles of Roundup issues are also extracted into SCI
-            documents, start with a capital letter, and type all other
-            letters in lowercase, except names and references.
-         '''
+      [ ""'''Should be an intuitive one-line description of the %(Classname)s.
+             Since titles of Roundup issues are also extracted into SCI
+             documents, start with a capital letter, and type all other
+             letters in lowercase, except names and references.
+          '''
       ]
     , ""'tmplate'                     :
       [ ""'''Used for writing letters (and invoices if selected as an
@@ -1147,10 +1158,10 @@ _helptext          = \
           '''
       ]
     , ""'tt_lines'                    :
-      [""'''Number of new lines (per day) in time-tracker (minimum: 1,
-            maximum: 5). This is not yet working, the logic behind it is
-            not yet implemented. See also it_issue884.
-         '''
+      [ ""'''Number of new lines (per day) in time-tracker (minimum: 1,
+             maximum: 5). This is not yet working, the logic behind it is
+             not yet implemented. See also it_issue884.
+          '''
       ]
     , ""'type'                        :
       [""'''Mime type of this file''']
@@ -1173,6 +1184,17 @@ _helptext          = \
       [ ""'''This %(Classname)s should be used with Lotus Notes (e.g.,
              no delivery to a program, etc. that is only possible with
              a real MTA)
+          '''
+      ]
+    , ""'user'                        :
+      [ ""'''When creating new freeze-records: Please select the user
+             whose time record you want to freeze
+             (with "submit changes") or the supervisor whose team you
+             want to freeze (with "Freeze team").  Freezing a team means
+             freezing all users whose direct supervisor is the selected
+             user at the moment. If you select a date and press "Freeze
+             all", the time records of all users up to the selected date
+             will be frozen.
           '''
       ]
     , ""'user_dynamic++durations_allowed' : [durations]
@@ -1223,12 +1245,17 @@ _helptext          = \
              week number for that year.
           '''
       ]
+    , ""'week_balance'                :
+      [ ""'''Shows the overtime or flexitime balance at the last sunday
+             before (or on) the selected date.
+          '''
+      ]
     , ""'weekend_allowed'             :
       [""'''Flag if booking on weekends is allowed for this %(Classname)s.''']
     , ""'daily_record++weekend_allowed' :
-      [""'''Admits user to book work or travel time on this
-            weekend-day; should always be preapproved by supervisor.
-         '''
+      [ ""'''Admits user to book work or travel time on this
+             weekend-day; should always be preapproved by supervisor.
+          '''
       ]
     , ""'weekly_hours'                :
       [""'''Expected weekly work-time for %(Classname)s.''']
@@ -1261,6 +1288,11 @@ _helptext          = \
       , ""''' If a value is given here, the work location will be
              corrected for all time records booked on work packages of
              this project.
+          '''
+      ]
+    , ""'year_balance'                :
+      [ ""'''Shows the overtime or flexitime balance at the last
+             year-end before (or on) the selected date.
           '''
       ]
     }

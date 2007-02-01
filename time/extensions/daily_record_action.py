@@ -601,7 +601,7 @@ class Freeze_Action (Action, autosuper) :
     def handle (self) :
         if not self.request.form ['date'].value :
             raise Reject, _ ("Date is required")
-        self.date  = Date (request.form ['date'].value)
+        self.date  = Date (self.request.form ['date'].value)
         msg = []
         for u in self.users :
             dyn = get_user_dynamic (self.db, u, self.date)
@@ -653,6 +653,8 @@ class Freeze_Action (Action, autosuper) :
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
         self.request = templating.HTMLRequest (self.client)
+        if 'user' in self.request.form :
+            raise Reject, _ ('''Don't specify a user for "Freeze all"''')
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle

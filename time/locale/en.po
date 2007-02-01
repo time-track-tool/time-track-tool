@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-01-29 12:26+0100\n"
+"POT-Creation-Date: 2007-02-01 15:03+0100\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -93,6 +93,9 @@ msgstr ""
 
 #, python-format
 msgid "%(attr)s must be set"
+msgstr ""
+
+msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
 
 #, python-format
@@ -2963,6 +2966,12 @@ msgstr ""
 msgid "Valid on"
 msgstr ""
 
+msgid "Freeze all"
+msgstr ""
+
+msgid "Freeze team"
+msgstr ""
+
 msgid "Welcome"
 msgstr ""
 
@@ -3247,16 +3256,16 @@ msgid "daily_record_freeze"
 msgstr "Daily Record freeze"
 
 msgid "month_balance"
-msgstr ""
+msgstr "Month balance"
 
 msgid "frozen"
 msgstr ""
 
 msgid "year_balance"
-msgstr ""
+msgstr "Year balance"
 
 msgid "week_balance"
-msgstr ""
+msgstr "Week balance"
 
 msgid "comment"
 msgstr "Comment"

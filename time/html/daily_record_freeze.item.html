@@ -69,7 +69,7 @@
          , editable = not context.id
          ).as_listentry (as_link = False)"/>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
             (classname, 'week_balance')"/>
       <td tal:content="structure python:context.week_balance.field ()"/>
@@ -79,7 +79,7 @@
         <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
       </tal:block>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
             (classname, 'month_balance')"/>
       <td tal:content="structure python:context.month_balance.field ()"/>
@@ -89,7 +89,7 @@
         <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
       </tal:block>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
             (classname, 'year_balance')"/>
       <td tal:content="structure python:context.year_balance.field ()"/>
@@ -105,10 +105,11 @@
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="button_slot">
-     <input tal:condition="not:context/id" type="button" value="Freeze all"
+     <input tal:condition="not:context/id" i18n:attributes="value"
+            type="button" value="Freeze all"
             tal:attributes="onClick python:utils.freeze_all_script ()">
-     <input tal:condition="not:context/id" type="button"
-            value="Freeze supervisor"
+     <input tal:condition="not:context/id" i18n:attributes="value"
+            type="button" value="Freeze team"
             tal:attributes="onClick python:utils.freeze_supervisor_script ()">
     </tal:block>
    </tal:block>

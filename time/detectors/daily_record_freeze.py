@@ -68,6 +68,8 @@ def new_freeze_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
     date = new_values ['date']
     user = new_values ['user']
+    if date >= Date ('.-10d') :
+        raise Reject, _ ("Freezing only for dates >= 10 days in the past")
     date.hour = date.minute = date.second = 0
     if 'frozen' not in new_values :
         new_values ['frozen'] = True
@@ -99,11 +101,14 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     check_editable (db, cl, nodeid, new_values, date = date + day)
     old_frozen = cl.get (nodeid, 'frozen')
     new_frozen = new_values.get ('frozen', old_frozen)
-    if new_frozen != old_frozen and new_frozen :
+    freezing   = new_frozen != old_frozen and new_frozen
+    if freezing :
         check_thawed_records (db, user, date)
     for p in periods :
         attr = p + '_balance'
-        if attr in new_values and new_values [attr] is None :
+        if  (  attr in new_values and new_values [attr] is None
+            or freezing and attr not in new_values
+            ) :
             new_values [attr] = compute_balance \
                 (db, user, date, p, not_after = True)
 # end def check_freeze_record

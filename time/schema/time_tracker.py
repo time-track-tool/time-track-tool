@@ -314,7 +314,7 @@ def security (db, ** kw) :
         , ("user_dynamic"        , ["HR"],               [])
         , ("work_location"       , ["User"],             ["Controlling"])
         , ("overtime_correction" , ["HR","Controlling"], [])
-        , ("daily_record_freeze" , ["HR","Controlling"], [])
+        , ("daily_record_freeze" , ["HR","Controlling"], ["Admin"])
         , ("overtime_period" ,     ["User"],             ["Admin"])
         ]
 
@@ -545,8 +545,7 @@ def security (db, ** kw) :
         , klass       = 'daily_record_freeze'
         , check       = dr_freeze_last_frozen
         , description = dr_freeze_last_frozen.__doc__
-        , properties  = 
-            ('frozen', 'week_balance', 'month_balance', 'year_balance')
+        , properties  = ('frozen',)
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'daily_record_freeze')
