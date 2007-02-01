@@ -749,7 +749,8 @@
 </tal:block>
 
 <tal:block metal:define-macro="note_required">
- <table class="form" tal:condition="not:context/id">
+ <table class="form" tal:condition="python:
+        not context.id and context.is_edit_ok ()">
  <tr>
   <td i18n:translate="">Note:&nbsp;</td>
   <th class="required" i18n:translate="">highlighted</th>

@@ -65,9 +65,8 @@
 <p></p>
 
 <form method="POST" onSubmit="return submit_once()"
-      enctype="multipart/form-data" tal:condition="context/is_view_ok"
-      tal:attributes="action context/designator"
-      name="itemSynopsis">
+      enctype="multipart/form-data" tal:attributes="action context/designator"
+      tal:condition="context/is_edit_ok" name="itemSynopsis">
 
 <input type="hidden" name="@template" value="item">
 
