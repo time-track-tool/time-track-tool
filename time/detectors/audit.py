@@ -223,6 +223,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
 
     # Check if the `fixed_in` field is filled in when moving to `testing`.
     if  (   new_status_name in ("testing", "closed")
+        and new_status_name != cur_status_name
         and not fixed
         and kind_name not in ('Mistaken', 'Obsolete')
         and not superseder
