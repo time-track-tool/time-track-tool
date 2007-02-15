@@ -650,8 +650,9 @@
    <tr tal:condition="context/is_edit_ok">
     <th></th>
     <td colspan="3">
-     <tal:block metal:define-slot="button_slot"/>
-     <tal:block tal:replace="structure context/submit"/>
+     <tal:block metal:define-slot="button_slot">
+         <tal:block tal:replace="structure context/submit"/>
+     </tal:block>
      <input tal:condition="context/id"
             type="button" value="Show History"
             i18n:attributes="value"

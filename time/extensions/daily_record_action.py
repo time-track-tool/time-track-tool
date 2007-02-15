@@ -154,6 +154,15 @@ def freeze_supervisor_script () :
         '''
 # end def freeze_supervisor_script
 
+def freeze_user_script () :
+     return \
+        '''javascript:if(submit_once()){
+            document.forms.itemSynopsis ['@action'].value = 'freeze_user';
+            document.itemSynopsis.submit ();
+           }
+        '''
+# end def freeze_user_script
+
 def time_url (request, classname) :
     url = 'daily_record?:action=daily_record_action&:template=edit'
     if  (   classname == 'daily_record'
@@ -598,17 +607,38 @@ def dynuser_half_frozen (db, dyn) :
 # end def dynuser_half_frozen
 
 class Freeze_Action (Action, autosuper) :
+
+    user_required_msg = ''"User is required"
+    user_invalid_msg  = ''"Invalid User"
+    def get_user (self) :
+        self.request = templating.HTMLRequest (self.client)
+        user         = self.request.form ['user'].value
+        if not user :
+            raise Reject, _ (self.user_required_msg)
+        try :
+            self.user = self.db.user.lookup (user)
+        except KeyError :
+            raise Reject, _ (self.user_invalid_msg)
+        return self.user
+    # end def get_user
+
     def handle (self) :
         if not self.request.form ['date'].value :
             raise Reject, _ ("Date is required")
         self.date  = Date (self.request.form ['date'].value)
         msg = []
+        print "USERS:", self.users
         for u in self.users :
-            dyn = get_user_dynamic (self.db, u, self.date)
+            date = self.date
+            dyn  = get_user_dynamic (self.db, u, date)
+            if not dyn :
+                dyn = last_user_dynamic (self.db, u)
+                if dyn :
+                    date = dyn.valid_to - day
             if dyn :
                 try :
                     self.db.daily_record_freeze.create \
-                        (date = self.date, user = u, frozen = 1)
+                        (date = date, user = u, frozen = 1)
                 except Reject, cause :
                     msg.append ((str (cause), u))
         self.db.commit ()
@@ -643,9 +673,9 @@ class Freeze_Action (Action, autosuper) :
             + msg
             + ':columns=id,date,user,frozen,'
             + 'week_balance,month_balance,year_balance'
-            + '&:sort=user,date&:filter=date'
-            + '&:pagesize=200&:startwith=0&date=%s'
-            ) % self.date
+            + '&:sort=user,date&:filter=creation'
+            + '&:pagesize=200&:startwith=0&creation=%s%%3B'
+            ) % (Date ('.') - Interval ('00:05'))
         raise Redirect, url
     # end def handle
 # end class Freeze_Action
@@ -660,17 +690,19 @@ class Freeze_All_Action (Freeze_Action) :
     # end def handle
 # end class Freeze_All_Action
 
-class Freeze_Supervisor_Action (Freeze_Action) :
+class Freeze_User_Action (Freeze_Action) :
     def handle (self) :
-        self.request = templating.HTMLRequest (self.client)
-        user         = self.request.form ['user'].value
-        if not user :
-            raise Reject, _ ("Supervisor (in User field) is required")
-        try :
-            user   = self.db.user.lookup (user)
-        except KeyError :
-            raise Reject, _ ("Invalid Supervisor")
-        self.users = self.db.user.filter (None, dict (supervisor = user))
+        self.users = [self.get_user ()]
+        return self.__super.handle ()
+    # end def handle
+# end class Freeze_User_Action
+
+class Freeze_Supervisor_Action (Freeze_Action) :
+    user_required_msg = ''"Supervisor (in User field) is required"
+    user_invalid_msg  = ''"Invalid Supervisor"
+    def handle (self) :
+        self.get_user ()
+        self.users = self.db.user.filter (None, dict (supervisor = self.user))
         return self.__super.handle ()
     # end def handle
 # end class Freeze_Supervisor_Action
@@ -735,6 +767,7 @@ def init (instance) :
     actn ('weekno_action',            Weekno_Action)
     actn ('freeze_all',               Freeze_All_Action)
     actn ('freeze_supervisor',        Freeze_Supervisor_Action)
+    actn ('freeze_user',              Freeze_User_Action)
     actn ('split_dynamic_user',       Split_Dynamic_User_Action)
     actn ('searchwithtemplate',       SearchActionWithTemplate)
     util = instance.registerUtil
@@ -749,6 +782,7 @@ def init (instance) :
     util ("is_end_of_week",           is_end_of_week)
     util ("freeze_all_script",        freeze_all_script)
     util ("freeze_supervisor_script", freeze_supervisor_script)
+    util ("freeze_user_script",       freeze_user_script)
     util ("frozen",                   frozen)
     util ("range_frozen",             range_frozen)
     util ("time_url",                 time_url)

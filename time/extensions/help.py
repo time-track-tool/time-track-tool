@@ -1191,7 +1191,7 @@ _helptext          = \
     , ""'user'                        :
       [ ""'''When creating new freeze-records: Please select the user
              whose time record you want to freeze
-             (with "submit changes") or the supervisor whose team you
+             (with "Freeze user") or the supervisor whose team you
              want to freeze (with "Freeze team").  Freezing a team means
              freezing all users whose direct supervisor is the selected
              user at the moment. If you select a date and press "Freeze

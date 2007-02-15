@@ -106,11 +106,11 @@ def check_freeze_record (db, cl, nodeid, new_values) :
         check_thawed_records (db, user, date)
     for p in periods :
         attr = p + '_balance'
-        if  (  attr in new_values and new_values [attr] is None
-            or freezing and attr not in new_values
-            ) :
+        if  freezing :
             new_values [attr] = compute_balance \
                 (db, user, date, p, not_after = True)
+        else :
+            new_values [attr] = None
 # end def check_freeze_record
 
 def check_overtime (db, cl, nodeid, new_values) :
