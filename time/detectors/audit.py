@@ -55,14 +55,16 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     kind        = newvalues.get ("kind",        None)
     responsible = newvalues.get ("responsible", None)
     msg         = newvalues.get ("messages",    None)
+    severity    = newvalues.get ("severity",    None)
 
-    # Ensure that `title`, `category`, `area`, `kind`, and `message` are set.
     if not category :
         category = newvalues ['category'] = db.category.lookup ('pending')
     if not area :
         area     = newvalues ['area']     = db.area.lookup ('SW')
     if not kind :
         kind     = newvalues ['kind']     = db.kind.lookup ('Bug')
+    if not severity :
+        severity = newvalues ['severity'] = db.severity.lookup ('Minor')
     if not title :
         raise Reject, '[%s] You must enter a "title".' % nodeid
     if not msg :
@@ -70,16 +72,6 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
                         "`message`."
                       % nodeid
                       )
-
-    # For IT issues in category 'helpdesk-it' we want them to be part_of
-    # issue 11600 automagically. We can't do this in the email gateway
-    # due to a bug in the installed version of roundup, so we do it
-    # here.
-    
-    if  (   category == db.category.lookup ('helpdesk-it')
-        and not newvalues.has_key ('part_of')
-        ) :
-        newvalues ['part_of'] = '11600'
 
     # Set `responsible` to the category's responsible.
     if not responsible :
@@ -122,12 +114,19 @@ def check_effort (newvalues) :
 def may_not_vanish (db, cl, nodeid, newvalues) :
     """Ensure that certain fields do not vanish.
     """
-    for k in 'title', 'category', 'area', 'kind', 'responsible', 'effort' :
+    for k in \
+        ( 'title'
+        , 'category'
+        , 'area'
+        , 'kind'
+        , 'responsible'
+        , 'effort'
+        , 'severity'
+        ) :
         old = cl.get (nodeid, k)
         new = newvalues.get (k, old)
         if new != old and not new :
-            raise Reject, \
-                _ ('The field "%s" must must remain filled.') % _ (k)
+            raise Reject, _ ('The field "%s" must remain filled.') % _ (k)
 # end def may_not_vanish
 
 def limit_transitions (db, cl, nodeid, newvalues) :
@@ -152,6 +151,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         ("files_affected", cl.get (nodeid, "files_affected"))
     effort          = newvalues.get ("effort", cl.get (nodeid, "effort"))
     msg             = newvalues.get ("messages", None)
+    severity        = newvalues.get ("severity", cl.get (nodeid, "severity"))
 
     ############ complete the form ############
 
@@ -221,18 +221,27 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                       % nodeid
                       )
 
-    # Check if the `fixed_in` field is filled in when moving to `testing`.
-    if  (   new_status_name in ("testing", "closed")
-        and new_status_name != cur_status_name
-        and not fixed
+    if  (   new_status_name != cur_status_name
         and kind_name not in ('Mistaken', 'Obsolete')
         and not superseder
         and not is_container
         ) :
-        raise Reject, ( "[%s] The 'fixed_in' field must be set for "
-                        "a transition to 'testing' or 'closed'."
-                      % nodeid
-                      )
+        # Check if the `fixed_in` field is filled in when moving to
+        # `testing` or `closed`.
+        if not fixed and new_status_name in ("testing", "closed") :
+            raise Reject, ( "[%s] The 'fixed_in' field must be set for "
+                            "a transition to 'testing' or 'closed'."
+                          % nodeid
+                          )
+        if not severity :
+            raise Reject, ( "[%s] The 'severity' field must be set for "
+                            "this transition"
+                          % nodeid
+                          )
+        if category.name == 'pending' :
+            raise Reject, ( "[%s] No status change for category 'pending'"
+                          % nodeid
+                          )
 
     # Check that fixed_in does not contain illegal pattern
     if 'fixed_in' in newvalues and fixed :
