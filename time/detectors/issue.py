@@ -118,7 +118,9 @@ def update_container_status (db, cl, id, new_values = {}) :
 
 def status_updated (db, cl, nodeid, old_values) :
     parent = cl.get (nodeid, 'part_of')
-    if parent and 'status' in old_values :
+    if  (   parent and 'status' in old_values
+        and old_values ['status'] != cl.get (nodeid, 'status')
+        ) :
         update_container_status (db, cl, parent)
 # end def status_updated
 
