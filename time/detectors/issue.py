@@ -75,8 +75,11 @@ def update_eff_prio (db, cl, nodeid, new_values) :
 # end def update_eff_prio
 
 def update_children (db, cl, nodeid, old_values) :
-    if 'effective_prio' in old_values :
+    if  (   'effective_prio' in old_values
+        and old_values ['effective_prio'] != cl.get (nodeid, 'effective_prio')
+        ) :
         #print "update_children:", old_values ['effective_prio']
+        #print "update_children:", cl.get (nodeid, 'effective_prio')
         closed = db.status.lookup ('closed')
         for child in cl.get (nodeid, 'composed_of') :
             if cl.get (child, 'status') != closed :
