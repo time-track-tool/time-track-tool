@@ -105,7 +105,7 @@ def backlink_announcement (db, cl, nodeid, old_values) :
         creator = db.announcement.get (new_ann_id, "creator")
         anns_new_values.update        ({"responsible" : creator})
 
-        print "anns_new_values", new_ann_id, anns_new_values
+        #print "anns_new_values", new_ann_id, anns_new_values
         db.announcement.set (new_ann_id, **anns_new_values)
 # end def backlink_announcement
 

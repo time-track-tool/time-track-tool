@@ -109,7 +109,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             or frozen (db, user, val_to)
             )
         ) :
-        print user, val_to, day, val_to - day, new_values.keys ()
+        #print user, val_to, day, val_to - day, new_values.keys ()
         raise Reject, _ ("Frozen: %(old_from)s") % locals ()
     last = last_user_dynamic (db, user)
     if  (   ('org_location' in new_values or 'department' in new_values)
