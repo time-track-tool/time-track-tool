@@ -297,6 +297,8 @@ def part_of_changed (db, cl, nodeid, newvalues) :
         old_part_of_id = cl.get (nodeid, "part_of")
         new_part_of_id = newvalues.get ("part_of")
         if old_part_of_id != new_part_of_id :
+            # schedule maturity_index for update
+            newvalues ['maturity_index'] = None
             if new_part_of_id == nodeid :
                 raise Reject, ( "[%s] `Part of` cannot point to itself."
                               % nodeid

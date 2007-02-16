@@ -212,21 +212,30 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
         compute it via all the children, otherwise we do a simple update
         with the changed maturity_index of the current node.
     """
-    part_of = cl.get (nodeid, 'part_of')
+    part_of  = cl.get (nodeid, 'part_of')
+    opart_of = old_values.get ('part_of', part_of)
     if  (   is_new
+        or  part_of != opart_of
         or  'maturity_index' in old_values
         and old_values ['maturity_index'] != cl.get (nodeid, 'maturity_index')
         ) :
-        mi   = cl.get (nodeid, 'maturity_index')
-        o_mi = old_values.get ('maturity_index', 0)
-        if part_of :
-            parent_mi = cl.get (part_of, 'maturity_index')
-            if parent_mi is None :
-                if part_of not in maturity_index_in_progress :
-                    set_maturity_index (db, cl, part_of, {}, True)
-            else :
-                if o_mi is not None : # only if second update in progress
-                    cl.set (part_of, maturity_index = parent_mi - o_mi + mi)
+        mi    = cl.get (nodeid, 'maturity_index')
+        o_mi  = old_values.get ('maturity_index', 0)
+        parts = dict.fromkeys ((part_of, opart_of)).keys ()
+        for p in parts :
+            if p :
+                parent_mi = cl.get (p, 'maturity_index')
+                if parent_mi is None :
+                    if p not in maturity_index_in_progress :
+                        set_maturity_index (db, cl, p, {}, True)
+                else :
+                    # only if second update in progress
+                    if o_mi is not None and p == opart_of :
+                        # handle the case that part_of == opart_of
+                        parent_mi = parent_mi - o_mi
+                        cl.set (p, maturity_index = parent_mi)
+                    if p == part_of :
+                        cl.set (p, maturity_index = parent_mi + mi)
 # end def update_maturity_index
 
 def creat_update_maturity_index (db, cl, nodeid, old_values) :
