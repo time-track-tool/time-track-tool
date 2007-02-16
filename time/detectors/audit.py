@@ -263,6 +263,11 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                       % nodeid
                       )
     
+    if  (   not is_container
+        and (new_status_name != cur_status_name or 'severity' in newvalues)
+        ) :
+        newvalues ['maturity_index'] = None # Force recomputation
+
     # If the `files_affected` field ist filled, it must be in a certain manner.
     # XXX To be implemented when RMA or GST come up with the Regex needed here.
 # end def limit_transitions

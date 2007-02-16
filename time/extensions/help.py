@@ -23,19 +23,26 @@
 
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Range
+from maturity_index                 import maturity_table
 try :
-    from happydoc.StructuredText import StructuredText
+    from docutils.core import publish_parts
 except ImportError :
-    StructuredText = None
+    publish_parts = None
 
 _ = None
 
-if StructuredText :
-    date_help  = StructuredText (Date.__doc__,  level = 1, header = 0)
-    range_help = StructuredText (Range.__doc__, level = 1, header = 0)
-else :
-    date_help  = Date.__doc__ 
-    range_help = Range.__doc__
+if not publish_parts :
+    def publish_parts (text, writer_name = 'html') :
+        return dict (body = text)
+    # end def publish_parts
+
+def Structured_Text (text) :
+    return publish_parts (text, writer_name = 'html') ['body'].replace \
+        ('%', '%%').replace ('%%(', '%(')
+# end def Structured_Text
+
+date_help  = Structured_Text (Date.__doc__)
+range_help = Structured_Text (Range.__doc__)
 
 academic_title     = \
     ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
@@ -95,6 +102,16 @@ keywords           = \
     ""'''Some %(Property)s for tagging your issue -- can be useful
          for querying.
       '''
+maturity_index_table = Structured_Text \
+    ( ('=' * 20 + '  ') * 3 + '\n'
+    + "%20s  %20s  %20s  \n" % ("Severity", "Status", "Value")
+    + ('=' * 20 + '  ') * 3 + '\n'
+    + '\n'.join
+        ( "%20s  %20s  %20s  \n" % (k [0], k [1], v)
+          for k, v in sorted (maturity_table.iteritems ())
+        )
+    + ('=' * 20 + '  ') * 3 + '\n'
+    )
 miss_text          = \
     ""'''If you miss an %(Property)s here, feel free to vote for it with
          an IT-Issue in category roundup.
@@ -621,6 +638,14 @@ _helptext          = \
       ]
     , ""'manager'                     :
       [""'''Responsible person of the %(Classname)s''']
+    , ""'maturity_index'              :
+      [ ""'''Maturity index for this %(Classname)s.
+             Computed as follows: For a container the sum of all
+             Maturity index values for all leaf nodes. For a leaf-node
+             according to the following table:\n\n
+          '''
+      , maturity_index_table
+      ]
     , ""'max_hours'                   :
       [ ""'''If given for a %(Classname)s restricts the number of hours
              you can book on this %(Classname)s for a single day.

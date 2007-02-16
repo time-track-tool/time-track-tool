@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-02-01 20:58+0100\n"
+"POT-Creation-Date: 2007-02-16 11:18+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -71,9 +71,8 @@ msgstr ""
 "Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf nicht geändert "
 "werden."
 
-#, python-format
-msgid "The field \"%s\" must must remain filled."
-msgstr ""
+msgid "The field \"%s\" must remain filled."
+msgstr "Das Feld \"%(attr)s\" muss ausgefüllt bleiben"
 
 #, python-format
 msgid "New %s requires a %s"
@@ -428,6 +427,12 @@ msgstr "Vorgesetzter"
 
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
+msgstr ""
+
+msgid "User is required"
+msgstr ""
+
+msgid "Invalid User"
 msgstr ""
 
 msgid "Date is required"
@@ -1605,6 +1610,19 @@ msgstr ""
 msgid "Responsible person of the %(Classname)s"
 msgstr "Verantwortliche Person für %(Classname)s"
 
+msgid "maturity_index"
+msgstr ""
+
+msgid ""
+"Maturity index for this %(Classname)s.\n"
+"             Computed as follows: For a container the sum of all\n"
+"             Maturity index values for all leaf nodes. For a leaf-node\n"
+"             according to the following table:\n"
+"\n"
+"\n"
+"          "
+msgstr ""
+
 msgid "max_hours"
 msgstr ""
 
@@ -2734,7 +2752,7 @@ msgstr "Benutzer"
 msgid ""
 "When creating new freeze-records: Please select the user\n"
 "             whose time record you want to freeze\n"
-"             (with \"submit changes\") or the supervisor whose team you\n"
+"             (with \"Freeze user\") or the supervisor whose team you\n"
 "             want to freeze (with \"Freeze team\").  Freezing a team means\n"
 "             freezing all users whose direct supervisor is the selected\n"
 "             user at the moment. If you select a date and press \"Freeze\n"
@@ -3101,6 +3119,9 @@ msgstr "Alle einfrieren"
 
 msgid "Freeze team"
 msgstr "Team einfrieren"
+
+msgid "Freeze user"
+msgstr "Benutzer einfrieren"
 
 msgid "Welcome"
 msgstr "Willkommen"

@@ -37,6 +37,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 import common
+from maturity_index                 import maturity_table
 
 def loopchecks (db, cl, nodeid, new_values) :
     for propname in 'superseder', 'part_of', 'needs', 'depends' :
@@ -162,6 +163,81 @@ def no_autoclose_container (db, cl, nodeid, new_values) :
             raise Reject, _ ("Containers may not be Obsolete/Mistaken")
 # end def no_autoclose_container
 
+maturity_index_in_progress = {}
+
+def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
+    """ Set the maturity index for a node if it was not already present.
+        This does a recursive update over all children if necessary.
+
+        Implementation note: Since we can be called via reactor *and*
+        recursively, we keep a dict of calls in progress so that we do
+        not attempt multiple updates (with endless recursion as a
+        result) on the same value.
+    """
+    not_in_progress = nodeid and nodeid not in maturity_index_in_progress
+    if not_in_progress :
+        maturity_index_in_progress [nodeid] = True
+    mi    = new_values.get ('maturity_index')
+    co    = new_values.get ('composed_of')
+    minor = db.severity.lookup ('Minor')
+    if nodeid :
+        if 'maturity_index' not in new_values :
+            mi = cl.get (nodeid, 'maturity_index')
+        if 'composed_of'    not in new_values :
+            co = cl.get (nodeid, 'composed_of')
+    if mi is None :
+        if co :
+            mi = 0
+            for k in co :
+                mi += set_maturity_index (db, cl, k, {}, True)
+        else :
+            status = new_values.get  ('status')   or cl.get (nodeid, 'status')
+            sev    = new_values.get  ('severity') or cl.get (nodeid, 'severity')
+            if not sev :
+                sev = minor
+            status = db.status.get   (status, 'name')
+            sev    = db.severity.get (sev, 'name')
+            mi     = maturity_table.get ((sev, status), 0)
+        new_values ['maturity_index'] = mi
+        if do_update and not_in_progress :
+            cl.set (nodeid, maturity_index = mi)
+    if not_in_progress :
+        del maturity_index_in_progress [nodeid]
+    return mi
+# end def set_maturity_index
+
+def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
+    """ Reactor to update maturity index for all predecessors. We walk
+        the predecessor chain, if the maturity_index is undefined, we
+        compute it via all the children, otherwise we do a simple update
+        with the changed maturity_index of the current node.
+    """
+    part_of = cl.get (nodeid, 'part_of')
+    if  (   is_new
+        or  'maturity_index' in old_values
+        and old_values ['maturity_index'] != cl.get (nodeid, 'maturity_index')
+        ) :
+        mi   = cl.get (nodeid, 'maturity_index')
+        o_mi = old_values.get ('maturity_index', 0)
+        while part_of :
+            parent_mi = cl.get (part_of, 'maturity_index')
+            if parent_mi is None :
+                if part_of not in maturity_index_in_progress :
+                    set_maturity_index (db, cl, part_of, {}, True)
+            else :
+                if o_mi is not None : # only if second update in progress
+                    cl.set (part_of, maturity_index = parent_mi - o_mi + mi)
+            part_of = cl.get (part_of, 'part_of')
+# end def update_maturity_index
+
+def creat_update_maturity_index (db, cl, nodeid, old_values) :
+    """ Reactor to update maturity_index -- see update_maturity_index
+        which does the real work, we only need information if the node
+        was just created or already existed.
+    """
+    update_maturity_index (db,cl, nodeid, old_values, True)
+# end def creat_update_maturity_index
+
 def init (db) :
     if 'issue' not in db.classes :
         return
@@ -179,5 +255,9 @@ def init (db) :
     db.issue.react ("set",    status_updated,               priority =  50)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
+    db.issue.audit ("set",    set_maturity_index,           priority = 300)
+    db.issue.audit ("create", set_maturity_index,           priority = 300)
+    db.issue.react ("set",    update_maturity_index)
+    db.issue.react ("create", creat_update_maturity_index)
     #db.issue.react ("set",    check_container_statuschange, priority =  90)
 # end def init

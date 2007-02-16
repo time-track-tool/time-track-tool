@@ -250,6 +250,12 @@
         name="files_affected" wrap="hard" rows="2" cols="65"/>
       </td>
      </tr>
+     <tr tal:condition="context/id">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'maturity_index')"/>
+      <td colspan="3" tal:content="context/maturity_index/plain">
+      </td>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

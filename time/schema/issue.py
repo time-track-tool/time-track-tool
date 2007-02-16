@@ -136,6 +136,7 @@ def init \
         , composed_of         = Multilink ("issue") # should be read only
         , part_of             = Link      ("issue") # should change composed_of
         , severity            = Link      ("severity")
+        , maturity_index      = Number    ()
         )
 
     Cls = kw ['Msg_Class']
