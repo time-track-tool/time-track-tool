@@ -219,7 +219,7 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
         ) :
         mi   = cl.get (nodeid, 'maturity_index')
         o_mi = old_values.get ('maturity_index', 0)
-        while part_of :
+        if part_of :
             parent_mi = cl.get (part_of, 'maturity_index')
             if parent_mi is None :
                 if part_of not in maturity_index_in_progress :
@@ -227,7 +227,6 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
             else :
                 if o_mi is not None : # only if second update in progress
                     cl.set (part_of, maturity_index = parent_mi - o_mi + mi)
-            part_of = cl.get (part_of, 'part_of')
 # end def update_maturity_index
 
 def creat_update_maturity_index (db, cl, nodeid, old_values) :
