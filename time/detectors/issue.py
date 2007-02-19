@@ -212,8 +212,9 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
         compute it via all the children, otherwise we do a simple update
         with the changed maturity_index of the current node.
     """
-    part_of  = cl.get (nodeid, 'part_of')
-    opart_of = old_values.get ('part_of', part_of)
+    old_values = old_values or {}
+    part_of    = cl.get (nodeid, 'part_of')
+    opart_of   = old_values.get ('part_of', part_of)
     if  (   is_new
         or  part_of != opart_of
         or  'maturity_index' in old_values
