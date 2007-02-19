@@ -30,9 +30,12 @@
 
 import sys
 
-from roundup.date import Date, Interval
 from time         import gmtime
 from bisect       import bisect_left
+from operator     import add
+
+from roundup.date import Date, Interval
+
 from common       import ymd, next_search_date, end_of_period, freeze_date
 from common       import pretty_range
 
@@ -102,17 +105,36 @@ def act_or_latest_user_dynamic (db, user) :
     return ud
 # end def act_or_latest_user_dynamic
 
+wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
 def day_work_hours (dynuser, date) :
     """ Compute hours for a holiday etc from the date """
     wday  = gmtime (date.timestamp ())[6]
-    field = 'hours_' + ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'][wday]
-    hours = dynuser [field]
-    if hours :
+    hours = dynuser ['hours_' + wdays [wday]]
+    if hours is not None :
         return hours
     if wday in (5, 6) or not dynuser.weekly_hours :
         return 0
     return dynuser.weekly_hours / 5.
 # end def day_work_hours
+
+def is_work_day (dynuser, date) :
+    """ Return True if the given date is a work day for this user.
+        Usually returns True if not on a weekend day but individual work
+        times can be defined with field_mon, ..., field_sun
+    """
+    return bool (day_work_hours (dynuser, date))
+# end def is_work_day
+
+def work_days (dynuser) :
+    """ Work days per week for this user. Returns number of days for
+        which a non-zero day_work_hours is defined. This is used for
+        overtime and additional time computation: We need to know the
+        ratio for a given day...
+    """
+    sum   = reduce (add, (bool (dynuser ['hours_' + f]) for f in wdays))
+    return sum or 5
+# end def work_days
 
 def round_daily_work_hours (hours) :
     """ Rounding of daily work hours.
@@ -249,12 +271,13 @@ def durations (db, user, date) :
         duration_cache [(user, pdate)] = \
             [0, 0, 0, 0, False, False, None, None, 0]
         if dyn :
-            wkend = wday in (5, 6)
             duration_cache [(user, pdate)] = \
                 [ 0
                 , day_work_hours (dyn, date)
-                , [(dyn.supp_weekly_hours or 0) / 5.0, 0][wkend]
-                , [(dyn.additional_hours  or 0) / 5.0, 0][wkend]
+                , (dyn.supp_weekly_hours or 0) * is_work_day (dyn, date)
+                  / work_days (dyn)
+                , (dyn.additional_hours  or 0) * is_work_day (dyn, date)
+                  / work_days (dyn)
                 , bool (dyn.supp_weekly_hours)
                 , bool (dyn.additional_hours)
                 , None
@@ -273,7 +296,7 @@ def overtime (db, user, start, end, end_ov, use_additional) :
     overtime = 0
     required = 0
     worked   = 0
-    compute  = True
+    compute  = False
     date     = start
     over_per = 0
     while date <= end_ov :
@@ -292,7 +315,7 @@ def overtime (db, user, start, end, end_ov, use_additional) :
         overtime += over
         required += req
         worked   += work
-        compute   = compute and do_over
+        compute   = compute or do_over
         date += Interval ('1d')
     if compute :
         overtime += over_per
