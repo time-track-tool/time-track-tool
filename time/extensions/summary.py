@@ -916,12 +916,15 @@ class Staff_Report (_Report) :
         , ""'actual_accepted'
         , ""'actual_all'
         , ""'required'
+        , ""'supp_weekly_hours'
         , ""'overtime_correction'
         , ""'balance_week_end'
         )
     period_fields = \
         ( ""'overtime_period'
         , ""'balance_period_start'
+        , ""'additional_hours'
+        , ""'supp_per_period'
         , ""'balance_period_end'
         )
     hr_fields = \
@@ -1051,29 +1054,35 @@ class Staff_Report (_Report) :
             container ['overtime_correction'] = ' + '.join \
                 (str (db.overtime_correction.get (i, 'value')) for i in ov)
         d = start
+        container ['supp_per_period']        = dyn.supp_per_period
         container ['actual_all']             = 0
         container ['actual_open']            = 0
         container ['actual_submitted']       = 0
         container ['actual_accepted']        = 0
         container ['required']               = 0
+        container ['supp_weekly_hours']      = 0
+        container ['additional_hours']       = 0
         container ['overtime_additional']    = 0
         container ['overtime_supplementary'] = 0
         container ['required_overtime']      = 0
         while d <= end :
-            act, req, sup, add, sup_v, add_v, st, ovr, op = durations (db, u, d)
+            act, req, sup, add, do_week, do_perd, st, ovr, op = \
+                durations (db, u, d)
             assert (not act or st)
             container ['actual_all'] += act
             if st :
                 f = 'actual_' + self.stati [st]
                 container [f] += act
-            container ['required'] += req
+            container ['required']          += req * do_week
+            container ['additional_hours']  += add * do_perd
+            container ['supp_weekly_hours'] += sup * do_week
             d = d + day
-            if add_v :
+            if do_perd :
                 if act > add :
                     container ['overtime_additional']    += act - add
                 if act < req :
                     container ['overtime_additional']    -= req - act
-            if sup_v :
+            if do_week :
                 if act > sup :
                     container ['overtime_supplementary'] += act - sup
                 if act < req :

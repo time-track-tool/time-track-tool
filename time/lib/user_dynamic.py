@@ -126,6 +126,18 @@ def is_work_day (dynuser, date) :
     return bool (day_work_hours (dynuser, date))
 # end def is_work_day
 
+def use_work_hours (dynuser, period) :
+    """ Check if work hours for given dynuser record should be used at
+        all in overtime computation. They will not be used if the sum of
+        required hours or the sum of overtime is zero (period denotes if
+        we want the result for week/month/year).
+    """
+    overtime = dynuser.additional_hours
+    if period == 'week' :
+        overtime = dynuser.supp_weekly_hours
+    return bool (dynuser.weekly_hours and overtime)
+# end def use_work_hours
+
 def work_days (dynuser) :
     """ Work days per week for this user. Returns number of days for
         which a non-zero day_work_hours is defined. This is used for
@@ -278,8 +290,8 @@ def durations (db, user, date) :
                   / work_days (dyn)
                 , (dyn.additional_hours  or 0) * is_work_day (dyn, date)
                   / work_days (dyn)
-                , bool (dyn.supp_weekly_hours)
-                , bool (dyn.additional_hours)
+                , use_work_hours (dyn, 'week')
+                , use_work_hours (dyn, 'month')
                 , None
                 , None
                 , dyn.supp_per_period
@@ -310,19 +322,18 @@ def overtime (db, user, start, end, end_ov, use_additional) :
             work = 0
             req  = 0
         if use_additional :
-            over    = dur [3]
-            do_over = dur [5]
-        overtime += over
-        required += req
-        worked   += work
+            over     = dur  [3]
+            do_over  = dur  [5]
+        overtime += over * do_over
+        required += req  * do_over
+        worked   += work * do_over
         compute   = compute or do_over
         date += Interval ('1d')
-    if compute :
-        overtime += over_per
-        if worked > overtime :
-            return worked - overtime
-        elif worked < required :
-            return worked - required
+    overtime += over_per * do_over
+    if worked > overtime :
+        return worked - overtime
+    elif worked < required :
+        return worked - required
     return 0
 # end def overtime
 
@@ -374,7 +385,10 @@ def compute_balance \
     corr = db.overtime_correction.filter \
         (None, dict (user = user, date = pretty_range (p_date, end)))
     for c in corr :
-        p_balance += db.overtime_correction.get (c, 'value') or 0
+        oc  = db.overtime_correction.getnode (c)
+        dyn = get_user_dynamic (db, user, oc.date)
+        if dyn and use_work_hours (dyn, period) :
+            p_balance += oc.value or 0
     while p_date < end :
         eop = end_of_period (p_date, period)
         p_balance += overtime (db, user, p_date, eop, eop, use_additional)
