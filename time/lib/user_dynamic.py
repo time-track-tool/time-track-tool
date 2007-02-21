@@ -133,7 +133,10 @@ def use_work_hours (db, dynuser, period) :
         we want the result for week/month/year).
     """
     overtime   = dynuser.additional_hours
-    dyn_period = db.overtime_period.get (dynuser.overtime_period, 'name')
+    period_id  = dynuser.overtime_period
+    dyn_period = None
+    if period_id :
+        dyn_period = db.overtime_period.get (period_id, 'name')
     if period == 'week' :
         overtime = dynuser.supp_weekly_hours
     return bool (dynuser.weekly_hours and overtime and dyn_period == period)
