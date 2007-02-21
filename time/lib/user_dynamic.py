@@ -126,16 +126,17 @@ def is_work_day (dynuser, date) :
     return bool (day_work_hours (dynuser, date))
 # end def is_work_day
 
-def use_work_hours (dynuser, period) :
+def use_work_hours (db, dynuser, period) :
     """ Check if work hours for given dynuser record should be used at
         all in overtime computation. They will not be used if the sum of
         required hours or the sum of overtime is zero (period denotes if
         we want the result for week/month/year).
     """
-    overtime = dynuser.additional_hours
+    overtime   = dynuser.additional_hours
+    dyn_period = db.overtime_period.get (dynuser.overtime_period, 'name')
     if period == 'week' :
         overtime = dynuser.supp_weekly_hours
-    return bool (dynuser.weekly_hours and overtime)
+    return bool (dynuser.weekly_hours and overtime and dyn_period == period)
 # end def use_work_hours
 
 def work_days (dynuser) :
@@ -290,8 +291,10 @@ def durations (db, user, date) :
                   / work_days (dyn)
                 , (dyn.additional_hours  or 0) * is_work_day (dyn, date)
                   / work_days (dyn)
-                , use_work_hours (dyn, 'week')
-                , use_work_hours (dyn, 'month')
+                , use_work_hours (db, dyn, 'week')
+                , (  use_work_hours (db, dyn, 'month')
+                  or use_work_hours (db, dyn, 'year')
+                  )
                 , None
                 , None
                 , dyn.supp_per_period
@@ -387,7 +390,7 @@ def compute_balance \
     for c in corr :
         oc  = db.overtime_correction.getnode (c)
         dyn = get_user_dynamic (db, user, oc.date)
-        if dyn and use_work_hours (dyn, period) :
+        if dyn and use_work_hours (db, dyn, period) :
             p_balance += oc.value or 0
     while p_date < end :
         eop = end_of_period (p_date, period)

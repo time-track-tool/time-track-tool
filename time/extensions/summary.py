@@ -1073,7 +1073,7 @@ class Staff_Report (_Report) :
             if st :
                 f = 'actual_' + self.stati [st]
                 container [f] += act
-            container ['required']          += req * do_week
+            container ['required']          += req * (do_week or do_perd)
             container ['additional_hours']  += add * do_perd
             container ['supp_weekly_hours'] += sup * do_week
             d = d + day
