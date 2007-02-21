@@ -667,8 +667,9 @@ _helptext          = \
           '''
       ]
     , ""'month_balance'               :
-      [ ""'''Shows the overtime or flexitime balance at the last
-             month-end before (or on) the selected date.
+      [ ""'''Overtime balance as in staff report for the date mentioned
+             in "valid on". Only applicable for user whose overtime
+             period is a month.
           '''
       ]
     , ""'msg'                         :
@@ -1273,8 +1274,9 @@ _helptext          = \
           '''
       ]
     , ""'week_balance'                :
-      [ ""'''Shows the overtime or flexitime balance at the last sunday
-             before (or on) the selected date.
+      [ ""'''Overtime balance as in staff report for the date mentioned
+             in "valid on". Only applicable for user whose overtime
+             period is a week.
           '''
       ]
     , ""'weekend_allowed'             :
@@ -1318,8 +1320,9 @@ _helptext          = \
           '''
       ]
     , ""'year_balance'                :
-      [ ""'''Shows the overtime or flexitime balance at the last
-             year-end before (or on) the selected date.
+      [ ""'''Overtime balance as in staff report for the date mentioned
+             in "valid on". Only applicable for user whose overtime
+             period is a year.
           '''
       ]
     }
