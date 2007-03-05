@@ -45,6 +45,28 @@ def union (* lists) :
     return tab.keys ()
 # end def union
 
+def initial_status_ok (db, status_id, cat_id) :
+    """ Allow "escalated" when submitting new issue. This is allowed in
+        case the analysis was done in advance. The first (submission)
+        message should contain the analysis results.
+
+        Allow "open" when submitting new non-cert issue. This is allowed
+        in case the analysis and decision about implementation was made
+        in advance, the first message should contain the analysis
+        results and decision.
+    """
+    status = db.status.get (status_id, 'name')
+    if status == 'escalated' :
+        return True
+    if  (   status == 'open'
+        and cat_id
+        and     db.category.get (cat_id, 'valid')
+        and not db.category.get (cat_id, 'cert_sw')
+        ) :
+        return True
+    return False
+# end def initial_status_ok 
+
 def limit_new_entry (db, cl, nodeid, newvalues) :
     """Limit creation of new issues, check on entered fields,
        and correctly complete missing fields.
@@ -56,6 +78,11 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     responsible = newvalues.get ("responsible", None)
     msg         = newvalues.get ("messages",    None)
     severity    = newvalues.get ("severity",    None)
+
+    if  (  "status" not in newvalues
+        or not initial_status_ok (db, newvalues ["status"], category)
+        ) :
+        newvalues ["status"] = db.status.lookup ("analyzing")
 
     if not category :
         category = newvalues ['category'] = db.category.lookup ('pending')
@@ -87,9 +114,6 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if None in nosy :
         nosy.remove (None)
     newvalues ["nosy"] = nosy
-
-    # Set `status` strictly to "analyzing"
-    newvalues ["status"]   = db.status.lookup ("analyzing")
 
     # It is meaningless to create obsolete or mistaken issues.
     kind_name = db.kind.get (kind, "name")
@@ -202,11 +226,12 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         and new_status_name != "analyzing"
         and not is_container
         ) :
-        if not kind :
-            raise Reject, "Kind must be filled in for status change"
-        if not effort :
-            raise Reject, "Effort must be filled in for status change"
-        if new_status_name == "open" :
+        if new_status_name != 'closed' :
+            if not kind :
+                raise Reject, "Kind must be filled in for status change"
+            if not effort :
+                raise Reject, "Effort must be filled in for status change"
+        if new_status_name == "open" and category.cert_sw :
             if kind_name == 'Change-Request' :
                 raise Reject, "No State-change to open for Change-Request"
             m = _effort_regex.match (effort)
