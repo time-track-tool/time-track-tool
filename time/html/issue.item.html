@@ -22,7 +22,7 @@
   <tal:block tal:define=
     " use_labelprop       python:1
     ; has_resp            python:0
-    ; required_attributes string:title
+    ; required_attributes string:title,release
     ; show_closed         request/form/show_closed/value | string:0
     ; show_closed         python:int (show_closed)
     ; expand_composed_of  request/form/expand_composed_of/value | string:0
@@ -44,7 +44,7 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu (valid = True)"/>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>
      </tr>
@@ -60,9 +60,11 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'kind')"/>
       <td tal:content="structure python:context.kind.menu ()"/>
-      <th tal:content="structure python:utils.fieldname
+      <th tal:condition="context/id"
+          tal:content="structure python:utils.fieldname
           (classname, 'earliest_start')"/>
-      <td tal:content="structure python:context.earliest_start.field ()"/>
+      <td tal:condition="context/id"
+          tal:content="structure python:context.earliest_start.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -97,12 +99,10 @@
           (classname, 'effort')"/>
       <td tal:content="structure python:context.effort.field (size = 15)"/>
      </tr>
-     <tr>
-      <td colspan="2" tal:condition="not:context/id"/>
-      <th tal:condition="context/id"
-          tal:content="structure python:utils.fieldname
+     <tr tal:condition="context/id">
+      <th tal:content="structure python:utils.fieldname
           (classname, 'priority')"/>
-      <td tal:condition="context/id">
+      <td>
        <table border=0 cellpadding=0 cellspacing=0>
         <tr>
          <td tal:content="structure python:context.priority.field (size = 7)"/>
@@ -132,9 +132,10 @@
         <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
        </tal:block>
       </td>
-      <th tal:content="structure python:utils.fieldname
+      <th tal:condition="context/id"
+          tal:content="structure python:utils.fieldname
           (classname, 'cur_est_begin')"/>
-      <td> 
+      <td tal:condition="context/id"> 
        <nobr tal:condition="context/cur_est_begin/plain"
              tal:content="structure python:'%s .. %s'
              % ( context.cur_est_begin.pretty (format = utils.ymd)
@@ -155,7 +156,7 @@
        </font>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
           (classname, 'superseder')"/>
       <td>
@@ -193,7 +194,7 @@
        </span>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
           (classname, 'composed_of')"/>
       <td>
@@ -234,7 +235,7 @@
        </span>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
           (classname, 'fixed_in')"/>
       <td tal:content="structure python:context.fixed_in.field ()"/>
@@ -242,7 +243,7 @@
           (classname, 'closed')"/>
       <td tal:content="context/closed/plain"/>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
           (classname, 'files_affected')"/>
       <td colspan="3">
