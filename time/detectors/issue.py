@@ -60,6 +60,7 @@ def update_eff_prio (db, cl, nodeid, new_values) :
     if (  'priority'       in new_values
        or 'effective_prio' in new_values
        or 'status'         in new_values
+       or 'part_of'        in new_values
        ) :
         prio = new_values.get ('priority', None)
         if prio is None :
@@ -72,7 +73,6 @@ def update_eff_prio (db, cl, nodeid, new_values) :
             pprio = cl.get (part, 'effective_prio')
             if pprio > prio :
                 new_values ['effective_prio'] = pprio
-        #print "update_eff_prio:", nodeid, new_values ['effective_prio']
 # end def update_eff_prio
 
 def update_children (db, cl, nodeid, old_values) :
@@ -261,7 +261,7 @@ def init (db) :
     db.issue.audit ("create", check_part_of)
     db.issue.audit ("set",    check_part_of)
     db.issue.react ("set",    update_children,              priority =  50)
-    db.issue.react ("set",    status_updated,               priority =  50)
+    db.issue.react ("set",    status_updated,               priority =  49)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
     db.issue.audit ("set",    composed_of_updated,          priority = 200)
     db.issue.audit ("set",    set_maturity_index,           priority = 300)
