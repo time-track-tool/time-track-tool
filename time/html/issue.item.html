@@ -22,7 +22,7 @@
   <tal:block tal:define=
     " use_labelprop       python:1
     ; has_resp            python:0
-    ; required_attributes string:title,release
+    ; required_attributes string:title
     ; show_closed         request/form/show_closed/value | string:0
     ; show_closed         python:int (show_closed)
     ; expand_composed_of  request/form/expand_composed_of/value | string:0
@@ -44,7 +44,7 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu (valid = True)"/>
-      <th class="required" tal:content="structure python:utils.fieldname
+      <th tal:content="structure python:utils.fieldname
           (classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>
      </tr>

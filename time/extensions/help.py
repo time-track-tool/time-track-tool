@@ -861,7 +861,8 @@ _helptext          = \
       [""'''Person responsible for recording findings''']
     , ""'release'                     :
       [ ""'''The %(Property)s this %(Classname)s belongs to -- if
-             available (e.g. 4.3.72 for TTP-Plan).
+             available (e.g. 4.3.72 for TTP-Plan). The %(Property)s has
+             to be specified for newly reported Bugs.
           '''
       ]
     , ""'remove'                      :

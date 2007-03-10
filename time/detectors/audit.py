@@ -78,6 +78,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     responsible = newvalues.get ("responsible", None)
     msg         = newvalues.get ("messages",    None)
     severity    = newvalues.get ("severity",    None)
+    bug         = db.kind.lookup ('Bug')
 
     if  (  "status" not in newvalues
         or not initial_status_ok (db, newvalues ["status"], category)
@@ -89,16 +90,17 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if not area :
         area     = newvalues ['area']     = db.area.lookup ('SW')
     if not kind :
-        kind     = newvalues ['kind']     = db.kind.lookup ('Bug')
+        kind     = newvalues ['kind']     = bug
     if not severity :
         severity = newvalues ['severity'] = db.severity.lookup ('Minor')
     if not title :
-        raise Reject, '[%s] You must enter a "title".' % nodeid
+        raise Reject, _ ('You must enter a "title".')
     if not msg :
-        raise Reject, ( "[%s] A detailed description must be given in "
-                        "`message`."
-                      % nodeid
-                      )
+        field = _ ('msg')
+        raise Reject, _ ("A detailed description must be given in %(field)s") \
+                        % locals ()
+    if kind == bug and 'release' not in newvalues :
+        raise Reject, _ ("For bugs you have to specify the release")
 
     # Set `responsible` to the category's responsible.
     if not responsible :
