@@ -860,9 +860,12 @@ _helptext          = \
     , ""'recorder'                    :
       [""'''Person responsible for recording findings''']
     , ""'release'                     :
-      [ ""'''The %(Property)s this %(Classname)s belongs to -- if
-             available (e.g. 4.3.72 for TTP-Plan). The %(Property)s has
-             to be specified for newly reported Bugs.
+      [ ""'''The %(Property)s this %(Classname)s was found, either as
+             bug or as missing feature. For (newly reported) bugs,
+             %(Property)s *must* be specified. Enter the release name
+             or, if applicable, the name and version of the tool (e.g.,
+             "TTP-Plan 4.3.72"). For change requests you may enter the
+             currently used release.
           '''
       ]
     , ""'remove'                      :
