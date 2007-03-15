@@ -110,13 +110,21 @@ wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 def day_work_hours (dynuser, date) :
     """ Compute hours for a holiday etc from the date """
     wday  = gmtime (date.timestamp ())[6]
+    return _day_work_hours (dynuser, wday)
+# end def day_work_hours
+
+def _day_work_hours (dynuser, wday) :
     hours = dynuser ['hours_' + wdays [wday]]
     if hours is not None :
         return hours
     if wday in (5, 6) or not dynuser.weekly_hours :
         return 0
     return dynuser.weekly_hours / 5.
-# end def day_work_hours
+# end def _day_work_hours
+
+def weekly_hours (dynuser) :
+    return sum (_day_work_hours (dynuser, wday) for wday in range (7))
+# end def weekly_hours
 
 def is_work_day (dynuser, date) :
     """ Return True if the given date is a work day for this user.
