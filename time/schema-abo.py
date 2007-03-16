@@ -41,7 +41,9 @@ import schemadef
 # Note: order matters. Usually ext_issue (needed by it_tracker for
 # example) comes first and core is always last.
 schemas = \
-    ( 'abo'
+    ( 'address'
+    , 'sinvoice'
+    , 'abo'
     , 'core'
     )
 

@@ -81,6 +81,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         )
     invoice_template.setkey (''"name")
 
+    return export
 # end def init
 
 
