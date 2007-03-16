@@ -129,8 +129,7 @@ def security (db, ** kw) :
         ]
 
     classes = \
-        [
-        , ("address"           , ["User"],    ["User"])
+        [ ("address"           , ["User"],    ["User"])
         , ("adr_type"          , ["User"],    ["Type"])
         , ("adr_type_cat"      , ["User"],    ["Type"])
         , ("letter"            , ["User"],    ["Letter"])
