@@ -140,7 +140,7 @@ def init \
         )
 
     Cls = kw ['Msg_Class']
-    class Msg_Class (Cls, Ext_Mixin) :
+    class Msg_Class (Cls) :
         """ extends the normal FileClass with some attributes for message
         """
         def __init__ (self, db, classname, ** properties) :
@@ -149,8 +149,7 @@ def init \
                 , keywords    = Multilink ("msg_keyword", do_journal = 'no')
                 , subject     = String    (indexme = 'no')
                 )
-            Ext_Mixin.__init__ (self, db, properties)
-            Cls.__init__       (self, db, classname, ** properties)
+            self.__super.__init__ (db, classname, ** properties
         # end def __init__
     # end class Msg_Class
     return dict (Msg_Class = Msg_Class)

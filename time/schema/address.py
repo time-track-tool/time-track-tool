@@ -30,12 +30,23 @@
 from roundup.hyperdb import Class
 import schemadef
 
-def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
+def init \
+    ( db
+    , Class
+    , Ext_Class
+    , String
+    , Date
+    , Link
+    , Multilink
+    , Boolean
+    , Number
+    , ** kw
+    ) :
 
     do_index = "no"
     export   = {}
 
-    class Address_Class (Class) :
+    class Address_Class (Ext_Class) :
         """ Create address class with default attributes, may be
             extended by other definitions.
         """
@@ -61,7 +72,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
                 , letters             = Multilink ("letter")
                 , lookalike_name      = String    (indexme = do_index)
                 )
-            Class.__init__ (self, db, classname, ** properties)
+            self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('lastname')
         # end def __init__
     # end class Address_Class
@@ -82,7 +93,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         )
     adr_type_cat.setkey (''"code")
 
-    class Letter_Class (Class) :
+    class Letter_Class (Ext_Class) :
         """ Create letter class with default attributes, may be
             extended by other definitions.
             The file types are either PDF (from old imported data) or an
@@ -97,6 +108,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
                 , files               = Multilink ("file", do_journal='no')
                 , messages            = Multilink ("msg")
                 )
+            self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('subject')
         # end def __init__
     # end class Letter_Class

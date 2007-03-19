@@ -54,20 +54,7 @@ def init \
         , content               = String    (indexme = 'no')
         )
 
-    Msg_Class \
-        ( db
-        , ''"msg"
-        , date                  = Date      ()
-        , files                 = Multilink ("file")
-        # Note: fields below are used by roundup internally (obviously
-        #       by the mail-gateway)
-        , author                = Link      ("user", do_journal='no')
-        , recipients            = Multilink ("user", do_journal='no')
-        , summary               = String    (indexme = 'no')
-        , messageid             = String    (indexme = 'no')
-        , inreplyto             = String    (indexme = 'no')
-        , content               = String    (indexme = 'no')
-        )
+    Msg_Class (db , ''"msg")
 
     query = Class \
         ( db

@@ -31,7 +31,18 @@
 from roundup.hyperdb import Class
 import schemadef
 
-def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
+def init \
+    ( db
+    , Class
+    , Ext_Class
+    , String
+    , Date
+    , Link
+    , Multilink
+    , Boolean
+    , Number
+    , ** kw
+    ) :
 
     do_index = "no"
     export   = {}
@@ -43,7 +54,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         )
     currency.setkey (''"name")
 
-    class Invoice_Class (Class) :
+    class Invoice_Class (Ext_Class) :
         """ Create an invoice class that should be extended in later
             definitions -- either as a simple invoice for abo or more
             complex for ERP.
@@ -64,7 +75,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
                 , payment             = Number    ()
                 , letters             = Multilink ("letter")
                 )
-            Class.__init__ (self, db, classname, ** properties)
+            self.__super.__init__ (db, classname, ** properties)
             self.setkey (''"invoice_no")
         # end def __init__
     # end class Invoice_Class

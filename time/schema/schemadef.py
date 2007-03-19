@@ -27,6 +27,8 @@
 #--
 #
 
+from rsclib.autosuper import autosuper
+
 # Common routines for registration of roles classes and permissions
 def register_roles (db, roles) :
     """Loop over given roles and register them -- each role consists of
@@ -74,9 +76,14 @@ class Importer (object) :
         self.modules = {}
         self.globals = globals
         self.schemas = schemas
-        Class = globals ['Class']
+        Class        = globals ['Class']
+        FileClass    = globals ['FileClass']
+        Date         = globals ['Date']
+        Multilink    = globals ['Multilink']
+        Link         = globals ['Link']
+        String       = globals ['String']
 
-        class Ext_Mixin :
+        class Ext_Mixin (autosuper) :
             """ create a class with some default attributes
                 Note: inheritance methodology stolen from
                 roundup/backends/back_anydbm.py's IssueClass ;-)
@@ -108,9 +115,28 @@ class Importer (object) :
             # end def __init__
         # end class Ext_Class
 
+        class Msg_Class (FileClass, Ext_Mixin) :
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    ( date                 = Date      ()
+                    , files                = Multilink ("file")
+                    # Note: fields below are used by roundup internally
+                    # (obviously by the mail-gateway)
+                    , author               = Link      ("user", do_journal='no')
+                    , recipients           = Multilink ("user", do_journal='no')
+                    , summary              = String    (indexme = 'no')
+                    , messageid            = String    (indexme = 'no')
+                    , inreplyto            = String    (indexme = 'no')
+                    , content              = String    (indexme = 'no')
+                    )
+                Ext_Mixin.__init__ (self, db, properties)
+                FileClass.__init__ (self, db, classname, ** properties)
+            # end def __init__
+        # end class Msg_Class
+
         globals ['Ext_Class'] = Ext_Class
+        globals ['Msg_Class'] = Msg_Class
         globals ['Ext_Mixin'] = Ext_Mixin
-        globals ['Msg_Class'] = globals ['FileClass']
 
         for s in schemas :
             m = __import__ (s)
