@@ -149,7 +149,7 @@ def init \
                 , keywords    = Multilink ("msg_keyword", do_journal = 'no')
                 , subject     = String    (indexme = 'no')
                 )
-            self.__super.__init__ (db, classname, ** properties
+            self.__super.__init__ (db, classname, ** properties)
         # end def __init__
     # end class Msg_Class
     return dict (Msg_Class = Msg_Class)
