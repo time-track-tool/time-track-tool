@@ -18,10 +18,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from roundup.exceptions import Reject
-from roundup.date       import Date
+from roundup.exceptions             import Reject
+from roundup.date                   import Date
 
-from rup_utils          import translate
+from rup_utils                      import translate
+from roundup.cgi.TranslationService import get_translation
 
 def fix_adr_type (db, cl, nodeid, new_values) :
     if 'adr_type' in new_values :
@@ -30,6 +31,8 @@ def fix_adr_type (db, cl, nodeid, new_values) :
         abos = new_values.get ('abos', None)
         if abos is None and nodeid :
             abos = cl.get (nodeid, 'abos')
+        else :
+            abos = []
         abos = [db.abo.getnode (a) for a in abos]
         adr_type_dict = dict ([(a, 1) for a in new_values ['adr_type']])
         for t in adr_types :
@@ -78,6 +81,8 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 def init (db) :
     if 'address' not in db.classes :
         return
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.address.audit ("create", set_adr_defaults)
     db.address.audit ("create", fix_adr_type)
     db.address.audit ("set",    fix_adr_type)
