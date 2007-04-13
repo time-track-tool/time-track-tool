@@ -119,6 +119,7 @@ def security (db, ** kw) :
     roles = \
         [ ("Abo"           , "Allowed to modify subscriptions")
         , ("Invoice"       , "Allowed to change financial data")
+        , ("Letter"        , "Allowed to add/change templates and letters")
         , ("Product"       , "Allowed to create/edit products")
         , ("Type"          , "Allowed to add/change type codes")
         ]
@@ -132,15 +133,17 @@ def security (db, ** kw) :
         , ("address"           , ["User"],    ["User"])
         , ("adr_type"          , ["User"],    ["Type"])
         , ("adr_type_cat"      , ["User"],    ["Type"])
+        , ("contact"           , ["User"],    ["User"])
+        , ("contact_type"      , ["User"],    ["Admin"])
         , ("currency"          , ["User"],    ["Product"])
         , ("file"              , ["User"],    ["User"])
         , ("invoice_group"     , ["Invoice"], ["Invoice"])
         , ("invoice_template"  , ["Invoice"], ["Invoice"])
         , ("invoice"           , ["Invoice"], ["Invoice"])
-        , ("letter"            , ["User"],    ["Abo"])
+        , ("letter"            , ["User"],    ["Abo", "Letter"])
         , ("msg"               , ["User"],    ["User"])
         , ("query"             , ["User"],    ["User"])
-        , ("tmplate"           , ["User"],    ["Abo", "Invoice"])
+        , ("tmplate"           , ["User"],    ["Abo", "Invoice", "Letter"])
         , ("valid"             , ["User"],    ["Admin"])
         ]
 

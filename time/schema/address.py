@@ -71,6 +71,7 @@ def init \
                 , valid               = Link      ("valid")
                 , letters             = Multilink ("letter")
                 , lookalike_name      = String    (indexme = do_index)
+                , contacts            = Multilink ("contact")
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('lastname')
@@ -143,7 +144,6 @@ def init \
         , contact             = String    ()
         , description         = String    ()
         , contact_type        = Link      ("contact_type")
-        , address             = Link      ("address")
         )
 
     return export
@@ -154,17 +154,16 @@ def security (db, ** kw) :
     roles = \
         [ ("Type"          , "Allowed to add/change type codes")
         , ("Letter"        , "Allowed to add/change templates and letters")
+        , ("Contact"       , "Allowed to add/change address data")
         ]
 
     classes = \
-        [ ("address"           , ["User"],    ["User"])
-        , ("adr_type"          , ["User"],    ["Type"])
+        [ ("adr_type"          , ["User"],    ["Type"])
         , ("adr_type_cat"      , ["User"],    ["Type"])
-        , ("letter"            , ["User"],    ["Letter"])
         , ("tmplate"           , ["User"],    ["Letter"])
         , ("valid"             , ["User"],    ["Admin"])
         , ("contact_type"      , ["User"],    ["Admin"])
-        , ("contact"           , ["User"],    ["User"])
+        , ("contact"           , ["User"],    ["Contact"])
         ]
 
     schemadef.register_roles             (db, roles)

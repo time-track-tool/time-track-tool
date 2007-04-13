@@ -465,21 +465,21 @@ if 'adr_type_cat' in db.classes :
 
 if 'contact_type' in db.classes :
     db.contact_type.create \
-        ( name         = 'Web'
+        ( name         = 'www'
         , description  = 'Home Page'
         , url_template = '%(contact)s'
         )
     db.contact_type.create \
         ( name         = 'Email'
-        , description  = 'Email Address'
+        , description  = 'Email Adresse'
         , url_template = 'mailto:%(contact)s'
         )
     db.contact_type.create \
-        ( name         = 'Phone'
-        , description  = 'Telephone Number'
+        ( name         = 'Telefon'
+        , description  = 'Telefonnummer'
         )
     db.contact_type.create \
         ( name         = 'Fax'
-        , description  = 'Fax Number'
+        , description  = 'Faxnummer'
         )
     
