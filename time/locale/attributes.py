@@ -35,7 +35,10 @@ schemas = \
     , 'nwm'
     , 'time_tracker'
     , 'complex'
+    , 'address'
+    , 'sinvoice'
     , 'abo'
+    , 'legalclient'
     , 'core'
     )
 importer = schemadef.Importer (globals (), schemas)

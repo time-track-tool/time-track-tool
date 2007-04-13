@@ -287,6 +287,13 @@ _helptext          = \
              must match.
           '''
       ]
+    , ""'contact'                     :
+      [ ""'''Contact information, e.g., Email address, Phone number, Fax
+             number, Homepage
+          '''
+      ]
+    , ""'contact_type'                :
+      [""'''Type of contact information, e.g., Email, Phone, Fax, Homepage''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
@@ -1207,6 +1214,14 @@ _helptext          = \
       ]
     , ""'url'                         :
       [""'''Web-Link for this %(Classname)s''']
+    , ""'url_template'                :
+      [ ""'''Template used when rendering the contact field for a
+             contact. You can use fields of the form "%%(variable)s" to
+             render variables, e.g. for a Web-Site the %(Property)s
+             would be "%%(contact)s" to render the contact as a link to
+             the web-site.
+          '''
+      ]
     , ""'use_dhcp'                    :
       [ ""'''Flag if this %(Classname)s should be served by the DHCP
              server.

@@ -42,8 +42,7 @@ import schemadef
 # Note: order matters. Usually ext_issue (needed by it_tracker for
 # example) comes first and core is always last.
 schemas = \
-    ( 'schemadef'
-    , 'ext_issue'
+    ( 'ext_issue'
     , 'it_tracker'
     , 'core'
     )

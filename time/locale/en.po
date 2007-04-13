@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-02-16 11:18+0100\n"
+"POT-Creation-Date: 2007-04-13 09:38+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -65,6 +65,19 @@ msgstr ""
 
 msgid ""
 "address type category \"ABO\" is used by the system and may not be changed."
+msgstr ""
+
+msgid "You must enter a \"title\"."
+msgstr ""
+
+msgid "msg"
+msgstr "Message"
+
+#, python-format
+msgid "A detailed description must be given in %(field)s"
+msgstr ""
+
+msgid "For bugs you have to specify the release"
 msgstr ""
 
 #, python-format
@@ -886,6 +899,21 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "contact"
+msgstr "Contact"
+
+msgid ""
+"Contact information, e.g., Email address, Phone number, Fax\n"
+"             number, Homepage\n"
+"          "
+msgstr ""
+
+msgid "contact_type"
+msgstr "Contact type"
+
+msgid "Type of contact information, e.g., Email, Phone, Fax, Homepage"
+msgstr ""
+
 msgid "Content of %(Classname)s"
 msgstr ""
 
@@ -1627,13 +1655,11 @@ msgid "month_balance"
 msgstr "Month balance"
 
 msgid ""
-"Shows the overtime or flexitime balance at the last\n"
-"             month-end before (or on) the selected date.\n"
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\". Only applicable for user whose overtime\n"
+"             period is a month.\n"
 "          "
 msgstr ""
-
-msgid "msg"
-msgstr "Message"
 
 msgid "New message or notice for %(Classname)s"
 msgstr ""
@@ -2021,8 +2047,12 @@ msgid "release"
 msgstr "Release"
 
 msgid ""
-"The %(Property)s this %(Classname)s belongs to -- if\n"
-"             available (e.g. 4.3.72 for TTP-Plan).\n"
+"The %(Property)s this %(Classname)s was found, either as\n"
+"             bug or as missing feature. For (newly reported) bugs,\n"
+"             %(Property)s *must* be specified. Enter the release name\n"
+"             or, if applicable, the name and version of the tool (e.g.,\n"
+"             \"TTP-Plan 4.3.72\"). For change requests you may enter the\n"
+"             currently used release.\n"
 "          "
 msgstr ""
 
@@ -2675,6 +2705,18 @@ msgstr "URL"
 msgid "Web-Link for this %(Classname)s"
 msgstr ""
 
+msgid "url_template"
+msgstr "URL template"
+
+msgid ""
+"Template used when rendering the contact field for a\n"
+"             contact. You can use fields of the form \"%%(variable)s\" to\n"
+"             render variables, e.g. for a Web-Site the %(Property)s\n"
+"             would be \"%%(contact)s\" to render the contact as a link to\n"
+"             the web-site.\n"
+"          "
+msgstr ""
+
 msgid "use_dhcp"
 msgstr "Use DHCP"
 
@@ -2805,8 +2847,9 @@ msgid "week_balance"
 msgstr "Week balance"
 
 msgid ""
-"Shows the overtime or flexitime balance at the last sunday\n"
-"             before (or on) the selected date.\n"
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\". Only applicable for user whose overtime\n"
+"             period is a week.\n"
 "          "
 msgstr ""
 
@@ -2886,8 +2929,9 @@ msgid "year_balance"
 msgstr "Year balance"
 
 msgid ""
-"Shows the overtime or flexitime balance at the last\n"
-"             year-end before (or on) the selected date.\n"
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\". Only applicable for user whose overtime\n"
+"             period is a year.\n"
 "          "
 msgstr ""
 
@@ -3541,14 +3585,17 @@ msgstr "Linenumber"
 msgid "file_name"
 msgstr "Filename"
 
+msgid "adr_type_cat"
+msgstr "Address type category"
+
 msgid "abo_price"
 msgstr ""
 
 msgid "abo_type"
 msgstr "Subscription type"
 
-msgid "adr_type_cat"
-msgstr "Address type category"
+msgid "legalclient"
+msgstr ""
 
 msgid "file"
 msgstr "File"
@@ -3570,6 +3617,3 @@ msgstr "User Status"
 
 msgid "doc_num"
 msgstr "Document number"
-
-msgid "legalclient"
-msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-02-16 11:18+0100\n"
+"POT-Creation-Date: 2007-04-13 09:38+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -71,6 +71,20 @@ msgstr ""
 "Die Typ-Kategorie \"ABO\" wird vom System verwendet und darf nicht geändert "
 "werden."
 
+msgid "You must enter a \"title\"."
+msgstr "\"Titel\" muss eingegeben werden."
+
+msgid "msg"
+msgstr "Notiz"
+
+#, python-format
+msgid "A detailed description must be given in %(field)s"
+msgstr "Eine detaillierte Beschreibung muss in %(field)s gegeben werden"
+
+msgid "For bugs you have to specify the release"
+msgstr "Bei Bugs muss das Release angegeben werden"
+
+#, python-format
 msgid "The field \"%s\" must remain filled."
 msgstr "Das Feld \"%(attr)s\" muss ausgefüllt bleiben"
 
@@ -913,6 +927,23 @@ msgstr ""
 "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
 "müssen übereinstimmen."
 
+msgid "contact"
+msgstr "Kontakt"
+
+msgid ""
+"Contact information, e.g., Email address, Phone number, Fax\n"
+"             number, Homepage\n"
+"          "
+msgstr ""
+"Kontakt-Information, z.B. Email-Adresse, Telefonnummer,"
+"Faxnummer, Homepage"
+
+msgid "contact_type"
+msgstr "Kontakt-Typ"
+
+msgid "Type of contact information, e.g., Email, Phone, Fax, Homepage"
+msgstr "Typ der Kontaktinformation, z.B. Email, Telefon, Fax, www"
+
 msgid "Content of %(Classname)s"
 msgstr "Inhalt dieser %(Classname)s"
 
@@ -1665,13 +1696,11 @@ msgid "month_balance"
 msgstr ""
 
 msgid ""
-"Shows the overtime or flexitime balance at the last\n"
-"             month-end before (or on) the selected date.\n"
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\". Only applicable for user whose overtime\n"
+"             period is a month.\n"
 "          "
 msgstr ""
-
-msgid "msg"
-msgstr "Notiz"
 
 msgid "New message or notice for %(Classname)s"
 msgstr "Feld für Notizen zu %(Classname)s"
@@ -2064,8 +2093,12 @@ msgid "release"
 msgstr "Release"
 
 msgid ""
-"The %(Property)s this %(Classname)s belongs to -- if\n"
-"             available (e.g. 4.3.72 for TTP-Plan).\n"
+"The %(Property)s this %(Classname)s was found, either as\n"
+"             bug or as missing feature. For (newly reported) bugs,\n"
+"             %(Property)s *must* be specified. Enter the release name\n"
+"             or, if applicable, the name and version of the tool (e.g.,\n"
+"             \"TTP-Plan 4.3.72\"). For change requests you may enter the\n"
+"             currently used release.\n"
 "          "
 msgstr ""
 
@@ -2727,6 +2760,22 @@ msgstr "URL"
 msgid "Web-Link for this %(Classname)s"
 msgstr "Web-Link für %(Classname)s"
 
+msgid "url_template"
+msgstr "URL Schablone"
+
+msgid ""
+"Template used when rendering the contact field for a\n"
+"             contact. You can use fields of the form \"%%(variable)s\" to\n"
+"             render variables, e.g. for a Web-Site the %(Property)s\n"
+"             would be \"%%(contact)s\" to render the contact as a link to\n"
+"             the web-site.\n"
+"          "
+msgstr ""
+"Die %(Property)s wird benutzt wenn eine Kontaktinformation dargestellt"
+" wird. Es können Variablen-Felder der Form \"%%(variable)s\" verwendet"
+" werden, z.B. für einen www-Kontakt wäre %(Property)s \"%%(contact)s\""
+" um den Kontakt als Link auf die Homepage darzustellen."
+
 msgid "use_dhcp"
 msgstr ""
 
@@ -2859,8 +2908,9 @@ msgid "week_balance"
 msgstr ""
 
 msgid ""
-"Shows the overtime or flexitime balance at the last sunday\n"
-"             before (or on) the selected date.\n"
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\". Only applicable for user whose overtime\n"
+"             period is a week.\n"
 "          "
 msgstr ""
 
@@ -2940,8 +2990,9 @@ msgid "year_balance"
 msgstr ""
 
 msgid ""
-"Shows the overtime or flexitime balance at the last\n"
-"             year-end before (or on) the selected date.\n"
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\". Only applicable for user whose overtime\n"
+"             period is a year.\n"
 "          "
 msgstr ""
 
@@ -3601,14 +3652,17 @@ msgstr "Zeilennummer"
 msgid "file_name"
 msgstr "Dateiname"
 
+msgid "adr_type_cat"
+msgstr "Typ Kategorie"
+
 msgid "abo_price"
 msgstr "Preis"
 
 msgid "abo_type"
 msgstr "Abotyp"
 
-msgid "adr_type_cat"
-msgstr "Typ Kategorie"
+msgid "legalclient"
+msgstr "Klient"
 
 msgid "file"
 msgstr "Datei"
@@ -3630,6 +3684,3 @@ msgstr "Benutzerstatus"
 
 msgid "doc_num"
 msgstr ""
-
-msgid "legalclient"
-msgstr "Klient"

@@ -22,7 +22,7 @@
 # ****************************************************************************
 #++
 # Name
-#    contact
+#    address
 #
 # Purpose
 #    Schema definitions for address and other contact information
@@ -130,6 +130,22 @@ def init \
         )
     valid.setkey (''"name")
 
+    contact_type = Class \
+        ( db, ''"contact_type"
+        , name                = String    ()
+        , description         = String    ()
+        , url_template        = String    ()
+        )
+    contact_type.setkey (''"name")
+
+    contact = Class \
+        ( db, ''"contact"
+        , contact             = String    ()
+        , description         = String    ()
+        , contact_type        = Link      ("contact_type")
+        , address             = Link      ("address")
+        )
+
     return export
 # end def init
 
@@ -147,6 +163,8 @@ def security (db, ** kw) :
         , ("letter"            , ["User"],    ["Letter"])
         , ("tmplate"           , ["User"],    ["Letter"])
         , ("valid"             , ["User"],    ["Admin"])
+        , ("contact_type"      , ["User"],    ["Admin"])
+        , ("contact"           , ["User"],    ["User"])
         ]
 
     schemadef.register_roles             (db, roles)

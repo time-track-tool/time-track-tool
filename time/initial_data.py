@@ -462,3 +462,24 @@ if 'valid' in db.classes :
 
 if 'adr_type_cat' in db.classes :
     db.adr_type_cat.create (code = 'ABO', description = 'Laufende Abos')
+
+if 'contact_type' in db.classes :
+    db.contact_type.create \
+        ( name         = 'Web'
+        , description  = 'Home Page'
+        , url_template = '%(contact)s'
+        )
+    db.contact_type.create \
+        ( name         = 'Email'
+        , description  = 'Email Address'
+        , url_template = 'mailto:%(contact)s'
+        )
+    db.contact_type.create \
+        ( name         = 'Phone'
+        , description  = 'Telephone Number'
+        )
+    db.contact_type.create \
+        ( name         = 'Fax'
+        , description  = 'Fax Number'
+        )
+    
