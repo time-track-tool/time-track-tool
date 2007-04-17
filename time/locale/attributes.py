@@ -39,6 +39,7 @@ schemas = \
     , 'sinvoice'
     , 'abo'
     , 'legalclient'
+    , 'erp'
     , 'core'
     )
 importer = schemadef.Importer (globals (), schemas)

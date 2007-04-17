@@ -81,6 +81,7 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 def init (db) :
     if 'address' not in db.classes :
         return
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.address.audit ("create", set_adr_defaults)

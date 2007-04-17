@@ -15,6 +15,7 @@
               , 'content', 'messages', 'files'
               )
   ; labelprop python: klass._klass.labelprop ()
+  ; keyprop   python: klass._klass.getkey ()
   ; linkprops python: (labelprop, 'id')
   ; props     python:[i for i in utils.sorted_properties (db, context)
                       if i._name not in excpt
@@ -72,8 +73,14 @@
 
 <table class="form">
 
+ <tr tal:condition="keyprop">
+  <th class="required"
+   tal:content="structure python:utils.fieldname (classname, keyprop)"/>
+  <td tal:content="structure python:context [keyprop].field ()"/>
+ </tr>
  <tal:block tal:repeat="prop props">
-  <tr tal:condition="python:prop._name not in ('id','date','author')">
+  <tr tal:condition="python:
+      prop._name not in ('id','date','author') and prop._name != keyprop">
    <th tal:content="structure python:utils.fieldname (classname, prop._name)"/>
    <td tal:content="structure python:utils.ExtProperty
        (utils, prop, item = context).menu_or_field (db)"/>

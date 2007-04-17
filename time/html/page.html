@@ -645,7 +645,7 @@
 
    <tr tal:condition="python:has_files and want_files">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
-    <td><input type="file" name="@file" size="40"/></td>
+    <td colspan="3"><input type="file" name="@file" size="40"/></td>
    </tr>
 
    <tr tal:condition="context/is_edit_ok">

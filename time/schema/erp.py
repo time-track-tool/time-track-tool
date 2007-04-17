@@ -40,7 +40,7 @@ def init \
     , Multilink
     , Boolean
     , Number
-    , Msg_Class
+    , IssueClass
     , Address_Class
     , Letter_Class
     , ** kw
@@ -52,14 +52,14 @@ def init \
     bank_account = Class \
         ( db, ''"bank_account"
         , bank                  = String    ()
+        , description           = String    ()
         , account_number        = String    ()
         , bank_code             = String    ()
         , iban                  = String    ()
         , bic                   = String    ()
-        , customer              = Link      ("customer")
         )
 
-    customer = Msg_Class \
+    customer = IssueClass \
         ( db, ''"customer"
         , name                  = String    ()
         , description           = String    ()
@@ -72,13 +72,13 @@ def init \
         , attendant             = Link      ("user")
         , credit_limit          = Number    ()
         , credit_limit_cur      = Link      ("currency")
+        , discount_group        = Link      ("discount_group")
         , invoice_dispatch      = Link      ("invoice_dispatch")
         , pharma_ref            = Link      ("pharma_ref")
-        , group_discounts       = Multilink ("group_discount")
-        , overall_discount      = Multilink ("overall_discount")
         , invoice_text          = String    ()
-        , bank_account          = Link      ("bank_account")
+        , bank_account          = Multilink ("bank_account")
         , sales_conditions      = Link      ("sales_conditions")
+        , messages              = Multilink ("msg")
         )
     customer.setkey (''"name")
 
@@ -86,6 +86,7 @@ def init \
         ( db, ''"customer_group"
         , name                  = String    ()
         , description           = String    ()
+        , discount_group        = Link      ("discount_group")
         )
     customer_group.setkey ("name")
 
@@ -96,6 +97,15 @@ def init \
         , order                 = Number    ()
         )
     customer_status.setkey ("name")
+
+    discount_group = Class \
+        ( db, ''"discount_group"
+        , name                  = String    ()
+        , description           = String    ()
+        , group_discounts       = Multilink ("group_discount")
+        , overall_discount      = Multilink ("overall_discount")
+        )
+    discount_group.setkey ("name")
 
     dispatch_type = Class \
         ( db, ''"dispatch_type"

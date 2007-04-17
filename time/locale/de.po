@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-04-13 09:38+0200\n"
+"POT-Creation-Date: 2007-04-16 12:00+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -935,8 +935,7 @@ msgid ""
 "             number, Homepage\n"
 "          "
 msgstr ""
-"Kontakt-Information, z.B. Email-Adresse, Telefonnummer,"
-"Faxnummer, Homepage"
+"Kontakt-Information, z.B. Email-Adresse, Telefonnummer,Faxnummer, Homepage"
 
 msgid "contact_type"
 msgstr "Kontakt-Typ"
@@ -2771,10 +2770,10 @@ msgid ""
 "             the web-site.\n"
 "          "
 msgstr ""
-"Die %(Property)s wird benutzt wenn eine Kontaktinformation dargestellt"
-" wird. Es können Variablen-Felder der Form \"%%(variable)s\" verwendet"
-" werden, z.B. für einen www-Kontakt wäre %(Property)s \"%%(contact)s\""
-" um den Kontakt als Link auf die Homepage darzustellen."
+"Die %(Property)s wird benutzt wenn eine Kontaktinformation dargestellt wird. "
+"Es können Variablen-Felder der Form \"%%(variable)s\" verwendet werden, z.B. "
+"für einen www-Kontakt wäre %(Property)s \"%%(contact)s\" um den Kontakt als "
+"Link auf die Homepage darzustellen."
 
 msgid "use_dhcp"
 msgstr ""
@@ -3661,14 +3660,107 @@ msgstr "Preis"
 msgid "abo_type"
 msgstr "Abotyp"
 
+msgid "contacts"
+msgstr "Kontakte"
+
 msgid "legalclient"
 msgstr "Klient"
 
-msgid "file"
-msgstr "Datei"
+msgid "bank_account"
+msgstr "Bankverbindung"
+
+msgid "customer"
+msgstr "Kunde"
+
+msgid "bank_code"
+msgstr "Bankleitzahl"
+
+msgid "bic"
+msgstr "BIC"
+
+msgid "iban"
+msgstr "IBAN"
+
+msgid "account_number"
+msgstr "Kontonummer"
+
+msgid "bank"
+msgstr "Bank"
+
+msgid "invoice_dispatch"
+msgstr "Rechnungsversand"
 
 msgid "header"
 msgstr ""
+
+msgid "invoice_text"
+msgstr "Rechnungstext"
+
+msgid "overall_discount"
+msgstr "Gesamtrabatt"
+
+msgid "pharma_ref"
+msgstr "Pharmaref. Bezirk"
+
+msgid "attendant"
+msgstr "Kundenbetreuer"
+
+msgid "tax_id"
+msgstr "Umsatzsteuer ID"
+
+msgid "credit_limit"
+msgstr "Kreditlimit"
+
+msgid "customer_group"
+msgstr "Kundengruppe"
+
+msgid "sales_conditions"
+msgstr "Konditionen"
+
+msgid "invoice_address"
+msgstr "Rechnungsadresse"
+
+msgid "shipping_address"
+msgstr "Lieferadresse"
+
+msgid "contact_person"
+msgstr "Kontaktperson"
+
+msgid "group_discounts"
+msgstr "Artikelgruppenrabatt"
+
+msgid "credit_limit_cur"
+msgstr "Kreditlimit-Währung"
+
+msgid "customer_status"
+msgstr "Kundenstatus"
+
+msgid "dispatch_type"
+msgstr "Versandart"
+
+msgid "group_discount"
+msgstr "Artikelgruppenrabatt"
+
+msgid "discount"
+msgstr "Gesamtrabatt"
+
+msgid "product_group"
+msgstr "Artikelgruppe"
+
+msgid "price"
+msgstr "Preis"
+
+msgid "payment_days"
+msgstr "Zahlungziel"
+
+msgid "discount_days"
+msgstr "Zahlungsziel-Skonto"
+
+msgid "discount_percent"
+msgstr "Skonto"
+
+msgid "file"
+msgstr "Datei"
 
 msgid "query"
 msgstr "Abfrage"
@@ -3685,68 +3777,5 @@ msgstr "Benutzerstatus"
 msgid "doc_num"
 msgstr ""
 
-msgid "invoice_dispatch"
-msgstr "Rechnungsversand"
-
-msgid "customer_status"
-msgstr "Kundenstatus"
-
-msgid "customer_group"
-msgstr "Kundengruppe"
-
-msgid "customer"
-msgstr "Kundenstamm"
-
-msgid "shipping_address"
-msgstr "Lieferadresse"
-
-msgid "invoice_address"
-msgstr "Rechnungsadresse"
-
-msgid "contact_person"
-msgstr "Kontaktperson"
-
-msgid "tax_id"
-msgstr "Umsatzsteuer ID"
-
-msgid "attendant"
-msgstr "Kundenbetreuer"
-
-msgid "credit_limit"
-msgstr "Kreditlimit"
-
-msgid "credit_limit_cur"
-msgstr "Kreditlimit-Währung"
-
-msgid "bank_account"
-msgstr "Bankverbindung"
-
-msgid "bank"
-msgstr "Bank"
-
-msgid "account_number"
-msgstr "Kontonummer"
-
-msgid "bank_code"
-msgstr "Bankleitzahl"
-
-msgid "iban"
-msgstr "IBAN"
-
-msgid "bic"
-msgstr "BIC"
-
-msgid "pharma_ref"
-msgstr "Pharmaref. Bezirk"
-
-msgid "group_discount"
-msgstr "Artikelgruppenrabatt"
-
-msgid "product_group"
-msgstr "Artikelgruppe"
-
-msgid "dispatch_type"
-msgstr "Versandart"
-
-msgid "sales_conditions"
-msgstr "Konditionen"
+msgid "discount_group"
+msgstr "Rabattgruppe"
