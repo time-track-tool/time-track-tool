@@ -475,7 +475,11 @@ if 'contact_type' in db.classes :
         , url_template = 'mailto:%(contact)s'
         )
     db.contact_type.create \
-        ( name         = 'Telefon'
+        ( name         = 'Tel. Firma'
+        , description  = 'Telefonnummer'
+        )
+    db.contact_type.create \
+        ( name         = 'Tel. privat'
         , description  = 'Telefonnummer'
         )
     db.contact_type.create \
@@ -483,3 +487,16 @@ if 'contact_type' in db.classes :
         , description  = 'Faxnummer'
         )
     
+if 'customer_status' in db.classes :
+    db.customer_status.create \
+        ( name         = 'gültig'
+        , description  = 'Gültiger Kunde'
+        , order        = 1
+        , valid        = True
+        )
+    db.customer_status.create \
+        ( name         = 'ungültig'
+        , description  = 'Kein Kunde'
+        , order        = 2
+        , valid        = False
+        )

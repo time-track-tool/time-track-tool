@@ -96,6 +96,7 @@ def init \
         , name                  = String    ()
         , description           = String    ()
         , order                 = Number    ()
+        , valid                 = Boolean   ()
         )
     customer_status.setkey ("name")
 

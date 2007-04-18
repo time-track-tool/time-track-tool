@@ -68,6 +68,8 @@
    , 'category'        : '@columns=name,description,responsible,nosy,'
                          'valid,cert_sw&@sort=name&@filter=valid&'
                          '@pagesize=200&@startwith=0&valid=yes'
+   , 'customer'        : '@template=index&@pagesize=50&@startwith=0&'
+                         '@columns=id,name,description,tax_id,status,attendant'
    , 'daily_record'    : '@columns=id,user,date,status&@sort=-id&'
                          '@filter=user,date&@pagesize=20&@startwith=0&'
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
@@ -259,6 +261,7 @@
      , ('pharma_ref',          'Edit',   '?@template=item', 1)
      , ('product_group',       'Edit',   '?@template=item', 1)
      , ('sales_conditions',    'Edit',   '?@template=item', 1)
+     , ('customer',            'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',         'View', '',               ('',''))
      , ('daily_record',        'View', 'controlling,hr', ('',''))
@@ -298,6 +301,7 @@
      , ('tmplate',             'View', '',               ('',''))
      , ('letter',              'View', '',               ('',''))
      , ('legalclient',         'View', '',               ('',''))
+     , ('customer',            'View', '',               ('',''))
      )
    )
  ; menu_type     python:
@@ -398,22 +402,23 @@
      </span>
 
      <!-- custom classes with "New" Button -->
-     <tal:block tal:repeat="c python:['address']">
+     <tal:block tal:repeat="c python:
+                [('address', 'customer_group'), ('customer', 'abo')]">
         <tal:block tal:condition="python:
-          (   'address' in db._db.classes
-          and request.user.hasPermission('View', c)
+          (   c [0] in db._db.classes
+          and not c [1] in db._db.classes
+          and request.user.hasPermission('View', c [0])
           )">
          <span class="classblock">
-          <a tal:condition="python:request.user.hasPermission('View', c) or
-                                   request.user.hasPermission('Edit', c)"
+          <a tal:condition="python:request.user.hasPermission('View', c [0]) or
+                                   request.user.hasPermission('Edit', c [0])"
              tal:attributes="href python:
-                 '%s?%s' % (c, default_queries.get (c, ''))"
-             tal:content="python:i18n.gettext (c)">xyzzy</a>
-          <span
-            tal:condition="python:request.user.hasPermission('Edit', c)"
-          >
+                 '%s?%s' % (c [0], default_queries.get (c [0], ''))"
+             tal:content="python:i18n.gettext (c [0])"/>
+          <span tal:condition="python:
+                request.user.hasPermission('Edit', c [0])">
              /
-             <a tal:attributes="href string:${c}?:template=item">Neu</a>
+             <a tal:attributes="href python:'%s?:template=item' % c [0]">Neu</a>
           </span>
          </span>
         </tal:block>
