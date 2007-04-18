@@ -73,6 +73,8 @@
    , 'daily_record'    : '@columns=id,user,date,status&@sort=-id&'
                          '@filter=user,date&@pagesize=20&@startwith=0&'
                          'date=.-1d%%3B.%%2B1d&user=%s' % uid
+   , 'discount_group'  : '@template=index&@columns=id,name,currency&'
+                         '@sort=-id&@pagesize=20&@startwith=0'
    , 'group'           : '@columns=name,gid,description,org_location&'
                          '@sort=-id&@pagesize=500&@startwith=0'
    , 'invoice'         : '@action=search&@columns=invoice_no,'
@@ -262,6 +264,7 @@
      , ('product_group',       'Edit',   '?@template=item', 1)
      , ('sales_conditions',    'Edit',   '?@template=item', 1)
      , ('customer',            'Edit',   '?@template=item', 1)
+     , ('discount_group',      'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',         'View', '',               ('',''))
      , ('daily_record',        'View', 'controlling,hr', ('',''))
@@ -302,6 +305,7 @@
      , ('letter',              'View', '',               ('',''))
      , ('legalclient',         'View', '',               ('',''))
      , ('customer',            'View', '',               ('',''))
+     , ('discount_group',      'View', '',               ('',''))
      )
    )
  ; menu_type     python:
