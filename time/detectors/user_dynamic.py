@@ -133,7 +133,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         , 'department'
         ) :
         if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)

@@ -56,6 +56,14 @@ class Create_New_Address (Action) :
     # end def handle
 # end class Create_New_Address
 
+def del_link (classname, id) :
+    return \
+        ( "document.forms.itemSynopsis ['@remove@%s'].value = '%s';"
+          "alert(document.forms.itemSynopsis ['@remove@%s'].value);"
+        % (classname, id, classname)
+        )
+# end def del_link
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -63,5 +71,5 @@ def init (instance) :
     actn = instance.registerAction
     actn ('create_new_address', Create_New_Address)
     util = instance.registerUtil
-    #util ("dynuser_copyfields",       dynuser_copyfields)
+    util ("del_link",           del_link)
 # end def init

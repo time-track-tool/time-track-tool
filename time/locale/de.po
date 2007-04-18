@@ -3742,7 +3742,7 @@ msgid "group_discount"
 msgstr "Artikelgruppenrabatt"
 
 msgid "discount"
-msgstr "Gesamtrabatt"
+msgstr "Rabatt"
 
 msgid "product_group"
 msgstr "Artikelgruppe"

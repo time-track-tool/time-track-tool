@@ -74,6 +74,7 @@ def init \
         , credit_limit_cur      = Link      ("currency")
         , discount_group        = Link      ("discount_group")
         , invoice_dispatch      = Link      ("invoice_dispatch")
+        , dispatch_type         = Link      ("dispatch_type")
         , pharma_ref            = Link      ("pharma_ref")
         , invoice_text          = String    ()
         , bank_account          = Multilink ("bank_account")
@@ -102,7 +103,8 @@ def init \
         ( db, ''"discount_group"
         , name                  = String    ()
         , description           = String    ()
-        , group_discounts       = Multilink ("group_discount")
+        , currency              = Link      ("currency")
+        , group_discount        = Multilink ("group_discount")
         , overall_discount      = Multilink ("overall_discount")
         )
     discount_group.setkey ("name")
@@ -116,11 +118,9 @@ def init \
 
     group_discount = Class \
         ( db, ''"group_discount"
-        , name                  = String    ()
         , product_group         = Link      ("product_group")
         , discount              = Number    ()
         )
-    group_discount.setkey ("name")
 
     invoice_dispatch = Class \
         ( db, ''"invoice_dispatch"
@@ -131,11 +131,9 @@ def init \
 
     overall_discount = Class \
         ( db, ''"overall_discount"
-        , name                  = String    ()
         , price                 = Number    ()
         , discount              = Number    ()
         )
-    overall_discount.setkey ("name")
 
     # Pharmareferenzbezirk
     pharma_ref = Class \
@@ -156,7 +154,6 @@ def init \
         ( db, ''"sales_conditions"
         , name                  = String    ()
         , description           = String    ()
-        , dispatch_type         = Link      ("dispatch_type")
         , discount_percent      = Number    ()
         , discount_days         = Number    ()
         , payment_days          = Number    ()

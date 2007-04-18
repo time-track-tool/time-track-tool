@@ -33,6 +33,16 @@ def update_address (db, cl, nodeid, new_values) :
             new_values ['invoice_address'] = invoice_address
 # end def update_address
 
+def new_customer (db, cl, nodeid, new_values) :
+    for i in ('customer_group',) :
+        if i not in new_values :
+            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+    customer_group = new_values ['customer_group']
+    if 'discount_group' not in new_values :
+        new_values ['discount_group'] = db.customer_group.get \
+            (customer_group, 'discount_group')
+# end def new_customer
+
 def init (db) :
     if 'customer' not in db.classes :
         return

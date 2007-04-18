@@ -79,13 +79,21 @@
       </td>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'dispatch_type')"/>
+      <td tal:content="structure python:context.dispatch_type.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'invoice_dispatch')"/>
+      <td tal:content="structure python:context.invoice_dispatch.menu ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'tax_id')"/>
       <td tal:content="structure python:context.tax_id.field ()"/>
       <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'customer_group')"/>
       <td tal:content="structure python:context.customer_group.menu ()"/>
       <th tal:content="structure python:utils.fieldname
@@ -115,7 +123,7 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'discount_group')"/>
-      <td tal:content="structure python:context.discount_group.field ()"/>
+      <td tal:content="structure python:context.discount_group.menu ()"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'sales_conditions')"/>
       <td tal:content="structure python:context.sales_conditions.menu ()"/>

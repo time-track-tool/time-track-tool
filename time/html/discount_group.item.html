@@ -1,0 +1,116 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'description')"/>
+     <td tal:content="structure python:context.description.field (size=60)"
+      colspan="3"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'currency')"/>
+     <td tal:content="structure python:context.currency.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'group_discount')"/>
+     <td>
+      <table class="form" border="0" style="border-spacing:0px;padding-top:0px">
+       <tr>
+        <th style="text-align:left;padding-top:0px"
+            tal:content="structure python:utils.fieldname
+            ('group_discount', 'product_group')"/>
+        <th style="text-align:left;padding-top:0px"
+            tal:content="structure python:utils.fieldname
+            ('group_discount', 'discount')" colspan="2"/>
+        <th tal:condition="context/is_edit_ok" i18n:translate=""
+            style="padding-top:0px">
+         remove
+        </th>
+       </tr>
+       <tr tal:repeat="gd python:sorted
+           (context.group_discount, key = lambda x : x.product_group)">
+        <td tal:content="structure gd/product_group/menu"/>
+        <td tal:content="structure python:gd.discount.field (size=5)"/>
+        <td>%</td>
+        <td tal:condition="context/is_edit_ok">
+          <input type="checkbox" name="@remove@group_discount"
+                 tal:attributes="value gd/id">
+        </td>
+       </tr>
+       <tr>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'group_discount', -1, 'product_group').menu ()"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'group_discount', -1, 'discount').field (size=5)"/>
+        <td>%</td>
+        <input type="hidden" name="@link@group_discount"
+               value="group_discount-1"/>
+       </tr>
+      </table>
+     </td>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'overall_discount')"/>
+     <td>
+      <table class="form" border="0" style="border-spacing:0px;padding-top:0px">
+       <tr>
+        <th style="text-align:left;padding-top:0px"
+            tal:content="structure python:utils.fieldname
+            ('overall_discount', 'price')"/>
+        <th style="text-align:left;padding-top:0px"
+            tal:content="structure python:utils.fieldname
+            ('overall_discount', 'discount')" colspan="2"/>
+        <th tal:condition="context/is_edit_ok" i18n:translate=""
+            style="padding-top:0px">
+         remove
+        </th>
+       </tr>
+       <tr tal:repeat="od python:sorted
+           (context.overall_discount, key = lambda x : x.price)">
+        <td tal:content="structure python:od.price.field (size=10)"/>
+        <td tal:content="structure python:od.discount.field (size=5)"/>
+        <td>%</td>
+        <td tal:condition="context/is_edit_ok">
+          <input type="checkbox" name="@remove@overall_discount"
+                 tal:attributes="value od/id">
+        </td>
+       </tr>
+       <tr>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'overall_discount', -1, 'price').field (size=10)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'overall_discount', -1, 'discount').field (size=5)"/>
+        <td>%</td>
+        <input type="hidden" name="@link@overall_discount"
+               value="overall_discount-1"/>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
