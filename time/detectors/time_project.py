@@ -40,22 +40,16 @@ def check_time_project (db, cl, nodeid, new_values) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
-    for n in 'department', :
-        if not new_values.get (n, cl.get (nodeid, n)) :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (n)}
+    common.require_attributes (_, cl, nodeid, new_values, 'department')
     if not wl :
-        for n in 'organisation', :
-            if not new_values.get (n, cl.get (nodeid, n)) :
-                raise Reject, "%(attr)s must be specified" % {'attr' : _ (n)}
+        common.require_attributes (_, cl, nodeid, new_values, 'organisation')
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
-    for i in ( 'name', 'responsible', 'department') :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
-    for i in ('organisation', ) :
-        if i not in new_values and 'work_location' not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'name', 'responsible', 'department')
+    if 'work_location' not in new_values :
+        common.require_attributes (_, cl, nodeid, new_values, 'organisation')
     common.check_name_len (_, new_values ['name'])
     if 'status' not in new_values :
         new_values ['status'] = db.time_project_status.lookup ('New')

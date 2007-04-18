@@ -53,7 +53,7 @@ def init \
         ( db, ''"bank_account"
         , bank                  = String    ()
         , description           = String    ()
-        , account_number        = String    ()
+        , act_number            = String    ()
         , bank_code             = String    ()
         , iban                  = String    ()
         , bic                   = String    ()

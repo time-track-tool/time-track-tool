@@ -3703,7 +3703,7 @@ msgstr "BIC"
 msgid "iban"
 msgstr "IBAN"
 
-msgid "account_number"
+msgid "act_number"
 msgstr "Kontonummer"
 
 msgid "bank"

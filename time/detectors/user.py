@@ -196,9 +196,16 @@ def new_user (db, cl, nodeid, new_values) :
         if 'status' not in new_values :
             new_values ['status'] = valid
         status = new_values ['status']
-    for i in 'firstname', 'lastname', 'org_location', 'department' :
-        if i not in new_values and i in cl.properties :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        ( _
+        , cl
+        , nodeid
+        , new_values
+        , 'firstname'
+        , 'lastname'
+        , 'org_location'
+        , 'department'
+        )
     if 'tt_lines' in cl.properties and 'tt_lines' not in new_values :
         new_values ['tt_lines'] = 1
 

@@ -81,13 +81,19 @@ def new_discount_group (db, cl, nodeid, new_values) :
     check_overall_discount (db, new_values)
 # end def new_discount_group
 
+def check_bank_account (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'bank')
+# end def check_bank_account
+
 def init (db) :
     if 'discount_group' not in db.classes :
         return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.discount_group.audit  ("set", check_discount_group)
+    db.discount_group.audit  ("set",    check_discount_group)
+    db.bank_account.audit    ("create", check_bank_account)
+    db.bank_account.audit    ("set",    check_bank_account)
 # end def init
 
 ### __END__ time_wp

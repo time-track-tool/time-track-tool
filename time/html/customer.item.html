@@ -134,6 +134,65 @@
       <td tal:content="structure python:context.invoice_text.field (size=80)"
           colspan="3"/>
      </tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'bank_account')"/>
+      <td colspan="3">
+       <table class="form" border="0"
+              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+        <tr>
+         <th style="text-align:left;padding-top:0px;padding-left:0px"
+             class="required" tal:content="structure python:utils.fieldname
+             (classname, 'bank')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:content="structure python:utils.fieldname
+             (classname, 'bank_code')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:content="structure python:utils.fieldname
+             (classname, 'act_number')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:content="structure python:utils.fieldname
+             (classname, 'bic')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:content="structure python:utils.fieldname
+             (classname, 'iban')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:condition="context/is_edit_ok" i18n:translate=""
+             style="padding-top:0px">
+             remove
+         </th>
+        </tr>
+        <tr tal:repeat="bnk python:sorted
+            (context.bank_account, key = lambda x : x.bank)">
+         <td style="padding-left:0px"
+             tal:content="structure python:utils.ExtProperty
+             (utils, bnk.bank, item = bnk).formatlink ()"/>
+         <td tal:content="structure python:bnk.bank_code.plain ()"/>
+         <td tal:content="structure python:bnk.act_number.plain ()"/>
+         <td tal:content="structure python:bnk.bic.plain ()"/>
+         <td tal:content="structure python:bnk.iban.plain ()"/>
+         <td tal:condition="context/is_edit_ok">
+          <input type="checkbox" name="@remove@bank_account"
+                 tal:attributes="value bnk/id">
+         </td>
+        </tr>
+        <tr>
+         <td style="padding-left:0px"
+             tal:content="structure python:utils.new_property
+             (context, db, 'bank_account', -1, 'bank').field (size=20)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'bank_account', -1, 'bank_code').field (size=10)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'bank_account', -1, 'act_number').field (size=15)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'bank_account', -1, 'bic').field (size=15)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'bank_account', -1, 'iban').field (size=15)"/>
+         <input type="hidden" name="@link@bank_account" value="bank_account-1"/>
+        </tr>
+       </table>
+      </td>
+     <tr>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

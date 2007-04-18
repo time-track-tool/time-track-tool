@@ -298,9 +298,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
         with the same date for this user.
     """
     uid = db.getuid ()
-    for i in 'user', 'date' :
-        if i not in new_values :
-            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'user', 'date')
     user  = new_values ['user']
     uname = db.user.get (user, 'username')
     if  (   uid != user
@@ -308,13 +306,10 @@ def new_daily_record (db, cl, nodeid, new_values) :
         and not common.user_has_role (db, uid, 'admin')
         ) :
         raise Reject, _ ("Only user and Controlling may create daily records")
-    for i in 'time_record', :
-        if i in new_values :
-            raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
+    common.reject_attributes (_, new_values, 'time_record')
     # the following is allowed for the admin (import!)
-    for i in 'status', :
-        if i in new_values and uid != '1' :
-            raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
+    if uid != '1' :
+        common.reject_attributes (_, new_values, 'status')
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
@@ -358,9 +353,10 @@ def check_start_end_duration \
         end   = end   + ":00"
     if 'end' in new_values :
         if not start :
-            raise Reject, _ ("%(attr)s must be specified") % {'attr' : 'start'}
+            attr = _ ('start')
+            raise Reject, _ (''"%(attr)s must be specified") % locals ()
         if 'duration' in new_values :
-            raise Reject, _ ("Either specify duration or start/end")
+            raise Reject, _ (''"Either specify duration or start/end")
         dstart = Date (start, offset = 0)
         dend   = Date (end,   offset = 0)
         check_timestamps (dstart, dend, date)
@@ -424,12 +420,8 @@ def new_time_record (db, cl, nodeid, new_values) :
     """
     uid    = db.getuid ()
     travel = False
-    for i in 'daily_record', :
-        if i not in new_values :
-            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
-    for i in 'dist', 'tr_duration' :
-        if i in new_values :
-            raise Reject, _ ("%(attr)s must not be specified") % {'attr': _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'daily_record')
+    common.reject_attributes  (_, new_values, 'dist', 'tr_duration')
     check_generated (new_values)
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     uname    = db.user.get (dr.user, 'username')

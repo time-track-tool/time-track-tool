@@ -31,6 +31,7 @@
 
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+from common                         import require_attributes
 
 _      = lambda x : x
 
@@ -41,9 +42,7 @@ def check_public_holiday (db, cl, nodeid, new_values) :
 # end def check_public_holiday
 
 def new_public_holiday (db, cl, nodeid, new_values) :
-    for i in 'name', 'date', 'locations' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    require_attributes (_, cl, nodeid, new_values, 'name', 'date', 'locations')
 # end def new_public_holiday
 
 def init (db) :

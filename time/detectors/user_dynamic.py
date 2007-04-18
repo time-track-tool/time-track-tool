@@ -34,6 +34,7 @@ from roundup.cgi.TranslationService import get_translation
 
 from freeze       import frozen
 from user_dynamic import last_user_dynamic, day
+from common       import require_attributes
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -126,14 +127,16 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
 
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
-    for i in \
-        ( 'user'
+    require_attributes \
+        ( _
+        , cl
+        , nodeid
+        , new_values
+        , 'user'
         , 'valid_from'
         , 'org_location'
         , 'department'
-        ) :
-        if i not in new_values :
-            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+        )
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)

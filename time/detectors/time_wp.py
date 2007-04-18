@@ -52,9 +52,16 @@ def check_time_wp (db, cl, nodeid, new_values) :
 # end def check_time_wp
 
 def new_time_wp (db, cl, nodeid, new_values) :
-    for i in 'name', 'responsible', 'project', 'cost_center' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        ( _
+        , cl
+        , nodeid
+        , new_values
+        , 'name'
+        , 'responsible'
+        , 'project'
+        , 'cost_center'
+        )
     prid = new_values ['project']
     uid  = db.getuid ()
     prj  = db.time_project.getnode (prid)

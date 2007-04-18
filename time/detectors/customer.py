@@ -21,22 +21,22 @@
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
+from common                         import auto_retire, require_attributes
 
 _ = lambda x : x
 
-def update_address (db, cl, nodeid, new_values) :
+def update_customer (db, cl, nodeid, new_values) :
+    auto_retire (db, cl, nodeid, new_values, 'bank_account')
     invoice_address = new_values.get \
         ('invoice_address', cl.get (nodeid, 'invoice_address'))
     if 'shipping_address' in new_values :
         if not invoice_address :
             invoice_address = new_values ['shipping_address']
             new_values ['invoice_address'] = invoice_address
-# end def update_address
+# end def update_customer
 
 def new_customer (db, cl, nodeid, new_values) :
-    for i in ('customer_group',) :
-        if i not in new_values :
-            raise Reject, _ ("%(attr)s must be specified") % {'attr' : _ (i)}
+    require_attributes (_, cl, nodeid, new_values, 'customer_group')
     customer_group = new_values ['customer_group']
     if 'discount_group' not in new_values :
         new_values ['discount_group'] = db.customer_group.get \
@@ -49,5 +49,6 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.customer.audit ("set", update_address)
+    db.customer.audit ("set",    update_customer)
+    db.customer.audit ("create", new_customer)
 # end def init

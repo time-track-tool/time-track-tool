@@ -80,9 +80,7 @@ def check_network_address (db, cl, nodeid, new_values) :
 # end def check_network_address
 
 def new_network_address (db, cl, nodeid, new_values) :
-    for i in 'ip', 'org_location' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'ip', 'org_location')
     check_ip_olo (db, new_values ['ip'], new_values ['org_location'])
 # end def new_network_address
 
@@ -111,9 +109,7 @@ def check_network_interface (db, cl, nodeid, new_values) :
 # end def check_network_interface
 
 def new_network_interface (db, cl, nodeid, new_values) :
-    for i in 'mac', :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'mac')
     reject_invalid_mac (new_values ['mac'])
 # end def new_network_interface
 
@@ -191,9 +187,7 @@ def check_machine_name (db, cl, nodeid, new_values) :
 # end def check_machine_name
 
 def new_machine_name (db, cl, nodeid, new_values) :
-    for i in 'name', :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'name')
     namecheck (new_values ['name'])
     adr = new_values.get ('network_address', [])
     mn  = new_values.get ('machine_name',    None)
@@ -232,9 +226,8 @@ def check_ip_subnet (db, cl, nodeid, new_values) :
 # end def check_ip_subnet
 
 def new_ip_subnet (db, cl, nodeid, new_values) :
-    for i in 'ip', 'netmask', 'org_location' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'ip', 'netmask', 'org_location')
     ip   = new_values ['ip']
     mask = new_values ['netmask']
     reject_invalid_ip         (ip)
@@ -266,9 +259,8 @@ def check_group (db, cl, nodeid, new_values) :
 # end def check_group
 
 def new_group (db, cl, nodeid, new_values) :
-    for i in 'name', 'org_location' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'name', 'org_location')
     si = db.org_location.get   (new_values ['org_location'], 'smb_domain')
     sd = db.smb_domain.getnode (si)
     if 'gid' not in new_values :
@@ -285,9 +277,7 @@ def check_smb_domain (db, cl, nodeid, new_values) :
 # end def check_smb_domain
 
 def new_smb_domain (db, cl, nodeid, new_values) :
-    for i in 'name', 'sid' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'name', 'sid')
     common.check_unique (_, cl, nodeid, sid = new_values ['sid'])
 # end def new_smb_domain
 
@@ -339,9 +329,8 @@ def check_alias_retire (db, cl, nodeid, dummy) :
 # end def check_alias_retire
 
 def new_alias (db, cl, nodeid, new_values) :
-    for i in 'name', 'org_location' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'name', 'org_location')
     if not ('alias_to_alias' in new_values or 'alias_to_user' in new_values) :
         raise Reject, _ ("Either %s or %s must be defined") \
             % ('alias_to_alias', 'alias_to_user')
@@ -359,9 +348,8 @@ def new_alias (db, cl, nodeid, new_values) :
 # end def new_alias
 
 def new_smb_machine (db, cl, nodeid, new_values) :
-    for i in 'smb_domain', 'machine_name' :
-        if i not in new_values :
-            raise Reject, "%(attr)s must be specified" % {'attr' : _ (i)}
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'smb_domain', 'machine_name')
     sd = db.smb_domain.getnode (new_values ['smb_domain'])
     if 'smb_domain' in new_values and 'machine_uid' not in new_values :
         new_values ['machine_uid'] = common.next_uid_or_gid \

@@ -801,4 +801,22 @@ def auto_retire (db, cl, nodeid, new_values, multilink_attr) :
             cls.retire (o)
 # end def auto_retire
 
+def require_attributes (_, cl, nodeid, new_values, * attributes) :
+    for a in attributes :
+        if a not in cl.properties :
+            continue
+        attr = _ (a)
+        if not nodeid and a not in new_values :
+            raise Reject, _ (''"%(attr)s must be specified") % locals ()
+        elif nodeid and new_values.get (a, 1) is None :
+            raise Reject, _ (''"%(attr)s must not be empty") % locals ()
+# end def require_attributes
+
+def reject_attributes (_, new_values, * attributes) :
+    for a in attributes :
+        attr = _ (a)
+        if a in new_values :
+            raise Reject, _ (''"%(attr)s must not be specified") % locals ()
+# end def reject_attributes
+
 ### __END__
