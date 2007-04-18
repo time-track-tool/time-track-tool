@@ -23,6 +23,7 @@ from roundup.date                   import Date
 
 from rup_utils                      import translate
 from roundup.cgi.TranslationService import get_translation
+from common                         import require_attributes, auto_retire
 
 def fix_adr_type (db, cl, nodeid, new_values) :
     if 'adr_type' in new_values :
@@ -61,10 +62,10 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
         raise Reject, _ (''"Country must be set")
 # end def set_adr_defaults
 
-def check_missing (db, cl, nodeid, new_values) :
-    if 'country' in new_values and not new_values ['country'] :
-        raise Reject, _ (''"Country must be set")
-# end def check_missing
+def check_address (db, cl, nodeid, new_values) :
+    require_attributes (_, cl, nodeid, new_values, 'country')
+    auto_retire (db, cl, nodeid, new_values, 'contacts')
+# end def check_address
 
 def lookalike_computation (db, cl, nodeid, new_values) :
     if 'firstname' in new_values or 'lastname' in new_values :
@@ -78,6 +79,10 @@ def lookalike_computation (db, cl, nodeid, new_values) :
         new_values ['lookalike_name'] = translate (firstname + ' ' + lastname)
 # end def lookalike_computation
 
+def check_contact (db, cl, nodeid, new_values) :
+    require_attributes (_, cl, nodeid, new_values, 'contact_type', 'contact')
+# end def check_contact
+
 def init (db) :
     if 'address' not in db.classes :
         return
@@ -89,5 +94,7 @@ def init (db) :
     db.address.audit ("set",    fix_adr_type)
     db.address.audit ("create", lookalike_computation)
     db.address.audit ("set",    lookalike_computation)
-    db.address.audit ("set",    check_missing)
+    db.address.audit ("set",    check_address)
+    db.contact.audit ("create", check_contact)
+    db.contact.audit ("set",    check_contact)
 # end def init

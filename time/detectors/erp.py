@@ -70,6 +70,7 @@ def check_overall_discount (db, new_values) :
 # end def check_overall_discount
 
 def check_discount_group (db, cl, nodeid, new_values) :
+    common.require_attributes (cl, nodeid, new_values, 'currency')
     check_group_discount   (db, new_values)
     check_overall_discount (db, new_values)
     common.auto_retire (db, cl, nodeid, new_values, 'group_discount')
