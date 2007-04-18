@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-04-16 12:00+0200\n"
+"POT-Creation-Date: 2007-04-18 09:33+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -97,6 +97,10 @@ msgid "%(attr)s may not be undefined"
 msgstr "\"%(attr)s\" darf nicht gelöscht werden"
 
 #, python-format
+msgid "%(attr)s must be specified"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
+#, python-format
 msgid "Already frozen: %(date)s"
 msgstr ""
 
@@ -122,6 +126,17 @@ msgstr "\"%(attr)s\" darf nicht geändert werden"
 #, python-format
 msgid "%(attr)s must remain filled"
 msgstr "\"%(attr)s\" muss ausgefüllt bleiben"
+
+msgid "product_group"
+msgstr "Artikelgruppe"
+
+#, python-format
+msgid "Duplicate %(grp)s \"%(groupname)s\""
+msgstr "Doppelte %(grp)s \"%(groupname)s\""
+
+#, python-format
+msgid "price/discount must be increasing: %(pd)s"
+msgstr "Rabatt muss mit dem Preis steigen: %(pd)s"
 
 #, python-format
 msgid "\"%(attr)s\" must not be filled in"
@@ -337,10 +352,6 @@ msgstr ""
 #, python-format
 msgid "Denied state change: %(old_status)s->%(status)s"
 msgstr ""
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
 msgid "Only user and Controlling may create daily records"
 msgstr ""
@@ -3143,6 +3154,17 @@ msgstr "Neue ${Classname}"
 msgid "number"
 msgstr "Nummer"
 
+msgid "<span nowrap></span> <span nowrap></span>"
+msgstr ""
+
+#, fuzzy
+msgid "new shipping address"
+msgstr "Lieferadresse"
+
+#, fuzzy
+msgid "new billing address"
+msgstr "Lieferadresse"
+
 msgid "Approvals pending"
 msgstr ""
 
@@ -3743,9 +3765,6 @@ msgstr "Artikelgruppenrabatt"
 
 msgid "discount"
 msgstr "Rabatt"
-
-msgid "product_group"
-msgstr "Artikelgruppe"
 
 msgid "price"
 msgstr "Preis"

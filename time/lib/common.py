@@ -787,4 +787,18 @@ def end_of_period (date, period) :
     return end_of_month (date)
 # end def end_of_period
 
+def auto_retire (db, cl, nodeid, new_values, multilink_attr) :
+    """ Retire all nodes which are no longer linked to by the new
+        version of a multilink
+    """
+    if multilink_attr not in new_values :
+        return
+    new = dict.fromkeys (new_values [multilink_attr])
+    old = dict.fromkeys (cl.get (nodeid, multilink_attr))
+    cls = db.classes [cl.properties [multilink_attr].classname]
+    for o in old.iterkeys () :
+        if o not in new :
+            cls.retire (o)
+# end def auto_retire
+
 ### __END__

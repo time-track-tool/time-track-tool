@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-04-16 12:00+0200\n"
+"POT-Creation-Date: 2007-04-18 09:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,6 +120,13 @@ msgstr ""
 msgid "%(attr)s may not be undefined"
 msgstr ""
 
+#: ../detectors/customer.py:39 ../detectors/discount_group.py:47
+#: ../detectors/time_record.py:303 ../detectors/time_record.py:361
+#: ../detectors/time_record.py:429 ../detectors/user_dynamic.py:136
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
+
 #: ../detectors/daily_record_freeze.py:49
 #, python-format
 msgid "Already frozen: %(date)s"
@@ -154,6 +161,21 @@ msgstr ""
 #: ../detectors/daily_record_freeze.py:122
 #, python-format
 msgid "%(attr)s must remain filled"
+msgstr ""
+
+#: ../detectors/discount_group.py:40 ../locale/attr.py:711
+#: ../locale/attr.py:723 ../schema/erp.py:147 attr.py:711 attr.py:723
+msgid "product_group"
+msgstr ""
+
+#: ../detectors/discount_group.py:51
+#, python-format
+msgid "Duplicate %(grp)s \"%(groupname)s\""
+msgstr ""
+
+#: ../detectors/discount_group.py:69
+#, python-format
+msgid "price/discount must be increasing: %(pd)s"
 msgstr ""
 
 #: ../detectors/invoice.py:45
@@ -453,12 +475,6 @@ msgstr ""
 #: ../detectors/time_record.py:253
 #, python-format
 msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-#: ../detectors/time_record.py:303 ../detectors/time_record.py:361
-#: ../detectors/time_record.py:429
-#, python-format
-msgid "%(attr)s must be specified"
 msgstr ""
 
 #: ../detectors/time_record.py:310
@@ -917,7 +933,7 @@ msgstr ""
 
 #: ../extensions/help.py:198 ../locale/attr.py:138 ../locale/attr.py:601
 #: ../locale/attr.py:652 ../locale/attr.py:733 ../locale/attr.py:757
-#: ../locale/attr.py:823 ../schema/abo.py:85 ../schema/erp.py:166 attr.py:138
+#: ../locale/attr.py:823 ../schema/abo.py:85 ../schema/erp.py:164 attr.py:138
 #: attr.py:601 attr.py:652 attr.py:733 attr.py:757 attr.py:823
 msgid "address"
 msgstr ""
@@ -2016,7 +2032,7 @@ msgid "lastname"
 msgstr ""
 
 #: ../extensions/help.py:602 ../locale/attr.py:648 ../locale/attr.py:754
-#: ../schema/abo.py:111 ../schema/erp.py:170 attr.py:648 attr.py:754
+#: ../schema/abo.py:111 ../schema/erp.py:168 attr.py:648 attr.py:754
 msgid "letter"
 msgstr ""
 
@@ -2280,7 +2296,7 @@ msgstr ""
 #: ../locale/attr.py:728 ../locale/attr.py:763 ../locale/attr.py:780
 #: ../locale/attr.py:845 ../locale/attr.py:849 ../schema/abo.py:71
 #: ../schema/abo.py:82 ../schema/abo.py:106 ../schema/address.py:124
-#: ../schema/address.py:132 ../schema/address.py:140 ../schema/erp.py:82
+#: ../schema/address.py:132 ../schema/address.py:140 ../schema/erp.py:84
 #: ../schema/sinvoice.py:55 ../schema/sinvoice.py:93 attr.py:4 attr.py:9
 #: attr.py:11 attr.py:14 attr.py:21 attr.py:24 attr.py:27 attr.py:32 attr.py:36
 #: attr.py:40 attr.py:43 attr.py:72 attr.py:90 attr.py:93 attr.py:109
@@ -4102,16 +4118,16 @@ msgstr ""
 msgid "History for ${label}"
 msgstr ""
 
-#: ../html/_generic.index.html:55 ../html/_generic.item.html:55
+#: ../html/_generic.index.html:56 ../html/_generic.item.html:56
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
-#: ../html/_generic.index.html:58 ../html/_generic.item.html:58
-#: ../html/page.html:1002
+#: ../html/_generic.index.html:59 ../html/_generic.item.html:59
+#: ../html/page.html:1009
 msgid "Download as CSV"
 msgstr ""
 
-#: ../html/_generic.index.html:95 ../html/_generic.item.html:95
+#: ../html/_generic.index.html:102 ../html/_generic.item.html:102
 #: ../html/user.item.html:399
 msgid "History"
 msgstr ""
@@ -4140,13 +4156,15 @@ msgstr ""
 msgid "New Letter for ${lastname}"
 msgstr ""
 
-#: ../html/alias.item.html:7 ../html/category.item.html:7
-#: ../html/cost_center.item.html:7 ../html/daily_record.item.html:7
-#: ../html/daily_record_freeze.item.html:7 ../html/group.item.html:7
-#: ../html/issue.item.html:7 ../html/it_issue.item.html:7
-#: ../html/it_project.item.html:7 ../html/machine.item.html:7
-#: ../html/machine_name.item.html:7 ../html/msg.item.html:7
-#: ../html/network_address.item.html:7 ../html/network_interface.item.html:7
+#: ../html/alias.item.html:7 ../html/bank_account.item.html:7
+#: ../html/category.item.html:7 ../html/cost_center.item.html:7
+#: ../html/customer.item.html:7 ../html/daily_record.item.html:7
+#: ../html/daily_record_freeze.item.html:7 ../html/discount_group.item.html:7
+#: ../html/group.item.html:7 ../html/issue.item.html:7
+#: ../html/it_issue.item.html:7 ../html/it_project.item.html:7
+#: ../html/machine.item.html:7 ../html/machine_name.item.html:7
+#: ../html/msg.item.html:7 ../html/network_address.item.html:7
+#: ../html/network_interface.item.html:7
 #: ../html/overtime_correction.item.html:7 ../html/public_holiday.item.html:7
 #: ../html/smb_machine.item.html:7 ../html/time_project.item.html:7
 #: ../html/time_record.item.html:7 ../html/time_wp.item.html:7
@@ -4154,13 +4172,15 @@ msgstr ""
 msgid "${classname_id} created by ${creator}"
 msgstr ""
 
-#: ../html/alias.item.html:10 ../html/category.item.html:10
-#: ../html/cost_center.item.html:10 ../html/daily_record.item.html:10
-#: ../html/daily_record_freeze.item.html:10 ../html/group.item.html:10
-#: ../html/issue.item.html:10 ../html/it_issue.item.html:10
-#: ../html/it_project.item.html:10 ../html/machine.item.html:10
-#: ../html/machine_name.item.html:10 ../html/msg.item.html:10
-#: ../html/network_address.item.html:10 ../html/network_interface.item.html:10
+#: ../html/alias.item.html:10 ../html/bank_account.item.html:10
+#: ../html/category.item.html:10 ../html/cost_center.item.html:10
+#: ../html/customer.item.html:10 ../html/daily_record.item.html:10
+#: ../html/daily_record_freeze.item.html:10 ../html/discount_group.item.html:10
+#: ../html/group.item.html:10 ../html/issue.item.html:10
+#: ../html/it_issue.item.html:10 ../html/it_project.item.html:10
+#: ../html/machine.item.html:10 ../html/machine_name.item.html:10
+#: ../html/msg.item.html:10 ../html/network_address.item.html:10
+#: ../html/network_interface.item.html:10
 #: ../html/overtime_correction.item.html:10 ../html/public_holiday.item.html:10
 #: ../html/smb_machine.item.html:10 ../html/time_project.item.html:10
 #: ../html/time_record.item.html:10 ../html/time_wp.item.html:10
@@ -4170,6 +4190,18 @@ msgstr ""
 
 #: ../html/cost_center.item.html:30
 msgid "number"
+msgstr ""
+
+#: ../html/customer.item.html:46 ../html/customer.item.html:68
+msgid "<span nowrap></span> <span nowrap></span>"
+msgstr ""
+
+#: ../html/customer.item.html:52
+msgid "new shipping address"
+msgstr ""
+
+#: ../html/customer.item.html:74
+msgid "new billing address"
 msgstr ""
 
 #: ../html/daily_record.approve.html:2
@@ -4254,148 +4286,148 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:317
+#: ../html/page.html:324
 msgid "Welcome:"
 msgstr ""
 
-#: ../html/page.html:322
+#: ../html/page.html:329
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
-#: ../html/page.html:329
+#: ../html/page.html:336
 msgid "Login:"
 msgstr ""
 
-#: ../html/page.html:333
+#: ../html/page.html:340
 msgid "Password:"
 msgstr ""
 
-#: ../html/page.html:337
+#: ../html/page.html:344
 msgid "Remember me?:"
 msgstr ""
 
-#: ../html/page.html:373
+#: ../html/page.html:380
 msgid "Time"
 msgstr ""
 
-#: ../html/page.html:382
+#: ../html/page.html:389
 msgid "Approval"
 msgstr ""
 
-#: ../html/page.html:433
+#: ../html/page.html:440
 msgid "User&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:493
+#: ../html/page.html:500
 msgid "-- Create / Update --"
 msgstr ""
 
-#: ../html/page.html:513
+#: ../html/page.html:520
 msgid "-- View / Query --"
 msgstr ""
 
-#: ../html/page.html:515
+#: ../html/page.html:522
 msgid "Manage Queries"
 msgstr ""
 
-#: ../html/page.html:657
+#: ../html/page.html:664
 msgid "Show History"
 msgstr ""
 
-#: ../html/page.html:721
+#: ../html/page.html:728
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
-#: ../html/page.html:759
+#: ../html/page.html:766
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:760
+#: ../html/page.html:767
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:761
+#: ../html/page.html:768
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:867
+#: ../html/page.html:874
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:883
+#: ../html/page.html:890
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:888
+#: ../html/page.html:895
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:893
+#: ../html/page.html:900
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:988 ../html/query.edit.html:45
+#: ../html/page.html:995 ../html/query.edit.html:45
 msgid "Query"
 msgstr ""
 
-#: ../html/page.html:989
+#: ../html/page.html:996
 msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:995
+#: ../html/page.html:1002
 msgid "View"
 msgstr ""
 
-#: ../html/page.html:998
+#: ../html/page.html:1005
 msgid "items per page"
 msgstr ""
 
-#: ../html/page.html:1012
+#: ../html/page.html:1019
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:1019 ../html/page.html:1041
+#: ../html/page.html:1026 ../html/page.html:1048
 msgid "- nothing -"
 msgstr ""
 
-#: ../html/page.html:1025 ../html/page.html:1047
+#: ../html/page.html:1032 ../html/page.html:1054
 msgid "Descending:"
 msgstr ""
 
-#: ../html/page.html:1034
+#: ../html/page.html:1041
 msgid "Group on:"
 msgstr ""
 
-#: ../html/page.html:1113
+#: ../html/page.html:1120
 msgid "- don't care -"
 msgstr ""
 
-#: ../html/page.html:1158
+#: ../html/page.html:1165
 msgid "Search full text:"
 msgstr ""
 
-#: ../html/page.html:1163
+#: ../html/page.html:1170
 msgid "(Searches also in messages)"
 msgstr ""
 
-#: ../html/page.html:1170
+#: ../html/page.html:1177
 msgid "Update view"
 msgstr ""
 
-#: ../html/page.html:1181
+#: ../html/page.html:1188
 msgid "This query's name:"
 msgstr ""
 
-#: ../html/page.html:1191
+#: ../html/page.html:1198
 msgid "Update view & store this query"
 msgstr ""
 
-#: ../html/page.html:1198
+#: ../html/page.html:1205
 msgid "(If you change the name, you create a new query!!!)"
 msgstr ""
 
-#: ../html/page.html:1207 ../html/page.html:1216
+#: ../html/page.html:1214 ../html/page.html:1223
 msgid "Update view & store NEW query"
 msgstr ""
 
@@ -4919,7 +4951,7 @@ msgstr ""
 msgid "bank"
 msgstr ""
 
-#: ../locale/attr.py:671 ../locale/attr.py:713 ../schema/erp.py:125 attr.py:671
+#: ../locale/attr.py:671 ../locale/attr.py:713 ../schema/erp.py:126 attr.py:671
 #: attr.py:713
 msgid "invoice_dispatch"
 msgstr ""
@@ -4932,12 +4964,12 @@ msgstr ""
 msgid "invoice_text"
 msgstr ""
 
-#: ../locale/attr.py:683 ../locale/attr.py:716 ../schema/erp.py:132 attr.py:683
+#: ../locale/attr.py:683 ../locale/attr.py:716 ../schema/erp.py:133 attr.py:683
 #: attr.py:716
 msgid "overall_discount"
 msgstr ""
 
-#: ../locale/attr.py:684 ../locale/attr.py:720 ../schema/erp.py:141 attr.py:684
+#: ../locale/attr.py:684 ../locale/attr.py:720 ../schema/erp.py:140 attr.py:684
 #: attr.py:720
 msgid "pharma_ref"
 msgstr ""
@@ -4954,12 +4986,12 @@ msgstr ""
 msgid "credit_limit"
 msgstr ""
 
-#: ../locale/attr.py:691 ../locale/attr.py:699 ../schema/erp.py:85 attr.py:691
+#: ../locale/attr.py:691 ../locale/attr.py:699 ../schema/erp.py:87 attr.py:691
 #: attr.py:699
 msgid "customer_group"
 msgstr ""
 
-#: ../locale/attr.py:692 ../locale/attr.py:726 ../schema/erp.py:155 attr.py:692
+#: ../locale/attr.py:692 ../locale/attr.py:726 ../schema/erp.py:154 attr.py:692
 #: attr.py:726
 msgid "sales_conditions"
 msgstr ""
@@ -4984,26 +5016,21 @@ msgstr ""
 msgid "credit_limit_cur"
 msgstr ""
 
-#: ../locale/attr.py:702 ../schema/erp.py:93 attr.py:702
+#: ../locale/attr.py:702 ../schema/erp.py:95 attr.py:702
 msgid "customer_status"
 msgstr ""
 
-#: ../locale/attr.py:706 ../locale/attr.py:731 ../schema/erp.py:110 attr.py:706
+#: ../locale/attr.py:706 ../locale/attr.py:731 ../schema/erp.py:113 attr.py:706
 #: attr.py:731
 msgid "dispatch_type"
 msgstr ""
 
-#: ../locale/attr.py:709 ../schema/erp.py:117 attr.py:709
+#: ../locale/attr.py:709 ../schema/erp.py:120 attr.py:709
 msgid "group_discount"
 msgstr ""
 
 #: ../locale/attr.py:710 ../locale/attr.py:717 attr.py:710 attr.py:717
 msgid "discount"
-msgstr ""
-
-#: ../locale/attr.py:711 ../locale/attr.py:723 ../schema/erp.py:148 attr.py:711
-#: attr.py:723
-msgid "product_group"
 msgstr ""
 
 #: ../locale/attr.py:718 attr.py:718
@@ -5046,6 +5073,6 @@ msgstr ""
 msgid "doc_num"
 msgstr ""
 
-#: ../schema/erp.py:101
+#: ../schema/erp.py:103
 msgid "discount_group"
 msgstr ""
