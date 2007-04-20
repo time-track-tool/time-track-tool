@@ -3773,10 +3773,10 @@ msgid "payment_days"
 msgstr "Zahlungziel"
 
 msgid "discount_days"
-msgstr "Zahlungsziel-Skonto"
+msgstr "Skontotage"
 
 msgid "discount_percent"
-msgstr "Skonto"
+msgstr "Skonto %"
 
 msgid "file"
 msgstr "Datei"
@@ -3798,3 +3798,6 @@ msgstr ""
 
 msgid "discount_group"
 msgstr "Rabattgruppe"
+
+msgid "New item"
+msgstr "Neuer Datensatz"

@@ -104,6 +104,11 @@
      tal:attributes=
       "onClick string:javascript:help_window('${context/designator}?@template=history','600','300')"
      value="History" i18n:attributes="value">
+   <input type="button"
+     tal:condition="python:context.id and context.is_view_ok()"
+     tal:attributes=
+      "onClick string:javascript:document.location = '${classname}?@template=item';"
+     value="New item" i18n:attributes="value">
   </td>
  </tr>
 </table>
