@@ -104,6 +104,8 @@
                          '@startwith=0'
    , 'network_interface':'@columns=id,mac,card_type,description,machine&'
                          '@sort=-id&@pagesize=2000&@startwith=0'
+   , 'product'         : '@columns=name,product_group,measuring_unit,packaging_unit,'
+                         'minimum_inventory&:filter=status&:pagesize=50&:startwith=0&status=1'
    , 'public_holiday'  : '@columns=id,name,description,date,locations,is_half&'
                          '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                          'date=.%3B'
@@ -256,15 +258,21 @@
      , ('tmplate',             'Edit',   '?@template=item', 1)
      , ('legalclient',         'Edit',   '?@template=item', 1)
      , ('contact_type',        'Edit',   '?@template=item', 1)
+     , ('customer',            'Edit',   '?@template=item', 1)
      , ('customer_group',      'Edit',   '?@template=item', 1)
      , ('customer_status',     'Edit',   '?@template=item', 1)
+     , ('discount_group',      'Edit',   '?@template=item', 1)
      , ('dispatch_type',       'Edit',   '?@template=item', 1)
      , ('invoice_dispatch',    'Edit',   '?@template=item', 1)
+     , ('measuring_unit',      'Edit',   '?@template=item', 1)
+     , ('packaging_unit',      'Edit',   '?@template=item', 1)
      , ('pharma_ref',          'Edit',   '?@template=item', 1)
+     , ('proceeds_group',      'Edit',   '?@template=item', 1)
+     , ('product',             'Edit',   '?@template=item', 1)
      , ('product_group',       'Edit',   '?@template=item', 1)
+     , ('product_status',      'Edit',   '?@template=item', 1)
      , ('sales_conditions',    'Edit',   '?@template=item', 1)
-     , ('customer',            'Edit',   '?@template=item', 1)
-     , ('discount_group',      'Edit',   '?@template=item', 1)
+     , ('shelf_life_code',     'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',         'View', '',               ('',''))
      , ('daily_record',        'View', 'controlling,hr', ('',''))
@@ -306,6 +314,7 @@
      , ('legalclient',         'View', '',               ('',''))
      , ('customer',            'View', '',               ('',''))
      , ('discount_group',      'View', '',               ('',''))
+     , ('product',             'View', '',               ('',''))
      )
    )
  ; menu_type     python:

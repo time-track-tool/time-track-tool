@@ -489,13 +489,13 @@ if 'contact_type' in db.classes :
     
 if 'customer_status' in db.classes :
     db.customer_status.create \
-        ( name         = 'gültig'
-        , description  = 'Gültiger Kunde'
+        ( name         = uni ('gültig')
+        , description  = uni ('Gültiger Kunde')
         , order        = 1
         , valid        = True
         )
     db.customer_status.create \
-        ( name         = 'ungültig'
+        ( name         = uni ('ungültig')
         , description  = 'Kein Kunde'
         , order        = 2
         , valid        = False
@@ -503,14 +503,14 @@ if 'customer_status' in db.classes :
 
 if 'product_status' in db.classes :
     db.product_status.create \
-        ( name         = 'gültig'
-        , description  = 'Gültiger Artikel'
+        ( name         = uni ('gültig')
+        , description  = uni ('Gültiger Artikel')
         , order        = 1
         , valid        = True
         )
     db.product_status.create \
-        ( name         = 'ungültig'
-        , description  = 'Kein gültiger Artikel'
+        ( name         = uni ('ungültig')
+        , description  = uni ('Kein gültiger Artikel')
         , order        = 2
         , valid        = False
         )

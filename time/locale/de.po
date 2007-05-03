@@ -3826,3 +3826,12 @@ msgstr "Lagerfähigkeitscode"
 msgid "use_lot"
 msgstr "Chargenführung?"
 
+msgid "product_status"
+msgstr "Artikelstatus"
+
+msgid "Shelf life in months"
+msgstr "Lagerfähigkeit in Monaten"
+
+msgid "shelf_life"
+msgstr "Lagerfähigkeit"
+

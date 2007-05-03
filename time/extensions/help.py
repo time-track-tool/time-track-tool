@@ -991,7 +991,7 @@ _helptext          = \
           '''
       ]
     , ""'shelf_life'                  :
-      [ ""'''Shelf life in months.''' ]
+      [ ""'''Shelf life in months''' ]
     , ""'show_all_users'              :
       [ ""'''If this option is selected, the result will also include
              users that do not
