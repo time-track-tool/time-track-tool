@@ -3574,7 +3574,7 @@ msgid "document_type"
 msgstr ""
 
 msgid "product"
-msgstr "Produkt"
+msgstr "Artikel"
 
 msgid "certifiable"
 msgstr ""
@@ -3801,3 +3801,28 @@ msgstr "Rabattgruppe"
 
 msgid "New item"
 msgstr "Neuer Datensatz"
+
+msgid "Date of birth for this %(Classname)s"
+msgstr "Geburtsdatum für diese %(Classname)s"
+
+msgid "birthdate"
+msgstr "Geburtsdatum"
+
+msgid "measuring_unit"
+msgstr "Einheit"
+
+msgid "minimum_inventory"
+msgstr "Mindestbestand"
+
+msgid "packaging_unit"
+msgstr "Verpackungseinheit"
+
+msgid "proceeds_group"
+msgstr "Erlösgruppe"
+
+msgid "shelf_life_code"
+msgstr "Lagerfähigkeitscode"
+
+msgid "use_lot"
+msgstr "Chargenführung?"
+

@@ -58,10 +58,10 @@ def default_defect_status (db, cl, nodeid, new_values) :
 # end def default_defect_status
 
 def default_defect_responsible (db, cl, nodeid, new_values) :
-    """set responsible to product.responsible
+    """set responsible to prod.responsible
     """
     if not new_values.has_key ("responsible") :
-        prod_resp = db.product.get (new_values ["product"], "responsible")
+        prod_resp = db.prod.get (new_values ["product"], "responsible")
         new_values ["responsible"] = prod_resp
 # end def default_defect_responsible
 
@@ -73,7 +73,7 @@ def default_defect_nosy (db, cl, nodeid, new_values) :
     """
     nosy      = new_values.get ("nosy"   , []    )
     product   = new_values.get ("product"        )
-    prod_nosy = db.product.get (product  , "nosy")
+    prod_nosy = db.prod.get (product  , "nosy")
     creator   = new_values.get ("creator"        )
     nosy      = union ( nosy
                       , prod_nosy

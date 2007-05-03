@@ -500,3 +500,17 @@ if 'customer_status' in db.classes :
         , order        = 2
         , valid        = False
         )
+
+if 'product_status' in db.classes :
+    db.product_status.create \
+        ( name         = 'gültig'
+        , description  = 'Gültiger Artikel'
+        , order        = 1
+        , valid        = True
+        )
+    db.product_status.create \
+        ( name         = 'ungültig'
+        , description  = 'Kein gültiger Artikel'
+        , order        = 2
+        , valid        = False
+        )

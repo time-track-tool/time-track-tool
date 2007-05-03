@@ -64,6 +64,11 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'salutation')"/>
       <td tal:content="structure context/salutation/field"/>
+      <tal:block tal:condition="python:'birthdate' in klass._klass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'birthdate')"/>
+       <td tal:content="structure context/birthdate/field"/>
+      </tal:block>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname(classname, 'title')"/>

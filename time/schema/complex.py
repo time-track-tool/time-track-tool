@@ -159,9 +159,9 @@ def init \
         )
     document_type.setkey ("name")
 
-    product = Class \
+    prod = Class \
         ( db
-        , ''"product"
+        , ''"prod"
         , name                  = String    ()
         , description           = String    ()
         , responsible           = Link      ("user")
@@ -172,7 +172,7 @@ def init \
         , certifiable           = Boolean   ()
         # XXX: no "order", gets sorted by "name" automatically.
         )
-    product.setkey ("name")
+    prod.setkey ("name")
 
     # Ext_Issue_Class automatically gets these properties:
     #   title       = String    ()

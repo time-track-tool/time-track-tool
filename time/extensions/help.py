@@ -228,6 +228,8 @@ _helptext          = \
       [""'''Open amount not yet payed''']
     , ""'begin'                       :
       [""'''Begin of period''']
+    , ""'birthdate'                   :
+      [""'''Date of birth for this %(Classname)s''']
     , ""'bookentry'                   :
       [""'''Date when the payment was booked''']
     , ""'bookers'                     :
@@ -988,6 +990,8 @@ _helptext          = \
              the password.
           '''
       ]
+    , ""'shelf_life'                  :
+      [ ""'''Shelf life in months.''' ]
     , ""'show_all_users'              :
       [ ""'''If this option is selected, the result will also include
              users that do not

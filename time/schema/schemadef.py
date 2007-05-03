@@ -115,6 +115,24 @@ class Importer (object) :
             # end def __init__
         # end class Ext_Class
 
+        class Min_Issue_Class (Ext_Class) :
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    ( messages             = Multilink ("msg")
+                    , files                = Multilink ("file")
+                    )
+                self.__super.__init__ (db, classname, ** properties)
+            # end def __init__
+        # end class Min_Issue_Class
+
+        class Nosy_Issue_Class (Min_Issue_Class) :
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    (nosy = Multilink ("user", do_journal = "no"))
+                self.__super.__init__ (db, classname, ** properties)
+            # end def __init__
+        # end class Min_Issue_Class
+
         class Msg_Class (FileClass, Ext_Mixin) :
             def __init__ (self, db, classname, ** properties) :
                 self.update_properties \
@@ -134,9 +152,11 @@ class Importer (object) :
             # end def __init__
         # end class Msg_Class
 
-        globals ['Ext_Class'] = Ext_Class
-        globals ['Msg_Class'] = Msg_Class
-        globals ['Ext_Mixin'] = Ext_Mixin
+        globals ['Ext_Class']        = Ext_Class
+        globals ['Msg_Class']        = Msg_Class
+        globals ['Ext_Mixin']        = Ext_Mixin
+        globals ['Min_Issue_Class']  = Min_Issue_Class
+        globals ['Nosy_Issue_Class'] = Nosy_Issue_Class
 
         for s in schemas :
             m = __import__ (s)

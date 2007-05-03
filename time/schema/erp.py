@@ -40,7 +40,8 @@ def init \
     , Multilink
     , Boolean
     , Number
-    , IssueClass
+    , Min_Issue_Class
+    , Nosy_Issue_Class
     , Address_Class
     , Letter_Class
     , ** kw
@@ -59,7 +60,7 @@ def init \
         , bic                   = String    ()
         )
 
-    customer = IssueClass \
+    customer = Nosy_Issue_Class \
         ( db, ''"customer"
         , name                  = String    ()
         , description           = String    ()
@@ -130,11 +131,25 @@ def init \
         )
     invoice_dispatch.setkey ("name")
 
+    measuring_unit = Class \
+        ( db, ''"measuring_unit"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    measuring_unit.setkey ("name")
+
     overall_discount = Class \
         ( db, ''"overall_discount"
         , price                 = Number    ()
         , discount              = Number    ()
         )
+
+    packaging_unit = Class \
+        ( db, ''"packaging_unit"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    packaging_unit.setkey ("name")
 
     # Pharmareferenzbezirk
     pharma_ref = Class \
@@ -144,12 +159,43 @@ def init \
         )
     pharma_ref.setkey ("name")
 
+    proceeds_group = Class \
+        ( db, ''"proceeds_group"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    proceeds_group.setkey ("name")
+
+    product = Min_Issue_Class \
+        ( db, ''"product"
+        , name                  = String    ()
+        , description           = String    ()
+        , status                = Link      ("product_status")
+        , product_group         = Link      ("product_group")
+        , measuring_unit        = Link      ("measuring_unit")
+        , packaging_unit        = Link      ("packaging_unit")
+        , minimum_inventory     = Number    ()
+        , shelf_life_code       = Link      ("shelf_life_code")
+        , proceeds_group        = Link      ("proceeds_group")
+        , use_lot               = Boolean   ()
+        )
+    product.setkey ("name")
+
     product_group = Class \
         ( db, ''"product_group"
         , name                  = String    ()
         , description           = String    ()
         )
     product_group.setkey ("name")
+
+    product_status = Class \
+        ( db, ''"product_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , order                 = Number    ()
+        , valid                 = Boolean   ()
+        )
+    product_status.setkey ("name")
 
     sales_conditions = Class \
         ( db, ''"sales_conditions"
@@ -159,10 +205,18 @@ def init \
         , discount_days         = Number    ()
         , payment_days          = Number    ()
         )
-    sales_conditions.setkey ("name")
+
+    shelf_life_code = Class \
+        ( db, ''"shelf_life_code"
+        , name                  = String    ()
+        , description           = String    ()
+        , shelf_life            = Number    ()
+        )
+    shelf_life_code.setkey ("name")
 
     Address_Class \
         ( db, ''"address"
+        , birthdate             = Date      ()
         )
 
     Letter_Class \
@@ -187,13 +241,21 @@ def security (db, ** kw) :
         , ("customer"          , ["User"],    ["Contact"])
         , ("customer_group"    , ["User"],    ["Admin"])
         , ("customer_status"   , ["User"],    ["Admin"])
+        , ("discount_group"    , ["User"],    ["Discount"])
         , ("dispatch_type"     , ["User"],    ["Admin"])
         , ("group_discount"    , ["User"],    ["Discount"])
         , ("invoice_dispatch"  , ["User"],    ["Admin"])
         , ("letter"            , ["User"],    ["Letter"])
+        , ("measuring_unit"    , ["User"],    ["Admin"])
+        , ("overall_discount"  , ["User"],    ["Discount"])
+        , ("packaging_unit"    , ["User"],    ["Admin"])
         , ("pharma_ref"        , ["User"],    ["Admin"])
+        , ("proceeds_group"    , ["User"],    ["Admin"])
+        , ("product"           , ["User"],    ["Product"])
         , ("product_group"     , ["User"],    ["Product"])
+        , ("product_status"    , ["User"],    ["Admin"])
         , ("sales_conditions"  , ["User"],    ["Admin"])
+        , ("shelf_life_code"   , ["User"],    ["Admin"])
         ]
 
     schemadef.register_roles             (db, roles)
