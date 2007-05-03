@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-04-18 09:33+0200\n"
+"POT-Creation-Date: 2007-05-03 08:02+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -97,10 +97,6 @@ msgid "%(attr)s may not be undefined"
 msgstr "\"%(attr)s\" darf nicht gelöscht werden"
 
 #, python-format
-msgid "%(attr)s must be specified"
-msgstr "\"%(attr)s\" muss ausgefüllt werden"
-
-#, python-format
 msgid "Already frozen: %(date)s"
 msgstr ""
 
@@ -129,6 +125,10 @@ msgstr "\"%(attr)s\" muss ausgefüllt bleiben"
 
 msgid "product_group"
 msgstr "Artikelgruppe"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -357,10 +357,6 @@ msgid "Only user and Controlling may create daily records"
 msgstr ""
 
 #, python-format
-msgid "%(attr)s must not be specified"
-msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
-
-#, python-format
 msgid "No dynamic user data for %(uname)s, %(date)s"
 msgstr ""
 
@@ -371,6 +367,9 @@ msgstr ""
 #, python-format
 msgid "Duplicate record: date = %(date)s, user = %(user)s"
 msgstr ""
+
+msgid "start"
+msgstr "Start"
 
 msgid "Either specify duration or start/end"
 msgstr ""
@@ -815,6 +814,12 @@ msgstr "Beginn"
 
 msgid "Begin of period"
 msgstr "Start der Rechnungsperiode"
+
+msgid "birthdate"
+msgstr "Geburtsdatum"
+
+msgid "Date of birth for this %(Classname)s"
+msgstr "Geburtsdatum für diese %(Classname)s"
 
 msgid "bookentry"
 msgstr "Buchung am"
@@ -2352,6 +2357,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "shelf_life"
+msgstr "Lagerfähigkeit"
+
+msgid "Shelf life in months"
+msgstr "Lagerfähigkeit in Monaten"
+
 msgid "show_all_users"
 msgstr ""
 
@@ -2416,9 +2427,6 @@ msgid ""
 "             that came in via telephone).\n"
 "          "
 msgstr ""
-
-msgid "start"
-msgstr "Start"
 
 msgid ""
 "Format xx:xx (e.g. 09:00), defines your start of work. Has to\n"
@@ -3127,6 +3135,9 @@ msgstr "Als CSV laden"
 msgid "History"
 msgstr "Liste der Änderungen"
 
+msgid "New item"
+msgstr "Neuer Datensatz"
+
 msgid "Help for ${Classname}"
 msgstr "Hilfe für ${Classname}"
 
@@ -3157,13 +3168,11 @@ msgstr "Nummer"
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
-#, fuzzy
 msgid "new shipping address"
-msgstr "Lieferadresse"
+msgstr "Neue Lieferadresse"
 
-#, fuzzy
 msgid "new billing address"
-msgstr "Lieferadresse"
+msgstr "Neue Rechnungsadresse"
 
 msgid "Approvals pending"
 msgstr ""
@@ -3402,6 +3411,14 @@ msgstr ""
 msgid "\"%s\" loop: %s"
 msgstr ""
 
+#, python-format
+msgid "%(attr)s must not be empty"
+msgstr "\"%(attr)s\" darf nicht leer sein"
+
+#, python-format
+msgid "%(attr)s must not be specified"
+msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
 msgid "meeting_room"
 msgstr ""
 
@@ -3573,8 +3590,8 @@ msgstr ""
 msgid "document_type"
 msgstr ""
 
-msgid "product"
-msgstr "Artikel"
+msgid "prod"
+msgstr "Produkt"
 
 msgid "certifiable"
 msgstr ""
@@ -3636,6 +3653,9 @@ msgstr ""
 msgid "closer"
 msgstr "Schliessender Benutzer"
 
+msgid "product"
+msgstr "Artikel"
+
 msgid "belongs_to_task"
 msgstr ""
 
@@ -3691,8 +3711,8 @@ msgstr "Klient"
 msgid "bank_account"
 msgstr "Bankverbindung"
 
-msgid "customer"
-msgstr "Kunde"
+msgid "act_number"
+msgstr "Kontonummer"
 
 msgid "bank_code"
 msgstr "Bankleitzahl"
@@ -3703,71 +3723,95 @@ msgstr "BIC"
 msgid "iban"
 msgstr "IBAN"
 
-msgid "act_number"
-msgstr "Kontonummer"
-
 msgid "bank"
 msgstr "Bank"
+
+msgid "customer"
+msgstr "Kunde"
 
 msgid "invoice_dispatch"
 msgstr "Rechnungsversand"
 
-msgid "header"
-msgstr ""
-
-msgid "invoice_text"
-msgstr "Rechnungstext"
-
-msgid "overall_discount"
-msgstr "Gesamtrabatt"
-
-msgid "pharma_ref"
-msgstr "Pharmaref. Bezirk"
-
-msgid "attendant"
-msgstr "Kundenbetreuer"
-
-msgid "tax_id"
-msgstr "Umsatzsteuer ID"
-
 msgid "credit_limit"
 msgstr "Kreditlimit"
-
-msgid "customer_group"
-msgstr "Kundengruppe"
-
-msgid "sales_conditions"
-msgstr "Konditionen"
 
 msgid "invoice_address"
 msgstr "Rechnungsadresse"
 
+msgid "customer_group"
+msgstr "Kundengruppe"
+
+msgid "discount_group"
+msgstr "Rabattgruppe"
+
+msgid "sales_conditions"
+msgstr "Konditionen"
+
+msgid "invoice_text"
+msgstr "Rechnungstext"
+
+msgid "pharma_ref"
+msgstr "Pharmaref. Bezirk"
+
 msgid "shipping_address"
 msgstr "Lieferadresse"
-
-msgid "contact_person"
-msgstr "Kontaktperson"
-
-msgid "group_discounts"
-msgstr "Artikelgruppenrabatt"
-
-msgid "credit_limit_cur"
-msgstr "Kreditlimit-Währung"
-
-msgid "customer_status"
-msgstr "Kundenstatus"
 
 msgid "dispatch_type"
 msgstr "Versandart"
 
+msgid "attendant"
+msgstr "Kundenbetreuer"
+
+msgid "credit_limit_cur"
+msgstr "Kreditlimit-Währung"
+
+msgid "contact_person"
+msgstr "Kontaktperson"
+
+msgid "tax_id"
+msgstr "Umsatzsteuer ID"
+
+msgid "customer_status"
+msgstr "Kundenstatus"
+
 msgid "group_discount"
 msgstr "Artikelgruppenrabatt"
+
+msgid "overall_discount"
+msgstr "Gesamtrabatt"
 
 msgid "discount"
 msgstr "Rabatt"
 
+msgid "measuring_unit"
+msgstr "Einheit"
+
 msgid "price"
 msgstr "Preis"
+
+msgid "packaging_unit"
+msgstr "Verpackungseinheit"
+
+msgid "proceeds_group"
+msgstr "Erlösgruppe"
+
+msgid "use_lot"
+msgstr "Chargenführung?"
+
+msgid "minimum_inventory"
+msgstr "Mindestbestand"
+
+msgid "product_price"
+msgstr "Artikelpreis"
+
+msgid "shelf_life_code"
+msgstr "Lagerfähigkeitscode"
+
+msgid "vat_percent"
+msgstr "% MWSt."
+
+msgid "product_status"
+msgstr "Artikelstatus"
 
 msgid "payment_days"
 msgstr "Zahlungziel"
@@ -3780,6 +3824,9 @@ msgstr "Skonto %"
 
 msgid "file"
 msgstr "Datei"
+
+msgid "header"
+msgstr ""
 
 msgid "query"
 msgstr "Abfrage"
@@ -3795,43 +3842,3 @@ msgstr "Benutzerstatus"
 
 msgid "doc_num"
 msgstr ""
-
-msgid "discount_group"
-msgstr "Rabattgruppe"
-
-msgid "New item"
-msgstr "Neuer Datensatz"
-
-msgid "Date of birth for this %(Classname)s"
-msgstr "Geburtsdatum für diese %(Classname)s"
-
-msgid "birthdate"
-msgstr "Geburtsdatum"
-
-msgid "measuring_unit"
-msgstr "Einheit"
-
-msgid "minimum_inventory"
-msgstr "Mindestbestand"
-
-msgid "packaging_unit"
-msgstr "Verpackungseinheit"
-
-msgid "proceeds_group"
-msgstr "Erlösgruppe"
-
-msgid "shelf_life_code"
-msgstr "Lagerfähigkeitscode"
-
-msgid "use_lot"
-msgstr "Chargenführung?"
-
-msgid "product_status"
-msgstr "Artikelstatus"
-
-msgid "Shelf life in months"
-msgstr "Lagerfähigkeit in Monaten"
-
-msgid "shelf_life"
-msgstr "Lagerfähigkeit"
-

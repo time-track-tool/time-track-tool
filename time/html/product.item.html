@@ -62,6 +62,53 @@
           (classname, 'proceeds_group')"/>
       <td tal:content="structure python:context.proceeds_group.menu ()"/>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'product_price')"/>
+      <td colspan="3">
+       <table class="form" border="0"
+              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+        <tr>
+         <th style="text-align:left;padding-top:0px;padding-left:0px"
+             class="required" tal:content="structure python:utils.fieldname
+             ('product_price', 'price')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:content="structure python:utils.fieldname
+             ('product_price', 'vat_percent')"/>
+         <th style="text-align:left;padding-top:0px"
+             class="required" tal:content="structure python:utils.fieldname
+             ('product_price', 'currency')"/>
+         <th style="text-align:left;padding-top:0px"
+             tal:condition="context/is_edit_ok" i18n:translate=""
+             style="padding-top:0px">
+             remove
+         </th>
+        </tr>
+        <tr tal:repeat="pp python:sorted
+            (context.product_price, key = lambda x : x.currency)">
+         <td style="padding-left:0px"
+             tal:content="structure python:utils.ExtProperty
+             (utils, pp.price, item = pp).formatlink ()"/>
+         <td tal:content="structure python:pp.vat_percent.plain ()"/>
+         <td tal:content="structure python:pp.currency.plain ()"/>
+         <td tal:condition="context/is_edit_ok">
+          <input type="checkbox" name="@remove@product_price"
+                 tal:attributes="value pp/id">
+         </td>
+        </tr>
+        <tr>
+         <td style="padding-left:0px"
+             tal:content="structure python:utils.new_property
+             (context, db, 'product_price', -1, 'price').field (size=10)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'product_price', -1, 'vat_percent').field (size=4)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'product_price', -1, 'currency').menu ()"/>
+         <input type="hidden" name="@link@product_price" value="product_price-1"/>
+        </tr>
+       </table>
+      </td>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

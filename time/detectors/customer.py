@@ -41,6 +41,12 @@ def new_customer (db, cl, nodeid, new_values) :
     if 'discount_group' not in new_values :
         new_values ['discount_group'] = db.customer_group.get \
             (customer_group, 'discount_group')
+    common.default_status \
+        ( new_values
+        , db.customer_status
+        , status = 'customer_status'
+        , valid  = False
+        )
 # end def new_customer
 
 def init (db) :

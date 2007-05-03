@@ -86,6 +86,26 @@ def check_bank_account (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'bank')
 # end def check_bank_account
 
+def new_product_price (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'price', 'currency')
+# end def new_product_price
+
+def check_product_price (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'price', 'currency')
+    if  (   'currency' in new_values
+        and cl.get (nodeid, 'currency') != new_values ['currency']
+        ) :
+        attr = _ ('currency')
+        raise Reject, _ ("%(attr)s must not be changed") % locals ()
+# end def check_product_price
+
+def check_product (db, cl, nodeid, new_values) :
+    if nodeid :
+        common.auto_retire (db, cl, nodeid, new_values, 'product_price')
+    else :
+        common.default_status (new_values, db.product_status)
+# end def check_product
+
 def init (db) :
     if 'discount_group' not in db.classes :
         return
@@ -95,6 +115,10 @@ def init (db) :
     db.discount_group.audit  ("set",    check_discount_group)
     db.bank_account.audit    ("create", check_bank_account)
     db.bank_account.audit    ("set",    check_bank_account)
+    db.product_price.audit   ("create", new_product_price)
+    db.product_price.audit   ("set",    check_product_price)
+    db.product.audit         ("create", check_product)
+    db.product.audit         ("set",    check_product)
 # end def init
 
 ### __END__ time_wp

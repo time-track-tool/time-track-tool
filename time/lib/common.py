@@ -819,4 +819,16 @@ def reject_attributes (_, new_values, * attributes) :
             raise Reject, _ (''"%(attr)s must not be specified") % locals ()
 # end def reject_attributes
 
+def default_status (new_values, status_class, valid = True, status = 'status') :
+    """ Set a default status for a new item if none is given.
+
+        assumes that a status class has a "valid" attribute and selects
+        the first status that is equal to the given valid parameter.
+    """
+    if status not in new_values :
+        stati = status_class.filter (None, {'valid' : valid})
+        assert (stati)
+        new_values [status] = stati [0]
+# end def default_status
+
 ### __END__

@@ -68,7 +68,7 @@ def init \
         , invoice_address       = Link      ("address")
         , contact_person        = Multilink ("contact_person")
         , tax_id                = String    ()
-        , status                = Link      ("customer_status")
+        , customer_status       = Link      ("customer_status")
         , customer_group        = Link      ("customer_group")
         , attendant             = Link      ("user")
         , credit_limit          = Number    ()
@@ -178,6 +178,7 @@ def init \
         , shelf_life_code       = Link      ("shelf_life_code")
         , proceeds_group        = Link      ("proceeds_group")
         , use_lot               = Boolean   ()
+        , product_price         = Multilink ("product_price")
         )
     product.setkey ("name")
 
@@ -187,6 +188,13 @@ def init \
         , description           = String    ()
         )
     product_group.setkey ("name")
+
+    product_price = Class \
+        ( db, ''"product_price"
+        , price                 = Number    ()
+        , vat_percent           = Number    ()
+        , currency              = Link      ("currency")
+        )
 
     product_status = Class \
         ( db, ''"product_status"
