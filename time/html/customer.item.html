@@ -89,8 +89,9 @@
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'tax_id')"/>
       <td tal:content="structure python:context.tax_id.field ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
-      <td tal:content="structure python:context.status.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'customer_status')"/>
+      <td tal:content="structure python:context.customer_status.menu ()"/>
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname

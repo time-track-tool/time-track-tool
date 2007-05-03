@@ -305,6 +305,7 @@ _helptext          = \
     , ""'creator'                     : [""'''Person who created this record''']
     , ""'currency'                    :
       [""'''Currency for this %(Classname)s''']
+    , ""'customer_status'             : [status]
     , ""'cut_off_date'                :
       [ ""'''Date until when this %(Classname)s must be finished.'''
       , date_text

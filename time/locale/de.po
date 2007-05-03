@@ -3842,3 +3842,6 @@ msgstr "Benutzerstatus"
 
 msgid "doc_num"
 msgstr ""
+
+msgid "customer_status"
+msgstr "Kundenstatus"
