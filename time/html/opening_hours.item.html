@@ -1,0 +1,66 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+             " use_labelprop       python:False
+             ; required_attributes python:''
+             ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'weekday')"/>
+      <td tal:content="structure python:context.weekday.menu ()" colspan="3"/>
+     </tr>
+     <tr>
+      <th>
+       <span tal:content="structure python:utils.fieldname
+          (classname, 'from_hour')"/>
+       /
+       <span tal:content="structure python:utils.fieldname
+          (classname, 'from_minute')"/>
+      </th>
+      <td>
+       <span tal:content="structure python:context.from_hour.field (size=4)"/>
+       :
+       <span tal:content="structure python:context.from_minute.field (size=4)"/>
+      </td>
+     </tr>
+     <tr>
+      <th>
+       <span tal:content="structure python:utils.fieldname
+          (classname, 'to_hour')"/>
+       /
+       <span tal:content="structure python:utils.fieldname
+          (classname, 'to_minute')"/>
+      </th>
+      <td>
+       <span tal:content="structure python:context.to_hour.field (size=4)"/>
+       :
+       <span tal:content="structure python:context.to_minute.field (size=4)"/>
+      </td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

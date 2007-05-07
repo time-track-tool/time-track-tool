@@ -68,7 +68,7 @@
    , 'category'        : '@columns=name,description,responsible,nosy,'
                          'valid,cert_sw&@sort=name&@filter=valid&'
                          '@pagesize=200&@startwith=0&valid=yes'
-   , 'customer'        : '@template=index&@pagesize=50&@startwith=0&'
+   , 'cust_supp'       : '@template=index&@pagesize=50&@startwith=0&'
                          '@columns=id,name,description,tax_id,status,attendant'
    , 'daily_record'    : '@columns=id,user,date,status&@sort=-id&'
                          '@filter=user,date&@pagesize=20&@startwith=0&'
@@ -258,7 +258,7 @@
      , ('tmplate',             'Edit',   '?@template=item', 1)
      , ('legalclient',         'Edit',   '?@template=item', 1)
      , ('contact_type',        'Edit',   '?@template=item', 1)
-     , ('customer',            'Edit',   '?@template=item', 1)
+     , ('cust_supp',           'Edit',   '?@template=item', 1)
      , ('customer_group',      'Edit',   '?@template=item', 1)
      , ('customer_status',     'Edit',   '?@template=item', 1)
      , ('discount_group',      'Edit',   '?@template=item', 1)
@@ -312,7 +312,7 @@
      , ('tmplate',             'View', '',               ('',''))
      , ('letter',              'View', '',               ('',''))
      , ('legalclient',         'View', '',               ('',''))
-     , ('customer',            'View', '',               ('',''))
+     , ('cust_supp',           'View', '',               ('',''))
      , ('discount_group',      'View', '',               ('',''))
      , ('product',             'View', '',               ('',''))
      )
@@ -416,7 +416,7 @@
 
      <!-- custom classes with "New" Button -->
      <tal:block tal:repeat="c python:
-                [('address', 'customer_group'), ('customer', 'abo')]">
+                [('address', 'customer_group'), ('cust_supp', 'abo')]">
         <tal:block tal:condition="python:
           (   c [0] in db._db.classes
           and not c [1] in db._db.classes

@@ -35,24 +35,48 @@ from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
 from roundup.date                   import Date, Interval, Range
 from roundup.cgi.TranslationService import get_translation
+from roundup.hyperdb                import Multilink
 
 class Create_New_Address (Action) :
     """ Create a new address to be added to the current item (used for
-        customer addresses)
+        customer addresses, supply_address, invoice_address,
+        contact_person).
+        
+        Optional @frm specifies the address to copy.
     """
+    copy_attributes = \
+        [ 'adr_type', 'birthdate', 'city', 'country'
+        , 'firstname', 'function', 'initial', 'lastname', 'lettertitle'
+        , 'lookalike_name', 'postalcode', 'salutation', 'street', 'title'
+        , 'valid'
+        ]
     def handle (self) :
         self.request = templating.HTMLRequest (self.client)
         assert (self.client.nodeid)
         klass    = self.db.classes [self.request.classname]
         id       = self.client.nodeid
         attr     = self.form ['@attr'].value.strip ()
-        newid    = self.db.address.create \
-            ( function  = klass.get (id, 'name')
-            , country   = ' '
-            )
-        klass.set (id, ** {attr : newid})
+        if '@frm' in self.form :
+            frm  = self.form ['@frm'].value.strip ()
+            node = self.db.address.getnode (self.db.cust_supp.get (id, frm))
+            attributes = dict \
+                ((k, node [k]) for k in self.copy_attributes
+                 if node [k] is not None
+                )
+        else :
+            attributes = dict \
+                ( function  = klass.get (id, 'name')
+                , country   = ' '
+                )
+
+        newvalue = newid = self.db.address.create (** attributes)
+        if isinstance (klass.properties [attr], Multilink) :
+            newvalue = klass.get (id, attr) [:]
+            newvalue.append (newid)
+            newvalue = dict.fromkeys (newvalue).keys ()
+        klass.set (id, ** {attr : newvalue})
         self.db.commit ()
-        raise Redirect, 'address%s' % newid
+        raise Redirect, "%s%s" % (self.request.classname, id)
     # end def handle
 # end class Create_New_Address
 

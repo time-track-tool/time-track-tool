@@ -42,6 +42,7 @@ import schemadef
 # example) comes first and core is always last.
 schemas = \
     ( 'address'
+    , 'adr_ext'
     , 'sinvoice'
     , 'erp'
     , 'core'

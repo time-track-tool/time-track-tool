@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-05-03 08:02+0200\n"
+"POT-Creation-Date: 2007-05-07 14:25+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -137,6 +137,9 @@ msgstr "Doppelte %(grp)s \"%(groupname)s\""
 #, python-format
 msgid "price/discount must be increasing: %(pd)s"
 msgstr "Rabatt muss mit dem Preis steigen: %(pd)s"
+
+msgid "currency"
+msgstr "Währung"
 
 #, python-format
 msgid "\"%(attr)s\" must not be filled in"
@@ -992,11 +995,11 @@ msgstr "Person die diesen Datensatz erstmalig angelegt hat"
 msgid "creator"
 msgstr "Erstellt von"
 
-msgid "currency"
-msgstr "Währung"
-
 msgid "Currency for this %(Classname)s"
 msgstr "Währung für %(Classname)s"
+
+msgid "customer_status"
+msgstr "Kundenstatus"
 
 msgid "cut_off_date"
 msgstr ""
@@ -2878,6 +2881,17 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "display"
+msgstr "anzeigen"
+
+msgid ""
+"If enabled, items with %(Classname)s will be displayed\n"
+"             in customer/supplier mask.\n"
+"          "
+msgstr ""
+"Wenn eingeschaltet, werden Elemente mit %(Classname)s in der Kunden/"
+"Lieferantenmaske angezeigt."
+
 msgid "valid"
 msgstr "gültig"
 
@@ -3168,11 +3182,20 @@ msgstr "Nummer"
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
+msgid "new invoice address"
+msgstr "Neue Rechnungsadresse"
+
+msgid "new contact from shipping address"
+msgstr "Neuer Kontakt aus Lieferadresse"
+
+msgid "new contact from invoice address"
+msgstr "Neuer Kontakt aus Rechnungsadresse"
+
+msgid "copy invoice address"
+msgstr "Rechnungsadresse übernehmen"
+
 msgid "new shipping address"
 msgstr "Neue Lieferadresse"
-
-msgid "new billing address"
-msgstr "Neue Rechnungsadresse"
 
 msgid "Approvals pending"
 msgstr ""
@@ -3696,6 +3719,24 @@ msgstr "Dateiname"
 msgid "adr_type_cat"
 msgstr "Typ Kategorie"
 
+msgid "weekday"
+msgstr "Wochentag"
+
+msgid "opening_hours"
+msgstr "Öffnungszeiten"
+
+msgid "from_minute"
+msgstr "Minute von"
+
+msgid "to_minute"
+msgstr "Minute bis"
+
+msgid "from_hour"
+msgstr "Stunde von"
+
+msgid "to_hour"
+msgstr "Stunde bis"
+
 msgid "abo_price"
 msgstr "Preis"
 
@@ -3726,53 +3767,59 @@ msgstr "IBAN"
 msgid "bank"
 msgstr "Bank"
 
-msgid "customer"
-msgstr "Kunde"
+msgid "cust_supp"
+msgstr "Kunde/Lieferant"
+
+msgid "supply_addresses"
+msgstr "Lieferadressen"
+
+msgid "supplier_status"
+msgstr "Lieferantenstatus"
 
 msgid "invoice_dispatch"
 msgstr "Rechnungsversand"
 
-msgid "credit_limit"
-msgstr "Kreditlimit"
+msgid "contact_persons"
+msgstr "Kontaktpersonen"
 
-msgid "invoice_address"
-msgstr "Rechnungsadresse"
-
-msgid "customer_group"
-msgstr "Kundengruppe"
+msgid "supplier_group"
+msgstr "Lieferantengruppe"
 
 msgid "discount_group"
 msgstr "Rabattgruppe"
 
-msgid "sales_conditions"
-msgstr "Konditionen"
-
 msgid "invoice_text"
 msgstr "Rechnungstext"
 
+msgid "order_text"
+msgstr "Bestelltext"
+
 msgid "pharma_ref"
 msgstr "Pharmaref. Bezirk"
+
+msgid "attendant"
+msgstr "Kundenbetreuer"
+
+msgid "tax_id"
+msgstr "Umsatzsteuer ID"
+
+msgid "credit_limit"
+msgstr "Kreditlimit"
+
+msgid "customer_group"
+msgstr "Kundengruppe"
+
+msgid "sales_conditions"
+msgstr "Konditionen"
+
+msgid "invoice_address"
+msgstr "Rechnungsadresse"
 
 msgid "shipping_address"
 msgstr "Lieferadresse"
 
 msgid "dispatch_type"
 msgstr "Versandart"
-
-msgid "attendant"
-msgstr "Kundenbetreuer"
-
-msgid "credit_limit_cur"
-msgstr "Kreditlimit-Währung"
-
-msgid "contact_person"
-msgstr "Kontaktperson"
-
-msgid "tax_id"
-msgstr "Umsatzsteuer ID"
-
-msgid "customer_status"
-msgstr "Kundenstatus"
 
 msgid "group_discount"
 msgstr "Artikelgruppenrabatt"
@@ -3843,5 +3890,5 @@ msgstr "Benutzerstatus"
 msgid "doc_num"
 msgstr ""
 
-msgid "customer_status"
-msgstr "Kundenstatus"
+#~ msgid "customer"
+#~ msgstr "Kunde"

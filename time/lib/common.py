@@ -808,7 +808,7 @@ def require_attributes (_, cl, nodeid, new_values, * attributes) :
         attr = _ (a)
         if not nodeid and a not in new_values :
             raise Reject, _ (''"%(attr)s must be specified") % locals ()
-        elif nodeid and new_values.get (a, 1) is None :
+        elif nodeid and new_values.get (a, cl.get (nodeid, a)) is None :
             raise Reject, _ (''"%(attr)s must not be empty") % locals ()
 # end def require_attributes
 

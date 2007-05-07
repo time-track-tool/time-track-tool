@@ -1273,6 +1273,11 @@ _helptext          = \
              that is added for each year.
           '''
       ]
+    , ""'display'                     :
+      [ ""'''If enabled, items with %(Classname)s will be displayed
+             in customer/supplier mask.
+          '''
+      ]
     , ""'valid'                       :
       [ ""'''If enabled, this %(Classname)s is valid and can be
              selected.

@@ -60,29 +60,34 @@ def init \
         , bic                   = String    ()
         )
 
-    customer = Nosy_Issue_Class \
-        ( db, ''"customer"
+    cust_supp = Nosy_Issue_Class \
+        ( db, ''"cust_supp"
         , name                  = String    ()
         , description           = String    ()
-        , shipping_address      = Link      ("address")
         , invoice_address       = Link      ("address")
-        , contact_person        = Multilink ("contact_person")
         , tax_id                = String    ()
-        , customer_status       = Link      ("customer_status")
-        , customer_group        = Link      ("customer_group")
-        , attendant             = Link      ("user")
-        , credit_limit          = Number    ()
-        , credit_limit_cur      = Link      ("currency")
-        , discount_group        = Link      ("discount_group")
+        , contact_persons       = Multilink ("address")
+        , pharma_ref            = Link      ("pharma_ref")
+        , bank_account          = Multilink ("bank_account")
+        , currency              = Link      ("currency")
         , invoice_dispatch      = Link      ("invoice_dispatch")
         , dispatch_type         = Link      ("dispatch_type")
-        , pharma_ref            = Link      ("pharma_ref")
+        # customer-specific:
+        , customer_status       = Link      ("customer_status")
+        , customer_group        = Link      ("customer_group")
+        , shipping_address      = Link      ("address")
+        , attendant             = Link      ("user")
+        , credit_limit          = Number    ()
+        , discount_group        = Link      ("discount_group")
         , invoice_text          = String    ()
-        , bank_account          = Multilink ("bank_account")
         , sales_conditions      = Link      ("sales_conditions")
-        , messages              = Multilink ("msg")
+        # supplier-specific:
+        , supplier_status       = Link      ("supplier_status")
+        , supplier_group        = Link      ("supplier_group")
+        , order_text            = String    ()
+        , supply_addresses      = Multilink ("address")
         )
-    customer.setkey (''"name")
+    cust_supp.setkey (''"name")
 
     customer_group = Class \
         ( db, ''"customer_group"
@@ -92,12 +97,20 @@ def init \
         )
     customer_group.setkey ("name")
 
+    supplier_group = Class \
+        ( db, ''"supplier_group"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    supplier_group.setkey ("name")
+
     customer_status = Class \
         ( db, ''"customer_status"
         , name                  = String    ()
         , description           = String    ()
         , order                 = Number    ()
         , valid                 = Boolean   ()
+        , display               = Boolean   ()
         )
     customer_status.setkey ("name")
 
@@ -222,9 +235,18 @@ def init \
         )
     shelf_life_code.setkey ("name")
 
+    supplier_status = Class \
+        ( db, ''"supplier_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , order                 = Number    ()
+        , valid                 = Boolean   ()
+        , display               = Boolean   ()
+        )
+    supplier_status.setkey ("name")
+
     Address_Class \
         ( db, ''"address"
-        , birthdate             = Date      ()
         )
 
     Letter_Class \
@@ -246,7 +268,7 @@ def security (db, ** kw) :
     classes = \
         [ ("address"           , ["User"],    ["Contact"])
         , ("bank_account"      , ["User"],    ["Contact"])
-        , ("customer"          , ["User"],    ["Contact"])
+        , ("cust_supp"         , ["User"],    ["Contact"])
         , ("customer_group"    , ["User"],    ["Admin"])
         , ("customer_status"   , ["User"],    ["Admin"])
         , ("discount_group"    , ["User"],    ["Discount"])

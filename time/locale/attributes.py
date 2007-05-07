@@ -36,6 +36,7 @@ schemas = \
     , 'time_tracker'
     , 'complex'
     , 'address'
+    , 'adr_ext'
     , 'sinvoice'
     , 'abo'
     , 'legalclient'

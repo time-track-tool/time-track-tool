@@ -467,7 +467,7 @@ if 'contact_type' in db.classes :
     db.contact_type.create \
         ( name         = 'www'
         , description  = 'Home Page'
-        , url_template = '%(contact)s'
+        , url_template = 'http://%(contact)s'
         )
     db.contact_type.create \
         ( name         = 'Email'
@@ -501,6 +501,20 @@ if 'customer_status' in db.classes :
         , valid        = False
         )
 
+if 'supplier_status' in db.classes :
+    db.supplier_status.create \
+        ( name         = uni ('gültig')
+        , description  = uni ('Gültiger Lieferant')
+        , order        = 1
+        , valid        = True
+        )
+    db.supplier_status.create \
+        ( name         = uni ('ungültig')
+        , description  = 'Kein Lieferant'
+        , order        = 2
+        , valid        = False
+        )
+
 if 'product_status' in db.classes :
     db.product_status.create \
         ( name         = uni ('gültig')
@@ -514,3 +528,15 @@ if 'product_status' in db.classes :
         , order        = 2
         , valid        = False
         )
+
+if 'weekday' in db.classes :
+    for n, d in enumerate \
+        ( 'Montag'
+        , 'Dienstag'
+        , 'Mittwoch'
+        , 'Donnerstag'
+        , 'Freitag'
+        , 'Samstag'
+        , 'Sonntag'
+        ) :
+        db.weekday.create (name = d, order = n + 1)
