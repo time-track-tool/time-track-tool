@@ -9,12 +9,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -162,6 +162,8 @@ view               = \
 
 _helptext          = \
     { ""'VIEW'                        : [view]
+    , ""'abbreviation'                        :
+      [""'''Abbreviated name''']
     , ""'abo'                         :
       [""'''Subscription to which this invoice belongs''']
     , ""'abo++end'                    :
@@ -408,7 +410,7 @@ _helptext          = \
     , ""'earliest_start'              :
       [ ""'''When this %(Classname)s can be started to work on. Used to
              specify external dependencies (e.g., availability of
-             hardware). 
+             hardware).
           '''
       ]
     , ""'effort'                      :
@@ -456,12 +458,12 @@ _helptext          = \
              filename and path and the new version. The CVS output from
              the command *VCFiltered_Commit* shall be used to fill in
              this field!
- 
+
              Example: Consider changed files *os_start.c*, *os_start.h*,
              and *os_version.c* in *projects/SW/external/ttpos/src/os*,
              resulting in *TTP-OS Version 4.5.23*. The entry to
              %(Property)s shall look like::
- 
+
               VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c
               VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h
               VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version.c
@@ -479,7 +481,7 @@ _helptext          = \
              The %(Property)s field contains the build version of the
              complete artefact. In the Example from Files affected the
              entry for %(Property)s shall look like::
-       
+
                TTP-OS 4.5.23
           '''
       ]
@@ -1186,13 +1188,13 @@ _helptext          = \
          '''
       ]
     , ""'travel'                      : [travel]
-    , ""'time_wp++travel'             : 
+    , ""'time_wp++travel'             :
       [ travel
       , ""''' In addition in reports the times booked will be halved (if
              exceeding the expected work hours and the person is not
              marked "travel_full" in the dynamic user data)
           '''
-      ]  
+      ]
     , ""'transitions'                 :
       [""'''Allowed transitions to other states''']
     , ""'tr_duration'                 :
@@ -1278,7 +1280,7 @@ _helptext          = \
       ]
     , ""'valid_from'                  :
       [ ""'''Creation date, or date since when this %(Classname)s can be
-             booked at 
+             booked at
           '''
       , date_text
       ]

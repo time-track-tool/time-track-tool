@@ -49,6 +49,7 @@ def init \
         ( db
         , ''"severity"
         , name                  = String    ()
+        , abbreviation          = String    ()
         , order                 = String    ()
         )
     severity.setkey ("name")

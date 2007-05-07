@@ -99,6 +99,7 @@ def init \
     sev = Class \
         ( db, "severity"
         , name                = String    (indexme = 'no')
+        , abbreviation        = String    (indexme = 'no')
         , order               = Number    ()
         )
     sev.setkey ("name")

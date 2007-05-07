@@ -251,13 +251,13 @@ if 'document_type' in db.classes :
 if 'severity' in db.classes :
     # severity
     # order, name
-    ss = [ ("1", "showstopper")
-         , ("2", "major")
-         , ("3", "minor")
-         ]
+    ss = ( (1, "Minor",       "m")
+         , (2, "Major",       "M")
+         , (3, "Showstopper", "S")
+         )
     severity = db.getclass ("severity")
-    for order, name in ss :
-        severity.create (name = name, order = order)
+    for order, name, abbr in ss :
+        severity.create (name = name, order = order, abbreviation = abbr)
 
 if 'user_status' in db.classes :
     # user status must come first.
