@@ -28,26 +28,15 @@ _ = lambda x : x
 
 def update_cust_supp (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'bank_account')
-    ocstat = cl.get (nodeid, 'customer_status')
-    cstat  = new_values.get ('customer_status', ocstat)
-    osstat = cl.get (nodeid, 'supplier_status')
-    sstat  = new_values.get ('supplier_status', osstat)
-    svalid = operator.__and__ \
-        (* [(k and db.customer_status.get (k, 'valid')) for k in ((sstat, osstat))])
-    cvalid = operator.__and__ \
-        (* [(k and db.customer_status.get (k, 'valid')) for k in
-        ((cstat, ocstat))])
-    if cvalid :
-        common.require_attributes (_, cl, nodeid, new_values, 'customer_group')
-        customer_group = new_values.get \
-            ('customer_group', cl.get (nodeid, 'customer_group'))
-        if  (   'discount_group' not in new_values
-            and not cl.get (nodeid, 'discount_group')
-            ) :
-            new_values ['discount_group'] = db.customer_group.get \
-                (customer_group, 'discount_group')
-    if svalid :
-        common.require_attributes (_, cl, nodeid, new_values, 'supplier_group')
+    cstat  = new_values.get \
+        ('customer_status', cl.get (nodeid, 'customer_status'))
+    cgroup = new_values.get \
+        ('customer_group',  cl.get (nodeid, 'customer_group'))
+    cgroup = new_values.get \
+        ('discount_group',  cl.get (nodeid, 'discount_group'))
+    if cvalid and cgroup and not dgroup :
+        new_values ['discount_group'] = db.customer_group.get \
+            (customer_group, 'discount_group')
 # end def update_cust_supp
 
 def new_cust_supp (db, cl, nodeid, new_values) :

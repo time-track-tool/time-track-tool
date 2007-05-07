@@ -66,7 +66,7 @@ def init \
         , description           = String    ()
         , invoice_address       = Link      ("address")
         , tax_id                = String    ()
-        , contact_persons       = Multilink ("address")
+        , contact_person        = Multilink ("address")
         , pharma_ref            = Link      ("pharma_ref")
         , bank_account          = Multilink ("bank_account")
         , currency              = Link      ("currency")
@@ -85,7 +85,7 @@ def init \
         , supplier_status       = Link      ("supplier_status")
         , supplier_group        = Link      ("supplier_group")
         , order_text            = String    ()
-        , supply_addresses      = Multilink ("address")
+        , supply_address        = Multilink ("address")
         )
     cust_supp.setkey (''"name")
 

@@ -1249,3 +1249,83 @@
   </table>
 </form>
 </tal:block>
+
+<!-- needed vars: property: Multilink to address, button_text -->
+<tal:block metal:define-macro="address_list">
+ <tr>
+  <th tal:content="structure python:utils.fieldname (classname, property)"/>
+  <td colspan="3">
+   <table class="form" border="0"
+          style="border-spacing:0px;padding-top:0px;padding-left:0px">
+    <tr>
+     <th style="text-align:left;padding-top:0px">
+      <span tal:content="structure python:utils.fieldname
+         ('address', 'firstname')"/>
+      /
+      <span tal:content="structure python:utils.fieldname
+         ('address', 'lastname')"/>
+      /
+      <span tal:content="structure python:utils.fieldname
+         ('address', 'function')"/>
+     <th style="text-align:left;padding-top:0px"
+         tal:condition="context/is_edit_ok" i18n:translate=""
+         style="padding-top:0px">
+         remove
+     </th>
+    </tr>
+    <tr tal:repeat="ca python:sorted
+        ( context [property]
+        , key = lambda x : (x.firstname, x.lastname, x.function)
+        )">
+     <td>
+      <span>
+       <a i18n:translate="" tal:attributes="href python:
+          'address%s' % ca.id">
+        <span nowrap
+         tal:content="python: ' '.join
+          (( ca.firstname.plain ()
+          ,  ca.lastname.plain ()
+          ))"/>
+        <span nowrap
+         tal:content="python: ' '.join
+          (ca.function.plain ().split ('\n')[:1])"/>
+       </a>
+      </span>
+     </td>
+     <td tal:condition="context/is_edit_ok">
+      <input type="checkbox" tal:attributes="
+                 value ca/id;
+                 name  string:@remove@${property};">
+     </td>
+    </tr>
+    <tr>
+     <td colspan="2">
+      <span>
+       <input type="text" size="6" tal:attributes="
+        onchange string:document.forms.itemSynopsis ['@link@${property}'].value
+          = 'address' + document.forms.itemSynopsis.a_${property}.value;
+        name string:a_${property}">
+       <input type="hidden" tal:attributes="name string:@link@${property}">
+       <input tal:condition="context/shipping_address"
+         type="button" tal:attributes=
+          "onClick python:'javascript:document.location = '
+           '\'%s?@attr=%s&@frm=shipping_address&@action=create_new_address\''
+           % (context.designator (), property)
+          ; value python:utils.adress_button ('shipping_address', property)
+          ">
+      </span>
+     </td>
+     <td>
+       <input tal:condition="context/invoice_address"
+         type="button" tal:attributes=
+          "onClick python:'javascript:document.location = '
+           '\'%s?@attr=%s&@frm=invoice_address&@action=create_new_address\''
+           % (context.designator (), property)
+          ; value python:utils.adress_button ('invoice_address', property)
+          ">
+     </td>
+    </tr>
+   </table>
+  </td>
+ </tr>
+</tal:block>

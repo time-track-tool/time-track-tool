@@ -61,79 +61,9 @@
        </span>
       </td>
      </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'contact_persons')"/>
-      <td colspan="3">
-       <table class="form" border="0"
-              style="border-spacing:0px;padding-top:0px;padding-left:0px">
-        <tr>
-         <th style="text-align:left;padding-top:0px">
-          <span tal:content="structure python:utils.fieldname
-             ('address', 'firstname')"/>
-          /
-          <span tal:content="structure python:utils.fieldname
-             ('address', 'lastname')"/>
-          /
-          <span tal:content="structure python:utils.fieldname
-             ('address', 'function')"/>
-         <th style="text-align:left;padding-top:0px"
-             tal:condition="context/is_edit_ok" i18n:translate=""
-             style="padding-top:0px">
-             remove
-         </th>
-        </tr>
-        <tr tal:repeat="ca python:sorted
-            ( context.contact_persons
-            , key = lambda x : (x.firstname, x.lastname, x.function)
-            )">
-         <td>
-          <span>
-           <a i18n:translate="" tal:attributes="href python:
-              'address%s' % ca.id">
-            <span nowrap
-             tal:content="python: ' '.join
-              (( ca.firstname.plain ()
-              ,  ca.lastname.plain ()
-              ))"/>
-            <span nowrap
-             tal:content="python: ' '.join
-              (ca.function.plain ().split ('\n')[:1])"/>
-           </a>
-          </span>
-         </td>
-         <td tal:condition="context/is_edit_ok">
-          <input type="checkbox" name="@remove@contact_persons"
-                 tal:attributes="value ca/id">
-         </td>
-        </tr>
-        <tr>
-         <td colspan="2">
-          <span>
-           <input type="text" name="anonymous" size="6" onchange="
-            document.forms.itemSynopsis ['@link@contact_persons'].value
-            = 'address' + document.forms.itemSynopsis.anonymous.value;">
-           <input type="hidden" name="@link@contact_persons">
-           <input tal:condition="context/shipping_address"
-             type="button" tal:attributes=
-              "onClick python:'javascript:document.location = '
-               '\'%s?@attr=contact_persons&@frm=shipping_address&'
-               '@action=create_new_address\''
-               % context.designator ()"
-             i18n:attributes="value" value="new contact from shipping address">
-           <input tal:condition="context/invoice_address"
-             type="button" tal:attributes=
-              "onClick python:'javascript:document.location = '
-               '\'%s?@attr=contact_persons&@frm=invoice_address&'
-               '@action=create_new_address\''
-               % context.designator ()"
-             i18n:attributes="value" value="new contact from invoice address">
-          </span>
-         </td>
-        </tr>
-       </table>
-      </td>
-     </tr>
+     <tal:block tal:define="property string:contact_person">
+      <tr metal:use-macro="templates/page/macros/address_list"/>
+     </tal:block>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'tax_id')"/>
       <td tal:content="structure python:context.tax_id.field ()"/>
@@ -259,7 +189,7 @@
        </td>
       </tr>
       <tr>
-       <th class="required" tal:content="structure python:utils.fieldname
+       <th tal:content="structure python:utils.fieldname
            (classname, 'customer_group')"/>
        <td tal:content="structure python:context.customer_group.menu ()"/>
        <th tal:content="structure python:utils.fieldname
@@ -311,10 +241,13 @@
          and (context.supplier_status.valid or context.supplier_status.display)
          )">
       <tr>
-       <th class="required" tal:content="structure python:utils.fieldname
+       <th tal:content="structure python:utils.fieldname
            (classname, 'supplier_group')"/>
        <td tal:content="structure python:context.supplier_group.menu ()"/>
       </tr>
+      <tal:block tal:define="property string:supply_address">
+       <tr metal:use-macro="templates/page/macros/address_list"/>
+      </tal:block>
       <tr>
        <th tal:content="structure python:utils.fieldname
            (classname, 'order_text')"/>
