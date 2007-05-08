@@ -230,7 +230,8 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'user'
         , check       = schemadef.own_user_record
-        , description = "User is allowed to edit (some of) their own user details"
+        , description = \
+            "User is allowed to edit (some of) their own user details"
         , properties  = \
             ( 'password', 'realname', 'phone', 'private_phone', 'external_phone'
             , 'quick_dialling', 'internal_phone', 'private_mobile'
@@ -256,7 +257,9 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'user'
         , check       = private_phone_ok
-        , description = "User wants private phone accessible"
+        , description = \
+            "User is allowed to see private phone if owner wants "
+            "private phone accessible"
         , properties  = ('private_phone', )
         )
     db.security.addPermissionToRole('User', p)
@@ -265,7 +268,9 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'user'
         , check       = private_mobile_ok
-        , description = "User wants private mobile accessible"
+        , description = \
+            "User is allowed to see private mobile if owner wants "
+            "private mobile accessible"
         , properties  = ('private_mobile', )
         )
     db.security.addPermissionToRole('User', p)

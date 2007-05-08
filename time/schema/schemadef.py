@@ -27,6 +27,7 @@
 #--
 #
 
+import re
 from rsclib.autosuper import autosuper
 
 # Common routines for registration of roles classes and permissions
@@ -70,6 +71,17 @@ def own_user_record (db, userid, itemid) :
     """Determine whether the userid matches the item being accessed"""
     return userid == itemid
 # end def own_user_record
+
+whitespace = re.compile ('(\s+)')
+
+def security_doc_from_docstring (doc) :
+    """ Take given docstring (from security function) and use first
+        paragraph (up to empty line) for security doc.
+    """
+    d = doc.split ('\n\n', 1) [0]
+    d = whitespace.sub (' ', d)
+    return d.strip ().strip ('.')
+# end def security_doc_from_docstring
 
 class Importer (object) :
     def __init__ (self, globals, schemas) :

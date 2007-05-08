@@ -337,8 +337,12 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
 
+    fixdoc = schemadef.security_doc_from_docstring
+
     def approver_daily_record (db, userid, itemid) :
-        """A negative itemid indicates that the record doesn't exits
+        """User is allowed to edit daily record if he is supervisor.
+
+           A negative itemid indicates that the record doesn't exits
            yet -- we allow creation in this case. Modification is only
            allowed by the supervisor.
         """
@@ -352,7 +356,10 @@ def security (db, ** kw) :
     # end def approver_daily_record
 
     def ok_daily_record (db, userid, itemid) :
-        """Determine if the user owns the daily record, a negative itemid
+        """User is allowed to edit daily record if he is owner or
+           supervisor.
+
+           Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exits yet -- we allow creation
            in this case. Modification is also allowed by the supervisor or
            the person to whom approvals are delegated.
@@ -362,7 +369,9 @@ def security (db, ** kw) :
     # end def ok_daily_record
 
     def own_time_record (db, userid, itemid) :
-        """Determine if the user owns the daily record, a negative itemid
+        """User may edit own time_records.
+
+           Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exits yet -- we allow creation
            in this case.
         """
@@ -374,7 +383,9 @@ def security (db, ** kw) :
     # end def own_time_record
 
     def may_see_time_record (db, userid, itemid) :
-        """ Project owner or deputy may see time record """
+        """User is allowed to see time record if he is Project owner or
+           deputy.
+        """
         dr      = db.time_record.get  (itemid, 'daily_record')
         wp      = db.time_record.get  (itemid, 'wp')
         if wp is None :
@@ -385,7 +396,9 @@ def security (db, ** kw) :
     # end def may_see_time_record
 
     def is_project_owner_of_wp (db, userid, itemid) :
-        """ Check if user is owner of wp """
+        """User is allowed to edit workpackage if he is time category
+           owner.
+        """
         if int (itemid) < 0 :
             return False
         prid    = db.time_wp.get (itemid, 'project')
@@ -394,8 +407,11 @@ def security (db, ** kw) :
     # end def is_project_owner_of_wp
 
     def ok_work_package (db, userid, itemid) :
-        """ Check if user is responsible for wp or if user is responsible
-            for project or is the deputy for project
+        """User is allowed to edit workpackage if he is owner or project
+           responsible/deputy.
+
+           Check if user is responsible for wp or if user is responsible
+           for project or is the deputy for project
         """
         if int (itemid) < 0 :
             return False
@@ -408,7 +424,10 @@ def security (db, ** kw) :
     # end def ok_work_package
 
     def time_project_responsible_and_open (db, userid, itemid) :
-        """ Check if the user is responsible for the given time_project
+        """ User is allowed to edit time category if the status is
+            "Open" and he is responsible for the time category.
+
+            Check if the user is responsible for the given time_project
             if yes *and* the time_project is in status open, the user
             may edit several fields.
         """
@@ -423,7 +442,10 @@ def security (db, ** kw) :
     # end def time_project_responsible_and_open
 
     def approval_for_time_record (db, userid, itemid) :
-        """Viewing is allowed by the supervisor or the person to whom
+        """User is allowed to view time record if he is the supervisor
+           or the person to whom approvals are delegated.
+
+           Viewing is allowed by the supervisor or the person to whom
            approvals are delegated.
         """
         dr        = db.time_record.get  (itemid, 'daily_record')
@@ -433,29 +455,28 @@ def security (db, ** kw) :
     # end def approval_for_time_record
 
     def overtime_thawed (db, userid, itemid) :
-        """Check that no daily_record_freeze is active at date
+        """User is allowed to edit overtime correction if the overtime
+           correction is not frozen.
+
+           Check that no daily_record_freeze is active at date
         """
         oc = db.overtime_correction.getnode (itemid)
         return not frozen (db, oc.user, oc.date)
     # end def overtime_thawed
 
-    def dr_freeze_thawed (db, userid, itemid) :
-        """Check that no daily_record_freeze is active at date
-        """
-        df = db.daily_record_freeze.getnode (itemid)
-        return not frozen (db, df.user, df.date)
-    # end def dr_freeze_thawed
-
     def dr_freeze_last_frozen (db, userid, itemid) :
-        """Check that no daily_record_freeze is active after date
+        """User is allowed to edit freeze record if not frozen at the
+           given date.
+
+           Check that no daily_record_freeze is active after date
         """
         df = db.daily_record_freeze.getnode (itemid)
         return not frozen (db, df.user, df.date + Interval ('1d'))
     # end def dr_freeze_last_frozen
 
     def dynuser_thawed (db, userid, itemid) :
-        """Check that no daily_record_freeze is active in validity span
-           of dyn user record
+        """User is allowed to edit dynamic user data if not frozen in
+           validity span of dynamic user record
         """
         dyn = db.user_dynamic.getnode (itemid)
         return not frozen (db, dyn.user, dyn.valid_from)
@@ -465,7 +486,7 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'time_wp'
         , check       = ok_work_package
-        , description = "User is allowed to edit (some of) their own user wps"
+        , description = fixdoc (ok_work_package.__doc__)
         , properties  = \
             ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
@@ -477,7 +498,7 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'time_wp'
         , check       = is_project_owner_of_wp
-        , description = "User is allowed to edit name and wp_no"
+        , description = fixdoc (is_project_owner_of_wp.__doc__)
         , properties  = ('name', 'responsible', 'wp_no', 'cost_center')
         )
     db.security.addPermissionToRole ('User', p)
@@ -486,7 +507,7 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'time_project'
         , check       = time_project_responsible_and_open
-        , description = "User is allowed to edit some fields"
+        , description = fixdoc (time_project_responsible_and_open.__doc__)
         , properties  = ('deputy', 'description', 'planned_effort', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
@@ -496,7 +517,7 @@ def security (db, ** kw) :
             ( name        = perm
             , klass       = 'daily_record'
             , check       = ok_daily_record
-            , description = 'User and approver may edit daily_records'
+            , description = fixdoc (ok_daily_record.__doc__)
             , properties  = ('status', 'time_record')
             )
         db.security.addPermissionToRole ('User', p)
@@ -505,7 +526,7 @@ def security (db, ** kw) :
             ( name        = perm
             , klass       = 'daily_record'
             , check       = approver_daily_record
-            , description = 'approver may edit daily_record.required_overtime'
+            , description = fixdoc (approver_daily_record.__doc__)
             , properties  = ('required_overtime')
             )
         db.security.addPermissionToRole ('User', p)
@@ -514,7 +535,7 @@ def security (db, ** kw) :
             ( name        = perm
             , klass       = 'time_record'
             , check       = own_time_record
-            , description = 'User may edit own time_records'
+            , description = fixdoc (own_time_record.__doc__)
             )
         db.security.addPermissionToRole ('User', p)
 
@@ -522,21 +543,21 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'time_record'
         , check       = approval_for_time_record
-        , description = 'Supervisor may see time record'
+        , description = fixdoc (approval_for_time_record.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_record'
         , check       = may_see_time_record
-        , description = may_see_time_record.__doc__
+        , description = fixdoc (may_see_time_record.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'overtime_correction'
         , check       = overtime_thawed
-        , description = overtime_thawed.__doc__
+        , description = fixdoc (overtime_thawed.__doc__)
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'overtime_correction')
@@ -544,7 +565,7 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'daily_record_freeze'
         , check       = dr_freeze_last_frozen
-        , description = dr_freeze_last_frozen.__doc__
+        , description = fixdoc (dr_freeze_last_frozen.__doc__)
         , properties  = ('frozen',)
         )
     db.security.addPermissionToRole ('HR', p)
@@ -553,7 +574,7 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'user_dynamic'
         , check       = dynuser_thawed
-        , description = dynuser_thawed.__doc__
+        , description = fixdoc (dynuser_thawed.__doc__)
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
