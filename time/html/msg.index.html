@@ -5,25 +5,22 @@
 </tal:block>
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
-  "batch request/batch;
-   pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty
-        ( utils, pdict ['author']
-        , help_props  = ['firstname', 'lastname']
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['recipients']
-        , help_props  = ['firstname', 'lastname']
-        )
-    , utils.ExtProperty (utils, pdict ['date'])
-    , utils.ExtProperty (utils, pdict ['subject'])
-    , utils.ExtProperty (utils, pdict ['messageid'])
-    , utils.ExtProperty (utils, pdict ['inreplyto'])
-    , utils.ExtProperty (utils, pdict ['keywords'], multiselect = 1)
-
-    );
+  "batch request/batch
+  ;pdict python: utils.properties_dict (db, context)
+  ;prp   python:
+    ( ('id',         {})
+    , ('author',     dict (help_props = ['firstname', 'lastname']))
+    , ('recipients', dict (help_props = ['firstname', 'lastname']))
+    , ('date',       {})
+    , ('subject',    {})
+    , ('messageid',  {})
+    , ('inreplyto',  {})
+    , ('keywords',   dict (multiselect = 1))
+    )
+  ;props python:
+         [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+           for p in prp if p [0] in pdict
+         ]
   "
   tal:condition="context/is_view_ok">
 
