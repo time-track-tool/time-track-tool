@@ -66,16 +66,31 @@ def get_user_dynamic (db, user, date) :
     return None
 # end def get_user_dynamic
 
-def first_user_dynamic (db, user, direction = '+') :
+def first_user_dynamic (db, user, direction = '+', date = None) :
+    """Search for first user_dynamic record, optionally starting at
+       date.
+       
+       The direction may be specified as '-' to search for the last
+       record, see last_user_dynamic
+    """
+    filter_dict = dict (user = user)
+    if date :
+        format = '%Y-%m-%d;'
+        if direction == '-' :
+            format = ';%Y-%m-%d'
+        filter_dict ['valid_from'] = date.pretty (format)
     ids = db.user_dynamic.filter \
-        (None, dict (user = user), group = (direction, 'valid_from'))
+        (None, filter_dict, group = (direction, 'valid_from'))
     if ids :
         return db.user_dynamic.getnode (ids [0])
     return None
 # end def first_user_dynamic
 
-def last_user_dynamic (db, user) :
-    return first_user_dynamic (db, user, direction = '-')
+def last_user_dynamic (db, user, date = None) :
+    """Search for last user_dynamic record, optionally searching
+       backwards from date.
+    """
+    return first_user_dynamic (db, user, direction = '-', date = date)
 # end def last_user_dynamic
 
 def find_user_dynamic (db, user, date, direction = '+') :
