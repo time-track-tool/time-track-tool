@@ -30,9 +30,10 @@ def update_cust_supp (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'bank_account')
     cstat  = new_values.get \
         ('customer_status', cl.get (nodeid, 'customer_status'))
+    cvalid = cstat and db.customer_status.get (cstat, 'valid')
     cgroup = new_values.get \
         ('customer_group',  cl.get (nodeid, 'customer_group'))
-    cgroup = new_values.get \
+    dgroup = new_values.get \
         ('discount_group',  cl.get (nodeid, 'discount_group'))
     if cvalid and cgroup and not dgroup :
         new_values ['discount_group'] = db.customer_group.get \
