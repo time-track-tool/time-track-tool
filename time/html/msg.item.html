@@ -89,8 +89,8 @@
         (classname, 'content')"/>
    </tr>
    <tr>
-    <td class="content" colspan=2>
-     <pre tal:content="python:utils.soft_wrap(context.content.plain(),80)"/>
+    <td class="content" colspan="2">
+     <pre tal:content="structure context/content/hyperlinked"/>
     </td>
    </tr>
   </table>
