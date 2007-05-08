@@ -97,13 +97,6 @@ def init \
         )
     customer_group.setkey ("name")
 
-    supplier_group = Class \
-        ( db, ''"supplier_group"
-        , name                  = String    ()
-        , description           = String    ()
-        )
-    supplier_group.setkey ("name")
-
     customer_status = Class \
         ( db, ''"customer_status"
         , name                  = String    ()
@@ -234,6 +227,13 @@ def init \
         , shelf_life            = Number    ()
         )
     shelf_life_code.setkey ("name")
+
+    supplier_group = Class \
+        ( db, ''"supplier_group"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    supplier_group.setkey ("name")
 
     supplier_status = Class \
         ( db, ''"supplier_status"
