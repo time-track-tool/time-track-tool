@@ -70,6 +70,7 @@ def comment_edit \
     , form     = "itemSynopsis"
     , title    = "Comment"
     , editable = False
+    , nodeid   = ''
     ) :
     """ Create a hidden field for this item with proper contents and
         a javascript link for editing the content property.
@@ -77,7 +78,7 @@ def comment_edit \
     return ( """<input type="hidden" name="%s" value=%s> """
              """<a class="classhelp" """
              """href="javascript:help_window """
-             """('%s?@template=comment"""
+             """('%s%s?@template=comment"""
              """&property=%s&editable=%s"""
              """&form=%s', %d, %d)">"""
              """<img src="@@file/comment.png" alt="C" title="%s" border="0">"""
@@ -85,6 +86,7 @@ def comment_edit \
              % ( property
                , quote (str (value))
                , klass
+               , nodeid
                , property
                , ('1','')[not editable]
                , form
@@ -544,6 +546,7 @@ class ExtProperty :
             , value    = self.item [self.name]
             , title    = self.i18nlabel
             , editable = self.editable
+            , nodeid   = self.item.id
             )
     # end def comment_edit
 

@@ -20,11 +20,14 @@
 
  <body class="body" tal:define="editable request/form/editable/value|nothing"
   onload="document.frm_content ['comment'].value = frm [field].value; ">
-  <h3 i18n:translate="">Comment editing</h3>
+  <h3 i18n:translate="" tal:condition="editable">Comment editing</h3>
+  <h3 i18n:translate="" tal:condition="not:editable">Comment view</h3>
   <form name="frm_content" tal:attributes="action request/base">
    <textarea type="text" name="comment" rows="5" cols="60" class="preview"
-    tal:attributes="readonly not:editable">
+    tal:attributes="readonly not:editable" tal:condition="editable">
    </textarea>
+   <pre tal:condition="not:editable"
+        tal:content="structure python:context.comment.wrapped(hyperlink=1)"/>
    <br/>
    <input type="button" name="btn_apply" class="apply" value="OK" onclick="
           frm [field].value = document.frm_content ['comment'].value;
