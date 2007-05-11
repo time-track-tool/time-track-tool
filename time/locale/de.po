@@ -3891,6 +3891,72 @@ msgstr "Benutzerstatus"
 msgid "doc_num"
 msgstr ""
 
+msgid "invoice_dispatch"
+msgstr "Rechnungsversand"
+
+msgid "customer_status"
+msgstr "Kundenstatus"
+
+msgid "customer_group"
+msgstr "Kundengruppe"
+
+msgid "customer"
+msgstr "Kundenstamm"
+
+msgid "shipping_address"
+msgstr "Lieferadresse"
+
+msgid "invoice_address"
+msgstr "Rechnungsadresse"
+
+msgid "contact_person"
+msgstr "Kontaktperson"
+
+msgid "tax_id"
+msgstr "Umsatzsteuer ID"
+
+msgid "attendant"
+msgstr "Kundenbetreuer"
+
+msgid "credit_limit"
+msgstr "Kreditlimit"
+
+msgid "credit_limit_cur"
+msgstr "Kreditlimit-Währung"
+
+msgid "bank_account"
+msgstr "Bankverbindung"
+
+msgid "bank"
+msgstr "Bank"
+
+msgid "account_number"
+msgstr "Kontonummer"
+
+msgid "bank_code"
+msgstr "Bankleitzahl"
+
+msgid "iban"
+msgstr "IBAN"
+
+msgid "bic"
+msgstr "BIC"
+
+msgid "pharma_ref"
+msgstr "Pharmaref. Bezirk"
+
+msgid "group_discount"
+msgstr "Artikelgruppenrabatt"
+
+msgid "product_group"
+msgstr "Artikelgruppe"
+
+msgid "dispatch_type"
+msgstr "Versandart"
+
+msgid "sales_conditions"
+msgstr "Konditionen"
+
 #~ msgid "new contact from shipping address"
 #~ msgstr "Neuer Kontakt aus Lieferadresse"
 

@@ -61,6 +61,15 @@ class Repr_Str (autosuper) :
     # end def __call__
 # end class Repr
 
+class Repr_Anschrift (Repr_Str) :
+    def __call__ (self, itemid, col) :
+        fields = ('country', 'postalcode', 'city')
+        x = ' '.join (self.klass.get (itemid, z) for z in fields)
+        x = x.replace (' ', '-', 1)
+        return self.conv (x)
+    # end def __call__
+# end class Repr_Anschrift
+
 class Repr_Date (Repr_Str) :
     def conv (self, x) :
         if x :
@@ -152,9 +161,10 @@ class Export_CSV_Names (Action, autosuper) :
             matches = self.db.indexer.search \
                 (re.findall (r'\b\w{2,25}\b', self.request.search_text), klass)
         else :
-            matches = None
-        self.columns = columns
-        self.matches = matches
+            matches        = None
+        self.columns       = columns
+        self.print_columns = columns
+        self.matches       = matches
     # end def _setup
 
     def build_repr (self) :
@@ -238,7 +248,7 @@ class Export_CSV_Names (Action, autosuper) :
             , quoting   = self.quoting
             )
         if self.print_head :
-            writer.writerow (self.columns)
+            writer.writerow (self.print_columns)
 
         self.build_repr ()
 
@@ -257,7 +267,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     quoting    = csv.QUOTE_NONE
 
     def _setup (self) :
-        self.columns = \
+        self.columns = self.print_columns = \
             [ 'title'
             , 'firstname'
             , 'lastname'
@@ -305,12 +315,32 @@ class Export_TeX (Export_CSV_Names) :
             , 'zh'
             , 'adrtyp'
             ]
-        self.csv_writer.writerow \
-            ( 'anrede', 'nr', 'strasse', 'titel', 'vorname', 'zuname'
-            , 'institut', 'bez', 'anm', 'anschrift', 'gruppe', 'locked'
-            , 'zh', 'adrtyp'
+        self.print_columns = \
+            ( 'anrede'
+            , 'nr'
+            , 'strasse'
+            , 'titel'
+            , 'vorname'
+            , 'zuname'
+            , 'institut'
+            , 'bez'
+            , 'anm'
+            , 'anschrift'
+            , 'gruppe'
+            , 'locked'
+            , 'zh'
+            , 'adrtyp'
             )
         self.matches = None
+
+    def build_repr (self) :
+        self.__super.build_repr ()
+        empty = lambda x, y : ''
+        for k in 'nr', 'bez', 'anm', 'gruppe', 'locked', 'zh', 'adrtyp' :
+            self.represent [k] = empty
+        self.represent ['anschrift'] = Repr_Anschrift (self.klass)
+    # end def build_repr
+
 # end class Export_TeX
 
 def init (instance) :
