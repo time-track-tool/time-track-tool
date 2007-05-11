@@ -35,13 +35,14 @@ try :
 except ImportError :
     from StringIO  import StringIO
 
-from roundup.cgi.actions import Action
-from roundup.cgi         import templating
-from roundup             import hyperdb
+from roundup.cgi.actions   import Action
+from roundup.cgi           import templating
+from roundup               import hyperdb
 
-from rsclib.autosuper    import autosuper
+from rsclib.autosuper      import autosuper
+from rsclib.TeX_CSV_Writer import TeX_CSV_Writer
 
-from extproperty         import ExtProperty
+from extproperty           import ExtProperty
 
 class Repr_Str (autosuper) :
     def __init__ (self, klass) :
@@ -139,6 +140,7 @@ class Export_CSV_Names (Action, autosuper) :
     filename       = 'query.csv'
     delimiter      = '\t'
     quoting        = csv.QUOTE_MINIMAL
+    csv_writer     = csv.writer
 
     def _setup (self) :
         columns    = self.request.columns
@@ -229,7 +231,7 @@ class Export_CSV_Names (Action, autosuper) :
             return 'dummy'
 
         io = StringIO ()
-        writer = csv.writer \
+        writer = self.csv_writer \
             ( io
             , dialect   = 'excel'
             , delimiter = self.delimiter
@@ -279,9 +281,40 @@ class Export_CSV_Addresses (Export_CSV_Names) :
         self.represent ['code']    = repr_code (self.klass, self.adr_types)
     # end def build_repr
 
-# end class Export_Addresses
+# end class Export_CSV_Addresses
+
+class Export_TeX (Export_CSV_Names) :
+    filename   = 'query.txt'
+    delimiter  = ';'
+    csv_writer = TeX_CSV_Writer
+
+    def _setup (self) :
+        self.columns = \
+            [ 'salutation'
+            , 'nr'
+            , 'street'
+            , 'title'
+            , 'firstname'
+            , 'lastname'
+            , 'function'
+            , 'bez'
+            , 'anm'
+            , 'anschrift'
+            , 'gruppe'
+            , 'locked'
+            , 'zh'
+            , 'adrtyp'
+            ]
+        self.csv_writer.writerow \
+            ( 'anrede', 'nr', 'strasse', 'titel', 'vorname', 'zuname'
+            , 'institut', 'bez', 'anm', 'anschrift', 'gruppe', 'locked'
+            , 'zh', 'adrtyp'
+            )
+        self.matches = None
+# end class Export_TeX
 
 def init (instance) :
     instance.registerAction ('export_csv_names',     Export_CSV_Names)
+    instance.registerAction ('export_csv_tex',       Export_TeX)
     instance.registerAction ('export_csv_addresses', Export_CSV_Addresses)
 # end def init
