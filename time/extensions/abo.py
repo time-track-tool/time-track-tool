@@ -38,9 +38,35 @@ def letter_link (request, id) :
           )
 # end def letter_link
 
+def valid_adr_types (db, adr_type_cat = None) :
+    tc = None
+    if adr_type_cat :
+        try :
+            tc = [db._db.adr_type_cat.lookup (adr_type_cat)]
+        except KeyError :
+            pass
+    if not tc :
+        tc = db._db.adr_type_cat.getnodeids ()
+    return tc
+# end def valid_adr_types
+
+def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
+    tc = valid_adr_types (db, adr_type_cat = adr_type_cat)
+    args = dict \
+        ( properties = 'code,description'
+        , property   = property
+        , pagesize   = 500
+        , sort       = 'code'
+        , filter     = ','.join (tc)
+        )
+    return db.adr_type.classhelp (** args)
+# end def adr_type_classhelp
+
 def init (instance) :
     global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerUtil
-    reg ('letter_link',       letter_link)
+    reg ('letter_link',        letter_link)
+    reg ('valid_adr_types',    valid_adr_types)
+    reg ('adr_type_classhelp', adr_type_classhelp)

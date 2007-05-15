@@ -32,16 +32,7 @@
    (   'adr_type_cat' in db._db.classes
    and ','.join (db._db.adr_type_cat.getnodeids ())
    )
- ; abo_typecat     python:
-   (   'adr_type_cat' in db._db.classes
-   and db._db.adr_type_cat.lookup ('ABO')
-   )
- ; abo_adrtype     python:
-   (   'adr_type_cat' in db._db.classes
-   and ','.join (str (i.code) for i in
-                 db.adr_type.filter (filterspec = dict (typecat = abo_typecat))
-                )
-   )
+ ; abo_adrtype     python:utils.valid_adr_types (db, adr_type_cat = 'ABO')
  ; default_queries python:
    { 'abo'             : '@action=search&@columns=id,aboprice,amount,begin,'
                          'end,subscriber.lastname,payer.lastname&'
