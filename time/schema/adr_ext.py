@@ -27,6 +27,8 @@
 # Purpose
 #    Schema definitions for extended address
 
+import schemadef
+
 def init \
     ( db
     , Address_Class
@@ -72,3 +74,12 @@ def init \
     export ['Address_Class'] = Ext_Address_Class
     return export
 # end def init
+
+def security (db, ** kw) :
+    classes = \
+        [ ("opening_hours"     , ["User"],    ["Contact"])
+        , ("weekday"           , ["User"],    ["Admin"])
+        ]
+
+    schemadef.register_class_permissions (db, classes, [])
+# end def security

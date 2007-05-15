@@ -53,7 +53,10 @@ importer = schemadef.Importer (globals (), schemas)
 
 del sys.path [0:1]
 
-#
+Address_Class (db, ''"address")
+
+importer.update_security ()
+
 # SECURITY SETTINGS
 #
 # See the configuration and customisation document for information
@@ -63,8 +66,9 @@ del sys.path [0:1]
 
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file"                , ["User"],  ["User"            ])
-    , ("msg"                 , ["User"],  ["User"            ])
+    [ ("file",               ["User"],    ["User"])
+    , ("msg",                ["User"],    ["User"])
+    , ("address",            ["Contact"], ["Contact"])
     ]
 
 prop_perms = \
@@ -108,4 +112,3 @@ for r in "Admin", :
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
 
-importer.update_security ()

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-04-13 09:38+0200\n"
+"POT-Creation-Date: 2007-05-15 12:54+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -117,6 +117,24 @@ msgstr ""
 
 #, python-format
 msgid "%(attr)s must remain filled"
+msgstr ""
+
+msgid "product_group"
+msgstr "Product group"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
+
+#, python-format
+msgid "Duplicate %(grp)s \"%(groupname)s\""
+msgstr ""
+
+#, python-format
+msgid "price/discount must be increasing: %(pd)s"
+msgstr ""
+
+msgid "currency"
 msgstr ""
 
 #, python-format
@@ -334,15 +352,7 @@ msgstr ""
 msgid "Denied state change: %(old_status)s->%(status)s"
 msgstr ""
 
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr ""
-
 msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s must not be specified"
 msgstr ""
 
 #, python-format
@@ -356,6 +366,9 @@ msgstr ""
 #, python-format
 msgid "Duplicate record: date = %(date)s, user = %(user)s"
 msgstr ""
+
+msgid "start"
+msgstr "Start"
 
 msgid "Either specify duration or start/end"
 msgstr ""
@@ -417,6 +430,10 @@ msgid "Frozen: %(valid_from)s"
 msgstr ""
 
 msgid "Download&nbsp;letter"
+msgstr ""
+
+#, python-format
+msgid "new %(adr_to)s from %(adr_frm)s"
 msgstr ""
 
 #, python-format
@@ -614,6 +631,12 @@ msgstr ""
 msgid "VIEW"
 msgstr "View"
 
+msgid "abbreviation"
+msgstr "Abbreviation"
+
+msgid "Abbreviated name"
+msgstr "Abbreviated name"
+
 msgid "abo"
 msgstr ""
 
@@ -781,6 +804,12 @@ msgstr ""
 msgid "Begin of period"
 msgstr ""
 
+msgid "birthdate"
+msgstr "Birthdate"
+
+msgid "Date of birth for this %(Classname)s"
+msgstr ""
+
 msgid "bookentry"
 msgstr "Booking date"
 
@@ -933,7 +962,7 @@ msgid "Country for this address"
 msgstr ""
 
 msgid "country"
-msgstr ""
+msgstr "Country"
 
 msgid "Record creation date"
 msgstr ""
@@ -947,11 +976,11 @@ msgstr ""
 msgid "creator"
 msgstr "Creator"
 
-msgid "currency"
-msgstr ""
-
 msgid "Currency for this %(Classname)s"
 msgstr ""
+
+msgid "customer_status"
+msgstr "Customer Status"
 
 msgid "cut_off_date"
 msgstr "Cut-off Date"
@@ -1133,7 +1162,7 @@ msgstr "Earliest Start"
 msgid ""
 "When this %(Classname)s can be started to work on. Used to\n"
 "             specify external dependencies (e.g., availability of\n"
-"             hardware). \n"
+"             hardware).\n"
 "          "
 msgstr ""
 
@@ -1209,12 +1238,12 @@ msgid ""
 "             filename and path and the new version. The CVS output from\n"
 "             the command *VCFiltered_Commit* shall be used to fill in\n"
 "             this field!\n"
-" \n"
+"\n"
 "             Example: Consider changed files *os_start.c*, *os_start.h*,\n"
 "             and *os_version.c* in *projects/SW/external/ttpos/src/os*,\n"
 "             resulting in *TTP-OS Version 4.5.23*. The entry to\n"
 "             %(Property)s shall look like::\n"
-" \n"
+"\n"
 "              VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c\n"
 "              VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h\n"
 "              VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version."
@@ -1246,7 +1275,7 @@ msgid ""
 "             The %(Property)s field contains the build version of the\n"
 "             complete artefact. In the Example from Files affected the\n"
 "             entry for %(Property)s shall look like::\n"
-"       \n"
+"\n"
 "               TTP-OS 4.5.23\n"
 "          "
 msgstr ""
@@ -2289,6 +2318,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "shelf_life"
+msgstr ""
+
+msgid "Shelf life in months"
+msgstr ""
+
 msgid "show_all_users"
 msgstr "show all users"
 
@@ -2353,9 +2388,6 @@ msgid ""
 "             that came in via telephone).\n"
 "          "
 msgstr ""
-
-msgid "start"
-msgstr "Start"
 
 msgid ""
 "Format xx:xx (e.g. 09:00), defines your start of work. Has to\n"
@@ -2799,6 +2831,15 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "display"
+msgstr ""
+
+msgid ""
+"If enabled, items with %(Classname)s will be displayed\n"
+"             in customer/supplier mask.\n"
+"          "
+msgstr ""
+
 msgid "valid"
 msgstr "Valid"
 
@@ -2813,7 +2854,7 @@ msgstr "Valid since"
 
 msgid ""
 "Creation date, or date since when this %(Classname)s can be\n"
-"             booked at \n"
+"             booked at\n"
 "          "
 msgstr ""
 
@@ -3052,6 +3093,9 @@ msgstr ""
 msgid "History"
 msgstr ""
 
+msgid "New item"
+msgstr ""
+
 msgid "Help for ${Classname}"
 msgstr ""
 
@@ -3078,6 +3122,18 @@ msgstr ""
 
 msgid "number"
 msgstr "Number"
+
+msgid "<span nowrap></span> <span nowrap></span>"
+msgstr ""
+
+msgid "new invoice address"
+msgstr ""
+
+msgid "copy invoice address"
+msgstr ""
+
+msgid "new shipping address"
+msgstr ""
 
 msgid "Approvals pending"
 msgstr ""
@@ -3281,6 +3337,9 @@ msgstr "New work package"
 msgid "Comment editing"
 msgstr ""
 
+msgid "Comment view"
+msgstr ""
+
 msgid "New User"
 msgstr ""
 
@@ -3312,6 +3371,14 @@ msgstr ""
 
 #, python-format
 msgid "\"%s\" loop: %s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must not be empty"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must not be specified"
 msgstr ""
 
 msgid "meeting_room"
@@ -3452,9 +3519,6 @@ msgstr "Reached"
 msgid "task_status"
 msgstr "Workpackage Status"
 
-msgid "abbreviation"
-msgstr "Abbreviation"
-
 msgid "task_kind"
 msgstr "Workpackage Kind"
 
@@ -3485,7 +3549,7 @@ msgstr "Document status"
 msgid "document_type"
 msgstr "Document type"
 
-msgid "product"
+msgid "prod"
 msgstr "Product"
 
 msgid "certifiable"
@@ -3548,6 +3612,9 @@ msgstr "Defect"
 msgid "closer"
 msgstr "Closer"
 
+msgid "product"
+msgstr "Product"
+
 msgid "belongs_to_task"
 msgstr "Belongs to Workpackage"
 
@@ -3588,14 +3655,155 @@ msgstr "Filename"
 msgid "adr_type_cat"
 msgstr "Address type category"
 
+msgid "weekday"
+msgstr "Weekday"
+
+msgid "opening_hours"
+msgstr "Opening hours"
+
+msgid "from_minute"
+msgstr ""
+
+msgid "to_minute"
+msgstr "to minute"
+
+msgid "from_hour"
+msgstr "from hour"
+
+msgid "to_hour"
+msgstr "to hour"
+
 msgid "abo_price"
 msgstr ""
 
 msgid "abo_type"
 msgstr "Subscription type"
 
+msgid "contacts"
+msgstr "Contacts"
+
 msgid "legalclient"
 msgstr ""
+
+msgid "bank_account"
+msgstr ""
+
+msgid "act_number"
+msgstr "Account number"
+
+msgid "bank_code"
+msgstr "Bank code"
+
+msgid "bic"
+msgstr "BIC"
+
+msgid "iban"
+msgstr "IBAN"
+
+msgid "bank"
+msgstr "Bank"
+
+msgid "cust_supp"
+msgstr "Customer/Supplier"
+
+msgid "supplier_status"
+msgstr "Supplier Status"
+
+msgid "invoice_dispatch"
+msgstr "Invoice dispatch"
+
+msgid "supplier_group"
+msgstr "Supplier group"
+
+msgid "discount_group"
+msgstr "Discount group"
+
+msgid "invoice_text"
+msgstr "Invoice text"
+
+msgid "order_text"
+msgstr "Order text"
+
+msgid "pharma_ref"
+msgstr ""
+
+msgid "attendant"
+msgstr ""
+
+msgid "tax_id"
+msgstr "Tax ID"
+
+msgid "supply_address"
+msgstr "Supply Address"
+
+msgid "credit_limit"
+msgstr ""
+
+msgid "customer_group"
+msgstr "Customer Group"
+
+msgid "sales_conditions"
+msgstr "Sales conditions"
+
+msgid "invoice_address"
+msgstr "Invoice address"
+
+msgid "shipping_address"
+msgstr "Shipping address"
+
+msgid "dispatch_type"
+msgstr ""
+
+msgid "contact_person"
+msgstr "Contact person"
+
+msgid "group_discount"
+msgstr ""
+
+msgid "overall_discount"
+msgstr ""
+
+msgid "discount"
+msgstr "Discount"
+
+msgid "measuring_unit"
+msgstr "Measuring unit"
+
+msgid "price"
+msgstr "Price"
+
+msgid "packaging_unit"
+msgstr ""
+
+msgid "proceeds_group"
+msgstr "Proceeds group"
+
+msgid "use_lot"
+msgstr "Use lot number"
+
+msgid "minimum_inventory"
+msgstr "Minimum inventory"
+
+msgid "product_price"
+msgstr "Product price"
+
+msgid "shelf_life_code"
+msgstr ""
+
+msgid "vat_percent"
+msgstr "VAT percent"
+
+msgid "product_status"
+msgstr "Product status"
+
+msgid "payment_days"
+msgstr "Payment (days)"
+
+msgid "discount_days"
+msgstr ""
+
+msgid "discount_percent"
+msgstr "Discount percent"
 
 msgid "file"
 msgstr "File"
