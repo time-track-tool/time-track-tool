@@ -531,12 +531,12 @@ if 'product_status' in db.classes :
 
 if 'weekday' in db.classes :
     for n, d in enumerate \
-        ( 'Montag'
-        , 'Dienstag'
-        , 'Mittwoch'
-        , 'Donnerstag'
-        , 'Freitag'
-        , 'Samstag'
-        , 'Sonntag'
-        ) :
+        (( 'Montag'
+         , 'Dienstag'
+         , 'Mittwoch'
+         , 'Donnerstag'
+         , 'Freitag'
+         , 'Samstag'
+         , 'Sonntag'
+        )) :
         db.weekday.create (name = d, order = n + 1)
