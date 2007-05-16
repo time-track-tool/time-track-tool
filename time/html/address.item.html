@@ -147,8 +147,6 @@
       <td tal:content="structure python:utils.new_property
           (context, db, 'contact', -1, 'description').field (size=14)"/>
       <input type="hidden" name="@link@contacts" value="contact-1"/>
-      <input type="hidden" name="contact-1@address"
-             tal:attributes="value context/id"/>
      </tr>
      <tr tal:repeat="ct python:sorted
          (context.contacts, key = lambda x : (x.contact_type.name, x.contact))">
@@ -261,8 +259,9 @@
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="button_slot">
-     <tal:block tal:replace="structure python:
-                context.submit (action='address_edit_action')"/>
+     <tal:block tal:define="action python:
+                ['new','edit'][bool (context.id)] + '_address_action'"
+                tal:replace="structure python:context.submit (action=action)"/>
     </tal:block>
 
    </tal:block>

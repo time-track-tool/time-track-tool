@@ -22,8 +22,9 @@
 # ****************************************************************************
 # $Id$
 
-from roundup.cgi.actions            import EditItemAction
+from roundup.cgi.actions            import EditItemAction, NewItemAction
 from roundup.cgi.TranslationService import get_translation
+from rsclib.autosuper               import autosuper
 
 _ = None
 
@@ -67,23 +68,33 @@ def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
     return db.adr_type.classhelp (** args)
 # end def adr_type_classhelp
 
-class Address_Edit_Action (EditItemAction) :
+def _editnodes (props, links) :
     """ Remove contacts for which only the address link is in the form,
         this way we can automagically create backlinks in the newly
         created contacts.
     """
-    name           = 'address_edit_action'
-    permissionType = 'Edit'
+    for (cl, id), val in props.items () :
+        if cl == 'contact' :
+            print "_editnodes", cl, id, val
+            if int (id) < 0 and val.keys () == ['address'] :
+                del props [(cl, id)]
+# end def _editnodes
 
+class Edit_Address_Action (EditItemAction) :
     def _editnodes (self, props, links) :
-        for (cl, id), val in props.items () :
-            if cl == 'contact' :
-                if int (id) < 0 and val.keys () == ['address'] :
-                    del props [(cl, id)]
+        _editnodes (props, links)
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
     # end def _editnodes
-# end class Address_Edit_Action
+# end class Edit_Address_Action
+
+class New_Address_Action (NewItemAction) :
+    def _editnodes (self, props, links) :
+        _editnodes (props, links)
+        self.ok_msg = NewItemAction._editnodes (self, props, links)
+        return self.ok_msg
+    # end def _editnodes
+# end class New_Address_Action
 
 def init (instance) :
     global _
@@ -93,4 +104,5 @@ def init (instance) :
     reg ('valid_adr_types',    valid_adr_types)
     reg ('adr_type_classhelp', adr_type_classhelp)
     act = instance.registerAction
-    act ('address_edit_action', Address_Edit_Action)
+    act ('edit_address_action', Edit_Address_Action)
+    act ('new_address_action',  New_Address_Action)
