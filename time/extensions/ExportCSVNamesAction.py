@@ -63,9 +63,11 @@ class Repr_Str (autosuper) :
 
 class Repr_Anschrift (Repr_Str) :
     def __call__ (self, itemid, col) :
-        fields = ('country', 'postalcode', 'city')
+        fields = ('postalcode', 'city')
         x = ' '.join (self.klass.get (itemid, z) for z in fields)
-        x = x.replace (' ', '-', 1)
+        country = self.klass.get (itemid, 'country')
+        if country != 'A' :
+            x = country + '-' + x
         return self.conv (x)
     # end def __call__
 # end class Repr_Anschrift
