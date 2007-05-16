@@ -45,7 +45,8 @@
                          '@columns=salutation,title,id,lastname,firstname,'
                          'country,street,postalcode,city&valid=1'
                          '%s&@search_text=&@queryname=' %
-                         ['', '&adr_type=%s' % abo_adrtype][bool (abo_adrtype)]
+                         ['', '&adr_type=%s' % ','.join (abo_adrtype)]
+                         [bool (abo_adrtype)]
    , 'adr_type'        : '@action=search&@columns=id,code,description,typecat&'
                          '@sort=code&@filter=typecat&@pagesize=50&'
                          '@startwith=0&typecat=%s' % typecat
