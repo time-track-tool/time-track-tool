@@ -258,12 +258,6 @@
       </td>
      </tr>
     </tal:block>
-    <tal:block metal:fill-slot="button_slot">
-     <tal:block tal:define="action python:
-                ['new','edit'][bool (context.id)] + '_address_action'"
-                tal:replace="structure python:context.submit (action=action)"/>
-    </tal:block>
-
    </tal:block>
   </tal:block>
  </tal:block>

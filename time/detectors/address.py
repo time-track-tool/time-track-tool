@@ -46,7 +46,13 @@ def fix_adr_type (db, cl, nodeid, new_values) :
                 assert (adrtype)
                 adr_type_dict [adrtype] = 1
         new_values ['adr_type'] = adr_type_dict.keys ()
-# end def check_adr_type
+# end def fix_adr_type
+
+def fix_contacts (db, cl, nodeid, old_values) :
+    if old_values is None or 'contacts' in old_values :
+        for c in cl.get (nodeid, 'contacts') :
+            db.contact.set (c, address = nodeid)
+# end def fix_contacts
 
 def set_adr_defaults (db, cl, nodeid, new_values) :
     """ Set some default values for new address """
@@ -85,8 +91,7 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 # end def lookalike_computation
 
 def check_contact (db, cl, nodeid, new_values) :
-    require_attributes \
-        (_, cl, nodeid, new_values, 'contact_type', 'contact', 'address')
+    require_attributes (_, cl, nodeid, new_values, 'contact_type', 'contact')
 # end def check_contact
 
 def init (db) :
@@ -103,4 +108,6 @@ def init (db) :
     db.address.audit ("set",    check_address)
     db.contact.audit ("create", check_contact)
     db.contact.audit ("set",    check_contact)
+    db.address.react ("create", fix_contacts)
+    db.address.react ("set",    fix_contacts)
 # end def init

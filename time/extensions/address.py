@@ -68,34 +68,6 @@ def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
     return db.adr_type.classhelp (** args)
 # end def adr_type_classhelp
 
-def _editnodes (props, links) :
-    """ Remove contacts for which only the address link is in the form,
-        this way we can automagically create backlinks in the newly
-        created contacts.
-    """
-    for (cl, id), val in props.items () :
-        if cl == 'contact' :
-            print "_editnodes", cl, id, val
-            if int (id) < 0 and val.keys () == ['address'] :
-                del props [(cl, id)]
-# end def _editnodes
-
-class Edit_Address_Action (EditItemAction) :
-    def _editnodes (self, props, links) :
-        _editnodes (props, links)
-        self.ok_msg = EditItemAction._editnodes (self, props, links)
-        return self.ok_msg
-    # end def _editnodes
-# end class Edit_Address_Action
-
-class New_Address_Action (NewItemAction) :
-    def _editnodes (self, props, links) :
-        _editnodes (props, links)
-        self.ok_msg = NewItemAction._editnodes (self, props, links)
-        return self.ok_msg
-    # end def _editnodes
-# end class New_Address_Action
-
 def init (instance) :
     global _
     _   = get_translation \
@@ -103,6 +75,3 @@ def init (instance) :
     reg = instance.registerUtil
     reg ('valid_adr_types',    valid_adr_types)
     reg ('adr_type_classhelp', adr_type_classhelp)
-    act = instance.registerAction
-    act ('edit_address_action', Edit_Address_Action)
-    act ('new_address_action',  New_Address_Action)
