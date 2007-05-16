@@ -57,7 +57,7 @@ def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
         , property   = property
         , pagesize   = 500
         , sort       = 'code'
-        , filter     = ','.join (tc)
+        , filter     = 'typecat=' + ','.join (tc)
         )
     return db.adr_type.classhelp (** args)
 # end def adr_type_classhelp
