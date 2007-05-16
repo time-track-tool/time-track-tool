@@ -85,7 +85,8 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 # end def lookalike_computation
 
 def check_contact (db, cl, nodeid, new_values) :
-    require_attributes (_, cl, nodeid, new_values, 'contact_type', 'contact')
+    require_attributes \
+        (_, cl, nodeid, new_values, 'contact_type', 'contact', 'address')
 # end def check_contact
 
 def init (db) :

@@ -33,6 +33,7 @@ import schemadef
 def init \
     ( db
     , Class
+    , Ext_Class
     , Min_Issue_Class
     , String
     , Date
@@ -128,19 +129,34 @@ def init \
         )
     valid.setkey (''"name")
 
+    class Contact_Class (Ext_Class) :
+        """ Create contact class with default attributes, may be
+            extended by other definitions.
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( contact             = String    ()
+                , description         = String    ()
+                , contact_type        = Link      ("contact_type")
+                )
+            self.__super.__init__ (db, classname, ** properties)
+            self.setlabelprop ('contact')
+        # end def __init__
+    # end class Contact_Class
+    export.update (dict (Contact_Class = Contact_Class))
+
     contact_type = Class \
         ( db, ''"contact_type"
         , name                = String    ()
         , description         = String    ()
         , url_template        = String    ()
+        , visible             = Boolean   ()
         )
     contact_type.setkey (''"name")
 
-    contact = Class \
+    contact = Contact_Class \
         ( db, ''"contact"
-        , contact             = String    ()
-        , description         = String    ()
-        , contact_type        = Link      ("contact_type")
+        , address             = Link      ("address")
         )
 
     return export

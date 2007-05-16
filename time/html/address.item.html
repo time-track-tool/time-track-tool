@@ -147,6 +147,8 @@
       <td tal:content="structure python:utils.new_property
           (context, db, 'contact', -1, 'description').field (size=14)"/>
       <input type="hidden" name="@link@contacts" value="contact-1"/>
+      <input type="hidden" name="contact-1@address"
+             tal:attributes="value context/id"/>
      </tr>
      <tr tal:repeat="ct python:sorted
          (context.contacts, key = lambda x : (x.contact_type.name, x.contact))">
@@ -160,6 +162,8 @@
           ct.contact_type.url_template.plain () % ct"/>
        <span tal:condition="python: not ct.contact_type.url_template"
              tal:content="ct/contact/plain"/>
+       <input type="hidden" tal:attributes=
+              "value context/id;name python:'%s@address' % ct.designator()"/>
       </td>
       <td tal:content="ct/description/plain"/>
       <td tal:condition="context/is_edit_ok">
@@ -256,6 +260,11 @@
       </td>
      </tr>
     </tal:block>
+    <tal:block metal:fill-slot="button_slot">
+     <tal:block tal:replace="structure python:
+                context.submit (action='address_edit_action')"/>
+    </tal:block>
+
    </tal:block>
   </tal:block>
  </tal:block>
