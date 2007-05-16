@@ -26,10 +26,11 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
-   "batch request/batch
-   ;pdict python: utils.properties_dict (db, context)
-   ;filt  python: dict (typecat = db._db.adr_type_cat.getnodeids ())
-   ;prp   python:
+   "batch  request/batch
+   ;n_sort python:4
+   ;pdict  python: utils.properties_dict (db, context)
+   ;filt   python: dict (typecat = db._db.adr_type_cat.getnodeids ())
+   ;prp    python:
      ( ('id',             {})
      , ('salutation',     {})
      , ('title',          {})
