@@ -77,7 +77,8 @@
     </tr>
    </tal:block>
   </tal:block>
-  <tal:block tal:define="wps python:db.time_wp.filter
+  <tal:block tal:condition="context/is_view_ok"
+   tal:define="wps python:db.time_wp.filter
    (None, {'project' : context.id})">
    <table class="files">
     <tr tal:define=

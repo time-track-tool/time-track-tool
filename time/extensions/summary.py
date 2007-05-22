@@ -46,34 +46,12 @@ from rsclib.PM_Value                import PM_Value
 from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
 from common                         import weekno_year_from_day, end_of_period
+from sum_common                     import time_wp_viewable
+from sum_common                     import daily_record_viewable
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
 
 day = Interval ('1d')
-
-sup_cache = {}
-def user_supervisor_for (db, uid = None, use_sv = True) :
-    """ Recursively compute the users for which the given uid is
-        supervisor. If uid in not given (None), the current database
-        user is taken.
-    """
-    if not uid :
-        uid = db.getuid ()
-    if uid in sup_cache :
-        return sup_cache [uid]
-    if use_sv :
-        sv            = dict ((u, 1) for u in db.user.find (substitute = uid))
-    else :
-        sv            = {}
-    sv [uid]          = 1
-    users             = db.user.find (supervisor = sv)
-    trans_users       = []
-    for u in users :
-        if u != uid :
-            trans_users.extend (user_supervisor_for (db, u, False))
-    sup_cache [uid] = dict ((u, 1) for u in users + trans_users)
-    return sup_cache [uid]
-# end def user_supervisor_for
 
 class Extended_Node (autosuper) :
     def __getattr__ (self, name) :
@@ -96,26 +74,15 @@ class Extended_Node (autosuper) :
 class Extended_Daily_Record (Extended_Node) :
     """ Keeps information about the username *and* about the status of
         the daily_records: own records (is_own = True) are records wich
-        may be unconditionally viewed by the user. This is determined by
-        looking at the current db user:
-        - HR and Controlling roles own all users
-        - a user owns records for his userid
-        - a user owns all users for which he is supervisor or substitute
-          supervisor
-        - the supervisor relationship is transitive.
-        - a user owns all users in his department(s)
+        may be unconditionally viewed by the user. For details about
+        permissions, see lib/summary.py daily_record_viewable.
     """
 
-    def __init__ (self, db, drid, supervised_users) :
-        self.node         = db.daily_record.getnode (drid)
-        self.username     = db.user.get (self.user, 'username')
-        self.name         = self.username
-        uid               = db.getuid ()
-        self.is_own       = \
-            (  user_has_role (db, uid, 'HR', 'Controlling')
-            or uid == self.user
-            or self.user in supervised_users
-            )
+    def __init__ (self, db, drid) :
+        self.node     = db.daily_record.getnode (drid)
+        self.username = db.user.get (self.user, 'username')
+        self.name     = self.username
+        self.is_own   = daily_record_viewable (db, db.getuid (), drid)
     # end def __init__
 
     def __cmp__ (self, other) :
@@ -126,33 +93,21 @@ class Extended_Daily_Record (Extended_Node) :
 
 class Extended_WP (Extended_Node) :
     """ Keeps information about the username *and* about the status of
-        the work package: own records (is_own = True) are records wich
-        may be unconditionally viewed by the user. This is the case if
-        the user is responsible for the wp or if he is responsible or
-        deputy for the project of the WP or if he is in the nosy list
-        for the project.
+        the work package.
+        
+        For permissions, see time_wp_viewable in lib/summary.py
     """
     def __init__ (self, db, wpid) :
-        self.node         = db.time_wp.getnode  (wpid)
-        self.project_name = db.time_project.get (self.project, 'name')
-        uid               = db.getuid ()
-        p_owner           = db.time_project.get (self.project, 'responsible')
-        p_deputy          = db.time_project.get (self.project, 'deputy')
-        p_nosy            = dict \
-            ([(i, 1) for i in db.time_project.get (self.project, 'nosy')])
-        self.is_own       = \
-            (  uid == self.responsible
-            or uid == p_owner
-            or uid == p_deputy
-            or uid in p_nosy
-            )
+        self.node          = db.time_wp.getnode  (wpid)
+        self.project_name  = db.time_project.get (self.project, 'name')
+        self.is_own        = time_wp_viewable (db, db.getuid (), wpid)
         self.effort_perday = PM_Value (0, 1)
         if  (   self.time_start and self.time_end
             and self.planned_effort is not None
             ) :
-            self.start = s     = Date (str (self.time_start))
-            self.end   = e     = Date (str (self.time_end))
-            days               = (e - s).get_tuple () [3]
+            self.start = s = Date (str (self.time_start))
+            self.end   = e = Date (str (self.time_end))
+            days           = (e - s).get_tuple () [3]
             if days :
                 self.effort_perday = PM_Value (self.planned_effort / days)
     # end def __init__
@@ -516,7 +471,6 @@ class Summary_Report (_Report) :
         columns         = request.columns
         now             = Date ('.')
         assert (request.classname == 'summary_report')
-        sup_users       = user_supervisor_for (db)
         wp_containers   = []
         if not columns :
             columns     = db.summary_report.getprops ().keys ()
@@ -574,7 +528,7 @@ class Summary_Report (_Report) :
                             )
                         )
                     edr = Extended_Daily_Record
-                    drs = [edr (db, d, sup_users) for d in drs]
+                    drs = [edr (db, d) for d in drs]
                     drecs.update (dict ((d.id, d) for d in drs))
 
         #print "after departments:", time.time () - timestamp
@@ -592,7 +546,7 @@ class Summary_Report (_Report) :
                 )
         #print "n_dr:", len (dr), time.time () - timestamp
         dr          = dict \
-            ((d, Extended_Daily_Record (db, d, sup_users)) for d in dr)
+            ((d, Extended_Daily_Record (db, d)) for d in dr)
         #print "after users:", time.time () - timestamp
         dr.update (drecs)
         #print "after dr.update:", time.time () - timestamp

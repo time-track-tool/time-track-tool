@@ -34,7 +34,8 @@
      <td colspan="3">
       <tal:block tal:replace="structure python:context.cost_center.menu
          (status = cc_status)"/>
-      <tal:block tal:replace="structure python:db.cost_center.classhelp
+      <tal:block tal:condition="context/cost_center/is_edit_ok"
+          tal:replace="structure python:db.cost_center.classhelp
             ( 'id,name,description'
             , property='cost_center'
             , inputtype='radio'
@@ -80,7 +81,8 @@
          (classname, 'bookers')"/>
      <td>
       <span tal:replace="structure context/bookers/field"/>
-      <span tal:replace="structure python:db.user.classhelp
+      <span tal:condition="context/bookers/is_edit_ok"
+         tal:replace="structure python:db.user.classhelp
             ( 'username,nickname,firstname,lastname'
             , property='bookers'
             , width='600'

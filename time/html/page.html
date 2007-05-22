@@ -611,7 +611,8 @@
        onSubmit="return submit_once()"
        name="itemSynopsis"
        enctype="multipart/form-data"
-       tal:attributes="action context/designator">
+       tal:attributes="action context/designator"
+       tal:condition="python:context.is_view_ok() or context.is_edit_ok()">
 
   <input type="hidden" name="@template" value="item">
 

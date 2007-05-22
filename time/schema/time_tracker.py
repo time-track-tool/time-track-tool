@@ -34,6 +34,7 @@ from common          import clearance_by
 from freeze          import frozen
 from roundup.date    import Interval
 import schemadef
+import sum_common
 
 def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
     cost_center = Class \
@@ -291,31 +292,71 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
 
 def security (db, ** kw) :
     roles = \
-        [ ("Project"       , "Project Office"                )
+        [ ("Project",      "Project Office")
+        , ("Project_View", "May view project data")
         ]
 
-    #     classname        allowed to view   /  edit
+    #     classname
+    # allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ("cost_center"         , ["User"],             ["Controlling"])
-        , ("cost_center_group"   , ["User"],             ["Controlling"])
-        , ("cost_center_status"  , ["User"],             ["Controlling"])
-        , ("daily_record"        , ["User"],             [])
-        , ("daily_record_status" , ["User"],             ["Admin"])
-        , ("public_holiday"      , ["User"],             ["HR","Controlling"])
-        , ("summary_report"      , ["User"],             [])
-        , ("summary_type"        , ["User"],             ["Admin"])
-        , ("time_activity"       , ["User"],             ["Controlling"])
-        , ("time_project_status" , ["User"],             ["Project"])
-        , ("time_project"        , ["User"],             ["Project"])
-        , ("time_record"         , ["HR","Controlling"], ["HR","Controlling"])
-        , ("time_wp_group"       , ["User"],             ["Project"])
-        , ("time_wp"             , ["User"],             ["Project"])
-        , ("user_dynamic"        , ["HR"],               [])
-        , ("work_location"       , ["User"],             ["Controlling"])
-        , ("overtime_correction" , ["HR","Controlling"], [])
-        , ("daily_record_freeze" , ["HR","Controlling"], ["Admin"])
-        , ("overtime_period" ,     ["User"],             ["Admin"])
+        [ ( "cost_center"
+          , ["User"],                    ["Controlling"]
+          )
+        , ( "cost_center_group"
+          , ["User"],                    ["Controlling"]
+          )
+        , ( "cost_center_status"
+          , ["User"],                    ["Controlling"]
+          )
+        , ( "daily_record"
+          , ["User"],                    []
+          )
+        , ( "daily_record_status"
+          , ["User"],                    ["Admin"]
+          )
+        , ( "public_holiday"
+          , ["User"],                    ["HR", "Controlling"]
+          )
+        , ( "summary_report"
+          , ["User"],                    []
+          )
+        , ( "summary_type"
+          , ["User"],                    ["Admin"]
+          )
+        , ( "time_activity"
+          , ["User"],                    ["Controlling"]
+          )
+        , ( "time_project_status"
+          , ["User"],                    ["Project"]
+          )
+        , ( "time_project"
+          , ["Project_View", "Project"], ["Project"]
+          )
+        , ( "time_record"
+          , ["HR", "Controlling"],       ["HR", "Controlling"]
+          )
+        , ( "time_wp_group"
+          , ["User"],                    ["Project"]
+          )
+        , ( "time_wp"
+          , ["Project_View", "Project"], ["Project"]
+          )
+        , ( "user_dynamic"
+          , ["HR"],                      []
+          )
+        , ( "work_location"
+          , ["User"],                    ["Controlling"]
+          )
+        , ( "overtime_correction"
+          , ["HR", "Controlling"],       []
+          )
+        , ( "daily_record_freeze"
+          , ["HR", "Controlling"],       ["Admin"]
+          )
+        , ( "overtime_period"
+          , ["User"],                    ["Admin"]
+          )
         ]
 
     prop_perms = \
@@ -383,16 +424,16 @@ def security (db, ** kw) :
     # end def own_time_record
 
     def may_see_time_record (db, userid, itemid) :
-        """User is allowed to see time record if he is Project owner or
-           deputy.
+        """User is allowed to see time record if he is allowed to see
+           all details on work package or 
         """
-        dr      = db.time_record.get  (itemid, 'daily_record')
-        wp      = db.time_record.get  (itemid, 'wp')
+        dr = db.time_record.get (itemid, 'daily_record')
+        wp = db.time_record.get (itemid, 'wp')
+        if sum_common.daily_record_viewable (db, userid, dr) :
+            return True
         if wp is None :
             return False
-        prid    = db.time_wp.get (wp, 'project')
-        project = db.time_project.getnode (prid)
-        return userid == project.responsible or userid == project.deputy
+        return sum_common.time_wp_viewable (db, userid, wp)
     # end def may_see_time_record
 
     def is_project_owner_of_wp (db, userid, itemid) :
@@ -407,7 +448,7 @@ def security (db, ** kw) :
     # end def is_project_owner_of_wp
 
     def ok_work_package (db, userid, itemid) :
-        """User is allowed to edit workpackage if he is owner or project
+        """User is allowed to view/edit workpackage if he is owner or project
            responsible/deputy.
 
            Check if user is responsible for wp or if user is responsible
@@ -482,6 +523,26 @@ def security (db, ** kw) :
         return not frozen (db, dyn.user, dyn.valid_from)
     # end def dynuser_thawed
 
+    def wp_admitted (db, userid, itemid) :
+        """User is allowed to view selected fields in work package if
+           booking is allowed for this user
+        """
+        if userid in db.time_wp.get (itemid, 'bookers') :
+            return True
+        return False
+    # end def wp_admitted
+
+    def project_admitted (db, userid, itemid) :
+        """User is allowed to view selected fields if booking is allowed
+           for at least one work package for this user
+        """
+        wps = db.time_wp.filter (None, dict (project = itemid))
+        for wp in wps :
+            if wp_admitted (db, userid, wp) :
+                return True
+        return False
+    # end def project_admitted
+
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'time_wp'
@@ -491,6 +552,14 @@ def security (db, ** kw) :
             ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
             )
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = sum_common.time_wp_viewable
+        , description = fixdoc (sum_common.time_wp_viewable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -550,7 +619,10 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'time_record'
         , check       = may_see_time_record
-        , description = fixdoc (may_see_time_record.__doc__)
+        , description = ' '.join
+            (( fixdoc (may_see_time_record.__doc__)
+             , fixdoc (sum_common.daily_record_viewable.__doc__)
+            ))
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
@@ -578,4 +650,35 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = wp_admitted
+        , description = fixdoc (wp_admitted.__doc__)
+        , properties  =
+            ( 'name', 'wp_no', 'description', 'responsible', 'project'
+            , 'time_start', 'time_end', 'durations_allowed', 'travel'
+            , 'cost_center', 'creation', 'creator', 'activity', 'actor'
+            )
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , check       = sum_common.time_project_viewable
+        , description = fixdoc (sum_common.time_project_viewable.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , check       = project_admitted
+        , description = fixdoc (project_admitted.__doc__)
+        , properties  =
+            ( 'name', 'description', 'responsible', 'deputy', 'organisation'
+            , 'department', 'status', 'work_location', 'op_project'
+            , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
+            )
+        )
+    db.security.addPermissionToRole ('User', p)
 # end def security
