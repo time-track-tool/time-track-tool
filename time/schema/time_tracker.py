@@ -35,6 +35,7 @@ from freeze          import frozen
 from roundup.date    import Interval
 import schemadef
 import sum_common
+import common
 
 def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
     cost_center = Class \
@@ -301,61 +302,80 @@ def security (db, ** kw) :
     # For daily_record, time_record, additional restrictions apply
     classes = \
         [ ( "cost_center"
-          , ["User"],                    ["Controlling"]
+          , ["User"]
+          , ["Controlling"]
           )
         , ( "cost_center_group"
-          , ["User"],                    ["Controlling"]
+          , ["User"]
+          , ["Controlling"]
           )
         , ( "cost_center_status"
-          , ["User"],                    ["Controlling"]
+          , ["User"]
+          , ["Controlling"]
           )
         , ( "daily_record"
-          , ["User"],                    []
+          , ["User"]
+          , []
           )
         , ( "daily_record_status"
-          , ["User"],                    ["Admin"]
+          , ["User"]
+          , ["Admin"]
           )
         , ( "public_holiday"
-          , ["User"],                    ["HR", "Controlling"]
+          , ["User"]
+          , ["HR", "Controlling"]
           )
         , ( "summary_report"
-          , ["User"],                    []
+          , ["User"]
+          , []
           )
         , ( "summary_type"
-          , ["User"],                    ["Admin"]
+          , ["User"]
+          , ["Admin"]
           )
         , ( "time_activity"
-          , ["User"],                    ["Controlling"]
+          , ["User"]
+          , ["Controlling"]
           )
         , ( "time_project_status"
-          , ["User"],                    ["Project"]
+          , ["User"]
+          , ["Project"]
           )
         , ( "time_project"
-          , ["Project_View", "Project"], ["Project"]
+          , ["Project_View", "Project", "Controlling"]
+          , ["Project"]
           )
         , ( "time_record"
-          , ["HR", "Controlling"],       ["HR", "Controlling"]
+          , ["HR", "Controlling"]
+          , ["HR", "Controlling"]
           )
         , ( "time_wp_group"
-          , ["User"],                    ["Project"]
+          , ["User"]
+          , ["Project"]
           )
         , ( "time_wp"
-          , ["Project_View", "Project"], ["Project"]
+          , ["Project_View", "Project", "Controlling"]
+          , ["Project"]
           )
         , ( "user_dynamic"
-          , ["HR"],                      []
+          , ["HR"]
+          , []
           )
         , ( "work_location"
-          , ["User"],                    ["Controlling"]
+          , ["User"]
+          , ["Controlling"]
           )
         , ( "overtime_correction"
-          , ["HR", "Controlling"],       []
+          , ["HR", "Controlling"]
+          , []
           )
         , ( "daily_record_freeze"
-          , ["HR", "Controlling"],       ["Admin"]
+          , ["HR", "Controlling"]
+          , ["Admin"]
           )
         , ( "overtime_period"
-          , ["User"],                    ["Admin"]
+          , ["User"]
+          , ["Admin"]
           )
         ]
 
@@ -543,6 +563,18 @@ def security (db, ** kw) :
         return False
     # end def project_admitted
 
+    def project_or_wp_name_visible (db, userid, itemid) :
+        """User is allowed to view work package and time category names
+           if he/she is department manager or supervisor or has role HR.
+        """
+        if common.user_has_role (db, userid, 'HR') :
+            return True
+        if db.department.filter (None, dict (manager = userid)) :
+            return True
+        if db.user.filter (None, dict (supervisor = userid)) :
+            return True
+    # end def project_or_wp_name_visible
+
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'time_wp'
@@ -681,4 +713,13 @@ def security (db, ** kw) :
             )
         )
     db.security.addPermissionToRole ('User', p)
+    for klass in 'time_project', 'time_wp' :
+        p = db.security.addPermission \
+            ( name        = 'View'
+            , klass       = klass
+            , check       = project_or_wp_name_visible
+            , description = fixdoc (project_or_wp_name_visible.__doc__)
+            , properties  = ('name', 'project')
+            )
+        db.security.addPermissionToRole ('User', p)
 # end def security
