@@ -49,6 +49,8 @@ def valid_adr_types (db, adr_type_cat = None) :
         db = db._db
     except AttributeError :
         pass
+    if 'adr_type' not in db.classes :
+        return []
     tc = valid_adr_type_cats (db, adr_type_cat)
     d  = {}
     if tc :
