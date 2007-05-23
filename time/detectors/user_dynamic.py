@@ -33,7 +33,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 from freeze       import frozen
-from user_dynamic import last_user_dynamic, day
+from user_dynamic import last_user_dynamic, day, wdays, round_daily_work_hours
 from common       import require_attributes
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
@@ -84,8 +84,50 @@ def check_vacation (attr, new_values) :
                 _ ( "%(attr)s must be positive or empty") % locals ()
 # end def check_vacation
 
+def hours_iter () :
+    return ('hours_' + wday for wday in wdays)
+
 def check_overtime_parameters (db, cl, nodeid, new_values) :
-    pass
+    class X : pass
+    fields = ['weekly_hours', 'supp_weekly_hours', 'additional_hours']
+    fields.extend (hours_iter ())
+    for f in fields :
+        if f in new_values :
+            setattr (X, f, new_values [f])
+        elif nodeid :
+            setattr (X, f, cl.get (nodeid, f))
+    if  (   X.supp_weekly_hours is not None
+        and X.additional_hours  is not None
+        and X.supp_weekly_hours < X.additional_hours
+        ) :
+        supp = _ ('supp_weekly_hours')
+        add  = _ ('additional_hours')
+        raise Reject, "%(supp)s must be >= %(add)s" % locals ()
+    daily = maybe_daily = False
+    for f in hours_iter () :
+        if f in new_values :
+            maybe_daily = True
+            if getattr (X, f) is not None :
+                daily = True
+                break
+    else :
+        if 'weekly_hours' in new_values and X.weekly_hours :
+            maybe_daily = False
+            h = X.weekly_hours
+            d = round_daily_work_hours (h / 5.)
+            for f in hours_iter () :
+                daily = min (d, h)
+                new_values [f] = daily
+                setattr (X, f, daily)
+                h -= daily
+    if daily or maybe_daily :
+        sum = 0
+        for f in hours_iter () :
+            if getattr (X, f) is None :
+                new_values [f] = 0
+                setattr (X, f, 0)
+            sum += getattr (X, f)
+        new_values ['weekly_hours'] = sum
 # end def check_overtime_parameters
 
 def check_user_dynamic (db, cl, nodeid, new_values) :

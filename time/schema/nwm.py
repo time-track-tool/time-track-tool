@@ -253,17 +253,17 @@ def security (db, ** kw) :
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("alias"               , ["IT", "ITView"],     ["IT"     ])
-        , ("dns_record_type"     , ["IT", "ITView"],     ["Admin"  ])
-        , ("group"               , ["IT", "ITView"],     ["IT"     ])
-        , ("ip_subnet"           , ["IT", "ITView"],     ["IT"     ])
-        , ("machine"             , ["IT", "ITView"],     ["IT"     ])
-        , ("machine_name"        , ["IT", "ITView"],     ["IT"     ])
-        , ("network_address"     , ["IT", "ITView"],     ["IT"     ])
-        , ("network_interface"   , ["IT", "ITView"],     ["IT"     ])
-        , ("operating_system"    , ["IT", "ITView"],     ["IT"     ])
-        , ("smb_domain"          , ["IT", "ITView"],     ["IT"     ])
-        , ("smb_machine"         , ["IT", "ITView"],     ["IT"     ])
+        [ ("alias",             ["IT", "ITView"],     ["IT"])
+        , ("dns_record_type",   ["IT", "ITView"],     [])
+        , ("group",             ["IT", "ITView"],     ["IT"])
+        , ("ip_subnet",         ["IT", "ITView"],     ["IT"])
+        , ("machine",           ["IT", "ITView"],     ["IT"])
+        , ("machine_name",      ["IT", "ITView"],     ["IT"])
+        , ("network_address",   ["IT", "ITView"],     ["IT"])
+        , ("network_interface", ["IT", "ITView"],     ["IT"])
+        , ("operating_system",  ["IT", "ITView"],     ["IT"])
+        , ("smb_domain",        ["IT", "ITView"],     ["IT"])
+        , ("smb_machine",       ["IT", "ITView"],     ["IT"])
         ]
 
     prop_perms = \

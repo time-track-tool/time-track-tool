@@ -60,7 +60,7 @@ def register_class_permissions (db, class_perms, prop_perms) :
         p = db.security.addPermission \
             ( name        = perm
             , klass       = cl
-            , description = "Allowed to edit this property"
+            , description = ''"User is allowed %(perm)s on" % locals ()
             , properties  = props
             )
         for r in roles :

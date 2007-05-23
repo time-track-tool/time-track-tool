@@ -881,11 +881,6 @@ class Staff_Report (_Report) :
         , ""'supp_per_period'
         , ""'balance_period_end'
         )
-    hr_fields = \
-        ( ""'overtime_additional'
-        , ""'overtime_supplementary'
-        , ""'required_overtime'
-        )
 
     def __init__ (self, db, request, utils, is_csv = False) :
         self.htmldb  = db
@@ -1064,9 +1059,6 @@ class Staff_Report (_Report) :
         if self.need_period :
             for f in self.period_fields :
                 line.append (formatter (_ (f)))
-        if False and user_has_role (self.db, self.uid, 'HR') :
-            for f in self.hr_fields :
-                line.append (formatter (_ (f)))
         return line
     # end def header_line
 
@@ -1086,9 +1078,6 @@ class Staff_Report (_Report) :
                     line.append (item_formatter (container [f]))
                 if self.need_period :
                     for f in self.period_fields :
-                        line.append (item_formatter (container [f]))
-                if False and user_has_role (self.db, self.uid, 'HR') :
-                    for f in self.hr_fields :
                         line.append (item_formatter (container [f]))
                 line_formatter (line)
     # end def _output

@@ -268,47 +268,56 @@
      , ('supplier_group',      'Edit',   '?@template=item', 1)
      , ('supplier_status',     'Edit',   '?@template=item', 1)
      )
-   , ( ('cost_center',         'View', '',               ('',''))
-     , ('daily_record',        'View', 'controlling,hr', ('',''))
-     , ('user_dynamic',        'View', '',               ('',''))
-     , ('time_project',        'View', '',               ('',''))
-     , ('time_wp',             'View', '',               ('',''))
-     , ('time_wp_group',       'View', '',               ('',''))
-     , ('public_holiday',      'View', '',               ('',''))
-     , ('user',                'View', '',               ('',''))
-     , ('summary_report',      'View', '',               ('',''))
-     , ('network_interface',   'View', '',               ('',''))
-     , ('machine',             'View', '',               ('',''))
-     , ('network_address',     'View', '',               ('',''))
-     , ('machine_name',        'View', '',               ('',''))
-     , ('group',               'View', '',               ('',''))
-     , ('alias',               'View', '',               ('',''))
-     , ('smb_machine',         'View', '',               ('',''))
-     , ('it_issue',            'View', '',               ('',''))
-     , ('it_project',          'View', '',               ('',''))
-     , ('issue',               'View', '',               ('',''))
-     , ('time_record',         'View', '',               ('',''))
-     , ('category',            'View', '',               ('',''))
-     , ('overtime_correction', 'View', '',               ('',''))
-     , ('daily_record_freeze', 'View', '',               ('',''))
-     , ('abo',                 'View', '',               ('',''))
-     , ('abo_type',            'View', '',               ('',''))
-     , ('address',             'View', '',               ('',''))
-     , ('valid',               'View', '',               ('',''))
-     , ('abo_price',           'View', '',               ('',''))
-     , ('invoice',             'View', '', ('generate invoices','send'))
-     , ('invoice',             'View', '',               ('',''))
-     , ('invoice_group',       'View', '',               ('',''))
-     , ('invoice_template',    'View', '',               ('',''))
-     , ('adr_type',            'View', '',               ('',''))
-     , ('adr_type_cat',        'View', '',               ('',''))
-     , ('currency',            'View', '',               ('',''))
-     , ('tmplate',             'View', '',               ('',''))
-     , ('letter',              'View', '',               ('',''))
-     , ('legalclient',         'View', '',               ('',''))
-     , ('cust_supp',           'View', '',               ('',''))
-     , ('discount_group',      'View', '',               ('',''))
-     , ('product',             'View', '',               ('',''))
+   , ( ('cost_center',         'View', 1,               ('',''))
+     , ( 'daily_record'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'controlling', 'hr')
+       , ('','')
+       )
+     , ('user_dynamic',        'View', 1,               ('',''))
+     , ('time_project',        'View', 1,               ('',''))
+     , ('time_wp',             'View', 1,               ('',''))
+     , ('time_wp_group',       'View', 1,               ('',''))
+     , ('public_holiday',      'View', 1,               ('',''))
+     , ('user',                'View', 1,               ('',''))
+     , ( 'user'
+       , 'View'
+       , db.user.roles.is_view_ok ()
+       , ('roles','role')
+       )
+     , ('summary_report',      'View', 1,               ('',''))
+     , ('network_interface',   'View', 1,               ('',''))
+     , ('machine',             'View', 1,               ('',''))
+     , ('network_address',     'View', 1,               ('',''))
+     , ('machine_name',        'View', 1,               ('',''))
+     , ('group',               'View', 1,               ('',''))
+     , ('alias',               'View', 1,               ('',''))
+     , ('smb_machine',         'View', 1,               ('',''))
+     , ('it_issue',            'View', 1,               ('',''))
+     , ('it_project',          'View', 1,               ('',''))
+     , ('issue',               'View', 1,               ('',''))
+     , ('time_record',         'View', 1,               ('',''))
+     , ('category',            'View', 1,               ('',''))
+     , ('overtime_correction', 'View', 1,               ('',''))
+     , ('daily_record_freeze', 'View', 1,               ('',''))
+     , ('abo',                 'View', 1,               ('',''))
+     , ('abo_type',            'View', 1,               ('',''))
+     , ('address',             'View', 1,               ('',''))
+     , ('valid',               'View', 1,               ('',''))
+     , ('abo_price',           'View', 1,               ('',''))
+     , ('invoice',             'View', 1, ('generate invoices','send'))
+     , ('invoice',             'View', 1,               ('',''))
+     , ('invoice_group',       'View', 1,               ('',''))
+     , ('invoice_template',    'View', 1,               ('',''))
+     , ('adr_type',            'View', 1,               ('',''))
+     , ('adr_type_cat',        'View', 1,               ('',''))
+     , ('currency',            'View', 1,               ('',''))
+     , ('tmplate',             'View', 1,               ('',''))
+     , ('letter',              'View', 1,               ('',''))
+     , ('legalclient',         'View', 1,               ('',''))
+     , ('cust_supp',           'View', 1,               ('',''))
+     , ('discount_group',      'View', 1,               ('',''))
+     , ('product',             'View', 1,               ('',''))
      )
    )
  ; menu_type     python:
@@ -525,8 +534,7 @@
 
 <!-- Macro to display query selector in menu -->
 <td metal:define-macro="select_query" class="sidebar" nowrap>
- <span class="classblock"
-       >
+ <span class="classblock">
   <select name="query"
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
    <option value="" i18n:translate="">-- View / Query --
@@ -542,13 +550,11 @@
        " name   python: i18n.gettext (k [3][0] or k [0])
        ; klass  python: k [0]
        ; perm   python: k [1]
-       ; role   python: k [2].split (',')
+       ; ok     python: k [2]
        ; tplate python: ('&@template=%s' % k [3][1], '') [not k [3][1]]
        ; qkey   python: k [3][1] or 'index'
        " tal:condition="python:
-          (   request.user.hasPermission (perm, klass)
-          and (not role [0] or utils.user_has_role (db._db, uid, *role))
-          )">
+          (request.user.hasPermission (perm, klass) and ok)">
          <option tal:attributes="value python: '%s?%s%s' %
           (klass, default_queries.get (klass, default_query), tplate)"
           tal:content="name"/>

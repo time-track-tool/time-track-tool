@@ -1,0 +1,43 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<title metal:fill-slot="head_title" i18n:translate="">roles</title> 
+<tal:block metal:fill-slot="body_title" tal:omit-tag="python:1"
+           i18n:translate="">roles</tal:block> 
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:condition="not:context/roles/is_view_ok">
+    You are not allowed to view this page.
+ </tal:block>
+
+ <table class="list" border=1 tal:condition="context/roles/is_view_ok"
+        tal:define=
+         " roles python:[v for k,v in sorted (db._db.security.role.items ())]
+         ; quote python:''
+         ">
+  <tal:block tal:repeat="role roles">
+   <tr>
+    <th class="group" tal:content="python:'%(name)s' % role.__dict__"/>
+   </tr>
+   <tr tal:repeat="perm python:
+       sorted (role.permissions, key = lambda p: p.__dict__ ['klass'])">
+    <tal:block tal:define=
+        "d python: utils.permdict (perm)
+        ;x python: ' %(description)s (%(name)s'
+         + [ ''
+           , ( ' for %(quote)s%(klass)s%(quote)s'
+             + ['', ': %(properties)s'][bool(perm.properties)]
+             + ' only'
+             )
+           ]
+           [bool(perm.klass)]
+         + ')'">
+     <td tal:content="python:i18n.gettext(x)%d"/>
+    </tal:block>
+   </tr>
+  </tal:block>
+ </table>
+</tal:block>
+</tal:block>

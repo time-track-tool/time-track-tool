@@ -1433,6 +1433,19 @@ def helptext (key) :
     return ' '.join (_ (h) for h in _helptext [key])
 # end def helptext
 
+def permdict (perm) :
+    """From a permission object compute a localized version of the dict.
+       We also put a quote into the dict for the web-interface.
+    """
+    d = dict (perm.__dict__.iteritems ())
+    d ['quote'] = '"'
+    if d ['klass'] :
+        d ['klass'] = _ (d ['klass'])
+    if d ['properties'] :
+        d ['properties'] = [_ (x) for x in d ['properties']]
+    return d
+# end def permdict
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -1441,4 +1454,5 @@ def init (instance) :
     instance.registerUtil ('help_properties', help_properties)
     instance.registerUtil ('fieldname',       fieldname)
     instance.registerUtil ('combined_name',   combined_name)
+    instance.registerUtil ('permdict',        permdict)
 # end def init

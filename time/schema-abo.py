@@ -53,7 +53,7 @@ del sys.path [0:1]
 importer.update_security ()
 
 classes = \
-    [ ("user"              , ["User", "Admin"],    ["Admin"                    ])
+    [ ("user", ["User"],    [])
     ]
 schemadef.register_class_permissions (db, classes, [])
 
@@ -65,10 +65,6 @@ p = db.security.addPermission \
     , properties  = ('password', 'realname')
     )
 db.security.addPermissionToRole('User', p)
-
-# editing of roles:
-for r in "Admin", :
-    db.security.addPermissionToRole (r, 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

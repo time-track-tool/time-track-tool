@@ -72,7 +72,7 @@ classes = \
     ]
 
 prop_perms = \
-    [ ( "user", "Edit", ["Admin", "HR", "IT"]
+    [ ( "user", "Edit", ["HR", "IT"]
       , ( "address"
         , "alternate_addresses"
         , "nickname"
@@ -81,7 +81,7 @@ prop_perms = \
         , "username"
         )
       )
-    , ( "user", "Edit", ["Admin", "HR"]
+    , ( "user", "Edit", ["HR"]
       , ( "clearance_by", "external_phone", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "phone", "pictures", "position", "private_phone", "realname"
@@ -117,7 +117,7 @@ prop_perms = \
 schemadef.register_class_permissions (db, classes, prop_perms)
 
 # editing of roles:
-for r in "Admin", "HR", "IT" :
+for r in "HR", "IT" :
     db.security.addPermissionToRole (r, 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too

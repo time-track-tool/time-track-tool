@@ -78,7 +78,7 @@ def init \
 def security (db, ** kw) :
     classes = \
         [ ("opening_hours"     , ["User"],    ["Contact"])
-        , ("weekday"           , ["User"],    ["Admin"])
+        , ("weekday"           , ["User"],    [])
         ]
 
     schemadef.register_class_permissions (db, classes, [])

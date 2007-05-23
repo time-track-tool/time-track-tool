@@ -101,8 +101,8 @@ def security (db, ** kw) :
     # Will have special handling for queries, see below
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("user_status"         , ["User"],  ["Admin"           ])
-        , ("query"               , ["Admin"], ["Admin"           ])
+        [ ("user_status", ["User"],  [])
+        , ("query",       [],        [])
         ]
 
     schemadef.register_class_permissions (db, classes, [])

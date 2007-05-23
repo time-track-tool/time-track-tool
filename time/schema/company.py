@@ -205,15 +205,15 @@ def security (db, ** kw) :
     #     classname        allowed to view   /  edit
 
     classes = \
-        [ ("department"          , ["User"],  ["Controlling"     ])
-        , ("location"            , ["User"],  ["HR"              ])
-        , ("meeting_room"        , ["User"],  ["HR"              ])
-        , ("organisation"        , ["User"],  ["HR","Controlling"])
-        , ("org_location"        , ["User"],  ["HR"              ])
-        , ("position"            , ["User"],  ["HR"              ])
-        , ("room"                , ["User"],  ["HR"              ])
-        , ("sex"                 , ["User"],  ["Admin"           ])
-    #   , ("user"                , See below -- individual fields)
+        [ ("department",   ["User"],  ["Controlling"])
+        , ("location",     ["User"],  ["HR"])
+        , ("meeting_room", ["User"],  ["HR"])
+        , ("organisation", ["User"],  ["HR", "Controlling"])
+        , ("org_location", ["User"],  ["HR"])
+        , ("position",     ["User"],  ["HR"])
+        , ("room",         ["User"],  ["HR"])
+        , ("sex",          ["User"],  [])
+    #   , ("user", See below -- individual fields)
         ]
 
     prop_perms = \

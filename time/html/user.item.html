@@ -93,12 +93,14 @@
  </tr>
  <tr tal:condition="context/roles/is_view_ok">
   <th tal:content="structure python:utils.fieldname('user', 'roles')"/>
-  <td>
+  <td colspan="3">
    <input tal:condition="context/id"
           tal:replace="structure context/roles/field">
    <input name="roles" tal:condition="not:context/id"
           tal:attributes="value db/config/NEW_WEB_USER_ROLES">
-   <span i18n:translate="">(comma-separated values)</span>
+   <a class="classhelp" href="user?@template=role" i18n:translate=""
+      onclick="javascript:help_window('user?@template=role', '600', '400')
+              ;return false;">(role permissions)</a>
   </td>
  </tr>
  <tr tal:condition="python:'org_location' in bclass.properties">

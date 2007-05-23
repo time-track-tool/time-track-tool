@@ -174,8 +174,8 @@ def security (db, ** kw) :
         [ ("adr_type"          , ["User"],    ["Type"])
         , ("adr_type_cat"      , ["User"],    ["Type"])
         , ("tmplate"           , ["User"],    ["Letter"])
-        , ("valid"             , ["User"],    ["Admin"])
-        , ("contact_type"      , ["User"],    ["Admin"])
+        , ("valid"             , ["User"],    [])
+        , ("contact_type"      , ["User"],    [])
         , ("contact"           , ["User"],    ["Contact"])
         ]
 

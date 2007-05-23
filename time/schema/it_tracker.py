@@ -113,12 +113,12 @@ def security (db, ** kw) :
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("it_category"         , ["User"        ],     ["IT"     ])
-        , ("it_issue_status"     , ["User"        ],     ["Admin"  ])
-        , ("it_issue"            , ["User"        ],     ["IT"     ])
-        , ("it_prio"             , ["User"        ],     ["Admin"  ])
-        , ("it_project"          , ["User"        ],     ["IT"     ])
-        , ("it_project_status"   , ["User"        ],     ["Admin"  ])
+        [ ("it_category",       ["User"],     ["IT"])
+        , ("it_issue_status",   ["User"],     [])
+        , ("it_issue",          ["User"],     ["IT"])
+        , ("it_prio",           ["User"],     [])
+        , ("it_project",        ["User"],     ["IT"])
+        , ("it_project_status", ["User"],     [])
         ]
 
     prop_perms = \
@@ -137,7 +137,7 @@ def security (db, ** kw) :
         , ( "organisation", "Edit", ["IT"]
           , ("domain_part",)
           )
-        , ( "user", "Edit", ["Admin", "IT"]
+        , ( "user", "Edit", ["IT"]
           , ( "address", "alternate_addresses", "nickname"
             , "password", "timezone", "username"
             , "is_lotus_user", "sync_with_ldap", "group"

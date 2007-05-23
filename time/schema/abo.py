@@ -134,7 +134,7 @@ def security (db, ** kw) :
         , ("adr_type"          , ["User"],    ["Type"])
         , ("adr_type_cat"      , ["User"],    ["Type"])
         , ("contact"           , ["User"],    ["User"])
-        , ("contact_type"      , ["User"],    ["Admin"])
+        , ("contact_type"      , ["User"],    [])
         , ("currency"          , ["User"],    ["Product"])
         , ("file"              , ["User"],    ["User"])
         , ("invoice_group"     , ["Invoice"], ["Invoice"])
@@ -144,7 +144,7 @@ def security (db, ** kw) :
         , ("msg"               , ["User"],    ["User"])
         , ("query"             , ["User"],    ["User"])
         , ("tmplate"           , ["User"],    ["Abo", "Invoice", "Letter"])
-        , ("valid"             , ["User"],    ["Admin"])
+        , ("valid"             , ["User"],    [])
         ]
 
     schemadef.register_roles             (db, roles)

@@ -319,7 +319,7 @@ def security (db, ** kw) :
           )
         , ( "daily_record_status"
           , ["User"]
-          , ["Admin"]
+          , []
           )
         , ( "public_holiday"
           , ["User"]
@@ -331,7 +331,7 @@ def security (db, ** kw) :
           )
         , ( "summary_type"
           , ["User"]
-          , ["Admin"]
+          , []
           )
         , ( "time_activity"
           , ["User"]
@@ -371,11 +371,11 @@ def security (db, ** kw) :
           )
         , ( "daily_record_freeze"
           , ["HR", "Controlling"]
-          , ["Admin"]
+          , []
           )
         , ( "overtime_period"
           , ["User"]
-          , ["Admin"]
+          , []
           )
         ]
 
@@ -629,7 +629,7 @@ def security (db, ** kw) :
             , klass       = 'daily_record'
             , check       = approver_daily_record
             , description = fixdoc (approver_daily_record.__doc__)
-            , properties  = ('required_overtime')
+            , properties  = ('required_overtime',)
             )
         db.security.addPermissionToRole ('User', p)
 
