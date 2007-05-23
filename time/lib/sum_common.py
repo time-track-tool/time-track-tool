@@ -100,7 +100,10 @@ def daily_record_viewable (db, userid, itemid) :
     # find departments managed by userid
     deps = db.department.filter (None, dict (manager = userid))
     # find all users which are member of above departments:
-    depusers = dict.fromkeys (db.user.filter (None, dict (department = deps)))
+    depusers = {}
+    if deps :
+        depusers = dict.fromkeys \
+            (db.user.filter (None, dict (department = deps)))
     return \
         (  userid in depusers
         or dr.user in supervised_users (db, userid)
