@@ -94,7 +94,9 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["Office"]
-      , ( "private_mobile", "private_phone" )
+      , ( "internal_phone", "external_phone", "private_mobile"
+        , "private_phone", "quick_dialling", "title", "room"
+        )
       )
     , ( "user", "Edit", ["IT"]
       , ( "is_lotus_user", "sync_with_ldap", "group"
