@@ -697,6 +697,7 @@ _helptext          = \
              number
           '''
       ]
+    , ""'needs.id'                    : [help_id]
     , ""'netbios_dd'                  :
       [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
              config. Specifies list of servers in order of preference.

@@ -1044,6 +1044,9 @@ msgstr ""
 msgid "depends.id"
 msgstr "Depends (id)"
 
+msgid "needs.id"
+msgstr "Needs (id)"
+
 msgid "deputy"
 msgstr "Deputy"
 

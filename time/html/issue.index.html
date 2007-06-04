@@ -37,6 +37,16 @@
         , searchname   = 'depends.id'
         )
     , utils.ExtProperty
+        ( utils, pdict ['needs']
+        , searchable   = True
+        , sortable     = False
+        , do_classhelp = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['needs']
+        , searchname   = 'needs.id'
+        )
+    , utils.ExtProperty
         ( utils, pdict ['composed_of']
         , searchable   = True
         , sortable     = False
