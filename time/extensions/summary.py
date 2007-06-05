@@ -1011,9 +1011,6 @@ class Staff_Report (_Report) :
         container ['required']               = 0
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = 0
-        container ['overtime_additional']    = 0
-        container ['overtime_supplementary'] = 0
-        container ['required_overtime']      = 0
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
@@ -1026,19 +1023,7 @@ class Staff_Report (_Report) :
             container ['additional_hours']  += add * do_perd
             container ['supp_weekly_hours'] += sup * do_week
             d = d + day
-            if do_perd :
-                if act > add :
-                    container ['overtime_additional']    += act - add
-                if act < req :
-                    container ['overtime_additional']    -= req - act
-            if do_week :
-                if act > sup :
-                    container ['overtime_supplementary'] += act - sup
-                if act < req :
-                    container ['overtime_supplementary'] -= req - act
-                if ovr and act > sup :
-                    container ['required_overtime'] += act - sup
-    # end def __init__
+    # end def fill_container
 
     def permission_ok (self, user) :
         if user == self.uid :
