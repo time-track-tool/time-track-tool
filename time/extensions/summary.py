@@ -873,10 +873,10 @@ class Staff_Report (_Report) :
         , ""'supp_weekly_hours'
         , ""'overtime_correction'
         , ""'balance_week_end'
+        , ""'overtime_period'
         )
     period_fields = \
-        ( ""'overtime_period'
-        , ""'balance_period_start'
+        ( ""'balance_period_start'
         , ""'additional_hours'
         , ""'supp_per_period'
         , ""'balance_period_end'
@@ -971,7 +971,7 @@ class Staff_Report (_Report) :
             (db, u, start - day, 'week', True)
         container ['balance_week_end']   = compute_balance \
             (db, u, end,         'week', True)
-        container ['overtime_period'] = ''
+        container ['overtime_period'] = 'week'
         if dyn.overtime_period :
             period = db.overtime_period.get (dyn.overtime_period, 'name')
             container ['overtime_period'] = period
@@ -1023,6 +1023,7 @@ class Staff_Report (_Report) :
             container ['additional_hours']  += add * do_perd
             container ['supp_weekly_hours'] += sup * do_week
             d = d + day
+        db.commit () # commit cached daily_record values
     # end def fill_container
 
     def permission_ok (self, user) :
