@@ -122,7 +122,7 @@ def check_unique (_, cl, id, ** kw) :
         if is_matching_result (cl, kw, s) :
             r = []
             for k, v in kw.iteritems () :
-                attr, val = (_ (i) for i in (k, v))
+                attr, val = (_ (str (i)) for i in (k, v))
                 r.append ("%(attr)s=%(val)s" % locals ())
             raise Reject, _ ("Duplicate: %s") % ', '.join (r)
 # end def check_unique

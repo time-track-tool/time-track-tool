@@ -205,6 +205,7 @@ def new_user (db, cl, nodeid, new_values) :
         , 'lastname'
         , 'org_location'
         , 'department'
+        , 'username'
         )
     if 'tt_lines' in cl.properties and 'tt_lines' not in new_values :
         new_values ['tt_lines'] = 1
