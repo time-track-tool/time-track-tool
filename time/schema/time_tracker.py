@@ -631,7 +631,7 @@ def security (db, ** kw) :
             , description = fixdoc (approver_daily_record.__doc__)
             , properties  = ('required_overtime',)
             )
-        db.security.addPermissionToRole ('User', p)
+        #db.security.addPermissionToRole ('User', p)
 
         p = db.security.addPermission \
             ( name        = perm
