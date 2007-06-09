@@ -89,20 +89,19 @@ def hours_iter () :
 
 def check_overtime_parameters (db, cl, nodeid, new_values) :
     class X : pass
-    fields = ['weekly_hours', 'supp_weekly_hours', 'additional_hours']
+    fields = ['weekly_hours', 'overtime_period', 'additional_hours']
     fields.extend (hours_iter ())
     for f in fields :
         if f in new_values :
             setattr (X, f, new_values [f])
         elif nodeid :
             setattr (X, f, cl.get (nodeid, f))
-    if  (   X.supp_weekly_hours is not None
-        and X.additional_hours  is not None
-        and X.supp_weekly_hours < X.additional_hours
-        ) :
-        supp = _ ('supp_weekly_hours')
-        add  = _ ('additional_hours')
-        raise Reject, "%(supp)s must be >= %(add)s" % locals ()
+        else :
+            setattr (X, f, None)
+    if (X.overtime_period and not X.additional_hours) :
+        ov  = _ ('overtime_period')
+        add = _ ('additional_hours')
+        raise Reject, "%(add)s must be specified if %(ov)s is set" % locals ()
     daily = maybe_daily = False
     for f in hours_iter () :
         if f in new_values :
