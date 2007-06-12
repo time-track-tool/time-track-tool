@@ -361,14 +361,10 @@ def overtime (db, user, start, end, end_ov, use_additional) :
         compute   = compute or do_over
         date += Interval ('1d')
     overtime += over_per * do_over
-    print "overtime:", worked, overtime, required
     if worked > overtime :
-        print  worked - overtime
         return worked - overtime
     elif worked < required :
-        print  worked - required
         return worked - required
-    print  0
     return 0
 # end def overtime
 
