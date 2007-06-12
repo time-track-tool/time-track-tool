@@ -145,14 +145,24 @@ def init \
     # end class Contact_Class
     export.update (dict (Contact_Class = Contact_Class))
 
-    contact_type = Class \
-        ( db, ''"contact_type"
-        , name                = String    ()
-        , description         = String    ()
-        , url_template        = String    ()
-        , visible             = Boolean   ()
-        )
-    contact_type.setkey (''"name")
+    class Contact_Type_Class (Ext_Class) :
+        """ Create contact_type class with default attributes, may be
+            extended by other definitions.
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( name                = String    ()
+                , description         = String    ()
+                , url_template        = String    ()
+                )
+            self.__super.__init__ (db, classname, ** properties)
+            self.setlabelprop ('contact')
+            self.setkey (''"name")
+        # end def __init__
+    # end class Contact_Type_Class
+    export.update (dict (Contact_Type_Class = Contact_Type_Class))
+
+    contact_type = Contact_Type_Class (db, ''"contact_type")
 
     contact = Contact_Class \
         ( db, ''"contact"
@@ -161,7 +171,6 @@ def init \
 
     return export
 # end def init
-
 
 def security (db, ** kw) :
     roles = \

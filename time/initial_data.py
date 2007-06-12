@@ -465,8 +465,8 @@ if 'adr_type_cat' in db.classes :
 
 if 'contact_type' in db.classes :
     db.contact_type.create \
-        ( name         = 'www'
-        , description  = 'Home Page'
+        ( name         = 'Web'
+        , description  = 'Internet Home Page'
         , url_template = 'http://%(contact)s'
         )
     db.contact_type.create \
@@ -475,12 +475,12 @@ if 'contact_type' in db.classes :
         , url_template = 'mailto:%(contact)s'
         )
     db.contact_type.create \
-        ( name         = 'Tel. Firma'
-        , description  = 'Telefonnummer'
+        ( name         = 'Telefon'
+        , description  = 'Telefonnummer privat/Firma'
         )
     db.contact_type.create \
-        ( name         = 'Tel. privat'
-        , description  = 'Telefonnummer'
+        ( name         = 'Mobiltelefon'
+        , description  = 'Telefonnummer mobil'
         )
     db.contact_type.create \
         ( name         = 'Fax'
