@@ -29,6 +29,11 @@
         , searchname  = 'address.function'
         , searchable  = True
         )
+    , utils.ExtProperty 
+        ( utils, pdict ['address']
+        , searchname  = 'address.lookalike_name'
+        , searchable  = True
+        )
     );
    "
   tal:condition="context/is_view_ok">
