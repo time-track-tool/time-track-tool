@@ -864,7 +864,7 @@ class Overtime_Corrections :
 
 class Staff_Report (_Report) :
     fields = \
-        ( ""'balance_week_start'
+        ( ""'balance_start'
         , ""'actual_open'
         , ""'actual_submitted'
         , ""'actual_accepted'
@@ -872,14 +872,14 @@ class Staff_Report (_Report) :
         , ""'required'
         , ""'supp_weekly_hours'
         , ""'overtime_correction'
-        , ""'balance_week_end'
+        , ""'balance_end'
         , ""'overtime_period'
         )
+    #####     field                    allow for all
     period_fields = \
-        ( ""'balance_period_start'
-        , ""'additional_hours'
-        , ""'supp_per_period'
-        , ""'balance_period_end'
+        ( (""'achieved_supplementary', 0)
+        , (""'supp_per_period',        1)
+        , (""'additional_hours',       1)
         )
 
     def __init__ (self, db, request, utils, is_csv = False) :
@@ -965,24 +965,17 @@ class Staff_Report (_Report) :
     # end def __init__
 
     def fill_container (self, container, user, dyn, start, end) :
-        db = self.db
-        u  = user
-        container ['balance_week_start'] = compute_balance \
-            (db, u, start - day, 'week', True)
-        container ['balance_week_end']   = compute_balance \
-            (db, u, end,         'week', True)
-        container ['overtime_period'] = 'week'
+        db     = self.db
+        u      = user
+        period = 'week'
         if dyn.overtime_period :
             period = db.overtime_period.get (dyn.overtime_period, 'name')
-            container ['overtime_period'] = period
             self.need_period = True
-            container ['balance_period_start'] = compute_balance \
-                (db, u, start - day, period, True)
-            container ['balance_period_end']   = compute_balance \
-                (db, u, end,         period, True)
-        else :
-            container ['balance_period_start'] = ''
-            container ['balance_period_end']   = ''
+        container ['overtime_period'] = period
+        container ['balance_start']   = compute_balance \
+            (db, u, start - day, period, True)
+        container ['balance_end']     = compute_balance \
+            (db, u, end,         period, True)
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = pretty_range (start, end)))
         try :
@@ -1010,7 +1003,10 @@ class Staff_Report (_Report) :
         container ['actual_accepted']        = 0
         container ['required']               = 0
         container ['supp_weekly_hours']      = 0
-        container ['additional_hours']       = 0
+        container ['additional_hours']       = ''
+        container ['achieved_supplementary'] = ''
+        if period != 'week' :
+            container ['additional_hours']       = 0
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
@@ -1020,21 +1016,34 @@ class Staff_Report (_Report) :
                 f = 'actual_' + self.stati [st]
                 container [f] += act
             container ['required']          += req * (do_week or do_perd)
-            container ['additional_hours']  += add * do_perd
             container ['supp_weekly_hours'] += sup * do_week
+            if period != 'week' :
+                container ['additional_hours']  += add * do_perd
             d = d + day
+        if period != 'week' :
+            container ['achieved_supplementary'] = \
+                container ['actual_all'] - container ['additional_hours']
+            if container ['achieved_supplementary'] < 0 :
+                container ['achieved_supplementary'] = 0
         db.commit () # commit cached daily_record values
     # end def fill_container
 
     def permission_ok (self, user) :
         if user == self.uid :
             return True
-        if user_has_role (self.db, self.uid, 'HR') :
+        if self.is_allowed () :
             return True
         if self.db.user.get (user, 'supervisor') == self.uid :
             return True
         return False
     # end def permission_ok
+
+    def is_allowed (self) :
+        """ HR is currently allowed to view everything including some
+            columns hidden for others.
+        """
+        return user_has_role (self.db, self.uid, 'HR')
+    # end is_allowed
 
     def header_line (self, formatter) :
         line = []
@@ -1043,8 +1052,9 @@ class Staff_Report (_Report) :
         for f in self.fields :
             line.append (formatter (_ (f)))
         if self.need_period :
-            for f in self.period_fields :
-                line.append (formatter (_ (f)))
+            for f, perm in self.period_fields :
+                if perm or self.is_allowed () :
+                    line.append (formatter (_ (f)))
         return line
     # end def header_line
 
@@ -1063,8 +1073,9 @@ class Staff_Report (_Report) :
                 for f in self.fields :
                     line.append (item_formatter (container [f]))
                 if self.need_period :
-                    for f in self.period_fields :
-                        line.append (item_formatter (container [f]))
+                    for f, perm in self.period_fields :
+                        if perm or self.is_allowed () :
+                            line.append (item_formatter (container [f]))
                 line_formatter (line)
     # end def _output
 

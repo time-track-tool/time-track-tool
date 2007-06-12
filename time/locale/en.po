@@ -714,6 +714,9 @@ msgstr ""
 msgid "additional_hours"
 msgstr "Additional hours"
 
+msgid "achieved_supplementary"
+msgstr "Achieved supplementary hours"
+
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
 
@@ -3027,7 +3030,7 @@ msgstr "Level"
 msgid "time"
 msgstr "Time Period"
 
-msgid "balance_week_start"
+msgid "balance_start"
 msgstr "Balance Start"
 
 msgid "actual_open"
@@ -3048,7 +3051,7 @@ msgstr ""
 msgid "overtime_correction"
 msgstr "Overtime correction"
 
-msgid "balance_week_end"
+msgid "balance_end"
 msgstr "Balance End"
 
 msgid "balance_period_start"
