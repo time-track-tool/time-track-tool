@@ -156,7 +156,6 @@ def init \
                 , url_template        = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
-            self.setlabelprop ('contact')
             self.setkey (''"name")
         # end def __init__
     # end class Contact_Type_Class
