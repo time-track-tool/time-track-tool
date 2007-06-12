@@ -27,6 +27,18 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'address')"/>
+      <td>
+       <span tal:repeat="i python:['firstname','lastname','function']"
+             tal:content="structure python:utils.ExtProperty
+               ( utils, context.address [i]
+               , item       = context.address
+               , searchname = i
+               ).formatlink ()"/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"/>
      </tr>

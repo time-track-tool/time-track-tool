@@ -744,8 +744,8 @@ msgstr ""
 msgid "address"
 msgstr "Adresse"
 
-msgid "Address for this letter"
-msgstr "Adresse zu diesem Brief"
+msgid "Address for this %(Classname)s"
+msgstr "Adresse zu diesem %(Classname)s"
 
 msgid "address++valid"
 msgstr "gültig"

@@ -198,7 +198,7 @@ _helptext          = \
     , ""'additional_hours'            :
       [""'''Austrian-Law: time above 38.5 hours per week''']
     , ""'address'                     :
-      [""'''Address for this letter''']
+      [""'''Address for this %(Classname)s''']
     , ""'address++valid'              : [address_valid]
     , ""'address++title'              : [academic_title]
     , ""'adr_type_cat.code'           : [code, adr_type_cat_code]
