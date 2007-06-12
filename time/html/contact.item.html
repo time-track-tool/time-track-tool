@@ -28,13 +28,18 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'address')"/>
-      <td>
-       <span tal:repeat="i python:['firstname','lastname','function']"
+      <td tal:define="fields python:['firstname','lastname','function']">
+       <span tal:repeat="i fields"
              tal:content="structure python:utils.ExtProperty
                ( utils, context.address [i]
                , item       = context.address
                , searchname = i
                ).formatlink ()"/>
+       <span tal:condition="python:
+             not sum ([bool (context.address [f]) for f in fields])">
+        <a tal:attributes="href context/address/designator"
+           tal:content="python:'(%s)' % context.address.id"/>
+       </span>
       </td>
      </tr>
      <tr>
