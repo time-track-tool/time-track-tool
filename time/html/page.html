@@ -60,6 +60,10 @@
    , 'category'        : '@columns=name,description,responsible,nosy,'
                          'valid,cert_sw&@sort=name&@filter=valid&'
                          '@pagesize=200&@startwith=0&valid=yes'
+   , 'contact'         : 'template=index&@columns=contact,contact_type,'
+                         'address.firstname,address.lastname,address.function&'
+                         '@sort=-address.lastname,address.firstname,'
+                         'contact_type&@pagesize=20&@startwith=0'
    , 'cust_supp'       : '@template=index&@pagesize=50&@startwith=0&'
                          '@columns=id,name,description,tax_id,status,attendant'
    , 'daily_record'    : '@columns=id,user,date,status&@sort=-id&'
@@ -318,6 +322,7 @@
      , ('cust_supp',           'View', 1,               ('',''))
      , ('discount_group',      'View', 1,               ('',''))
      , ('product',             'View', 1,               ('',''))
+     , ('contact',             'View', 1,               ('',''))
      )
    )
  ; menu_type     python:

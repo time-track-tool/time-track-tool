@@ -1,0 +1,40 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   n_sort python:4;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['contact'])
+    , utils.ExtProperty (utils, pdict ['description'])
+    , utils.ExtProperty (utils, pdict ['contact_type'], multiselect=True)
+    , utils.ExtProperty 
+        ( utils, pdict ['address']
+        , searchname  = 'address.firstname'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['address']
+        , searchname  = 'address.lastname'
+        , searchable  = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['address']
+        , searchname  = 'address.function'
+        , searchable  = True
+        )
+    );
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>
