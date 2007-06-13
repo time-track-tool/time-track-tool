@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-05-07 21:04+0200\n"
+"POT-Creation-Date: 2007-06-13 05:30+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -424,6 +424,9 @@ msgstr ""
 #, python-format
 msgid "%(attr)s must be positive or empty"
 msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
+
+msgid "overtime_period"
+msgstr ""
 
 #, python-format
 msgid "Frozen: %(old_from)s"
@@ -1757,6 +1760,9 @@ msgid ""
 "          "
 msgstr "Eindeutiger name für diese %(Classname)s, inklusive Versionsnummer"
 
+msgid "needs.id"
+msgstr "hängt ab von (ID)"
+
 msgid "netbios_dd"
 msgstr ""
 
@@ -1905,9 +1911,6 @@ msgstr ""
 
 msgid "Operating System running on this %(Classname)s"
 msgstr "Betriebssystem dieser %(Classname)s"
-
-msgid "overtime_period"
-msgstr ""
 
 msgid "Period over which overtime is computed for a person"
 msgstr ""
@@ -3088,8 +3091,12 @@ msgstr ""
 msgid "time"
 msgstr "Zeit"
 
-msgid "balance_week_start"
+#.  for translation in web-interface
+msgid "Staff Report"
 msgstr ""
+
+msgid "balance_start"
+msgstr "Akkumulierte Zeit Start"
 
 msgid "actual_open"
 msgstr ""
@@ -3109,19 +3116,10 @@ msgstr ""
 msgid "overtime_correction"
 msgstr ""
 
-msgid "balance_week_end"
-msgstr ""
+msgid "balance_end"
+msgstr "Akkumulierte Zeit Ende"
 
-msgid "balance_period_start"
-msgstr ""
-
-msgid "balance_period_end"
-msgstr ""
-
-msgid "overtime_additional"
-msgstr ""
-
-msgid "overtime_supplementary"
+msgid "achieved_supplementary"
 msgstr ""
 
 msgid "${property} help - ${tracker}"
@@ -3405,6 +3403,9 @@ msgstr ""
 msgid "Comment editing"
 msgstr ""
 
+msgid "Comment view"
+msgstr "Kommentar-Ansicht"
+
 msgid "New User"
 msgstr "Neuer User"
 
@@ -3414,8 +3415,8 @@ msgstr ""
 msgid "<span>x</span> User"
 msgstr ""
 
-msgid "(comma-separated values)"
-msgstr "(Komma-getrennte Liste)"
+msgid "(role permissions)"
+msgstr "(Rollen-Zugriffsrechte)"
 
 msgid "default:"
 msgstr "Voreinstellung:"
@@ -3891,11 +3892,14 @@ msgstr "Benutzerstatus"
 msgid "doc_num"
 msgstr ""
 
-msgid "credit_limit_cur"
-msgstr "Kreditlimit-Währung"
+msgid "User is allowed %(perm)s on"
+msgstr "Benutzer darf %(perm)s auf"
 
-msgid "account_number"
-msgstr "Kontonummer"
+#~ msgid "credit_limit_cur"
+#~ msgstr "Kreditlimit-Währung"
+
+#~ msgid "account_number"
+#~ msgstr "Kontonummer"
 
 #~ msgid "new contact from shipping address"
 #~ msgstr "Neuer Kontakt aus Lieferadresse"

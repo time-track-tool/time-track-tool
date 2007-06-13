@@ -863,6 +863,7 @@ class Overtime_Corrections :
 # end class Overtime_Corrections
 
 class Staff_Report (_Report) :
+    ''"Staff Report" # for translation in web-interface
     fields = \
         ( ""'balance_start'
         , ""'actual_open'
@@ -875,7 +876,7 @@ class Staff_Report (_Report) :
         , ""'balance_end'
         , ""'overtime_period'
         )
-    #####     field                    allow for all
+    #####     field                    allow for all (HR only if unset)
     period_fields = \
         ( (""'achieved_supplementary', 0)
         , (""'supp_per_period',        1)

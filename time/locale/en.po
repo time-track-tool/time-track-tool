@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-05-15 12:54+0200\n"
+"POT-Creation-Date: 2007-06-13 05:30+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -421,6 +421,9 @@ msgstr ""
 msgid "%(attr)s must be positive or empty"
 msgstr ""
 
+msgid "overtime_period"
+msgstr "Overtime period"
+
 #, python-format
 msgid "Frozen: %(old_from)s"
 msgstr ""
@@ -714,16 +717,13 @@ msgstr ""
 msgid "additional_hours"
 msgstr "Additional hours"
 
-msgid "achieved_supplementary"
-msgstr "Achieved supplementary hours"
-
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
 
 msgid "address"
 msgstr "Address"
 
-msgid "Address for this letter"
+msgid "Address for this %(Classname)s"
 msgstr ""
 
 msgid "address++valid"
@@ -1046,9 +1046,6 @@ msgstr ""
 
 msgid "depends.id"
 msgstr "Depends (id)"
-
-msgid "needs.id"
-msgstr "Needs (id)"
 
 msgid "deputy"
 msgstr "Deputy"
@@ -1723,6 +1720,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "needs.id"
+msgstr "Needs (id)"
+
 msgid "netbios_dd"
 msgstr "NetBIOS datagram servers"
 
@@ -1866,9 +1866,6 @@ msgstr "Operating system"
 
 msgid "Operating System running on this %(Classname)s"
 msgstr ""
-
-msgid "overtime_period"
-msgstr "Overtime period"
 
 msgid "Period over which overtime is computed for a person"
 msgstr ""
@@ -3030,6 +3027,10 @@ msgstr "Level"
 msgid "time"
 msgstr "Time Period"
 
+#.  for translation in web-interface
+msgid "Staff Report"
+msgstr ""
+
 msgid "balance_start"
 msgstr "Balance Start"
 
@@ -3054,17 +3055,8 @@ msgstr "Overtime correction"
 msgid "balance_end"
 msgstr "Balance End"
 
-msgid "balance_period_start"
-msgstr "Balance Period Start"
-
-msgid "balance_period_end"
-msgstr "Balance Period End"
-
-msgid "overtime_additional"
-msgstr "Overtime additional"
-
-msgid "overtime_supplementary"
-msgstr "Overtime supplementary"
+msgid "achieved_supplementary"
+msgstr "Achieved supplementary hours"
 
 msgid "${property} help - ${tracker}"
 msgstr ""
@@ -3355,7 +3347,7 @@ msgstr ""
 msgid "<span>x</span> User"
 msgstr ""
 
-msgid "(comma-separated values)"
+msgid "(role permissions)"
 msgstr ""
 
 msgid "default:"
@@ -3831,3 +3823,6 @@ msgstr "User Status"
 
 msgid "doc_num"
 msgstr "Document number"
+
+msgid "User is allowed %(perm)s on"
+msgstr ""
