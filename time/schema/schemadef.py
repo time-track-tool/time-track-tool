@@ -117,6 +117,7 @@ def register_permission_by_link (db, role, perm, linkclass, * classprops) :
     """
     if linkclass not in db.classes :
         return
+    classprops = [(c, p) for c, p in classprops if c in db.classes]
     def is_linked (db, uid, itemid) :
         if not itemid :
             return False

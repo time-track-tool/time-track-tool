@@ -72,32 +72,6 @@ classes = \
     , ("query"               , ["Controlling"],  ["Controlling"])
     ]
 
-linkperms = \
-    [ ( "file", ['User'], ['View', 'Edit']
-      , [ ('issue',      'files')
-        , ('it_issue',   'files')
-        , ('it_project', 'files')
-        , ('user',       'pictures')
-        ]
-      )
-    , ( "msg", ['User'], ['View']
-      , [ ('department',   'messages')
-        , ('issue',        'messages')
-        , ('it_issue',     'messages')
-        , ('it_project',   'messages')
-        , ('organisation', 'messages')
-        ]
-      )
-    , ( "msg", ['Issue_Admin', 'IT'], ['Edit']
-      , [ ('department',   'messages')
-        , ('issue',        'messages')
-        , ('it_issue',     'messages')
-        , ('it_project',   'messages')
-        , ('organisation', 'messages')
-        ]
-      )
-    ]
-
 prop_perms = \
     [ ( "user", "Edit", ["HR", "IT"]
       , ( "address"
@@ -150,11 +124,6 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
-for cls, roles, perms, classprops in linkperms :
-    for role in roles :
-        for perm in perms :
-            schemadef.register_permission_by_link \
-                (db, role, perm, cls, * classprops)
 db.security.addPermissionToRole ('User', 'Create', 'msg') 
 # the following is further checked in an auditor:
 db.security.addPermissionToRole ('User', 'Create', 'time_wp') 

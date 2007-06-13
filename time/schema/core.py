@@ -105,7 +105,62 @@ def security (db, ** kw) :
         , ("query",       [],        [])
         ]
 
+    msg_props = \
+        [ ('department',   'messages')
+        , ('issue',        'messages')
+        , ('it_issue',     'messages')
+        , ('it_project',   'messages')
+        , ('organisation', 'messages')
+        , ('cust_supp',    'messages')
+        , ('product',      'messages')
+        , ('address',      'messages')
+        , ('letter',       'messages')
+        # start properties of complex tracker
+        , ('meeting',      'messages')
+        , ('action_item',  'messages')
+        , ('document',     'messages')
+        , ('release',      'messages')
+        , ('feature',      'messages')
+        , ('task',         'messages')
+        , ('defect',       'messages')
+        , ('review',       'messages')
+        , ('announcement', 'messages')
+        , ('comment',      'messages')
+        ]
+
+    linkperms = \
+        [ ( "file", ['User'], ['View', 'Edit']
+          , [ ('issue',        'files')
+            , ('it_issue',     'files')
+            , ('it_project',   'files')
+            , ('user',         'pictures')
+            , ('tmplate',      'files')
+            , ('cust_supp',    'files')
+            , ('product',      'files')
+            , ('address',      'files')
+            , ('letter',       'files')
+            # start properties of complex tracker
+            , ('meeting',      'files')
+            , ('action_item',  'files')
+            , ('document',     'files')
+            , ('task',         'files')
+            , ('defect',       'files')
+            , ('review',       'files')
+            , ('announcement', 'files')
+            ]
+          )
+        , ( "msg", ['User'],              ['View'], msg_props)
+        , ( "msg", ['Issue_Admin', 'IT'], ['Edit'], msg_props)
+        ]
+
     schemadef.register_class_permissions (db, classes, [])
+    for cls, roles, perms, classprops in linkperms :
+        for role in roles :
+            if role.lower () not in db.security.role :
+                continue
+            for perm in perms :
+                schemadef.register_permission_by_link \
+                    (db, role, perm, cls, * classprops)
 
     ### Query permissions ###
     def view_query (db, userid, itemid) :
