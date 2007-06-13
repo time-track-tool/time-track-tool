@@ -89,11 +89,10 @@ def updatenosy(db, cl, nodeid, newvalues):
         ok = ('yes',)
         # old node, get the current values from the node if they haven't
         # changed
+        oldnosy = cl.get(nodeid, 'nosy')
         if not newvalues.has_key('nosy'):
-            oldnosy = nosy = cl.get(nodeid, 'nosy')
-            for value in nosy:
-                if not current.has_key(value):
-                    current[value] = 1
+            nosy    = cl.get(nodeid, 'nosy')
+            current = dict.fromkeys (nosy)
     oldnosy.sort ()
 
     # if the nosy list changed in this transaction, init from the new value
@@ -105,14 +104,19 @@ def updatenosy(db, cl, nodeid, newvalues):
             if not current.has_key(value):
                 current[value] = 1
 
-    # add responsible(s) etc. to the nosy list
+    # *always* add responsible(s) etc. to the nosy list -- make sure
+    # responsible/stakeholder cannot be removed from nosy.
     for k in 'responsible', 'stakeholder' :
-        if newvalues.get(k, None):
+        if k in newvalues :
+            item = newvalues [k]
+        elif nodeid :
+            item = cl.get (nodeid, k)
+        if item:
             propdef = cl.getprops()
             if isinstance(propdef[k], hyperdb.Link):
-                assignedto_ids = [newvalues[k]]
+                assignedto_ids = [item]
             elif isinstance(propdef[k], hyperdb.Multilink):
-                assignedto_ids = newvalues[k]
+                assignedto_ids = item
             for assignedto_id in assignedto_ids:
                 if not current.has_key(assignedto_id):
                     current[assignedto_id] = 1
@@ -127,7 +131,7 @@ def updatenosy(db, cl, nodeid, newvalues):
             ok = ('yes',)
             # figure which of the messages now on the issue weren't
             # there before
-            oldmessages = cl.get(nodeid, 'messages')
+            oldmessages = dict.fromkeys (cl.get(nodeid, 'messages'))
             messages = []
             for msgid in newvalues['messages']:
                 if msgid not in oldmessages:
@@ -156,9 +160,10 @@ def updatenosy(db, cl, nodeid, newvalues):
             if db.security.hasPermission ('Nosy', x, 'issue')
         ]
     newnosy.sort ()
+    newvalues ['nosy'] = newnosy
     # only set if really changed
-    if oldnosy != newnosy :
-        newvalues ['nosy'] = newnosy
+    if oldnosy == newnosy :
+        del newvalues ['nosy']
 
 def init(db):
     nosy_classes = [ "action_item"

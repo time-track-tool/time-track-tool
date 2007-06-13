@@ -29,19 +29,9 @@
 
 from schemadef import register_roles
 
-def register_nosy_classes (db, nosy_classes) :
-    for klass in nosy_classes :
-        db.security.addPermission \
-            ( name        = "Nosy"
-            , klass       = klass
-            , description = "User may get nosy messages for %s" % klass
-            )
-        db.security.addPermissionToRole ("Nosy", "Nosy", klass)
-# end def nosy_permissions
-
-def init (db, Ext_Class, IssueClass, String, Link, Multilink, ** kw) :
-    class Ext_Issue_Class (Ext_Class, IssueClass) :
-        """ extends the IssueClass with some attributes
+def init (db, Ext_Class, String, Link, Multilink, ** kw) :
+    class Ext_Issue_Class (Ext_Class) :
+        """ extends the Ext_Class with some attributes
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \

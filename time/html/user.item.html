@@ -34,7 +34,8 @@
  <tr tal:condition="python:'firstname' in bclass.properties">
   <th tal:content="structure python:utils.fieldname('user', 'firstname')"/>
   <td tal:content="structure context/firstname/field"/>
-  <td tal:condition="context/pictures" rowspan="9">
+  <td tal:condition="python:context.pictures and context.pictures.is_view_ok ()"
+      rowspan="9">
     <img width="112" alt="Photo" tal:attributes="src python:
      context.pictures.reverse().next ().download_url ()">
   </td>

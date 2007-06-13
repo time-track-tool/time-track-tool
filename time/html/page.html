@@ -240,7 +240,7 @@
      , ('it_issue',            'Edit',   '?@template=item', 1)
      , ( 'it_project'
        , 'Edit'
-       , '?@template=item'
+       , '?@template=item&confidential=1'
        , utils.user_has_role (db._db, db._db.getuid (), 'IT')
        )
      , ('it_issue_status',     'Edit',   '?@template=item', 1)
@@ -307,6 +307,7 @@
        , db.user.roles.is_view_ok ()
        , ('roles','role')
        )
+     , ('summary_report',      'View', 1, ('Staff Report','staff'))
      , ('summary_report',      'View', 1,               ('',''))
      , ('network_interface',   'View', 1,               ('',''))
      , ('machine',             'View', 1,               ('',''))
@@ -346,7 +347,6 @@
  ; menu_type     python:
     dict ([(k [0],menu_tracker) for k in menu_tracker [0]])
 ">
- <!--    , ('summary_report',      'View', 1, ('Staff Report','staff'))-->
  <head>
   <title metal:define-slot="head_title">
    <span tal:replace="head_title"/>
@@ -696,7 +696,8 @@
 
    <tr metal:use-macro="templates/page/macros/message_box"/>
 
-   <tr tal:condition="python:has_files and want_files">
+   <tr tal:condition="python:
+       has_files and want_files and context.files.is_edit_ok ()">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
     <td colspan="3"><input type="file" name="@file" size="40"/></td>
    </tr>
@@ -780,7 +781,8 @@
 
  <table metal:use-macro="templates/page/macros/note_required" />
  <table metal:use-macro="templates/page/macros/message_display" />
- <table tal:condition="python: has_files and context.files" class="files">
+ <table class="files" tal:condition="python:
+        has_files and context.files and context.files.is_view_ok ()">
   <tr>
    <th colspan="3" class="header">Files</th>
   </tr>
@@ -817,7 +819,8 @@
 </tal:block>
 
 <tal:block metal:define-macro="message_display">
- <table class="messages" tal:condition="python:has_msgs and context.messages">
+ <table class="messages" tal:condition="python:
+  has_msgs and context.messages and context.is_view_ok ()">
   <tr>
    <th colspan="4" class="header" tal:content="structure python:
      utils.fieldname (classname, 'messages')"/>

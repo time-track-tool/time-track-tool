@@ -26,7 +26,7 @@
 #    schema-full
 #
 # Purpose
-#    Specify the DB-Schema for a tracker including all parts,
+#    Specify the DB-Schema for a tracker including most parts,
 #    time-tracking, it-issue tracking, ...
 #    Link this file to schema.py
 #--
@@ -40,11 +40,9 @@ from common import clearance_by
 import schemadef
 
 # sub-schema definitins to include
-# Note: order matters. Usually ext_issue (needed by it_tracker for
-# example) comes first and core is always last.
+# Note: order matters, core is always last.
 schemas = \
-    ( 'ext_issue'
-    , 'company'
+    ( 'company'
     , 'issue'
     , 'it_tracker'
     , 'nwm'
@@ -69,9 +67,35 @@ importer.update_security ()
 
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file"                , ["User"],               ["User"])
-    , ("msg"                 , ["User"],               ["IT", "Issue_Admin"])
-    , ("query"               , ["Controlling"],        ["Controlling"])
+    [ ("file"                , [],               [])
+    , ("msg"                 , [],               [])
+    , ("query"               , ["Controlling"],  ["Controlling"])
+    ]
+
+linkperms = \
+    [ ( "file", ['User'], ['View', 'Edit']
+      , [ ('issue',      'files')
+        , ('it_issue',   'files')
+        , ('it_project', 'files')
+        , ('user',       'pictures')
+        ]
+      )
+    , ( "msg", ['User'], ['View']
+      , [ ('department',   'messages')
+        , ('issue',        'messages')
+        , ('it_issue',     'messages')
+        , ('it_project',   'messages')
+        , ('organisation', 'messages')
+        ]
+      )
+    , ( "msg", ['Issue_Admin', 'IT'], ['Edit']
+      , [ ('department',   'messages')
+        , ('issue',        'messages')
+        , ('it_issue',     'messages')
+        , ('it_project',   'messages')
+        , ('organisation', 'messages')
+        ]
+      )
     ]
 
 prop_perms = \
@@ -126,6 +150,11 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
+for cls, roles, perms, classprops in linkperms :
+    for role in roles :
+        for perm in perms :
+            schemadef.register_permission_by_link \
+                (db, role, perm, cls, * classprops)
 db.security.addPermissionToRole ('User', 'Create', 'msg') 
 # the following is further checked in an auditor:
 db.security.addPermissionToRole ('User', 'Create', 'time_wp') 

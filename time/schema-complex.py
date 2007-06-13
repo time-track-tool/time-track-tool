@@ -40,7 +40,7 @@ from common import clearance_by
 import schemadef
 
 # sub-schema definitins to include
-# Note: order matters. Usually ext_issue (needed by it_tracker for
+# Note: order matters. Usually ext_issue (needed by complex tracker for
 # example) comes first and core is always last.
 schemas = \
     ( 'ext_issue'

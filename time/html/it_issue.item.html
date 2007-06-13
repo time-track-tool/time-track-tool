@@ -42,6 +42,11 @@
           (classname, 'it_prio')"/>
       <td tal:content="structure python:context.it_prio.menu ()"/>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'confidential')"/>
+      <td tal:content="structure python:context.confidential.field ()"/>
+     </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

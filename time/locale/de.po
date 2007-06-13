@@ -861,6 +861,8 @@ msgid ""
 "             of the given %(Classname)s\n"
 "          "
 msgstr ""
+"Benutzer darf Time Records im Gültigkeitsbereich von"
+" %(Classname)s buchen"
 
 msgid "Date of birth"
 msgstr "Geburtsdatum"

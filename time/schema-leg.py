@@ -38,8 +38,7 @@ sys.path.insert (0, os.path.join (db.config.HOME, 'schema'))
 import schemadef
 
 # sub-schema definitins to include
-# Note: order matters. Usually ext_issue (needed by it_tracker for
-# example) comes first and core is always last.
+# Note: order matters, core is always last.
 schemas = \
     ( 'legalclient'
     , 'core'

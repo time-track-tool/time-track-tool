@@ -30,7 +30,6 @@
 #
 
 import schemadef
-import ext_issue
 
 def init \
     ( db
@@ -429,5 +428,5 @@ def security (db, **kw) :
                    , "comment"
                    ]
 
-    ext_issue.register_nosy_classes (db, nosy_classes)
+    schemadef.register_nosy_classes (db, nosy_classes)
 # end def security

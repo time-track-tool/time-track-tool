@@ -33,7 +33,18 @@ from roundup.hyperdb import Class
 import schemadef
 
 def init \
-    (db, Class, Ext_Issue_Class, String, Date, Link, Multilink, Number, ** kw) :
+    ( db
+    , Class
+    , Full_Issue_Class
+    , Superseder_Issue_Class
+    , Boolean
+    , String
+    , Date
+    , Link
+    , Multilink
+    , Number
+    , ** kw
+    ) :
     it_category = Class \
         ( db
         , ''"it_category"
@@ -42,7 +53,7 @@ def init \
         )
     it_category.setkey ("name")
 
-    Ext_Issue_Class \
+    Superseder_Issue_Class \
         ( db
         , ''"it_issue"
         , status                = Link      ("it_issue_status",
@@ -51,9 +62,8 @@ def init \
         , category              = Link      ("it_category", do_journal='no')
         , stakeholder           = Link      ("user",        do_journal='no')
         , deadline              = Date      ()
-        , files                 = Multilink ("file")
         , it_project            = Link      ("it_project")
-        , superseder            = Multilink ("it_issue")
+        , confidential          = Boolean   ()
         )
 
     it_issue_status = Class \
@@ -74,7 +84,7 @@ def init \
         )
     it_prio.setkey ("name")
 
-    Ext_Issue_Class \
+    Full_Issue_Class \
         ( db
         , ''"it_project"
         , status                = Link      ("it_project_status",
@@ -83,7 +93,7 @@ def init \
         , category              = Link      ("it_category", do_journal = 'no')
         , stakeholder           = Link      ("user",        do_journal = 'no')
         , deadline              = Date      ()
-        , files                 = Multilink ("file")
+        , confidential          = Boolean   ()
         )
 
     it_project_status = Class \
@@ -113,23 +123,17 @@ def security (db, ** kw) :
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("it_category",       ["User"],     ["IT"])
-        , ("it_issue_status",   ["User"],     [])
-        , ("it_issue",          ["User"],     ["IT"])
-        , ("it_prio",           ["User"],     [])
-        , ("it_project",        ["User"],     ["IT"])
-        , ("it_project_status", ["User"],     [])
+        [ ("it_category",       ["User"],         ["IT"])
+        , ("it_issue_status",   ["User"],         [])
+        , ("it_issue",          ["IT", "ITView"], ["IT"])
+        , ("it_prio",           ["User"],         [])
+        , ("it_project",        ["IT", "ITView"], ["IT"])
+        , ("it_project_status", ["User"],         [])
         ]
 
     prop_perms = \
         [ ( "location", "Edit", ["IT"]
           , ("domain_part",)
-          )
-        , ( "it_issue",   "Edit", ["User"]
-          , ("messages", "files", "nosy")
-          )
-        , ( "it_project",   "Edit", ["User"]
-          , ("messages", "files", "nosy")
           )
         , ( "org_location", "Edit", ["IT"]
           , ("smb_domain", "dhcp_server", "domino_dn")
@@ -189,5 +193,12 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     db.security.addPermissionToRole ('User', 'Create', 'it_issue')
-
+    schemadef.register_confidentiality_check \
+        (db, 'it_issue',   ('View',))
+    schemadef.register_confidentiality_check \
+        (db, 'it_issue',   ('Edit',), "messages", "files", "nosy")
+    schemadef.register_confidentiality_check \
+        (db, 'it_project', ('View',))
+    schemadef.register_confidentiality_check \
+        (db, 'it_project', ('Edit',), "messages", "files", "nosy")
 # end def security

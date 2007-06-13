@@ -16,7 +16,7 @@
  </tal:block> 
 
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:content="Classname"></span>
+       tal:content="Classname"/>
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
@@ -83,7 +83,7 @@
     </tal:block>
    </tal:block>
   </tal:block>
-  <table class="messages">
+  <table class="messages" tal:condition="context/is_view_ok">
    <tr>
     <th class="header" tal:content="structure python:utils.fieldname
         (classname, 'content')"/>

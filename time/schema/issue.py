@@ -31,13 +31,12 @@
 
 from roundup.hyperdb import Class
 import schemadef
-import ext_issue
 
 def init \
     ( db
     , Class
     , Ext_Mixin
-    , IssueClass
+    , Superseder_Issue_Class
     , String
     , Date
     , Link
@@ -111,9 +110,8 @@ def init \
         )
     msg_keyword.setkey("name")
 
-    issue = IssueClass \
+    Superseder_Issue_Class \
         ( db, "issue"
-        , responsible         = Link      ("user",        do_journal = 'no')
         , keywords            = Multilink ("keyword",     do_journal = 'no')
         , priority            = Number    ()
         , effective_prio      = Number    ()
@@ -138,6 +136,7 @@ def init \
         , part_of             = Link      ("issue") # should change composed_of
         , severity            = Link      ("severity")
         , maturity_index      = Number    ()
+        , confidential        = Boolean   ()
         )
 
     Cls = kw ['Msg_Class']
@@ -159,21 +158,23 @@ def init \
 def security (db, ** kw) :
     roles = \
         [ ("Issue_Admin", "Admin for issue tracker")
+        , ("Nosy",        "Allowed on nosy list")
         ]
     #     classname             allowed to view   /  edit
     classes = \
-        [ ("issue",             ["User"], ["User"])
-        , ("area",              ["User"], ["Issue_Admin"])
-        , ("category",          ["User"], ["Issue_Admin"])
-        , ("keyword",           ["User"], ["Issue_Admin"])
-        , ("kind",              ["User"], ["Issue_Admin"])
-        , ("msg_keyword",       ["User"], ["Issue_Admin"])
-        , ("status",            ["User"], ["Issue_Admin"])
-        , ("status_transition", ["User"], ["Issue_Admin"])
-        , ("severity",          ["User"], ["Issue_Admin"])
+        [ ("issue",             ["Issue_Admin"], ["Issue_Admin"])
+        , ("area",              ["User"],        ["Issue_Admin"])
+        , ("category",          ["User"],        ["Issue_Admin"])
+        , ("keyword",           ["User"],        ["Issue_Admin"])
+        , ("kind",              ["User"],        ["Issue_Admin"])
+        , ("msg_keyword",       ["User"],        ["Issue_Admin"])
+        , ("status",            ["User"],        ["Issue_Admin"])
+        , ("status_transition", ["User"],        ["Issue_Admin"])
+        , ("severity",          ["User"],        ["Issue_Admin"])
         ]
 
-    schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, ())
-    ext_issue.register_nosy_classes      (db, ['issue'])
+    schemadef.register_roles                 (db, roles)
+    schemadef.register_class_permissions     (db, classes, ())
+    schemadef.register_nosy_classes          (db, ['issue'])
+    schemadef.register_confidentiality_check (db, 'issue', ('View', 'Edit'))
 # end def security

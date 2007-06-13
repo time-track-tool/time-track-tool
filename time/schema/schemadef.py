@@ -67,6 +67,81 @@ def register_class_permissions (db, class_perms, prop_perms) :
             db.security.addPermissionToRole (r, p)
 # end def register_class_permissions
 
+def register_nosy_classes (db, nosy_classes) :
+    for klass in nosy_classes :
+        p = db.security.addPermission \
+            ( name        = "Nosy"
+            , klass       = klass
+            , description = \
+                "User may get nosy messages for %(klass)s" % locals ()
+            )
+        db.security.addPermissionToRole ("Nosy", p)
+# end def register_nosy_classes
+
+def register_confidentiality_check (db, cls, perms, * properties) :
+    """ Register a check for confidentiality, allow access with perms if
+        - confidential flag for item of cls is not set
+        - user is in nosy list of item
+    """
+    klass = db.getclass (cls)
+    def check_confidential (db, userid, itemid) :
+        if not itemid :
+            return False
+        item = klass.getnode (itemid)
+        if not item.confidential :
+            return True
+        if userid in item.nosy :
+            return True
+        return False
+    # end def check_confidential
+    for perm in perms :
+        params = dict \
+            ( name        = perm
+            , klass       = cls
+            , check       = check_confidential
+            , description = \
+                ''"User is allowed %(perm)s on %(cls)s if %(cls)s is "
+                "non-confidential or user is on nosy list" % locals ()
+            )
+        if properties :
+            params ['properties'] = properties
+        p = db.security.addPermission (** params)
+        db.security.addPermissionToRole ('User', p)
+# end register_confidentiality_check
+
+def register_permission_by_link (db, role, perm, linkclass, * classprops) :
+    """ Install permission check methods for a given linkclass (e.g.
+        msg, file) linked by other classes (e.g. issue) from a
+        Multilink. The parameter classprops is a list of 2-tuple of
+        classname and property name.
+    """
+    if linkclass not in db.classes :
+        return
+    def is_linked (db, uid, itemid) :
+        if not itemid :
+            return False
+        for cls, prop in classprops :
+            if cls not in db.classes :
+                continue
+            ids = db.getclass (cls).filter (None, {prop : itemid})
+            for id in ids :
+                if db.security.hasPermission \
+                    (perm, uid, cls, itemid = id, property = prop) :
+                    return True
+        return False
+    # end def is_linked
+    p = db.security.addPermission \
+        ( name        = perm
+        , klass       = linkclass
+        , check       = is_linked
+        , description = \
+            ''"User is allowed %(perm)s on %(linkclass)s"
+            " if %(linkclass)s is linked from an item with %(perm)s"
+            " permission" % locals ()
+        )
+    db.security.addPermissionToRole (role, p)
+# end def register_permission_by_link
+
 def own_user_record (db, userid, itemid) :
     """Determine whether the userid matches the item being accessed"""
     return userid == itemid
@@ -143,7 +218,25 @@ class Importer (object) :
                     (nosy = Multilink ("user", do_journal = "no"))
                 self.__super.__init__ (db, classname, ** properties)
             # end def __init__
-        # end class Min_Issue_Class
+        # end class Nosy_Issue_Class
+
+        class Full_Issue_Class (Nosy_Issue_Class) :
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    ( title       = String    (indexme = "yes")
+                    , responsible = Link      ("user")
+                    )
+                self.__super.__init__ (db, classname, ** properties)
+            # end def __init__
+        # end class Full_Issue_Class
+
+        class Superseder_Issue_Class (Full_Issue_Class) :
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    (superseder  = Multilink (classname))
+                self.__super.__init__ (db, classname, ** properties)
+            # end def __init__
+        # end class Superseder_Issue_Class
 
         class Msg_Class (FileClass, Ext_Mixin) :
             def __init__ (self, db, classname, ** properties) :
@@ -164,11 +257,13 @@ class Importer (object) :
             # end def __init__
         # end class Msg_Class
 
-        globals ['Ext_Class']        = Ext_Class
-        globals ['Msg_Class']        = Msg_Class
-        globals ['Ext_Mixin']        = Ext_Mixin
-        globals ['Min_Issue_Class']  = Min_Issue_Class
-        globals ['Nosy_Issue_Class'] = Nosy_Issue_Class
+        globals ['Ext_Class']              = Ext_Class
+        globals ['Msg_Class']              = Msg_Class
+        globals ['Ext_Mixin']              = Ext_Mixin
+        globals ['Min_Issue_Class']        = Min_Issue_Class
+        globals ['Nosy_Issue_Class']       = Nosy_Issue_Class
+        globals ['Full_Issue_Class']       = Full_Issue_Class
+        globals ['Superseder_Issue_Class'] = Superseder_Issue_Class
 
         for s in schemas :
             m = __import__ (s)

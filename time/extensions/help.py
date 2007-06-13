@@ -286,6 +286,12 @@ _helptext          = \
           '''
       ]
     , ""'composed_of.id'              : [help_id]
+    , ""'confidential'                :
+      [ ""'''If set, %(Classname)s is visible only to users on the nosy
+             list (note that the stakeholder and the responsible person
+             are always on the nosy list).
+          '''
+      ]
     , ""'confirm'                     :
       [ ""'''Confirm the password here: first password and this entry
              must match.

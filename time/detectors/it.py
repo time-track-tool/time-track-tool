@@ -50,9 +50,6 @@ def new_it (db, cl, nodeid, new_values) :
         new_values ['stakeholder'] = db.getuid ()
     if 'it_prio'     not in new_values :
         new_values ['it_prio'] = db.it_prio.lookup ('unknown')
-    # Don't allow non-it users to create a project
-    if cl is db.it_project and not user_has_role (db, db.getuid (), 'IT') :
-        raise Reject, _ ('Not allowed to create new %s') % _ ('it_project')
 # end def new_it
 
 def check_it (db, cl, nodeid, new_values) :
@@ -62,14 +59,6 @@ def check_it (db, cl, nodeid, new_values) :
     if new_values.get ('responsible', None) == db.user.lookup ('helpdesk') :
         raise Reject, _ ("User may not be set to helpdesk")
 
-    if not common.user_has_role (db, db.getuid (), 'IT') :
-        allowed = {'messages' : 1, 'nosy' : 1, 'files' : 1}
-        # Don't use iterkeys () here, we change the dict.
-        for prop in new_values.keys () :
-            if prop == 'title' :
-                del new_values ['title']
-            elif prop not in allowed :
-                raise Reject, _ ('Not allowed to edit %(prop)s' % locals ())
     if 'status' in new_values :
         rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
         if rsp  == db.user.lookup ('helpdesk') :
