@@ -228,6 +228,32 @@ def init \
         )
     shelf_life_code.setkey ("name")
 
+    storage = Class \
+        ( db, ''"storage"
+        , name                  = String    ()
+        , description           = String    ()
+        , storage_locations     = Multilink ("storage_location")
+        )
+    storage.setkey ("name")
+
+    storage_location = Class \
+        ( db, ''"stock"
+        , name                  = String    ()
+        , description           = String    ()
+        , storage               = Link      ("storage")
+        )
+
+    stocked_product = Class \
+        ( db, ''"stocked_product"
+        , product               = Link      ("product")
+        , storage_location      = Link      ("storage_location")
+        , on_stock              = Number    ()
+        , lot                   = String    ()
+        # Wareneingang
+        # Verfall
+        # Quarantänestatus
+        )
+
     supplier_group = Class \
         ( db, ''"supplier_group"
         , name                  = String    ()
