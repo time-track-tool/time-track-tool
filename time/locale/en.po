@@ -2473,6 +2473,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "summary_report++op_project"
+msgstr "Project"
+
 msgid "summary_report++cost_center"
 msgstr "Cost Center"
 

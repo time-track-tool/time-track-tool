@@ -1102,6 +1102,12 @@ _helptext          = \
              department
           '''
       ]
+    , ""'summary_report++op_project'  :
+      [ ""'''Flag to search for real-projects or a non-project (just
+             used for time-tracking). Leave as don't care if it should
+             not be searched for.
+          '''
+      ]
     , ""'summary_report++status'      :
       [ ""'''If you choose "open, submitted and approved" yellow times
              will be those that have not yet been opened by the user.

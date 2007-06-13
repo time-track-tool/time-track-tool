@@ -49,6 +49,8 @@
       (utils, pdict ['status'],            multiselect = 1)
     , planned_effort    = utils.ExtProperty
       (utils, pdict ['planned_effort'])
+    , op_project        = utils.ExtProperty
+      (utils, pdict ['op_project'])
     );
     sr   python: utils.Summary_Report (db, request, utils)
    "
@@ -64,7 +66,7 @@
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
         , 'time_project', 'time_wp_group', 'cost_center', 'cost_center_group'
         , 'summary_type', 'status', 'show_all_users', 'show_empty'
-        , 'show_missing'
+        , 'show_missing', 'op_project'
         )
       ; sprops         python: [myprops [p] for p in propkeys]
       ; multi_props    python: [p for p in sprops if p.multiselect]

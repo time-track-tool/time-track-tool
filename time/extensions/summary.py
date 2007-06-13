@@ -481,6 +481,8 @@ class Summary_Report (_Report) :
         show_empty      = filterspec.get ('show_empty',     'no')
         show_all_users  = filterspec.get ('show_all_users', 'no')
         show_missing    = filterspec.get ('show_missing',   'no')
+        op_project      = filterspec.get ('op_project', None)
+        op_project      = {'yes' : True, 'no' : False}.get (op_project, None)
         self.show_empty = show_empty == 'yes'
         show_all_users  = self.show_all_users = show_all_users == 'yes'
         show_missing    = show_missing == 'yes' and not is_csv
@@ -577,9 +579,13 @@ class Summary_Report (_Report) :
                 )
             wp.update (wp_containers [-1])
         #print "wpgs", len (wp), time.time () - timestamp
+        selected_by_op_project = []
+        if op_project is not None :
+            selected_by_op_project = db.time_project.filter \
+                (None, dict (op_project = op_project))
         projects    = filterspec.get ('time_project',      [])
         #print projects
-        for p in projects :
+        for p in projects + selected_by_op_project :
             #print p, db.time_wp.find (project = p)
             wp_containers.append \
                 ( WP_Container

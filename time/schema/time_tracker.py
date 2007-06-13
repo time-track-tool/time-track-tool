@@ -144,6 +144,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , planned_effort        = Number    ()
         , show_missing          = Boolean   ()
         , all_in                = Boolean   ()
+        , op_project            = Boolean   ()
         )
 
     summary_type = Class \
