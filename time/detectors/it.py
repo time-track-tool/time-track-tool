@@ -42,14 +42,16 @@ def new_it (db, cl, nodeid, new_values) :
     if 'messages'    not in new_values :
         raise Reject, _ ("New %s requires a message") % _ (cl.classname)
     new_values ['status'] = '1'
-    if 'category'    not in new_values :
+    if 'category'     not in new_values :
         new_values ['category'] = '1'
-    if 'responsible' not in new_values :
+    if 'responsible'  not in new_values :
         new_values ['responsible'] = db.user.lookup ('helpdesk')
-    if 'stakeholder' not in new_values :
+    if 'stakeholder'  not in new_values :
         new_values ['stakeholder'] = db.getuid ()
-    if 'it_prio'     not in new_values :
+    if 'it_prio'      not in new_values :
         new_values ['it_prio'] = db.it_prio.lookup ('unknown')
+    if 'confidential' not in new_values :
+        new_values ['confidential'] = 1
 # end def new_it
 
 def check_it (db, cl, nodeid, new_values) :
@@ -67,7 +69,7 @@ def check_it (db, cl, nodeid, new_values) :
         if prio == db.it_prio.lookup ('unknown') :
             raise Reject, _ ('Must change %s, "unknown" is not allowed') \
                 % _ ('it_prio')
-# end def new_it
+# end def check_it
 
 def audit_superseder (db, cl, nodeid, new_values) :
     """
