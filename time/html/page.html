@@ -307,7 +307,6 @@
        , db.user.roles.is_view_ok ()
        , ('roles','role')
        )
-     , ('summary_report',      'View', 1, ('Staff Report','staff'))
      , ('summary_report',      'View', 1,               ('',''))
      , ('network_interface',   'View', 1,               ('',''))
      , ('machine',             'View', 1,               ('',''))
@@ -347,6 +346,7 @@
  ; menu_type     python:
     dict ([(k [0],menu_tracker) for k in menu_tracker [0]])
 ">
+     <!--, ('summary_report',      'View', 1, ('Staff Report','staff'))-->
  <head>
   <title metal:define-slot="head_title">
    <span tal:replace="head_title"/>
