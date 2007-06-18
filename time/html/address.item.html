@@ -33,9 +33,9 @@
        </select>
       </span>
      </td>
-     <td class="sidebar" nowrap tal:condition="python:'abo' in db._db.classes">
-      <span class="classblock"
-       tal:condition="python:request.user.hasPermission ('Edit','abo')">
+     <td class="sidebar" nowrap>
+      <span class="classblock" tal:condition="python:
+       'abo' in db._db.classes and request.user.hasPermission ('Edit','abo')">
        <a i18n:translate=""
           tal:attributes="href
           string:abo?:template=item&subscriber=${context/id}&payer=${context/id}">
@@ -43,8 +43,9 @@
         <tal:block i18n:name="lastname" tal:replace="context/lastname"/>
        </a>
       </span>
-      <span class="classblock"
-       tal:condition="python:request.user.hasPermission ('Edit','letter')">
+      <span class="classblock" tal:condition="python:
+        'letter' in db._db.classes
+        and request.user.hasPermission ('Edit','letter')">
        <a i18n:translate=""
           tal:attributes="href
           string:letter?:template=item&address=${context/id}">
