@@ -166,6 +166,7 @@ class Importer (object) :
         self.schemas = schemas
         Class        = globals ['Class']
         FileClass    = globals ['FileClass']
+        IssueClass   = globals ['IssueClass']
         Date         = globals ['Date']
         Multilink    = globals ['Multilink']
         Link         = globals ['Link']
@@ -203,7 +204,14 @@ class Importer (object) :
             # end def __init__
         # end class Ext_Class
 
-        class Min_Issue_Class (Ext_Class) :
+        class Min_Issue_Class (Ext_Class, IssueClass) :
+            """ Minimal issue class with messages and files.
+            
+                Note that we inherit from IssueClass for handling of
+                nosy messages, message sending (in reactors) etc., *not*
+                for the attributes of IssueClass (that's why we don't
+                call the constructor).
+            """
             def __init__ (self, db, classname, ** properties) :
                 self.update_properties \
                     ( messages             = Multilink ("msg")

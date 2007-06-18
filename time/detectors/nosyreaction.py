@@ -107,6 +107,8 @@ def updatenosy(db, cl, nodeid, newvalues):
     # *always* add responsible(s) etc. to the nosy list -- make sure
     # responsible/stakeholder cannot be removed from nosy.
     for k in 'responsible', 'stakeholder' :
+        if k not in cl.getprops () :
+            continue
         if k in newvalues :
             item = newvalues [k]
         elif nodeid :
