@@ -176,5 +176,6 @@ def security (db, ** kw) :
     schemadef.register_roles                 (db, roles)
     schemadef.register_class_permissions     (db, classes, ())
     schemadef.register_nosy_classes          (db, ['issue'])
+    db.security.addPermissionToRole          ('User', 'Create', 'issue')
     schemadef.register_confidentiality_check (db, 'issue', ('View', 'Edit'))
 # end def security
