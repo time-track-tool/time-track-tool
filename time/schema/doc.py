@@ -83,7 +83,7 @@ def security (db, ** kw) :
     roles      = (("Doc_Admin", "Admin for documents (e.g. QM)"),)
     prop_perms = (("department", "Edit", ("Doc_Admin", ), ("doc_num", )), )
     classes    = \
-        ( ("doc"         , ("User",), ("User",))
+        ( ("doc"         , ("User",), ("Doc_Admin",))
         , ("artefact"    , ("User",), ("Doc_Admin",))
         , ("product_type", ("User",), ("Doc_Admin",))
         , ("reference"   , ("User",), ("Doc_Admin",))
