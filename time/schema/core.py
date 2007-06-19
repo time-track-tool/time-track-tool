@@ -161,6 +161,10 @@ def security (db, ** kw) :
             for perm in perms :
                 schemadef.register_permission_by_link \
                     (db, role, perm, cls, * classprops)
+    # Allow creation of file and msg for normal users:
+    db.security.addPermissionToRole ('User', 'Create', 'file')
+    db.security.addPermissionToRole ('User', 'Create', 'msg')
+
 
     ### Query permissions ###
     def view_query (db, userid, itemid) :
