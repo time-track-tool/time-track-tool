@@ -106,15 +106,16 @@ def security (db, ** kw) :
         ]
 
     msg_props = \
-        [ ('department',   'messages')
+        [ ('address',      'messages')
+        , ('cust_supp',    'messages')
         , ('issue',        'messages')
         , ('it_issue',     'messages')
         , ('it_project',   'messages')
-        , ('organisation', 'messages')
-        , ('cust_supp',    'messages')
-        , ('product',      'messages')
-        , ('address',      'messages')
+        , ('department',   'messages')
+        , ('doc',          'messages')
         , ('letter',       'messages')
+        , ('organisation', 'messages')
+        , ('product',      'messages')
         # start properties of complex tracker
         , ('meeting',      'messages')
         , ('action_item',  'messages')
