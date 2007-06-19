@@ -5,17 +5,17 @@
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -477,9 +477,9 @@ def new_time_record (db, cl, nodeid, new_values) :
     le       = ls + Interval ('%d:%d' % (hours, minutes))
     if not travel and duration > 6 and start and dstart < ls and dend > ls :
         newrec  = { 'daily_record' : new_values ['daily_record']
-                  , 'start'        : le.pretty (hour_format) 
+                  , 'start'        : le.pretty (hour_format)
                   }
-        
+
         dur1    = (ls - dstart).as_seconds () / 3600.
         dur2    = duration - dur1
         if end :
@@ -647,6 +647,37 @@ def check_retire (db, cl, nodeid, dummy) :
     update_timerecs (db, nodeid, False)
 # end def check_retire
 
+def send_mail_on_deny (db, cl, nodeid, old_values) :
+    """If daily record is denied, send message to user."""
+
+    my_uid    = db.getuid ()
+    other_uid = cl.get (nodeid, "user")
+    if my_uid == other_uid :
+        return ### user reopened himself
+
+    dr_status     = db.getclass ("daily_record_status")
+    old_status    = old_values ["status"]
+    new_status    = cl.get (nodeid, "status")
+    s_sub, s_open = [dr_status.lookup (s) for s in ("submitted", "open")]
+
+    if (old_status, new_status) == (s_sub, s_open) :
+        mailer  = roundupdb.Mailer (db.config)
+        date    = cl.get (nodeid, "date").pretty (common.ymd)
+        superv  = db.user.get (my_uid, "username")
+        email   = db.user.get (other_uid, "address")
+        subject = "Daily record denied for %(date)s by %(superv)s" % locals ()
+        content = \
+            ( "Your daily record for %(date)s has been denied.\n"
+              "Please contact %(superv)s for details, then submit again.\n"
+            % locals ()
+            )
+        try :
+            mailer.standard_message ((email,), subject, content)
+        except roundupdb.MessageSendError, message :
+            raise roundupdb.DetectorError, message
+# end def send_mail_on_deny
+
+
 def init (db) :
     if 'time_record' not in db.classes :
         return
@@ -660,6 +691,7 @@ def init (db) :
     db.time_record.react  ("retire", check_retire)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
+    db.daily_record.react ("set",    send_mail_on_deny)
 # end def init
 
 ### __END__ time_record

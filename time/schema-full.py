@@ -44,6 +44,7 @@ import schemadef
 schemas = \
     ( 'company'
     , 'issue'
+    , 'doc'
     , 'it_tracker'
     , 'nwm'
     , 'time_tracker'
@@ -124,9 +125,9 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
-db.security.addPermissionToRole ('User', 'Create', 'msg') 
+db.security.addPermissionToRole ('User', 'Create', 'msg')
 # the following is further checked in an auditor:
-db.security.addPermissionToRole ('User', 'Create', 'time_wp') 
+db.security.addPermissionToRole ('User', 'Create', 'time_wp')
 
 # editing of roles:
 for r in "HR", "IT" :
@@ -135,4 +136,3 @@ for r in "HR", "IT" :
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
-

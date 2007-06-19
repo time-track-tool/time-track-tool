@@ -1,0 +1,28 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <title metal:fill-slot="head_title">Roundup Document Index</title>
+
+ <h3 metal:fill-slot="body_title">Roundup Document Index</h3>
+
+ <td class="content" metal:fill-slot="content"
+  tal:condition="context/is_view_ok"
+  tal:define=
+   "pdict python: utils.properties_dict (db, context);
+    props python:
+    ( utils.ExtProperty (utils, pdict ['title'])
+    , utils.ExtProperty (utils, pdict ['document_nr'])
+    , utils.ExtProperty (utils, pdict ['product_type'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['reference'],    multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['artefact'],     multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['department'],   multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['owner'])
+    )
+   ">
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </td>
+</tal:block>

@@ -80,6 +80,8 @@
    , ('discount_group', '')
                         : '@columns=id,name,currency&'
                           '@sort=-id&@pagesize=20&@startwith=0'
+   , ('doc', '')        : '@columns=title,document_nr,artefact,department&'
+                          '@sort=title'
    , ('group', '')      : '@columns=name,gid,description,org_location&'
                           '@sort=-id&@pagesize=500&@startwith=0'
    , ('invoice', '')    : '@columns=invoice_no,'
@@ -134,7 +136,7 @@
                           'show_all_users,show_missing&'
                           '@pagesize=50&@startwith=0&status=3,1,2&'
                           'date=%s%%3B.&summary_type=2,4&user=%s&'
-                          'show_empty=no&show_all_users=no&show_missing=no' % 
+                          'show_empty=no&show_all_users=no&show_missing=no' %
                           (utils.monthstart_twoweeksago (), uid)
    , ('time_project', '')
                         : '@columns=name,responsible,organisation,department'
@@ -159,7 +161,7 @@
    , ('user', '')       : '@columns=%s%s&@sort=%s&'
                           '@filter=status&@pagesize=200&@startwith=0&status=1'
                           % ( ','.join
-                              (n for n in 
+                              (n for n in
                                ( 'lastname'
                                , 'firstname'
                                , 'nickname'
@@ -289,6 +291,9 @@
      , ('shelf_life_code',     'Edit',   '?@template=item', 1)
      , ('supplier_group',      'Edit',   '?@template=item', 1)
      , ('supplier_status',     'Edit',   '?@template=item', 1)
+     , ('doc',                 'Edit',   '?@template=item', 1)
+     , ('artefact',            'Edit',   '?@template=item', 1)
+     , ('reference',           'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',         'View', 1,               ('',''))
      , ( 'daily_record'
@@ -341,6 +346,7 @@
      , ('discount_group',      'View', 1,               ('',''))
      , ('product',             'View', 1,               ('',''))
      , ('contact',             'View', 1,               ('',''))
+     , ('doc',                 'View', 1,               ('',''))
      )
    )
  ; menu_type     python:

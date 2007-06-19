@@ -57,5 +57,5 @@ template: attr.py
 attr.py: attributes.py ../schema/abo.py ../schema/company.py \
     ../schema/complex.py ../schema/core.py ../schema/ext_issue.py \
     ../schema/issue.py ../schema/it_tracker.py ../schema/nwm.py \
-    ../schema/schemadef.py ../schema/time_tracker.py
+    ../schema/schemadef.py ../schema/time_tracker.py ../schema/doc.py
 	$(RUN_PYTHON) attributes.py > attr.py

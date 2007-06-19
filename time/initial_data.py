@@ -435,12 +435,47 @@ if 'msg_keyword' in db.classes :
         )
 
 if 'status' in db.classes :
-    db.status.create (name = "open",      order = '1')
-    db.status.create (name = "feedback",  order = '2')
-    db.status.create (name = "analyzed",  order = '3')
-    db.status.create (name = "testing",   order = '4')
-    db.status.create (name = "suspended", order = '5')
-    db.status.create (name = "closed",    order = '6')
+    ### Since status refers to status_transition and status_transition refers to
+    ### status, this needs to be done in three steps
+
+    assert "status_transition" in db.classes, "status needs status_transition"
+
+    status_lst = \
+        ( ('analyzing', 'Require Analysis', ('o_wo_msg', 'e', 'c'))
+        , ('open',      'Open to be implemented', 'acest')
+        , ('feedback',  'Require Feedback', ('o_wo_msg', 'c_w_msg'))
+        , ('escalated', 'Require Decision', 'acos')
+        , ('testing',   'Independent Test', 'oc')
+        , ('suspended', 'Will currently not be implemented', 'e')
+        , ('closed',    'Done', 'o')
+        )
+    trans_lst = dict \
+        ( a        = ('To analyzing',                     'analyzing', 1, 0)
+        , f        = ('To feedback',                      'feedback',  1, 1)
+        , t        = ('To testing',                       'testing',   1, 1)
+        , s        = ('To suspended',                     'suspended', 1, 0)
+        , o        = ('To open',                          'open',      1, 0)
+        , o_wo_msg = ('To open without required message', 'open',      0, 0)
+        , o_wo_ch  = ('To open with changed responsible', 'open',      1, 1)
+        , e        = ('To escalated',                     'escalated', 1, 0)
+        , c        = ('To closed',                        'closed',    0, 0)
+        , c_w_msg  = ('To closed with message',           'closed',    1, 0)
+        )
+
+    for order, (name, desc, _) in enumerate (status_lst) :
+        db.status.create (name = name, order = str (order), description = desc)
+
+    for name, tgt, msg, resp in trans_lst.itervalues () :
+        db.status_transition.create \
+            ( name                = name
+            , target              = tgt
+            , require_msg         = msg
+            , require_resp_change = resp
+            )
+
+    for name, _, trans in status_lst :
+        status             = db.status.getnode (db.status.lookup (name))
+        status.transitions = [trans_lst [t] [0] for t in trans]
 
 if 'overtime_period' in db.classes :
     db.overtime_period.create (name = "month", order = 1)
@@ -486,7 +521,7 @@ if 'contact_type' in db.classes :
         ( name         = 'Fax'
         , description  = 'Faxnummer'
         )
-    
+
 if 'customer_status' in db.classes :
     db.customer_status.create \
         ( name         = uni ('gültig')
@@ -540,3 +575,8 @@ if 'weekday' in db.classes :
          , 'Sonntag'
         )) :
         db.weekday.create (name = d, order = n + 1)
+
+if 'product_type' in db.classes :
+    db.product_type.create (name = "D", description = "Document")
+    db.product_type.create (name = "S", description = "Software")
+    db.product_type.create (name = "H", description = "Hardware")

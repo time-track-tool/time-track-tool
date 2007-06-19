@@ -222,6 +222,8 @@ _helptext          = \
       [ ""'''Where this issue belongs to.'''
       , miss_text
       ]
+    , ""'artefact'                    :
+      [""'''The artefact type''']
     , ""'author'                      :
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
@@ -392,6 +394,12 @@ _helptext          = \
              multiple A-Records. The flag is ignored for CNAME records.
           '''
       ]
+    , ""'document_nr'                 :
+      [ ""'''The %(Property)s is generated when the %(Classname)s is
+             created. It can be manually overwritten for an old %(Classname)s
+             that already has a %(Property)s assigned.
+          '''
+      ]
     , ""'domain_part'                 :
       [ ""'''Part of a domain name. The domain name is built by
              concatenation the names of the Organisation and the Location.
@@ -455,6 +463,8 @@ _helptext          = \
       ]
     , ""'fax'                         :
       [""'''FAX number for this %(Classname)s''']
+    , ""'filename_format'             :
+      [""'''Template for file names used for this %(Classname)s''']
     , ""'files'                       :
       [""'''Files for %(Classname)s''']
     , ""'files_affected'              :
@@ -619,6 +629,8 @@ _helptext          = \
       [""'''List of letters for this %(Classname)s''']
     , ""'lettertitle'                 :
       [""'''Title of this person used in a letter''']
+    , ""'link'                        :
+      [""'''The location of the file in the repository or on the file server''']
     , ""'link_field'                  :
       [ ""'''Auxiliary field for use with other software, e.g., asset
              tracking
@@ -852,6 +864,8 @@ _helptext          = \
       , default_hidden
       ]
     , ""'private_phone_visible'       : [ phone_visible ]
+    , ""'product_type'                :
+      [""'''The type of the %(Classname)s.''']
     , ""'project'                     :
       [ ""'''%(Classname)s is part of a Time Category. With the Time
              Category name a
@@ -878,6 +892,8 @@ _helptext          = \
       [""'''Only set if message was received via email.''']
     , ""'recorder'                    :
       [""'''Person responsible for recording findings''']
+    , ""'reference'                   :
+      [""'''Defines the relation to a project, customer, etc.''']
     , ""'release'                     :
       [ ""'''The %(Property)s this %(Classname)s was found, either as
              bug or as missing feature. For (newly reported) bugs,
@@ -1104,7 +1120,7 @@ _helptext          = \
       ]
     , ""'summary_report++op_project'  :
       [ ""'''Flag to search for real-projects or a non-project (just
-             used for time-tracking). Leave as don't care if it should
+             used for time-tracking). Leave as don\'t care if it should
              not be searched for.
           '''
       ]

@@ -41,10 +41,9 @@ schemas = \
     , 'abo'
     , 'legalclient'
     , 'erp'
+    , 'doc'
     , 'core'
     )
 importer = schemadef.Importer (globals (), schemas)
 
 Department_Class (db, ''"department")
-
-

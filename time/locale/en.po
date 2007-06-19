@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-06-13 05:30+0200\n"
+"POT-Creation-Date: 2007-06-15 23:06+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -119,6 +119,23 @@ msgstr ""
 msgid "%(attr)s must remain filled"
 msgstr ""
 
+msgid "modify"
+msgstr ""
+
+msgid "specify"
+msgstr ""
+
+#, python-format
+msgid "Your are not allowed to %(action)s: %(attrs)s"
+msgstr ""
+
+#, python-format
+msgid "Document number is not valid: \"%s\""
+msgstr ""
+
+msgid "Selected department has no document number"
+msgstr ""
+
 msgid "product_group"
 msgstr "Product group"
 
@@ -182,18 +199,7 @@ msgstr ""
 msgid "New %s requires a message"
 msgstr ""
 
-#, python-format
-msgid "Not allowed to create new %s"
-msgstr ""
-
-msgid "it_project"
-msgstr "IT-Project"
-
 msgid "User may not be set to helpdesk"
-msgstr ""
-
-#, python-format
-msgid "Not allowed to edit %(prop)s"
 msgstr ""
 
 msgid "Must change user, \"helpdesk\" is not allowed"
@@ -783,6 +789,12 @@ msgstr "Area"
 msgid "Where this issue belongs to."
 msgstr ""
 
+msgid "artefact"
+msgstr "Artefact"
+
+msgid "The artefact type"
+msgstr ""
+
 msgid "author"
 msgstr "Author"
 
@@ -921,6 +933,16 @@ msgstr ""
 
 msgid "composed_of.id"
 msgstr "Composed of (id)"
+
+msgid "confidential"
+msgstr ""
+
+msgid ""
+"If set, %(Classname)s is visible only to users on the nosy\n"
+"             list (note that the stakeholder and the responsible person\n"
+"             are always on the nosy list).\n"
+"          "
+msgstr ""
 
 msgid "confirm"
 msgstr "Confirm Password"
@@ -1124,6 +1146,17 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "document_nr"
+msgstr "Document Number"
+
+msgid ""
+"The %(Property)s is generated when the %(Classname)s is\n"
+"             created. It can be manually overwritten for an old %(Classname)"
+"s\n"
+"             that already has a %(Property)s assigned.\n"
+"          "
+msgstr ""
+
 msgid "domain_part"
 msgstr "Domain part"
 
@@ -1223,6 +1256,12 @@ msgid "fax"
 msgstr ""
 
 msgid "FAX number for this %(Classname)s"
+msgstr ""
+
+msgid "filename_format"
+msgstr "Filename format"
+
+msgid "Template for file names used for this %(Classname)s"
 msgstr ""
 
 msgid "files"
@@ -1470,6 +1509,9 @@ msgstr ""
 msgid "it_issue++superseder"
 msgstr "Duplicate of"
 
+msgid "it_project"
+msgstr "IT-Project"
+
 msgid "Optional IT Project to which this %(Classname)s belongs"
 msgstr ""
 
@@ -1548,6 +1590,12 @@ msgid "lettertitle"
 msgstr "Letter-title"
 
 msgid "Title of this person used in a letter"
+msgstr ""
+
+msgid "link"
+msgstr "Link/CVS location"
+
+msgid "The location of the file in the repository or on the file server"
 msgstr ""
 
 msgid "link_field"
@@ -2013,6 +2061,12 @@ msgstr ""
 msgid "private_phone_visible"
 msgstr "Private Phone visible"
 
+msgid "product_type"
+msgstr "Product type"
+
+msgid "The type of the %(Classname)s."
+msgstr ""
+
 msgid "project"
 msgstr "Time Category"
 
@@ -2072,6 +2126,12 @@ msgid "recorder"
 msgstr "Recorder"
 
 msgid "Person responsible for recording findings"
+msgstr ""
+
+msgid "reference"
+msgstr "Reference"
+
+msgid "Defines the relation to a project, customer, etc."
 msgstr ""
 
 #.  just to show something in the pop-up, gets set to the last reached milestone
@@ -2473,9 +2533,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "summary_report++op_project"
-msgstr "Project"
-
 msgid "summary_report++cost_center"
 msgstr "Cost Center"
 
@@ -2502,6 +2559,16 @@ msgstr "Department"
 msgid ""
 "Selects the users according to their placement in a\n"
 "             department\n"
+"          "
+msgstr ""
+
+msgid "summary_report++op_project"
+msgstr "Project"
+
+msgid ""
+"Flag to search for real-projects or a non-project (just\n"
+"             used for time-tracking). Leave as don't care if it should\n"
+"             not be searched for.\n"
 "          "
 msgstr ""
 
@@ -3806,6 +3873,30 @@ msgstr ""
 msgid "discount_percent"
 msgstr "Discount percent"
 
+msgid "storage"
+msgstr "Storage"
+
+msgid "storage_locations"
+msgstr "Storage locations"
+
+msgid "stock"
+msgstr "Stock"
+
+msgid "stocked_product"
+msgstr "Stocked product"
+
+msgid "storage_location"
+msgstr "Storage location"
+
+msgid "on_stock"
+msgstr ""
+
+msgid "lot"
+msgstr "Lot number"
+
+msgid "doc"
+msgstr "Document"
+
 msgid "file"
 msgstr "File"
 
@@ -3828,4 +3919,14 @@ msgid "doc_num"
 msgstr "Document number"
 
 msgid "User is allowed %(perm)s on"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
+"is on nosy list"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
+"item with %(perm)s permission"
 msgstr ""

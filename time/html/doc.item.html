@@ -1,0 +1,73 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+
+ <title metal:fill-slot="head_title" >
+  <span tal:condition="context/id"
+        tal:replace="string:Document: ${context/id} by ${context/owner}"/>
+  <span tal:condition="not:context/id"
+        tal:replace="string:Create New Document"/>
+ </title>
+
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <tal:block metal:fill-slot="content"
+  tal:define=
+   "use_labelprop       nothing;
+    required_attributes string:title,product_type,reference,artefact,department;
+    fieldname           python:lambda f, utils = utils, classname = classname :
+                               utils.fieldname (classname, f);
+    is_doc_admin        python:utils.user_has_role (db._db, uid, 'Doc_Admin')
+   "
+  >
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
+    <tr>
+     <th class="required"
+      tal:content="structure python:fieldname ('title')" />
+     <td tal:content="structure python:context.title.field (size=80)" />
+    </tr>
+    <tr>
+     <th class="required"
+      tal:content="structure python:fieldname ('product_type')" />
+     <td tal:content="structure context/product_type/menu" />
+    </tr>
+    <tr>
+     <th class="required"
+      tal:content="structure python:fieldname ('reference')" />
+     <td tal:content="structure context/reference/menu" />
+    </tr>
+    <tr>
+     <th class="required"
+      tal:content="structure python:fieldname ('artefact')" />
+     <td tal:content="structure context/artefact/menu" />
+    </tr>
+    <tr>
+     <th class="required"
+      tal:content="structure python:fieldname ('department')" />
+     <td tal:content="structure context/department/menu" />
+    </tr>
+    <tr
+     tal:condition="python: context.id or is_doc_admin">
+     <th tal:content="structure python:fieldname ('document_nr')" />
+     <td
+      tal:content="structure python:context.document_nr.field (size=80)" />
+    </tr>
+    <tr tal:condition="python: context.id or is_doc_admin">
+     <th tal:content="structure python:fieldname ('owner')" />
+     <td tal:content="structure context/owner/menu" />
+    </tr>
+    <tr>
+     <th tal:content="structure python:fieldname ('link')" />
+     <td tal:content="structure python:context.link.field (size=80)" />
+    </tr>
+    <tr tal:condition="context/artefact">
+     <th tal:content="structure
+          python:fieldname ('filename_format', classname = 'artefact')"/>
+     <td tal:content="structure context/artefact/filename_format" />
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

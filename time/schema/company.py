@@ -56,7 +56,6 @@ def init \
                 , description           = String    ()
                 , manager               = Link      ("user")
                 , part_of               = Link      ("department")
-                , doc_num               = String    () # FIXME
                 , valid_from            = Date      ()
                 , valid_to              = Date      ()
                 , messages              = Multilink ("msg")
@@ -66,7 +65,7 @@ def init \
         # end def __init__
     # end class Department_Class
     export.update (dict (Department_Class = Department_Class))
-         
+
     class Location_Class (Ext_Class) :
         """ create a department class with some default attributes
         """
