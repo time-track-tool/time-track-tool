@@ -35,7 +35,7 @@ def init (db, Ext_Class, String, Link, Multilink, ** kw) :
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( title       = String    (indexme = "no")
+                ( title       = String    (indexme = "yes")
                 , responsible = Link      ("user")
                 , nosy        = Multilink ("user", do_journal = "no")
                 , messages    = Multilink ("msg")

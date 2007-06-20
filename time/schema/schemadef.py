@@ -259,7 +259,7 @@ class Importer (object) :
                     , summary              = String    (indexme = 'no')
                     , messageid            = String    (indexme = 'no')
                     , inreplyto            = String    (indexme = 'no')
-                    , content              = String    (indexme = 'no')
+                    , content              = String    (indexme = 'yes')
                     )
                 Ext_Mixin.__init__ (self, db, properties)
                 FileClass.__init__ (self, db, classname, ** properties)
