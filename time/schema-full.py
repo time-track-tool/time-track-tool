@@ -94,7 +94,7 @@ prop_perms = \
       )
     , ( "user", "Edit", ["Office"]
       , ( "phone", "internal_phone", "external_phone", "private_mobile"
-        , "private_phone", "quick_dialling", "title", "room"
+        , "private_phone", "quick_dialling", "title", "room", "position"
         )
       )
     , ( "user", "Edit", ["IT"]

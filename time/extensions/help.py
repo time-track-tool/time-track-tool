@@ -836,6 +836,8 @@ _helptext          = \
              person days, so you have to convert old values to hours!
           '''
       ]
+    , ""'position'                    :
+      [""'''%(Property)s in the company''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
     , ""'priority'                    :
