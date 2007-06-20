@@ -44,7 +44,7 @@ def init \
     , ** kw
     ) :
 
-    do_index = "no"
+    do_index = "yes"
     export   = {}
 
     class Address_Class (Min_Issue_Class) :
