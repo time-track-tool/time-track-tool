@@ -43,7 +43,8 @@
    , ('address', '')    : '@startwith=0&@pagesize=20&'
                           '@sort=id&@sortdir=on&@group=&'
                           '@columns=salutation,title,id,lastname,firstname,'
-                          'country,street,postalcode,city&valid=1'
+                          'country,street,postalcode,city&'
+                          '@filter=valid,adr_type&valid=1'
                           '%s&@search_text=&@queryname=' %
                           ['', '&adr_type=%s' % ','.join (abo_adrtype)]
                           [bool (abo_adrtype)]
@@ -1366,3 +1367,4 @@
   </td>
  </tr>
 </tal:block>
+<!-- SHA: 8383332f2af29ddff89e3eedd318d01a0a054514 -->
