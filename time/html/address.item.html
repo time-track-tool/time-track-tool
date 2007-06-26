@@ -171,7 +171,8 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'adr_type')"/>
-      <td tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
+      <td nowrap
+          tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
        <span tal:content="structure context/adr_type/field"/>
        <span tal:replace="structure python:utils.adr_type_classhelp (db)"/>
       </td>
@@ -261,3 +262,4 @@
   </tal:block>
  </tal:block>
 </tal:block>
+<!-- SHA: 31e2cfcd7e525152e00a48593b8757e67ea8d4c8 -->
