@@ -3137,7 +3137,7 @@ msgid "&lt;&lt; previous"
 msgstr "&lt;&lt;&nbsp;zurück"
 
 msgid "${start}..${end} out of ${total}"
-msgstr "${start} - ${end} von gesamt ${length}"
+msgstr "${start} - ${end} von gesamt ${total}"
 
 msgid "next &gt;&gt;"
 msgstr "vorwärts&nbsp;&gt;&gt;"
