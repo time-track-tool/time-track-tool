@@ -402,11 +402,11 @@ def compute_balance \
         # loop over dyn recs until we find a hole or have reached the
         # freeze date. The first dyn record that reaches the freeze date
         # without a hole in between is our candidate.
-        while dyn.valid_to and dyn.valid_to <= date :
+        while dyn and dyn.valid_to and dyn.valid_to <= date :
             ldyn = dyn
             dyn  = find_user_dynamic \
                 (db, dyn.user, dyn.valid_from, direction = '+')
-            if dyn.valid_from > ldyn.valid_to :
+            if dyn and dyn.valid_from > ldyn.valid_to :
                 fdyn = dyn
         dyn = fdyn
         p_date    = dyn.valid_from
