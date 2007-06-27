@@ -376,11 +376,19 @@ def invalidate_cache (user, date) :
 
 def compute_balance \
     (db, user, date, period, sharp_end = False, not_after = False) :
+    """ Compute the overtime balance at the given day.
+        if not_after is True, we use the next end of period for
+        searching for existing freeze records.
+        if sharp_end is True, we compute the exact balance on that day,
+        not on the end of previous period.
+    """
     day            = Interval ('1d')
-    end            = freeze_date   (date, period)
+    c_end = end    = freeze_date   (date, period)
     eop            = end_of_period (date + day, period)
     if not_after :
         eop        = date
+    if sharp_end :
+        c_end      = date
     use_additional = period != 'week'
     id = db.daily_record_freeze.filter \
         ( None
@@ -396,8 +404,7 @@ def compute_balance \
         p_end     = freeze_date (prev.date, period)
         p_date    = p_end + day # start at day after last period ends
     else :
-        dyn       = last_user_dynamic  (db, user)
-        assert (not dyn.valid_to or dyn.valid_to >= date)
+        # didn't find any freeze recs up to current end of period
         fdyn      = dyn = first_user_dynamic (db, user)
         # loop over dyn recs until we find a hole or have reached the
         # freeze date. The first dyn record that reaches the freeze date
@@ -414,7 +421,7 @@ def compute_balance \
         if p_date > end :
             return 0
     corr = db.overtime_correction.filter \
-        (None, dict (user = user, date = pretty_range (p_date, end)))
+        (None, dict (user = user, date = pretty_range (p_date, c_end)))
     for c in corr :
         oc  = db.overtime_correction.getnode (c)
         dyn = get_user_dynamic (db, user, oc.date)
