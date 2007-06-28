@@ -18,24 +18,26 @@ ROUNDUP_ADMIN=roundup-admin
 ### WARNING ###
 ### WARNING ###
 RESTORE=/data/roundup/xyzzy
+RESTOREPW=restore
 
-if [ ${TRACKER} == ${RESTORE} ] ; then
+if [ ${TRACKER} = ${RESTORE} ] ; then
     echo "READ COMMENTS. You don't want to overwrite your tracker?!"
     exit 23
 fi
 
 dir=${BACKUPDIR}/backup-$(date +%a)
-echo Backing up ${TRACKER} to $dir
+echo Backing up $TRACKER to $dir
 rm -rf $dir
 mkdir $dir
 
-${ROUNDUP_ADMIN} -i $TRACKER export $dir
+$ROUNDUP_ADMIN -i $TRACKER export $dir
 cp $TRACKER/config.ini $dir
 
 if [ -n "$RESTORE" ] ; then
-	echo Restoring from $dir to $RESTORE
-	cp $TRACKER/db/backend_name $RESTORE/db
-	${ROUNDUP_ADMIN} -i $RESTORE init xyzzy
-	cp $TRACKER/db/backend_name $RESTORE/db
-	${ROUNDUP_ADMIN} -i $RESTORE import $dir
+    echo Restoring from $dir to $RESTORE
+    cp $TRACKER/db/backend_name $RESTORE/db
+    echo y | $ROUNDUP_ADMIN -i $RESTORE init ${RESTOREPW}
+    cp $TRACKER/db/backend_name $RESTORE/db
+    $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
+
