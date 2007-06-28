@@ -412,8 +412,11 @@ class ExtProperty :
     # end def menu
 
     def editfield (self) :
+        parameters = {}
+        if not isinstance (self.prop, BooleanHTMLProperty) :
+            parameters ['size'] = self.fieldwidth
         return "<span style='white-space:nowrap'>%s</span>" \
-            % self.item [self.name].field (size = self.fieldwidth)
+            % self.item [self.name].field (** parameters)
     # end def editfield
 
     def menu_or_field (self, db) :
@@ -575,3 +578,4 @@ def init (instance) :
     instance.registerUtil ('prop_as_array',     prop_as_array)
     instance.registerUtil ('get_cssclass',      get_cssclass)
 # end def init
+#SHA: c575e9130f7bced1955c0bdb4d634d7a10cc8059
