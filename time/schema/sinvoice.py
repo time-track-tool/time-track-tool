@@ -65,14 +65,12 @@ def init \
                 , amount              = Number    ()
                 , currency            = Link      ("currency")
                 , balance_open        = Number    ()
+                , amount_payed        = Number    ()
                 , open                = Boolean   ()
                 , n_sent              = Number    ()
                 , last_sent           = Date      ()
-                , date_payed          = Date      ()
-                , bookentry           = Date      ()
-                , receipt_no          = String    ()
                 , send_it             = Boolean   ()
-                , payment             = Number    ()
+                , payment             = Multilink ("payment")
                 , letters             = Multilink ("letter")
                 )
             self.__super.__init__ (db, classname, ** properties)
@@ -92,6 +90,14 @@ def init \
         )
     invoice_template.setkey (''"name")
 
+    payment = Class \
+        ( db, ''"payment"
+        , invoice             = Link      ("invoice")
+        , amount              = Number    ()
+        , date_payed          = Date      ()
+        , receipt_no          = String    ()
+        )
+
     return export
 # end def init
 
@@ -109,3 +115,4 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
 # end def security
+#SHA: d291d533c65b6c5ac280df7527e4541237c67b11

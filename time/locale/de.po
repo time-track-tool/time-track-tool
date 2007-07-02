@@ -152,8 +152,8 @@ msgstr "\"%(attr)s\" darf nicht geändert werden"
 msgid "no change of closed subscription"
 msgstr "Kein Buchen bei storniertem Abo"
 
-msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
-msgstr "\"Zahlung\", \"Offen\", \"Betrag\": nur Zahlen erlaubt"
+msgid "\"balance_open\", \"amount\": only numbers allowed"
+msgstr "\"Offen\", \"Betrag\": nur Zahlen erlaubt"
 
 msgid "amount may not be changed after payment"
 msgstr "Betrag darf nach Zahlung nicht mehr geändert werden"
@@ -162,7 +162,7 @@ msgstr "Betrag darf nach Zahlung nicht mehr geändert werden"
 msgid "inconsistency of payment:%s and balance_open:%s"
 msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
 
-msgid "payment may not exceed balance_open"
+msgid "payment may not exceed the open balance"
 msgstr "Zahlung darf Betrag nicht übersteigen"
 
 #, python-format
@@ -791,6 +791,12 @@ msgstr "Alternative Email-Adressen für diesen Benutzer, eine pro Zeile"
 
 msgid "amount"
 msgstr "Betrag"
+
+msgid "amount_payed"
+msgstr "Zahlungsbetrag"
+
+msgid "(cal)"
+msgstr "(Kal.)"
 
 msgid "Amount this subscription costs"
 msgstr "Betrag den dieses Abo kostet"

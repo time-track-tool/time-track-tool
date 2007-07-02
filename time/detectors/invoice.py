@@ -23,33 +23,36 @@ from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
 
 from rup_utils                      import abo_max_invoice
+import common
 
 _ = lambda x : x
 
 def new_invoice (db, cl, nodeid, new_values) :
-    for i in ('abo', ) :
-        if not i in new_values :
-            raise Reject, _ ('"%(attr)s" must be filled in') \
-                % {'attr' : _ (i)}
+    common.require_attributes (_, cl, nodeid, new_values, 'abo')
     abo_id    = new_values.get       ('abo', None)
     abo       = db.abo.getnode       (abo_id)
     abo_price = db.abo_price.getnode (abo ['aboprice'])
     abo_type  = db.abo_type.getnode  (abo_price ['abotype'])
-    for i in \
-        ( 'balance_open', 'n_sent', 'last_sent', 'payer', 'subscriber'
-        , 'date_payed', 'bookentry', 'receipt_no', 'send_it'
-        , 'period_start', 'period_end', 'invoice_no', 'payment'
+    common.reject_attributes \
+        ( _
+        , new_values
+        , 'balance_open'
+        , 'n_sent'
+        , 'last_sent'
+        , 'payer'
+        , 'subscriber'
+        , 'send_it'
+        , 'period_start'
+        , 'period_end'
+        , 'invoice_no'
+        , 'payment'
         , 'invoice_group'
-        ) :
-        if i in new_values :
-            raise Reject, _ ('"%(attr)s" must not be filled in') \
-                % {'attr' : _ (i)}
+        )
     if 'amount' not in new_values :
         new_values ['amount']   = abo        ['amount']
     if 'currency' not in new_values :
         new_values ['currency'] = abo_price  ['currency']
     new_values ['balance_open'] = new_values ['amount']
-    new_values ['payment']      = 0.0
     new_values ['open']         = new_values ['balance_open'] > 0
     new_values ['n_sent']       = 0
     new_values ['payer']        = abo ['payer']
@@ -80,52 +83,42 @@ def add_to_abo_payer (db, cl, nodeid, oldvalues) :
 
 def check_invoice (db, cl, nodeid, new_values) :
     now = Date ('.')
-    for i in \
-        ( 'abo', 'invoice_no', 'period_start', 'period_end'
-        , 'payer', 'subscriber', 'open', 'receipt_no'
-        ) :
-        if i in new_values :
-            raise Reject, _ ('"%(attr)s" must not be changed') \
-                % {'attr' : _ (i)}
+    common.reject_attributes \
+        ( _
+        , new_values
+        , 'abo'
+        , 'invoice_no'
+        , 'period_start'
+        , 'period_end'
+        , 'payer'
+        , 'subscriber'
+        , 'open'
+        , 'receipt_no'
+        , 'amount_payed'
+        , 'balance_open'
+        )
     invoice = db.invoice.getnode (nodeid)
-    balance = new_values.get ('balance_open', cl.get (nodeid, 'balance_open'))
-    amount  = new_values.get ('amount',       cl.get (nodeid, 'amount'))
-    payment = new_values.get ('payment',      cl.get (nodeid, 'payment'))
-    date_p  = new_values.get ('date_payed',   cl.get (nodeid, 'date_payed'))
-    receipt = new_values.get ('receipt_no',   cl.get (nodeid, 'receipt_no'))
+    amount  = new_values.get ('amount', cl.get (nodeid, 'amount'))
+    if amount is None :
+        raise Reject, _ ('"amount": only numbers allowed')
+    if 'amount' in new_values and payment :
+        raise Reject, _ ('amount may not be changed after payment')
+    if 'payment' in new_values :
+        payment = new_values.get ('payment')
+        payed   = sum (db.payment.get (i, 'amount') for i in payment)
+        new_values ['amount_payed'] = payed
+        balance = new_values ['balance_open'] = amount - payed
+        if balance > amount :
+            raise Reject, _ ('payment may not exceed the open balance')
+        if not balance :
+            new_values ['open'] = False
+        else :
+            new_values ['open'] = True
     inv_no  = cl.get (nodeid, 'invoice_no')
     abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
     if abo ['end'] and new_values.keys () != ['invoice_group']:
         raise Reject, _ ('no change of closed subscription')
-    if balance is None or amount is None or payment is None :
-        raise Reject, \
-            _ ('"payment", "balance_open", "amount": only numbers allowed')
-    if 'amount' in new_values :
-        if cl.get (nodeid, 'payment') > 0 :
-            raise Reject, _ ('amount may not be changed after payment')
-    if 'payment' in new_values and 'balance_open' in new_values :
-        if amount - payment != balance :
-            raise Reject, _ ('inconsistency of payment:%s and balance_open:%s')\
-                % (payment, balance)
-    elif 'payment' in new_values :
-        new_values ['balance_open'] = amount - payment
-    elif 'balance_open' in new_values :
-        new_values ['payment']      = amount - balance
-    if balance > amount :
-        raise Reject, _ ('payment may not exceed balance_open')
-    # is there too now if only balance changed:
-    if 'payment' in new_values :
-        new_values ['bookentry'] = now
-        if not receipt :
-            rnum = inv_no.replace ('R', 'B')
-            if rnum [0] != 'B' : rnum = 'b' + rnum
-            new_values ['receipt_no'] = rnum
-    if not balance :
-        new_values ['open'] = False
-    else :
-        new_values ['open'] = True
-    if not balance and not date_p :
-        new_values ['date_payed'] = now
+    common.auto_retire (db, cl, nodeid, new_values, 'payment')
 # end def check_invoice
 
 def create_new_invoice (db, cl, nodeid, oldvalues) :
@@ -137,6 +130,30 @@ def create_new_invoice (db, cl, nodeid, oldvalues) :
             db.invoice.create (abo = abo_id)
 # end def create_new_invoice
 
+def fix_payments (db, cl, nodeid, old_values) :
+    if old_values.get ('payment') != cl.get (nodeid, 'payment') :
+        inv_no = cl.get (nodeid, 'invoice_no')
+        for c in cl.get (nodeid, 'payment') :
+            params  = dict (invoice = nodeid)
+            receipt = db.payment.get (c, 'receipt_no')
+            if not receipt :
+                rnum = inv_no.replace ('R', 'B')
+                if rnum [0] != 'B' : rnum = 'b' + rnum
+                params ['receipt_no'] = rnum
+            db.payment.set (c, **params)
+# end def fix_payments
+
+def new_payment (db, cl, nodeid, new_values) :
+    if 'date_payed' not in new_values :
+        new_values ['date_payed'] = Date ('.')
+    common.require_attributes (_, cl, nodeid, new_values, 'amount')
+# end def new_payment
+
+def check_payment (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'amount', 'date_payed', 'receipt_no')
+# end def check_payment
+
 def init (db) :
     if 'invoice' not in db.classes :
         return
@@ -147,4 +164,7 @@ def init (db) :
     db.invoice.react ("create", add_to_abo_payer)
     db.invoice.audit ("set",    check_invoice)
     db.invoice.react ("set",    create_new_invoice)
+    db.invoice.react ("set",    fix_payments)
+    db.payment.audit ("create", new_payment)
+    db.payment.audit ("set",    check_payment)
 # end def init
