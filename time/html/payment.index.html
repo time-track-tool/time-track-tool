@@ -1,0 +1,113 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <span tal:replace="string:Abfrage ${Classname}"/>
+ </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="string:Abfrage ${Classname}"/>
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+   "batch request/batch;
+    pdict python: utils.properties_dict (db, context);
+    ep    python: utils.ExtProperty;
+    props python:
+     ( ep (utils, pdict ['id'])
+     , ep (utils, pdict ['date_payed'])
+     , ep (utils, pdict ['receipt_no'])
+     , ep (utils, pdict ['amount'])
+     , ep (utils, pdict ['invoice'], do_classhelp = False)
+     , ep ( utils, pdict ['invoice']
+          , searchname  = 'invoice.period_start'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname  = 'invoice.period_end'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname  = 'invoice.currency'
+          , searchable  = True
+          , multiselect = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname  = 'invoice.amount'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname  = 'invoice.open'
+          , searchable  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.firstname'
+          , searchable   = True
+          , do_classhelp = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.lastname'
+          , searchable   = True
+          , do_classhelp = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.valid'
+          , searchable   = True
+          , multiselect  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.firstname'
+          , searchable   = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.lastname'
+          , searchable   = True
+          , do_classhelp = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.valid'
+          , searchable   = True
+          , multiselect  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.abo'
+          , searchable   = True
+          , do_classhelp = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.abo.aboprice'
+          , searchable   = True
+          , multiselect  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.abo.aboprice.abotype'
+          , searchable   = True
+          , multiselect  = True
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.invoice_group'
+          , searchable   = True
+          , multiselect  = True
+          )
+     );
+   "
+   tal:condition="context/is_view_ok">
+
+   <form method="POST" tal:attributes="action request/classname">
+    <tal:block metal:use-macro="templates/page/macros/search_results"/>
+    <p>
+    <input type="hidden" name="@action" value="edit">
+    <tal:block replace="structure request/indexargs_form"/>
+    </p>
+   </form>
+
+   <tal:block metal:use-macro="templates/page/macros/simple_search_form">
+    <tal:block metal:fill-slot="query_title">
+     <tal:block tal:replace="python:'Abfrage ' + Classname">
+     </tal:block>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

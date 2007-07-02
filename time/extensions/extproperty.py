@@ -555,12 +555,12 @@ class ExtProperty :
 
 # end class ExtProperty
 
-def new_property (context, db, classname, id, propname) :
+def new_property (context, db, classname, id, propname, value=None) :
     kl     = db [classname]
     prop   = db [classname]._props [propname]
     for kl, hkl in propclasses :
         if isinstance (prop, kl) :
-            return hkl (context._client, classname, id, prop, propname, None)
+            return hkl (context._client, classname, id, prop, propname, value)
     return None
 # end def new_property
 
@@ -578,4 +578,3 @@ def init (instance) :
     instance.registerUtil ('prop_as_array',     prop_as_array)
     instance.registerUtil ('get_cssclass',      get_cssclass)
 # end def init
-#SHA: c575e9130f7bced1955c0bdb4d634d7a10cc8059

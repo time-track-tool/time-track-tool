@@ -33,6 +33,13 @@
  <tal:block metal:fill-slot="content">
   <tal:block tal:define="use_labelprop python:0;required_attributes string:">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="button_slot">
+     <tal:block tal:condition="context/id"
+                tal:replace="structure python:context.submit
+                (action='edit_payment')"/>
+     <tal:block tal:condition="not:context/id"
+                tal:replace="structure context/submit"/>
+    </tal:block>
     <tal:block metal:fill-slot="formatted_class_content"
      tal:define="cond python:not context.abo.end">
      <tr>
@@ -91,16 +98,16 @@
       <td tal:content="structure python:utils.ExtProperty
           (utils, context.currency, item = context, editable = cond).menu ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
           (classname, 'amount_payed')"/>
       <td tal:content="structure python:utils.ExtProperty
-          (utils, context.amount_payed, item = context, editable = cond)
+          (utils, context.amount_payed, item = context, editable = False)
           .as_listentry ()"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'balance_open')"/>
       <td tal:content="structure python:utils.ExtProperty
-          (utils, context.balance_open, item = context, editable = cond)
+          (utils, context.balance_open, item = context, editable = False)
           .as_listentry ()"/>
      </tr>
      <tr>
@@ -135,6 +142,10 @@
          <th style="text-align:left;padding-top:0px;padding-left:0px"
              tal:content="structure python:utils.fieldname
              ('payment', 'receipt_no')"/>
+         <th tal:condition="python:context.payment and context.is_edit_ok()"
+             i18n:translate="" style="padding-top:0px">
+          remove
+         </th>
         </tr>
         <tr tal:repeat="pay python:sorted
             (context.payment, key = lambda x : x.date_payed)">
@@ -155,7 +166,10 @@
          <td tal:content="structure python:utils.new_property
              (context, db, 'payment', -1, 'amount').field (size=10)"/>
          <td tal:content="structure python:utils.new_property
-             (context, db, 'payment', -1, 'receipt_no').field (size=20)"/>
+             (context, db, 'payment', -1, 'receipt_no', value='auto')
+             .field (size=20)"/>
+         <input type="hidden" name="payment-1@invoice"
+                tal:attributes="value context/id"/>
          <input type="hidden" name="@link@payment" value="payment-1"/>
         </tr>
        </table>

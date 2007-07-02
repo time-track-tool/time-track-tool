@@ -97,6 +97,7 @@ def init \
         , date_payed          = Date      ()
         , receipt_no          = String    ()
         )
+    payment.setkey (''"receipt_no")
 
     return export
 # end def init
@@ -115,4 +116,3 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
 # end def security
-#SHA: d291d533c65b6c5ac280df7527e4541237c67b11

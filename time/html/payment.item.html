@@ -1,0 +1,102 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+
+ <title metal:fill-slot="head_title">
+  <span tal:condition="context/id"
+        tal:replace="string:${Classname}: ${context/id} angelegt von
+                     ${context/creator}">
+  </span>
+  <span tal:condition="not:context/id" tal:replace="string:Neue Rechnung"/>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"/>
+ <tal:block metal:fill-slot="menu_slot">
+   <tr tal:condition="python:request.user.hasPermission ('Edit','invoice')">
+    <td colspan="2"/>
+    <td class="sidebar" nowrap
+     tal:condition="python:request.user.hasPermission ('Edit','invoice')">
+     <span class="classblock">
+      <a i18n:translate=""
+         tal:attributes=
+          "href python:'invoice%s?:action=mark_single_invoice_sent' %
+           context.id">
+       Generate single invoice
+      </a>
+     </span>
+    </td>
+   </tr>
+ </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:0;required_attributes string:">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'receipt_no')"/>
+      <td tal:content="structure context/receipt_no/field"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'invoice')"/>
+      <td tal:content="structure python: utils.ExtProperty
+          (utils, context.invoice.invoice_no, item = context.invoice)
+          .formatlink ()"/>
+     </tr>
+     <tr tal:condition="context/id">
+      <th tal:content="structure python:utils.fieldname
+          ('invoice', 'subscriber')"/>
+      <td tal:content="structure python: ' '.join
+       (( utils.ExtProperty
+          ( utils
+          , context.invoice.subscriber.firstname
+          , item = context.invoice.subscriber
+          ).formatlink ()
+       ,  utils.ExtProperty
+          ( utils
+          , context.invoice.subscriber.lastname
+          , item = context.invoice.subscriber
+          ).formatlink ()
+       ))"/>
+      <th tal:content="structure python:utils.fieldname('invoice', 'payer')"/>
+      <td tal:content="structure python: ' '.join
+       (( utils.ExtProperty
+          ( utils
+          , context.invoice.payer.firstname
+          , item = context.invoice.payer
+          ).formatlink ()
+       ,  utils.ExtProperty
+          ( utils
+          , context.invoice.payer.lastname
+          , item = context.invoice.payer
+          ).formatlink ()
+       ))"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          ('invoice', 'period_start')"/>
+      <td tal:content="structure python:
+          context.invoice.period_start.pretty('%Y-%m-%d')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('invoice', 'period_end')"/>
+      <td tal:content="structure python:
+          context.invoice.period_end.pretty('%Y-%m-%d')"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'date_payed')"/>
+      <td tal:content="structure context/date_payed/field"/>
+      <th tal:content="structure python:utils.fieldname(classname, 'amount')"/>
+      <td>
+       <span tal:content="structure python:utils.ExtProperty
+          (utils, context.amount, item = context, editable = True)
+          .as_listentry ()"/>
+       <span tal:content="context/invoice/currency"/>
+      </td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

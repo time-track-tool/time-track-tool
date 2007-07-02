@@ -25,7 +25,7 @@
 from cStringIO                      import StringIO
 from os.path                        import splitext
 
-from roundup.cgi.actions            import Action
+from roundup.cgi.actions            import Action, EditItemAction
 from roundup.cgi                    import templating
 from roundup                        import hyperdb
 from roundup.date                   import Date, Interval
@@ -406,6 +406,26 @@ class Personalized_Template (Download_Letter) :
     # end def handle
 # end class Personalized_Template
 
+class Edit_Payment_Action (EditItemAction, autosuper) :
+    """ Remove items that did not change (for which we defined a hidden
+        attribute in the mask) from the new items. Then proceed as usual
+        like for EditItemAction.
+    """
+    def _editnodes (self, props, links) :
+        # use props.items here, with iteritems we get a RuntimeError
+        # "dictionary changed size during iteration"
+        for (cl, id), val in props.items () :
+            print cl, id, val
+            if (   cl == 'payment'
+               and int (id) < 0
+               and sorted (val.keys ()) == ['invoice', 'receipt_no']
+               and val ['receipt_no'] == 'auto'
+               ) :
+               del props [(cl, id)]
+        return EditItemAction._editnodes (self, props, links)
+    # end def _editnodes
+# end class Edit_Payment_Action
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -418,4 +438,5 @@ def init (instance) :
     reg ('mark_single_invoice_sent', Mark_Single_Invoice_Sent)
     reg ('download_letter',          Download_Letter)
     reg ('personalized_template',    Personalized_Template)
+    reg ('edit_payment',             Edit_Payment_Action)
 # end def init
