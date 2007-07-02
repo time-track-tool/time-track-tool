@@ -42,14 +42,40 @@
           , searchable  = True
           )
      , ep ( utils, pdict ['invoice']
-          , searchname   = 'invoice.subscriber.firstname'
-          , searchable   = True
+          , searchname   = 'invoice.subscriber.lastname'
+          , searchable   = False
           , do_classhelp = False
+          , sortable     = False
           )
      , ep ( utils, pdict ['invoice']
-          , searchname   = 'invoice.subscriber.lastname'
+          , searchname   = 'invoice.subscriber.firstname'
+          , searchable   = False
+          , do_classhelp = False
+          , sortable     = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.function'
+          , searchable   = False
+          , do_classhelp = False
+          , sortable     = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.lookalike_lastname'
           , searchable   = True
           , do_classhelp = False
+          , displayable  = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.lookalike_firstname'
+          , searchable   = True
+          , do_classhelp = False
+          , displayable  = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.subscriber.lookalike_function'
+          , searchable   = True
+          , do_classhelp = False
+          , displayable  = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.subscriber.valid'
@@ -57,13 +83,40 @@
           , multiselect  = True
           )
      , ep ( utils, pdict ['invoice']
-          , searchname   = 'invoice.payer.firstname'
-          , searchable   = True
+          , searchname   = 'invoice.payer.lastname'
+          , searchable   = False
+          , do_classhelp = False
+          , sortable     = False
           )
      , ep ( utils, pdict ['invoice']
-          , searchname   = 'invoice.payer.lastname'
+          , searchname   = 'invoice.payer.firstname'
+          , searchable   = False
+          , do_classhelp = False
+          , sortable     = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.function'
+          , searchable   = False
+          , do_classhelp = False
+          , sortable     = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.lookalike_lastname'
           , searchable   = True
           , do_classhelp = False
+          , displayable  = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.lookalike_firstname'
+          , searchable   = True
+          , do_classhelp = False
+          , displayable  = False
+          )
+     , ep ( utils, pdict ['invoice']
+          , searchname   = 'invoice.payer.lookalike_function'
+          , searchable   = True
+          , do_classhelp = False
+          , displayable  = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.payer.valid'

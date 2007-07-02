@@ -37,6 +37,7 @@ def abo_max_invoice (db, abo) :
 
 def uni (x) :
     return x.decode ("latin1").encode ("utf-8")
+# end def uni
 
 translation_table = {}
 translation_table.update (dict ([(k, ord ('A')) for k in range (192, 198)]))
@@ -66,6 +67,8 @@ def translate (x) :
     """ Translate utf-8 string to lookalike utf-8 string without accents
 
         >>> translate (uni ('äöüÄÖÜß'))
-        'aouAOUss'
+        'aouaouss'
     """
-    return x.decode ('utf-8').translate (translation_table).encode ('utf-8')
+    t = x.decode ('utf-8').translate (translation_table).encode ('utf-8')
+    return t.lower ()
+# end def translate

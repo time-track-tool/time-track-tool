@@ -16,23 +16,39 @@
     , utils.ExtProperty (utils, pdict ['contact_type'], multiselect=True)
     , utils.ExtProperty 
         ( utils, pdict ['address']
-        , searchname  = 'address.firstname'
-        , searchable  = True
+        , searchname  = 'address.lastname'
+        , searchable  = False
+        , sortable    = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['address']
-        , searchname  = 'address.lastname'
-        , searchable  = True
+        , searchname  = 'address.firstname'
+        , searchable  = False
+        , sortable    = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['address']
         , searchname  = 'address.function'
-        , searchable  = True
+        , searchable  = False
+        , sortable    = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['address']
-        , searchname  = 'address.lookalike_name'
+        , searchname  = 'address.lookalike_lastname'
         , searchable  = True
+        , displayable = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['address']
+        , searchname  = 'address.lookalike_firstname'
+        , searchable  = True
+        , displayable = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['address']
+        , searchname  = 'address.lookalike_function'
+        , searchable  = True
+        , displayable = False
         )
     );
    "

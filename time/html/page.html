@@ -41,7 +41,7 @@
                           'invoice_template&@sort=order&@pagesize=20&'
                           '@startwith=0'
    , ('address', '')    : '@startwith=0&@pagesize=20&'
-                          '@sort=id&@sortdir=on&@group=&'
+                          '@sort=lookalike_lastname,lookalike_firstname&'
                           '@columns=salutation,title,id,lastname,firstname,'
                           'country,street,postalcode,city&'
                           '@filter=valid,adr_type&valid=1'
@@ -120,6 +120,7 @@
                          '@sort=-date&@filter=user&@pagesize=20&@startwith=0&'
                          'user=%s' % uid
    , ('payment', '')    : ':columns=date_payed,amount,invoice,'
+                          'invoice.payer.lastname,invoice.payer.firstname,'
                           'invoice.currency,invoice.amount,invoice.abo&'
                           ':sort=date_payed&:pagesize=20&:startwith=0'
    , ('product', '')    : '@columns=name,product_group,measuring_unit,'
@@ -1032,6 +1033,7 @@
             (classname, {'@action':'export_csv_names'})
      ; do_fulltext    python: True
      ; do_pagesize    python: True
+     ; props          python: [p for p in props if p.displayable]
      ">
   <tal:block metal:use-macro="templates/page/macros/search_form"/>
  </tal:block>

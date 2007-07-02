@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-06-13 05:30+0200\n"
+"POT-Creation-Date: 2007-07-02 21:50+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -64,6 +64,13 @@ msgstr "Laufzeit muss ganzzahlig sein"
 
 msgid "Country must be set"
 msgstr "Land muss gesetzt sein"
+
+msgid "function"
+msgstr "Adresszusatz"
+
+#, python-format
+msgid "%(attr)s must not exceed 2 lines"
+msgstr "%(attr)s darf nicht länger als 2 Zeilen sein"
 
 msgid ""
 "address type category \"ABO\" is used by the system and may not be changed."
@@ -123,6 +130,23 @@ msgstr "\"%(attr)s\" darf nicht geändert werden"
 msgid "%(attr)s must remain filled"
 msgstr "\"%(attr)s\" muss ausgefüllt bleiben"
 
+msgid "modify"
+msgstr ""
+
+msgid "specify"
+msgstr ""
+
+#, python-format
+msgid "Your are not allowed to %(action)s: %(attrs)s"
+msgstr ""
+
+#, python-format
+msgid "Document number is not valid: \"%s\""
+msgstr ""
+
+msgid "Selected department has no document number"
+msgstr ""
+
 msgid "product_group"
 msgstr "Artikelgruppe"
 
@@ -141,29 +165,17 @@ msgstr "Rabatt muss mit dem Preis steigen: %(pd)s"
 msgid "currency"
 msgstr "Währung"
 
-#, python-format
-msgid "\"%(attr)s\" must not be filled in"
-msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
-
-#, python-format
-msgid "\"%(attr)s\" must not be changed"
-msgstr "\"%(attr)s\" darf nicht geändert werden"
-
-msgid "no change of closed subscription"
-msgstr "Kein Buchen bei storniertem Abo"
-
-msgid "\"balance_open\", \"amount\": only numbers allowed"
-msgstr "\"Offen\", \"Betrag\": nur Zahlen erlaubt"
+msgid "\"amount\": only numbers allowed"
+msgstr "\"Betrag\": nur Zahlen erlaubt"
 
 msgid "amount may not be changed after payment"
 msgstr "Betrag darf nach Zahlung nicht mehr geändert werden"
 
-#, python-format
-msgid "inconsistency of payment:%s and balance_open:%s"
-msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
-
 msgid "payment may not exceed the open balance"
 msgstr "Zahlung darf Betrag nicht übersteigen"
+
+msgid "no change of closed subscription"
+msgstr "Kein Buchen bei storniertem Abo"
 
 #, python-format
 msgid "\"%(attr)s\" may not be deleted"
@@ -186,18 +198,7 @@ msgstr ""
 msgid "New %s requires a message"
 msgstr ""
 
-#, python-format
-msgid "Not allowed to create new %s"
-msgstr ""
-
-msgid "it_project"
-msgstr ""
-
 msgid "User may not be set to helpdesk"
-msgstr ""
-
-#, python-format
-msgid "Not allowed to edit %(prop)s"
 msgstr ""
 
 msgid "Must change user, \"helpdesk\" is not allowed"
@@ -546,6 +547,13 @@ msgstr " "
 msgid "First name for this %(Classname)s, e.g., Ralf"
 msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf"
 
+msgid ""
+"Multiline field for this %(Classname)s, will be printed on an\n"
+"         address label\n"
+"      "
+msgstr ""
+"Mehrzeiliges Feld für diese %(Classname)s, wird auf Adressetiketten gedruckt."
+
 msgid "Green start/end times have been created by the distribute function."
 msgstr ""
 
@@ -557,6 +565,9 @@ msgstr ""
 "ID dieses Datensatzes, wird automatisch vom System erzeugt und kann vom "
 "Benutzer nicht geändert werden."
 
+msgid "Amount this subscription costs"
+msgstr "Betrag den dieses Abo kostet"
+
 msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
 msgstr "Nachname für diesen %(Classname)s, z.B., Schlatterbeck"
 
@@ -564,12 +575,12 @@ msgid "Leave this field empty if unsure."
 msgstr ""
 
 msgid ""
-"Search for similar names: only non-accented characters are\n"
-"         possible when searching\n"
+"%(Property)s for searching: Search for similar names: only\n"
+"         non-accented lowercase characters are possible when searching\n"
 "      "
 msgstr ""
-"Suche nach ähnlicher Schreibweise: Nur nicht-akzentuierte Zeichen verwenden "
-"(keine Umlaute)"
+"%(Property)s: Sucht nach ähnlichen Namen, nur nicht-akzentuierte "
+"Kleinbuchstaben sind bei der Suche möglich."
 
 msgid ""
 "Some %(Property)s for tagging your issue -- can be useful\n"
@@ -789,23 +800,11 @@ msgstr "zusätzliche Adressen"
 msgid "Alternate email addresses for this user, one per line"
 msgstr "Alternative Email-Adressen für diesen Benutzer, eine pro Zeile"
 
-msgid "invoice.amount"
-msgstr "Rechnungsbetrag"
-
-msgid "invoice++amount"
-msgstr "Betrag"
-
 msgid "amount"
 msgstr "Betrag"
 
-msgid "amount_payed"
+msgid "Amount payed"
 msgstr "Zahlungsbetrag"
-
-msgid "(cal)"
-msgstr "(Kal.)"
-
-msgid "Amount this subscription costs"
-msgstr "Betrag den dieses Abo kostet"
 
 msgid "announcements"
 msgstr ""
@@ -817,6 +816,12 @@ msgid "area"
 msgstr ""
 
 msgid "Where this issue belongs to."
+msgstr ""
+
+msgid "artefact"
+msgstr "Artefakt"
+
+msgid "The artefact type"
 msgstr ""
 
 msgid "author"
@@ -873,8 +878,7 @@ msgid ""
 "             of the given %(Classname)s\n"
 "          "
 msgstr ""
-"Benutzer darf Time Records im Gültigkeitsbereich von"
-" %(Classname)s buchen"
+"Benutzer darf Time Records im Gültigkeitsbereich von %(Classname)s buchen"
 
 msgid "Date of birth"
 msgstr "Geburtsdatum"
@@ -960,6 +964,16 @@ msgid ""
 msgstr ""
 
 msgid "composed_of.id"
+msgstr ""
+
+msgid "confidential"
+msgstr ""
+
+msgid ""
+"If set, %(Classname)s is visible only to users on the nosy\n"
+"             list (note that the stakeholder and the responsible person\n"
+"             are always on the nosy list).\n"
+"          "
 msgstr ""
 
 msgid "confirm"
@@ -1167,6 +1181,17 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "document_nr"
+msgstr "Dokument-Nr"
+
+msgid ""
+"The %(Property)s is generated when the %(Classname)s is\n"
+"             created. It can be manually overwritten for an old %(Classname)"
+"s\n"
+"             that already has a %(Property)s assigned.\n"
+"          "
+msgstr ""
+
 msgid "domain_part"
 msgstr ""
 
@@ -1268,6 +1293,12 @@ msgstr "Fax"
 msgid "FAX number for this %(Classname)s"
 msgstr "FAX Nummer für diese %(Classname)s"
 
+msgid "filename_format"
+msgstr "Dateinamen-Format"
+
+msgid "Template for file names used for this %(Classname)s"
+msgstr "Vorlage für Dateinamen für diese %(Classname)s"
+
 msgid "files"
 msgstr "Dateien"
 
@@ -1335,16 +1366,6 @@ msgid ""
 "             changed any more.\n"
 "          "
 msgstr ""
-
-msgid "function"
-msgstr "Funktion"
-
-msgid ""
-"Multiline field for this %(Classname)s, will be printed on an\n"
-"            address label\n"
-"         "
-msgstr ""
-"Mehrzeiliges Feld für diese %(Classname)s, wird auf Adressetiketten gedruckt."
 
 msgid "Numeric group ID"
 msgstr ""
@@ -1437,6 +1458,63 @@ msgstr "Rechnung"
 msgid "Link to invoice for this %(Classname)s"
 msgstr "Verbindung zur Rechnung für %(Classname)s"
 
+msgid "invoice.amount"
+msgstr "Rechnungsbetrag"
+
+msgid "invoice++amount"
+msgstr "Betrag"
+
+msgid "invoice.payer.firstname"
+msgstr "Zahler Vorname"
+
+msgid "invoice.payer.lastname"
+msgstr "Zahler Nachname"
+
+msgid "invoice.payer.function"
+msgstr "Zahler Adresszusatz"
+
+msgid "invoice.payer.lookalike_firstname"
+msgstr "Zahler Vorname"
+
+msgid "invoice.payer.lookalike_lastname"
+msgstr "Zahler Nachname"
+
+msgid "invoice.payer.lookalike_city"
+msgstr "Zahler Ort"
+
+msgid "invoice.payer.lookalike_street"
+msgstr "Zahler Straße"
+
+msgid "invoice.payer.lookalike_function"
+msgstr "Zahler Adresszusatz"
+
+msgid "invoice.payer.valid"
+msgstr "Zahler gültig"
+
+msgid "invoice.subscriber.firstname"
+msgstr "Abonnent Vorname"
+
+msgid "invoice.subscriber.lastname"
+msgstr "Abonnent Nachname"
+
+msgid "invoice.subscriber.lookalike_firstname"
+msgstr "Abonnent Vorname"
+
+msgid "invoice.subscriber.lookalike_lastname"
+msgstr "Abonnent Nachname"
+
+msgid "invoice.subscriber.lookalike_city"
+msgstr "Abonnent Ort"
+
+msgid "invoice.subscriber.lookalike_street"
+msgstr "Abonnent Straße"
+
+msgid "invoice.subscriber.lookalike_function"
+msgstr "Abonnent Adresszusatz"
+
+msgid "invoice.subscriber.valid"
+msgstr "Abonnent gültig"
+
 msgid "invoice_group"
 msgstr "Rechnungsgruppe"
 
@@ -1522,6 +1600,9 @@ msgstr ""
 msgid "it_issue++superseder"
 msgstr ""
 
+msgid "it_project"
+msgstr ""
+
 msgid "Optional IT Project to which this %(Classname)s belongs"
 msgstr "Optionales IT Projekt zu welchem diese %(Classname)s gehört"
 
@@ -1604,6 +1685,12 @@ msgstr "Brief-Titel"
 msgid "Title of this person used in a letter"
 msgstr "Titel dieser Person, Verwendung in der Brief-Anrede"
 
+msgid "link"
+msgstr ""
+
+msgid "The location of the file in the repository or on the file server"
+msgstr ""
+
 msgid "link_field"
 msgstr ""
 
@@ -1624,9 +1711,6 @@ msgstr ""
 
 msgid "UNIX login shell for %(Classname)s"
 msgstr "UNIX Login-Shell für %(Classname)s"
-
-msgid "lookalike_name"
-msgstr "Ähnlichkeitssuche"
 
 msgid "lunch_duration"
 msgstr "Länge der Mittagspause"
@@ -1964,26 +2048,20 @@ msgstr "Zahler"
 msgid "Address which is paying for this subscription"
 msgstr "Adresse welche für dieses Abo bezahlt"
 
-msgid "invoice.payer.firstname"
-msgstr "Zahler Vorname"
-
-msgid "invoice.payer.lastname"
-msgstr "Zahler Nachname"
-
-msgid "invoice.payer.lookalike_name"
-msgstr "Zahler Ähnlichkeitssuche"
-
-msgid "invoice.payer.valid"
-msgstr "Zahler gültig"
-
 msgid "payer.firstname"
 msgstr "Zahler Vorname"
 
 msgid "payer.lastname"
 msgstr "Zahler Nachname"
 
-msgid "payer.lookalike_name"
-msgstr "Zahler Ähnlichkeitssuche"
+msgid "payer.lookalike_lastname"
+msgstr "Zahler Nachname"
+
+msgid "payer.lookalike_firstname"
+msgstr "Zahler Vorname"
+
+msgid "payer.lookalike_function"
+msgstr "Zahler Adresszusatz"
 
 msgid "payer.valid"
 msgstr "Zahler gültig"
@@ -2037,6 +2115,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "position"
+msgstr "Position"
+
+msgid "%(Property)s in the company"
+msgstr ""
+
 msgid "postalcode"
 msgstr "PLZ"
 
@@ -2083,6 +2167,12 @@ msgstr ""
 
 msgid "private_phone_visible"
 msgstr ""
+
+msgid "product_type"
+msgstr "Artikel-Typ"
+
+msgid "The type of the %(Classname)s."
+msgstr "Typ für diese %(Classname)s"
 
 msgid "project"
 msgstr ""
@@ -2143,6 +2233,12 @@ msgid "recorder"
 msgstr "Aufzeichnung von"
 
 msgid "Person responsible for recording findings"
+msgstr ""
+
+msgid "reference"
+msgstr ""
+
+msgid "Defines the relation to a project, customer, etc."
 msgstr ""
 
 #.  just to show something in the pop-up, gets set to the last reached milestone
@@ -2501,26 +2597,23 @@ msgstr "Abonnent"
 msgid "Subscriber of this subscription"
 msgstr "Abonnent für dieses Abo"
 
-msgid "invoice.subscriber.firstname"
-msgstr "Abonnent Vorname"
-
-msgid "invoice.subscriber.lastname"
-msgstr "Abonnent Nachname"
-
-msgid "invoice.subscriber.lookalike_name"
-msgstr "Abonnent Ähnlichkeitssuche"
-
-msgid "invoice.subscriber.valid"
-msgstr "Abonnent gültig"
-
 msgid "subscriber.firstname"
 msgstr "Abonnent Vorname"
 
 msgid "subscriber.lastname"
 msgstr "Abonnent Nachname"
 
-msgid "subscriber.lookalike_name"
-msgstr "Abonnent Ähnlichkeitssuche"
+msgid "subscriber.function"
+msgstr "Abonnent Adresszusatz"
+
+msgid "subscriber.lookalike_firstname"
+msgstr "Abonnent Vorname"
+
+msgid "subscriber.lookalike_lastname"
+msgstr "Abonnent Nachname"
+
+msgid "subscriber.lookalike_function"
+msgstr "Abonnent Adresszusatz"
 
 msgid "subscriber.valid"
 msgstr "Abonnent gültig"
@@ -2589,6 +2682,16 @@ msgstr ""
 msgid ""
 "Selects the users according to their placement in a\n"
 "             department\n"
+"          "
+msgstr ""
+
+msgid "summary_report++op_project"
+msgstr "Projekt?"
+
+msgid ""
+"Flag to search for real-projects or a non-project (just\n"
+"             used for time-tracking). Leave as don't care if it should\n"
+"             not be searched for.\n"
 "          "
 msgstr ""
 
@@ -3088,7 +3191,7 @@ msgstr ""
 "template=property_help#%s', '500', '400')\">%s%s</a>"
 
 msgid "(cal)"
-msgstr "(Kalender)"
+msgstr "(Kal.)"
 
 msgid "Welcome to the "
 msgstr "Willkommen zur "
@@ -3488,9 +3591,6 @@ msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
 msgid "meeting_room"
 msgstr ""
 
-msgid "position"
-msgstr "Position"
-
 msgid "sex"
 msgstr ""
 
@@ -3783,8 +3883,26 @@ msgstr "Abo/Preis"
 msgid "abo_type"
 msgstr "Abotyp"
 
+msgid "lookalike_street"
+msgstr "Straße"
+
 msgid "contacts"
 msgstr "Kontakte"
+
+msgid "lookalike_lastname"
+msgstr "Nachname"
+
+msgid "lookalike_city"
+msgstr "Ort"
+
+msgid "lookalike_firstname"
+msgstr "Vorname"
+
+msgid "lookalike_function"
+msgstr "Adresszusatz"
+
+msgid "amount_payed"
+msgstr "Zahlungsbetrag"
 
 msgid "legalclient"
 msgstr "Klient"
@@ -3909,6 +4027,30 @@ msgstr "Skontotage"
 msgid "discount_percent"
 msgstr "Skonto %"
 
+msgid "storage"
+msgstr ""
+
+msgid "storage_locations"
+msgstr ""
+
+msgid "stock"
+msgstr ""
+
+msgid "stocked_product"
+msgstr "Lagerartikel"
+
+msgid "storage_location"
+msgstr "Lagerort"
+
+msgid "on_stock"
+msgstr ""
+
+msgid "lot"
+msgstr "Charge"
+
+msgid "doc"
+msgstr "Dokument"
+
 msgid "file"
 msgstr "Datei"
 
@@ -3932,6 +4074,39 @@ msgstr ""
 
 msgid "User is allowed %(perm)s on"
 msgstr "Benutzer darf %(perm)s auf"
+
+msgid ""
+"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
+"is on nosy list"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
+"item with %(perm)s permission"
+msgstr ""
+
+#~ msgid "\"%(attr)s\" must not be filled in"
+#~ msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+#~ msgid "\"%(attr)s\" must not be changed"
+#~ msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#~ msgid "inconsistency of payment:%s and balance_open:%s"
+#~ msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
+
+#~ msgid ""
+#~ "Search for similar names: only non-accented characters are\n"
+#~ "         possible when searching\n"
+#~ "      "
+#~ msgstr ""
+#~ "Suche nach ähnlicher Schreibweise: Nur nicht-akzentuierte Zeichen "
+#~ "verwenden (keine Umlaute)"
+
+#~ msgid "payer.function"
+#~ msgstr "Zahler Adresszusatz"
+
+#~ msgid "invoice.subscriber.function"
+#~ msgstr "Abonnent Adresszusatz"
 
 #~ msgid "credit_limit_cur"
 #~ msgstr "Kreditlimit-Währung"

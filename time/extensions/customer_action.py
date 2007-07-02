@@ -47,7 +47,7 @@ class Create_New_Address (Action) :
     copy_attributes = \
         [ 'adr_type', 'birthdate', 'city', 'country'
         , 'firstname', 'function', 'initial', 'lastname', 'lettertitle'
-        , 'lookalike_name', 'postalcode', 'salutation', 'street', 'title'
+        , 'postalcode', 'salutation', 'street', 'title'
         , 'valid'
         ]
     def handle (self) :

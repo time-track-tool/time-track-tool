@@ -32,6 +32,7 @@
 from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , BooleanHTMLProperty       \
                                          , DateHTMLProperty          \
+                                         , StringHTMLProperty        \
                                          , _HTMLItem                 \
                                          , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
@@ -144,6 +145,8 @@ class ExtProperty :
         add_hidden: Add a hidden attribute in addition to the link
         searchable: Usually a safe bet if this can be searched for, can
             be overridden when you know what you're doing.
+        displayable: Usually True, set to False if no display in
+            search-mask
         displayprop: Name of the property to display. Only used
             internally, should not be used in the external interface
             (e.g., in a search mask) because the value will not show up
@@ -179,6 +182,7 @@ class ExtProperty :
         , editable      = None
         , add_hidden    = False
         , searchable    = None # usually computed, override with False
+        , displayable   = True
         , sortable      = None
         , pretty        = _
         , get_cssclass  = get_cssclass
@@ -208,6 +212,7 @@ class ExtProperty :
         self.editable      = editable
         self.key           = None
         self.searchable    = searchable
+        self.displayable   = displayable
         self.sortable      = sortable
         self.do_classhelp  = do_classhelp
         self.fieldwidth    = fieldwidth
@@ -481,7 +486,9 @@ class ExtProperty :
     # end def classhelp_properties
 
     def pretty_ids (self, idstring) :
-        if not idstring or idstring == '-1' or not self.key :
+        if isinstance (idstring, list) :
+            return ' '.join (idstring)
+        if  not idstring or idstring == '-1' or not self.key :
             return idstring
         ids = idstring.split (',')
         try :

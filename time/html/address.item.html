@@ -130,12 +130,13 @@
       </th>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'function')"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'function')"/>
       <td tal:attributes="rowspan python:1+len (context.contacts)">
        <textarea tal:content="context/function/plain"
                  name="function"
                  wrap="hard"
-                 rows="3"
+                 rows="1"
                  cols="30">
        </textarea>
       </td>

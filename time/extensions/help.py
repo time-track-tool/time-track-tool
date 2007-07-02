@@ -84,6 +84,10 @@ extension          = \
       '''
 firstname          = \
     ""'''First name for this %(Classname)s, e.g., Ralf'''
+function           = \
+    ""'''Multiline field for this %(Classname)s, will be printed on an
+         address label
+      '''
 green              = \
     ""'''Green start/end times have been created by the distribute function.'''
 help_id            = \
@@ -97,8 +101,8 @@ lastname           = \
 leave_empty        = \
     ""'''Leave this field empty if unsure.'''
 lookalike_name     = \
-    ""'''Search for similar names: only non-accented characters are
-         possible when searching
+    ""'''%(Property)s for searching: Search for similar names: only
+         non-accented lowercase characters are possible when searching
       '''
 keywords           = \
     ""'''Some %(Property)s for tagging your issue -- can be useful
@@ -503,17 +507,13 @@ _helptext          = \
                TTP-OS 4.5.23
           '''
       ]
-    , ""'frozen'              :
+    , ""'frozen'                      :
       [ ""'''If this is set to "yes", all time records up to this date
              as well as the dynamic user data up to this date cannot be
              changed any more.
           '''
       ]
-    , ""'function'            :
-      [ ""'''Multiline field for this %(Classname)s, will be printed on an
-            address label
-         '''
-      ]
+    , ""'function'                    : [function]
     , ""'gid'                         :
       [""'''Numeric group ID''']
     , ""'gid_range'                   :
@@ -557,11 +557,20 @@ _helptext          = \
     , ""'invoice++amount'             : [invoice_amount]
     , ""'invoice.payer.firstname'     : [firstname]
     , ""'invoice.payer.lastname'      : [lastname]
-    , ""'invoice.payer.lookalike_name': [lookalike_name]
+    , ""'invoice.payer.function'      : [function]
+    , ""'invoice.payer.lookalike_firstname': [lookalike_name]
+    , ""'invoice.payer.lookalike_lastname' : [lookalike_name]
+    , ""'invoice.payer.lookalike_city'     : [lookalike_name]
+    , ""'invoice.payer.lookalike_street'   : [lookalike_name]
+    , ""'invoice.payer.lookalike_function' : [lookalike_name]
     , ""'invoice.payer.valid'         : [address_valid]
     , ""'invoice.subscriber.firstname': [firstname]
     , ""'invoice.subscriber.lastname' : [lastname]
-    , ""'invoice.subscriber.lookalike_name': [lookalike_name]
+    , ""'invoice.subscriber.lookalike_firstname': [lookalike_name]
+    , ""'invoice.subscriber.lookalike_lastname' : [lookalike_name]
+    , ""'invoice.subscriber.lookalike_city'     : [lookalike_name]
+    , ""'invoice.subscriber.lookalike_street'   : [lookalike_name]
+    , ""'invoice.subscriber.lookalike_function' : [lookalike_name]
     , ""'invoice.subscriber.valid'    : [address_valid]
     , ""'invoice_group'               :
       [""'''Link to invoice_group for this %(Classname)s''']
@@ -652,7 +661,6 @@ _helptext          = \
       [""'''Location of %(Classname)s, e.g., Vienna HQ.''']
     , ""'login_shell'                 :
       [""'''UNIX login shell for %(Classname)s''']
-    , ""'lookalike_name'              : [lookalike_name]
     , ""'lunch_duration'              :
       [""'''Preference for time tracking, duration of lunch break in hours''']
     , ""'lunch_start'                 :
@@ -825,7 +833,10 @@ _helptext          = \
       [""'''Address which is paying for this subscription''']
     , ""'payer.firstname'             : [firstname]
     , ""'payer.lastname'              : [lastname]
-    , ""'payer.lookalike_name'        : [lookalike_name]
+    , ""'payer.lastname'              : [function]
+    , ""'payer.lookalike_lastname'    : [lookalike_name]
+    , ""'payer.lookalike_firstname'   : [lookalike_name]
+    , ""'payer.lookalike_function'    : [lookalike_name]
     , ""'payer.valid'                 : [address_valid]
     , ""'payer.adr_type'              : [adr_type]
     , ""'payment'                     :
@@ -1092,7 +1103,10 @@ _helptext          = \
       [""'''Subscriber of this subscription''']
     , ""'subscriber.firstname'        : [firstname]
     , ""'subscriber.lastname'         : [lastname]
-    , ""'subscriber.lookalike_name'   : [lookalike_name]
+    , ""'subscriber.function'         : [function]
+    , ""'subscriber.lookalike_firstname' : [lookalike_name]
+    , ""'subscriber.lookalike_lastname'  : [lookalike_name]
+    , ""'subscriber.lookalike_function'  : [lookalike_name]
     , ""'subscriber.valid'            : [address_valid]
     , ""'subscriber.adr_type'         : [adr_type]
     , ""'substitute'                  :
@@ -1463,12 +1477,13 @@ def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     if not prop in _helptext :
         return "%s%s" % (_ (prop), endswith)
     label = _ (prop)
+    href  = prop.split ('.')[-1].split ('++')[-1]
     if csscls :
         csscls = 'class="%s"' % csscls
     return (_ (''"""<a %s title=\"Help for %s\" href=\"javascript:help_window"""
                """('%s?:template=property_help#%s', '500', '400')\">"""
                """%s%s</a>""" \
-              ) % (csscls, label, cls, prop.split ('.')[-1], label, endswith)
+              ) % (csscls, label, cls, href, label, endswith)
            )
 # end def fieldname
 

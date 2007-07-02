@@ -61,6 +61,7 @@ from user_dynamic                   import round_daily_work_hours, day
 from user_dynamic                   import last_user_dynamic
 from freeze                         import frozen, range_frozen, next_dr_freeze
 from freeze                         import prev_dr_freeze
+from rup_utils                      import translate
 
 def prev_week (db, request) :
     try :
@@ -751,6 +752,29 @@ class SearchActionWithTemplate(SearchAction):
             return req.indexargs_url ('', {'@template' : template}) [1:]
         return req.indexargs_url('', {})[1:]
     # end def getCurrentURL
+
+    def fakeFilterVars (self) :
+        """ Fix search-strings for lookalike-computation: run
+            search-strings from the form through translate
+        """
+        SearchAction.fakeFilterVars (self)
+        cls = self.db.classes [self.classname]
+        fields = self.form ['@filter']
+        if not isinstance (fields, list) :
+            fields = [fields]
+        for k in fields :
+            key = k.value
+            if not key.split ('.') [-1].startswith ('lookalike_') :
+                continue
+            prop = cls.get_transitive_prop (str (key))
+            if not prop or not isinstance(prop, hyperdb.String) :
+                continue
+            value = self.form [key]
+            if not isinstance (value, list) :
+                value = [value]
+            for v in value :
+                v.value = translate (v.value)
+    # end def fakeFilterVars
 # end class SearchActionWithTemplate
 
 def init (instance) :

@@ -74,24 +74,26 @@ def check_address (db, cl, nodeid, new_values) :
 # end def check_address
 
 def lookalike_computation (db, cl, nodeid, new_values) :
-    if 'firstname' in new_values or 'lastname' in new_values :
-        firstname = new_values.get ('firstname')
-        lastname  = new_values.get ('lastname')
-        names = []
-        if nodeid :
-            if not firstname :
-                firstname = cl.get (nodeid, 'firstname')
-                if firstname :
-                    names.append (firstname)
-            if not lastname :
-                lastname  = cl.get (nodeid, 'lastname')
-                if lastname :
-                    names.append (lastname)
-        new_values ['lookalike_name'] = translate (' '.join (names))
+    for field in ('firstname', 'lastname', 'city', 'street', 'function') :
+        if  (  field in new_values
+            or nodeid and 'lookalike_' + field in new_values
+            ) :
+            nv = new_values.get (field)
+            if nv not in new_values :
+                nv = cl.get (nodeid, field)
+            new_values ['lookalike_' + field] = translate (nv)
 # end def lookalike_computation
 
 def check_contact (db, cl, nodeid, new_values) :
     require_attributes (_, cl, nodeid, new_values, 'contact_type', 'contact')
+# end def check_contact
+
+def check_function (db, cl, nodeid, new_values) :
+    if 'function' in new_values :
+        length = len (new_values ['function'].split ('\n'))
+        if length > 2 :
+            attr = _ ('function')
+            raise Reject, _ (''"%(attr)s must not exceed 2 lines") % locals ()
 # end def check_contact
 
 def init (db) :
@@ -110,4 +112,6 @@ def init (db) :
     db.contact.audit ("set",    check_contact)
     db.address.react ("create", fix_contacts)
     db.address.react ("set",    fix_contacts)
+    db.address.audit ("create", check_function)
+    db.address.audit ("set",    check_function)
 # end def init

@@ -28,16 +28,16 @@
      , ep (utils, pdict ['send_it'])
      , ep (utils, pdict ['last_sent'])
      , ep ( utils, pdict ['subscriber']
-          , searchname   = 'subscriber.firstname'
+          , searchname   = 'subscriber.lookalike_lastname'
           , searchable   = True
           )
      , ep ( utils, pdict ['subscriber']
-          , searchname   = 'subscriber.lastname'
+          , searchname   = 'subscriber.lookalike_firstname'
           , searchable   = True
           , do_classhelp = False
           )
      , ep ( utils, pdict ['subscriber']
-          , searchname   = 'subscriber.lookalike_name'
+          , searchname   = 'subscriber.lookalike_function'
           , searchable   = True
           )
      , ep ( utils, pdict ['subscriber']
@@ -46,16 +46,16 @@
           , multiselect  = True
           )
      , ep ( utils, pdict ['payer']
-          , searchname   = 'payer.firstname'
+          , searchname   = 'payer.lookalike_lastname'
           , searchable   = True
           )
      , ep ( utils, pdict ['payer']
-          , searchname   = 'payer.lastname'
+          , searchname   = 'payer.lookalike_firstname'
           , searchable   = True
           , do_classhelp = False
           )
      , ep ( utils, pdict ['payer']
-          , searchname   = 'payer.lookalike_name'
+          , searchname   = 'payer.lookalike_function'
           , searchable   = True
           )
      , ep ( utils, pdict ['payer']

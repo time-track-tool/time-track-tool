@@ -21,19 +21,39 @@
     , utils.ExtProperty (utils, pdict ['end'])
     , utils.ExtProperty 
         ( utils, pdict ['subscriber']
-        , searchname  = 'subscriber.firstname'
-        , searchable  = True
-        )
-    , utils.ExtProperty 
-        ( utils, pdict ['subscriber']
         , searchname  = 'subscriber.lastname'
-        , searchable  = True
-        , do_classhelp = False
+        , searchable  = False
+        , sortable    = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['subscriber']
-        , searchname  = 'subscriber.lookalike_name'
+        , searchname  = 'subscriber.firstname'
+        , searchable  = False
+        , sortable    = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.function'
+        , searchable  = False
+        , sortable    = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.lookalike_lastname'
         , searchable  = True
+        , displayable = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.lookalike_firstname'
+        , searchable  = True
+        , displayable = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['subscriber']
+        , searchname  = 'subscriber.lookalike_function'
+        , searchable  = True
+        , displayable = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['subscriber']
@@ -43,19 +63,39 @@
         )
     , utils.ExtProperty 
         ( utils, pdict ['payer']
-        , searchname  = 'payer.firstname'
-        , searchable  = True
-        )
-    , utils.ExtProperty 
-        ( utils, pdict ['payer']
         , searchname  = 'payer.lastname'
-        , searchable  = True
-        , do_classhelp = False
+        , searchable  = False
+        , sortable    = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['payer']
-        , searchname  = 'payer.lookalike_name'
+        , searchname  = 'payer.firstname'
+        , searchable  = False
+        , sortable    = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.function'
+        , searchable  = False
+        , sortable    = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.lookalike_lastname'
         , searchable  = True
+        , displayable = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.lookalike_firstname'
+        , searchable  = True
+        , displayable = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['payer']
+        , searchname  = 'payer.lookalike_function'
+        , searchable  = True
+        , displayable = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['payer']
