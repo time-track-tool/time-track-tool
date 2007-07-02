@@ -555,6 +555,14 @@ _helptext          = \
       [""'''Link to invoice for this %(Classname)s''']
     , ""'invoice.amount'              : [invoice_amount]
     , ""'invoice++amount'             : [invoice_amount]
+    , ""'invoice.payer.firstname'     : [firstname]
+    , ""'invoice.payer.lastname'      : [lastname]
+    , ""'invoice.payer.lookalike_name': [lookalike_name]
+    , ""'invoice.payer.valid'         : [address_valid]
+    , ""'invoice.subscriber.firstname': [firstname]
+    , ""'invoice.subscriber.lastname' : [lastname]
+    , ""'invoice.subscriber.lookalike_name': [lookalike_name]
+    , ""'invoice.subscriber.valid'    : [address_valid]
     , ""'invoice_group'               :
       [""'''Link to invoice_group for this %(Classname)s''']
     , ""'invoice_level'               :

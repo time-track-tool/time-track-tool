@@ -671,7 +671,7 @@ msgid "Date when this subscription ends"
 msgstr "Datum wann dieses Abo endet"
 
 msgid "aboprice"
-msgstr "Preis"
+msgstr "Abo/Preis"
 
 msgid "Price and currency for this subscription"
 msgstr "Preis und Währung für dieses Abo"
@@ -1964,6 +1964,18 @@ msgstr "Zahler"
 msgid "Address which is paying for this subscription"
 msgstr "Adresse welche für dieses Abo bezahlt"
 
+msgid "invoice.payer.firstname"
+msgstr "Zahler Vorname"
+
+msgid "invoice.payer.lastname"
+msgstr "Zahler Nachname"
+
+msgid "invoice.payer.lookalike_name"
+msgstr "Zahler Ähnlichkeitssuche"
+
+msgid "invoice.payer.valid"
+msgstr "Zahler gültig"
+
 msgid "payer.firstname"
 msgstr "Zahler Vorname"
 
@@ -2488,6 +2500,18 @@ msgstr "Abonnent"
 
 msgid "Subscriber of this subscription"
 msgstr "Abonnent für dieses Abo"
+
+msgid "invoice.subscriber.firstname"
+msgstr "Abonnent Vorname"
+
+msgid "invoice.subscriber.lastname"
+msgstr "Abonnent Nachname"
+
+msgid "invoice.subscriber.lookalike_name"
+msgstr "Abonnent Ähnlichkeitssuche"
+
+msgid "invoice.subscriber.valid"
+msgstr "Abonnent gültig"
 
 msgid "subscriber.firstname"
 msgstr "Abonnent Vorname"
@@ -3754,7 +3778,7 @@ msgid "to_hour"
 msgstr "Stunde bis"
 
 msgid "abo_price"
-msgstr "Preis"
+msgstr "Abo/Preis"
 
 msgid "abo_type"
 msgstr "Abotyp"
