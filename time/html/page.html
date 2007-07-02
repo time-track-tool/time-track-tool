@@ -119,6 +119,9 @@
                        : '@columns=id,user,date,value,comment&'
                          '@sort=-date&@filter=user&@pagesize=20&@startwith=0&'
                          'user=%s' % uid
+   , ('payment', '')    : ':columns=date_payed,amount,invoice,'
+                          'invoice.currency,invoice.amount,invoice.abo&'
+                          ':sort=date_payed&:pagesize=20&:startwith=0'
    , ('product', '')    : '@columns=name,product_group,measuring_unit,'
                           'packaging_unit,minimum_inventory&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
@@ -335,6 +338,7 @@
      , ('abo_price',           'View', 1,               ('',''))
      , ('invoice',             'View', 1, ('generate invoices','send'))
      , ('invoice',             'View', 1,               ('',''))
+     , ('payment',             'View', 1,               ('',''))
      , ('invoice_group',       'View', 1,               ('',''))
      , ('invoice_template',    'View', 1,               ('',''))
      , ('adr_type',            'View', 1,               ('',''))

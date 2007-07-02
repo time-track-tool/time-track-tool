@@ -789,6 +789,12 @@ msgstr "zusätzliche Adressen"
 msgid "Alternate email addresses for this user, one per line"
 msgstr "Alternative Email-Adressen für diesen Benutzer, eine pro Zeile"
 
+msgid "invoice.amount"
+msgstr "Rechnungsbetrag"
+
+msgid "invoice++amount"
+msgstr "Betrag"
+
 msgid "amount"
 msgstr "Betrag"
 

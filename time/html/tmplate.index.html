@@ -21,18 +21,10 @@
    "
    tal:condition="context/is_view_ok">
 
-   <form method="POST" tal:attributes="action request/classname">
-    <tal:block metal:use-macro="templates/page/macros/search_results"/>
-    <p>
-     <input type="submit" value=" Speichern ">
-     <input type="hidden" name="@action" value="edit">
-     <tal:block replace="structure request/indexargs_form"/>
-    </p>
-   </form>
+   <tal:block metal:use-macro="templates/page/macros/search_results"/>
    <tal:block metal:use-macro="templates/page/macros/simple_search_form">
     <tal:block metal:fill-slot="query_title">
-     <tal:block tal:replace="python:'Abfrage ' + Classname">
-     </tal:block>
+     <tal:block tal:replace="python:'Abfrage ' + Classname"/>
     </tal:block>
    </tal:block>
   </tal:block>
