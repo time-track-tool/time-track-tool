@@ -45,8 +45,6 @@ def init \
     , ** kw
     ) :
 
-    do_index = "no"
-
     abo = Class \
         ( db, ''"abo"
         , begin               = Date      ()
