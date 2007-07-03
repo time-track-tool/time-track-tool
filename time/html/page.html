@@ -162,7 +162,8 @@
    , ('time_wp_group', '')
                         : '@columns=id,name,description,wps&@sort=name&'
                           '@pagesize=20&@startwith=0'
-   , ('tmplate', '')    : '@columns=id,name&@sort=name&@pagesize=20&@startwith=0'
+   , ('tmplate', '')    : '@columns=id,name,tmplate_status&@sort=name&'
+                          '@pagesize=20&@startwith=0'
    , ('user', '')       : '@columns=%s%s&@sort=%s&'
                           '@filter=status&@pagesize=200&@startwith=0&status=1'
                           % ( ','.join
@@ -277,6 +278,7 @@
      , ('adr_type_cat',        'Edit',   '?@template=item', 1)
      , ('currency',            'Edit',   '?@template=item', 1)
      , ('tmplate',             'Edit',   '?@template=item', 1)
+     , ('tmplate_status',      'Edit',   '?@template=item', 1)
      , ('legalclient',         'Edit',   '?@template=item', 1)
      , ('contact_type',        'Edit',   '?@template=item', 1)
      , ('customer_group',      'Edit',   '?@template=item', 1)
@@ -346,6 +348,7 @@
      , ('adr_type_cat',        'View', 1,               ('',''))
      , ('currency',            'View', 1,               ('',''))
      , ('tmplate',             'View', 1,               ('',''))
+     , ('tmplate_status',      'View', 1,               ('',''))
      , ('letter',              'View', 1,               ('',''))
      , ('legalclient',         'View', 1,               ('',''))
      , ('cust_supp',           'View', 1,               ('',''))

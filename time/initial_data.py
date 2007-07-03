@@ -585,3 +585,26 @@ if 'product_type' in db.classes :
     db.product_type.create (name = "D", description = "Document")
     db.product_type.create (name = "S", description = "Software")
     db.product_type.create (name = "H", description = "Hardware")
+
+if 'tmplate_status' in db.classes :
+    db.tmplate_status.create \
+        ( name            = uni ('Brief')
+        , order           = 1
+        , description     = uni ('Vorlage für Briefe')
+        , use_for_invoice = False
+        , use_for_letter  = True
+        )
+    db.tmplate_status.create \
+        ( name            = uni ('Rechnung')
+        , order           = 2
+        , description     = uni ('Vorlage für Rechnungen')
+        , use_for_invoice = True
+        , use_for_letter  = False
+        )
+    db.tmplate_status.create \
+        ( name            = uni ('Ungültig')
+        , order           = 1
+        , description     = uni ('Vorlage derzeit nicht in Verwendung')
+        , use_for_invoice = False
+        , use_for_letter  = False
+        )

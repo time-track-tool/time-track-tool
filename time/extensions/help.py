@@ -1244,6 +1244,11 @@ _helptext          = \
             invoice template)
          '''
       ]
+    , ""'tmplate_status'              :
+      [ ""'''Status of template -- used for letter template, invoice
+             template or none.
+         '''
+      ]
     , ""'travel'                      : [travel]
     , ""'time_wp++travel'             :
       [ travel
@@ -1289,6 +1294,16 @@ _helptext          = \
     , ""'use_dhcp'                    :
       [ ""'''Flag if this %(Classname)s should be served by the DHCP
              server.
+          '''
+      ]
+    , ""'use_for_invoice'             :
+      [ ""'''Flag if templates with this %(Classname)s should be visible
+             in invoice templates
+          '''
+      ]
+    , ""'use_for_letter'              :
+      [ ""'''Flag if templates with this %(Classname)s should be visible
+             as letter templates
           '''
       ]
     , ""'use_in_ln'                   :

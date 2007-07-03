@@ -48,6 +48,6 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.abo_type.audit ("create", check)
-    db.abo_type.audit ("set",    check)
+    db.abo_type.audit     ("create", check)
+    db.abo_type.audit     ("set",    check)
 # end def init

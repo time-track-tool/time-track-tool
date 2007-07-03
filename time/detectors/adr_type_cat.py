@@ -39,6 +39,11 @@ def retire_check (db, cl, nodeid, new_values) :
             )
 # end def retire_check
 
+def new_adr_type_cat (db, cl, nodeid, new_values) :
+    if 'type_valid' not in new_values :
+        new_values ['type_valid'] = True
+# end def new_adr_type_cat
+
 def init (db) :
     if 'adr_type_cat' not in db.classes :
         return
@@ -47,4 +52,5 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.adr_type_cat.audit ("set",    check)
     db.adr_type_cat.audit ("retire", retire_check)
+    db.adr_type_cat.audit ("create", new_adr_type_cat)
 # end def init

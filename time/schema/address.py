@@ -115,11 +115,22 @@ def init \
     # end class Letter_Class
     export.update (dict (Letter_Class = Letter_Class))
 
+    tmplate_status = Class \
+        ( db, ''"tmplate_status"
+        , name                = String    ()
+        , order               = Number    ()
+        , description         = String    ()
+        , use_for_invoice     = Boolean   ()
+        , use_for_letter      = Boolean   ()
+        )
+    tmplate_status.setkey (''"name")
+
     tmplate = Class \
         ( db, ''"tmplate"
         , name                = String    ()
         # version control, use latest:
         , files               = Multilink ("file", do_journal='no')
+        , tmplate_status      = Link      ("tmplate_status")
         )
     tmplate.setkey (''"name")
 
@@ -188,6 +199,7 @@ def security (db, ** kw) :
         , ("valid"             , ["User"],    [])
         , ("contact_type"      , ["User"],    [])
         , ("contact"           , ["User"],    ["Contact"])
+        , ("tmplate_status"    , ["User"],    [])
         ]
 
     schemadef.register_roles             (db, roles)

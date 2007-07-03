@@ -12,10 +12,17 @@
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
  </tal:block> 
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:content="Classname"></span>
+       tal:content="Classname"/>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'tmplate_status')"/>
+      <td tal:content="structure context/tmplate_status/menu"/>
+     </tr>
+    </tal:block>
   </tal:block>
  </tal:block>
 </tal:block>

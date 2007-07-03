@@ -17,6 +17,7 @@
     props python:
      ( ep (utils, pdict ['id'])
      , ep (utils, pdict ['name'])
+     , ep (utils, pdict ['tmplate_status'], multiselect = 1)
      );
    "
    tal:condition="context/is_view_ok">
