@@ -67,6 +67,7 @@ def init \
         , amount              = Number    ()
         , name                = String    ()
         , invoice_group       = Link      ('invoice_group')
+        , valid               = Boolean   ()
         )
     abo_price.setkey (''"name")
 

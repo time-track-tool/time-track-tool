@@ -79,18 +79,28 @@ def lookalike_computation (db, cl, nodeid, new_values) :
             or nodeid and 'lookalike_' + field in new_values
             ) :
             nv = new_values.get (field)
-            if nv not in new_values :
+            if field not in new_values :
                 nv = cl.get (nodeid, field)
-            new_values ['lookalike_' + field] = translate (nv)
+            if nv is None :
+                new_values ['lookalike_' + field] = None
+            else :
+                new_values ['lookalike_' + field] = translate (nv)
 # end def lookalike_computation
 
 def check_contact (db, cl, nodeid, new_values) :
-    require_attributes (_, cl, nodeid, new_values, 'contact_type', 'contact')
+    require_attributes (_, cl, nodeid, new_values, 'contact')
+    if nodeid :
+        require_attributes (_, cl, nodeid, new_values, 'contact_type')
+    if not nodeid and 'contact_type' not in new_values :
+        ct = db.contact_type.filter (None, {}, sort = [('+', 'order')])
+        assert (ct)
+        new_values ['contact_type'] = ct [0]
 # end def check_contact
 
 def check_function (db, cl, nodeid, new_values) :
-    if 'function' in new_values :
-        length = len (new_values ['function'].split ('\n'))
+    function = new_values.get ('function')
+    if 'function' in new_values and function is not None :
+        length = len (function.split ('\n'))
         if length > 2 :
             attr = _ ('function')
             raise Reject, _ (''"%(attr)s must not exceed 2 lines") % locals ()

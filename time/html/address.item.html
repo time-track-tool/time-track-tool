@@ -83,8 +83,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'lastname')"/>
+      <td tal:content="structure context/lastname/field"/>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'firstname')"/>
-      <td>
+      <td colspan="2">
        <table border="0" cellspacing="0" cellpadding="0">
         <tr>
          <td tal:content="structure python:context.firstname.field (size=24)"/>
@@ -92,32 +95,12 @@
         </tr>
        </table>
       </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'lastname')"/>
-      <td tal:content="structure context/lastname/field" colspan="2"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'country')"
-          class="required"/>
-      <td>
-       <table border="0" cellspacing="0" cellpadding="0">
-        <tr>
-         <td tal:content="structure python:context.country.field (size=4)"/>
-         <td>&nbsp</td>
-         <th tal:content="structure python:utils.fieldname
-             (classname, 'postalcode')"/>
-         <td tal:content="structure python:context.postalcode.field (size=10)"/>
-        </tr>
-       </table>
-      </td>
-      <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
-      <td tal:content="structure context/city/field" colspan="2"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname(classname, 'street')"/>
       <td tal:content="structure context/street/field"/>
       <th tal:content="structure python:utils.fieldname
-          ('contact', 'contact_type')" class="required"/>
+          ('contact', 'contact_type')"/>
       <th style="text-align:left"
           tal:content="structure python:utils.fieldname
           ('contact', 'contact')" class="required"/>
@@ -149,7 +132,9 @@
       <input type="hidden" name="@link@contacts" value="contact-1"/>
      </tr>
      <tr tal:repeat="ct python:sorted
-         (context.contacts, key = lambda x : (x.contact_type.name, x.contact))">
+         ( context.contacts
+         , key = lambda x : (x.contact_type.order, x.contact)
+         )">
       <td colspan="2">
       <th style="vertical-align:top"
           tal:content="structure python:utils.ExtProperty
@@ -170,10 +155,26 @@
       </td>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname(classname, 'country')"
+          class="required"/>
+      <td>
+       <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td tal:content="structure python:context.country.field (size=4)"/>
+         <td>&nbsp</td>
+         <th tal:content="structure python:utils.fieldname
+             (classname, 'postalcode')"/>
+         <td tal:content="structure python:context.postalcode.field (size=10)"/>
+        </tr>
+       </table>
+      </td>
+      <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
+      <td tal:content="structure context/city/field" colspan="2"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'adr_type')"/>
-      <td nowrap
-          tal:define="tc python:','.join (db._db.adr_type_cat.getnodeids ())">
+      <td nowrap>
        <span tal:content="structure context/adr_type/field"/>
        <span tal:replace="structure python:utils.adr_type_classhelp (db)"/>
       </td>

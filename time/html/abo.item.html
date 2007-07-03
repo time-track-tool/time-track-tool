@@ -20,7 +20,7 @@
      <tr>
       <th tal:content="structure python:utils.fieldname(classname, 'aboprice')"
           class="required"/>
-      <td tal:content="structure context/aboprice/menu"
+      <td tal:content="structure python:context.aboprice.menu (valid = True)"
           tal:condition="not:context/id"/>
       <td tal:content="structure python: utils.ExtProperty
           (utils, context.aboprice.name, item = context.aboprice).formatlink ()"

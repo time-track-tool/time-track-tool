@@ -415,7 +415,6 @@ class Edit_Payment_Action (EditItemAction, autosuper) :
         # use props.items here, with iteritems we get a RuntimeError
         # "dictionary changed size during iteration"
         for (cl, id), val in props.items () :
-            print cl, id, val
             if (   cl == 'payment'
                and int (id) < 0
                and sorted (val.keys ()) == ['invoice', 'receipt_no']

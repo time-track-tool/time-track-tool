@@ -40,7 +40,7 @@ def valid_adr_type_cats (db, adr_type_cat = None) :
         except KeyError :
             pass
     if not tc :
-        tc = db.adr_type_cat.getnodeids ()
+        tc = db.adr_type_cat.filter (None, dict (type_valid = True)) or None
     return tc
 # end def valid_adr_type_cats
 
@@ -63,10 +63,11 @@ def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
     args = dict \
         ( properties = 'code,description'
         , property   = property
-        , pagesize   = 500
+        , pagesize   = 2000
         , sort       = 'code'
-        , filter     = 'typecat=' + ','.join (tc)
         )
+    if tc :
+        args ['filter'] = 'typecat=' + ','.join (tc)
     return db.adr_type.classhelp (** args)
 # end def adr_type_classhelp
 

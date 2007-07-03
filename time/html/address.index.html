@@ -29,7 +29,7 @@
    "batch  request/batch
    ;n_sort python:4
    ;pdict  python: utils.properties_dict (db, context)
-   ;filt   python: dict (typecat = db._db.adr_type_cat.getnodeids ())
+   ;filt   python: dict (typecat = utils.valid_adr_types (db))
    ;prp    python:
      ( ('id',                  {})
      , ('salutation',          {})
@@ -38,14 +38,14 @@
      , ('firstname',           dict (searchable   = False, sortable = False))
      , ('lookalike_lastname',  dict (displayable  = False))
      , ('lookalike_firstname', dict (displayable  = False))
+     , ('street',              dict (searchable   = False, sortable = False))
+     , ('lookalike_street',    dict (displayable  = False))
+     , ('function',            dict (searchable   = False, sortable = False))
+     , ('lookalike_function',  dict (displayable  = False))
      , ('country',             {})
      , ('postalcode',          {})
      , ('city',                dict (searchable   = False, sortable = False))
-     , ('street',              dict (searchable   = False, sortable = False))
-     , ('function',            dict (searchable   = False, sortable = False))
      , ('lookalike_city',      dict (displayable  = False))
-     , ('lookalike_street',    dict (displayable  = False))
-     , ('lookalike_function',  dict (displayable  = False))
      , ('abos',                {})
      , ('payed_abos',          {})
      , ('adr_type',            dict (filter       = filt))

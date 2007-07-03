@@ -759,7 +759,10 @@ class SearchActionWithTemplate(SearchAction):
         """
         SearchAction.fakeFilterVars (self)
         cls = self.db.classes [self.classname]
-        fields = self.form ['@filter']
+        try :
+            fields = self.form ['@filter']
+        except KeyError :
+            return
         if not isinstance (fields, list) :
             fields = [fields]
         for k in fields :

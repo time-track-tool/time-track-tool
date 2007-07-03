@@ -92,6 +92,7 @@ def init \
         ( db, ''"adr_type_cat"
         , code                = String    ()
         , description         = String    ()
+        , type_valid          = Boolean   ()
         )
     adr_type_cat.setkey (''"code")
 
@@ -155,6 +156,7 @@ def init \
                 ( name                = String    ()
                 , description         = String    ()
                 , url_template        = String    ()
+                , order               = Number    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setkey (''"name")
