@@ -1481,7 +1481,8 @@ def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     if csscls :
         csscls = 'class="%s"' % csscls
     return (_ (''"""<a %s title=\"Help for %s\" href=\"javascript:help_window"""
-               """('%s?:template=property_help#%s', '500', '400')\">"""
+               """('%s?:template=property_help#%s', '500', '400')\" """
+               """tabindex="-1">"""
                """%s%s</a>""" \
               ) % (csscls, label, cls, href, label, endswith)
            )

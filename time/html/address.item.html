@@ -150,7 +150,7 @@
       </td>
       <td tal:content="ct/description/plain"/>
       <td tal:condition="context/is_edit_ok">
-       <input type="checkbox" name="@remove@contacts"
+       <input tabindex="-1" type="checkbox" name="@remove@contacts"
               tal:attributes="value ct/id">
       </td>
      </tr>
@@ -231,7 +231,7 @@
        <table border="0" cellspacing="0" cellpadding="0">
         <tr tal:repeat="abo context/abos">
          <td>
-          <a tal:attributes="href string:abo${abo/id}
+          <a tabindex="-1" tal:attributes="href string:abo${abo/id}
                             ;class python:utils.get_cssclass (abo)
                             "
              tal:content="abo/aboprice">

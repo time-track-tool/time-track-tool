@@ -400,7 +400,7 @@ class ExtProperty :
             return hidden + self.formatted ()
         if not self.classname :
             return ""
-        return """<a class="%s" href="%s%s">%s</a>%s""" \
+        return """<a tabindex="-1" class="%s" href="%s%s">%s</a>%s""" \
             % ( self.get_cssclass (i)
               , self.classname
               , i.id
