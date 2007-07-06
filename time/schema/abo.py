@@ -47,8 +47,8 @@ def init \
 
     abo = Class \
         ( db, ''"abo"
-        , begin               = Date      ()
-        , end                 = Date      ()
+        , begin               = Date      (offset = 0)
+        , end                 = Date      (offset = 0)
         , aboprice            = Link      ('abo_price')
         , payer               = Link      ('address')
         , subscriber          = Link      ('address')
@@ -89,8 +89,8 @@ def init \
 
     Invoice_Class \
         ( db, ''"invoice"
-        , period_start        = Date      ()
-        , period_end          = Date      ()
+        , period_start        = Date      (offset = 0)
+        , period_end          = Date      (offset = 0)
         , payer               = Link      ("address")
         , subscriber          = Link      ("address")
         , abo                 = Link      ("abo")
@@ -112,7 +112,6 @@ def init \
         )
 
 # end def init
-
 
 def security (db, ** kw) :
     roles = \
