@@ -33,6 +33,7 @@
    and ','.join (db._db.adr_type_cat.getnodeids ())
    )
  ; abo_adrtype     python:utils.valid_adr_types (db, adr_type_cat = 'ABO')
+ ; terse           python: utils.get_from_form (request, 'terse')
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
@@ -44,10 +45,8 @@
                           '@sort=lookalike_lastname,lookalike_firstname&'
                           '@columns=salutation,title,id,lastname,firstname,'
                           'country,street,postalcode,city&'
-                          '@filter=valid,adr_type&valid=1'
-                          '%s&@search_text=&@queryname=' %
-                          ['', '&adr_type=%s' % ','.join (abo_adrtype)]
-                          [bool (abo_adrtype)]
+                          '@filter=valid&valid=1&@search_text=&'
+                          '@queryname=&@terse=1'
    , ('adr_type', '')   : '@columns=id,code,description,typecat&'
                           '@sort=code&@filter=typecat&@pagesize=50&'
                           '@startwith=0&typecat=%s' % typecat
@@ -1030,14 +1029,13 @@
 
 <tal:block metal:define-macro="simple_search_form">
  <tal:block tal:define=
-     " terse          python: utils.get_from_form (request, 'terse')
-     ; multi_props    python: [p for p in props if p.multiselect]
+     " multi_props    python: [p for p in props if p.multiselect]
      ; sort_props     python: [p for p in props if p.sortable]
      ; nomulti_props  python: [p for p in props
                                if (not p.multiselect and p.searchable)]
      ; csv_link       python:request.indexargs_url
             (classname, {'@action':'export_csv_names'})
-     ; do_fulltext    python: True
+     ; do_fulltext    python: not terse
      ; do_pagesize    python: True
      ; props          python: [p for p in props if p.displayable]
      ">
@@ -1063,7 +1061,7 @@
     </th>
    </tr>
 
-   <tr>
+   <tr tal:condition="not:terse">
     <td tal:condition="do_pagesize" colspan="2">
      <span i18n:translate="">View</span>
      <input type="text" size="4" name=":pagesize"
@@ -1075,6 +1073,8 @@
      <a tal:attributes="href csv_link" i18n:translate="">Download as CSV</a>
     </td>
    </tr>
+   <input type="hidden" tal:condition="terse" name=":pagesize"
+          tal:attributes="value request/pagesize">
    <tal:block tal:repeat="onum python:range(n_sort)"
     tal:condition="python:sort_props">
     <tal:block tal:define=
@@ -1141,7 +1141,7 @@
    <tr>
     <td colspan="5">
      <table border="0" bgcolor="#e0c0c0" align="left" class="searchform"
-      tal:condition="props">
+      tal:condition="python:props and not terse">
       <tr>
        <th style="text-align:left;" tal:content="structure python:
          utils.fieldname (classname, 'VIEW', endswith=':', csscls='header')"/>
@@ -1153,66 +1153,75 @@
          <option tal:repeat="prop props"
                  tal:attributes="selected python:request.show[prop.searchname];
                                  value    python:prop.searchname"
-                 tal:content="python:prop.i18nlabel"></option>
+                 tal:content="python:prop.i18nlabel"/>
         </select>
        </td>
       </tr>
      </table>
-   <tal:block tal:repeat="prop multi_props">
-     <table border="0" bgcolor="#e0c0c0" align="left" class="searchform">
-      <tr>
-       <th style="text-align:left;"
-        tal:content="structure python:prop.colonlabel()"/>
-      </tr>
-      <tr>
-       <td style="text-align:center;">
-        <tal:block tal:condition="python:
-         prop.lnkcls == 'user' and prop.searchname != 'nosy'"
-         tal:define=
-          "size      string:7;
-           name      python:prop.searchname;
-           form      string:query;
-           dont_care python:i18n.gettext ('''- don't care -''');
-           selected  python:
-            str(request.filterspec.get(prop.searchname) or [''])[1:-1]
-          ">
-         <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
-        </tal:block>
-        <tal:block tal:condition="python:prop.searchname == 'nosy'"
-         tal:define=
-          "size      string:7;
-           name      python:prop.searchname;
-           form      string:query;
-           dont_care python:i18n.gettext ('''- don't care -''');
-           selected  python:
-            str(request.filterspec.get(prop.searchname) or [''])[1:-1]
-          ">
-         <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"></tal:block>
-        </tal:block>
-        <tal:block tal:condition="python:prop.lnkcls != 'user'">
-         <select multiple
-                 size="7"
-                 tal:attributes="name python:prop.searchname"
-                 tal:define="form_vals
-                   python:request.filterspec.get(prop.searchname) or []">
-          <option value="" i18n:translate=""
-                  tal:attributes="selected not:form_vals">- don't care -</option>
-          <option
-           tal:repeat="s python: db[prop.lnkcls.classname].filter
-               ( filterspec = prop.filter
-               , group      = [('+', prop.lnkcls.orderprop ())]
-               )"
-           tal:attributes=
-               "value    s/id;
-                selected python:s.id in form_vals"
-           tal:content="python:s[prop.propname]">
-          </option>
-         </select>
-        </tal:block>
-       </td>
-      </tr>
-     </table>
-   </tal:block>
+     <input tal:condition="terse" type="hidden" name=":columns"
+            tal:attributes="value python:','.join(request.show.keys)">
+     <tal:block tal:repeat="prop multi_props">
+      <input tal:condition="python:terse and not prop.terse"
+             type="hidden" tal:attributes=
+             " name  python:prop.searchname
+             ; value python:
+                     ','.join(request.filterspec.get(prop.searchname) or [])
+             ">
+      <table border="0" bgcolor="#e0c0c0" align="left" class="searchform"
+             tal:condition="python:not terse or prop.terse">
+       <tr>
+        <th style="text-align:left;"
+         tal:content="structure python:prop.colonlabel()"/>
+       </tr>
+       <tr>
+        <td style="text-align:center;">
+         <tal:block tal:condition="python:
+          prop.lnkcls == 'user' and prop.searchname != 'nosy'"
+          tal:define=
+           "size      string:7;
+            name      python:prop.searchname;
+            form      string:query;
+            dont_care python:i18n.gettext ('''- don't care -''');
+            selected  python:
+             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
+           ">
+          <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
+         </tal:block>
+         <tal:block tal:condition="python:prop.searchname == 'nosy'"
+          tal:define=
+           "size      string:7;
+            name      python:prop.searchname;
+            form      string:query;
+            dont_care python:i18n.gettext ('''- don't care -''');
+            selected  python:
+             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
+           ">
+          <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"/>
+         </tal:block>
+         <tal:block tal:condition="python:prop.lnkcls != 'user'">
+          <select multiple
+                  size="7"
+                  tal:attributes="name python:prop.searchname"
+                  tal:define="form_vals
+                    python:request.filterspec.get(prop.searchname) or []">
+           <option value="" i18n:translate="" tal:attributes=
+            "selected not:form_vals">- don't care -</option>
+           <option
+            tal:repeat="s python: db[prop.lnkcls.classname].filter
+                ( filterspec = prop.filter
+                , group      = [('+', prop.lnkcls.orderprop ())]
+                )"
+            tal:attributes=
+                "value    s/id;
+                 selected python:s.id in form_vals"
+            tal:content="python:s[prop.propname]">
+           </option>
+          </select>
+         </tal:block>
+        </td>
+       </tr>
+      </table>
+     </tal:block>
     </td>
    </tr>
 
@@ -1220,25 +1229,31 @@
     <td colspan="5">
      <table border="0" bgcolor="#e0c0c0">
       <!-- fill in text entry fields -->
-   <tal:block tal:repeat="prop nomulti_props">
-      <tr>
-       <th style="text-align:right;"
-           tal:content="structure python:prop.colonlabel()"></th>
-       <td>
-        <tal:block tal:replace="structure python:prop.search_input (request)"/>
-        <span tal:condition="python:prop.do_classhelp"
-          tal:replace="structure python:db[prop.lnkcls.classname].classhelp
-           ( properties=prop.classhelp_properties
-             ('description', 'status', 'responsible')
-           , property=prop.searchname
-           , form='query'
-           , pagesize=500
-           , filter=prop.help_filter
-           , sort=prop.help_sort
-           )"/>
-       </td>
-      </tr>
-   </tal:block>
+      <tal:block tal:repeat="prop nomulti_props">
+       <input tal:condition="python:terse and not prop.terse"
+              type="hidden" tal:attributes=
+              " name  python:prop.searchname
+              ; value python:
+                      ','.join(request.filterspec.get(prop.searchname) or [])
+              ">
+       <tr tal:condition="python:not terse or prop.terse">
+        <th style="text-align:right;"
+            tal:content="structure python:prop.colonlabel()"/>
+        <td>
+         <tal:block tal:replace="structure python:prop.search_input (request)"/>
+         <span tal:condition="python:prop.do_classhelp"
+           tal:replace="structure python:db[prop.lnkcls.classname].classhelp
+            ( properties=prop.classhelp_properties
+              ('description', 'status', 'responsible')
+            , property=prop.searchname
+            , form='query'
+            , pagesize=500
+            , filter=prop.help_filter
+            , sort=prop.help_sort
+            )"/>
+        </td>
+       </tr>
+      </tal:block>
       <tr tal:condition="do_fulltext">
        <th style="text-align:right;" i18n:translate="">Search full text:</th>
        <td>
@@ -1262,12 +1277,14 @@
         queryid   request/form/queryid/value | nothing;
         new_query request/form/new_query/value | nothing;
         u_q       python:sorted ([q.id for q in request.user.queries]);
-        ">
-      <th style="text-align:right;" i18n:translate="">This query's name:</th>
-       <td tal:define="queryid python:new_query and (u_q and u_q.pop()) or queryid">
-        <input type="hidden" name="queryid" tal:attributes="value queryid | nothing">
-        <span tal:condition="queryid">
-         <span tal:condition="python:queryid in request.user.queries">
+        " tal:condition="not:terse">
+       <th style="text-align:right;" i18n:translate="">This query's name:</th>
+       <td tal:define="queryid python:
+           new_query and (u_q and u_q.pop()) or queryid">
+        <input type="hidden" name="queryid"
+               tal:attributes="value queryid | nothing">
+         <span tal:condition="python:
+               queryid and queryid in request.user.queries">
           <input type="hidden" name="@queryname">
           <input type="hidden" name="@old-queryname">
           <input type="text"
@@ -1284,23 +1301,14 @@
             (If you change the name, you create a new query!!!)
           </span>
          </span>
-         <span tal:condition="python:queryid not in request.user.queries">
-          <input type="text"
-                 name="@queryname"
-                 onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
+         <span tal:condition="python:
+               not queryid or queryid not in request.user.queries">
+          <input type="text" name="@queryname" onChange=
+            "document.forms ['query'].elements ['new_query'].value = '1';">
           <input type="hidden" name="new_query" value="">
           <input type="submit" i18n:attributes="value"
                  value="Update view & store NEW query">
          </span>
-        </span>
-        <span tal:condition="not:queryid">
-         <input type="text"
-                name="@queryname"
-                onChange="document.forms ['query'].elements ['new_query'].value = '1'; ">
-         <input type="hidden" name="new_query" value="">
-         <input type="submit" i18n:attributes="value"
-                value="Update view & store NEW query">
-        </span>
        </td>
       </tr>
      </table>

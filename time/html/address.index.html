@@ -1,6 +1,7 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
  <tal:block metal:fill-slot="menu_slot">
-   <tr tal:condition="python:request.user.hasPermission ('View','address')">
+   <tr tal:condition="python:
+       not terse and request.user.hasPermission ('View','address')">
     <td colspan="2"/>
     <td class="sidebar" nowrap>
      <span class="classblock">
@@ -13,9 +14,10 @@
    </tr>
  </tal:block>
  <title metal:fill-slot="head_title">
-  <span tal:replace="string:Abfrage ${Classname}" />
+  <span tal:replace="string:Abfrage ${Classname}"/>
  </title>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:condition="not:terse"
        tal:content="string:Abfrage ${Classname}">
  </span>
  <tal:block metal:fill-slot="create_or_query">
@@ -32,29 +34,29 @@
    ;filt   python: dict (typecat = utils.valid_adr_types (db))
    ;prp    python:
      ( ('id',                  dict (terse = False))
-     , ('salutation',          {})
-     , ('title',               {})
+     , ('salutation',          dict (terse = False))
+     , ('title',               dict (terse = False))
      , ('lastname',            dict (searchable   = False, sortable = False))
      , ('firstname',           dict (searchable   = False, sortable = False))
      , ('lookalike_lastname',  dict (displayable  = False))
      , ('lookalike_firstname', dict (displayable  = False))
      , ('street',              dict (searchable   = False, sortable = False))
-     , ('lookalike_street',    dict (displayable  = False))
+     , ('lookalike_street',    dict (displayable  = False, terse = False))
      , ('function',            dict (searchable   = False, sortable = False))
-     , ('lookalike_function',  dict (displayable  = False))
+     , ('lookalike_function',  dict (displayable  = False, terse = False))
      , ('country',             {})
      , ('postalcode',          {})
      , ('city',                dict (searchable   = False, sortable = False))
-     , ('lookalike_city',      dict (displayable  = False))
-     , ('abos',                {})
-     , ('payed_abos',          {})
+     , ('lookalike_city',      dict (displayable  = False, terse = False))
+     , ('abos',                dict (terse = False))
+     , ('payed_abos',          dict (terse = False))
      , ('adr_type',            dict (filter       = filt))
-     , ('valid',               dict (multiselect  = 1))
-     , ('invoices',            dict (do_classhelp = False))
+     , ('valid',               dict (multiselect  = 1, terse = False))
+     , ('invoices',            dict (do_classhelp = False, terse = False))
      , ('creation',            {})
-     , ('creator',             {})
+     , ('creator',             dict (terse = False))
      , ('activity',            {})
-     , ('actor',               {})
+     , ('actor',               dict (terse = False))
      )
    ;props python:
           [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
