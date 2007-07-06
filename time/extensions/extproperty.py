@@ -145,6 +145,8 @@ class ExtProperty :
         add_hidden: Add a hidden attribute in addition to the link
         searchable: Usually a safe bet if this can be searched for, can
             be overridden when you know what you're doing.
+        sortable: True if the item can be sorted by.
+        terse: True if the item should be displayed in terse mode
         displayable: Usually True, set to False if no display in
             search-mask
         displayprop: Name of the property to display. Only used
@@ -184,6 +186,7 @@ class ExtProperty :
         , searchable    = None # usually computed, override with False
         , displayable   = True
         , sortable      = None
+        , terse         = True
         , pretty        = _
         , get_cssclass  = get_cssclass
         , do_classhelp  = None
@@ -214,6 +217,7 @@ class ExtProperty :
         self.searchable    = searchable
         self.displayable   = displayable
         self.sortable      = sortable
+        self.terse         = terse
         self.do_classhelp  = do_classhelp
         self.fieldwidth    = fieldwidth
         self.format        = format

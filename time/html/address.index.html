@@ -31,7 +31,7 @@
    ;pdict  python: utils.properties_dict (db, context)
    ;filt   python: dict (typecat = utils.valid_adr_types (db))
    ;prp    python:
-     ( ('id',                  {})
+     ( ('id',                  dict (terse = False))
      , ('salutation',          {})
      , ('title',               {})
      , ('lastname',            dict (searchable   = False, sortable = False))

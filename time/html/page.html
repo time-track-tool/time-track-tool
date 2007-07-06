@@ -1030,10 +1030,11 @@
 
 <tal:block metal:define-macro="simple_search_form">
  <tal:block tal:define=
-     " multi_props    python: [p for p in props if p.multiselect]
+     " terse          python: utils.get_from_form (request, 'terse')
+     ; multi_props    python: [p for p in props if p.multiselect]
      ; sort_props     python: [p for p in props if p.sortable]
      ; nomulti_props  python: [p for p in props
-                               if not p.multiselect and p.searchable]
+                               if (not p.multiselect and p.searchable)]
      ; csv_link       python:request.indexargs_url
             (classname, {'@action':'export_csv_names'})
      ; do_fulltext    python: True
@@ -1044,12 +1045,10 @@
  </tal:block>
 </tal:block>
 
-<!-- needs props, multi_props, sort_props, nomulti_props, csv_link -->
+<!-- needs terse, props, multi_props, sort_props, nomulti_props, csv_link -->
 <tal:block metal:define-macro="search_form">
-<!-- query specification form -->
-<form method="GET"
-      name="query"
-      tal:attributes="action request/classname">
+ <!-- query specification form -->
+ <form method="GET" name="query" tal:attributes="action request/classname">
   <tal:block metal:define-slot="search_variables"/>
   <input type="hidden" name=":action" value="searchwithtemplate">
   <input type="hidden" name=":startwith"
@@ -1078,54 +1077,66 @@
    </tr>
    <tal:block tal:repeat="onum python:range(n_sort)"
     tal:condition="python:sort_props">
-    <tr tal:define=
-        "skey python:len(request.sort)>onum and request.sort[onum]
-        ;gkey python:len(request.group)>onum and request.group[onum]
+    <tal:block tal:define=
+        "skey python:(len(request.sort) >onum or '') and request.sort [onum]
+        ;gkey python:(len(request.group)>onum or '') and request.group[onum]
         ">
-     <td nowrap>
-      <tal:block tal:condition="not:onum" i18n:translate="">
-          Sort on:
-      </tal:block>
-     </td>
-     <td nowrap>
-      <select tal:attributes="name python:':sort%d'%onum"
-       onChange="this.form.elements[':startwith'].value='0'">
-       <option value="" i18n:translate="">- nothing -</option>
-       <option tal:repeat="prop sort_props"
-        tal:attributes= "selected python:skey and prop.searchname==skey[1];
-                         value    python:prop.searchname"
-        tal:content="python:prop.i18nlabel"/>
-      </select>
-      <span i18n:translate="">Descending:</span>
-      <input type="checkbox"
-       tal:attributes="name python:':sortdir%d'%onum
-                      ;checked python:skey and skey[0] == '-'
-                      "
-       onChange="this.form.elements[':startwith'].value='0'"/>
-     </td>
-     <td nowrap>&nbsp;</td>
-     <td nowrap>
-      <tal:block tal:condition="not:onum" i18n:translate="">
-          Group on:
-      </tal:block>
-     </td>
-     <td nowrap>
-      <select tal:attributes="name python:':group%d'%onum"
-       onChange="this.form.elements[':startwith'].value='0'">
-       <option value="" i18n:translate="">- nothing -</option>
-       <option tal:repeat="prop sort_props"
-        tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
-                         value    python:prop.searchname"
-        tal:content="python:prop.i18nlabel"/>
-      </select>
-      <span i18n:translate="">Descending:</span>
-      <input type="checkbox"
-       tal:attributes="name python:':groupdir%d'%onum
-                      ;checked python:gkey and gkey[0] == '-'
-                      "
-       onChange="this.form.elements[':startwith'].value='0'"/>
-     </td>
-    </tr>
+     <tal:block tal:condition="terse">
+      <input type="hidden" tal:attributes=
+             " name python:':sort%d'%onum
+             ; value python:''.join ([k,''][k=='+'] for k in skey)
+             ">
+      <input type="hidden" tal:attributes=
+             " name python:':group%d'%onum
+             ; value python:''.join ([k,''][k=='+'] for k in gkey)
+             ">
+     </tal:block>
+     <tr tal:condition="not:terse">
+      <td nowrap>
+       <tal:block tal:condition="not:onum" i18n:translate="">
+           Sort on:
+       </tal:block>
+      </td>
+      <td nowrap>
+       <select tal:attributes="name python:':sort%d'%onum"
+        onChange="this.form.elements[':startwith'].value='0'">
+        <option value="" i18n:translate="">- nothing -</option>
+        <option tal:repeat="prop sort_props"
+         tal:attributes= "selected python:skey and prop.searchname==skey[1];
+                          value    python:prop.searchname"
+         tal:content="python:prop.i18nlabel"/>
+       </select>
+       <span i18n:translate="">Descending:</span>
+       <input type="checkbox"
+        tal:attributes="name python:':sortdir%d'%onum
+                       ;checked python:skey and skey[0] == '-'
+                       "
+        onChange="this.form.elements[':startwith'].value='0'"/>
+      </td>
+      <td nowrap>&nbsp;</td>
+      <td nowrap>
+       <tal:block tal:condition="not:onum" i18n:translate="">
+           Group on:
+       </tal:block>
+      </td>
+      <td nowrap>
+       <select tal:attributes="name python:':group%d'%onum"
+        onChange="this.form.elements[':startwith'].value='0'">
+        <option value="" i18n:translate="">- nothing -</option>
+        <option tal:repeat="prop sort_props"
+         tal:attributes= "selected python:gkey and prop.searchname==gkey[1];
+                          value    python:prop.searchname"
+         tal:content="python:prop.i18nlabel"/>
+       </select>
+       <span i18n:translate="">Descending:</span>
+       <input type="checkbox"
+        tal:attributes="name python:':groupdir%d'%onum
+                       ;checked python:gkey and gkey[0] == '-'
+                       "
+        onChange="this.form.elements[':startwith'].value='0'"/>
+      </td>
+     </tr>
+    </tal:block>
    </tal:block>
    <tr>
     <td colspan="5">
@@ -1237,7 +1248,7 @@
         <span i18n:translate="">(Searches also in messages)</span>
        </td>
       </tr>
-<!-- submit button -->
+      <!-- submit button -->
       <tr>
        <th></th>
        <td>
@@ -1296,7 +1307,7 @@
     </td>
    </tr>
   </table>
-</form>
+ </form>
 </tal:block>
 
 <!-- needed vars: property: Multilink to address, button_text -->
