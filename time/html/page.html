@@ -986,43 +986,45 @@
 
 <!-- display the search results -->
 <tal:block metal:define-macro="search_results">
- <tal:block tal:condition="not:context/is_view_ok">
-  You are not allowed to view this page.
- </tal:block>
+ <tal:block tal:condition="python:not utils.get_from_form (request, 'quiet')">
+  <tal:block tal:condition="not:context/is_view_ok">
+   You are not allowed to view this page.
+  </tal:block>
 
- <tal:block tal:define="batch request/batch"
-            tal:condition="context/is_view_ok">
-  <table class="list" border=1>
-   <tr>
-<!-- list all properties we want to see -->
-    <tal:block tal:repeat="prop props">
-     <th tal:condition="python:request.show[prop.searchname]"
-         tal:content="python:prop.i18nlabel"/>
-    </tal:block>
-   </tr>
-   <tal:block metal:use-macro="templates/page/macros/search_nav"/>
-   <!-- items found -->
-   <tal:block tal:repeat="i batch">
-    <tr tal:condition="python:
-      request.group and batch.propchanged(*[g[1] for g in request.group])">
-     <th tal:attributes="colspan python:len(request.columns)" class="group">
-      <tal:block tal:repeat="gr request/group">
-       <tal:block tal:content="python:i[gr[1]]"/>
-      </tal:block>
-     </th>
-    </tr>
-    <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
-     <!-- all the properties: label property and id will be made a link -->
-     <!-- filter out only the properties the user wants to see -->
+  <tal:block tal:define="batch request/batch"
+             tal:condition="context/is_view_ok">
+   <table class="list" border=1>
+    <tr>
+     <!-- list all properties we want to see -->
      <tal:block tal:repeat="prop props">
-      <td tal:condition="python:request.show [prop.searchname]"
-          tal:content="structure python:prop.as_listentry (i)"
-          tal:attributes="class python:prop.get_cssclass(i)">
-      </td>
+      <th tal:condition="python:request.show[prop.searchname]"
+          tal:content="python:prop.i18nlabel"/>
      </tal:block>
     </tr>
-   </tal:block> <!-- repeat i batch -->
-  </table>
+    <tal:block metal:use-macro="templates/page/macros/search_nav"/>
+    <!-- items found -->
+    <tal:block tal:repeat="i batch">
+     <tr tal:condition="python:
+       request.group and batch.propchanged(*[g[1] for g in request.group])">
+      <th tal:attributes="colspan python:len(request.columns)" class="group">
+       <tal:block tal:repeat="gr request/group">
+        <tal:block tal:content="python:i[gr[1]]"/>
+       </tal:block>
+      </th>
+     </tr>
+     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
+      <!-- all the properties: label property and id will be made a link -->
+      <!-- filter out only the properties the user wants to see -->
+      <tal:block tal:repeat="prop props">
+       <td tal:condition="python:request.show [prop.searchname]"
+           tal:content="structure python:prop.as_listentry (i)"
+           tal:attributes="class python:prop.get_cssclass(i)">
+       </td>
+      </tal:block>
+     </tr>
+    </tal:block> <!-- repeat i batch -->
+   </table>
+  </tal:block>
  </tal:block>
 </tal:block>
 
@@ -1376,4 +1378,3 @@
   </td>
  </tr>
 </tal:block>
-<!-- SHA: 8383332f2af29ddff89e3eedd318d01a0a054514 -->

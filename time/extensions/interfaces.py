@@ -319,6 +319,14 @@ def until_now () :
     return now ().pretty (';%Y-%-m-%d')
 # end def until_now
 
+def get_from_form (request, name) :
+    for key in ('@' + name, ':' + name):
+        if request.form.has_key (key):
+            return request.form [key].value.strip()
+    return ''
+# end def get_from_form
+
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -347,3 +355,4 @@ def init (instance) :
     reg ("color_duration",               color_duration)
     reg ("now",                          now)
     reg ("until_now",                    until_now)
+    reg ("get_from_form",                get_from_form)
