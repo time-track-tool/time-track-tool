@@ -24,6 +24,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 from rup_utils                      import abo_max_invoice
+from common                         import ymd
 
 month  = Interval ('1m')
 month2 = Interval ('2m')
@@ -75,6 +76,8 @@ def set_defaults (db, cl, nodeid, new_values) :
                 month = 1
                 year += 1
         new_values ['begin'] = Date ('%d-%d-%d' % (year, month, day))
+    else :
+        new_values ['begin'] = fix_date (new_values ['begin'])
     if not new_values.has_key ('payer') :
         new_values ['payer'] = new_values ['subscriber']
 # end def set_defaults
@@ -116,6 +119,7 @@ def check_change (db, cl, nodeid, new_values) :
             raise Reject, err ('nochange', attr = 'amount')
     # Changing 'end':
     if  'end' in new_values :
+        new_values ['end'] = fix_date (new_values ['end'])
         o_end   = abo        ['end']
         n_end   = new_values ['end']
         now     = Date ('.')
@@ -128,9 +132,6 @@ def check_change (db, cl, nodeid, new_values) :
             if invoice :
                 if o_end < now - month2 :
                     raise Reject, err ('closefree')
-            else :
-                if invoice ['period_end'] < now :
-                    raise Reject, err ('closepay')
         # Attempt to close (or modify close date), check end-date:
         if  (n_end) :
             if n_end < abo ['begin'] :
@@ -167,6 +168,7 @@ def check_change (db, cl, nodeid, new_values) :
                     inv = db.address.get (id, 'invoices')
                     l   = [i for i in inv if i != invoice ['id']]
                     db.address.set (id, invoices = l)
+                    db.invoice.retire (invoice.id)
 # end def check_change
 
 def check_amount (db, cl, nodeid, new_values) :
@@ -190,6 +192,19 @@ def update_adr_type_in_address (db, cl, nodeid, oldvalues) :
     db.address.set (adr, adr_type = types)
 # end def update_adr_type_in_address
 
+def fix_date (date) :
+    if date :
+        return Date (date.pretty (ymd))
+    return date
+# end fix_date
+
+def retire_if_zero_period (db, cl, nodeid, oldvalues) :
+    if 'end' in oldvalues :
+        abo = db.abo.getnode (nodeid)
+        if abo.begin == abo.end :
+            cl.retire (nodeid)
+# end def retire_if_zero_period
+
 def init (db) :
     if 'abo' not in db.classes :
         return
@@ -204,4 +219,5 @@ def init (db) :
     db.abo.react ("create", create_invoice)
     db.abo.react ("create", update_adr_type_in_address)
     db.abo.react ("set",    update_adr_type_in_address)
+    db.abo.react ("set",    retire_if_zero_period)
 # end def init
