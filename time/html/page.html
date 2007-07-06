@@ -32,8 +32,9 @@
    (   'adr_type_cat' in db._db.classes
    and ','.join (db._db.adr_type_cat.getnodeids ())
    )
- ; abo_adrtype     python:utils.valid_adr_types (db, adr_type_cat = 'ABO')
+ ; abo_adrtype     python: utils.valid_adr_types (db, adr_type_cat = 'ABO')
  ; terse           python: utils.get_from_form (request, 'terse')
+ ; quiet           python: utils.get_from_form (request, 'quiet')
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
@@ -985,7 +986,7 @@
 
 <!-- display the search results -->
 <tal:block metal:define-macro="search_results">
- <tal:block tal:condition="python:not utils.get_from_form (request, 'quiet')">
+ <tal:block tal:condition="not:quiet">
   <tal:block tal:condition="not:context/is_view_ok">
    You are not allowed to view this page.
   </tal:block>

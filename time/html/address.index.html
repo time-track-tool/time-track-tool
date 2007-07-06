@@ -28,7 +28,7 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
-   "batch  request/batch
+   "batch  python:quiet or request.batch
    ;n_sort python:4
    ;pdict  python: utils.properties_dict (db, context)
    ;filt   python: dict (typecat = utils.valid_adr_types (db))
