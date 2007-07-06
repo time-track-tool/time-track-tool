@@ -155,7 +155,7 @@
          <td tal:content="structure python:pay.amount.plain ()"/>
          <td tal:content="structure python:pay.receipt_no.plain ()"/>
          <td tal:condition="context/is_edit_ok">
-          <input type="checkbox" name="@remove@payment"
+          <input tabindex="-1" type="checkbox" name="@remove@payment"
                  tal:attributes="value pay/id">
          </td>
         </tr>

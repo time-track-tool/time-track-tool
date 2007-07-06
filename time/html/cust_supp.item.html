@@ -122,7 +122,7 @@
          <td tal:content="structure python:bnk.bic.plain ()"/>
          <td tal:content="structure python:bnk.iban.plain ()"/>
          <td tal:condition="context/is_edit_ok">
-          <input type="checkbox" name="@remove@bank_account"
+          <input tabindex="-1" type="checkbox" name="@remove@bank_account"
                  tal:attributes="value bnk/id">
          </td>
         </tr>

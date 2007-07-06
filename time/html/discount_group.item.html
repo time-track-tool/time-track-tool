@@ -55,7 +55,7 @@
         <td tal:content="structure python:gd.discount.field (size=5)"/>
         <td>%</td>
         <td tal:condition="context/is_edit_ok">
-          <input type="checkbox" name="@remove@group_discount"
+          <input tabindex="-1" type="checkbox" name="@remove@group_discount"
                  tal:attributes="value gd/id">
         </td>
        </tr>
@@ -93,7 +93,7 @@
         <td tal:content="structure python:od.discount.field (size=5)"/>
         <td>%</td>
         <td tal:condition="context/is_edit_ok">
-          <input type="checkbox" name="@remove@overall_discount"
+          <input tabindex="-1" type="checkbox" name="@remove@overall_discount"
                  tal:attributes="value od/id">
         </td>
        </tr>

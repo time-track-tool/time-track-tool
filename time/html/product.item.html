@@ -92,7 +92,7 @@
          <td tal:content="structure python:pp.vat_percent.plain ()"/>
          <td tal:content="structure python:pp.currency.plain ()"/>
          <td tal:condition="context/is_edit_ok">
-          <input type="checkbox" name="@remove@product_price"
+          <input tabindex="-1" type="checkbox" name="@remove@product_price"
                  tal:attributes="value pp/id">
          </td>
         </tr>

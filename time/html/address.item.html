@@ -142,7 +142,7 @@
       <td>
        <a tal:condition="python: ct.contact_type.url_template"
           tal:content="ct/contact/plain" tal:attributes="href python:
-          ct.contact_type.url_template.plain () % ct"/>
+          ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
        <span tal:condition="python: not ct.contact_type.url_template"
              tal:content="ct/contact/plain"/>
        <input type="hidden" tal:attributes=
@@ -231,9 +231,10 @@
        <table border="0" cellspacing="0" cellpadding="0">
         <tr tal:repeat="abo context/abos">
          <td>
-          <a tabindex="-1" tal:attributes="href string:abo${abo/id}
-                            ;class python:utils.get_cssclass (abo)
-                            "
+          <a tabindex="-1" tal:attributes=
+             "href string:abo${abo/id}
+             ;class python:utils.get_cssclass (abo)
+             "
              tal:content="abo/aboprice">
           </a>
          </td>
@@ -249,9 +250,10 @@
        <table border="0" cellspacing="0" cellpadding="0">
         <tr tal:repeat="abo context/payed_abos">
          <td>
-          <a tal:attributes="href  string:abo${abo/id}
-                            ;class python:utils.get_cssclass (abo)
-                            "
+          <a tabindex="-1" tal:attributes=
+             "href  string:abo${abo/id}
+             ;class python:utils.get_cssclass (abo)
+             "
              tal:content="abo/aboprice">
           </a>
          </td>
