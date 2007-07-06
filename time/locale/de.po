@@ -2588,8 +2588,8 @@ msgstr "Straße für diese %(Classname)s"
 msgid "subject"
 msgstr "Betreff"
 
-msgid "Short identification of this message"
-msgstr "Kurz-Identifikation für diese Notiz"
+msgid "Short identification of %(Classname)s"
+msgstr "Kurz-Identifikation für %(Classname)s"
 
 msgid "subscriber"
 msgstr "Abonnent"

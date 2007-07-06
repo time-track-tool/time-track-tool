@@ -1098,7 +1098,7 @@ _helptext          = \
     , ""'street'                      :
       [""'''Street for this %(Classname)s''']
     , ""'subject'                     :
-      [""'''Short identification of this message''']
+      [""'''Short identification of %(Classname)s''']
     , ""'subscriber'                  :
       [""'''Subscriber of this subscription''']
     , ""'subscriber.firstname'        : [firstname]
