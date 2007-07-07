@@ -60,8 +60,7 @@ class Invoice (Action, autosuper) :
         """
         db          = self.db
         aboprice    = db.abo.get       (iv ['abo'], 'aboprice')
-        abotype     = db.abo_price.get (aboprice, 'abotype')
-        iv_tmplates = db.abo_type.get  (abotype, 'invoice_template')
+        iv_tmplates = db.abo_price.get (aboprice, 'invoice_template')
         if not iv_tmplates :
             raise Reject, \
                 ( _ ('No invoice_template defined for all invoices: %s')
