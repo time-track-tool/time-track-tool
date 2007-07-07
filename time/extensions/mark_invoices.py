@@ -230,12 +230,17 @@ class Generate_Invoice (Invoice) :
     def handle (self) :
         ''' Prepare invoices for printout and send to browser.'''
         self.__super.handle ()
+        mimetype = None
         invoices = [self.db.invoice.getnode (i) for i in self.marked (True)]
         ivts      = [(self.get_iv_template (i), i) for i in invoices]
         iv_by_tid = {}
         tp_by_tid = {}
         for i in ivts :
             tid = i [0]['id']
+            if not mimetype :
+                mimetype = tid.type
+            else :
+                assert (mimetype == tid.type)
             if tid not in iv_by_tid :
                 iv_by_tid [tid] = []
                 tp_by_tid [tid] = i [0]
@@ -271,7 +276,7 @@ class Generate_Invoice (Invoice) :
         else :
             out = outfiles [0]
         h = self.client.additional_headers
-        h ['Content-Type']        = 'application/vnd.sun.xml.writer'
+        h ['Content-Type']        = mimetype
         h ['Content-Disposition'] = 'inline; filename=inv.sxw'
         self.client.header  ()
         return out.getvalue ()
@@ -331,8 +336,11 @@ class Mark_Single_Invoice_Sent (_Mark_Invoice) :
 
 class Download_Letter (Action, autosuper) :
     def create_file (self, file, invoice, date, address) :
-        if  (   file.type != 'application/vnd.sun.xml.writer'
-            and splitext (file.name) [1] != '.sxw'
+        if  (   file.type not in 
+                ( 'application/vnd.sun.xml.writer'
+                , 'application/vnd.oasis.opendocument.text'
+                )
+            and splitext (file.name) [1] not in ('.sxw', '.odt')
             ) :
             raise Redirect, 'file%s/%s' % (file.id, file.name)
         out = StringIO ()
@@ -347,7 +355,7 @@ class Download_Letter (Action, autosuper) :
         t.transform (o)
         o.close ()
         h = self.client.additional_headers
-        h ['Content-Type']        = 'application/vnd.sun.xml.writer'
+        h ['Content-Type']        = file.type
         h ['Content-Disposition'] = 'inline; filename=inv.sxw'
         self.client.header  ()
         return out.getvalue ()

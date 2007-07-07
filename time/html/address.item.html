@@ -18,13 +18,16 @@
      <td class="sidebar" nowrap colspan="2"
       tal:condition="python:request.user.hasPermission ('View','tmplate')">
       <span class="classblock">
-       <select name="tmplates"
+       <select name="tmplates" tal:define=
+         "status python:db._db.tmplate_status.filter
+                 (None, dict (use_for_letter = True))"
         onChange="javascript:document.location=document.forms['menubar'].elements['tmplates'].options[document.forms['menubar'].elements['tmplates'].options.selectedIndex].value;">
 
         <option value="" i18n:translate="">
         -- tmplates --
         </option>
-        <tal:block tal:repeat="o python:db.tmplate.filter (sort=('+','name'))">
+        <tal:block tal:repeat="o python:db.tmplate.filter
+                   (filterspec={'tmplate_status' : status}, sort=('+','name'))">
          <option tal:content="o/name"
           tal:attributes="value
            python:'address%s?:action=personalized_template&tmplate=%s' %
