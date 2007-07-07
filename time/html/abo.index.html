@@ -3,7 +3,7 @@
  <span tal:replace="string:Abfrage ${Classname}" />
 </title>
 <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-      tal:content="string:Abfrage ${Classname}"></span>
+      tal:condition="not:terse" tal:content="string:Abfrage ${Classname}"/>
 <tal:block metal:fill-slot="create_or_query">
  <tal:block
   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
@@ -14,9 +14,21 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['aboprice'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['amount'])
+    ( utils.ExtProperty (utils, pdict ['id'], terse = False)
+    , utils.ExtProperty
+        (utils, pdict ['aboprice'], multiselect = 1, terse = False)
+    , utils.ExtProperty
+        ( utils, pdict ['aboprice']
+        , multiselect = 1
+        , searchname  = 'aboprice.abotype'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['aboprice']
+        , multiselect = 1
+        , searchname  = 'aboprice.abotype.adr_type'
+        , filter      = {'typecat' : db._db.adr_type_cat.lookup ('ABO')}
+        )
+    , utils.ExtProperty (utils, pdict ['amount'], terse = False)
     , utils.ExtProperty (utils, pdict ['begin'])
     , utils.ExtProperty (utils, pdict ['end'])
     , utils.ExtProperty 
@@ -54,12 +66,14 @@
         , searchname  = 'subscriber.lookalike_function'
         , searchable  = True
         , displayable = False
+        , terse       = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['subscriber']
         , searchname  = 'subscriber.valid'
         , searchable  = True
         , multiselect = True
+        , terse       = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['payer']
@@ -96,14 +110,17 @@
         , searchname  = 'payer.lookalike_function'
         , searchable  = True
         , displayable = False
+        , terse       = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['payer']
         , searchname  = 'payer.valid'
         , searchable  = True
         , multiselect = True
+        , terse       = False
         )
-    , utils.ExtProperty (utils, pdict ['invoices'], do_classhelp = False)
+    , utils.ExtProperty
+        (utils, pdict ['invoices'], do_classhelp = False, terse = False)
     );
   "
   tal:condition="context/is_view_ok">

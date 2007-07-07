@@ -509,8 +509,8 @@ class ExtProperty :
     def search_input (self, request) :
         value = request.form.getvalue (self.searchname) or ''
         if isinstance (self.prop, BooleanHTMLProperty) :
-            yvalue = value == 'yes'
-            nvalue = value == 'no'
+            yvalue = value in ('yes', '1')
+            nvalue = value in ('no',  '0')
             s = [ """<input type="radio" name="%s" value="yes"%s>%s"""
                   """<input type="radio" name="%s" value="no"%s>%s"""
                 % ( self.searchname

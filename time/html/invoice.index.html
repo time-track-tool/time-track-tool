@@ -3,7 +3,7 @@
   <span tal:replace="string:Abfrage ${Classname}"/>
  </title>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:content="string:Abfrage ${Classname}"/>
+       tal:condition="not:terse" tal:content="string:Abfrage ${Classname}"/>
  <tal:block metal:fill-slot="create_or_query">
   <tal:block
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
@@ -15,66 +15,113 @@
     pdict python: utils.properties_dict (db, context);
     ep    python: utils.ExtProperty;
     props python:
-     ( ep (utils, pdict ['id'])
+     ( ep (utils, pdict ['id'], terse = False)
      , ep (utils, pdict ['invoice_no'])
-     , ep (utils, pdict ['period_start'])
-     , ep (utils, pdict ['period_end'])
-     , ep (utils, pdict ['amount'])
-     , ep (utils, pdict ['currency'],      multiselect = 1)
-     , ep (utils, pdict ['balance_open'])
-     , ep (utils, pdict ['amount_payed'])
-     , ep (utils, pdict ['open'])
-     , ep (utils, pdict ['n_sent'])
-     , ep (utils, pdict ['send_it'])
+     , ep (utils, pdict ['period_start'], terse = False)
+     , ep (utils, pdict ['period_end'], terse = False)
+     , ep (utils, pdict ['amount'], terse = False)
+     , ep (utils, pdict ['currency'],      multiselect = 1, terse = False)
+     , ep (utils, pdict ['balance_open'], terse = False)
+     , ep (utils, pdict ['amount_payed'], terse = False)
+     , ep (utils, pdict ['open'], terse = False)
+     , ep (utils, pdict ['n_sent'], terse = False)
+     , ep (utils, pdict ['send_it'], terse = False)
      , ep (utils, pdict ['last_sent'])
+     , ep ( utils, pdict ['subscriber']
+          , searchname   = 'subscriber.lastname'
+          , searchable   = False
+          )
+     , ep ( utils, pdict ['subscriber']
+          , searchname   = 'subscriber.firstname'
+          , searchable   = False
+          , do_classhelp = False
+          )
+     , ep ( utils, pdict ['subscriber']
+          , searchname   = 'subscriber.function'
+          , searchable   = False
+          , terse        = False
+          )
      , ep ( utils, pdict ['subscriber']
           , searchname   = 'subscriber.lookalike_lastname'
           , searchable   = True
+          , displayable  = False
           )
      , ep ( utils, pdict ['subscriber']
           , searchname   = 'subscriber.lookalike_firstname'
           , searchable   = True
           , do_classhelp = False
+          , displayable  = False
           )
      , ep ( utils, pdict ['subscriber']
           , searchname   = 'subscriber.lookalike_function'
           , searchable   = True
+          , terse        = False
+          , displayable  = False
           )
      , ep ( utils, pdict ['subscriber']
           , searchname   = 'subscriber.valid'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname   = 'payer.lastname'
+          , searchable   = False
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname   = 'payer.firstname'
+          , searchable   = False
+          , do_classhelp = False
+          )
+     , ep ( utils, pdict ['payer']
+          , searchname   = 'payer.function'
+          , searchable   = False
+          , terse        = False
           )
      , ep ( utils, pdict ['payer']
           , searchname   = 'payer.lookalike_lastname'
           , searchable   = True
+          , displayable  = False
           )
      , ep ( utils, pdict ['payer']
           , searchname   = 'payer.lookalike_firstname'
           , searchable   = True
           , do_classhelp = False
+          , displayable  = False
           )
      , ep ( utils, pdict ['payer']
           , searchname   = 'payer.lookalike_function'
           , searchable   = True
+          , terse        = False
+          , displayable  = False
           )
      , ep ( utils, pdict ['payer']
           , searchname   = 'payer.valid'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
-     , ep (utils, pdict ['abo'])
+     , ep (utils, pdict ['abo'], terse = False)
      , ep ( utils, pdict ['abo']
           , searchname   = 'abo.aboprice'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
      , ep ( utils, pdict ['abo']
           , searchname   = 'abo.aboprice.abotype'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
-     , ep (utils, pdict ['invoice_group'], multiselect = 1)
+     , ep ( utils, pdict ['abo']
+          , searchname   = 'abo.aboprice.abotype.adr_type'
+          , searchable   = True
+          , multiselect  = True
+          , terse        = False
+          , filter       = {'typecat' : db._db.adr_type_cat.lookup ('ABO')}
+          )
+     , ep (utils, pdict ['invoice_group'], multiselect = 1, terse = False)
      );
    "
    tal:condition="context/is_view_ok">

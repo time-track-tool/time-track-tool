@@ -3,7 +3,7 @@
   <span tal:replace="string:Abfrage ${Classname}"/>
  </title>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:content="string:Abfrage ${Classname}"/>
+       tal:condition="not:terse" tal:content="string:Abfrage ${Classname}"/>
  <tal:block metal:fill-slot="create_or_query">
   <tal:block
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
@@ -15,35 +15,40 @@
     pdict python: utils.properties_dict (db, context);
     ep    python: utils.ExtProperty;
     props python:
-     ( ep (utils, pdict ['id'])
-     , ep (utils, pdict ['date_payed'])
-     , ep (utils, pdict ['creation'])
-     , ep (utils, pdict ['creator'])
-     , ep (utils, pdict ['activity'])
-     , ep (utils, pdict ['actor'])
+     ( ep (utils, pdict ['id'], terse = False)
+     , ep (utils, pdict ['date_payed'], terse = False)
+     , ep (utils, pdict ['creation'], terse = False)
+     , ep (utils, pdict ['creator'], terse = False)
+     , ep (utils, pdict ['activity'], terse = False)
+     , ep (utils, pdict ['actor'], terse = False)
      , ep (utils, pdict ['receipt_no'])
-     , ep (utils, pdict ['amount'])
+     , ep (utils, pdict ['amount'], terse = False)
      , ep (utils, pdict ['invoice'], do_classhelp = False)
      , ep ( utils, pdict ['invoice']
-          , searchname  = 'invoice.period_start'
-          , searchable  = True
+          , searchname   = 'invoice.period_start'
+          , searchable   = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
-          , searchname  = 'invoice.period_end'
-          , searchable  = True
+          , searchname   = 'invoice.period_end'
+          , searchable   = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
-          , searchname  = 'invoice.currency'
-          , searchable  = True
-          , multiselect = True
+          , searchname   = 'invoice.currency'
+          , searchable   = True
+          , multiselect  = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
-          , searchname  = 'invoice.amount'
-          , searchable  = True
+          , searchname   = 'invoice.amount'
+          , searchable   = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
-          , searchname  = 'invoice.open'
-          , searchable  = True
+          , searchname   = 'invoice.open'
+          , searchable   = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.subscriber.lastname'
@@ -80,11 +85,13 @@
           , searchable   = True
           , do_classhelp = False
           , displayable  = False
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.subscriber.valid'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.payer.lastname'
@@ -121,31 +128,37 @@
           , searchable   = True
           , do_classhelp = False
           , displayable  = False
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.payer.valid'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.abo'
           , searchable   = True
           , do_classhelp = False
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.abo.aboprice'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.abo.aboprice.abotype'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
      , ep ( utils, pdict ['invoice']
           , searchname   = 'invoice.invoice_group'
           , searchable   = True
           , multiselect  = True
+          , terse        = False
           )
      );
    "

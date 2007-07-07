@@ -3530,6 +3530,9 @@ msgstr "(Sucht auch in Notizen)"
 msgid "Update view"
 msgstr "Neu anzeigen"
 
+msgid "Find"
+msgstr "Finden"
+
 msgid "This query's name:"
 msgstr "Name dieser Abfrage:"
 

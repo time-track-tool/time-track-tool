@@ -3,7 +3,7 @@
   <span tal:replace="string:Abfrage ${Classname}"/>
  </title>
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:content="string:Abfrage ${Classname}"/>
+       tal:condition="not:terse" tal:content="string:Abfrage ${Classname}"/>
  <tal:block metal:fill-slot="create_or_query">
   <tal:block
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
@@ -14,8 +14,8 @@
    "batch request/batch;
     pdict python: utils.properties_dict (db, context);
     props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['subject'])
+    ( utils.ExtProperty (utils, pdict ['id'], terse = False)
+    , utils.ExtProperty (utils, pdict ['subject'], terse = False)
     , utils.ExtProperty (utils, pdict ['date'])
     , utils.ExtProperty 
         ( utils, pdict ['address']
@@ -52,12 +52,14 @@
         , searchname  = 'address.lookalike_function'
         , searchable  = True
         , displayable = False
+        , terse       = False
         )
     , utils.ExtProperty
         ( utils, pdict ['address']
         , searchname   = 'address.valid'
         , searchable   = True
         , multiselect  = True
+        , terse       = False
         )
     );
    "
