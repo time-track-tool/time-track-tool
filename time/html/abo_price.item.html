@@ -37,7 +37,8 @@
       <td tal:content="structure context/invoice_group/menu"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'invoice_template')"/>
-      <td tal:content="structure context/invoice_template/menu"/>
+      <td tal:content="structure python:context.invoice_template.menu
+                       (height=4)"/>
      </tr>
     </tal:block>
    </tal:block>

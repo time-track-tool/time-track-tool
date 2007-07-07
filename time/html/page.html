@@ -43,6 +43,8 @@
    , ('abo_type', '')   : '@columns=name,description,period,order,adr_type,'
                           'invoice_template&@sort=order&@pagesize=20&'
                           '@startwith=0'
+   , ('abo_price', '')  : '@startwith=0&@pagesize=20&@sort=name&'
+                          '@columns=name,amount,invoice_group,invoice_template'
    , ('address', '')    : '@quiet=1&@startwith=0&@pagesize=20&'
                           '@sort=lookalike_lastname,lookalike_firstname&'
                           '@columns=salutation,title,id,lastname,firstname,'
@@ -275,7 +277,7 @@
      , ('abo_type',            'Edit',   '?@template=item', 1)
      , ('address',             'Edit',   '?@template=item', 1)
      , ('valid',               'Edit',   '?@template=item', 1)
-     , ('abo_price',           'Edit',   '?@template=item', 1)
+     , ('abo_price',           'Edit',   '?@template=item&valid=1', 1)
      , ('invoice_group',       'Edit',   '?@template=item', 1)
      , ('invoice_template',    'Edit',   '?@template=item', 1)
      , ('adr_type',            'Edit',   '?@template=item', 1)
