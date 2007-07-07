@@ -64,6 +64,7 @@ def init \
         , currency            = Link      ('currency')
         , amount              = Number    ()
         , name                = String    ()
+        , invoice_template    = Multilink ('invoice_template')
         , invoice_group       = Link      ('invoice_group')
         , valid               = Boolean   ()
         )
@@ -75,7 +76,6 @@ def init \
         , description         = String    ()
         , period              = Number    () # subscription period in months
         , order               = Number    ()
-        , invoice_template    = Multilink ('invoice_template')
         , adr_type            = Link      ('adr_type')
         )
     abo_type.setkey (''"name")

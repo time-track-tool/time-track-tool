@@ -19,20 +19,25 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
-      <td colspan="3"
-          tal:content="structure python:context.description.field (size=60)"/>
+          (classname, 'abotype')"/>
+      <td tal:content="structure python:context.abotype.menu ()"/>
+      <th tal:content="structure python:utils.fieldname(classname, 'valid')"/>
+      <td tal:content="structure context/valid/field"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'period')"/>
-      <td tal:content="structure context/period/field"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'order')"/>
-      <td tal:content="structure context/order/field"/>
-     </tr>
-     <tr tal:define="tc python:db._db.adr_type_cat.lookup ('ABO')">
+      <th tal:content="structure python:utils.fieldname(classname, 'amount')"/>
+      <td tal:content="structure context/amount/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'adr_type')"/>
-      <td tal:content="structure python:context.adr_type.menu (typecat = tc)"/>
+          (classname, 'currency')"/>
+      <td tal:content="structure python:context.currency.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'invoice_group')"/>
+      <td tal:content="structure context/invoice_group/menu"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'invoice_template')"/>
+      <td tal:content="structure context/invoice_template/menu"/>
      </tr>
     </tal:block>
    </tal:block>

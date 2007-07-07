@@ -10,13 +10,17 @@
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['period'])
-    , utils.ExtProperty (utils, pdict ['order'])
+    , utils.ExtProperty (utils, pdict ['amount'])
+    , utils.ExtProperty (utils, pdict ['currency'],      multiselect = True)
+    , utils.ExtProperty (utils, pdict ['abotype'],       multiselect = True)
+    , utils.ExtProperty (utils, pdict ['invoice_group'], multiselect = True)
+    , utils.ExtProperty (utils, pdict ['invoice_template'], searchable = False)
+    , utils.ExtProperty (utils, pdict ['valid'])
     , utils.ExtProperty
-        ( utils, pdict ['adr_type']
+        ( utils, pdict ['abotype']
+        , searchname  = 'abotype.adr_type'
         , multiselect = True
-        , filter       = {'typecat' : db._db.adr_type_cat.lookup ('ABO')}
+        , filter      = {'typecat' : db._db.adr_type_cat.lookup ('ABO')}
         )
     );
   "
