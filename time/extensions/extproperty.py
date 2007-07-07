@@ -37,7 +37,7 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
-from roundup.hyperdb                import Link, Multilink
+from roundup.hyperdb                import Link, Multilink, Boolean
 
 _ = None
 
@@ -227,6 +227,7 @@ class ExtProperty :
         self.help_sort     = help_sort
         self.bool_tristate = bool_tristate
         self.propname      = displayprop
+        self.leafprop      = prop
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -266,6 +267,7 @@ class ExtProperty :
                 if len (props) > 1:
                     self.helpcls  = props [-2].classname
                     self.helpname = props [-1].name
+                    self.leafprop = props [-1].propclass
             else :
                 self.lnkcls = prop._db.getclass (prop._prop.classname)
             self.key     = self.lnkcls.getkey ()
@@ -508,7 +510,7 @@ class ExtProperty :
 
     def search_input (self, request) :
         value = request.form.getvalue (self.searchname) or ''
-        if isinstance (self.prop, BooleanHTMLProperty) :
+        if isinstance (self.leafprop, Boolean) :
             yvalue = value in ('yes', '1')
             nvalue = value in ('no',  '0')
             s = [ """<input type="radio" name="%s" value="yes"%s>%s"""
