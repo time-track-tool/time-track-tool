@@ -113,8 +113,9 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.address.audit ("create", set_adr_defaults)
-    db.address.audit ("create", fix_adr_type)
-    db.address.audit ("set",    fix_adr_type)
+    if 'abo' in db.classes :
+        db.address.audit ("create", fix_adr_type)
+        db.address.audit ("set",    fix_adr_type)
     db.address.audit ("create", lookalike_computation)
     db.address.audit ("set",    lookalike_computation)
     db.address.audit ("set",    check_address)
