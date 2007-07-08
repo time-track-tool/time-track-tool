@@ -104,7 +104,7 @@ def check_function (db, cl, nodeid, new_values) :
         if length > 2 :
             attr = _ ('function')
             raise Reject, _ (''"%(attr)s must not exceed 2 lines") % locals ()
-# end def check_contact
+# end def check_function
 
 def init (db) :
     if 'address' not in db.classes :
