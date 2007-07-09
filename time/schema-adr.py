@@ -50,6 +50,7 @@ importer = schemadef.Importer (globals (), schemas)
 
 del sys.path [0:1]
 
+Letter_Class  (db, ''"letter")
 Address_Class (db, ''"address")
 
 importer.update_security ()
