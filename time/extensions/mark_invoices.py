@@ -253,11 +253,11 @@ class Generate_Invoice (Invoice) :
 
             o = OOoPy (infile = file, outfile = sio [tid])
             t = Transformer \
-                ( get_meta
+                ( get_meta (o.mimetype)
                 , Transforms.Addpagebreak_Style ()
                 , Transforms.Mailmerge          (iterator = iv_by_tid [tid])
-                , renumber_all
-                , set_meta
+                , renumber_all (o.mimetype)
+                , set_meta     (o.mimetype)
                 )
             t.transform (o)
             o.close ()
@@ -266,10 +266,10 @@ class Generate_Invoice (Invoice) :
             out = StringIO ()
             o   = OOoPy (infile = outfiles [0], outfile = out)
             t   = Transformer \
-                  ( get_meta
+                  ( get_meta (o.mimetype)
                   , Transforms.Concatenate (* (outfiles [1:]))
-                  , renumber_all
-                  , set_meta
+                  , renumber_all (o.mimetype)
+                  , set_meta     (o.mimetype)
                   )
             t.transform (o)
             o.close ()
