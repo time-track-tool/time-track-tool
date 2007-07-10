@@ -58,7 +58,7 @@ from common                         import weekno_year_from_day
 from common                         import from_week_number
 from user_dynamic                   import get_user_dynamic, day_work_hours
 from user_dynamic                   import round_daily_work_hours, day
-from user_dynamic                   import last_user_dynamic
+from user_dynamic                   import last_user_dynamic, find_user_dynamic
 from freeze                         import frozen, range_frozen, next_dr_freeze
 from freeze                         import prev_dr_freeze
 from rup_utils                      import translate
@@ -628,14 +628,16 @@ class Freeze_Action (Action, autosuper) :
             raise Reject, _ ("Date is required")
         self.date  = Date (self.request.form ['date'].value)
         msg = []
-        print "USERS:", self.users
         for u in self.users :
             date = self.date
             dyn  = get_user_dynamic (self.db, u, date)
             if not dyn :
-                dyn = last_user_dynamic (self.db, u)
+                dyn = find_user_dynamic (self.db, u, date, direction = '-')
                 if dyn :
+                    # there must be a valid_to date, otherwise
+                    # get_user_dynamic would have found something above
                     date = dyn.valid_to - day
+                    assert (date < self.date)
             if dyn :
                 try :
                     self.db.daily_record_freeze.create \
