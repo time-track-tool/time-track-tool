@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-06-15 23:06+0200\n"
+"POT-Creation-Date: 2007-07-03 19:45+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -61,6 +61,13 @@ msgid "period must be an integer"
 msgstr ""
 
 msgid "Country must be set"
+msgstr ""
+
+msgid "function"
+msgstr "Address details"
+
+#, python-format
+msgid "%(attr)s must not exceed 2 lines"
 msgstr ""
 
 msgid ""
@@ -154,28 +161,16 @@ msgstr ""
 msgid "currency"
 msgstr ""
 
-#, python-format
-msgid "\"%(attr)s\" must not be filled in"
-msgstr ""
-
-#, python-format
-msgid "\"%(attr)s\" must not be changed"
-msgstr ""
-
-msgid "no change of closed subscription"
-msgstr ""
-
-msgid "\"payment\", \"balance_open\", \"amount\": only numbers allowed"
+msgid "\"amount\": only numbers allowed"
 msgstr ""
 
 msgid "amount may not be changed after payment"
 msgstr ""
 
-#, python-format
-msgid "inconsistency of payment:%s and balance_open:%s"
+msgid "payment may not exceed the open balance"
 msgstr ""
 
-msgid "payment may not exceed balance_open"
+msgid "no change of closed subscription"
 msgstr ""
 
 #, python-format
@@ -543,6 +538,12 @@ msgstr ""
 msgid "First name for this %(Classname)s, e.g., Ralf"
 msgstr ""
 
+msgid ""
+"Multiline field for this %(Classname)s, will be printed on an\n"
+"         address label\n"
+"      "
+msgstr ""
+
 msgid "Green start/end times have been created by the distribute function."
 msgstr ""
 
@@ -552,6 +553,9 @@ msgid ""
 "      "
 msgstr ""
 
+msgid "Amount this subscription costs"
+msgstr ""
+
 msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
 msgstr ""
 
@@ -559,8 +563,8 @@ msgid "Leave this field empty if unsure."
 msgstr ""
 
 msgid ""
-"Search for similar names: only non-accented characters are\n"
-"         possible when searching\n"
+"%(Property)s for searching: Search for similar names: only\n"
+"         non-accented lowercase characters are possible when searching\n"
 "      "
 msgstr ""
 
@@ -774,7 +778,7 @@ msgstr ""
 msgid "amount"
 msgstr ""
 
-msgid "Amount this subscription costs"
+msgid "Amount payed"
 msgstr ""
 
 msgid "announcements"
@@ -1300,7 +1304,7 @@ msgid "Date of final meeting for this %(Classname)s."
 msgstr ""
 
 msgid "firstname"
-msgstr "First Name"
+msgstr "First name"
 
 msgid "Date of first contact"
 msgstr ""
@@ -1330,15 +1334,6 @@ msgid ""
 "             as well as the dynamic user data up to this date cannot be\n"
 "             changed any more.\n"
 "          "
-msgstr ""
-
-msgid "function"
-msgstr "Function"
-
-msgid ""
-"Multiline field for this %(Classname)s, will be printed on an\n"
-"            address label\n"
-"         "
 msgstr ""
 
 msgid "Numeric group ID"
@@ -1428,6 +1423,63 @@ msgstr ""
 
 msgid "Link to invoice for this %(Classname)s"
 msgstr ""
+
+msgid "invoice.amount"
+msgstr "Invoice amount"
+
+msgid "invoice++amount"
+msgstr "Amount"
+
+msgid "invoice.payer.firstname"
+msgstr "Payer First name"
+
+msgid "invoice.payer.lastname"
+msgstr "Payer Last name"
+
+msgid "invoice.payer.function"
+msgstr "Payer Address details"
+
+msgid "invoice.payer.lookalike_firstname"
+msgstr "Payer First name"
+
+msgid "invoice.payer.lookalike_lastname"
+msgstr "Payer Last name"
+
+msgid "invoice.payer.lookalike_city"
+msgstr "Payer City"
+
+msgid "invoice.payer.lookalike_street"
+msgstr "Payer Street"
+
+msgid "invoice.payer.lookalike_function"
+msgstr "Payer Address details"
+
+msgid "invoice.payer.valid"
+msgstr "Payer valid"
+
+msgid "invoice.subscriber.firstname"
+msgstr "Subscriber First name"
+
+msgid "invoice.subscriber.lastname"
+msgstr "Subscriber Last name"
+
+msgid "invoice.subscriber.lookalike_firstname"
+msgstr "Subscriber First name"
+
+msgid "invoice.subscriber.lookalike_lastname"
+msgstr "Subscriber Last name"
+
+msgid "invoice.subscriber.lookalike_city"
+msgstr "Subscriber City"
+
+msgid "invoice.subscriber.lookalike_street"
+msgstr "Subscriber Street"
+
+msgid "invoice.subscriber.lookalike_function"
+msgstr "Subscriber Address details"
+
+msgid "invoice.subscriber.valid"
+msgstr "Subscriber valid"
 
 msgid "invoice_group"
 msgstr "Invoice group"
@@ -1569,7 +1621,7 @@ msgid "Last used uid in this %(Classname)s"
 msgstr ""
 
 msgid "lastname"
-msgstr "Last Name"
+msgstr "Last name"
 
 msgid "letter"
 msgstr ""
@@ -1618,9 +1670,6 @@ msgstr "Login shell"
 
 msgid "UNIX login shell for %(Classname)s"
 msgstr ""
-
-msgid "lookalike_name"
-msgstr "Lookalike search"
 
 msgid "lunch_duration"
 msgstr "Lunch Duration"
@@ -1954,13 +2003,19 @@ msgid "Address which is paying for this subscription"
 msgstr ""
 
 msgid "payer.firstname"
-msgstr "Payer First Name"
+msgstr "Payer First name"
 
 msgid "payer.lastname"
-msgstr "Payer Last Name"
+msgstr "Payer Last name"
 
-msgid "payer.lookalike_name"
-msgstr "Payer Lookalike search"
+msgid "payer.lookalike_lastname"
+msgstr "Payer Last name"
+
+msgid "payer.lookalike_firstname"
+msgstr "Payer First name"
+
+msgid "payer.lookalike_function"
+msgstr "Payer Address details"
 
 msgid "payer.valid"
 msgstr "Payer valid"
@@ -2012,6 +2067,12 @@ msgid ""
 "             in the Project Evaluation Sheet. Warning: This used to be in\n"
 "             person days, so you have to convert old values to hours!\n"
 "          "
+msgstr ""
+
+msgid "position"
+msgstr "Position"
+
+msgid "%(Property)s in the company"
 msgstr ""
 
 msgid "postalcode"
@@ -2484,13 +2545,22 @@ msgid "Subscriber of this subscription"
 msgstr ""
 
 msgid "subscriber.firstname"
-msgstr "Subscriber First Name"
+msgstr "Subscriber First name"
 
 msgid "subscriber.lastname"
-msgstr "Subscriber Last Name"
+msgstr "Subscriber Last name"
 
-msgid "subscriber.lookalike_name"
-msgstr "Subscriber Lookalike search"
+msgid "subscriber.function"
+msgstr "Subscriber Address details"
+
+msgid "subscriber.lookalike_firstname"
+msgstr "Subscriber First name"
+
+msgid "subscriber.lookalike_lastname"
+msgstr "Subscriber Last name"
+
+msgid "subscriber.lookalike_function"
+msgstr "Subscriber Address details"
 
 msgid "subscriber.valid"
 msgstr "Subscriber valid"
@@ -2744,6 +2814,15 @@ msgid ""
 "         "
 msgstr ""
 
+msgid "tmplate_status"
+msgstr "Template Status"
+
+msgid ""
+"Status of template -- used for letter template, invoice\n"
+"             template or none.\n"
+"         "
+msgstr ""
+
 msgid "travel"
 msgstr "Travel"
 
@@ -2828,6 +2907,24 @@ msgstr "Use DHCP"
 msgid ""
 "Flag if this %(Classname)s should be served by the DHCP\n"
 "             server.\n"
+"          "
+msgstr ""
+
+msgid "use_for_invoice"
+msgstr "Use for Invoice"
+
+msgid ""
+"Flag if templates with this %(Classname)s should be visible\n"
+"             in invoice templates\n"
+"          "
+msgstr ""
+
+msgid "use_for_letter"
+msgstr ""
+
+msgid ""
+"Flag if templates with this %(Classname)s should be visible\n"
+"             as letter templates\n"
 "          "
 msgstr ""
 
@@ -3052,7 +3149,7 @@ msgstr ""
 #, python-format
 msgid ""
 "<a %s title=\"Help for %s\" href=\"javascript:help_window('%s?:"
-"template=property_help#%s', '500', '400')\">%s%s</a>"
+"template=property_help#%s', '500', '400')\" tabindex=\"-1\">%s%s</a>"
 msgstr ""
 
 msgid "(cal)"
@@ -3452,9 +3549,6 @@ msgstr ""
 msgid "meeting_room"
 msgstr "Meeting Room"
 
-msgid "position"
-msgstr "Position"
-
 msgid "sex"
 msgstr ""
 
@@ -3723,6 +3817,9 @@ msgstr "Filename"
 msgid "adr_type_cat"
 msgstr "Address type category"
 
+msgid "type_valid"
+msgstr "Type valid"
+
 msgid "weekday"
 msgstr "Weekday"
 
@@ -3747,8 +3844,26 @@ msgstr ""
 msgid "abo_type"
 msgstr "Subscription type"
 
+msgid "lookalike_street"
+msgstr "Street"
+
 msgid "contacts"
 msgstr "Contacts"
+
+msgid "lookalike_lastname"
+msgstr "Last name"
+
+msgid "lookalike_city"
+msgstr "City"
+
+msgid "lookalike_firstname"
+msgstr "First name"
+
+msgid "lookalike_function"
+msgstr "Address details"
+
+msgid "amount_payed"
+msgstr ""
 
 msgid "legalclient"
 msgstr ""
