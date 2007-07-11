@@ -237,27 +237,25 @@ class Generate_Invoice (Invoice) :
         tp_by_tid = {}
         for i in ivts :
             tid = i [0]['id']
-            if not mimetype :
-                mimetype = tid.type
-            else :
-                assert (mimetype == tid.type)
             if tid not in iv_by_tid :
                 iv_by_tid [tid] = []
                 tp_by_tid [tid] = i [0]
             iv_by_tid [tid].append (OOoPy_Invoice_Wrapper (self.db, i [1]))
         sio = {}
-        for tid,tp in tp_by_tid.iteritems () :
+        for tid, tp in tp_by_tid.iteritems () :
             sio [tid] = StringIO ()
             fileid    = self.db.tmplate.get (tp ['tmplate'], 'files')[-1]
             file      = StringIO (self.db.file.get (fileid, 'content'))
 
             o = OOoPy (infile = file, outfile = sio [tid])
             t = Transformer \
-                ( get_meta (o.mimetype)
+                ( o.mimetype
+                , get_meta (o.mimetype)
                 , Transforms.Addpagebreak_Style ()
-                , Transforms.Mailmerge          (iterator = iv_by_tid [tid])
+                , Transforms.Mailmerge (iterator = iv_by_tid [tid])
                 , renumber_all (o.mimetype)
                 , set_meta     (o.mimetype)
+                , Transforms.Fix_OOo_Tag ()
                 )
             t.transform (o)
             o.close ()
@@ -266,10 +264,12 @@ class Generate_Invoice (Invoice) :
             out = StringIO ()
             o   = OOoPy (infile = outfiles [0], outfile = out)
             t   = Transformer \
-                  ( get_meta (o.mimetype)
+                  ( o.mimetype
+                  , get_meta (o.mimetype)
                   , Transforms.Concatenate (* (outfiles [1:]))
                   , renumber_all (o.mimetype)
                   , set_meta     (o.mimetype)
+                  , Transforms.Fix_OOo_Tag ()
                   )
             t.transform (o)
             o.close ()
@@ -346,11 +346,13 @@ class Download_Letter (Action, autosuper) :
         out = StringIO ()
         o   = OOoPy (infile = StringIO (file.content), outfile = out)
         t   = Transformer \
-              ( Transforms.Editinfo ()
+              ( o.mimetype
+              , Transforms.Editinfo ()
               , Transforms.Field_Replace
                 ( replace = OOoPy_Invoice_Wrapper
                     (self.db, invoice, date, address)
                 )
+              , Transforms.Fix_OOo_Tag ()
               )
         t.transform (o)
         o.close ()
