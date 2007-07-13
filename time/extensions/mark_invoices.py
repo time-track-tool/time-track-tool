@@ -230,7 +230,8 @@ class Generate_Invoice (Invoice) :
     def handle (self) :
         ''' Prepare invoices for printout and send to browser.'''
         self.__super.handle ()
-        mimetype = None
+        mimetype  = None
+        extension = None
         invoices = [self.db.invoice.getnode (i) for i in self.marked (True)]
         ivts      = [(self.get_iv_template (i), i) for i in invoices]
         iv_by_tid = {}
@@ -246,6 +247,7 @@ class Generate_Invoice (Invoice) :
             sio [tid] = StringIO ()
             fileid    = self.db.tmplate.get (tp ['tmplate'], 'files')[-1]
             file      = StringIO (self.db.file.get (fileid, 'content'))
+            extension = splitext (self.db.file.get (fileid, 'name'))[1]
 
             o = OOoPy (infile = file, outfile = sio [tid])
             t = Transformer \
@@ -258,6 +260,7 @@ class Generate_Invoice (Invoice) :
                 , Transforms.Fix_OOo_Tag ()
                 )
             t.transform (o)
+            mimetype = o.mimetype
             o.close ()
         outfiles = sio.values ()
         if len (outfiles) > 1 :
@@ -277,7 +280,7 @@ class Generate_Invoice (Invoice) :
             out = outfiles [0]
         h = self.client.additional_headers
         h ['Content-Type']        = mimetype
-        h ['Content-Disposition'] = 'inline; filename=inv.sxw'
+        h ['Content-Disposition'] = 'inline; filename=inv%s' % extension
         self.client.header  ()
         return out.getvalue ()
     # end def handle
