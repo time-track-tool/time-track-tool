@@ -9,12 +9,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -65,25 +65,28 @@ def initial_status_ok (db, status_id, cat_id) :
         ) :
         return True
     return False
-# end def initial_status_ok 
+# end def initial_status_ok
 
 def limit_new_entry (db, cl, nodeid, newvalues) :
     """Limit creation of new issues, check on entered fields,
        and correctly complete missing fields.
     """
-    title       = newvalues.get ("title",       None)
-    category    = newvalues.get ("category",    None)
-    area        = newvalues.get ("area",        None)
-    kind        = newvalues.get ("kind",        None)
-    responsible = newvalues.get ("responsible", None)
-    msg         = newvalues.get ("messages",    None)
-    severity    = newvalues.get ("severity",    None)
-    bug         = db.kind.lookup ('Bug')
+    title       = newvalues.get    ("title")
+    category    = newvalues.get    ("category")
+    area        = newvalues.get    ("area")
+    kind        = newvalues.get    ("kind")
+    responsible = newvalues.get    ("responsible")
+    msg         = newvalues.get    ("messages")
+    severity    = newvalues.get    ("severity")
+    effort      = newvalues.get    ("effort")
+    bug         = db.kind.lookup   ('Bug')
+    analyzing   = db.status.lookup ("analyzing")
 
     if  (  "status" not in newvalues
         or not initial_status_ok (db, newvalues ["status"], category)
         ) :
-        newvalues ["status"] = db.status.lookup ("analyzing")
+        newvalues ["status"] = analyzing
+    status = newvalues ["status"]
 
     if not category :
         category = newvalues ['category'] = db.category.lookup ('pending')
@@ -101,6 +104,9 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
                         % locals ()
     if kind == bug and 'release' not in newvalues :
         raise Reject, _ ("For bugs you have to specify the release")
+    if status != analyzing and not effort :
+        raise Reject, \
+            _ ("An effort estimation is required for issues to skip analyzing")
 
     # Set `responsible` to the category's responsible.
     if not responsible :
@@ -111,7 +117,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     # and the category's nosy list.
     nosy     = newvalues.get   ("nosy", [])
     cat_nosy = db.category.get (category, "nosy")
-    creator  = newvalues.get   ("creator", None)
+    creator  = newvalues.get   ("creator")
     nosy     = union (nosy, cat_nosy, [creator, responsible])
     if None in nosy :
         nosy.remove (None)
@@ -131,39 +137,42 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
 # end def limit_new_entry
 
 def check_effort (newvalues) :
-    effort = newvalues.get ("effort", None)
+    effort = newvalues.get ("effort")
     if effort and not _effort_regex.match (effort) :
         raise Reject, ( "The `effort` field must have the format "
                         "`\\d+ [PM][DWM]`, e.g. `12 PD`."
                       )
+# end def check_effort
 
-def may_not_vanish (db, cl, nodeid, newvalues) :
+def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
     """Ensure that certain fields do not vanish.
     """
-    for k in \
-        ( 'title'
-        , 'category'
-        , 'area'
-        , 'kind'
-        , 'responsible'
-        , 'effort'
-        , 'severity'
+    for k, except_analyzing in \
+        ( ('title'      , False)
+        , ('category'   , False)
+        , ('area'       , False)
+        , ('kind'       , False)
+        , ('responsible', False)
+        , ('effort'     , True )
+        , ('severity'   , False)
         ) :
         old = cl.get (nodeid, k)
         new = newvalues.get (k, old)
         if new != old and not new :
-            raise Reject, _ ('The field "%s" must remain filled.') % _ (k)
+            if not (except_analyzing and new_status_name == "analyzing") :
+                raise Reject, _ ('The field "%s" must remain filled.') % _ (k)
 # end def may_not_vanish
 
 def limit_transitions (db, cl, nodeid, newvalues) :
     """Enforce (i.e. limit) status transitions
     """
-    may_not_vanish (db, cl, nodeid, newvalues)
-
     cur_status      = cl.get        (nodeid, "status")
     cur_status_name = db.status.get (cur_status, "name")
     new_status      = newvalues.get ("status", cur_status)
     new_status_name = db.status.get (new_status, "name")
+
+    may_not_vanish (db, cl, nodeid, newvalues, new_status_name)
+
     kind            = newvalues.get ("kind", cl.get (nodeid, "kind"))
     kind_name       = kind and db.kind.get (kind, "name") or ""
     old_responsible = cl.get        (nodeid, "responsible")
@@ -196,7 +205,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     and (cur_status_name == "feedback") and (new_status_name == "feedback") :
         new_status_name = "open"
         newvalues ["status"] = new_status = db.status.lookup (new_status_name)
-    
+
     # Automatically clear the `fixed_in` field if testing failed.
     if cur_status_name == "testing" and new_status_name == "open" :
         newvalues ["fixed_in"] = fixed = "" # active delete
@@ -204,7 +213,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     check_effort (newvalues)
 
     ############ prohibit invalid changes ############
-    
+
     # Direct close only allowed if mistaken, obsolete or duplicate,
     # or if it is a container.
     if (   cur_status_name in ["open", "feedback", "suspended", "analyzing"]
@@ -289,7 +298,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                         "set for certified software."
                       % nodeid
                       )
-    
+
     if  (   not is_container
         and (new_status_name != cur_status_name or 'severity' in newvalues)
         ) :
