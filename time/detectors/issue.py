@@ -138,11 +138,12 @@ def check_container_statuschange (db, cl, nodeid, new_values) :
 # end def check_container_statuschange
 
 def check_part_of (db, cl, nodeid, new_values) :
-    if not 'part_of' in new_values :
+    p_id = new_values.get ('part_of')
+    if not p_id :
         return
     obsolete = db.kind.lookup ('Obsolete')
     mistaken = db.kind.lookup ('Mistaken')
-    part_of = cl.getnode (new_values ['part_of'])
+    part_of = cl.getnode (p_id)
     if part_of.kind in (mistaken, obsolete) :
         raise Reject, _ ("May not be part of Obsolete or Mistaken container")
 # end def check_part_of
