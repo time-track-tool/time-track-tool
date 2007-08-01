@@ -46,7 +46,7 @@
     </tal:block>
 
     <form method="POST" tal:attributes="action request/classname"
-     name="edit_daily_record">
+     name="edit_daily_record" enctype="multipart/form-data">
      <tal:block tal:define=
       "batch        request/batch;
        is_open      python:utils.batch_has_status (batch, 'open');
