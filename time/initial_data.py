@@ -398,6 +398,15 @@ if 'area' in db.classes :
     db.area.create (name = "Doc", description = "Documentation")
     db.area.create (name = "IT",  description = "Information Technology")
 
+if 'category' in db.classes :
+    db.category.create \
+        ( name        = "pending"
+        , responsible = "admin"
+        , valid       = True
+        , cert_sw     = False
+        , description = "Category for faulty PRs"
+        )
+
 if 'kind' in db.classes :
     db.kind.create \
         ( name        = "Bug"
