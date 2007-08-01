@@ -561,7 +561,7 @@ class Summary_Report (_Report) :
         trvl_tr     = {}
         for d in dr.itervalues () :
             update_tr_duration (db, d)
-        db.commit ()
+            db.commit ()
         #print "trv daily_recs", len (trvl_dr), time.time () - timestamp
 
         wp          = dict ((w, 1) for w in filterspec.get ('time_wp', []))
@@ -981,8 +981,10 @@ class Staff_Report (_Report) :
         container ['overtime_period'] = period
         container ['balance_start']   = compute_balance \
             (db, u, start - day, period, True)
+        db.commit () # immediately commit cached tr_duration if changed
         container ['balance_end']     = compute_balance \
             (db, u, end,         period, True)
+        db.commit () # immediately commit cached tr_duration if changed
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = pretty_range (start, end)))
         try :
@@ -1017,6 +1019,7 @@ class Staff_Report (_Report) :
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
+            db.commit () # immediately commit cached tr_duration if changed
             assert (not act or st)
             container ['actual_all'] += act
             if st :
