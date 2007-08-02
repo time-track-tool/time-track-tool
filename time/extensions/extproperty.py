@@ -228,7 +228,7 @@ class ExtProperty :
         self.help_sort     = help_sort
         self.bool_tristate = bool_tristate
         self.propname      = displayprop
-        self.leafprop      = prop
+        self.leafprop      = prop._prop
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -511,6 +511,7 @@ class ExtProperty :
 
     def search_input (self, request) :
         value = request.form.getvalue (self.searchname) or ''
+        print self.name, "leafprop", self.leafprop.__class__.__name__
         if isinstance (self.leafprop, Boolean) :
             yvalue = value in ('yes', '1')
             nvalue = value in ('no',  '0')
