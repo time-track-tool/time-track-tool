@@ -14,7 +14,7 @@
        ( [i for i in items
           if i.status.plain () != 'closed' or not hide
          ]
-       , key = lambda x : (str (x.status), x.id)
+       , key = lambda x : (str (x.status), -int (x.id))
        )
       )">
       <tal:block metal:use-macro="templates/issue/macros/rec_issue_loop" />
