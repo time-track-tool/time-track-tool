@@ -821,7 +821,8 @@ _helptext          = \
              order to define what %(Classname)ss compose a larger
              project, e.g., Define one Top-Level work package Some New
              Feature which is composed of Design, Build Hardware, Write
-             Software, Put all parts together, and Test. You can enter
+             Software, Put all parts together, and Test. In the
+             search-mask you can enter
              "-1" here to find only Top-Level container work packages.
           '''
       ]
