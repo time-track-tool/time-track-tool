@@ -511,7 +511,6 @@ class ExtProperty :
 
     def search_input (self, request) :
         value = request.form.getvalue (self.searchname) or ''
-        print self.name, "leafprop", self.leafprop.__class__.__name__
         if isinstance (self.leafprop, Boolean) :
             yvalue = value in ('yes', '1')
             nvalue = value in ('no',  '0')
