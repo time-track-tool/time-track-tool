@@ -716,7 +716,9 @@
      <span tal:replace="structure context/nosy/field"/>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:db.user.classhelp
-             ( 'username,nickname,firstname,lastname'
+             ( ','.join (n for n in (username,nickname,firstname,lastname)
+                         if n in db._db.user.properties
+                        )
              , property='nosy'
              , width='600'
              , pagesize=500
