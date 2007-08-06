@@ -86,14 +86,7 @@
           (classname, 'responsible')"/>
       <td>
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
-       <tal:block tal:replace="structure python:db.user.classhelp
-             ( 'username,nickname,firstname,lastname'
-             , property='responsible'
-             , filter='status=%s' % db._db.user_status.lookup ('valid')
-             , inputtype='radio'
-             , width='600'
-             , pagesize=500
-             )"/>
+       <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'effort')"/>

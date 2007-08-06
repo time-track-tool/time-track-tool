@@ -50,14 +50,8 @@
          ).formatlink ()"/>
       <td tal:condition="not:context/id">
        <span tal:replace="structure context/user/field"/>
-       <span tal:replace="structure python:db.user.classhelp
-             ( 'username,nickname,firstname,lastname'
-             , property='user'
-             , width='600'
-             , inputtype='radio'
-             , filter='status=%s' % db._db.user_status.lookup ('valid')
-             , pagesize=500
-             )"/>
+       <span tal:replace="structure python:utils.user_classhelp
+             (db, property = 'user')"/>
       </td>
       <th class="required"
           tal:content="structure python:utils.fieldname (classname, 'date')"/>

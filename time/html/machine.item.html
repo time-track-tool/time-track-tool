@@ -30,14 +30,8 @@
      <th tal:content="structure python:utils.fieldname (classname, 'owner')"/>
      <td>
       <tal:block tal:replace="structure context/owner/field"/>
-      <tal:block tal:replace="structure python:db.user.classhelp
-       ( 'username,nickname,firstname,lastname'
-       , property='owner'
-       , filter='status=%s' % db._db.user_status.lookup ('valid')
-       , inputtype='radio'
-       , width='600'
-       , pagesize=1000
-       )"/>
+      <tal:block tal:replace="structure python:utils.user_classhelp
+        (db, property = 'owner')"/>
      </td>
     </tr>
     <tr>

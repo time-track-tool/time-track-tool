@@ -326,6 +326,20 @@ def get_from_form (request, name) :
     return ''
 # end def get_from_form
 
+def user_classhelp (db, property='responsible', inputtype = 'radio') :
+    return db.user.classhelp \
+        ( ','.join (n for n in
+                    'username,nickname,firstname,lastname'.split(',')
+                    if n in db._db.user.properties
+                   )
+        , property  = property
+        , filter    = 'status=%s' % db._db.user_status.lookup ('valid')
+        , inputtype = inputtype
+        , width     = '600'
+        , pagesize  = 500
+        )
+# end def user_classhelp
+
 
 def init (instance) :
     global _
@@ -356,3 +370,4 @@ def init (instance) :
     reg ("now",                          now)
     reg ("until_now",                    until_now)
     reg ("get_from_form",                get_from_form)
+    reg ("user_classhelp",               user_classhelp)

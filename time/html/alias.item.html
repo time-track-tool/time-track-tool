@@ -36,13 +36,8 @@
          (classname, 'alias_to_user')"/>
      <td>
       <tal:block tal:content="structure context/alias_to_user/field"/>
-      <tal:block tal:replace="structure python:db.user.classhelp
-       ( 'username,nickname,firstname,lastname'
-       , property='alias_to_user'
-       , filter='status=%s' % db._db.user_status.lookup ('valid')
-       , width='600'
-       , pagesize=1000
-       )"/>
+      <tal:block tal:replace="structure python:utils.user_classhelp
+                 (db, property='alias_to_user', inputtype='checkbox')"/>
      </td>
     </tr>
     <tr>

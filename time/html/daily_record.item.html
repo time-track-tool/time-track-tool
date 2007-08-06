@@ -26,14 +26,8 @@
       <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
       <td>
        <span tal:replace="structure context/user/field"/>
-       <span tal:replace="structure python:db.user.classhelp
-             ( 'username,nickname,firstname,lastname'
-             , property='user'
-             , width='600'
-             , inputtype='radio'
-             , filter='status=%s' % db._db.user_status.lookup ('valid')
-             , pagesize=500
-             )"/>
+       <span tal:replace="structure python:utils.user_classhelp
+             (db, property = 'user')"/>
       </td>
       <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
       <td tal:content="structure python:context.date.field (size=20)"/>
