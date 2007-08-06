@@ -183,8 +183,8 @@ def init(db):
         if klass not in db.classes :
             continue
         cl = db.getclass (klass)
-        cl.react('create', nosyreaction, priority = 200)
-        cl.react('set'   , nosyreaction, priority = 200)
-        cl.audit('create', updatenosy)
-        cl.audit('set'   , updatenosy)
+        #cl.react('create', nosyreaction, priority = 200)
+        #cl.react('set'   , nosyreaction, priority = 200)
+        cl.audit('create', updatenosy, priority = 500)
+        cl.audit('set'   , updatenosy, priority = 500)
 
