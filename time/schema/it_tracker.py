@@ -117,8 +117,9 @@ def init \
 
 def security (db, ** kw) :
     roles = \
-        [ ("IT"            , "IT-Department"                 )
-        , ("ITView"        , "View but not change IT data"   )
+        [ ("IT",     "IT-Department")
+        , ("ITView", "View but not change IT data")
+        , ("Nosy",   "Allowed on nosy list")
         ]
 
     #     classname        allowed to view   /  edit

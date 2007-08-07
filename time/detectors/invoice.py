@@ -178,7 +178,8 @@ def init (db) :
     db.invoice.react ("create", add_to_abo_payer)
     db.invoice.audit ("set",    check_invoice)
     db.invoice.react ("set",    create_new_invoice)
-    db.payment.audit ("create", new_payment)
-    db.payment.audit ("set",    check_payment)
-    db.payment.react ("set",    update_payment)
+    if 'payment' in db.classes :
+	    db.payment.audit ("create", new_payment)
+	    db.payment.audit ("set",    check_payment)
+	    db.payment.react ("set",    update_payment)
 # end def init

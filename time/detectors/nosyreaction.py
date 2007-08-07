@@ -106,36 +106,36 @@ def updatenosy(db, cl, nodeid, newvalues):
 
     # *always* add responsible(s) etc. to the nosy list -- make sure
     # responsible/stakeholder cannot be removed from nosy.
+    props = cl.getprops ()
     for k in 'responsible', 'stakeholder' :
-        if k not in cl.getprops () :
+        if k not in props :
             continue
         if k in newvalues :
             item = newvalues [k]
         elif nodeid :
             item = cl.get (nodeid, k)
         if item:
-            propdef = cl.getprops()
-            if isinstance(propdef[k], hyperdb.Link):
+            if isinstance(props [k], hyperdb.Link):
                 assignedto_ids = [item]
-            elif isinstance(propdef[k], hyperdb.Multilink):
+            elif isinstance(props [k], hyperdb.Multilink):
                 assignedto_ids = item
             for assignedto_id in assignedto_ids:
-                if not current.has_key(assignedto_id):
-                    current[assignedto_id] = 1
+                if not current.has_key (assignedto_id) :
+                    current [assignedto_id] = 1
 
     # see if there's any new messages - if so, possibly add the author and
     # recipient to the nosy
-    if newvalues.has_key('messages'):
+    if newvalues.has_key ('messages'):
         if nodeid is None:
             ok = ('new', 'yes')
-            messages = newvalues['messages']
+            messages = newvalues ['messages']
         else:
             ok = ('yes',)
             # figure which of the messages now on the issue weren't
             # there before
-            oldmessages = dict.fromkeys (cl.get(nodeid, 'messages'))
+            oldmessages = dict.fromkeys (cl.get (nodeid, 'messages'))
             messages = []
-            for msgid in newvalues['messages']:
+            for msgid in newvalues ['messages'] :
                 if msgid not in oldmessages:
                     messages.append(msgid)
 
