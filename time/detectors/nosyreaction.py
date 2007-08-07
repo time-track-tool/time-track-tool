@@ -159,13 +159,14 @@ def updatenosy(db, cl, nodeid, newvalues):
     # that do not have the 'Nosy' permission.
     newnosy = \
         [ x for x in current.keys ()
-            if db.security.hasPermission ('Nosy', x, 'issue')
+            if db.security.hasPermission ('Nosy', x, cl.classname)
         ]
     newnosy.sort ()
     newvalues ['nosy'] = newnosy
     # only set if really changed
     if oldnosy == newnosy :
         del newvalues ['nosy']
+# end def updatenosy
 
 def init(db):
     nosy_classes = [ "action_item"
