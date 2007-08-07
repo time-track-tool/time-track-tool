@@ -202,4 +202,5 @@ def security (db, ** kw) :
         (db, 'it_project', ('View',))
     schemadef.register_confidentiality_check \
         (db, 'it_project', ('Edit',), "messages", "files", "nosy")
+    schemadef.register_nosy_classes (db, ['it_issue', 'it_project'])
 # end def security
