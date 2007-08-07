@@ -62,13 +62,15 @@ def check_it (db, cl, nodeid, new_values) :
         raise Reject, _ ("User may not be set to helpdesk")
 
     if 'status' in new_values :
-        rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
-        if rsp  == db.user.lookup ('helpdesk') :
-            raise Reject, _ ('Must change user, "helpdesk" is not allowed')
-        prio = new_values.get ('it_prio',     cl.get (nodeid, 'it_prio'))
-        if prio == db.it_prio.lookup ('unknown') :
-            raise Reject, _ ('Must change %s, "unknown" is not allowed') \
-                % _ ('it_prio')
+	st   = new_values ['status']
+	rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
+	if not db.it_issue_status.get (st, 'relaxed') :
+	    if rsp  == db.user.lookup ('helpdesk') :
+		raise Reject, _ ('Must change user, "helpdesk" is not allowed')
+	    prio = new_values.get ('it_prio',     cl.get (nodeid, 'it_prio'))
+	    if prio == db.it_prio.lookup ('unknown') :
+		raise Reject, _ ('Must change %s, "unknown" is not allowed') \
+		    % _ ('it_prio')
 # end def check_it
 
 def audit_superseder (db, cl, nodeid, new_values) :

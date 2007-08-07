@@ -61,6 +61,8 @@ def check_status (db, cl, nodeid, new_values) :
             raise Reject, _ ("Invalid Status transition: %s -> %s") \
                 % (o_status.name, n_status.name)
         need_msg = True
+	if 'relaxed' in status_cl.properties and n_status.relaxed :
+	    need_msg = False
         if extended :
             target = targets [n_status.id]
             need_msg = target.require_msg

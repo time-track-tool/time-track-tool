@@ -73,6 +73,7 @@ def init \
         , description           = String    ()
         , transitions           = Multilink ("it_issue_status")
         , order                 = Number    ()
+	, relaxed               = Boolean   ()
         )
     it_issue_status.setkey ("name")
 

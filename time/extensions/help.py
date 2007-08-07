@@ -921,6 +921,11 @@ _helptext          = \
       [""'''Person responsible for recording findings''']
     , ""'reference'                   :
       [""'''Defines the relation to a project, customer, etc.''']
+    , ""'relaxed'                     :
+      [""'''If set, when changing status, no checks about priority and
+            responsible (helpdesk) are done when changing to this status.
+         '''
+      ]
     , ""'release'                     :
       [ ""'''The %(Property)s this %(Classname)s was found, either as
              bug or as missing feature. For (newly reported) bugs,
