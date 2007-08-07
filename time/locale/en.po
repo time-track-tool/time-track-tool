@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-07-03 19:45+0200\n"
+"POT-Creation-Date: 2007-08-07 16:24+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -85,6 +85,9 @@ msgid "A detailed description must be given in %(field)s"
 msgstr ""
 
 msgid "For bugs you have to specify the release"
+msgstr ""
+
+msgid "An effort estimation is required for issues to skip analyzing"
 msgstr ""
 
 #, python-format
@@ -1977,7 +1980,9 @@ msgid ""
 "             order to define what %(Classname)ss compose a larger\n"
 "             project, e.g., Define one Top-Level work package Some New\n"
 "             Feature which is composed of Design, Build Hardware, Write\n"
-"             Software, Put all parts together, and Test.\n"
+"             Software, Put all parts together, and Test. In the\n"
+"             search-mask you can enter\n"
+"             \"-1\" here to find only Top-Level container work packages.\n"
 "          "
 msgstr ""
 
@@ -2193,6 +2198,15 @@ msgid "reference"
 msgstr "Reference"
 
 msgid "Defines the relation to a project, customer, etc."
+msgstr ""
+
+msgid "relaxed"
+msgstr "Relaxed"
+
+msgid ""
+"If set, when changing status, no checks about priority and\n"
+"            responsible (helpdesk) are done when changing to this status.\n"
+"         "
 msgstr ""
 
 #.  just to show something in the pop-up, gets set to the last reached milestone
@@ -2535,7 +2549,7 @@ msgstr ""
 msgid "subject"
 msgstr "Subject"
 
-msgid "Short identification of this message"
+msgid "Short identification of %(Classname)s"
 msgstr ""
 
 msgid "subscriber"
@@ -3455,6 +3469,9 @@ msgid "(Searches also in messages)"
 msgstr ""
 
 msgid "Update view"
+msgstr ""
+
+msgid "Find"
 msgstr ""
 
 msgid "This query's name:"

@@ -922,8 +922,9 @@ _helptext          = \
     , ""'reference'                   :
       [""'''Defines the relation to a project, customer, etc.''']
     , ""'relaxed'                     :
-      [""'''If set, when changing status, no checks about priority and
-            responsible (helpdesk) are done when changing to this status.
+      [""'''If set, when changing status, no checks about a message, the
+            priority and responsible (helpdesk) are done when changing
+            to this status.
          '''
       ]
     , ""'release'                     :
