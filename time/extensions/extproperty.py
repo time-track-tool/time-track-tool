@@ -29,6 +29,7 @@
 #
 #--
 
+from urllib                         import quote as urlquote
 from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , BooleanHTMLProperty       \
                                          , DateHTMLProperty          \
@@ -579,7 +580,6 @@ def new_property (context, db, classname, id, propname, value=None) :
 # end def new_property
 
 def init (instance) :
-    from urllib import quote as urlquote
     global _
     _ = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
