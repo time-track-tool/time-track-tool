@@ -602,8 +602,7 @@ def dynuser_half_frozen (db, dyn) :
     val_to   = dyn.valid_to._value
     return \
         (   frozen (db, userid, val_from)
-        and val_to
-        and not frozen (db, userid, val_to - day)
+        and (val_to and not frozen (db, userid, val_to - day) or not val_to)
         )
 # end def dynuser_half_frozen
 
@@ -714,7 +713,7 @@ class Split_Dynamic_User_Action (Action) :
     """ Get date of last freeze-record and split dynamic user record
         around the freeze date. A precondition is that the dyn user
         record is half-frozen, i.e., the valid_from is frozen and the
-        valid_to is not.
+        valid_to is not (or valid_to is None).
     """
     def handle (self) :
         self.request = templating.HTMLRequest (self.client)
@@ -727,13 +726,14 @@ class Split_Dynamic_User_Action (Action) :
         dyn      = self.db.user_dynamic.getnode (id)
         fields   = dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)
+        if dyn.valid_to :
+            date = pretty_range (dyn.valid_from, dyn.valid_to - day)
+        else :
+            date = dyn.valid_from.pretty (ymd) + ';'
+        
         frozen   = self.db.daily_record_freeze.filter \
             ( None
-            , dict 
-                ( user   = dyn.user
-                , date   = pretty_range (dyn.valid_from, dyn.valid_to - day)
-                , frozen = True
-                )
+            , dict (user = dyn.user, date = date, frozen = True)
             , group = [('-', 'date')]
             )
         assert (frozen)
