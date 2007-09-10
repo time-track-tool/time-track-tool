@@ -365,12 +365,16 @@
      , ('product',             'View', 1,               ('',''))
      , ('contact',             'View', 1,               ('',''))
      , ('doc',                 'View', 1,               ('',''))
+     , ( 'summary_report'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'hr')
+       , ('Staff Report','staff')
+       )
      )
    )
  ; menu_type     python:
     dict ([(k [0],menu_tracker) for k in menu_tracker [0]])
 ">
-     <!--, ('summary_report',      'View', 1, ('Staff Report','staff'))-->
  <head>
   <title metal:define-slot="head_title">
    <span tal:replace="head_title"/>
