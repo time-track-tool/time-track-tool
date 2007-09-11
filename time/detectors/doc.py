@@ -36,7 +36,7 @@ from   roundup.cgi.TranslationService import get_translation
 import common
 import re
 
-doc_nr_re = re.compile ("^[0-9A-Z_\-]+  - (?P<suffix> [0-9]+ )$", re.X)
+doc_nr_re = re.compile ("^[0-9A-Z_\-]+? (?P<suffix> [0-9]+ )$", re.X)
 
 def check_document_required (db, cl, nodeid, newvalues) :
     req = ['product_type', 'reference', 'artefact', 'department', 'title']
@@ -69,7 +69,7 @@ def check_document_nr (db, cl, nodeid, newvalues) :
     doc_nr = newvalues.get ('document_nr')
     if doc_nr :
         if not doc_nr_re.match (doc_nr) :
-            raise Reject, _ ('Document number is not valid: "%s"' % doc_nr)
+            raise Reject (_ ('Document number is not valid: "%s"') % doc_nr)
     elif not nodeid :
         ### Creation where no `document_nr` is given
         dept_doc_num = db.department.get (newvalues ['department'], 'doc_num')
