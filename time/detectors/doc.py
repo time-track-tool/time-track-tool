@@ -36,7 +36,7 @@ from   roundup.cgi.TranslationService import get_translation
 import common
 import re
 
-doc_nr_re = re.compile ("^[0-9A-Z_\-]+? (?P<suffix> [0-9]+ )$", re.X)
+doc_nr_re = re.compile ("^[0-9a-zA-Z_\-]+? (?P<suffix> [0-9]+ )$", re.X)
 
 def check_document_required (db, cl, nodeid, newvalues) :
     req = ['product_type', 'reference', 'artefact', 'department', 'title']
