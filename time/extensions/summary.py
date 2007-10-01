@@ -585,6 +585,10 @@ class Summary_Report (_Report) :
                 (None, dict (op_project = op_project))
         projects    = filterspec.get ('time_project',      [])
         #print projects
+        if  (   not (projects + selected_by_op_project)
+            and 'time_project' in self.columns
+            ) :
+            projects = db.time_project.getnodeids ()
         for p in projects + selected_by_op_project :
             #print p, db.time_wp.find (project = p)
             wp_containers.append \
