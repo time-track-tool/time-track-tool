@@ -585,10 +585,6 @@ class Summary_Report (_Report) :
                 (None, dict (op_project = op_project))
         projects    = filterspec.get ('time_project',      [])
         #print projects
-        if  (   not (projects + selected_by_op_project)
-            and 'time_project' in self.columns
-            ) :
-            projects = db.time_project.getnodeids ()
         for p in projects + selected_by_op_project :
             #print p, db.time_wp.find (project = p)
             wp_containers.append \
@@ -703,6 +699,18 @@ class Summary_Report (_Report) :
                     )
                 )
         #print "filtered wps", time.time () - timestamp
+        if not projects + selected_by_op_project :
+            tprojects   = dict ((tr.wp.project, 1) for tr in time_recs)
+            for p in tprojects :
+                wp_containers.append \
+                    ( WP_Container
+                        ( db.time_project, p
+                        , 'time_project' in self.columns
+                        , ''
+                        , [(w, 1) for w in db.time_wp.find (project = p)]
+                        )
+                    )
+                wp.update (wp_containers [-1])
         wp_containers.append \
             (Sum_Container (_ ('Sum'), 'summary' in self.columns, wps))
 
