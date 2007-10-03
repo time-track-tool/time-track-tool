@@ -976,6 +976,8 @@ class Staff_Report (_Report) :
                     date = start
                     while date < end :
                         eop       = end_of_period (date, period)
+			if eop > end :
+			    eop = end
                         container = time_container_classes [period] (date)
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
@@ -1031,6 +1033,7 @@ class Staff_Report (_Report) :
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
+	    print "d, do_week", d, do_week
             db.commit () # immediately commit cached tr_duration if changed
             assert (not act or st)
             container ['actual_all'] += act
