@@ -1059,7 +1059,7 @@ class Staff_Report (_Report) :
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)
-        if self.need_period :
+        if periods and periods != ['week'] :
             container ['achieved_supplementary'] = \
                 container ['actual_all'] - container ['additional_hours']
             if container ['achieved_supplementary'] < 0 :
