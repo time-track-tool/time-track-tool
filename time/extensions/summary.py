@@ -46,10 +46,12 @@ from rsclib.PM_Value                import PM_Value
 from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
 from common                         import weekno_year_from_day, end_of_period
+from common                         import start_of_period
 from sum_common                     import time_wp_viewable
 from sum_common                     import daily_record_viewable
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
+from user_dynamic                   import Period_Data
 
 day = Interval ('1d')
 
@@ -975,13 +977,13 @@ class Staff_Report (_Report) :
                 else :
                     date = start
                     while date < end :
-                        eop       = end_of_period (date, period)
+			eop = end_of_period (date, period)
 			if eop > end :
 			    eop = end
                         container = time_container_classes [period] (date)
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
-                        date      = eop + day
+                        date = eop + day
         db.commit () # commit cached daily_record values
     # end def __init__
 
@@ -1019,7 +1021,7 @@ class Staff_Report (_Report) :
             container ['overtime_correction'] = ' + '.join \
                 (str (db.overtime_correction.get (i, 'value')) for i in ov)
         d = start
-        container ['supp_per_period']        = dyn.supp_per_period
+        container ['supp_per_period']        = ''
         container ['actual_all']             = 0
         container ['actual_open']            = 0
         container ['actual_submitted']       = 0
@@ -1028,12 +1030,13 @@ class Staff_Report (_Report) :
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = ''
         container ['achieved_supplementary'] = ''
+        supp_pp = {}
         if period != 'week' :
             container ['additional_hours']       = 0
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
-	    print "d, do_week", d, do_week
+            supp_pp [str (int (op))] = True
             db.commit () # immediately commit cached tr_duration if changed
             assert (not act or st)
             container ['actual_all'] += act
@@ -1046,10 +1049,18 @@ class Staff_Report (_Report) :
                 container ['additional_hours']  += add * do_perd
             d = d + day
         if period != 'week' :
+	    eop = end_of_period (start, period)
             container ['achieved_supplementary'] = \
                 container ['actual_all'] - container ['additional_hours']
             if container ['achieved_supplementary'] < 0 :
                 container ['achieved_supplementary'] = 0
+	    print end, eop
+            cont = [', '.join (supp_pp.iterkeys ())]
+	    if eop == end_of_period (end, period) :
+		st = start_of_period (start, period)
+		pd = Period_Data (db, user, st, end, eop, True)
+                cont.append ('=> %.2f' % pd.overtime_per_period)
+            container ['supp_per_period'] = ' '.join (cont)
         db.commit () # commit cached daily_record values
     # end def fill_container
 

@@ -335,38 +335,46 @@ def durations (db, user, date) :
     return duration_cache [(user, pdate)]
 # end def durations
 
-def overtime (db, user, start, end, end_ov, use_additional) :
-    overtime = 0
-    required = 0
-    worked   = 0
-    compute  = False
-    date     = start
-    over_per = 0
-    while date <= end_ov :
-        dur      = durations (db, user, date)
-        over_per = (use_additional and dur [8]) or 0
-        work     = dur [0]
-        req      = dur [1]
-        over     = dur [2]
-        do_over  = dur [4]
-        if date > end :
-            work = 0
-            req  = 0
-        if use_additional :
-            over     = dur  [3]
-            do_over  = dur  [5]
-        overtime += over * do_over
-        required += req  * do_over
-        worked   += work * do_over
-        compute   = compute or do_over
-        date += Interval ('1d')
-    overtime += over_per * do_over
-    if worked > overtime :
-        return worked - overtime
-    elif worked < required :
-        return worked - required
-    return 0
-# end def overtime
+class Period_Data (object) :
+    def __init__ (self, db, user, start, end, end_ov, use_additional) :
+        overtime = 0
+        required = 0
+        worked   = 0
+        compute  = False
+        date     = start
+        over_per = 0
+        days     = 0.0
+        while date <= end_ov :
+            dur       = durations (db, user, date)
+            over_per += (use_additional and dur [8]) or 0
+            days     += 1
+            work      = dur [0]
+            req       = dur [1]
+            over      = dur [2]
+            do_over   = dur [4]
+            if date > end :
+                work  = 0
+                req   = 0
+            if use_additional :
+                over    = dur  [3]
+                do_over = dur  [5]
+            overtime += over * do_over
+            required += req  * do_over
+            worked   += work * do_over
+            compute   = compute or do_over
+            date += Interval ('1d')
+        assert (days)
+        self.overtime_per_period = over_per / days
+	print user, start, end, end_ov, use_additional, self.overtime_per_period
+        overtime += self.overtime_per_period
+        if worked > overtime :
+            self.overtime_balance = worked - overtime
+        elif worked < required :
+            self.overtime_balance = worked - required
+        else :
+            self.overtime_balance = 0
+    # end def __init__
+# end class Period_Data
 
 def invalidate_cache (user, date) :
     pdate = date.pretty (ymd)
@@ -429,12 +437,14 @@ def compute_balance \
             p_balance += oc.value or 0
     while p_date < end :
         eop = end_of_period (p_date, period)
-        p_balance += overtime (db, user, p_date, eop, eop, use_additional)
+        pd  = Period_Data (db, user, p_date, eop, eop, use_additional)
+        p_balance += pd.overtime_balance
         p_date = eop + day
     assert (p_date == end + day)
     eop = end_of_period (date, period)
     if sharp_end and date != eop :
-        p_balance += overtime (db, user, p_date, date, eop, use_additional)
+        pd = Period_Data (db, user, p_date, date, eop, use_additional)
+        p_balance += pd.overtime_balance
     return p_balance
 # end def compute_balance
 
