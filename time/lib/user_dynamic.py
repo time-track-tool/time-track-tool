@@ -365,7 +365,6 @@ class Period_Data (object) :
             date += Interval ('1d')
         assert (days)
         self.overtime_per_period = over_per / days
-	print user, start, end, end_ov, use_additional, self.overtime_per_period
         overtime += self.overtime_per_period
         if worked > overtime :
             self.overtime_balance = worked - overtime

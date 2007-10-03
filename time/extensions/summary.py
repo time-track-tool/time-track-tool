@@ -1054,7 +1054,6 @@ class Staff_Report (_Report) :
                 container ['actual_all'] - container ['additional_hours']
             if container ['achieved_supplementary'] < 0 :
                 container ['achieved_supplementary'] = 0
-	    print end, eop
             cont = [', '.join (supp_pp.iterkeys ())]
 	    if eop == end_of_period (end, period) :
 		st = start_of_period (start, period)
