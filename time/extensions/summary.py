@@ -1040,10 +1040,6 @@ class Staff_Report (_Report) :
 	    container ['additional_hours']  += add * do_perd
             d = d + day
 	cont = [', '.join (supp_pp.iterkeys ())]
-	container ['achieved_supplementary'] = \
-	    container ['actual_all'] - container ['additional_hours']
-	if container ['achieved_supplementary'] < 0 :
-	    container ['achieved_supplementary'] = 0
 	effective_overtime = []
 	for period in periods :
 	    self.need_period = self.need_period or period != "week"
@@ -1063,6 +1059,11 @@ class Staff_Report (_Report) :
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)
+        if self.need_period :
+            container ['achieved_supplementary'] = \
+                container ['actual_all'] - container ['additional_hours']
+            if container ['achieved_supplementary'] < 0 :
+                container ['achieved_supplementary'] = 0
         db.commit () # commit cached daily_record values
     # end def fill_container
 
