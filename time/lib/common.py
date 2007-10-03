@@ -765,6 +765,10 @@ def _period_start_end (date, period) :
     return start_of_year (date), date.month == 12 and date.day == 31
 # end def _period_start_end
 
+def start_of_period (date, period) :
+    return _period_start_end (date, period) [0]
+# end def start_of_period
+
 def freeze_date (date, period) :
     """ Return end of last freeze period before or at date """
     if not date :
