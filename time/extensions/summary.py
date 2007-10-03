@@ -1036,7 +1036,8 @@ class Staff_Report (_Report) :
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
-            supp_pp [str (int (op))] = True
+	    if op :
+		supp_pp [str (int (op))] = True
             db.commit () # immediately commit cached tr_duration if changed
             assert (not act or st)
             container ['actual_all'] += act
