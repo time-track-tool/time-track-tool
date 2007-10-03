@@ -51,7 +51,7 @@ from sum_common                     import time_wp_viewable
 from sum_common                     import daily_record_viewable
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
-from user_dynamic                   import Period_Data
+from user_dynamic                   import Period_Data, overtime_periods
 
 day = Interval ('1d')
 
@@ -988,19 +988,9 @@ class Staff_Report (_Report) :
     # end def __init__
 
     def fill_container (self, container, user, dyn, start, end) :
-        db     = self.db
-        u      = user
-        period = 'week'
-        if dyn.overtime_period :
-            period = db.overtime_period.get (dyn.overtime_period, 'name')
-            self.need_period = True
-        container ['overtime_period'] = period
-        container ['balance_start']   = compute_balance \
-            (db, u, start - day, period, True)
-        db.commit () # immediately commit cached tr_duration if changed
-        container ['balance_end']     = compute_balance \
-            (db, u, end,         period, True)
-        db.commit () # immediately commit cached tr_duration if changed
+        db      = self.db
+        u       = user
+        periods = overtime_periods (db, user, start, end)
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = pretty_range (start, end)))
         try :
@@ -1020,7 +1010,9 @@ class Staff_Report (_Report) :
         except AttributeError :
             container ['overtime_correction'] = ' + '.join \
                 (str (db.overtime_correction.get (i, 'value')) for i in ov)
-        d = start
+        container ['overtime_period']        = ', '.join (periods)
+        container ['balance_start']          = 0.0
+        container ['balance_end']            = 0.0
         container ['supp_per_period']        = ''
         container ['actual_all']             = 0
         container ['actual_open']            = 0
@@ -1028,11 +1020,10 @@ class Staff_Report (_Report) :
         container ['actual_accepted']        = 0
         container ['required']               = 0
         container ['supp_weekly_hours']      = 0
-        container ['additional_hours']       = ''
+        container ['additional_hours']       = 0
         container ['achieved_supplementary'] = ''
+        d = start
         supp_pp = {}
-        if period != 'week' :
-            container ['additional_hours']       = 0
         while d <= end :
             act, req, sup, add, do_week, do_perd, st, ovr, op = \
                 durations (db, u, d)
@@ -1046,21 +1037,32 @@ class Staff_Report (_Report) :
                 container [f] += act
             container ['required']          += req * (do_week or do_perd)
             container ['supp_weekly_hours'] += sup * do_week
-            if period != 'week' :
-                container ['additional_hours']  += add * do_perd
+	    container ['additional_hours']  += add * do_perd
             d = d + day
-        if period != 'week' :
-	    eop = end_of_period (start, period)
-            container ['achieved_supplementary'] = \
-                container ['actual_all'] - container ['additional_hours']
-            if container ['achieved_supplementary'] < 0 :
-                container ['achieved_supplementary'] = 0
-            cont = [', '.join (supp_pp.iterkeys ())]
-	    if eop == end_of_period (end, period) :
-		st = start_of_period (start, period)
-		pd = Period_Data (db, user, st, end, eop, True)
-                cont.append ('=> %.2f' % pd.overtime_per_period)
-            container ['supp_per_period'] = ' '.join (cont)
+	cont = [', '.join (supp_pp.iterkeys ())]
+	container ['achieved_supplementary'] = \
+	    container ['actual_all'] - container ['additional_hours']
+	if container ['achieved_supplementary'] < 0 :
+	    container ['achieved_supplementary'] = 0
+	effective_overtime = []
+	for period in periods :
+	    self.need_period = self.need_period or period != "week"
+	    container ['balance_start']  += compute_balance \
+		(db, u, start - day, period, True)
+	    db.commit () # immediately commit cached tr_duration if changed
+	    container ['balance_end']    += compute_balance \
+		(db, u, end,         period, True)
+	    db.commit () # immediately commit cached tr_duration if changed
+	    if period != 'week' :
+		eop = end_of_period (start, period)
+		if eop == end_of_period (end, period) :
+		    st = start_of_period (start, period)
+		    pd = Period_Data (db, user, st, end, eop, True)
+		    effective_overtime.append \
+			('=> %.2f' % pd.overtime_per_period)
+	if len (effective_overtime) == 1 :
+	    cont.append (effective_overtime [0])
+	container ['supp_per_period'] = ' '.join (cont)
         db.commit () # commit cached daily_record values
     # end def fill_container
 
