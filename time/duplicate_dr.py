@@ -4,13 +4,13 @@ tracker  = instance.open ('/roundup/tracker/ttt')
 db       = tracker.open ('admin')
 monthd   = [21,28,31,30,31,30,31,31,30,31,30,31]
 
-user     = '21' #db.user.lookup ('ionescu')
-daystart = 20
-month    = 11
+user     = db.user.lookup ('erkinger')
+daystart = 14
+month    = 05
 
 for j in range (7) :
     max = monthd [month -1] + 1
-    i = '2006-%s-%s' % ((j + daystart) / max + month, j + daystart)
+    i = '2007-%s-%s' % ((j + daystart) / max + month, j + daystart)
     dr = db.daily_record.filter \
         (None, dict (date = '%s;%s' % (i, i), user = user))
     for d in dr :
