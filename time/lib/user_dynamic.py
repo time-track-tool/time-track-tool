@@ -86,9 +86,16 @@ def first_user_dynamic (db, user, direction = '+', date = None) :
         # one record too far?
         if date and direction == '+' and dyn.valid_from > date :
             d = prev_user_dynamic (db, dyn)
-            if d :
+            if d and d.valid_to < date :
                 return d
         return dyn
+    elif date and direction == '+' :
+        dyn = last_user_dynamic (db, user)
+        if  (   dyn
+            and dyn.valid_from <= date
+            and (not dyn.valid_to or dyn.valid_to > date)
+            ) :
+            return dyn
     return None
 # end def first_user_dynamic
 
