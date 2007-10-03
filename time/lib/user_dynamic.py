@@ -111,7 +111,7 @@ def _next_user_dynamic (db, dynuser, direction = '+') :
         id = id.id
     except AttributeError :
         pass
-    return find_user_dynamic (db, id, dynuser.valid_from, direction = '-')
+    return find_user_dynamic (db, id, dynuser.valid_from, direction = direction)
 # end def _find_user_dynamic
 
 def next_user_dynamic (db, dynuser) :
