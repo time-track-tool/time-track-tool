@@ -104,13 +104,22 @@ def find_user_dynamic (db, user, date, direction = '+') :
     return None
 # end def find_user_dynamic
 
+def _next_user_dynamic (db, dynuser, direction = '+') :
+    id = dynuser.user
+    try :
+        db = db._db
+        id = id.id
+    except AttributeError :
+        pass
+    return find_user_dynamic (db, id, dynuser.valid_from, direction = '-')
+# end def _find_user_dynamic
+
 def next_user_dynamic (db, dynuser) :
-    return find_user_dynamic (db._db, dynuser.user.id, dynuser.valid_from)
+    return _next_user_dynamic (db, dynuser)
 # end def next_user_dynamic
 
 def prev_user_dynamic (db, dynuser) :
-    return find_user_dynamic \
-        (db._db, dynuser.user.id, dynuser.valid_from, direction = '-')
+    return _next_user_dynamic (db, dynuser, direction = '-')
 # end def prev_user_dynamic
 
 def act_or_latest_user_dynamic (db, user) :
@@ -446,4 +455,18 @@ def compute_balance \
         p_balance += pd.overtime_balance
     return p_balance
 # end def compute_balance
+
+def overtime_periods (db, user, start, end) :
+    periods = {}
+    dyn = first_user_dynamic (db, user, date = start)
+    while (dyn and dyn.valid_from <= end) :
+        ot  = dyn.overtime_period
+        if not ot :
+            ot = "week"
+        else :
+            ot = db.overtime_period.get (ot, 'name')
+        periods [ot] = True
+        dyn = next_user_dynamic (db, dyn)
+    return periods.keys ()
+# end def overtime_periods
 
