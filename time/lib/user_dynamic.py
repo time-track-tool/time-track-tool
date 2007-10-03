@@ -82,7 +82,13 @@ def first_user_dynamic (db, user, direction = '+', date = None) :
     ids = db.user_dynamic.filter \
         (None, filter_dict, group = (direction, 'valid_from'))
     if ids :
-        return db.user_dynamic.getnode (ids [0])
+        dyn = db.user_dynamic.getnode (ids [0])
+        # one record too far?
+        if date and direction == '+' and dyn.valid_from > date :
+            d = prev_user_dynamic (db, dyn)
+            if d :
+                return d
+        return dyn
     return None
 # end def first_user_dynamic
 
