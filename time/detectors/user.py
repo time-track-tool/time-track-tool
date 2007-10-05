@@ -169,10 +169,15 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 % (_('uid'), _('org_location'))
         uid     = new_values ['uid']
         uidname = _ ('uid')
-        sd  = db.smb_domain.getnode (db.org_location.get (olo, 'smb_domain'))
-        if not common.uid_or_gid_in_range (uid, sd.uid_range) :
-            raise Reject, _("Invalid %(uidname)s: %(uid)s") % locals ()
-        db.smb_domain.set (sd.id, last_uid = max (uid, sd.last_uid))
+        id  = db.org_location.get (olo, 'smb_domain')
+        if id :
+            sd  = db.smb_domain.getnode (id)
+            if not common.uid_or_gid_in_range (uid, sd.uid_range) :
+                raise Reject, _("Invalid %(uidname)s: %(uid)s") % locals ()
+            db.smb_domain.set (sd.id, last_uid = max (uid, sd.last_uid))
+        else :
+            raise Reject, _ \
+                ("%(uidname)s specified but no samba domain configured")
 # end def common_user_checks
 
 def create_dynuser (db, cl, nodeid, new_values) :
@@ -226,7 +231,10 @@ def new_user (db, cl, nodeid, new_values) :
         org        = db.org_location.get   (olo, 'organisation')
         maildomain = db.organisation.get   (org, 'mail_domain')
         if 'smb_domain' in db.classes :
-            sd = db.smb_domain.getnode (db.org_location.get (olo, 'smb_domain'))
+            sd = None
+            id = db.org_location.get (olo, 'smb_domain')
+            if id :
+                sd = db.smb_domain.getnode (id)
 
     username   = new_values ['username']
     # defaults:
@@ -243,7 +251,7 @@ def new_user (db, cl, nodeid, new_values) :
                 new_values ['lunch_duration'] = .5
             if 'lunch_start'    not in new_values :
                 new_values ['lunch_start'] = '12:00'
-        if 'uid' in cl.properties and 'uid' not in new_values :
+        if sd and 'uid' in cl.properties and 'uid' not in new_values :
             new_values ['uid'] = common.next_uid_or_gid \
                 (sd.last_uid, sd.uid_range)
             uid = new_values ['uid']
