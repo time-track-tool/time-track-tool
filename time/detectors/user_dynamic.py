@@ -252,7 +252,7 @@ def overtime_check (db, cl, nodeid, new_values) :
     same   = cl.filter (None, dict (months = months, weekly = weekly))
     mname  = _ ("months")
     wname  = _ ("weekly")
-    if same and len (same) > 1 or same [0] != nodeid :
+    if same and (len (same) > 1 or same [0] != nodeid) :
         raise Reject, _ \
             ("No entries with same number of %(mname)s / %(wname)s allowed") \
             % locals ()
