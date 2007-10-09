@@ -470,7 +470,7 @@ def compute_saved_balance \
             period = periods [0]
             if period.months :
                 period = None
-    except KeyError :
+    except IndexError :
         pass
     eop = date
     if period and not not_after :
