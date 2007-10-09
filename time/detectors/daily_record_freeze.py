@@ -35,9 +35,10 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Interval
 
-from freeze                         import frozen
+from freeze                         import frozen, find_prev_dr_freeze
 from user_dynamic                   import get_user_dynamic, last_user_dynamic
-from user_dynamic                   import compute_balance
+from user_dynamic                   import compute_balance, first_user_dynamic
+from common                         import next_search_date
 
 day  = Interval ('1d')
 
@@ -63,7 +64,17 @@ def check_thawed_records (db, user, date) :
             _ ("Thawed freeze records before %(date)s") % locals ()
 # end def check_thawed_records
 
-periods = ['week', 'month', 'year']
+periods = ['week', 'month']
+
+def compute_monthly_freeze (db, user, date, new_values) :
+    r = find_prev_dr_freeze (db, user, date)
+    if r :
+        start = r.month_validity_date
+    else :
+        dyn   = first_user_dynamic (db, user)
+        start = dyn.valid_from
+    FIXME
+# end def compute_monthly_freeze
 
 def new_freeze_record (db, cl, nodeid, new_values) :
     for i in ('date', 'user') :
@@ -83,7 +94,7 @@ def new_freeze_record (db, cl, nodeid, new_values) :
         attr = p + '_balance'
         if attr not in new_values or new_values [attr] is None :
             new_values [attr] = compute_balance \
-                (db, user, date, p, not_after = True)
+                (db, user, date, p == 'month', not_after = True)
 # end def new_freeze_record
 
 def new_overtime (db, cl, nodeid, new_values) :
@@ -93,7 +104,7 @@ def new_overtime (db, cl, nodeid, new_values) :
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     check_editable (db, cl, nodeid, new_values)
-# end def new_freeze_record
+# end def new_overtime
 
 def check_freeze_record (db, cl, nodeid, new_values) :
     """Check that edits of a freeze record are ok.
@@ -112,6 +123,13 @@ def check_freeze_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must not be changed") % {'attr' : _ (i)}
     date = cl.get (nodeid, 'date')
     user = cl.get (nodeid, 'user')
+    # special case for fixing existing freeze records:
+    if  (   db.getuid () == '1'
+        and new_values.keys () == ['month_validity_date']
+        and new_values ['month_validity_date'] == date
+        and cl.get (nodeid, 'month_validity_date') is None
+        ) :
+        return
     dyn  = get_user_dynamic (db, user, date)
     if not dyn :
         dyn    = last_user_dynamic (db, user, date = date)
@@ -142,7 +160,7 @@ def check_freeze_record (db, cl, nodeid, new_values) :
         attr = p + '_balance'
         if  freezing :
             new_values [attr] = compute_balance \
-                (db, user, date, p, not_after = True)
+                (db, user, date, p == 'month', not_after = True)
         else :
             new_values [attr] = None
 # end def check_freeze_record

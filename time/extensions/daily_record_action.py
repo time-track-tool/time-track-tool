@@ -52,15 +52,15 @@ from roundup.date                   import Date, Interval, Range
 from roundup                        import hyperdb
 from roundup.cgi.TranslationService import get_translation
 
-from common                         import pretty_range, freeze_date
+from common                         import pretty_range
 from common                         import week_from_date, ymd, date_range
 from common                         import weekno_year_from_day
-from common                         import from_week_number
+from common                         import from_week_number, week_freeze_date
 from user_dynamic                   import get_user_dynamic, day_work_hours
 from user_dynamic                   import round_daily_work_hours, day
 from user_dynamic                   import last_user_dynamic, find_user_dynamic
-from freeze                         import frozen, range_frozen, next_dr_freeze
-from freeze                         import prev_dr_freeze
+from freeze                         import frozen, range_frozen
+from freeze                         import prev_dr_freeze, next_dr_freeze
 from rup_utils                      import translate
 
 def prev_week (db, request) :
@@ -674,7 +674,7 @@ class Freeze_Action (Action, autosuper) :
             ( 'daily_record_freeze?'
             + msg
             + ':columns=id,date,user,frozen,'
-            + 'week_balance,month_balance,year_balance'
+            + 'week_balance,month_balance,month_validity_date'
             + '&:sort=user,date&:filter=creation'
             + '&:pagesize=200&:startwith=0&creation=%s%%3B'
             ) % (Date ('.') - Interval ('00:05'))
@@ -817,7 +817,7 @@ def init (instance) :
     util ("time_url",                 time_url)
     util ("next_dr_freeze",           next_dr_freeze)
     util ("prev_dr_freeze",           prev_dr_freeze)
-    util ("freeze_date",              freeze_date)
+    util ("week_freeze_date",         week_freeze_date)
     util ("dynuser_half_frozen",      dynuser_half_frozen)
     util ("dynuser_copyfields",       dynuser_copyfields)
 # end def init

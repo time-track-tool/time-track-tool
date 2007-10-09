@@ -45,6 +45,7 @@ except ImportError :
     pass
 
 ymd = '%Y-%m-%d'
+day = Interval ('1d')
 
 def update_feature_status (db, cl, nodeid, new_values) :
     """auditor on feature.set
@@ -289,6 +290,12 @@ def clearance_by (db, userid, only_subs = False) :
 # end def clearance_by
 
 def week_from_date (date) :
+    """ Return start and end of week from give date
+        >>> week_from_date (Date ('2007-01-01'))
+        (<Date 2007-01-01.00:00:00.000>, <Date 2007-01-07.00:00:00.000>)
+        >>> week_from_date (Date ('2006-01-01'))
+        (<Date 2005-12-26.00:00:00.000>, <Date 2006-01-01.00:00:00.000>)
+    """
     wday        = gmtime (date.timestamp ())[6]
     start       = date + Interval ("%sd" % -wday)
     end         = date + Interval ("%sd" % (6 - wday))
@@ -756,16 +763,84 @@ def next_search_date (date, direction = '+') :
         )
 # end def next_search_date
 
+def period_is_weekly (period) :
+    return period.weekly and not period.months
+# end def period_is_weekly
+
+def overtime_period_week (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    ids = db.overtime_period.filter (None, dict (weekly = True, months = 0))
+    assert (len (ids) <= 1)
+    if ids :
+        return db.overtime_period.getnode (ids [0])
+    return None
+# end def overtime_period_week
+
+class Fake_Period (object) :
+    """ Fake period class, needed to emulate a Class overtime_period
+        database object for regression testing and start/end of period
+        computations.
+    """
+    def __init__ (self, weekly, months) :
+        self.weekly = weekly
+        self.months = months
+    # end __init__
+# end class Fake_Period
+
+period_month = Fake_Period (0, 1)
+period_week  = Fake_Period (1, 0)
+
 def _period_start_end (date, period) :
-    if period == 'week' :
+    """ Compute start of given period from date and indication if given
+        date ends the period
+        >>> P = Fake_Period
+        >>> _period_start_end (Date ('2007-01-07'), P (1, 0))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-01-01'), P (1, 0))
+        (<Date 2007-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2006-01-01'), P (1, 0))
+        (<Date 2005-12-26.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-01-31'), P (0, 1))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-01-07'), P (1, 1))
+        (<Date 2007-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2007-02-28'), P (0, 2))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-02-07'), P (1, 2))
+        (<Date 2007-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2007-03-31'), P (0, 3))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-03-07'), P (1, 3))
+        (<Date 2007-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2007-04-30'), P (0, 4))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-04-07'), P (1, 4))
+        (<Date 2007-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2007-06-30'), P (0, 6))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-06-07'), P (1, 6))
+        (<Date 2007-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2007-12-31'), P (0, 12))
+        (<Date 2007-01-01.00:00:00.000>, True)
+        >>> _period_start_end (Date ('2007-12-07'), P (1, 12))
+        (<Date 2007-01-01.00:00:00.000>, False)
+    """
+    if period_is_weekly (period) :
         start, end = week_from_date (date)
         return start, date == end
-    elif period == 'month' :
-        return start_of_month (date), is_month_end (date)
-    return start_of_year (date), date.month == 12 and date.day == 31
+    elif period.months == 12 :
+        return start_of_year (date), date.month == 12 and date.day == 31
+    d = start_of_month (date)
+    while (d.month - 1) % period.months :
+        d = start_of_month (d - day)
+    return d, end_of_period (date, period) == Date (date.pretty (ymd))
 # end def _period_start_end
 
 def start_of_period (date, period) :
+    """ Compute start of given period from date """
     return _period_start_end (date, period) [0]
 # end def start_of_period
 
@@ -779,17 +854,57 @@ def freeze_date (date, period) :
         pass
     start, is_end = _period_start_end (date, period)
     if is_end :
-        return date
-    return start - Interval ('1d')
+        return Date (date.pretty (ymd))
+    return start - day
 # end def freeze_date
 
+def week_freeze_date (date) :
+    return freeze_date (date, period_week)
+# end def week_freeze_date
+
 def end_of_period (date, period) :
-    if period == 'week' :
+    """ Compute end of given period from date
+        >>> P = Fake_Period
+        >>> end_of_period (Date ('2007-01-07'), P (1, 0))
+        <Date 2007-01-07.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-01'), P (1, 0))
+        <Date 2007-01-07.00:00:00.000>
+        >>> end_of_period (Date ('2006-01-01'), P (1, 0))
+        <Date 2006-01-01.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (0, 1))
+        <Date 2007-01-31.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (1, 1))
+        <Date 2007-01-31.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (0, 2))
+        <Date 2007-02-28.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (1, 2))
+        <Date 2007-02-28.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (0, 3))
+        <Date 2007-03-31.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (1, 3))
+        <Date 2007-03-31.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (0, 4))
+        <Date 2007-04-30.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (1, 4))
+        <Date 2007-04-30.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (0, 6))
+        <Date 2007-06-30.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (1, 6))
+        <Date 2007-06-30.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (0, 12))
+        <Date 2007-12-31.00:00:00.000>
+        >>> end_of_period (Date ('2007-01-07'), P (1, 12))
+        <Date 2007-12-31.00:00:00.000>
+    """
+    if period_is_weekly (period) :
         start, end = week_from_date (date)
         return end
-    if period == 'year' :
+    if period.months == 12 :
         return Date ('%s-12-31' % date.year)
-    return end_of_month (date)
+    d = end_of_month (date)
+    while d.month % period.months :
+        d = end_of_month (d + day)
+    return d
 # end def end_of_period
 
 def auto_retire (db, cl, nodeid, new_values, multilink_attr) :

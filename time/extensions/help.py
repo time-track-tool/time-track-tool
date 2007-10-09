@@ -1430,10 +1430,9 @@ _helptext          = \
              this project.
           '''
       ]
-    , ""'year_balance'                :
-      [ ""'''Overtime balance as in staff report for the date mentioned
-             in "valid on". Only applicable for user whose overtime
-             period is a year.
+    , ""'month_validity_date'         :
+      [ ""'''Validity date of Month balance field. May be up to a year
+             before the freeze date.
           '''
       ]
     }

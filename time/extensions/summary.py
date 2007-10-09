@@ -46,12 +46,14 @@ from rsclib.PM_Value                import PM_Value
 from common                         import pretty_range, week_from_date, ymd
 from common                         import user_has_role, date_range
 from common                         import weekno_year_from_day, end_of_period
-from common                         import start_of_period
+from common                         import start_of_period, period_is_weekly
+from common                         import period_month, period_week
 from sum_common                     import time_wp_viewable
 from sum_common                     import daily_record_viewable
 from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
 from user_dynamic                   import Period_Data, overtime_periods
+from user_dynamic                   import use_work_hours
 
 day = Interval ('1d')
 
@@ -964,6 +966,7 @@ class Staff_Report (_Report) :
             )
         self.values      = values = {}
         self.need_period = False
+        period_objects   = dict (week = period_week, month = period_month)
         for u in self.users :
             dyn        = get_user_dynamic (db, u, end)
             values [u] = []
@@ -977,7 +980,7 @@ class Staff_Report (_Report) :
                 else :
                     date = start
                     while date < end :
-			eop = end_of_period (date, period)
+			eop = end_of_period (date, period_objects [period])
 			if eop > end :
 			    eop = end
                         container = time_container_classes [period] (date)
@@ -1010,7 +1013,7 @@ class Staff_Report (_Report) :
         except AttributeError :
             container ['overtime_correction'] = ' + '.join \
                 (str (db.overtime_correction.get (i, 'value')) for i in ov)
-        container ['overtime_period']        = ', '.join (periods)
+        container ['overtime_period']        = ', '.join (periods.iterkeys ())
         container ['balance_start']          = 0.0
         container ['balance_end']            = 0.0
         container ['supp_per_period']        = ''
@@ -1022,44 +1025,56 @@ class Staff_Report (_Report) :
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = 0
         container ['achieved_supplementary'] = ''
-        d = start
-        supp_pp = {}
-        while d <= end :
-            act, req, sup, add, do_week, do_perd, st, ovr, op = \
-                durations (db, u, d)
-	    if op :
-		supp_pp [str (int (op))] = True
-            db.commit () # immediately commit cached tr_duration if changed
-            assert (not act or st)
-            container ['actual_all'] += act
-            if st :
-                f = 'actual_' + self.stati [st]
-                container [f] += act
-            container ['required']          += req * (do_week or do_perd)
-            container ['supp_weekly_hours'] += sup * do_week
-	    container ['additional_hours']  += add * do_perd
-            d = d + day
-	cont = [', '.join (supp_pp.iterkeys ())]
 	effective_overtime = []
-	for period in periods :
-	    self.need_period = self.need_period or period != "week"
+
+	for pt in False, True :
 	    container ['balance_start']  += compute_balance \
-		(db, u, start - day, period, True)
+		(db, u, start - day, pt, True)
 	    db.commit () # immediately commit cached tr_duration if changed
 	    container ['balance_end']    += compute_balance \
-		(db, u, end,         period, True)
+		(db, u, end,         pt, True)
 	    db.commit () # immediately commit cached tr_duration if changed
-	    if period != 'week' :
-		eop = end_of_period (start, period)
-		if eop == end_of_period (end, period) :
-		    st = start_of_period (start, period)
-		    pd = Period_Data (db, user, st, end, eop, True)
-		    effective_overtime.append \
-			('=> %.2f' % pd.overtime_per_period)
+        for period in periods.itervalues () :
+            if not period_is_weekly (period) :
+                self.need_period = True
+                eop = end_of_period (start, period)
+                if eop == end_of_period (end, period) :
+                    st = start_of_period (start, period)
+                    pd = Period_Data (db, user, st, end, eop, period)
+                    effective_overtime.append \
+                        ('=> %.2f' % pd.overtime_per_period)
+        supp_pp = {}
+        d = start
+        while d <= end :
+            do_perd = do_week = False
+            dur = durations (db, u, d)
+            db.commit () # immediately commit cached tr_duration if changed
+            for period in periods.itervalues () :
+                do_perd = do_perd or \
+                    (   not period_is_weekly (period)
+                    and use_work_hours (db, dur.dyn, period)
+                    )
+                do_week = do_week or \
+                    (   period_is_weekly (period)
+                    and use_work_hours (db, dur.dyn, period)
+                    )
+	    if dur.supp_per_period :
+		supp_pp [str (int (dur.supp_per_period))] = True
+            assert (not dur.tr_duration or dur.dr_status)
+            container ['actual_all'] += dur.tr_duration
+            if dur.dr_status :
+                f = 'actual_' + self.stati [dur.dr_status]
+                container [f] += dur.tr_duration
+            container ['required']          += \
+                dur.day_work_hours * (do_week or do_perd)
+            container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
+	    container ['additional_hours']  += dur.additional_hours  * do_perd
+            d = d + day
+	cont = [', '.join (supp_pp.iterkeys ())]
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)
-        if periods and periods != ['week'] :
+        if periods and periods.keys () != ['week'] :
             container ['achieved_supplementary'] = \
                 container ['actual_all'] - container ['additional_hours']
             if container ['achieved_supplementary'] < 0 :

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-07-03 19:45+0200\n"
+"POT-Creation-Date: 2007-10-05 17:24+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -90,6 +90,9 @@ msgstr "Eine detaillierte Beschreibung muss in %(field)s gegeben werden"
 
 msgid "For bugs you have to specify the release"
 msgstr "Bei Bugs muss das Release angegeben werden"
+
+msgid "An effort estimation is required for issues to skip analyzing"
+msgstr ""
 
 #, python-format
 msgid "The field \"%s\" must remain filled."
@@ -413,6 +416,10 @@ msgstr "Benutzerkennung"
 
 #, python-format
 msgid "Invalid %(uidname)s: %(uid)s"
+msgstr ""
+
+#, python-format
+msgid "%(uidname)s specified but no samba domain configured"
 msgstr ""
 
 msgid "Not allowed to retire a user"
@@ -2023,7 +2030,9 @@ msgid ""
 "             order to define what %(Classname)ss compose a larger\n"
 "             project, e.g., Define one Top-Level work package Some New\n"
 "             Feature which is composed of Design, Build Hardware, Write\n"
-"             Software, Put all parts together, and Test.\n"
+"             Software, Put all parts together, and Test. In the\n"
+"             search-mask you can enter\n"
+"             \"-1\" here to find only Top-Level container work packages.\n"
 "          "
 msgstr ""
 
@@ -2239,6 +2248,17 @@ msgid "reference"
 msgstr ""
 
 msgid "Defines the relation to a project, customer, etc."
+msgstr ""
+
+#, fuzzy
+msgid "relaxed"
+msgstr "Release"
+
+msgid ""
+"If set, when changing status, no checks about a message, the\n"
+"            priority and responsible (helpdesk) are done when changing\n"
+"            to this status.\n"
+"         "
 msgstr ""
 
 #.  just to show something in the pop-up, gets set to the last reached milestone
@@ -2877,8 +2897,8 @@ msgid ""
 "             template or none.\n"
 "         "
 msgstr ""
-"Status der Vorlage -- Benutzung als Briefvorlage, als Rechnungsvorlage "
-"oder keines davon"
+"Status der Vorlage -- Benutzung als Briefvorlage, als Rechnungsvorlage oder "
+"keines davon"
 
 msgid "travel"
 msgstr ""
@@ -2979,8 +2999,8 @@ msgid ""
 "             in invoice templates\n"
 "          "
 msgstr ""
-"Hinweis ob Vorlagen mit diesem %(Classname)s in "
-"Rechnungsvorlagen sichtbar sein sollen"
+"Hinweis ob Vorlagen mit diesem %(Classname)s in Rechnungsvorlagen sichtbar "
+"sein sollen"
 
 msgid "use_for_letter"
 msgstr "für Briefe"
@@ -2990,8 +3010,8 @@ msgid ""
 "             as letter templates\n"
 "          "
 msgstr ""
-"Hinweis ob Vorlagen mit diesem %(Classname)s für Briefe "
-"verwendet werden sollen"
+"Hinweis ob Vorlagen mit diesem %(Classname)s für Briefe verwendet werden "
+"sollen"
 
 msgid "use_in_ln"
 msgstr ""
@@ -3205,17 +3225,17 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "year_balance"
+msgid "month_validity_date"
 msgstr ""
 
 msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\". Only applicable for user whose overtime\n"
-"             period is a year.\n"
+"Validity date of Month balance field. May be up to a year\n"
+"             before the freeze date.\n"
 "          "
 msgstr ""
 
 # python-format
+#, python-format
 msgid ""
 "<a %s title=\"Help for %s\" href=\"javascript:help_window('%s?:"
 "template=property_help#%s', '500', '400')\" tabindex=\"-1\">%s%s</a>"

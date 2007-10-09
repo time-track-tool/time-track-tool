@@ -34,11 +34,11 @@ from   roundup.exceptions import Reject
 from   roundup.date       import Date, Interval, Range
 from   time               import gmtime
 from   roundup.hyperdb    import String, Link, Multilink
-from   common             import next_search_date
+from   common             import next_search_date, day
 
 def frozen (db, user, date) :
-    """ Get freeze-records >= date. If some are found, check if date is
-        frozen.
+    """ Get frozen freeze-records >= date. If some are found, the date
+        is frozen.
     """
     f = db.daily_record_freeze.filter \
         ( None
@@ -57,22 +57,44 @@ def range_frozen (db, user, range) :
     return frozen (db, user, date)
 # end def range_frozen
 
-def _find_next (db, daily_record_freeze, direction = '+') :
-    user = daily_record_freeze.user.id
-    date = next_search_date (daily_record_freeze.date, direction)
-    recs = db._db.daily_record_freeze.filter \
-        (None, dict (user = user, date = date), group = [(direction, 'date')])
+def find_next_dr_freeze (db, user, date, direction = '+', frozen = True) :
+    """ Search for next daily_record_freeze in direction *after* date.
+        By default searches for frozen records only. Setting frozen to
+        None will find *all* records, setting it to False will find only
+        thawed records.
+    """
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    date  = next_search_date (date, direction)
+    sdict = dict (user = user, date = date)
+    if frozen is not None :
+        sdict ['frozen'] = frozen
+    recs  = db.daily_record_freeze.filter \
+        (None, sdict, group = [(direction, 'date')])
     if recs :
-        return recs [0]
+        return db.daily_record_freeze.getnode (recs [0])
     return None
+# end def find_next_dr_freeze
+
+def find_prev_dr_freeze (db, user, date, frozen = True) :
+    return find_next_dr_freeze \
+        (db, user, date, direction = '-', frozen = frozen)
+# end def find_prev_dr_freeze
+
+def _find_next (db, daily_record_freeze, direction = '+', frozen = None) :
+    user = daily_record_freeze.user.id
+    return find_next_dr \
+        (db, user, daily_record_freeze.date, direction, frozen = frozen)
 # end def _find_next
 
-def next_dr_freeze (db, daily_record_freeze) :
-    return _find_next (db, daily_record_freeze)
+def next_dr_freeze (db, daily_record_freeze, frozen = None) :
+    return _find_next (db, daily_record_freeze, frozen = frozen)
 # end def next_dr_freeze
 
-def prev_dr_freeze (db, daily_record_freeze) :
-    return _find_next (db, daily_record_freeze, '-')
+def prev_dr_freeze (db, daily_record_freeze, frozen = None) :
+    return _find_next (db, daily_record_freeze, '-', frozen = frozen)
 # end def prev_dr_freeze
 
 ### __END__

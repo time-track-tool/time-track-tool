@@ -34,12 +34,12 @@ from time         import gmtime
 from bisect       import bisect_left
 from operator     import add
 
-from roundup.date import Date, Interval
+from roundup.date import Date
 
 from common       import ymd, next_search_date, end_of_period, freeze_date
-from common       import pretty_range
+from common       import pretty_range, day, period_week, period_is_weekly
+from freeze       import find_prev_dr_freeze
 
-day          = Interval ('1d')
 last_dynamic = None # simple one-element cache
 
 def get_user_dynamic (db, user, date) :
@@ -179,14 +179,9 @@ def use_work_hours (db, dynuser, period) :
     """
     overtime   = dynuser.additional_hours
     period_id  = dynuser.overtime_period
-    dyn_period = None
-    if period_id :
-        dyn_period = db.overtime_period.get (period_id, 'name')
-    else :
-        dyn_period = 'week'
-    if period == 'week' :
+    if period_is_weekly (period) :
         overtime = dynuser.supp_weekly_hours
-    return bool (dynuser.weekly_hours and overtime and dyn_period == period)
+    return bool (dynuser.weekly_hours and overtime and period_id == period.id)
 # end def use_work_hours
 
 def work_days (dynuser) :
@@ -326,67 +321,93 @@ def get_daily_record (db, user, date) :
 
 duration_cache = {}
 
+class Duration (object) :
+    def __init__ \
+        ( self
+        , db
+        , dyn               = None
+        , tr_duration       = 0
+        , day_work_hours    = 0
+        , supp_weekly_hours = 0
+        , additional_hours  = 0
+        , dr_status         = None
+        , require_overtime  = None
+        , supp_per_period   = 0
+        ) :
+        self.db                = db
+        self.dyn               = dyn
+        self.tr_duration       = tr_duration
+        self.day_work_hours    = day_work_hours
+        self.supp_weekly_hours = supp_weekly_hours
+        self.additional_hours  = additional_hours
+        self.dr_status         = dr_status
+        self.require_overtime  = require_overtime
+        self.supp_per_period   = supp_per_period
+        if dyn :
+            self.supp_per_period = dyn.supp_per_period
+    # end def __init__
+# end class Duration
+
 def durations (db, user, date) :
     pdate = date.pretty (ymd)
     if (user, pdate) not in duration_cache :
         wday  = gmtime (date.timestamp ())[6]
         dyn   = get_user_dynamic (db, user, date)
-        duration_cache [(user, pdate)] = \
-            [0, 0, 0, 0, False, False, None, None, 0]
         if dyn :
-            duration_cache [(user, pdate)] = \
-                [ 0
-                , day_work_hours (dyn, date)
-                , (dyn.supp_weekly_hours or 0) * is_work_day (dyn, date)
-                  / work_days (dyn)
-                , (dyn.additional_hours  or 0) * is_work_day (dyn, date)
-                  / work_days (dyn)
-                , use_work_hours (db, dyn, 'week')
-                , (  use_work_hours (db, dyn, 'month')
-                  or use_work_hours (db, dyn, 'year')
-                  )
-                , None
-                , None
-                , dyn.supp_per_period
-                ]
+            dc = duration_cache [(user, pdate)] = Duration \
+                ( db, dyn
+                , day_work_hours    = day_work_hours (dyn, date)
+                , supp_weekly_hours = \
+                    (dyn.supp_weekly_hours or 0) * is_work_day (dyn, date)
+                    / work_days (dyn)
+                , additional_hours  = \
+                    (dyn.additional_hours  or 0) * is_work_day (dyn, date)
+                    / work_days (dyn)
+                )
             dr = get_daily_record (db, user, date)
             if dr :
-                duration_cache [(user, pdate)][0] = update_tr_duration (db, dr)
-                duration_cache [(user, pdate)][6] = dr.status
-                duration_cache [(user, pdate)][7] = dr.required_overtime
+                dc.tr_duration      = update_tr_duration (db, dr)
+                dc.dr_status        = dr.status
+                dc.require_overtime = dr.required_overtime
+        else :
+            duration_cache [(user, pdate)] = Duration (db)
     return duration_cache [(user, pdate)]
 # end def durations
 
 class Period_Data (object) :
-    def __init__ (self, db, user, start, end, end_ov, use_additional) :
-        overtime = 0
-        required = 0
-        worked   = 0
-        compute  = False
-        date     = start
-        over_per = 0
-        days     = 0.0
+    def __init__ (self, db, user, start, end, end_ov, period) :
+        use_additional = not period_is_weekly (period)
+        overtime       = 0
+        required       = 0
+        worked         = 0
+        compute        = False
+        date           = start
+        over_per       = 0
+        days           = 0.0
         while date <= end_ov :
             dur       = durations (db, user, date)
-            over_per += (use_additional and dur [8]) or 0
+            over_per += (use_additional and dur.supp_per_period) or 0
             days     += 1
-            work      = dur [0]
-            req       = dur [1]
-            over      = dur [2]
-            do_over   = dur [4]
+            work      = dur.tr_duration
+            req       = dur.day_work_hours
+            over      = dur.supp_weekly_hours
+            do_over   = use_work_hours (db, dur.dyn, period)
             if date > end :
                 work  = 0
                 req   = 0
             if use_additional :
-                over    = dur  [3]
-                do_over = dur  [5]
+                over    = dur.additional_hours
             overtime += over * do_over
             required += req  * do_over
             worked   += work * do_over
             compute   = compute or do_over
-            date += Interval ('1d')
+            date += day
         assert (days)
         self.overtime_per_period = over_per / days
+        self.achieved_supp       = 0
+        if worked > overtime and use_additional :
+            self.achieved_supp = \
+                max (worked - overtime, self.overtime_per_period)
         overtime += self.overtime_per_period
         if worked > overtime :
             self.overtime_balance = worked - overtime
@@ -403,52 +424,83 @@ def invalidate_cache (user, date) :
         del duration_cache [(user, pdate)]
 # end def invalidate_cache
 
-def compute_balance \
-    (db, user, date, period, sharp_end = False, not_after = False) :
-    """ Compute the overtime balance at the given day.
+def overtime_periods (db, user, start, end) :
+    periods = {}
+    if start > end :
+        return periods
+    dyn = first_user_dynamic (db, user, date = start)
+    while (dyn and dyn.valid_from <= end) :
+        if dyn.overtime_period :
+            ot = db.overtime_period.getnode (dyn.overtime_period)
+            periods [ot.name] = ot
+        dyn = next_user_dynamic (db, dyn)
+    return periods
+# end def overtime_periods
+
+def compute_saved_balance \
+    (db, user, start, date, is_monthly, not_after = False) :
+    """ Compute the saved overtime balance before or at the given day
+        and the date on which this balance is valid.
+        
+        This looks through saved values in freeze records and determines
+        a matching freeze record and returns the value for the given
+        weekly/monthly period.
+
+        If not_after is True, we use the next end of period for
+        searching for existing freeze records. This is used for
+        freezing: we don't want to find records at the freeze date.
+
+        Implementation note: we search for freeze records before the end
+        of period one day *after* date. This is exactly the same end of
+        period as for date in the usual case. In case date *is* the end
+        of period, this will include freeze records with freeze_date ==
+        date.
+    """
+    period = None
+    periods = sorted \
+        ( overtime_periods (db, user, start, date).itervalues ()
+        , key = lambda p : p.months
+        )
+    try :
+        if is_monthly :
+            period = periods [-1]
+            if not period.months :
+                period = None
+        else :
+            period = periods [0]
+            if period.months :
+                period = None
+    except KeyError :
+        pass
+    eop = date
+    if period and not not_after :
+        eop = end_of_period (date + day, period)
+    r = find_prev_dr_freeze (db, user, eop)
+    if r :
+        if is_monthly :
+            return r.month_balance, r.month_validity_date
+        return r.week_balance, freeze_date (r.date, period_week)
+    return 0.0, None
+# end def compute_saved_balance
+
+def compute_running_balance (db, user, start, date, period, sharp_end = False) :
+    """ Compute the overtime balance at the given date.
         if not_after is True, we use the next end of period for
         searching for existing freeze records.
-        if sharp_end is True, we compute the exact balance on that day,
+
+        If sharp_end is True, we compute the exact balance on that day,
         not on the end of previous period.
+
+        If not_after is True, we use the next end of period for
+        searching for existing freeze records. This is used for
+        freezing: we don't want to find records at the freeze date.
     """
-    day            = Interval ('1d')
-    c_end = end    = freeze_date   (date, period)
-    eop            = end_of_period (date + day, period)
-    if not_after :
-        eop        = date
+    c_end = end = freeze_date (date, period)
     if sharp_end :
-        c_end      = date
-    use_additional = period != 'week'
-    id = db.daily_record_freeze.filter \
-        ( None
-        , dict ( user   = user
-               , date   = (eop - day).pretty (';%Y-%m-%d')
-               , frozen = True
-               )
-        , group = [('-', 'date')]
-        )
-    if id :
-        prev = db.daily_record_freeze.getnode (id [0])
-        p_balance = prev [period + '_balance']
-        p_end     = freeze_date (prev.date, period)
-        p_date    = p_end + day # start at day after last period ends
-    else :
-        # didn't find any freeze recs up to current end of period
-        fdyn      = dyn = first_user_dynamic (db, user)
-        # loop over dyn recs until we find a hole or have reached the
-        # freeze date. The first dyn record that reaches the freeze date
-        # without a hole in between is our candidate.
-        while dyn and dyn.valid_to and dyn.valid_to <= date :
-            ldyn = dyn
-            dyn  = find_user_dynamic \
-                (db, dyn.user, dyn.valid_from, direction = '+')
-            if dyn and dyn.valid_from > ldyn.valid_to :
-                fdyn = dyn
-        dyn = fdyn
-        p_date    = dyn.valid_from
-        p_balance = 0
-        if p_date > end :
-            return 0
+        c_end = date
+    p_date    = start
+    p_balance = 0
+
     corr = db.overtime_correction.filter \
         (None, dict (user = user, date = pretty_range (p_date, c_end)))
     for c in corr :
@@ -458,28 +510,48 @@ def compute_balance \
             p_balance += oc.value or 0
     while p_date < end :
         eop = end_of_period (p_date, period)
-        pd  = Period_Data (db, user, p_date, eop, eop, use_additional)
+        pd  = Period_Data (db, user, p_date, eop, eop, period)
         p_balance += pd.overtime_balance
+        #print "OTB:", pd.overtime_balance
         p_date = eop + day
     assert (p_date == end + day)
     eop = end_of_period (date, period)
     if sharp_end and date != eop :
-        pd = Period_Data (db, user, p_date, date, eop, use_additional)
+        pd = Period_Data (db, user, p_date, date, eop, period)
         p_balance += pd.overtime_balance
+        #print "OTBSE:", pd.overtime_balance
     return p_balance
-# end def compute_balance
+# end def compute_running_balance
 
-def overtime_periods (db, user, start, end) :
-    periods = {}
-    dyn = first_user_dynamic (db, user, date = start)
-    while (dyn and dyn.valid_from <= end) :
-        ot  = dyn.overtime_period
-        if not ot :
-            ot = "week"
-        else :
-            ot = db.overtime_period.get (ot, 'name')
-        periods [ot] = True
-        dyn = next_user_dynamic (db, dyn)
-    return periods.keys ()
-# end def overtime_periods
+def compute_balance \
+    (db, user, date, is_monthly, sharp_end = False, not_after = False) :
+    """ Compute the overtime balance at the given day.
+        if not_after is True, we use the next end of period for
+        searching for existing freeze records.
 
+        If sharp_end is True, we compute the exact balance on that day,
+        not on the end of previous period.
+
+        If not_after is True, we use the next end of period for
+        searching for existing freeze records. This is used for
+        freezing: we don't want to find records at the freeze date.
+    """
+    dyn   = first_user_dynamic (db, user)
+    if dyn :
+        start = dyn.valid_from
+    else :
+        start = date + day
+    balance, n_start = compute_saved_balance \
+        (db, user, start, date, is_monthly, not_after)
+    #print "SAVED:", date.pretty (ymd), is_monthly, balance, n_start
+    if n_start :
+        start = n_start + day # start after freeze date
+    periods = overtime_periods (db, user, start, date)
+    for p in periods.itervalues () :
+        if (is_monthly and p.months) or (not is_monthly and not p.months) :
+            rb = compute_running_balance \
+                (db, user, start, date, p, sharp_end)
+            #print "PERIOD", p.name, rb
+            balance += rb
+    return balance
+# end compute_balance

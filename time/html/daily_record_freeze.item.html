@@ -27,14 +27,14 @@
       <td align="right"
        tal:define="prev python:utils.prev_dr_freeze (db, context)">
        <a tal:condition="prev"
-          tal:attributes="href string:daily_record_freeze${prev}">
+          tal:attributes="href string:daily_record_freeze${prev/id}">
         &lt;&lt;&nbsp;
        </a>
       </td>
       <td align="left"
        tal:define="next python:utils.next_dr_freeze (db, context)">
        <a tal:condition="next"
-          tal:attributes="href string:daily_record_freeze${next}">
+          tal:attributes="href string:daily_record_freeze${next/id}">
         &gt;&gt;
        </a>
       </td>
@@ -68,7 +68,7 @@
             (classname, 'week_balance')"/>
       <td tal:content="structure python:context.week_balance.field ()"/>
       <tal:block tal:condition = "context/id"
-       tal:define="d python:utils.freeze_date (context.date, 'week')">
+       tal:define="d python:utils.week_freeze_date (context.date)">
         <th i18n:translate="">Valid on</th>
         <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
       </tal:block>
@@ -77,21 +77,9 @@
       <th tal:content="structure python:utils.fieldname
             (classname, 'month_balance')"/>
       <td tal:content="structure python:context.month_balance.field ()"/>
-      <tal:block tal:condition = "context/id"
-       tal:define="d python:utils.freeze_date (context.date, 'month')">
-        <th i18n:translate="">Valid on</th>
-        <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
-      </tal:block>
-     </tr>
-     <tr tal:condition="python: context.id and context.frozen">
       <th tal:content="structure python:utils.fieldname
-            (classname, 'year_balance')"/>
-      <td tal:content="structure python:context.year_balance.field ()"/>
-      <tal:block tal:condition = "context/id"
-       tal:define="d python:utils.freeze_date (context.date, 'year')">
-        <th i18n:translate="">Valid on</th>
-        <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
-      </tal:block>
+            (classname, 'month_validity_date')"/>
+      <td tal:content="structure python:context.month_validity_date.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'frozen')"/>

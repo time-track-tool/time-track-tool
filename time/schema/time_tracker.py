@@ -91,7 +91,7 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , frozen                = Boolean   ()
         , week_balance          = Number    ()
         , month_balance         = Number    ()
-        , year_balance          = Number    ()
+        , month_validity_date   = Date      (offset = 0)
         )
     daily_record_freeze.setlabelprop ('date')
 
@@ -242,6 +242,8 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , ''"overtime_period"
         , name                  = String    ()
         , order                 = Number    ()
+        , weekly                = Boolean   ()
+        , months                = Number    ()
         )
     overtime_period.setkey ("name")
 

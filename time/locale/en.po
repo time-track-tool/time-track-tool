@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-08-07 16:24+0200\n"
+"POT-Creation-Date: 2007-10-05 17:24+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -412,6 +412,10 @@ msgstr "User id"
 
 #, python-format
 msgid "Invalid %(uidname)s: %(uid)s"
+msgstr ""
+
+#, python-format
+msgid "%(uidname)s specified but no samba domain configured"
 msgstr ""
 
 msgid "Not allowed to retire a user"
@@ -2204,8 +2208,9 @@ msgid "relaxed"
 msgstr "Relaxed"
 
 msgid ""
-"If set, when changing status, no checks about priority and\n"
-"            responsible (helpdesk) are done when changing to this status.\n"
+"If set, when changing status, no checks about a message, the\n"
+"            priority and responsible (helpdesk) are done when changing\n"
+"            to this status.\n"
 "         "
 msgstr ""
 
@@ -3150,13 +3155,13 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "year_balance"
-msgstr "Year balance"
+#, fuzzy
+msgid "month_validity_date"
+msgstr "Month balance"
 
 msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\". Only applicable for user whose overtime\n"
-"             period is a year.\n"
+"Validity date of Month balance field. May be up to a year\n"
+"             before the freeze date.\n"
 "          "
 msgstr ""
 
