@@ -1,11 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 # -*- coding: iso-8859-1 -*-
 import sys
 import os
 from roundup           import date
 from roundup           import instance
 from roundup.password  import Password, encodePassword
-dir     = '/home/ralf/roundup/ttt'
+dir     = '/roundup/tracker/xyzzy'
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
