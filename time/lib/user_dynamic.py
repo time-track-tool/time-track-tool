@@ -38,6 +38,7 @@ from roundup.date import Date
 
 from common       import ymd, next_search_date, end_of_period, freeze_date
 from common       import pretty_range, day, period_week, period_is_weekly
+from common       import week_from_date
 from freeze       import find_prev_dr_freeze
 
 last_dynamic = None # simple one-element cache
@@ -378,48 +379,70 @@ def durations (db, user, date) :
 
 class Period_Data (object) :
     def __init__ (self, db, user, start, end, end_ov, period) :
-        use_additional = not period_is_weekly (period)
-        overtime       = 0
-        overtadd       = 0
-        required       = 0
-        worked         = 0
-        compute        = False
-        date           = start
-        over_per       = 0
-        days           = 0.0
+        use_additional        = not period_is_weekly (period)
+        overtime              = 0.0
+        overtadd              = 0.0
+        required              = 0.0
+        worked                = 0.0
+        date                  = start
+        over_per              = 0.0
+        days                  = 0.0
+        self.achieved_supp    = 0.0
+        self.overtime_balance = 0.0
         while date <= end_ov :
             dur       = durations (db, user, date)
-            over_per += (use_additional and dur.supp_per_period) or 0
-            days     += 1
+            over_per += (period.months and dur.supp_per_period) or 0
+            days     += 1.0
             work      = dur.tr_duration
             req       = dur.day_work_hours
             over      = dur.supp_weekly_hours
+            addition  = dur.additional_hours
             do_over   = use_work_hours (db, dur.dyn, period)
             if date > end :
-                work  = 0
-                req   = 0
+                work  = 0.0
+                req   = 0.0
             if use_additional :
-                over    = dur.additional_hours
+                over  = dur.additional_hours
             overtime += over * do_over
-	    if date <= end :
-		overtadd += over * do_over
+	    if period.months and date <= end :
+		overtadd += dur.additional_hours * do_over
             required += req  * do_over
             worked   += work * do_over
-            compute   = compute or do_over
-            date += day
+            date     += day
+            eow       = week_from_date (date) [1]
+            if date == eow and period.months and period.weekly :
+                if worked > overtadd and period.months :
+                    self.achieved_supp    += worked - overtadd
+                if worked > overtime :
+                    self.overtime_balance += worked - overtime
+                elif worked < required :
+                    self.overtime_balance += worked - required
+                overtadd = overtime = worked = required = 0.0
         assert (days)
         self.overtime_per_period = over_per / days
-        self.achieved_supp       = 0.0
-        if worked > overtadd and use_additional :
-            self.achieved_supp = \
-                min (worked - overtadd, self.overtime_per_period)
-        overtime += self.overtime_per_period
+        if not period.weekly :
+            overtime += self.overtime_per_period
+        if worked > overtadd and period.months :
+            self.achieved_supp    += worked - overtadd
         if worked > overtime :
-            self.overtime_balance = worked - overtime
+            self.overtime_balance += worked - overtime
         elif worked < required :
-            self.overtime_balance = worked - required
-        else :
-            self.overtime_balance = 0
+            self.overtime_balance += worked - required
+        if period.months and period.weekly :
+            # consolidate overtime_balance and achieved_supp:
+            # - achieved_supp must not exceed overtime_per_period
+            #   exceeding hours are added to overtime_balance
+            # - if overtime_balance is negative, use hours from
+            #   achieved_supp first
+            if self.achieved_supp > self.overtime_per_period :
+                self.overtime_balance += \
+                    self.achieved_supp - self.overtime_per_period
+                self.achieved_supp = self.overtime_per_period
+            if self.overtime_balance < 0 :
+                to_add = min (self.achieved_supp, -self.overtime_balance)
+                self.overtime_balance += to_add
+                self.achieved_supp    -= to_add
+        self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
     # end def __init__
 # end class Period_Data
 
