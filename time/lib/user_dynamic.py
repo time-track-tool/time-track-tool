@@ -483,9 +483,9 @@ def compute_saved_balance \
     r = find_prev_dr_freeze (db, user, eop)
     if r :
         if is_monthly :
-            return r.month_balance, r.month_validity_date
-        return r.week_balance, freeze_date (r.date, period_week)
-    return 0.0, None
+            return r.month_balance, r.month_validity_date, r.achieved_hours
+        return r.week_balance, freeze_date (r.date, period_week), 0.0
+    return 0.0, None, 0.0
 # end def compute_saved_balance
 
 def compute_running_balance (db, user, start, date, period, sharp_end = False) :
@@ -549,9 +549,8 @@ def compute_balance \
         start = dyn.valid_from
     else :
         start = date + day
-    balance, n_start = compute_saved_balance \
+    balance, n_start, achieved = compute_saved_balance \
         (db, user, start, date, is_monthly, not_after)
-    achieved = 0
     if n_start :
         start = n_start + day # start after freeze date
     periods = overtime_periods (db, user, start, date)
