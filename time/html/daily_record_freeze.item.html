@@ -69,7 +69,7 @@
       <td tal:content="structure python:context.week_balance.field ()"/>
       <tal:block tal:condition = "context/id"
        tal:define="d python:utils.week_freeze_date (context.date)">
-        <th i18n:translate="">Valid on</th>
+        <th i18n:translate="">Valid on&nbsp;</th>
         <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
       </tal:block>
      </tr>
@@ -79,7 +79,8 @@
       <td tal:content="structure python:context.month_balance.field ()"/>
       <th tal:content="structure python:utils.fieldname
             (classname, 'month_validity_date')"/>
-      <td tal:content="structure python:context.month_validity_date.field ()"/>
+      <td tal:content="structure python:context.month_validity_date.pretty
+            ('%Y-%m-%d')"/>
      </tr>
      <tr tal:condition="python: context.id and context.frozen">
       <th tal:content="structure python:utils.fieldname

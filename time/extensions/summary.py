@@ -1057,7 +1057,7 @@ class Staff_Report (_Report) :
                     and use_work_hours (db, dur.dyn, period)
                     )
                 do_week = do_week or \
-                    (   period_is_weekly (period)
+                    (   period.weekly
                     and use_work_hours (db, dur.dyn, period)
                     )
 	    if dur.supp_per_period :
