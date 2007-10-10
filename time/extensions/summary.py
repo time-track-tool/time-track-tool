@@ -1028,11 +1028,13 @@ class Staff_Report (_Report) :
 	effective_overtime = []
 
 	for pt in False, True :
-	    container ['balance_start']  += compute_balance \
-		(db, u, start - day, pt, True)
+	    bal       = compute_balance (db, u, start - day, pt, True) [0]
+	    container ['balance_start'] += bal
 	    db.commit () # immediately commit cached tr_duration if changed
-	    container ['balance_end']    += compute_balance \
-		(db, u, end,         pt, True)
+	    bal, asup = compute_balance (db, u, end,         pt, True)
+	    container ['balance_end']   += bal
+	    if pt :
+		container ['achieved_supplementary'] = asup
 	    db.commit () # immediately commit cached tr_duration if changed
         for period in periods.itervalues () :
             if not period_is_weekly (period) :
@@ -1074,11 +1076,6 @@ class Staff_Report (_Report) :
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)
-        if periods and periods.keys () != ['week'] :
-            container ['achieved_supplementary'] = \
-                container ['actual_all'] - container ['additional_hours']
-            if container ['achieved_supplementary'] < 0 :
-                container ['achieved_supplementary'] = 0
         db.commit () # commit cached daily_record values
     # end def fill_container
 

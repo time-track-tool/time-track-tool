@@ -81,6 +81,11 @@
             (classname, 'month_validity_date')"/>
       <td tal:content="structure python:context.month_validity_date.field ()"/>
      </tr>
+     <tr tal:condition="python: context.id and context.frozen">
+      <th tal:content="structure python:utils.fieldname
+            (classname, 'achieved_hours')"/>
+      <td tal:content="structure python:context.achieved_hours.field ()"/>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'frozen')"/>
       <td tal:content="structure python:context.frozen.field ()"/>

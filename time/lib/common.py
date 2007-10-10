@@ -743,7 +743,7 @@ def start_of_year (date) :
     """
     date = Date (date.pretty ('%Y-01-01'))
     return date
-# end def start_of_month
+# end def start_of_year
 
 def next_search_date (date, direction = '+') :
     """ Return find-pattern for date matching everything after next day

@@ -32,7 +32,7 @@ for id in db.user_dynamic.getnodeids () :
         db.user_dynamic.set (id, overtime_period = otw.id)
 
 # find first freeze records for all users and fix them to have a
-# month_validity_date
+# month_validity_date and a value for achieved.
 for uid in db.user.getnodeids () :
     fids = db.daily_record_freeze.filter \
         ( None
@@ -42,9 +42,12 @@ for uid in db.user.getnodeids () :
     if not fids :
         continue
     freeze = db.daily_record_freeze.getnode (fids [0])
-    if freeze.month_validity_date :
-        continue
-    db.daily_record_freeze.set (freeze.id, month_validity_date = freeze.date)
+    if not freeze.month_validity_date :
+	db.daily_record_freeze.set \
+	    (freeze.id, month_validity_date = freeze.date)
+    if freeze.achieved_hours is None :
+	db.daily_record_freeze.set \
+	    (freeze.id, achieved_hours = 0)
 
 # fix month_validity_date for the rest which do not have a yearly
 # setting
@@ -57,5 +60,29 @@ for id in db.daily_record_freeze.getnodeids (retired = False) :
     if dyn.overtime_period == yearly :
         continue
     db.daily_record_freeze.set (id, month_validity_date = f.date)
+
+def refreeze (freezelist) :
+    d = date.Date ('2005-12-31')
+    for f in reversed (freezelist) :
+	if f.date != d :
+	    db.daily_record_freeze.set (f.id, frozen = False)
+    for f in freezelist :
+	if f.date != d :
+	    db.daily_record_freeze.set (f.id, frozen = True)
+
+# Loop over all freeze recs and thaw them, except for records on 2005-12-31,
+# then re-freeze them.
+ids = db.daily_record_freeze.filter \
+    (None, dict (frozen = True), group = [('+', 'user'), ('+', 'date')])
+u   = None
+l   = []
+for id in ids :
+    f = db.daily_record_freeze.getnode (id)
+    if f.user != u :
+	refreeze (l)
+	u = f.user
+	l = []
+    l.append (f)
+refreeze (l)
 
 db.commit ()
