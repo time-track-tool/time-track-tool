@@ -85,7 +85,7 @@ def find_prev_dr_freeze (db, user, date, frozen = True) :
 
 def _find_next (db, daily_record_freeze, direction = '+', frozen = None) :
     user = daily_record_freeze.user.id
-    return find_next_dr \
+    return find_next_dr_freeze \
         (db, user, daily_record_freeze.date, direction, frozen = frozen)
 # end def _find_next
 
