@@ -106,7 +106,8 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
 
     for f in ov_req :
         # don't allow 0 for additional_hours
-        if  (   op.months
+        if  (   op
+	    and op.months
             and (  getattr (X, f, None) is None
                 or f == 'additional_hours' and not getattr (X, f, None)
                 )
@@ -143,7 +144,11 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
             sum += getattr (X, f)
         new_values ['weekly_hours'] = sum
         setattr (X, 'weekly_hours', sum)
-    if not op.weekly and op.months and X.additional_hours != X.weekly_hours :
+    if  (   op
+        and not op.weekly
+	and op.months
+	and X.additional_hours != X.weekly_hours
+	) :
         ah = _ ('additional_hours')
         wh = _ ('weekly_hours')
         raise Reject, "%(ah)s must equal %(wh)s for monthly balance" % locals ()

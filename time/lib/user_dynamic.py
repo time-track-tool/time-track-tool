@@ -514,7 +514,8 @@ def compute_running_balance (db, user, start, date, period, sharp_end = False) :
         p_balance += pd.overtime_balance
         #print "OTB:", pd.overtime_balance
         p_date = eop + day
-    assert (p_date == end + day)
+    print p_date, end
+    assert (p_date >= end + day and p_date <= date)
     eop = end_of_period (date, period)
     if sharp_end and date != eop :
         pd = Period_Data (db, user, p_date, date, eop, period)
@@ -541,17 +542,19 @@ def compute_balance \
         start = dyn.valid_from
     else :
         start = date + day
+    print "START:", start,
     balance, n_start = compute_saved_balance \
         (db, user, start, date, is_monthly, not_after)
     #print "SAVED:", date.pretty (ymd), is_monthly, balance, n_start
     if n_start :
         start = n_start + day # start after freeze date
+    print "START:", start, "date:", date
     periods = overtime_periods (db, user, start, date)
     for p in periods.itervalues () :
         if (is_monthly and p.months) or (not is_monthly and not p.months) :
             rb = compute_running_balance \
                 (db, user, start, date, p, sharp_end)
-            #print "PERIOD", p.name, rb
+            print "PERIOD", p.name, rb
             balance += rb
     return balance
 # end compute_balance

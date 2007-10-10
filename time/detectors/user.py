@@ -181,12 +181,17 @@ def common_user_checks (db, cl, nodeid, new_values) :
 # end def common_user_checks
 
 def create_dynuser (db, cl, nodeid, new_values) :
-    db.user_dynamic.create \
-        ( user         = nodeid
-        , valid_from   = Date ('.')
-        , org_location = cl.get (nodeid, 'org_location')
-        , department   = cl.get (nodeid, 'department')
-        )
+    u = db.user.getnode (nodeid)
+    s = None
+    if 'user_status' in db.classes :
+	s = db.user_status.lookup ('valid')
+    if nodeid > 2 and (not s or u.status == s) :
+	db.user_dynamic.create \
+	    ( user         = nodeid
+	    , valid_from   = Date ('.')
+	    , org_location = cl.get (nodeid, 'org_location')
+	    , department   = cl.get (nodeid, 'department')
+	    )
 # end def create_dynuser
 
 def new_user (db, cl, nodeid, new_values) :
