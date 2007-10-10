@@ -177,6 +177,8 @@ def use_work_hours (db, dynuser, period) :
         required hours or the sum of overtime is zero (period denotes if
         we want the result for week/month/year).
     """
+    if not dynuser :
+	return False
     overtime   = dynuser.additional_hours
     period_id  = dynuser.overtime_period
     if period_is_weekly (period) :
@@ -515,9 +517,9 @@ def compute_running_balance (db, user, start, date, period, sharp_end = False) :
         #print "OTB:", pd.overtime_balance
         p_date = eop + day
     print p_date, end
-    assert (p_date >= end + day and p_date <= date)
+    assert (p_date >= end + day and p_date <= date + day)
     eop = end_of_period (date, period)
-    if sharp_end and date != eop :
+    if sharp_end and date != eop and p_date < date :
         pd = Period_Data (db, user, p_date, date, eop, period)
         p_balance += pd.overtime_balance
         #print "OTBSE:", pd.overtime_balance
