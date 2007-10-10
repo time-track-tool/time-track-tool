@@ -93,7 +93,6 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , month_balance         = Number    ()
 	, achieved_hours        = Number    ()
         , month_validity_date   = Date      (offset = 0)
-	, year_balance          = Number    ()
         )
     daily_record_freeze.setlabelprop ('date')
 
