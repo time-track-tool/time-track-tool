@@ -508,7 +508,8 @@ def compute_saved_balance \
     r = find_prev_dr_freeze (db, user, eop)
     if r :
         if is_monthly :
-            return r.month_balance, r.month_validity_date, r.achieved_hours
+	    achieved = bool (date == r.month_validity_date) * r.achieved_hours
+            return r.month_balance, r.month_validity_date, achieved
         return r.week_balance, freeze_date (r.date, period_week), 0.0
     return 0.0, None, 0.0
 # end def compute_saved_balance
