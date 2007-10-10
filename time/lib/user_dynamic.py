@@ -379,7 +379,7 @@ def durations (db, user, date) :
 
 class Period_Data (object) :
     def __init__ (self, db, user, start, end, end_ov, period) :
-        use_additional        = not period_is_weekly (period)
+        use_additional        = not period.weekly
         overtime              = 0.0
         overtadd              = 0.0
         required              = 0.0
@@ -411,8 +411,8 @@ class Period_Data (object) :
             date     += day
             eow       = week_from_date (date) [1]
             if date == eow and period.months and period.weekly :
-                if worked > overtadd and period.months :
-                    self.achieved_supp    += worked - overtadd
+                if worked > overtadd :
+                    self.achieved_supp    += worked - min (overtadd, overtime)
                 if worked > overtime :
                     self.overtime_balance += worked - overtime
                 elif worked < required :
@@ -423,6 +423,8 @@ class Period_Data (object) :
         if not period.weekly :
             overtime += self.overtime_per_period
         if worked > overtadd and period.months :
+	    if period.weekly :
+		overtadd = min (overtadd, overtime)
             self.achieved_supp    += worked - overtadd
         if worked > overtime :
             self.overtime_balance += worked - overtime
