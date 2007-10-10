@@ -191,6 +191,11 @@ _helptext          = \
              the address type category is "ABO".
           '''
       ]
+    , ""'achieved_hours'              :
+      [""'''Achieved overtime hours included in monthly/yearly supplementary
+            hours per overtime period
+         '''
+      ]
     , ""'active'                      :
       [""'''Set if this %(Classname)s is active.''']
     , ""'activity'                    :
@@ -735,6 +740,11 @@ _helptext          = \
              number
           '''
       ]
+    , ""'month_validity_date'         :
+      [ ""'''Validity date of Month balance field. May be up to a year
+             before the freeze date.
+          '''
+      ]
     , ""'needs.id'                    : [help_id]
     , ""'netbios_dd'                  :
       [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
@@ -1231,6 +1241,13 @@ _helptext          = \
              for determining if the user may book on a work package.
           '''
       ]
+    , ""'time_project++work_location' :
+      [ work_loc
+      , ""''' If a value is given here, the work location will be
+             corrected for all time records booked on work packages of
+             this project.
+          '''
+      ]
     , ""'time_project_status++active' :
       [ ""'''Set if this %(Classname)s is active. This determines if new
              work packages may be created for a project with this activity
@@ -1423,18 +1440,6 @@ _helptext          = \
           '''
       ]
     , ""'work_location'               : [work_loc]
-    , ""'time_project++work_location' :
-      [ work_loc
-      , ""''' If a value is given here, the work location will be
-             corrected for all time records booked on work packages of
-             this project.
-          '''
-      ]
-    , ""'month_validity_date'         :
-      [ ""'''Validity date of Month balance field. May be up to a year
-             before the freeze date.
-          '''
-      ]
     }
 
 def combined_name (cls, attr, searchname = None) :
