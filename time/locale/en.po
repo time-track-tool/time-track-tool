@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-10-05 17:24+0200\n"
+"POT-Creation-Date: 2007-10-10 15:16+0200\n"
 "PO-Revision-Date: 2005-06-20 17:20+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -432,12 +432,39 @@ msgstr ""
 msgid "overtime_period"
 msgstr "Overtime period"
 
+msgid "supp_weekly_hours"
+msgstr "Supplementary hours"
+
+msgid "additional_hours"
+msgstr "Additional hours"
+
+msgid "weekly_hours"
+msgstr "Weekly hours"
+
 #, python-format
 msgid "Frozen: %(old_from)s"
 msgstr ""
 
 #, python-format
 msgid "Frozen: %(valid_from)s"
+msgstr ""
+
+msgid "months"
+msgstr "Months"
+
+msgid "weekly"
+msgstr "Weekly"
+
+#, python-format
+msgid "No entries with same number of %(mname)s / %(wname)s allowed"
+msgstr ""
+
+#, python-format
+msgid "One of %(mname)s, %(wname)s must be specified"
+msgstr ""
+
+#, python-format
+msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
 msgstr ""
 
 msgid "Download&nbsp;letter"
@@ -730,9 +757,6 @@ msgstr "Add File"
 
 msgid "Add a new file for %(Classname)s"
 msgstr ""
-
-msgid "additional_hours"
-msgstr "Additional hours"
 
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
@@ -2729,9 +2753,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "supp_weekly_hours"
-msgstr "Supplementary hours"
-
 msgid ""
 "Weekly hours including the agreed supplementary hours (e.g.\n"
 "             45h), Format: xx.xx. Please round to whole quarters of an hour\n"
@@ -3098,9 +3119,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "weekly_hours"
-msgstr "Weekly hours"
-
 msgid "Expected weekly work-time for %(Classname)s."
 msgstr ""
 
@@ -3155,9 +3173,8 @@ msgid ""
 "          "
 msgstr ""
 
-#, fuzzy
 msgid "month_validity_date"
-msgstr "Month balance"
+msgstr "Month validity date"
 
 msgid ""
 "Validity date of Month balance field. May be up to a year\n"
@@ -3642,6 +3659,9 @@ msgstr "Duration (incl. Travel)"
 
 msgid "daily_record_freeze"
 msgstr "Daily Record freeze"
+
+msgid "achieved_hours"
+msgstr "Achieved hours"
 
 msgid "comment"
 msgstr "Comment"
