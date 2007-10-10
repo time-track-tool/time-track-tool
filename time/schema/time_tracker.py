@@ -727,4 +727,11 @@ def security (db, ** kw) :
             , properties  = ('name', 'project')
             )
         db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'overtime_period'
+        , properties  = ('name', 'order')
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'overtime_period')
 # end def security
