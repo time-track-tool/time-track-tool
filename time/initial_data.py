@@ -487,8 +487,12 @@ if 'status' in db.classes :
         status.transitions = [trans_lst [t] [0] for t in trans]
 
 if 'overtime_period' in db.classes :
-    db.overtime_period.create (name = "month", order = 1)
-    db.overtime_period.create (name = "year",  order = 2)
+    db.overtime_period.create \
+        (name = "week",  order = 0, months = 0,  weekly = 1)
+    db.overtime_period.create \
+        (name = "month", order = 1, months = 1,  weekly = 0)
+    db.overtime_period.create \
+        (name = "year",  order = 2, months = 12, weekly = 0)
 
 if 'currency' in db.classes :
     currency = db.getclass ('currency')
