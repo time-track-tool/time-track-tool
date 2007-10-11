@@ -73,7 +73,8 @@ def init (db, Class, Department_Class, Number, String, Link, Multilink, ** kw) :
         , document_nr         = String    ()
         , messages            = Multilink ("msg")
         )
-    doc.setkey ("document_nr")
+    doc.setkey       ("document_nr")
+    doc.setlabelprop ("title")
 
     return dict (Department_Class = Ext_Department_Class)
 # end def init
@@ -83,7 +84,7 @@ def security (db, ** kw) :
     roles      = (("Doc_Admin", "Admin for documents (e.g. QM)"),)
     prop_perms = (("department", "Edit", ("Doc_Admin", ), ("doc_num", )), )
     classes    = \
-        ( ("doc"         , ("User",), ("Doc_Admin",))
+        ( ("doc"         , ("User",), ("Doc_Admin", "User"))
         , ("artefact"    , ("User",), ("Doc_Admin",))
         , ("product_type", ("User",), ("Doc_Admin",))
         , ("reference"   , ("User",), ("Doc_Admin",))

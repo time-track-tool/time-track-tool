@@ -655,7 +655,7 @@ _helptext          = \
       [""'''List of letters for this %(Classname)s''']
     , ""'lettertitle'                 :
       [""'''Title of this person used in a letter''']
-    , ""'link'                        :
+    , ""'doc++link'                        :
       [""'''The location of the file in the repository or on the file server''']
     , ""'link_field'                  :
       [ ""'''Auxiliary field for use with other software, e.g., asset

@@ -1675,7 +1675,7 @@ msgstr "Letter-title"
 msgid "Title of this person used in a letter"
 msgstr ""
 
-msgid "link"
+msgid "doc++link"
 msgstr "Link/CVS location"
 
 msgid "The location of the file in the repository or on the file server"
