@@ -488,11 +488,11 @@ if 'status' in db.classes :
 
 if 'overtime_period' in db.classes :
     db.overtime_period.create \
-        (name = "week",  order = 0, months = 0,  weekly = 1)
+        (name = "week",  order = 0, months = 0,  weekly = True)
     db.overtime_period.create \
-        (name = "month", order = 1, months = 1,  weekly = 0)
+        (name = "month", order = 1, months = 1,  weekly = False)
     db.overtime_period.create \
-        (name = "year",  order = 2, months = 12, weekly = 0)
+        (name = "year",  order = 2, months = 12, weekly = False)
 
 if 'currency' in db.classes :
     currency = db.getclass ('currency')
