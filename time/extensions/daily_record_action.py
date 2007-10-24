@@ -685,7 +685,7 @@ class Freeze_Action (Action, autosuper) :
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
         self.request = templating.HTMLRequest (self.client)
-        if 'user' in self.request.form :
+        if 'user' in self.request.form and self.request.form ['user'].value :
             raise Reject, _ ('''Don't specify a user for "Freeze all"''')
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()

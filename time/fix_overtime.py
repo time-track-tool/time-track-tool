@@ -5,7 +5,7 @@ import os
 from roundup           import date
 from roundup           import instance
 from roundup.password  import Password, encodePassword
-dir     = '/roundup/tracker/xyzzy'
+dir     = '/home/ralf/roundup/ttt'
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
