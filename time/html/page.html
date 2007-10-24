@@ -571,7 +571,7 @@
  <span class="classblock">
   <select name="create_new"
           onChange="javascript:document.location=document.forms['menubar'].elements['create_new'].options[document.forms['menubar'].elements['create_new'].options.selectedIndex].value; ">
-   <option value="" i18n:translate="">-- Create / Update --</option>
+   <option value="" i18n:translate="">-- Create --</option>
    <tal:block tal:repeat="k python:
     sorted ( [k for k in klasses if k [0] in db._db.classes]
            , key = lambda x, y = i18n.gettext : y (x [0]).lower ()
