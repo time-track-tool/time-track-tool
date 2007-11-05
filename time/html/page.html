@@ -85,7 +85,7 @@
                         : '@columns=id,name,currency&'
                           '@sort=-id&@pagesize=20&@startwith=0'
    , ('doc', '')        : '@columns=title,document_nr,artefact,department&'
-                          '@sort=title'
+                          '@sort=title&@filter=status&status=-1,1,2,3'
    , ('group', '')      : '@columns=name,gid,description,org_location&'
                           '@sort=-id&@pagesize=500&@startwith=0'
    , ('invoice', '')    : '@quiet=1&@terse=1&@columns=invoice_no,'
@@ -366,6 +366,8 @@
      , ('product',             'View', 1,               ('',''))
      , ('contact',             'View', 1,               ('',''))
      , ('doc',                 'View', 1,               ('',''))
+     , ('artefact',            'View', 1,               ('',''))
+     , ('reference',           'View', 1,               ('',''))
      , ( 'summary_report'
        , 'View'
        , utils.user_has_role (db._db, db._db.getuid (), 'hr')
@@ -699,7 +701,7 @@
         "name      string:responsible;
          form      string:itemSynopsis;
          dont_care python:i18n.gettext ('''- don't care -''');
-         selected  context/responsible/id | string:0">
+         selected python:context.responsible and context.responsible.id or 0">
       <tal:block metal:use-macro="templates/userlist/macros/user"/>
      </tal:block>
     </td>

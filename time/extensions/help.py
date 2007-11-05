@@ -655,8 +655,14 @@ _helptext          = \
       [""'''List of letters for this %(Classname)s''']
     , ""'lettertitle'                 :
       [""'''Title of this person used in a letter''']
-    , ""'doc++link'                        :
+    , ""'doc++link'                   :
       [""'''The location of the file in the repository or on the file server''']
+    , ""'doc++status'                 :
+      [ ""'''The status of the item. Can be one of "work in progress",
+             "draft", "released" and "obsolete". The latter will cause the
+             item to not be displayed in the standard query.
+          '''
+      ]
     , ""'link_field'                  :
       [ ""'''Auxiliary field for use with other software, e.g., asset
              tracking

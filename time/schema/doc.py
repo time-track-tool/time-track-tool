@@ -61,6 +61,13 @@ def init (db, Class, Department_Class, Number, String, Link, Multilink, ** kw) :
         )
     artefact.setkey ("description") ### names are not unique
 
+    doc_status = Class \
+        ( db, "doc_status"
+        , name                = String    (required = True)
+        , order               = Number    ()
+        )
+    doc_status.setkey ("name")
+
     doc = Class \
         ( db, "doc"
         , title               = String    ()
@@ -69,6 +76,7 @@ def init (db, Class, Department_Class, Number, String, Link, Multilink, ** kw) :
         , artefact            = Link      ("artefact")
         , department          = Link      ("department")
         , owner               = Link      ("user")
+        , status              = Link      ("doc_status")
         , link                = String    ()
         , document_nr         = String    ()
         , messages            = Multilink ("msg")
@@ -88,6 +96,7 @@ def security (db, ** kw) :
         , ("artefact"    , ("User",), ("Doc_Admin",))
         , ("product_type", ("User",), ("Doc_Admin",))
         , ("reference"   , ("User",), ("Doc_Admin",))
+        , ("doc_status"  , ("User",), ("Doc_Admin",))
         )
 
     schemadef.register_roles             (db, roles)

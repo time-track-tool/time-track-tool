@@ -2,9 +2,10 @@
 
  <title metal:fill-slot="head_title" >
   <span tal:condition="context/id"
-        tal:replace="string:Document: ${context/id} by ${context/owner}"/>
+        tal:replace=
+          "string:${context/product_type} ${context/id} by ${context/owner}"/>
   <span tal:condition="not:context/id"
-        tal:replace="string:Create New Document"/>
+        tal:replace="string:Create New Item"/>
  </title>
 
  <tal:block metal:fill-slot="create_or_query">
@@ -57,6 +58,11 @@
     <tr tal:condition="python: context.id or is_doc_admin">
      <th tal:content="structure python:fieldname ('owner')" />
      <td tal:content="structure context/owner/menu" />
+    </tr>
+    <tr>
+     <th
+      tal:content="structure python:fieldname ('status')" />
+     <td tal:content="structure context/status/menu" />
     </tr>
     <tr>
      <th tal:content="structure python:fieldname ('link')" />

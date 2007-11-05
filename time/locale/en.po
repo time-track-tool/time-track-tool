@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-10-10 15:16+0200\n"
-"PO-Revision-Date: 2005-06-20 17:20+CEST\n"
+"POT-Creation-Date: 2007-10-30 17:27+0100\n"
+"PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -1680,6 +1680,9 @@ msgstr "Link/CVS location"
 
 msgid "The location of the file in the repository or on the file server"
 msgstr ""
+
+msgid "doc++status"
+msgstr "Status"
 
 msgid "link_field"
 msgstr "Link field"
@@ -3420,7 +3423,7 @@ msgstr "Approval"
 msgid "User&nbsp;List"
 msgstr ""
 
-msgid "-- Create / Update --"
+msgid "-- Create --"
 msgstr ""
 
 msgid "-- View / Query --"
@@ -4052,7 +4055,7 @@ msgid "lot"
 msgstr "Lot number"
 
 msgid "doc"
-msgstr "Document"
+msgstr "Numbering System"
 
 msgid "file"
 msgstr "File"

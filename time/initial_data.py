@@ -599,6 +599,11 @@ if 'product_type' in db.classes :
     db.product_type.create (name = "S", description = "Software")
     db.product_type.create (name = "H", description = "Hardware")
 
+if 'doc_status' in db.classes :
+    lst = ("work in progress", "draft", "released", "obsolete")
+    for nr, name in enumerate (lst) :
+        db.doc_status.create (name = name, order = nr)
+
 if 'tmplate_status' in db.classes :
     db.tmplate_status.create \
         ( name            = uni ('Brief')

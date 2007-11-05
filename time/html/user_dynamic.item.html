@@ -47,7 +47,7 @@
             "name      python:'user';
              form      string:itemSynopsis;
              dont_care string:- no selection -;
-             selected  context/user/id | string:0;
+             selected python:context.user and context.user.id or 0;
             ">
         <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
        </tal:block>

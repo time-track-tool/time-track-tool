@@ -168,7 +168,7 @@
    <tal:block tal:define="name      string:supervisor;
                           form      string:user_form;
                           dont_care string:don't care;
-                          selected  context/supervisor/id | string:0">
+                          selected python:context.supervisor and context.supervisor.id or 0">
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
@@ -179,7 +179,7 @@
    <tal:block tal:define="name      string:substitute;
                           form      string:user_form;
                           dont_care string:don't care;
-                          selected  context/substitute/id | string:0">
+                          selected python:context.substitute and context.substitute.id or 0">
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
@@ -194,7 +194,7 @@
    <tal:block tal:define="name      string:clearance_by;
                           form      string:user_form;
                           dont_care string:don't care;
-                          selected  context/clearance_by/id | string:0">
+                          selected python:context.clearance_by and context.clearance_by.id or 0">
     <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
    </tal:block>
   </td>
