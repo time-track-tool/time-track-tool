@@ -412,7 +412,7 @@ class Period_Data (object) :
             eow       = week_from_date (date) [1]
             if date == eow and period.months and period.weekly :
                 if worked > overtadd :
-                    self.achieved_supp    += worked - min (overtadd, overtime)
+                    self.achieved_supp    += min (worked, overtime) - overtadd
                 if worked > overtime :
                     self.overtime_balance += worked - overtime
                 elif worked < required :
@@ -424,8 +424,9 @@ class Period_Data (object) :
             overtime += self.overtime_per_period
         if worked > overtadd and period.months :
 	    if period.weekly :
-		overtadd = min (overtadd, overtime)
-            self.achieved_supp    += worked - overtadd
+	        self.achieved_supp += min (worked, overtime) - overtadd
+	    else :
+		self.achieved_supp += worked - overtadd
         if worked > overtime :
             self.overtime_balance += worked - overtime
         elif worked < required :
@@ -434,16 +435,10 @@ class Period_Data (object) :
             # consolidate overtime_balance and achieved_supp:
             # - achieved_supp must not exceed overtime_per_period
             #   exceeding hours are added to overtime_balance
-            # - if overtime_balance is negative, use hours from
-            #   achieved_supp first
             if self.achieved_supp > self.overtime_per_period :
                 self.overtime_balance += \
                     self.achieved_supp - self.overtime_per_period
                 self.achieved_supp = self.overtime_per_period
-            if self.overtime_balance < 0 :
-                to_add = min (self.achieved_supp, -self.overtime_balance)
-                self.overtime_balance += to_add
-                self.achieved_supp    -= to_add
         self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
     # end def __init__
 # end class Period_Data
@@ -558,7 +553,14 @@ def compute_running_balance (db, user, start, date, period, sharp_end = False) :
 # end def compute_running_balance
 
 def compute_balance \
-    (db, user, date, is_monthly, sharp_end = False, not_after = False) :
+    ( db
+    , user
+    , date
+    , is_monthly
+    , sharp_end     = False
+    , not_after     = False
+    , start_balance = 0.0
+    ) :
     """ Compute the overtime balance at the given day.
         if not_after is True, we use the next end of period for
         searching for existing freeze records.
@@ -586,5 +588,11 @@ def compute_balance \
                 (db, user, start, date, p, sharp_end)
             balance  += rb
 	    achieved += ach
+    # if balance is negative, use hours from achieved first
+    if balance + start_balance < 0 :
+	#print "Balance underrun:", balance + start_balance, achieved
+	to_add = min (achieved, -(balance + start_balance))
+	balance  += to_add
+	achieved -= to_add
     return balance, achieved
 # end compute_balance

@@ -1031,7 +1031,8 @@ class Staff_Report (_Report) :
 	    bal       = compute_balance (db, u, start - day, pt, True) [0]
 	    container ['balance_start'] += bal
 	    db.commit () # immediately commit cached tr_duration if changed
-	    bal, asup = compute_balance (db, u, end,         pt, True)
+	    bal, asup = compute_balance \
+		(db, u, end, pt, True, start_balance = bal)
 	    container ['balance_end']   += bal
 	    if pt :
 		container ['achieved_supplementary'] = asup

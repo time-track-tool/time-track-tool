@@ -95,12 +95,19 @@ def new_freeze_record (db, cl, nodeid, new_values) :
     if new_values ['frozen'] :
         check_thawed_records (db, user, date)
     check_editable (db, cl, nodeid, new_values)
+    start_balance = 0.0
     for p in periods :
         attr = p + '_balance'
         if attr not in new_values or new_values [attr] is None :
 	    balance, achieved = compute_balance \
-                (db, user, date, p == 'month', not_after = True)
-            new_values [attr] = balance
+                ( db
+		, user
+		, date
+		, p == 'month'
+		, not_after     = True
+		, start_balance = start_balance
+		)
+            new_values [attr] = start_balance = balance
 	    if  (   p == 'month'
 	        and new_values.get ('achieved_hours', None) is None
 		) :
@@ -177,12 +184,19 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     else :
 	new_values ['month_validity_date'] = None
 	new_values ['achieved_hours']      = None
+    start_balance = 0.0
     for p in periods :
         attr = p + '_balance'
         if  freezing :
 	    balance, achieved = compute_balance \
-                (db, user, date, p == 'month', not_after = True)
-            new_values [attr] = balance
+                ( db
+		, user
+		, date
+		, p == 'month'
+		, not_after     = True
+		, start_balance = start_balance
+		)
+            new_values [attr] = start_balance = balance
 	    if (p == 'month') :
 		new_values ['achieved_hours'] = achieved
         else :
