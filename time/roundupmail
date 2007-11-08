@@ -20,7 +20,7 @@ if l > 3 :
     lockfile = sys.argv [3]
 tracker  = sys.argv [1]
 server   = sys.argv [2]
-mailgw   = 'roundup-mailgw %s %s imap %s' % \
+mailgw   = "roundup-mailgw %s '%s' imap '%s'" % \
     (' '.join (options), tracker, server)
 
 # Note: There is still a race condition if you call this script almost
