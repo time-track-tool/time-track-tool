@@ -1,0 +1,17 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+from roundup.password  import Password, encodePassword
+dir     = sys.argv [1]
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+sys.path.insert (1, os.path.join (dir, 'lib'))
+
+from user_dynamic import overtime_periods
+
+user = db.user.lookup ('admin')
+db.user.set (user, username = 'xyzzy')
+db.user.set (user, username = 'admin')
