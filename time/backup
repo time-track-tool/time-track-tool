@@ -42,3 +42,5 @@ if [ -n "$RESTORE" ] ; then
     $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
 
+# re-create html/userlist.html in restored tracker.
+$RESTORE/genuserlist $RESTORE
