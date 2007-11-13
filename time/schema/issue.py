@@ -172,6 +172,25 @@ def security (db, ** kw) :
         , ("status_transition", ["User"],        ["Issue_Admin"])
         , ("severity",          ["User"],        ["Issue_Admin"])
         ]
+    fixdoc = schemadef.security_doc_from_docstring
+
+    def responsible_for_category (db, userid, itemid) :
+        """ User is allowed to edit category if he is responsible for it.
+        """
+        if int (itemid) < 0 :
+            return False
+        resp = db.category.get (itemid, 'responsible')
+        return userid == resp
+    # end def responsible_for_category
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'category'
+        , check       = responsible_for_category
+        , description = fixdoc (responsible_for_category.__doc__)
+        , properties  = ('nosy',)
+        )
+    db.security.addPermissionToRole ('User', p)
 
     schemadef.register_roles                 (db, roles)
     schemadef.register_class_permissions     (db, classes, ())
