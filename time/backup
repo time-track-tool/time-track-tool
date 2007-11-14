@@ -28,11 +28,13 @@ fi
 dir=${BACKUPDIR}/backup-$(date +%a)
 echo Backing up $TRACKER to $dir
 rm -rf $dir
+/roundup/bin/dropcache
 mkdir $dir
 mkdir $dir/code
 cp -a $(find ${TRACKER} -mindepth 1 -maxdepth 1 \! -name db) $dir/code
 
 $ROUNDUP_ADMIN -i $TRACKER export $dir
+/roundup/bin/dropcache
 
 if [ -n "$RESTORE" ] ; then
     echo Restoring from $dir to $RESTORE
@@ -41,6 +43,7 @@ if [ -n "$RESTORE" ] ; then
     cp $TRACKER/db/backend_name $RESTORE/db
     $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
+/roundup/bin/dropcache
 
 # re-create html/userlist.html in restored tracker.
 $RESTORE/genuserlist $RESTORE
