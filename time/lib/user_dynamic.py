@@ -594,5 +594,6 @@ def compute_balance \
 	to_add = min (achieved, -(balance + start_balance))
 	balance  += to_add
 	achieved -= to_add
+    #print date, is_monthly, start_balance, balance, achieved
     return balance, achieved
 # end compute_balance
