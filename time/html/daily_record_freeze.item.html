@@ -62,24 +62,13 @@
          , fieldwidth = 20
          , editable = not context.id
          ).as_listentry (as_link = False)"/>
-     </tr>
      <tr tal:condition="python: context.id and context.frozen">
       <th tal:content="structure python:utils.fieldname
-            (classname, 'week_balance')"/>
-      <td tal:content="structure python:context.week_balance.field ()"/>
-      <tal:block tal:condition = "context/id"
-       tal:define="d python:utils.week_freeze_date (context.date)">
-        <th i18n:translate="">Valid on&nbsp;</th>
-        <td tal:content="python:d.pretty ('%Y-%m-%d')"/>
-      </tal:block>
-     </tr>
-     <tr tal:condition="python: context.id and context.frozen">
+            (classname, 'balance')"/>
+      <td tal:content="structure python:context.balance.field ()"/>
       <th tal:content="structure python:utils.fieldname
-            (classname, 'month_balance')"/>
-      <td tal:content="structure python:context.month_balance.field ()"/>
-      <th tal:content="structure python:utils.fieldname
-            (classname, 'month_validity_date')"/>
-      <td tal:content="structure python:context.month_validity_date.pretty
+            (classname, 'validity_date')"/>
+      <td tal:content="structure python:context.validity_date.pretty
             ('%Y-%m-%d')"/>
      </tr>
      <tr tal:condition="python: context.id and context.frozen">

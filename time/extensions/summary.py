@@ -993,7 +993,7 @@ class Staff_Report (_Report) :
     def fill_container (self, container, user, dyn, start, end) :
         db      = self.db
         u       = user
-        periods = overtime_periods (db, user, start, end)
+        periods = [p [2] for p in overtime_periods (db, user, start, end)]
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = pretty_range (start, end)))
         try :
@@ -1013,7 +1013,8 @@ class Staff_Report (_Report) :
         except AttributeError :
             container ['overtime_correction'] = ' + '.join \
                 (str (db.overtime_correction.get (i, 'value')) for i in ov)
-        container ['overtime_period']        = ', '.join (periods.iterkeys ())
+        container ['overtime_period']        = \
+	    ', '.join (p.name for p in periods)
         container ['balance_start']          = 0.0
         container ['balance_end']            = 0.0
         container ['supp_per_period']        = ''
@@ -1027,27 +1028,20 @@ class Staff_Report (_Report) :
         container ['achieved_supplementary'] = ''
 	effective_overtime = []
 
-        bal = 0.0
-	for pt in False, True :
-	    bal       = compute_balance \
-		(db, u, start - day, pt, True, start_balance = bal) [0]
-	    container ['balance_start'] += bal
-	    db.commit () # immediately commit cached tr_duration if changed
-        bal = 0.0
-	for pt in False, True :
-	    bal, asup = compute_balance \
-		(db, u, end, pt, True, start_balance = bal)
-	    container ['balance_end']   += bal
-	    if pt :
-		container ['achieved_supplementary'] = asup
-	    db.commit () # immediately commit cached tr_duration if changed
-        for period in periods.itervalues () :
+	bal       = compute_balance (db, u, start - day, True) [0]
+	container ['balance_start'] += bal
+	db.commit () # immediately commit cached tr_duration if changed
+	bal, asup = compute_balance (db, u, end,         True)
+	container ['balance_end']   += bal
+	container ['achieved_supplementary'] = asup
+	db.commit () # immediately commit cached tr_duration if changed
+        for period in periods :
             if not period_is_weekly (period) :
                 self.need_period = True
                 eop = end_of_period (start, period)
                 if eop == end_of_period (end, period) :
                     st = start_of_period (start, period)
-                    pd = Period_Data (db, user, st, end, eop, period)
+                    pd = Period_Data (db, user, st, end, eop, period, 0.0)
                     effective_overtime.append \
                         ('=> %.2f' % pd.overtime_per_period)
         supp_pp = {}
@@ -1056,7 +1050,7 @@ class Staff_Report (_Report) :
             do_perd = do_week = False
             dur = durations (db, u, d)
             db.commit () # immediately commit cached tr_duration if changed
-            for period in periods.itervalues () :
+            for period in periods :
                 do_perd = do_perd or \
                     (   not period_is_weekly (period)
                     and use_work_hours (db, dur.dyn, period)

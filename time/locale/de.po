@@ -1854,7 +1854,7 @@ msgid ""
 "          "
 msgstr " "
 
-msgid "month_balance"
+msgid "balance"
 msgstr ""
 
 msgid ""
@@ -3165,9 +3165,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "week_balance"
-msgstr ""
-
 msgid ""
 "Overtime balance as in staff report for the date mentioned\n"
 "             in \"valid on\". Only applicable for user whose overtime\n"
@@ -3244,7 +3241,7 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "month_validity_date"
+msgid "validity_date"
 msgstr ""
 
 msgid ""

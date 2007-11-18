@@ -673,8 +673,7 @@ class Freeze_Action (Action, autosuper) :
         url = \
             ( 'daily_record_freeze?'
             + msg
-            + ':columns=id,date,user,frozen,'
-            + 'week_balance,month_balance,month_validity_date'
+            + ':columns=id,date,user,frozen,balance,validity_date'
             + '&:sort=user,date&:filter=creation'
             + '&:pagesize=200&:startwith=0&creation=%s%%3B'
             ) % (Date ('.') - Interval ('00:05'))

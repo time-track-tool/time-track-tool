@@ -4306,7 +4306,7 @@ msgid ""
 msgstr ""
 
 #: ../extensions/help.py:1433 ../locale/attr.py:240 attr.py:240
-msgid "month_validity_date"
+msgid "validity_date"
 msgstr ""
 
 #: ../extensions/help.py:1434

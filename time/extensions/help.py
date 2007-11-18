@@ -239,6 +239,11 @@ _helptext          = \
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'balance'                     :
+      [ ""'''Overtime balance as in staff report for the date mentioned
+             in "valid on".
+          '''
+      ]
     , ""'balance_open'                :
       [""'''Open amount not yet payed''']
     , ""'begin'                       :
@@ -727,12 +732,6 @@ _helptext          = \
              to consider this offset.
           '''
       ]
-    , ""'month_balance'               :
-      [ ""'''Overtime balance as in staff report for the date mentioned
-             in "valid on". Only applicable for user whose overtime
-             period is a month.
-          '''
-      ]
     , ""'msg'                         :
       [""'''New message or notice for %(Classname)s''']
     , ""'msg_keywords'                :
@@ -746,8 +745,8 @@ _helptext          = \
              number
           '''
       ]
-    , ""'month_validity_date'         :
-      [ ""'''Validity date of Month balance field. May be up to a year
+    , ""'validity_date'         :
+      [ ""'''Validity date of balance field. May be up to a year
              before the freeze date.
           '''
       ]
@@ -1405,12 +1404,6 @@ _helptext          = \
              a date range: just enter the week number here (for the
              current year) or YYYY/WW where YYYY is the year and WW the
              week number for that year.
-          '''
-      ]
-    , ""'week_balance'                :
-      [ ""'''Overtime balance as in staff report for the date mentioned
-             in "valid on". Only applicable for user whose overtime
-             period is a week.
           '''
       ]
     , ""'weekend_allowed'             :
