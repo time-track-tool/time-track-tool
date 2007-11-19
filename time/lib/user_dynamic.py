@@ -501,7 +501,7 @@ def overtime_periods (db, user, start, end) :
 	    if periods and periods [-1][2].id == ot.id :
 		periods [-1][1] = to
 	    else :
-		periods.append ((frm, to, ot))
+		periods.append ([frm, to, ot])
         dyn = next_user_dynamic (db, dyn)
     return periods
 # end def overtime_periods
