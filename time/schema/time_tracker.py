@@ -38,6 +38,7 @@ import sum_common
 import common
 
 def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
+    export = {}
     cost_center = Class \
         ( db
         , ''"cost_center"
@@ -287,6 +288,20 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         , description           = String    ()
         )
     work_location.setkey ("code")
+
+    class User_Class (kw ['User_Class']) :
+        """ add some attrs to user class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( timing_info            = Boolean   ()
+                )
+            kw ['User_Class'].__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class User_Class
+    export.update (dict (User_Class = User_Class))
+
+    return export
 # end def init
 
     #
