@@ -158,6 +158,9 @@
            ;allowed   python: (w_allowed or not is_wend) and edit_ok
            ;wps       python:utils.sorted 
                              (utils.work_packages (db, i), ('project', 'name'))
+           ;wpsopt_d  python:utils.work_packages_selector (wps)
+           ;wpsopt    python:wpsopt_d [0]
+           ;wpsdict   python:wpsopt_d [1]
            ">
           <tr tal:attributes="class cls">
            <td class="subhead-nb" width="1%"
@@ -226,19 +229,13 @@
                 python:dur.del_link (form='edit_daily_record')">
              </span>
             </td>
-            <td colspan="2">
-             <select tal:condition="editable"
-              tal:attributes="name python:'time_record%s@wp'%r.id">
-              <option tal:attributes="selected not:r/wp/id" value="-1">
-               - no selection -
-              </option>
-              <option tal:repeat="wp wps" tal:attributes=
-                  "value wp/id
-                  ;selected python:wp.id == r.wp.id
-                  "
-                tal:content="python:' '.join
-                 ([str (wp [i]) for i in 'project','wp_no','name'])"/>
+            <td colspan="2" tal:define="name python:'time_record%s@wp'%r.id">
+             <select tal:condition="editable" tal:attributes="name name">
+              <tal:block tal:content="structure wpsopt"/>
              </select>
+             <tal:block tal:content="structure python:
+                 utils.work_packages_javascript
+                   (name, wpsdict, r.wp.id or -1)"/>
              <span tal:condition="not:editable" tal:content="structure python:
               '&nbsp;'.join
                ([utils.ExtProperty
@@ -283,12 +280,8 @@
              (context, db, 'time_record', -idx, 'duration').field (size=5)"/>
            <td/>
            <td colspan="2">
-            <select
-             tal:attributes="name python:'time_record-%d@wp'%idx">
-             <option selected="selected" value="-1">- no selection -</option>
-             <option tal:repeat="wp wps" tal:attributes="value wp/id"
-              tal:content="python:' '.join
-                ([str (wp [i]) for i in 'project','wp_no','name'])"/>
+            <select tal:attributes="name python:'time_record-%d@wp'%idx">
+             <tal:block tal:content="structure wpsopt"/>
             </select>
            </td>
            <td class="nb" tal:content="structure python:utils.new_property

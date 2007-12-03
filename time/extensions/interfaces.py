@@ -247,6 +247,31 @@ def work_packages (db, daily_record) :
     return x
 # end def work_packages
 
+def work_packages_selector (wps) :
+    """ Generate all options for wps inside a selector. Return html and
+        a dict containing id to option number mapping
+    """
+    d    = { -1 : 0 }
+    html = [' <option value="-1">- no selection -</option>']
+    for n, wp in enumerate (wps) :
+        d [wp.id] = n + 1
+        html.append \
+            ( ' <option value="%s">%s %s %s</option>'
+            % tuple ([escape (str (s)) for s in
+                      (wp.id, wp.project, wp.wp_no, wp.name)]
+                    )
+            )
+    return '\n'.join (html), d
+# end def work_packages_selector
+
+def work_packages_javascript (name, wpsdict, id) :
+    idx = wpsdict [id]
+    return ("<script> document.edit_daily_record ['%(name)s'].options "
+            "[%(idx)s].selected = true;</script>"
+           % locals ()
+           )
+# end def work_packages_javascript
+
 def u_sorted (vals, keys, fun = str) :
     """ Sort given values by given keys.
         The function "fun" is tricky. If you want to sort numerically,
@@ -359,6 +384,8 @@ def init (instance) :
     reg ("html_calendar",                html_calendar)
     reg ("batch_has_status",             batch_has_status)
     reg ("work_packages",                work_packages)
+    reg ("work_packages_selector",       work_packages_selector)
+    reg ("work_packages_javascript",     work_packages_javascript)
     reg ("sorted",                       u_sorted)
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)
