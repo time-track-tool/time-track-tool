@@ -122,7 +122,8 @@
         </th>
        </tr>
 
-       <tal:block tal:condition="context/is_view_ok">
+       <tal:block tal:condition="context/is_view_ok"
+        tal:define="timestamp python:utils.start_timer (utils)">
         <tr>
          <th tal:content="structure python:utils.fieldname
              ('time_record', 'start',         endswith = '')" class="nb"/>
@@ -202,8 +203,7 @@
             tal:define="dur python: utils.ExtProperty
              ( utils, r.duration, item = r, editable = editable, fieldwidth = 5
              , format = '%.2f'
-             )
-            ">
+             )">
             <tal:block tal:repeat="pn python: [('start', 2),('end', 1)]">
              <td tal:define="gen python: r [pn [0] + '_generated']"
               tal:attributes="class python: ['generated',''][not gen] + pn [0]
@@ -303,7 +303,8 @@
            </td>
            <td tal:content="structure python:utils.new_property
               (context, db, 'time_record', -idx, 'work_location').menu ()"/>
-           <td/>
+           <!--<td/>-->
+           <td tal:content="python:utils.time_stamp (utils)"/>
            <input type="hidden"
             tal:attributes="name  python:'time_record-%d@daily_record'%idx
                            ;value python:i.id

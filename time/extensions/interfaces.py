@@ -230,15 +230,20 @@ def work_packages (db, daily_record) :
     """ Compute allowed work packages for this date and user of the
         given daily_record. Needs a HTML db and a HTML daily_record.
     """
+    from time import time
     date       = daily_record.date
     filterspec = \
         { 'bookers'    : daily_record.user.id
         , 'time_start' : ';%s' % date
         }
-    x1 = db.time_wp.filter (filterspec = filterspec)
+    x1 = db._db.time_wp.filter (None, filterspec)
+    #print "1st query", time () - timestamp, daily_record.user.id, date
     filterspec ['bookers'] = '-1'
-    x2 = db.time_wp.filter (filterspec = filterspec)
-    x = [wp for wp in x1 + x2 if not wp.time_end or wp.time_end >= date]
+    x2 = db._db.time_wp.filter (None, filterspec)
+    #print "2nd query", time () - timestamp
+    wps = (db.time_wp.getItem (k) for k in x1 + x2)
+    x = [wp for wp in wps if not wp.time_end or wp.time_end >= date]
+    #print "filtering", time () - timestamp
     return x
 # end def work_packages
 
