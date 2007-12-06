@@ -233,7 +233,7 @@
              <select tal:condition="editable" tal:attributes="name name">
               <tal:block tal:content="structure wpsopt"/>
              </select>
-             <tal:block tal:content="structure python:
+             <tal:block tal:condition="editable" tal:content="structure python:
                  utils.work_packages_javascript
                    (name, wpsdict, r.wp.id or -1)"/>
              <span tal:condition="not:editable" tal:content="structure python:
