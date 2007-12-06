@@ -226,10 +226,12 @@ def batch_has_status (batch, status) :
     return False
 # end def batch_open
 
-def work_packages (db, daily_record) :
+def work_packages (db, daily_record, editable = True) :
     """ Compute allowed work packages for this date and user of the
         given daily_record. Needs a HTML db and a HTML daily_record.
     """
+    if not editable :
+        return []
     from time import time
     date       = daily_record.date
     filterspec = \
@@ -244,7 +246,7 @@ def work_packages (db, daily_record) :
     wps = (db.time_wp.getItem (k) for k in x1 + x2)
     x = [wp for wp in wps if not wp.time_end or wp.time_end >= date]
     #print "filtering", time () - timestamp
-    return x
+    return sorted (x, key = lambda x: (x.project, x.name))
 # end def work_packages
 
 def work_packages_selector (wps) :

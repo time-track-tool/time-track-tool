@@ -156,8 +156,7 @@
                              or utils.weekend_allowed (db._db, i)
            ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
            ;allowed   python: (w_allowed or not is_wend) and edit_ok
-           ;wps       python:utils.sorted 
-                             (utils.work_packages (db, i), ('project', 'name'))
+           ;wps       python:utils.work_packages (db, i, editable)
            ;wpsopt_d  python:utils.work_packages_selector (wps)
            ;wpsopt    python:wpsopt_d [0]
            ;wpsdict   python:wpsopt_d [1]
