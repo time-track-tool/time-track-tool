@@ -246,7 +246,7 @@ def work_packages (db, daily_record, editable = True) :
     wps = (db.time_wp.getItem (k) for k in x1 + x2)
     x = [wp for wp in wps if not wp.time_end or wp.time_end >= date]
     #print "filtering", time () - timestamp
-    return sorted (x, key = lambda x: (x.project, x.name))
+    return sorted (x, key = lambda z: (str (z.project), str (z.name)))
 # end def work_packages
 
 def work_packages_selector (wps) :
