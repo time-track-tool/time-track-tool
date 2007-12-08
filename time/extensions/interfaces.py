@@ -33,6 +33,7 @@
 import calendar
 import time
 import os
+import locale
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Interval
 from copy                           import copy
@@ -44,6 +45,14 @@ from user_dynamic                   import next_user_dynamic, prev_user_dynamic
 from user_dynamic                   import update_tr_duration
 from common                         import clearance_by, ymd
 from common                         import user_has_role, monthstart_twoweeksago
+
+def localecollate (s) :
+    old = locale.getlocale (locale.LC_COLLATE)
+    locale.setlocale (locale.LC_COLLATE, '')
+    s = locale.strxfrm (str (s))
+    locale.setlocale (locale.LC_COLLATE, old)
+    return s
+# end def localecollate
 
 def correct_midnight_date_string (db) :
     """returns GMT's "today.midnight" in localtime format.
@@ -246,7 +255,8 @@ def work_packages (db, daily_record, editable = True) :
     wps = (db.time_wp.getItem (k) for k in x1 + x2)
     x = [wp for wp in wps if not wp.time_end or wp.time_end >= date]
     #print "filtering", time () - timestamp
-    return sorted (x, key = lambda z: (str (z.project), str (z.name)))
+    srt = lambda z: (localecollate (z.project), localecollate (z.name))
+    return sorted (x, key = srt)
 # end def work_packages
 
 def work_packages_selector (wps) :
