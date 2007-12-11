@@ -277,7 +277,7 @@ def work_packages_selector (wps) :
 # end def work_packages_selector
 
 def work_packages_javascript (name, wpsdict, id) :
-    idx = wpsdict [id]
+    idx = wpsdict.get (id, 0)
     return ("<script> document.edit_daily_record ['%(name)s'].options "
             "[%(idx)s].selected = true;</script>"
            % locals ()
