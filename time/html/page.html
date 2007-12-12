@@ -1225,6 +1225,10 @@
                     python:request.filterspec.get(prop.searchname) or []">
            <option value="" i18n:translate="" tal:attributes=
             "selected not:form_vals">- don't care -</option>
+           <option value="-1" i18n:translate=""
+            tal:condition="python: not prop.leafprop.required"
+            tal:attributes="selected python:'-1' in form_vals"
+           >- not selected -</option>
            <option
             tal:repeat="s python: db[prop.lnkcls.classname].filter
                 ( filterspec = prop.filter
