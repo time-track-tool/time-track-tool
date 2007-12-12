@@ -26,10 +26,9 @@
 #
 # Revision Dates
 #    11-Dec-2007 (PGO) Creation
+#    12-Dec-2007 (RSC) Remove i18n hack
 #    ««revision-date»»···
 #--
-
-from roundup.cgi.TranslationService import get_translation
 
 def filter_status_transitions (status_prop) :
     if status_prop :
@@ -38,11 +37,8 @@ def filter_status_transitions (status_prop) :
 # end def filter_status_transitions
 
 def init (instance) :
-    global _
-    _ = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
-    instance.registerUtil \
-        ('filter_status_transitions', filter_status_transitions)
+    reg = instance.registerUtil
+    reg ('filter_status_transitions', filter_status_transitions)
 # end def init
 
 ### __END__ issue
