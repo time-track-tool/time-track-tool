@@ -104,6 +104,13 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
     if X.overtime_period :
         op = db.overtime_period.getnode (X.overtime_period)
 
+    if op and not op.months :
+	new_values ['supp_per_period'] = None
+	setattr (X, 'supp_per_period', None)
+    if op and not op.weekly :
+	new_values ['supp_weekly_hours'] = None
+	setattr (X, 'supp_weekly_hours', None)
+
     for f in ov_req :
         # don't allow 0 for additional_hours
         if  (   op

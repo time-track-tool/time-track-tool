@@ -408,7 +408,7 @@ class Period_Data (object) :
             date     += day
         assert (days)
         self.overtime_per_period = over_per / days
-        date                  = start
+        date                     = start
         while date <= end_ov :
             dur       = durations (db, user, date)
             work      = dur.tr_duration
@@ -493,8 +493,8 @@ def overtime_periods (db, user, start, end) :
     dyn = first_user_dynamic (db, user, date = start)
     while (dyn and dyn.valid_from <= end) :
         if dyn.overtime_period :
-            ot = db.overtime_period.getnode (dyn.overtime_period)
-	    frm = max (dyn.valid_from,     start)
+            ot  = db.overtime_period.getnode (dyn.overtime_period)
+	    frm = max (dyn.valid_from, start)
 	    to  = end
 	    if dyn.valid_to :
 		to = min (dyn.valid_to - day, end)
@@ -573,13 +573,14 @@ def compute_running_balance \
 	p_achieved = pd.achieved_supp
         #print "OTB:", pd.overtime_balance, pd.achieved_supp
         p_date = eop + day
-    assert (p_date >= end + day and p_date <= date + day)
+    #print "pdate: %(p_date)s, end: %(end)s, date: %(date)s" % locals ()
+    assert (p_date <= date + day)
     eop = end_of_period (date, period)
     if sharp_end and date != eop and p_date < date :
-        pd = Period_Data (db, user, p_date, date, eop, period, p_balance, corr)
+        pd = Period_Data (db, user, p_date, date, date, period, p_balance, corr)
         p_balance += pd.overtime_balance
 	p_achieved = pd.achieved_supp
-        #print "OTBSE:", pd.overtime_balance, pd.achieved_supp
+        #print "OTBSE:", p_date, date, pd.overtime_balance, pd.achieved_supp
     return p_balance - start_balance, p_achieved
 # end def compute_running_balance
 
@@ -612,7 +613,7 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
 	rb, ach = compute_running_balance \
 	    (db, user, frm, to, otp, sharp, start_balance = balance)
 	balance  += rb
-	achieved += ach
+	achieved  = ach
     #print date, balance, achieved
     return balance, achieved
 # end compute_balance
