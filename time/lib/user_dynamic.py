@@ -403,7 +403,11 @@ class Period_Data (object) :
         date                  = start
         while date <= end_ov :
             dur       = durations (db, user, date)
-            over_per += (period.months and dur.supp_per_period) or 0
+            over_per += \
+		(   period.months
+		and dur.dyn.overtime_period == self.period.id
+		and dur.supp_per_period
+		) or 0
             days     += 1.0
             date     += day
         assert (days)
