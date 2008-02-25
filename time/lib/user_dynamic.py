@@ -414,7 +414,7 @@ class Period_Data (object) :
         assert (days)
         self.overtime_per_period = over_per / days
         date                     = start
-        while date <= end_ov :
+        while date <= end :
             dur       = durations (db, user, date)
             work      = dur.tr_duration
             req       = dur.day_work_hours
@@ -582,7 +582,7 @@ def compute_running_balance \
     assert (p_date <= date + day)
     eop = end_of_period (date, period)
     if sharp_end and date != eop and p_date < date :
-        pd = Period_Data (db, user, p_date, date, date, period, p_balance, corr)
+        pd = Period_Data (db, user, p_date, date, eop, period, p_balance, corr)
         p_balance += pd.overtime_balance
 	p_achieved = pd.achieved_supp
         #print "OTBSE:", p_date, date, pd.overtime_balance, pd.achieved_supp

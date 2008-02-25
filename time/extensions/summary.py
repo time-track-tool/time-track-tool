@@ -1039,11 +1039,9 @@ class Staff_Report (_Report) :
             if not period_is_weekly (period) :
                 self.need_period = True
                 eop = end_of_period (start, period)
-                if eop == end_of_period (end, period) :
-                    st = start_of_period (start, period)
-                    pd = Period_Data (db, user, st, end, eop, period, 0.0)
-                    effective_overtime.append \
-                        ('=> %.2f' % pd.overtime_per_period)
+		st = start_of_period (start, period)
+		pd = Period_Data (db, user, st, end, eop, period, 0.0)
+		effective_overtime.append ('=> %.2f' % pd.overtime_per_period)
         supp_pp = {}
         d = start
         while d <= end :
