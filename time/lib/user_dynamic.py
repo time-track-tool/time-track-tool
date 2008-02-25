@@ -405,7 +405,7 @@ class Period_Data (object) :
             dur       = durations (db, user, date)
             over_per += \
 		(   period.months
-		and dyn
+		and dur.dyn
 		and dur.dyn.overtime_period == self.period.id
 		and dur.supp_per_period
 		) or 0
