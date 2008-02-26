@@ -37,7 +37,7 @@ from operator     import add
 from roundup.date import Date
 
 from common       import ymd, next_search_date, end_of_period, freeze_date
-from common       import pretty_range, day, period_is_weekly
+from common       import pretty_range, day, period_is_weekly, start_of_period
 from common       import week_from_date
 from freeze       import find_prev_dr_freeze
 
@@ -384,7 +384,6 @@ class Period_Data (object) :
         , user
         , start
         , end
-        , end_ov
         , period
         , start_balance
         , overtime_corrections = {}
@@ -400,17 +399,22 @@ class Period_Data (object) :
         self.overtime_balance = 0.0
 	self.start_balance    = start_balance
 	self.period           = period
-        date                  = start
-        while date <= end_ov :
-            dur       = durations (db, user, date)
+        date                  = start_of_period (start, self.period)
+	eop                   = end_of_period   (end,   self.period)
+	s, e, p               = overtime_period (db, user, start, end, period)
+	assert (p.id == self.period.id)
+        while date <= eop :
+            days     += 1.0
+	    d         = date
+            date     += day
+	    if d < s or d > e : continue
+            dur       = durations (db, user, d)
             over_per += \
 		(   period.months
 		and dur.dyn
 		and dur.dyn.overtime_period == self.period.id
 		and dur.supp_per_period
 		) or 0
-            days     += 1.0
-            date     += day
         assert (days)
         self.overtime_per_period = over_per / days
         date                     = start
@@ -511,6 +515,26 @@ def overtime_periods (db, user, start, end) :
     return periods
 # end def overtime_periods
 
+def overtime_period (db, user, start, end, period) :
+    """ Return triple start, end, period for the given date which represents a
+	contiguous range of the same overtime_period in this users dynamic user
+	data
+    """
+    periods = []
+    sop     = start_of_period (start, period)
+    eop     = end_of_period   (end,   period)
+    otp     = overtime_periods (db, user, sop, eop)
+    for s, e, p in otp :
+	if  (   p.id == period.id
+	    and start >= s and start < e or end > s and end <= e
+	    ) :
+	    periods.append ((s, e, p))
+    assert (periods)
+    # this fails if somebody has the idea of switching twice within a week or so
+    assert (len (periods) == 1)
+    return periods [0]
+# end def overtime_period
+
 def compute_saved_balance (db, user, start, date, not_after = False) :
     """ Compute the saved overtime balance before or at the given day
         and the date on which this balance is valid.
@@ -573,7 +597,7 @@ def compute_running_balance \
             corr [oc.date.pretty (ymd)] = oc
     while p_date < end :
         eop = end_of_period (p_date, period)
-        pd  = Period_Data (db, user, p_date, eop, eop, period, p_balance, corr)
+        pd  = Period_Data (db, user, p_date, eop, period, p_balance, corr)
         p_balance += pd.overtime_balance
 	p_achieved = pd.achieved_supp
         #print "OTB:", pd.overtime_balance, pd.achieved_supp
@@ -582,10 +606,12 @@ def compute_running_balance \
     assert (p_date <= date + day)
     eop = end_of_period (date, period)
     if sharp_end and date != eop and p_date < date :
-        pd = Period_Data (db, user, p_date, date, eop, period, p_balance, corr)
+        #print "OTBSE:", p_date.pretty (ymd), date.pretty (ymd),
+        pd = Period_Data (db, user, p_date, date, period, p_balance, corr)
         p_balance += pd.overtime_balance
 	p_achieved = pd.achieved_supp
-        #print "OTBSE:", p_date, date, pd.overtime_balance, pd.achieved_supp
+	#print eop.pretty (ymd), "%.02f %.02f %.02f" \
+	#    % (pd.overtime_balance, pd.achieved_supp, pd.overtime_per_period)
     return p_balance - start_balance, p_achieved
 # end def compute_running_balance
 

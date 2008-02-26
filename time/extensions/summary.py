@@ -993,7 +993,8 @@ class Staff_Report (_Report) :
     def fill_container (self, container, user, dyn, start, end) :
         db      = self.db
         u       = user
-        periods = [p [2] for p in overtime_periods (db, user, start, end)]
+	otp     = overtime_periods (db, user, start, end)
+        periods = [p [2] for p in otp]
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = pretty_range (start, end)))
         try :
@@ -1035,12 +1036,11 @@ class Staff_Report (_Report) :
 	container ['balance_end']   += bal
 	container ['achieved_supplementary'] = asup
 	db.commit () # immediately commit cached tr_duration if changed
-        for period in periods :
+        for s, e, period in otp :
+	    #print "otp:", period.name, s.pretty (ymd), e.pretty (ymd)
             if not period_is_weekly (period) :
                 self.need_period = True
-                eop = end_of_period (start, period)
-		st = start_of_period (start, period)
-		pd = Period_Data (db, user, st, end, eop, period, 0.0)
+		pd  = Period_Data (db, user, s, e, period, 0.0)
 		effective_overtime.append ('=> %.2f' % pd.overtime_per_period)
         supp_pp = {}
         d = start
