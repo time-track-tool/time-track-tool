@@ -425,9 +425,9 @@ class Period_Data (object) :
             over      = dur.supp_weekly_hours
             addition  = dur.additional_hours
             do_over   = use_work_hours (db, dur.dyn, period)
-            oc        = overtime_corrections.get (date.pretty (ymd))
-            if oc :
-                self.overtime_balance += oc.value or 0
+            oc        = overtime_corrections.get (date.pretty (ymd), [])
+            for o in oc :
+                self.overtime_balance += o.value or 0
             if date > end :
                 work  = 0.0
                 req   = 0.0
@@ -594,7 +594,10 @@ def compute_running_balance \
         oc  = db.overtime_correction.getnode (c)
         dyn = get_user_dynamic (db, user, oc.date)
         if dyn and use_work_hours (db, dyn, period) :
-            corr [oc.date.pretty (ymd)] = oc
+	    d = oc.date.pretty (ymd)
+	    if d not in corr :
+		corr [d] = []
+            corr [d].append (oc)
     while p_date < end :
         eop = end_of_period (p_date, period)
         pd  = Period_Data (db, user, p_date, eop, period, p_balance, corr)
