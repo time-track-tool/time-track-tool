@@ -401,7 +401,10 @@ class Period_Data (object) :
 	self.period           = period
         date                  = start_of_period (start, self.period)
 	eop                   = end_of_period   (end,   self.period)
-	s, e, p               = overtime_period (db, user, start, end, period)
+	try :
+		s, e, p       = overtime_period (db, user, start, end, period)
+	except TypeError :
+		s, e, p = eop + day, eop + day, self.period
 	assert (p.id == self.period.id)
         while date <= eop :
             days     += 1.0
@@ -525,13 +528,16 @@ def overtime_period (db, user, start, end, period) :
     eop     = end_of_period   (end,   period)
     otp     = overtime_periods (db, user, sop, eop)
     for s, e, p in otp :
+	#print period.id, p.id, start, s, e, end
 	if  (   p.id == period.id
 	    and start >= s and start < e or end > s and end <= e
 	    ) :
 	    periods.append ((s, e, p))
-    assert (periods)
+    #print user, sop, eop, otp
     # this fails if somebody has the idea of switching twice within a week or so
-    assert (len (periods) == 1)
+    assert (len (periods) <= 1)
+    if not periods :
+	return None
     return periods [0]
 # end def overtime_period
 
