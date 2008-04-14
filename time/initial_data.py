@@ -513,10 +513,14 @@ if 'adr_type_cat' in db.classes :
 
 if 'contact_type' in db.classes :
     db.contact_type.create \
-        ( name         = 'Web'
-        , description  = 'Internet Home Page'
-        , url_template = 'http://%(contact)s'
-        , order        = 5
+        ( name         = 'Telefon'
+        , description  = 'Telefonnummer privat/Firma'
+        , order        = 1
+        )
+    db.contact_type.create \
+        ( name         = 'Fax'
+        , description  = 'Faxnummer'
+        , order        = 3
         )
     db.contact_type.create \
         ( name         = 'Email'
@@ -525,19 +529,15 @@ if 'contact_type' in db.classes :
         , order        = 4
         )
     db.contact_type.create \
-        ( name         = 'Telefon'
-        , description  = 'Telefonnummer privat/Firma'
-        , order        = 1
+        ( name         = 'Web'
+        , description  = 'Internet Home Page'
+        , url_template = 'http://%(contact)s'
+        , order        = 5
         )
     db.contact_type.create \
         ( name         = 'Mobiltelefon'
         , description  = 'Telefonnummer mobil'
         , order        = 2
-        )
-    db.contact_type.create \
-        ( name         = 'Fax'
-        , description  = 'Faxnummer'
-        , order        = 3
         )
 
 if 'customer_status' in db.classes :
