@@ -67,5 +67,6 @@ def init (db) :
     db.issue.react    ("create", update_composed_of, priority = 50)
     db.issue.react    ("set",    update_composed_of, priority = 50)
     db.issue.react    ("set",    join_nosy_lists,    priority = 50)
-    db.it_issue.react ("set",    join_nosy_lists,    priority = 50)
+    if 'it_issue' in db.classes :
+        db.it_issue.react ("set", join_nosy_lists,   priority = 50)
 # end def init
