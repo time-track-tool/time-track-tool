@@ -118,17 +118,17 @@ def common_user_checks (db, cl, nodeid, new_values) :
             if dyn :
                 olo = new_values ['org_location'] = dyn.org_location
                 new_values ['department']         = dyn.department
-    if new_values.has_key('address') and ' ' in new_values['address']:
+    if new_values.has_key('address') and ' ' in new_values['address'] :
         raise ValueError, 'Email address must not contain spaces'
-    if new_values.has_key('roles'):
+    if new_values.has_key('roles') :
         roles = new_values ['roles']
         if roles :
             roles = roles.strip ()
         if roles :
             roles = [x.lower().strip() for x in roles.split(',')]
             for rolename in roles:
-                if not db.security.role.has_key(rolename):
-                    raise ValueError, 'Role "%s" does not exist'%rolename
+                if not db.security.role.has_key (rolename):
+                    raise ValueError, 'Role "%s" does not exist' % rolename
     # automatic setting of realname
     if 'firstname' in cl.properties :
         n = 'firstname'
@@ -226,7 +226,8 @@ def new_user (db, cl, nodeid, new_values) :
     if 'tt_lines' in cl.properties and 'tt_lines' not in new_values :
         new_values ['tt_lines'] = 1
 
-    id    = nodeid
+    id = nodeid
+    sd = None
     if 'firstname' in cl.properties :
         fn    = new_values ['firstname']
         ln    = new_values ['lastname']
@@ -242,7 +243,6 @@ def new_user (db, cl, nodeid, new_values) :
         org        = db.org_location.get   (olo, 'organisation')
         maildomain = db.organisation.get   (org, 'mail_domain')
         if 'smb_domain' in db.classes :
-            sd = None
             id = db.org_location.get (olo, 'smb_domain')
             if id :
                 sd = db.smb_domain.getnode (id)
@@ -393,3 +393,4 @@ def init (db) :
     db.user.react("set"   , update_userlist_html)
     db.user.audit("retire", check_retire)
     db.user.audit("set"   , obsolete_action)
+#SHA: b1666459706d9b1dda69616096c5f4915cadd57d
