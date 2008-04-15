@@ -32,7 +32,7 @@
         ( str (item.id)
         , item.status.plain () [0].upper ()
         , (item.severity and item.severity.abbreviation or '-')
-        , item.responsible.nickname.plain ().lower ()
+        , utils.nickname (db, item.responsible).lower ()
         , utils.truncate_chars (item.title.plain (), 40, '...')
         )"/>
   </nobr>
@@ -70,3 +70,4 @@
      ])
    )"/>
 </tal:block>
+<!-- SHA: 4589d7c37a102e937ef64c4f03b8bbddad7926a7 -->

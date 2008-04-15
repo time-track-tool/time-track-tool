@@ -91,7 +91,9 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if not category :
         category = newvalues ['category'] = db.category.lookup ('pending')
     if not area :
-        area     = newvalues ['area']     = db.area.lookup ('SW')
+        try :
+            area = newvalues ['area']     = db.area.lookup ('SW')
+        except KeyError : pass
     if not kind :
         kind     = newvalues ['kind']     = bug
     if not severity :

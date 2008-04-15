@@ -382,6 +382,11 @@ def user_classhelp (db, property='responsible', inputtype = 'radio') :
         )
 # end def user_classhelp
 
+def nickname (db, user) :
+    if 'nickname' in db._db.user.properties :
+        return user.nickname.plain ()
+    return user.username.plain ()
+# end def nickname
 
 def init (instance) :
     global _
@@ -415,3 +420,4 @@ def init (instance) :
     reg ("until_now",                    until_now)
     reg ("get_from_form",                get_from_form)
     reg ("user_classhelp",               user_classhelp)
+    reg ("nickname",                     nickname)
