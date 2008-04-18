@@ -68,7 +68,16 @@ p = db.security.addPermission \
     )
 db.security.addPermissionToRole('User', p)
 
-perms = [ ( "user", "View", ["User"], ("username", "realname")) ]
+perms = [ ( "user", "View", ["User"]
+          , ( "username"
+            , "realname"
+            , "creation"
+            , "creator"
+            , "activity"
+            , "actor"
+            )
+          )
+        ]
 schemadef.register_class_permissions (db, [], perms)
 
 # oh, g'wan, let anonymous access the web interface too
