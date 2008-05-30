@@ -50,7 +50,7 @@ class Repr_Str (autosuper) :
     # end def __init__
 
     def conv (self, x) :
-        return str (x).decode ('utf-8').encode ('latin1')
+        return str (x).decode ('utf-8').encode ('latin1', 'replace')
     # end def conv
 
     def __call__ (self, itemid, col, x = None) :
