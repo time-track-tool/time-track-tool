@@ -862,7 +862,11 @@
   <tr>
    <th><a tal:attributes="href string:msg${msg/id}"
           tal:content="string:msg${msg/id}"></a></th>
-   <th tal:content="string:Author: ${msg/author}">author</th>
+   <th>
+    <tal:block i18n:translate="">Author:</tal:block>
+    <a tal:attributes="href string:user${msg/author/id}"
+       tal:content="msg/author"/>
+   </th>
    <th tal:content="string:Date: ${msg/date}">date</th>
    <th>
     <a i18n:translate="" tal:condition="may_remove_msgs" tal:attributes="href
