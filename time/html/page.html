@@ -5,6 +5,7 @@
    uname           python: str (request.user.username)
  ; classname       context/_classname|db/user/_classname
  ; Classname       python: i18n.gettext (classname)
+ ; formname        python: 'itemSynopsis'
  ; head_title      Classname
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
@@ -672,9 +673,8 @@
  </span>
  <form method="POST"
        onSubmit="return submit_once()"
-       name="itemSynopsis"
        enctype="multipart/form-data"
-       tal:attributes="action context/designator"
+       tal:attributes="action context/designator; name formname"
        tal:condition="python:context.is_view_ok() or context.is_edit_ok()">
 
   <input type="hidden" name="@template" value="item">
