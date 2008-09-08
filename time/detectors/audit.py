@@ -119,11 +119,10 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     # and the category's nosy list.
     nosy     = newvalues.get   ("nosy", [])
     cat_nosy = db.category.get (category, "nosy")
+    cat_resp = db.category.get (category, "responsible")
     creator  = newvalues.get   ("creator")
-    nosy     = union (nosy, cat_nosy, [creator, responsible])
-    if None in nosy :
-        nosy.remove (None)
-    newvalues ["nosy"] = nosy
+    nosy     = union (nosy, cat_nosy, [creator, responsible, cat_resp])
+    newvalues ["nosy"] = filter (None, nosy)
 
     # It is meaningless to create obsolete or mistaken issues.
     kind_name = db.kind.get (kind, "name")
