@@ -115,6 +115,12 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         responsible = db.category.get (category, "responsible")
         newvalues ["responsible"] = responsible
 
+    if db.user.get (responsible, "status") != db.user_status.lookup ("valid") :
+        raise Reject \
+            ( _ ("'%s' is not a valid user!")
+            % (db.user.get (responsible, "username"))
+            )
+
     # Set `nosy` to contain the creator, the responsible,
     # and the category's nosy list.
     nosy     = newvalues.get   ("nosy", [])
@@ -252,11 +258,18 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                 raise Reject, "State-change to open only for effort < 1PD"
 
     # A `message` must be given whenever `responsible` changes.
-    if old_responsible != new_responsible and not msg :
-        raise Reject, ( "[%s] A reason in `message` must be given to "
-                        "change the `responsible`."
-                      % nodeid
-                      )
+    if old_responsible != new_responsible :
+        if not msg :
+            raise Reject, ( "[%s] A reason in `message` must be given to "
+                            "change the `responsible`."
+                          % nodeid
+                          )
+        valid = db.user_status.lookup ("valid")
+        if db.user.get (new_responsible, "status") != valid :
+            raise Reject \
+                ( _ ("'%s' is not a valid user!")
+                % (db.user.get (new_responsible, "username"))
+                )
 
     if  (   new_status_name != cur_status_name
         and kind_name not in ('Mistaken', 'Obsolete')
