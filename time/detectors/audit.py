@@ -205,6 +205,15 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     # If a Superseder is/has been set, automatically close this issue.
     # Also close if "Obsolete" or "Mistaken".
     if superseder or kind_name in ["Mistaken", "Obsolete"] :
+        if is_container :
+            if  (   newvalues.get ('kind')
+                and kind_name in ["Mistaken", "Obsolete"]
+                ) :
+                raise Reject, \
+                    "A container may not be set to Mistaken or Obsolete."
+            if newvalues.get ('superseder') :
+                raise Reject, \
+                    "A container may not be a duplicate of another issue."
         new_status_name = "closed"
         newvalues ["status"] = new_status = db.status.lookup (new_status_name)
 
