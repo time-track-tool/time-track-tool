@@ -79,6 +79,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     msg         = newvalues.get    ("messages")
     severity    = newvalues.get    ("severity")
     effort      = newvalues.get    ("effort")
+    part_of     = newvalues.get    ("part_of")
     bug         = db.kind.lookup   ('Bug')
     analyzing   = db.status.lookup ("analyzing")
 
@@ -109,6 +110,10 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if status != analyzing and not effort :
         raise Reject, \
             _ ("An effort estimation is required for issues to skip analyzing")
+
+    # Set `part_of` to the category default if not given.
+    if not part_of :
+        newvalues ["part_of"] = db.category.get (category, "default_part_of")
 
     # Set `responsible` to the category's responsible.
     if not responsible :

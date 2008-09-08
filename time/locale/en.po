@@ -91,6 +91,10 @@ msgid "An effort estimation is required for issues to skip analyzing"
 msgstr ""
 
 #, python-format
+msgid "'%s' is not a valid user!"
+msgstr ""
+
+#, python-format
 msgid "The field \"%s\" must remain filled."
 msgstr ""
 
@@ -3590,6 +3594,9 @@ msgstr "Meeting Room"
 
 msgid "sex"
 msgstr ""
+
+msgid "default_part_of"
+msgstr "Default Container"
 
 msgid "keyword"
 msgstr "Keyword"

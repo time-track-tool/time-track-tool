@@ -60,6 +60,7 @@ def init \
         , nosy                = Multilink ("user")
         , valid               = Boolean   ()
         , cert_sw             = Boolean   ()
+        , default_part_of     = Link      ("issue")
         )
     category.setkey ("name")
 
@@ -188,7 +189,7 @@ def security (db, ** kw) :
         , klass       = 'category'
         , check       = responsible_for_category
         , description = fixdoc (responsible_for_category.__doc__)
-        , properties  = ('nosy',)
+        , properties  = ('nosy', 'default_part_of')
         )
     db.security.addPermissionToRole ('User', p)
 

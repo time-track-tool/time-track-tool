@@ -351,6 +351,11 @@ _helptext          = \
       [deadline]
     , ""'default_lease_time'          :
       [""'''Default DHCP lease time for %(Classname)s''']
+    , ""'default_part_of'             :
+      [""'''When a new issue is created with %(Classname)s set, but 'Part of'
+            not set, then '%(Property)s' will be used as the default 'Part of'.
+         '''
+      ]
     , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
     , ""'depends'                     :
