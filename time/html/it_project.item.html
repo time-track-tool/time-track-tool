@@ -72,6 +72,52 @@
     </tal:block>
    </tal:block>
   </tal:block>
+  <tal:block tal:condition="context/id"
+   tal:define="its python:db.it_issue.filter
+    (None, {'it_project' : context.id})">
+   <table class="files">
+    <tr tal:define="cond python: bool
+        (   context.id
+        and context.is_edit_ok ()
+        and db.it_issue.is_edit_ok ()
+        )">
+     <th class="header" i18n:translate=""
+      tal:attributes="colspan python: 3 - cond">
+      IT Issues
+     </th>
+     <td class="header" tal:condition="cond">
+      <a i18n:translate="" tal:attributes="href python:
+       'it_issue?:template=item&' + '&'.join
+        ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+          [ ('it_project',   context.id)
+          , ('confidential', context.confidential)
+          , ('nosy',         context.nosy)
+          , ('stakeholder',  context.stakeholder)
+          , ('responsible',  context.responsible)
+          ]
+         ]
+        )">
+       new it_issue
+      </a>
+     </td>
+    </tr>
+    <tr tal:define="n python:'it_issue'">
+     <th tal:content="structure python:utils.fieldname (n, 'id')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'responsible')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'title')"/>
+    </tr>
+    <tr tal:repeat="it its">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, utils.properties_dict (db, context) ['id'], item=it, get_cssclass = utils.get_cssclass_from_status)
+          .formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, it.responsible.realname, item=it.responsible).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, it.title, item=it, get_cssclass = utils.get_cssclass_from_status)
+          .formatlink ()"/>
+    </tr>
+   </table>
+  </tal:block>
  </tal:block>
 
 </tal:block>

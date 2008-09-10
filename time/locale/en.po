@@ -3331,6 +3331,9 @@ msgstr "Number"
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
+msgid "new it_issue"
+msgstr "new IT-Issue"
+
 msgid "new invoice address"
 msgstr ""
 

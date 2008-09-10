@@ -579,16 +579,24 @@ def new_property (context, db, classname, id, propname, value=None) :
     return None
 # end def new_property
 
+def get_cssclass_from_status (context) :
+    """ Sample get_cssclass function that returns the status name of the
+        current issue.
+    """
+    return context.status.name
+# end def get_cssclass_from_status
+
 def init (instance) :
     global _
     _ = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
-    instance.registerUtil ('ExtProperty',       ExtProperty)
-    instance.registerUtil ('sorted_properties', sorted_properties)
-    instance.registerUtil ('properties_dict',   properties_dict)
-    instance.registerUtil ('new_property',      new_property)
-    instance.registerUtil ('comment_edit',      comment_edit)
-    instance.registerUtil ('urlquote',          urlquote)
-    instance.registerUtil ('prop_as_array',     prop_as_array)
-    instance.registerUtil ('get_cssclass',      get_cssclass)
+    instance.registerUtil ('ExtProperty',              ExtProperty)
+    instance.registerUtil ('sorted_properties',        sorted_properties)
+    instance.registerUtil ('properties_dict',          properties_dict)
+    instance.registerUtil ('new_property',             new_property)
+    instance.registerUtil ('comment_edit',             comment_edit)
+    instance.registerUtil ('urlquote',                 urlquote)
+    instance.registerUtil ('prop_as_array',            prop_as_array)
+    instance.registerUtil ('get_cssclass',             get_cssclass)
+    instance.registerUtil ('get_cssclass_from_status', get_cssclass_from_status)
 # end def init
