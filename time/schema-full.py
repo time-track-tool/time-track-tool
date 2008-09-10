@@ -46,7 +46,6 @@ schemas = \
     , 'issue'
     , 'doc'
     , 'it_tracker'
-    , 'nwm'
     , 'time_tracker'
     , 'core'
     )
