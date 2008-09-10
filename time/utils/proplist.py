@@ -1,8 +1,9 @@
 #!/usr/bin/python2.4
-import sys
+import sys, os
 from roundup           import date
 from roundup           import instance
-tracker = instance.open ('/home/ralf/roundup/ttt')
+
+tracker = instance.open (os.getcwd ())
 db      = tracker.open ('admin')
 
 #print db.classes
