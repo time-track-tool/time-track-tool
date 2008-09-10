@@ -37,7 +37,21 @@ import schemadef
 import sum_common
 import common
 
-def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
+def init \
+    ( db
+    , Class
+    , String
+    , Date
+    , Link
+    , Multilink
+    , Boolean
+    , Number
+    , Department_Class
+    , Location_Class
+    , Organisation_Class
+    , Org_Location_Class
+    , ** kw
+    ) :
     export = {}
     cost_center = Class \
         ( db
@@ -300,6 +314,13 @@ def init (db, Class, String, Date, Link, Multilink, Boolean, Number, ** kw) :
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
+
+    # Some classes defined elsewhere which are required (and possibly
+    # extended in several other include files)
+    Department_Class   (db, ''"department")
+    Location_Class     (db, ''"location")
+    Organisation_Class (db, ''"organisation")
+    Org_Location_Class (db, ''"org_location")
 
     return export
 # end def init

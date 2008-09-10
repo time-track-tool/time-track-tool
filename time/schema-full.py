@@ -54,8 +54,6 @@ schemas = \
 importer = schemadef.Importer (globals (), schemas)
 del sys.path [0:1]
 
-Department_Class (db, ''"department")
-
 #
 # SECURITY SETTINGS
 #

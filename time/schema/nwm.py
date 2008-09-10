@@ -35,9 +35,6 @@ import schemadef
 def init \
     ( db
     , Class
-    , Location_Class
-    , Org_Location_Class
-    , Organisation_Class
     , Date
     , String
     , Link
@@ -46,6 +43,9 @@ def init \
     , Number
     , ** kw
     ) :
+
+    export = {}
+
     class User_Class (kw ['User_Class']) :
         """ add some default attributes to User_Class
         """
@@ -81,6 +81,7 @@ def init \
             ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class User_Class
+    export.update (dict (User_Class = User_Class))
 
     alias = Class \
         ( db
@@ -125,11 +126,16 @@ def init \
         )
     ip_subnet.setlabelprop ('ip')
 
-    Location_Class \
-        ( db
-        , ''"location"
-        , domain_part           = String    ()
-        )
+    class Location_Class (kw ['Location_Class']) :
+        """ add some default attributes to Location_Class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Location_Class']
+            self.update_properties (domain_part = String ())
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Location_Class
+    export.update (dict (Location_Class = Location_Class))
 
     machine = Class \
         ( db
@@ -189,19 +195,31 @@ def init \
         )
     operating_system.setkey ("name_version")
 
-    Org_Location_Class \
-        ( db
-        , ''"org_location"
-        , smb_domain            = Link      ("smb_domain")
-        , dhcp_server           = Link      ("machine_name")
-        , domino_dn             = String    ()
-        )
+    class Org_Location_Class (kw ['Org_Location_Class']) :
+        """ add some default attributes to Org_Location_Class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Org_Location_Class']
+            self.update_properties \
+                ( smb_domain            = Link      ("smb_domain")
+                , dhcp_server           = Link      ("machine_name")
+                , domino_dn             = String    ()
+                )
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Org_Location_Class
+    export.update (dict (Org_Location_Class = Org_Location_Class))
 
-    Organisation_Class \
-        ( db
-        , ''"organisation"
-        , domain_part           = String    ()
-        )
+    class Organisation_Class (kw ['Organisation_Class']) :
+        """ add some default attributes to Organisation_Class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Organisation_Class']
+            self.update_properties (domain_part = String ())
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Organisation_Class
+    export.update (dict (Organisation_Class = Organisation_Class))
 
     smb_domain = Class \
         ( db
@@ -234,7 +252,7 @@ def init \
         , machine_name          = Link      ("machine_name")
         )
     smb_machine.setkey ("name")
-    return dict (User_Class = User_Class)
+    return export
 # end def init
 
     #
