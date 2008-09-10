@@ -91,7 +91,7 @@
         ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
           [ ('it_project',   context.id)
           , ('confidential', context.confidential)
-          , ('nosy',         context.nosy)
+          , ('nosy',         ','.join(p.id for p in context.nosy))
           , ('stakeholder',  context.stakeholder)
           , ('responsible',  context.responsible)
           ]
