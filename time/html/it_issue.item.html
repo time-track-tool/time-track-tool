@@ -75,7 +75,7 @@
      </tr>
      <tr>
       <td>
-      <td colspan=3 tal:condition="context/it_project">
+      <td colspan=3 tal:condition="python: context.it_project and context.id">
        <a tal:attributes="href string:it_project${context/it_project/id}">
         <span tal:content="context/it_project/id"/>
         (<span tal:content="context/it_project/it_prio"/>
