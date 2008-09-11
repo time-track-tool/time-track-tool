@@ -74,8 +74,9 @@ default_hidden     = \
 durations          = \
     ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 explicit           = \
-    ""'''Only an explicitly chosen %(Property)s (or several) appear in
-         the report when you also choose %(Property)s in View
+    ""'''This selects Work packages that belong to a %(Property)s.
+         Only an explicitly chosen %(Property)s (or several) appear in
+         the report when you also choose %(Property)s in View.
       '''
 extension          = \
     ""'''This is an extension number of the PBX. Can be concatenated
