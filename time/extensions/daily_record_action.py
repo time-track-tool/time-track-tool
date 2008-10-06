@@ -205,7 +205,9 @@ def try_create_public_holiday (db, daily_record, date, user) :
             except (IndexError, KeyError) :
                 pass
             holiday = db.public_holiday.getnode (hol [0])
-            comment = '\n'.join ((holiday.name, holiday.description))
+            comment = holiday.name
+            if holiday.description :
+                comment = '\n'.join ((holiday.name, holiday.description))
             if holiday.is_half :
                 wh = wh / 2.
             wh = round_daily_work_hours (wh)
