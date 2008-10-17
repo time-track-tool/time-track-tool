@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2008-10-17 23:17+0200\n"
+"POT-Creation-Date: 2008-10-18 00:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4510,7 +4510,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:59 ../html/_generic.item.html:59
-#: ../html/page.html:1099
+#: ../html/page.html:1100
 msgid "Download as CSV"
 msgstr ""
 
@@ -4544,6 +4544,14 @@ msgstr ""
 
 #: ../html/address.item.html:56
 msgid "New Letter for ${lastname}"
+msgstr ""
+
+#: ../html/address.item.html:298
+msgid "Child addresses"
+msgstr ""
+
+#: ../html/address.item.html:303
+msgid "new child address"
 msgstr ""
 
 #: ../html/alias.item.html:7 ../html/bank_account.item.html:7
@@ -4587,7 +4595,7 @@ msgid "number"
 msgstr ""
 
 #: ../html/cust_supp.item.html:50 ../html/cust_supp.item.html:171
-#: ../html/page.html:1393
+#: ../html/page.html:1394
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
@@ -4735,116 +4743,116 @@ msgstr ""
 msgid "Show History"
 msgstr ""
 
-#: ../html/page.html:808
+#: ../html/page.html:809
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
-#: ../html/page.html:847
+#: ../html/page.html:848
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:848
+#: ../html/page.html:849
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:849
+#: ../html/page.html:850
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:866
+#: ../html/page.html:867
 msgid "Author:"
 msgstr ""
 
-#: ../html/page.html:871
+#: ../html/page.html:872
 msgid "Date:"
 msgstr ""
 
-#: ../html/page.html:963
+#: ../html/page.html:964
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:979
+#: ../html/page.html:980
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:984
+#: ../html/page.html:985
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:989
+#: ../html/page.html:990
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:1085 ../html/query.edit.html:45
+#: ../html/page.html:1086 ../html/query.edit.html:45
 msgid "Query"
 msgstr ""
 
-#: ../html/page.html:1086
+#: ../html/page.html:1087
 msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:1092
+#: ../html/page.html:1093
 msgid "View"
 msgstr ""
 
-#: ../html/page.html:1095
+#: ../html/page.html:1096
 msgid "items per page"
 msgstr ""
 
-#: ../html/page.html:1122
+#: ../html/page.html:1123
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:1129 ../html/page.html:1151
+#: ../html/page.html:1130 ../html/page.html:1152
 msgid "- nothing -"
 msgstr ""
 
-#: ../html/page.html:1135 ../html/page.html:1157
+#: ../html/page.html:1136 ../html/page.html:1158
 msgid "Descending:"
 msgstr ""
 
-#: ../html/page.html:1144
+#: ../html/page.html:1145
 msgid "Group on:"
 msgstr ""
 
-#: ../html/page.html:1233
+#: ../html/page.html:1234
 msgid "- don't care -"
 msgstr ""
 
-#: ../html/page.html:1235
+#: ../html/page.html:1236
 msgid "- not selected -"
 msgstr ""
 
-#: ../html/page.html:1288
+#: ../html/page.html:1289
 msgid "Search full text:"
 msgstr ""
 
-#: ../html/page.html:1293
+#: ../html/page.html:1294
 msgid "(Searches also in messages)"
 msgstr ""
 
-#: ../html/page.html:1300
+#: ../html/page.html:1301
 msgid "Update view"
 msgstr ""
 
-#: ../html/page.html:1305
+#: ../html/page.html:1306
 msgid "Find"
 msgstr ""
 
-#: ../html/page.html:1317
+#: ../html/page.html:1318
 msgid "This query's name:"
 msgstr ""
 
-#: ../html/page.html:1329
+#: ../html/page.html:1330
 msgid "Update view & store this query"
 msgstr ""
 
-#: ../html/page.html:1336
+#: ../html/page.html:1337
 msgid "(If you change the name, you create a new query!!!)"
 msgstr ""
 
-#: ../html/page.html:1345
+#: ../html/page.html:1346
 msgid "Update view & store NEW query"
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2008-10-17 23:17+0200\n"
+"POT-Creation-Date: 2008-10-18 00:33+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3419,6 +3419,12 @@ msgstr "Neues Abo für ${lastname}"
 
 msgid "New Letter for ${lastname}"
 msgstr "Neuer Brief für ${lastname}"
+
+msgid "Child addresses"
+msgstr "Abgeleitete Adressen"
+
+msgid "new child address"
+msgstr "Neue abgeleitete Adresse"
 
 msgid "${classname_id} created by ${creator}"
 msgstr ""
