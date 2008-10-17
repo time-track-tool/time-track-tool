@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2008-10-17 10:11+0200\n"
+"POT-Creation-Date: 2008-10-17 23:17+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -2046,6 +2046,12 @@ msgstr ""
 msgid "Period over which overtime is computed for a person"
 msgstr ""
 
+msgid "parent"
+msgstr "Parent address"
+
+msgid "%(Classname)s to which this %(Classname)s belongs."
+msgstr ""
+
 msgid "part_of"
 msgstr "Part of"
 
@@ -3477,6 +3483,10 @@ msgstr ""
 #, fuzzy
 msgid "Author:"
 msgstr "Author"
+
+#, fuzzy
+msgid "Date:"
+msgstr "Date"
 
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""

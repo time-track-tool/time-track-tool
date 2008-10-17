@@ -48,6 +48,11 @@
      , ('postalcode',          {})
      , ('city',                dict (searchable   = False, sortable = False))
      , ('lookalike_city',      dict (displayable  = False, terse = False))
+     , ('parent',              dict ( do_classhelp = False
+                                    , terse        = False
+                                    , searchable   = True
+                                    )
+       )
      , ('abos',                dict (terse = False))
      , ('payed_abos',          dict (terse = False))
      , ('adr_type',            dict (filter       = filt))

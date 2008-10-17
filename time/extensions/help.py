@@ -837,6 +837,8 @@ _helptext          = \
       [""'''Operating System running on this %(Classname)s''']
     , ""'overtime_period'             :
       [""'''Period over which overtime is computed for a person''']
+    , ""'parent'                      :
+      [""'''%(Classname)s to which this %(Classname)s belongs.''']
     , ""'part_of'                     :
       [ ""'''If you have a Top-Level work package which consists of other
              work packages, you should enter the parent work package

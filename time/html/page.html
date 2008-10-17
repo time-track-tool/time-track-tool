@@ -747,6 +747,7 @@
             tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
     </td>
    </tr>
+   <tr metal:define-slot="formatted_class_listentry"/>
    <tr tal:condition="has_invoices">
     <th style="text-align:left" class="required"
      tal:content="structure python:utils.fieldname(classname, 'invoices')"
