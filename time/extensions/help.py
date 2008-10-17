@@ -216,6 +216,8 @@ _helptext          = \
     , ""'adr_type_cat.code'           : [code, adr_type_cat_code]
     , ""'adr_type_cat++code'          : [code, adr_type_cat_code]
     , ""'adr_type'                    : [adr_type]
+    , ""'affix'                       :
+      [""'''Name affix like e.g. "senior" or "MBA"''']
     , ""'alias'                       :
       [""'''Email alias''']
     , ""'alias_to_alias'              :

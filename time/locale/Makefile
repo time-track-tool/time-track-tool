@@ -49,7 +49,7 @@ template: attr.py
 	  -o $(TEMPLATE) $(SOURCES)
 
 %.po: $(TEMPLATE)
-	${MSGMERGE} -U --suffix=.bak $@ $<
+	${MSGMERGE} -U --no-location --suffix=.bak $@ $<
 
 %.mo: %.po
 	${MSGFMT} --statistics -o $@ $<

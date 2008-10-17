@@ -58,6 +58,7 @@ def init \
                 , firstname           = String    (indexme = do_index)
                 , initial             = String    (indexme = "no")
                 , lastname            = String    (indexme = do_index)
+                , affix               = String    (indexme = do_index)
                 , function            = String    (indexme = do_index)
                 , street              = String    (indexme = do_index)
                 , country             = String    (indexme = "no")

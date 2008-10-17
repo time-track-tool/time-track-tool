@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-10-10 15:16+0200\n"
+"POT-Creation-Date: 2008-10-17 10:25+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -92,6 +92,10 @@ msgid "For bugs you have to specify the release"
 msgstr "Bei Bugs muss das Release angegeben werden"
 
 msgid "An effort estimation is required for issues to skip analyzing"
+msgstr ""
+
+#, python-format
+msgid "'%s' is not a valid user!"
 msgstr ""
 
 #, python-format
@@ -436,6 +440,9 @@ msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
 msgid "overtime_period"
 msgstr ""
 
+msgid "supp_per_period"
+msgstr ""
+
 msgid "supp_weekly_hours"
 msgstr ""
 
@@ -466,8 +473,7 @@ msgstr ""
 #, python-format
 msgid "One of %(mname)s, %(wname)s must be specified"
 msgstr ""
-"Mindestens eines von \"%(mname)s\" oder %(wname)s "
-"muss ausgefüllt werden"
+"Mindestens eines von \"%(mname)s\" oder %(wname)s muss ausgefüllt werden"
 
 #, python-format
 msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
@@ -568,8 +574,9 @@ msgstr ""
 "Hinweis, ob Buchungen von Zeitdauern für diese %(Classname)s erlaubt ist"
 
 msgid ""
-"Only an explicitly chosen %(Property)s (or several) appear in\n"
-"         the report when you also choose %(Property)s in View\n"
+"This selects Work packages that belong to a %(Property)s.\n"
+"         Only an explicitly chosen %(Property)s (or several) appear in\n"
+"         the report when you also choose %(Property)s in View.\n"
 "      "
 msgstr ""
 
@@ -755,6 +762,15 @@ msgstr ""
 "Bitte beachten: Nur Adress-Typen die zur Typ-Kategorie \"ABO\" gehören, "
 "dürfen hier ausgewählt werden."
 
+msgid "achieved_hours"
+msgstr ""
+
+msgid ""
+"Achieved overtime hours included in monthly/yearly supplementary\n"
+"            hours per overtime period\n"
+"         "
+msgstr ""
+
 msgid "active"
 msgstr "aktiv"
 
@@ -808,6 +824,12 @@ msgstr "Code"
 
 msgid "adr_type"
 msgstr "Typ"
+
+msgid "affix"
+msgstr "Namenszusatz"
+
+msgid "Name affix like e.g. \"senior\" or \"MBA\""
+msgstr "Namenszusatz wie z.B. \"sen.\" oder \"MBA\""
 
 msgid "alias"
 msgstr "Alias"
@@ -868,6 +890,15 @@ msgstr "Autoren"
 
 msgid "Authors of the artefact of this %(Classname)s"
 msgstr "Autoren des Artefakts für diese %(Classname)s"
+
+msgid "balance"
+msgstr ""
+
+msgid ""
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\".\n"
+"          "
+msgstr ""
 
 msgid "balance_open"
 msgstr "Offen"
@@ -1113,6 +1144,12 @@ msgstr ""
 
 msgid "Default DHCP lease time for %(Classname)s"
 msgstr "Standard DHCP Lease-Zeit für %(Classname)s"
+
+msgid "default_part_of"
+msgstr ""
+
+msgid "When a new issue is created with %(Classname)s set, but "
+msgstr ""
 
 msgid "department"
 msgstr "Abteilung"
@@ -1718,10 +1755,21 @@ msgstr "Brief-Titel"
 msgid "Title of this person used in a letter"
 msgstr "Titel dieser Person, Verwendung in der Brief-Anrede"
 
-msgid "link"
+msgid "doc++link"
 msgstr ""
 
 msgid "The location of the file in the repository or on the file server"
+msgstr ""
+
+msgid "doc++status"
+msgstr ""
+
+msgid ""
+"The status of the item. Can be one of \"work in progress\",\n"
+"             \"draft\", \"released\" and \"obsolete\". The latter will cause "
+"the\n"
+"             item to not be displayed in the standard query.\n"
+"          "
 msgstr ""
 
 msgid "link_field"
@@ -1854,16 +1902,6 @@ msgid ""
 "          "
 msgstr " "
 
-msgid "balance"
-msgstr ""
-
-msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\". Only applicable for user whose overtime\n"
-"             period is a month.\n"
-"          "
-msgstr ""
-
 msgid "New message or notice for %(Classname)s"
 msgstr "Feld für Notizen zu %(Classname)s"
 
@@ -1890,6 +1928,15 @@ msgid ""
 "             number\n"
 "          "
 msgstr "Eindeutiger name für diese %(Classname)s, inklusive Versionsnummer"
+
+msgid "validity_date"
+msgstr ""
+
+msgid ""
+"Validity date of balance field. May be up to a year\n"
+"             before the freeze date.\n"
+"          "
+msgstr ""
 
 msgid "needs.id"
 msgstr "hängt ab von (ID)"
@@ -2799,9 +2846,6 @@ msgstr "Vorgesetzter"
 msgid "Supervisor for %(Classname)s"
 msgstr "Vorgesetzter für %(Classname)s"
 
-msgid "supp_per_period"
-msgstr ""
-
 msgid ""
 "Supplementary hours in Overtime period. If Overtime period\n"
 "             is not specified, this field should be left empty.\n"
@@ -2869,6 +2913,16 @@ msgid ""
 "             used for determining if new work packages may be created for\n"
 "             this %(Classname)s -- it is not used during time recording\n"
 "             for determining if the user may book on a work package.\n"
+"          "
+msgstr ""
+
+msgid "time_project++work_location"
+msgstr ""
+
+msgid ""
+" If a value is given here, the work location will be\n"
+"             corrected for all time records booked on work packages of\n"
+"             this project.\n"
 "          "
 msgstr ""
 
@@ -3165,13 +3219,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\". Only applicable for user whose overtime\n"
-"             period is a week.\n"
-"          "
-msgstr ""
-
 msgid "weekend_allowed"
 msgstr ""
 
@@ -3229,25 +3276,6 @@ msgid ""
 msgstr ""
 
 msgid "work_location"
-msgstr ""
-
-msgid "time_project++work_location"
-msgstr ""
-
-msgid ""
-" If a value is given here, the work location will be\n"
-"             corrected for all time records booked on work packages of\n"
-"             this project.\n"
-"          "
-msgstr ""
-
-msgid "validity_date"
-msgstr ""
-
-msgid ""
-"Validity date of Month balance field. May be up to a year\n"
-"             before the freeze date.\n"
-"          "
 msgstr ""
 
 # python-format
@@ -3425,9 +3453,6 @@ msgstr ""
 msgid " Save "
 msgstr ""
 
-msgid "Valid on"
-msgstr "gültig ab"
-
 msgid "Freeze all"
 msgstr "Alle einfrieren"
 
@@ -3454,6 +3479,12 @@ msgstr "Rechnungen erzeugen"
 
 msgid "mark as sent"
 msgstr "als gesendet markieren"
+
+msgid "IT Issues"
+msgstr ""
+
+msgid "new it_issue"
+msgstr "Neues IT Issue"
 
 msgid "Network Interfaces"
 msgstr ""
@@ -3491,7 +3522,7 @@ msgstr "Genehmigung"
 msgid "User&nbsp;List"
 msgstr "Benutzerliste"
 
-msgid "-- Create / Update --"
+msgid "-- Create --"
 msgstr "-- Anlegen / Ändern --"
 
 msgid "-- View / Query --"
@@ -3517,6 +3548,12 @@ msgstr "fettgedruckte"
 
 msgid "&nbsp;fields are required."
 msgstr "&nbsp;Felder müssen ausgefüllt werden"
+
+msgid "Author:"
+msgstr "Autor:"
+
+msgid "Date:"
+msgstr "Datum:"
 
 msgid "&lt;&lt;&nbsp;previous"
 msgstr "&lt;&lt;&nbsp;zurück"
@@ -3555,6 +3592,9 @@ msgid "Group on:"
 msgstr ""
 
 msgid "- don't care -"
+msgstr "- nicht suchen -"
+
+msgid "- not selected -"
 msgstr "- nicht suchen -"
 
 msgid "Search full text:"
@@ -3709,9 +3749,6 @@ msgstr ""
 msgid "it_project_status"
 msgstr ""
 
-msgid "mail_domain"
-msgstr ""
-
 msgid "pdc"
 msgstr "PDC"
 
@@ -3733,8 +3770,14 @@ msgstr "Dauer incl. Reisezeit"
 msgid "daily_record_freeze"
 msgstr ""
 
-msgid "achieved_hours"
+msgid "month_balance"
 msgstr ""
+
+msgid "month_validity_date"
+msgstr ""
+
+msgid "week_balance"
+msgstr "Akkumulierte Zeit Ende"
 
 msgid "comment"
 msgstr "Kommentar"
@@ -3782,6 +3825,9 @@ msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
 
 msgid "travel_full"
+msgstr ""
+
+msgid "mail_domain"
 msgstr ""
 
 msgid "milestone"
@@ -4124,8 +4170,14 @@ msgstr ""
 msgid "lot"
 msgstr "Charge"
 
+msgid "doc_status"
+msgstr "Dokumentenstatus"
+
 msgid "doc"
 msgstr "Dokument"
+
+msgid "link"
+msgstr ""
 
 msgid "file"
 msgstr "Datei"
@@ -4140,6 +4192,9 @@ msgid "job_description"
 msgstr "Stellenbeschreibung"
 
 msgid "pictures"
+msgstr ""
+
+msgid "timing_info"
 msgstr ""
 
 msgid "user_status"
@@ -4160,6 +4215,9 @@ msgid ""
 "User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
 "item with %(perm)s permission"
 msgstr ""
+
+#~ msgid "Valid on"
+#~ msgstr "gültig ab"
 
 #~ msgid "\"%(attr)s\" must not be filled in"
 #~ msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"

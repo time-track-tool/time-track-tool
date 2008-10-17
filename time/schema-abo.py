@@ -41,6 +41,7 @@ import schemadef
 # Note: order matters, core is always last.
 schemas = \
     ( 'address'
+    , 'adr_ext'
     , 'sinvoice'
     , 'abo'
     , 'core'

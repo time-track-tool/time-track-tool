@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2007-10-30 17:27+0100\n"
+"POT-Creation-Date: 2008-10-17 10:11+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -436,6 +436,9 @@ msgstr ""
 msgid "overtime_period"
 msgstr "Overtime period"
 
+msgid "supp_per_period"
+msgstr "Supp. hours / period"
+
 msgid "supp_weekly_hours"
 msgstr "Supplementary hours"
 
@@ -561,8 +564,9 @@ msgid "Flag if booking of durations is allowed for this %(Classname)s."
 msgstr ""
 
 msgid ""
-"Only an explicitly chosen %(Property)s (or several) appear in\n"
-"         the report when you also choose %(Property)s in View\n"
+"This selects Work packages that belong to a %(Property)s.\n"
+"         Only an explicitly chosen %(Property)s (or several) appear in\n"
+"         the report when you also choose %(Property)s in View.\n"
 "      "
 msgstr ""
 
@@ -732,6 +736,15 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "achieved_hours"
+msgstr "Achieved hours"
+
+msgid ""
+"Achieved overtime hours included in monthly/yearly supplementary\n"
+"            hours per overtime period\n"
+"         "
+msgstr ""
+
 msgid "active"
 msgstr "Active"
 
@@ -785,6 +798,12 @@ msgstr "Code"
 
 msgid "adr_type"
 msgstr "Address type"
+
+msgid "affix"
+msgstr "Name affix"
+
+msgid "Name affix like e.g. \"senior\" or \"MBA\""
+msgstr ""
 
 msgid "alias"
 msgstr "Alias"
@@ -844,6 +863,15 @@ msgid "authors"
 msgstr "Authors"
 
 msgid "Authors of the artefact of this %(Classname)s"
+msgstr ""
+
+msgid "balance"
+msgstr "Balance"
+
+msgid ""
+"Overtime balance as in staff report for the date mentioned\n"
+"             in \"valid on\".\n"
+"          "
 msgstr ""
 
 msgid "balance_open"
@@ -1083,6 +1111,12 @@ msgid "default_lease_time"
 msgstr "default DHCP lease time"
 
 msgid "Default DHCP lease time for %(Classname)s"
+msgstr ""
+
+msgid "default_part_of"
+msgstr "Default Container"
+
+msgid "When a new issue is created with %(Classname)s set, but "
 msgstr ""
 
 msgid "department"
@@ -1688,6 +1722,14 @@ msgstr ""
 msgid "doc++status"
 msgstr "Status"
 
+msgid ""
+"The status of the item. Can be one of \"work in progress\",\n"
+"             \"draft\", \"released\" and \"obsolete\". The latter will cause "
+"the\n"
+"             item to not be displayed in the standard query.\n"
+"          "
+msgstr ""
+
 msgid "link_field"
 msgstr "Link field"
 
@@ -1818,13 +1860,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\". Only applicable for user whose overtime\n"
-"             period is a month.\n"
-"          "
-msgstr ""
-
 msgid "New message or notice for %(Classname)s"
 msgstr ""
 
@@ -1849,6 +1884,15 @@ msgstr "Name+Version"
 msgid ""
 "Unique name of this %(Classname)s, including the version\n"
 "             number\n"
+"          "
+msgstr ""
+
+msgid "validity_date"
+msgstr "Validity date"
+
+msgid ""
+"Validity date of balance field. May be up to a year\n"
+"             before the freeze date.\n"
 "          "
 msgstr ""
 
@@ -2748,9 +2792,6 @@ msgstr "Superior"
 msgid "Supervisor for %(Classname)s"
 msgstr ""
 
-msgid "supp_per_period"
-msgstr "Supp. hours / period"
-
 msgid ""
 "Supplementary hours in Overtime period. If Overtime period\n"
 "             is not specified, this field should be left empty.\n"
@@ -2818,6 +2859,16 @@ msgid ""
 "             used for determining if new work packages may be created for\n"
 "             this %(Classname)s -- it is not used during time recording\n"
 "             for determining if the user may book on a work package.\n"
+"          "
+msgstr ""
+
+msgid "time_project++work_location"
+msgstr "Mandatory work location"
+
+msgid ""
+" If a value is given here, the work location will be\n"
+"             corrected for all time records booked on work packages of\n"
+"             this project.\n"
 "          "
 msgstr ""
 
@@ -3098,16 +3149,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "balance"
-msgstr "Balance"
-
-msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\". Only applicable for user whose overtime\n"
-"             period is a week.\n"
-"          "
-msgstr ""
-
 msgid "weekend_allowed"
 msgstr "Weekend allowed"
 
@@ -3166,25 +3207,6 @@ msgstr ""
 
 msgid "work_location"
 msgstr "Work location"
-
-msgid "time_project++work_location"
-msgstr "Mandatory work location"
-
-msgid ""
-" If a value is given here, the work location will be\n"
-"             corrected for all time records booked on work packages of\n"
-"             this project.\n"
-"          "
-msgstr ""
-
-msgid "validity_date"
-msgstr "Validity date"
-
-msgid ""
-"Validity date of balance field. May be up to a year\n"
-"             before the freeze date.\n"
-"          "
-msgstr ""
 
 #, python-format
 msgid ""
@@ -3331,9 +3353,6 @@ msgstr "Number"
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
-msgid "new it_issue"
-msgstr "new IT-Issue"
-
 msgid "new invoice address"
 msgstr ""
 
@@ -3359,9 +3378,6 @@ msgid "Time-Tracking for <span> ${firstname} ${lastname} </span> ${username}"
 msgstr ""
 
 msgid " Save "
-msgstr ""
-
-msgid "Valid on"
 msgstr ""
 
 msgid "Freeze all"
@@ -3390,6 +3406,12 @@ msgstr ""
 
 msgid "mark as sent"
 msgstr ""
+
+msgid "IT Issues"
+msgstr ""
+
+msgid "new it_issue"
+msgstr "new IT-Issue"
 
 msgid "Network Interfaces"
 msgstr ""
@@ -3452,6 +3474,10 @@ msgstr ""
 msgid "&nbsp;fields are required."
 msgstr ""
 
+#, fuzzy
+msgid "Author:"
+msgstr "Author"
+
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
@@ -3489,6 +3515,9 @@ msgid "Group on:"
 msgstr ""
 
 msgid "- don't care -"
+msgstr ""
+
+msgid "- not selected -"
 msgstr ""
 
 msgid "Search full text:"
@@ -3598,9 +3627,6 @@ msgstr "Meeting Room"
 msgid "sex"
 msgstr ""
 
-msgid "default_part_of"
-msgstr "Default Container"
-
 msgid "keyword"
 msgstr "Keyword"
 
@@ -3646,9 +3672,6 @@ msgstr "IT-Issue status"
 msgid "it_project_status"
 msgstr "IT-Project status"
 
-msgid "mail_domain"
-msgstr "Mail domain"
-
 msgid "pdc"
 msgstr "Primary domain controller"
 
@@ -3670,8 +3693,17 @@ msgstr "Duration (incl. Travel)"
 msgid "daily_record_freeze"
 msgstr "Daily Record freeze"
 
-msgid "achieved_hours"
-msgstr "Achieved hours"
+#, fuzzy
+msgid "month_balance"
+msgstr "Balance"
+
+#, fuzzy
+msgid "month_validity_date"
+msgstr "Validity date"
+
+#, fuzzy
+msgid "week_balance"
+msgstr "Balance"
 
 msgid "comment"
 msgstr "Comment"
@@ -3720,6 +3752,9 @@ msgstr "Dynamic User Data"
 
 msgid "travel_full"
 msgstr "Travel full"
+
+msgid "mail_domain"
+msgstr "Mail domain"
 
 msgid "milestone"
 msgstr "Milestone"
@@ -4061,8 +4096,16 @@ msgstr ""
 msgid "lot"
 msgstr "Lot number"
 
+#, fuzzy
+msgid "doc_status"
+msgstr "Status"
+
 msgid "doc"
 msgstr "Numbering System"
+
+#, fuzzy
+msgid "link"
+msgstr "Link/CVS location"
 
 msgid "file"
 msgstr "File"
@@ -4078,6 +4121,9 @@ msgstr "Job Description"
 
 msgid "pictures"
 msgstr "Picture"
+
+msgid "timing_info"
+msgstr ""
 
 msgid "user_status"
 msgstr "User Status"
