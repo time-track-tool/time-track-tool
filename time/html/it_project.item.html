@@ -108,8 +108,9 @@
     </tr>
     <tr tal:repeat="it its">
      <td tal:content="structure python:utils.ExtProperty
-      (utils, utils.properties_dict (db, context) ['id'], item=it, get_cssclass = utils.get_cssclass_from_status)
-          .formatlink ()"/>
+      ( utils, utils.properties_dict (db, it) ['id']
+      , item=it, get_cssclass = utils.get_cssclass_from_status
+      ).formatlink ()"/>
      <td tal:content="structure python:utils.ExtProperty
       (utils, it.responsible.realname, item=it.responsible).formatlink ()"/>
      <td tal:content="structure python:utils.ExtProperty
