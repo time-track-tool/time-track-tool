@@ -102,6 +102,15 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
+p = db.security.addPermission \
+    ( name        = 'Edit'
+    , klass       = 'user'
+    , check       = schemadef.own_user_record
+    , description = \
+        "User is allowed to edit (some of) their own user details"
+    , properties  = ('password', 'phone')
+    )
+db.security.addPermissionToRole('User', p)
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
