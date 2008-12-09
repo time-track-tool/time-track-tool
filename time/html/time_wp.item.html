@@ -78,15 +78,11 @@
          (classname, 'time_start')"/>
      <td>
       <span tal:content="structure python:context.time_start.field ()"/>
-      <span tal:replace="structure python:utils.date_help
-            (request, context.time_start)"/>
      </td>
      <th tal:content="structure python:utils.fieldname
          (classname, 'time_end')"/>
      <td>
       <span tal:replace="structure python:context.time_end.field ()"/>
-      <span tal:replace="structure python:utils.date_help
-            (request, context.time_end)"/>
      </td>
     </tr>
     <tr>
