@@ -1,5 +1,4 @@
 #!/usr/bin/python2.4
-# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2003-9 TTTech Computertechnik GmbH. All rights reserved
 # Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
 # ****************************************************************************
@@ -100,12 +99,19 @@ class user_report :
     def mail (self, smtp, header) :
         to    = "To: %s" % self.user
         date  = "Date: %s"   % formatdate (time.time (), True)
+        mime  = \
+            [ 'Mime-Version: 1.0'
+            , 'Content-Type: text/plain; charset=UTF-8'
+            , 'Content-Transfer-Encoding: 8bit'
+            ]
         smtp.sendmail \
-            ( 'root@tttech.com'
+            ( 'roundup-admin@tttech.com'
             , self.user
             , '\n'.join \
                 ( header
-                + [to, date, "X-" + date, "\n", str (self)]
+                + [to, date, "X-" + date]
+                + mime
+                + ["\n", str (self)]
                 )
             )
 # end class user_report
@@ -125,7 +131,7 @@ def print_results (user_reports) :
 
 
 def mail_results (user_reports) :
-    smtp = SMTP ('mail.tttech1.ttt')
+    smtp = SMTP ('mail.vie.at.tttech.ttt')
     header = \
         [ "Subject: %s Summary of pending bug reports" % subject_type [type]
         ]
@@ -197,7 +203,7 @@ for user in  db.user.list () :
         if int (prio) < minprio : continue
         report_lines.append (format % pretty)
         if pretty ["missing_effort"] :
-            eff_msg = 'Bitte bei Reports mit "*" Effort abschätzen!!'
+            eff_msg = 'Please estimate effort for issues marked with "*".'
     if report_lines or lonely_lines :
         adr = db.user.get (user, 'address')
         user_reports [adr] = user_report \
