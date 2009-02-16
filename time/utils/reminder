@@ -135,7 +135,7 @@ def mail_results (user_reports) :
 
 # defaults
 out_fun = print_results
-tpath   = "/home/ralf/roundup/ttt"
+tpath   = "/roundup/tracker/ttt"
 user    = "admin"
 type    = "Week"
 
