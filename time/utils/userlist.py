@@ -1,7 +1,5 @@
 #!/usr/bin/python2.4
 # -*- coding: iso-8859-1 -*-
-# Cron-job for updating adr-type for valid or closed abos.
-# Should be run in the early morning of every 1st of a month.
 
 import sys
 import os
