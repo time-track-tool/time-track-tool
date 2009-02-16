@@ -1,0 +1,205 @@
+#!/usr/bin/python2.4
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2003-9 TTTech Computertechnik GmbH. All rights reserved
+# Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
+# ****************************************************************************
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# ****************************************************************************
+
+import os
+import sys
+import time
+from email.Utils        import formatdate
+from smtplib            import SMTP
+from getopt             import getopt, GetoptError
+from roundup            import instance
+
+#                 Minimum prio to warn
+types        = { 'Day' : 91,      'Week' : 40,       'Month' : 0 }
+subject_type = { 'Day' : 'Daily', 'Week' : 'Weekly', 'Month' : 'Monthly' }
+
+top_level_containers = \
+    {  '5059' : 'Old (Closed) Releases and Projects'
+    ,  '5060' : 'Running projects and releases'
+    ,  '5160' : 'Future projects'
+    ,  '8769' : 'SW Action Items'
+    ,  '9332' : 'CCB Container'
+    , '11000' : 'DECOS'
+    , '12946' : 'A380 CPCS Certification Documentation TTChip'
+    , '20861' : 'TT-A664 project folder update generic issue'
+    , '23729' : 'C2NF-ALTERA Container'
+    , '23988' : 'Container for Sales Topics'
+    , '24001' : 'Container for (possible) Zeus 2 requirements requested ...'
+    , '25162' : 'TTX-Autolink Prototype'
+    , '25651' : 'Container for Improvments in future software versions'
+    , '26373' : 'Container: TT-GbE PM'
+    , '26961' : 'Container for Support Contracts'
+    , '27183' : 'Container: TT-GbE Design'
+    , '27456' : 'Container FlexRay Multirouter'
+    , '29065' : 'Container Parker Chip IP Prototype'
+    , '29325' : 'Container for Series Production'
+    , '29326' : 'Container for ZEUS CANopen implementation'
+    , '29327' : 'Container for Improvments in future hardware versions'
+    , '29729' : 'Parker Chip IP Container'
+    , '29924' : 'VIRA service tool issues and improvements'
+    , '30093' : 'VIRA service tool: Future features'
+    , '30345' : 'Container for TTE Evalsystem 100 Mbit/s'
+    , '30434' : 'Certification documents container'
+    , '30441' : 'Container for schematics and layout'
+    , '30442' : 'TTC 50/60/90 SW Release V1.0'
+    , '30556' : 'HYDRIVE Container'
+    }
+
+format = \
+    ( "%(missing_effort)1s %(id)5s %(category)-15.15s "
+    + "%(status)-9s %(effective_prio)4.4s %(title)-40.40s"
+    )
+
+class user_report :
+    heading = {"missing_effort" : " ", "effective_prio" : "priority"}
+    for i in ['id','category','status','title'] :
+        heading [i] = i
+
+    def __init__ (self, user, report_lines, lonely_lines, eff_msg) :
+        self.user         = user
+        self.report_lines = report_lines
+        self.lonely_lines = lonely_lines
+        self.eff_msg      = eff_msg
+
+    def report (self) :
+        raise NotImplementedError
+
+    def __str__ (self) :
+        s = ["%s\n%s\n" % (self.eff_msg, format % self.heading)]
+        for l in self.report_lines :
+            s.append ("%s\n" % l)
+        s.append ("\n")
+        if self.lonely_lines :
+            s.append ("Please attach the following reports to a container:\n")
+            s.append (format % self.heading)
+            s.append ("\n")
+            for l in self.lonely_lines :
+                s.append ("%s\n" % l)
+        return "".join (s)
+
+    def mail (self, smtp, header) :
+        to    = "To: %s" % self.user
+        date  = "Date: %s"   % formatdate (time.time (), True)
+        smtp.sendmail \
+            ( 'root@tttech.com'
+            , self.user
+            , '\n'.join \
+                ( header
+                + [to, date, "X-" + date, "\n", str (self)]
+                )
+            )
+# end class user_report
+
+def usage () :
+    usage_msg = \
+        ( 'Usage: %s [-h|--help] [-m|--mail] [-t|--tracker t] '
+          '[-u|--user u] [-r|--report_type r]\n' \
+        % sys.argv [0]
+        )
+    sys.stderr.write (usage_msg)
+    sys.exit ()
+
+def print_results (user_reports) :
+    for user, report in user_reports.iteritems () :
+        print "%s:\n" % user, str (report)
+
+
+def mail_results (user_reports) :
+    smtp = SMTP ('mail.tttech1.ttt')
+    header = \
+        [ "Subject: %s Summary of pending bug reports" % subject_type [type]
+        ]
+    for report in user_reports.values () :
+        report.mail (smtp, header)
+# end def mail_results
+
+# defaults
+out_fun = print_results
+tpath   = "/home/ralf/roundup/ttt"
+user    = "admin"
+type    = "Week"
+
+try :
+    opts, args = getopt \
+        ( sys.argv [1:]
+        , "hmr:t:u:"
+        , ["help", "mail", "tracker=", "user=", "report_type="]
+        )
+except GetoptError : usage ()
+
+for o, a in opts :
+    if o in ("-h", "--help") :
+        usage ()
+    if o in ("-m", "--mail") :
+        out_fun = mail_results
+    if o in ("-t", "--tracker") :
+        tpath = a
+    if o in ("-u", "--user") :
+        user = a
+    if o in ("-r", "--report_type") :
+        type = a
+        if not types.has_key (type) :
+            sys.stderr.write \
+                ('Wrong type: "%s", allowed are %s\n' % (type, types.keys ()))
+            usage ()
+
+if args: usage ()
+
+tracker = instance.open (tpath)
+minprio = types [type]
+
+db = tracker.open (user)
+from prettynode import prettynode
+
+user_reports = {}
+status_filter = ['suspended', 'closed']
+stati = [id for id in db.status.getnodeids ()
+         if db.status.get (id, 'name') not in status_filter
+        ]
+for user in  db.user.list () :
+    report_lines = []
+    lonely_lines = []
+    eff_msg      = ""
+    filterspec = \
+       { 'responsible' : user
+       , 'status'      : stati
+       }
+    for issue_id in db.issue.filter \
+        (None, filterspec, sort = ('+','id'), group = ('-', 'effective_prio')) :
+        issue = db.issue.getnode (issue_id)
+        pretty = prettynode (issue)
+        if not issue.part_of and not top_level_containers.has_key (issue.id) :
+            lonely_lines.append (format % pretty)
+        if issue.composed_of and type == "Day" : continue
+        prio = pretty ["priority"]
+        if pretty ["effective_prio"] is not None :
+            prio = pretty ["effective_prio"]
+        if int (prio) < minprio : continue
+        report_lines.append (format % pretty)
+        if pretty ["missing_effort"] :
+            eff_msg = 'Bitte bei Reports mit "*" Effort abschätzen!!'
+    if report_lines or lonely_lines :
+        adr = db.user.get (user, 'address')
+        user_reports [adr] = user_report \
+            (adr, report_lines, lonely_lines, eff_msg)
+db.close ()
+
+out_fun (user_reports)
