@@ -375,7 +375,7 @@ def user_classhelp (db, property='responsible', inputtype = 'radio') :
                     if n in db._db.user.properties
                    )
         , property  = property
-        , filter    = 'status=%s' % db._db.user_status.lookup ('valid')
+        , filter    = 'roles=Nosy'
         , inputtype = inputtype
         , width     = '600'
         , pagesize  = 500

@@ -26,6 +26,7 @@ if __name__ != "__main__" :
 
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+from common                         import user_has_role
 
 _effort_pattern = r"(\d+) \s* ([PM][DWM]) (?:\s+ \(([^)]+)\))?"
 _effort_regex   = re.compile (_effort_pattern, re.VERBOSE)
@@ -120,9 +121,9 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         responsible = db.category.get (category, "responsible")
         newvalues ["responsible"] = responsible
 
-    if db.user.get (responsible, "status") != db.user_status.lookup ("valid") :
+    if not user_has_role (db, responsible, 'Nosy') :
         raise Reject \
-            ( _ ("'%s' is not a valid user!")
+            ( _ ("'%s' is not a valid user (need 'Nosy' role)!")
             % (db.user.get (responsible, "username"))
             )
 
@@ -278,10 +279,9 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                             "change the `responsible`."
                           % nodeid
                           )
-        valid = db.user_status.lookup ("valid")
-        if db.user.get (new_responsible, "status") != valid :
+        if not user_has_role (db, new_responsible, 'Nosy') :
             raise Reject \
-                ( _ ("'%s' is not a valid user!")
+                ( _ ("'%s' is not a valid user (need 'Nosy' role)!")
                 % (db.user.get (new_responsible, "username"))
                 )
 
