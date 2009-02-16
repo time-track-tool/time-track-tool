@@ -83,10 +83,12 @@ class user_report :
         raise NotImplementedError
 
     def __str__ (self) :
-        s = ["%s\n%s\n" % (self.eff_msg, format % self.heading)]
-        for l in self.report_lines :
-            s.append ("%s\n" % l)
-        s.append ("\n")
+        s = []
+        if self.report_lines :
+            s.append ("%s\n%s\n" % (self.eff_msg, format % self.heading))
+            for l in self.report_lines :
+                s.append ("%s\n" % l)
+            s.append ("\n")
         if self.lonely_lines :
             s.append ("Please attach the following reports to a container:\n")
             s.append (format % self.heading)
