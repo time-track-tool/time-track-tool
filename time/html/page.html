@@ -802,10 +802,10 @@
   <p tal:condition="context/id" i18n:translate="">
    Created on
    <b i18n:name="creation" tal:content="python:context.creation.pretty
-      (utils.ymd)"/> by
+      ('%Y-%m-%d %H:%M:%S')"/> by
    <b i18n:name="creator"  tal:content="context/creator"/>, last changed
    <b i18n:name="activity" tal:content="python:context.activity.pretty
-      (utils.ymd)"/> by
+      ('%Y-%m-%d %H:%M:%S')"/> by
    <b i18n:name="actor"    tal:content="context/actor"/>.
   </p>
   <input type="hidden" name="@required"

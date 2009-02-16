@@ -1,0 +1,56 @@
+#!/usr/bin/python2.4
+# -*- coding: iso-8859-1 -*-
+
+# loop over all items of the given class
+# determine all items where some of creation, creator, activity, actor
+# are empty, create sql from history information to fill in the missing
+# info.
+
+attr = 'creation creator activity actor'.split ()
+
+import sys
+import os
+from roundup           import instance
+tracker = instance.open (os.getcwd ())
+db      = tracker.open  ('admin')
+
+cls = db.getclass (sys.argv [1])
+
+print "begin transaction;"
+
+for id in cls.getnodeids (retired = False) :
+    n = cls.getnode (id)
+    if n.creation and n.creator and n.activity and n.actor :
+        continue
+    youngest      = None
+    youngest_user = None
+    update        = {}
+    for nodeid, date, user, tag, params in n.history () :
+        assert (nodeid == id)
+        if tag == 'create' :
+            if not n.creation :
+                update ['creation'] = date.pretty ('%Y-%m-%d %H:%M:%S')
+            if not n.creator :
+                update ['creator'] = user
+                if n.creation :
+                    if date != n.creation :
+                        print "wrong creation:", n.id, date, n.creation
+        if tag in ('set', 'create') and youngest < date :
+            youngest      = date
+            youngest_user = user
+    if not n.activity and youngest :
+        update ['activity'] = youngest.pretty ('%Y-%m-%d %H:%M:%S')
+    if not n.actor and youngest_user :
+        update ['actor'] = youngest_user
+        if n.activity :
+            if youngest != n.activity :
+                #print "wrong activity:", n.id, youngest, n.activity
+                pass
+    assert (update)
+    print "update _%s set" % cls.classname,
+    print ",".join \
+        ("_%s='%s'" % (k, update [k]) for k in attr if update.get (k)),
+    print "where id = %s;" % n.id
+
+print "commit;"
+
