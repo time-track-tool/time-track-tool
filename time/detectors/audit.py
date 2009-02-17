@@ -140,9 +140,6 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
                         'kind of "Mistaken" or "Obsolete".'
                       % nodeid
                       )
-
-    # Do not allow `files_affected` to be filled in initially.
-    # XXX Maybe we need this somewhen in future.
 # end def limit_new_entry
 
 def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
