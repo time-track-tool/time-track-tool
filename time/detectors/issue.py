@@ -103,18 +103,18 @@ def update_container_status (db, cl, id, new_values = {}) :
         if cl.get (child, 'status') != stat_closed :
             closed = False
     status = cl.get (id, 'status')
-    if status == stat_closed :
-        if not closed :
-            if new_values :
-                new_values ['status'] = stat_open
-            else :
-                cl.set (id, status = stat_open)
+    if closed :
+        if new_values :
+            new_values ['status'] = stat_closed
+        else :
+            cl.set (id, status = stat_closed)
     else :
-        if closed :
-            if new_values :
-                new_values ['status'] = stat_closed
-            else :
-                cl.set (id, status = stat_closed)
+        if new_values :
+            new_values ['status'] = stat_open
+            if 'closed' in new_values :
+                new_values ['closed'] = None
+        else :
+            cl.set (id, status = stat_open)
 # end def update_container_status
 
 def status_updated (db, cl, nodeid, old_values) :
@@ -126,7 +126,7 @@ def status_updated (db, cl, nodeid, old_values) :
 # end def status_updated
 
 def composed_of_updated (db, cl, nodeid, new_values) :
-    if 'composed_of' in new_values :
+    if 'composed_of' in new_values or 'status' in new_values :
         update_container_status (db, cl, nodeid, new_values)
 # end def composed_of_updated
 
@@ -166,9 +166,12 @@ def no_autoclose_container (db, cl, nodeid, new_values) :
 
 maturity_index_in_progress = {}
 
-def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
+def set_maturity_index \
+    (db, cl, nodeid, new_values, do_update = False, force = False) :
     """ Set the maturity index for a node if it was not already present.
         This does a recursive update over all children if necessary.
+        If the maturity_index in new_values is None, we recompute the
+        value.
 
         Implementation note: Since we can be called via reactor *and*
         recursively, we keep a dict of calls in progress so that we do
@@ -182,11 +185,9 @@ def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
     co    = new_values.get ('composed_of')
     minor = db.severity.lookup ('Minor')
     if nodeid :
-        if 'maturity_index' not in new_values :
-            mi = cl.get (nodeid, 'maturity_index')
         if 'composed_of'    not in new_values :
             co = cl.get (nodeid, 'composed_of')
-    if mi is None :
+    if mi is None or force :
         if co :
             mi = 0
             for k in co :
@@ -216,20 +217,21 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
     old_values = old_values or {}
     part_of    = cl.get (nodeid, 'part_of')
     opart_of   = old_values.get ('part_of', part_of)
+    mi         = cl.get (nodeid, 'maturity_index')
+    o_mi       = old_values.get ('maturity_index', 0)
     if  (   is_new
         or  part_of != opart_of
         or  'maturity_index' in old_values
-        and old_values ['maturity_index'] != cl.get (nodeid, 'maturity_index')
+        and old_values ['maturity_index'] != mi
         ) :
-        mi    = cl.get (nodeid, 'maturity_index')
-        o_mi  = old_values.get ('maturity_index', 0)
         parts = dict.fromkeys ((part_of, opart_of)).keys ()
         for p in parts :
             if p :
                 parent_mi = cl.get (p, 'maturity_index')
-                if parent_mi is None :
+                force     = part_of != opart_of
+                if parent_mi is None or force :
                     if p not in maturity_index_in_progress :
-                        set_maturity_index (db, cl, p, {}, True)
+                        set_maturity_index (db, cl, p, {}, True, force)
                 else :
                     # only if second update in progress
                     if o_mi is not None and p == opart_of :
