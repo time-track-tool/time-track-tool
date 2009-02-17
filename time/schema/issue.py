@@ -127,6 +127,7 @@ def init \
         , depends             = Multilink ("issue")
         , needs               = Multilink ("issue")
         , effort              = String    (indexme = 'no')
+        , numeric_effort      = Number    ()
         , deadline            = Date      ()
         , earliest_start      = Date      ()
         , planned_begin       = Date      ()

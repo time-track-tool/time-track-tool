@@ -451,19 +451,15 @@ _helptext          = \
              hardware).
           '''
       ]
-    , ""'effort'                      :
+    , ""'numeric_effort'              :
       [ ""'''The estimated effort this work package has. This should be
              a fair estimation done by the Responsible of the
              %(Classname)s. Be sure to set it for Change-Requests
              because otherwise one (1!) day will be used as a rough
              guess for the planning procedure -- which -- in most
-             circumstances -- will NOT be sufficient. The format is
-             checked and should be *a number* followed by either *P* or
-             *M* which stands for *People* or *Man*, directly followed
-             by *D*, *W*, or *M* for *Day*, *Week*, or *Month*,
-             respectively. Optionally the person who estimated can be
-             specified in parenthesis, e.g, *15 PD (priesch)* means: 15
-             PeopleDays estimated by priesch.
+             circumstances -- will NOT be sufficient. The unit is in
+             person days. One person year = 10 person months, one person
+             month = 4 person weeks, one person week = 5 person days.
           '''
       ]
     , ""'email'                       :

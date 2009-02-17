@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-9 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -27,9 +27,6 @@ if __name__ != "__main__" :
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from common                         import user_has_role
-
-_effort_pattern = r"(\d+) \s* ([PM][DWM]) (?:\s+ \(([^)]+)\))?"
-_effort_regex   = re.compile (_effort_pattern, re.VERBOSE)
 
 _fixed_in_patterns = \
     [ re.compile (r"^\s*[hH][eE][aA][dD]\s*$")
@@ -79,7 +76,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     responsible = newvalues.get    ("responsible")
     msg         = newvalues.get    ("messages")
     severity    = newvalues.get    ("severity")
-    effort      = newvalues.get    ("effort")
+    effort      = newvalues.get    ("numeric_effort")
     part_of     = newvalues.get    ("part_of")
     bug         = db.kind.lookup   ('Bug')
     analyzing   = db.status.lookup ("analyzing")
@@ -144,34 +141,25 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
                       % nodeid
                       )
 
-    check_effort (newvalues)
     # Do not allow `files_affected` to be filled in initially.
     # XXX Maybe we need this somewhen in future.
 # end def limit_new_entry
-
-def check_effort (newvalues) :
-    effort = newvalues.get ("effort")
-    if effort and not _effort_regex.match (effort) :
-        raise Reject, ( "The `effort` field must have the format "
-                        "`\\d+ [PM][DWM]`, e.g. `12 PD`."
-                      )
-# end def check_effort
 
 def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
     """Ensure that certain fields do not vanish.
     """
     for k, except_analyzing in \
-        ( ('title'      , False)
-        , ('category'   , False)
-        , ('area'       , False)
-        , ('kind'       , False)
-        , ('responsible', False)
-        , ('effort'     , True )
-        , ('severity'   , False)
+        ( ('title',          False)
+        , ('category',       False)
+        , ('area',           False)
+        , ('kind',           False)
+        , ('responsible',    False)
+        , ('numeric_effort', True )
+        , ('severity',       False)
         ) :
         old = cl.get (nodeid, k)
         new = newvalues.get (k, old)
-        if new != old and not new :
+        if new != old and (new is None or new == '') :
             if not (except_analyzing and new_status_name == "analyzing") :
                 raise Reject, _ ('The field "%s" must remain filled.') % _ (k)
 # end def may_not_vanish
@@ -197,7 +185,8 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     category        = db.category.getnode (cat_id)
     affected        = newvalues.get \
         ("files_affected", cl.get (nodeid, "files_affected"))
-    effort          = newvalues.get ("effort", cl.get (nodeid, "effort"))
+    effort          = newvalues.get \
+                      ("numeric_effort", cl.get (nodeid, "numeric_effort"))
     msg             = newvalues.get ("messages", None)
     severity        = newvalues.get ("severity", cl.get (nodeid, "severity"))
 
@@ -232,8 +221,6 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     if cur_status_name == "testing" and new_status_name == "open" :
         newvalues ["fixed_in"] = fixed = "" # active delete
 
-    check_effort (newvalues)
-
     ############ prohibit invalid changes ############
 
     # Direct close only allowed if mistaken, obsolete or duplicate,
@@ -267,10 +254,8 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         if new_status_name == "open" and category.cert_sw :
             if kind_name == 'Change-Request' :
                 raise Reject, "No State-change to open for Change-Request"
-            m = _effort_regex.match (effort)
-            # > 1 PD ?
-            if not m.group (2).endswith ('D') or int (m.group (1)) > 1 :
-                raise Reject, "State-change to open only for effort < 1PD"
+            if effort > 1 :
+                raise Reject, "State-change to open only for effort <= 1PD"
 
     # A `message` must be given whenever `responsible` changes.
     if old_responsible != new_responsible :

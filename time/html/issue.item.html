@@ -90,8 +90,9 @@
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'effort')"/>
-      <td tal:content="structure python:context.effort.field (size = 15)"/>
+          (classname, 'numeric_effort')"/>
+      <td tal:content="structure
+          python:context.numeric_effort.field (size = 15)"/>
      </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
