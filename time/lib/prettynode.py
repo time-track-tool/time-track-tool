@@ -33,7 +33,7 @@ class prettynode (object) :
 
     def __getitem__ (self, name) :
         if name == "missing_effort" :
-            if self.node.effort or self.node.composed_of :
+            if self.node.numeric_effort is not None or self.node.composed_of :
                 return ""
             else :
                 return "*"
