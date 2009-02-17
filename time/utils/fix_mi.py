@@ -22,6 +22,7 @@ while id_depends :
     for id, deps in id_depends.iteritems () :
         if not deps :
             n = cache [id]
+            db.issue.set (id, maturity_index = None) # force update
             print "%s->%s" % (id, n.part_of)
             to_delete.append (id)
             if n.part_of :
@@ -31,3 +32,4 @@ while id_depends :
     assert (to_delete)
     for id in to_delete :
         del id_depends [id]
+db.commit ()
