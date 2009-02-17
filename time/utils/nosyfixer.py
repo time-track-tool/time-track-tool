@@ -7,6 +7,9 @@ from roundup.password  import Password, encodePassword
 tracker = instance.open (sys.argv [1])
 db      = tracker.open ('admin')
 
+# sometimes there are "None" values in the nosy history. Fix these.
+# takes the id of the issue to fix
+
 id = sys.argv [2]
 journal = db.getjournal ('issue', id)
 for line in journal :
