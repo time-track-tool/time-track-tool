@@ -150,6 +150,8 @@ def check_part_of (db, cl, nodeid, new_values) :
     closed = db.status.lookup ('closed')
     if part_of.status not in (open, closed) :
         raise Reject, _ ("Parent container must be in state open or closed")
+    if part_of.status == closed and not part_of.composed_of :
+        raise Reject, _ ("Tried to make this issue part of a closed issue")
 # end def check_part_of
 
 def no_autoclose_container (db, cl, nodeid, new_values) :
