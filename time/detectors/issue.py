@@ -90,24 +90,35 @@ def update_children (db, cl, nodeid, old_values) :
 def update_container_status (db, cl, id, new_values = {}) :
     """ Check status of a container -- if all sub-issues are closed and
         the container is open, we have to update. Same if one sub-issue
-        is open and the container is closed.
+        is open and the container is closed. Or if all sub-isues are
+        closed or suspended.
     """
     closed      = True
+    suspended   = True
     stat_closed = db.status.lookup ('closed')
     stat_open   = db.status.lookup ('open')
+    stat_susp   = db.status.lookup ('suspended')
     composed_of = \
         (new_values.get ('composed_of', None) or cl.get (id, 'composed_of'))
     if not composed_of :
         return # not a container
     for child in composed_of :
-        if cl.get (child, 'status') != stat_closed :
+        cstatus = cl.get (child, 'status')
+        if cstatus != stat_closed :
             closed = False
+        if cstatus != stat_closed and cstatus != stat_susp :
+            suspended = False
     status = cl.get (id, 'status')
     if closed :
         if new_values :
             new_values ['status'] = stat_closed
         else :
             cl.set (id, status = stat_closed)
+    elif suspended :
+        if new_values :
+            new_values ['status'] = stat_susp
+        else :
+            cl.set (id, status = stat_susp)
     else :
         if new_values :
             new_values ['status'] = stat_open
@@ -129,13 +140,6 @@ def composed_of_updated (db, cl, nodeid, new_values) :
     if 'composed_of' in new_values or 'status' in new_values :
         update_container_status (db, cl, nodeid, new_values)
 # end def composed_of_updated
-
-def check_container_statuschange (db, cl, nodeid, new_values) :
-    composed_of = \
-        new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
-    if composed_of and 'status' in new_values :
-        raise Reject, _ ("You may not change container status")
-# end def check_container_statuschange
 
 def check_part_of (db, cl, nodeid, new_values) :
     p_id = new_values.get ('part_of')
@@ -277,5 +281,4 @@ def init (db) :
     db.issue.audit ("create", set_maturity_index,           priority = 300)
     db.issue.react ("set",    update_maturity_index)
     db.issue.react ("create", creat_update_maturity_index)
-    #db.issue.react ("set",    check_container_statuschange, priority =  90)
 # end def init
