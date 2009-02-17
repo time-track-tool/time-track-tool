@@ -60,17 +60,6 @@ from   roundup                 import instance, date
 from   xml.sax.saxutils        import escape
 from   elementtree.ElementTree import Element, SubElement, ElementTree
 
-_effort_pattern = re.compile (r"(\d+)\s*([PM][DWM])?(\s+\([^)]+\))?")
-
-def effort_in_days (effort) :
-    m = _effort_pattern.match (effort)
-    assert (m)
-    days = int (m.group (1))
-    if m.group (2).upper ()[1] == "W" : days *=  5
-    if m.group (2).upper ()[1] == "M" : days *= 20
-    return days
-# end def effort_in_days
-
 class Pygantt_XML :
     """Queries the Roundup DB and creates XML output for pygantt."""
 
@@ -235,8 +224,7 @@ class Pygantt_XML :
             , type  = "worker"
             )
         if not issue.composed_of :
-            e = issue.effort or "%s PD" % (5, 1) [issue.status == self.s_test]
-            effort = effort_in_days (e)
+            effort = issue.numeric_effort or (5, 1)[issue.status == self.s_test]
             SubElement (tree, "duration", unit = "days").text = ("%s" % effort)
         else : # fill containers with a dummy length of 0 days
             SubElement (tree, "duration", unit = "days").text = "0"
