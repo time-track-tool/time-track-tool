@@ -146,6 +146,10 @@ def check_part_of (db, cl, nodeid, new_values) :
     part_of = cl.getnode (p_id)
     if part_of.kind in (mistaken, obsolete) :
         raise Reject, _ ("May not be part of Obsolete or Mistaken container")
+    open   = db.status.lookup ('open')
+    closed = db.status.lookup ('closed')
+    if part_of.status not in (open, closed) :
+        raise Reject, _ ("Parent container must be in state open or closed")
 # end def check_part_of
 
 def no_autoclose_container (db, cl, nodeid, new_values) :
