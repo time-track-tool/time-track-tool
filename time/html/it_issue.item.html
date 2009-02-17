@@ -62,16 +62,26 @@
             "name      python:'stakeholder';
              form      string:itemSynopsis;
              dont_care string:- no selection -;
-             selected  python:context.stakeholder and context.stakeholder.id or 0;
+             selected  python:context.stakeholder
+                       and context.stakeholder.id or 0;
             ">
-        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+        <tal:block metal:use-macro="templates/userlist/macros/user"/>
        </tal:block>
       </td>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'it_project')"/>
-      <td tal:content="structure python:context.it_project.field ()"/>
+      <td>
+       <tal:block tal:content="structure python:context.it_project.field ()"/>
+       <tal:block tal:replace="structure python:db.it_project.classhelp
+                  ( 'id,status,it_prio,title'
+                  , property='it_project'
+                  , inputtype='radio'
+                  , width='800'
+                  , pagesize=1000 
+                  )"/>
+      </td>
      </tr>
      <tr>
       <td>
