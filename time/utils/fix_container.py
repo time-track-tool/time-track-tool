@@ -41,4 +41,4 @@ while id_depends :
     assert (to_delete)
     for id in to_delete :
         del id_depends [id]
-#db.commit ()
+db.commit ()
