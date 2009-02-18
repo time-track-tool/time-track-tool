@@ -225,6 +225,7 @@ class Pygantt_XML :
             )
         if not issue.composed_of :
             effort = issue.numeric_effort or (5, 1)[issue.status == self.s_test]
+            effort = int (effort + .5)
             SubElement (tree, "duration", unit = "days").text = ("%s" % effort)
         else : # fill containers with a dummy length of 0 days
             SubElement (tree, "duration", unit = "days").text = "0"
