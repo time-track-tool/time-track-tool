@@ -126,7 +126,7 @@ def init \
         , area                = Link      ("area",        do_journal = 'no')
         , depends             = Multilink ("issue")
         , needs               = Multilink ("issue")
-        , effort              = String    (indexme = 'no')
+#       , effort              = String    (indexme = 'no')
         , numeric_effort      = Number    ()
         , deadline            = Date      ()
         , earliest_start      = Date      ()
