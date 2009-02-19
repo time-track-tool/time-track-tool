@@ -460,6 +460,9 @@ _helptext          = \
              circumstances -- will NOT be sufficient. The unit is in
              person days. One person year = 10 person months, one person
              month = 4 person weeks, one person week = 5 person days.
+             Note that the contents of this field will be rounded to the
+             next integer, only full days make sense for the work-time
+             estimates.
           '''
       ]
     , ""'email'                       :

@@ -260,6 +260,17 @@ def creat_update_maturity_index (db, cl, nodeid, old_values) :
     update_maturity_index (db,cl, nodeid, old_values, True)
 # end def creat_update_maturity_index
 
+def fix_effort (db, cl, nodeid, new_values) :
+    """ If effort is changed and not None, round to nearest int. """
+    ne = 'numeric_effort'
+    if ne in new_values and new_values [ne] is not None :
+        new_values [ne] = int (new_values [ne] + .5)
+    elif ne not in new_values and nodeid :
+        effort = cl.get (nodeid, ne)
+        if effort and effort % 1 :
+            new_values [ne] = int (effort + .5)
+# end def fix_effort
+
 def init (db) :
     if 'issue' not in db.classes :
         return
@@ -281,4 +292,6 @@ def init (db) :
     db.issue.audit ("create", set_maturity_index,           priority = 300)
     db.issue.react ("set",    update_maturity_index)
     db.issue.react ("create", creat_update_maturity_index)
+    db.issue.audit ("set",    fix_effort)
+    db.issue.audit ("create", fix_effort)
 # end def init
