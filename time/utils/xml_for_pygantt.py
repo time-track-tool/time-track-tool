@@ -206,7 +206,7 @@ class Pygantt_XML :
     # end def reduce_date
 
     def write_task (self, issue, tree) :
-        user = self.db.user.getnode
+        user = self.db.user.getnode (issue.responsible)
         SubElement (tree, "label").text = \
             ("%s" %
                 ( escape (issue.title [:50])
@@ -217,10 +217,11 @@ class Pygantt_XML :
             ("%d" % (issue.effective_prio or issue.priority))
 
         ### XXX still not taking candidates into account
+        username = 
         SubElement \
             ( tree
             , "use-resource"
-            , idref = ("%s" % user (issue.responsible).nickname)
+            , idref = "%s" % (user.nickname or user.username)
             , type  = "worker"
             )
         if not issue.composed_of :
@@ -268,18 +269,20 @@ class Pygantt_XML :
             tt = SubElement (tree, "timetable", id = day)
             SubElement (tt, "dayoff", type = "weekday").text = day
             week.append (day)
-        stati = [self.db.user_status.lookup (i) for i in ("valid", "obsolete")]
+        stati = [self.db.user_status.lookup (i)
+                 for i in ("valid", "obsolete", "system")
+                ]
         for uid in self.db.user.filter (None, dict (status = stati)) :
             dyn = self.get_user_dynamic (self.db, uid, self.now)
             if not dyn :
                 dyn = self.last_user_dynamic (self.db, uid)
             user = self.db.user.getnode (uid)
-            if not user.nickname or not user.realname :
+            if not user.nickname and not user.realname :
                 continue
             r    = SubElement \
                 ( tree
                 , "resource"
-                , id       = user.nickname.decode ("utf-8")
+                , id       = (user.nickname or user.username).decode ("utf-8")
                 , fullname = user.realname.decode ("utf-8")
                 )
             SubElement (r, "use-timetable", idref = "weekend")
