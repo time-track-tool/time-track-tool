@@ -3480,13 +3480,11 @@ msgstr ""
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#, fuzzy
 msgid "Author:"
-msgstr "Author"
+msgstr ""
 
-#, fuzzy
 msgid "Date:"
-msgstr "Date"
+msgstr ""
 
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
@@ -3703,17 +3701,14 @@ msgstr "Duration (incl. Travel)"
 msgid "daily_record_freeze"
 msgstr "Daily Record freeze"
 
-#, fuzzy
 msgid "month_balance"
-msgstr "Balance"
+msgstr "Month Balance"
 
-#, fuzzy
 msgid "month_validity_date"
-msgstr "Validity date"
+msgstr "Month validity date"
 
-#, fuzzy
 msgid "week_balance"
-msgstr "Balance"
+msgstr "Week Balance"
 
 msgid "comment"
 msgstr "Comment"
@@ -4106,14 +4101,12 @@ msgstr ""
 msgid "lot"
 msgstr "Lot number"
 
-#, fuzzy
 msgid "doc_status"
 msgstr "Status"
 
 msgid "doc"
 msgstr "Numbering System"
 
-#, fuzzy
 msgid "link"
 msgstr "Link/CVS location"
 

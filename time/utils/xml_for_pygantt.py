@@ -217,7 +217,6 @@ class Pygantt_XML :
             ("%d" % (issue.effective_prio or issue.priority))
 
         ### XXX still not taking candidates into account
-        username = 
         SubElement \
             ( tree
             , "use-resource"
@@ -277,13 +276,13 @@ class Pygantt_XML :
             if not dyn :
                 dyn = self.last_user_dynamic (self.db, uid)
             user = self.db.user.getnode (uid)
-            if not user.nickname and not user.realname :
+            if not user.nickname and not user.username :
                 continue
             r    = SubElement \
                 ( tree
                 , "resource"
                 , id       = (user.nickname or user.username).decode ("utf-8")
-                , fullname = user.realname.decode ("utf-8")
+                , fullname = (user.realname or user.username).decode ("utf-8")
                 )
             SubElement (r, "use-timetable", idref = "weekend")
             wh = 38.5
