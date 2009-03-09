@@ -22,7 +22,7 @@ import os
 import sys
 import time
 from email.Utils        import formatdate
-from smtplib            import SMTP
+from smtplib            import SMTP, SMTPRecipientsRefused
 from getopt             import getopt, GetoptError
 from roundup            import instance
 
@@ -136,7 +136,10 @@ def mail_results (user_reports) :
         [ "Subject: %s Summary of pending bug reports" % subject_type [type]
         ]
     for report in user_reports.values () :
-        report.mail (smtp, header)
+        try :
+            report.mail (smtp, header)
+        except SMTPRecipientsRefused, cause :
+            print >> sys.stderr, cause
 # end def mail_results
 
 # defaults
