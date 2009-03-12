@@ -206,11 +206,11 @@ def security (db, ** kw) :
     classes = \
         [ ("department",   ["User"],  ["Controlling"])
         , ("location",     ["User"],  ["HR"])
-        , ("meeting_room", ["User"],  ["HR"])
+        , ("meeting_room", ["User"],  ["HR", "Office"])
         , ("organisation", ["User"],  ["HR", "Controlling"])
         , ("org_location", ["User"],  ["HR"])
         , ("position",     ["User"],  ["HR"])
-        , ("room",         ["User"],  ["HR"])
+        , ("room",         ["User"],  ["HR", "Office"])
         , ("sex",          ["User"],  [])
     #   , ("user", See below -- individual fields)
         ]
