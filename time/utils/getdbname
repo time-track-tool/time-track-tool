@@ -1,0 +1,7 @@
+#!/usr/bin/python2.4
+# -*- coding: iso-8859-1 -*-
+import os
+import sys
+from roundup           import instance
+tracker = instance.open (sys.argv [1])
+print tracker.config.RDBMS_NAME
