@@ -26,8 +26,8 @@ if [ "${TRACKER}" = "${RESTORE}" ] ; then
     exit 42
 fi
 
-RESTOREDBNAME=$(${TRACKER}/utils/getdbname ${TRACKER})
-TRACKERDBNAME=$(${RESTORE}/utils/getdbname ${RESTORE})
+RESTOREDBNAME=$(${RESTORE}/utils/getdbname ${RESTORE})
+TRACKERDBNAME=$(${TRACKER}/utils/getdbname ${TRACKER})
 
 if [ "${TRACKERDBNAME}" = "${RESTOREDBNAME}" ] ; then
     echo "tracker and restore DB configured to use same database"
@@ -40,36 +40,39 @@ echo TRACKER db=$TRACKERDBNAME, RESTORE db=$RESTOREDBNAME
 dir=${BACKUPDIR}/backup-$(date +%a)
 if [ -n "$USE_CURRENT" ] ; then
     dir=${BACKUPDIR}/current
-#    old=${BACKUPDIR}/backup-$(date -d yesterday +%a)
-#    rm -rf $old
-#    echo mv ${dir} ${old}
-#    mv ${dir} ${old}
+    old=${BACKUPDIR}/backup-$(date -d yesterday +%a)
+    rm -rf $old
+    echo mv ${dir} ${old}
+    mv ${dir} ${old}
 fi
-#echo Backing up $TRACKER to $dir
-#rm -rf $dir
-#echo "Vor dropcache vor Backup, nach rm"
-#cat /proc/slabinfo | grep ext3
-#/roundup/bin/dropcache
-#echo "Nach dropcache"
-#cat /proc/slabinfo | grep ext3
-#mkdir $dir
-#mkdir $dir/code
-#cp -a $(find -H ${TRACKER} -mindepth 1 -maxdepth 1 \! -name db) $dir/code
+echo Backing up $TRACKER to $dir
+rm -rf $dir
+echo "Vor dropcache vor Backup, nach rm"
+cat /proc/slabinfo | grep ext3
+/roundup/bin/dropcache
+echo "Nach dropcache"
+cat /proc/slabinfo | grep ext3
+mkdir $dir
+mkdir $dir/code
+cp -a $(find -H ${TRACKER} -mindepth 1 -maxdepth 1 \! -name db) $dir/code
 
-#$ROUNDUP_ADMIN -i $TRACKER export $dir
-#echo "Vor dropcache nach backup (export)"
-#cat /proc/slabinfo | grep ext3
-#/roundup/bin/dropcache
-#echo "Nach dropcache"
-#cat /proc/slabinfo | grep ext3
+$ROUNDUP_ADMIN -i $TRACKER export $dir
+echo "Vor dropcache nach backup (export)"
+cat /proc/slabinfo | grep ext3
+/roundup/bin/dropcache
+echo "Nach dropcache"
+cat /proc/slabinfo | grep ext3
 
 if [ -n "$RESTORE" ] ; then
     echo Restoring from $dir to $RESTORE Restore DB: $RESTOREDBNAME
     cp $TRACKER/db/backend_name $RESTORE/db
     echo y | $ROUNDUP_ADMIN -i $RESTORE init ${RESTOREPW}
-    pgsql $RESTOREDBNAME << EOF
+    psql $RESTOREDBNAME << EOF
     delete from _overtime_period;
-    EOF
+    delete from _status;
+    delete from _status_transition;
+    delete from _user;
+EOF
     cp $TRACKER/db/backend_name $RESTORE/db
     $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
