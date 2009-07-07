@@ -8,7 +8,7 @@ XPOT ?= xpot
 MSGFMT ?= msgfmt
 MSGMERGE ?= msgmerge
 XGETTEXT ?= xgettext
-PYTHON ?= python2.4
+PYTHON ?= python
 
 TEMPLATE=roundup.pot
 
