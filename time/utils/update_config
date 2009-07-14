@@ -1,0 +1,8 @@
+#!/usr/bin/python2.4
+# -*- coding: iso-8859-1 -*-
+import os
+from roundup           import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+
+tracker.config.save()
