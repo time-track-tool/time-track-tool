@@ -979,7 +979,7 @@ class Staff_Report (_Report) :
                     self.fill_container (container, u, dyn, start, end)
                 else :
                     date = start
-                    while date < end :
+                    while date <= end :
 			eop = end_of_period (date, period_objects [period])
 			if eop > end :
 			    eop = end
