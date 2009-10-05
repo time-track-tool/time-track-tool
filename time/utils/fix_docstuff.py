@@ -23,7 +23,7 @@ for cl in db.product_type, db.reference, db.artefact :
         name = cl.get (id, 'name')
         if not name_re.match (name) :
             print >> sys.stderr, \
-                "Wrong name for %s %s: %s" % (cl.name, id, name)
+                "Wrong name for %s %s: %s" % (cl.classname, id, name)
 
 stati = {}
 for id in db.doc_status.getnodeids () :
