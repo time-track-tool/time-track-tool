@@ -1,7 +1,10 @@
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
+# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
-#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
@@ -27,7 +30,18 @@
 
 import schemadef
 
-def init (db, Class, Department_Class, Number, String, Link, Multilink, ** kw) :
+def init \
+    ( db
+    , Class
+    , Department_Class
+    , Number
+    , String
+    , Link
+    , Multilink
+    , Full_Issue_Class
+    , ** kw
+    ) :
+
     class Ext_Department_Class (Department_Class) :
         """Add the attribute `doc_num` to the existing Department class."""
 
@@ -65,12 +79,12 @@ def init (db, Class, Department_Class, Number, String, Link, Multilink, ** kw) :
         ( db, "doc_status"
         , name                = String    (required = True)
         , order               = Number    ()
+        , transitions         = Multilink ("doc_status")
         )
     doc_status.setkey ("name")
 
-    doc = Class \
+    doc = Full_Issue_Class \
         ( db, "doc"
-        , title               = String    ()
         , product_type        = Link      ("product_type")
         , reference           = Link      ("reference")
         , artefact            = Link      ("artefact")
@@ -79,7 +93,7 @@ def init (db, Class, Department_Class, Number, String, Link, Multilink, ** kw) :
         , status              = Link      ("doc_status")
         , link                = String    ()
         , document_nr         = String    ()
-        , messages            = Multilink ("msg")
+        , state_changed_by    = Link      ("user")
         )
     doc.setkey       ("document_nr")
     doc.setlabelprop ("title")
@@ -101,6 +115,7 @@ def security (db, ** kw) :
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
+    schemadef.register_nosy_classes      (db, ['doc'])
 # end def security
 
 ### __END__ doc

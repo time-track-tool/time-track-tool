@@ -664,6 +664,23 @@
  </tal:block>
 </tal:block>
 
+<tal:block metal:define-macro="responsible">
+   <tr tal:condition="has_resp">
+    <th tal:attributes="class responsible_required | default"
+     tal:content="structure python:utils.fieldname(classname, 'responsible')">
+    </th>
+    <td colspan="3">
+     <tal:block tal:define=
+        "name      string:responsible;
+         form      string:itemSynopsis;
+         dont_care python:i18n.gettext ('''- don't care -''');
+         selected python:context.responsible and context.responsible.id or 0">
+      <tal:block metal:use-macro="templates/userlist/macros/user"/>
+     </tal:block>
+    </td>
+   </tr>
+</tal:block>
+
 <!-- the following macro is used for all pages which display a
      class that needs some more formatting -->
 
@@ -691,21 +708,7 @@
     <td colspan="3"
         tal:content="structure python:context [labelprop].field (size=60)"/>
    </tr>
-   <tr tal:condition="has_resp">
-    <th tal:attributes="class responsible_required | default"
-     tal:content="structure python:utils.fieldname(classname, 'responsible')">
-    </th>
-    <td colspan="3">
-     <tal:block tal:define=
-        "name      string:responsible;
-         form      string:itemSynopsis;
-         dont_care python:i18n.gettext ('''- don't care -''');
-         selected python:context.responsible and context.responsible.id or 0">
-      <tal:block metal:use-macro="templates/userlist/macros/user"/>
-     </tal:block>
-    </td>
-   </tr>
-
+   <tal:block metal:use-macro="templates/page/macros/responsible"/>
    <tal:block metal:define-slot="formatted_class_content"/>
 
    <tr tal:condition="has_nosy">

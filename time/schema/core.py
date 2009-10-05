@@ -119,7 +119,6 @@ def security (db, ** kw) :
         # start properties of complex tracker
         , ('meeting',      'messages')
         , ('action_item',  'messages')
-        , ('document',     'messages')
         , ('release',      'messages')
         , ('feature',      'messages')
         , ('task',         'messages')

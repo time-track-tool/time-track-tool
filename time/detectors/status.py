@@ -42,11 +42,13 @@ def check_status (db, cl, nodeid, new_values) :
         to impossible in the web-interface).
         Added: Container changes don't need a message.
         Added: Containers may do invalid state changes -- checked elsewhere
+        Added: Allow transition if status field is unset
     """
-    if "status" in new_values :
+    oldstatus = cl.get (nodeid, 'status')
+    if "status" in new_values and oldstatus :
         status_cl = db.getclass (cl.properties ['status'].classname)
         n_status  = status_cl.getnode (new_values ['status'])
-        o_status  = status_cl.getnode (cl.get (nodeid, 'status'))
+        o_status  = status_cl.getnode (oldstatus)
         trans_cl  = db.getclass (status_cl.properties ['transitions'].classname)
         extended  = trans_cl is not status_cl
         old_resp  = cl.get (nodeid, "responsible")
@@ -85,7 +87,7 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    status_classes = ['it_issue', 'it_project', 'issue']
+    status_classes = ['it_issue', 'it_project', 'issue', 'doc']
     for cl in status_classes :
         if cl not in db.classes :
             continue

@@ -848,7 +848,7 @@ msgid "Where this issue belongs to."
 msgstr ""
 
 msgid "artefact"
-msgstr "Artefact"
+msgstr "Artefact type"
 
 msgid "The artefact type"
 msgstr ""
@@ -1220,7 +1220,7 @@ msgid ""
 msgstr ""
 
 msgid "document_nr"
-msgstr "Document Number"
+msgstr "Artefact number"
 
 msgid ""
 "The %(Property)s is generated when the %(Classname)s is\n"
@@ -2895,6 +2895,12 @@ msgstr "Timezone"
 msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
 msgstr ""
 
+msgid "doc++title"
+msgstr "Title"
+
+msgid "issue++title"
+msgstr "Title"
+
 msgid "title"
 msgstr "Title"
 
@@ -4102,10 +4108,10 @@ msgid "lot"
 msgstr "Lot number"
 
 msgid "doc_status"
-msgstr "Status"
+msgstr "Artefact Status"
 
 msgid "doc"
-msgstr "Numbering System"
+msgstr "Artefact record"
 
 msgid "link"
 msgstr "Link/CVS location"
@@ -4146,3 +4152,6 @@ msgid ""
 "User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
 "item with %(perm)s permission"
 msgstr ""
+
+msgid "doc++responsible"
+msgstr "Owner"

@@ -237,7 +237,10 @@ _helptext          = \
       , miss_text
       ]
     , ""'artefact'                    :
-      [""'''The artefact type''']
+      [""'''Defines the detailled characteristic, e.g Project Plan,
+            Manual, Specification etc.
+         '''
+      ]
     , ""'author'                      :
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
@@ -418,6 +421,25 @@ _helptext          = \
              multiple A-Records. The flag is ignored for CNAME records.
           '''
       ]
+    , ""'doc++responsible'            :
+      [""'''User/Owner of this %(Classname)s''']
+    , ""'doc++link'                   :
+      [""'''The location of the file in the repository or on the file server''']
+    , ""'doc++status'                 :
+      [ ""'''The status of the item. Can be one of "work in progress",
+             "draft", "released" and "obsolete". The latter will cause the
+             item to not be displayed in the standard query.
+             For allowed transitions, see the Transistions column in the
+             <a href=doc_status>Artefact Status</a> page.
+          '''
+      ]
+    , ""'doc++title'                  :
+      [ ""'''Should be an intuitive one-line description of the %(Classname)s
+             consisting of the <short name> and the <long name>. 
+             Example for a title:
+             \"ASDM Automotive Software Development Manual\".
+          '''
+      ]
     , ""'document_nr'                 :
       [ ""'''The %(Property)s is generated when the %(Classname)s is
              created. It can be manually overwritten for an old %(Classname)s
@@ -487,7 +509,7 @@ _helptext          = \
     , ""'fax'                         :
       [""'''FAX number for this %(Classname)s''']
     , ""'filename_format'             :
-      [""'''Template for file names used for this %(Classname)s''']
+      [""'''Naming convention for a Filename''']
     , ""'files'                       :
       [""'''Files for %(Classname)s''']
     , ""'files_affected'              :
@@ -626,6 +648,13 @@ _helptext          = \
              by the planning tool via the Depends and Part Of fields.
           '''
       ]
+    , ""'issue++title'                :
+      [ ""'''Should be an intuitive one-line description of the %(Classname)s.
+             Since titles of Roundup issues are also extracted into SCI
+             documents, start with a capital letter, and type all other
+             letters in lowercase, except names and references.
+          '''
+      ]
     , ""'it_issue++superseder'        :
       [superseder, multiple_allowed]
     , ""'it_prio'                     :
@@ -667,14 +696,6 @@ _helptext          = \
       [""'''List of letters for this %(Classname)s''']
     , ""'lettertitle'                 :
       [""'''Title of this person used in a letter''']
-    , ""'doc++link'                   :
-      [""'''The location of the file in the repository or on the file server''']
-    , ""'doc++status'                 :
-      [ ""'''The status of the item. Can be one of "work in progress",
-             "draft", "released" and "obsolete". The latter will cause the
-             item to not be displayed in the standard query.
-          '''
-      ]
     , ""'link_field'                  :
       [ ""'''Auxiliary field for use with other software, e.g., asset
              tracking
@@ -944,7 +965,11 @@ _helptext          = \
     , ""'recorder'                    :
       [""'''Person responsible for recording findings''']
     , ""'reference'                   :
-      [""'''Defines the relation to a project, customer, etc.''']
+      [""'''Defines the relation to a project, customer, etc. If
+            necessary, this entry is defined for new customers and/or
+            products when the project starts.
+         '''
+      ]
     , ""'relaxed'                     :
       [""'''If set, when changing status, no checks about a message, the
             priority and responsible (helpdesk) are done when changing
@@ -1273,9 +1298,6 @@ _helptext          = \
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
       [ ""'''Should be an intuitive one-line description of the %(Classname)s.
-             Since titles of Roundup issues are also extracted into SCI
-             documents, start with a capital letter, and type all other
-             letters in lowercase, except names and references.
           '''
       ]
     , ""'tmplate'                     :

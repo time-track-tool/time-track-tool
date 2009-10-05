@@ -171,7 +171,7 @@ def updatenosy(db, cl, nodeid, newvalues):
 def init(db):
     nosy_classes = [ "action_item"
                    , "defect"
-                   , "document"
+                   , "doc"
                    , "feature"
                    , "issue"
                    , "it_issue"

@@ -1,11 +1,14 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-
  <title metal:fill-slot="head_title" >
-  <span tal:condition="context/id"
-        tal:replace=
-          "string:${context/product_type} ${context/id} by ${context/owner}"/>
-  <span tal:condition="not:context/id"
-        tal:replace="string:Create New Item"/>
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   owned by
+   <span tal:replace="context/responsible" i18n:name="responsible"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
  </title>
 
  <tal:block metal:fill-slot="create_or_query">
@@ -13,13 +16,17 @@
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
  </tal:block>
 
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"/>
  <tal:block metal:fill-slot="content"
   tal:define=
    "use_labelprop       nothing;
     required_attributes string:title,product_type,reference,artefact,department;
     fieldname           python:lambda f, utils = utils, classname = classname :
                                utils.fieldname (classname, f);
-    is_doc_admin        python:utils.user_has_role (db._db, uid, 'Doc_Admin')
+    is_doc_admin        python:utils.user_has_role (db._db, uid, 'Doc_Admin');
+    want_files          python:False;
+    has_resp            python:False
    "
   >
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
@@ -55,10 +62,9 @@
      <td
       tal:content="structure python:context.document_nr.field (size=80)" />
     </tr>
-    <tr tal:condition="python: context.id or is_doc_admin">
-     <th tal:content="structure python:fieldname ('owner')" />
-     <td tal:content="structure context/owner/menu" />
-    </tr>
+    <tal:block tal:define="has_resp python:True">
+     <tal:block metal:use-macro="templates/page/macros/responsible"/>
+    </tal:block>
     <tr>
      <th
       tal:content="structure python:fieldname ('status')" />

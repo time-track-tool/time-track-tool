@@ -267,6 +267,8 @@ def new_nickname (_, cl, nodeid, lfn, lln, uniq = check_unique) :
 
 def user_has_role (db, uid, * role) :
     roles = db.user.get (uid, 'roles')
+    if not roles :
+        return False
     roles = dict ([(r.lower ().strip (), 1) for r in roles.split (',')])
     role  = [r.lower ().strip () for r in role]
     for r in role :

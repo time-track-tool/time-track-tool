@@ -20,7 +20,12 @@
     , utils.ExtProperty (utils, pdict ['artefact'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['department'],   multiselect = 1)
     , utils.ExtProperty (utils, pdict ['status'],       multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['owner'])
+    , utils.ExtProperty (utils, pdict ['responsible'])
+    , utils.ExtProperty
+        ( utils, pdict ['nosy']
+        , help_props  = ['firstname', 'lastname']
+        , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
+        )
     )
    ">
   <tal:block metal:use-macro="templates/page/macros/search_results"/>

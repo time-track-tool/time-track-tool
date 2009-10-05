@@ -1,7 +1,10 @@
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
+# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Reichergasse 131, A-3411 Weidling.
+# Web: http://www.runtux.com Email: office@runtux.com
+# All rights reserved
 # ****************************************************************************
-#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
@@ -23,12 +26,6 @@
 #
 # Purpose
 #    Detectors for document class
-#
-# Revision Dates
-#    22-May-2007 (PGO) Creation
-#    29-May-2007 (PGO) Creation continued
-#     8-Jun-2007 (PGO) Creation continued.
-#    ««revision-date»»···
 #--
 
 from   roundup.exceptions             import Reject
@@ -36,12 +33,15 @@ from   roundup.cgi.TranslationService import get_translation
 import common
 import re
 
-doc_nr_re = re.compile ("^[0-9a-zA-Z_\-]+? (?P<suffix> [0-9]+ )$", re.X)
+name_txt  = "[0-9a-zA-Z_]+"
+name_re   = re.compile ("^%s$" % name_txt)
+doc_nr_re = re.compile ("^(%s-)+? (?P<suffix> [0-9]+ )$" % name_txt, re.X)
 
 def check_document_required (db, cl, nodeid, newvalues) :
     req = ['product_type', 'reference', 'artefact', 'department', 'title']
     if nodeid :
         req.append ('document_nr')
+        req.append ('responsible')
     common.require_attributes (_, cl, nodeid, newvalues, * req)
 # end def check_document_required
 
@@ -53,7 +53,7 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
         attr_lst = ('product_type', 'reference', 'artefact', 'department')
         action   = _ ('modify')
     else :
-        attr_lst = ('document_nr', 'owner')
+        attr_lst = ('document_nr', 'responsible')
         action   = _ ('specify')
 
     attrs = ", ".join (_ (a) for a in attr_lst if a in newvalues)
@@ -96,10 +96,13 @@ def _check_for_description (db, cl, nodeid, newvalues) :
 check_product_type = _check_for_description
 check_reference    = _check_for_description
 
-def default_owner (db, cl, nodeid, newvalues) :
-    if not newvalues.get ('owner', None) :
-        newvalues ['owner'] = db.getuid ()
-# end def default_owner
+def defaults (db, cl, nodeid, newvalues) :
+    if not newvalues.get ('responsible', None) :
+        newvalues ['responsible'] = db.getuid ()
+    # new doc item: always set status to work in progress
+    newvalues ['status'] = db.doc_status.lookup ('work in progress')
+    newvalues ['state_changed_by'] = db.getuid ()
+# end def defaults
 
 # end def _check_document_nr
 
@@ -123,6 +126,47 @@ def _next_document_nr (db, cl, prefix) :
         return 1
 # end def _next_document_nr
 
+def check_name (db, cl, nodeid, newvalues, name = 'name') :
+    if name not in newvalues or not newvalues [name] :
+        return
+    if not name_re.match (newvalues [name]) :
+        raise Reject, _ ('Malformed %s: Only %s allowed') % (_ (name), name_txt)
+# end def check_name
+
+def check_department (db, cl, nodeid, newvalues) :
+    return check_name (db, cl, nodeid, newvalues, name = 'doc_num')
+# end def check_department
+
+def check_statechange (db, cl, nodeid, newvalues) :
+    """ Things to do for a state change:
+        Add doc admins to nosy for certain state changes
+        State-change to released by different person that last
+        state-change
+    """
+    if 'status' not in newvalues :
+        return
+    oldstate = cl.get (nodeid, 'status')
+    newstate = newvalues ['status']
+    wip = db.doc_status.lookup ('work in progress')
+    if newstate != oldstate and oldstate != wip :
+        nosy = newvalues.get ('nosy', cl.get (nodeid, 'nosy'))
+        if not nosy :
+            nosy = [db.getuid ()]
+        nosy = dict.fromkeys (nosy)
+        for u in db.user.getnodeids () :
+            if common.user_has_role (db, u, 'Doc_Admin') :
+                nosy [u] = True
+        newvalues ['nosy'] = nosy.keys ()
+        if newstate == db.doc_status.lookup ('released') :
+            if db.getuid () == cl.get (nodeid, 'state_changed_by') :
+                raise Reject, _ \
+                    ('Change to "released": user must be different from'
+                     ' change to "draft"'
+                    )
+    if newstate != oldstate :
+        newvalues ['state_changed_by'] = db.getuid ()
+# end def check_statechange
+
 def init (db) :
     if 'doc' not in db.classes :
         return
@@ -136,7 +180,11 @@ def init (db) :
         db.doc.audit          (action, check_document_nr,       priority = 130)
         db.product_type.audit (action, check_product_type)
         db.reference.audit    (action, check_reference)
+        for cl in (db.product_type, db.reference, db.artefact) :
+            cl.audit          (action, check_name)
+        db.department.audit   (action, check_department)
 
-    db.doc.audit ('create', default_owner, 140)
+    db.doc.audit ('create', defaults, 140)
+    db.doc.audit ('set',    check_statechange)
 
 ### __END__ doc
