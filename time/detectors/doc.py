@@ -33,7 +33,7 @@ from   roundup.cgi.TranslationService import get_translation
 import common
 import re
 
-name_txt  = "[0-9a-zA-Z_]+"
+name_txt  = "[0-9a-zA-Z_/]+"
 name_re   = re.compile ("^%s$" % name_txt)
 doc_nr_re = re.compile ("^(%s-)+? (?P<suffix> [0-9]+ )$" % name_txt, re.X)
 
