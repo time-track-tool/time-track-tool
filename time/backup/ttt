@@ -72,6 +72,7 @@ if [ -n "$RESTORE" ] ; then
     delete from _status;
     delete from _status_transition;
     delete from _user;
+    delete from _severity;
 EOF
     cp $TRACKER/db/backend_name $RESTORE/db
     $ROUNDUP_ADMIN -i $RESTORE import $dir
