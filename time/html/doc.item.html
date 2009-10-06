@@ -80,6 +80,21 @@
      <td tal:content="structure context/artefact/filename_format" />
     </tr>
    </tal:block>
+   <tal:block metal:fill-slot="before_messages">
+    <tal:block tal:condition="context/id">
+     <table class="messages">
+      <tr><th class="header" i18n:translate="">BibTeX</th></tr>
+     </table>
+     <pre tal:content="string:
+@techreport{${context/document_nr},
+    author      = {${context/responsible/realname}},
+    title       = {${context/title}},
+    type        = {${context/artefact/name}},
+    number      = {${context/document_nr}},
+    institution = {TTTech, ${context/department/name}},
+}"/>
+    </tal:block>
+   </tal:block>
   </tal:block>
  </tal:block>
 </tal:block>

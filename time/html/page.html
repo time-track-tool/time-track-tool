@@ -816,6 +816,8 @@
 
  </form>
 
+ <tal:block metal:define-slot="before_messages"/>
+
  <table metal:use-macro="templates/page/macros/note_required" />
  <table metal:use-macro="templates/page/macros/message_display" />
  <table class="files" tal:condition="python:
