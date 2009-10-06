@@ -325,10 +325,7 @@ def approval_for (db) :
 # end def approval_for
 
 def welcome (db) :
-    fname = os.path.join \
-        ( '/tttech/company/operations/org-handbook/info'
-        , 'Welcome-info-Startseite-Time2005.txt'
-        )
+    fname = os.path.join (db.config.TRACKER_HOME, 'Welcome-Info.txt')
     try :
         text = file (fname, 'rU').read ()
         return escape (text).replace ('\n\n', '<br>\n')
