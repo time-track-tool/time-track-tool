@@ -33,7 +33,9 @@ from   roundup.cgi.TranslationService import get_translation
 import common
 import re
 
-name_txt  = "[0-9a-zA-Z_/]+"
+name_txt  = "[0-9a-zA-Z/]+"
+ref_txt   = "[-0-9a-zA-Z/]+" # allow '-' for reference name
+ref_re    = re.compile ("^%s$" % ref_txt)
 name_re   = re.compile ("^%s$" % name_txt)
 doc_nr_re = re.compile ("^(%s-)+? (?P<suffix> [0-9]+ )$" % name_txt, re.X)
 
@@ -104,8 +106,6 @@ def defaults (db, cl, nodeid, newvalues) :
     newvalues ['state_changed_by'] = db.getuid ()
 # end def defaults
 
-# end def _check_document_nr
-
 def _dept_doc_nr (db, cl, nodeid, newvalues) :
     """Return the selected department's `doc_num`, or reject, if it is not set.
     """
@@ -126,16 +126,21 @@ def _next_document_nr (db, cl, prefix) :
         return 1
 # end def _next_document_nr
 
-def check_name (db, cl, nodeid, newvalues, name = 'name') :
+def check_name \
+    (db, cl, nodeid, newvalues, name = 'name', regex = name_re, txt = name_txt) :
     if name not in newvalues or not newvalues [name] :
         return
-    if not name_re.match (newvalues [name]) :
-        raise Reject, _ ('Malformed %s: Only %s allowed') % (_ (name), name_txt)
+    if not regex.match (newvalues [name]) :
+        raise Reject, _ ('Malformed %s: Only %s allowed') % (_ (name), txt)
 # end def check_name
 
 def check_department (db, cl, nodeid, newvalues) :
     return check_name (db, cl, nodeid, newvalues, name = 'doc_num')
 # end def check_department
+
+def check_reference (db, cl, nodeid, newvalues) :
+    return check_name (db, cl, nodeid, newvalues, regex = ref_re, txt = ref_txt)
+# end def check_reference
 
 def check_statechange (db, cl, nodeid, newvalues) :
     """ Things to do for a state change:
@@ -180,8 +185,9 @@ def init (db) :
         db.doc.audit          (action, check_document_nr,       priority = 130)
         db.product_type.audit (action, check_product_type)
         db.reference.audit    (action, check_reference)
-        for cl in (db.product_type, db.reference, db.artefact) :
+        for cl in (db.product_type, db.artefact) :
             cl.audit          (action, check_name)
+        db.reference.audit    (action, check_reference)
         db.department.audit   (action, check_department)
 
     db.doc.audit ('create', defaults, 140)
