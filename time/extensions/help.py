@@ -435,7 +435,7 @@ _helptext          = \
       ]
     , ""'doc++title'                  :
       [ ""'''Should be an intuitive one-line description of the %(Classname)s
-             consisting of the <short name> and the <long name>. 
+             consisting of the &lt;short name&gt; and the &lt;long name&gt;. 
              Example for a title:
              \"ASDM Automotive Software Development Manual\".
           '''
