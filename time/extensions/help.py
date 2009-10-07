@@ -443,7 +443,7 @@ _helptext          = \
     , ""'document_nr'                 :
       [ ""'''The %(Property)s is generated when the %(Classname)s is
              created. It can be manually overwritten for an old %(Classname)s
-             that already has a %(Property)s assigned.
+             that already has an %(Property)s assigned.
           '''
       ]
     , ""'domain_part'                 :
