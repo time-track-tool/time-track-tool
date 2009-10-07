@@ -41,7 +41,8 @@ import schemadef
 # sub-schema definitins to include
 # Note: order matters, core is always last.
 schemas = \
-    ( 'it_tracker'
+    ( 'user'
+    , 'it_tracker'
     , 'address'
     , 'adr_ext'
     , 'core'
