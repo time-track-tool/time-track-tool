@@ -13,6 +13,6 @@ db      = tracker.open ('admin')
 last = 0
 for id in db.contact.getnodeids () :
     last = max (last, int (id))
-db.setid ('contact', str (last + 1))
+db.setid ('contact', str (last))
 db.commit ()
 
