@@ -3290,6 +3290,8 @@ msgid ""
 "<a %s title=\"Help for %s\" href=\"javascript:help_window('%s?:"
 "template=property_help#%s', '500', '400')\" tabindex=\"-1\">%s%s</a>"
 msgstr ""
+"<a %s title=\"Hilfe zu %s\" href=\"javascript:help_window('%s?:"
+"template=property_help#%s', '500', '400')\" tabindex=\"-1\">%s%s</a>"
 
 msgid "(cal)"
 msgstr "(Kal.)"
@@ -3403,7 +3405,7 @@ msgid "New item"
 msgstr "Neuer Datensatz"
 
 msgid "Help for ${Classname}"
-msgstr "Hilfe für ${Classname}"
+msgstr "Hilfe zu ${Classname}"
 
 msgid "Properties of ${Classname}"
 msgstr "Eigenschaften von ${Classname}"
