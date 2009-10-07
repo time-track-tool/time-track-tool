@@ -265,7 +265,7 @@ class Export_CSV_Names (Action, autosuper) :
 class Export_CSV_Addresses (Export_CSV_Names) :
 
     print_head = False
-    filename   = 'ZFABO.CSV'
+    filename   = 'ABO.CSV'
     quoting    = csv.QUOTE_NONE
 
     def _setup (self) :
