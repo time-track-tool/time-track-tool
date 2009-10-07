@@ -1,4 +1,4 @@
-#!/usr/bin/python2.4
+#!/usr/bin/python
 import sys, os
 from roundup           import date
 from roundup           import instance
