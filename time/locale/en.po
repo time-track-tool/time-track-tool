@@ -2277,7 +2277,7 @@ msgid "Person responsible for recording findings"
 msgstr ""
 
 msgid "reference"
-msgstr "Reference"
+msgstr "Artefact reference"
 
 msgid "Defines the relation to a project, customer, etc."
 msgstr ""
