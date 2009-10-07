@@ -17,14 +17,6 @@
   You are not allowed to edit queries.
   </span>
 
-  <script language="javascript">
-  // This exists solely because I can't figure how to get the & into an
-  // attributes TALES expression, and so it keeps getting quoted.
-  function retire(qid) {
-      window.location = 'query'+qid+'?@action=retire&@template=edit';
-  }
-  </script>
-
   <form method="POST" onSubmit="return submit_once()" action="query"
         enctype="multipart/form-data" tal:condition="context/is_edit_ok">
 
@@ -70,10 +62,14 @@
 
      <td tal:condition="query/is_retired">[query is retired]<!-- XXX: maybe offer "restore" some day --></td>
 
-     <td tal:condition="not:query/is_retired">
-      <input type="button" i18n:attributes="value" value="Delete"
-       tal:condition="query/is_edit_ok"
-       tal:attributes="onClick python:'''retire('%s')'''%query.id">
+     <td tal:condition="python:
+                        not query.is_retired () and context.is_retire_ok ()">
+      <form style="padding:0" method="POST"
+            tal:attributes="action string:query${query/id}">
+        <input type="button" i18n:attributes="value" value="Delete">
+        <input type="hidden" name="@template" value="index">
+        <input type="hidden" name="@action" value="retire">
+      </form>
      </td>
     </tr>
     <tr>
