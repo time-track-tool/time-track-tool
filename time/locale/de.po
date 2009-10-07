@@ -4270,3 +4270,9 @@ msgstr ""
 
 #~ msgid "customer"
 #~ msgstr "Kunde"
+
+msgid "csv_delimiter"
+msgstr "CSV Trennzeichen"
+
+msgid "Delimiter for CSV export"
+msgstr "Trennzeichen für CSV export"

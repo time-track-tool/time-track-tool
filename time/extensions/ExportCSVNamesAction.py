@@ -230,6 +230,12 @@ class Export_CSV_Names (Action, autosuper) :
         klass      = self.klass = self.db.getclass (request.classname)
         self.props = klass.getprops ()
         self.htcls = templating.HTMLClass (self.client, request.classname)
+
+        if self.db.user.properties.get ('csv_delimiter') :
+            d = self.db.user.get (self.db.getuid (), 'csv_delimiter')
+            if d and len (d) == 1 :
+                self.delimiter = d
+
         self._setup ()
 
         h                        = self.client.additional_headers
@@ -258,7 +264,6 @@ class Export_CSV_Names (Action, autosuper) :
 
         # and search
         for itemid in klass.filter (self.matches, filterspec, sort, group) :
-            print itemid
             writer.writerow \
                 ([self.represent [col] (itemid, col) for col in self.columns])
         return io.getvalue ()
@@ -286,7 +291,8 @@ class Export_CSV_Addresses (Export_CSV_Names) :
             , 'city'
             , 'code'
             ]
-        self.matches = None
+        self.matches   = None
+        self.delimiter = '\t'
     # end def _setup
 
     def build_repr (self) :
@@ -301,7 +307,6 @@ class Export_CSV_Addresses (Export_CSV_Names) :
 
 class Export_TeX (Export_CSV_Names) :
     filename   = 'query.txt'
-    delimiter  = ';'
     csv_writer = TeX_CSV_Writer
 
     def _setup (self) :
@@ -337,7 +342,8 @@ class Export_TeX (Export_CSV_Names) :
             , 'zh'
             , 'adrtyp'
             )
-        self.matches = None
+        self.matches   = None
+        self.delimiter = ';'
 
     def build_repr (self) :
         self.__super.build_repr ()

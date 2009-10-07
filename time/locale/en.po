@@ -4155,3 +4155,6 @@ msgstr ""
 
 msgid "doc++responsible"
 msgstr "Owner"
+
+msgid "csv_delimiter"
+msgstr "CSV delimiter"
