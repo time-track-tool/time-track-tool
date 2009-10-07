@@ -150,6 +150,7 @@ class Export_CSV_Names (Action, autosuper) :
     print_head     = True
     filename       = 'query.csv'
     delimiter      = '\t'
+    quotechar      = '"'
     quoting        = csv.QUOTE_MINIMAL
     csv_writer     = csv.writer
 
@@ -248,6 +249,7 @@ class Export_CSV_Names (Action, autosuper) :
             , dialect   = 'excel'
             , delimiter = self.delimiter
             , quoting   = self.quoting
+            , quotechar = self.quotechar
             )
         if self.print_head :
             writer.writerow (self.print_columns)
@@ -256,6 +258,7 @@ class Export_CSV_Names (Action, autosuper) :
 
         # and search
         for itemid in klass.filter (self.matches, filterspec, sort, group) :
+            print itemid
             writer.writerow \
                 ([self.represent [col] (itemid, col) for col in self.columns])
         return io.getvalue ()
@@ -267,6 +270,7 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     print_head = False
     filename   = 'ABO.CSV'
     quoting    = csv.QUOTE_NONE
+    quotechar  = None
 
     def _setup (self) :
         self.columns = self.print_columns = \
