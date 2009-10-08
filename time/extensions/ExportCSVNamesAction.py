@@ -299,7 +299,9 @@ class Export_CSV_Names (Action, autosuper) :
             if d and len (d) == 1 :
                 self.delimiter = d
 
+        self.filterspec = filterspec
         self._setup ()
+        filterspec = self.filterspec
 
         h                        = self.client.additional_headers
         h ['Content-Type']       = 'text/csv'
@@ -372,6 +374,7 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
     filename   = 'export.csv'
 
     def _setup (self) :
+        self.__super._setup ()
         self.columns = \
             [ 'salutation'
             , 'title'
@@ -404,7 +407,7 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
             , 'DD-Vb'
             , 'G-DD-Vb'
             )
-        self.matches = None
+        self.filterspec ['parent'] = '-1'
     # end def _setup
 
     def build_repr (self) :
