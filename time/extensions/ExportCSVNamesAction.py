@@ -425,6 +425,7 @@ class Export_TeX (Export_CSV_Names) :
     csv_writer = TeX_CSV_Writer
 
     def _setup (self) :
+        self.__super._setup ()
         self.columns = \
             [ 'salutation'
             , 'nr'
@@ -457,8 +458,8 @@ class Export_TeX (Export_CSV_Names) :
             , 'zh'
             , 'adrtyp'
             )
-        self.matches   = None
         self.delimiter = ';'
+    # end def _setup
 
     def build_repr (self) :
         self.__super.build_repr ()
