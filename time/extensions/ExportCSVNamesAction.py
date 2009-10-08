@@ -82,27 +82,6 @@ class Repr_Fullname (Repr_Str) :
     # end def __call__
 # end class Repr_Fullname
 
-class Repr_Contact (Repr_Str) :
-    def __call__ (self, itemid, col) :
-        type = col.split ('.') [1]
-        ccls = self.klass.db.contact
-        contacts = self.klass.get (itemid, 'contacts') or []
-        cnames = []
-        for c in contacts :
-            co = ccls.getnode (c)
-            ct = co.contact_type
-            if type == 'Telefon' :
-                if ct != type and ct != 'Mobiltelefon' :
-                    continue
-            else :
-                if ct != type :
-                    continue
-            cnames.append (co.contact)
-        x = ', '.join (cnames)
-        return self.conv (x)
-    # end def __call__
-# end class Repr_Contact
-
 class Repr_Type (Repr_Str) :
     def __call__ (self, itemid, col) :
         x = ''
@@ -250,6 +229,29 @@ class Export_CSV_Names (Action, autosuper) :
             return f
         # end def repr_extprop
 
+        cts = self.db.contact_type.getnodeids (retired = False)
+        cts = dict ((i, self.db.contact_type.get (i, 'name')) for i in cts)
+        class Repr_Contact (Repr_Str) :
+            def __call__ (self, itemid, col) :
+                type = col.split ('.') [1]
+                ccls = self.klass.db.contact
+                contacts = self.klass.get (itemid, 'contacts') or []
+                cnames = []
+                for c in contacts :
+                    co = ccls.getnode (c)
+                    ct = cts [co.contact_type]
+                    if type == 'Telefon' :
+                        if ct != type and ct != 'Mobiltelefon' :
+                            continue
+                    else :
+                        if ct != type :
+                            continue
+                    cnames.append (co.contact)
+                x = ', '.join (cnames)
+                return self.conv (x)
+            # end def __call__
+        # end class Repr_Contact
+
         for col in self.columns :
             self.represent [col] = repr_str
             if col.startswith ('function.') :
@@ -325,11 +327,8 @@ class Export_CSV_Names (Action, autosuper) :
 
         # and search
         for itemid in klass.filter (self.matches, filterspec, sort, group) :
-            print itemid
             writer.writerow \
                 ([self.represent [col] (itemid, col) for col in self.columns])
-            print itemid
-        print "after write"
         return io.getvalue ()
     # end def handle
 # end class Export_CSV_Names
