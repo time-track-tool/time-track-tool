@@ -72,13 +72,68 @@ class Repr_Anschrift (Repr_Str) :
     # end def __call__
 # end class Repr_Anschrift
 
+class Repr_Fullname (Repr_Str) :
+    def __call__ (self, itemid, col) :
+        fields = ('lastname', 'firstname', 'function')
+        x = ' '.join \
+            (y for y in (self.klass.get (itemid, z) for z in fields) if y)
+        x = x.replace ('\n', ' ')
+        return self.conv (x)
+    # end def __call__
+# end class Repr_Fullname
+
+class Repr_Contact (Repr_Str) :
+    def __call__ (self, itemid, col) :
+        type = col.split ('.') [1]
+        ccls = self.klass.db.contact
+        contacts = self.klass.get (itemid, 'contacts') or []
+        cnames = []
+        for c in contacts :
+            co = ccls.getnode (c)
+            ct = co.contact_type
+            if type == 'Telefon' :
+                if ct != type and ct != 'Mobiltelefon' :
+                    continue
+            else :
+                if ct != type :
+                    continue
+            cnames.append (co.contact)
+        x = ', '.join (cnames)
+        return self.conv (x)
+    # end def __call__
+# end class Repr_Contact
+
+class Repr_Type (Repr_Str) :
+    def __call__ (self, itemid, col) :
+        x = ''
+        type = self.klass.db.adr_type.lookup (col.split ('.') [1])
+        if type in self.klass.get (itemid, 'adr_type') :
+            x = 'ja'
+        return self.conv (x)
+    # end def __call__
+# end class Repr_Type
+
 class Repr_Date (Repr_Str) :
     def conv (self, x) :
         if x :
-            return x.pretty ('%Y-%m-%d')
+            return '%4d-%02d-%02d' % (x.year, x.month, x.day)
         return self.__super.conv (x)
     # end def conv
 # end class Repr_Date
+
+class Repr_Birthdate (Repr_Date) :
+    def __call__ (self, itemid, col, x = None) :
+        if x is None :
+            x = self.klass.get (itemid, col)
+        children = self.klass.filter (None, {'parent' : itemid})
+        if children :
+            x = ', '.join (self.conv 
+                (self.klass.get (c, 'birthdate')) for c in children)
+            return x
+        x = x or ""
+        return self.conv (x)
+    # end def __call__
+# end class Repr_Birthdate
 
 class Repr_Country (Repr_Str) :
     def conv (self, x) :
@@ -200,7 +255,12 @@ class Export_CSV_Names (Action, autosuper) :
             if col.startswith ('function.') :
                 self.represent [col] = repr_func (self.klass, col)
             elif '.' in col :
-                self.represent [col] = repr_extprop (col)
+                if col.startswith ('contact.') :
+                    self.represent [col] = Repr_Contact (self.klass)
+                elif col.startswith ('type.') :
+                    self.represent [col] = Repr_Type (self.klass)
+                else :
+                    self.represent [col] = repr_extprop (col)
             elif col not in self.props :
                 pass
             elif isinstance (self.props [col], hyperdb.Link) :
@@ -217,12 +277,13 @@ class Export_CSV_Names (Action, autosuper) :
                 self.represent [col] = repr_multilink
             elif isinstance (self.props [col], hyperdb.Date) :
                 self.represent [col] = repr_date
+        self.represent ['birthdate'] = Repr_Birthdate (self.klass)
     # end def build_repr
 
     def handle (self) :
         ''' Export the specified search query as CSV. '''
         # figure the request
-        request    = self.request = templating.HTMLRequest     (self.client)
+        request    = self.request = templating.HTMLRequest (self.client)
         self.utils = templating.TemplatingUtils (self.client)
         filterspec = request.filterspec
         sort       = request.sort
@@ -264,8 +325,11 @@ class Export_CSV_Names (Action, autosuper) :
 
         # and search
         for itemid in klass.filter (self.matches, filterspec, sort, group) :
+            print itemid
             writer.writerow \
                 ([self.represent [col] (itemid, col) for col in self.columns])
+            print itemid
+        print "after write"
         return io.getvalue ()
     # end def handle
 # end class Export_CSV_Names
@@ -304,6 +368,55 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     # end def build_repr
 
 # end class Export_CSV_Addresses
+
+class Export_CSV_Legacy_Format (Export_CSV_Names) :
+    filename   = 'export.csv'
+
+    def _setup (self) :
+        self.columns = \
+            [ 'salutation'
+            , 'title'
+            , 'fullname'
+            , 'street'
+            , 'postalcode'
+            , 'city'
+            , 'birthdate'
+            , 'contact.Telefon'
+            , 'anm'
+            , 'creation'
+            , 'contact.Email'
+            , 'type.Petition-EU'
+            , 'type.DD-Vb'
+            , 'type.G-DD-Vb'
+            ]
+        self.print_columns = \
+            ( 'Anrede'
+            , 'Titel'
+            , 'Name'
+            , 'Straﬂe'
+            , 'PLZ'
+            , 'Ort'
+            , 'Geburtsdatum'
+            , 'Telefon'
+            , 'Bemerkungen'
+            , 'Eintragedatum'
+            , 'E-mail'
+            , 'EU-Aus-Pet.'
+            , 'DD-Vb'
+            , 'G-DD-Vb'
+            )
+        self.matches = None
+    # end def _setup
+
+    def build_repr (self) :
+        self.__super.build_repr ()
+        empty = lambda x, y : ''
+        for k in 'anm', :
+            self.represent [k] = empty
+        self.represent ['fullname'] = Repr_Fullname (self.klass)
+    # end def build_repr
+
+# end class Export_CSV_Legacy_Format
 
 class Export_TeX (Export_CSV_Names) :
     filename   = 'query.txt'
@@ -356,7 +469,8 @@ class Export_TeX (Export_CSV_Names) :
 # end class Export_TeX
 
 def init (instance) :
-    instance.registerAction ('export_csv_names',     Export_CSV_Names)
-    instance.registerAction ('export_csv_tex',       Export_TeX)
-    instance.registerAction ('export_csv_addresses', Export_CSV_Addresses)
+    instance.registerAction ('export_csv_names',        Export_CSV_Names)
+    instance.registerAction ('export_csv_tex',          Export_TeX)
+    instance.registerAction ('export_csv_addresses',    Export_CSV_Addresses)
+    instance.registerAction ('export_legacy_addresses', Export_CSV_Legacy_Format)
 # end def init

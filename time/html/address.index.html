@@ -10,6 +10,12 @@
        export addresses
       </a>
      </span>
+     <span class="classblock">
+      <a i18n:translate="" tal:attributes="href python:request.indexargs_url
+         (classname, {':action' : 'export_legacy_addresses'})">
+       export legacy
+      </a>
+     </span>
     </td>
    </tr>
  </tal:block>

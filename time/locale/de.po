@@ -3413,6 +3413,9 @@ msgstr "Eigenschaften von ${Classname}"
 msgid "export addresses"
 msgstr "Versand-Export"
 
+msgid "export legacy"
+msgstr "Altes Adressformat"
+
 msgid "-- tmplates --"
 msgstr "-- Vorlagen --"
 
