@@ -1,0 +1,5 @@
+This directory contains pre-defined schema files (which in turn include
+from the directory "schema"). One of these files here needs to be
+symbolically linked to from "schema.py" in the tracker home directory.
+Or you can make up your own schema definition using one of the files
+here as an example.
