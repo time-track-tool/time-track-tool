@@ -205,7 +205,7 @@
    <span tal:replace="db/config/DEFAULT_TIMEZONE"/>
   </td>
  </tr>
- <tr tal:condition="context/csv_delimiter/is_view_ok">
+ <tr tal:condition="python:'csv_delimiter' in bclass.properties">
   <th tal:content="structure python:utils.fieldname ('user', 'csv_delimiter')"/>
   <td tal:content="structure context/csv_delimiter/field"/>
  </tr>
