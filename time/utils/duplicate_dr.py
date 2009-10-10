@@ -6,10 +6,10 @@ db       = tracker.open ('admin')
 monthd   = [21,28,31,30,31,30,31,31,30,31,30,31]
 
 user     = db.user.lookup ('schlatterbeck')
-daystart = 10
-month    = 05
+daystart = 4
+month    = 10
 
-for j in range (7) :
+for j in range (21) :
     max = monthd [month -1] + 1
     i = '2009-%s-%s' % ((j + daystart) / max + month, j + daystart)
     dr = db.daily_record.filter \
