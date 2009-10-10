@@ -42,6 +42,7 @@ import schemadef
 schemas = \
     ( 'user'
     , 'address'
+    , 'adr_letter'
     , 'adr_ext'
     , 'adr_ptr'
     , 'sinvoice'
