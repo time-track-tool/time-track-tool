@@ -67,7 +67,6 @@ def init \
                 , salutation          = String    (indexme = "no")
                 , adr_type            = Multilink ("adr_type")
                 , valid               = Link      ("valid")
-                , letters             = Multilink ("letter")
                 , lookalike_lastname  = String    (indexme = do_index)
                 , lookalike_firstname = String    (indexme = do_index)
                 , lookalike_city      = String    (indexme = do_index)
