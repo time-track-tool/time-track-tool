@@ -423,7 +423,11 @@ _helptext          = \
           '''
       ]
     , ""'doc++responsible'            :
-      [""'''User/Owner of this %(Classname)s''']
+      [""'''Owner of this %(Classname)s. Depending on the state, this
+            shall be the author of the %(Classname)s or the reponsible
+            person for review/release of the %(Classname)s.
+         '''
+      ]
     , ""'doc++link'                   :
       [""'''The location of the file in the repository or on the file server''']
     , ""'doc++status'                 :
