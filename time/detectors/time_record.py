@@ -323,7 +323,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
     if frozen (db, user, date) :
         raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     if db.daily_record.filter \
-        (None, {'date' : str (date.local (0)), 'user' : user}) :
+        (None, {'date' : date.pretty ('%Y-%m-%d'), 'user' : user}) :
         raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
             % new_values
     new_values ['time_record'] = []
