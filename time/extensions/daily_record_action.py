@@ -347,6 +347,9 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             { 'date' : pretty_range (self.start, self.end)
             , 'user' : [self.user]
             }
+        # insert into form for new request objects
+        self.request.form ['date'].value = self.request.filterspec ['date']
+        self.request.form ['user'].value = self.request.filterspec ['user'][0]
         # returns only in error case
         return self.__super.handle ()
     # end def handle
