@@ -42,8 +42,7 @@
           (classname, 'it_prio')"/>
       <td tal:content="structure python:context.it_prio.menu ()"/>
      </tr>
-     <tr tal:condition="python: context.id or db._db.security.hasPermission 
-         ('Edit', db._db.getuid(), 'it_issue', 'confidential')">
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
