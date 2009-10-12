@@ -53,9 +53,7 @@ def range_frozen (db, user, range) :
     """
     if not range or not user :
         return False
-    if ';' not in range :
-        db.get_logger ().error ("RANGE: %s" % range)
-    date = Date (range.split (';')[1])
+    date = Date (range.split (';', 1)[-1])
     return frozen (db, user, date)
 # end def range_frozen
 
