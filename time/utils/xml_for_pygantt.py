@@ -1,4 +1,4 @@
-#! /usr/bin/python2.4
+#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2003-2007 TTTech Computertechnik AG. All rights reserved
 # Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@tttech.com

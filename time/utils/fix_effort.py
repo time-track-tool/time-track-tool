@@ -1,4 +1,4 @@
-#!/usr/bin/python2.4
+#!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
 # Copy effort to numeric effort, changing everything to person days
