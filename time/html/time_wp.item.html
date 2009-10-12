@@ -103,11 +103,14 @@
          (classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>
     </tr>
+    <tr tal:condition="python: context.id or db._db.security.hasPermission
+           ('Edit', db._db.getuid(), 'time_wp', 'travel')">
      <th tal:content="structure python:utils.fieldname
          (classname, 'durations_allowed')"/>
      <td tal:content="structure python:context.durations_allowed.field ()"/>
      <th tal:content="structure python:utils.fieldname (classname, 'travel')"/>
      <td tal:content="structure python:context.travel.field ()"/>
+    </tr>
     <tr>
     </tr>
    </tal:block>
