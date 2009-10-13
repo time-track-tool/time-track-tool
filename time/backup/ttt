@@ -2,7 +2,7 @@
 
 TRACKER=/roundup/tracker/ttt
 BACKUPDIR=/roundup/backup
-ROUNDUP_ADMIN=/roundup/sw/python/bin/roundup-admin 
+ROUNDUP_ADMIN=/usr/bin/roundup-admin
 USE_CURRENT=1
 
 ### WARNING ###
