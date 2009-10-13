@@ -41,6 +41,7 @@
 from time                           import gmtime
 from copy                           import copy
 from operator                       import add
+from urllib                         import quote as urlquote
 
 from rsclib.autosuper               import autosuper
 
@@ -173,9 +174,11 @@ def time_url (request, classname) :
             ( request.indexargs_url 
               (classname, {'@action':'daily_record_action', '@template':'edit'})
             )
+    # double encode (!)
+    enc_url = urlquote (url)
     return \
         """javascript:if(submit_once()){
-             location.href = '%(url)s'
+             location.href = '%(enc_url)s'
            }
         """ % locals ()
 # end def time_url
