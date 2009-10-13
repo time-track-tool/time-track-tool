@@ -312,8 +312,11 @@ def date_range (db, filterspec) :
         time as end time. If not range is given use current week.
     """
     r = None
-    if 'date' in filterspec and filterspec ['date'] :
-        r = Range (filterspec ['date'], Date)
+    f = filterspec.get ('date', None)
+    if f:
+        if ';' not in f:
+            f = ';'.join ((f,f))
+        r = Range (f, Date)
     if r and (r.to_value or r.from_value) :
         if r.to_value is None :
             start = end = r.from_value
