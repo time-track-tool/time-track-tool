@@ -45,6 +45,7 @@ schemas = \
     , 'adr_letter'
     , 'adr_ext'
     , 'adr_ptr'
+    , 'adr_perm'
     , 'sinvoice'
     , 'abo'
     , 'core'
@@ -54,22 +55,6 @@ importer = schemadef.Importer (globals (), schemas)
 del sys.path [0:1]
 
 importer.update_security ()
-
-classes = \
-    [ ("user", ["User", "Adr_Readonly"], [])
-    , ("msg",  ["User", "Adr_Readonly"], ["User"])
-    , ("file", ["User", "Adr_Readonly"], ["User"])
-    ]
-schemadef.register_class_permissions (db, classes, [])
-
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'user'
-    , check       = schemadef.own_user_record
-    , description = "User is allowed to edit their own user details"
-    , properties  = ('password', 'realname')
-    )
-db.security.addPermissionToRole('User', p)
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

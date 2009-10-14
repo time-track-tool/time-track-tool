@@ -45,6 +45,7 @@ schemas = \
     , 'it_tracker'
     , 'address'
     , 'adr_ext'
+    , 'adr_perm'
     , 'core'
     )
 
@@ -55,53 +56,6 @@ del sys.path [0:1]
 Address_Class (db, ''"address")
 
 importer.update_security ()
-
-# SECURITY SETTINGS
-#
-# See the configuration and customisation document for information
-# about security setup.
-# Assign the access and edit Permissions for issue, file and message
-# to regular users now
-
-#     classname        allowed to view   /  edit
-classes = \
-    [ ("file",               ["User", "Adr_Readonly"],    ["User"])
-    , ("msg",                ["User", "Adr_Readonly"],    ["User"])
-    , ("address",            ["Contact", "Adr_Readonly"], ["Contact"])
-    ]
-
-prop_perms = \
-    [ ( "user", "Edit", []
-      , ( "address"
-        , "alternate_addresses"
-        , "nickname"
-        , "password"
-        , "timezone"
-        , "username"
-        )
-      )
-    , ( "user", "Edit", []
-      , ( "clearance_by", "external_phone", "firstname"
-        , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "phone", "pictures", "position", "private_phone", "realname"
-        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles"
-        )
-      )
-    , ( "user", "View", ["User"]
-      , ( "activity", "actor", "address", "alternate_addresses"
-        , "clearance_by", "creation", "creator", "department"
-        , "external_phone", "firstname", "job_description", "lastname"
-        , "lunch_duration", "lunch_start", "nickname", "password", "phone"
-        , "pictures", "position", "queries", "realname", "room", "sex"
-        , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path"
-        )
-      )
-    ]
-
-schemadef.register_class_permissions (db, classes, prop_perms)
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

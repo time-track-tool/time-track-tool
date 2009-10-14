@@ -201,8 +201,10 @@ def security (db, ** kw) :
         , ("contact_type"      , ["User", "Adr_Readonly"],    [])
         , ("contact"           , ["User", "Adr_Readonly"],    ["Contact"])
         , ("tmplate_status"    , ["User"],                    [])
+        , ("address"           , ["Adr_Readonly"],            [])
         ]
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
+    db.security.addPermissionToRole ('Adr_Readonly', 'Web Access')
 # end def security

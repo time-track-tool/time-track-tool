@@ -46,6 +46,7 @@ schemas = \
     , 'adr_letter'
     , 'adr_ext'
     , 'adr_ptr'
+    , 'adr_perm'
     , 'core'
     )
 
@@ -66,53 +67,6 @@ importer.update_security ()
 # to regular users now
 
 #     classname        allowed to view   /  edit
-classes = \
-    [ ("file",               ["User", "Adr_Readonly"],    ["User"])
-    , ("msg",                ["User", "Adr_Readonly"],    ["User"])
-    , ("address",            ["Contact", "Adr_Readonly"], ["Contact"])
-    ]
-
-prop_perms = \
-    [ ( "user", "Edit", []
-      , ( "address"
-        , "alternate_addresses"
-        , "nickname"
-        , "password"
-        , "timezone"
-        , "username"
-        )
-      )
-    , ( "user", "Edit", []
-      , ( "clearance_by", "external_phone", "firstname"
-        , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "phone", "pictures", "position", "private_phone", "realname"
-        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles"
-        )
-      )
-    , ( "user", "View", ["User"]
-      , ( "activity", "actor", "address", "alternate_addresses"
-        , "clearance_by", "creation", "creator", "department"
-        , "external_phone", "firstname", "job_description", "lastname"
-        , "lunch_duration", "lunch_start", "nickname", "password", "phone"
-        , "pictures", "position", "queries", "realname", "room", "sex"
-        , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path"
-        )
-      )
-    ]
-
-schemadef.register_class_permissions (db, classes, prop_perms)
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'user'
-    , check       = schemadef.own_user_record
-    , description = \
-        "User is allowed to edit (some of) their own user details"
-    , properties  = ('password', 'phone')
-    )
-db.security.addPermissionToRole('User', p)
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

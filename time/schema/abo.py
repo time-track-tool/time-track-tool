@@ -131,7 +131,7 @@ def security (db, ** kw) :
         , ("address"           , ["User"],    ["User"])
         , ("adr_type"          , ["User"],    ["Type"])
         , ("adr_type_cat"      , ["User"],    ["Type"])
-        , ("contact"           , ["User"],    ["User"])
+        , ("contact"           , ["User"],    ["Contact"])
         , ("contact_type"      , ["User"],    [])
         , ("currency"          , ["User"],    ["Product"])
         , ("invoice_group"     , ["Invoice"], ["Invoice"])
