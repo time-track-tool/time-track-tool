@@ -65,9 +65,9 @@ importer.update_security ()
 
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file",               ["User"],    ["User"])
-    , ("msg",                ["User"],    ["User"])
-    , ("address",            ["Contact"], ["Contact"])
+    [ ("file",               ["User", "Adr_Readonly"],    ["User"])
+    , ("msg",                ["User", "Adr_Readonly"],    ["User"])
+    , ("address",            ["Contact", "Adr_Readonly"], ["Contact"])
     ]
 
 prop_perms = \

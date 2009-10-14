@@ -56,9 +56,9 @@ del sys.path [0:1]
 importer.update_security ()
 
 classes = \
-    [ ("user", ["User"], [])
-    , ("msg",  ["User"], ["User"])
-    , ("file", ["User"], ["User"])
+    [ ("user", ["User", "Adr_Readonly"], [])
+    , ("msg",  ["User", "Adr_Readonly"], ["User"])
+    , ("file", ["User", "Adr_Readonly"], ["User"])
     ]
 schemadef.register_class_permissions (db, classes, [])
 

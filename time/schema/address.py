@@ -190,16 +190,17 @@ def security (db, ** kw) :
         [ ("Type"          , "Allowed to add/change type codes")
         , ("Letter"        , "Allowed to add/change templates and letters")
         , ("Contact"       , "Allowed to add/change address data")
+        , ("Adr_Readonly"  , "Allowed to read address and contact data")
         ]
 
     classes = \
-        [ ("adr_type"          , ["User"],    ["Type"])
-        , ("adr_type_cat"      , ["User"],    ["Type"])
-        , ("tmplate"           , ["User"],    ["Letter"])
-        , ("valid"             , ["User"],    [])
-        , ("contact_type"      , ["User"],    [])
-        , ("contact"           , ["User"],    ["Contact"])
-        , ("tmplate_status"    , ["User"],    [])
+        [ ("adr_type"          , ["User", "Adr_Readonly"],    ["Type"])
+        , ("adr_type_cat"      , ["User", "Adr_Readonly"],    ["Type"])
+        , ("tmplate"           , ["User"],                    ["Letter"])
+        , ("valid"             , ["User", "Adr_Readonly"],    [])
+        , ("contact_type"      , ["User", "Adr_Readonly"],    [])
+        , ("contact"           , ["User", "Adr_Readonly"],    ["Contact"])
+        , ("tmplate_status"    , ["User"],                    [])
         ]
 
     schemadef.register_roles             (db, roles)
