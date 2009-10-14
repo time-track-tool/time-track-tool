@@ -89,7 +89,6 @@ def init \
         , reference           = Link      ("reference")
         , artefact            = Link      ("artefact")
         , department          = Link      ("department")
-        , owner               = Link      ("user")
         , status              = Link      ("doc_status")
         , link                = String    ()
         , document_nr         = String    ()
