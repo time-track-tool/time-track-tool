@@ -82,6 +82,18 @@ class Repr_Fullname (Repr_Str) :
     # end def __call__
 # end class Repr_Fullname
 
+class Repr_Notice (Repr_Str) :
+    def __call__ (self, itemid, col) :
+        ccls = self.klass.db.msg
+        retstr = []
+        for id in (self.klass.get (itemid, 'messages') or []) :
+            retstr.append \
+                (ccls.get (id, 'date').pretty ('%Y-%m-%d: '))
+            retstr.append (ccls.get (id, 'content').replace ('\n', ' '))
+        return self.conv (' '.join (retstr))
+    # end def __call__
+# end class Repr_Notice
+
 class Repr_Type (Repr_Str) :
     def __call__ (self, itemid, col) :
         x = ''
@@ -386,7 +398,7 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
             , 'city'
             , 'birthdate'
             , 'contact.Telefon'
-            , 'anm'
+            , 'notice'
             , 'creation'
             , 'contact.Email'
             , 'type.Petition-EU'
@@ -415,8 +427,7 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
     def build_repr (self) :
         self.__super.build_repr ()
         empty = lambda x, y : ''
-        for k in 'anm', :
-            self.represent [k] = empty
+        self.represent ['notice']   = Repr_Notice (self.klass)
         self.represent ['fullname'] = Repr_Fullname (self.klass)
     # end def build_repr
 
