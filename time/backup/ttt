@@ -84,4 +84,4 @@ fi
 #cat /proc/slabinfo | grep ext3
 
 # re-create html/userlist.html in restored tracker.
-$RESTORE/genuserlist $RESTORE
+(cd $RESTORE ; utils/userlist.py)
