@@ -98,7 +98,10 @@ class Repr_Notice (Repr_Str) :
 class Repr_Type (Repr_Str) :
     def __call__ (self, itemid, col) :
         x = ''
-        type = self.klass.db.adr_type.lookup (col.split ('.') [1])
+        try :
+            type = self.klass.db.adr_type.lookup (col.split ('.') [1])
+        except KeyError :
+            return self.conv (x)
         if type in self.klass.get (itemid, 'adr_type') :
             x = 'ja'
         return self.conv (x)
