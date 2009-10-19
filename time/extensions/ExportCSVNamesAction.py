@@ -88,8 +88,9 @@ class Repr_Notice (Repr_Str) :
         retstr = []
         for id in (self.klass.get (itemid, 'messages') or []) :
             date = ccls.get (id, 'date')
-            retstr.append \
-                ('%04d-%02d-%02d' % (date.year, date.month, date.day) + ':')
+            if date :
+                retstr.append \
+                    ('%04d-%02d-%02d' % (date.year, date.month, date.day) + ':')
             retstr.append (ccls.get (id, 'content').replace ('\n', ' '))
         return self.conv (' '.join (retstr))
     # end def __call__
