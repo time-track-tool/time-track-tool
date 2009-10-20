@@ -25,10 +25,21 @@ if [ ${TRACKER} = ${RESTORE} ] ; then
     exit 23
 fi
 
+RESTOREDBNAME=$(${RESTORE}/utils/getdbname ${RESTORE})
+TRACKERDBNAME=$(${TRACKER}/utils/getdbname ${TRACKER})
+
+if [ "${TRACKERDBNAME}" = "${RESTOREDBNAME}" ] ; then
+    echo "tracker and restore DB configured to use same database"
+    echo "READ COMMENTS. You don't want to overwrite your tracker?!"
+    exit 42
+fi
+
 dir=${BACKUPDIR}/backup-$(date +%a)
 echo Backing up $TRACKER to $dir
 rm -rf $dir
 mkdir $dir
+mkdir $dir/code
+cp -a $(find -H ${TRACKER} -mindepth 1 -maxdepth 1 \! -name db) $dir/code
 
 $ROUNDUP_ADMIN -i $TRACKER export $dir
 cp $TRACKER/config.ini $dir
