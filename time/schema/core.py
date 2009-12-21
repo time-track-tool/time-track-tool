@@ -30,6 +30,7 @@
 #
 
 import schemadef
+from linking import linkclass_iter
 
 def init \
     ( db
@@ -105,55 +106,40 @@ def security (db, ** kw) :
         , ("query",       [],        [])
         ]
 
-    msg_props = \
-        [ ('address',      'messages')
-        , ('cust_supp',    'messages')
-        , ('issue',        'messages')
-        , ('it_issue',     'messages')
-        , ('it_project',   'messages')
-        , ('department',   'messages')
-        , ('doc',          'messages')
-        , ('letter',       'messages')
-        , ('organisation', 'messages')
-        , ('product',      'messages')
-        # start properties of complex tracker
-        , ('meeting',      'messages')
-        , ('action_item',  'messages')
-        , ('release',      'messages')
-        , ('feature',      'messages')
-        , ('task',         'messages')
-        , ('defect',       'messages')
-        , ('review',       'messages')
-        , ('announcement', 'messages')
-        , ('comment',      'messages')
-        ]
-
     linkperms = \
-        [ ( "file", ['User'], ['View', 'Edit']
-          , [ ('issue',        'files')
-            , ('it_issue',     'files')
-            , ('it_project',   'files')
-            , ('user',         'pictures')
-            , ('tmplate',      'files')
-            , ('cust_supp',    'files')
-            , ('product',      'files')
-            , ('address',      'files')
-            , ('letter',       'files')
-            # start properties of complex tracker
-            , ('meeting',      'files')
-            , ('action_item',  'files')
-            , ('document',     'files')
-            , ('task',         'files')
-            , ('defect',       'files')
-            , ('review',       'files')
-            , ('announcement', 'files')
-            ]
-          )
-        , ( "msg", ['User'],              ['View'], msg_props)
-        , ( "msg", ['Issue_Admin', 'IT'], ['Edit'], msg_props)
+        [ ("file", ['User'],      ['View', 'Edit'], linkclass_iter (db, "file"))
+        , ("msg",  ['User'],              ['View'], linkclass_iter (db, "msg"))
+        , ("msg",  ['Issue_Admin', 'IT'], ['Edit'], linkclass_iter (db, "msg"))
         ]
 
     schemadef.register_class_permissions (db, classes, [])
+    # Allow creation of file and msg for normal users:
+    db.security.addPermissionToRole ('User', 'Create', 'file')
+    db.security.addPermissionToRole ('User', 'Create', 'msg')
+
+    def view_msg(db, userid, itemid):
+        return userid == db.msg.get(itemid, 'creator')
+    # end def view_msg
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'msg'
+        , check       = view_msg
+        , description = "User is allowed to view their own messages"
+        )
+    db.security.addPermissionToRole('User', p)
+
+    def view_file(db, userid, itemid):
+        return userid == db.file.get(itemid, 'creator')
+    # end def view_file
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'file'
+        , check       = view_file
+        , description = "User is allowed to view their own files"
+        )
+    db.security.addPermissionToRole('User', p)
     for cls, roles, perms, classprops in linkperms :
         for role in roles :
             if role.lower () not in db.security.role :
@@ -161,10 +147,6 @@ def security (db, ** kw) :
             for perm in perms :
                 schemadef.register_permission_by_link \
                     (db, role, perm, cls, * classprops)
-    # Allow creation of file and msg for normal users:
-    db.security.addPermissionToRole ('User', 'Create', 'file')
-    db.security.addPermissionToRole ('User', 'Create', 'msg')
-
 
     ### Query permissions ###
     def view_query (db, userid, itemid) :
