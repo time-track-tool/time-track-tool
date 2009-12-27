@@ -24,24 +24,35 @@ import sys
 from email.Utils  import formatdate
 from smtplib      import SMTP, SMTPRecipientsRefused
 from optparse     import OptionParser
-from roundup      import instance
+from roundup      import instance, hyperdb
 from roundup.date import Date
 
 class ReportLine (object) :
     format = \
-        ( "%(id)5s %(assignedto)-8.8s %(priority)-15.15s "
-          "%(status)-12s %(title)-40.40s"
+        ( "%(id)5s %(assignedto)-10.10s %(deadline)10s %(priority)-15.15s "
+          "%(status)-12s\n      %(title)-70.70s"
         )
     def __init__ (self, node) :
         self.node = node
+        self.cl   = node.cl
+        self.db   = node.cl.db
 
     def __str__ (self) :
-        return format % self.__dict__
+        return self.format % self
 
-    def __getattr__ (self, name) :
-        a = getattr (self.node, name)
-        setattr (self, name, a)
-        return a
+    def __getitem__ (self, name) :
+        subhead = dict ((x,x) for x in self.db.issue.getprops ().iterkeys ())
+        if self.node [name] is None :
+            return ''
+        try :
+            classname = getattr (self.node.cl.getprops () [name], 'classname')
+            cl = self.db.getclass (classname)
+            return cl.get (self.node [name], cl.labelprop ())
+        except AttributeError :
+            pass
+        if isinstance (self.node.cl.getprops () [name], hyperdb.Date) :
+            return self.node [name].pretty ('%Y-%m-%d')
+        return self.node [name]
 # end class ReportLine
 
 class UserReport (object) :
@@ -60,7 +71,7 @@ class UserReport (object) :
 
     def __str__ (self) :
         s = []
-        subhead = dict ((x,x) for x in self.db.issue.properties.iterkeys ())
+        subhead = dict ((x,x) for x in self.db.issue.getprops ().iterkeys ())
         for h, lines in \
             zip ( self.headings
                 , (self.report_lines, self.nosy_lines, self.all_lines)
@@ -99,13 +110,14 @@ class UserReport (object) :
 class Report (object) :
 
     def __init__ (self, db, date, send_mail = False, users = [], mailall = []) :
-        self.date = date
+        self.db     = db
+        self.date   = Date (date)
         self.output = self.print_results
         if send_mail :
             self.output = self.mail_results
         self.users = users
         self.now = Date ('.')
-        stati = dict ((db.status.get (i, name), i)
+        stati = dict ((db.status.get (i, 'name'), i)
                       for i in db.status.getnodeids ())
         for n in 'deferred', 'done-cbb', 'resolved' :
             del stati [n]
@@ -116,15 +128,18 @@ class Report (object) :
                 ( status = stati.values ()
                 , deadline = ';%s' % self.date.pretty ('%Y-%m-%d.%H:%M:%S')
                 )
-            , sort = (('deadline', '-'), ('priority', '+'))
+            , sort = [('+', 'deadline'), ('+', 'priority')]
             )
         for i in issues :
             n = db.issue.getnode (i)
-            u = self.add_user (db.user.get (n.assignedto, 'address'))
-            u.report_lines.append (ReportLine (n))
+
+            if n.assignedto :
+                u = self.add_user (db.user.get (n.assignedto, 'address'))
+                u.report_lines.append (ReportLine (n))
             for uid in n.nosy :
-                u = self.add_user (db.user.get (uid, 'address'))
-                u.nosy_lines.append (ReportLine (n))
+                if uid != n.assignedto :
+                    u = self.add_user (db.user.get (uid, 'address'))
+                    u.nosy_lines.append (ReportLine (n))
             for m in mailall :
                 u = self.add_user (m)
                 u.all_lines.append (ReportLine (n))
