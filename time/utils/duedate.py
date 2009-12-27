@@ -109,13 +109,21 @@ class UserReport (object) :
 
 class Report (object) :
 
-    def __init__ (self, db, date, send_mail = False, users = [], mailall = []) :
+    def __init__ \
+        (self, db, date
+        , send_mail = False
+        , users     = []
+        , mailall   = []
+        , do_nosy   = False
+        ) :
         self.db     = db
         self.date   = Date (date)
         self.output = self.print_results
         if send_mail :
             self.output = self.mail_results
-        self.users = users
+        self.users = list (users)
+        if self.users :
+            self.users.extend (mailall)
         self.now = Date ('.')
         stati = dict ((db.status.get (i, 'name'), i)
                       for i in db.status.getnodeids ())
@@ -135,16 +143,22 @@ class Report (object) :
 
             if n.assignedto :
                 u = self.add_user (db.user.get (n.assignedto, 'address'))
-                u.report_lines.append (ReportLine (n))
-            for uid in n.nosy :
-                if uid != n.assignedto :
-                    u = self.add_user (db.user.get (uid, 'address'))
-                    u.nosy_lines.append (ReportLine (n))
+                if u :
+                    u.report_lines.append (ReportLine (n))
+            if do_nosy :
+                for uid in n.nosy :
+                    if uid != n.assignedto :
+                        u = self.add_user (db.user.get (uid, 'address'))
+                        if u :
+                            u.nosy_lines.append (ReportLine (n))
             for m in mailall :
                 u = self.add_user (m)
-                u.all_lines.append (ReportLine (n))
+                if u :
+                    u.all_lines.append (ReportLine (n))
 
     def add_user (self, email) :
+        if self.users and email not in self.users :
+            return None
         if email not in self.user_reports :
             self.user_reports [email] = UserReport (self, email)
         return self.user_reports [email]
@@ -214,6 +228,8 @@ def main () :
         , date      = options.date
         , send_mail = options.send
         , users     = options.users
+        , mailall   = options.mails
+        , do_nosy   = options.nosy
         )
     r.output ()
     db.close ()
