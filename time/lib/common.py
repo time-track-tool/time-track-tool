@@ -41,7 +41,7 @@ try :
     import _TFL._Meta.Object
     import _TFL.Numeric_Interval
     import _TFL.Interval_Set
-except ImportError :
+except (ImportError, SyntaxError) :
     pass
 
 ymd = '%Y-%m-%d'
