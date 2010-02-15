@@ -55,7 +55,8 @@ def init \
         , content               = String    (indexme = 'no')
         )
 
-    Msg_Class (db , ''"msg")
+    msg = Msg_Class  (db , ''"msg")
+    msg.setorderprop ('creation')
 
     query = Class \
         ( db
