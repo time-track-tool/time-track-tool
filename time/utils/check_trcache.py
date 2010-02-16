@@ -11,6 +11,7 @@ tracker  = instance.open (dir)
 db       = tracker.open ('admin')
 
 for dri in db.daily_record.getnodeids () :
+    eps = 0.0001
     dr  = db.daily_record.getnode (dri)
     dur = dr.tr_duration_ok
     hours = hhours = 0.0
@@ -18,6 +19,7 @@ for dri in db.daily_record.getnodeids () :
     trs = []
     trvl_tr = {}
     dyn = get_user_dynamic (db, dr.user, dr.date)
+    oopsed = False
     if dyn :
         tr_full = dyn.travel_full
         wh = round_daily_work_hours (day_work_hours (dyn, dr.date))
@@ -44,9 +46,17 @@ for dri in db.daily_record.getnodeids () :
             else :
                 tr_duration = tr.duration
             if tr.tr_duration is None :
+                if not oopsed :
+                    print "Oops  for daily_record%s" % tri
+                    oopsed = True
                 print "Oops: time_record%s has not tr_duration" % tr.id
-            elif abs (tr.tr_duration - tr_duration) > 0.0001 :
+            elif abs (tr.tr_duration - tr_duration) > eps :
+                if not oopsed :
+                    print "Oops  for daily_record%s" % tri
+                    oopsed = True
                 print "Oops: expect %s, got %s for time_record%s" \
                     % (tr_duration, tr.tr_duration, tr.id)
-
+        if oopsed and abs (dr.tr_duration_ok - sum) < eps :
+            print "Oopsed but sum OK"
+    oopsed = False
     
