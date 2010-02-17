@@ -958,4 +958,17 @@ def default_status (new_values, status_class, valid = True, status = 'status') :
         new_values [status] = stati [0]
 # end def default_status
 
+def changed_values (old_values, cl, id) :
+    """ In a reactor compute the changed values -- old_values may
+        contain attributes that didn't change.
+        We ignore system attributes creation, creator, activity, actor
+    """
+    exc = dict.fromkeys ('creation creator activity actor'.split ())
+    changed = []
+    for k in old_values.iterkeys () :
+        if k not in exc and old_values [k] != cl.get (id, k) :
+            changed.append (k)
+    return changed
+# end def changed_values
+
 ### __END__

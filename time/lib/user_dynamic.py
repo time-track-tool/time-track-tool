@@ -322,8 +322,6 @@ def get_daily_record (db, user, date) :
     return daily_record_cache [(user, pdate)]
 # end def get_daily_record
 
-duration_cache = {}
-
 class Duration (object) :
     def __init__ \
         ( self
@@ -353,28 +351,27 @@ class Duration (object) :
 
 def durations (db, user, date) :
     pdate = date.pretty (ymd)
-    if (user, pdate) not in duration_cache :
-        wday  = gmtime (date.timestamp ())[6]
-        dyn   = get_user_dynamic (db, user, date)
-        if dyn :
-            dc = duration_cache [(user, pdate)] = Duration \
-                ( db, dyn
-                , day_work_hours    = day_work_hours (dyn, date)
-                , supp_weekly_hours = \
-                    (dyn.supp_weekly_hours or 0) * is_work_day (dyn, date)
-                    / work_days (dyn)
-                , additional_hours  = \
-                    (dyn.additional_hours  or 0) * is_work_day (dyn, date)
-                    / work_days (dyn)
-                )
-            dr = get_daily_record (db, user, date)
-            if dr :
-                dc.tr_duration      = update_tr_duration (db, dr)
-                dc.dr_status        = dr.status
-                dc.require_overtime = dr.required_overtime
-        else :
-            duration_cache [(user, pdate)] = Duration (db)
-    return duration_cache [(user, pdate)]
+    wday  = gmtime (date.timestamp ())[6]
+    dyn   = get_user_dynamic (db, user, date)
+    if dyn :
+        dc = Duration \
+            ( db, dyn
+            , day_work_hours    = day_work_hours (dyn, date)
+            , supp_weekly_hours = \
+                (dyn.supp_weekly_hours or 0) * is_work_day (dyn, date)
+                / work_days (dyn)
+            , additional_hours  = \
+                (dyn.additional_hours  or 0) * is_work_day (dyn, date)
+                / work_days (dyn)
+            )
+        dr = get_daily_record (db, user, date)
+        if dr :
+            dc.tr_duration      = update_tr_duration (db, dr)
+            dc.dr_status        = dr.status
+            dc.require_overtime = dr.required_overtime
+    else :
+        dc = Duration (db)
+    return dc
 # end def durations
 
 class Period_Data (object) :
@@ -490,12 +487,6 @@ class Period_Data (object) :
 		self.achieved_supp     -= to_add
     # end def _consolidate
 # end class Period_Data
-
-def invalidate_cache (user, date) :
-    pdate = date.pretty (ymd)
-    if (user, pdate) in duration_cache :
-        del duration_cache [(user, pdate)]
-# end def invalidate_cache
 
 def overtime_periods (db, user, start, end) :
     """ Compute list of 3-tuples start, end, overtime_period. """

@@ -43,7 +43,6 @@ from time                           import gmtime
 
 import common
 from user_dynamic                   import get_user_dynamic, day_work_hours
-from user_dynamic                   import invalidate_cache
 from freeze                         import frozen
 
 def check_timestamps (start, end, date) :
@@ -271,13 +270,13 @@ def update_timerecs (db, time_record_id, set_it) :
     trecs   = trecs.keys ()
     trecs.sort ()
     if trecs != trecs_o :
+        db.daily_record.set (drec_id, tr_duration_ok = 0)
         db.daily_record.set \
             ( drec_id
             , time_record    = [str (i) for i in trecs]
             , tr_duration_ok = None
             )
         dr = db.daily_record.getnode (drec_id)
-        invalidate_cache (dr.user, dr.date)
 # end def update_timerecs
 
 def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
@@ -330,7 +329,6 @@ def new_daily_record (db, cl, nodeid, new_values) :
     if 'status' not in new_values :
         new_values ['status']  = db.daily_record_status.lookup ('open')
     new_values ['tr_duration_ok'] = None
-    invalidate_cache (user, date)
 # end def new_daily_record
 
 def check_start_end_duration \
@@ -627,20 +625,15 @@ def check_time_record (db, cl, nodeid, new_values) :
         correct_work_location (db, wp, new_values)
     if 'tr_duration' not in new_values :
         new_values ['tr_duration'] = None
-        db.daily_record.set (dr.id, tr_duration_ok = 0)
-        db.daily_record.set (dr.id, tr_duration_ok = None)
 # end def check_time_record
 
 def check_for_retire_and_duration (db, cl, nodeid, old_values) :
     if cl.get (nodeid, 'duration') is None :
         cl.retire (nodeid)
-    elif (   'duration' in old_values
-         and old_values ['duration'] != cl.get (nodeid, 'duration')
-         ) :
+    elif common.changed_values (old_values, cl, nodeid) != ['tr_duration'] :
         drid = cl.get (nodeid, 'daily_record')
+        db.daily_record.set (drid, tr_duration_ok = 0)
         db.daily_record.set (drid, tr_duration_ok = None)
-        dr = db.daily_record.getnode (drid)
-        invalidate_cache (dr.user, dr.date)
 # end def check_for_retire_and_duration
 
 def check_retire (db, cl, nodeid, dummy) :
