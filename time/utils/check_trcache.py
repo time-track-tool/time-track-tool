@@ -10,6 +10,14 @@ from user_dynamic import travel_worktime, day_work_hours
 tracker  = instance.open (dir)
 db       = tracker.open ('admin')
 
+def print_dr (dr) :
+    print "Problem  for daily_record%s user:%s date:%s" % \
+        ( dri
+        , db.user.get (dr.user, 'username')
+        , dr.date.pretty ('%Y-%m-%d')
+        )
+# end def print_dr
+
 for dri in db.daily_record.getnodeids () :
     eps = 0.0001
     dr  = db.daily_record.getnode (dri)
@@ -23,11 +31,7 @@ for dri in db.daily_record.getnodeids () :
     if dyn :
         tr_full = dyn.travel_full
         wh = round_daily_work_hours (day_work_hours (dyn, dr.date))
-    if dur is None :
-        if dr.time_record :
-            pass
-            #print "Oops: daily_record%s has no tr_duration" % dri
-    else :
+    if dur is not None :
         for tri in dr.time_record :
             tr = db.time_record.getnode (tri)
             trs.append (tr)
@@ -47,16 +51,16 @@ for dri in db.daily_record.getnodeids () :
                 tr_duration = tr.duration
             if tr.tr_duration is None :
                 if not oopsed :
-                    print "Oops  for daily_record%s" % dri
+                    print_dr (dr)
                     oopsed = True
-                print "Oops: time_record%s has not tr_duration" % tr.id
+                print "Problem: time_record%s has not tr_duration" % tr.id
             elif abs (tr.tr_duration - tr_duration) > eps :
                 if not oopsed :
-                    print "Oops  for daily_record%s" % dri
+                    print_dr (dr)
                     oopsed = True
-                print "Oops: expect %s, got %s for time_record%s" \
+                print "Problem: expect %s, got %s for time_record%s" \
                     % (tr_duration, tr.tr_duration, tr.id)
         if oopsed and abs (dr.tr_duration_ok - sum) < eps :
-            print "Oopsed but sum OK"
+            print "Problem but sum in daily_record OK"
     oopsed = False
     
