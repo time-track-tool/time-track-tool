@@ -627,6 +627,7 @@ def check_time_record (db, cl, nodeid, new_values) :
         correct_work_location (db, wp, new_values)
     if 'tr_duration' not in new_values :
         new_values ['tr_duration'] = None
+        db.daily_record.set (dr.id, tr_duration_ok = 0)
         db.daily_record.set (dr.id, tr_duration_ok = None)
 # end def check_time_record
 

@@ -47,12 +47,12 @@ for dri in db.daily_record.getnodeids () :
                 tr_duration = tr.duration
             if tr.tr_duration is None :
                 if not oopsed :
-                    print "Oops  for daily_record%s" % tri
+                    print "Oops  for daily_record%s" % dri
                     oopsed = True
                 print "Oops: time_record%s has not tr_duration" % tr.id
             elif abs (tr.tr_duration - tr_duration) > eps :
                 if not oopsed :
-                    print "Oops  for daily_record%s" % tri
+                    print "Oops  for daily_record%s" % dri
                     oopsed = True
                 print "Oops: expect %s, got %s for time_record%s" \
                     % (tr_duration, tr.tr_duration, tr.id)
