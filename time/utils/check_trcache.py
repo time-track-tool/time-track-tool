@@ -43,12 +43,12 @@ class Err_Rec (object) :
             )
         for tr, err in sorted (self.by_tri.iteritems ()) :
             s.append (err)
-        if abs (dr.tr_duration_ok - sum) < eps :
+        if abs (self.dr.tr_duration_ok - sum) < eps :
             s.append ("        but sum in daily_record OK")
         else :
             s.append \
-                ( "Expected %s but got %s"
-                % (sum, dr.tr_duration_ok)
+                ( "        Expected %s but got %s"
+                % (sum, self.dr.tr_duration_ok)
                 )
         return '\n'.join (s)
     # end def as_text
@@ -95,7 +95,6 @@ for dri in db.daily_record.getnodeids () :
     trs = []
     trvl_tr = {}
     dyn = get_user_dynamic (db, dr.user, dr.date)
-    oopsed = False
     if dyn :
         tr_full = dyn.travel_full
         wh = round_daily_work_hours (day_work_hours (dyn, dr.date))
