@@ -15,9 +15,10 @@ class Err_Rec (object) :
 
     by_dri = {}
 
-    def __init__ (self, db, dr, err) :
+    def __init__ (self, db, dr, err, sum) :
         self.db  = db
         self.dr  = dr
+        self.sum = sum
         self.by_tri = {tr.id : err}
         self.by_dri [dr.id] = self
     # end def __init__
@@ -43,18 +44,19 @@ class Err_Rec (object) :
             )
         for tr, err in sorted (self.by_tri.iteritems ()) :
             s.append (err)
-        if abs (self.dr.tr_duration_ok - sum) < eps :
+        if abs (self.dr.tr_duration_ok - self.sum) < eps :
             s.append ("        but sum in daily_record OK")
         else :
             s.append \
-                ( "        Expected %s but got %s"
-                % (sum, self.dr.tr_duration_ok)
+                ( "        Expected %s but got %s for daily_record"
+                % (self.sum, self.dr.tr_duration_ok)
                 )
+        s.append ('')
         return '\n'.join (s)
     # end def as_text
 
     @classmethod
-    def try_new (cls, db, dr, tr, ratio, is_trvl) :
+    def try_new (cls, db, dr, tr, sum, ratio, is_trvl) :
         err = None
         if is_trvl :
             tr_duration = ratio * tr.duration
@@ -67,9 +69,10 @@ class Err_Rec (object) :
                 % (tr_duration, tr.tr_duration, tr.id)
         if err :
             if dr.id not in cls.by_dri :
-                obj = cls (db, dr, err)
+                obj = cls (db, dr, err, sum)
             else :
                 obj = cls.by_dri [dr.id]
+                assert (obj.sum == sum)
                 obj.append (tr.id, err)
     # end def try_new
 
@@ -80,7 +83,7 @@ class Err_Rec (object) :
             ( cls.by_dri.itervalues ()
             , key = lambda x : (x.username, x.dr.date)
             ) :
-            if old and old != rec.username :
+            if old != rec.username :
                 print rec.username
                 old = rec.username
             print rec.as_text ()
@@ -112,5 +115,5 @@ for dri in db.daily_record.getnodeids () :
                 hhours += tr.duration
         sum, ratio = travel_worktime (hours, hhours, wh)
         for tr in trs :
-            Err_Rec.try_new (db, dr, tr, ratio, tr.id in trvl_tr)
+            Err_Rec.try_new (db, dr, tr, sum, ratio, tr.id in trvl_tr)
 Err_Rec.output ()
