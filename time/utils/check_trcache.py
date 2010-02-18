@@ -35,7 +35,7 @@ class Err_Rec (object) :
     def as_text (self) :
         s = []
         s.append \
-            ( "Problem  for daily_record%s user:%s date:%s"
+            ( "Problem for daily_record%s user:%s date:%s"
             % ( self.dr.id
               , self.username
               , self.dr.date.pretty ('%Y-%m-%d')
@@ -44,7 +44,7 @@ class Err_Rec (object) :
         for tr, err in sorted (self.by_tri.iteritems ()) :
             s.append (err)
         if abs (dr.tr_duration_ok - sum) < eps :
-            s.append ("Problem but sum in daily_record OK")
+            s.append ("        but sum in daily_record OK")
         else :
             s.append \
                 ( "Expected %s but got %s"
@@ -61,9 +61,9 @@ class Err_Rec (object) :
         else :
             tr_duration = tr.duration
         if tr.tr_duration is None :
-            err = "Problem: time_record%s has no tr_duration" % tr.id
+            err = "        time_record%s has no tr_duration" % tr.id
         elif abs (tr.tr_duration - tr_duration) > eps :
-            err = "Problem: expect %s, got %s for time_record%s" \
+            err = "        expect %s, got %s for time_record%s" \
                 % (tr_duration, tr.tr_duration, tr.id)
         if err :
             if dr.id not in cls.by_dri :
