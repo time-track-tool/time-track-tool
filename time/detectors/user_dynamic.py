@@ -34,7 +34,7 @@ from roundup.cgi.TranslationService import get_translation
 
 from freeze       import frozen
 from user_dynamic import last_user_dynamic, day, wdays, round_daily_work_hours
-from common       import require_attributes, overtime_period_week
+from common       import require_attributes, overtime_period_week, ymd
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -203,11 +203,40 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
             check_ranges (cl, nodeid, user, val_from, val_to)
+        val_from = new_values ['valid_from']
+        val_to   = new_values ['valid_to']
     check_overtime_parameters (db, cl, nodeid, new_values)
     for i in 'vacation_yearly', 'vacation_remaining' :
         check_vacation (i, new_values)
+    if not frozen (db, user, old_from) :
+        invalidate_tr_duration (db, user, val_from, val_to)
+    else :
+        old_to = cl.get (nodeid, 'valid_to')
+        use_to = val_to
+        if old_to :
+            if val_to :
+                use_to = min (old_to, val_to)
+            else :
+                use_to = old_to
+        invalidate_tr_duration (db, user, use_to, None)
 # end def check_user_dynamic
 
+def invalidate_tr_duration (db, user, v_frm, v_to) :
+    """ Invalidate all cached tr_duration_ok values in all daily records
+        in the given range for the given user.
+        We also invalidate computations on v_to (which is too far) but
+        these get recomputed (we're in a non-frozen range anyway).
+        Make sure the tr_duration_ok is *really* set even if our cached
+        value is None.
+    """
+    if v_to is None :
+        pdate = v_frm.pretty (ymd) + ';'
+    else :
+        pdate = ';'.join ((v_frm.pretty (ymd), v_to.pretty (ymd)))
+    for dr in db.daily_record.filter (None, dict (date = pdate, user = user)) :
+        db.daily_record.set (dr, tr_duration_ok = 0)
+        db.daily_record.set (dr, tr_duration_ok = None)
+# end def invalidate_tr_duration
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
     require_attributes \
@@ -234,6 +263,8 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     for i in 'vacation_yearly', 'vacation_remaining' :
         check_vacation (i, new_values)
     check_overtime_parameters (db, cl, nodeid, new_values)
+    invalidate_tr_duration \
+        (db, user, new_values ['valid_from'], new_values ['valid_to'])
     # FIXME: Todo: compute remaining vacation from old dyn record and
     # all time tracking data for this user.
     # No: if vacation data is missing look up backwards until a vacation
