@@ -163,6 +163,7 @@ for dri in ids :
     trs = []
     trvl_tr = {}
     dyn = get_user_dynamic (db, dr.user, dr.date)
+    wh  = 0.0
     if dyn :
         tr_full = dyn.travel_full
         wh = round_daily_work_hours (day_work_hours (dyn, dr.date))
