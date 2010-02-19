@@ -34,14 +34,15 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-
-import common
+from common                         import user_has_role
 
 def new_it (db, cl, nodeid, new_values) :
-    user_has_role = common.user_has_role
     if 'messages'    not in new_values :
         raise Reject, _ ("New %s requires a message") % _ (cl.classname)
-    new_values ['status'] = '1'
+    if  (  'status' not in new_values
+        or not user_has_role (db, db.getuid (), 'IT')
+        ) :
+        new_values ['status'] = '1'
     if 'category'     not in new_values :
         new_values ['category'] = '1'
     if 'responsible'  not in new_values :
