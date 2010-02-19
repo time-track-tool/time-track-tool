@@ -2,6 +2,8 @@
 import os
 import sys
 dir = os.getcwd ()
+from csv               import DictWriter
+from optparse          import OptionParser
 from roundup           import date
 from roundup           import instance
 sys.path.insert (0, os.path.join (dir, 'lib'))
@@ -15,17 +17,17 @@ class Err_Rec (object) :
 
     by_dri = {}
 
-    def __init__ (self, db, dr, err, sum) :
+    def __init__ (self, db, dr, tr, err, sum) :
         self.db  = db
         self.dr  = dr
         self.sum = sum
-        self.by_tri = {tr.id : err}
+        self.by_tri = {tr.id : (tr, err)}
         self.by_dri [dr.id] = self
     # end def __init__
 
-    def append (self, trid, err) :
-        assert (trid not in self.by_tri)
-        self.by_tri [trid] = err
+    def append (self, tr, err) :
+        assert (tr.id not in self.by_tri)
+        self.by_tri [tr.id] = (tr, err)
     # end def append
 
     @property
@@ -42,7 +44,7 @@ class Err_Rec (object) :
               , self.dr.date.pretty ('%Y-%m-%d')
               )
             )
-        for tr, err in sorted (self.by_tri.iteritems ()) :
+        for trid, (tr, err) in sorted (self.by_tri.iteritems ()) :
             s.append (err)
         if abs (self.dr.tr_duration_ok - self.sum) < eps :
             s.append ("        but sum in daily_record OK")
@@ -54,6 +56,62 @@ class Err_Rec (object) :
         s.append ('')
         return '\n'.join (s)
     # end def as_text
+
+    fieldnames = \
+        [ 'user'
+        , 'date'
+        , 'daily_record'
+        , 'time_record'
+        , 'sum_day'
+        , 'sum_day_cached'
+        , 'sum_tr'
+        , 'sum_tr_cached'
+        ]
+
+    def as_csv (self, writer) :
+        for trid, (tr, err) in sorted (self.by_tri.iteritems ()) :
+            d = dict \
+                ( user           = self.username
+                , date           = self.dr.date.pretty ('%Y-%m-%d')
+                , daily_record   = self.dr.id
+                , time_record    = trid
+                , sum_day        = self.sum
+                , sum_day_cached = self.dr.tr_duration_ok
+                , sum_tr         = tr.tr_duration
+                , sum_tr_cached  = 'zoppel'
+                )
+            writer.writerow (d)
+    # end def as_csv
+
+    @classmethod
+    def csv_writer (cls, file) :
+        w = DictWriter (file, cls.fieldnames, delimiter = ';')
+        w.writerow (dict ((x, x) for x in cls.fieldnames))
+        return w
+    # end def csv_writer
+
+    @classmethod
+    def output (cls) :
+        old = None
+        for rec in sorted \
+            ( cls.by_dri.itervalues ()
+            , key = lambda x : (x.username, x.dr.date)
+            ) :
+            if old != rec.username :
+                print rec.username
+                old = rec.username
+            print rec.as_text ()
+    # end def output
+
+    @classmethod
+    def output_csv (cls) :
+        w = cls.csv_writer (sys.stdout)
+        for rec in sorted \
+            ( cls.by_dri.itervalues ()
+            , key = lambda x : (x.username, x.dr.date)
+            ) :
+            rec.as_csv (w)
+    # end def output_csv
 
     @classmethod
     def try_new (cls, db, dr, tr, sum, ratio, is_trvl) :
@@ -69,28 +127,35 @@ class Err_Rec (object) :
                 % (tr_duration, tr.tr_duration, tr.id)
         if err :
             if dr.id not in cls.by_dri :
-                obj = cls (db, dr, err, sum)
+                obj = cls (db, dr, tr, err, sum)
             else :
                 obj = cls.by_dri [dr.id]
                 assert (obj.sum == sum)
-                obj.append (tr.id, err)
+                obj.append (tr, err)
     # end def try_new
 
-    @classmethod
-    def output (cls) :
-        old = None
-        for rec in sorted \
-            ( cls.by_dri.itervalues ()
-            , key = lambda x : (x.username, x.dr.date)
-            ) :
-            if old != rec.username :
-                print rec.username
-                old = rec.username
-            print rec.as_text ()
-    # end def output
 # end class Err_Rec
 
-for dri in db.daily_record.getnodeids () :
+parser = OptionParser ()
+parser.add_option \
+    ( "-c", "--csv"
+    , dest   = "csv"
+    , help   = "Output in CSV format"
+    , action = "store_true"
+    )
+parser.add_option \
+    ( "-s", "--start"
+    , dest   = "start"
+    , help   = "Start-Date in YYYY-MM-DD format"
+    )
+opt, args = parser.parse_args ()
+
+if opt.start :
+    ids = db.daily_record.filter (None, dict (date = opt.start + ';'))
+else :
+    ids = db.daily_record.getnodeids ()
+
+for dri in ids :
     dr  = db.daily_record.getnode (dri)
     dur = dr.tr_duration_ok
     hours = hhours = 0.0
@@ -116,4 +181,7 @@ for dri in db.daily_record.getnodeids () :
         sum, ratio = travel_worktime (hours, hhours, wh)
         for tr in trs :
             Err_Rec.try_new (db, dr, tr, sum, ratio, tr.id in trvl_tr)
-Err_Rec.output ()
+if opt.csv :
+    Err_Rec.output_csv ()
+else :
+    Err_Rec.output ()
