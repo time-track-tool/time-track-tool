@@ -139,19 +139,21 @@ class Err_Rec (object) :
 parser = OptionParser ()
 parser.add_option \
     ( "-c", "--csv"
-    , dest   = "csv"
-    , help   = "Output in CSV format"
-    , action = "store_true"
+    , dest    = "csv"
+    , help    = "Output in CSV format"
+    , action  = "store_true"
     )
 parser.add_option \
     ( "-e", "--end"
-    , dest   = "end"
-    , help   = "End-Date in YYYY-MM-DD format"
+    , dest    = "end"
+    , help    = "End-Date in YYYY-MM-DD format"
+    , default = ''
     )
 parser.add_option \
     ( "-s", "--start"
-    , dest   = "start"
-    , help   = "Start-Date in YYYY-MM-DD format"
+    , dest    = "start"
+    , help    = "Start-Date in YYYY-MM-DD format"
+    , default = ''
     )
 opt, args = parser.parse_args ()
 
