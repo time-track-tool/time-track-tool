@@ -17,17 +17,17 @@ class Err_Rec (object) :
 
     by_dri = {}
 
-    def __init__ (self, db, dr, tr, err, sum) :
+    def __init__ (self, db, dr, tr, err, sum, tr_duration) :
         self.db  = db
         self.dr  = dr
         self.sum = sum
-        self.by_tri = {tr.id : (tr, err)}
+        self.by_tri = {tr.id : (tr, err, tr_duration)}
         self.by_dri [dr.id] = self
     # end def __init__
 
-    def append (self, tr, err) :
+    def append (self, tr, err, tr_duration) :
         assert (tr.id not in self.by_tri)
-        self.by_tri [tr.id] = (tr, err)
+        self.by_tri [tr.id] = (tr, err, tr_duration)
     # end def append
 
     @property
@@ -44,7 +44,7 @@ class Err_Rec (object) :
               , self.dr.date.pretty ('%Y-%m-%d')
               )
             )
-        for trid, (tr, err) in sorted (self.by_tri.iteritems ()) :
+        for trid, (tr, err, trd) in sorted (self.by_tri.iteritems ()) :
             s.append (err)
         if abs (self.dr.tr_duration_ok - self.sum) < eps :
             s.append ("        but sum in daily_record OK")
@@ -69,7 +69,7 @@ class Err_Rec (object) :
         ]
 
     def as_csv (self, writer) :
-        for trid, (tr, err) in sorted (self.by_tri.iteritems ()) :
+        for trid, (tr, err, trd) in sorted (self.by_tri.iteritems ()) :
             d = dict \
                 ( user           = self.username
                 , date           = self.dr.date.pretty ('%Y-%m-%d')
@@ -77,8 +77,8 @@ class Err_Rec (object) :
                 , time_record    = trid
                 , sum_day        = self.sum
                 , sum_day_cached = self.dr.tr_duration_ok
-                , sum_tr         = tr.tr_duration
-                , sum_tr_cached  = 'zoppel'
+                , sum_tr         = trd
+                , sum_tr_cached  = tr.tr_duration
                 )
             writer.writerow (d)
     # end def as_csv
@@ -127,11 +127,11 @@ class Err_Rec (object) :
                 % (tr_duration, tr.tr_duration, tr.id)
         if err :
             if dr.id not in cls.by_dri :
-                obj = cls (db, dr, tr, err, sum)
+                obj = cls (db, dr, tr, err, sum, tr_duration)
             else :
                 obj = cls.by_dri [dr.id]
                 assert (obj.sum == sum)
-                obj.append (tr, err)
+                obj.append (tr, err, tr_duration)
     # end def try_new
 
 # end class Err_Rec
