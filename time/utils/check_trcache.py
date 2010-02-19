@@ -144,14 +144,19 @@ parser.add_option \
     , action = "store_true"
     )
 parser.add_option \
+    ( "-e", "--end"
+    , dest   = "end"
+    , help   = "End-Date in YYYY-MM-DD format"
+    )
+parser.add_option \
     ( "-s", "--start"
     , dest   = "start"
     , help   = "Start-Date in YYYY-MM-DD format"
     )
 opt, args = parser.parse_args ()
 
-if opt.start :
-    ids = db.daily_record.filter (None, dict (date = opt.start + ';'))
+if opt.start or opt.end :
+    ids = db.daily_record.filter (None, {'date' : opt.start + ';' + opt.end})
 else :
     ids = db.daily_record.getnodeids ()
 
