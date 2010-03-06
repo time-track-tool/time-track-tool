@@ -316,6 +316,7 @@ class Test_Case (unittest.TestCase) :
         user1_time.import_data_1 (self.db, self.user1)
         self.db.close ()
         self.db  = None
+
         self.db1 = self.tracker.open ('admin')
         self.db2 = self.tracker.open ('admin')
         self.db1.time_record.set (trid, duration = 7)
@@ -341,6 +342,37 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual \
             (self.db1.daily_record.get (drid, 'tr_duration_ok'), None)
     # end def test_concurrency
+
+    def test_tr_duration (self) :
+        trid = '4'
+        self.setup_db ()
+        self.db.close ()
+        self.db = None
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+
+        self.db.time_record.set (trid, duration = 7)
+        self.db.time_record.set (trid, duration = 8)
+        drid = self.db.time_record.get (trid, 'daily_record')
+        self.db.commit ()
+        self.db.clearCache ()
+
+        trok = self.db.daily_record.get (drid, 'tr_duration_ok')
+        self.assertEqual (trok, None)
+        self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)
+        self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), None)
+        self.db.clearCache ()
+
+        dr = self.db.daily_record.getnode (drid)
+        update_tr_duration (self.db, dr)
+        self.db.commit ()
+        self.db.clearCache ()
+        self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)
+        self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
+        self.assertEqual (self.db.daily_record.get (drid, 'tr_duration_ok'), 8)
+    # end def test_tr_duration
 # end class Test_Case
 
 def test_suite () :
