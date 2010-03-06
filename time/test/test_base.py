@@ -116,6 +116,69 @@ class Test_Case (unittest.TestCase) :
             , org_location = self.olo
             , department   = self.dep
             )
+        # create initial dyn_user record for each user
+        # others will follow during tests
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user1))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from      = date.Date ('2005-09-01')
+            , booking_allowed = False
+            , vacation_yearly = 25
+            , all_in          = False
+            , hours_mon       = 7.75
+            , hours_tue       = 7.75
+            , hours_wed       = 7.75
+            , hours_thu       = 7.75
+            , hours_fri       = 7.5
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2005-10-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , supp_weekly_hours = 40
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            )
+        self.assertEqual \
+            ( self.db.user_dynamic.get (ud [0], 'valid_to')
+            , date.Date ('2005-10-01')
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user2))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from      = date.Date ('2008-11-03')
+            , booking_allowed = True
+            , vacation_yearly = 25
+            , all_in          = True
+            , hours_mon       = 7.75
+            , hours_tue       = 7.75
+            , hours_wed       = 7.75
+            , hours_thu       = 7.75
+            , hours_fri       = 7.5
+            , supp_per_period = 40
+            )
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , balance        = 0.0
+            , achieved_hours = 0.0
+            , frozen         = True
+            , date           = date.Date ('2005-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        0.0)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2005-12-25'))
         self.db.commit ()
     # end def setup_db
 
