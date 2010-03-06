@@ -50,6 +50,12 @@ def get_user_dynamic (db, user, date) :
     global last_dynamic
     user = str  (user)
     date = Date (date)
+    # Guard against db that was closed
+    try :
+        if last_dynamic :
+            x = last_dynamic.user
+    except ReferenceError :
+        last_dynamic = None
     if  (   last_dynamic
         and last_dynamic.user == user
         and last_dynamic.valid_from < date
