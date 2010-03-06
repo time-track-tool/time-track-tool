@@ -50,11 +50,12 @@ def get_user_dynamic (db, user, date) :
     global last_dynamic
     user = str  (user)
     date = Date (date)
-    # Guard against db that was closed
+    # Guard against db that was closed, may throw various tracebacks,
+    # some are not StandardError (Yechchch)
     try :
-        if last_dynamic :
+        if last_dynamic is not None :
             x = last_dynamic.user
-    except ReferenceError :
+    except :
         last_dynamic = None
     if  (   last_dynamic
         and last_dynamic.user == user
