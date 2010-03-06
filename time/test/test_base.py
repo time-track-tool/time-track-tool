@@ -21,6 +21,7 @@
 import errno
 import os
 import shutil
+import sys
 import unittest
 
 from roundup import instance, configuration, init, password, date
@@ -182,8 +183,9 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2005-12-25'))
         wl_off    = self.db.work_location.lookup ('off')
+        wl_trav   = self.db.work_location.lookup ('off-site/trav.')
         stat_open = self.db.time_project_status.lookup ('Open')
-        self.holiday_wp = self.db.time_project.create \
+        self.holiday_tp = self.db.time_project.create \
             ( name = 'Public Holiday'
             , work_location     = wl_off
             , op_project        = False
@@ -193,7 +195,7 @@ class Test_Case (unittest.TestCase) :
             , department        = self.dep
             , status            = stat_open
             )
-        self.unpaid_wp = self.db.time_project.create \
+        self.unpaid_tp = self.db.time_project.create \
             ( name = 'Leave'
             , work_location     = wl_off
             , op_project        = False
@@ -202,6 +204,65 @@ class Test_Case (unittest.TestCase) :
             , department        = self.dep
             , status            = stat_open
             )
+        self.travel_tp = self.db.time_project.create \
+            ( name = 'Travel'
+            , work_location     = wl_trav
+            , op_project        = False
+            , responsible       = '1'
+            , department        = self.dep
+            , status            = stat_open
+            )
+        self.normal_tp = self.db.time_project.create \
+            ( name = 'A Project'
+            , op_project        = True
+            , responsible       = self.user1
+            , department        = self.dep
+            , organisation      = self.org
+            )
+        self.ccg = self.db.cost_center_group.create (name = 'CCG')
+        self.cc = self.db.cost_center.create \
+            ( name              = 'CC'
+            , cost_center_group = self.ccg
+            , organisation      = self.org
+            , status            = self.db.cost_center_status.lookup ('Open')
+            )
+        self.holiday_wp = self.db.time_wp.create \
+            ( name              = 'Holiday'
+            , project           = self.holiday_tp
+            , time_start        = date.Date ('2004-01-01')
+            , durations_allowed = True
+            , responsible       = '1'
+            , bookers           = [self.user1, self.user2]
+            , cost_center       = self.cc
+            )
+        self.unpaid_wp = self.db.time_wp.create \
+            ( name              = 'Unpaid'
+            , project           = self.holiday_tp
+            , time_start        = date.Date ('2004-01-01')
+            , durations_allowed = True
+            , responsible       = '1'
+            , bookers           = [self.user1, self.user2]
+            , cost_center       = self.cc
+            )
+        self.travel_wp = self.db.time_wp.create \
+            ( name              = 'Travel'
+            , project           = self.holiday_tp
+            , time_start        = date.Date ('2004-01-01')
+            , travel            = True
+            , responsible       = '1'
+            , bookers           = [self.user1, self.user2]
+            , cost_center       = self.cc
+            )
+        for i in xrange (30) :
+            self.db.time_wp.create \
+                ( name              = 'Work Package %s' % i
+                , project           = self.normal_tp
+                , time_start        = date.Date ('2004-01-01')
+                , travel            = True
+                , responsible       = '1'
+                , bookers           = [self.user1, self.user2]
+                , cost_center       = self.cc
+                )
         self.db.commit ()
     # end def setup_db
 
@@ -211,14 +272,29 @@ class Test_Case (unittest.TestCase) :
 
     def test_create_time_project (self) :
         self.setup_db ()
-        self.db.time_project.create \
-            ( name = 'A Project'
+        # test that renaming the 'New' time_project_status will still work
+        tps = self.db.time_project_status.lookup ('New')
+        self.db.time_project_status.set (tps, name = 'Something')
+        self.normal_tp = self.db.time_project.create \
+            ( name = 'Another Project'
             , op_project        = True
             , responsible       = self.user1
             , department        = self.dep
             , organisation      = self.org
             )
     # end def test_create_time_project
+
+    def test_create_cost_center (self) :
+        self.setup_db ()
+        ccs = self.db.cost_center_status.lookup ('New')
+        self.db.cost_center_status.set (ccs, name = 'Something')
+        self.cc = self.db.cost_center.create \
+            ( name              = 'CC-New'
+            , cost_center_group = self.ccg
+            , organisation      = self.org
+            )
+    # end def test_create_cost_center
+
 # end class Test_Case
 
 def test_suite () :
