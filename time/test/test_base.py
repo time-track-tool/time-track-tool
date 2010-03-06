@@ -23,7 +23,7 @@ import os
 import shutil
 import unittest
 
-from roundup import instance, configuration, init, password
+from roundup import instance, configuration, init, password, date
 
 
 class Test_Case (unittest.TestCase) :
@@ -52,7 +52,7 @@ class Test_Case (unittest.TestCase) :
             tracker.nuke ()
             init.write_select_db (self.dirname, self.backend)
         tracker.init (password.Password (self.config.RDBMS_PASSWORD))
-        return tracker
+        self.tracker = tracker
     # end def setup_tracker
 
     def setUp (self) :
@@ -78,8 +78,49 @@ class Test_Case (unittest.TestCase) :
             shutil.rmtree (self.dirname)
     # end def tearDown
 
+    def setup_db (self) :
+        self.db = self.tracker.open ('admin')
+        self.org = self.db.organisation.create \
+            ( name        = 'The Org'
+            , description = 'A Test Organisation'
+            , mail_domain = 'example.com'
+            , valid_from  = date.Date ('2004-01-01')
+            )
+        self.loc = self.db.location.create \
+            ( name    = 'Vienna'
+            , country = 'Austria'
+            , address = 'Vienna, Austria'
+            )
+        self.olo = self.db.org_location.create \
+            ( name         = 'The Org, Vienna'
+            , location     = self.loc
+            , organisation = self.org
+            )
+        self.dep = self.db.department.create \
+            ( name       = 'Software Development'
+            , valid_from = date.Date ('2004-01-01')
+            )
+        self.username1 = 'testuser1'
+        self.user1 = self.db.user.create \
+            ( username     = self.username1
+            , firstname    = 'Test'
+            , lastname     = 'User1'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        self.username2 = 'testuser2'
+        self.user2 = self.db.user.create \
+            ( username     = self.username2
+            , firstname    = 'Test'
+            , lastname     = 'User2'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        self.db.commit ()
+    # end def setup_db
+
     def test_bla (self) :
-        self.assertEqual (1, 1)
+        self.setup_db ()
     # end def test_bla
 # end class Test_Case
 
