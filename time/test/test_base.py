@@ -73,7 +73,9 @@ class Test_Case (unittest.TestCase) :
 
     def tearDown (self) :
         if self.db :
+            self.db.clearCache ()
             self.db.close ()
+            self.db = None
         if os.path.exists (self.dirname) :
             shutil.rmtree (self.dirname)
     # end def tearDown
@@ -179,12 +181,44 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (f.balance,        0.0)
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2005-12-25'))
+        wl_off    = self.db.work_location.lookup ('off')
+        stat_open = self.db.time_project_status.lookup ('Open')
+        self.holiday_wp = self.db.time_project.create \
+            ( name = 'Public Holiday'
+            , work_location     = wl_off
+            , op_project        = False
+            , no_overtime       = True
+            , is_public_holiday = True
+            , responsible       = '1'
+            , department        = self.dep
+            , status            = stat_open
+            )
+        self.unpaid_wp = self.db.time_project.create \
+            ( name = 'Leave'
+            , work_location     = wl_off
+            , op_project        = False
+            , no_overtime       = True
+            , responsible       = '1'
+            , department        = self.dep
+            , status            = stat_open
+            )
         self.db.commit ()
     # end def setup_db
 
     def test_bla (self) :
         self.setup_db ()
     # end def test_bla
+
+    def test_create_time_project (self) :
+        self.setup_db ()
+        self.db.time_project.create \
+            ( name = 'A Project'
+            , op_project        = True
+            , responsible       = self.user1
+            , department        = self.dep
+            , organisation      = self.org
+            )
+    # end def test_create_time_project
 # end class Test_Case
 
 def test_suite () :
