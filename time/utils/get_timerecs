@@ -16,7 +16,7 @@ user = sys.argv [1]
 userid = db.user.lookup (user)
 sdate = sys.argv [2]
 
-wpmax  = 0
+wpmax  = 3 # number of reserved time_wp ids
 wpdict = {}
 
 print "def import_data_%s (db, user) :" % userid
@@ -36,10 +36,22 @@ for dri in db.daily_record.filter (None, dict (user = userid, date = sdate)) :
         print ident, "    , end           = %s" % tr.end
         print ident, "    , time_activity = %s" % tr.time_activity
         print ident, "    , work_location = %s" % tr.work_location
-        if tr.wp not in wpdict :
-            wpmax += 1
-            wpdict [tr.wp] = wpmax
-        print ident, "    , wp            = %s" % wpdict [tr.wp]
+        if tr.wp in wpdict :
+            new_wpid = wpdict [tr.wp]
+        else :
+            wp = db.time_wp.getnode (tr.wp)
+            tp = db.time_project.getnode (wp.project)
+            if wp.travel :
+                new_wpid = 3
+            elif tp.is_public_holiday :
+                new_wpid = 1
+            elif tp.no_overtime :
+                new_wpid = 2
+            else :
+                wpmax += 1
+                new_wpid = wpmax
+            wpdict [tr.wp] = new_wpid
+        print ident, "    , wp            = %s" % new_wpid
         print ident, "    )"
 print ident, "db.commit ()"
 print "# end def import_data_%s" % userid
