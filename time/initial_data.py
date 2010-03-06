@@ -305,26 +305,30 @@ if 'daily_record_status' in db.classes :
 if 'work_location' in db.classes :
     work_location = db.getclass ('work_location')
     work_location.create \
-        ( code = "on site"
-        , description = "Person working at office"
+        ( code = "office"
+        , description = "Abwesend"
         )
     work_location.create \
         ( code = "home"
-        , description = "Zuhaus / Home office"
+        , description = "Zuhause / Home office"
         )
     work_location.create \
         ( code = "off-site/trav."
-        , description = \
+        , description =
           "Travel -- Unterwegs, Dienstgang, Dienstreise "
           "(reisend oder an einer fremden Location)"
         )
     work_location.create \
-        ( code = "other-TTT"
+        ( code = "other"
         , description = "In einer anderen als der eigenen Org-Location"
         )
     work_location.create \
         ( code = "off"
         , description = "Abwesend"
+        )
+    work_location.create \
+        ( code = "on site"
+        , description = "Person working at customer site"
         )
 
 if 'sex' in db.classes :
@@ -638,3 +642,16 @@ if 'cost_center_status' in db.classes :
     db.cost_center_status.create (name = 'New',    active = False)
     db.cost_center_status.create (name = 'Open',   active = True)
     db.cost_center_status.create (name = 'Closed', active = False)
+
+if 'time_activity' in db.classes :
+    db.time_activity.create (name = 'study',          travel = False)
+    db.time_activity.create (name = 'info transfer',  travel = False)
+    db.time_activity.create (name = 'sell',           travel = False)
+    db.time_activity.create (name = 'plan',           travel = False)
+    db.time_activity.create (name = 'review',         travel = False)
+    db.time_activity.create (name = 'document',       travel = False)
+    db.time_activity.create (name = 'execute',        travel = False)
+    db.time_activity.create (name = 'test',           travel = False)
+    db.time_activity.create (name = 'administer',     travel = False)
+    db.time_activity.create (name = 'travel passive', travel = True)
+    db.time_activity.create (name = 'travel active',  travel = False)

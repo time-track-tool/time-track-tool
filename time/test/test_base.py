@@ -24,8 +24,9 @@ import shutil
 import sys
 import unittest
 
-from roundup import instance, configuration, init, password, date
+import user1_time, user2_time
 
+from roundup import instance, configuration, init, password, date
 
 class Test_Case (unittest.TestCase) :
     count = 0
@@ -253,7 +254,7 @@ class Test_Case (unittest.TestCase) :
             , bookers           = [self.user1, self.user2]
             , cost_center       = self.cc
             )
-        for i in xrange (30) :
+        for i in xrange (40) :
             self.db.time_wp.create \
                 ( name              = 'Work Package %s' % i
                 , project           = self.normal_tp
@@ -266,11 +267,7 @@ class Test_Case (unittest.TestCase) :
         self.db.commit ()
     # end def setup_db
 
-    def test_bla (self) :
-        self.setup_db ()
-    # end def test_bla
-
-    def test_create_time_project (self) :
+    def test_rename_status (self) :
         self.setup_db ()
         # test that renaming the 'New' time_project_status will still work
         tps = self.db.time_project_status.lookup ('New')
@@ -282,10 +279,7 @@ class Test_Case (unittest.TestCase) :
             , department        = self.dep
             , organisation      = self.org
             )
-    # end def test_create_time_project
-
-    def test_create_cost_center (self) :
-        self.setup_db ()
+        # same for cost_center
         ccs = self.db.cost_center_status.lookup ('New')
         self.db.cost_center_status.set (ccs, name = 'Something')
         self.cc = self.db.cost_center.create \
@@ -293,7 +287,21 @@ class Test_Case (unittest.TestCase) :
             , cost_center_group = self.ccg
             , organisation      = self.org
             )
-    # end def test_create_cost_center
+    # end def test_rename_status
+
+    def test_user1 (self) :
+        self.setup_db ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+    # end def test_user1
+
+    def test_user2 (self) :
+        self.setup_db ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        user2_time.import_data_2 (self.db, self.user2)
+    # end def test_user2
 
 # end class Test_Case
 
