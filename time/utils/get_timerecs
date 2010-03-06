@@ -1,4 +1,4 @@
-#!/usr/bin/python2.4
+#!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 import sys
 import os
@@ -19,6 +19,8 @@ sdate = sys.argv [2]
 wpmax  = 3 # number of reserved time_wp ids
 wpdict = {}
 
+print "from roundup import date"
+print ""
 print "def import_data_%s (db, user) :" % userid
 ident = '    '
 for dri in db.daily_record.filter (None, dict (user = userid, date = sdate)) :
@@ -31,13 +33,18 @@ for dri in db.daily_record.filter (None, dict (user = userid, date = sdate)) :
         tr = db.time_record.getnode (tri)
         print ident, "db.time_record.create \\"
         print ident, "    ( daily_record  = dr"
-        print ident, "    , duration      = %s" % tr.duration
-        print ident, "    , start         = %s" % tr.start
-        print ident, "    , end           = %s" % tr.end
-        print ident, "    , time_activity = %s" % tr.time_activity
-        print ident, "    , work_location = %s" % tr.work_location
+        if tr.start :
+            print ident, "    , start         = '%s'" % tr.start
+            print ident, "    , end           = '%s'" % tr.end
+        else :
+            print ident, "    , duration      = %s" % tr.duration
+        if tr.time_activity :
+            print ident, "    , time_activity = '%s'" % tr.time_activity
+        print ident, "    , work_location = '%s'" % tr.work_location
         if tr.wp in wpdict :
             new_wpid = wpdict [tr.wp]
+        elif tr.wp is None :
+            new_wpid = None
         else :
             wp = db.time_wp.getnode (tr.wp)
             tp = db.time_project.getnode (wp.project)
@@ -51,7 +58,8 @@ for dri in db.daily_record.filter (None, dict (user = userid, date = sdate)) :
                 wpmax += 1
                 new_wpid = wpmax
             wpdict [tr.wp] = new_wpid
-        print ident, "    , wp            = %s" % new_wpid
+        if new_wpid :
+            print ident, "    , wp            = '%s'" % new_wpid
         print ident, "    )"
 print ident, "db.commit ()"
 print "# end def import_data_%s" % userid
