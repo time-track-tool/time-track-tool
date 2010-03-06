@@ -52,7 +52,10 @@ def new_time_project (db, cl, nodeid, new_values) :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
     common.check_name_len (_, new_values ['name'])
     if 'status' not in new_values :
-        new_values ['status'] = db.time_project_status.lookup ('New')
+        try :
+            new_values ['status'] = db.time_project_status.lookup ('New')
+        except KeyError :
+            new_values ['status'] = '1'
     if 'op_project' not in new_values :
         new_values ['op_project'] = True
 # end def new_time_project

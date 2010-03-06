@@ -626,3 +626,10 @@ if 'tmplate_status' in db.classes :
         , use_for_invoice = False
         , use_for_letter  = False
         )
+
+if 'time_project_status' in db.classes :
+    db.time_project_status.create (name = 'New',        active = False)
+    db.time_project_status.create (name = 'Open',       active = True)
+    db.time_project_status.create (name = 'Post-Prjct', active = True)
+    db.time_project_status.create (name = 'Hold',       active = False)
+    db.time_project_status.create (name = 'Closed',     active = False)
