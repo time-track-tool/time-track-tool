@@ -27,6 +27,8 @@ import unittest
 import user1_time, user2_time
 
 from roundup import instance, configuration, init, password, date
+sys.path.insert (0, os.path.abspath ('lib'))
+from user_dynamic import update_tr_duration
 
 class Test_Case (unittest.TestCase) :
     count = 0
@@ -60,7 +62,7 @@ class Test_Case (unittest.TestCase) :
     def setUp (self) :
         self.__class__.count += 1
         self.dirname = '_test_init_%s' % self.count
-        self.backend = 'anydbm'
+        self.backend = 'postgresql'
         self.config  = config = configuration.CoreConfig ()
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptest"
@@ -74,10 +76,12 @@ class Test_Case (unittest.TestCase) :
     # end def setUp
 
     def tearDown (self) :
-        if self.db :
-            self.db.clearCache ()
-            self.db.close ()
-            self.db = None
+        for k in 'db', 'db1', 'db2' :
+            db = getattr (self, k, None)
+            if db :
+                db.clearCache ()
+                db.close ()
+        self.db = self.db1 = self.db2 = None
         if os.path.exists (self.dirname) :
             shutil.rmtree (self.dirname)
     # end def tearDown
@@ -303,6 +307,40 @@ class Test_Case (unittest.TestCase) :
         user2_time.import_data_2 (self.db, self.user2)
     # end def test_user2
 
+    def test_concurrency (self) :
+        trid = '4'
+        self.setup_db ()
+        self.db.close ()
+        self.db = None
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db  = None
+        self.db1 = self.tracker.open ('admin')
+        self.db2 = self.tracker.open ('admin')
+        self.db1.time_record.set (trid, duration = 7)
+        self.db1.time_record.set (trid, duration = 8)
+        drid = self.db1.time_record.get (trid, 'daily_record')
+        tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
+        dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
+        self.db1.commit ()
+
+        dr  = self.db2.daily_record.getnode (drid)
+        dud = dr.tr_duration_ok
+        tr  = self.db2.time_record.getnode (trid)
+        dut = tr.tr_duration
+        self.db2.commit ()
+        update_tr_duration (self.db2, dr)
+        self.db2.commit ()
+
+        self.db1.time_record.set (trid, duration = 5)
+        self.db1.commit ()
+
+        self.db1.clearCache ()
+
+        self.assertEqual \
+            (self.db1.daily_record.get (drid, 'tr_duration_ok'), None)
+    # end def test_concurrency
 # end class Test_Case
 
 def test_suite () :
