@@ -42,7 +42,10 @@ def new_cc (db, cl, nodeid, new_values) :
         if i not in new_values :
             raise Reject, _ ("New %s requires a %s") % (_ (cl.classname), _ (i))
     if 'status' not in new_values :
-        new_values ['status'] = db.cost_center_status.lookup ('New')
+        try :
+            new_values ['status'] = db.cost_center_status.lookup ('New')
+        except KeyError :
+            new_values ['status'] = '1'
 # end def new_cc
 
 def check_cc (db, cl, nodeid, new_values) :

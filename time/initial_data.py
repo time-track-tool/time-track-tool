@@ -633,3 +633,8 @@ if 'time_project_status' in db.classes :
     db.time_project_status.create (name = 'Post-Prjct', active = True)
     db.time_project_status.create (name = 'Hold',       active = False)
     db.time_project_status.create (name = 'Closed',     active = False)
+
+if 'cost_center_status' in db.classes :
+    db.cost_center_status.create (name = 'New',    active = False)
+    db.cost_center_status.create (name = 'Open',   active = True)
+    db.cost_center_status.create (name = 'Closed', active = False)
