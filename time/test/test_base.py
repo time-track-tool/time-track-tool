@@ -307,7 +307,7 @@ class Test_Case (unittest.TestCase) :
         user2_time.import_data_2 (self.db, self.user2)
     # end def test_user2
 
-    def test_concurrency_set (self) :
+    def concurrency (self, method) :
         trid = '4'
         self.setup_db ()
         self.db.close ()
@@ -334,50 +334,38 @@ class Test_Case (unittest.TestCase) :
         update_tr_duration (self.db2, dr)
         self.db2.commit ()
 
-        self.db1.time_record.set (trid, duration = 5)
+        method (drid, trid)
         self.db1.commit ()
 
         self.db1.clearCache ()
 
         self.assertEqual \
             (self.db1.daily_record.get (drid, 'tr_duration_ok'), None)
-    # end def test_concurrency_set
+    # end def concurrency
+
+    def concurrency_create (self, drid, trid) :
+        self.db1.time_record.create (duration = 5, daily_record = drid)
+    # end def concurrency_set
+
+    def concurrency_retire (self, drid, trid) :
+        self.db1.time_record.set (trid, duration = None)
+    # end def concurrency_set
+
+    def concurrency_set (self, drid, trid) :
+        self.db1.time_record.set (trid, duration = 5)
+    # end def concurrency_set
 
     def test_concurrency_create (self) :
-        trid = '4'
-        self.setup_db ()
-        self.db.close ()
-        self.db = None
-        self.db = self.tracker.open (self.username1)
-        user1_time.import_data_1 (self.db, self.user1)
-        self.db.close ()
-        self.db  = None
-
-        self.db1 = self.tracker.open ('admin')
-        self.db2 = self.tracker.open ('admin')
-        self.db1.time_record.set (trid, duration = 7)
-        self.db1.time_record.set (trid, duration = 8)
-        drid = self.db1.time_record.get (trid, 'daily_record')
-        tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
-        dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
-        self.db1.commit ()
-
-        dr  = self.db2.daily_record.getnode (drid)
-        dud = dr.tr_duration_ok
-        tr  = self.db2.time_record.getnode (trid)
-        dut = tr.tr_duration
-        self.db2.commit ()
-        update_tr_duration (self.db2, dr)
-        self.db2.commit ()
-
-        self.db1.time_record.create (duration = 5, daily_record = drid)
-        self.db1.commit ()
-
-        self.db1.clearCache ()
-
-        self.assertEqual \
-            (self.db1.daily_record.get (drid, 'tr_duration_ok'), None)
+        self.concurrency (self.concurrency_create)
     # end def test_concurrency_create
+
+    def test_concurrency_retire (self) :
+        self.concurrency (self.concurrency_retire)
+    # end def test_concurrency_retire
+
+    def test_concurrency_set (self) :
+        self.concurrency (self.concurrency_set)
+    # end def test_concurrency_set
 
     def test_tr_duration (self) :
         trid = '4'
