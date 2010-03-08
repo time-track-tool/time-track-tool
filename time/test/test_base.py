@@ -298,6 +298,77 @@ class Test_Case (unittest.TestCase) :
         self.db.close ()
         self.db = self.tracker.open (self.username1)
         user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        self.db.overtime_correction.create \
+            ( user    = self.user1
+            , value   = 970.0
+            , comment = 'Auf null stellen, da keine Eintraege'
+            , date    = date.Date ('2008-09-07')
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2006-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2008-01-01')
+            , valid_to          = date.Date ('2008-09-11')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 5.0
+            , hours_tue         = 5.0
+            , hours_wed         = 5.0
+            , hours_thu         = 5.0
+            , hours_fri         = 5.0
+            , daily_worktime    = 0.0
+            , supp_weekly_hours = 25.
+            , org_location      = self.olo
+            , department        = self.dep
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2009-01-04')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 2.0
+            , hours_tue         = 2.0
+            , hours_wed         = 2.0
+            , hours_thu         = 2.0
+            , hours_fri         = 2.0
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 2.0
+            , hours_tue         = 2.0
+            , hours_wed         = 2.0
+            , hours_thu         = 2.0
+            , hours_fri         = 2.0
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            )
     # end def test_user1
 
     def test_user2 (self) :
