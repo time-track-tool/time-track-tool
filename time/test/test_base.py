@@ -26,9 +26,13 @@ import unittest
 
 import user1_time, user2_time
 
-from roundup import instance, configuration, init, password, date
+from roundup     import instance, configuration, init, password, date
+from roundup.cgi import templating
 sys.path.insert (0, os.path.abspath ('lib'))
+sys.path.insert (0, os.path.abspath ('extensions'))
 from user_dynamic import update_tr_duration
+from summary import Staff_Report
+from summary import init as summary_init
 
 class Test_Case (unittest.TestCase) :
     count = 0
@@ -146,11 +150,11 @@ class Test_Case (unittest.TestCase) :
             , booking_allowed   = True
             , vacation_yearly   = 25
             , all_in            = False
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
+            , hours_mon         = 0.0
+            , hours_tue         = 0.0
+            , hours_wed         = 0.0
+            , hours_thu         = 0.0
+            , hours_fri         = 0.0
             , daily_worktime    = 0.0
             , org_location      = self.olo
             , department        = self.dep
@@ -302,10 +306,15 @@ class Test_Case (unittest.TestCase) :
         self.db = self.tracker.open ('admin')
         self.db.overtime_correction.create \
             ( user    = self.user1
-            , value   = 970.0
+            , value   = 910.0
             , comment = 'Auf null stellen, da keine Eintraege'
             , date    = date.Date ('2008-09-07')
             )
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user1, date = '2006-01-23')) [0]
+        dr = self.db.daily_record.getnode (dr)
+        update_tr_duration (self.db, dr)
+        self.assertEqual (dr.tr_duration_ok, 0)
         self.db.user_dynamic.create \
             ( user              = self.user1
             , valid_from        = date.Date ('2006-01-01')
@@ -321,6 +330,8 @@ class Test_Case (unittest.TestCase) :
             , org_location      = self.olo
             , department        = self.dep
             )
+        self.db.clearCache ()
+        self.assertEqual (dr.tr_duration_ok, None)
         self.db.user_dynamic.create \
             ( user              = self.user1
             , valid_from        = date.Date ('2008-01-01')
@@ -369,6 +380,49 @@ class Test_Case (unittest.TestCase) :
             , org_location      = self.olo
             , department        = self.dep
             )
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username1)
+        fs = { 'user'         : [self.user1]
+             , 'date'         : '2008-09-01;2008-09-10'
+             , 'summary_type' : [2, 4]
+             }
+        class r : filterspec = fs
+        summary_init (self.tracker)
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 36/2008')
+        self.assertEqual (lines [2] [1], 'WW 37/2008')
+        self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
+        self.assertEqual (lines [1][10], '15.00')
+        self.assertEqual (lines [2][10], '0.00')
+        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [3] [9], '910.0')
+        fs = { 'user'         : [self.user1]
+             , 'date'         : '2009-12-21;2010-01-03'
+             , 'summary_type' : [2, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][10], '0.00')
+        self.assertEqual (lines [2][10], '0.00')
+        self.assertEqual (lines [3][10], '0.00')
+
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
+        for l in lines :
+            print >> sys.stderr, l
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][10], '0.00')
+        self.assertEqual (lines [2][10], '0.00')
+        self.assertEqual (lines [3][10], '0.00')
     # end def test_user1
 
     def test_user2 (self) :
