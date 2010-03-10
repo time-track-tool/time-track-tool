@@ -445,6 +445,7 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
 
         self.db.daily_record_freeze.set (f.id, frozen = False)
+        self.assertEqual (f.balance, None)
         self.db.daily_record_freeze.set (f.id, frozen = True)
 
         self.db.clearCache ()
