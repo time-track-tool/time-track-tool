@@ -169,16 +169,17 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (len (ud), 1)
         self.db.user_dynamic.set \
             ( ud [0]
-            , valid_from      = date.Date ('2008-11-03')
-            , booking_allowed = True
-            , vacation_yearly = 25
-            , all_in          = True
-            , hours_mon       = 7.75
-            , hours_tue       = 7.75
-            , hours_wed       = 7.75
-            , hours_thu       = 7.75
-            , hours_fri       = 7.5
-            , supp_per_period = 40
+            , valid_from       = date.Date ('2008-11-03')
+            , booking_allowed  = True
+            , vacation_yearly  = 25
+            , all_in           = True
+            , hours_mon        = 7.75
+            , hours_tue        = 7.75
+            , hours_wed        = 7.75
+            , hours_thu        = 7.75
+            , hours_fri        = 7.5
+            , supp_per_period  = 40
+            , additional_hours = 40
             )
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
@@ -390,7 +391,7 @@ class Test_Case (unittest.TestCase) :
         class r : filterspec = fs
         summary_init (self.tracker)
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
         self.assertEqual (lines [1] [1], 'WW 36/2008')
         self.assertEqual (lines [2] [1], 'WW 37/2008')
@@ -405,7 +406,7 @@ class Test_Case (unittest.TestCase) :
              }
         class r : filterspec = fs
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
@@ -456,7 +457,7 @@ class Test_Case (unittest.TestCase) :
         self.db.clearCache ()
 
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         for l in lines :
             print >> sys.stderr, l
         self.assertEqual (lines [1] [1], 'WW 52/2009')
@@ -472,6 +473,107 @@ class Test_Case (unittest.TestCase) :
         self.db.close ()
         self.db = self.tracker.open (self.username2)
         user2_time.import_data_2 (self.db, self.user2)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        self.db.user_dynamic.create \
+            ( user              = self.user2
+            , valid_from        = date.Date ('2009-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user2
+            , frozen         = True
+            , date           = date.Date ('2008-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        0.0)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2008-12-31'))
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username2)
+        fs = { 'user'         : [self.user2]
+             , 'date'         : '2008-12-22;2009-01-04'
+             , 'summary_type' : [2, 4]
+             }
+        class r : filterspec = fs
+        summary_init (self.tracker)
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 52/2008')
+        self.assertEqual (lines [2] [1], 'WW 1/2009')
+        self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
+        self.assertEqual (lines [1][10], '0.00')
+        self.assertEqual (lines [2][10], '0.00')
+        self.assertEqual (lines [3][10], '0.00')
+
+        fs = { 'user'         : [self.user2]
+             , 'date'         : '2009-12-21;2010-01-03'
+             , 'summary_type' : [2, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][10], '113.12')
+        self.assertEqual (lines [2][10], '113.12')
+        self.assertEqual (lines [3][10], '113.12')
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user2
+            , frozen         = True
+            , date           = date.Date ('2009-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        113.125)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-27'))
+        # test split of frozen dyn record and reset of tr_duration
+        dr1 = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = '2009-12-31')) [0]
+        dr1 = self.db.daily_record.getnode (dr1)
+        update_tr_duration (self.db, dr1)
+        self.assertEqual (dr1.tr_duration_ok, 7.75)
+        dr2 = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = '2010-01-01')) [0]
+        dr2 = self.db.daily_record.getnode (dr2)
+        update_tr_duration (self.db, dr2)
+        self.assertEqual (dr2.tr_duration_ok, 7.5)
+        self.db.user_dynamic.create \
+            ( user              = self.user2
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        self.db.clearCache ()
+        self.assertEqual (dr1.tr_duration_ok, 7.75)
+        self.assertEqual (dr2.tr_duration_ok, None)
     # end def test_user2
 
     def concurrency (self, method) :
