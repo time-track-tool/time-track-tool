@@ -412,6 +412,47 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (lines [1][10], '0.00')
         self.assertEqual (lines [2][10], '0.00')
         self.assertEqual (lines [3][10], '0.00')
+        
+        for d in ('2006-12-31', '2007-12-31') :
+            f = self.db.daily_record_freeze.create \
+                ( user           = self.user1
+                , frozen         = True
+                , date           = date.Date (d)
+                )
+            f = self.db.daily_record_freeze.getnode (f)
+            self.assertEqual (f.balance,        0.0)
+            self.assertEqual (f.achieved_hours, 0.0)
+            self.assertEqual (f.validity_date,  date.Date (d))
+
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , frozen         = True
+            , date           = date.Date ('2008-09-10')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,       15.0)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
+
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , frozen         = True
+            , date           = date.Date ('2009-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        #self.assertEqual (f.balance,        0.0) # BUG
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
+
+        self.db.daily_record_freeze.set (f.id, frozen = False)
+        self.db.daily_record_freeze.set (f.id, frozen = True)
+
+        self.db.clearCache ()
+        #self.assertEqual (f.balance,        0.0) # BUG
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
+
+        self.db.clearCache ()
 
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
         lines = [x.split (',') for x in sr.as_csv ().split ('\n')]
