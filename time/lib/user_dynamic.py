@@ -647,7 +647,11 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
     if periods :
 	end   = periods [-1][1]
     for frm, to, otp in periods :
-	sharp = sharp_end or to != end
+        # compute sharp end for intermediate periods *and* if the last
+        # period happens to end before our end date in which case we
+        # need to take the last several days of the last period into
+        # account.
+	sharp = sharp_end or to != end or end < date
 	rb, ach = compute_running_balance \
 	    (db, user, frm, to, otp, sharp, start_balance = balance)
 	balance  += rb

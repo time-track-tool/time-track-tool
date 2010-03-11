@@ -30,7 +30,8 @@ from roundup     import instance, configuration, init, password, date
 from roundup.cgi import templating
 sys.path.insert (0, os.path.abspath ('lib'))
 sys.path.insert (0, os.path.abspath ('extensions'))
-from user_dynamic import update_tr_duration
+from user_dynamic import update_tr_duration, compute_balance
+from user_dynamic import overtime_periods, first_user_dynamic, next_user_dynamic
 from summary import Staff_Report
 from summary import init as summary_init
 
@@ -413,7 +414,7 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (lines [1][10], '0.00')
         self.assertEqual (lines [2][10], '0.00')
         self.assertEqual (lines [3][10], '0.00')
-        
+
         for d in ('2006-12-31', '2007-12-31') :
             f = self.db.daily_record_freeze.create \
                 ( user           = self.user1
@@ -435,13 +436,56 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
 
+        dyn = first_user_dynamic (self.db, self.user1)
+        self.assertEqual (dyn.valid_from, date.Date ('2005-09-01'))
+        op  = overtime_periods \
+            (self.db, self.user1, dyn.valid_from, date.Date ('2009-12-31'))
+        self.assertEqual (len (op), 1)
+        self.assertEqual (op [0][0], date.Date ('2005-10-01'))
+        self.assertEqual (op [0][1], date.Date ('2008-09-10'))
+        self.assertEqual (op [0][2].name, 'week')
+        dyn = next_user_dynamic (self.db, dyn)
+        self.assertEqual (dyn.valid_from, date.Date ('2005-10-01'))
+        dyn = next_user_dynamic (self.db, dyn)
+        self.assertEqual (dyn.valid_from, date.Date ('2006-01-01'))
+        self.assertEqual (dyn.overtime_period, None)
+
+        bal = compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
+        self.assertEqual (bal, (0.0, 0))
+        bal = compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
+        self.assertEqual (bal, (0.0, 0))
+        bal = compute_balance \
+            (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
+        self.assertEqual (bal, (0.0, 0))
+
+        bal = compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
+        self.assertEqual (bal, (0.0, 0))
+        bal = compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
+        self.assertEqual (bal, (0.0, 0))
+        bal = compute_balance \
+            (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
+        self.assertEqual (bal, (0.0, 0))
+
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][10], '0.00')
+        self.assertEqual (lines [2][10], '0.00')
+        self.assertEqual (lines [3][10], '0.00')
+
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
             , frozen         = True
             , date           = date.Date ('2009-12-31')
             )
         f = self.db.daily_record_freeze.getnode (f)
-        #self.assertEqual (f.balance,        0.0) # BUG
+        self.assertEqual (f.balance,        0.0)
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
 
@@ -450,7 +494,7 @@ class Test_Case (unittest.TestCase) :
         self.db.daily_record_freeze.set (f.id, frozen = True)
 
         self.db.clearCache ()
-        #self.assertEqual (f.balance,        0.0) # BUG
+        self.assertEqual (f.balance,        0.0)
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
 
@@ -458,14 +502,12 @@ class Test_Case (unittest.TestCase) :
 
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        for l in lines :
-            print >> sys.stderr, l
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
         self.assertEqual (lines [1][10], '0.00')
-        #self.assertEqual (lines [2][10], '0.00')
-        #self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [2][10], '0.00')
+        self.assertEqual (lines [3][10], '0.00')
     # end def test_user1
 
     def test_user2 (self) :
