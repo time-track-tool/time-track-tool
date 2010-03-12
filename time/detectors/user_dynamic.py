@@ -238,6 +238,11 @@ def invalidate_tr_duration (db, user, v_frm, v_to) :
         db.daily_record.set (dr, tr_duration_ok = None)
 # end def invalidate_tr_duration
 
+def set_otp_if_all_in (db, cl, nodeid, new_values) :
+    if 'all_in' in new_values and new_values ['all_in'] :
+        new_values ['overtime_period'] = None
+# end def set_otp_if_all_in
+
 def new_user_dynamic (db, cl, nodeid, new_values) :
     require_attributes \
         ( _, cl, nodeid, new_values
@@ -316,6 +321,8 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.user_dynamic.audit    ("create", new_user_dynamic)
     db.user_dynamic.audit    ("set",    check_user_dynamic)
+    db.user_dynamic.audit    ("create", set_otp_if_all_in, priority = 20)
+    db.user_dynamic.audit    ("set",    set_otp_if_all_in, priority = 20)
     db.user_dynamic.react    ("create", close_existing)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)

@@ -35,36 +35,14 @@ from user_dynamic import overtime_periods, first_user_dynamic, next_user_dynamic
 from summary import Staff_Report
 from summary import init as summary_init
 
-class Test_Case (unittest.TestCase) :
+class _Test_Case (unittest.TestCase) :
     count = 0
     db = None
 
-    def setup_tracker (self) :
+    def setup_tracker (self, schema = 'full.py', backend = 'postgresql') :
         """ Install and initialize tracker in dirname, return tracker instance.
             If directory exists, it is wiped out before the operation.
         """
-        self.tearDown ()
-        srcdir = os.path.join (os.path.dirname (__file__), '..')
-        os.mkdir (self.dirname)
-        for f in ( 'detectors', 'extensions', 'html', 'initial_data.py'
-                 , 'lib', 'locale', 'schema', 'schema.py', 'schemas'
-                 , 'TEMPLATE-INFO.txt', 'utils'
-                 ) :
-            os.symlink \
-                ( os.path.abspath (os.path.join (srcdir, f))
-                , os.path.join (self.dirname, f)
-                )
-        init.write_select_db (self.dirname, self.backend)
-        self.config.save (os.path.join (self.dirname, 'config.ini'))
-        tracker = instance.open (self.dirname)
-        if tracker.exists () :
-            tracker.nuke ()
-            init.write_select_db (self.dirname, self.backend)
-        tracker.init (password.Password (self.config.RDBMS_PASSWORD))
-        self.tracker = tracker
-    # end def setup_tracker
-
-    def setUp (self) :
         self.__class__.count += 1
         self.dirname = '_test_init_%s' % self.count
         self.backend = 'postgresql'
@@ -77,6 +55,31 @@ class Test_Case (unittest.TestCase) :
         config.MAIL_DOMAIN    = "your.tracker.email.domain.example"
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
         config.init_logging ()
+        self.tearDown ()
+        srcdir = os.path.join (os.path.dirname (__file__), '..')
+        os.mkdir (self.dirname)
+        for f in ( 'detectors', 'extensions', 'html', 'initial_data.py'
+                 , 'lib', 'locale', 'schema', 'schemas/%s' % schema
+                 , 'TEMPLATE-INFO.txt', 'utils'
+                 ) :
+            ft = f
+            if f.startswith ('schemas') :
+                ft = 'schema.py'
+            os.symlink \
+                ( os.path.abspath (os.path.join (srcdir, f))
+                , os.path.join (self.dirname, ft)
+                )
+        init.write_select_db (self.dirname, self.backend)
+        self.config.save (os.path.join (self.dirname, 'config.ini'))
+        tracker = instance.open (self.dirname)
+        if tracker.exists () :
+            tracker.nuke ()
+            init.write_select_db (self.dirname, self.backend)
+        tracker.init (password.Password (self.config.RDBMS_PASSWORD))
+        self.tracker = tracker
+    # end def setup_tracker
+
+    def setUp (self) :
         self.setup_tracker ()
     # end def setUp
 
@@ -90,7 +93,9 @@ class Test_Case (unittest.TestCase) :
         if os.path.exists (self.dirname) :
             shutil.rmtree (self.dirname)
     # end def tearDown
+# end class _Test_Case
 
+class Test_Case_Timetracker (_Test_Case) :
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.org = self.db.organisation.create \
@@ -138,7 +143,7 @@ class Test_Case (unittest.TestCase) :
             , valid_from      = date.Date ('2005-09-01')
             , booking_allowed = False
             , vacation_yearly = 25
-            , all_in          = False
+            , all_in          = True
             , hours_mon       = 7.75
             , hours_tue       = 7.75
             , hours_wed       = 7.75
@@ -340,7 +345,7 @@ class Test_Case (unittest.TestCase) :
             , valid_to          = date.Date ('2008-09-11')
             , booking_allowed   = True
             , vacation_yearly   = 25
-            , all_in            = True
+            , all_in            = False
             , hours_mon         = 5.0
             , hours_tue         = 5.0
             , hours_wed         = 5.0
@@ -522,7 +527,7 @@ class Test_Case (unittest.TestCase) :
             , valid_from        = date.Date ('2009-01-01')
             , booking_allowed   = True
             , vacation_yearly   = 25
-            , all_in            = True
+            , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
@@ -601,7 +606,7 @@ class Test_Case (unittest.TestCase) :
             , valid_from        = date.Date ('2010-01-01')
             , booking_allowed   = True
             , vacation_yearly   = 25
-            , all_in            = True
+            , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
@@ -708,10 +713,10 @@ class Test_Case (unittest.TestCase) :
         self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
         self.assertEqual (self.db.daily_record.get (drid, 'tr_duration_ok'), 8)
     # end def test_tr_duration
-# end class Test_Case
+# end class Test_Case_Timetracker
 
 def test_suite () :
     suite = unittest.TestSuite ()
-    suite.addTest (unittest.makeSuite (Test_Case))
+    suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
 # end def test_suite
