@@ -8,7 +8,7 @@ from roundup.password  import Password, encodePassword
 dir     = os.getcwd ()
 sys.path.insert (0, os.path.join (dir, 'lib'))
 from user_dynamic import first_user_dynamic, next_user_dynamic, compute_balance
-from common       import start_of_period, end_of_period, day, period_week
+from common       import start_of_period, end_of_period, day
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 ymd     = '%Y-%m-%d'
@@ -23,11 +23,9 @@ for u in db.user.getnodeids () :
         if not dt and dyn :
             dt = dyn.valid_from
         if lop and dyn and dyn.overtime_period is None :
-            x = otp = db.overtime_period.getnode (lop)
-            if otp.weekly :
-                x = period_week
-            eop = end_of_period   (dt - day, x)
-            sop = start_of_period (dt - day, x)
+            otp = db.overtime_period.getnode (lop)
+            eop = end_of_period   (dt - day, otp)
+            sop = start_of_period (dt - day, otp)
             is_eop = eop == dt - day
             un = db.user.get (dyn.user, 'username')
             d1 = dyn.valid_from.pretty ('%Y-%m-%d')
