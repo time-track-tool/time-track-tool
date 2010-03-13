@@ -99,8 +99,9 @@ class _Test_Case (unittest.TestCase) :
     # end def tearDown
 
     def test_schema (self) :
-        for cl, props, cls in zip \
-            (self.properties, sorted (self.db.getclasses ()) :
+        self.db = self.tracker.open ('admin')
+        classnames = sorted (self.db.getclasses ())
+        for (cl, props), cls in zip (self.properties, classnames) :
             self.assertEqual (cl, cls)
             clprops = sorted (self.db.getclass (cls).properties.keys ())
             self.assertEqual (props, clprops)
