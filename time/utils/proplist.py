@@ -30,7 +30,7 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
             print "    ", p
     if as_list :
         if not len (db.getclass (cl).properties) :
-            print "        ["
+            print "      , ["
         print "        ]"
         print "      )"
 if as_list :
