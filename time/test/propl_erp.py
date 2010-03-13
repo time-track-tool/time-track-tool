@@ -133,6 +133,7 @@ properties = \
         ]
       )
     , ( 'invoice'
+        [
         ]
       )
     , ( 'invoice_dispatch'
@@ -283,6 +284,7 @@ properties = \
         ]
       )
     , ( 'storage_location'
+        [
         ]
       )
     , ( 'supplier_group'
