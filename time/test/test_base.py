@@ -26,8 +26,9 @@ import unittest
 
 import user1_time, user2_time
 
-from propl_full import properties as properties_full
+from propl_adr  import properties as properties_adr
 from propl_erp  import properties as properties_erp
+from propl_full import properties as properties_full
 
 from roundup     import instance, configuration, init, password, date
 from roundup.cgi import templating
@@ -735,8 +736,14 @@ class Test_Case_ERP (_Test_Case) :
     properties = properties_erp
 # end class Test_Case_ERP
 
+class Test_Case_Adr (_Test_Case) :
+    schemaname = 'adr'
+    properties = properties_adr
+# end class Test_Case_ERP
+
 def test_suite () :
     suite = unittest.TestSuite ()
+    suite.addTest (unittest.makeSuite (Test_Case_Adr))
     suite.addTest (unittest.makeSuite (Test_Case_ERP))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
