@@ -26,6 +26,9 @@ import unittest
 
 import user1_time, user2_time
 
+from propl_full import properties as properties_full
+from propl_erp  import properties as properties_erp
+
 from roundup     import instance, configuration, init, password, date
 from roundup.cgi import templating
 sys.path.insert (0, os.path.abspath ('lib'))
@@ -39,7 +42,7 @@ class _Test_Case (unittest.TestCase) :
     count = 0
     db = None
 
-    def setup_tracker (self, schema = 'full.py', backend = 'postgresql') :
+    def setup_tracker (self, backend = 'postgresql') :
         """ Install and initialize tracker in dirname, return tracker instance.
             If directory exists, it is wiped out before the operation.
         """
@@ -59,7 +62,8 @@ class _Test_Case (unittest.TestCase) :
         srcdir = os.path.join (os.path.dirname (__file__), '..')
         os.mkdir (self.dirname)
         for f in ( 'detectors', 'extensions', 'html', 'initial_data.py'
-                 , 'lib', 'locale', 'schema', 'schemas/%s' % schema
+                 , 'lib', 'locale', 'schema'
+                 , 'schemas/%s.py' % self.schemaname
                  , 'TEMPLATE-INFO.txt', 'utils'
                  ) :
             ft = f
@@ -93,9 +97,19 @@ class _Test_Case (unittest.TestCase) :
         if os.path.exists (self.dirname) :
             shutil.rmtree (self.dirname)
     # end def tearDown
+
+    def test_schema (self) :
+        for cl, props, cls in zip \
+            (self.properties, sorted (self.db.getclasses ()) :
+            self.assertEqual (cl, cls)
+            clprops = sorted (self.db.getclass (cls).properties.keys ())
+            self.assertEqual (props, clprops)
+    # end def test_schema
 # end class _Test_Case
 
 class Test_Case_Timetracker (_Test_Case) :
+    schemaname = 'full'
+    properties = properties_full
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.org = self.db.organisation.create \
@@ -715,8 +729,14 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_tr_duration
 # end class Test_Case_Timetracker
 
+class Test_Case_ERP (_Test_Case) :
+    schemaname = 'erp'
+    properties = properties_erp
+# end class Test_Case_ERP
+
 def test_suite () :
     suite = unittest.TestSuite ()
+    suite.addTest (unittest.makeSuite (Test_Case_ERP))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
 # end def test_suite
