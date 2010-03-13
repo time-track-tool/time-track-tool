@@ -57,6 +57,10 @@ classes = \
     ]
 schemadef.register_class_permissions (db, classes, [])
 
+# temporary fix: FIXME
+Class (db, ''"invoice")
+Class (db, ''"storage_location")
+
 p = db.security.addPermission \
     ( name        = 'Edit'
     , klass       = 'user'
