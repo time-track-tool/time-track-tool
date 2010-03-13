@@ -26,6 +26,7 @@ import unittest
 
 import user1_time, user2_time
 
+from propl_abo  import properties as properties_abo
 from propl_adr  import properties as properties_adr
 from propl_erp  import properties as properties_erp
 from propl_full import properties as properties_full
@@ -739,10 +740,16 @@ class Test_Case_ERP (_Test_Case) :
 class Test_Case_Adr (_Test_Case) :
     schemaname = 'adr'
     properties = properties_adr
-# end class Test_Case_ERP
+# end class Test_Case_Adr
+
+class Test_Case_Abo (_Test_Case) :
+    schemaname = 'abo'
+    properties = properties_abo
+# end class Test_Case_Abo
 
 def test_suite () :
     suite = unittest.TestSuite ()
+    suite.addTest (unittest.makeSuite (Test_Case_Abo))
     suite.addTest (unittest.makeSuite (Test_Case_Adr))
     suite.addTest (unittest.makeSuite (Test_Case_ERP))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
