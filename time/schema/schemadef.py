@@ -150,6 +150,50 @@ def own_user_record (db, userid, itemid) :
     return userid == itemid
 # end def own_user_record
 
+def allow_user_details (db, role, permission, *additional_props) :
+    """ Allow editing some user details -- depending on the properties
+        the user class has
+    """
+    default_props = \
+        [ 'csv_delimiter'
+        , 'external_phone'
+        , 'internal_phone'
+        , 'lunch_duration'
+        , 'lunch_start'
+        , 'password'
+        , 'phone'
+        , 'private_mobile'
+        , 'private_mobile_visible'
+        , 'private_phone'
+        , 'private_phone_visible'
+        , 'queries'
+        , 'quick_dialling'
+        , 'realname'
+        , 'room'
+        , 'subst_active'
+        , 'substitute'
+        , 'timezone'
+        , 'title'
+        , 'tt_lines'
+        ]
+    props = []
+    allprops = dict.fromkeys (default_props)
+    allprops.update (dict.fromkeys (additional_props))
+    for p in sorted (allprops.iterkeys ()) :
+        if p in db.user.properties :
+            props.append (p)
+    p = db.security.addPermission \
+        ( name        = permission
+        , klass       = 'user'
+        , check       = own_user_record
+        , description = \
+            "User is allowed to %s (some of) their own user details"
+            % permission.lower ()
+        , properties  = tuple (props)
+        )
+    db.security.addPermissionToRole(role, p)
+# end def allow_user_details
+
 whitespace = re.compile ('(\s+)')
 
 def security_doc_from_docstring (doc) :

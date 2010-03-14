@@ -58,16 +58,7 @@ del sys.path [0:1]
 # to regular users now
 
 importer.update_security ()
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'user'
-    , check       = schemadef.own_user_record
-    , description = \
-        "User is allowed to edit (some of) their own user details"
-    , properties  = \
-        ('password', 'address', 'alternate_addresses', 'timezone', 'phone')
-    )
-db.security.addPermissionToRole('User', p)
+schemadef.allow_user_details (db, 'User', 'Edit')
 
 perms = [ ( "user", "View", ["User"]
           , ( "username"
@@ -84,4 +75,3 @@ schemadef.register_class_permissions (db, [], perms)
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
-#SHA: f6118fb5aa97dc121092fc0ebd4f379a6d3eacb1

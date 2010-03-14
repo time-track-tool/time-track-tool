@@ -226,23 +226,6 @@ def security (db, ** kw) :
     # HR should be able to create new users:
     db.security.addPermissionToRole ("HR", "Create", "user")
 
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'user'
-        , check       = schemadef.own_user_record
-        , description = \
-            "User is allowed to edit (some of) their own user details"
-        , properties  = \
-            ( 'password', 'realname', 'phone', 'private_phone', 'external_phone'
-            , 'quick_dialling', 'internal_phone', 'private_mobile'
-            , 'private_phone_visible', 'private_mobile_visible'
-            , 'substitute', 'subst_active', 'title', 'queries'
-            , 'lunch_start', 'lunch_duration', 'room', 'timezone'
-            , 'tt_lines'
-            )
-        )
-    db.security.addPermissionToRole('User', p)
-
     def private_phone_ok (db, userid, itemid) :
         """Determine whether the user wants private number to be accessed"""
         return db.user.get (itemid, 'private_phone_visible')

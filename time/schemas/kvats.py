@@ -57,16 +57,8 @@ del sys.path [0:1]
 # to regular users now
 
 importer.update_security ()
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'user'
-    , check       = schemadef.own_user_record
-    , description = \
-        "User is allowed to edit (some of) their own user details"
-    , properties  = \
-        ('password', 'address', 'alternate_addresses', 'timezone', 'phone')
-    )
-db.security.addPermissionToRole('User', p)
+schemadef.allow_user_details \
+    (db, 'User', 'Edit', 'address', 'alternate_addresses')
 
 perms = [ ( "user", "View", ["User"]
           , ( "username"

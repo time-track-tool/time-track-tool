@@ -51,15 +51,7 @@ importer.update_security ()
 
 classes = [("user", ["User"], [])]
 schemadef.register_class_permissions (db, classes, [])
-
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'user'
-    , check       = schemadef.own_user_record
-    , description = "User is allowed to edit their own user details"
-    , properties  = ('password', 'realname')
-    )
-db.security.addPermissionToRole('User', p)
+schemadef.allow_user_details         (db, 'User', 'Edit')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

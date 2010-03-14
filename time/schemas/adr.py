@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -26,7 +26,7 @@
 #    schema-it
 #
 # Purpose
-#    Specify the DB-Schema for a simple IT issue tracker.
+#    Specify the DB-Schema for a simple address tracker.
 #    Link this file to schema.py
 #--
 #
@@ -43,10 +43,14 @@ import schemadef
 schemas = \
     ( 'user'
     , 'address'
-    , 'adr_letter'
     , 'adr_ext'
     , 'adr_ptr'
     , 'adr_perm'
+    , 'person_adr'
+    , 'person'
+    , 'pers_ext'
+    , 'letter'
+    , 'pers_letter'
     , 'core'
     )
 
@@ -54,8 +58,8 @@ importer = schemadef.Importer (globals (), schemas)
 
 del sys.path [0:1]
 
-Letter_Class  (db, ''"letter")
-Address_Class (db, ''"address")
+Letter_Class (db, ''"letter")
+Person_Class (db, ''"address")
 
 importer.update_security ()
 

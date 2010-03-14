@@ -141,20 +141,6 @@ properties = \
         , 'url'
         ]
       )
-    , ( 'tmplate'
-      , [ 'files'
-        , 'name'
-        , 'tmplate_status'
-        ]
-      )
-    , ( 'tmplate_status'
-      , [ 'description'
-        , 'name'
-        , 'order'
-        , 'use_for_invoice'
-        , 'use_for_letter'
-        ]
-      )
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'

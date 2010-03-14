@@ -42,6 +42,10 @@ import schemadef
 schemas = \
     ( 'address'
     , 'adr_ext'
+    , 'person_adr'
+    , 'person'
+    , 'pers_ext'
+    , 'letter'
     , 'sinvoice'
     , 'erp'
     , 'core'
@@ -61,14 +65,7 @@ schemadef.register_class_permissions (db, classes, [])
 Class (db, ''"invoice")
 Class (db, ''"storage_location")
 
-p = db.security.addPermission \
-    ( name        = 'Edit'
-    , klass       = 'user'
-    , check       = schemadef.own_user_record
-    , description = "User is allowed to edit their own user details"
-    , properties  = ('password', 'realname')
-    )
-db.security.addPermissionToRole('User', p)
+schemadef.allow_user_details (db, 'User', 'Edit')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

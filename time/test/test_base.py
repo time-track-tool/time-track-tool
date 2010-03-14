@@ -34,6 +34,14 @@ from propl_it    import properties as properties_it
 from propl_itadr import properties as properties_itadr
 from propl_kvats import properties as properties_kvats
 
+from sec_abo     import security as security_abo
+from sec_adr     import security as security_adr
+from sec_erp     import security as security_erp
+from sec_full    import security as security_full
+from sec_it      import security as security_it
+from sec_itadr   import security as security_itadr
+from sec_kvats   import security as security_kvats
+
 from roundup     import instance, configuration, init, password, date
 from roundup.cgi import templating
 sys.path.insert (0, os.path.abspath ('lib'))
@@ -89,6 +97,8 @@ class _Test_Case (unittest.TestCase) :
     # end def setup_tracker
 
     def setUp (self) :
+        self.properties    = globals () ['properties_' + self.schemaname]
+        self.security_desc = globals () ['security_'   + self.schemaname]
         self.setup_tracker ()
     # end def setUp
 
@@ -103,19 +113,49 @@ class _Test_Case (unittest.TestCase) :
             shutil.rmtree (self.dirname)
     # end def tearDown
 
-    def test_schema (self) :
+    def test_1_schema (self) :
         self.db = self.tracker.open ('admin')
         classnames = sorted (self.db.getclasses ())
         for (cl, props), cls in zip (self.properties, classnames) :
             self.assertEqual (cl, cls)
             clprops = sorted (self.db.getclass (cls).properties.keys ())
             self.assertEqual (props, clprops)
-    # end def test_schema
+    # end def test_1_schema
+
+    def test_2_security (self) :
+        self.db = self.tracker.open ('admin')
+        secdesc = self.security_desc.split ('\n')
+        s = []
+        s.append (secdesc [0])
+        s.append (secdesc [1])
+        roles = sorted (list (self.db.security.role.items ()))
+        for rolename, role in roles :
+            s.append ('Role "%(name)s":' % role.__dict__)
+            perms = []
+            for permission in role.permissions :
+                d = permission.__dict__
+                if permission.klass :
+                    if permission.properties :
+                        perms.append \
+                            (' %(description)s (%(name)s for "%(klass)s"'
+                             ': %(properties)s only)'
+                            % d
+                            )
+                    else :
+                        perms.append \
+                            (' %(description)s (%(name)s for "%(klass)s" only)'
+                            % d
+                            )
+                else:
+                    perms.append (' %(description)s (%(name)s)' % d)
+            s.extend (sorted (dict.fromkeys (perms).keys ()))
+        for s1, s2 in zip (secdesc, s) :
+            self.assertEqual (s1, s2)
+    # end def test_2_security
 # end class _Test_Case
 
 class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
-    properties = properties_full
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.org = self.db.organisation.create \
@@ -737,32 +777,26 @@ class Test_Case_Timetracker (_Test_Case) :
 
 class Test_Case_ERP (_Test_Case) :
     schemaname = 'erp'
-    properties = properties_erp
 # end class Test_Case_ERP
 
 class Test_Case_Adr (_Test_Case) :
     schemaname = 'adr'
-    properties = properties_adr
 # end class Test_Case_Adr
 
 class Test_Case_Abo (_Test_Case) :
     schemaname = 'abo'
-    properties = properties_abo
 # end class Test_Case_Abo
 
 class Test_Case_IT (_Test_Case) :
     schemaname = 'it'
-    properties = properties_it
 # end class Test_Case_IT
 
 class Test_Case_ITAdr (_Test_Case) :
     schemaname = 'itadr'
-    properties = properties_itadr
 # end class Test_Case_ITAdr
 
 class Test_Case_Kvats (_Test_Case) :
     schemaname = 'kvats'
-    properties = properties_kvats
 # end class Test_Case_Kvats
 
 def test_suite () :

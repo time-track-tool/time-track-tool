@@ -83,6 +83,7 @@ properties = \
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'
+        , 'csv_delimiter'
         , 'password'
         , 'phone'
         , 'queries'

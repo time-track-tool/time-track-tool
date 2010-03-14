@@ -122,6 +122,7 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
+schemadef.allow_user_details         (db, 'User', 'Edit')
 # the following is further checked in an auditor:
 db.security.addPermissionToRole ('User', 'Create', 'time_wp')
 

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2007 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2007-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -29,56 +29,21 @@
 
 import schemadef
 
-def init \
-    ( db
-    , Address_Class
-    , Class
-    , Date
-    , Link
-    , Multilink
-    , Number
-    , String
-    , ** kw
-    ) :
+def init (db, Person_Class, Date, ** kw) :
     export   = {}
 
-    class Ext_Address_Class (Address_Class) :
-        """ Create address class with additional default attributes from
-            standard Address Class.
+    class Ext_Person_Class (Person_Class) :
+        """ Create person class with additional default attributes from
+            standard Person Class.
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( opening_hours       = Multilink ("opening_hours")
+                ( birthdate           = Date      ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
-    # end class Ext_Address_Class
+    # end class Ext_Person_Class
 
-    weekday = Class \
-        ( db, ''"weekday"
-        , name                = String    ()
-        , order               = Number    ()
-        )
-    weekday.setkey ("name")
-
-    opening_hours = Class \
-        ( db, ''"opening_hours"
-        , weekday             = Link      ("weekday")
-        , from_hour           = Number    ()
-        , from_minute         = Number    ()
-        , to_hour             = Number    ()
-        , to_minute           = Number    ()
-        )
-
-    export ['Address_Class'] = Ext_Address_Class
+    export ['Person_Class'] = Ext_Person_Class
     return export
 # end def init
-
-def security (db, ** kw) :
-    classes = \
-        [ ("opening_hours"     , ["User"],    ["Contact"])
-        , ("weekday"           , ["User"],    [])
-        ]
-
-    schemadef.register_class_permissions (db, classes, [])
-# end def security

@@ -33,7 +33,6 @@ import schemadef
 def init \
     ( db
     , Class
-    , Ext_Class
     , String
     , Date
     , Link
@@ -42,7 +41,7 @@ def init \
     , Number
     , Min_Issue_Class
     , Nosy_Issue_Class
-    , Address_Class
+    , Person_Class
     , Letter_Class
     , ** kw
     ) :
@@ -271,7 +270,7 @@ def init \
         )
     supplier_status.setkey ("name")
 
-    Address_Class \
+    Person_Class \
         ( db, ''"address"
         )
 

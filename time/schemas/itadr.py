@@ -46,6 +46,9 @@ schemas = \
     , 'address'
     , 'adr_ext'
     , 'adr_perm'
+    , 'person_adr'
+    , 'person'
+    , 'pers_ext'
     , 'core'
     )
 
@@ -53,7 +56,7 @@ importer = schemadef.Importer (globals (), schemas)
 
 del sys.path [0:1]
 
-Address_Class (db, ''"address")
+Person_Class (db, ''"address")
 
 importer.update_security ()
 

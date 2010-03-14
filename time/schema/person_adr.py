@@ -22,31 +22,16 @@
 # ****************************************************************************
 #++
 # Name
-#    adr_ptr
+#    person_adr
 #
 # Purpose
-#    Schema definitions for pointer to another address
+#    Schema definitions for extending address with person attributes
 
 import schemadef
 
-def init (db, Address_Class, Multilink, ** kw) :
+def init (db, Address_Class, ** kw) :
     export   = {}
 
-    class Letter_Address_Class (Address_Class) :
-        """ Create address class with additional default attributes from
-            standard Address Class.
-        """
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties (letters = Multilink ("letter"))
-
-            self.__super.__init__  (db, classname, ** properties)
-        # end def __init__
-    # end class Ptr_Address_Class
-
-    export ['Address_Class'] = Letter_Address_Class
+    export ['Person_Class'] = Address_Class
     return export
 # end def init
-
-def security (db, ** kw) :
-    pass
-# end def security

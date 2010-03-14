@@ -61,26 +61,8 @@ def security (db, ** kw) :
         ]
 
     schemadef.register_class_permissions (db, classes, prop_perms)
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'user'
-        , check       = schemadef.own_user_record
-        , description = \
-            "User is allowed to edit (some of) their own user details"
-        , properties  = ('password', 'phone', 'csv_delimiter'
-                        , 'timezone', 'address', 'alternate_addresses'
-                        )
-        )
-    db.security.addPermissionToRole ('User', p)
-    db.security.addPermissionToRole ('Adr_Readonly', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'user'
-        , check       = schemadef.own_user_record
-        , description = \
-            "User is allowed to view (some of) their own user details"
-        , properties  = ('username', 'realname')
-        )
-    db.security.addPermissionToRole ('User', p)
-    db.security.addPermissionToRole ('Adr_Readonly', p)
+    schemadef.allow_user_details \
+        (db, 'User',         'Edit', 'address', 'alternate_addresses')
+    schemadef.allow_user_details \
+        (db, 'Adr_Readonly', 'Edit', 'address', 'alternate_addresses')
 # end def security

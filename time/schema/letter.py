@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2007 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2007-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,17 +22,18 @@
 # ****************************************************************************
 #++
 # Name
-#    adr_ext
+#    letter
 #
 # Purpose
-#    Schema definitions for extended address
+#    Schema definitions for letter
 
 import schemadef
 
 def init \
     ( db
-    , Address_Class
     , Class
+    , Min_Issue_Class
+    , Boolean
     , Date
     , Link
     , Multilink
@@ -42,43 +43,57 @@ def init \
     ) :
     export   = {}
 
-    class Ext_Address_Class (Address_Class) :
-        """ Create address class with additional default attributes from
-            standard Address Class.
+    class Letter_Class (Min_Issue_Class) :
+        """ Create letter class with default attributes, may be
+            extended by other definitions.
+            The file types are either PDF (from old imported data) or an
+            OpenOffice.org document which is cusomized using info
+            pointed to with invoice and/or address.
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( opening_hours       = Multilink ("opening_hours")
+                ( subject             = String    ()
+                , address             = Link      ("address")
+                , date                = Date      ()
                 )
             self.__super.__init__ (db, classname, ** properties)
+            self.setlabelprop ('subject')
         # end def __init__
-    # end class Ext_Address_Class
+    # end class Letter_Class
+    export.update (dict (Letter_Class = Letter_Class))
 
-    weekday = Class \
-        ( db, ''"weekday"
+    tmplate_status = Class \
+        ( db, ''"tmplate_status"
         , name                = String    ()
         , order               = Number    ()
+        , description         = String    ()
+        , use_for_invoice     = Boolean   ()
+        , use_for_letter      = Boolean   ()
         )
-    weekday.setkey ("name")
+    tmplate_status.setkey (''"name")
 
-    opening_hours = Class \
-        ( db, ''"opening_hours"
-        , weekday             = Link      ("weekday")
-        , from_hour           = Number    ()
-        , from_minute         = Number    ()
-        , to_hour             = Number    ()
-        , to_minute           = Number    ()
+    tmplate = Class \
+        ( db, ''"tmplate"
+        , name                = String    ()
+        # version control, use latest:
+        , files               = Multilink ("file", do_journal='no')
+        , tmplate_status      = Link      ("tmplate_status")
         )
+    tmplate.setkey (''"name")
 
-    export ['Address_Class'] = Ext_Address_Class
     return export
 # end def init
 
 def security (db, ** kw) :
-    classes = \
-        [ ("opening_hours"     , ["User"],    ["Contact"])
-        , ("weekday"           , ["User"],    [])
+    roles = \
+        [ ("Letter"        , "Allowed to add/change templates and letters")
         ]
 
+    classes = \
+        [ ("tmplate"           , ["User"],                    ["Letter"])
+        , ("tmplate_status"    , ["User"],                    [])
+        ]
+
+    schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
 # end def security

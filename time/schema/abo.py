@@ -33,7 +33,7 @@ import schemadef
 def init \
     ( db
     , Class
-    , Address_Class
+    , Person_Class
     , Invoice_Class
     , Letter_Class
     , String
@@ -80,7 +80,7 @@ def init \
         )
     abo_type.setkey (''"name")
 
-    Address_Class \
+    Person_Class \
         ( db, ''"address"
         , abos                = Multilink ("abo")
         , payed_abos          = Multilink ("abo")

@@ -42,6 +42,7 @@ import schemadef
 # Note: order matters, core is always last.
 schemas = \
     ( 'it_tracker'
+    , 'user'
     , 'core'
     )
 
@@ -78,6 +79,8 @@ prop_perms = \
     ]
 
 schemadef.register_class_permissions (db, classes, prop_perms)
+schemadef.allow_user_details \
+    (db, 'User', 'Edit', 'address', 'alternate_addresses')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
