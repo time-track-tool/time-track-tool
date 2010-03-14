@@ -30,6 +30,7 @@ from propl_abo   import properties as properties_abo
 from propl_adr   import properties as properties_adr
 from propl_erp   import properties as properties_erp
 from propl_full  import properties as properties_full
+from propl_itadr import properties as properties_itadr
 from propl_kvats import properties as properties_kvats
 
 from roundup     import instance, configuration, init, password, date
@@ -748,6 +749,11 @@ class Test_Case_Abo (_Test_Case) :
     properties = properties_abo
 # end class Test_Case_Abo
 
+class Test_Case_ITAdr (_Test_Case) :
+    schemaname = 'itadr'
+    properties = properties_itadr
+# end class Test_Case_ITAdr
+
 class Test_Case_Kvats (_Test_Case) :
     schemaname = 'kvats'
     properties = properties_kvats
@@ -758,6 +764,7 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_Abo))
     suite.addTest (unittest.makeSuite (Test_Case_Adr))
     suite.addTest (unittest.makeSuite (Test_Case_ERP))
+    suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
