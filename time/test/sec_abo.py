@@ -1,3 +1,4 @@
+security = """
 New Web users get the Role "User"
 New Email users get the Role "User"
 Role "abo":
@@ -152,3 +153,4 @@ Role "user":
  User is allowed to create queries (Create for "query" only)
  User may access the web interface (Web Access)
  User may use the email interface (Email Access)
+""".strip ()
