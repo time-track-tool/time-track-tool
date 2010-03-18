@@ -1,28 +1,15 @@
 properties = \
     [ ( 'address'
       , [ 'adr_type'
-        , 'affix'
-        , 'birthdate'
         , 'city'
-        , 'contacts'
         , 'country'
         , 'files'
-        , 'firstname'
-        , 'function'
-        , 'initial'
-        , 'lastname'
-        , 'lettertitle'
         , 'lookalike_city'
-        , 'lookalike_firstname'
-        , 'lookalike_function'
-        , 'lookalike_lastname'
         , 'lookalike_street'
         , 'messages'
         , 'opening_hours'
         , 'postalcode'
-        , 'salutation'
         , 'street'
-        , 'title'
         , 'valid'
         ]
       )
@@ -48,10 +35,10 @@ properties = \
         ]
       )
     , ( 'contact'
-      , [ 'address'
-        , 'contact'
+      , [ 'contact'
         , 'contact_type'
         , 'description'
+        , 'person'
         ]
       )
     , ( 'contact_type'
@@ -69,16 +56,15 @@ properties = \
     , ( 'cust_supp'
       , [ 'attendant'
         , 'bank_account'
-        , 'contact_person'
         , 'credit_limit'
         , 'currency'
         , 'customer_group'
         , 'customer_status'
+        , 'customer_type'
         , 'description'
         , 'discount_group'
         , 'dispatch_type'
         , 'files'
-        , 'invoice_address'
         , 'invoice_dispatch'
         , 'invoice_text'
         , 'messages'
@@ -87,10 +73,8 @@ properties = \
         , 'order_text'
         , 'pharma_ref'
         , 'sales_conditions'
-        , 'shipping_address'
         , 'supplier_group'
         , 'supplier_status'
-        , 'supply_address'
         , 'tax_id'
         ]
       )
@@ -106,6 +90,11 @@ properties = \
         , 'name'
         , 'order'
         , 'valid'
+        ]
+      )
+    , ( 'customer_type'
+      , [ 'code'
+        , 'description'
         ]
       )
     , ( 'discount_group'
@@ -196,6 +185,34 @@ properties = \
         , 'date_payed'
         , 'invoice'
         , 'receipt_no'
+        ]
+      )
+    , ( 'person'
+      , [ 'address'
+        , 'affix'
+        , 'birthdate'
+        , 'contacts'
+        , 'cust_supp'
+        , 'description'
+        , 'files'
+        , 'firstname'
+        , 'function'
+        , 'initial'
+        , 'lastname'
+        , 'lettertitle'
+        , 'lookalike_firstname'
+        , 'lookalike_function'
+        , 'lookalike_lastname'
+        , 'messages'
+        , 'person_type'
+        , 'salutation'
+        , 'title'
+        ]
+      )
+    , ( 'person_type'
+      , [ 'description'
+        , 'name'
+        , 'order'
         ]
       )
     , ( 'pharma_ref'

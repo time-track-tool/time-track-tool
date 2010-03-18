@@ -7,12 +7,82 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2008-10-17 23:17+0200\n"
+"POT-Creation-Date: 2010-03-16 16:53+0100\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+msgid "No negative times are allowed"
+msgstr ""
+
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be set"
+msgstr ""
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -91,11 +161,19 @@ msgid "An effort estimation is required for issues to skip analyzing"
 msgstr ""
 
 #, python-format
-msgid "'%s' is not a valid user!"
+msgid "'%s' is not a valid user (need 'Nosy' role)!"
 msgstr ""
 
 #, python-format
 msgid "The field \"%s\" must remain filled."
+msgstr ""
+
+#, python-format
+msgid "You may link only to your own %(cls)s"
+msgstr ""
+
+#, python-format
+msgid "You may not unlink %(cls)s from %(name)s"
 msgstr ""
 
 #, python-format
@@ -116,10 +194,6 @@ msgstr ""
 
 #, python-format
 msgid "Thawed freeze records before %(date)s"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s must be set"
 msgstr ""
 
 msgid "Freezing only for dates >= 10 days in the past"
@@ -150,12 +224,15 @@ msgstr ""
 msgid "Selected department has no document number"
 msgstr ""
 
+#, python-format
+msgid "Malformed %s: Only %s allowed"
+msgstr ""
+
+msgid "Change to \"released\": user must be different from change to \"draft\""
+msgstr ""
+
 msgid "product_group"
 msgstr "Product group"
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr ""
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -188,10 +265,13 @@ msgstr ""
 msgid "New issue may not define \"%s\""
 msgstr ""
 
-msgid "You may not change container status"
+msgid "May not be part of Obsolete or Mistaken container"
 msgstr ""
 
-msgid "May not be part of Obsolete or Mistaken container"
+msgid "Parent container must be in state open or closed"
+msgstr ""
+
+msgid "Tried to make this issue part of a closed issue"
 msgstr ""
 
 msgid "Containers may not be Obsolete/Mistaken"
@@ -335,68 +415,6 @@ msgstr ""
 msgid "summary_report"
 msgstr "Summary Report"
 
-msgid "start and end must be on same day and start <= end."
-msgstr ""
-
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-msgid "No negative times are allowed"
-msgstr ""
-
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr ""
-
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-msgid "start"
-msgstr "Start"
-
-msgid "Either specify duration or start/end"
-msgstr ""
-
-#, python-format
-msgid "%s: You specified new values for %s but no duration"
-msgstr ""
-
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-msgid "No weekend booking allowed"
-msgstr ""
-
-msgid "Distribution: WP must be given"
-msgstr ""
-
-msgid "dist must not exceed sum of unassigned times in week"
-msgstr ""
-
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
@@ -528,12 +546,6 @@ msgstr ""
 msgid "Status of this address"
 msgstr ""
 
-msgid "Type of Address"
-msgstr ""
-
-msgid "Code of this %(Classname)s."
-msgstr ""
-
 msgid ""
 "The address type category with\n"
 "         code \"ABO\" is special: It is used by the system for marking all\n"
@@ -541,6 +553,12 @@ msgid ""
 "         of running abos. Therefore the address type category with code\n"
 "         \"ABO\" may not be deleted or changed.\n"
 "      "
+msgstr ""
+
+msgid "City where this person lives."
+msgstr ""
+
+msgid "Code of this %(Classname)s."
 msgstr ""
 
 msgid ""
@@ -577,13 +595,16 @@ msgid ""
 "      "
 msgstr ""
 
-msgid "First name for this %(Classname)s, e.g., Ralf"
+msgid "First name for this %(Classname)s, e.g., Ralf."
 msgstr ""
 
 msgid ""
 "Multiline field for this %(Classname)s, will be printed on an\n"
 "         address label\n"
 "      "
+msgstr ""
+
+msgid "Type of %(Classname)s"
 msgstr ""
 
 msgid "Green start/end times have been created by the distribute function."
@@ -602,12 +623,6 @@ msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
 msgstr ""
 
 msgid "Leave this field empty if unsure."
-msgstr ""
-
-msgid ""
-"%(Property)s for searching: Search for similar names: only\n"
-"         non-accented lowercase characters are possible when searching\n"
-"      "
 msgstr ""
 
 msgid ""
@@ -658,6 +673,9 @@ msgid ""
 "Status of this %(Classname)s. Automatically set on a new\n"
 "         %(Classname)s if not set.\n"
 "      "
+msgstr ""
+
+msgid "Street for this %(Classname)s."
 msgstr ""
 
 msgid ""
@@ -850,7 +868,10 @@ msgstr ""
 msgid "artefact"
 msgstr "Artefact type"
 
-msgid "The artefact type"
+msgid ""
+"Defines the detailled characteristic, e.g Project Plan,\n"
+"            Manual, Specification etc.\n"
+"         "
 msgstr ""
 
 msgid "author"
@@ -953,9 +974,6 @@ msgstr ""
 
 msgid "city"
 msgstr "City"
-
-msgid "City where this person lives"
-msgstr ""
 
 msgid "clearance_by"
 msgstr "Approval delegated to"
@@ -1067,6 +1085,12 @@ msgstr ""
 
 msgid "creator"
 msgstr "Creator"
+
+msgid "Delimiter for CSV export"
+msgstr ""
+
+msgid "csv_delimiter"
+msgstr "CSV delimiter"
 
 msgid "Currency for this %(Classname)s"
 msgstr ""
@@ -1219,6 +1243,47 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "doc++responsible"
+msgstr "Owner"
+
+msgid ""
+"Owner of this %(Classname)s. Depending on the state, this\n"
+"            shall be the author of the %(Classname)s or the reponsible\n"
+"            person for review/release of the %(Classname)s.\n"
+"         "
+msgstr ""
+
+msgid "doc++link"
+msgstr "Link/CVS/SVN location"
+
+msgid "The location of the file in the repository or on the file server"
+msgstr ""
+
+msgid "doc++status"
+msgstr "Status"
+
+msgid ""
+"The status of the item. Can be one of \"work in progress\",\n"
+"             \"draft\", \"released\" and \"obsolete\". The latter will cause "
+"the\n"
+"             item to not be displayed in the standard query.\n"
+"             For allowed transitions, see the Transistions column in the\n"
+"             <a href=doc_status>Artefact Status</a> page.\n"
+"          "
+msgstr ""
+
+msgid "doc++title"
+msgstr "Title"
+
+msgid ""
+"Should be an intuitive one-line description of the %(Classname)s\n"
+"             consisting of the &lt;short name&gt; and the &lt;long "
+"name&gt;. \n"
+"             Example for a title:\n"
+"             \"ASDM Automotive Software Development Manual\".\n"
+"          "
+msgstr ""
+
 msgid "document_nr"
 msgstr "Artefact number"
 
@@ -1226,7 +1291,7 @@ msgid ""
 "The %(Property)s is generated when the %(Classname)s is\n"
 "             created. It can be manually overwritten for an old %(Classname)"
 "s\n"
-"             that already has a %(Property)s assigned.\n"
+"             that already has an %(Property)s assigned.\n"
 "          "
 msgstr ""
 
@@ -1284,13 +1349,12 @@ msgid ""
 "             %(Classname)s. Be sure to set it for Change-Requests\n"
 "             because otherwise one (1!) day will be used as a rough\n"
 "             guess for the planning procedure -- which -- in most\n"
-"             circumstances -- will NOT be sufficient. The format is\n"
-"             checked and should be *a number* followed by either *P* or\n"
-"             *M* which stands for *People* or *Man*, directly followed\n"
-"             by *D*, *W*, or *M* for *Day*, *Week*, or *Month*,\n"
-"             respectively. Optionally the person who estimated can be\n"
-"             specified in parenthesis, e.g, *15 PD (priesch)* means: 15\n"
-"             PeopleDays estimated by priesch.\n"
+"             circumstances -- will NOT be sufficient. The unit is in\n"
+"             person days. One person year = 10 person months, one person\n"
+"             month = 4 person weeks, one person week = 5 person days.\n"
+"             Note that the contents of this field will be rounded to the\n"
+"             next integer, only full days make sense for the work-time\n"
+"             estimates.\n"
 "          "
 msgstr ""
 
@@ -1334,7 +1398,7 @@ msgstr ""
 msgid "filename_format"
 msgstr "Filename format"
 
-msgid "Template for file names used for this %(Classname)s"
+msgid "Naming convention for a Filename"
 msgstr ""
 
 msgid "files"
@@ -1508,21 +1572,6 @@ msgstr "Payer Last name"
 msgid "invoice.payer.function"
 msgstr "Payer Address details"
 
-msgid "invoice.payer.lookalike_firstname"
-msgstr "Payer First name"
-
-msgid "invoice.payer.lookalike_lastname"
-msgstr "Payer Last name"
-
-msgid "invoice.payer.lookalike_city"
-msgstr "Payer City"
-
-msgid "invoice.payer.lookalike_street"
-msgstr "Payer Street"
-
-msgid "invoice.payer.lookalike_function"
-msgstr "Payer Address details"
-
 msgid "invoice.payer.valid"
 msgstr "Payer valid"
 
@@ -1531,21 +1580,6 @@ msgstr "Subscriber First name"
 
 msgid "invoice.subscriber.lastname"
 msgstr "Subscriber Last name"
-
-msgid "invoice.subscriber.lookalike_firstname"
-msgstr "Subscriber First name"
-
-msgid "invoice.subscriber.lookalike_lastname"
-msgstr "Subscriber Last name"
-
-msgid "invoice.subscriber.lookalike_city"
-msgstr "Subscriber City"
-
-msgid "invoice.subscriber.lookalike_street"
-msgstr "Subscriber Street"
-
-msgid "invoice.subscriber.lookalike_function"
-msgstr "Subscriber Address details"
 
 msgid "invoice.subscriber.valid"
 msgstr "Subscriber valid"
@@ -1624,6 +1658,17 @@ msgid ""
 "             dependencies of work packages (e.g. start b after a has\n"
 "             finished on a given date)!!! -- This is done automatically\n"
 "             by the planning tool via the Depends and Part Of fields.\n"
+"          "
+msgstr ""
+
+msgid "issue++title"
+msgstr "Title"
+
+msgid ""
+"Should be an intuitive one-line description of the %(Classname)s.\n"
+"             Since titles of Roundup issues are also extracted into SCI\n"
+"             documents, start with a capital letter, and type all other\n"
+"             letters in lowercase, except names and references.\n"
 "          "
 msgstr ""
 
@@ -1711,23 +1756,6 @@ msgid "lettertitle"
 msgstr "Letter-title"
 
 msgid "Title of this person used in a letter"
-msgstr ""
-
-msgid "doc++link"
-msgstr "Link/CVS/SVN location"
-
-msgid "The location of the file in the repository or on the file server"
-msgstr ""
-
-msgid "doc++status"
-msgstr "Status"
-
-msgid ""
-"The status of the item. Can be one of \"work in progress\",\n"
-"             \"draft\", \"released\" and \"obsolete\". The latter will cause "
-"the\n"
-"             item to not be displayed in the standard query.\n"
-"          "
 msgstr ""
 
 msgid "link_field"
@@ -2095,15 +2123,6 @@ msgstr "Payer First name"
 msgid "payer.lastname"
 msgstr "Payer Last name"
 
-msgid "payer.lookalike_lastname"
-msgstr "Payer Last name"
-
-msgid "payer.lookalike_firstname"
-msgstr "Payer First name"
-
-msgid "payer.lookalike_function"
-msgstr "Payer Address details"
-
 msgid "payer.valid"
 msgstr "Payer valid"
 
@@ -2138,6 +2157,12 @@ msgid "period_start"
 msgstr "Period Start"
 
 msgid "Date when this invoice period starts"
+msgstr ""
+
+msgid "person"
+msgstr "personal address"
+
+msgid "personal Information for this %(Classname)s"
 msgstr ""
 
 msgid "phone"
@@ -2279,7 +2304,11 @@ msgstr ""
 msgid "reference"
 msgstr "Artefact reference"
 
-msgid "Defines the relation to a project, customer, etc."
+msgid ""
+"Defines the relation to a project, customer, etc. If\n"
+"            necessary, this entry is defined for new customers and/or\n"
+"            products when the project starts.\n"
+"         "
 msgstr ""
 
 msgid "relaxed"
@@ -2626,9 +2655,6 @@ msgstr ""
 msgid "street"
 msgstr "Street"
 
-msgid "Street for this %(Classname)s"
-msgstr ""
-
 msgid "subject"
 msgstr "Subject"
 
@@ -2648,15 +2674,6 @@ msgid "subscriber.lastname"
 msgstr "Subscriber Last name"
 
 msgid "subscriber.function"
-msgstr "Subscriber Address details"
-
-msgid "subscriber.lookalike_firstname"
-msgstr "Subscriber First name"
-
-msgid "subscriber.lookalike_lastname"
-msgstr "Subscriber Last name"
-
-msgid "subscriber.lookalike_function"
 msgstr "Subscriber Address details"
 
 msgid "subscriber.valid"
@@ -2895,20 +2912,11 @@ msgstr "Timezone"
 msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
 msgstr ""
 
-msgid "doc++title"
-msgstr "Title"
-
-msgid "issue++title"
-msgstr "Title"
-
 msgid "title"
 msgstr "Title"
 
 msgid ""
 "Should be an intuitive one-line description of the %(Classname)s.\n"
-"             Since titles of Roundup issues are also extracted into SCI\n"
-"             documents, start with a capital letter, and type all other\n"
-"             letters in lowercase, except names and references.\n"
 "          "
 msgstr ""
 
@@ -3347,6 +3355,12 @@ msgstr "Export Addresses"
 msgid "export legacy"
 msgstr "Legacy Adr. Format"
 
+msgid "New ${Classname}"
+msgstr ""
+
+msgid "x"
+msgstr ""
+
 msgid "-- tmplates --"
 msgstr ""
 
@@ -3356,26 +3370,17 @@ msgstr ""
 msgid "New Letter for ${lastname}"
 msgstr ""
 
-msgid "${classname_id} created by ${creator}"
+msgid "Child addresses"
 msgstr ""
 
-msgid "New ${Classname}"
+msgid "new child address"
+msgstr ""
+
+msgid "${classname_id} created by ${creator}"
 msgstr ""
 
 msgid "number"
 msgstr "Number"
-
-msgid "<span nowrap></span> <span nowrap></span>"
-msgstr ""
-
-msgid "new invoice address"
-msgstr ""
-
-msgid "copy invoice address"
-msgstr ""
-
-msgid "new shipping address"
-msgstr ""
 
 msgid "Approvals pending"
 msgstr ""
@@ -3402,6 +3407,12 @@ msgid "Freeze team"
 msgstr ""
 
 msgid "Freeze user"
+msgstr ""
+
+msgid "${classname_id} owned by ${responsible}"
+msgstr ""
+
+msgid "BibTeX"
 msgstr ""
 
 msgid "Welcome"
@@ -3561,6 +3572,15 @@ msgstr ""
 msgid "Update view & store NEW query"
 msgstr ""
 
+msgid "<span nowrap></span> <span nowrap></span>"
+msgstr ""
+
+msgid "New ${Name}"
+msgstr ""
+
+msgid "<span nowrap></span>"
+msgstr ""
+
 msgid "\"My Queries\" Editing - ${tracker}"
 msgstr ""
 
@@ -3617,6 +3637,28 @@ msgstr "New Dynamic User Data"
 
 msgid "split user_dynamic record"
 msgstr "Split frozen dynamic user data"
+
+#, fuzzy
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+#, fuzzy
+msgid "shipping"
+msgstr "Shipping address"
+
+#, fuzzy
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+#, fuzzy
+msgid "supply"
+msgstr "Supply Address"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr ""
+
+msgid "Address of a personal contact"
+msgstr ""
 
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
@@ -3688,6 +3730,9 @@ msgstr "IT-Issue status"
 
 msgid "it_project_status"
 msgstr "IT-Project status"
+
+msgid "legalclient"
+msgstr ""
 
 msgid "pdc"
 msgstr "Primary domain controller"
@@ -3869,6 +3914,9 @@ msgstr "Estimated Begin"
 msgid "estimated_end"
 msgstr "Estimated End"
 
+msgid "effort"
+msgstr "Effort"
+
 msgid "defect"
 msgstr "Defect"
 
@@ -3939,34 +3987,31 @@ msgstr "from hour"
 msgid "to_hour"
 msgstr "to hour"
 
+msgid "person_type"
+msgstr "Person type"
+
 msgid "abo_price"
 msgstr ""
 
 msgid "abo_type"
 msgstr "Subscription type"
 
-msgid "lookalike_street"
-msgstr "Street"
+msgid "lookalike_function"
+msgstr "Address details"
 
 msgid "contacts"
 msgstr "Contacts"
 
+msgid "cust_supp"
+msgstr "Customer/Supplier"
+
 msgid "lookalike_lastname"
 msgstr "Last name"
-
-msgid "lookalike_city"
-msgstr "City"
 
 msgid "lookalike_firstname"
 msgstr "First name"
 
-msgid "lookalike_function"
-msgstr "Address details"
-
 msgid "amount_payed"
-msgstr ""
-
-msgid "legalclient"
 msgstr ""
 
 msgid "bank_account"
@@ -3986,9 +4031,6 @@ msgstr "IBAN"
 
 msgid "bank"
 msgstr "Bank"
-
-msgid "cust_supp"
-msgstr "Customer/Supplier"
 
 msgid "supplier_status"
 msgstr "Supplier Status"
@@ -4017,9 +4059,6 @@ msgstr ""
 msgid "tax_id"
 msgstr "Tax ID"
 
-msgid "supply_address"
-msgstr "Supply Address"
-
 msgid "credit_limit"
 msgstr ""
 
@@ -4029,17 +4068,11 @@ msgstr "Customer Group"
 msgid "sales_conditions"
 msgstr "Sales conditions"
 
-msgid "invoice_address"
-msgstr "Invoice address"
-
-msgid "shipping_address"
-msgstr "Shipping address"
+msgid "customer_type"
+msgstr "Customer Type"
 
 msgid "dispatch_type"
 msgstr ""
-
-msgid "contact_person"
-msgstr "Contact person"
 
 msgid "group_discount"
 msgstr ""
@@ -4110,6 +4143,12 @@ msgstr ""
 msgid "lot"
 msgstr "Lot number"
 
+msgid "lookalike_street"
+msgstr "Street"
+
+msgid "lookalike_city"
+msgstr "City"
+
 msgid "doc_status"
 msgstr "Artefact Status"
 
@@ -4118,6 +4157,9 @@ msgstr "Artefact record"
 
 msgid "link"
 msgstr "Link/CVS location"
+
+msgid "state_changed_by"
+msgstr ""
 
 msgid "file"
 msgstr "File"
@@ -4156,8 +4198,77 @@ msgid ""
 "item with %(perm)s permission"
 msgstr ""
 
-msgid "doc++responsible"
-msgstr "Owner"
+#~ msgid "invoice.payer.lookalike_firstname"
+#~ msgstr "Payer First name"
 
-msgid "csv_delimiter"
-msgstr "CSV delimiter"
+#~ msgid "invoice.payer.lookalike_lastname"
+#~ msgstr "Payer Last name"
+
+#~ msgid "invoice.payer.lookalike_city"
+#~ msgstr "Payer City"
+
+#~ msgid "invoice.payer.lookalike_street"
+#~ msgstr "Payer Street"
+
+#~ msgid "invoice.payer.lookalike_function"
+#~ msgstr "Payer Address details"
+
+#~ msgid "invoice.subscriber.lookalike_firstname"
+#~ msgstr "Subscriber First name"
+
+#~ msgid "invoice.subscriber.lookalike_lastname"
+#~ msgstr "Subscriber Last name"
+
+#~ msgid "invoice.subscriber.lookalike_city"
+#~ msgstr "Subscriber City"
+
+#~ msgid "invoice.subscriber.lookalike_street"
+#~ msgstr "Subscriber Street"
+
+#~ msgid "invoice.subscriber.lookalike_function"
+#~ msgstr "Subscriber Address details"
+
+#~ msgid "payer.lookalike_lastname"
+#~ msgstr "Payer Last name"
+
+#~ msgid "payer.lookalike_firstname"
+#~ msgstr "Payer First name"
+
+#~ msgid "payer.lookalike_function"
+#~ msgstr "Payer Address details"
+
+#~ msgid "person.lookalike_firstname"
+#~ msgstr "Subscriber First name"
+
+#~ msgid "person.lookalike_lastname"
+#~ msgstr "Subscriber Last name"
+
+#~ msgid "person.lookalike_function"
+#~ msgstr "Subscriber Address details"
+
+#~ msgid "address.lookalike_firstname"
+#~ msgstr "Subscriber First name"
+
+#~ msgid "address.lookalike_lastname"
+#~ msgstr "Subscriber Last name"
+
+#~ msgid "address.lookalike_function"
+#~ msgstr "Subscriber Address details"
+
+#~ msgid "address.lookalike_city"
+#~ msgstr "Subscriber Address details"
+
+#~ msgid "address.lookalike_street"
+#~ msgstr "Subscriber Address details"
+
+#~ msgid "subscriber.lookalike_firstname"
+#~ msgstr "Subscriber First name"
+
+#~ msgid "subscriber.lookalike_lastname"
+#~ msgstr "Subscriber Last name"
+
+#~ msgid "subscriber.lookalike_function"
+#~ msgstr "Subscriber Address details"
+
+#~ msgid "contact_person"
+#~ msgstr "Contact person"

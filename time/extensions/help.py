@@ -47,8 +47,6 @@ range_help = Structured_Text (Range.__doc__)
 academic_title     = \
     ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
 address_valid      = ""'''Status of this address'''
-adr_type           = ""'''Type of Address'''
-code               = ""'''Code of this %(Classname)s.'''
 adr_type_cat_code  = \
     ""'''The address type category with
          code "ABO" is special: It is used by the system for marking all
@@ -56,6 +54,8 @@ adr_type_cat_code  = \
          of running abos. Therefore the address type category with code
          "ABO" may not be deleted or changed.
       '''
+city               = ""'''City where this person lives.'''
+code               = ""'''Code of this %(Classname)s.'''
 daily_hours        = \
     ""'''Expected daily work-time for %(Classname)s for each day of
          the week. If nothing is specified, the average of Weekly
@@ -84,11 +84,12 @@ extension          = \
          valid external phone number.
       '''
 firstname          = \
-    ""'''First name for this %(Classname)s, e.g., Ralf'''
+    ""'''First name for this %(Classname)s, e.g., Ralf.'''
 function           = \
     ""'''Multiline field for this %(Classname)s, will be printed on an
          address label
       '''
+generic_type       = ""'''Type of %(Classname)s'''
 green              = \
     ""'''Green start/end times have been created by the distribute function.'''
 help_id            = \
@@ -101,10 +102,6 @@ lastname           = \
     ""'''Last name for this %(Classname)s, e.g., Schlatterbeck'''
 leave_empty        = \
     ""'''Leave this field empty if unsure.'''
-lookalike_name     = \
-    ""'''%(Property)s for searching: Search for similar names: only
-         non-accented lowercase characters are possible when searching
-      '''
 keywords           = \
     ""'''Some %(Property)s for tagging your issue -- can be useful
          for querying.
@@ -150,6 +147,7 @@ status             = \
     ""'''Status of this %(Classname)s. Automatically set on a new
          %(Classname)s if not set.
       '''
+street             = ""'''Street for this %(Classname)s.'''
 superseder         = \
     ""'''This %(Classname)s has been closed as a duplicate against
          another %(Classname)s.
@@ -182,7 +180,7 @@ _helptext          = \
     , ""'abotype'                     :
       [""'''Type of this subscription''']
     , ""'abo_type++adr_type'          :
-      [ adr_type
+      [ generic_type
       , ""'''-- this field indicates the address type to
              be used for marking addresses that should be exported for
              sending. When a new subsription is generated this type will
@@ -215,7 +213,7 @@ _helptext          = \
     , ""'address++title'              : [academic_title]
     , ""'adr_type_cat.code'           : [code, adr_type_cat_code]
     , ""'adr_type_cat++code'          : [code, adr_type_cat_code]
-    , ""'adr_type'                    : [adr_type]
+    , ""'adr_type'                    : [generic_type]
     , ""'affix'                       :
       [""'''Name affix like e.g. "senior" or "MBA"''']
     , ""'alias'                       :
@@ -286,8 +284,7 @@ _helptext          = \
              some fields like "Files affected" are filled in.
           '''
       ]
-    , ""'city'                        :
-      [""'''City where this person lives''']
+    , ""'city'                        : [city]
     , ""'clearance_by'                :
       [ ""'''Usually the supervisor of a person approves
              time records. This can be delegated using this attribute. It
@@ -328,6 +325,8 @@ _helptext          = \
       ]
     , ""'contact_type'                :
       [""'''Type of contact information, e.g., Email, Phone, Fax, Homepage''']
+    , ""'contact_person'              :
+      [""'''Personal information about a %(Property)s''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
@@ -338,7 +337,9 @@ _helptext          = \
     , ""'csv_delimiter'               : [""'''Delimiter for CSV export''']
     , ""'currency'                    :
       [""'''Currency for this %(Classname)s''']
+    , ""'cust_supp'                   : [""'''%(Property)s of %(Classname)s''']
     , ""'customer_status'             : [status]
+    , ""'customer_type'               : [generic_type]
     , ""'cut_off_date'                :
       [ ""'''Date until when this %(Classname)s must be finished.'''
       , date_text
@@ -602,20 +603,12 @@ _helptext          = \
     , ""'invoice.payer.firstname'     : [firstname]
     , ""'invoice.payer.lastname'      : [lastname]
     , ""'invoice.payer.function'      : [function]
-    , ""'invoice.payer.lookalike_firstname': [lookalike_name]
-    , ""'invoice.payer.lookalike_lastname' : [lookalike_name]
-    , ""'invoice.payer.lookalike_city'     : [lookalike_name]
-    , ""'invoice.payer.lookalike_street'   : [lookalike_name]
-    , ""'invoice.payer.lookalike_function' : [lookalike_name]
     , ""'invoice.payer.valid'         : [address_valid]
     , ""'invoice.subscriber.firstname': [firstname]
     , ""'invoice.subscriber.lastname' : [lastname]
-    , ""'invoice.subscriber.lookalike_firstname': [lookalike_name]
-    , ""'invoice.subscriber.lookalike_lastname' : [lookalike_name]
-    , ""'invoice.subscriber.lookalike_city'     : [lookalike_name]
-    , ""'invoice.subscriber.lookalike_street'   : [lookalike_name]
-    , ""'invoice.subscriber.lookalike_function' : [lookalike_name]
     , ""'invoice.subscriber.valid'    : [address_valid]
+    , ""'invoice_address'             :
+      [""'''Data for %(Property)s''']
     , ""'invoice_group'               :
       [""'''Link to invoice_group for this %(Classname)s''']
     , ""'invoice_level'               :
@@ -886,11 +879,8 @@ _helptext          = \
     , ""'payer.firstname'             : [firstname]
     , ""'payer.lastname'              : [lastname]
     , ""'payer.lastname'              : [function]
-    , ""'payer.lookalike_lastname'    : [lookalike_name]
-    , ""'payer.lookalike_firstname'   : [lookalike_name]
-    , ""'payer.lookalike_function'    : [lookalike_name]
     , ""'payer.valid'                 : [address_valid]
-    , ""'payer.adr_type'              : [adr_type]
+    , ""'payer.adr_type'              : [generic_type]
     , ""'payment'                     :
       [""'''Amount of payment received for this invoice''']
     , ""'peer_reviewers'              :
@@ -901,6 +891,10 @@ _helptext          = \
       [""'''Date when this invoice period ends''']
     , ""'period_start'                :
       [""'''Date when this invoice period starts''']
+    , ""'person_type'                 :
+      [""'''Type of this %(Classname)s for Customer/Supplier''']
+    , ""'person'                      :
+      [""'''personal Information for this %(Classname)s''']
     , ""'phone'                       :
       [ ""'''Short phone number (suffix) only, e.g., 42.'''
       , extension
@@ -1105,6 +1099,8 @@ _helptext          = \
       ]
     , ""'shelf_life'                  :
       [ ""'''Shelf life in months''' ]
+    , ""'shipping_address'            :
+      [""'''Data for %(Property)s''']
     , ""'show_all_users'              :
       [ ""'''If this option is selected, the result will also include
              users that do not
@@ -1157,8 +1153,7 @@ _helptext          = \
       [ status
       , ""'''There are constraints on status transitions.'''
       ]
-    , ""'street'                      :
-      [""'''Street for this %(Classname)s''']
+    , ""'street'                      : [street]
     , ""'subject'                     :
       [""'''Short identification of %(Classname)s''']
     , ""'subscriber'                  :
@@ -1166,11 +1161,8 @@ _helptext          = \
     , ""'subscriber.firstname'        : [firstname]
     , ""'subscriber.lastname'         : [lastname]
     , ""'subscriber.function'         : [function]
-    , ""'subscriber.lookalike_firstname' : [lookalike_name]
-    , ""'subscriber.lookalike_lastname'  : [lookalike_name]
-    , ""'subscriber.lookalike_function'  : [lookalike_name]
     , ""'subscriber.valid'            : [address_valid]
-    , ""'subscriber.adr_type'         : [adr_type]
+    , ""'subscriber.adr_type'         : [generic_type]
     , ""'substitute'                  :
       [ ""'''Person who can substitute %(Classname)s for approving time
              records.
@@ -1256,6 +1248,8 @@ _helptext          = \
              (e.g. 0.5 means a half-hour).
           '''
       ]
+    , ""'supply_address'              :
+      [""'''Data for %(Property)s''']
     , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
              when the user changes PW via PAM, the pw in roundup will be

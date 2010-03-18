@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2007 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,41 +22,45 @@
 # ****************************************************************************
 #++
 # Name
-#    person
+#    person_adr
 #
 # Purpose
-#    Schema definitions for person
+#    Schema definitions for separate person class
 
 import schemadef
 
-def init (db, Ext_Class, Person_Class, String, Link, Multilink, Number, ** kw) :
-    do_index = "yes"
+def init \
+    (db, Class, Contact_Class, Min_Issue_Class, Link, Number, String, ** kw) :
     export   = {}
 
-    class E_Person_Class (Person_Class) :
-        """ Create person class with default attributes, may be
-            extended by other definitions.
+    class Person_Class (Min_Issue_Class) :
+        """ Create person class with default attributes
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( title               = String    (indexme = "no")
-                , lettertitle         = String    (indexme = "no")
-                , firstname           = String    (indexme = do_index)
-                , initial             = String    (indexme = "no")
-                , lastname            = String    (indexme = do_index)
-                , affix               = String    (indexme = do_index)
-                , function            = String    (indexme = do_index)
-                , salutation          = String    (indexme = "no")
-                , lookalike_lastname  = String    (indexme = do_index)
-                , lookalike_firstname = String    (indexme = do_index)
-                , lookalike_function  = String    (indexme = do_index)
-                , contacts            = Multilink ("contact")
+                ( person_type         = Link      ("person_type")
+                , cust_supp           = Link      ("cust_supp")
+                , address             = Link      ("address")
+                , description         = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
-            self.setlabelprop ('lastname')
         # end def __init__
     # end class Person_Class
-    export.update (dict (Person_Class = E_Person_Class))
+
+    export ['Person_Class'] = Person_Class
+
+    person_type = Class \
+        ( db, ''"person_type"
+        , name                = String    ()
+        , description         = String    ()
+        , order               = Number    ()
+        )
+    person_type.setkey ("name")
+
+    contact = Contact_Class \
+        ( db, ''"contact"
+        , person              = Link      ('person')
+        )
 
     return export
 # end def init

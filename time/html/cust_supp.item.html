@@ -23,47 +23,49 @@
    " use_labelprop       python: True
    ; msg_box_height      python: 3
    ; has_nosy            python: False
+   ; use_labelprop       python: False
    ; required_attributes python:'currency,customer_status,supplier_status'
+   ; pers python:db.person.filter (None, {'cust_supp':context.id})
+   ; p_invo python: [k for k in pers if k.person_type.id == '1']
+   ; p_ship python: [k for k in pers if k.person_type.id == '2']
+   ; p_supp python: [k for k in pers if k.person_type.id == '3']
+   ; p_cont python: [k for k in pers if k.person_type.id not in ['1', '2', '3']]
    ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'name')"/>
+      <td colspan="3">
+       <textarea tal:content="context/name/plain"
+                 name="name"
+                 wrap="hard"
+                 rows="1"
+                 cols="65">
+       </textarea>
+      </td>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"
           colspan="3"/>
      </tr>
-     <tr tal:condition="context/id">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'invoice_address')"/>
-      <td colspan="3">
-       <span tal:content="structure python:context.invoice_address.field
-             (size=6)"/>
-       <span tal:condition="context/invoice_address">
-        <a i18n:translate="" tal:attributes="href python:
-           'address%s' % context.invoice_address.id">
-         <span nowrap
-          tal:content="python: ' '.join
-           (( context.invoice_address.firstname.plain ()
-           ,  context.invoice_address.lastname.plain ()
-           ))"/>
-         <span nowrap
-          tal:content="python: ' '.join
-           (context.invoice_address.function.plain ().split ('\n')[:1])"/>
-        </a>
-       </span>
-       <span tal:condition="not:context/invoice_address">
-        <input type="button" tal:attributes=
-           "onClick python:'javascript:document.location =
-            \'%s?@attr=invoice_address&@action=create_new_address\''
-            % context.designator ()"
-           i18n:attributes="value" value="new invoice address">
-       </span>
-      </td>
-     </tr>
+     <tal:block tal:condition="context/id">
+      <tal:block tal:define="persons p_invo;name string:invoice_address;
+                 ptype python:1; cond not:p_invo; remove python: False">
+       <tal:block metal:use-macro="templates/page/macros/perslist" />
+      </tal:block>
+      <tal:block tal:define="persons p_cont;name string:contact_person;
+                 ptype python:4; cond python: True; remove python: False">
+       <tal:block metal:use-macro="templates/page/macros/perslist" />
+      </tal:block>
+     </tal:block>
+     <!--
      <tal:block tal:define="property string:contact_person">
       <tr metal:use-macro="templates/page/macros/address_list"/>
      </tal:block>
+     -->
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'tax_id')"/>
       <td tal:content="structure python:context.tax_id.field ()"/>
@@ -148,12 +150,32 @@
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'customer_status')"/>
       <td tal:content="structure python:context.customer_status.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'customer_type')"/>
+      <td>
+       <span tal:content="structure python:context.customer_type.plain ()"/>
+       <br/>
+       <input type="text" name="customer_type"
+        tal:attributes="value python:
+        ','.join (x.id for x in context.customer_type)"/>
+       <span tal:content="structure python:db.customer_type.classhelp
+             ( 'id,code,description'
+             , property='customer_type'
+             , width='600'
+             , pagesize=1000
+             )"/>
+      </td>
      </tr>
      <tal:block tal:condition="python:
          (   context.id
          and context.customer_status
          and (context.customer_status.valid or context.customer_status.display)
          )">
+      <tal:block tal:define="persons p_ship;name string:shipping_address;
+                 ptype python:2; cond not:p_ship; remove python: False">
+       <tal:block metal:use-macro="templates/page/macros/perslist" />
+      </tal:block>
+      <!--
       <tr>
        <th tal:content="structure python:utils.fieldname
            (classname, 'shipping_address')"/>
@@ -188,6 +210,7 @@
         </span>
        </td>
       </tr>
+      -->
       <tr>
        <th tal:content="structure python:utils.fieldname
            (classname, 'customer_group')"/>
@@ -245,9 +268,15 @@
            (classname, 'supplier_group')"/>
        <td tal:content="structure python:context.supplier_group.menu ()"/>
       </tr>
+      <tal:block tal:define="persons p_supp;name string:supply_address;
+                 ptype python:3; cond not:p_supp; remove python: False">
+       <tal:block metal:use-macro="templates/page/macros/perslist" />
+      </tal:block>
+      <!--
       <tal:block tal:define="property string:supply_address">
        <tr metal:use-macro="templates/page/macros/address_list"/>
       </tal:block>
+      -->
       <tr>
        <th tal:content="structure python:utils.fieldname
            (classname, 'order_text')"/>

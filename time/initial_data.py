@@ -29,7 +29,10 @@
 #
 
 # init values
-from rup_utils import uni
+from roundup.cgi.TranslationService import get_translation
+from rup_utils                      import uni
+
+_ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
 # task_status
 # order, name, abbreviation, transitions, description
@@ -475,7 +478,7 @@ if 'status' in db.classes :
         , c_w_msg  = ('To closed with message',           'closed',    1, 0)
         )
 
-    for order, (name, desc, _) in enumerate (status_lst) :
+    for order, (name, desc, x) in enumerate (status_lst) :
         db.status.create (name = name, order = str (order), description = desc)
 
     for name, tgt, msg, resp in trans_lst.itervalues () :
@@ -486,7 +489,7 @@ if 'status' in db.classes :
             , require_resp_change = resp
             )
 
-    for name, _, trans in status_lst :
+    for name, x, trans in status_lst :
         status             = db.status.getnode (db.status.lookup (name))
         status.transitions = [trans_lst [t] [0] for t in trans]
 
@@ -655,3 +658,25 @@ if 'time_activity' in db.classes :
     db.time_activity.create (name = 'administer',     travel = False)
     db.time_activity.create (name = 'travel passive', travel = True)
     db.time_activity.create (name = 'travel active',  travel = False)
+
+if 'person_type' in db.classes :
+    db.person_type.create \
+        ( name        = _ (""'invoice')
+        , description = _ (""'Invoice Address')
+        , order       = 1
+        )
+    db.person_type.create \
+        ( name        = _ (""'shipping')
+        , description = _ (""'Shipping Address')
+        , order       = 2
+        )
+    db.person_type.create \
+        ( name        = _ (""'supply')
+        , description = _ (""'Address used for fetching supplies from supplier')
+        , order       = 3
+        )
+    db.person_type.create \
+        ( name        = _ (""'contact')
+        , description = _ (""'Address of a personal contact')
+        , order       = 4
+        )

@@ -25,7 +25,7 @@
              ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
-     <tr>
+     <tr tal:condition="python:'address' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'address')"/>
       <td tal:define="fields python:['firstname','lastname','function']">
@@ -39,6 +39,22 @@
              not sum ([bool (context.address [f]) for f in fields])">
         <a tal:attributes="href context/address/designator"
            tal:content="python:'(%s)' % context.address.id"/>
+       </span>
+      </td>
+     </tr>
+     <tr tal:condition="python:'person' in props and context.person">
+      <th tal:content="structure python:utils.fieldname (classname, 'person')"/>
+      <td tal:define="fields python:['firstname','lastname','function']">
+       <span tal:repeat="i fields"
+             tal:content="structure python:utils.ExtProperty
+               ( utils, context.person [i]
+               , item       = context.person
+               , searchname = i
+               ).formatlink ()"/>
+       <span tal:condition="python:
+             not sum ([bool (context.person [f]) for f in fields])">
+        <a tal:attributes="href context/person/designator"
+           tal:content="python:'(%s)' % context.person.id"/>
        </span>
       </td>
      </tr>

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -41,8 +41,9 @@ import schemadef
 # Note: order matters, core is always last.
 schemas = \
     ( 'address'
+    , 'contact'
     , 'adr_ext'
-    , 'person_adr'
+    , 'person_sep'
     , 'person'
     , 'pers_ext'
     , 'letter'
@@ -65,6 +66,7 @@ schemadef.register_class_permissions (db, classes, [])
 Class (db, ''"invoice")
 Class (db, ''"storage_location")
 
+Person_Class (db, ''"person")
 schemadef.allow_user_details (db, 'User', 'Edit')
 
 # oh, g'wan, let anonymous access the web interface too

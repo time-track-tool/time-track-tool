@@ -22,8 +22,9 @@ class Class :
             print '_("%s")' % p
     def setkey (self, key) : pass
     setlabelprop = setkey
+    setorderprop = setkey
 
-FileClass = IssueClass = Class
+Contact_Class = FileClass = IssueClass = Class
 db = DB ()
 
 import schemadef
@@ -32,11 +33,19 @@ schemas = \
     , 'company'
     , 'issue'
     , 'it_tracker'
+    , 'legalclient'
     , 'nwm'
     , 'time_tracker'
     , 'complex'
     , 'address'
     , 'adr_ext'
+    , 'adr_ptr'
+    , 'person_adr'
+    , 'person_sep'
+    , 'person'
+    , 'pers_ext'
+    , 'letter'
+    , 'pers_letter'
     , 'sinvoice'
     , 'abo'
     , 'legalclient'

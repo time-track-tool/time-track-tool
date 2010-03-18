@@ -44,6 +44,7 @@ schemas = \
     ( 'user'
     , 'it_tracker'
     , 'address'
+    , 'contact'
     , 'adr_ext'
     , 'adr_perm'
     , 'person_adr'

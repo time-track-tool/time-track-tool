@@ -41,7 +41,7 @@ def init \
     , Number
     , Min_Issue_Class
     , Nosy_Issue_Class
-    , Person_Class
+    , Address_Class
     , Letter_Class
     , ** kw
     ) :
@@ -63,9 +63,7 @@ def init \
         ( db, ''"cust_supp"
         , name                  = String    ()
         , description           = String    ()
-        , invoice_address       = Link      ("address")
         , tax_id                = String    ()
-        , contact_person        = Multilink ("address")
         , pharma_ref            = Link      ("pharma_ref")
         , bank_account          = Multilink ("bank_account")
         , currency              = Link      ("currency")
@@ -74,7 +72,7 @@ def init \
         # customer-specific:
         , customer_status       = Link      ("customer_status")
         , customer_group        = Link      ("customer_group")
-        , shipping_address      = Link      ("address")
+        , customer_type         = Multilink ("customer_type")
         , attendant             = Link      ("user")
         , credit_limit          = Number    ()
         , discount_group        = Link      ("discount_group")
@@ -84,9 +82,15 @@ def init \
         , supplier_status       = Link      ("supplier_status")
         , supplier_group        = Link      ("supplier_group")
         , order_text            = String    ()
-        , supply_address        = Multilink ("address")
         )
     cust_supp.setkey (''"name")
+
+    customer_type = Class \
+        ( db, ''"customer_type"
+        , code                = String    ()
+        , description         = String    ()
+        )
+    customer_type.setkey ("code")
 
     customer_group = Class \
         ( db, ''"customer_group"
@@ -270,7 +274,7 @@ def init \
         )
     supplier_status.setkey ("name")
 
-    Person_Class \
+    Address_Class \
         ( db, ''"address"
         )
 
@@ -284,8 +288,7 @@ def init \
 
 def security (db, ** kw) :
     roles = \
-        [ ("Contact"       , "Allowed to add/change customer contact data")
-        , ("Discount"      , "Allowed to add/change discounts")
+        [ ("Discount"      , "Allowed to add/change discounts")
         , ("Letter"        , "Allowed to add/change templates and letters")
         , ("Product"       , "Allowed to add/change product data")
         ]

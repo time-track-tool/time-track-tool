@@ -6,52 +6,99 @@
 
 <tal:block metal:fill-slot="content">
  <tal:block tal:define=
-  "batch request/batch;
-   n_sort python:4;
-   pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['contact'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['contact_type'], multiselect=True)
-    , utils.ExtProperty 
-        ( utils, pdict ['address']
-        , searchname  = 'address.lastname'
+  " batch request/batch
+  ; n_sort python:4
+  ; pdict python: utils.properties_dict (db, context)
+  ; prp python:
+    ( ('id',           {})
+    , ('contact',      {})
+    , ('description',  {})
+    , ('contact_type', dict (multiselect=True))
+    , ('address', dict
+        ( searchname  = 'address.lastname'
         , searchable  = False
         , sortable    = False
         )
-    , utils.ExtProperty 
-        ( utils, pdict ['address']
-        , searchname  = 'address.firstname'
+      )
+    , ( 'address', dict
+        ( searchname  = 'address.firstname'
         , searchable  = False
         , sortable    = False
         )
-    , utils.ExtProperty 
-        ( utils, pdict ['address']
-        , searchname  = 'address.function'
+      )
+    , ('address', dict
+        ( searchname  = 'address.function'
         , searchable  = False
         , sortable    = False
         )
-    , utils.ExtProperty 
-        ( utils, pdict ['address']
-        , searchname  = 'address.lookalike_lastname'
+      )
+    , ('address', dict
+        ( searchname  = 'address.lookalike_lastname'
         , searchable  = True
         , displayable = False
+        , helpname    = 'lastname'
         )
-    , utils.ExtProperty 
-        ( utils, pdict ['address']
-        , searchname  = 'address.lookalike_firstname'
+      )
+    , ('address', dict
+        ( searchname  = 'address.lookalike_firstname'
         , searchable  = True
         , displayable = False
+        , helpname    = 'firstname'
         )
-    , utils.ExtProperty 
-        ( utils, pdict ['address']
-        , searchname  = 'address.lookalike_function'
+      )
+    , ('address', dict
+        ( searchname  = 'address.lookalike_function'
         , searchable  = True
         , displayable = False
+        , helpname    = 'function'
         )
-    );
-   "
+      )
+    , ('person', dict
+        ( searchname  = 'person.lastname'
+        , searchable  = False
+        , sortable    = False
+        )
+      )
+    , ('person', dict
+        ( searchname  = 'person.firstname'
+        , searchable  = False
+        , sortable    = False
+        )
+      )
+    , ('person', dict
+        ( searchname  = 'person.function'
+        , searchable  = False
+        , sortable    = False
+        )
+      )
+    , ('person', dict
+        ( searchname  = 'person.lookalike_lastname'
+        , searchable  = True
+        , displayable = False
+        , helpname    = 'lastname'
+        )
+      )
+    , ('person', dict
+        ( searchname  = 'person.lookalike_firstname'
+        , searchable  = True
+        , displayable = False
+        , helpname    = 'firstname'
+        )
+      )
+    , ('person', dict
+        ( searchname  = 'person.lookalike_function'
+        , searchable  = True
+        , displayable = False
+        , helpname    = 'function'
+        )
+      )
+    )
+  ; props python:
+        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+          for p in prp if p [0] in pdict
+        ]
+
+  "
   tal:condition="context/is_view_ok">
 
   <tal:block metal:use-macro="templates/page/macros/search_results"/>

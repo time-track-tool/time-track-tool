@@ -1,7 +1,8 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
  <tal:block metal:fill-slot="menu_slot">
    <tr tal:condition="python:
-       not terse and request.user.hasPermission ('View','address')">
+       not terse and request.user.hasPermission ('View','address')
+       and 'lastname' in props">
     <td colspan="2"/>
     <td class="sidebar" nowrap>
      <span class="classblock">
@@ -42,26 +43,86 @@
      ( ('id',                  dict (terse = False))
      , ('salutation',          dict (terse = False))
      , ('title',               dict (terse = False))
-     , ('lastname',            dict (searchable   = False, sortable = False))
-     , ('firstname',           dict (searchable   = False, sortable = False))
-     , ('lookalike_lastname',  dict (displayable  = False))
-     , ('lookalike_firstname', dict (displayable  = False))
-     , ('street',              dict (searchable   = False, sortable = False))
-     , ('lookalike_street',    dict (displayable  = False, terse = False))
-     , ('function',            dict (searchable   = False, sortable = False))
-     , ('lookalike_function',  dict (displayable  = False, terse = False))
+     , ('lastname',            dict (searchable  = False, sortable = False))
+     , ('firstname',           dict (searchable  = False, sortable = False))
+     , ('description',         dict (sortable    = False))
+     , ( 'lookalike_lastname'
+       , dict ( displayable = False
+              , helpname    = 'lastname'
+              )
+       )
+     , ( 'lookalike_firstname'
+       , dict ( displayable = False
+              , helpname    = 'firstname'
+              )
+       )
+     , ('street',                   dict (searchable  = False, sortable = False))
+     , ('address'
+       , dict ( searchable   = False
+              , sortable     = False
+              , searchname   = 'address.street'
+              )
+       )
+     , ( 'lookalike_street'
+       , dict ( displayable  = False
+              , terse        = False
+              , helpname     = 'street'
+              )
+       )
+     , ('address'
+       , dict ( displayable  = False
+              , terse        = False
+              , searchable   = True
+              , searchname   = 'address.lookalike_street'
+              , helpname     = 'street'
+              )
+       )
+     , ('function',            dict (searchable  = False, sortable = False))
+     , ( 'lookalike_function'
+       , dict ( displayable  = False
+              , terse        = False
+              , helpname     = 'function'
+              )
+       )
      , ('country',             {})
+     , ( 'address'
+       , dict ( searchname   = 'address.country'
+              , searchable   = True
+              , do_classhelp = False
+              )
+       )
      , ('postalcode',          {})
-     , ('city',                dict (searchable   = False, sortable = False))
-     , ('lookalike_city',      dict (displayable  = False, terse = False))
-     , ('parent',              dict ( do_classhelp = False
-                                    , terse        = False
-                                    , searchable   = True
-                                    )
+     , ('address.postalcode',  {})
+     , ('city',                dict (searchable  = False, sortable = False))
+     , ( 'address'
+       , dict ( searchable   = False
+              , sortable     = False
+              , searchname   = 'address.city'
+              )
+       )
+     , ( 'lookalike_city'
+       , dict ( displayable  = False
+              , terse        = False
+              , helpname     = 'city'
+              )
+       )
+     , ( 'address'
+       , dict ( displayable  = False
+              , terse        = False
+              , helpname     = 'city'
+              , searchname   = 'address.lookalike_city'
+              )
+       )
+     , ('parent'
+       , dict ( do_classhelp = False
+              , terse        = False
+              , searchable   = True
+              )
        )
      , ('abos',                dict (terse = False))
      , ('payed_abos',          dict (terse = False))
      , ('adr_type',            dict (filter       = filt))
+     , ('address.adr_type',    dict (filter       = filt))
      , ('valid',               dict (multiselect  = 1, terse = False))
      , ('invoices',            dict (do_classhelp = False, terse = False))
      , ('creation',            {})

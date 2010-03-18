@@ -46,7 +46,8 @@ from extproperty           import ExtProperty
 
 class Repr_Str (autosuper) :
     def __init__ (self, klass) :
-        self.klass = klass
+        self.klass    = klass
+        self.props    = klass.getprops ()
     # end def __init__
 
     def conv (self, x) :
@@ -103,7 +104,12 @@ class Repr_Type (Repr_Str) :
             type = self.klass.db.adr_type.lookup (col.split ('.') [1])
         except KeyError :
             return self.conv (x)
-        if type in self.klass.get (itemid, 'adr_type') :
+        klass = self.klass
+        id    = itemid
+        if 'address' in self.props :
+            klass = self.klass.db.address
+            id    = self.klass.get (itemid, 'address')
+        if type in klass.get (id, 'adr_type') :
             x = 'ja'
         return self.conv (x)
     # end def __call__
@@ -182,7 +188,10 @@ def repr_func (klass, col) :
 def repr_code (klass, adr_types) :
     class Repr_Code (Repr_Str) :
         def __call__ (self, itemid, col) :
-            return self.__super.__call__ (itemid, 'adr_type')
+            prefix = ''
+            if 'address' in self.props :
+                prefix = 'address.'
+            return self.__super.__call__ (itemid, '%sadr_type' % prefix)
         # end def __call__
 
         def conv (self, x) :
@@ -362,6 +371,9 @@ class Export_CSV_Addresses (Export_CSV_Names) :
     quotechar  = None
 
     def _setup (self) :
+        prefix = ''
+        if 'address' in self.props :
+            prefix = 'address.'
         self.columns = self.print_columns = \
             [ 'title'
             , 'firstname'
@@ -369,10 +381,10 @@ class Export_CSV_Addresses (Export_CSV_Names) :
             , 'function.0'
             , 'function.1'
             , 'function.2'
-            , 'street'
-            , 'country'
-            , 'postalcode'
-            , 'city'
+            , prefix + 'street'
+            , prefix + 'country'
+            , prefix + 'postalcode'
+            , prefix + 'city'
             , 'code'
             ]
         self.matches   = None
@@ -394,13 +406,16 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
 
     def _setup (self) :
         self.__super._setup ()
+        prefix = ''
+        if 'address' in self.props :
+            prefix = 'address.'
         self.columns = \
             [ 'salutation'
             , 'title'
             , 'fullname'
-            , 'street'
-            , 'postalcode'
-            , 'city'
+            , prefix + 'street'
+            , prefix + 'postalcode'
+            , prefix + 'city'
             , 'birthdate'
             , 'contact.Telefon'
             , 'notice'

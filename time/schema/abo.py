@@ -119,7 +119,6 @@ def security (db, ** kw) :
         , ("Invoice"       , "Allowed to change financial data")
         , ("Letter"        , "Allowed to add/change templates and letters")
         , ("Product"       , "Allowed to create/edit products")
-        , ("Type"          , "Allowed to add/change type codes")
         ]
 
     classes = \
@@ -129,9 +128,6 @@ def security (db, ** kw) :
         , ("abo"               , ["Abo", "Product", "Invoice"],
                                               ["Abo"])
         , ("address"           , ["User"],    ["User"])
-        , ("adr_type"          , ["User"],    ["Type"])
-        , ("adr_type_cat"      , ["User"],    ["Type"])
-        , ("contact"           , ["User"],    ["Contact"])
         , ("contact_type"      , ["User"],    [])
         , ("currency"          , ["User"],    ["Product"])
         , ("invoice_group"     , ["Invoice"], ["Invoice"])

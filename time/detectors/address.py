@@ -23,7 +23,8 @@ from roundup.date                   import Date
 
 from rup_utils                      import translate
 from roundup.cgi.TranslationService import get_translation
-from common                         import require_attributes, auto_retire
+
+import common
 
 def fix_adr_type (db, cl, nodeid, new_values) :
     if 'adr_type' in new_values :
@@ -51,27 +52,34 @@ def fix_adr_type (db, cl, nodeid, new_values) :
 def fix_contacts (db, cl, nodeid, old_values) :
     if old_values is None or 'contacts' in old_values :
         for c in cl.get (nodeid, 'contacts') :
-            db.contact.set (c, address = nodeid)
+            d = {cl.classname : nodeid}
+            db.contact.set (c, **d)
 # end def fix_contacts
 
 def set_adr_defaults (db, cl, nodeid, new_values) :
     """ Set some default values for new address """
-    if 'lettertitle' not in new_values  and 'title' in new_values :
-        new_values ['lettertitle'] = new_values ['title']
-    if 'valid' not in new_values :
-        new_values ['valid'] = '1'
-    if (   'initial' not in new_values
-       and 'firstname'   in new_values and new_values ['firstname']
-       ) :
-        new_values ['initial'] = new_values ['firstname'][0].upper () + '.'
-    if 'country' not in new_values :
+    if 'lettertitle' in cl.properties :
+        if 'lettertitle' not in new_values  and 'title' in new_values :
+            new_values ['lettertitle'] = new_values ['title']
+    if 'valid' in cl.properties and 'valid' not in new_values :
+            new_values ['valid'] = '1'
+    if 'firstname' in cl.properties :
+        if (   'initial' not in new_values
+           and 'firstname'   in new_values and new_values ['firstname']
+           ) :
+            new_values ['initial'] = new_values ['firstname'][0].upper () + '.'
+    if 'country' in cl.properties and 'country' not in new_values :
         raise Reject, _ (''"Country must be set")
 # end def set_adr_defaults
 
 def check_address (db, cl, nodeid, new_values) :
-    require_attributes (_, cl, nodeid, new_values, 'country')
-    auto_retire (db, cl, nodeid, new_values, 'contacts')
+    common.require_attributes (_, cl, nodeid, new_values, 'country')
+    common.auto_retire (db, cl, nodeid, new_values, 'contacts')
 # end def check_address
+
+def check_person (db, cl, nodeid, new_values) :
+    common.auto_retire (db, cl, nodeid, new_values, 'contacts')
+# end def check_person
 
 def lookalike_computation (db, cl, nodeid, new_values) :
     for field in ('firstname', 'lastname', 'city', 'street', 'function') :
@@ -88,9 +96,9 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 # end def lookalike_computation
 
 def check_contact (db, cl, nodeid, new_values) :
-    require_attributes (_, cl, nodeid, new_values, 'contact')
+    common.require_attributes (_, cl, nodeid, new_values, 'contact')
     if nodeid :
-        require_attributes (_, cl, nodeid, new_values, 'contact_type')
+        common.require_attributes (_, cl, nodeid, new_values, 'contact_type')
     if not nodeid and 'contact_type' not in new_values :
         ct = db.contact_type.filter (None, {}, sort = [('+', 'order')])
         assert (ct)
@@ -98,12 +106,7 @@ def check_contact (db, cl, nodeid, new_values) :
 # end def check_contact
 
 def check_function (db, cl, nodeid, new_values) :
-    function = new_values.get ('function')
-    if 'function' in new_values and function is not None :
-        length = len (function.split ('\n'))
-        if length > 2 :
-            attr = _ ('function')
-            raise Reject, _ (''"%(attr)s must not exceed 2 lines") % locals ()
+    return common.check_attribute_lines (_, new_values, 'function', 2)
 # end def check_function
 
 def init (db) :
@@ -118,11 +121,21 @@ def init (db) :
         db.address.audit ("set",    fix_adr_type)
     db.address.audit ("create", lookalike_computation)
     db.address.audit ("set",    lookalike_computation)
+    if 'person' in db.classes :
+        db.person.audit  ("create", lookalike_computation)
+        db.person.audit  ("set",    lookalike_computation)
+        db.person.audit  ("create", check_function)
+        db.person.audit  ("set",    check_function)
+        db.person.audit  ("set",    check_person)
+        db.person.react  ("set",    fix_contacts)
+        db.person.react  ("create", fix_contacts)
+        db.person.audit  ("create", set_adr_defaults)
+    else :
+        db.address.audit ("create", check_function)
+        db.address.audit ("set",    check_function)
+        db.address.react ("set",    fix_contacts)
+        db.address.react ("create", fix_contacts)
     db.address.audit ("set",    check_address)
     db.contact.audit ("create", check_contact)
     db.contact.audit ("set",    check_contact)
-    db.address.react ("create", fix_contacts)
-    db.address.react ("set",    fix_contacts)
-    db.address.audit ("create", check_function)
-    db.address.audit ("set",    check_function)
 # end def init

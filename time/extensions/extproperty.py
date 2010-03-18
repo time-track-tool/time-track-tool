@@ -165,6 +165,9 @@ class ExtProperty :
             displaying a menu (in a search mask) or help.
         help_filter: deprecated, a string of property/value pairs
             usually computed from filter and used in classhelp
+        helpname: Name used for looking up helptext, can be overridden
+            in case the class uses shadowed attributes for searching
+            (e.g. lookalike_city)
 
         Internal attributes:
         name: name of the property
@@ -179,6 +182,7 @@ class ExtProperty :
         , prop
         , item          = None
         , searchname    = None
+        , helpname      = None
         , label         = None
         , displayprop   = None
         , multiselect   = None
@@ -206,6 +210,7 @@ class ExtProperty :
         self.classname     = prop._classname
         self.klass         = prop._db.getclass (self.classname)
         self.name          = prop._name
+        self.helpname      = helpname
         self.add_hidden    = add_hidden
         self.searchname    = searchname
         self.label         = label
@@ -254,8 +259,8 @@ class ExtProperty :
             self.help_filter = ' '.join ('%s=%s' % (k, v) for k, v in f)
         self.lnkcls = None
 
-        self.helpcls  = self.classname
-        self.helpname = self.name
+        self.helpcls   = self.classname
+        self._helpname = self.helpname or self.name
         if self.is_link_or_multilink :
             if self.searchname :
                 proptree = self.klass._proptree ({self.searchname : 1})
@@ -268,14 +273,15 @@ class ExtProperty :
                 self.lnkcls = p.cls
                 if len (props) > 1:
                     self.helpcls  = props [-2].classname
-                    self.helpname = props [-1].name
+                    if not self.helpname :
+                        self._helpname = props [-1].name
                     self.leafprop = props [-1].propclass
             else :
                 self.lnkcls = prop._db.getclass (prop._prop.classname)
             self.key     = self.lnkcls.getkey ()
         self.i18nlabel = self.pretty \
             (self.utils.combined_name
-                (self.helpcls, self.helpname, self.searchname)
+                (self.helpcls, self._helpname, self.searchname)
             )
         if self.do_classhelp is None :
             self.do_classhelp = \
@@ -393,7 +399,7 @@ class ExtProperty :
             )
     # end def deref
 
-    def formatlink (self, item = None, as_link = True) :
+    def formatlink (self, item = None, as_link = True, with_title = False) :
         """
             Render my property of an item as a link to this item (unless
             as_link is False). We get the item. The name of the item and
@@ -408,8 +414,12 @@ class ExtProperty :
             return hidden + self.formatted ()
         if not self.classname :
             return ""
-        return """<a tabindex="-1" class="%s" href="%s%s">%s</a>%s""" \
+        title = ''
+        if with_title :
+            title = ' title="%s"' % i.description
+        return """<a tabindex="-1" class="%s"%s href="%s%s">%s</a>%s""" \
             % ( self.get_cssclass (i)
+              , title
               , self.classname
               , i.id
               , self.formatted ()
@@ -461,7 +471,7 @@ class ExtProperty :
 
     def colonlabel (self, delimiter = ':') :
         return self.utils.fieldname \
-            (self.helpcls, self.helpname, self.label, delimiter, 'header')
+            (self.helpcls, self._helpname, self.label, delimiter, 'header')
     # end def colonlabel
 
     def colonfield (self, item = None) :

@@ -36,6 +36,8 @@
  ; abo_adrtype     python: utils.valid_adr_types (db, adr_type_cat = 'ABO')
  ; terse           python: utils.get_from_form (request, 'terse')
  ; quiet           python: utils.get_from_form (request, 'quiet')
+ ; cadr            python: ['address', 'person']
+                           ['person' in db._db.contact.properties]
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
@@ -66,10 +68,11 @@
    , ('category', '')   : '@columns=name,description,responsible,nosy,'
                           'valid,cert_sw&@sort=name&@filter=valid&'
                           '@pagesize=200&@startwith=0&valid=1'
-   , ('contact', '')    : '@columns=contact,contact_type,address.firstname,'
-                          'address.lastname,address.function&'
-                          '@sort=-address.lastname,address.firstname,'
-                          'contact_type&@pagesize=20&@startwith=0&@quiet=1'
+   , ('contact', '')    : '@columns=contact,contact_type,%(cadr)s.firstname,'
+                          '%(cadr)s.lastname,%(cadr)s.function&'
+                          '@sort=-%(cadr)s.lastname,%(cadr)s.firstname,'
+                          'contact_type&@pagesize=20&@startwith=0'
+                          % dict (cadr = cadr)
    , ('cust_supp', '')  : '@pagesize=50&@startwith=0&'
                           '@columns=id,name,description,tax_id,status,attendant'
    , ('daily_record', '')
@@ -129,6 +132,11 @@
                           'invoice.currency,invoice.amount,invoice.abo&'
                           ':sort=date_payed&:pagesize=20&:startwith=0&'
                           '@quiet=1&@terse=1'
+   , ('person', '')     : '@quiet=1&@startwith=0&@pagesize=20&'
+                          '@sort=lookalike_lastname,lookalike_firstname&'
+                          '@columns=salutation,title,id,lastname,firstname&'
+                          '@filter=valid&valid=1&@search_text=&'
+                          '@queryname=&@terse=1'
    , ('product', '')    : '@columns=name,product_group,measuring_unit,'
                           'packaging_unit,minimum_inventory&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
@@ -278,7 +286,11 @@
      , ('daily_record_freeze', 'Edit',   '?@template=item&frozen=1', 1)
      , ('abo',                 'Edit',   '?@template=item', 1)
      , ('abo_type',            'Edit',   '?@template=item', 1)
-     , ('address',             'Edit',   '?@template=item', 1)
+     , ( 'address'
+       , 'Edit'
+       , '?@template=item'
+       , 'person' not in db._db.classes
+       )
      , ('valid',               'Edit',   '?@template=item', 1)
      , ('abo_price',           'Edit',   '?@template=item&valid=1', 1)
      , ('invoice_group',       'Edit',   '?@template=item', 1)
@@ -298,6 +310,7 @@
      , ('invoice_dispatch',    'Edit',   '?@template=item', 1)
      , ('measuring_unit',      'Edit',   '?@template=item', 1)
      , ('packaging_unit',      'Edit',   '?@template=item', 1)
+     , ('person',              'Edit',   '?@template=item', 1)
      , ('pharma_ref',          'Edit',   '?@template=item', 1)
      , ('proceeds_group',      'Edit',   '?@template=item', 1)
      , ('product',             'Edit',   '?@template=item', 1)
@@ -346,12 +359,17 @@
      , ('daily_record_freeze', 'View', 1,               ('',''))
      , ('abo',                 'View', 1,               ('',''))
      , ('abo_type',            'View', 1,               ('',''))
-     , ('address',             'View', 1,               ('',''))
+     , ('address'
+       , 'View'
+       , 'person' not in db._db.classes
+       , ('','')
+       )
      , ('valid',               'View', 1,               ('',''))
      , ('abo_price',           'View', 1,               ('',''))
      , ('invoice',             'View', 1, ('generate invoices','send'))
      , ('invoice',             'View', 1,               ('',''))
      , ('payment',             'View', 1,               ('',''))
+     , ('person',              'View', 1,               ('',''))
      , ('invoice_group',       'View', 1,               ('',''))
      , ('invoice_template',    'View', 1,               ('',''))
      , ('adr_type',            'View', 1,               ('',''))
@@ -1435,6 +1453,69 @@
            % (context.designator (), property)
           ; value python:utils.adress_button ('invoice_address', property)
           ">
+     </td>
+    </tr>
+   </table>
+  </td>
+ </tr>
+</tal:block>
+
+<tal:block metal:define-macro="perslist">
+ <tr tal:define="Name python:i18n.gettext (name)">
+  <th tal:attributes="rowspan python:len (persons) or 1"
+      tal:content="structure python:utils.fieldname ('', name)"/>
+  <td colspan="3">
+   <table class="form" border="0"
+          style="border-spacing:0px;padding-top:0px;padding-left:0px">
+    <tr tal:condition="cond">
+     <td colspan="3">
+      <a i18n:translate="" tal:attributes="href python:
+         'person?@template=item&' + '&'.join
+          ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+            [ ('person_type', ptype)
+            , ('cust_supp',   context.id)
+            , ('function',    context.name)
+            ]
+           ]
+          )">
+        New <span tal:replace="Name" i18n:name="Name"/>
+      </a>
+     </td>
+    </tr>
+    <tr tal:condition="persons">
+     <th style="text-align:left;padding-top:0px">
+      <span tal:content="structure python:utils.fieldname
+         ('person', 'firstname')"/>
+      /
+      <span tal:content="structure python:utils.fieldname
+         ('person', 'lastname')"/>
+      /
+      <span tal:content="structure python:utils.fieldname
+         ('person', 'function')"/>
+     <th style="text-align:left;padding-top:0px"
+         tal:condition="python:context.is_edit_ok() and remove" i18n:translate=""
+         style="padding-top:0px">
+         remove
+     </th>
+    </tr>
+    <tr tal:repeat="p python:
+        sorted (persons, key = lambda x: (x.firstname, x.lastname, x.function))">
+     <td>
+      <span nowrap tal:content="structure python:utils.ExtProperty
+       ( utils, p.firstname, item=p
+       ).formatlink ()"/>
+      <span nowrap tal:content="structure python:utils.ExtProperty
+       ( utils, p.lastname, item=p
+       ).formatlink ()"/>
+      <span nowrap>
+       <a i18n:translate="" tal:attributes="href python: p.designator ()">
+        <span nowrap
+         tal:content="python: ' '.join
+          (p.function.plain ().split ('\n')[:1])"/>
+       </a>
+      </span>
+     </td>
+     <td tal:condition="python:context.is_edit_ok() and remove">
      </td>
     </tr>
    </table>

@@ -98,7 +98,6 @@ def init \
 def security (db, ** kw) :
     roles = \
         [ ("Type"          , "Allowed to add/change type codes")
-        , ("Contact"       , "Allowed to add/change address data")
         , ("Adr_Readonly"  , "Allowed to read address and contact data")
         ]
 

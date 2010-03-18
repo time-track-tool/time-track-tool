@@ -939,6 +939,16 @@ def require_attributes (_, cl, nodeid, new_values, * attributes) :
             raise Reject, _ (''"%(attr)s must not be empty") % locals ()
 # end def require_attributes
 
+def check_attribute_lines (_, new_values, name, length) :
+    attr = new_values.get (name)
+    if name in new_values and attr is not None :
+        l = len (attr.split ('\n'))
+        if l > length :
+            atname = _ (name)
+            raise Reject, _ \
+                (''"%(atname)s must not exceed %(length)s lines") % locals ()
+# end def check_attribute_lines
+
 def reject_attributes (_, new_values, * attributes) :
     for a in attributes :
         attr = _ (a)

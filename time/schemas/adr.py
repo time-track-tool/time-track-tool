@@ -43,6 +43,7 @@ import schemadef
 schemas = \
     ( 'user'
     , 'address'
+    , 'contact'
     , 'adr_ext'
     , 'adr_ptr'
     , 'adr_perm'

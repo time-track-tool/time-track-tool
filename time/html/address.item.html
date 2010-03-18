@@ -1,11 +1,13 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 
- <title metal:fill-slot="head_title">
+ <title metal:fill-slot="head_title" i18n:translate="">
   <span tal:condition="context/id"
         tal:replace="string:${Classname}: ${context/id} angelegt von
                      ${context/creator}">
   </span>
-  <span tal:condition="not:context/id" tal:replace="string:Neue Adresse"></span>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
  </title>
  <tal:block metal:fill-slot="create_or_query">
    <tal:block
@@ -64,27 +66,49 @@
   <tal:block tal:define=
              " use_labelprop       python:0
              ; msg_box_height      python:4
-             ; required_attributes string:country">
+             ; required_attributes python:
+               ['country',''][classname == 'person']">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
-     <tr>
+     <tr tal:condition="python:'cust_supp' in props and context.cust_supp">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'cust_supp')"/>
+      <td tal:define="fields python:['name']">
+       <span tal:repeat="i fields"
+             tal:content="structure python:utils.ExtProperty
+               ( utils, context.cust_supp [i]
+               , item       = context.cust_supp
+               , searchname = i
+               ).formatlink ()"/>
+       <span tal:condition="python:
+             not sum ([bool (context.cust_supp [f]) for f in fields])">
+        <a tal:attributes="href context/cust_supp/designator"
+           tal:content="python:'(%s)' % context.cust_supp.id"/>
+       </span>
+       <tal:block tal:condition="not:context/id">
+        <input type="hidden" name="cust_supp"
+               tal:attributes="value context/cust_supp/id"/>
+       </tal:block>
+      </td>
+     </tr>
+     <tr tal:condition="python:'salutation' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'salutation')"/>
       <td tal:content="structure context/salutation/field"/>
-      <tal:block tal:condition="python:'birthdate' in klass._klass.properties">
+      <tal:block tal:condition="python:'birthdate' in props">
        <th tal:content="structure python:utils.fieldname
            (classname, 'birthdate')"/>
        <td colspan="2" tal:content="structure context/birthdate/field"/>
       </tal:block>
      </tr>
-     <tr>
+     <tr tal:condition="python:'title' in props">
       <th tal:content="structure python:utils.fieldname(classname, 'title')"/>
       <td tal:content="structure context/title/field"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'lettertitle')"/>
       <td tal:content="structure context/lettertitle/field" colspan="2"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:'lastname' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'lastname')"/>
       <td tal:content="structure context/lastname/field"/>
@@ -99,25 +123,64 @@
        </table>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python:'affix' in props">
       <th tal:content="structure python:utils.fieldname(classname, 'affix')"/>
       <td tal:content="structure context/affix/field"/>
+      <tal:block tal:condition="python:'person_type' in props">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'person_type')"/>
+       <td tal:content="structure context/person_type/menu"/>
+      </tal:block>
+     </tr>
+     <tr tal:condition="python:'function' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'function')"/>
-      <td rowspan="2">
+      <td colspan="3">
        <textarea tal:content="context/function/plain"
                  name="function"
                  wrap="hard"
                  rows="1"
-                 cols="30">
+                 cols="65">
        </textarea>
       </td>
      </tr>
+     <tr tal:condition="python:'description' in props">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'description')"/>
+      <td colspan = "3"
+       tal:content="structure python:context.description.field (size = 60)"/>
+     </tr>
+     <tal:block tal:condition="python:'address' in props and context.address">
      <tr>
+      <th tal:content="structure python:utils.fieldname('address', 'street')"/>
+      <td tal:content="structure context/address/street/plain"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname('address', 'country')"
+          class="required"/>
+      <td>
+       <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td tal:content="structure python:
+             context.address.country.plain ()"/>
+         <td>&nbsp</td>
+         <th tal:content="structure python:utils.fieldname
+             ('address', 'postalcode')"/>
+         <td tal:content="structure python:
+             context.address.postalcode.plain ()"/>
+        </tr>
+       </table>
+      </td>
+      <th tal:content="structure python:utils.fieldname('address', 'city')"/>
+      <td tal:content="structure context/address/city/plain" colspan="2"/>
+     </tr>
+     </tal:block>
+
+     <tr tal:condition="python:'street' in props">
       <th tal:content="structure python:utils.fieldname(classname, 'street')"/>
       <td tal:content="structure context/street/field"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:'country' in props">
       <th tal:content="structure python:utils.fieldname(classname, 'country')"
           class="required"/>
       <td>
@@ -146,7 +209,7 @@
         (utils, context.parent.function,  item=context.parent).formatlink ()"/>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python:'adr_type' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'adr_type')"/>
       <td nowrap>
@@ -157,7 +220,7 @@
       <td tal:content="structure context/valid/menu" colspan="2"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
-     <tr>
+     <tr tal:condition="python:'contacts' in props">
       <th tal:content="structure python:utils.fieldname
           ('contact', 'contact_type')"/>
       <th style="text-align:left"
@@ -171,7 +234,7 @@
           remove
       </th>
      </tr>
-     <tr>
+     <tr tal:condition="python:'contacts' in props">
       <td tal:content="structure python:utils.new_property
           (context, db, 'contact', -1, 'contact_type').menu ()"/>
       <td tal:content="structure python:utils.new_property
@@ -181,7 +244,7 @@
           (context, db, 'contact', -1, 'description').field (size=40)"/>
       <input type="hidden" name="@link@contacts" value="contact-1"/>
      </tr>
-     <tr tal:repeat="ct python:sorted
+     <tr tal:condition="python:'contacts' in props" tal:repeat="ct python:sorted
          ( context.contacts
          , key = lambda x : (x.contact_type.order, x.contact)
          )">
@@ -204,7 +267,7 @@
       </td>
      </tr>
      <tr><td>&nbsp;</td></tr>
-     <tr tal:condition="python:'opening_hours' in db._db.classes">
+     <tr tal:condition="python:'opening_hours' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'opening_hours')"/>
       <td colspan="3">
@@ -242,6 +305,30 @@
                 value="opening_hours-1"/>
         </tr>
 
+       </table>
+      </td>
+     </tr>
+     <tr tal:condition="python:'address' in props and context.address">
+      <th tal:content="structure python:utils.fieldname
+          ('address', 'opening_hours')"/>
+      <td colspan="3">
+       <table class="form" border="0"
+              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+        <tr tal:repeat="oh python:sorted
+            ( context.address.opening_hours
+            , key = lambda x : (x.weekday, x.from_hour)
+            )">
+         <td style="padding-left:0px"
+             tal:content="structure python:utils.ExtProperty
+             (utils, oh.weekday, item = oh).formatlink ()"/>
+         <td tal:content="structure python:'%02d' % oh.from_hour"/>
+         <td>:</td>
+         <td tal:content="structure python:'%02d' % oh.from_minute"/>
+         <td>-</td>
+         <td tal:content="structure python:'%02d' % oh.to_hour"/>
+         <td>:</td>
+         <td tal:content="structure python:'%02d' % oh.to_minute"/>
+        </tr>
        </table>
       </td>
      </tr>

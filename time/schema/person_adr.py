@@ -29,8 +29,13 @@
 
 import schemadef
 
-def init (db, Address_Class, ** kw) :
+def init (db, Address_Class, Contact_Class, Link, ** kw) :
     export   = {}
+
+    contact = Contact_Class \
+        ( db, ''"contact"
+        , address             = Link      ('address')
+        )
 
     export ['Person_Class'] = Address_Class
     return export
