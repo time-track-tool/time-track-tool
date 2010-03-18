@@ -45,6 +45,7 @@
      , ('title',               dict (terse = False))
      , ('lastname',            dict (searchable  = False, sortable = False))
      , ('firstname',           dict (searchable  = False, sortable = False))
+     , ('function',            dict (searchable  = False, sortable = False))
      , ('description',         dict (sortable    = False))
      , ( 'lookalike_lastname'
        , dict ( displayable = False
@@ -56,7 +57,12 @@
               , helpname    = 'firstname'
               )
        )
-     , ('street',                   dict (searchable  = False, sortable = False))
+     , ( 'lookalike_function'
+       , dict ( displayable = False
+              , helpname    = 'function'
+              )
+       )
+     , ('street', dict (searchable  = False, sortable = False))
      , ('address'
        , dict ( searchable   = False
               , sortable     = False
@@ -77,13 +83,6 @@
               , helpname     = 'street'
               )
        )
-     , ('function',            dict (searchable  = False, sortable = False))
-     , ( 'lookalike_function'
-       , dict ( displayable  = False
-              , terse        = False
-              , helpname     = 'function'
-              )
-       )
      , ('country',             {})
      , ( 'address'
        , dict ( searchname   = 'address.country'
@@ -91,8 +90,18 @@
               , do_classhelp = False
               )
        )
-     , ('postalcode',          {})
-     , ('address.postalcode',  {})
+     , ( 'postalcode'
+       , dict ( displayable  = True
+              , searchable   = True
+              )
+       )
+     , ( 'address'
+       , dict ( displayable  = True
+              , helpname     = 'postalcode'
+              , searchname   = 'address.postalcode'
+              , searchable   = True
+              )
+       )
      , ('city',                dict (searchable  = False, sortable = False))
      , ( 'address'
        , dict ( searchable   = False
@@ -104,6 +113,8 @@
        , dict ( displayable  = False
               , terse        = False
               , helpname     = 'city'
+              , searchable   = True
+              , sortable     = True
               )
        )
      , ( 'address'
@@ -111,6 +122,8 @@
               , terse        = False
               , helpname     = 'city'
               , searchname   = 'address.lookalike_city'
+              , searchable   = True
+              , sortable     = True
               )
        )
      , ('parent'
