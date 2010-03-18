@@ -981,4 +981,20 @@ def changed_values (old_values, cl, id) :
     return changed
 # end def changed_values
 
+def lookalike_computation (db, cl, nodeid, new_values) :
+    for field in cl.properties.iterkeys () :
+        if  (    'lookalike_' + field in cl.properties
+            and  (  field in new_values
+                 or nodeid and 'lookalike_' + field in new_values
+                 ) 
+            ) :
+            nv = new_values.get (field)
+            if field not in new_values :
+                nv = cl.get (nodeid, field)
+            if nv is None :
+                new_values ['lookalike_' + field] = None
+            else :
+                new_values ['lookalike_' + field] = translate (nv)
+# end def lookalike_computation
+
 ### __END__

@@ -62,6 +62,7 @@ def init \
     cust_supp = Nosy_Issue_Class \
         ( db, ''"cust_supp"
         , name                  = String    ()
+        , lookalike_name        = String    ()
         , description           = String    ()
         , tax_id                = String    ()
         , pharma_ref            = Link      ("pharma_ref")

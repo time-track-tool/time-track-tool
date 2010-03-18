@@ -67,6 +67,7 @@ properties = \
         , 'files'
         , 'invoice_dispatch'
         , 'invoice_text'
+        , 'lookalike_name'
         , 'messages'
         , 'name'
         , 'nosy'

@@ -69,5 +69,8 @@ def init (db) :
     db.cust_supp.audit ("create", new_cust_supp)
     db.cust_supp.audit ("create", check_name_len)
     db.cust_supp.audit ("set",    check_name_len)
+    db.cust_supp.audit ("create", common.lookalike_computation)
+    db.cust_supp.audit ("set",    common.lookalike_computation)
+
 
 # end def init

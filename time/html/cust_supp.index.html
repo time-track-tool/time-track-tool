@@ -10,7 +10,18 @@
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
+    , utils.ExtProperty \
+        ( utils
+        , pdict ['name']
+        , searchable = False
+        , sortable   = False
+        )
+    , utils.ExtProperty \
+        ( utils
+        , pdict ['lookalike_name']
+        , displayable = False
+        , helpname    = 'name'
+        )
     , utils.ExtProperty (utils, pdict ['description'])
     , utils.ExtProperty (utils, pdict ['tax_id'])
     , utils.ExtProperty (utils, pdict ['pharma_ref'],       multiselect = 1)

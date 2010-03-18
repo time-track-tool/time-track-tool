@@ -81,20 +81,6 @@ def check_person (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'contacts')
 # end def check_person
 
-def lookalike_computation (db, cl, nodeid, new_values) :
-    for field in ('firstname', 'lastname', 'city', 'street', 'function') :
-        if  (  field in new_values
-            or nodeid and 'lookalike_' + field in new_values
-            ) :
-            nv = new_values.get (field)
-            if field not in new_values :
-                nv = cl.get (nodeid, field)
-            if nv is None :
-                new_values ['lookalike_' + field] = None
-            else :
-                new_values ['lookalike_' + field] = translate (nv)
-# end def lookalike_computation
-
 def check_contact (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'contact')
     if nodeid :
@@ -119,11 +105,11 @@ def init (db) :
     if 'abo' in db.classes :
         db.address.audit ("create", fix_adr_type)
         db.address.audit ("set",    fix_adr_type)
-    db.address.audit ("create", lookalike_computation)
-    db.address.audit ("set",    lookalike_computation)
+    db.address.audit ("create", common.lookalike_computation)
+    db.address.audit ("set",    common.lookalike_computation)
     if 'person' in db.classes :
-        db.person.audit  ("create", lookalike_computation)
-        db.person.audit  ("set",    lookalike_computation)
+        db.person.audit  ("create", common.lookalike_computation)
+        db.person.audit  ("set",    common.lookalike_computation)
         db.person.audit  ("create", check_function)
         db.person.audit  ("set",    check_function)
         db.person.audit  ("set",    check_person)
