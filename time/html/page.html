@@ -1489,9 +1489,12 @@
       /
       <span tal:content="structure python:utils.fieldname
          ('person', 'lastname')"/>
-      /
-      <span tal:content="structure python:utils.fieldname
-         ('person', 'function')"/>
+     </th>
+     <th style="text-align:left;padding-top:0px"
+         tal:content="structure python:utils.fieldname ('person', 'function')"/>
+     <th style="text-align:left;padding-top:0px"
+         tal:content="structure python:utils.fieldname
+         ('person', 'description')"/>
      <th style="text-align:left;padding-top:0px"
          tal:condition="python:context.is_edit_ok() and remove" i18n:translate=""
          style="padding-top:0px">
@@ -1507,14 +1510,17 @@
       <span nowrap tal:content="structure python:utils.ExtProperty
        ( utils, p.lastname, item=p
        ).formatlink ()"/>
-      <span nowrap>
-       <a i18n:translate="" tal:attributes="href python: p.designator ()">
-        <span nowrap
-         tal:content="python: ' '.join
-          (p.function.plain ().split ('\n')[:1])"/>
-       </a>
-      </span>
      </td>
+     <td nowrap>
+      <a i18n:translate="" tal:attributes="href python: p.designator ()">
+       <span nowrap
+        tal:content="python: ' '.join
+         (p.function.plain ().split ('\n')[:1])"/>
+      </a>
+     </td>
+     <td nowrap tal:content="structure python:utils.ExtProperty
+      ( utils, p.description, item=p
+      ).formatlink ()"/>
      <td tal:condition="python:context.is_edit_ok() and remove">
      </td>
     </tr>
