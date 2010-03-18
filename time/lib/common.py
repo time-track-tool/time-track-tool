@@ -34,6 +34,7 @@ from   roundup.exceptions import Reject
 from   roundup.date       import Date, Interval, Range
 from   time               import gmtime
 from   roundup.hyperdb    import String, Link, Multilink
+from   rup_utils          import translate
 
 TFL = None
 try :
