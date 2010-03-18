@@ -10,13 +10,13 @@
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty \
+    , utils.ExtProperty
         ( utils
         , pdict ['name']
         , searchable = False
         , sortable   = False
         )
-    , utils.ExtProperty \
+    , utils.ExtProperty
         ( utils
         , pdict ['lookalike_name']
         , displayable = False
