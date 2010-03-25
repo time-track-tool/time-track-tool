@@ -61,12 +61,14 @@
                  ptype python:4; cond python: True; remove python: False">
        <tal:block metal:use-macro="templates/page/macros/perslist" />
       </tal:block>
+      <tr/>
      </tal:block>
      <!--
      <tal:block tal:define="property string:contact_person">
       <tr metal:use-macro="templates/page/macros/address_list"/>
      </tal:block>
      -->
+     <tr/>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'tax_id')"/>
       <td tal:content="structure python:context.tax_id.field ()"/>
