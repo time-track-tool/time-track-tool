@@ -63,7 +63,7 @@ def init \
                 , lookalike_street    = String    (indexme = do_index)
                 )
             self.__super.__init__ (db, classname, ** properties)
-            self.setlabelprop ('country')
+            self.setlabelprop ('city')
         # end def __init__
     # end class Address_Class
     export.update (dict (Address_Class = Address_Class))

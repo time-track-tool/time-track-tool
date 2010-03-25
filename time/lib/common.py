@@ -998,4 +998,8 @@ def lookalike_computation (db, cl, nodeid, new_values) :
                 new_values ['lookalike_' + field] = translate (nv)
 # end def lookalike_computation
 
+def persons_for_adr (db, nodeid) :
+    return db.person.filter (None, dict (address = nodeid))
+# end def adr_for_person
+
 ### __END__

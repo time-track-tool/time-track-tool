@@ -56,6 +56,15 @@ def fix_contacts (db, cl, nodeid, old_values) :
             db.contact.set (c, **d)
 # end def fix_contacts
 
+def check_retire_address (db, cl, nodeid, old_values) :
+        oadr = old_values.get ('address')
+        if oadr and not common.persons_for_adr (db, oadr) :
+            db.address.retire (oadr)
+        nadr = db.person.get (nodeid, 'address')
+        if nadr and db.address.is_retired (nadr) :
+            db.address.restore (nadr)
+# end def check_retire_address
+
 def set_adr_defaults (db, cl, nodeid, new_values) :
     """ Set some default values for new address """
     if 'lettertitle' in cl.properties :
@@ -113,9 +122,11 @@ def init (db) :
         db.person.audit  ("create", check_function)
         db.person.audit  ("set",    check_function)
         db.person.audit  ("set",    check_person)
+        db.person.audit  ("create", set_adr_defaults)
         db.person.react  ("set",    fix_contacts)
         db.person.react  ("create", fix_contacts)
-        db.person.audit  ("create", set_adr_defaults)
+        db.person.react  ("set",    check_retire_address)
+        db.person.react  ("retire", check_retire_address)
     else :
         db.address.audit ("create", check_function)
         db.address.audit ("set",    check_function)
