@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-03-18 08:55+0100\n"
+"POT-Creation-Date: 2010-03-25 16:39+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -134,13 +134,6 @@ msgstr "Laufzeit muss ganzzahlig sein"
 
 msgid "Country must be set"
 msgstr "Land muss gesetzt sein"
-
-msgid "function"
-msgstr "Adresszusatz"
-
-#, python-format
-msgid "%(attr)s must not exceed 2 lines"
-msgstr "%(attr)s darf nicht länger als 2 Zeilen sein"
 
 msgid ""
 "address type category \"ABO\" is used by the system and may not be changed."
@@ -1083,6 +1076,12 @@ msgstr "Kontakt-Typ"
 msgid "Type of contact information, e.g., Email, Phone, Fax, Homepage"
 msgstr "Typ der Kontaktinformation, z.B. Email, Telefon, Fax, www"
 
+msgid "contact_person"
+msgstr "Kontaktperson"
+
+msgid "Personal information about a %(Property)s"
+msgstr "Persönliche Daten zu einer %(Property)s"
+
 msgid "Content of %(Classname)s"
 msgstr "Inhalt dieser %(Classname)s"
 
@@ -1133,6 +1132,9 @@ msgstr "Kunde/Lieferant"
 
 msgid "customer_status"
 msgstr "Kundenstatus"
+
+msgid "customer_type"
+msgstr "Kundentyp"
 
 msgid "cut_off_date"
 msgstr ""
@@ -1505,6 +1507,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "function"
+msgstr "Adresszusatz"
+
 msgid "Numeric group ID"
 msgstr ""
 
@@ -1622,6 +1627,12 @@ msgstr "Abonnent Nachname"
 
 msgid "invoice.subscriber.valid"
 msgstr "Abonnent gültig"
+
+msgid "invoice_address"
+msgstr "Rechnungsadresse"
+
+msgid "Data for %(Property)s"
+msgstr "Daten zu einer %(Property)s"
 
 msgid "invoice_group"
 msgstr "Rechnungsgruppe"
@@ -2638,6 +2649,9 @@ msgstr "Lagerfähigkeit"
 msgid "Shelf life in months"
 msgstr "Lagerfähigkeit in Monaten"
 
+msgid "shipping_address"
+msgstr "Lieferadresse"
+
 msgid "show_all_users"
 msgstr ""
 
@@ -2891,6 +2905,9 @@ msgid ""
 "             (e.g. 0.5 means a half-hour).\n"
 "          "
 msgstr ""
+
+msgid "supply_address"
+msgstr "Bezugsanschrift"
 
 msgid "sync_with_ldap"
 msgstr ""
@@ -3452,8 +3469,11 @@ msgstr "-- Vorlagen --"
 msgid "New Subscription for ${lastname}"
 msgstr "Neues Abo für ${lastname}"
 
-msgid "New Letter for ${lastname}"
-msgstr "Neuer Brief für ${lastname}"
+msgid "New Letter for ${lastname} ${function}"
+msgstr "Neuer Brief für ${lastname} ${function}"
+
+msgid "- no selection -"
+msgstr "- nichts ausgewählt -"
 
 msgid "Child addresses"
 msgstr "Abgeleitete Adressen"
@@ -3758,6 +3778,9 @@ msgstr ""
 #, python-format
 msgid "%(attr)s must not be empty"
 msgstr "\"%(attr)s\" darf nicht leer sein"
+
+msgid "%(atname)s must not exceed %(length)s lines"
+msgstr "%(atname)s darf nicht länger als %(length)s Zeilen sein"
 
 #, python-format
 msgid "%(attr)s must not be specified"
@@ -4145,9 +4168,6 @@ msgstr "Kundengruppe"
 msgid "sales_conditions"
 msgstr "Konditionen"
 
-msgid "customer_type"
-msgstr "Kundentyp"
-
 msgid "dispatch_type"
 msgstr "Versandart"
 
@@ -4349,9 +4369,6 @@ msgstr ""
 #~ msgid "new shipping address"
 #~ msgstr "Neue Lieferadresse"
 
-msgid "supply_address"
-msgstr "Bezugsanschrift"
-
 #~ msgid "Valid on"
 #~ msgstr "gültig ab"
 
@@ -4383,21 +4400,6 @@ msgstr "Bezugsanschrift"
 
 #~ msgid "account_number"
 #~ msgstr "Kontonummer"
-
-msgid "invoice_address"
-msgstr "Rechnungsadresse"
-
-msgid "Data for %(Property)s"
-msgstr "Daten zu einer %(Property)s"
-
-msgid "shipping_address"
-msgstr "Lieferadresse"
-
-msgid "contact_person"
-msgstr "Kontaktperson"
-
-msgid "Personal information about a %(Property)s"
-msgstr "Persönliche Daten zu einer %(Property)s"
 
 #~ msgid "new contact from shipping address"
 #~ msgstr "Neuer Kontakt aus Lieferadresse"
