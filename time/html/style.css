@@ -167,6 +167,10 @@ table.form th a[href]:hover { color: #338 }
 table.form th a[href]:link  { color: #338 }
 table.form th a[href]       { color: #338 }
 
+table.form span.help a[href]:hover { color: #338 }
+table.form span.help a[href]:link  { color: #338 }
+table.form span.help a[href]       { color: #338 }
+
 table.form th.header {
   font-weight: bold;
   background-color: #eef;

@@ -70,9 +70,21 @@
              " use_labelprop       python:0
              ; msg_box_height      python:4
              ; required_attributes python:
-               ['country',''][classname == 'person']">
+               ['country',''][classname == 'person']
+             ; onch                string:
+               javascript:document.forms.itemSynopsis.address.value = -1
+             ; clradr              string:javascript:clradr()">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
+     <script type="text/javascript">
+      function clradr ()
+      {
+         document.forms.itemSynopsis ['address-1@country'].value    = '';
+         document.forms.itemSynopsis ['address-1@postalcode'].value = '';
+         document.forms.itemSynopsis ['address-1@city'].value       = '';
+         document.forms.itemSynopsis ['address-1@street'].value     = '';
+      }
+     </script>
      <tr tal:condition="python:'cust_supp' in props and context.cust_supp">
       <th tal:content="structure python:utils.fieldname
           (classname, 'cust_supp')"/>
@@ -155,14 +167,20 @@
      </tr>
      <tal:block tal:condition="python:'address' in props">
       <tr>
+       <th tal:content="structure python:utils.fieldname('address', 'street')"/>
        <tal:block tal:condition="context/address">
-        <th tal:content="structure python:utils.fieldname('address', 'street')"/>
         <td tal:content="structure python:utils.ExtProperty
          (utils, context.address.street, item=context.address).formatlink ()"/>
        </tal:block>
+       <tal:block tal:condition="not:context/address">
+        <input type="hidden" name="@link@address" value="address-1"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'address', -1, 'street').field (onChange=onch)"/>
+       </tal:block>
        <th tal:content="structure python:utils.fieldname('person', 'address')"/>
        <td>
-        <select name="address" tal:define="adrs python:dict
+        <select name="address" tal:attributes="onChange clradr"
+                tal:define="adrs python:dict
                 ((x.address.id, x.address) for x in db.person.filter
                   (None, dict (cust_supp = context.cust_supp.id))
                   if x.address).itervalues()">
@@ -175,22 +193,39 @@
         </select>
        </td>
       </tr>
-      <tr tal:condition="context/address">
+      <tr>
        <th tal:content="structure python:utils.fieldname('address', 'country')"
            class="required"/>
-       <td>
+       <td tal:condition="context/address">
         <span tal:content="structure python:utils.ExtProperty
          (utils, context.address.country, item=context.address).formatlink ()"/>
           -
         <span tal:content="structure python:utils.ExtProperty
          (utils, context.address.postalcode, item=context.address)
          .formatlink ()"/>
-        (<tal:block tal:replace="structure python:utils.fieldname
-         ('address', 'postalcode')"/>)
+        <span class="help"> (<tal:block tal:replace=
+            "structure python:utils.fieldname ('address', 'postalcode')"/>)
+        </span>
+       </td>
+       <td tal:condition="not:context/address">
+         <span tal:content="structure python:utils.new_property
+          (context, db, 'address', -1, 'country').field 
+          (size=4, onChange=onch)"/>
+           -
+         <span tal:content="structure python:utils.new_property
+          (context, db, 'address', -1, 'postalcode').field
+          (size=10, onChange=onch)"/>
+         <span class="help"> (<tal:block tal:replace=
+             "structure python:utils.fieldname ('address', 'postalcode')"/>)
+         </span>
        </td>
        <th tal:content="structure python:utils.fieldname('address', 'city')"/>
-       <td tal:content="structure python:utils.ExtProperty
-        (utils, context.address.city, item=context.address).formatlink()"/>
+       <td tal:condition="context/address"
+           tal:content="structure python:utils.ExtProperty
+           (utils, context.address.city, item=context.address).formatlink()"/>
+       <td tal:condition="not:context/address"
+           tal:content="structure python:utils.new_property
+            (context, db, 'address', -1, 'city').field (onChange=onch)"/>
       </tr>
      </tal:block>
 
@@ -202,15 +237,11 @@
       <th tal:content="structure python:utils.fieldname(classname, 'country')"
           class="required"/>
       <td>
-       <table border="0" cellspacing="0" cellpadding="0">
-        <tr>
-         <td tal:content="structure python:context.country.field (size=4)"/>
-         <td>&nbsp</td>
-         <th tal:content="structure python:utils.fieldname
-             (classname, 'postalcode')"/>
-         <td tal:content="structure python:context.postalcode.field (size=10)"/>
-        </tr>
-       </table>
+        <span tal:content="structure python:context.country.field (size=4)"/>
+          -
+        <span tal:content="structure python:context.postalcode.field (size=10)"/>
+        (<tal:block tal:replace="structure python:utils.fieldname
+         ('address', 'postalcode')"/>)
       </td>
       <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
       <td tal:content="structure context/city/field" colspan="2"/>
