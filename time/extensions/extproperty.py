@@ -581,8 +581,7 @@ class ExtProperty :
 # end class ExtProperty
 
 def new_property (context, db, classname, id, propname, value=None) :
-    kl     = db [classname]
-    prop   = db [classname]._props [propname]
+    prop = db [classname]._props [propname]
     for kl, hkl in propclasses :
         if isinstance (prop, kl) :
             return hkl (context._client, classname, id, prop, propname, value)
