@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-03-25 16:39+0100\n"
+"POT-Creation-Date: 2010-03-28 20:11+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3481,6 +3481,9 @@ msgstr "Abgeleitete Adressen"
 msgid "new child address"
 msgstr "Neue abgeleitete Adresse"
 
+msgid "Address used in"
+msgstr "Adresse verwendet in"
+
 msgid "${classname_id} created by ${creator}"
 msgstr ""
 
@@ -3779,6 +3782,7 @@ msgstr ""
 msgid "%(attr)s must not be empty"
 msgstr "\"%(attr)s\" darf nicht leer sein"
 
+#, python-format
 msgid "%(atname)s must not exceed %(length)s lines"
 msgstr "%(atname)s darf nicht länger als %(length)s Zeilen sein"
 
@@ -4360,15 +4364,6 @@ msgstr ""
 #~ msgid "Template for file names used for this %(Classname)s"
 #~ msgstr "Vorlage für Dateinamen für diese %(Classname)s"
 
-#~ msgid "new invoice address"
-#~ msgstr "Neue Rechnungsadresse"
-
-#~ msgid "copy invoice address"
-#~ msgstr "Rechnungsadresse übernehmen"
-
-#~ msgid "new shipping address"
-#~ msgstr "Neue Lieferadresse"
-
 #~ msgid "Valid on"
 #~ msgstr "gültig ab"
 
@@ -4400,9 +4395,3 @@ msgstr ""
 
 #~ msgid "account_number"
 #~ msgstr "Kontonummer"
-
-#~ msgid "new contact from shipping address"
-#~ msgstr "Neuer Kontakt aus Lieferadresse"
-
-#~ msgid "new contact from invoice address"
-#~ msgstr "Neuer Kontakt aus Rechnungsadresse"

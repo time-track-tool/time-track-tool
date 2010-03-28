@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-03-25 16:39+0100\n"
+"POT-Creation-Date: 2010-03-28 20:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,7 +179,7 @@ msgstr ""
 msgid "period must be an integer"
 msgstr ""
 
-#: ../detectors/address.py:72
+#: ../detectors/address.py:81
 msgid "Country must be set"
 msgstr ""
 
@@ -4633,16 +4633,20 @@ msgstr ""
 msgid "New Letter for ${lastname} ${function}"
 msgstr ""
 
-#: ../html/address.item.html:169 ../html/person.item.html:169
+#: ../html/address.item.html:187 ../html/person.item.html:187
 msgid "- no selection -"
 msgstr ""
 
-#: ../html/address.item.html:404 ../html/person.item.html:404
+#: ../html/address.item.html:435 ../html/person.item.html:435
 msgid "Child addresses"
 msgstr ""
 
-#: ../html/address.item.html:409 ../html/person.item.html:409
+#: ../html/address.item.html:440 ../html/person.item.html:440
 msgid "new child address"
+msgstr ""
+
+#: ../html/address.item.html:495 ../html/person.item.html:495
+msgid "Address used in"
 msgstr ""
 
 #: ../html/alias.item.html:7 ../html/bank_account.item.html:7
@@ -4924,11 +4928,11 @@ msgstr ""
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
-#: ../html/page.html:1483
+#: ../html/page.html:1477
 msgid "New ${Name}"
 msgstr ""
 
-#: ../html/page.html:1518
+#: ../html/page.html:1512
 msgid "<span nowrap></span>"
 msgstr ""
 

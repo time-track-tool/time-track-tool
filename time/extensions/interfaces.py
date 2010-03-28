@@ -43,7 +43,7 @@ from user_dynamic                   import get_user_dynamic
 from user_dynamic                   import act_or_latest_user_dynamic
 from user_dynamic                   import next_user_dynamic, prev_user_dynamic
 from user_dynamic                   import update_tr_duration
-from common                         import clearance_by, ymd
+from common                         import clearance_by, ymd, persons_for_adr
 from common                         import user_has_role, monthstart_twoweeksago
 
 def localecollate (s) :
@@ -418,3 +418,4 @@ def init (instance) :
     reg ("get_from_form",                get_from_form)
     reg ("user_classhelp",               user_classhelp)
     reg ("nickname",                     nickname)
+    reg ("persons_for_adr",              persons_for_adr)

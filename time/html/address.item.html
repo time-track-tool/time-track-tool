@@ -421,67 +421,93 @@
       </td>
      </tr>
     </tal:block>
-    <tal:block metal:fill-slot="formatted_class_listentry"
-     tal:condition="python:'parent' in props">
+    <tal:block metal:fill-slot="formatted_class_listentry">
      <tal:block tal:condition="python:
-      context.id and 'parent' in props and chlds"
-      tal:define="chlds python:db.address.filter (None, {'parent':context.id})">
-      <table class="files">
-       <tr tal:define="cond python: bool
-           (   context.id
-           and context.is_edit_ok ()
-           and db.address.is_edit_ok ()
-           )">
-        <th class="header" i18n:translate=""
-         tal:attributes="colspan python: 5 - cond">
-         Child addresses
-        </th>
-        <td class="header" tal:condition="cond">
-         <a i18n:translate="" tal:attributes="href python:
-          'address?:template=item&' + '&'.join
-           ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
-             [ ('parent',      context.id)
-             , ('title',       context.title)
-             , ('lettertitle', context.lettertitle)
-             , ('firstname',   context.firstname)
-             , ('lastname',    context.lastname)
-             , ('affix',       context.affix)
-             , ('function',    context.function)
-             , ('street',      context.street)
-             , ('country',     context.country)
-             , ('postalcode',  context.postalcode)
-             , ('city',        context.city)
-             , ('adr_type',    context.adr_type)
+      context.id and 'parent' in props and chlds">
+      <tal:block tal:define=
+       "chlds python:db.address.filter (None, {'parent':context.id})">
+       <table class="files">
+        <tr tal:define="cond python: bool
+            (   context.id
+            and context.is_edit_ok ()
+            and db.address.is_edit_ok ()
+            )">
+         <th class="header" i18n:translate=""
+          tal:attributes="colspan python: 5 - cond">
+          Child addresses
+         </th>
+         <td class="header" tal:condition="cond">
+          <a i18n:translate="" tal:attributes="href python:
+           'address?:template=item&' + '&'.join
+            ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+              [ ('parent',      context.id)
+              , ('title',       context.title)
+              , ('lettertitle', context.lettertitle)
+              , ('firstname',   context.firstname)
+              , ('lastname',    context.lastname)
+              , ('affix',       context.affix)
+              , ('function',    context.function)
+              , ('street',      context.street)
+              , ('country',     context.country)
+              , ('postalcode',  context.postalcode)
+              , ('city',        context.city)
+              , ('adr_type',    context.adr_type)
+              ]
              ]
-            ]
-           )">
-          new child address
-         </a>
-        </td>
+            )">
+           new child address
+          </a>
+         </td>
+        </tr>
+        <tr tal:define="n python:'address'">
+         <th tal:content="structure python:utils.fieldname (n, 'id')"/>
+         <th tal:content="structure python:utils.fieldname (n, 'title')"/>
+         <th tal:content="structure python:utils.fieldname (n, 'firstname')"/>
+         <th tal:content="structure python:utils.fieldname (n, 'lastname')"/>
+         <th tal:content="structure python:utils.fieldname (n, 'affix')"/>
+        </tr>
+        <tr tal:repeat="cld chlds">
+         <td tal:content="structure python:utils.ExtProperty
+          ( utils
+          , utils.properties_dict (db, cld) ['id']
+          , item = cld
+          ).formatlink ()
+          "/>
+         <td tal:content="structure python:utils.ExtProperty
+          (utils, cld.title,     item=cld).formatlink ()"/>
+         <td tal:content="structure python:utils.ExtProperty
+          (utils, cld.firstname, item=cld).formatlink ()"/>
+         <td tal:content="structure python:utils.ExtProperty
+          (utils, cld.lastname,  item=cld).formatlink ()"/>
+         <td tal:content="structure python:utils.ExtProperty
+          (utils, cld.affix,     item=cld).formatlink ()"/>
+        </tr>
+       </table>
+      </tal:block>
+     </tal:block>
+    </tal:block>
+
+    <tal:block metal:fill-slot="before_messages">
+     <tal:block tal:condition=
+          "python:True or 'ort'in props and 'person' in db._db.classes">
+      <table class="files">
+       <tr>
+        <th colspan="3" class="header" i18n:translate="">
+        Address used in
+        </th>
        </tr>
-       <tr tal:define="n python:'address'">
-        <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-        <th tal:content="structure python:utils.fieldname (n, 'title')"/>
-        <th tal:content="structure python:utils.fieldname (n, 'firstname')"/>
-        <th tal:content="structure python:utils.fieldname (n, 'lastname')"/>
-        <th tal:content="structure python:utils.fieldname (n, 'affix')"/>
-       </tr>
-       <tr tal:repeat="cld chlds">
-        <td tal:content="structure python:utils.ExtProperty
-         (utils, utils.properties_dict (db, cld) ['id'], item=cld).formatlink ()
-         "/>
-        <td tal:content="structure python:utils.ExtProperty
-         (utils, cld.title,     item=cld).formatlink ()"/>
-        <td tal:content="structure python:utils.ExtProperty
-         (utils, cld.firstname, item=cld).formatlink ()"/>
-        <td tal:content="structure python:utils.ExtProperty
-         (utils, cld.lastname,  item=cld).formatlink ()"/>
-        <td tal:content="structure python:utils.ExtProperty
-         (utils, cld.affix,     item=cld).formatlink ()"/>
-       </tr>
+       <tal:block tal:define="
+         persons python:utils.persons_for_adr (db, context.id);
+         name python:' ';
+         ptype python:1;
+         cond false;
+         remove python: False">
+        <tal:block metal:use-macro="templates/page/macros/innerperslist" />
+       </tal:block>
       </table>
      </tal:block>
     </tal:block>
+
    </tal:block>
   </tal:block>
  </tal:block>
