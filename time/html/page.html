@@ -1491,8 +1491,8 @@
      <th style="text-align:left;padding-top:0px"
          tal:content="structure python:utils.fieldname
          ('person', 'description')"/>
-     <th style="text-align:left;padding-top:0px"
-         tal:condition="python:context.is_edit_ok() and remove" i18n:translate=""
+     <th style="text-align:left;padding-top:0px" i18n:translate=""
+         tal:condition="python:context.is_edit_ok() and remove"
          style="padding-top:0px">
          remove
      </th>
@@ -1518,6 +1518,10 @@
       ( utils, p.description, item=p
       ).formatlink ()"/>
      <td tal:condition="python:context.is_edit_ok() and remove">
+      <input tabindex="-1" type="checkbox" tal:attributes=
+             "value python:'-1';
+              name  python:'%s@cust_supp' % p.designator ();
+             ">
      </td>
     </tr>
 </tal:block>

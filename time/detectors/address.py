@@ -57,12 +57,16 @@ def fix_contacts (db, cl, nodeid, old_values) :
 # end def fix_contacts
 
 def check_retire_address (db, cl, nodeid, old_values) :
-        oadr = old_values.get ('address')
+        oadr = None
+        if old_values :
+            oadr = old_values.get ('address')
+            nadr = db.person.get (nodeid, 'address')
+            if nadr and db.address.is_retired (nadr) :
+                db.address.restore (nadr)
+        else :
+            oadr = cl.get (nodeid, 'address')
         if oadr and not common.persons_for_adr (db, oadr) :
             db.address.retire (oadr)
-        nadr = db.person.get (nodeid, 'address')
-        if nadr and db.address.is_retired (nadr) :
-            db.address.restore (nadr)
 # end def check_retire_address
 
 def set_adr_defaults (db, cl, nodeid, new_values) :
@@ -104,6 +108,15 @@ def check_function (db, cl, nodeid, new_values) :
     return common.check_attribute_lines (_, new_values, 'function', 2)
 # end def check_function
 
+def require_cust_supp (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'cust_supp')
+# end def require_cust_supp
+
+def check_retire (db, cl, nodeid, old_values) :
+    if cl.get (nodeid, 'cust_supp') is None :
+        cl.retire (nodeid)
+# end def check_retire
+
 def init (db) :
     if 'address' not in db.classes :
         return
@@ -117,6 +130,7 @@ def init (db) :
     db.address.audit ("create", common.lookalike_computation)
     db.address.audit ("set",    common.lookalike_computation)
     if 'person' in db.classes :
+        db.person.audit  ("create", require_cust_supp)
         db.person.audit  ("create", common.lookalike_computation)
         db.person.audit  ("set",    common.lookalike_computation)
         db.person.audit  ("create", check_function)
@@ -127,6 +141,7 @@ def init (db) :
         db.person.react  ("create", fix_contacts)
         db.person.react  ("set",    check_retire_address)
         db.person.react  ("retire", check_retire_address)
+        db.person.react  ("set",    check_retire)
     else :
         db.address.audit ("create", check_function)
         db.address.audit ("set",    check_function)

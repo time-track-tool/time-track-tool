@@ -53,12 +53,12 @@
      </tr>
      <tal:block tal:condition="context/id">
       <tal:block tal:define="persons p_invo;name string:invoice_address;
-                 ptype python:1; cond not:p_invo; remove python: False">
+                 ptype python:1; cond not:p_invo; remove python: True">
        <tal:block metal:use-macro="templates/page/macros/perslist" />
       </tal:block>
       <tr/>
       <tal:block tal:define="persons p_cont;name string:contact_person;
-                 ptype python:4; cond python: True; remove python: False">
+                 ptype python:4; cond python: True; remove python: True">
        <tal:block metal:use-macro="templates/page/macros/perslist" />
       </tal:block>
       <tr/>
@@ -175,7 +175,7 @@
          and (context.customer_status.valid or context.customer_status.display)
          )">
       <tal:block tal:define="persons p_ship;name string:shipping_address;
-                 ptype python:2; cond not:p_ship; remove python: False">
+                 ptype python:2; cond not:p_ship; remove python: True">
        <tal:block metal:use-macro="templates/page/macros/perslist" />
       </tal:block>
       <!--
@@ -272,7 +272,7 @@
        <td tal:content="structure python:context.supplier_group.menu ()"/>
       </tr>
       <tal:block tal:define="persons p_supp;name string:supply_address;
-                 ptype python:3; cond not:p_supp; remove python: False">
+                 ptype python:3; cond not:p_supp; remove python: True">
        <tal:block metal:use-macro="templates/page/macros/perslist" />
       </tal:block>
       <!--
