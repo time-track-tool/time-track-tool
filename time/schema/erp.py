@@ -300,6 +300,7 @@ def security (db, ** kw) :
         , ("cust_supp",        ["User"],    ["Contact"])
         , ("customer_group",   ["User"],    [])
         , ("customer_status",  ["User"],    [])
+        , ("customer_type",    ["User"],    [])
         , ("discount_group",   ["User"],    ["Discount"])
         , ("dispatch_type",    ["User"],    [])
         , ("group_discount",   ["User"],    ["Discount"])
