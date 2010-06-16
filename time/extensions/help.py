@@ -1293,6 +1293,7 @@ _helptext          = \
              be created for a project with this status.
           '''
       ]
+    , ""'time_wp++travel'             : [travel]
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
@@ -1309,16 +1310,15 @@ _helptext          = \
              template or none.
          '''
       ]
-    , ""'travel'                      : [travel]
-    , ""'time_wp++travel'             :
+    , ""'transitions'                 :
+      [""'''Allowed transitions to other states''']
+    , ""'travel'                      :
       [ travel
       , ""''' In addition in reports the times booked will be halved (if
              exceeding the expected work hours and the person is not
              marked "travel_full" in the dynamic user data)
           '''
       ]
-    , ""'transitions'                 :
-      [""'''Allowed transitions to other states''']
     , ""'tr_duration'                 :
       [ ""'''Work duration in minutes including special travel computation:
              travel times will be halved if exceeding the maximum work
