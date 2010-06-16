@@ -24,7 +24,7 @@ import shutil
 import sys
 import unittest
 
-import user1_time, user2_time
+import user1_time, user2_time, user3_time
 
 from propl_abo   import properties as properties_abo
 from propl_adr   import properties as properties_adr
@@ -158,6 +158,12 @@ class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
+        self.db.overtime_period.create \
+            ( name   = 'yearly/weekly'
+            , months = 12
+            , order  = 1.5
+            , weekly = True
+            )
         self.org = self.db.organisation.create \
             ( name        = 'The Org'
             , description = 'A Test Organisation'
@@ -177,6 +183,15 @@ class Test_Case_Timetracker (_Test_Case) :
         self.dep = self.db.department.create \
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
+            )
+        self.username0 = 'testuser0'
+        self.user0 = self.db.user.create \
+            ( username     = self.username0
+            , firstname    = 'Test'
+            , lastname     = 'User0'
+            , org_location = self.olo
+            , department   = self.dep
+            , roles        = 'User,Nosy,HR,controlling,project,ITView,IT'
             )
         self.username1 = 'testuser1'
         self.user1 = self.db.user.create \
@@ -341,6 +356,39 @@ class Test_Case_Timetracker (_Test_Case) :
                 )
         self.db.commit ()
     # end def setup_db
+
+    def setup_user3 (self) :
+        self.username3 = 'testuser3'
+        self.user3 = self.db.user.create \
+            ( username     = self.username3
+            , firstname    = 'NochEinTest'
+            , lastname     = 'User3'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user3))
+        self.assertEqual (len (ud), 1)
+        p = self.db.overtime_period.lookup ('yearly/weekly')
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , additional_hours  = 40
+            , supp_weekly_hours = 45.0
+            , supp_per_period   = 84.0
+            , overtime_period   = p
+            , weekend_allowed   = True
+            )
+        self.db.commit ()
+    # end def setup_user3
 
     def test_rename_status (self) :
         self.setup_db ()
@@ -682,6 +730,42 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (dr1.tr_duration_ok, 7.75)
         self.assertEqual (dr2.tr_duration_ok, None)
     # end def test_user2
+
+    def test_user3 (self) :
+        self.setup_db ()
+        self.setup_user3 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username3)
+        user3_time.import_data_3 (self.db, self.user3)
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user3]
+             , 'date'         : '2010-01-01;2010-05-31'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 31)
+        self.assertEqual (lines [0]  [1], 'Time Period')
+        self.assertEqual (lines [0] [12], 'Achieved supplementary hours')
+        self.assertEqual (lines [1]  [1], 'WW 53/2009')
+        self.assertEqual (lines [2]  [1], 'WW 1/2010')
+        self.assertEqual (lines [16] [6], '57.62')
+        self.assertEqual (lines [16] [8], '45.00')
+        self.assertEqual (lines [16][10], '12.62')
+        self.assertEqual (lines [16][12], '5.00')
+        self.assertEqual (lines [17] [6], '52.88')
+        self.assertEqual (lines [17] [8], '45.00')
+        self.assertEqual (lines [17][10], '20.50')
+        self.assertEqual (lines [17][12], '10.00')
+        self.assertEqual (lines [18] [1], 'WW 17/2010')
+        self.assertEqual (lines [18] [6], '38.50')
+        self.assertEqual (lines [18] [8], '45.00')
+        self.assertEqual (lines [18][10], '14.00')
+        self.assertEqual (lines [18][12], '15.00')
+    # end def test_user3
 
     def concurrency (self, method) :
         trid = '4'
