@@ -70,6 +70,7 @@ Role "user":
  User is allowed to access cust_supp (View for "cust_supp" only)
  User is allowed to access customer_group (View for "customer_group" only)
  User is allowed to access customer_status (View for "customer_status" only)
+ User is allowed to access customer_type (View for "customer_type" only)
  User is allowed to access discount_group (View for "discount_group" only)
  User is allowed to access dispatch_type (View for "dispatch_type" only)
  User is allowed to access group_discount (View for "group_discount" only)
