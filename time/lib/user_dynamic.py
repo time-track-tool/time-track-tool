@@ -436,6 +436,7 @@ class Period_Data (object) :
             for o in oc :
                 self.overtime_balance += o.value or 0
             if date > end :
+                assert (0)
                 work  = 0.0
                 req   = 0.0
             if use_additional :
@@ -445,7 +446,6 @@ class Period_Data (object) :
 		overtadd += dur.additional_hours * do_over
             required += req  * do_over
             worked   += work * do_over
-            date     += day
             eow       = week_from_date (date) [1]
             if date == eow and period.months and period.weekly :
                 if worked > overtadd :
@@ -456,6 +456,9 @@ class Period_Data (object) :
                     self.overtime_balance += worked - required
                 overtadd = overtime = worked = required = 0.0
 		self._consolidate ()
+            # increment at end (!)
+            date += day
+                         
         if not period.weekly :
             overtime += self.overtime_per_period
         if worked > overtadd and period.months :

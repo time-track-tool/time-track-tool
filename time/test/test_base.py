@@ -763,8 +763,13 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [18] [1], 'WW 17/2010')
         self.assertEqual (lines [18] [6], '38.50')
         self.assertEqual (lines [18] [8], '45.00')
-        self.assertEqual (lines [18][10], '14.00')
-        self.assertEqual (lines [18][12], '15.00')
+        self.assertEqual (lines [18][10], '20.50')
+        self.assertEqual (lines [18][12], '10.00')
+        self.assertEqual (lines [19] [1], 'WW 18/2010')
+        self.assertEqual (lines [19] [6], '38.50')
+        self.assertEqual (lines [19] [8], '45.00')
+        self.assertEqual (lines [19][10], '20.50')
+        self.assertEqual (lines [19][12], '10.00')
     # end def test_user3
 
     def concurrency (self, method) :
