@@ -61,7 +61,7 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
     attrs = ", ".join (_ (a) for a in attr_lst if a in newvalues)
     if attrs :
         raise Reject, _ \
-            ('Your are not allowed to %(action)s: %(attrs)s'
+            ('You are not allowed to %(action)s: %(attrs)s'
             % locals ()
             )
 # end def check_document_frozen
