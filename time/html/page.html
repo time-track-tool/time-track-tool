@@ -37,7 +37,8 @@
  ; terse           python: utils.get_from_form (request, 'terse')
  ; quiet           python: utils.get_from_form (request, 'quiet')
  ; cadr            python: ['address', 'person']
-                           ['person' in db._db.contact.properties]
+                           ['contact' in db._db.classes
+                            and 'person' in db._db.contact.properties]
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
