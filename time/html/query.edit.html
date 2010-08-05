@@ -16,8 +16,16 @@
   <span tal:condition="not:context/is_edit_ok" i18n:translate="">
   You are not allowed to edit queries.
   </span>
+  <script language="javascript">
+  function retire(qid) {
+      frm = document.forms.edit
+      frm['@action'].value = 'retire';
+      frm.action = 'query' + qid
+      frm.submit();
+  }
+  </script>
 
-  <form method="POST" onSubmit="return submit_once()" action="query"
+  <form name="edit" method="POST" onSubmit="return submit_once()" action="query"
         enctype="multipart/form-data" tal:condition="context/is_edit_ok">
 
    <table class="list" tal:define=
@@ -64,12 +72,8 @@
 
      <td tal:condition="python:
                         not query.is_retired () and context.is_retire_ok ()">
-      <form style="padding:0" method="POST"
-            tal:attributes="action string:query${query/id}">
-        <input type="button" i18n:attributes="value" value="Delete">
-        <input type="hidden" name="@template" value="index">
-        <input type="hidden" name="@action" value="retire">
-      </form>
+        <input type="button" value="Delete" i18n:attributes="value"
+               tal:attributes="onClick python:'''retire('%s')'''%query.id">
      </td>
     </tr>
     <tr>
