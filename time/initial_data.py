@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -679,4 +679,35 @@ if 'person_type' in db.classes :
         ( name        = _ (""'contact')
         , description = _ (""'Address of a personal contact')
         , order       = 4
+        )
+
+if 'logstyle' in db.classes :
+    db.logstyle.create \
+        ( name        = 'circular'
+        , description = _ (""'Circular logging')
+        , order       = 1
+        )
+    db.logstyle.create \
+        ( name        = 'start'
+        , order       = 2
+        )
+    db.logstyle.create \
+        ( name        = 'stop'
+        , order       = 3
+        )
+    db.logstyle.create \
+        ( name        = 'full'
+        , order       = 4
+        )
+    db.user.create \
+        ( username = "user"
+        , password = adminpw
+        , address  = db.config.ADMIN_EMAIL
+        , roles    = 'User'
+        )
+    db.user.create \
+        ( username = "guest"
+        , password = adminpw
+        , address  = db.config.ADMIN_EMAIL
+        , roles    = 'Guest'
         )
