@@ -1,0 +1,74 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+   "batch request/batch;
+    pdict python: utils.properties_dict (db, context);
+    ep python: utils.ExtProperty;
+    props python:
+     ( ep (utils, pdict ['id'])
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device.device_group'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device.transceiver'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device.adr'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device.dev'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device.cls'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device.name'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.adr'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.type'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.name'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep (utils, pdict ['val'])
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.unit'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep (utils, pdict ['date'], format = '%Y-%m-%d.%H:%M:%S')
+     );
+    "
+   tal:condition="context/is_view_ok">
+
+   <tal:block metal:use-macro="templates/page/macros/search_results"/>
+   <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+  </tal:block>
+ </tal:block>
+</tal:block>

@@ -48,19 +48,29 @@ def init \
 
     transceiver = Class \
         ( db, ''"transceiver"
-        , adr                 = String    ()
+        , tty                 = String    ()
         , name                = String    ()
         , sint                = Number    ()
         , mint                = Number    ()
         )
     transceiver.setlabelprop (''"name")
 
+    device_group = Class \
+        ( db, ''"device_group"
+        , name                = String    ()
+        , description         = String    ()
+        , order               = Number    ()
+        )
+    device_group.setlabelprop (''"name")
+
     device = Class \
         ( db, ''"device"
+        , transceiver         = Link      ("transceiver")
         , adr                 = String    ()
         , dev                 = String    ()
         , cls                 = String    ()
         , name                = String    ()
+        , device_group        = Link      ("device_group")
         , sint                = Number    ()
         , mint                = Number    ()
         , gapint              = Number    ()
@@ -68,11 +78,11 @@ def init \
         , version             = String    ()
         )
     device.setkey (''"adr")
-    device.setlabelprop (''"name")
 
     sensor = Class \
         ( db, ''"sensor"
         , device              = Link      ("device")
+        , adr                 = String    ()
         , type                = String    ()
         , name                = String    ()
         , almin               = Number    ()
@@ -81,7 +91,7 @@ def init \
         , do_logging          = Boolean   ()
         , is_actuator         = Boolean   ()
         )
-    sensor.setlabelprop (''"name")
+    sensor.setlabelprop (''"adr")
 
     logstyle = Class \
         ( db, ''"logstyle"
@@ -107,11 +117,12 @@ def security (db, ** kw) :
         ]
 
     classes = \
-        [ ("device",      ["User", "Guest", "Logger"], ["Logger"])
-        , ("logstyle",    ["User", "Guest", "Logger"], [])
-        , ("measurement", ["User", "Guest", "Logger"], ["Logger"])
-        , ("sensor",      ["User", "Guest", "Logger"], ["Logger"])
-        , ("transceiver", ["User", "Guest", "Logger"], ["Logger"])
+        [ ("device",       ["User", "Guest", "Logger"], ["Logger"])
+        , ("device_group", ["User", "Guest", "Logger"], ["User"])
+        , ("logstyle",     ["User", "Guest", "Logger"], [])
+        , ("measurement",  ["User", "Guest", "Logger"], ["Logger"])
+        , ("sensor",       ["User", "Guest", "Logger"], ["Logger"])
+        , ("transceiver",  ["User", "Guest", "Logger"], ["Logger"])
         ]
 
     prop_perms = \
@@ -124,7 +135,7 @@ def security (db, ** kw) :
             )
           )
         , ( "transceiver", "Edit", ["User"]
-          , ("name", "adr", "sint", "mint")
+          , ("name", "tty", "sint", "mint")
           )
         ]
 

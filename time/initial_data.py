@@ -683,7 +683,7 @@ if 'person_type' in db.classes :
 
 if 'logstyle' in db.classes :
     db.logstyle.create \
-        ( name        = 'circular'
+        ( name        = 'circ'
         , description = _ (""'Circular logging')
         , order       = 1
         )
@@ -699,6 +699,13 @@ if 'logstyle' in db.classes :
         ( name        = 'full'
         , order       = 4
         )
+if 'transceiver' in db.classes :
+    db.transceiver.create \
+        ( tty  = '/dev/ttyUSB0'
+        , name = 'USB0'
+        , mint = 10
+        , sint = 10
+        )
     db.user.create \
         ( username = "user"
         , password = adminpw
@@ -710,4 +717,10 @@ if 'logstyle' in db.classes :
         , password = adminpw
         , address  = db.config.ADMIN_EMAIL
         , roles    = 'Guest'
+        )
+    db.user.create \
+        ( username = "logger"
+        , password = adminpw
+        , address  = db.config.ADMIN_EMAIL
+        , roles    = 'Logger'
         )
