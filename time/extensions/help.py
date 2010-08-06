@@ -228,6 +228,10 @@ _helptext          = \
       [""'''List of users this %(Classname)s maps to''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
+    , ""'almax'                       :
+      [""'''Maximum value, this or larger values trigger an alarm''']
+    , ""'almin'                       :
+      [""'''Minimum value, this or smaller values trigger an alarm''']
     , ""'alternate_addresses'         :
       [""'''Alternate email addresses for this user, one per line''']
     , ""'amount'                      :
@@ -435,6 +439,8 @@ _helptext          = \
              the DHCP configuration.
           '''
       ]
+    , ""'do_logging'                  :
+      [""'''Log values received for this %(Classname)s''']
     , ""'do_reverse_mapping'          :
       [ ""'''Flag if a reverse DNS entry should be created for this
              %(Classname)s -- should usually be enabled. If a
@@ -497,20 +503,6 @@ _helptext          = \
       [ ""'''When this %(Classname)s can be started to work on. Used to
              specify external dependencies (e.g., availability of
              hardware).
-          '''
-      ]
-    , ""'numeric_effort'              :
-      [ ""'''The estimated effort this work package has. This should be
-             a fair estimation done by the Responsible of the
-             %(Classname)s. Be sure to set it for Change-Requests
-             because otherwise one (1!) day will be used as a rough
-             guess for the planning procedure -- which -- in most
-             circumstances -- will NOT be sufficient. The unit is in
-             person days. One person year = 10 person months, one person
-             month = 4 person weeks, one person week = 5 person days.
-             Note that the contents of this field will be rounded to the
-             next integer, only full days make sense for the work-time
-             estimates.
           '''
       ]
     , ""'email'                       :
@@ -656,6 +648,8 @@ _helptext          = \
              automatic public holiday computation.
           '''
       ]
+    , ""'is_actuator'                 :
+      [""'''This %(Classname)s allows setting a value''']
     , ""'issue++deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are
@@ -842,6 +836,20 @@ _helptext          = \
       ]
     , ""'nosy'                        :
       [""'''People receiving announcements (messages) for %(Classname)s''']
+    , ""'numeric_effort'              :
+      [ ""'''The estimated effort this work package has. This should be
+             a fair estimation done by the Responsible of the
+             %(Classname)s. Be sure to set it for Change-Requests
+             because otherwise one (1!) day will be used as a rough
+             guess for the planning procedure -- which -- in most
+             circumstances -- will NOT be sufficient. The unit is in
+             person days. One person year = 10 person months, one person
+             month = 4 person weeks, one person week = 5 person days.
+             Note that the contents of this field will be rounded to the
+             next integer, only full days make sense for the work-time
+             estimates.
+          '''
+      ]
     , ""'op_project'                  :
       [ ""'''Flag if this %(Classname)s is a real project or just used for
              time tracking.

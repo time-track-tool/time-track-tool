@@ -8,16 +8,49 @@
   <tal:block tal:define=
    "batch request/batch;
     pdict python: utils.properties_dict (db, context);
+    ep python: utils.ExtProperty;
     props python:
-     ( utils.ExtProperty (utils, pdict ['id'])
-     , utils.ExtProperty (utils, pdict ['device'], multiselect = 1)
-     , utils.ExtProperty (utils, pdict ['type'])
-     , utils.ExtProperty (utils, pdict ['name'])
-     , utils.ExtProperty (utils, pdict ['almin'])
-     , utils.ExtProperty (utils, pdict ['almax'])
-     , utils.ExtProperty (utils, pdict ['unit'])
-     , utils.ExtProperty (utils, pdict ['do_logging'])
-     , utils.ExtProperty (utils, pdict ['is_actuator'])
+     ( ep (utils, pdict ['id'])
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.device_group'
+          , searchable   = True
+          , displayable  = True
+          , multiselect  = True
+          )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.transceiver'
+          , searchable   = True
+          , displayable  = True
+          , multiselect  = True
+          )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.adr'
+          , searchable   = True
+          , displayable  = True
+          , help_props   = ('device_group', 'adr', 'name', 'cls', 'dev')
+          )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.dev'
+          , searchable   = False
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.cls'
+          , searchable   = False
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.name'
+          , searchable   = False
+          , displayable  = True
+          )
+     , ep (utils, pdict ['type'])
+     , ep (utils, pdict ['name'])
+     , ep (utils, pdict ['almin'])
+     , ep (utils, pdict ['almax'])
+     , ep (utils, pdict ['unit'])
+     , ep (utils, pdict ['do_logging'])
+     , ep (utils, pdict ['is_actuator'])
      );
     "
    tal:condition="context/is_view_ok">
