@@ -165,6 +165,7 @@ class ExtProperty :
             displaying a menu (in a search mask) or help.
         help_filter: deprecated, a string of property/value pairs
             usually computed from filter and used in classhelp
+        help_props: Properties used for classhelp
         helpname: Name used for looking up helptext, can be overridden
             in case the class uses shadowed attributes for searching
             (e.g. lookalike_city)
