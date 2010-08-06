@@ -158,6 +158,8 @@ travel             = \
          be computed. Even if enabled, no maximum work hours will be
          enforced for this %(Classname)s.
       '''
+userdefined_name   = \
+    ""'''User-defined name of this %(Classname)s'''
 work_loc           = \
     ""'''Location where you worked.'''
 view               = \
@@ -388,6 +390,7 @@ _helptext          = \
     , ""'dev'                         :
       [ ""'''Device type name (product)''' ]
     , ""'device++adr'                 : [adr]
+    , ""'device++name'                : [userdefined_name]
     , ""'device_group'                :
       [ ""'''Device group for %(Classname)s -- a device may belong
              to one device group which can be configured by the user.
@@ -1081,8 +1084,7 @@ _helptext          = \
     , ""'sensor'                      :
       [ ""'''Sensor of this %(Classname)s''' ]
     , ""'sensor++adr'                 : [adr]
-    , ""'sensor++name'                :
-      [ ""'''User-defined name of this %(Classname)s''' ]
+    , ""'sensor++name'                : [userdefined_name]
     , ""'sensor++type'                :
       [ ""'''Type of %(Classname)s''' ]
     , ""'shadow_last_change'          :
