@@ -1378,6 +1378,8 @@ _helptext          = \
              not yet implemented. See also it_issue884.
           '''
       ]
+    , ""'tty'                         :
+      [""'''Serial line connection to transceiver''']
     , ""'type'                        :
       [""'''Mime type of this file''']
     , ""'typecat'             :

@@ -4347,6 +4347,9 @@ msgstr "Measurement interval"
 msgid "sint"
 msgstr "Transmit interval"
 
+msgid "tty"
+msgstr "Serial line"
+
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"
 
