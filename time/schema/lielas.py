@@ -53,7 +53,7 @@ def init \
         , sint                = Number    ()
         , mint                = Number    ()
         )
-    transceiver.setlabelprop (''"name")
+    transceiver.setkey (''"name")
 
     device_group = Class \
         ( db, ''"device_group"
