@@ -120,9 +120,13 @@
                           'dns_record_type,do_reverse_mapping&@sort=name&'
                           '@pagesize=20&@startwith=0'
    , ('measurement', '')
-                        : '@columns=sensor.device,sensor,val,date&'
-                          '@sort=sensor.device,device,-date&'
-                          '@pagesize=20&@startwith=0'
+                        : '@columns=sensor.device.device_group,'
+                          'sensor.device.adr,sensor.device.name,'
+                          'sensor.adr,sensor.type,sensor.name,val,'
+                          'sensor.unit,date&'
+                          '@sort=date&@group=sensor.device.adr,'
+                          'sensor.adr&'
+                          '@pagesize=50&@startwith=0'
    , ('network_address', '')
                         : '@columns=ip,org_location,use_dhcp,network_interface&'
                           '@sort=ip&@group=org_location&@pagesize=20&'
