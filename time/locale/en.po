@@ -2579,6 +2579,9 @@ msgstr ""
 msgid "sensor++adr"
 msgstr "Sensor address"
 
+msgid "device++name"
+msgstr "Device Name"
+
 msgid "sensor++name"
 msgstr "Sensor Name"
 
