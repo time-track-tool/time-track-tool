@@ -1,0 +1,67 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python: 0">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'adr')"/>
+      <td tal:content="structure python:context.adr.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'name')"/>
+      <td tal:content="structure python:context.name.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'transceiver')"/>
+      <td tal:content="structure python:context.transceiver.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'device_group')"/>
+      <td tal:content="structure python:context.device_group.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'cls')"/>
+      <td tal:content="structure python:context.cls.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'dev')"/>
+      <td tal:content="structure python:context.dev.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'mint')"/>
+      <td tal:content="structure python:context.mint.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'sint')"/>
+      <td tal:content="structure python:context.sint.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'gapint')"/>
+      <td tal:content="structure python:context.gapint.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'rec')"/>
+      <td tal:content="structure python:context.rec.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'version')"/>
+      <td tal:content="structure python:context.version.field ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

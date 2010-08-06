@@ -1,0 +1,62 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python: 0">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname ('device', 'adr')"/>
+      <td tal:content="structure python:context.device.adr.plain ()"/>
+      <th tal:content="structure python:utils.fieldname ('device', 'name')"/>
+      <td tal:content="structure python:context.device.name.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'adr')"/>
+      <td tal:content="structure python:context.adr.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'name')"/>
+      <td tal:content="structure python:context.name.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'unit')"/>
+      <td tal:content="structure python:context.unit.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'type')"/>
+      <td tal:content="structure python:context.type.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'almin')"/>
+      <td tal:content="structure python:context.almin.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'almax')"/>
+      <td tal:content="structure python:context.almax.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'do_logging')"/>
+      <td tal:content="structure python:context.do_logging.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'is_actuator')"/>
+      <td tal:content="structure python:context.is_actuator.field ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
