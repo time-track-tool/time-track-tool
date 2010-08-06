@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-03-16 16:53+0100\n"
+"POT-Creation-Date: 2010-08-06 19:25+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -133,13 +133,6 @@ msgstr ""
 msgid "Country must be set"
 msgstr ""
 
-msgid "function"
-msgstr "Address details"
-
-#, python-format
-msgid "%(attr)s must not exceed 2 lines"
-msgstr ""
-
 msgid ""
 "address type category \"ABO\" is used by the system and may not be changed."
 msgstr ""
@@ -214,7 +207,7 @@ msgid "specify"
 msgstr ""
 
 #, python-format
-msgid "Your are not allowed to %(action)s: %(attrs)s"
+msgid "You are not allowed to %(action)s: %(attrs)s"
 msgstr ""
 
 #, python-format
@@ -546,6 +539,9 @@ msgstr ""
 msgid "Status of this address"
 msgstr ""
 
+msgid "Address of %(Classname)s"
+msgstr ""
+
 msgid ""
 "The address type category with\n"
 "         code \"ABO\" is special: It is used by the system for marking all\n"
@@ -808,6 +804,9 @@ msgstr "valid"
 msgid "address++title"
 msgstr "Title"
 
+msgid "adr"
+msgstr "Address"
+
 msgid "adr_type_cat.code"
 msgstr "Code"
 
@@ -995,6 +994,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "cls"
+msgstr "Class"
+
+msgid "%(Classname)s class"
+msgstr ""
+
 msgid "code"
 msgstr "Code"
 
@@ -1053,6 +1058,12 @@ msgstr "Contact type"
 msgid "Type of contact information, e.g., Email, Phone, Fax, Homepage"
 msgstr ""
 
+msgid "contact_person"
+msgstr "Contact person"
+
+msgid "Personal information about a %(Property)s"
+msgstr ""
+
 msgid "Content of %(Classname)s"
 msgstr ""
 
@@ -1095,8 +1106,17 @@ msgstr "CSV delimiter"
 msgid "Currency for this %(Classname)s"
 msgstr ""
 
+msgid "%(Property)s of %(Classname)s"
+msgstr ""
+
+msgid "cust_supp"
+msgstr "Customer/Supplier"
+
 msgid "customer_status"
 msgstr "Customer Status"
+
+msgid "customer_type"
+msgstr "Customer type"
 
 msgid "cut_off_date"
 msgstr "Cut-off Date"
@@ -1178,6 +1198,24 @@ msgstr "Description"
 msgid "Verbose description of %(Classname)s"
 msgstr ""
 
+msgid "dev"
+msgstr "Device"
+
+msgid "Device type name (product)"
+msgstr ""
+
+msgid "device++adr"
+msgstr "Device address"
+
+msgid "device_group"
+msgstr "Device group"
+
+msgid ""
+"Device group for %(Classname)s -- a device may belong\n"
+"             to one device group which can be configured by the user.\n"
+"          "
+msgstr ""
+
 msgid "dhcp_range"
 msgstr "DHCP range"
 
@@ -1194,6 +1232,15 @@ msgid "dhcp_server"
 msgstr "DHCP server"
 
 msgid "DHCP Server for this %(Classname)s"
+msgstr ""
+
+msgid "display"
+msgstr ""
+
+msgid ""
+"If enabled, items with %(Classname)s will be displayed\n"
+"             in customer/supplier mask.\n"
+"          "
 msgstr ""
 
 msgid "dist"
@@ -1469,6 +1516,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "function"
+msgstr "Address details"
+
 msgid "Numeric group ID"
 msgstr ""
 
@@ -1583,6 +1633,12 @@ msgstr "Subscriber Last name"
 
 msgid "invoice.subscriber.valid"
 msgstr "Subscriber valid"
+
+msgid "invoice_address"
+msgstr "Invoice address"
+
+msgid "Data for %(Property)s"
+msgstr ""
 
 msgid "invoice_group"
 msgstr "Invoice group"
@@ -1863,6 +1919,12 @@ msgid "max_lease_time"
 msgstr "maximum DHCP lease time"
 
 msgid "Maximum DHCP lease time for %(Classname)s"
+msgstr ""
+
+msgid "measurement"
+msgstr "Measurement"
+
+msgid "Measurement for a given sensor"
 msgstr ""
 
 msgid "messageid"
@@ -2157,6 +2219,12 @@ msgid "period_start"
 msgstr "Period Start"
 
 msgid "Date when this invoice period starts"
+msgstr ""
+
+msgid "person_type"
+msgstr "Person type"
+
+msgid "Type of this %(Classname)s for Customer/Supplier"
 msgstr ""
 
 msgid "person"
@@ -2502,6 +2570,24 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "sensor"
+msgstr "Sensor"
+
+msgid "Sensor of this %(Classname)s"
+msgstr ""
+
+msgid "sensor++adr"
+msgstr "Sensor address"
+
+msgid "sensor++name"
+msgstr "Sensor Name"
+
+msgid "User-defined name of this %(Classname)s"
+msgstr ""
+
+msgid "sensor++type"
+msgstr "Sensor type"
+
 msgid "shadow_last_change"
 msgstr "Shadow last change"
 
@@ -2573,6 +2659,9 @@ msgstr ""
 
 msgid "Shelf life in months"
 msgstr ""
+
+msgid "shipping_address"
+msgstr "Shipping address"
 
 msgid "show_all_users"
 msgstr "show all users"
@@ -2828,6 +2917,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "supply_address"
+msgstr "Supply Address"
+
 msgid "sync_with_ldap"
 msgstr "Synch with LDAP"
 
@@ -2906,6 +2998,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "time_wp++travel"
+msgstr "Travel WP"
+
 msgid "timezone"
 msgstr "Timezone"
 
@@ -2938,16 +3033,12 @@ msgid ""
 "         "
 msgstr ""
 
-msgid "travel"
-msgstr "Travel"
-
-msgid "time_wp++travel"
-msgstr "Travel WP"
+msgid "transceiver"
+msgstr "Transceiver"
 
 msgid ""
-" In addition in reports the times booked will be halved (if\n"
-"             exceeding the expected work hours and the person is not\n"
-"             marked \"travel_full\" in the dynamic user data)\n"
+"Transceiver on which devices are handled via radio\n"
+"             connection\n"
 "          "
 msgstr ""
 
@@ -2955,6 +3046,16 @@ msgid "transitions"
 msgstr "Transitions"
 
 msgid "Allowed transitions to other states"
+msgstr ""
+
+msgid "travel"
+msgstr "Travel"
+
+msgid ""
+" In addition in reports the times booked will be halved (if\n"
+"             exceeding the expected work hours and the person is not\n"
+"             marked \"travel_full\" in the dynamic user data)\n"
+"          "
 msgstr ""
 
 msgid "tr_duration"
@@ -2996,6 +3097,12 @@ msgid "uid_range"
 msgstr "UIDs for persons"
 
 msgid "Allowed range of user ids"
+msgstr ""
+
+msgid "unit"
+msgstr "Unit"
+
+msgid "Unit of measurement"
 msgstr ""
 
 msgid "url"
@@ -3116,13 +3223,10 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "display"
-msgstr ""
+msgid "val"
+msgstr "Value"
 
-msgid ""
-"If enabled, items with %(Classname)s will be displayed\n"
-"             in customer/supplier mask.\n"
-"          "
+msgid "Measured value"
 msgstr ""
 
 msgid "valid"
@@ -3367,13 +3471,19 @@ msgstr ""
 msgid "New Subscription for ${lastname}"
 msgstr ""
 
-msgid "New Letter for ${lastname}"
+msgid "New Letter for ${lastname} ${function}"
+msgstr ""
+
+msgid "- no selection -"
 msgstr ""
 
 msgid "Child addresses"
 msgstr ""
 
 msgid "new child address"
+msgstr ""
+
+msgid "Address used in"
 msgstr ""
 
 msgid "${classname_id} created by ${creator}"
@@ -3638,26 +3748,25 @@ msgstr "New Dynamic User Data"
 msgid "split user_dynamic record"
 msgstr "Split frozen dynamic user data"
 
-#, fuzzy
 msgid "Invoice Address"
 msgstr "Invoice address"
 
-#, fuzzy
 msgid "shipping"
-msgstr "Shipping address"
+msgstr "shipping"
 
-#, fuzzy
 msgid "Shipping Address"
 msgstr "Shipping address"
 
-#, fuzzy
 msgid "supply"
-msgstr "Supply Address"
+msgstr "supply"
 
 msgid "Address used for fetching supplies from supplier"
 msgstr ""
 
 msgid "Address of a personal contact"
+msgstr ""
+
+msgid "Circular logging"
 msgstr ""
 
 #, python-format
@@ -3674,6 +3783,10 @@ msgstr ""
 
 #, python-format
 msgid "%(attr)s must not be empty"
+msgstr ""
+
+#, python-format
+msgid "%(atname)s must not exceed %(length)s lines"
 msgstr ""
 
 #, python-format
@@ -3987,9 +4100,6 @@ msgstr "from hour"
 msgid "to_hour"
 msgstr "to hour"
 
-msgid "person_type"
-msgstr "Person type"
-
 msgid "abo_price"
 msgstr ""
 
@@ -4001,9 +4111,6 @@ msgstr "Address details"
 
 msgid "contacts"
 msgstr "Contacts"
-
-msgid "cust_supp"
-msgstr "Customer/Supplier"
 
 msgid "lookalike_lastname"
 msgstr "Last name"
@@ -4062,14 +4169,14 @@ msgstr "Tax ID"
 msgid "credit_limit"
 msgstr ""
 
+msgid "lookalike_name"
+msgstr "Lookalike name"
+
 msgid "customer_group"
 msgstr "Customer Group"
 
 msgid "sales_conditions"
 msgstr "Sales conditions"
-
-msgid "customer_type"
-msgstr "Customer Type"
 
 msgid "dispatch_type"
 msgstr ""
@@ -4185,6 +4292,12 @@ msgstr "User Status"
 msgid "doc_num"
 msgstr "Document number"
 
+msgid "device"
+msgstr "Device"
+
+msgid "logstyle"
+msgstr "Logging style"
+
 msgid "User is allowed %(perm)s on"
 msgstr ""
 
@@ -4269,6 +4382,3 @@ msgstr ""
 
 #~ msgid "subscriber.lookalike_function"
 #~ msgstr "Subscriber Address details"
-
-#~ msgid "contact_person"
-#~ msgstr "Contact person"
