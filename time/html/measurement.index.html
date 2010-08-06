@@ -7,6 +7,7 @@
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
    "batch request/batch;
+    n_sort python:4;
     pdict python: utils.properties_dict (db, context);
     ep python: utils.ExtProperty;
     props python:
@@ -27,6 +28,7 @@
           , searchname   = 'sensor.device.adr'
           , searchable   = True
           , displayable  = True
+          , help_props   = ('device_group', 'adr', 'name', 'cls', 'dev')
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.dev'
@@ -45,8 +47,13 @@
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.adr'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchable   = True
+          , displayable  = False
+          , help_props   = ('device', 'adr', 'name', 'type', 'unit')
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.type'
