@@ -131,7 +131,7 @@ def security (db, ** kw) :
           )
         , ( "sensor",      "Edit", ["User"]
           , ("name", "type", "almin", "almax", "unit"
-            , "do_logging", "is_actuator"
+            , "do_logging"
             )
           )
         , ( "transceiver", "Edit", ["User"]
@@ -140,5 +140,5 @@ def security (db, ** kw) :
         ]
 
     schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, [])
+    schemadef.register_class_permissions (db, classes, prop_perms)
 # end def security
