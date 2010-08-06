@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-03-28 20:11+0200\n"
+"POT-Creation-Date: 2010-08-06 22:58+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -211,7 +211,7 @@ msgid "specify"
 msgstr ""
 
 #, python-format
-msgid "Your are not allowed to %(action)s: %(attrs)s"
+msgid "You are not allowed to %(action)s: %(attrs)s"
 msgstr ""
 
 #, python-format
@@ -544,6 +544,9 @@ msgstr ""
 msgid "Status of this address"
 msgstr "Gültigkeits-Status dieser Adresse"
 
+msgid "Address of %(Classname)s"
+msgstr "Adresse zu diesem %(Classname)s"
+
 msgid ""
 "The address type category with\n"
 "         code \"ABO\" is special: It is used by the system for marking all\n"
@@ -699,6 +702,9 @@ msgid ""
 "      "
 msgstr ""
 
+msgid "User-defined name of this %(Classname)s"
+msgstr "Benutzerdefinierter Name für %(Classname)s"
+
 msgid "Location where you worked."
 msgstr ""
 
@@ -825,6 +831,9 @@ msgstr "gültig"
 msgid "address++title"
 msgstr "Titel"
 
+msgid "adr"
+msgstr "Adresse"
+
 msgid "adr_type_cat.code"
 msgstr "Code"
 
@@ -856,6 +865,18 @@ msgid "all_in"
 msgstr ""
 
 msgid "If selected, the user has an all-inclusive work time contract"
+msgstr ""
+
+msgid "almax"
+msgstr "Alarm max"
+
+msgid "Maximum value, this or larger values trigger an alarm"
+msgstr ""
+
+msgid "almin"
+msgstr "Alarm min"
+
+msgid "Minimum value, this or smaller values trigger an alarm"
 msgstr ""
 
 msgid "alternate_addresses"
@@ -1014,6 +1035,12 @@ msgid ""
 msgstr ""
 "Zeitpunkt, wann dieses %(Classname)s geschlossen wurde. Wird automatisch vom "
 "System gesetzt"
+
+msgid "cls"
+msgstr "Klasse"
+
+msgid "%(Classname)s class"
+msgstr "Klasse von %(Classname)s"
 
 msgid "code"
 msgstr "Code"
@@ -1216,6 +1243,27 @@ msgstr "Beschreibung"
 msgid "Verbose description of %(Classname)s"
 msgstr "Ausführliche Beschreibung von %(Classname)s"
 
+msgid "dev"
+msgstr ""
+
+msgid "Device type name (product)"
+msgstr ""
+
+msgid "device++adr"
+msgstr ""
+
+msgid "device++name"
+msgstr "Gerätename"
+
+msgid "device_group"
+msgstr "Gerätegruppe"
+
+msgid ""
+"Device group for %(Classname)s -- a device may belong\n"
+"             to one device group which can be configured by the user.\n"
+"          "
+msgstr ""
+
 msgid "dhcp_range"
 msgstr ""
 
@@ -1233,6 +1281,17 @@ msgstr ""
 
 msgid "DHCP Server for this %(Classname)s"
 msgstr "DHCP Server für diese %(Classname)s"
+
+msgid "display"
+msgstr "anzeigen"
+
+msgid ""
+"If enabled, items with %(Classname)s will be displayed\n"
+"             in customer/supplier mask.\n"
+"          "
+msgstr ""
+"Wenn eingeschaltet, werden Elemente mit %(Classname)s in der Kunden/"
+"Lieferantenmaske angezeigt."
 
 msgid "dist"
 msgstr ""
@@ -1268,6 +1327,12 @@ msgid ""
 "             the DHCP configuration.\n"
 "          "
 msgstr ""
+
+msgid "do_logging"
+msgstr "Aufzeichnung"
+
+msgid "Log values received for this %(Classname)s"
+msgstr "Werte für %(Classname)s sollen aufgezeichnet werden"
 
 msgid "do_reverse_mapping"
 msgstr ""
@@ -1375,24 +1440,6 @@ msgid ""
 "When this %(Classname)s can be started to work on. Used to\n"
 "             specify external dependencies (e.g., availability of\n"
 "             hardware).\n"
-"          "
-msgstr ""
-
-msgid "numeric_effort"
-msgstr ""
-
-msgid ""
-"The estimated effort this work package has. This should be\n"
-"             a fair estimation done by the Responsible of the\n"
-"             %(Classname)s. Be sure to set it for Change-Requests\n"
-"             because otherwise one (1!) day will be used as a rough\n"
-"             guess for the planning procedure -- which -- in most\n"
-"             circumstances -- will NOT be sufficient. The unit is in\n"
-"             person days. One person year = 10 person months, one person\n"
-"             month = 4 person weeks, one person week = 5 person days.\n"
-"             Note that the contents of this field will be rounded to the\n"
-"             next integer, only full days make sense for the work-time\n"
-"             estimates.\n"
 "          "
 msgstr ""
 
@@ -1703,6 +1750,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "is_actuator"
+msgstr "Aktuator"
+
+msgid "This %(Classname)s allows setting a value"
+msgstr "%(Classname)s erlaubt das Setzen von Werten"
+
 msgid "issue++deadline"
 msgstr ""
 
@@ -1922,6 +1975,12 @@ msgstr ""
 msgid "Maximum DHCP lease time for %(Classname)s"
 msgstr "Maximale DHCP Lease-Zeit für %(Classname)s"
 
+msgid "measurement"
+msgstr "Messwert"
+
+msgid "Measurement for a given sensor"
+msgstr "Messwert für den gegebenen Sensor"
+
 msgid "messageid"
 msgstr "Message-ID"
 
@@ -2059,6 +2118,24 @@ msgstr ""
 
 msgid "People receiving announcements (messages) for %(Classname)s"
 msgstr "Personen die Ankündigungen (Notizen) zu %(Classname)s erhalten"
+
+msgid "numeric_effort"
+msgstr ""
+
+msgid ""
+"The estimated effort this work package has. This should be\n"
+"             a fair estimation done by the Responsible of the\n"
+"             %(Classname)s. Be sure to set it for Change-Requests\n"
+"             because otherwise one (1!) day will be used as a rough\n"
+"             guess for the planning procedure -- which -- in most\n"
+"             circumstances -- will NOT be sufficient. The unit is in\n"
+"             person days. One person year = 10 person months, one person\n"
+"             month = 4 person weeks, one person week = 5 person days.\n"
+"             Note that the contents of this field will be rounded to the\n"
+"             next integer, only full days make sense for the work-time\n"
+"             estimates.\n"
+"          "
+msgstr ""
 
 msgid "op_project"
 msgstr ""
@@ -2577,6 +2654,21 @@ msgstr ""
 "verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese Rechnung "
 "weder versendet, noch als gesendet markiert."
 
+msgid "sensor"
+msgstr "Sensor"
+
+msgid "Sensor of this %(Classname)s"
+msgstr "Sensor für %(Classname)s"
+
+msgid "sensor++adr"
+msgstr "Sensoradresse"
+
+msgid "sensor++name"
+msgstr "Sensorname"
+
+msgid "sensor++type"
+msgstr "Sensortyp"
+
 msgid "shadow_last_change"
 msgstr "Datum der letzten Änderung des Shadow-Passworts"
 
@@ -2987,6 +3079,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "time_wp++travel"
+msgstr ""
+
 msgid "timezone"
 msgstr "Zeitzone"
 
@@ -3023,16 +3118,12 @@ msgstr ""
 "Status der Vorlage -- Benutzung als Briefvorlage, als Rechnungsvorlage oder "
 "keines davon"
 
-msgid "travel"
-msgstr ""
-
-msgid "time_wp++travel"
+msgid "transceiver"
 msgstr ""
 
 msgid ""
-" In addition in reports the times booked will be halved (if\n"
-"             exceeding the expected work hours and the person is not\n"
-"             marked \"travel_full\" in the dynamic user data)\n"
+"Transceiver on which devices are handled via radio\n"
+"             connection\n"
 "          "
 msgstr ""
 
@@ -3040,6 +3131,16 @@ msgid "transitions"
 msgstr "Übergänge"
 
 msgid "Allowed transitions to other states"
+msgstr ""
+
+msgid "travel"
+msgstr ""
+
+msgid ""
+" In addition in reports the times booked will be halved (if\n"
+"             exceeding the expected work hours and the person is not\n"
+"             marked \"travel_full\" in the dynamic user data)\n"
+"          "
 msgstr ""
 
 msgid "tr_duration"
@@ -3081,6 +3182,12 @@ msgid "uid_range"
 msgstr ""
 
 msgid "Allowed range of user ids"
+msgstr ""
+
+msgid "unit"
+msgstr "Einheit"
+
+msgid "Unit of measurement"
 msgstr ""
 
 msgid "url"
@@ -3211,16 +3318,11 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "display"
-msgstr "anzeigen"
+msgid "val"
+msgstr "Wert"
 
-msgid ""
-"If enabled, items with %(Classname)s will be displayed\n"
-"             in customer/supplier mask.\n"
-"          "
-msgstr ""
-"Wenn eingeschaltet, werden Elemente mit %(Classname)s in der Kunden/"
-"Lieferantenmaske angezeigt."
+msgid "Measured value"
+msgstr "gemessener Wert"
 
 msgid "valid"
 msgstr "gültig"
@@ -3766,6 +3868,9 @@ msgstr "Adresse zum Bezug beim Lieferanten"
 msgid "Address of a personal contact"
 msgstr "Adresse persönlicher Kontakt"
 
+msgid "Circular logging"
+msgstr ""
+
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -4166,6 +4271,9 @@ msgstr "Umsatzsteuer ID"
 msgid "credit_limit"
 msgstr "Kreditlimit"
 
+msgid "lookalike_name"
+msgstr "Nachname"
+
 msgid "customer_group"
 msgstr "Kundengruppe"
 
@@ -4285,6 +4393,12 @@ msgstr "Benutzerstatus"
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+msgid "device"
+msgstr "Gerät"
+
+msgid "logstyle"
+msgstr ""
 
 msgid "User is allowed %(perm)s on"
 msgstr "Benutzer darf %(perm)s auf"

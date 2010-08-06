@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-08-06 19:25+0200\n"
+"POT-Creation-Date: 2010-08-06 22:58+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -687,6 +687,9 @@ msgid ""
 "      "
 msgstr ""
 
+msgid "User-defined name of this %(Classname)s"
+msgstr ""
+
 msgid "Location where you worked."
 msgstr ""
 
@@ -838,6 +841,18 @@ msgid "all_in"
 msgstr "All in"
 
 msgid "If selected, the user has an all-inclusive work time contract"
+msgstr ""
+
+msgid "almax"
+msgstr "Alarm max"
+
+msgid "Maximum value, this or larger values trigger an alarm"
+msgstr ""
+
+msgid "almin"
+msgstr "Alarm min"
+
+msgid "Minimum value, this or smaller values trigger an alarm"
 msgstr ""
 
 msgid "alternate_addresses"
@@ -1207,6 +1222,9 @@ msgstr ""
 msgid "device++adr"
 msgstr "Device address"
 
+msgid "device++name"
+msgstr "Device Name"
+
 msgid "device_group"
 msgstr "Device group"
 
@@ -1276,6 +1294,12 @@ msgid ""
 "DNS Servers for this %(Classname)s, used when generating\n"
 "             the DHCP configuration.\n"
 "          "
+msgstr ""
+
+msgid "do_logging"
+msgstr "do logging"
+
+msgid "Log values received for this %(Classname)s"
 msgstr ""
 
 msgid "do_reverse_mapping"
@@ -1384,24 +1408,6 @@ msgid ""
 "When this %(Classname)s can be started to work on. Used to\n"
 "             specify external dependencies (e.g., availability of\n"
 "             hardware).\n"
-"          "
-msgstr ""
-
-msgid "numeric_effort"
-msgstr "Effort"
-
-msgid ""
-"The estimated effort this work package has. This should be\n"
-"             a fair estimation done by the Responsible of the\n"
-"             %(Classname)s. Be sure to set it for Change-Requests\n"
-"             because otherwise one (1!) day will be used as a rough\n"
-"             guess for the planning procedure -- which -- in most\n"
-"             circumstances -- will NOT be sufficient. The unit is in\n"
-"             person days. One person year = 10 person months, one person\n"
-"             month = 4 person weeks, one person week = 5 person days.\n"
-"             Note that the contents of this field will be rounded to the\n"
-"             next integer, only full days make sense for the work-time\n"
-"             estimates.\n"
 "          "
 msgstr ""
 
@@ -1702,6 +1708,12 @@ msgid ""
 "             want work packages of this %(Classname)s to be used in\n"
 "             automatic public holiday computation.\n"
 "          "
+msgstr ""
+
+msgid "is_actuator"
+msgstr "is actuator"
+
+msgid "This %(Classname)s allows setting a value"
 msgstr ""
 
 msgid "issue++deadline"
@@ -2063,6 +2075,24 @@ msgid "nosy"
 msgstr "Nosy List"
 
 msgid "People receiving announcements (messages) for %(Classname)s"
+msgstr ""
+
+msgid "numeric_effort"
+msgstr "Effort"
+
+msgid ""
+"The estimated effort this work package has. This should be\n"
+"             a fair estimation done by the Responsible of the\n"
+"             %(Classname)s. Be sure to set it for Change-Requests\n"
+"             because otherwise one (1!) day will be used as a rough\n"
+"             guess for the planning procedure -- which -- in most\n"
+"             circumstances -- will NOT be sufficient. The unit is in\n"
+"             person days. One person year = 10 person months, one person\n"
+"             month = 4 person weeks, one person week = 5 person days.\n"
+"             Note that the contents of this field will be rounded to the\n"
+"             next integer, only full days make sense for the work-time\n"
+"             estimates.\n"
+"          "
 msgstr ""
 
 msgid "op_project"
@@ -2579,14 +2609,8 @@ msgstr ""
 msgid "sensor++adr"
 msgstr "Sensor address"
 
-msgid "device++name"
-msgstr "Device Name"
-
 msgid "sensor++name"
 msgstr "Sensor Name"
-
-msgid "User-defined name of this %(Classname)s"
-msgstr ""
 
 msgid "sensor++type"
 msgstr "Sensor type"
