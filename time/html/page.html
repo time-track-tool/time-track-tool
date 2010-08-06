@@ -80,8 +80,8 @@
                         : '@columns=id,user,date,status&@sort=-id&'
                           '@filter=user,date&@pagesize=20&@startwith=0&'
                           'date=.-1d%%3B.%%2B1d&user=%s' % uid
-   , ('device', '')     : '@columns=adr,name,dev,cls,version&'
-                          '@sort=-adr&@pagesize=20&@startwith=0'
+   , ('device', '')     : '@columns=device_group,adr,name,dev,cls,version&'
+                          '@sort=adr&@pagesize=20&@startwith=0'
    , ('daily_record_freeze', '')
                         : '@columns=id,date,balance,validity_date,frozen&'
                           '@sort=-date&@group=user&@filter=user&'

@@ -571,6 +571,8 @@ _helptext          = \
           '''
       ]
     , ""'function'                    : [function]
+    , ""'gapint'                      :
+      [""'''Sensor interval for %(Classname)s''']
     , ""'gid'                         :
       [""'''Numeric group ID''']
     , ""'gid_range'                   :
@@ -774,6 +776,8 @@ _helptext          = \
              to consider this offset.
           '''
       ]
+    , ""'mint'                        :
+      [""'''Measurement interval for %(Classname)s''']
     , ""'msg'                         :
       [""'''New message or notice for %(Classname)s''']
     , ""'msg_keywords'                :
@@ -1166,6 +1170,8 @@ _helptext          = \
              group id information
           '''
       ]
+    , ""'sint'                        :
+      [""'''Transmit interval for %(Classname)s''']
     , ""'smb_domain'                  :
       [""'''Samba domain for this %(Classname)s''']
     , ""'smb_name'                    :

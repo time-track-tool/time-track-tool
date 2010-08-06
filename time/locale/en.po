@@ -4338,6 +4338,15 @@ msgid ""
 "item with %(perm)s permission"
 msgstr ""
 
+msgid "gapint"
+msgstr "Sensor interval"
+
+msgid "mint"
+msgstr "Measurement interval"
+
+msgid "sint"
+msgstr "Transmit interval"
+
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"
 
