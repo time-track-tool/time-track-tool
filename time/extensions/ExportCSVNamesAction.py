@@ -118,7 +118,13 @@ class Repr_Type (Repr_Str) :
 class Repr_Date (Repr_Str) :
     def conv (self, x) :
         if x :
-            return '%4d-%02d-%02d' % (x.year, x.month, x.day)
+            if self.klass.classname == 'measurement' :
+                return \
+                    ( '%4d-%02d-%02d.%02d:%02d:%02d'
+                    % (x.year, x.month, x.day, x.hour, x.minute, x.second)
+                    )
+            else :
+                return '%4d-%02d-%02d' % (x.year, x.month, x.day)
         return self.__super.conv (x)
     # end def conv
 # end class Repr_Date
