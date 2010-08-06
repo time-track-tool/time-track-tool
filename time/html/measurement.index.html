@@ -15,11 +15,13 @@
           , searchname   = 'sensor.device.device_group'
           , searchable   = True
           , displayable  = True
+          , multiselect  = True
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.transceiver'
           , searchable   = True
           , displayable  = True
+          , multiselect  = True
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.adr'
@@ -28,17 +30,17 @@
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.dev'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.cls'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.name'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
           )
      , ep ( utils, pdict ['sensor']
@@ -48,18 +50,18 @@
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.type'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.name'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
           )
      , ep (utils, pdict ['val'])
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.unit'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
           )
      , ep (utils, pdict ['date'], format = '%Y-%m-%d.%H:%M:%S')

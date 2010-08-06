@@ -47,6 +47,7 @@ range_help = Structured_Text (Range.__doc__)
 academic_title     = \
     ""'''Academic title of %(Classname)s, e.g., Dipl. Ing.'''
 address_valid      = ""'''Status of this address'''
+adr                = ""'Address of %(Classname)s'
 adr_type_cat_code  = \
     ""'''The address type category with
          code "ABO" is special: It is used by the system for marking all
@@ -211,6 +212,7 @@ _helptext          = \
       [""'''Address for this %(Classname)s''']
     , ""'address++valid'              : [address_valid]
     , ""'address++title'              : [academic_title]
+    , ""'adr'                         : [adr]
     , ""'adr_type_cat.code'           : [code, adr_type_cat_code]
     , ""'adr_type_cat++code'          : [code, adr_type_cat_code]
     , ""'adr_type'                    : [generic_type]
@@ -297,6 +299,8 @@ _helptext          = \
              Roundup.
           '''
       ]
+    , ""'cls'                         :
+      [ ""'''%(Classname)s class''' ]
     , ""'code'                        :
       [""'''Code of this %(Classname)s''']
     , ""'company'                     :
@@ -381,6 +385,14 @@ _helptext          = \
       [""'''Substitute for the responsible Person of %(Classname)s''']
     , ""'description'                 :
       [""'''Verbose description of %(Classname)s''']
+    , ""'dev'                         :
+      [ ""'''Device type name (product)''' ]
+    , ""'device++adr'                 : [adr]
+    , ""'device_group'                :
+      [ ""'''Device group for %(Classname)s -- a device may belong
+             to one device group which can be configured by the user.
+          '''
+      ]
     , ""'dhcp_range'                  :
       [ ""'''Range of dynamic IP addresses for %(Classname)s -- used
              when generating DHCP configuration. Format: Two IP addresses in
@@ -390,6 +402,11 @@ _helptext          = \
       ]
     , ""'dhcp_server'                 :
       [""'''DHCP Server for this %(Classname)s''']
+    , ""'display'                     :
+      [ ""'''If enabled, items with %(Classname)s will be displayed
+             in customer/supplier mask.
+          '''
+      ]
     , ""'dist'                        :
       [ ""'''Distribute: In a first step you can enter Start and End time
              for each day or the hours you worked during the day. In a
@@ -745,6 +762,8 @@ _helptext          = \
       ]
     , ""'max_lease_time'              :
       [""'''Maximum DHCP lease time for %(Classname)s''']
+    , ""'measurement'                 :
+      [""'''Measurement for a given sensor''']
     , ""'messageid'                   :
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                    :
@@ -1059,6 +1078,13 @@ _helptext          = \
              invoices are marked.
           '''
       ]
+    , ""'sensor'                      :
+      [ ""'''Sensor of this %(Classname)s''' ]
+    , ""'sensor++adr'                 : [adr]
+    , ""'sensor++name'                :
+      [ ""'''User-defined name of this %(Classname)s''' ]
+    , ""'sensor++type'                :
+      [ ""'''Type of %(Classname)s''' ]
     , ""'shadow_last_change'          :
       [ ""'''Time-stamp the shadow password was last changed,
              automatically computed by the system
@@ -1310,6 +1336,11 @@ _helptext          = \
              template or none.
          '''
       ]
+    , ""'transceiver'                 :
+      [ ""'''Transceiver on which devices are handled via radio
+             connection
+          '''
+      ]
     , ""'transitions'                 :
       [""'''Allowed transitions to other states''']
     , ""'travel'                      :
@@ -1341,6 +1372,8 @@ _helptext          = \
       [ ""'''Allowed range of user ids'''
       , range_description
       ]
+    , ""'unit'                        :
+      [""'''Unit of measurement''']
     , ""'url'                         :
       [""'''Web-Link for this %(Classname)s''']
     , ""'url_template'                :
@@ -1405,11 +1438,8 @@ _helptext          = \
              that is added for each year.
           '''
       ]
-    , ""'display'                     :
-      [ ""'''If enabled, items with %(Classname)s will be displayed
-             in customer/supplier mask.
-          '''
-      ]
+    , ""'val'                         :
+      [ ""'''Measured value''' ]
     , ""'valid'                       :
       [ ""'''If enabled, this %(Classname)s is valid and can be
              selected.
