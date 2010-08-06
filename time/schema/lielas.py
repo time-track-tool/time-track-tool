@@ -103,7 +103,7 @@ def init \
 
     measurement = Class \
         ( db, ''"measurement"
-        , sensor              = Link      ("sensor")
+        , sensor              = Link      ("sensor", do_journal = "no")
         , val                 = Number    ()
         , date                = Date      ()
         )
