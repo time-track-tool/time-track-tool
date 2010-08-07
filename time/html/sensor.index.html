@@ -24,10 +24,15 @@
           , multiselect  = True
           )
      , ep ( utils, pdict ['device']
-          , searchname   = 'device.adr'
+          , searchname   = 'device'
           , searchable   = True
-          , displayable  = True
+          , displayable  = False
           , multiselect  = True
+          )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.adr'
+          , searchable   = False
+          , displayable  = True
           )
      , ep ( utils, pdict ['device']
           , searchname   = 'device.dev'
@@ -44,6 +49,12 @@
           , searchable   = False
           , displayable  = True
           )
+     , ep ( utils, pdict ['device']
+          , searchname   = 'device.name'
+          , searchable   = False
+          , displayable  = True
+          )
+     , ep (utils, pdict ['adr'], searchable = False, force_link = True)
      , ep (utils, pdict ['type'])
      , ep (utils, pdict ['name'])
      , ep (utils, pdict ['almin'])

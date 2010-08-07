@@ -204,6 +204,7 @@ class ExtProperty :
         , help_filter   = None
         , help_sort     = None
         , bool_tristate = True
+        , force_link    = False
         ) :
         self.utils         = utils
         self.prop          = prop
@@ -236,6 +237,7 @@ class ExtProperty :
         self.bool_tristate = bool_tristate
         self.propname      = displayprop
         self.leafprop      = prop._prop
+        self.force_link    = force_link
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -339,7 +341,7 @@ class ExtProperty :
         self._set_item (item)
         if self.editable and self.item [self.name].is_edit_ok () :
             return self.editfield ()
-        if self.is_labelprop :
+        if self.is_labelprop or self.force_link :
             return self.formatlink (as_link = as_link)
         elif self.lnkcls :
             if isinstance (self.prop, MultilinkHTMLProperty) :
