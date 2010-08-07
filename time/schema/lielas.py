@@ -70,6 +70,7 @@ def init \
         , dev                 = String    ()
         , cls                 = String    ()
         , name                = String    ()
+        , surrogate           = String    ()
         , device_group        = Link      ("device_group")
         , sint                = Number    ()
         , mint                = Number    ()
@@ -77,7 +78,7 @@ def init \
         , rec                 = Link      ("logstyle")
         , version             = String    ()
         )
-    device.setkey (''"adr")
+    device.setkey (''"surrogate")
 
     sensor = Class \
         ( db, ''"sensor"
@@ -85,13 +86,14 @@ def init \
         , adr                 = String    ()
         , type                = String    ()
         , name                = String    ()
+        , surrogate           = String    ()
         , almin               = Number    ()
         , almax               = Number    ()
         , unit                = String    ()
         , do_logging          = Boolean   ()
         , is_actuator         = Boolean   ()
         )
-    sensor.setlabelprop (''"adr")
+    sensor.setkey (''"surrogate")
 
     logstyle = Class \
         ( db, ''"logstyle"
