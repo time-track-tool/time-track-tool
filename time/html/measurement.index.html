@@ -26,9 +26,14 @@
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.adr'
-          , searchable   = True
+          , searchable   = False
           , displayable  = True
-          , help_props   = ('device_group', 'adr', 'name', 'cls', 'dev')
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.device'
+          , searchable   = True
+          , displayable  = False
+          , multiselect  = True
           )
      , ep ( utils, pdict ['sensor']
           , searchname   = 'sensor.device.dev'
