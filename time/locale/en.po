@@ -1214,7 +1214,7 @@ msgid "Verbose description of %(Classname)s"
 msgstr ""
 
 msgid "dev"
-msgstr "Device"
+msgstr "Device type"
 
 msgid "Device type name (product)"
 msgstr ""

@@ -1244,13 +1244,13 @@ msgid "Verbose description of %(Classname)s"
 msgstr "Ausführliche Beschreibung von %(Classname)s"
 
 msgid "dev"
-msgstr ""
+msgstr "Gerätetyp"
 
 msgid "Device type name (product)"
 msgstr ""
 
 msgid "device++adr"
-msgstr ""
+msgstr "Geräteadresse"
 
 msgid "device++name"
 msgstr "Gerätename"
