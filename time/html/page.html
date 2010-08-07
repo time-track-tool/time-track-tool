@@ -124,9 +124,8 @@
                           'sensor.device.adr,sensor.device.name,'
                           'sensor.adr,sensor.type,sensor.name,val,'
                           'sensor.unit,date&'
-                          '@sort=date&@group=sensor.device.adr,'
-                          'sensor.adr&'
-                          '@pagesize=50&@startwith=0'
+                          '@sort=date&@group=sensor.device,sensor&'
+                          '@pagesize=20&@startwith=0'
    , ('network_address', '')
                         : '@columns=ip,org_location,use_dhcp,network_interface&'
                           '@sort=ip&@group=org_location&@pagesize=20&'
