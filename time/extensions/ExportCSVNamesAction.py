@@ -228,7 +228,9 @@ class Export_CSV_Names (Action, autosuper) :
         # full-text search
         if self.request.search_text :
             matches = self.db.indexer.search \
-                (re.findall (r'\b\w{2,25}\b', self.request.search_text), klass)
+                ( re.findall (r'\b\w{2,25}\b', self.request.search_text)
+                , self.klass
+                )
         else :
             matches        = None
         self.columns       = columns
