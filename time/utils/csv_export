@@ -3,15 +3,9 @@
 import sys
 import os
 import cgi
+from optparse               import OptionParser
 from roundup                import instance
 from roundup.cgi.templating import HTMLRequest
-
-dir     = os.getcwd ()
-tracker = instance.open (dir)
-db      = tracker.open ('admin')
-sys.path.insert (1, os.path.join (dir, 'extensions'))
-
-from ExportCSVNamesAction import Export_CSV_Names
 
 class Request :
     """ Fake html request """
@@ -21,16 +15,91 @@ class Request :
     # end def start_response
 # end class Request
 
-classname = 'user'
+parser = OptionParser (usage = '%prog [options] <class>')
+parser.add_option \
+    ( "-c", "--column"
+    , dest    = "column"
+    , help    = "Column in database, can be specified more than once,"
+                " if unspecified, all columns are selected"
+    , default = []
+    , action  = 'append'
+    )
+parser.add_option \
+    ( "-d", "--database-directory"
+    , dest    = "database_directory"
+    , help    = "Directory of the roundup installation"
+    , default = '.'
+    )
+parser.add_option \
+    ( "-f", "--filter"
+    , dest    = "filter"
+    , help    = "Filter-column=value in DB, can be specified more than once"
+    , default = []
+    , action  = 'append'
+    )
+parser.add_option \
+    ( "-g", "--group"
+    , dest    = "group"
+    , help    = "Grouping-column in database, can be specified more than once"
+    , default = []
+    , action  = 'append'
+    )
+parser.add_option \
+    ( "-s", "--sort"
+    , dest    = "sort"
+    , help    = "Sorting-column in database, can be specified more than once"
+    , default = []
+    , action  = 'append'
+    )
+parser.add_option \
+    ( "-o", "--output-file"
+    , dest    = "outfile"
+    , help    = "Output-file, '-' is stdout"
+    , default = '-'
+    )
+parser.add_option \
+    ( "-q", "--query"
+    , dest    = "query"
+    , help    = "Query-string or url (from browser) overrides all other "
+                "query-related options."
+    )
+opt, args = parser.parse_args ()
 
-env = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
-env ['QUERY_STRING'] = '@columns=username,phone,realname&@sort=username&@filter=status&@pagesize=500&@startwith=0&status=1'
+if len (args) != 1 :
+    parser.error ('Need exactly one argument, the class name')
+    exit (23)
+
+dir     = opt.database_directory
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+sys.path.insert (1, os.path.join (dir, 'extensions'))
+from ExportCSVNamesAction import Export_CSV_Names
+
+classname = args [0]
+
+env   = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
+filt  = ','.join ((f.split ('=', 1)[0] for f in opt.filter))
+if opt.query :
+    env ['QUERY_STRING'] = opt.query.split ('?', 1) [-1]
+else :
+    query = []
+    query.append ('@columns=%s' % ','.join (opt.column))
+    query.append ('@group=%s'   % ','.join (opt.group))
+    query.append ('@sort=%s'    % ','.join (opt.sort))
+    query.append ('@filter=%s'  % filt)
+    query.extend (opt.filter)
+    env ['QUERY_STRING'] = '&'.join (query)
 
 req = Request ()
 cli = tracker.Client (tracker, req, env, None)
 cli.db        = db
 cli.language  = None
 cli.classname = classname
+cli.userid    = db.getuid ()
 
 exp = Export_CSV_Names (cli)
-exp.handle (outfile = open ('bla', 'w'))
+if opt.outfile != '-' :
+    out = open (opt.outfile)
+else :
+    out = sys.stdout
+exp.handle (outfile = out)
