@@ -48,6 +48,10 @@ from extproperty           import ExtProperty
 # Formatting numbers according to locale settings
 locale.setlocale (locale.LC_NUMERIC, '')
 
+def latin1 (x) :
+    return str (x).decode ('utf-8').encode ('latin1', 'replace')
+# end def latin1
+
 class Repr_Str (autosuper) :
     def __init__ (self, klass) :
         self.klass    = klass
@@ -55,7 +59,7 @@ class Repr_Str (autosuper) :
     # end def __init__
 
     def conv (self, x) :
-        return str (x).decode ('utf-8').encode ('latin1', 'replace')
+        return latin1 (x)
     # end def conv
 
     def __call__ (self, itemid, col, x = None) :
@@ -269,7 +273,7 @@ class Export_CSV_Names (Action, autosuper) :
             def f (itemid, col) :
                 item = templating.HTMLItem \
                     (self.client, self.request.classname, itemid)
-                return ep.as_listentry (item = item, as_link = False)
+                return latin1 (ep.as_listentry (item = item, as_link = False))
             # end def f
             return f
         # end def repr_extprop
