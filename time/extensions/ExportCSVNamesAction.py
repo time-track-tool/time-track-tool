@@ -30,6 +30,7 @@
 
 import csv
 import re
+import locale
 try :
     from cStringIO import StringIO
 except ImportError :
@@ -43,6 +44,9 @@ from rsclib.autosuper      import autosuper
 from rsclib.TeX_CSV_Writer import TeX_CSV_Writer
 
 from extproperty           import ExtProperty
+
+# Formatting numbers according to locale settings
+locale.setlocale (locale.LC_NUMERIC, '')
 
 class Repr_Str (autosuper) :
     def __init__ (self, klass) :
@@ -61,6 +65,12 @@ class Repr_Str (autosuper) :
         return self.conv (x)
     # end def __call__
 # end class Repr_Str
+
+class Repr_Number (Repr_Str) :
+    def conv (self, x) :
+        return locale.format ("%2.2f", x)
+    # end def conv
+# end class Repr_Number
 
 class Repr_Anschrift (Repr_Str) :
     def __call__ (self, itemid, col) :
@@ -246,6 +256,7 @@ class Export_CSV_Names (Action, autosuper) :
         repr_date      = Repr_Date      (self.klass)
         repr_str       = Repr_Str       (self.klass)
         repr_multilink = Repr_Multilink (self.klass)
+        repr_number    = Repr_Number    (self.klass)
 
         def repr_extprop (col) :
             parts = col.split ('.', 1)
@@ -315,6 +326,8 @@ class Export_CSV_Names (Action, autosuper) :
                 self.represent [col] = repr_multilink
             elif isinstance (self.props [col], hyperdb.Date) :
                 self.represent [col] = repr_date
+            elif isinstance (self.props [col], hyperdb.Number) :
+                self.represent [col] = repr_number
         self.represent ['birthdate'] = Repr_Birthdate (self.klass)
     # end def build_repr
 
