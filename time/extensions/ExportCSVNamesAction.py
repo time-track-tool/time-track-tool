@@ -134,8 +134,8 @@ class Repr_Date (Repr_Str) :
         if x :
             if self.klass.classname == 'measurement' :
                 return \
-                    ( '%4d-%02d-%02d.%02d:%02d:%02d'
-                    % (x.year, x.month, x.day, x.hour, x.minute, x.second)
+                    ( '%2d.%02d.%04d %02d:%02d:%02d'
+                    % (x.day, x.month, x.year, x.hour, x.minute, x.second)
                     )
             else :
                 return '%4d-%02d-%02d' % (x.year, x.month, x.day)
