@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004-2007 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-2010 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -60,7 +60,7 @@ class Repr_Str (autosuper) :
         x = x or ""
         return self.conv (x)
     # end def __call__
-# end class Repr
+# end class Repr_Str
 
 class Repr_Anschrift (Repr_Str) :
     def __call__ (self, itemid, col) :
@@ -318,7 +318,7 @@ class Export_CSV_Names (Action, autosuper) :
         self.represent ['birthdate'] = Repr_Birthdate (self.klass)
     # end def build_repr
 
-    def handle (self) :
+    def handle (self, outfile = None) :
         ''' Export the specified search query as CSV. '''
         # figure the request
         request    = self.request = templating.HTMLRequest (self.client)
@@ -350,7 +350,9 @@ class Export_CSV_Names (Action, autosuper) :
             # all done, return a dummy string
             return 'dummy'
 
-        io = StringIO ()
+        io = outfile
+        if io is None :
+            io = StringIO ()
         writer = self.csv_writer \
             ( io
             , dialect   = 'excel'
@@ -367,7 +369,8 @@ class Export_CSV_Names (Action, autosuper) :
         for itemid in klass.filter (self.matches, filterspec, sort, group) :
             writer.writerow \
                 ([self.represent [col] (itemid, col) for col in self.columns])
-        return io.getvalue ()
+        if outfile is None :
+            return io.getvalue ()
     # end def handle
 # end class Export_CSV_Names
 

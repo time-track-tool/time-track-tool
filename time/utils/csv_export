@@ -1,0 +1,36 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+import cgi
+from roundup                import instance
+from roundup.cgi.templating import HTMLRequest
+
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+sys.path.insert (1, os.path.join (dir, 'extensions'))
+
+from ExportCSVNamesAction import Export_CSV_Names
+
+class Request :
+    """ Fake html request """
+    rfile = None
+    def start_response (self, a, b) :
+        pass
+    # end def start_response
+# end class Request
+
+classname = 'user'
+
+env = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
+env ['QUERY_STRING'] = '@columns=username,phone,realname&@sort=username&@filter=status&@pagesize=500&@startwith=0&status=1'
+
+req = Request ()
+cli = tracker.Client (tracker, req, env, None)
+cli.db        = db
+cli.language  = None
+cli.classname = classname
+
+exp = Export_CSV_Names (cli)
+exp.handle (outfile = open ('bla', 'w'))
