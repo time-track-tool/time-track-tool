@@ -99,7 +99,7 @@ cli.userid    = db.getuid ()
 
 exp = Export_CSV_Names (cli)
 if opt.outfile != '-' :
-    out = open (opt.outfile)
+    out = open (opt.outfile, "w")
 else :
     out = sys.stdout
 exp.handle (outfile = out)
