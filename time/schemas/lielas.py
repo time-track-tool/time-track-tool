@@ -65,3 +65,4 @@ schemadef.allow_user_details (db, 'User', 'Edit')
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
+db.security.addPermissionToRole('guest', 'Web Access')
