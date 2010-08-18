@@ -74,6 +74,12 @@ class Repr_Number (Repr_Str) :
     def conv (self, x) :
         return locale.format ("%2.2f", x)
     # end def conv
+
+    def __call__ (self, itemid, col, x = None) :
+        if x is None :
+            x = self.klass.get (itemid, col)
+        return self.conv (x)
+    # end def __call__
 # end class Repr_Number
 
 class Repr_Anschrift (Repr_Str) :
