@@ -62,6 +62,40 @@
     </tal:block>
    </tal:block>
   </tal:block>
+  <tal:block tal:condition="context/id"
+   tal:define="sensors python:db.sensor.filter
+    (None, {'device' : context.id})">
+   <table class="files">
+    <tr tal:define="cond python: bool
+        (   context.id
+        and context.is_edit_ok ()
+        and db.sensor.is_edit_ok ()
+        )">
+     <th class="header" i18n:translate="" colspan="5">
+      Sensors
+     </th>
+    </tr>
+    <tr tal:define="n python:'sensor'">
+     <th tal:content="structure python:utils.fieldname (n, 'id')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'adr')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'name')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'unit')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'type')"/>
+    </tr>
+    <tr tal:repeat="s sensors">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, utils.properties_dict (db, s) ['id'], item=s).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.adr,  item=s).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.name, item=s).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.unit, item=s).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.type, item=s).formatlink ()"/>
+    </tr>
+   </table>
+  </tal:block>
  </tal:block>
 
 </tal:block>
