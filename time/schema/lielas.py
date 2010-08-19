@@ -129,7 +129,7 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ( "device",      "Edit", ["User"]
-          , ("name", "sint", "mint", "gapint", "rec")
+          , ("name", "sint", "mint", "gapint", "rec", "device_group")
           )
         , ( "sensor",      "Edit", ["User"]
           , ("name", "type", "almin", "almax", "unit"

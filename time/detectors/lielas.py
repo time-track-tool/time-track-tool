@@ -18,9 +18,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+import os
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from common                         import reject_attributes
+from signal                         import SIGUSR1
 
 _ = lambda x : x
 
@@ -42,14 +44,45 @@ def update_sensor_surrogate (db, cl, nodeid, new_values) :
         new_values ['surrogate'] = '-'.join ((new_values ['name'], d, n.adr))
 # end def update_sensor_surrogate
 
+def notify_lielas_daemon () :
+    """ We search for the lielas daemon and try to send it a SIGUSR1
+        signal so it will update it's state from the database.
+    """
+    name = "roundup_handler.py"
+    for process in os.listdir ('/proc') :
+        if not process.isdigit () :
+            continue
+        try :
+            cmd = open (os.path.join ('/proc',  process, 'cmdline')).read ()
+        except IOError :
+            continue
+        cmd = cmd.rstrip ('\0').split ('\0')
+        if cmd [0].endswith ('/python') and name in cmd [1] :
+            try :
+                os.kill (int (process), SIGUSR1)
+            except OSError :
+                pass
+# end def notify_lielas_daemon
+
+def check_daemon_props (db, cl, nodeid, new_values) :
+    for a in 'almin', 'almax', 'do_logging', 'mint', 'sint', 'gapint', 'rec' :
+        if a in new_values :
+            notify_lielas_daemon ()
+            break
+# end def check_daemon_props
+
+
 def init (db) :
     if 'measurement' not in db.classes :
         return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.device.audit ("set", deny_adr)
-    db.device.audit ("set", update_device_surrogate)
-    db.sensor.audit ("set", deny_adr)
-    db.sensor.audit ("set", update_sensor_surrogate)
+    db.device.audit      ("set", deny_adr)
+    db.device.audit      ("set", update_device_surrogate)
+    db.device.audit      ("set", check_daemon_props)
+    db.sensor.audit      ("set", deny_adr)
+    db.sensor.audit      ("set", update_sensor_surrogate)
+    db.sensor.audit      ("set", check_daemon_props)
+    db.transceiver.audit ("set", check_daemon_props)
 # end def init

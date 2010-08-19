@@ -24,9 +24,11 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname ('device', 'adr')"/>
-      <td tal:content="structure python:context.device.adr.plain ()"/>
+      <td tal:content="structure python:utils.ExtProperty
+          (utils, context.device.adr,  item = context.device).formatlink ()"/>
       <th tal:content="structure python:utils.fieldname ('device', 'name')"/>
-      <td tal:content="structure python:context.device.name.plain ()"/>
+      <td tal:content="structure python:utils.ExtProperty
+          (utils, context.device.name, item = context.device).formatlink ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'adr')"/>
