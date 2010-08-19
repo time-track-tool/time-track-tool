@@ -21,7 +21,7 @@
 import os
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-from common                         import reject_attributes
+from common                         import reject_attributes, changed_values
 from signal                         import SIGUSR1
 
 _ = lambda x : x
@@ -64,9 +64,10 @@ def notify_lielas_daemon () :
                 pass
 # end def notify_lielas_daemon
 
-def check_daemon_props (db, cl, nodeid, new_values) :
+def check_daemon_props (db, cl, nodeid, old_values) :
+    changed = changed_values (old_values, cl, nodeid)
     for a in 'almin', 'almax', 'do_logging', 'mint', 'sint', 'gapint', 'rec' :
-        if a in new_values :
+        if a in changed :
             notify_lielas_daemon ()
             break
 # end def check_daemon_props
@@ -80,9 +81,9 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.device.audit      ("set", deny_adr)
     db.device.audit      ("set", update_device_surrogate)
-    db.device.audit      ("set", check_daemon_props)
+    db.device.react      ("set", check_daemon_props)
     db.sensor.audit      ("set", deny_adr)
     db.sensor.audit      ("set", update_sensor_surrogate)
-    db.sensor.audit      ("set", check_daemon_props)
-    db.transceiver.audit ("set", check_daemon_props)
+    db.sensor.react      ("set", check_daemon_props)
+    db.transceiver.react ("set", check_daemon_props)
 # end def init
