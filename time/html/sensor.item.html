@@ -56,6 +56,23 @@
           (classname, 'is_actuator')"/>
       <td tal:content="structure python:context.is_actuator.field ()"/>
      </tr>
+     <tr>
+      <th/>
+      <td class="header">
+       <a i18n:translate="" tal:attributes="href python: request.indexargs_url
+          ( 'measurement'
+          , { '@columns' : 'sensor.device.device_group,sensor.device.adr,'
+                           'sensor.device.name,sensor.adr,sensor.type,'
+                           'sensor.name,val,sensor.unit,date'
+            , '@sort'    : '-date'
+            , '@filter'  : 'sensor'
+            , 'sensor'   : context.id
+            }
+          )">
+        display latest measurements for this sensor
+       </a>
+      </td>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>
