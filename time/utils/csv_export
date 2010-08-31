@@ -38,6 +38,12 @@ parser.add_option \
     , action  = 'append'
     )
 parser.add_option \
+    ( "-t", "--format"
+    , dest    = "format"
+    , help    = "Format for CSV output (selects CSV class)"
+    , default = 'Names'
+    )
+parser.add_option \
     ( "-g", "--group"
     , dest    = "group"
     , help    = "Grouping-column in database, can be specified more than once"
@@ -73,7 +79,7 @@ dir     = opt.database_directory
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'extensions'))
-from ExportCSVNamesAction import Export_CSV_Names
+from ExportCSVNamesAction import *
 
 classname = args [0]
 
@@ -97,7 +103,8 @@ cli.language  = None
 cli.classname = classname
 cli.userid    = db.getuid ()
 
-exp = Export_CSV_Names (cli)
+cls = globals () ['Export_CSV_' + opt.format]
+exp = cls (cli)
 if opt.outfile != '-' :
     out = open (opt.outfile, "w")
 else :

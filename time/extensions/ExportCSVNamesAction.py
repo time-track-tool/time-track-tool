@@ -230,6 +230,22 @@ def repr_code (klass, adr_types) :
     return Repr_Code (klass)
 # end def repr_code
 
+class True_Value (object) :
+    """ A class that evaluates to True but returns a zero-length string.
+        We use this as return value from a handle routine where the
+        output happend to the file descriptor
+    """
+    def __nonzero__ (self) :
+        return True
+    # end def __nonzero__
+
+    def __repr__ (self) :
+        return ''
+    # end def __repr__
+
+    __str__ = __repr__
+# end class True_Value
+
 class Export_CSV_Names (Action, autosuper) :
     name           = 'export'
     permissionType = 'View'
@@ -239,6 +255,23 @@ class Export_CSV_Names (Action, autosuper) :
     quotechar      = '"'
     quoting        = csv.QUOTE_MINIMAL
     csv_writer     = csv.writer
+
+    def _setup_request (self) :
+        """ figure the request """
+        request    = self.request = templating.HTMLRequest (self.client)
+        self.utils = templating.TemplatingUtils (self.client)
+        filterspec = self.filterspec = request.filterspec
+        self.sort  = request.sort
+        self.group = request.group
+        self.klass = self.klass = self.db.getclass (request.classname)
+        self.props = self.klass.getprops ()
+        self.htcls = templating.HTMLClass (self.client, request.classname)
+
+        if self.db.user.properties.get ('csv_delimiter') :
+            d = self.db.user.get (self.db.getuid (), 'csv_delimiter')
+            if d and len (d) == 1 :
+                self.delimiter = d
+    # end def _setup_request
 
     def _setup (self) :
         columns    = self.request.columns
@@ -343,22 +376,7 @@ class Export_CSV_Names (Action, autosuper) :
 
     def handle (self, outfile = None) :
         ''' Export the specified search query as CSV. '''
-        # figure the request
-        request    = self.request = templating.HTMLRequest (self.client)
-        self.utils = templating.TemplatingUtils (self.client)
-        filterspec = request.filterspec
-        sort       = request.sort
-        group      = request.group
-        klass      = self.klass = self.db.getclass (request.classname)
-        self.props = klass.getprops ()
-        self.htcls = templating.HTMLClass (self.client, request.classname)
-
-        if self.db.user.properties.get ('csv_delimiter') :
-            d = self.db.user.get (self.db.getuid (), 'csv_delimiter')
-            if d and len (d) == 1 :
-                self.delimiter = d
-
-        self.filterspec = filterspec
+        self._setup_request ()
         self._setup ()
         filterspec = self.filterspec
 
@@ -375,7 +393,7 @@ class Export_CSV_Names (Action, autosuper) :
 
         io = outfile
         if io is None :
-            io = StringIO ()
+            io = self.client.request.wfile
         writer = self.csv_writer \
             ( io
             , dialect   = 'excel'
@@ -389,11 +407,15 @@ class Export_CSV_Names (Action, autosuper) :
         self.build_repr ()
 
         # and search
-        for itemid in klass.filter (self.matches, filterspec, sort, group) :
-            writer.writerow \
-                ([self.represent [col] (itemid, col) for col in self.columns])
-        if outfile is None :
-            return io.getvalue ()
+        for itemid in self.klass.filter \
+            (self.matches, filterspec, self.sort, self.group) :
+            self.client._socket_op \
+                ( writer.writerow 
+                , ([self.represent [col] (itemid, col)
+                   for col in self.columns]
+                  )
+                )
+        return True_Value ()
     # end def handle
 # end class Export_CSV_Names
 
@@ -488,6 +510,105 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
     # end def build_repr
 
 # end class Export_CSV_Legacy_Format
+
+class Export_CSV_Lielas (Export_CSV_Names) :
+    def handle (self, outfile = None) :
+        ''' Export the specified search query as special CSV format. '''
+        ''' Export the specified search query as CSV. '''
+        self._setup_request ()
+        self._setup         ()
+
+        h                        = self.client.additional_headers
+        h ['Content-Type']       = 'text/csv'
+        # some browsers will honor the filename here...
+        h ['Content-Disposition'] = 'inline; filename=%s' % self.filename
+
+        self.client.header ()
+
+        if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
+            # all done, return a dummy string
+            return 'dummy'
+
+        sensorspec = {}
+        for k, v in self.filterspec.iteritems () :
+            if k.startswith ('sensor.') :
+                sensorspec [k [7:]] = v
+
+        sensor_sort = \
+            ['device.device_group', 'device.name', 'device.adr', 'name', 'adr']
+        sensors = self.db.sensor.filter \
+            (None, sensorspec, group = [('+', k) for k in sensor_sort])
+
+        last_dg = last_d = None
+        lines   = [[''], [''], ['Adr.'], ['date/time'], ['']]
+        sids    = []
+        for s in sensors :
+            s  = self.db.sensor.getnode (s)
+            d  = self.db.device.getnode (s.device)
+            if d.device_group :
+                dg = self.db.device_group.getnode (d.device_group)
+            else :
+                dg = None
+            if dg and dg.id != last_dg :
+                lines [0].append (latin1 (dg.name))
+                last_dg = dg.id
+            else :
+                lines [0].append ('')
+            if d.id != last_d :
+                lines [1].append (latin1 (d.name))
+                lines [2].append (latin1 (d.adr))
+                last_d = d.id
+            else :
+                lines [1].append ('')
+                lines [2].append ('')
+            lines [3].append (latin1 (s.name))
+            lines [4].append (latin1 (s.unit))
+            sids.append (s.id)
+        index_by_sid = {}
+        for n, sid in enumerate (sids) :
+            index_by_sid [sid] = n + 1
+
+        io = outfile
+        if io is None :
+            io = self.client.request.wfile
+        writer = self.csv_writer \
+            ( io
+            , dialect   = 'excel'
+            , delimiter = self.delimiter
+            , quoting   = self.quoting
+            , quotechar = self.quotechar
+            )
+        for l in lines :
+            self.client._socket_op (writer.writerow, l)
+
+        sort = []
+        for dir, key in self.group + self.sort :
+            if key == 'date' :
+                sort.append ((dir, key))
+                break
+        else :
+            sort.append (('-', 'date'))
+        for k in sensor_sort :
+            sort.append (('+', 'sensor.' + k))
+
+        repr_date   = Repr_Date   (self.klass)
+        repr_number = Repr_Number (self.klass)
+        # and search
+        last_date = None
+        line      = None
+        for itemid in self.klass.filter (self.matches, self.filterspec, sort) :
+            item = self.klass.getnode (itemid)
+            if item.date != last_date :
+                if line :
+                    self.client._socket_op (writer.writerow, line)
+                last_date = item.date
+                line = [''] * (len (sids) + 2)
+                line [0] = repr_date (itemid, 'date')
+            line [index_by_sid [item.sensor]] = repr_number (itemid, 'val')
+
+        return True_Value ()
+    # end def handle
+# end class Export_CSV_Lielas
 
 class Export_TeX (Export_CSV_Names) :
     filename   = 'query.txt'
