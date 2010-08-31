@@ -39,7 +39,7 @@ def check_linking (db, cl, nodeid, new_values) :
         klass = db.getclass (cl.properties [prop].classname)
         for id in new_values [prop] :
             if id not in old and klass.get (id, 'creator') != db.getuid () :
-                cls  = _ (klass)
+                cls  = _ (klass.classname)
                 raise Reject, \
                     _ ("You may link only to your own %(cls)s") % locals ()
 # end def check_linking
