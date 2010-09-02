@@ -35,9 +35,8 @@
 import sys, os
 
 sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-sys.path.insert (0, os.path.join (db.config.HOME, 'schema'))
-from common import clearance_by
-import schemadef
+from common    import clearance_by
+from schemacfg import schemadef
 
 # sub-schema definitins to include
 # Note: order matters. Usually ext_issue (needed by complex tracker for

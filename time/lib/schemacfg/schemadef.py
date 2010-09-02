@@ -322,8 +322,8 @@ class Importer (object) :
         globals ['Superseder_Issue_Class'] = Superseder_Issue_Class
 
         for s in schemas :
-            m = __import__ (s)
-            globals [s] = m
+            m = __import__ ('.'.join (('schemacfg', s)))
+            m = globals [s] = getattr (m, s)
             if hasattr (m, 'init') :
                 v = m.init (** globals)
                 if v :
