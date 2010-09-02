@@ -46,6 +46,7 @@ from schemacfg import schemadef
 schemas = \
     ( 'lielas'
     , 'user'
+    , 'dyndns'
     , 'core'
     )
 

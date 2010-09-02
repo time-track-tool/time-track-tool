@@ -724,3 +724,64 @@ if 'transceiver' in db.classes :
         , address  = db.config.ADMIN_EMAIL
         , roles    = 'Logger'
         )
+
+if 'dyndns' in db.classes :
+    db.dyndns.create \
+        ( syslog  = True
+        , web_url = 'dyndns'
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'dyndns2'
+        , order          = 1
+        , default_server = 'members.dyndns.org'
+        , description    = "free dynamic DNS service offered by dyndns.org"
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'concont'
+        , order          = 2
+        , default_server = 'www.dydns.za.net'
+        , description    = "used by the free dyndns service Tyrmida"
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'dnspark'
+        , order          = 3
+        , default_server = 'www.dnspark.com'
+        , description    = "DNS service offered by www.dnspark.com"
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'dslreports1'
+        , order          = 4
+        , default_server = 'www.dslreports.com'
+        , description    = "free DSL monitoring service www.dslreports.com"
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'easydns'
+        , order          = 5
+        , default_server = 'members.easydns.com'
+        , description    = "for fee DNS service offered by www.easydns.com"
+        )
+# Dead
+#   db.dyndns_protocol.create \
+#       ( name           = 'hammernode1'
+#       , order          = 6
+#       , default_server = 'www.hn.org'
+#       , description    = "free dynamic DNS service by Hammernode www.hn.org"
+#       )
+    db.dyndns_protocol.create \
+        ( name           = 'namecheap'
+        , order          = 7
+        , default_server = 'dynamicdns.park-your-domain.com'
+        , description    = "DNS service offered by www.namecheap.com"
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'sitelutions'
+        , order          = 8
+        , default_server = 'sitelutions.com'
+        , description    = "DNS services offered by www.sitelutions.com"
+        )
+    db.dyndns_protocol.create \
+        ( name           = 'zoneedit1'
+        , order          = 9
+        , default_server = 'www.zoneedit.com'
+        , description    = 'DNS service offered by www.zoneedit.com'
+        )
