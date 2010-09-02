@@ -662,8 +662,9 @@ class Export_TeX (Export_CSV_Names) :
 # end class Export_TeX
 
 def init (instance) :
-    instance.registerAction ('export_csv_names',        Export_CSV_Names)
-    instance.registerAction ('export_csv_tex',          Export_TeX)
-    instance.registerAction ('export_csv_addresses',    Export_CSV_Addresses)
-    instance.registerAction ('export_legacy_addresses', Export_CSV_Legacy_Format)
+    instance.registerAction ('export_csv_names',     Export_CSV_Names)
+    instance.registerAction ('export_csv_tex',       Export_TeX)
+    instance.registerAction ('export_csv_addresses', Export_CSV_Addresses)
+    instance.registerAction ('export_legacy',        Export_CSV_Legacy_Format)
+    instance.registerAction ('export_csv_lielas',    Export_CSV_Lielas)
 # end def init

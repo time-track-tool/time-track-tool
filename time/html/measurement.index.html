@@ -1,4 +1,18 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="menu_slot">
+   <tr tal:condition="python:
+       not terse and request.user.hasPermission ('View','measurement')">
+    <td colspan="2"/>
+    <td class="sidebar" nowrap>
+     <span class="classblock">
+      <a i18n:translate="" tal:attributes="href python:request.indexargs_url
+         (classname, {':action' : 'export_csv_lielas'})">
+       Lielas CSV
+      </a>
+     </span>
+    </td>
+   </tr>
+ </tal:block>
  <tal:block metal:fill-slot="create_or_query">
   <tal:block 
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
