@@ -28,7 +28,7 @@
 #    Schema definitions for abo
 
 from roundup.hyperdb import Class
-import schemadef
+from schemacfg       import schemadef
 
 def init \
     ( db

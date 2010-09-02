@@ -27,8 +27,6 @@
 # Purpose
 #    Schema definitions for separate person class
 
-import schemadef
-
 def init \
     (db, Class, Contact_Class, Min_Issue_Class, Link, Number, String, ** kw) :
     export   = {}

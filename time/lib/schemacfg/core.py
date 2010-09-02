@@ -30,7 +30,7 @@
 #--
 #
 
-import schemadef
+from schemacfg import schemadef
 from linking import linkclass_iter
 
 def init \

@@ -27,7 +27,7 @@
 #--
 #
 
-from schemadef import register_roles
+from schemacfg.schemadef import register_roles
 
 def init (db, Ext_Class, String, Link, Multilink, ** kw) :
     class Ext_Issue_Class (Ext_Class) :

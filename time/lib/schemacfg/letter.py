@@ -27,7 +27,7 @@
 # Purpose
 #    Schema definitions for letter
 
-import schemadef
+from schemacfg import schemadef
 
 def init \
     ( db

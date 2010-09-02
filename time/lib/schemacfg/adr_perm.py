@@ -27,7 +27,7 @@
 # Purpose
 #    Permissions for addresses common for some projects
 
-import schemadef
+from schemacfg import schemadef
 
 def init (db, Address_Class, Link, ** kw) :
     pass

@@ -29,7 +29,7 @@
 #    by further definitions
 
 from roundup.hyperdb import Class
-import schemadef
+from schemacfg       import schemadef
 
 def init \
     ( db

@@ -27,7 +27,7 @@
 # Purpose
 #    Schema definitions for extended address
 
-import schemadef
+from schemacfg import schemadef
 
 def init \
     ( db

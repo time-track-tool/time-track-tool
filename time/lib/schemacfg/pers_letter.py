@@ -27,8 +27,6 @@
 # Purpose
 #    Schema definitions for pointer to another address
 
-import schemadef
-
 def init (db, Person_Class, Multilink, ** kw) :
     export   = {}
 

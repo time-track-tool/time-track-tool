@@ -27,7 +27,7 @@
 # Purpose
 #    Schema definitions for person and other contact information
 
-import schemadef
+from schemacfg import schemadef
 
 def init (db, Ext_Class, String, Link, Number, ** kw) :
     do_index = "yes"

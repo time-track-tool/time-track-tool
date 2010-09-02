@@ -27,8 +27,6 @@
 # Purpose
 #    Schema definitions for person
 
-import schemadef
-
 def init (db, Ext_Class, Person_Class, String, Link, Multilink, Number, ** kw) :
     do_index = "yes"
     export   = {}

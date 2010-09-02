@@ -27,8 +27,6 @@
 # Purpose
 #    Schema definitions for extending address with person attributes
 
-import schemadef
-
 def init (db, Address_Class, Contact_Class, Link, ** kw) :
     export   = {}
 

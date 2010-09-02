@@ -33,7 +33,7 @@ from roundup.hyperdb import Class
 from common          import clearance_by
 from freeze          import frozen
 from roundup.date    import Interval
-import schemadef
+from schemacfg       import schemadef
 import sum_common
 import common
 

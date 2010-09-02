@@ -30,7 +30,7 @@
 #
 
 from roundup.hyperdb import Class
-import schemadef
+from schemacfg       import schemadef
 
 def init (db, Class, String, Date, Link, Multilink, Number, ** kw) :
     client = Class \

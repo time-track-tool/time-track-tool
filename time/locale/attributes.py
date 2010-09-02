@@ -1,5 +1,4 @@
 import sys
-sys.path.insert (0, '../schema')
 sys.path.insert (0, '../lib')
 
 class String :
@@ -27,7 +26,8 @@ class Class :
 Contact_Class = FileClass = IssueClass = Class
 db = DB ()
 
-import schemadef
+from schemacfg import schemadef
+# Don't sort these -- need specific include order:
 schemas = \
     ( 'ext_issue'
     , 'company'
@@ -51,6 +51,10 @@ schemas = \
     , 'legalclient'
     , 'erp'
     , 'doc'
+    , 'dyndns'
+    , 'lielas'
+    , 'contact'
+    , 'user'
     , 'core'
     )
 importer = schemadef.Importer (globals (), schemas)

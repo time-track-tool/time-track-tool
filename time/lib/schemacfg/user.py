@@ -29,8 +29,6 @@
 #--
 #
 
-import schemadef
-
 def init \
     ( db
     , String

@@ -27,8 +27,6 @@
 # Purpose
 #    Schema definitions for extended address
 
-import schemadef
-
 def init (db, Person_Class, Date, ** kw) :
     export   = {}
 
