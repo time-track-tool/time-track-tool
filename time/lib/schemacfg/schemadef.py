@@ -323,7 +323,7 @@ class Importer (object) :
 
         for s in schemas :
             m = __import__ ('.'.join (('schemacfg', s)))
-            m = globals [s] = getattr (m, s)
+            m = getattr (m, s)
             if hasattr (m, 'init') :
                 v = m.init (** globals)
                 if v :
