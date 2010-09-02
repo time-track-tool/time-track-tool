@@ -17,6 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
+# Dual License:
+# If you need a proprietary license that permits you to add your own
+# software without the need to publish your source-code under the GNU
+# General Public License above, contact
+# Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
 
 import os
 from roundup.exceptions             import Reject
