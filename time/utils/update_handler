@@ -1,0 +1,89 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+# Copyright (C) 2010 Ralf Schlatterbeck. All rights reserved
+# Reichergasse 131, A-3411 Weidling
+# ****************************************************************************
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# ****************************************************************************
+# Dual License:
+# If you need a proprietary license that permits you to add your own
+# software without the need to publish your source-code under the GNU
+# General Public License above, contact
+# Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
+
+import os
+import sys
+from struct   import unpack
+from socket   import socket, SOCK_SEQPACKET, AF_UNIX, SOL_SOCKET
+try :
+    from socket import SO_PEERCRED # Not implemented in 2.6, maybe higher
+except ImportError :
+    SO_PEERCRED = 17 # Linux
+from optparse import OptionParser
+
+class Server (object) :
+    """ Handle update requests on a SOCK_SEQPACKET UNIX domain socket.
+        We run as root and accept update requests (changes to files only
+        root may access and/or server restart requests) on that socket.
+        Access control is handled by checking the uid of the connecting
+        peer. We get a list of users that are allowed to connect on
+        startup.
+        A SOCK_SEQPACKET is a connection oriented datagram socket which
+        preserves packet boundaries. Available in Linux starting with
+        2.6.4.
+    """
+        
+    def __init__ (self, path, *users) :
+        self.path  = path
+        self.users = users
+        self.sock  = socket (AF_UNIX, SOCK_SEQPACKET)
+        try :
+            os.remove (self.path)
+        except OSError :
+            pass
+        self.sock.bind (self.path)
+    # end def __init__
+
+    def serve_forever (self) :
+        self.sock.listen (5)
+        while True :
+            conn, adr = self.sock.accept ()
+            ucred = conn.getsockopt (SOL_SOCKET, SO_PEERCRED, 12)
+            pid, uid, gid = unpack ('LLL', ucred)
+            print pid, uid, gid
+            while True :
+                data = conn.recv (4096)
+                if not data :
+                    break
+                print data
+    # end def serve_forever
+# end class Server
+
+if __name__ == "__main__" :
+    parser = OptionParser (usage = '%prog [options] <path>')
+    parser.add_option \
+        ( "-u", "--user"
+        , dest    = "user"
+        , help    = "User(s) allowed to connect"
+        , default = []
+        , action  = 'append'
+        )
+    opt, args = parser.parse_args ()
+    if len (args) != 1 :
+        parser.error ("Need exactly one argument")
+        sys.exit (23)
+    s = Server (args [0], *opt.user)
+    s.serve_forever ()
