@@ -90,6 +90,7 @@ function           = \
     ""'''Multiline field for this %(Classname)s, will be printed on an
          address label
       '''
+generic            = ""'''%(Property)s for this %(Classname)s'''
 generic_type       = ""'''Type of %(Classname)s'''
 green              = \
     ""'''Green start/end times have been created by the distribute function.'''
@@ -373,6 +374,14 @@ _helptext          = \
       [""'''When a new issue is created with %(Classname)s set, but 'Part of'
             not set, then '%(Property)s' will be used as the default 'Part of'.
          '''
+      ]
+    , ""'default_server'              :
+      [ ""'''%(Property)s for %(Classname)s: Other DNS services may use
+            the same protocol but the %(Property)s is the server of the
+            company who invented the protocol. When selecting a protocol
+            for use with a DNS service, the %(Property)s is used if no
+            server is specified.
+          '''
       ]
     , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
@@ -741,6 +750,7 @@ _helptext          = \
       ]
     , ""'location'                    :
       [""'''Location of %(Classname)s, e.g., Vienna HQ.''']
+    , ""'login'                       : [generic]
     , ""'login_shell'                 :
       [""'''UNIX login shell for %(Classname)s''']
     , ""'lunch_duration'              :
@@ -928,8 +938,7 @@ _helptext          = \
           '''
       ]
     , ""'part_of.id'                  : [help_id]
-    , ""'password'                    :
-      [""'''Password for this %(Classname)s''']
+    , ""'password'                    : [generic]
     , ""'payed_abos'                  :
       [""'''Subscriptions for which this %(Classname)s is paying''']
     , ""'payer'                       :
@@ -1001,6 +1010,8 @@ _helptext          = \
              %(Classname)s can be clearly  identified
           '''
       ]
+    , ""'protocol'                    :
+      [""'''The dynamic DNS protocol to use with this %(Classname)s.''']
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
     , ""'query++tmplate'              :
@@ -1123,6 +1134,12 @@ _helptext          = \
     , ""'sensor++name'                : [userdefined_name]
     , ""'sensor++type'                :
       [ ""'''Type of %(Classname)s''' ]
+    , ""'server'                      :
+      [ ""'''The %(Property)s to use for this %(Classname)s:
+            If left empty the default %(Property)s from the protocol
+            configuration is used.
+          '''
+      ]
     , ""'shadow_last_change'          :
       [ ""'''Time-stamp the shadow password was last changed,
              automatically computed by the system

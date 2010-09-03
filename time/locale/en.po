@@ -3673,6 +3673,9 @@ msgstr ""
 msgid "new dyndns_service"
 msgstr "new DynDNS service"
 
+msgid "new dyndns_host"
+msgstr "new DynDNS host"
+
 msgid "Welcome"
 msgstr ""
 

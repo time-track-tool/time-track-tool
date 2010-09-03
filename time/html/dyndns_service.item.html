@@ -58,11 +58,11 @@
     <tr tal:define="cond python: bool
         (   context.id
         and context.is_edit_ok ()
-        and db.dyndns_service.is_edit_ok ()
+        and db.dyndns_host.is_edit_ok ()
         )">
      <th class="header" i18n:translate=""
          tal:attributes="colspan python:2-cond">
-      dyndns_service
+      dyndns_host
      </th>
      <td class="header" tal:condition="cond">
       <a i18n:translate="" tal:attributes="href python:
@@ -70,11 +70,11 @@
            (['%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
             (('dyndns_service', context.id),)
            ])">
-       new dyndns_service
+       new dyndns_host
       </a>
      </td>
     </tr>
-    <tr tal:define="n python:'dyndns_service'">
+    <tr tal:define="n python:'dyndns_host'">
      <th tal:content="structure python:utils.fieldname (n, 'hostname')"/>
      <th tal:content="structure python:utils.fieldname (n, 'description')"/>
     </tr>
