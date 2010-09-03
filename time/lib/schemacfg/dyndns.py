@@ -61,6 +61,7 @@ def init \
         , login               = String    ()
         , password            = String    ()
         )
+    dyndns_service.setlabelprop (''"server")
 
     dyndns_host = Class \
         ( db, ''"dyndns_host"

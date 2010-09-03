@@ -1,0 +1,91 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"/>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="
+      use_labelprop       python: 0;
+      required_attributes python:'protocol,login,password';
+      ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <input type="hidden" name="dyndns"
+             tal:attributes="value context/dyndns">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'server')"/>
+      <td tal:content="structure python:context.server.field ()"/>
+      <td colspan="2">
+      (leave empty for default)
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'protocol')" class="required"/>
+      <td tal:content="structure python:context.protocol.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'login')" class="required"/>
+      <td tal:content="structure python:context.login.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'password')" class="required"/>
+      <td tal:content="structure python:context.password.field
+          (type = 'password')"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+  <tal:block tal:condition="context/id"
+   tal:define="hosts python:db.dyndns_host.filter (None, {})">
+   <table class="files">
+    <tr tal:define="cond python: bool
+        (   context.id
+        and context.is_edit_ok ()
+        and db.dyndns_service.is_edit_ok ()
+        )">
+     <th class="header" i18n:translate=""
+         tal:attributes="colspan python:2-cond">
+      dyndns_service
+     </th>
+     <td class="header" tal:condition="cond">
+      <a i18n:translate="" tal:attributes="href python:
+         'dyndns_host?:template=item&' + '&'.join
+           (['%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+            (('dyndns_service', context.id),)
+           ])">
+       new dyndns_service
+      </a>
+     </td>
+    </tr>
+    <tr tal:define="n python:'dyndns_service'">
+     <th tal:content="structure python:utils.fieldname (n, 'hostname')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'description')"/>
+    </tr>
+    <tr tal:repeat="s hosts">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.hostname,    item=s).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.description, item=s).formatlink ()"/>
+    </tr>
+   </table>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
