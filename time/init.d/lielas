@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -19,6 +19,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
+# Dual License:
+# If you need a proprietary license that permits you to add your own
+# software without the need to publish your source-code under the GNU
+# General Public License above, contact
+# Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
 #
 # roundup	Startup script for the roundup http server.
 #
@@ -26,12 +31,18 @@
 
 DESC='Roundup HTTP-Server'
 
+USER=roundup
 BINFILE=roundup-server 
 EXECUTABLE=/usr/bin/$BINFILE
+ROOTBIN=update_handler
+LIELAS_PATH=/usr/local/src/lielas
+ROOTSERVER=$LIELAS_PATH/utils/$ROOTBIN
+RSPARAMS="-u $USER /var/run/roundup/rootsock"
 PIDFILE=/var/run/roundup/server.pid
+ROOTPID=/var/run/roundup/handler.pid
 LOGFILE=/var/log/roundup/roundup.log
-TRACKERS="lielas=/usr/local/src/lielas"
-OPTIONS="-- -p 8080 -u roundup -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
+TRACKERS="lielas=$LIELAS_PATH"
+OPTIONS="-- -p 8080 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
 NICENESS=0
 
 
@@ -46,6 +57,12 @@ start_stop() {
                                   --nicelevel $NICENESS \
 				  --exec $EXECUTABLE $OPTIONS
 		printf " $BINFILE"
+		start-stop-daemon --start --oknodo --quiet \
+                                  --pidfile $ROOTPID \
+                                  --make-pidfile --background \
+                                  --nicelevel $NICENESS \
+				  --exec $ROOTSERVER $RSPARAMS
+		printf " $ROOTBIN"
 		printf ".\n"
 		;;
 	stop)
@@ -53,6 +70,9 @@ start_stop() {
 		start-stop-daemon --stop --oknodo --quiet \
                                   --pidfile $PIDFILE
 		printf " $BINFILE"
+		start-stop-daemon --stop --oknodo --quiet \
+                                  --pidfile $ROOTPID
+		printf " $ROOTBIN"
 		printf ".\n"
 		;;
 	restart | force-reload)
