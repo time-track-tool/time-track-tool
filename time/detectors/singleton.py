@@ -20,6 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from roundup.exceptions             import Reject
+from roundup.cgi.TranslationService import get_translation
+
+_ = lambda x : x
+
 def new_singleton (db, cl, nodeid, new_values) :
     """ Note: You probably want to create a singleton during database
         initialisation. Later there is a race condition: The database
@@ -33,6 +38,9 @@ def new_singleton (db, cl, nodeid, new_values) :
 # end def new_singleton
 
 def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     singletons = ["dyndns"]
     for klass in singletons :
         if klass not in db.classes :
