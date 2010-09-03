@@ -113,6 +113,10 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'dyndns_host' in db.classes :
+        db.dyndns.react         ("create", dyndns_update)
+        db.dyndns.react         ("set",    dyndns_update)
+        db.dyndns_service.react ("create", dyndns_update)
+        db.dyndns_service.react ("set",    dyndns_update)
         db.dyndns_host.react    ("create", dyndns_update)
         db.dyndns_host.react    ("set",    dyndns_update)
         db.dyndns_host.audit    ("create", dyndns_host)
