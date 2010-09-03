@@ -26,15 +26,19 @@
 
 import os
 import sys
-from struct   import unpack
-from socket   import socket, SOCK_SEQPACKET, AF_UNIX, SOL_SOCKET
+import shutil
+from struct         import unpack
+from pwd            import getpwnam
+from stat           import S_IRUSR, S_IWUSR, S_IRGRP, S_IWGRP, S_IROTH, S_IWOTH
+from socket         import socket, SOCK_SEQPACKET, AF_UNIX, SOL_SOCKET
 try :
-    from socket import SO_PEERCRED # Not implemented in 2.6, maybe higher
+    from socket     import SO_PEERCRED # Not implemented in 2.6, maybe higher
 except ImportError :
     SO_PEERCRED = 17 # Linux
-from optparse import OptionParser
+from optparse       import OptionParser
+from rsclib.execute import Log
 
-class Server (object) :
+class Server (Log) :
     """ Handle update requests on a SOCK_SEQPACKET UNIX domain socket.
         We run as root and accept update requests (changes to files only
         root may access and/or server restart requests) on that socket.
@@ -46,16 +50,36 @@ class Server (object) :
         2.6.4.
     """
         
-    def __init__ (self, path, *users) :
+    def __init__ (self, path, *users, **kw) :
+        self.logprefix = 'root-'
+        self.__super.__init__ (**kw)
         self.path  = path
         self.users = users
         self.sock  = socket (AF_UNIX, SOCK_SEQPACKET)
+        self.uids  = {}
+        for u in self.users :
+            self.uids [getpwnam (u) [2]] = u
+        print self.uids
         try :
             os.remove (self.path)
         except OSError :
             pass
         self.sock.bind (self.path)
+        rw = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
+        os.chmod (self.path, rw)
     # end def __init__
+
+    def handle_dyndns (self, *args) :
+        if len (args) != 1 :
+            return
+        a = args [0]
+        try :
+            shutil.move (a, '/etc/ddclient.conf')
+        except IOError, cause :
+            self.log.error ('dyndns: %s' % cause)
+            return
+        os.system ('/etc/init.d/ddclient restart')
+    # end def handle_dyndns
 
     def serve_forever (self) :
         self.sock.listen (5)
@@ -63,12 +87,21 @@ class Server (object) :
             conn, adr = self.sock.accept ()
             ucred = conn.getsockopt (SOL_SOCKET, SO_PEERCRED, 12)
             pid, uid, gid = unpack ('LLL', ucred)
-            print pid, uid, gid
+            if uid not in self.uids :
+                conn.close ()
+                continue
             while True :
                 data = conn.recv (4096)
                 if not data :
+                    conn.close ()
                     break
-                print data
+                data = data.rstrip ()
+                data = data.split ()
+                method = getattr (self, 'handle_' + data [0], None)
+                if not method :
+                    self.log.error ('No handler for %s' % data [0])
+                    continue
+                method (*data [1:])
     # end def serve_forever
 # end class Server
 
