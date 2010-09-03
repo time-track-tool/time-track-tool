@@ -33,6 +33,10 @@ from common                         import require_attributes
 _ = lambda x : x
 
 def dyndns_update (db, cl, nodeid, old_values) :
+    # Only generate config if at least one host is configured
+    hosts = db.dyndns_host.getnodeids ()
+    if not hosts :
+        return
     fd, fn = mkstemp ('conf', 'ddclient', '/var/run/roundup/')
     f = os.fdopen (fd, "wb")
     print "created"
