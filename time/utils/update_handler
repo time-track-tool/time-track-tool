@@ -36,9 +36,9 @@ try :
 except ImportError :
     SO_PEERCRED = 17 # Linux
 from optparse       import OptionParser
-from rsclib.execute import Log
+from rsclib.execute import Exec
 
-class Server (Log) :
+class Server (Exec) :
     """ Handle update requests on a SOCK_SEQPACKET UNIX domain socket.
         We run as root and accept update requests (changes to files only
         root may access and/or server restart requests) on that socket.
@@ -59,7 +59,6 @@ class Server (Log) :
         self.uids  = {}
         for u in self.users :
             self.uids [getpwnam (u) [2]] = u
-        print self.uids
         try :
             os.remove (self.path)
         except OSError :
@@ -78,7 +77,10 @@ class Server (Log) :
         except IOError, cause :
             self.log.error ('dyndns: %s' % cause)
             return
-        os.system ('/etc/init.d/ddclient restart')
+        r = self.exec_pipe \
+            (('/etc/init.d/ddclient', 'restart'), ignore_err = True)
+        for line in r :
+            self.log.warning ('ddclient restart: %s' % line)
     # end def handle_dyndns
 
     def serve_forever (self) :
