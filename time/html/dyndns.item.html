@@ -1,0 +1,120 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"/>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="
+      use_labelprop       python: 0;
+      required_attributes python:'';
+      ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'syslog')"/>
+      <td tal:content="structure python:context.syslog.field ()"/>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <td i18n:translate="" colspan="4">
+       Configure one of the following:
+      </td>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <td i18n:translate="" colspan="4">
+       Determine IP Address by Network Interface
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'interface')"/>
+      <td tal:content="structure python:context.interface.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'interface_skip')"/>
+      <td tal:content="structure python:context.interface_skip.field ()"/>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <td i18n:translate="" colspan="4">
+       Determine IP Address from a Web Service
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'web_url')"/>
+      <td tal:content="structure python:context.web_url.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'web_skip')"/>
+      <td tal:content="structure python:context.web_skip.field ()"/>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <td i18n:translate="" colspan="4">
+       Determine IP Address from a Firewall
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'fw_url')"/>
+      <td tal:content="structure python:context.fw_url.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'fw_skip')"/>
+      <td tal:content="structure python:context.fw_skip.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'fw_login')"/>
+      <td tal:content="structure python:context.fw_login.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'fw_password')"/>
+      <td tal:content="structure python:context.fw_password.field
+          (type = 'password')"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+  <tal:block tal:condition="context/id"
+   tal:define="services python:db.dyndns_service.filter (None, {})">
+   <table class="files">
+    <tr tal:define="cond python: bool
+        (   context.id
+        and context.is_edit_ok ()
+        and db.dyndns_service.is_edit_ok ()
+        )">
+     <th class="header" i18n:translate="" colspan="3">
+      dyndns_service
+     </th>
+    </tr>
+    <tr tal:define="n python:'dyndns_service'">
+     <th tal:content="structure python:utils.fieldname (n, 'server')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'protocol')"/>
+     <th tal:content="structure python:utils.fieldname (n, 'login')"/>
+    </tr>
+    <tr tal:repeat="s services">
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.server, item=s).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.protocol.name, item=s.protocol).formatlink ()"/>
+     <td tal:content="structure python:utils.ExtProperty
+      (utils, s.login,  item=s).formatlink ()"/>
+    </tr>
+   </table>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

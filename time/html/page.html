@@ -92,6 +92,7 @@
                           '@sort=-id&@pagesize=20&@startwith=0'
    , ('doc', '')        : '@columns=title,document_nr,artefact,department&'
                           '@sort=title&@filter=status&status=-1,1,2,3'
+   , ('dyndns', '')     : '@action=singleton'
    , ('group', '')      : '@columns=name,gid,description,org_location&'
                           '@sort=-id&@pagesize=500&@startwith=0'
    , ('invoice', '')    : '@quiet=1&@terse=1&@columns=invoice_no,'
@@ -348,6 +349,7 @@
      , ('artefact',            'Edit',   '?@template=item', 1)
      , ('reference',           'Edit',   '?@template=item', 1)
      , ('overtime_period',     'Edit',   '?@template=item', 1)
+     , ('dyndns',              'Edit',   '?@action=singleton', 1)
      )
    , ( ('cost_center',         'View', 1,               ('',''))
      , ( 'daily_record'
@@ -421,6 +423,7 @@
      , ('measurement',         'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))
      , ('transceiver',         'View', 1,               ('',''))
+     , ('dyndns',              'View', 1,               ('',''))
      )
    )
  ; menu_type     python:

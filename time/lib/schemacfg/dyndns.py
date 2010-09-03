@@ -56,7 +56,7 @@ def init \
     dyndns_service = Class \
         ( db, ''"dyndns_service"
         , server              = String    ()
-        , protocol            = String    ()
+        , protocol            = Link      ('dyndns_protocol')
         , login               = String    ()
         , password            = String    ()
         )
