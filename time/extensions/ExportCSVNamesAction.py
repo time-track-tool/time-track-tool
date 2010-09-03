@@ -528,7 +528,13 @@ class Export_CSV_Lielas (Export_CSV_Names) :
                 sensorspec [k [7:]] = v
 
         sensor_sort = \
-            ['device.device_group', 'device.name', 'device.adr', 'name', 'adr']
+            [ 'device.device_group'
+            , 'device.name'
+            , 'device.adr'
+            , 'order'
+            , 'name'
+            , 'adr'
+            ]
         sensors = self.db.sensor.filter \
             (None, sensorspec, group = [('+', k) for k in sensor_sort])
 

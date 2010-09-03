@@ -37,10 +37,14 @@
       <td tal:content="structure python:context.name.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'unit')"/>
-      <td tal:content="structure python:context.unit.field ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'order')"/>
+      <td tal:content="structure python:context.order.field ()"/>
       <th tal:content="structure python:utils.fieldname (classname, 'type')"/>
       <td tal:content="structure python:context.type.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'unit')"/>
+      <td tal:content="structure python:context.unit.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'almin')"/>
@@ -50,11 +54,16 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'do_logging')"/>
-      <td tal:content="structure python:context.do_logging.field ()"/>
-      <th tal:content="structure python:utils.fieldname
           (classname, 'is_actuator')"/>
       <td tal:content="structure python:context.is_actuator.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'is_app_sensor')"/>
+      <td tal:content="structure python:context.is_app_sensor.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'do_logging')"/>
+      <td tal:content="structure python:context.do_logging.field ()"/>
      </tr>
      <tr>
       <th/>

@@ -42,6 +42,28 @@ def update_device_surrogate (db, cl, nodeid, new_values) :
         new_values ['surrogate'] = '-'.join ((new_values ['name'], n.adr))
 # end def update_device_surrogate
 
+def update_order (db, cl, nodeid, new_values) :
+    order = new_values.get ('order')
+    if order is None and nodeid :
+        order = cl.get (nodeid, 'order')
+    if order is None and 'adr' in new_values :
+        adr = new_values ['adr']
+        new_values ['order'] = 0
+        if str (adr).isdigit () :
+            new_values ['order'] = int (adr)
+# end def update_order
+
+def update_is_app (db, cl, nodeid, new_values) :
+    app = new_values.get ('is_app_sensor')
+    if app is None and nodeid :
+        app = cl.get (nodeid, 'is_app_sensor')
+    if app is None and 'adr' in new_values :
+        adr = new_values ['adr']
+        new_values ['is_app_sensor'] = False
+        if str (adr).isdigit () :
+            new_values ['is_app_sensor'] = True
+# end def update_is_app
+
 def update_sensor_surrogate (db, cl, nodeid, new_values) :
     if 'name' in new_values :
         n = cl.getnode (nodeid)
@@ -84,11 +106,13 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.device.audit      ("set", deny_adr)
-    db.device.audit      ("set", update_device_surrogate)
-    db.device.react      ("set", check_daemon_props)
-    db.sensor.audit      ("set", deny_adr)
-    db.sensor.audit      ("set", update_sensor_surrogate)
-    db.sensor.react      ("set", check_daemon_props)
-    db.transceiver.react ("set", check_daemon_props)
+    db.device.audit      ("set",    deny_adr)
+    db.device.audit      ("set",    update_device_surrogate)
+    db.device.react      ("set",    check_daemon_props)
+    db.sensor.audit      ("set",    deny_adr)
+    db.sensor.audit      ("set",    update_sensor_surrogate)
+    db.sensor.audit      ("create", update_order)
+    db.sensor.audit      ("create", update_is_app)
+    db.sensor.react      ("set",    check_daemon_props)
+    db.transceiver.react ("set",    check_daemon_props)
 # end def init

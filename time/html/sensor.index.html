@@ -55,6 +55,7 @@
           , displayable  = True
           )
      , ep (utils, pdict ['adr'], searchable = False, force_link = True)
+     , ep (utils, pdict ['order'], searchable = False)
      , ep (utils, pdict ['type'])
      , ep (utils, pdict ['name'], force_link = True)
      , ep (utils, pdict ['almin'])
@@ -62,6 +63,7 @@
      , ep (utils, pdict ['unit'])
      , ep (utils, pdict ['do_logging'])
      , ep (utils, pdict ['is_actuator'])
+     , ep (utils, pdict ['is_app_sensor'])
      );
     "
    tal:condition="context/is_view_ok">

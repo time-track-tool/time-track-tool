@@ -90,7 +90,27 @@
           , searchable   = False
           , displayable  = True
           )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.order'
+          , searchable   = False
+          , displayable  = True
+          )
      , ep (utils, pdict ['date'], format = '%Y-%m-%d.%H:%M:%S')
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.do_logging'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.is_actuator'
+          , searchable   = True
+          , displayable  = True
+          )
+     , ep ( utils, pdict ['sensor']
+          , searchname   = 'sensor.is_app_sensor'
+          , searchable   = True
+          , displayable  = True
+          )
      );
     "
    tal:condition="context/is_view_ok">

@@ -120,6 +120,10 @@
                         : '@columns=id,name,network_address,machine_name,'
                           'dns_record_type,do_reverse_mapping&@sort=name&'
                           '@pagesize=20&@startwith=0'
+   , ('measurement', ' (CSV)') 
+                        : '@sort=date&@filter=date,sensor.is_app_sensor,'
+                          'sensor.do_logging&date=.-1w%3B.&'
+                          'sensor.is_app_sensor=yes&sensor.do_logging=yes'
    , ('measurement', '')
                         : '@columns=sensor.device.device_group,'
                           'sensor.device.adr,sensor.device.name,'
@@ -565,21 +569,20 @@
 
      <!-- Lielas links to sensor and measurement -->
      <tal:block tal:repeat="c python:
-                    [('sensor','index', ''),('measurement','index', ' (CSV)')]">
+            [('sensor','index', ''),('measurement','index', ' (CSV)')]">
         <tal:block tal:condition="python:
           (   'measurement' in db._db.classes
           and  request.user.hasPermission('View', c [0])
           )">
          <span class="classblock" tal:define="
                a python:
-                 (
-                 '&@filter=date&date=.-1w%3B.&@action=export_csv_lielas'
+                 ( '&@action=export_csv_lielas'
                  , '&@nosearch=1'
                  ) [c [0] == 'sensor']">
           <a tal:condition="python:request.user.hasPermission('View', c [0])"
              tal:attributes=
               "href python:'%s?%s&@template=%s%s' %
-                (c [0], default_queries.get ((c [0], ''), ''), c [1], a)"
+                (c [0], default_queries.get ((c [0], c [2]), ''), c [1], a)"
              tal:content="python:
                i18n.gettext (c [0]) + (c[2] and i18n.gettext (c [2]))"/>
          </span>

@@ -92,8 +92,11 @@ def init \
         , unit                = String    ()
         , do_logging          = Boolean   ()
         , is_actuator         = Boolean   ()
+        , is_app_sensor       = Boolean   ()
+        , order               = Number    ()
         )
-    sensor.setkey (''"surrogate")
+    sensor.setkey       (''"surrogate")
+    sensor.setorderprop (''"surrogate")
 
     logstyle = Class \
         ( db, ''"logstyle"
