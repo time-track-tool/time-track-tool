@@ -54,8 +54,19 @@ template: attr.py
 %.mo: %.po
 	${MSGFMT} --statistics -o $@ $<
 
-attr.py: attributes.py ../schema/abo.py ../schema/company.py \
-    ../schema/complex.py ../schema/core.py ../schema/ext_issue.py \
-    ../schema/issue.py ../schema/it_tracker.py ../schema/nwm.py \
-    ../schema/schemadef.py ../schema/time_tracker.py ../schema/doc.py
+attr.py: attributes.py ../lib/schemacfg/abo.py \
+    ../lib/schemacfg/address.py ../lib/schemacfg/adr_ext.py \
+    ../lib/schemacfg/adr_perm.py ../lib/schemacfg/adr_ptr.py \
+    ../lib/schemacfg/company.py ../lib/schemacfg/complex.py \
+    ../lib/schemacfg/contact.py ../lib/schemacfg/core.py \
+    ../lib/schemacfg/doc.py ../lib/schemacfg/dyndns.py \
+    ../lib/schemacfg/erp.py ../lib/schemacfg/ext_issue.py \
+    ../lib/schemacfg/__init__.py ../lib/schemacfg/issue.py \
+    ../lib/schemacfg/it_tracker.py ../lib/schemacfg/legalclient.py \
+    ../lib/schemacfg/letter.py ../lib/schemacfg/lielas.py \
+    ../lib/schemacfg/nwm.py ../lib/schemacfg/pers_ext.py \
+    ../lib/schemacfg/pers_letter.py ../lib/schemacfg/person_adr.py \
+    ../lib/schemacfg/person.py ../lib/schemacfg/person_sep.py \
+    ../lib/schemacfg/schemadef.py ../lib/schemacfg/sinvoice.py \
+    ../lib/schemacfg/time_tracker.py ../lib/schemacfg/user.py
 	$(RUN_PYTHON) attributes.py > attr.py

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-08-06 22:58+0200\n"
+"POT-Creation-Date: 2010-09-03 15:14+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -389,6 +389,10 @@ msgid "May not change %(olon)s if dependencies exist"
 msgstr ""
 
 msgid "May not retire if dependencies exist"
+msgstr ""
+
+#, python-format
+msgid "May not create another instance of \"%s\""
 msgstr ""
 
 #, python-format
@@ -1525,6 +1529,39 @@ msgstr ""
 msgid "function"
 msgstr "Address details"
 
+msgid "fw_url"
+msgstr "Firewall URL"
+
+msgid ""
+"Obtain IP address from IP checking page of firewall at\n"
+"            %(Property)s\n"
+"          "
+msgstr ""
+
+msgid "fw_skip"
+msgstr "Firewall skip pattern"
+
+msgid ""
+"Skip any IP address before %(Property)s in output returned\n"
+"            from ip-checking page of firewall\n"
+"          "
+msgstr ""
+
+msgid "fw_login"
+msgstr "Firewall login"
+
+msgid "%(Property)s to log into firewall"
+msgstr ""
+
+msgid "fw_password"
+msgstr "Firewall Password"
+
+msgid "gapint"
+msgstr "Sensor interval"
+
+msgid "Sensor interval for %(Classname)s"
+msgstr ""
+
 msgid "Numeric group ID"
 msgstr ""
 
@@ -1580,6 +1617,18 @@ msgid "inreplyto"
 msgstr "In Reply To"
 
 msgid "In Reply To field if this %(Classname)s was received by email"
+msgstr ""
+
+msgid "interface"
+msgstr "Interface"
+
+msgid "%(Property)s to determine IP address from"
+msgstr ""
+
+msgid "interface_skip"
+msgstr "Interface skip pattern"
+
+msgid "Skip any IP address before %(Property)s in output of ifconfig"
 msgstr ""
 
 msgid "internal_phone"
@@ -1960,6 +2009,12 @@ msgid ""
 "             referring to message numbers in the range 1-73815 will need\n"
 "             to consider this offset.\n"
 "          "
+msgstr ""
+
+msgid "mint"
+msgstr "Measurement interval"
+
+msgid "Measurement interval for %(Classname)s"
 msgstr ""
 
 msgid "New message or notice for %(Classname)s"
@@ -2735,6 +2790,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "sint"
+msgstr "Transmit interval"
+
+msgid "Transmit interval for %(Classname)s"
+msgstr ""
+
 msgid "Samba domain for this %(Classname)s"
 msgstr ""
 
@@ -2957,6 +3018,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "syslog"
+msgstr "enable syslog"
+
+msgid "Enable logging to syslog"
+msgstr ""
+
 msgid "target"
 msgstr "Target"
 
@@ -3103,6 +3170,12 @@ msgid ""
 "             maximum: 5). This is not yet working, the logic behind it is\n"
 "             not yet implemented. See also it_issue884.\n"
 "          "
+msgstr ""
+
+msgid "tty"
+msgstr "Serial line"
+
+msgid "Serial line connection to transceiver"
 msgstr ""
 
 msgid "type"
@@ -3287,6 +3360,21 @@ msgid "value"
 msgstr "Value"
 
 msgid "Value of this %(Classname)s"
+msgstr ""
+
+msgid "web_url"
+msgstr "Web URL"
+
+msgid "Obtain IP address from IP checking page at %(Property)s"
+msgstr ""
+
+msgid "web_skip"
+msgstr "Web skip pattern"
+
+msgid ""
+"Skip any IP address before %(Property)s in output returned\n"
+"            from website\n"
+"          "
 msgstr ""
 
 msgid "week"
@@ -3546,11 +3634,29 @@ msgstr ""
 msgid "Freeze user"
 msgstr ""
 
+msgid "Sensors"
+msgstr "Sensors"
+
 msgid "${classname_id} owned by ${responsible}"
 msgstr ""
 
 msgid "BibTeX"
 msgstr ""
+
+msgid "Configure one of the following:"
+msgstr ""
+
+msgid "Determine IP Address by Network Interface"
+msgstr ""
+
+msgid "Determine IP Address from a Web Service"
+msgstr ""
+
+msgid "Determine IP Address from a Firewall"
+msgstr ""
+
+msgid "new dyndns_service"
+msgstr "new DynDNS service"
 
 msgid "Welcome"
 msgstr ""
@@ -3581,6 +3687,9 @@ msgstr ""
 
 msgid "new network_interface"
 msgstr "new Network interface"
+
+msgid "Lielas CSV"
+msgstr ""
 
 msgid "Network Addresses"
 msgstr ""
@@ -3742,6 +3851,12 @@ msgstr ""
 msgid "Save Selection"
 msgstr ""
 
+msgid "Extended Search"
+msgstr ""
+
+msgid "display latest measurements for this sensor"
+msgstr ""
+
 msgid "Current Work Package(s)"
 msgstr ""
 
@@ -3820,20 +3935,262 @@ msgstr ""
 msgid "%(attr)s must not be specified"
 msgstr ""
 
+msgid "abo_price"
+msgstr ""
+
+msgid "abo_type"
+msgstr "Subscription type"
+
+msgid "adr_type_cat"
+msgstr "Address type category"
+
+msgid "weekday"
+msgstr "Weekday"
+
+msgid "opening_hours"
+msgstr "Opening hours"
+
 msgid "meeting_room"
 msgstr "Meeting Room"
 
 msgid "sex"
 msgstr ""
 
+msgid "severity"
+msgstr "Severity"
+
+msgid "milestone"
+msgstr "Milestone"
+
+msgid "task_status"
+msgstr "Workpackage Status"
+
+msgid "task_kind"
+msgstr "Workpackage Kind"
+
+msgid "feature_status"
+msgstr "Requirement Status"
+
+msgid "defect_status"
+msgstr "Defect Status"
+
+msgid "action_item_status"
+msgstr "Status of Action Item"
+
+msgid "review_status"
+msgstr "Review Status"
+
+msgid "comment_status"
+msgstr "Comment Status"
+
+msgid "document_status"
+msgstr "Document status"
+
+msgid "document_type"
+msgstr "Document type"
+
+msgid "prod"
+msgstr "Product"
+
+msgid "meeting"
+msgstr "Meeting"
+
+msgid "action_item"
+msgstr "Action Item"
+
+msgid "document"
+msgstr "Document"
+
+msgid "feature"
+msgstr "Requirement"
+
+msgid "task"
+msgstr "Workpackage"
+
+msgid "defect"
+msgstr "Defect"
+
+#.  `moderator` is implemented with `responsible`
+msgid "review"
+msgstr "Review"
+
+msgid "announcement"
+msgstr "Announcement"
+
+msgid "comment"
+msgstr "Comment"
+
+msgid "file"
+msgstr "File"
+
+msgid "query"
+msgstr "Query"
+
+msgid "user_status"
+msgstr "User Status"
+
+msgid "dyndns_protocol"
+msgstr "DynDNS protocol"
+
+msgid "dyndns_service"
+msgstr "DynDNS service"
+
+msgid "server"
+msgstr "Server"
+
+msgid "dyndns_host"
+msgstr "DynDNS host"
+
+msgid "hostname"
+msgstr "Hostname"
+
+msgid "dyndns"
+msgstr "DynDNS"
+
+msgid "bank_account"
+msgstr ""
+
+msgid "customer_group"
+msgstr "Customer Group"
+
+msgid "discount_group"
+msgstr "Discount group"
+
+msgid "dispatch_type"
+msgstr ""
+
+msgid "group_discount"
+msgstr ""
+
+msgid "invoice_dispatch"
+msgstr "Invoice dispatch"
+
+msgid "measuring_unit"
+msgstr "Measuring unit"
+
+msgid "overall_discount"
+msgstr ""
+
+msgid "packaging_unit"
+msgstr ""
+
+msgid "pharma_ref"
+msgstr ""
+
+msgid "proceeds_group"
+msgstr "Proceeds group"
+
+msgid "product"
+msgstr "Product"
+
+msgid "product_price"
+msgstr "Product price"
+
+msgid "product_status"
+msgstr "Product status"
+
+msgid "sales_conditions"
+msgstr "Sales conditions"
+
+msgid "shelf_life_code"
+msgstr ""
+
+msgid "storage"
+msgstr "Storage"
+
+msgid "stock"
+msgstr "Stock"
+
+msgid "stocked_product"
+msgstr "Stocked product"
+
+msgid "supplier_group"
+msgstr "Supplier group"
+
+msgid "supplier_status"
+msgstr "Supplier Status"
+
+msgid "it_category"
+msgstr "IT-Category"
+
+msgid "it_issue"
+msgstr "IT-Issue"
+
+msgid "it_issue_status"
+msgstr "IT-Issue status"
+
+msgid "it_project_status"
+msgstr "IT-Project status"
+
+msgid "legalclient"
+msgstr ""
+
+msgid "device"
+msgstr "Device"
+
+msgid "surrogate"
+msgstr ""
+
+msgid "logstyle"
+msgstr "Logging style"
+
+msgid "smb_machine"
+msgstr "Samba machine"
+
+msgid "User is allowed %(perm)s on"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
+"is on nosy list"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
+"item with %(perm)s permission"
+msgstr ""
+
+msgid "cost_center_group"
+msgstr "Cost Center Group"
+
+msgid "daily_record"
+msgstr "Daily Record"
+
+msgid "daily_record_freeze"
+msgstr "Daily Record freeze"
+
+msgid "daily_record_status"
+msgstr "Daily Record Status"
+
+msgid "public_holiday"
+msgstr "Public Holiday"
+
+msgid "summary_type"
+msgstr "Summary type"
+
+msgid "time_project"
+msgstr "Time Category"
+
+msgid "time_project_status"
+msgstr "Time Category Status"
+
+msgid "time_record"
+msgstr "Time Record"
+
+msgid "time_wp"
+msgstr "Work package"
+
+msgid "time_wp_group"
+msgstr "Work package group"
+
+msgid "user_dynamic"
+msgstr "Dynamic User Data"
+
 msgid "keyword"
 msgstr "Keyword"
 
 msgid "status_transition"
 msgstr "Status Transition"
-
-msgid "severity"
-msgstr "Severity"
 
 msgid "msg_keyword"
 msgstr "Message Keyword"
@@ -3859,41 +4216,11 @@ msgstr "Estimated Start"
 msgid "effective_prio"
 msgstr "Eff. Priority"
 
-msgid "it_category"
-msgstr "IT-Category"
-
-msgid "it_issue"
-msgstr "IT-Issue"
-
-msgid "it_issue_status"
-msgstr "IT-Issue status"
-
-msgid "it_project_status"
-msgstr "IT-Project status"
-
-msgid "legalclient"
-msgstr ""
-
 msgid "pdc"
 msgstr "Primary domain controller"
 
-msgid "smb_machine"
-msgstr "Samba machine"
-
-msgid "cost_center_group"
-msgstr "Cost Center Group"
-
-msgid "daily_record"
-msgstr "Daily Record"
-
-msgid "time_record"
-msgstr "Time Record"
-
 msgid "tr_duration_ok"
 msgstr "Duration (incl. Travel)"
-
-msgid "daily_record_freeze"
-msgstr "Daily Record freeze"
 
 msgid "month_balance"
 msgstr "Month Balance"
@@ -3904,38 +4231,14 @@ msgstr "Month validity date"
 msgid "week_balance"
 msgstr "Week Balance"
 
-msgid "comment"
-msgstr "Comment"
-
-msgid "daily_record_status"
-msgstr "Daily Record Status"
-
-msgid "public_holiday"
-msgstr "Public Holiday"
-
 msgid "is_half"
 msgstr "Half day"
 
 msgid "locations"
 msgstr "Locations"
 
-msgid "time_wp"
-msgstr "Work package"
-
-msgid "summary_type"
-msgstr "Summary type"
-
-msgid "time_project"
-msgstr "Time Category"
-
-msgid "time_wp_group"
-msgstr "Work package group"
-
 msgid "is_staff"
 msgstr "Needed by staff report"
-
-msgid "time_project_status"
-msgstr "Time Category Status"
 
 msgid "end_generated"
 msgstr ""
@@ -3946,17 +4249,11 @@ msgstr ""
 msgid "durations_allowed"
 msgstr "Durations allowed"
 
-msgid "user_dynamic"
-msgstr "Dynamic User Data"
-
 msgid "travel_full"
 msgstr "Travel full"
 
 msgid "mail_domain"
 msgstr "Mail domain"
-
-msgid "milestone"
-msgstr "Milestone"
 
 msgid "planned"
 msgstr "Planned"
@@ -3964,53 +4261,14 @@ msgstr "Planned"
 msgid "reached"
 msgstr "Reached"
 
-msgid "task_status"
-msgstr "Workpackage Status"
-
-msgid "task_kind"
-msgstr "Workpackage Kind"
-
-msgid "feature_status"
-msgstr "Requirement Status"
-
-msgid "defect_status"
-msgstr "Defect Status"
-
 msgid "cert"
 msgstr "Cert"
 
 msgid "cert_transitions"
 msgstr "Cert Transitions"
 
-msgid "action_item_status"
-msgstr "Status of Action Item"
-
-msgid "review_status"
-msgstr "Review Status"
-
-msgid "comment_status"
-msgstr "Comment Status"
-
-msgid "document_status"
-msgstr "Document status"
-
-msgid "document_type"
-msgstr "Document type"
-
-msgid "prod"
-msgstr "Product"
-
 msgid "certifiable"
 msgstr "Certifiable"
-
-msgid "meeting"
-msgstr "Meeting"
-
-msgid "action_item"
-msgstr "Action Item"
-
-msgid "document"
-msgstr "Document"
 
 msgid "documents"
 msgstr "Documents"
@@ -4027,9 +4285,6 @@ msgstr "Milestones"
 msgid "planned_fixes"
 msgstr "Planned Fixes"
 
-msgid "feature"
-msgstr "Requirement"
-
 msgid "actual_end"
 msgstr "Actual end"
 
@@ -4045,9 +4300,6 @@ msgstr "Workpackages"
 msgid "defects"
 msgstr "Defects"
 
-msgid "task"
-msgstr "Workpackage"
-
 msgid "estimated_begin"
 msgstr "Estimated Begin"
 
@@ -4057,14 +4309,8 @@ msgstr "Estimated End"
 msgid "effort"
 msgstr "Effort"
 
-msgid "defect"
-msgstr "Defect"
-
 msgid "closer"
 msgstr "Closer"
-
-msgid "product"
-msgstr "Product"
 
 msgid "belongs_to_task"
 msgstr "Belongs to Workpackage"
@@ -4087,13 +4333,6 @@ msgstr "Version"
 msgid "fixed_until"
 msgstr "Fixed until"
 
-#.  `moderator` is implemented with `responsible`
-msgid "review"
-msgstr "Review"
-
-msgid "announcement"
-msgstr "Announcement"
-
 msgid "comments"
 msgstr "Comments"
 
@@ -4103,17 +4342,8 @@ msgstr "Linenumber"
 msgid "file_name"
 msgstr "Filename"
 
-msgid "adr_type_cat"
-msgstr "Address type category"
-
 msgid "type_valid"
 msgstr "Type valid"
-
-msgid "weekday"
-msgstr "Weekday"
-
-msgid "opening_hours"
-msgstr "Opening hours"
 
 msgid "from_minute"
 msgstr ""
@@ -4126,12 +4356,6 @@ msgstr "from hour"
 
 msgid "to_hour"
 msgstr "to hour"
-
-msgid "abo_price"
-msgstr ""
-
-msgid "abo_type"
-msgstr "Subscription type"
 
 msgid "lookalike_function"
 msgstr "Address details"
@@ -4146,9 +4370,6 @@ msgid "lookalike_firstname"
 msgstr "First name"
 
 msgid "amount_payed"
-msgstr ""
-
-msgid "bank_account"
 msgstr ""
 
 msgid "act_number"
@@ -4166,26 +4387,11 @@ msgstr "IBAN"
 msgid "bank"
 msgstr "Bank"
 
-msgid "supplier_status"
-msgstr "Supplier Status"
-
-msgid "invoice_dispatch"
-msgstr "Invoice dispatch"
-
-msgid "supplier_group"
-msgstr "Supplier group"
-
-msgid "discount_group"
-msgstr "Discount group"
-
 msgid "invoice_text"
 msgstr "Invoice text"
 
 msgid "order_text"
 msgstr "Order text"
-
-msgid "pharma_ref"
-msgstr ""
 
 msgid "attendant"
 msgstr ""
@@ -4199,35 +4405,11 @@ msgstr ""
 msgid "lookalike_name"
 msgstr "Lookalike name"
 
-msgid "customer_group"
-msgstr "Customer Group"
-
-msgid "sales_conditions"
-msgstr "Sales conditions"
-
-msgid "dispatch_type"
-msgstr ""
-
-msgid "group_discount"
-msgstr ""
-
-msgid "overall_discount"
-msgstr ""
-
 msgid "discount"
 msgstr "Discount"
 
-msgid "measuring_unit"
-msgstr "Measuring unit"
-
 msgid "price"
 msgstr "Price"
-
-msgid "packaging_unit"
-msgstr ""
-
-msgid "proceeds_group"
-msgstr "Proceeds group"
 
 msgid "use_lot"
 msgstr "Use lot number"
@@ -4235,17 +4417,8 @@ msgstr "Use lot number"
 msgid "minimum_inventory"
 msgstr "Minimum inventory"
 
-msgid "product_price"
-msgstr "Product price"
-
-msgid "shelf_life_code"
-msgstr ""
-
 msgid "vat_percent"
 msgstr "VAT percent"
-
-msgid "product_status"
-msgstr "Product status"
 
 msgid "payment_days"
 msgstr "Payment (days)"
@@ -4256,17 +4429,8 @@ msgstr ""
 msgid "discount_percent"
 msgstr "Discount percent"
 
-msgid "storage"
-msgstr "Storage"
-
 msgid "storage_locations"
 msgstr "Storage locations"
-
-msgid "stock"
-msgstr "Stock"
-
-msgid "stocked_product"
-msgstr "Stocked product"
 
 msgid "storage_location"
 msgstr "Storage location"
@@ -4295,14 +4459,20 @@ msgstr "Link/CVS location"
 msgid "state_changed_by"
 msgstr ""
 
-msgid "file"
-msgstr "File"
+msgid "default_server"
+msgstr "default server"
+
+msgid "login"
+msgstr "Login"
+
+msgid "protocol"
+msgstr "Protocol"
+
+msgid "rec"
+msgstr "Recording type"
 
 msgid "header"
 msgstr "Mail-Header"
-
-msgid "query"
-msgstr "Query"
 
 msgid "job_description"
 msgstr "Job Description"
@@ -4313,42 +4483,8 @@ msgstr "Picture"
 msgid "timing_info"
 msgstr ""
 
-msgid "user_status"
-msgstr "User Status"
-
 msgid "doc_num"
 msgstr "Document number"
-
-msgid "device"
-msgstr "Device"
-
-msgid "logstyle"
-msgstr "Logging style"
-
-msgid "User is allowed %(perm)s on"
-msgstr ""
-
-msgid ""
-"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
-"is on nosy list"
-msgstr ""
-
-msgid ""
-"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
-"item with %(perm)s permission"
-msgstr ""
-
-msgid "gapint"
-msgstr "Sensor interval"
-
-msgid "mint"
-msgstr "Measurement interval"
-
-msgid "sint"
-msgstr "Transmit interval"
-
-msgid "tty"
-msgstr "Serial line"
 
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"

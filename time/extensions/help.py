@@ -571,6 +571,20 @@ _helptext          = \
           '''
       ]
     , ""'function'                    : [function]
+    , ""'fw_url'                      :
+      [ ""'''Obtain IP address from IP checking page of firewall at
+            %(Property)s
+          '''
+      ]
+    , ""'fw_skip'                     :
+      [ ""'''Skip any IP address before %(Property)s in output returned
+            from ip-checking page of firewall
+          '''
+      ]
+    , ""'fw_login'                    :
+      [""'''%(Property)s to log into firewall''']
+    , ""'fw_password'                 :
+      [""'''%(Property)s to log into firewall''']
     , ""'gapint'                      :
       [""'''Sensor interval for %(Classname)s''']
     , ""'gid'                         :
@@ -595,6 +609,10 @@ _helptext          = \
       [""'''Initials of this %(Classname)s''']
     , ""'inreplyto'                   :
       [""'''In Reply To field if this %(Classname)s was received by email''']
+    , ""'interface'                   :
+      [""'''%(Property)s to determine IP address from''']
+    , ""'interface_skip'              :
+      [""'''Skip any IP address before %(Property)s in output of ifconfig''']
     , ""'internal_phone'              :
       [ ""'''Short mobile or external phone number, e.g., 6142.'''
       , extension
@@ -1298,6 +1316,8 @@ _helptext          = \
              changed, too (if the daemon is running)
           '''
       ]
+    , ""'syslog'                      :
+      [""'''Enable logging to syslog''']
     , ""'target'                      :
       [ ""'''Target of this %(Classname)s, only targets explicitly
              enabled will be allowed for status changes.
@@ -1477,6 +1497,13 @@ _helptext          = \
       ]
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']
+    , ""'web_url'                     :
+      [""'''Obtain IP address from IP checking page at %(Property)s''']
+    , ""'web_skip'                    :
+      [ ""'''Skip any IP address before %(Property)s in output returned
+            from website
+          '''
+      ]
     , ""'week'                        :
       [ ""'''Week for time tracking, this is an alternative for specifying
              a date range: just enter the week number here (for the

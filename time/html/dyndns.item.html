@@ -96,9 +96,19 @@
         and context.is_edit_ok ()
         and db.dyndns_service.is_edit_ok ()
         )">
-     <th class="header" i18n:translate="" colspan="3">
+     <th class="header" i18n:translate=""
+         tal:attributes="colspan python:3-cond">
       dyndns_service
      </th>
+     <td class="header" tal:condition="cond">
+      <a i18n:translate="" tal:attributes="href python:
+         'dyndns_service?:template=item&' + '&'.join
+           (['%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+            (('dyndns_protocol', 1),)
+           ])">
+       new dyndns_service
+      </a>
+     </td>
     </tr>
     <tr tal:define="n python:'dyndns_service'">
      <th tal:content="structure python:utils.fieldname (n, 'server')"/>

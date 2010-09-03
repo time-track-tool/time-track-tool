@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-08-06 22:58+0200\n"
+"POT-Creation-Date: 2010-09-03 15:14+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -393,6 +393,10 @@ msgid "May not change %(olon)s if dependencies exist"
 msgstr ""
 
 msgid "May not retire if dependencies exist"
+msgstr ""
+
+#, python-format
+msgid "May not create another instance of \"%s\""
 msgstr ""
 
 #, python-format
@@ -1557,6 +1561,39 @@ msgstr ""
 msgid "function"
 msgstr "Adresszusatz"
 
+msgid "fw_url"
+msgstr "Firewall URL"
+
+msgid ""
+"Obtain IP address from IP checking page of firewall at\n"
+"            %(Property)s\n"
+"          "
+msgstr ""
+
+msgid "fw_skip"
+msgstr ""
+
+msgid ""
+"Skip any IP address before %(Property)s in output returned\n"
+"            from ip-checking page of firewall\n"
+"          "
+msgstr ""
+
+msgid "fw_login"
+msgstr "Firewall login"
+
+msgid "%(Property)s to log into firewall"
+msgstr ""
+
+msgid "fw_password"
+msgstr "Firewall Passwort"
+
+msgid "gapint"
+msgstr ""
+
+msgid "Sensor interval for %(Classname)s"
+msgstr "Sensor Intervall für %(Classname)s"
+
 msgid "Numeric group ID"
 msgstr ""
 
@@ -1613,6 +1650,18 @@ msgstr "Antwort auf"
 
 msgid "In Reply To field if this %(Classname)s was received by email"
 msgstr "Nur verwendet, wenn diese %(Classname)s per Email empfangen wurde."
+
+msgid "interface"
+msgstr "Interface"
+
+msgid "%(Property)s to determine IP address from"
+msgstr ""
+
+msgid "interface_skip"
+msgstr ""
+
+msgid "Skip any IP address before %(Property)s in output of ifconfig"
+msgstr ""
 
 msgid "internal_phone"
 msgstr "Interne Durchwahl"
@@ -2003,6 +2052,12 @@ msgid ""
 "             to consider this offset.\n"
 "          "
 msgstr " "
+
+msgid "mint"
+msgstr "Messintervall"
+
+msgid "Measurement interval for %(Classname)s"
+msgstr "Messintervall für %(Classname)s"
 
 msgid "New message or notice for %(Classname)s"
 msgstr "Feld für Notizen zu %(Classname)s"
@@ -2789,6 +2844,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "sint"
+msgstr "Sensor Intervall"
+
+msgid "Transmit interval for %(Classname)s"
+msgstr "Übertraguns-Intervall für %(Classname)s"
+
 msgid "Samba domain for this %(Classname)s"
 msgstr "Samba Domain für %(Classname)s"
 
@@ -3011,6 +3072,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "syslog"
+msgstr ""
+
+msgid "Enable logging to syslog"
+msgstr ""
+
 msgid "target"
 msgstr "Ziel"
 
@@ -3161,6 +3228,12 @@ msgid ""
 "             maximum: 5). This is not yet working, the logic behind it is\n"
 "             not yet implemented. See also it_issue884.\n"
 "          "
+msgstr ""
+
+msgid "tty"
+msgstr ""
+
+msgid "Serial line connection to transceiver"
 msgstr ""
 
 msgid "type"
@@ -3356,6 +3429,21 @@ msgstr "Wert"
 
 msgid "Value of this %(Classname)s"
 msgstr "Wert für diese %(Classname)s"
+
+msgid "web_url"
+msgstr "Web-URL"
+
+msgid "Obtain IP address from IP checking page at %(Property)s"
+msgstr ""
+
+msgid "web_skip"
+msgstr ""
+
+msgid ""
+"Skip any IP address before %(Property)s in output returned\n"
+"            from website\n"
+"          "
+msgstr ""
 
 msgid "week"
 msgstr ""
@@ -3619,10 +3707,28 @@ msgstr "Team einfrieren"
 msgid "Freeze user"
 msgstr "Benutzer einfrieren"
 
+msgid "Sensors"
+msgstr "Sensoren"
+
 msgid "${classname_id} owned by ${responsible}"
 msgstr ""
 
 msgid "BibTeX"
+msgstr ""
+
+msgid "Configure one of the following:"
+msgstr ""
+
+msgid "Determine IP Address by Network Interface"
+msgstr ""
+
+msgid "Determine IP Address from a Web Service"
+msgstr ""
+
+msgid "Determine IP Address from a Firewall"
+msgstr ""
+
+msgid "new dyndns_protocol"
 msgstr ""
 
 msgid "Welcome"
@@ -3653,6 +3759,9 @@ msgid "Network Interfaces"
 msgstr ""
 
 msgid "new network_interface"
+msgstr ""
+
+msgid "Lielas CSV"
 msgstr ""
 
 msgid "Network Addresses"
@@ -3817,6 +3926,12 @@ msgstr "löschen"
 msgid "Save Selection"
 msgstr "Auswahl speichern"
 
+msgid "Extended Search"
+msgstr ""
+
+msgid "display latest measurements for this sensor"
+msgstr "Anzeige der letzten Messwerte für den Sensor"
+
 msgid "Current Work Package(s)"
 msgstr ""
 
@@ -3895,20 +4010,262 @@ msgstr "%(atname)s darf nicht länger als %(length)s Zeilen sein"
 msgid "%(attr)s must not be specified"
 msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
 
+msgid "abo_price"
+msgstr "Abo/Preis"
+
+msgid "abo_type"
+msgstr "Abotyp"
+
+msgid "adr_type_cat"
+msgstr "Typ Kategorie"
+
+msgid "weekday"
+msgstr "Wochentag"
+
+msgid "opening_hours"
+msgstr "Öffnungszeiten"
+
 msgid "meeting_room"
 msgstr ""
 
 msgid "sex"
 msgstr ""
 
+msgid "severity"
+msgstr ""
+
+msgid "milestone"
+msgstr ""
+
+msgid "task_status"
+msgstr ""
+
+msgid "task_kind"
+msgstr ""
+
+msgid "feature_status"
+msgstr ""
+
+msgid "defect_status"
+msgstr ""
+
+msgid "action_item_status"
+msgstr ""
+
+msgid "review_status"
+msgstr ""
+
+msgid "comment_status"
+msgstr ""
+
+msgid "document_status"
+msgstr ""
+
+msgid "document_type"
+msgstr ""
+
+msgid "prod"
+msgstr "Produkt"
+
+msgid "meeting"
+msgstr ""
+
+msgid "action_item"
+msgstr ""
+
+msgid "document"
+msgstr ""
+
+msgid "feature"
+msgstr ""
+
+msgid "task"
+msgstr "Aufgabe"
+
+msgid "defect"
+msgstr ""
+
+#.  `moderator` is implemented with `responsible`
+msgid "review"
+msgstr ""
+
+msgid "announcement"
+msgstr ""
+
+msgid "comment"
+msgstr "Kommentar"
+
+msgid "file"
+msgstr "Datei"
+
+msgid "query"
+msgstr "Abfrage"
+
+msgid "user_status"
+msgstr "Benutzerstatus"
+
+msgid "dyndns_protocol"
+msgstr ""
+
+msgid "dyndns_service"
+msgstr "DynDNS Service"
+
+msgid "server"
+msgstr "Server"
+
+msgid "dyndns_host"
+msgstr "DynDNS Host"
+
+msgid "hostname"
+msgstr "Hostname"
+
+msgid "dyndns"
+msgstr "DynDNS"
+
+msgid "bank_account"
+msgstr "Bankverbindung"
+
+msgid "customer_group"
+msgstr "Kundengruppe"
+
+msgid "discount_group"
+msgstr "Rabattgruppe"
+
+msgid "dispatch_type"
+msgstr "Versandart"
+
+msgid "group_discount"
+msgstr "Artikelgruppenrabatt"
+
+msgid "invoice_dispatch"
+msgstr "Rechnungsversand"
+
+msgid "measuring_unit"
+msgstr "Einheit"
+
+msgid "overall_discount"
+msgstr "Gesamtrabatt"
+
+msgid "packaging_unit"
+msgstr "Verpackungseinheit"
+
+msgid "pharma_ref"
+msgstr "Pharmaref. Bezirk"
+
+msgid "proceeds_group"
+msgstr "Erlösgruppe"
+
+msgid "product"
+msgstr "Artikel"
+
+msgid "product_price"
+msgstr "Artikelpreis"
+
+msgid "product_status"
+msgstr "Artikelstatus"
+
+msgid "sales_conditions"
+msgstr "Konditionen"
+
+msgid "shelf_life_code"
+msgstr "Lagerfähigkeitscode"
+
+msgid "storage"
+msgstr ""
+
+msgid "stock"
+msgstr "Lager"
+
+msgid "stocked_product"
+msgstr "Lagerartikel"
+
+msgid "supplier_group"
+msgstr "Lieferantengruppe"
+
+msgid "supplier_status"
+msgstr "Lieferantenstatus"
+
+msgid "it_category"
+msgstr "IT Kategorie"
+
+msgid "it_issue"
+msgstr "IT Issue"
+
+msgid "it_issue_status"
+msgstr ""
+
+msgid "it_project_status"
+msgstr ""
+
+msgid "legalclient"
+msgstr "Klient"
+
+msgid "device"
+msgstr "Gerät"
+
+msgid "surrogate"
+msgstr ""
+
+msgid "logstyle"
+msgstr ""
+
+msgid "smb_machine"
+msgstr ""
+
+msgid "User is allowed %(perm)s on"
+msgstr "Benutzer darf %(perm)s auf"
+
+msgid ""
+"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
+"is on nosy list"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
+"item with %(perm)s permission"
+msgstr ""
+
+msgid "cost_center_group"
+msgstr "Kostenstellengruppe"
+
+msgid "daily_record"
+msgstr ""
+
+msgid "daily_record_freeze"
+msgstr ""
+
+msgid "daily_record_status"
+msgstr ""
+
+msgid "public_holiday"
+msgstr ""
+
+msgid "summary_type"
+msgstr "Typ der Zusammenfassung"
+
+msgid "time_project"
+msgstr "Projekt"
+
+msgid "time_project_status"
+msgstr ""
+
+msgid "time_record"
+msgstr ""
+
+msgid "time_wp"
+msgstr ""
+
+msgid "time_wp_group"
+msgstr "Arbeitspaket-Gruppe"
+
+msgid "user_dynamic"
+msgstr "Dynamische Benutzerdaten"
+
 msgid "keyword"
 msgstr ""
 
 msgid "status_transition"
 msgstr "Statusübergang"
-
-msgid "severity"
-msgstr ""
 
 msgid "msg_keyword"
 msgstr ""
@@ -3934,41 +4291,11 @@ msgstr ""
 msgid "effective_prio"
 msgstr ""
 
-msgid "it_category"
-msgstr "IT Kategorie"
-
-msgid "it_issue"
-msgstr "IT Issue"
-
-msgid "it_issue_status"
-msgstr ""
-
-msgid "it_project_status"
-msgstr ""
-
-msgid "legalclient"
-msgstr "Klient"
-
 msgid "pdc"
 msgstr "PDC"
 
-msgid "smb_machine"
-msgstr ""
-
-msgid "cost_center_group"
-msgstr "Kostenstellengruppe"
-
-msgid "daily_record"
-msgstr ""
-
-msgid "time_record"
-msgstr ""
-
 msgid "tr_duration_ok"
 msgstr "Dauer incl. Reisezeit"
-
-msgid "daily_record_freeze"
-msgstr ""
 
 msgid "month_balance"
 msgstr ""
@@ -3979,37 +4306,13 @@ msgstr ""
 msgid "week_balance"
 msgstr "Akkumulierte Zeit Ende"
 
-msgid "comment"
-msgstr "Kommentar"
-
-msgid "daily_record_status"
-msgstr ""
-
-msgid "public_holiday"
-msgstr ""
-
 msgid "is_half"
 msgstr ""
 
 msgid "locations"
 msgstr "Orte"
 
-msgid "time_wp"
-msgstr ""
-
-msgid "summary_type"
-msgstr "Typ der Zusammenfassung"
-
-msgid "time_project"
-msgstr "Projekt"
-
-msgid "time_wp_group"
-msgstr "Arbeitspaket-Gruppe"
-
 msgid "is_staff"
-msgstr ""
-
-msgid "time_project_status"
 msgstr ""
 
 msgid "end_generated"
@@ -4021,16 +4324,10 @@ msgstr ""
 msgid "durations_allowed"
 msgstr "Dauer erlaubt"
 
-msgid "user_dynamic"
-msgstr "Dynamische Benutzerdaten"
-
 msgid "travel_full"
 msgstr ""
 
 msgid "mail_domain"
-msgstr ""
-
-msgid "milestone"
 msgstr ""
 
 msgid "planned"
@@ -4039,52 +4336,13 @@ msgstr ""
 msgid "reached"
 msgstr ""
 
-msgid "task_status"
-msgstr ""
-
-msgid "task_kind"
-msgstr ""
-
-msgid "feature_status"
-msgstr ""
-
-msgid "defect_status"
-msgstr ""
-
 msgid "cert"
 msgstr ""
 
 msgid "cert_transitions"
 msgstr "CERT Übergänge"
 
-msgid "action_item_status"
-msgstr ""
-
-msgid "review_status"
-msgstr ""
-
-msgid "comment_status"
-msgstr ""
-
-msgid "document_status"
-msgstr ""
-
-msgid "document_type"
-msgstr ""
-
-msgid "prod"
-msgstr "Produkt"
-
 msgid "certifiable"
-msgstr ""
-
-msgid "meeting"
-msgstr ""
-
-msgid "action_item"
-msgstr ""
-
-msgid "document"
 msgstr ""
 
 msgid "documents"
@@ -4102,9 +4360,6 @@ msgstr ""
 msgid "planned_fixes"
 msgstr ""
 
-msgid "feature"
-msgstr ""
-
 msgid "actual_end"
 msgstr ""
 
@@ -4120,9 +4375,6 @@ msgstr "Aufgaben"
 msgid "defects"
 msgstr ""
 
-msgid "task"
-msgstr "Aufgabe"
-
 msgid "estimated_begin"
 msgstr "Geschätzter Startzeitpunkt"
 
@@ -4132,14 +4384,8 @@ msgstr "Geschätzter Endzeitpunkt"
 msgid "effort"
 msgstr ""
 
-msgid "defect"
-msgstr ""
-
 msgid "closer"
 msgstr "Schliessender Benutzer"
-
-msgid "product"
-msgstr "Artikel"
 
 msgid "belongs_to_task"
 msgstr ""
@@ -4162,13 +4408,6 @@ msgstr ""
 msgid "fixed_until"
 msgstr ""
 
-#.  `moderator` is implemented with `responsible`
-msgid "review"
-msgstr ""
-
-msgid "announcement"
-msgstr ""
-
 msgid "comments"
 msgstr "Kommentare"
 
@@ -4178,17 +4417,8 @@ msgstr "Zeilennummer"
 msgid "file_name"
 msgstr "Dateiname"
 
-msgid "adr_type_cat"
-msgstr "Typ Kategorie"
-
 msgid "type_valid"
 msgstr "Typ gültig"
-
-msgid "weekday"
-msgstr "Wochentag"
-
-msgid "opening_hours"
-msgstr "Öffnungszeiten"
 
 msgid "from_minute"
 msgstr "Minute von"
@@ -4201,12 +4431,6 @@ msgstr "Stunde von"
 
 msgid "to_hour"
 msgstr "Stunde bis"
-
-msgid "abo_price"
-msgstr "Abo/Preis"
-
-msgid "abo_type"
-msgstr "Abotyp"
 
 msgid "lookalike_function"
 msgstr "Adresszusatz"
@@ -4223,9 +4447,6 @@ msgstr "Vorname"
 msgid "amount_payed"
 msgstr "Zahlungsbetrag"
 
-msgid "bank_account"
-msgstr "Bankverbindung"
-
 msgid "act_number"
 msgstr "Kontonummer"
 
@@ -4241,26 +4462,11 @@ msgstr "IBAN"
 msgid "bank"
 msgstr "Bank"
 
-msgid "supplier_status"
-msgstr "Lieferantenstatus"
-
-msgid "invoice_dispatch"
-msgstr "Rechnungsversand"
-
-msgid "supplier_group"
-msgstr "Lieferantengruppe"
-
-msgid "discount_group"
-msgstr "Rabattgruppe"
-
 msgid "invoice_text"
 msgstr "Rechnungstext"
 
 msgid "order_text"
 msgstr "Bestelltext"
-
-msgid "pharma_ref"
-msgstr "Pharmaref. Bezirk"
 
 msgid "attendant"
 msgstr "Kundenbetreuer"
@@ -4274,35 +4480,11 @@ msgstr "Kreditlimit"
 msgid "lookalike_name"
 msgstr "Nachname"
 
-msgid "customer_group"
-msgstr "Kundengruppe"
-
-msgid "sales_conditions"
-msgstr "Konditionen"
-
-msgid "dispatch_type"
-msgstr "Versandart"
-
-msgid "group_discount"
-msgstr "Artikelgruppenrabatt"
-
-msgid "overall_discount"
-msgstr "Gesamtrabatt"
-
 msgid "discount"
 msgstr "Rabatt"
 
-msgid "measuring_unit"
-msgstr "Einheit"
-
 msgid "price"
 msgstr "Preis"
-
-msgid "packaging_unit"
-msgstr "Verpackungseinheit"
-
-msgid "proceeds_group"
-msgstr "Erlösgruppe"
 
 msgid "use_lot"
 msgstr "Chargenführung?"
@@ -4310,17 +4492,8 @@ msgstr "Chargenführung?"
 msgid "minimum_inventory"
 msgstr "Mindestbestand"
 
-msgid "product_price"
-msgstr "Artikelpreis"
-
-msgid "shelf_life_code"
-msgstr "Lagerfähigkeitscode"
-
 msgid "vat_percent"
 msgstr "% MWSt."
-
-msgid "product_status"
-msgstr "Artikelstatus"
 
 msgid "payment_days"
 msgstr "Zahlungziel"
@@ -4331,17 +4504,8 @@ msgstr "Skontotage"
 msgid "discount_percent"
 msgstr "Skonto %"
 
-msgid "storage"
-msgstr ""
-
 msgid "storage_locations"
 msgstr "Lagerorte"
-
-msgid "stock"
-msgstr "Lager"
-
-msgid "stocked_product"
-msgstr "Lagerartikel"
 
 msgid "storage_location"
 msgstr "Lagerort"
@@ -4370,14 +4534,20 @@ msgstr ""
 msgid "state_changed_by"
 msgstr ""
 
-msgid "file"
-msgstr "Datei"
+msgid "default_server"
+msgstr "Default Server"
+
+msgid "login"
+msgstr "Login"
+
+msgid "protocol"
+msgstr "Protokoll"
+
+msgid "rec"
+msgstr ""
 
 msgid "header"
 msgstr ""
-
-msgid "query"
-msgstr "Abfrage"
 
 msgid "job_description"
 msgstr "Stellenbeschreibung"
@@ -4388,30 +4558,8 @@ msgstr ""
 msgid "timing_info"
 msgstr ""
 
-msgid "user_status"
-msgstr "Benutzerstatus"
-
 msgid "doc_num"
 msgstr "Dokument Nummer"
-
-msgid "device"
-msgstr "Gerät"
-
-msgid "logstyle"
-msgstr ""
-
-msgid "User is allowed %(perm)s on"
-msgstr "Benutzer darf %(perm)s auf"
-
-msgid ""
-"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
-"is on nosy list"
-msgstr ""
-
-msgid ""
-"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
-"item with %(perm)s permission"
-msgstr ""
 
 #~ msgid "Type of Address"
 #~ msgstr "Typ dieser Adresse"
