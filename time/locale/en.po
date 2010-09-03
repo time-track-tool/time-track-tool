@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-09-03 17:09+0200\n"
+"POT-Creation-Date: 2010-09-03 23:08+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -604,6 +604,9 @@ msgid ""
 "      "
 msgstr ""
 
+msgid "%(Property)s for this %(Classname)s"
+msgstr ""
+
 msgid "Type of %(Classname)s"
 msgstr ""
 
@@ -1182,6 +1185,18 @@ msgstr "Default Container"
 msgid "When a new issue is created with %(Classname)s set, but "
 msgstr ""
 
+msgid "default_server"
+msgstr "default server"
+
+msgid ""
+"%(Property)s for %(Classname)s: Other DNS services may use\n"
+"            the same protocol but the %(Property)s is the server of the\n"
+"            company who invented the protocol. When selecting a protocol\n"
+"            for use with a DNS service, the %(Property)s is used if no\n"
+"            server is specified.\n"
+"          "
+msgstr ""
+
 msgid "department"
 msgstr "Department"
 
@@ -1405,6 +1420,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "dyndns_service"
+msgstr "DynDNS service"
+
+msgid "Configured %(Property)s to use for this %(Classname)s"
+msgstr ""
+
 msgid "earliest_start"
 msgstr "Earliest Start"
 
@@ -1583,6 +1604,12 @@ msgstr "Home directory"
 msgid "UNIX home directory for %(Classname)s"
 msgstr ""
 
+msgid "hostname"
+msgstr "Hostname"
+
+msgid "Name of the host configured in the dynamic DNS service"
+msgstr ""
+
 msgid "hours_mon"
 msgstr "Mon"
 
@@ -1743,6 +1770,15 @@ msgstr "Is Alias"
 msgid "No real user but only an email alias"
 msgstr ""
 
+msgid "is_app_sensor"
+msgstr "is application sensor"
+
+msgid ""
+"True if this %(Classname)s is an application sensor (not the\n"
+"            battery or dBm Sensor)\n"
+"          "
+msgstr ""
+
 msgid "is_lotus_user"
 msgstr "Is Lotus user"
 
@@ -1899,6 +1935,9 @@ msgstr "Location"
 
 msgid "Location of %(Classname)s, e.g., Vienna HQ."
 msgstr ""
+
+msgid "login"
+msgstr "Login"
 
 msgid "login_shell"
 msgstr "Login shell"
@@ -2259,9 +2298,6 @@ msgstr "Part of (id)"
 msgid "password"
 msgstr "Password"
 
-msgid "Password for this %(Classname)s"
-msgstr ""
-
 msgid "payed_abos"
 msgstr ""
 
@@ -2411,6 +2447,12 @@ msgid ""
 "             Category name a\n"
 "             %(Classname)s can be clearly  identified\n"
 "          "
+msgstr ""
+
+msgid "protocol"
+msgstr "Protocol"
+
+msgid "The dynamic DNS protocol to use with this %(Classname)s."
 msgstr ""
 
 msgid "qa_representative"
@@ -2679,6 +2721,16 @@ msgstr "Sensor Name"
 
 msgid "sensor++type"
 msgstr "Sensor type"
+
+msgid "server"
+msgstr "Server"
+
+msgid ""
+"The %(Property)s to use for this %(Classname)s:\n"
+"            If left empty the default %(Property)s from the protocol\n"
+"            configuration is used.\n"
+"          "
+msgstr ""
 
 msgid "shadow_last_change"
 msgstr "Shadow last change"
@@ -4050,14 +4102,8 @@ msgstr "User Status"
 msgid "dyndns_protocol"
 msgstr "DynDNS protocol"
 
-msgid "dyndns_service"
-msgstr "DynDNS service"
-
 msgid "dyndns_host"
 msgstr "DynDNS host"
-
-msgid "hostname"
-msgstr "Hostname"
 
 msgid "dyndns"
 msgstr "DynDNS"
@@ -4473,18 +4519,6 @@ msgstr "Link/CVS location"
 
 msgid "state_changed_by"
 msgstr ""
-
-msgid "default_server"
-msgstr "default server"
-
-msgid "protocol"
-msgstr "Protocol"
-
-msgid "login"
-msgstr "Login"
-
-msgid "server"
-msgstr "Server"
 
 msgid "rec"
 msgstr "Recording type"

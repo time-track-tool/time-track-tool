@@ -673,6 +673,11 @@ _helptext          = \
       [""'''Internet protocol subnet''']
     , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
+    , ""'is_app_sensor'               :
+      [ ""'''True if this %(Classname)s is an application sensor (not the
+            battery or dBm Sensor)
+          '''
+      ]
     , ""'is_lotus_user'               :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
     , ""'is_public_holiday'           :
