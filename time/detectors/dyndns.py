@@ -92,6 +92,11 @@ def dyndns_service (db, cl, nodeid, new_values) :
         new_values [a] = server
 # end def dyndns_service
 
+def dyndns_host (db, cl, nodeid, new_values) :
+    require_attributes \
+        (_, cl, nodeid, new_values, 'dyndns_service')
+# end def dyndns_host
+
 def init (db) :
     if 'measurement' not in db.classes :
         return
@@ -101,6 +106,8 @@ def init (db) :
     if 'dyndns_host' in db.classes :
         db.dyndns_host.react    ("create", dyndns_update)
         db.dyndns_host.react    ("set",    dyndns_update)
+        db.dyndns_host.audit    ("create", dyndns_host)
+        db.dyndns_host.audit    ("set",    dyndns_host)
         db.dyndns_service.audit ("create", dyndns_service)
         db.dyndns_service.audit ("set",    dyndns_service)
 # end def init

@@ -508,6 +508,8 @@ _helptext          = \
              "End" time of 18:30.
           '''
       ]
+    , ""'dyndns_service'              :
+      [""'''Configured %(Property)s to use for this %(Classname)s''']
     , ""'earliest_start'              :
       [ ""'''When this %(Classname)s can be started to work on. Used to
              specify external dependencies (e.g., availability of
@@ -606,6 +608,8 @@ _helptext          = \
       [""'''UNIX Group for this %(Classname)s''']
     , ""'home_directory'              :
       [""'''UNIX home directory for %(Classname)s''']
+    , ""'hostname'                    :
+      [""'''Name of the host configured in the dynamic DNS service''']
     , ""'hours_mon'                   : [daily_hours]
     , ""'hours_tue'                   : [daily_hours]
     , ""'hours_wed'                   : [daily_hours]
