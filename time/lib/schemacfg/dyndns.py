@@ -55,12 +55,12 @@ def init \
 
     dyndns_service = Class \
         ( db, ''"dyndns_service"
+        , dyndns              = Link      ('dyndns')
         , server              = String    ()
         , protocol            = Link      ('dyndns_protocol')
         , login               = String    ()
         , password            = String    ()
         )
-    dyndns_service.setkey (''"server")
 
     dyndns_host = Class \
         ( db, ''"dyndns_host"
@@ -70,8 +70,10 @@ def init \
         )
     dyndns_host.setkey (''"hostname")
 
+    # currently a singleton -- may be more for different hosts
     dyndns = Class \
         ( db, ''"dyndns"
+        , local_hostname      = String    ()
         , syslog              = Boolean   ()
         , interface           = String    ()
         , interface_skip      = String    ()
@@ -82,5 +84,6 @@ def init \
         , fw_url              = String    ()
         , fw_skip             = String    ()
         )
+    dyndns.setkey (''"local_hostname")
 
 # end def init

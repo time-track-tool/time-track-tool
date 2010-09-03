@@ -27,6 +27,7 @@ import os
 from tempfile                       import NamedTemporaryFile
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+from common                         import require_attributes
 
 _ = lambda x : x
 
@@ -77,6 +78,19 @@ def dyndns_update (db, cl, nodeid, old_values) :
 
 # end def dyndns_update
 
+def dyndns_service (db, cl, nodeid, new_values) :
+    require_attributes \
+        (_, cl, nodeid, new_values, 'protocol', 'login', 'password')
+    a = 'server'
+    if  (  not nodeid and a not in new_values
+        or nodeid and new_values.get (a, cl.get (nodeid, a)) is None
+        ) :
+        prid  = new_values.get ('protocol')
+        if not prid :
+            prid = cl.get (nodeid, 'protocol')
+        server = db.dyndns_protocol.get (prid, 'default_server')
+        new_values [a] = server
+# end def dyndns_service
 
 def init (db) :
     if 'measurement' not in db.classes :
@@ -84,6 +98,9 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.dyndns_host.react ("create", dyndns_update)
-    db.dyndns_host.react ("set",    dyndns_update)
+    if 'dyndns_host' in db.classes :
+        db.dyndns_host.react    ("create", dyndns_update)
+        db.dyndns_host.react    ("set",    dyndns_update)
+        db.dyndns_service.audit ("create", dyndns_service)
+        db.dyndns_service.audit ("set",    dyndns_service)
 # end def init

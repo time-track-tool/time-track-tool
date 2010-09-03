@@ -733,6 +733,12 @@ _helptext          = \
              tracking
           '''
       ]
+    , ""'local_hostname'              :
+      [ ""'''Hostname of the host invoking dyndns service, currently
+             defaults to localhost, there is currently no mechanism to
+             configure dyndns services for remote hosts.
+          '''
+      ]
     , ""'location'                    :
       [""'''Location of %(Classname)s, e.g., Vienna HQ.''']
     , ""'login_shell'                 :
@@ -1498,7 +1504,12 @@ _helptext          = \
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']
     , ""'web_url'                     :
-      [""'''Obtain IP address from IP checking page at %(Property)s''']
+      [ ""'''Obtain IP address from IP checking page at %(Property)s
+             If no method for detecting IP address is configured, this
+             method is the default and uses the dyndns url (specify the
+             word \"dyndns\" here to get this default).
+          '''
+      ]
     , ""'web_skip'                    :
       [ ""'''Skip any IP address before %(Property)s in output returned
             from website

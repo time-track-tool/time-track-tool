@@ -26,6 +26,8 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
+      <input type="hidden" name="local_hostname"
+             tal:attributes="value context/local_hostname">
       <th tal:content="structure python:utils.fieldname
           (classname, 'syslog')"/>
       <td tal:content="structure python:context.syslog.field ()"/>
@@ -104,7 +106,9 @@
       <a i18n:translate="" tal:attributes="href python:
          'dyndns_service?:template=item&' + '&'.join
            (['%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
-            (('protocol', 1),)
+            ( ('protocol', db.dyndns_protocol.filter (None, {}) [0].id)
+            , ('dyndns',   context.id)
+            )
            ])">
        new dyndns_service
       </a>

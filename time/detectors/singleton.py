@@ -45,6 +45,6 @@ def init (db) :
     for klass in singletons :
         if klass not in db.classes :
             continue
-    cl = db.getclass (klass)
-    cl.audit ("create", new_singleton)
+        cl = db.getclass (klass)
+        cl.audit ("create", new_singleton)
 # end def init

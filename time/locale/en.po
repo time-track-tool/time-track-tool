@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-09-03 15:14+0200\n"
+"POT-Creation-Date: 2010-09-03 17:09+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -1884,6 +1884,16 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "local_hostname"
+msgstr "Local hostname"
+
+msgid ""
+"Hostname of the host invoking dyndns service, currently\n"
+"             defaults to localhost, there is currently no mechanism to\n"
+"             configure dyndns services for remote hosts.\n"
+"          "
+msgstr ""
+
 msgid "location"
 msgstr "Location"
 
@@ -3365,7 +3375,12 @@ msgstr ""
 msgid "web_url"
 msgstr "Web URL"
 
-msgid "Obtain IP address from IP checking page at %(Property)s"
+msgid ""
+"Obtain IP address from IP checking page at %(Property)s\n"
+"             If no method for detecting IP address is configured, this\n"
+"             method is the default and uses the dyndns url (specify the\n"
+"             word \"dyndns\" here to get this default).\n"
+"          "
 msgstr ""
 
 msgid "web_skip"
@@ -4035,9 +4050,6 @@ msgstr "DynDNS protocol"
 msgid "dyndns_service"
 msgstr "DynDNS service"
 
-msgid "server"
-msgstr "Server"
-
 msgid "dyndns_host"
 msgstr "DynDNS host"
 
@@ -4462,11 +4474,14 @@ msgstr ""
 msgid "default_server"
 msgstr "default server"
 
+msgid "protocol"
+msgstr "Protocol"
+
 msgid "login"
 msgstr "Login"
 
-msgid "protocol"
-msgstr "Protocol"
+msgid "server"
+msgstr "Server"
 
 msgid "rec"
 msgstr "Recording type"

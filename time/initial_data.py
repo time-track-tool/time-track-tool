@@ -734,14 +734,16 @@ if 'dyndns' in db.classes :
         ( name           = 'dyndns2'
         , order          = 1
         , default_server = 'members.dyndns.org'
-        , description    = "free dynamic DNS service offered by dyndns.org"
+        , description    = "free dynamic DNS service offered by www.dyndns.org"
         )
-    db.dyndns_protocol.create \
-        ( name           = 'concont'
-        , order          = 2
-        , default_server = 'www.dydns.za.net'
-        , description    = "used by the free dyndns service Tyrmida"
-        )
+# Dead
+#   db.dyndns_protocol.create \
+#       ( name           = 'concont'
+#       , order          = 2
+#       , default_server = 'www.dydns.za.net'
+#       , description    = "used by the free dyndns service Tyrmida "
+#                          "www.dydns.za.net"
+#       )
     db.dyndns_protocol.create \
         ( name           = 'dnspark'
         , order          = 3

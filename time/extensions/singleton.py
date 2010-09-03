@@ -44,7 +44,10 @@ class Singleton (Action) :
                 id = ids [0]
         if id :
             raise Redirect, '%s%s' % (request.classname, id)
-        raise Redirect, '%s?@template=item' % (request.classname)
+        add = ''
+        if request.classname == 'dyndns' :
+            add = '&local_hostname=localhost'
+        raise Redirect, '%s?@template=item%s' % (request.classname, add)
     # end def handle
 # end class Singleton
 
