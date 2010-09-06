@@ -77,8 +77,10 @@ def init \
         , gapint              = Number    ()
         , rec                 = Link      ("logstyle")
         , version             = String    ()
+        , order               = Number    ()
         )
-    device.setkey (''"surrogate")
+    device.setkey       (''"surrogate")
+    device.setorderprop (''"surrogate")
 
     sensor = Class \
         ( db, ''"sensor"

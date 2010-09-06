@@ -529,6 +529,7 @@ class Export_CSV_Lielas (Export_CSV_Names) :
 
         sensor_sort = \
             [ 'device.device_group'
+            , 'device.order'
             , 'device.name'
             , 'device.adr'
             , 'order'

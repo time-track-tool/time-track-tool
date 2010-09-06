@@ -38,8 +38,16 @@ def deny_adr (db, cl, nodeid, new_values) :
 
 def update_device_surrogate (db, cl, nodeid, new_values) :
     if 'name' in new_values :
-        n = cl.getnode (nodeid)
-        new_values ['surrogate'] = '-'.join ((new_values ['name'], n.adr))
+        n  = cl.getnode (nodeid)
+        na = n.adr
+        if na.isdigit () :
+            na = "%03d" % int (na)
+        new_values ['surrogate'] = '-'.join ((new_values ['name'], na))
+        for sid in db.sensor.filter (None, dict (device = nodeid)) :
+            s = db.sensor.getnode (sid)
+            nv = dict (name = s.name)
+            update_sensor_surrogate (db, db.sensor, sid, nv)
+            db.sensor.set (sid, **nv)
 # end def update_device_surrogate
 
 def update_order (db, cl, nodeid, new_values) :
@@ -66,9 +74,14 @@ def update_is_app (db, cl, nodeid, new_values) :
 
 def update_sensor_surrogate (db, cl, nodeid, new_values) :
     if 'name' in new_values :
-        n = cl.getnode (nodeid)
-        d = db.device.get (n.device, 'adr')
-        new_values ['surrogate'] = '-'.join ((new_values ['name'], d, n.adr))
+        n  = cl.getnode (nodeid)
+        d  = db.device.get (n.device, 'adr')
+        if d.isdigit () :
+            d = "%03d" % int (d)
+        na = n.adr
+        if na.isdigit () :
+            na = "%03d" % int (na)
+        new_values ['surrogate'] = '-'.join ((new_values ['name'], d, na))
 # end def update_sensor_surrogate
 
 def notify_lielas_daemon () :

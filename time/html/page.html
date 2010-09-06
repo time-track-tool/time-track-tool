@@ -129,7 +129,7 @@
                           'sensor.device.adr,sensor.device.name,'
                           'sensor.adr,sensor.type,sensor.name,val,'
                           'sensor.unit,date&'
-                          '@sort=-date&@group=sensor.device,sensor&'
+                          '@sort=-date&@group=sensor.device.order,sensor.order&'
                           '@pagesize=20&@startwith=0'
    , ('network_address', '')
                         : '@columns=ip,org_location,use_dhcp,network_interface&'
@@ -162,7 +162,7 @@
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                           'date=.%3B'
    , ('sensor', '')     : '@columns=id,device.adr,device.name,device.name,'
-                          'adr,type,name,unit&@sort=device.adr,type&'
+                          'adr,type,name,unit&@sort=device.adr.order,type&'
                           '@pagesize=50&@startwith=0'
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
