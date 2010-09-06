@@ -727,8 +727,9 @@ if 'transceiver' in db.classes :
 
 if 'dyndns' in db.classes :
     db.dyndns.create \
-        ( syslog  = True
-        , web_url = 'dyndns'
+        ( syslog         = True
+        , web_url        = 'dyndns'
+        , local_hostname = 'localhost'
         )
     db.dyndns_protocol.create \
         ( name           = 'dyndns2'
