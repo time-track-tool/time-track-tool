@@ -124,6 +124,8 @@ miss_text          = \
       '''
 multiple_allowed   = \
     ""'''Multiple %(Classname)s entries are allowed.'''
+order              = \
+    ""'''Items are ordered by this property in drop-down boxes etc.'''
 priority           = \
     ""'''Priority for this %(Classname)s.'''
 phone_visible      = \
@@ -404,6 +406,7 @@ _helptext          = \
       [ ""'''Device type name (product)''' ]
     , ""'device++adr'                 : [adr]
     , ""'device++name'                : [userdefined_name]
+    , ""'device++order'               : [order]
     , ""'device_group'                :
       [ ""'''Device group for %(Classname)s -- a device may belong
              to one device group which can be configured by the user.
@@ -909,8 +912,7 @@ _helptext          = \
       ]
     , ""'opt_reviewers'               :
       [""'''Optional reviewers for this %(Classname)s''']
-    , ""'order'                       :
-      [""'''Items are ordered by this property in drop-down boxes etc.''']
+    , ""'order'                       : [order]
     , ""'organisation'                :
       [""'''Organisation in which the %(Classname)s is based.''']
     , ""'org_location'                :
@@ -1141,6 +1143,7 @@ _helptext          = \
       [ ""'''Sensor of this %(Classname)s''' ]
     , ""'sensor++adr'                 : [adr]
     , ""'sensor++name'                : [userdefined_name]
+    , ""'sensor++order'               : [order]
     , ""'sensor++type'                :
       [ ""'''Type of %(Classname)s''' ]
     , ""'server'                      :

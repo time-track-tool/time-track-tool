@@ -1242,7 +1242,10 @@ msgid "device++adr"
 msgstr "Device address"
 
 msgid "device++name"
-msgstr "Device Name"
+msgstr "Device name"
+
+msgid "device++order"
+msgstr "Device order"
 
 msgid "device_group"
 msgstr "Device group"
@@ -2717,7 +2720,10 @@ msgid "sensor++adr"
 msgstr "Sensor address"
 
 msgid "sensor++name"
-msgstr "Sensor Name"
+msgstr "Sensor name"
+
+msgid "sensor++order"
+msgstr "Sensor order"
 
 msgid "sensor++type"
 msgstr "Sensor type"
