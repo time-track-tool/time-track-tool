@@ -577,7 +577,7 @@
          <span class="classblock" tal:define="
                a python:
                  ( '&@action=export_csv_lielas'
-                 , '&@nosearch=1'
+                 , '&:nosearch=1'
                  ) [c [0] == 'sensor']">
           <a tal:condition="python:request.user.hasPermission('View', c [0])"
              tal:attributes=
@@ -1045,14 +1045,10 @@
      <table width="100%">
       <tr class="navigation">
        <th class="left">
-        <a tal:define="prev batch/previous" tal:condition="prev"
-           i18n:translate=""
-           tal:attributes="href python:
-               str ( request.indexargs_href
-                     ( request.classname
-                     , {':startwith':prev.first, ':pagesize':prev.size}
-                     )
-                   )">
+        <a tal:define="prev batch/previous;
+                       d python: utils.indexargs_dict (prev, request.form);"
+           tal:condition="prev" i18n:translate="" tal:attributes="href python:
+               str (request.indexargs_href (request.classname, d))">
            &lt;&lt;&nbsp;previous
         </a>
        </th>
@@ -1071,14 +1067,10 @@
         </nobr>
        </th>
        <th class="right">
-        <a tal:define="next batch/next" tal:condition="next"
-           i18n:translate=""
-           tal:attributes="href python:
-               str ( request.indexargs_href
-                     ( request.classname
-                     , {':startwith':next.first, ':pagesize':next.size}
-                   )
-                  )">
+        <a tal:define="next batch/next;
+                       d python: utils.indexargs_dict (next, request.form);"
+           tal:condition="next" i18n:translate="" tal:attributes="href python:
+               str (request.indexargs_href (request.classname, d))">
            next&nbsp;&gt;&gt;
         </a>
        </th>

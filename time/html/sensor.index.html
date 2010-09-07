@@ -74,14 +74,14 @@
    tal:condition="context/is_view_ok">
 
    <tal:block metal:use-macro="templates/page/macros/search_results"/>
-   <tal:block tal:condition="python: request.form.has_key ('@nosearch')">
+   <tal:block tal:condition="python: request.form.has_key (':nosearch')">
     <br><br>
     <a i18n:translate="" tal:attributes="href python:
        request.indexargs_url (classname, request.filterspec)">
        Extended Search
     </a>
    </tal:block>
-   <tal:block tal:condition="python: not request.form.has_key ('@nosearch')">
+   <tal:block tal:condition="python: not request.form.has_key (':nosearch')">
     <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
    </tal:block>
   </tal:block>

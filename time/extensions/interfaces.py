@@ -385,6 +385,15 @@ def nickname (db, user) :
     return user.username.plain ()
 # end def nickname
 
+def indexargs_dict (nav, form) :
+    d = {}
+    if nav :
+        d = {':startwith' : nav.first, ':pagesize' : nav.size}
+    if form.has_key (':nosearch') :
+        d [':nosearch'] = 1
+    return d
+# end def indexargs_dict
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -419,3 +428,4 @@ def init (instance) :
     reg ("user_classhelp",               user_classhelp)
     reg ("nickname",                     nickname)
     reg ("persons_for_adr",              persons_for_adr)
+    reg ("indexargs_dict",               indexargs_dict)
