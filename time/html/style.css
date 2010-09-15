@@ -91,6 +91,17 @@ td.sidebar span.classblock {
   background-color: #eee;
 }
 
+td.sidebar span.danger {
+  padding: 0px 5px 0px 5px;
+  margin: 1px 1px 1px 1px;
+  border: 1px solid #444444;
+  background-color: #eee;
+}
+
+td.sidebar span.danger a {
+  color: red;
+}
+
 td.sidebar p.userblock {
   padding: 2px 5px 2px 5px;
   margin: 1px 1px 1px 1px;
@@ -126,7 +137,7 @@ p.error-message {
 /* style for search forms */
 ul.search-checkboxes {
     display: inline;
-    padding: none;
+    padding: 0px;
     list-style: none;
 }
 ul.search-checkboxes > li {
@@ -242,9 +253,7 @@ table.list th.nb {
 
 table.list td {
   padding: 0 4px 0 4px;
-/*  border: 1px solid white; */
-
-  border: 0 2 0 2;
+  /* border: 1px solid white; */
   border-right: 1px solid #404070;
 
   color: #404070;

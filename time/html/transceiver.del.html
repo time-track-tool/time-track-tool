@@ -1,0 +1,54 @@
+<tal:block tal:define="actions utils/lielas_actions">
+ <tal:block metal:use-macro="templates/page/macros/icing">
+  <tal:block metal:fill-slot="menu_slot">
+    <tr tal:condition="python:
+        utils.user_has_role (db._db, request.user.id, 'Admin')">
+     <td colspan="2"/>
+     <td class="sidebar" nowrap>
+      <span class="danger" tal:repeat="a python:
+           sorted (actions, key=lambda k:actions [k][1])">
+       <a i18n:translate="" tal:content="python:actions [a][0]"
+          tal:attributes="href python:'transceiver?@template=del&@what=%s'%a"/>
+      </span>
+     </td>
+    </tr>
+  </tal:block>
+  <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+  <tal:block metal:fill-slot="body_title">
+   <h3 i18n:translate="" tal:condition="python:
+       utils.user_has_role (db._db, request.user.id, 'Admin')">
+     Database Maintenance
+   </h3>
+  </tal:block>
+
+  <tal:block metal:fill-slot="content" i18n:translate="" tal:condition="python:
+        utils.user_has_role (db._db, request.user.id, 'Admin')">
+   Links at the top of this page will permanently remove database content.
+   This ranges from deleting the last sensor (including all measurements
+   from that sensor) to deleting all measurments to removing (and
+   re-creating) the whole database including all sensors and all devices.
+   Proceed only if you have backed up the sensor/measurement data.
+
+   <tal:block tal:condition="python:request.form.has_key ('@what')">
+    <tal:block tal:repeat="act python:actions">
+     <tal:block tal:condition="python:request.form ['@what'].value == act">
+      <h3 tal:content="python: actions [act][0]"/>
+      <form action="transceiver" name="deleter">
+       <input type="hidden" name="@template" value="del">
+       <input type="hidden" name="@action" value="">
+       <input type="submit" class="cancel" value="Cancel">
+       <input type="submit" class="submit" tal:attributes="
+              value   python:actions[act][2];
+              onclick python:
+                 'document.forms[\'deleter\'][\'@action\'].value =
+                     \'delete_%s\'%s' % (act, chr(0x3B))">
+      </form>
+     </tal:block>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
