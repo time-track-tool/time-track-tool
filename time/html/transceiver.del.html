@@ -27,8 +27,8 @@
   <tal:block metal:fill-slot="content" i18n:translate="" tal:condition="python:
         utils.user_has_role (db._db, request.user.id, 'Admin')">
    Links at the top of this page will permanently remove database content.
-   This ranges from deleting the last sensor (including all measurements
-   from that sensor) to deleting all measurments to removing (and
+   This ranges from deleting the last device (including all measurements
+   from that device) to deleting all measurments to removing (and
    re-creating) the whole database including all sensors and all devices.
    Proceed only if you have backed up the sensor/measurement data.
 

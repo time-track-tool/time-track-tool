@@ -124,13 +124,7 @@
                         : '@sort=date&@filter=date,sensor.is_app_sensor,'
                           'sensor.do_logging&date=.-1w%3B.&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
-   , ('measurement', '')
-                        : '@columns=sensor.device.device_group,'
-                          'sensor.device.adr,sensor.device.name,'
-                          'sensor.adr,sensor.type,sensor.name,val,'
-                          'sensor.unit,date&'
-                          '@sort=-date&@group=sensor.device.order,sensor.order&'
-                          '@pagesize=20&@startwith=0'
+   , ('measurement', ''): utils.measurement_query
    , ('network_address', '')
                         : '@columns=ip,org_location,use_dhcp,network_interface&'
                           '@sort=ip&@group=org_location&@pagesize=20&'
@@ -161,9 +155,7 @@
                         : '@columns=id,name,description,date,locations,is_half&'
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                           'date=.%3B'
-   , ('sensor', '')     : '@columns=id,device.adr,device.name,device.name,'
-                          'adr,type,name,unit&@sort=device.order,type&'
-                          '@pagesize=50&@startwith=0'
+   , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
                           '@filter=summary_type,date,user&summary_type=2,4&'
@@ -201,6 +193,8 @@
    , ('transceiver', '')
                         : '@columns=id,name,adr&@sort=name,adr&'
                           '@pagesize=20&@startwith=0'
+   , ('transceiver', 'del')
+                        : ''
    , ('user', '')       : '@columns=%s%s&@sort=%s&'
                           '@filter=status&@pagesize=500&@startwith=0&status=1'
                           % ( ','.join
@@ -427,6 +421,11 @@
      , ('measurement',         'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))
      , ('transceiver',         'View', 1,               ('',''))
+     , ( 'transceiver'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'Admin')
+       , ('Database Management','del')
+       )
      , ('dyndns',              'View', 1,               ('',''))
      , ('dyndns_protocol',     'View', 1,               ('',''))
      )

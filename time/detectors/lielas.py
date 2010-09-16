@@ -84,7 +84,7 @@ def update_sensor_surrogate (db, cl, nodeid, new_values) :
         new_values ['surrogate'] = '-'.join ((new_values ['name'], d, na))
 # end def update_sensor_surrogate
 
-def notify_lielas_daemon () :
+def notify_lielas_daemon (db = None, cl = None, nodeid = None, ov = None) :
     """ We search for the lielas daemon and try to send it a SIGUSR1
         signal so it will update it's state from the database.
     """
@@ -122,10 +122,12 @@ def init (db) :
     db.device.audit      ("set",    deny_adr)
     db.device.audit      ("set",    update_device_surrogate)
     db.device.react      ("set",    check_daemon_props)
+    db.device.react      ("retire", notify_lielas_daemon)
     db.sensor.audit      ("set",    deny_adr)
     db.sensor.audit      ("set",    update_sensor_surrogate)
     db.sensor.audit      ("create", update_order)
     db.sensor.audit      ("create", update_is_app)
     db.sensor.react      ("set",    check_daemon_props)
     db.transceiver.react ("set",    check_daemon_props)
+    db.transceiver.react ("retire", notify_lielas_daemon)
 # end def init
