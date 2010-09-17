@@ -45,7 +45,7 @@ lielas_actions = dict \
 # and here (for redirects) -- define them only once
 sensor_query = \
     ('@columns=id,device.adr,device.name,device.name,adr,type,name,unit&'
-     '@sort=device.order,type&@pagesize=50&@startwith=0'
+     '@sort=device.order,order&@pagesize=50&@startwith=0'
     )
 measurement_query = \
     ('@columns=sensor.device.device_group,sensor.device.adr,sensor.device.name'

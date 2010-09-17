@@ -121,6 +121,7 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.device.audit      ("set",    deny_adr)
     db.device.audit      ("set",    update_device_surrogate)
+    db.device.audit      ("create", update_order)
     db.device.react      ("set",    check_daemon_props)
     db.device.react      ("retire", notify_lielas_daemon)
     db.sensor.audit      ("set",    deny_adr)
