@@ -31,12 +31,16 @@ from roundup.exceptions             import Reject
 
 _      = None
 
+# Action codes and strings used in the web-interface and as action names
+# in this module. We make sure these are properly localized here
 lielas_actions = dict \
     ( device = (""'Remove last Device',     0, ""'Remove last Device now')
     , data   = (""'Clear Measurement Data', 1, ""'Clear Measurements now')
     , db     = (""'Delete Database',        2, ""'Delete Database now')
     )
 
+# Default sensor and measurement queries -- used in the web-interface
+# and here (for redirects) -- define them only once
 sensor_query = \
     ('@columns=id,device.adr,device.name,device.name,adr,type,name,unit&'
      '@sort=device.order,type&@pagesize=50&@startwith=0'
@@ -109,7 +113,23 @@ class Delete_Data (Delete_Something) :
         self.db.clearCache ()
         raise Redirect ('measurement?'+measurement_query+'&@template=index')
     # end def handle
-# end class Delete_Device
+# end class Delete_Data
+
+class Delete_DB (Delete_Something) :
+    def handle (self) :
+        self.delete_measurements ()
+        for k in self.db.device.getnodeids () :
+            self.db.device.destroy (k)
+        for k in self.db.sensor.getnodeids () :
+            self.db.sensor.destroy (k)
+        tr = self.db.transceiver.getnodeids ()
+        assert (len (tr) == 1)
+        self.db.transceiver.retire (tr [0])
+        self.db.commit ()
+        self.db.clearCache ()
+        raise Redirect ('sensor?'+sensor_query+'&@template=index&:nosearch=1')
+    # end def handle
+# end class Delete_DB
 
 def init (instance) :
     global _
@@ -120,7 +140,7 @@ def init (instance) :
 
     act ('delete_device',     Delete_Device)
     act ('delete_data',       Delete_Data)
-    #act ('delete_db',         Delete_DB)
+    act ('delete_db',         Delete_DB)
 
     reg ('lielas_actions',    lielas_actions)
     reg ('sensor_query',      sensor_query)
