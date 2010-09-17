@@ -24,10 +24,12 @@
 # Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
 
 from rsclib.iter_recipes            import grouper
+from rsclib.autosuper               import autosuper
 from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
+from common                         import user_has_role
 
 _      = None
 
@@ -52,7 +54,7 @@ measurement_query = \
      '@pagesize=20&@startwith=0'
     )
 
-class Delete_Something (Action) :
+class Delete_Something (Action, autosuper) :
     def delete_measurements (self, ids = None) :
         """ Delete given ids (or all if ids is None) from the
             measurements -- used for cleanup of measurements or when
@@ -79,10 +81,17 @@ class Delete_Something (Action) :
             self.db.sql (sql)
             self.db.sql (sqlj)
     # end def delete_measurements
+
+    def handle (self) :
+        """ Common permission check -- we may want to add more roles here """
+        if not user_has_role (self.db, self.db.getuid (), 'Admin') :
+            raise Reject ("You are not allowed to execute this action")
+    # end def handle
 # end class Delete_Something
 
 class Delete_Device (Delete_Something) :
     def handle (self) :
+        self.__super.handle ()
         # device adrs are strings, query all, keep largest
         largest = 0
         dev     = None
@@ -108,6 +117,7 @@ class Delete_Device (Delete_Something) :
 
 class Delete_Data (Delete_Something) :
     def handle (self) :
+        self.__super.handle ()
         self.delete_measurements ()
         self.db.commit ()
         self.db.clearCache ()
@@ -117,6 +127,7 @@ class Delete_Data (Delete_Something) :
 
 class Delete_DB (Delete_Something) :
     def handle (self) :
+        self.__super.handle ()
         self.delete_measurements ()
         for k in self.db.device.getnodeids () :
             self.db.device.destroy (k)
