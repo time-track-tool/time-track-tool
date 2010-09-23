@@ -711,12 +711,14 @@ if 'transceiver' in db.classes :
         , password = adminpw
         , address  = db.config.ADMIN_EMAIL
         , roles    = 'User'
+        , timezone = 'Europe/Vienna'
         )
     db.user.create \
         ( username = "guest"
         , password = adminpw
         , address  = db.config.ADMIN_EMAIL
         , roles    = 'Guest'
+        , timezone = 'Europe/Vienna'
         )
     db.user.create \
         ( username = "logger"
