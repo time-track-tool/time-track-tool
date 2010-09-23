@@ -88,7 +88,7 @@ def notify_lielas_daemon (db = None, cl = None, nodeid = None, ov = None) :
     """ We search for the lielas daemon and try to send it a SIGUSR1
         signal so it will update it's state from the database.
     """
-    name = "roundup_handler.py"
+    names = ("lielas-daemon", "roundup_handler.py")
     for process in os.listdir ('/proc') :
         if not process.isdigit () :
             continue
@@ -97,7 +97,9 @@ def notify_lielas_daemon (db = None, cl = None, nodeid = None, ov = None) :
         except IOError :
             continue
         cmd = cmd.rstrip ('\0').split ('\0')
-        if cmd [0].endswith ('/python') and name in cmd [1] :
+        if  (   cmd [0].endswith ('/python')
+            and (names [0] in cmd [1] or names [1] in cmd [1])
+            ) :
             try :
                 os.kill (int (process), SIGUSR1)
             except OSError :
