@@ -38,7 +38,7 @@ ROOTBIN=update_handler
 LIELAS_PATH=/home/ralf/roundup/lielas2
 RUNDIR=$LIELAS_PATH
 ROOTSERVER=$LIELAS_PATH/utils/$ROOTBIN
-RSPARAMS="-u $USER $RUNDIR/rootsock"
+RSPARAMS="-u $USER /var/run/roundup/rootsock"
 SERIALBIN=lielas-daemon
 SERIALSERVER=/usr/local/bin/$SERIALBIN
 SERPARAMS=$LIELAS_PATH
@@ -66,14 +66,14 @@ start_stop() {
                                   --pidfile $ROOTPID          \
                                   --make-pidfile --background \
                                   --nicelevel $NICENESS       \
-				  --exec $ROOTSERVER $RSPARAMS
+				  --exec $ROOTSERVER -- $RSPARAMS
 		printf " $ROOTBIN"
 		start-stop-daemon --start --oknodo --quiet    \
                                   --pidfile $SERPID           \
                                   --make-pidfile --background \
                                   --nicelevel $NICENESS       \
                                   --chuid $USER               \
-				  --exec $SERIALSERVER $SERPARAMS
+				  --exec $SERIALSERVER -- $SERPARAMS
 		printf " $SERIALBIN"
 		printf ".\n"
 		;;

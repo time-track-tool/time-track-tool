@@ -70,14 +70,14 @@ start_stop() {
                                   --pidfile $ROOTPID          \
                                   --make-pidfile --background \
                                   --nicelevel $NICENESS       \
-				  --exec $ROOTSERVER $RSPARAMS
+				  --exec $ROOTSERVER -- $RSPARAMS
 		printf " $ROOTBIN"
 		start-stop-daemon --start --oknodo --quiet    \
                                   --pidfile $SERPID           \
                                   --make-pidfile --background \
                                   --nicelevel $NICENESS       \
                                   --chuid $USER               \
-				  --exec $SERIALSERVER $SERPARAMS
+				  --exec $SERIALSERVER -- $SERPARAMS
 		printf " $SERIALBIN"
 		printf ".\n"
 		;;
