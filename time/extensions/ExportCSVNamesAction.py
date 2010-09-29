@@ -131,13 +131,15 @@ class Repr_Type (Repr_Str) :
 class Repr_Date (Repr_Str) :
     def conv (self, x) :
         if x :
+            tz = self.klass.db.user.get (self.klass.db.getuid (), 'timezone')
+            d  = x.local (tz)
             if self.klass.classname == 'measurement' :
                 return \
                     ( '%2d.%02d.%04d %02d:%02d:%02d'
-                    % (x.day, x.month, x.year, x.hour, x.minute, x.second)
+                    % (d.day, d.month, d.year, d.hour, d.minute, d.second)
                     )
             else :
-                return '%4d-%02d-%02d' % (x.year, x.month, x.day)
+                return '%4d-%02d-%02d' % (d.year, d.month, d.day)
         return self.__super.conv (x)
     # end def conv
 # end class Repr_Date
