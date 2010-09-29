@@ -56,6 +56,7 @@ class Repr_Str (autosuper) :
     # end def conv
 
     def __call__ (self, itemid, col, x = None) :
+        self.col = col
         if x is None :
             x = self.klass.get (itemid, col)
         x = x or ""
@@ -131,7 +132,7 @@ class Repr_Type (Repr_Str) :
 class Repr_Date (Repr_Str) :
     def conv (self, x) :
         if x :
-            tz = self.klass.db.user.get (self.klass.db.getuid (), 'timezone')
+            tz = self.props [self.col].offset (self.klass.db)
             d  = x.local (tz)
             if self.klass.classname == 'measurement' :
                 return \
