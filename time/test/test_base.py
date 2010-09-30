@@ -26,24 +26,26 @@ import unittest
 
 import user1_time, user2_time, user3_time
 
-from propl_abo   import properties as properties_abo
-from propl_adr   import properties as properties_adr
-from propl_erp   import properties as properties_erp
-from propl_full  import properties as properties_full
-from propl_it    import properties as properties_it
-from propl_itadr import properties as properties_itadr
-from propl_kvats import properties as properties_kvats
+from propl_abo    import properties as properties_abo
+from propl_adr    import properties as properties_adr
+from propl_erp    import properties as properties_erp
+from propl_full   import properties as properties_full
+from propl_it     import properties as properties_it
+from propl_itadr  import properties as properties_itadr
+from propl_kvats  import properties as properties_kvats
+from propl_lielas import properties as properties_lielas
 
-from sec_abo     import security as security_abo
-from sec_adr     import security as security_adr
-from sec_erp     import security as security_erp
-from sec_full    import security as security_full
-from sec_it      import security as security_it
-from sec_itadr   import security as security_itadr
-from sec_kvats   import security as security_kvats
+from sec_abo      import security as security_abo
+from sec_adr      import security as security_adr
+from sec_erp      import security as security_erp
+from sec_full     import security as security_full
+from sec_it       import security as security_it
+from sec_itadr    import security as security_itadr
+from sec_kvats    import security as security_kvats
+from sec_lielas   import security as security_lielas
 
-from roundup     import instance, configuration, init, password, date
-from roundup.cgi import templating
+from roundup      import instance, configuration, init, password, date
+from roundup.cgi  import templating
 sys.path.insert (0, os.path.abspath ('lib'))
 sys.path.insert (0, os.path.abspath ('extensions'))
 from user_dynamic import update_tr_duration, compute_balance
@@ -150,6 +152,7 @@ class _Test_Case (unittest.TestCase) :
                     perms.append (' %(description)s (%(name)s)' % d)
             s.extend (sorted (dict.fromkeys (perms).keys ()))
         for s1, s2 in zip (secdesc, s) :
+            #print >> sys.stderr, s1, s1
             self.assertEqual (s1, s2)
     # end def test_2_security
 # end class _Test_Case
@@ -888,6 +891,10 @@ class Test_Case_Kvats (_Test_Case) :
     schemaname = 'kvats'
 # end class Test_Case_Kvats
 
+class Test_Case_Lielas (_Test_Case) :
+    schemaname = 'lielas'
+# end class Test_Case_Lielas
+
 def test_suite () :
     suite = unittest.TestSuite ()
     suite.addTest (unittest.makeSuite (Test_Case_Abo))
@@ -896,6 +903,7 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_IT))
     suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
+    suite.addTest (unittest.makeSuite (Test_Case_Lielas))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
 # end def test_suite
