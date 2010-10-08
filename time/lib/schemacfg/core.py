@@ -81,7 +81,7 @@ def init \
         , phone                 = String    ()
         , queries               = Multilink ("query")
         , roles                 = String    ()
-        , status                = Link      ("user_status")
+        , status                = Link      ("user_status", do_journal='no')
         , timezone              = String    ()
         )
     user.setkey ('username')

@@ -136,7 +136,7 @@ def init \
         , cur_est_end         = Date      () # current estimate
         , composed_of         = Multilink ("issue") # should be read only
         , part_of             = Link      ("issue") # should change composed_of
-        , severity            = Link      ("severity")
+        , severity            = Link      ("severity",    do_journal = 'no')
         , maturity_index      = Number    ()
         , confidential        = Boolean   ()
         )
