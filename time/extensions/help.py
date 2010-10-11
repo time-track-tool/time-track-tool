@@ -987,6 +987,10 @@ _helptext          = \
       [""'''%(Property)s in the company''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
+    , ""'prio'                        :
+      [ priority
+      , leave_empty
+      ]
     , ""'priority'                    :
       [ priority
       , ""'''Should be set between 0 and 100. For the planning process
@@ -1047,6 +1051,10 @@ _helptext          = \
       [""'''Defines the relation to a project, customer, etc. If
             necessary, this entry is defined for new customers and/or
             products when the project starts.
+         '''
+      ]
+    , ""'related_issues'              :
+      [""'''Issues related to this %(Classname)s.
          '''
       ]
     , ""'relaxed'                     :
@@ -1137,6 +1145,11 @@ _helptext          = \
              this invoice will disappear from the current list of invoices. It
              is not sent when generating invoices and is not marked when sent
              invoices are marked.
+          '''
+      ]
+    , ""'severity'                    :
+      [ ""'''How severe is the %(Classname)s for the customer or
+             stakeholder
           '''
       ]
     , ""'sensor'                      :
@@ -1345,6 +1358,8 @@ _helptext          = \
       ]
     , ""'supply_address'              :
       [""'''Data for %(Property)s''']
+    , ""'support++superseder'         :
+      [superseder, multiple_allowed]
     , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
              when the user changes PW via PAM, the pw in roundup will be

@@ -17,6 +17,9 @@ msgstr ""
 msgid "start and end must be on same day and start <= end."
 msgstr ""
 
+msgid "support"
+msgstr "Support issue"
+
 msgid "Times must be given in quarters of an hour"
 msgstr ""
 
@@ -1828,6 +1831,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "support++superseder"
+msgstr "Duplicate of"
+
 msgid "it_issue++superseder"
 msgstr "Duplicate of"
 
@@ -2394,6 +2400,9 @@ msgstr ""
 
 msgid "Postal code for this %(Classname)s "
 msgstr ""
+
+msgid "prio"
+msgstr "Priority"
 
 msgid "priority"
 msgstr "Priority"
@@ -4543,6 +4552,25 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Document number"
+
+msgid "serial_number"
+msgstr "Serial number"
+
+msgid "related_issues"
+msgstr "Related issues"
+
+msgid "User is allowed %(perm)s on"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
+"is on nosy list"
+msgstr ""
+
+msgid ""
+"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
+"item with %(perm)s permission"
+msgstr ""
 
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"
