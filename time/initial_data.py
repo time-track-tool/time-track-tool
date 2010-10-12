@@ -806,7 +806,6 @@ if 'sup_status' in db.classes :
     db.sup_status.set (closed, transitions = [open])
 
 if 'sup_prio' in db.classes :
-    db.sup_prio.create (name = "nice to have",                        order = 1)
     db.sup_prio.create (name = "assistance",                          order = 2)
     db.sup_prio.create (name = "one person, important for project",   order = 3)
     db.sup_prio.create (name = "many persons, important for project", order = 4)
