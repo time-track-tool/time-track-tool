@@ -209,7 +209,8 @@
          (utils, context.address.postalcode, item=context.address)
          .formatlink ()"/>
         <span class="help"> (<tal:block tal:replace=
-            "structure python:utils.fieldname ('address', 'postalcode')"/>)
+            "structure python:utils.fieldname
+               ('address', 'postalcode', endswith = '')"/>)
         </span>
        </td>
        <td tal:condition="not:context/address">
@@ -221,7 +222,8 @@
           (context, db, 'address', -1, 'postalcode').field
           (size=10, onChange=onch)"/>
          <span class="help"> (<tal:block tal:replace=
-             "structure python:utils.fieldname ('address', 'postalcode')"/>)
+             "structure python:utils.fieldname
+                ('address', 'postalcode', endswith = '')"/>)
          </span>
        </td>
        <th tal:content="structure python:utils.fieldname('address', 'city')"/>
@@ -246,7 +248,7 @@
           -
         <span tal:content="structure python:context.postalcode.field(size=10)"/>
         (<tal:block tal:replace="structure python:utils.fieldname
-         (classname, 'postalcode')"/>)
+         (classname, 'postalcode', endswith = '')"/>)
       </td>
       <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
       <td tal:content="structure context/city/field" colspan="2"/>

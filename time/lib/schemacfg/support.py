@@ -107,6 +107,7 @@ def security (db, ** kw) :
         , ("sup_prio",       ["User"],            [])
         , ("support",        ["Support"],         ["Support"])
         , ("customer",       ["User", "Support"], ["Support"])
+        , ("contact",        ["User", "Support"], ["Support"])
         , ("adr_type",       ["User", "Support"], ["Support"])
         , ("adr_type_cat",   ["User", "Support"], ["Support"])
         ]
