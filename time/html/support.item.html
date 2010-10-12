@@ -64,7 +64,7 @@
       <td>
        <tal:block tal:content="structure python:context.customer.field ()"/>
        <tal:block tal:replace="structure python:db.customer.classhelp
-            ( 'id,name,firstname,lastname,function'
+            ( 'name,firstname,lastname,function'
             , property='customer'
             , inputtype='radio'
             , width='600'
