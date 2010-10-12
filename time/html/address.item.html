@@ -70,7 +70,9 @@
              " use_labelprop       python:0
              ; msg_box_height      python:4
              ; required_attributes python:
-               ['country',''][classname == 'person']
+               ['country','']
+               ['country' not in klass._klass.properties
+                or not klass._klass.key]
              ; onch                string:
                javascript:document.forms.itemSynopsis.address.value = -1
              ; clradr              string:javascript:clradr()">
@@ -107,8 +109,8 @@
       </td>
      </tr>
      <tr tal:condition="python:'name' in props">
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'name')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'name')"
+          class="required"/>
       <td tal:content="structure context/name/field"/>
      </tr>
      <tr tal:condition="python:'salutation' in props">
@@ -200,7 +202,8 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname('address', 'country')"
-           class="required"/>
+           class="required" tal:attributes="class python:
+               ['', 'required']['country' in required_attributes]"/>
        <td tal:condition="context/address">
         <span tal:content="structure python:utils.ExtProperty
          (utils, context.address.country, item=context.address).formatlink ()"/>
@@ -242,7 +245,8 @@
      </tr>
      <tr tal:condition="python:'country' in props">
       <th tal:content="structure python:utils.fieldname(classname, 'country')"
-          class="required"/>
+          class="required" tal:attributes="class python:
+              ['', 'required']['country' in required_attributes]"/>
       <td>
         <span tal:content="structure python:context.country.field (size=4)"/>
           -

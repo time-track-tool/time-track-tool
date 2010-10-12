@@ -85,14 +85,14 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
         raise Reject, _ (''"Country must be set")
 # end def set_adr_defaults
 
-def check_address (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'country')
-    common.auto_retire (db, cl, nodeid, new_values, 'contacts')
-# end def check_address
+def require_country (db, cl, nodeid, new_values) :
+    if not cl.key :
+        common.require_attributes (_, cl, nodeid, new_values, 'country')
+# end def require_country
 
-def check_person (db, cl, nodeid, new_values) :
+def auto_retire_contacts (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'contacts')
-# end def check_person
+# end def auto_retire_contacts
 
 def check_contact (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'contact')
@@ -109,45 +109,51 @@ def check_function (db, cl, nodeid, new_values) :
 # end def check_function
 
 def require_cust_supp (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'cust_supp')
+    if 'cust_supp' in cl.properties :
+        common.require_attributes (_, cl, nodeid, new_values, 'cust_supp')
 # end def require_cust_supp
 
 def check_retire (db, cl, nodeid, old_values) :
-    if cl.get (nodeid, 'cust_supp') is None :
+    if 'cust_supp' in cl.properties and cl.get (nodeid, 'cust_supp') is None :
         cl.retire (nodeid)
 # end def check_retire
 
 def init (db) :
-    if 'address' not in db.classes :
-        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.address.audit ("create", set_adr_defaults)
-    if 'abo' in db.classes :
-        db.address.audit ("create", fix_adr_type)
-        db.address.audit ("set",    fix_adr_type)
-    db.address.audit ("create", common.lookalike_computation)
-    db.address.audit ("set",    common.lookalike_computation)
+
+    adrclass = persclass = None
+    if 'address' in db.classes :
+        adrclass  = persclass = db.address
     if 'person' in db.classes :
-        db.person.audit  ("create", require_cust_supp)
-        db.person.audit  ("create", common.lookalike_computation)
-        db.person.audit  ("set",    common.lookalike_computation)
-        db.person.audit  ("create", check_function)
-        db.person.audit  ("set",    check_function)
-        db.person.audit  ("set",    check_person)
-        db.person.audit  ("create", set_adr_defaults)
-        db.person.react  ("set",    fix_contacts)
-        db.person.react  ("create", fix_contacts)
-        db.person.react  ("set",    check_retire_address)
-        db.person.react  ("retire", check_retire_address)
-        db.person.react  ("set",    check_retire)
-    else :
-        db.address.audit ("create", check_function)
-        db.address.audit ("set",    check_function)
-        db.address.react ("set",    fix_contacts)
-        db.address.react ("create", fix_contacts)
-    db.address.audit ("set",    check_address)
-    db.contact.audit ("create", check_contact)
-    db.contact.audit ("set",    check_contact)
+        persclass = db.person
+    if 'customer' in db.classes :
+        adrclass  = persclass = db.customer
+
+    if 'abo' in db.classes and adrclass :
+        adrclass.audit   ("create", fix_adr_type)
+        adrclass.audit   ("set",    fix_adr_type)
+    if adrclass :
+        adrclass.audit   ("create", common.lookalike_computation)
+        adrclass.audit   ("set",    common.lookalike_computation)
+        adrclass.audit   ("set",    require_country)
+        adrclass.audit   ("create", set_adr_defaults)
+    if persclass and persclass != adrclass :
+        persclass.audit  ("create", common.lookalike_computation)
+        persclass.audit  ("set",    common.lookalike_computation)
+        persclass.audit  ("create", set_adr_defaults)
+        persclass.react  ("set",    check_retire_address)
+        persclass.react  ("retire", check_retire_address)
+    if persclass :
+        persclass.audit  ("create", require_cust_supp)
+        persclass.audit  ("create", check_function)
+        persclass.audit  ("set",    check_function)
+        persclass.audit  ("set",    auto_retire_contacts)
+        persclass.react  ("set",    fix_contacts)
+        persclass.react  ("create", fix_contacts)
+        persclass.react  ("set",    check_retire)
+    if 'contact' in db.classes :
+        db.contact.audit ("create", check_contact)
+        db.contact.audit ("set",    check_contact)
 # end def init
