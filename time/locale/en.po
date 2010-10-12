@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-10-12 12:46+0200\n"
+"POT-Creation-Date: 2010-10-12 13:35+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -2748,6 +2748,12 @@ msgstr "Sensor order"
 msgid "sensor++type"
 msgstr "Sensor type"
 
+msgid "serial_number"
+msgstr "Serial number"
+
+msgid "Serial number of hardware item if applicable"
+msgstr ""
+
 msgid "server"
 msgstr "Server"
 
@@ -4608,9 +4614,6 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Document number"
-
-#~ msgid "serial_number"
-#~ msgstr "Serial number"
 
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"

@@ -17,23 +17,49 @@ a[href]:hover { color:blue; text-decoration: underline; }
 a[href]:link  { color:blue; text-decoration: none; }
 a[href]       { color:blue; text-decoration: none; }
 
-a.closed[href]:hover                      { color:green; text-decoration: underline; }
-a.closed[href]:link, a.closed[href]       { color:green; text-decoration: none; }
-a.analyzed[href]:hover                    { color:red;   text-decoration: underline; }
-a.analyzed[href]:link, a.analyzed[href]   { color:red;   text-decoration: none; }
-a.feedback[href]:hover                    { color:red;   text-decoration: underline; }
-a.feedback[href]:link, a.feedback[href]   { color:red;   text-decoration: none; }
-a.open[href]:hover                        { color:red;   text-decoration: underline; }
-a.open[href]:link, a.open[href]           { color:red;   text-decoration: none; }
-a.testing[href]:hover                     { color:green; text-decoration: underline; }
-a.testing[href]:link, a.testing[href]     { color:green; text-decoration: none; }
-a.suspended[href]:hover                   { color:blue;  text-decoration: line-through; }
-a.suspended[href]:link, a.suspended[href] { color:blue;  text-decoration: line-through; }
+a.closed[href]:hover, table.form td a.closed[href]:hover
+    { color:green; text-decoration: underline; }
+a.closed[href]:link, a.closed[href],
+  table.form td a.closed[href]:link, table.form td a.closed[href]
+    { color:green; text-decoration: none; }
+a.analyzed[href]:hover, table.form td a.analyzed[href]:hover
+    { color:red;   text-decoration: underline; }
+a.analyzed[href]:link, a.analyzed[href],
+  table.form td a.analyzed[href]:link, table.form td a.analyzed[href]
+    { color:red;   text-decoration: none; }
+a.feedback[href]:hover, table.form td a.feedback[href]:hover,
+  table.form td a.feedback[href]:hover,
+  table.form td table.form td a.feedback[href]:hover
+    { color:red;   text-decoration: underline; }
+a.feedback[href]:link, a.feedback[href],
+  table.form td a.feedback[href]:link, table.form td a.feedback[href]
+    { color:red;   text-decoration: none; }
+a.open[href]:hover, table.form td a.open[href]:hover
+    { color:red;   text-decoration: underline; }
+a.open[href]:link, a.open[href],
+  table.form td a.open[href]:link, table.form td a.open[href]
+    { color:red;   text-decoration: none; }
+a.testing[href]:hover, table.form td a.testing[href]:hover
+    { color:green; text-decoration: underline; }
+a.testing[href]:link, a.testing[href],
+  table.form td a.testing[href]:link, table.form td a.testing[href]
+    { color:green; text-decoration: none; }
+a.suspended[href]:hover, table.form td a.suspended[href]:hover
+    { color:blue;  text-decoration: line-through; }
+a.suspended[href]:link, a.suspended[href],
+  table.form td a.suspended[href]:link, table.form td a.suspended[href]
+    { color:blue;  text-decoration: line-through; }
 
-a.run[href]:hover                   { color:green; text-decoration: underline; }
-a.run[href]:link, a.run[href]       { color:green; text-decoration: none; }
-a.canc[href]:hover                  { color:blue;  text-decoration: underline; }
-a.canc[href]:link, a.canc[href]     { color:blue;  text-decoration: none; }
+a.run[href]:hover, table.form td a.run[href]:hover
+    { color:green; text-decoration: underline; }
+a.run[href]:link, a.run[href],
+  table.form td a.run[href]:link, table.form td a.run[href]
+    { color:green; text-decoration: none; }
+a.canc[href]:hover, table.form td a.canc[href]:hover
+    { color:blue;  text-decoration: underline; }
+a.canc[href]:link, a.canc[href],
+  table.form td a.canc[href]:link, table.form td a.canc[href]
+    { color:blue;  text-decoration: none; }
 
 table.body {
   border: 0;

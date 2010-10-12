@@ -76,6 +76,9 @@ def init \
         , release          = String    ()
         , severity         = Link      ("severity",   do_journal='no')
         , status           = Link      ("sup_status", do_journal='no')
+        , serial_number    = String    ()
+        , related_issues   = Multilink ("issue")
+        , customer         = Link      ("customer",   do_journal='no')
         )
 
     customer = Person_Class \

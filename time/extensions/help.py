@@ -1159,6 +1159,8 @@ _helptext          = \
     , ""'sensor++order'               : [order]
     , ""'sensor++type'                :
       [ ""'''Type of %(Classname)s''' ]
+    , ""'serial_number'               :
+      [ ""'''Serial number of hardware item if applicable''' ]
     , ""'server'                      :
       [ ""'''The %(Property)s to use for this %(Classname)s:
             If left empty the default %(Property)s from the protocol
