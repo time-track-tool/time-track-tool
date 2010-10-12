@@ -802,8 +802,8 @@ if 'sup_status' in db.classes :
         , description = 'Done support issue'
         , order       = 2
         )
-    db.sup_status.set (open,   dict (transitions = closed))
-    db.sup_status.set (closed, dict (transitions = open))
+    db.sup_status.set (open,   transitions = [closed])
+    db.sup_status.set (closed, transitions = [open])
 
 if 'sup_prio' in db.classes :
     db.sup_prio.create (name = "nice to have",                        order = 1)
