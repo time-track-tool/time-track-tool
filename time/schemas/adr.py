@@ -23,7 +23,7 @@
 #
 #++
 # Name
-#    schema-it
+#    schema-adr
 #
 # Purpose
 #    Specify the DB-Schema for a simple address tracker.

@@ -105,8 +105,9 @@ def security (db, ** kw) :
         [ ("adr_type"          , ["User", "Adr_Readonly"],    ["Type"])
         , ("adr_type_cat"      , ["User", "Adr_Readonly"],    ["Type"])
         , ("valid"             , ["User", "Adr_Readonly"],    [])
-        , ("address"           , ["Adr_Readonly"],            [])
         ]
+    if 'address' in db.classes :
+        classes.append (("address", ["Adr_Readonly"], []))
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])

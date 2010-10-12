@@ -35,6 +35,7 @@ from schemacfg       import schemadef
 def init \
     ( db
     , Class
+    , Person_Class
     , Full_Issue_Class
     , Superseder_Issue_Class
     , Boolean
@@ -77,6 +78,13 @@ def init \
         , status           = Link      ("sup_status", do_journal='no')
         )
 
+    customer = Person_Class \
+        ( db
+        , ''"customer"
+        , name             =  String   ()
+        )
+    customer.setkey ("name")
+
 # end def init
 
     #
@@ -92,9 +100,11 @@ def security (db, ** kw) :
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("sup_status",     ["User"],         [])
-        , ("sup_prio",       ["User"],         [])
-        , ("support",        ["Support"],      ["Support"])
+        [ ("sup_status",     ["User"],            [])
+        , ("sup_prio",       ["User"],            [])
+        , ("support",        ["Support"],         ["Support"])
+        , ("customer",       ["User", "Support"], ["Support"])
+        , ("adr_type",       ["User", "Support"], ["Support"])
         ]
 
     prop_perms = \

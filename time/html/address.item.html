@@ -106,6 +106,11 @@
        </tal:block>
       </td>
      </tr>
+     <tr tal:condition="python:'name' in props">
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'name')"/>
+      <td tal:content="structure context/name/field"/>
+     </tr>
      <tr tal:condition="python:'salutation' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'salutation')"/>
@@ -239,9 +244,9 @@
       <td>
         <span tal:content="structure python:context.country.field (size=4)"/>
           -
-        <span tal:content="structure python:context.postalcode.field (size=10)"/>
+        <span tal:content="structure python:context.postalcode.field(size=10)"/>
         (<tal:block tal:replace="structure python:utils.fieldname
-         ('address', 'postalcode')"/>)
+         (classname, 'postalcode')"/>)
       </td>
       <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
       <td tal:content="structure context/city/field" colspan="2"/>
@@ -489,7 +494,7 @@
 
     <tal:block metal:fill-slot="before_messages">
      <tal:block tal:condition=
-          "python:True or 'ort'in props and 'person' in db._db.classes">
+          "python:'ort' in props and 'person' in db._db.classes">
       <table class="files">
        <tr>
         <th colspan="3" class="header" i18n:translate="">
