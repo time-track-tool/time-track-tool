@@ -81,8 +81,6 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
            and 'firstname'   in new_values and new_values ['firstname']
            ) :
             new_values ['initial'] = new_values ['firstname'][0].upper () + '.'
-    if 'country' in cl.properties and 'country' not in new_values :
-        raise Reject, _ (''"Country must be set")
 # end def set_adr_defaults
 
 def require_country (db, cl, nodeid, new_values) :
@@ -137,6 +135,7 @@ def init (db) :
     if adrclass :
         adrclass.audit   ("create", common.lookalike_computation)
         adrclass.audit   ("set",    common.lookalike_computation)
+        adrclass.audit   ("create", require_country)
         adrclass.audit   ("set",    require_country)
         adrclass.audit   ("create", set_adr_defaults)
     if persclass and persclass != adrclass :

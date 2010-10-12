@@ -71,8 +71,10 @@
              ; msg_box_height      python:4
              ; required_attributes python:
                ['country','']
-               ['country' not in klass._klass.properties
-                or not klass._klass.key]
+               [bool (  'country' not in klass._klass.properties
+                     or klass._klass.key
+                     )
+               ]
              ; onch                string:
                javascript:document.forms.itemSynopsis.address.value = -1
              ; clradr              string:javascript:clradr()">
