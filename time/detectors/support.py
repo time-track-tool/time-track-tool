@@ -100,5 +100,5 @@ def init (db) :
     db.support.audit ("set",    check_support, priority = 40)
     db.support.audit ("create", audit_superseder)
     db.support.audit ("set",    audit_superseder)
-    db.support.audit ("set",    check_closed,  priority = 60)
+    db.support.audit ("set",    check_closed,  priority = 200)
 # end def init
