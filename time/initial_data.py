@@ -790,3 +790,27 @@ if 'dyndns' in db.classes :
         , default_server = 'www.zoneedit.com'
         , description    = 'DNS service offered by www.zoneedit.com'
         )
+
+if 'sup_status' in db.classes :
+    open = db.sup_status.create \
+        ( name        = 'open'
+        , description = 'New or open supprt issue'
+        , order       = 1
+        )
+    closed = db.sup_status.create \
+        ( name        = 'closed'
+        , description = 'Done support issue'
+        , order       = 2
+        )
+    db.sup_status.set (open,   dict (transitions = closed))
+    db.sup_status.set (closed, dict (transitions = open))
+
+if 'sup_prio' in db.classes :
+    db.sup_prio.create (name = "nice to have",                        order = 1)
+    db.sup_prio.create (name = "assistance",                          order = 2)
+    db.sup_prio.create (name = "one person, important for project",   order = 3)
+    db.sup_prio.create (name = "many persons, important for project", order = 4)
+    db.sup_prio.create (name = "showstopper for one person",          order = 5)
+    db.sup_prio.create (name = "showstopper for many persons",        order = 6)
+    db.sup_prio.create (name = "unknown",                             order = 7)
+

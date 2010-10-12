@@ -1,0 +1,127 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:1
+    ; has_resp            python:0
+    ; required_attributes string:title
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'category')"/>
+      <td tal:content="structure python:context.category.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'release')"/>
+      <td tal:content="structure python:context.release.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'status')"/>
+      <td tal:content="structure python:context.status.menu ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'prio')"/>
+      <td tal:content="structure python:context.prio.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'severity')"/>
+      <td tal:content="structure python:context.severity.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'numeric_effort')"/>
+      <td tal:content="structure python:context.numeric_effort.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'confidential')"/>
+      <td tal:content="structure python:context.confidential.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'serial_number')"/>
+      <td tal:content="structure python:context.serial_number.field ()"/>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'customer')"/>
+      <td>
+       <tal:block tal:content="structure python:context.customer.field ()"/>
+       <tal:block tal:replace="structure python:db.customer.classhelp
+            ( 'id,name,firstname,lastname,function'
+            , property='customer'
+            , inputtype='radio'
+            , width='600'
+            , pagesize=500
+            )"/>
+      </td>
+      <td colspan="2" tal:condition="context/id"
+          tal:content="structure python:utils.ExtProperty
+           ( utils, context.customer.name
+           , item = context.customer
+           ).formatlink ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'responsible')"/>
+      <td>
+       <tal:block tal:replace="structure python:context.responsible.field ()"/>
+       <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'related_issues')"/>
+      <td tal:content="structure python:context.related_issues.field ()"/>
+     </tr>
+     <tr>
+      <th/>
+      <td tal:condition="context/related_issues/plain">
+       <font size="-1" tal:define=
+        " issues python: context.related_issues
+        ; attr   python: 'related_issues'
+        ; expand python: False
+        ; hide   python: False
+        ">
+        <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+       </font>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'superseder')"/>
+      <td tal:content="structure python:context.superseder.field ()"/>
+     </tr>
+     <tr tal:repeat="sup context/superseder">
+      <td>
+      <td colspan=3>
+       <a tal:attributes="href string:support${sup/id}">
+        <span tal:content="sup/id"/>
+        (<span tal:content="sup/it_prio"/>
+        <span tal:content="sup/responsible/username"/>)
+        <span tal:content="sup/title"/>
+       </a>
+      </td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
