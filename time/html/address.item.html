@@ -16,7 +16,7 @@
  <span metal:fill-slot="body_title" tal:omit-tag="python:1"
        tal:content="Classname"/>
  <tal:block metal:fill-slot="menu_slot">
-   <tr tal:condition="python:context.id and 'lastname' in props">
+   <tr tal:condition="python:context.id and 'tmplate' in db._db.classes">
      <td class="sidebar" nowrap colspan="2"
       tal:condition="python:request.user.hasPermission ('View','tmplate')">
       <span class="classblock">
