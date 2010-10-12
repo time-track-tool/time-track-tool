@@ -20,13 +20,6 @@
     </td>
    </tr>
  </tal:block>
- <title metal:fill-slot="head_title">
-  <span tal:replace="string:Abfrage ${Classname}"/>
- </title>
- <span metal:fill-slot="body_title" tal:omit-tag="python:1"
-       tal:condition="not:terse"
-       tal:content="string:Abfrage ${Classname}">
- </span>
  <tal:block metal:fill-slot="create_or_query">
   <tal:block
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />

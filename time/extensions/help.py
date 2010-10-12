@@ -1057,6 +1057,7 @@ _helptext          = \
       [""'''Issues related to this %(Classname)s.
          '''
       ]
+    , ""'related_issues.id'           : [help_id]
     , ""'relaxed'                     :
       [""'''If set, when changing status, no checks about a message, the
             priority and responsible (helpdesk) are done when changing

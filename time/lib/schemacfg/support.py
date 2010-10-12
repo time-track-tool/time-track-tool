@@ -108,6 +108,7 @@ def security (db, ** kw) :
         , ("support",        ["Support"],         ["Support"])
         , ("customer",       ["User", "Support"], ["Support"])
         , ("adr_type",       ["User", "Support"], ["Support"])
+        , ("adr_type_cat",   ["User", "Support"], ["Support"])
         ]
 
     prop_perms = \

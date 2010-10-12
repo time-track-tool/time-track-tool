@@ -2298,6 +2298,9 @@ msgstr ""
 msgid "part_of.id"
 msgstr "Part of (id)"
 
+msgid "related_issues.id"
+msgstr "Related issues (id)"
+
 msgid "password"
 msgstr "Password"
 

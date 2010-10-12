@@ -76,6 +76,9 @@
                           % dict (cadr = cadr)
    , ('cust_supp', '')  : '@pagesize=50&@startwith=0&'
                           '@columns=id,name,description,tax_id,status,attendant'
+   , ('customer', '')   : '@columns=name,salutation,title,lastname,'
+                          'firstname,function,adr_type&@sort=name&'
+                          '@pagesize=20&@startwith=0'
    , ('daily_record', '')
                         : '@columns=id,user,date,status&@sort=-id&'
                           '@filter=user,date&@pagesize=20&@startwith=0&'
@@ -169,6 +172,9 @@
                           'date=%s%%3B.&summary_type=2,4&user=%s&'
                           'show_empty=no&show_all_users=no&show_missing=no' %
                           (utils.monthstart_twoweeksago (), uid)
+   , ('support', '')    : '@columns=id,category,title,status,severity,'
+                          'responsible,customer&@sort=category&'
+                          '@group=-prio&@pagesize=20&@startwith=0'
    , ('time_project', '')
                         : '@columns=name,responsible,organisation,department'
                           ',status&@sort=name&@filter=status&@pagesize=20&'
@@ -318,9 +324,10 @@
      , ('abo_price',           'Edit',   '?@template=item&valid=1', 1)
      , ('invoice_group',       'Edit',   '?@template=item', 1)
      , ('invoice_template',    'Edit',   '?@template=item', 1)
-     , ('adr_type',            'Edit',   '?@template=item', 1)
-     , ('adr_type_cat',        'Edit',   '?@template=item', 1)
+     , ('adr_type',            'Create', '?@template=item', 1)
+     , ('adr_type_cat',        'Create', '?@template=item', 1)
      , ('currency',            'Edit',   '?@template=item', 1)
+     , ('customer',            'Create', '?@template=item', 1)
      , ('tmplate',             'Edit',   '?@template=item', 1)
      , ('tmplate_status',      'Edit',   '?@template=item', 1)
      , ('legalclient',         'Edit',   '?@template=item', 1)
@@ -348,6 +355,7 @@
      , ('reference',           'Edit',   '?@template=item', 1)
      , ('overtime_period',     'Edit',   '?@template=item', 1)
      , ('dyndns',              'Edit',   '?@action=singleton', 1)
+     , ('support',             'Create', '?@action=singleton', 1)
      )
    , ( ('cost_center',         'View', 1,               ('',''))
      , ( 'daily_record'
@@ -396,8 +404,8 @@
      , ('person',              'View', 1,               ('',''))
      , ('invoice_group',       'View', 1,               ('',''))
      , ('invoice_template',    'View', 1,               ('',''))
-     , ('adr_type',            'View', 1,               ('',''))
-     , ('adr_type_cat',        'View', 1,               ('',''))
+     , ('adr_type',            'Edit', 1,               ('',''))
+     , ('adr_type_cat',        'Edit', 1,               ('',''))
      , ('currency',            'View', 1,               ('',''))
      , ('tmplate',             'View', 1,               ('',''))
      , ('tmplate_status',      'View', 1,               ('',''))
@@ -428,6 +436,8 @@
        )
      , ('dyndns',              'View', 1,               ('',''))
      , ('dyndns_protocol',     'View', 1,               ('',''))
+     , ('customer',            'View', 1,               ('',''))
+     , ('support',             'View', 1,               ('',''))
      )
    )
  ; menu_type     python:
