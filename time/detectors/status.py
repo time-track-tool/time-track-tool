@@ -87,7 +87,7 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    status_classes = ['it_issue', 'it_project', 'issue', 'doc']
+    status_classes = ['it_issue', 'it_project', 'issue', 'doc', 'support']
     for cl in status_classes :
         if cl not in db.classes :
             continue

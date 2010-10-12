@@ -84,6 +84,9 @@
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'closed')"/>
+      <td tal:content="context/closed/plain"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
