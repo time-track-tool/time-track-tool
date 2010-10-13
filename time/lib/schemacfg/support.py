@@ -74,7 +74,6 @@ def init \
         , numeric_effort   = Number    ()
         , prio             = Link      ("sup_prio",   do_journal='no')
         , release          = String    ()
-        , severity         = Link      ("severity",   do_journal='no')
         , status           = Link      ("sup_status", do_journal='no')
         , serial_number    = String    ()
         , related_issues   = Multilink ("issue")

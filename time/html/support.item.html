@@ -31,8 +31,16 @@
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu ()"/>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'numeric_effort')"/>
+      <td tal:content="structure python:context.numeric_effort.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'serial_number')"/>
+      <td tal:content="structure python:context.serial_number.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -43,19 +51,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'severity')"/>
-      <td tal:content="structure python:context.severity.menu ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'numeric_effort')"/>
-      <td tal:content="structure python:context.numeric_effort.field ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
           (classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'serial_number')"/>
-      <td tal:content="structure python:context.serial_number.field ()"/>
+          (classname, 'closed')"/>
+      <td tal:content="context/closed/plain"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
@@ -84,9 +84,6 @@
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'closed')"/>
-      <td tal:content="context/closed/plain"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
