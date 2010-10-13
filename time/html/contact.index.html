@@ -53,6 +53,45 @@
         , helpname    = 'function'
         )
       )
+    , ('customer', dict
+        ( searchname  = 'customer.lastname'
+        , searchable  = False
+        , sortable    = False
+        )
+      )
+    , ( 'customer', dict
+        ( searchname  = 'customer.firstname'
+        , searchable  = False
+        , sortable    = False
+        )
+      )
+    , ('customer', dict
+        ( searchname  = 'customer.function'
+        , searchable  = False
+        , sortable    = False
+        )
+      )
+    , ('customer', dict
+        ( searchname  = 'customer.lookalike_lastname'
+        , searchable  = True
+        , displayable = False
+        , helpname    = 'lastname'
+        )
+      )
+    , ('customer', dict
+        ( searchname  = 'customer.lookalike_firstname'
+        , searchable  = True
+        , displayable = False
+        , helpname    = 'firstname'
+        )
+      )
+    , ('customer', dict
+        ( searchname  = 'customer.lookalike_function'
+        , searchable  = True
+        , displayable = False
+        , helpname    = 'function'
+        )
+      )
     , ('person', dict
         ( searchname  = 'person.lastname'
         , searchable  = False

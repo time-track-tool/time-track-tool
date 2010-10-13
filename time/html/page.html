@@ -36,9 +36,12 @@
  ; abo_adrtype     python: utils.valid_adr_types (db, adr_type_cat = 'ABO')
  ; terse           python: utils.get_from_form (request, 'terse')
  ; quiet           python: utils.get_from_form (request, 'quiet')
- ; cadr            python: ['address', 'person']
+ ; cadr            python: ['address', 'person', 'customer']
                            ['contact' in db._db.classes
-                            and 'person' in db._db.contact.properties]
+                            and (    'person' in db._db.contact.properties
+                                or 'customer' in db._db.contact.properties and 2
+                                )
+                           ]
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
