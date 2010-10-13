@@ -139,6 +139,7 @@ def init \
         , severity            = Link      ("severity",    do_journal = 'no')
         , maturity_index      = Number    ()
         , confidential        = Boolean   ()
+        , needs_doc           = Boolean   ()
         )
 
     Cls = kw ['Msg_Class']

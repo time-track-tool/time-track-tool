@@ -71,15 +71,20 @@
           (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu
           (** utils.filter_status_transitions (context.status))" />
-      <th rowspan="3" tal:content="structure python:utils.fieldname
+      <th rowspan="4" tal:content="structure python:utils.fieldname
           (classname, 'keywords')"/>
-      <td rowspan="3"
-       tal:content="structure python:context.keywords.menu (height = 3)"/>
+      <td rowspan="4"
+       tal:content="structure python:context.keywords.menu (height = 4)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'severity')"/>
       <td tal:content="structure python:context.severity.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'needs_doc')"/>
+      <td tal:content="structure python:context.needs_doc.field ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>

@@ -843,6 +843,8 @@ _helptext          = \
           '''
       ]
     , ""'needs.id'                    : [help_id]
+    , ""'needs_doc'                   :
+      [""'''%(Classname)s needs documentation''']
     , ""'netbios_dd'                  :
       [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
              config. Specifies list of servers in order of preference.
