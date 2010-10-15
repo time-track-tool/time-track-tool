@@ -40,14 +40,12 @@ def check_time_project (db, cl, nodeid, new_values) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
-    common.require_attributes (_, cl, nodeid, new_values, 'department')
     if not wl :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
-    common.require_attributes \
-        (_, cl, nodeid, new_values, 'name', 'responsible', 'department')
+    common.require_attributes (_, cl, nodeid, new_values, 'name', 'responsible')
     if 'work_location' not in new_values :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
     common.check_name_len (_, new_values ['name'])
