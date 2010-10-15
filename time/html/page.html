@@ -1291,7 +1291,7 @@
        <tr>
         <td style="text-align:center;">
          <tal:block tal:condition="python:
-          prop.lnkcls == 'user' and prop.searchname != 'nosy'"
+          prop.lnkcls.classname == 'user' and prop.searchname != 'nosy'"
           tal:define=
            "size      string:7;
             name      python:prop.searchname;
@@ -1313,7 +1313,7 @@
            ">
           <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"/>
          </tal:block>
-         <tal:block tal:condition="python:prop.lnkcls != 'user'">
+         <tal:block tal:condition="python:prop.lnkcls.classname != 'user'">
           <select multiple
                   size="7"
                   tal:attributes="name python:prop.searchname"
