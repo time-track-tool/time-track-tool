@@ -751,7 +751,7 @@ def security (db, ** kw) :
         , description = fixdoc (project_admitted.__doc__)
         , properties  =
             ( 'name', 'description', 'responsible', 'deputy', 'organisation'
-            , 'department', 'status', 'work_location', 'op_project'
+            , 'status', 'work_location', 'op_project'
             , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
             )
         )
