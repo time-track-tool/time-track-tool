@@ -318,7 +318,10 @@ class ExtProperty :
 
     def formatted (self, item = None) :
         self._set_item (item)
-        if self.prop is None or isinstance (self.prop, MissingValue) :
+        if  (  self.prop is None
+            or isinstance (self.prop, MissingValue)
+            or self.name != 'id' and not self.prop.is_view_ok ()
+            ) :
             return ""
         if self.displayprop :
             format = self.format or '%s'
@@ -338,8 +341,10 @@ class ExtProperty :
 
     def as_listentry (self, item = None, as_link = True) :
         self._set_item (item)
-        if self.editable and self.item [self.name].is_edit_ok () :
+        if self.editable and self.prop.is_edit_ok () :
             return self.editfield ()
+        if self.name != 'id' and not self.prop.is_view_ok () :
+            return _('[hidden]')
         if self.is_labelprop or self.force_link :
             return self.formatlink (as_link = as_link)
         elif self.lnkcls :
@@ -408,11 +413,15 @@ class ExtProperty :
             its id are computed.
         """
         i = item or self.item
+        if  (   not i.is_view_ok ()
+            or self.name != 'id' and not self.prop.is_view_ok ()
+            ) :
+            return ""
         hidden = ""
         if self.add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
                 % (self.searchname, str (self.prop))
-        if not i.is_view_ok () or not as_link :
+        if not as_link :
             return hidden + self.formatted ()
         if not self.classname :
             return ""
