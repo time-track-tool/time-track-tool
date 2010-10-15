@@ -1,5 +1,17 @@
 properties = \
-    [ ( 'area'
+    [ ( 'adr_type'
+      , [ 'code'
+        , 'description'
+        , 'typecat'
+        ]
+      )
+    , ( 'adr_type_cat'
+      , [ 'code'
+        , 'description'
+        , 'type_valid'
+        ]
+      )
+    , ( 'area'
       , [ 'description'
         , 'name'
         ]
@@ -18,6 +30,20 @@ properties = \
         , 'nosy'
         , 'responsible'
         , 'valid'
+        ]
+      )
+    , ( 'contact'
+      , [ 'contact'
+        , 'contact_type'
+        , 'customer'
+        , 'description'
+        ]
+      )
+    , ( 'contact_type'
+      , [ 'description'
+        , 'name'
+        , 'order'
+        , 'url_template'
         ]
       )
     , ( 'cost_center'
@@ -39,6 +65,32 @@ properties = \
       , [ 'active'
         , 'description'
         , 'name'
+        ]
+      )
+    , ( 'customer'
+      , [ 'adr_type'
+        , 'affix'
+        , 'city'
+        , 'contacts'
+        , 'country'
+        , 'files'
+        , 'firstname'
+        , 'function'
+        , 'initial'
+        , 'lastname'
+        , 'lettertitle'
+        , 'lookalike_city'
+        , 'lookalike_firstname'
+        , 'lookalike_function'
+        , 'lookalike_lastname'
+        , 'lookalike_street'
+        , 'messages'
+        , 'name'
+        , 'postalcode'
+        , 'salutation'
+        , 'street'
+        , 'title'
+        , 'valid'
         ]
       )
     , ( 'daily_record'
@@ -127,6 +179,7 @@ properties = \
         , 'maturity_index'
         , 'messages'
         , 'needs'
+        , 'needs_doc'
         , 'nosy'
         , 'numeric_effort'
         , 'part_of'
@@ -356,6 +409,38 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'sup_prio'
+      , [ 'name'
+        , 'order'
+        ]
+      )
+    , ( 'sup_status'
+      , [ 'description'
+        , 'name'
+        , 'order'
+        , 'relaxed'
+        , 'transitions'
+        ]
+      )
+    , ( 'support'
+      , [ 'category'
+        , 'closed'
+        , 'confidential'
+        , 'customer'
+        , 'files'
+        , 'messages'
+        , 'nosy'
+        , 'numeric_effort'
+        , 'prio'
+        , 'related_issues'
+        , 'release'
+        , 'responsible'
+        , 'serial_number'
+        , 'status'
+        , 'superseder'
+        , 'title'
+        ]
+      )
     , ( 'time_activity'
       , [ 'description'
         , 'name'
@@ -489,6 +574,11 @@ properties = \
         ]
       )
     , ( 'user_status'
+      , [ 'description'
+        , 'name'
+        ]
+      )
+    , ( 'valid'
       , [ 'description'
         , 'name'
         ]
