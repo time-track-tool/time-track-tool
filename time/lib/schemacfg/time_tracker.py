@@ -701,6 +701,11 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_record'
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'overtime_correction'
         , check       = overtime_thawed
@@ -725,16 +730,23 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
+    wp_properties = \
+        ( 'name', 'wp_no', 'description', 'responsible', 'project'
+        , 'time_start', 'time_end', 'durations_allowed', 'travel'
+        , 'cost_center', 'creation', 'creator', 'activity', 'actor'
+        )
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_wp'
         , check       = wp_admitted
         , description = fixdoc (wp_admitted.__doc__)
-        , properties  =
-            ( 'name', 'wp_no', 'description', 'responsible', 'project'
-            , 'time_start', 'time_end', 'durations_allowed', 'travel'
-            , 'cost_center', 'creation', 'creator', 'activity', 'actor'
-            )
+        , properties  = wp_properties
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_wp'
+        , properties  = wp_properties
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
@@ -744,18 +756,27 @@ def security (db, ** kw) :
         , description = fixdoc (sum_common.time_project_viewable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+    tp_properties = \
+        ( 'name', 'description', 'responsible', 'deputy', 'organisation'
+        , 'status', 'work_location', 'op_project'
+        , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
+        )
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_project'
         , check       = project_admitted
         , description = fixdoc (project_admitted.__doc__)
-        , properties  =
-            ( 'name', 'description', 'responsible', 'deputy', 'organisation'
-            , 'status', 'work_location', 'op_project'
-            , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
-            )
+        , properties  = tp_properties
         )
     db.security.addPermissionToRole ('User', p)
+    # Search permission
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_project'
+        , properties  = tp_properties
+        )
+    db.security.addPermissionToRole ('User', p)
+
     for klass in 'time_project', 'time_wp' :
         p = db.security.addPermission \
             ( name        = 'View'

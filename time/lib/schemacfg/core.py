@@ -131,6 +131,13 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole('User', p)
 
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'msg'
+        , description = "User is allowed to search for their own messages"
+        )
+    db.security.addPermissionToRole('User', p)
+
     def view_file(db, userid, itemid):
         return userid == db.file.get(itemid, 'creator')
     # end def view_file
@@ -150,12 +157,27 @@ def security (db, ** kw) :
                 schemadef.register_permission_by_link \
                     (db, role, perm, cls, * classprops)
 
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'file'
+        , description = "User is allowed to search for their own files"
+        )
+    db.security.addPermissionToRole('User', p)
+
+
     ### Query permissions ###
     def view_query (db, userid, itemid) :
         private_for = db.query.get (itemid, 'private_for')
         if not private_for : return True
         return userid == private_for
     # end def view_query
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'query'
+        , description = "User is allowed to search for their queries"
+        )
+    db.security.addPermissionToRole('User', p)
 
     def edit_query(db, userid, itemid):
         return userid == db.query.get(itemid, 'creator')
