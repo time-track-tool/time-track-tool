@@ -15,6 +15,13 @@ parser.add_option \
     , default = False
     , action  = "store_true"
     )
+parser.add_option \
+    ( "-s", "--search"
+    , dest    = "search"
+    , help    = "Check search permissions for each role"
+    , default = False
+    , action  = "store_true"
+    )
 opt, args = parser.parse_args ()
 
 if len (args) :
@@ -32,13 +39,27 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
     else :
         print cl
     for n, p in enumerate (sorted (db.getclass (cl).properties.keys ())) :
+        rs = ''
+        if opt.search :
+            rs = '( '
         if opt.as_list :
             if n :
-                print "        , '%s'" % p
+                print "        , %s'%s'" % (rs, p)
             else :
-                print "      , [ '%s'" % p
+                print "      , [ %s'%s'" % (rs, p)
         else :
             print "    ", p
+        if opt.search :
+            roles = []
+            for role in sorted (db.security.role.iterkeys ()) :
+                if db.security.roleHasSearchPermission (role, cl, p) :
+                    roles.append (role)
+            if opt.as_list :
+                r = ', '.join ('"%s"' % r for r in roles)
+                print '          , [%s]' % r
+                print '          )'
+            else :
+                print "        ", ', '.join (roles)
     if opt.as_list :
         if not len (db.getclass (cl).properties) :
             print "      , ["
