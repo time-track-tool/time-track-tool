@@ -60,6 +60,8 @@ del sys.path [0:1]
 
 Letter_Class (db, ''"letter")
 Person_Class (db, ''"address")
+classes = [("letter", ["User"], ["User"])]
+schemadef.register_class_permissions (db, classes, [])
 
 importer.update_security ()
 

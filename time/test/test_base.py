@@ -44,8 +44,9 @@ from sec_itadr    import security as security_itadr
 from sec_kvats    import security as security_kvats
 from sec_lielas   import security as security_lielas
 
-from search_full  import properties as sec_search_full
 from search_abo   import properties as sec_search_abo
+from search_adr   import properties as sec_search_adr
+from search_full  import properties as sec_search_full
 
 from roundup      import instance, configuration, init, password, date
 from roundup.cgi  import templating
