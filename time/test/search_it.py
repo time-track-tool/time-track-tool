@@ -1,235 +1,235 @@
 properties = \
     [ ( 'file'
       , [ ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_category'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_issue'
       , [ ( 'category'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'confidential'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'deadline'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'files'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'it_prio'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'it_project'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'messages'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'nosy'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'responsible'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'stakeholder'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'status'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'superseder'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'title'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         ]
       )
     , ( 'it_issue_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'relaxed'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_prio'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_project'
       , [ ( 'category'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'confidential'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'deadline'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'files'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'it_prio'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'messages'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'nosy'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'responsible'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'stakeholder'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'status'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'title'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         ]
       )
     , ( 'it_project_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'inreplyto'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messageid'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'recipients'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'private_for'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tmplate'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'url'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'alternate_addresses'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'csv_delimiter'
-          , []
+          , ["admin"]
           )
         , ( 'password'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'queries'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'realname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'roles'
-          , []
+          , ["admin"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'timezone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'username'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
