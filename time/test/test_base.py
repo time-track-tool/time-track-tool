@@ -26,33 +26,34 @@ import unittest
 
 import user1_time, user2_time, user3_time
 
-from propl_abo    import properties as properties_abo
-from propl_adr    import properties as properties_adr
-from propl_erp    import properties as properties_erp
-from propl_full   import properties as properties_full
-from propl_it     import properties as properties_it
-from propl_itadr  import properties as properties_itadr
-from propl_kvats  import properties as properties_kvats
-from propl_lielas import properties as properties_lielas
+from propl_abo     import properties as properties_abo
+from propl_adr     import properties as properties_adr
+from propl_erp     import properties as properties_erp
+from propl_full    import properties as properties_full
+from propl_it      import properties as properties_it
+from propl_itadr   import properties as properties_itadr
+from propl_kvats   import properties as properties_kvats
+from propl_lielas  import properties as properties_lielas
 
-from sec_abo      import security as security_abo
-from sec_adr      import security as security_adr
-from sec_erp      import security as security_erp
-from sec_full     import security as security_full
-from sec_it       import security as security_it
-from sec_itadr    import security as security_itadr
-from sec_kvats    import security as security_kvats
-from sec_lielas   import security as security_lielas
+from sec_abo       import security as security_abo
+from sec_adr       import security as security_adr
+from sec_erp       import security as security_erp
+from sec_full      import security as security_full
+from sec_it        import security as security_it
+from sec_itadr     import security as security_itadr
+from sec_kvats     import security as security_kvats
+from sec_lielas    import security as security_lielas
 
-from search_abo   import properties as sec_search_abo
-from search_adr   import properties as sec_search_adr
-from search_erp   import properties as sec_search_erp
-from search_full  import properties as sec_search_full
-from search_it    import properties as sec_search_it
-from search_kvats import properties as sec_search_kvats
+from search_abo    import properties as sec_search_abo
+from search_adr    import properties as sec_search_adr
+from search_erp    import properties as sec_search_erp
+from search_full   import properties as sec_search_full
+from search_it     import properties as sec_search_it
+from search_kvats  import properties as sec_search_kvats
+from search_lielas import properties as sec_search_lielas
 
-from roundup      import instance, configuration, init, password, date
-from roundup.cgi  import templating
+from roundup       import instance, configuration, init, password, date
+from roundup.cgi   import templating
 sys.path.insert (0, os.path.abspath ('lib'))
 sys.path.insert (0, os.path.abspath ('extensions'))
 from user_dynamic import update_tr_duration, compute_balance
