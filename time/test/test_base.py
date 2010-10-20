@@ -48,6 +48,7 @@ from search_abo   import properties as sec_search_abo
 from search_adr   import properties as sec_search_adr
 from search_erp   import properties as sec_search_erp
 from search_full  import properties as sec_search_full
+from search_it    import properties as sec_search_it
 from search_kvats import properties as sec_search_kvats
 
 from roundup      import instance, configuration, init, password, date
