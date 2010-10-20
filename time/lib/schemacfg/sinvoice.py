@@ -111,6 +111,7 @@ def security (db, ** kw) :
     classes = \
         [ ("currency",         ["User"],    [])
         , ("invoice_template", ["Invoice"], ["Invoice"])
+        , ("payment",          ["Invoice"], ["Invoice"])
         ]
 
     schemadef.register_roles             (db, roles)

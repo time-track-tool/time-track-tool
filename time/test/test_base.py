@@ -45,6 +45,7 @@ from sec_kvats    import security as security_kvats
 from sec_lielas   import security as security_lielas
 
 from search_full  import properties as sec_search_full
+from search_abo   import properties as sec_search_abo
 
 from roundup      import instance, configuration, init, password, date
 from roundup.cgi  import templating
@@ -103,8 +104,7 @@ class _Test_Case (unittest.TestCase) :
     def setUp (self) :
         self.properties    = globals () ['properties_' + self.schemaname]
         self.security_desc = globals () ['security_'   + self.schemaname]
-        if self.schemaname == 'full' :
-            self.search_desc   = globals () ['sec_search_' + self.schemaname]
+        self.search_desc   = globals () ['sec_search_' + self.schemaname]
         self.setup_tracker ()
     # end def setUp
 
