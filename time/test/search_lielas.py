@@ -1,316 +1,316 @@
 properties = \
     [ ( 'device'
       , [ ( 'adr'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'cls'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'dev'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'device_group'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'gapint'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'mint'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'name'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'order'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'rec'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'sint'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'surrogate'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'transceiver'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'version'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         ]
       )
     , ( 'device_group'
       , [ ( 'description'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'name'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'order'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         ]
       )
     , ( 'dyndns'
       , [ ( 'fw_login'
-          , []
+          , ["admin"]
           )
         , ( 'fw_password'
-          , []
+          , ["admin"]
           )
         , ( 'fw_skip'
-          , []
+          , ["admin"]
           )
         , ( 'fw_url'
-          , []
+          , ["admin"]
           )
         , ( 'interface'
-          , []
+          , ["admin"]
           )
         , ( 'interface_skip'
-          , []
+          , ["admin"]
           )
         , ( 'local_hostname'
-          , []
+          , ["admin"]
           )
         , ( 'syslog'
-          , []
+          , ["admin"]
           )
         , ( 'web_skip'
-          , []
+          , ["admin"]
           )
         , ( 'web_url'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'dyndns_host'
       , [ ( 'description'
-          , []
+          , ["admin"]
           )
         , ( 'dyndns_service'
-          , []
+          , ["admin"]
           )
         , ( 'hostname'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'dyndns_protocol'
       , [ ( 'default_server'
-          , []
+          , ["admin"]
           )
         , ( 'description'
-          , []
+          , ["admin"]
           )
         , ( 'name'
-          , []
+          , ["admin"]
           )
         , ( 'order'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'dyndns_service'
       , [ ( 'dyndns'
-          , []
+          , ["admin"]
           )
         , ( 'login'
-          , []
+          , ["admin"]
           )
         , ( 'password'
-          , []
+          , ["admin"]
           )
         , ( 'protocol'
-          , []
+          , ["admin"]
           )
         , ( 'server'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'logstyle'
       , [ ( 'description'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'name'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'order'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         ]
       )
     , ( 'measurement'
       , [ ( 'date'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'sensor'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'val'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'inreplyto'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messageid'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'recipients'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'private_for'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tmplate'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'url'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'sensor'
       , [ ( 'adr'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'almax'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'almin'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'device'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'do_logging'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'is_actuator'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'is_app_sensor'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'name'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'order'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'surrogate'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'type'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'unit'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         ]
       )
     , ( 'transceiver'
       , [ ( 'mint'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'name'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'sint'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         , ( 'tty'
-          , ["guest", "logger", "user"]
+          , ["admin", "guest", "logger", "user"]
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'alternate_addresses'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'csv_delimiter'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'password'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'queries'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'realname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'roles'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'timezone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'username'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
