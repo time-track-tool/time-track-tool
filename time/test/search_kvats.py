@@ -1,313 +1,313 @@
 properties = \
     [ ( 'area'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'category'
       , [ ( 'cert_sw'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'default_part_of'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'nosy'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'responsible'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'issue'
       , [ ( 'area'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'category'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'closed'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'composed_of'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'confidential'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'cur_est_begin'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'cur_est_end'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'deadline'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'depends'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'earliest_start'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'effective_prio'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'files'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'files_affected'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'fixed_in'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'keywords'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'kind'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'maturity_index'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'messages'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'needs'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'needs_doc'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'nosy'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'numeric_effort'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'part_of'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'planned_begin'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'planned_end'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'priority'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'release'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'responsible'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'severity'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'status'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'superseder'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'title'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         ]
       )
     , ( 'keyword'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'kind'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'header'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'inreplyto'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'keywords'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messageid'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'recipients'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'subject'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'msg_keyword'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'private_for'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tmplate'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'url'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'severity'
       , [ ( 'abbreviation'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'status_transition'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'require_msg'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'require_resp_change'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'target'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , []
+          , ["admin"]
           )
         , ( 'alternate_addresses'
-          , []
+          , ["admin"]
           )
         , ( 'password'
-          , []
+          , ["admin"]
           )
         , ( 'phone'
-          , []
+          , ["admin"]
           )
         , ( 'queries'
-          , []
+          , ["admin"]
           )
         , ( 'realname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'roles'
-          , []
+          , ["admin"]
           )
         , ( 'status'
-          , []
+          , ["admin"]
           )
         , ( 'timezone'
-          , []
+          , ["admin"]
           )
         , ( 'username'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
