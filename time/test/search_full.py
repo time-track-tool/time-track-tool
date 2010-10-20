@@ -1,1402 +1,1402 @@
 properties = \
     [ ( 'adr_type'
       , [ ( 'code'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'description'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'typecat'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         ]
       )
     , ( 'adr_type_cat'
       , [ ( 'code'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'description'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'type_valid'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         ]
       )
     , ( 'area'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'artefact'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'filename_format'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'category'
       , [ ( 'cert_sw'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'default_part_of'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'nosy'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'responsible'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'contact'
       , [ ( 'contact'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'contact_type'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'customer'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         , ( 'description'
-          , ["adr_readonly", "support", "user"]
+          , ["admin", "adr_readonly", "support", "user"]
           )
         ]
       )
     , ( 'contact_type'
       , [ ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'name'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'order'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'url_template'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'cost_center'
       , [ ( 'cost_center_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'organisation'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'cost_center_group'
       , [ ( 'active'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'responsible'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'cost_center_status'
       , [ ( 'active'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'customer'
       , [ ( 'adr_type'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'affix'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'city'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'contacts'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'country'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'files'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'firstname'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'function'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'initial'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lastname'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lettertitle'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lookalike_city'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lookalike_firstname'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lookalike_function'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lookalike_lastname'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'lookalike_street'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'messages'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'name'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'postalcode'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'salutation'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'street'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'title'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'valid'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         ]
       )
     , ( 'daily_record'
       , [ ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'required_overtime'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'time_record'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tr_duration_ok'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'user'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'weekend_allowed'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'daily_record_freeze'
       , [ ( 'achieved_hours'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'balance'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'date'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'frozen'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'month_balance'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'month_validity_date'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'user'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'validity_date'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'week_balance'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         ]
       )
     , ( 'daily_record_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'department'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'doc_num'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'manager'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'part_of'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid_from'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid_to'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'doc'
       , [ ( 'artefact'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'department'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'document_nr'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'link'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'nosy'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'product_type'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'reference'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'responsible'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'state_changed_by'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'title'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'doc_status'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'issue'
       , [ ( 'area'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'category'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'closed'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'composed_of'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'confidential'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'cur_est_begin'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'cur_est_end'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'deadline'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'depends'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'earliest_start'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'effective_prio'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'files'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'files_affected'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'fixed_in'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'keywords'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'kind'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'maturity_index'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'messages'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'needs'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'needs_doc'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'nosy'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'numeric_effort'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'part_of'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'planned_begin'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'planned_end'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'priority'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'release'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'responsible'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'severity'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'status'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'superseder'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'title'
-          , ["issue_admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         ]
       )
     , ( 'it_category'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_issue'
       , [ ( 'category'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'confidential'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'deadline'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'files'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'it_prio'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'it_project'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'messages'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'nosy'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'responsible'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'stakeholder'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'status'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'superseder'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'title'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         ]
       )
     , ( 'it_issue_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'relaxed'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_prio'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'it_project'
       , [ ( 'category'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'confidential'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'deadline'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'files'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'it_prio'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'messages'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'nosy'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'responsible'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'stakeholder'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'status'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         , ( 'title'
-          , ["it", "itview", "user"]
+          , ["admin", "it", "itview", "user"]
           )
         ]
       )
     , ( 'it_project_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'keyword'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'kind'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'location'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'country'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'domain_part'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'meeting_room'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'room'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'header'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'inreplyto'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'keywords'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messageid'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'recipients'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'subject'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'msg_keyword'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'org_location'
       , [ ( 'location'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'organisation'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'organisation'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'mail_domain'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid_from'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid_to'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'overtime_correction'
       , [ ( 'comment'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'date'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'user'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'value'
-          , ["controlling", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         ]
       )
     , ( 'overtime_period'
       , [ ( 'months'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'weekly'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'position'
       , [ ( 'position'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'product_type'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'public_holiday'
       , [ ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'is_half'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'locations'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["controlling", "user"]
+          , ["admin", "controlling", "user"]
           )
         , ( 'name'
-          , ["controlling", "user"]
+          , ["admin", "controlling", "user"]
           )
         , ( 'private_for'
-          , ["controlling", "user"]
+          , ["admin", "controlling", "user"]
           )
         , ( 'tmplate'
-          , ["controlling", "user"]
+          , ["admin", "controlling", "user"]
           )
         , ( 'url'
-          , ["controlling", "user"]
+          , ["admin", "controlling", "user"]
           )
         ]
       )
     , ( 'reference'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'room'
       , [ ( 'location'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'severity'
       , [ ( 'abbreviation'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'sex'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'status_transition'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'require_msg'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'require_resp_change'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'target'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'summary_report'
       , [ ( 'all_in'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'cost_center'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'cost_center_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'department'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'op_project'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'org_location'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'planned_effort'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'show_all_users'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'show_empty'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'show_missing'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary_type'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'supervisor'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'time_project'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'time_wp'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'time_wp_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'user'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'summary_type'
       , [ ( 'is_staff'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'sup_prio'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'sup_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'relaxed'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'transitions'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'support'
       , [ ( 'category'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'closed'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'confidential'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'customer'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'files'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'messages'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'nosy'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'numeric_effort'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'prio'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'related_issues'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'release'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'responsible'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'serial_number'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'status'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'superseder'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         , ( 'title'
-          , ["support", "user"]
+          , ["admin", "support", "user"]
           )
         ]
       )
     , ( 'time_activity'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'travel'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'time_project'
       , [ ( 'department'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'deputy'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'description'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'is_public_holiday'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'max_hours'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'name'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'no_overtime'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'nosy'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'op_project'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'organisation'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'planned_effort'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'responsible'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'status'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'work_location'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         ]
       )
     , ( 'time_project_status'
       , [ ( 'active'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'time_record'
       , [ ( 'comment'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'daily_record'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'dist'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'duration'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'end'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'end_generated'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'start'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'start_generated'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'time_activity'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'tr_duration'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'work_location'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         , ( 'wp'
-          , ["controlling", "hr", "user"]
+          , ["admin", "controlling", "hr", "user"]
           )
         ]
       )
     , ( 'time_wp'
       , [ ( 'bookers'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'cost_center'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'description'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'durations_allowed'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'name'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'planned_effort'
-          , ["controlling", "project", "project_view"]
+          , ["admin", "controlling", "project", "project_view"]
           )
         , ( 'project'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'responsible'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'time_end'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'time_start'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'travel'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         , ( 'wp_no'
-          , ["controlling", "project", "project_view", "user"]
+          , ["admin", "controlling", "project", "project_view", "user"]
           )
         ]
       )
     , ( 'time_wp_group'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'wps'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'alternate_addresses'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'clearance_by'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'department'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'external_phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'firstname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'internal_phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'job_description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lastname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lunch_duration'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lunch_start'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'nickname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'org_location'
-          , []
+          , ["admin"]
           )
         , ( 'password'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'pictures'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'position'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'private_mobile'
-          , []
+          , ["admin"]
           )
         , ( 'private_mobile_visible'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'private_phone'
-          , []
+          , ["admin"]
           )
         , ( 'private_phone_visible'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'queries'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'quick_dialling'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'realname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'roles'
-          , ["controlling"]
+          , ["admin", "controlling"]
           )
         , ( 'room'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'sex'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'subst_active'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'substitute'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'supervisor'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'timezone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'timing_info'
-          , []
+          , ["admin"]
           )
         , ( 'title'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tt_lines'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'username'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user_dynamic'
       , [ ( 'additional_hours'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'all_in'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'booking_allowed'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'daily_worktime'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'department'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'durations_allowed'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_fri'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_mon'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_sat'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_sun'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_thu'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_tue'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'hours_wed'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'org_location'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'overtime_period'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'supp_per_period'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'supp_weekly_hours'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'travel_full'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'user'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'vacation_remaining'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'vacation_yearly'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'valid_from'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'valid_to'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'weekend_allowed'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         , ( 'weekly_hours'
-          , ["hr"]
+          , ["admin", "hr"]
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'valid'
       , [ ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'name'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'work_location'
       , [ ( 'code'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
