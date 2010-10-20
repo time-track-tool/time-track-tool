@@ -1,280 +1,280 @@
 properties = \
     [ ( 'address'
       , [ ( 'adr_type'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'city'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'country'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'files'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'lookalike_city'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'lookalike_street'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'messages'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'opening_hours'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'postalcode'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'street'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'valid'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'adr_type'
       , [ ( 'code'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'typecat'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'adr_type_cat'
       , [ ( 'code'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'type_valid'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'bank_account'
       , [ ( 'act_number'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'bank'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'bank_code'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'bic'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'iban'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'contact'
       , [ ( 'contact'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'contact_type'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'person'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'contact_type'
       , [ ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'name'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'order'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'url_template'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'currency'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'cust_supp'
       , [ ( 'attendant'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'bank_account'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'credit_limit'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'currency'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'customer_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'customer_status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'customer_type'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'discount_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'dispatch_type'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'invoice_dispatch'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'invoice_text'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lookalike_name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'nosy'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order_text'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'pharma_ref'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'sales_conditions'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'supplier_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'supplier_status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tax_id'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'customer_group'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'discount_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'customer_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'display'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'customer_type'
       , [ ( 'code'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'discount_group'
       , [ ( 'currency'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'group_discount'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'overall_discount'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'dispatch_type'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'group_discount'
       , [ ( 'discount'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'product_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
@@ -284,388 +284,388 @@ properties = \
       )
     , ( 'invoice_dispatch'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'invoice_template'
       , [ ( 'interval'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         , ( 'invoice_level'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         , ( 'name'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         , ( 'tmplate'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         ]
       )
     , ( 'letter'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'subject'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'measuring_unit'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'content'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'date'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'inreplyto'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messageid'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'recipients'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'summary'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'type'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'opening_hours'
       , [ ( 'from_hour'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'from_minute'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'to_hour'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'to_minute'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'weekday'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'overall_discount'
       , [ ( 'discount'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'price'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'packaging_unit'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'payment'
       , [ ( 'amount'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         , ( 'date_payed'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         , ( 'invoice'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         , ( 'receipt_no'
-          , ["invoice"]
+          , ["admin", "invoice"]
           )
         ]
       )
     , ( 'person'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'affix'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'birthdate'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'contacts'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'cust_supp'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'firstname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'function'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'initial'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lastname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lettertitle'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lookalike_firstname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lookalike_function'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'lookalike_lastname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'person_type'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'salutation'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'title'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'person_type'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'pharma_ref'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'proceeds_group'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'product'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'measuring_unit'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'messages'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'minimum_inventory'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'packaging_unit'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'proceeds_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'product_group'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'product_price'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'shelf_life_code'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'use_lot'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'product_group'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'product_price'
       , [ ( 'currency'
-          , []
+          , ["admin"]
           )
         , ( 'price'
-          , []
+          , ["admin"]
           )
         , ( 'vat_percent'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'product_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'valid'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'private_for'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tmplate'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'url'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'sales_conditions'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'discount_days'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'discount_percent'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'payment_days'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'shelf_life_code'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'shelf_life'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'stock'
       , [ ( 'description'
-          , []
+          , ["admin"]
           )
         , ( 'name'
-          , []
+          , ["admin"]
           )
         , ( 'storage'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'stocked_product'
       , [ ( 'lot'
-          , []
+          , ["admin"]
           )
         , ( 'on_stock'
-          , []
+          , ["admin"]
           )
         , ( 'product'
-          , []
+          , ["admin"]
           )
         , ( 'storage_location'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'storage'
       , [ ( 'description'
-          , []
+          , ["admin"]
           )
         , ( 'name'
-          , []
+          , ["admin"]
           )
         , ( 'storage_locations'
-          , []
+          , ["admin"]
           )
         ]
       )
@@ -675,118 +675,118 @@ properties = \
       )
     , ( 'supplier_group'
       , [ ( 'description'
-          , []
+          , ["admin"]
           )
         , ( 'name'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'supplier_status'
       , [ ( 'description'
-          , []
+          , ["admin"]
           )
         , ( 'display'
-          , []
+          , ["admin"]
           )
         , ( 'name'
-          , []
+          , ["admin"]
           )
         , ( 'order'
-          , []
+          , ["admin"]
           )
         , ( 'valid'
-          , []
+          , ["admin"]
           )
         ]
       )
     , ( 'tmplate'
       , [ ( 'files'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'tmplate_status'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'tmplate_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'use_for_invoice'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'use_for_letter'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'alternate_addresses'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'password'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'phone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'queries'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'realname'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'roles'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'status'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'timezone'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'username'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
     , ( 'valid'
       , [ ( 'description'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         , ( 'name'
-          , ["adr_readonly", "user"]
+          , ["admin", "adr_readonly", "user"]
           )
         ]
       )
     , ( 'weekday'
       , [ ( 'name'
-          , ["user"]
+          , ["admin", "user"]
           )
         , ( 'order'
-          , ["user"]
+          , ["admin", "user"]
           )
         ]
       )
