@@ -54,19 +54,20 @@ schemas = \
 importer = schemadef.Importer (globals (), schemas)
 del sys.path [0:1]
 
-importer.update_security ()
-
-classes = \
-    [ ("user", ["User"], [])
-    ]
-schemadef.register_class_permissions (db, classes, [])
-
 # temporary fix: FIXME
 Class (db, ''"invoice")
 Class (db, ''"storage_location")
 
 Person_Class (db, ''"person")
+importer.update_security ()
 schemadef.allow_user_details (db, 'User', 'Edit')
+
+classes = \
+    [ ("user",        ["User"], [])
+    , ("person",      ["User"], ["User"])
+    , ("person_type", ["User"], ["User"])
+    ]
+schemadef.register_class_permissions (db, classes, [])
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
