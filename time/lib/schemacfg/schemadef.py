@@ -151,6 +151,16 @@ def own_user_record (db, userid, itemid) :
     return userid == itemid
 # end def own_user_record
 
+def add_search_permission (db, klass, role, properties = None) :
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = klass
+        , description = "search %s" % klass
+        , properties  = properties
+        )
+    db.security.addPermissionToRole (role, p)
+# end add_search_permission
+
 def allow_user_details (db, role, permission, *additional_props) :
     """ Allow editing some user details -- depending on the properties
         the user class has

@@ -187,6 +187,7 @@ Role "type":
  User is allowed to edit adr_type (Edit for "adr_type" only)
  User is allowed to edit adr_type_cat (Edit for "adr_type_cat" only)
 Role "user":
+  (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'work_location', 'op_project', 'is_public_holiday', 'creation', 'creator', 'activity', 'actor') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
@@ -267,6 +268,9 @@ Role "user":
  User is allowed to edit time category if the status is "Open" and he is responsible for the time category (Edit for "time_project": ('deputy', 'description', 'planned_effort', 'nosy') only)
  User is allowed to edit workpackage if he is time category owner (Edit for "time_wp": ('name', 'responsible', 'wp_no', 'cost_center') only)
  User is allowed to retire their queries (Retire for "query" only)
+ User is allowed to search for their own files (Search for "file" only)
+ User is allowed to search for their own messages (Search for "msg" only)
+ User is allowed to search for their queries (Search for "query" only)
  User is allowed to see private mobile if owner wants private mobile accessible (View for "user": ('private_mobile',) only)
  User is allowed to see private phone if owner wants private phone accessible (View for "user": ('private_phone',) only)
  User is allowed to see time record if he is allowed to see all details on work package or User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record (View for "time_record" only)

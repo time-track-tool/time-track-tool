@@ -204,8 +204,6 @@ def security (db, ** kw) :
     schemadef.register_confidentiality_check \
         (db, 'it_project', ('Edit',), "messages", "files", "nosy")
     schemadef.register_nosy_classes (db, ['it_issue', 'it_project'])
-    p = db.security.addPermission   (name = 'Search', klass = 'it_issue')
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission   (name = 'Search', klass = 'it_project')
-    db.security.addPermissionToRole ('User', p)
+    schemadef.add_search_permission (db, 'it_issue', 'User')
+    schemadef.add_search_permission (db, 'it_project', 'User')
 # end def security

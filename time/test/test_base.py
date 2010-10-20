@@ -44,6 +44,8 @@ from sec_itadr    import security as security_itadr
 from sec_kvats    import security as security_kvats
 from sec_lielas   import security as security_lielas
 
+from search_full  import properties as sec_search_full
+
 from roundup      import instance, configuration, init, password, date
 from roundup.cgi  import templating
 sys.path.insert (0, os.path.abspath ('lib'))
@@ -101,6 +103,8 @@ class _Test_Case (unittest.TestCase) :
     def setUp (self) :
         self.properties    = globals () ['properties_' + self.schemaname]
         self.security_desc = globals () ['security_'   + self.schemaname]
+        if self.schemaname == 'full' :
+            self.search_desc   = globals () ['sec_search_' + self.schemaname]
         self.setup_tracker ()
     # end def setUp
 
@@ -155,6 +159,22 @@ class _Test_Case (unittest.TestCase) :
             #print >> sys.stderr, s1, s1
             self.assertEqual (s1, s2)
     # end def test_2_security
+
+    def test_3_search (self) :
+        self.db = self.tracker.open ('admin')
+        classnames = sorted (self.db.getclasses ())
+        for (cl, props), cls in zip (self.search_desc, classnames) :
+            self.assertEqual (cl, cls)
+            clprops = []
+            for p in sorted (self.db.getclass (cls).properties.keys ()) :
+                roles = []
+                for role in sorted (self.db.security.role.iterkeys ()) :
+                    if self.db.security.roleHasSearchPermission (role, cl, p) :
+                        roles.append (role)
+                clprops.append ((p, roles))
+            self.assertEqual (props, clprops)
+    # end def test_3_search
+
 # end class _Test_Case
 
 class Test_Case_Timetracker (_Test_Case) :
