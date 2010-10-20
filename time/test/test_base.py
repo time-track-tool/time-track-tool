@@ -49,6 +49,7 @@ from search_adr    import properties as sec_search_adr
 from search_erp    import properties as sec_search_erp
 from search_full   import properties as sec_search_full
 from search_it     import properties as sec_search_it
+from search_itadr  import properties as sec_search_itadr
 from search_kvats  import properties as sec_search_kvats
 from search_lielas import properties as sec_search_lielas
 
