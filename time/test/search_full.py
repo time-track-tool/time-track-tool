@@ -1,241 +1,242 @@
 properties = \
     [ ( 'adr_type'
       , [ ( 'code'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'typecat'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'adr_type_cat'
       , [ ( 'code'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'type_valid'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'area'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'artefact'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'filename_format'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'category'
       , [ ( 'cert_sw'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'default_part_of'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nosy'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'valid'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'contact'
       , [ ( 'contact'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'contact_type'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'customer'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "support", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
+
       )
     , ( 'contact_type'
       , [ ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'url_template'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'cost_center'
       , [ ( 'cost_center_group'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'organisation'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'cost_center_group'
       , [ ( 'active'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'cost_center_status'
       , [ ( 'active'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'customer'
       , [ ( 'adr_type'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'affix'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'city'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'contacts'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'country'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'firstname'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'function'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'initial'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lastname'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lettertitle'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lookalike_city'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lookalike_firstname'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lookalike_function'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lookalike_lastname'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lookalike_street'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'postalcode'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'salutation'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'street'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'valid'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'daily_record'
       , [ ( 'date'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'required_overtime'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_record'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'tr_duration_ok'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'user'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'weekend_allowed'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
@@ -271,1027 +272,1029 @@ properties = \
       )
     , ( 'daily_record_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'department'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'doc_num'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'manager'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'part_of'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'valid_from'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'valid_to'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'doc'
       , [ ( 'artefact'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'department'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'document_nr'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'link'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nosy'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'product_type'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'reference'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'state_changed_by'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'doc_status'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'type'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'issue'
       , [ ( 'area'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'category'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'closed'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'composed_of'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'confidential'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'cur_est_begin'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'cur_est_end'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'deadline'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'depends'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'earliest_start'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'effective_prio'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files_affected'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'fixed_in'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'keywords'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'kind'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'maturity_index'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'needs'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'needs_doc'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nosy'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'numeric_effort'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'part_of'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'planned_begin'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'planned_end'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'priority'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'release'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'severity'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'superseder'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "issue_admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'it_category'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'it_issue'
       , [ ( 'category'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'confidential'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'deadline'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'it_prio'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'it_project'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nosy'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'stakeholder'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'superseder'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'it_issue_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'relaxed'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'it_prio'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'it_project'
       , [ ( 'category'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'confidential'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'deadline'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'it_prio'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nosy'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'stakeholder'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "it", "itview", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'it_project_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'keyword'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'kind'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'location'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'country'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'domain_part'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'meeting_room'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'phone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'room'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'content'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'date'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'header'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'inreplyto'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'keywords'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messageid'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'recipients'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'subject'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'summary'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'type'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'msg_keyword'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'org_location'
       , [ ( 'location'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'organisation'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'phone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'organisation'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'mail_domain'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'valid_from'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'valid_to'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'overtime_correction'
       , [ ( 'comment'
-          , ["admin", "controlling", "hr"]
+          , ['admin', 'controlling', 'hr']
           )
         , ( 'date'
-          , ["admin", "controlling", "hr"]
+          , ['admin', 'controlling', 'hr']
           )
         , ( 'user'
-          , ["admin", "controlling", "hr"]
+          , ['admin', 'controlling', 'hr']
           )
         , ( 'value'
-          , ["admin", "controlling", "hr"]
+          , ['admin', 'controlling', 'hr']
           )
         ]
       )
     , ( 'overtime_period'
       , [ ( 'months'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'weekly'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'position'
       , [ ( 'position'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'product_type'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'public_holiday'
       , [ ( 'date'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'is_half'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'locations'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["admin", "controlling", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "controlling", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'private_for'
-          , ["admin", "controlling", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'tmplate'
-          , ["admin", "controlling", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'url'
-          , ["admin", "controlling", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'reference'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'room'
       , [ ( 'location'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'severity'
       , [ ( 'abbreviation'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'sex'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'status_transition'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'require_msg'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'require_resp_change'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'target'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'summary_report'
       , [ ( 'all_in'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'cost_center'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'cost_center_group'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'date'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'department'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'op_project'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'org_location'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'planned_effort'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'show_all_users'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'show_empty'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'show_missing'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'summary'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'summary_type'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'supervisor'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_project'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_wp'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_wp_group'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'user'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'summary_type'
       , [ ( 'is_staff'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'sup_prio'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'sup_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin'
+, 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user'
+]
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'relaxed'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'support'
       , [ ( 'category'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'closed'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'confidential'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'customer'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nosy'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'numeric_effort'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'prio'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'related_issues'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'release'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'serial_number'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'superseder'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "support", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'time_activity'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'travel'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'time_project'
       , [ ( 'department'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'deputy'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'is_public_holiday'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'max_hours'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'name'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'no_overtime'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'nosy'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'op_project'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'organisation'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'planned_effort'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'responsible'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'work_location'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'time_project_status'
       , [ ( 'active'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'time_record'
       , [ ( 'comment'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'daily_record'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'dist'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'duration'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'end'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'end_generated'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'start'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'start_generated'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_activity'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'tr_duration'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'work_location'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'wp'
-          , ["admin", "controlling", "hr", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'time_wp'
       , [ ( 'bookers'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'cost_center'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'durations_allowed'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'planned_effort'
-          , ["admin", "controlling", "project", "project_view"]
+          , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'project'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'responsible'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_end'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'time_start'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'travel'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'wp_no'
-          , ["admin", "controlling", "project", "project_view", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'time_wp_group'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'wps'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'alternate_addresses'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'clearance_by'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'department'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'external_phone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'firstname'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'internal_phone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'job_description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lastname'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lunch_duration'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'lunch_start'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'nickname'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'org_location'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'password'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'phone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'pictures'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'position'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'private_mobile'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'private_mobile_visible'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'private_phone'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'private_phone_visible'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'queries'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'quick_dialling'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'realname'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'roles'
-          , ["admin", "controlling"]
+          , ['admin', 'controlling']
           )
         , ( 'room'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'sex'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'subst_active'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'substitute'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'supervisor'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'timezone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'timing_info'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'title'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'tt_lines'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'username'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
@@ -1375,28 +1378,28 @@ properties = \
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'valid'
       , [ ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )
     , ( 'work_location'
       , [ ( 'code'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         ]
       )

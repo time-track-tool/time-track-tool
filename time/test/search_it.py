@@ -1,22 +1,22 @@
 properties = \
     [ ( 'file'
       , [ ( 'content'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'type'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
     , ( 'it_category'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
@@ -64,28 +64,29 @@ properties = \
       )
     , ( 'it_issue_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'relaxed'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
+
       )
     , ( 'it_prio'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
@@ -127,109 +128,109 @@ properties = \
       )
     , ( 'it_project_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'content'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'date'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'files'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'inreplyto'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'messageid'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'recipients'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'summary'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'type'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'private_for'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'tmplate'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'url'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'alternate_addresses'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'csv_delimiter'
           , ["admin"]
           )
         , ( 'password'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'phone'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'queries'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'realname'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'roles'
           , ["admin"]
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'timezone'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'username'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'it', 'itview', 'user']
           )
         ]
       )

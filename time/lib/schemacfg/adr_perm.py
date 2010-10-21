@@ -47,7 +47,7 @@ def security (db, ** kw) :
         [ ( "user", "View", ["User"]
           , ( "activity", "actor", "address", "alternate_addresses"
             , "clearance_by", "creation", "creator", "department"
-            , "external_phone", "firstname", "job_description", "lastname"
+            , "external_phone", "firstname", "id", "job_description", "lastname"
             , "lunch_duration", "lunch_start", "nickname", "password", "phone"
             , "pictures", "position", "queries", "realname", "room", "sex"
             , "status", "subst_active", "substitute", "supervisor", "timezone"

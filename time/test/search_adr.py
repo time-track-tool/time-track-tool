@@ -1,325 +1,326 @@
 properties = \
     [ ( 'address'
       , [ ( 'adr_type'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'affix'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'birthdate'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'city'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'contacts'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'country'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'firstname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'function'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'initial'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lastname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'letters'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lettertitle'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lookalike_city'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lookalike_firstname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lookalike_function'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lookalike_lastname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'lookalike_street'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'opening_hours'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'parent'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'postalcode'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'salutation'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'street'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'valid'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'adr_type'
       , [ ( 'code'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'typecat'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'adr_type_cat'
       , [ ( 'code'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'type_valid'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'contact'
       , [ ( 'address'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'contact'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'contact_type'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'contact_type'
       , [ ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'url_template'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
+
       )
     , ( 'file'
       , [ ( 'content'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'type'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'letter'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'date'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'subject'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'content'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'date'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'inreplyto'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'messageid'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'recipients'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'summary'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'type'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'opening_hours'
       , [ ( 'from_hour'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'from_minute'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'to_hour'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'to_minute'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'weekday'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'private_for'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'tmplate'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'url'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'tmplate'
       , [ ( 'files'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'tmplate_status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'tmplate_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'use_for_invoice'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'use_for_letter'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'alternate_addresses'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'csv_delimiter'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'password'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'phone'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'queries'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'realname'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'roles'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'timezone'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'username'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'valid'
       , [ ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )
     , ( 'weekday'
       , [ ( 'name'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user']
           )
         ]
       )

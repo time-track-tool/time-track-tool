@@ -114,7 +114,7 @@ prop_perms = \
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
         , "external_phone", "firstname", "job_description", "lastname"
-        , "quick_dialling", "internal_phone"
+        , "quick_dialling", "id", "internal_phone"
         , "private_phone_visible", "private_mobile_visible"
         , "lunch_duration", "lunch_start", "nickname", "password", "phone"
         , "pictures", "position", "queries", "realname", "room", "sex"

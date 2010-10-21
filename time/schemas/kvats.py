@@ -62,6 +62,7 @@ schemadef.allow_user_details \
 perms = [ ( "user", "View", ["User"]
           , ( "username"
             , "realname"
+            , "id"
             , "creation"
             , "creator"
             , "activity"

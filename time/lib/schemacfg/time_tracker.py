@@ -729,7 +729,7 @@ def security (db, ** kw) :
     wp_properties = \
         ( 'name', 'wp_no', 'description', 'responsible', 'project'
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
-        , 'cost_center', 'creation', 'creator', 'activity', 'actor'
+        , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
         )
     p = db.security.addPermission \
         ( name        = 'View'
@@ -749,7 +749,7 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
     tp_properties = \
         ( 'name', 'description', 'responsible', 'deputy', 'organisation'
-        , 'status', 'work_location', 'op_project'
+        , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
         )
     p = db.security.addPermission \

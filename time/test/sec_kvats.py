@@ -37,7 +37,7 @@ Role "nosy":
 Role "user":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
- User is allowed View on (View for "user": ('username', 'realname', 'creation', 'creator', 'activity', 'actor') only)
+ User is allowed View on (View for "user": ('username', 'realname', 'id', 'creation', 'creator', 'activity', 'actor') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)

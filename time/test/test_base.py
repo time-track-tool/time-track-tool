@@ -26,6 +26,8 @@ import unittest
 
 import user1_time, user2_time, user3_time
 
+from operator import mul
+
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
 from propl_erp     import properties as properties_erp
@@ -53,6 +55,16 @@ from search_itadr  import properties as sec_search_itadr
 from search_kvats  import properties as sec_search_kvats
 from search_lielas import properties as sec_search_lielas
 
+from trans_abo     import transprop_perms as transprop_abo
+from trans_adr     import transprop_perms as transprop_adr
+from trans_erp     import transprop_perms as transprop_erp
+from trans_full    import transprop_perms as transprop_full
+from trans_itadr   import transprop_perms as transprop_itadr
+from trans_kvats   import transprop_perms as transprop_kvats
+from trans_lielas  import transprop_perms as transprop_lielas
+
+from trans_search  import classdict  as trans_classprops
+
 from roundup       import instance, configuration, init, password, date
 from roundup.cgi   import templating
 sys.path.insert (0, os.path.abspath ('lib'))
@@ -65,6 +77,35 @@ from summary import init as summary_init
 class _Test_Case (unittest.TestCase) :
     count = 0
     db = None
+    roles = ['admin']
+    allroles = dict.fromkeys \
+        (('abo'
+        , 'abo+invoice'
+        , 'admin'
+        , 'adr_readonly'
+        , 'anonymous'
+        , 'contact'
+        , 'controlling'
+        , 'discount'
+        , 'doc_admin'
+        , 'guest'
+        , 'hr'
+        , 'invoice'
+        , 'issue_admin'
+        , 'it'
+        , 'itview'
+        , 'letter'
+        , 'logger'
+        , 'nosy'
+        , 'office'
+        , 'product'
+        , 'project'
+        , 'project_view'
+        , 'support'
+        , 'type'
+        , 'user'
+        ))
+
 
     def setup_tracker (self, backend = 'postgresql') :
         """ Install and initialize tracker in dirname, return tracker instance.
@@ -125,6 +166,14 @@ class _Test_Case (unittest.TestCase) :
             shutil.rmtree (self.dirname)
     # end def tearDown
 
+    def test_0_roles (self) :
+        self.db = self.tracker.open ('admin')
+        roles = list (sorted (self.db.security.role.iterkeys ()))
+        self.assertEqual (roles, self.roles)
+        for r in roles :
+            self.assertEqual (r in self.allroles, True)
+    # end def test_0_roles
+
     def test_1_schema (self) :
         self.db = self.tracker.open ('admin')
         classnames = sorted (self.db.getclasses ())
@@ -168,23 +217,80 @@ class _Test_Case (unittest.TestCase) :
 
     def test_3_search (self) :
         self.db = self.tracker.open ('admin')
+        self.create_test_users ()
         classnames = sorted (self.db.getclasses ())
         for (cl, props), cls in zip (self.search_desc, classnames) :
             self.assertEqual (cl, cls)
             clprops = []
             for p in sorted (self.db.getclass (cls).properties.keys ()) :
-                roles = []
-                for role in sorted (self.db.security.role.iterkeys ()) :
-                    if self.db.security.roleHasSearchPermission (role, cl, p) :
-                        roles.append (role)
-                clprops.append ((p, roles))
-            self.assertEqual (props, clprops)
+                users = []
+                for user, uid in sorted (self.users.iteritems ()) :
+                    if self.db.security.hasSearchPermission (uid, cl, p) :
+                        users.append (user)
+                clprops.append ((p, users))
+            self.assertEqual ((cl, props), (cl, clprops))
     # end def test_3_search
+
+    transprop_perms = []
+    def test_4_transprops (self) :
+        self.db = self.tracker.open ('admin')
+        self.create_test_users ()
+        perms = []
+        for cl, props in sorted (trans_classprops.iteritems ()) :
+            if cl not in self.db.classes :
+                continue
+            klass = self.db.classes [cl]
+            for p in sorted (props) :
+                ps = p.split ('.')
+                if ps [0] not in klass.getprops () :
+                    continue
+                pusers = []
+                for user, uid in sorted (self.users.iteritems ()) :
+                    if self.db.security.hasSearchPermission (uid, cl, p) :
+                        pusers.append (user)
+                perms.append (('.'.join ((cl, p)), pusers))
+        self.assertEqual (self.transprop_perms, perms)
+    # end def test_4_transprops
+
+    def create_test_users (self) :
+        nouserroles = ['adr_readonly', 'guest', 'logger', 'nosy', 'user']
+        self.users = {'admin' : '1', 'anonymous' : '2'}
+        for u in self.allroles :
+            if u in self.users :
+                continue
+            roles = u.split ('+')
+            if u not in nouserroles :
+                roles.append ('user')
+            r_ok = (self.db.security.role.has_key (r) for r in roles)
+            # wired and :-)
+            if not reduce (mul, r_ok, 1) :
+                continue
+            params = dict \
+                ( username = u
+                , roles    = ','.join (roles)
+                )
+            try :
+                status = self.db.user_status.lookup ('system')
+                params ['status'] = status
+            except ValueError :
+                pass
+            try :
+                self.users [u] = self.db.user.create (**params)
+            except ValueError :
+                self.users [u] = self.db.user.lookup (u)
+    # end def create_test_users
 
 # end class _Test_Case
 
 class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
+    roles = \
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
+        , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'office', 'project', 'project_view', 'support', 'type', 'user'
+        ]
+    transprop_perms = transprop_full
+
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.db.overtime_period.create \
@@ -893,32 +999,57 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_tr_duration
 # end class Test_Case_Timetracker
 
-class Test_Case_ERP (_Test_Case) :
-    schemaname = 'erp'
-# end class Test_Case_ERP
+class Test_Case_Abo (_Test_Case) :
+    schemaname = 'abo'
+    roles = \
+        [ 'abo', 'admin', 'adr_readonly', 'anonymous', 'contact'
+        , 'invoice', 'letter', 'product', 'type', 'user'
+        ]
+    transprop_perms = transprop_abo
+# end class Test_Case_Abo
 
 class Test_Case_Adr (_Test_Case) :
     schemaname = 'adr'
+    roles = \
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'letter'
+        , 'type', 'user'
+        ]
+    transprop_perms = transprop_adr
 # end class Test_Case_Adr
 
-class Test_Case_Abo (_Test_Case) :
-    schemaname = 'abo'
-# end class Test_Case_Abo
+class Test_Case_ERP (_Test_Case) :
+    schemaname = 'erp'
+    roles = \
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'discount'
+        , 'invoice', 'letter', 'product', 'type', 'user'
+        ]
+    transprop_perms = transprop_erp
+# end class Test_Case_ERP
 
 class Test_Case_IT (_Test_Case) :
     schemaname = 'it'
+    roles = ['admin', 'anonymous', 'it', 'itview', 'nosy', 'user']
 # end class Test_Case_IT
 
 class Test_Case_ITAdr (_Test_Case) :
     schemaname = 'itadr'
+    roles = \
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
+        , 'itview', 'nosy', 'type', 'user'
+        ]
+    transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr
 
 class Test_Case_Kvats (_Test_Case) :
     schemaname = 'kvats'
+    roles = ['admin', 'anonymous', 'issue_admin', 'nosy', 'user']
+    transprop_perms = transprop_kvats
 # end class Test_Case_Kvats
 
 class Test_Case_Lielas (_Test_Case) :
     schemaname = 'lielas'
+    roles = ['admin', 'anonymous', 'guest', 'logger', 'user']
+    transprop_perms = transprop_lielas
 # end class Test_Case_Lielas
 
 def test_suite () :

@@ -1,46 +1,46 @@
 properties = \
     [ ( 'area'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'category'
       , [ ( 'cert_sw'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'default_part_of'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'nosy'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'responsible'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'valid'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'type'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
@@ -145,169 +145,169 @@ properties = \
       )
     , ( 'keyword'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         ]
       )
     , ( 'kind'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'content'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'date'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'files'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'header'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'inreplyto'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'keywords'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'messageid'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'recipients'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'subject'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'summary'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         , ( 'type'
-          , ["admin", "user"]
+          , ["admin", "issue_admin", "user"]
           )
         ]
       )
     , ( 'msg_keyword'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'private_for'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'tmplate'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'url'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'severity'
       , [ ( 'abbreviation'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'transitions'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'status_transition'
       , [ ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'require_msg'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'require_resp_change'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'target'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'alternate_addresses'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'password'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'phone'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'queries'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'realname'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'roles'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'status'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'timezone'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'username'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['admin', 'issue_admin', 'user']
           )
         ]
       )

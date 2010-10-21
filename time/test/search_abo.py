@@ -1,508 +1,508 @@
 properties = \
     [ ( 'abo'
       , [ ( 'aboprice'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         , ( 'amount'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         , ( 'begin'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         , ( 'end'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         , ( 'invoices'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo+invoice", "admin", "invoice"]
           )
         , ( 'messages'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         , ( 'payer'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         , ( 'subscriber'
-          , ["abo", "admin", "invoice", "product"]
+          , ["abo", "abo+invoice", "admin", "invoice", "product"]
           )
         ]
       )
     , ( 'abo_price'
       , [ ( 'abotype'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'amount'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'currency'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'invoice_group'
-          , ["admin", "user"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'invoice_template'
-          , ["admin", "user"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'valid'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'abo_type'
       , [ ( 'adr_type'
-          , ["abo", "admin", "invoice", "product"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'description'
-          , ["abo", "admin", "invoice", "product"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'name'
-          , ["abo", "admin", "invoice", "product"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'order'
-          , ["abo", "admin", "invoice", "product"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'period'
-          , ["abo", "admin", "invoice", "product"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         ]
       )
     , ( 'address'
       , [ ( 'abos'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'adr_type'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'affix'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'birthdate'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'city'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'contacts'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'country'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'firstname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'function'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'initial'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'invoices'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'lastname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'letters'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'lettertitle'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'lookalike_city'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'lookalike_firstname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'lookalike_function'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'lookalike_lastname'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'lookalike_street'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'messages'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'opening_hours'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'parent'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'payed_abos'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'invoice', 'product']
           )
         , ( 'postalcode'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'salutation'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'street'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'title'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'valid'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'adr_type'
       , [ ( 'code'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'typecat'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'adr_type_cat'
       , [ ( 'code'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'type_valid'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'contact'
       , [ ( 'address'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'contact'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'contact_type'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'description'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'contact_type'
       , [ ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'url_template'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'currency'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'file'
       , [ ( 'content'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'type'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'invoice'
       , [ ( 'abo'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'amount'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'amount_payed'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'balance_open'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'currency'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'invoice_group'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'invoice_no'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'last_sent'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'letters'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'n_sent'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'open'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'payer'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'payment'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'period_end'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'period_start'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'send_it'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'subscriber'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         ]
       )
     , ( 'invoice_group'
       , [ ( 'description'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'name'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         ]
       )
     , ( 'invoice_template'
       , [ ( 'interval'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'invoice_level'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'name'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'tmplate'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         ]
       )
     , ( 'letter'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'date'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'invoice'
-          , ["admin", "user"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'messages'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'subject'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'msg'
       , [ ( 'author'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'content'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'date'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'files'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'inreplyto'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'messageid'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'recipients'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'summary'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'type'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'opening_hours'
       , [ ( 'from_hour'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'from_minute'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'to_hour'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'to_minute'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'weekday'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'payment'
       , [ ( 'amount'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'date_payed'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'invoice'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         , ( 'receipt_no'
-          , ["admin", "invoice"]
+          , ['abo+invoice', 'admin', 'invoice']
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'private_for'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'tmplate'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'url'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'tmplate'
       , [ ( 'files'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'tmplate_status'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'tmplate_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'use_for_invoice'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'use_for_letter'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'user'
       , [ ( 'address'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'alternate_addresses'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'csv_delimiter'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'password'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'phone'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'queries'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'realname'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'roles'
-          , ["admin"]
+          , ['admin']
           )
         , ( 'status'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'timezone'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'username'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'user_status'
       , [ ( 'description'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'valid'
       , [ ( 'description'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'name'
-          , ["admin", "adr_readonly", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )
     , ( 'weekday'
       , [ ( 'name'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         , ( 'order'
-          , ["admin", "adr_readonly", "contact", "user"]
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]
       )

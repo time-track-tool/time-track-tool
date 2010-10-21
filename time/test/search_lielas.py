@@ -1,43 +1,43 @@
 properties = \
     [ ( 'device'
       , [ ( 'adr'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'cls'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'dev'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'device_group'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'gapint'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'mint'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'name'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'order'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'rec'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'sint'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'surrogate'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'transceiver'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'version'
-          , ["admin", "guest", "logger", "user"]
+          , ['admin', 'guest', 'logger', 'user']
           )
         ]
       )
