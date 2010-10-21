@@ -65,6 +65,6 @@ transprop_perms = \
       , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
       )
     , ( 'time_record.wp.project'
-      , ['admin', 'controlling', 'project', 'project_view']
+      , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
       )
     ]
