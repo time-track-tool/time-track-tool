@@ -967,6 +967,114 @@ class Test_Case_Timetracker (_Test_Case) :
         self.concurrency (self.concurrency_set)
     # end def test_concurrency_set
 
+    def test_maturity_index (self) :
+        self.db = self.tracker.open ('admin')
+        user = self.db.user.create \
+            ( username = 'user'
+            , status = self.db.user_status.lookup ('system')
+            , roles = 'User,Nosy'
+            )
+        pending = self.db.category.lookup ('pending')
+        self.db.category.set (pending, responsible = user)
+        self.db.commit ()
+        self.db.clearCache ()
+        self.db.close ()
+        self.db = self.tracker.open ('user')
+        opn = self.db.status.lookup ('open')
+        m1 = self.db.msg.create (content="new issue", subject="new issue")
+        m2 = self.db.msg.create (content="Mistaken", subject="Mistaken")
+        mc = self.db.issue.create \
+            ( title          = "Master Container"
+            , messages       = [m1]
+            , release        = 'None'
+            , status         = opn
+            , numeric_effort = 1
+            , category       = pending
+            )
+        c1 = self.db.issue.create \
+            ( title          = "Container"
+            , messages       = [m1]
+            , release        = 'None'
+            , status         = opn
+            , numeric_effort = 1
+            , category       = pending
+            , part_of        = mc
+            )
+        self.assertEqual (self.db.issue.get (c1, 'status'), opn)
+        self.assertEqual (self.db.issue.get (c1, 'maturity_index'), 5.0)
+        c2 = self.db.issue.create \
+            ( title          = "Container"
+            , messages       = [m1]
+            , release        = 'None'
+            , status         = opn
+            , numeric_effort = 1
+            , category       = pending
+            , part_of        = mc
+            )
+        self.assertEqual (self.db.issue.get (c2, 'status'), opn)
+        self.assertEqual (self.db.issue.get (c2, 'maturity_index'), 5.0)
+        i1 = self.db.issue.create \
+            ( title    = "Issue no. 1"
+            , messages = [m1]
+            , release  = '1'
+            , status   = opn
+            , part_of  = c1
+            )
+        self.assertEqual (self.db.issue.get (c1, 'maturity_index'), 10.0)
+        i2 = self.db.issue.create \
+            ( title    = "Issue no. 2"
+            , messages = [m1]
+            , release  = '2'
+            , status   = opn
+            , part_of  = c1
+            )
+        self.assertEqual (self.db.issue.get (c1, 'maturity_index'), 20.0)
+        i3 = self.db.issue.create \
+            ( title    = "Issue no. 3"
+            , messages = [m1]
+            , release  = '3'
+            , status   = opn
+            , part_of  = c2
+            )
+        self.db.commit ()
+        self.assertEqual (self.db.issue.get (i1, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (i2, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (i3, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (c1, 'maturity_index'), 20.0)
+        self.assertEqual (self.db.issue.get (c2, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (mc, 'maturity_index'), 30.0)
+
+        self.db.issue.set (i1, part_of = c2)
+        self.assertEqual (self.db.issue.get (i1, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (c1, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (c2, 'maturity_index'), 20.0)
+        self.assertEqual (self.db.issue.get (mc, 'maturity_index'), 30.0)
+
+        # close
+        mistaken = self.db.kind.lookup ('Mistaken')
+        self.db.issue.set (i1, kind = mistaken, messages = [m1, m2])
+        self.assertEqual (self.db.issue.get (i1, 'maturity_index'),  0.0)
+        self.assertEqual (self.db.issue.get (c2, 'maturity_index'), 10.0)
+        self.assertEqual (self.db.issue.get (mc, 'maturity_index'), 20.0)
+
+        self.db2 = self.tracker.open ('user')
+        self.db2.issue.get (c1, 'maturity_index')
+        self.db2.issue.get (c2, 'maturity_index')
+        self.db2.commit ()
+
+        self.db.commit ()
+
+        # concurrency: check that we don't cache values over commits
+        self.assertEqual (self.db2.issue.get (c1, 'maturity_index'), 10.0)
+        self.assertEqual (self.db2.issue.get (c2, 'maturity_index'), 10.0)
+        self.assertEqual (self.db2.issue.get (mc, 'maturity_index'), 20.0)
+        self.db2.issue.set (i3, part_of = c1)
+        self.db2.commit ()
+        self.assertEqual (self.db2.issue.get (c1, 'maturity_index'), 20.0)
+        self.assertEqual (self.db2.issue.get (c2, 'maturity_index'),  0.0)
+        self.assertEqual (self.db2.issue.get (mc, 'maturity_index'), 20.0)
+    # end def test_maturity_index
+
     def test_tr_duration (self) :
         trid = '4'
         self.setup_db ()

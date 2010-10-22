@@ -174,34 +174,32 @@ def no_autoclose_container (db, cl, nodeid, new_values) :
             raise Reject, _ ("Containers may not be Obsolete/Mistaken")
 # end def no_autoclose_container
 
-maturity_index_in_progress = {}
-
-def set_maturity_index \
-    (db, cl, nodeid, new_values, do_update = False, force = False) :
+def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
     """ Set the maturity index for a node if it was not already present.
-        This does a recursive update over all children if necessary.
-        If the maturity_index in new_values is None, we recompute the
-        value.
-
-        Implementation note: Since we can be called via reactor *and*
-        recursively, we keep a dict of calls in progress so that we do
-        not attempt multiple updates (with endless recursion as a
-        result) on the same value.
+        If the maturity_index in new_values is None, we recompute.
+        We also recompute if any relevant fields changed or do_update
+        ist True (in which case some of the children changed and we were
+        called by a reactor)
     """
-    not_in_progress = nodeid and nodeid not in maturity_index_in_progress
-    if not_in_progress :
-        maturity_index_in_progress [nodeid] = True
     mi    = new_values.get ('maturity_index')
+    omi   = mi
     co    = new_values.get ('composed_of')
     minor = db.severity.lookup ('Minor')
     if nodeid :
-        if 'composed_of'    not in new_values :
+        if 'composed_of' not in new_values :
             co = cl.get (nodeid, 'composed_of')
-    if mi is None or force :
+        omi = cl.get (nodeid, 'maturity_index')
+        if 'maturity_index' not in new_values :
+            mi = omi
+    if  (   mi is None or omi is None
+        or 'status' in new_values or 'severity' in new_values
+        or 'composed_of' in new_values
+        or do_update
+        ) :
         if co :
             mi = 0
             for k in co :
-                mi += set_maturity_index (db, cl, k, {}, True)
+                mi += db.issue.get (k, 'maturity_index')
         else :
             status = new_values.get  ('status')   or cl.get (nodeid, 'status')
             sev    = new_values.get  ('severity') or cl.get (nodeid, 'severity')
@@ -211,10 +209,8 @@ def set_maturity_index \
             sev    = db.severity.get (sev, 'name')
             mi     = maturity_table.get ((sev, status), 0)
         new_values ['maturity_index'] = mi
-        if do_update and not_in_progress :
+        if do_update :
             cl.set (nodeid, maturity_index = mi)
-    if not_in_progress :
-        del maturity_index_in_progress [nodeid]
     return mi
 # end def set_maturity_index
 
@@ -239,17 +235,7 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
             if p :
                 parent_mi = cl.get (p, 'maturity_index')
                 force     = part_of != opart_of
-                if parent_mi is None or force :
-                    if p not in maturity_index_in_progress :
-                        set_maturity_index (db, cl, p, {}, True, force)
-                else :
-                    # only if second update in progress
-                    if o_mi is not None and p == opart_of :
-                        # handle the case that part_of == opart_of
-                        parent_mi = parent_mi - o_mi
-                        cl.set (p, maturity_index = parent_mi)
-                    if p == part_of :
-                        cl.set (p, maturity_index = parent_mi + mi)
+                set_maturity_index (db, cl, p, {}, True)
 # end def update_maturity_index
 
 def creat_update_maturity_index (db, cl, nodeid, old_values) :
@@ -257,7 +243,7 @@ def creat_update_maturity_index (db, cl, nodeid, old_values) :
         which does the real work, we only need information if the node
         was just created or already existed.
     """
-    update_maturity_index (db,cl, nodeid, old_values, True)
+    update_maturity_index (db, cl, nodeid, old_values, True)
 # end def creat_update_maturity_index
 
 def fix_effort (db, cl, nodeid, new_values) :
