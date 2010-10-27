@@ -49,8 +49,6 @@ def new_support (db, cl, nodeid, new_values) :
         new_values ['responsible'] = db.getuid ()
     if 'prio'         not in new_values :
         new_values ['prio'] = db.sup_prio.lookup ('unknown')
-    if 'severity'     not in new_values :
-        new_values ['severity'] = db.severity.lookup ('Minor')
     if 'confidential' not in new_values :
         new_values ['confidential'] = 0
 # end def new_support
@@ -58,7 +56,7 @@ def new_support (db, cl, nodeid, new_values) :
 def check_support (db, cl, nodeid, new_values) :
     require_attributes \
         ( _, cl, nodeid, new_values
-        , 'title', 'category', 'status', 'prio', 'responsible', 'severity'
+        , 'title', 'category', 'status', 'prio', 'responsible'
         )
 # end def check_support
 
