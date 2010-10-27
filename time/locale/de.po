@@ -20,8 +20,8 @@ msgstr ""
 msgid "Times must be given in quarters of an hour"
 msgstr ""
 
-msgid "needs_doc"
-msgstr "Doku nötig"
+msgid "doc_issue_status"
+msgstr "Doku status"
 
 msgid "No negative times are allowed"
 msgstr ""

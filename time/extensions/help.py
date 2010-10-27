@@ -484,6 +484,11 @@ _helptext          = \
              \"ASDM Automotive Software Development Manual\".
           '''
       ]
+    , ""'doc_status'                  :
+      [ ""'''%(Classname)s documentation status -- %(Classname)s can't be
+             closed if documentation is needed.
+          '''
+      ]
     , ""'document_nr'                 :
       [ ""'''The %(Property)s is generated when the %(Classname)s is
              created. It can be manually overwritten for an old %(Classname)s
@@ -843,8 +848,6 @@ _helptext          = \
           '''
       ]
     , ""'needs.id'                    : [help_id]
-    , ""'needs_doc'                   :
-      [""'''%(Classname)s needs documentation''']
     , ""'netbios_dd'                  :
       [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
              config. Specifies list of servers in order of preference.

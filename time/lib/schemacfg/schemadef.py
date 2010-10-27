@@ -304,6 +304,8 @@ class Importer (object) :
             # end def __init__
         # end class Superseder_Issue_Class
 
+        Optional_Doc_Issue_Class = Superseder_Issue_Class
+
         class Msg_Class (FileClass, Ext_Mixin) :
             def __init__ (self, db, classname, ** properties) :
                 self.update_properties \
@@ -323,13 +325,14 @@ class Importer (object) :
             # end def __init__
         # end class Msg_Class
 
-        globals ['Ext_Class']              = Ext_Class
-        globals ['Msg_Class']              = Msg_Class
-        globals ['Ext_Mixin']              = Ext_Mixin
-        globals ['Min_Issue_Class']        = Min_Issue_Class
-        globals ['Nosy_Issue_Class']       = Nosy_Issue_Class
-        globals ['Full_Issue_Class']       = Full_Issue_Class
-        globals ['Superseder_Issue_Class'] = Superseder_Issue_Class
+        globals ['Ext_Class']                = Ext_Class
+        globals ['Msg_Class']                = Msg_Class
+        globals ['Ext_Mixin']                = Ext_Mixin
+        globals ['Min_Issue_Class']          = Min_Issue_Class
+        globals ['Nosy_Issue_Class']         = Nosy_Issue_Class
+        globals ['Full_Issue_Class']         = Full_Issue_Class
+        globals ['Superseder_Issue_Class']   = Superseder_Issue_Class
+        globals ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
 
         for s in schemas :
             m = __import__ ('.'.join (('schemacfg', s)))

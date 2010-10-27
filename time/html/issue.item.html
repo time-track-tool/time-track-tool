@@ -81,10 +81,10 @@
           (classname, 'severity')"/>
       <td tal:content="structure python:context.severity.menu ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:'doc_issue_status' in klass._klass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'needs_doc')"/>
-      <td tal:content="structure python:context.needs_doc.field ()"/>
+          (classname, 'doc_issue_status')"/>
+      <td tal:content="structure python:context.doc_issue_status.menu ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>

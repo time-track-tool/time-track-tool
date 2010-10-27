@@ -102,9 +102,6 @@ properties = \
         , ( 'needs'
           , ["admin", "issue_admin", "user"]
           )
-        , ( 'needs_doc'
-          , ["admin", "issue_admin", "user"]
-          )
         , ( 'nosy'
           , ["admin", "issue_admin", "user"]
           )

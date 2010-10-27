@@ -42,6 +42,7 @@ from schemacfg import schemadef
 # Note: order matters, core is always last.
 schemas = \
     ( 'company'
+    , 'docissue'
     , 'issue'
     , 'doc'
     , 'it_tracker'

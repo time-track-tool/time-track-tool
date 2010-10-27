@@ -8,85 +8,58 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['category'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['title'])
-    , utils.ExtProperty (utils, pdict ['area'],        multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['kind'],        multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['severity'],    multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['responsible']
-        , help_props   = ['firstname', 'lastname']
-        )
-    , utils.ExtProperty (utils, pdict ['deadline'])
-    , utils.ExtProperty (utils, pdict ['earliest_start'])
-    , utils.ExtProperty (utils, pdict ['numeric_effort'])
-    , utils.ExtProperty (utils, pdict ['priority'])
-    , utils.ExtProperty (utils, pdict ['effective_prio'])
-    , utils.ExtProperty (utils, pdict ['release'])
-    , utils.ExtProperty
-        ( utils, pdict ['depends']
-        , searchable   = True
-        , sortable     = False
-        , do_classhelp = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['depends']
-        , searchname   = 'depends.id'
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['needs']
-        , searchable   = True
-        , sortable     = False
-        , do_classhelp = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['needs']
-        , searchname   = 'needs.id'
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['composed_of']
-        , searchable   = True
-        , sortable     = False
-        , do_classhelp = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['composed_of']
-        , searchname = 'composed_of.id'
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['part_of']
-        , searchable   = True
-        , do_classhelp = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['part_of']
-        , searchname   = 'part_of.id'
-        )
-    , utils.ExtProperty (utils, pdict ['fixed_in'])
-    , utils.ExtProperty (utils, pdict ['superseder'])
-    , utils.ExtProperty
-        ( utils, pdict ['nosy']
-        , help_props   = ['firstname', 'lastname']
-        , filter       = dict (status = db._db.user_status.lookup ('valid'))
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['creator']
-        , help_props   = ['firstname', 'lastname']
-        )
-    , utils.ExtProperty (utils, pdict ['planned_begin'])
-    , utils.ExtProperty (utils, pdict ['planned_end'])
-    , utils.ExtProperty (utils, pdict ['cur_est_begin'])
-    , utils.ExtProperty (utils, pdict ['cur_est_end'])
-    , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['activity'])
-    , utils.ExtProperty (utils, pdict ['closed'])
-    , utils.ExtProperty (utils, pdict ['keywords'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['maturity_index'])
-    , utils.ExtProperty (utils, pdict ['needs_doc'])
+   prp python:
+    ( ('id',                 {})
+    , ('category',           dict (multiselect = 1))
+    , ('title',              {})
+    , ('area',               dict (multiselect = 1))
+    , ('kind',               dict (multiselect = 1))
+    , ('status',             dict (multiselect = 1))
+    , ('severity',           dict (multiselect = 1))
+    , ('responsible',        dict (help_props = ['firstname', 'lastname']))
+    , ('deadline',           {})
+    , ('earliest_start',     {})
+    , ('numeric_effort',     {})
+    , ('priority',           {})
+    , ('effective_prio',     {})
+    , ('release',            {})
+    , ( 'depends'
+      , dict (searchable = True, sortable = False, do_classhelp = False)
+      )
+    , ('depends',            dict (searchname = 'depends.id'))
+    , ( 'needs'
+      , dict (searchable = True, sortable = False, do_classhelp = False)
+      )
+    , ('needs',              dict (searchname = 'needs.id'))
+    , ( 'composed_of'
+      , dict (searchable = True, sortable = False, do_classhelp = False)
+      )
+    , ('composed_of',        dict (searchname = 'composed_of.id'))
+    , ('part_of',            dict (searchable = True, do_classhelp = False))
+    , ('part_of',            dict (searchname = 'part_of.id'))
+    , ('fixed_in',           {})
+    , ('superseder',         {})
+    , ('nosy'
+      , dict ( help_props = ['firstname', 'lastname']
+             , filter     = dict (status = db._db.user_status.lookup ('valid'))
+             )
+      )
+    , ('creator',            dict (help_props = ['firstname', 'lastname']))
+    , ('planned_begin',      {})
+    , ('planned_end',        {})
+    , ('cur_est_begin',      {})
+    , ('cur_est_end',        {})
+    , ('creation',           {})
+    , ('activity',           {})
+    , ('closed',             {})
+    , ('keywords',           dict (multiselect = 1))
+    , ('maturity_index',     {})
+    , ('doc_issue_status',   dict (multiselect = 1))
     );
+   props python:
+       [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+         for p in prp if p [0] in pdict
+       ]
    "
   tal:condition="context/is_view_ok">
 

@@ -147,6 +147,14 @@ properties = \
         , 'title'
         ]
       )
+    , ( 'doc_issue_status'
+      , [ 'description'
+        , 'name'
+        , 'nosy'
+        , 'order'
+        , 'transitions'
+        ]
+      )
     , ( 'doc_status'
       , [ 'name'
         , 'order'
@@ -169,6 +177,7 @@ properties = \
         , 'cur_est_end'
         , 'deadline'
         , 'depends'
+        , 'doc_issue_status'
         , 'earliest_start'
         , 'effective_prio'
         , 'files'
@@ -179,7 +188,6 @@ properties = \
         , 'maturity_index'
         , 'messages'
         , 'needs'
-        , 'needs_doc'
         , 'nosy'
         , 'numeric_effort'
         , 'part_of'

@@ -40,7 +40,6 @@ properties = \
         , 'maturity_index'
         , 'messages'
         , 'needs'
-        , 'needs_doc'
         , 'nosy'
         , 'numeric_effort'
         , 'part_of'

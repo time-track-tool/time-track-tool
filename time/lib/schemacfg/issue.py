@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -36,7 +36,7 @@ def init \
     ( db
     , Class
     , Ext_Mixin
-    , Superseder_Issue_Class
+    , Optional_Doc_Issue_Class
     , String
     , Date
     , Link
@@ -111,7 +111,7 @@ def init \
         )
     msg_keyword.setkey("name")
 
-    Superseder_Issue_Class \
+    Optional_Doc_Issue_Class \
         ( db, "issue"
         , keywords            = Multilink ("keyword",     do_journal = 'no')
         , priority            = Number    ()
@@ -139,7 +139,6 @@ def init \
         , severity            = Link      ("severity",    do_journal = 'no')
         , maturity_index      = Number    ()
         , confidential        = Boolean   ()
-        , needs_doc           = Boolean   ()
         )
 
     Cls = kw ['Msg_Class']
