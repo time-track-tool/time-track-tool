@@ -33,6 +33,8 @@
 
 import sys, os
 
+sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
+sys.path.insert (0, os.path.join (db.config.HOME, 'schema'))
 from common    import clearance_by
 from schemacfg import schemadef
 

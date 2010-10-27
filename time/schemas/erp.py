@@ -33,6 +33,7 @@
 
 import sys, os
 
+sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
 from schemacfg import schemadef
 
 # sub-schema definitins to include
