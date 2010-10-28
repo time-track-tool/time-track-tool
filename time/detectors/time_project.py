@@ -42,6 +42,7 @@ def check_time_project (db, cl, nodeid, new_values) :
     wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
     if not wl :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
+    common.require_attributes (_, cl, nodeid, new_values, 'cost_center')
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
@@ -56,6 +57,7 @@ def new_time_project (db, cl, nodeid, new_values) :
             new_values ['status'] = '1'
     if 'op_project' not in new_values :
         new_values ['op_project'] = True
+    common.require_attributes (_, cl, nodeid, new_values, 'cost_center')
 # end def new_time_project
 
 def fix_wp (db, cl, nodeid, old_values) :

@@ -40,7 +40,7 @@
       colspan="3"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname
+     <th class="required" tal:content="structure python:utils.fieldname
          (classname, 'cost_center')"/>
      <td tal:define="ccs python: db.cost_center_status.filter
                      (None, dict (active = True))">

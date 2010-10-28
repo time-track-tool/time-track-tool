@@ -347,6 +347,8 @@ _helptext          = \
     , ""'contact_person'              :
       [""'''Personal information about a %(Property)s''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
+    , ""'cost_center'                 :
+      [""'''%(Property)s for this %(Classname)s (required)''']
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
       [""'''Specifies the Phase the Cost Center is in''']
