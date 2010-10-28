@@ -394,6 +394,13 @@ def indexargs_dict (nav, form) :
     return d
 # end def indexargs_dict
 
+def may_search (db, uid, classname, property) :
+    check = getattr (db.security, 'hasSearchPermission', None)
+    if check :
+        return check (uid, classname, property)
+    return True
+# end def may_search
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -429,3 +436,4 @@ def init (instance) :
     reg ("nickname",                     nickname)
     reg ("persons_for_adr",              persons_for_adr)
     reg ("indexargs_dict",               indexargs_dict)
+    reg ("may_search",                   may_search)

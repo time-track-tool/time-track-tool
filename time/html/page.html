@@ -1146,17 +1146,17 @@
 <tal:block metal:define-macro="simple_search_form">
  <tal:block tal:define=
      " multi_props    python: [p for p in props if p.multiselect
-                               and db._db.security.hasSearchPermission
-                                (uid, classname, p.searchname)
+                               and utils.may_search
+                                (db._db, uid, classname, p.searchname)
                               ]
      ; sort_props     python: [p for p in props if p.sortable
-                               and db._db.security.hasSearchPermission
-                                (uid, classname, p.searchname)
+                               and utils.may_search
+                                (db._db, uid, classname, p.searchname)
                               ]
      ; nomulti_props  python: [p for p in props
                                if (not p.multiselect and p.searchable)
-                               and db._db.security.hasSearchPermission
-                                (uid, classname, p.searchname)
+                               and utils.may_search
+                                (db._db, uid, classname, p.searchname)
                               ]
      ; csv_link       python:request.indexargs_url
             (classname, {'@action':'export_csv_names'})
