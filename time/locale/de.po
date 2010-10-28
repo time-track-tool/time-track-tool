@@ -23,6 +23,18 @@ msgstr ""
 msgid "doc_issue_status"
 msgstr "Doku status"
 
+msgid "doc_issue_status++order"
+msgstr "Sortiernummer"
+
+msgid "doc_issue_status++nosy"
+msgstr "Verteiler"
+
+msgid "may_close"
+msgstr "Schließen erlaubt"
+
+msgid "need_msg"
+msgstr "Nachricht nötig"
+
 msgid "No negative times are allowed"
 msgstr ""
 
@@ -2230,7 +2242,7 @@ msgid ""
 msgstr ""
 
 msgid "nosy"
-msgstr ""
+msgstr "Verteiler"
 
 msgid "People receiving announcements (messages) for %(Classname)s"
 msgstr "Personen die Ankündigungen (Notizen) zu %(Classname)s erhalten"

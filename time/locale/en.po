@@ -23,6 +23,18 @@ msgstr ""
 msgid "doc_issue_status"
 msgstr "Doc status"
 
+msgid "doc_issue_status++order"
+msgstr "Order"
+
+msgid "doc_issue_status++nosy"
+msgstr "Nosy List"
+
+msgid "may_close"
+msgstr "May close"
+
+msgid "need_msg"
+msgstr "Need message"
+
 msgid "No negative times are allowed"
 msgstr ""
 

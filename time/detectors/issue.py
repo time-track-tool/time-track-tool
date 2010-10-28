@@ -1,11 +1,10 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -257,6 +256,34 @@ def fix_effort (db, cl, nodeid, new_values) :
             new_values [ne] = int (effort + .5)
 # end def fix_effort
 
+def doc_issue_status (db, cl, nodeid, new_values) :
+    """ Check if doc_issue_status is set, if no we set it to undecided.
+        Don't allow to set this to empty.
+    """
+    n = 'doc_issue_status'
+    old = cl.get (nodeid, n)
+    if old :
+        common.require_attributes (_, cl, nodeid, new_values, n)
+    else :
+        if n not in new_values or not new_values [n] :
+            new_values [n] = db.doc_issue_status.filter \
+                (None, {}, sort = [('+', 'order')]) [0]
+    if  (n in new_values) :
+        di = db.doc_issue_status.getnode (new_values [n])
+        if di.need_msg and 'messages' not in new_values :
+            raise Reject, _ \
+                ("Change of %(doc_issue_status)s requires a message") \
+                % {n : _ (n)}
+# end def doc_issue_status
+
+def new_doc_issue_status (db, cl, nodeid, new_values) :
+    n = 'doc_issue_status'
+    if n not in new_values or not new_values [n] :
+        new_values [n] = db.doc_issue_status.filter \
+            (None, {}, sort = [('+', 'order')]) [0]
+# end new_doc_issue_status
+
+
 def init (db) :
     if 'issue' not in db.classes :
         return
@@ -280,4 +307,7 @@ def init (db) :
     db.issue.react ("create", creat_update_maturity_index)
     db.issue.audit ("set",    fix_effort)
     db.issue.audit ("create", fix_effort)
+    if 'doc_issue_status' in db.issue.properties :
+        db.issue.audit ("set",    doc_issue_status)
+        db.issue.audit ("create", new_doc_issue_status)
 # end def init

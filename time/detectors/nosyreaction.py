@@ -1,6 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
+# Copyright (c) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+#                       Web: http://www.runtux.com Email: office@runtux.com
 # This module is free software, and you may redistribute it and/or modify
 # under the same terms as Python, so long as this copyright message and
 # disclaimer are retained in their original form.
@@ -16,21 +18,12 @@
 # BASIS, AND THERE IS NO OBLIGATION WHATSOEVER TO PROVIDE MAINTENANCE,
 # SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #
-#$Id$
-#
 #++
 # Name
 #    nosyreaction
 #
 # Purpose
 #    Send out notification emails to all the users on the nosy list.
-#
-# Revision Dates
-#    24-Jun-2004 (MPH) Creation
-#     6-Jul-2004 (MPH) Changed `*_document` to `document`.
-#    ««revision-date»»···
-#--
-#
 
 
 from roundup import roundupdb, hyperdb
@@ -103,6 +96,12 @@ def updatenosy(db, cl, nodeid, newvalues):
                 continue
             if not current.has_key(value):
                 current[value] = 1
+
+    # check if doc_issue_status changed and has a nosy list
+    if 'doc_issue_status' in newvalues :
+        di = db.doc_issue_status.getnode (newvalues ['doc_issue_status'])
+        for n in di.nosy :
+            current [n] = 1
 
     # *always* add responsible(s) etc. to the nosy list -- make sure
     # responsible/stakeholder cannot be removed from nosy.

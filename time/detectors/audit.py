@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-9 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -186,6 +186,11 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                       ("numeric_effort", cl.get (nodeid, "numeric_effort"))
     msg             = newvalues.get ("messages", None)
     severity        = newvalues.get ("severity", cl.get (nodeid, "severity"))
+    dis_name        = 'doc_issue_status'
+    if dis_name in db.classes and dis_name in cl.properties :
+        dis_id_old  = cl.get (nodeid, dis_name)
+        dis_id      = newvalues.get (dis_name, dis_id_old)
+        di_status   = db.doc_issue_status.getnode (dis_id)
 
     ############ complete the form ############
 
@@ -238,6 +243,22 @@ def limit_transitions (db, cl, nodeid, newvalues) :
             raise Reject, ( "[%s] A reason in `message` must be given here."
                           % nodeid
                           )
+
+    # Don't allow close if doc_issue_status doesn't allow it
+    if  (   dis_name in db.classes and dis_name in cl.properties
+        and new_status_name == "closed"
+        and not (  kind_name in ["Mistaken", "Obsolete"]
+                or superseder
+                or is_container
+                )
+        and not di_status.may_close
+        ) :
+            dis_name_l = _ (dis_name)
+            st         = di_status.name
+            raise Reject, \
+                ( "[%(nodeid)s] %(dis_name_l)s = %(st)s doesn't allow close"
+                % locals ()
+                )
 
     if  (   cur_status_name == "analyzing"
         and new_status_name != "analyzing"

@@ -231,6 +231,12 @@ _helptext          = \
       [""'''List of users this %(Classname)s maps to''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
+    , ""'may_close'                   :
+      [ ""'''Set this to \"No\" if you want to forbid closing of an
+             issue -- at least for one %(Classname)s this needs to be
+             set to \"Yes\".
+          '''
+      ]
     , ""'almax'                       :
       [""'''Maximum value, this or larger values trigger an alarm''']
     , ""'almin'                       :
@@ -484,9 +490,21 @@ _helptext          = \
              \"ASDM Automotive Software Development Manual\".
           '''
       ]
-    , ""'doc_status'                  :
+    , ""'doc_issue_status'            :
       [ ""'''%(Classname)s documentation status -- %(Classname)s can't be
              closed if documentation is needed.
+          '''
+      ]
+    , ""'doc_issue_status++nosy'      :
+      [ ""'''People receiving announcements (messages) for issues with
+             this %(Classname)s, the nosy list is modified when changing
+             to this %(Classname)s
+          '''
+      ]
+    , ""'doc_issue_status++order'     :
+      [ order
+      , ""'''Note that the %(Classname)s ordered first will also be the
+             default value.
           '''
       ]
     , ""'document_nr'                 :
@@ -842,9 +860,9 @@ _helptext          = \
              number
           '''
       ]
-    , ""'validity_date'         :
-      [ ""'''Validity date of balance field. May be up to a year
-             before the freeze date.
+    , ""'need_msg'                    :
+      [ ""'''Changing to this %(Classname)s needs a message from the
+             user.
           '''
       ]
     , ""'needs.id'                    : [help_id]
@@ -1552,6 +1570,11 @@ _helptext          = \
              here is *not* itself part of the validity time.
           '''
       , date_text
+      ]
+    , ""'validity_date'         :
+      [ ""'''Validity date of balance field. May be up to a year
+             before the freeze date.
+          '''
       ]
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']

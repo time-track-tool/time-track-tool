@@ -493,6 +493,34 @@ if 'status' in db.classes :
         status             = db.status.getnode (db.status.lookup (name))
         status.transitions = [trans_lst [t] [0] for t in trans]
 
+if 'doc_issue_status' in db.classes :
+    di1 = db.doc_issue_status.create \
+        ( name        = 'undecided'
+        , description = 'Unknown if this issue need documentation'
+        , order       = 1
+        , nosy        = []
+        , may_close   = False
+        , need_msg    = False
+        )
+    di2 = db.doc_issue_status.create \
+        ( name        = 'needs documentation'
+        , description = 'This issue needs documentation (not done yet)'
+        , order       = 2
+        , nosy        = []
+        , may_close   = False
+        , need_msg    = True
+        )
+    di3 = db.doc_issue_status.create \
+        ( name        = 'no documentation'
+        , description = 'This issue needs no documentation (or already done)'
+        , order       = 3
+        , nosy        = []
+        , may_close   = True
+        , need_msg    = True
+        )
+    for k in di1, di2, di3 :
+        db.doc_issue_status.set (k, transitions = [di1, di2, di3])
+
 if 'overtime_period' in db.classes :
     db.overtime_period.create \
         (name = "week",  order = 0, months = 0,  weekly = True)

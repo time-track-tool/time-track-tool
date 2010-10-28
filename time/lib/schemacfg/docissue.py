@@ -32,15 +32,17 @@
 from roundup.hyperdb import Class
 from schemacfg       import schemadef
 
-def init (db, Class, String, Link, Multilink, ** kw) :
+def init (db, Class, Boolean, Number, String, Link, Multilink, ** kw) :
     export   = {}
     docstat = Class \
         ( db, "doc_issue_status"
         , name                = String    (indexme = 'no')
         , description         = String    (indexme = 'no')
-        , order               = String    (indexme = 'no')
+        , order               = Number    ()
         , transitions         = Multilink ("doc_issue_status")
         , nosy                = Multilink ("user")
+        , need_msg            = Boolean   ()
+        , may_close           = Boolean   ()
         )
     docstat.setkey ("name")
 

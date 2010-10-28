@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
+# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting
+# Web: http://www.runtux.com Email: office@runtux.com
 # ****************************************************************************
-#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
@@ -24,15 +25,21 @@
 # Purpose
 #    Provide utitity functions for the issue class and friends
 #
-# Revision Dates
-#    11-Dec-2007 (PGO) Creation
-#    12-Dec-2007 (RSC) Remove i18n hack
-#    ««revision-date»»···
 #--
 
-def filter_status_transitions (status_prop) :
-    if status_prop :
-        return {'id' : [t.target._value for t in status_prop.transitions]}
+def filter_status_transitions (context) :
+    may_close = True
+    if  (   'doc_issue_status' in context._props
+        and (  not context.doc_issue_status
+            or not context.doc_issue_status.may_close
+            )
+        ) :
+        may_close = False
+    if context.status :
+        values = [t.target._value for t in context.status.transitions
+                  if t.target.name != 'closed' or may_close
+                 ]
+        return {'id' : values}
     return {}
 # end def filter_status_transitions
 
