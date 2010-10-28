@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-10-12 13:35+0200\n"
+"POT-Creation-Date: 2010-10-28 12:14+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,21 +19,6 @@ msgstr ""
 
 msgid "Times must be given in quarters of an hour"
 msgstr ""
-
-msgid "doc_issue_status"
-msgstr "Doku status"
-
-msgid "doc_issue_status++order"
-msgstr "Sortiernummer"
-
-msgid "doc_issue_status++nosy"
-msgstr "Verteiler"
-
-msgid "may_close"
-msgstr "Schließen erlaubt"
-
-msgid "need_msg"
-msgstr "Nachricht nötig"
 
 msgid "No negative times are allowed"
 msgstr ""
@@ -146,9 +131,6 @@ msgstr "\"%(attr)s\" muss größer/gleich Null sein"
 
 msgid "period must be an integer"
 msgstr "Laufzeit muss ganzzahlig sein"
-
-msgid "Country must be set"
-msgstr "Land muss gesetzt sein"
 
 msgid ""
 "address type category \"ABO\" is used by the system and may not be changed."
@@ -287,6 +269,10 @@ msgid "Tried to make this issue part of a closed issue"
 msgstr ""
 
 msgid "Containers may not be Obsolete/Mistaken"
+msgstr ""
+
+#, python-format
+msgid "Change of %(doc_issue_status)s requires a message"
 msgstr ""
 
 #, python-format
@@ -553,6 +539,9 @@ msgstr ""
 
 msgid "Invalid Supervisor"
 msgstr ""
+
+msgid "[hidden]"
+msgstr "[unsichtbar]"
 
 msgid "Don't care"
 msgstr "Nicht suchen"
@@ -891,6 +880,16 @@ msgid "all_in"
 msgstr ""
 
 msgid "If selected, the user has an all-inclusive work time contract"
+msgstr ""
+
+msgid "may_close"
+msgstr "Schließen erlaubt"
+
+msgid ""
+"Set this to \"No\" if you want to forbid closing of an\n"
+"             issue -- at least for one %(Classname)s this needs to be\n"
+"             set to \"Yes\".\n"
+"          "
 msgstr ""
 
 msgid "almax"
@@ -1428,6 +1427,40 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "doc_issue_status"
+msgstr "Doku status"
+
+msgid ""
+"%(Classname)s documentation status -- %(Classname)s can't be\n"
+"             closed if documentation is needed.\n"
+"          "
+msgstr ""
+"%(Classname)s Dokumentationsstatus -- %(Classname)s kann nicht\n"
+"             geschlossen werden solange Dokumentation benötigt wird.\n"
+"          "
+
+msgid "doc_issue_status++nosy"
+msgstr "Verteiler"
+
+msgid ""
+"People receiving announcements (messages) for issues with\n"
+"             this %(Classname)s, the nosy list is modified when changing\n"
+"             to this %(Classname)s\n"
+"          "
+msgstr ""
+
+msgid "doc_issue_status++order"
+msgstr "Sortiernummer"
+
+msgid ""
+"Note that the %(Classname)s ordered first will also be the\n"
+"             default value.\n"
+"          "
+msgstr ""
+"Beachten Sie, dass der zuerst sortierte %(Classname)s auch der\n"
+"             Standardwert (default) ist.\n"
+"          "
+
 msgid "document_nr"
 msgstr "Dokument-Nr"
 
@@ -1638,7 +1671,7 @@ msgid "Sensor interval for %(Classname)s"
 msgstr "Sensor Intervall für %(Classname)s"
 
 msgid "Numeric group ID"
-msgstr ""
+msgstr "Numerische Gruppen-ID"
 
 msgid "gid_range"
 msgstr ""
@@ -1716,7 +1749,7 @@ msgid "internal_phone"
 msgstr "Interne Durchwahl"
 
 msgid "Short mobile or external phone number, e.g., 6142."
-msgstr ""
+msgstr "Kurze mobile oder externe Telefonnummer, z.B. 6142"
 
 msgid "interval"
 msgstr "Intervall"
@@ -1739,6 +1772,8 @@ msgid ""
 "             inventory number for asset tracking\n"
 "          "
 msgstr ""
+"Eindeutiger name für diese %(Classname)s, bevorzugt die"
+"Inventarnummer für die Verwaltung von Anlagegütern (asset tracking)"
 
 msgid "invoice"
 msgstr "Rechnung"
@@ -1827,7 +1862,7 @@ msgid "Internet protocol subnet"
 msgstr ""
 
 msgid "is_alias"
-msgstr ""
+msgstr "Alias"
 
 msgid "No real user but only an email alias"
 msgstr ""
@@ -1866,7 +1901,7 @@ msgid "This %(Classname)s allows setting a value"
 msgstr "%(Classname)s erlaubt das Setzen von Werten"
 
 msgid "issue++deadline"
-msgstr ""
+msgstr "Zieldatum"
 
 msgid ""
 "Should only be entered on Top-Level workpackages which are\n"
@@ -2000,7 +2035,7 @@ msgid "location"
 msgstr "Ort"
 
 msgid "Location of %(Classname)s, e.g., Vienna HQ."
-msgstr ""
+msgstr "Ort für diese(n) %(Classname)s, z. B. Wien."
 
 msgid "login"
 msgstr "Login"
@@ -2159,14 +2194,15 @@ msgid ""
 "          "
 msgstr "Eindeutiger name für diese %(Classname)s, inklusive Versionsnummer"
 
-msgid "validity_date"
-msgstr ""
+msgid "need_msg"
+msgstr "Nachricht nötig"
 
 msgid ""
-"Validity date of balance field. May be up to a year\n"
-"             before the freeze date.\n"
+"Changing to this %(Classname)s needs a message from the\n"
+"             user.\n"
 "          "
 msgstr ""
+"Ändern dieses %(Classname)s benötigt eine Nachricht vom Benutzer"
 
 msgid "needs.id"
 msgstr "hängt ab von (ID)"
@@ -2361,9 +2397,6 @@ msgstr ""
 
 msgid "part_of.id"
 msgstr ""
-
-msgid "related_issues.id"
-msgstr "zugehörige Issues (id)"
 
 msgid "password"
 msgstr "Passwort"
@@ -2596,6 +2629,9 @@ msgid ""
 "Issues related to this %(Classname)s.\n"
 "         "
 msgstr "Issues die zu diesem %(Classname)s zugeordnet sind"
+
+msgid "related_issues.id"
+msgstr "zugehörige Issues (id)"
 
 msgid "relaxed"
 msgstr ""
@@ -3538,6 +3574,15 @@ msgstr "gültig bis"
 msgid ""
 "Expiration date for %(Classname)s. Note that the date given\n"
 "             here is *not* itself part of the validity time.\n"
+"          "
+msgstr ""
+
+msgid "validity_date"
+msgstr ""
+
+msgid ""
+"Validity date of balance field. May be up to a year\n"
+"             before the freeze date.\n"
 "          "
 msgstr ""
 
@@ -4709,6 +4754,9 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "Country must be set"
+#~ msgstr "Land muss gesetzt sein"
 
 #~ msgid "Password for this %(Classname)s"
 #~ msgstr "Passwort für %(Classname)s"

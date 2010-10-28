@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-10-12 13:35+0200\n"
+"POT-Creation-Date: 2010-10-28 12:14+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,21 +19,6 @@ msgstr ""
 
 msgid "Times must be given in quarters of an hour"
 msgstr ""
-
-msgid "doc_issue_status"
-msgstr "Doc status"
-
-msgid "doc_issue_status++order"
-msgstr "Order"
-
-msgid "doc_issue_status++nosy"
-msgstr "Nosy List"
-
-msgid "may_close"
-msgstr "May close"
-
-msgid "need_msg"
-msgstr "Need message"
 
 msgid "No negative times are allowed"
 msgstr ""
@@ -143,9 +128,6 @@ msgid "\"%(attr)s\" must be greater or equal to zero"
 msgstr ""
 
 msgid "period must be an integer"
-msgstr ""
-
-msgid "Country must be set"
 msgstr ""
 
 msgid ""
@@ -283,6 +265,10 @@ msgid "Tried to make this issue part of a closed issue"
 msgstr ""
 
 msgid "Containers may not be Obsolete/Mistaken"
+msgstr ""
+
+#, python-format
+msgid "Change of %(doc_issue_status)s requires a message"
 msgstr ""
 
 #, python-format
@@ -547,6 +533,9 @@ msgid "Supervisor (in User field) is required"
 msgstr ""
 
 msgid "Invalid Supervisor"
+msgstr ""
+
+msgid "[hidden]"
 msgstr ""
 
 msgid "Don't care"
@@ -866,6 +855,16 @@ msgid "all_in"
 msgstr "All in"
 
 msgid "If selected, the user has an all-inclusive work time contract"
+msgstr ""
+
+msgid "may_close"
+msgstr "May close"
+
+msgid ""
+"Set this to \"No\" if you want to forbid closing of an\n"
+"             issue -- at least for one %(Classname)s this needs to be\n"
+"             set to \"Yes\".\n"
+"          "
 msgstr ""
 
 msgid "almax"
@@ -1392,6 +1391,34 @@ msgid ""
 "name&gt;. \n"
 "             Example for a title:\n"
 "             \"ASDM Automotive Software Development Manual\".\n"
+"          "
+msgstr ""
+
+msgid "doc_issue_status"
+msgstr "Doc status"
+
+msgid ""
+"%(Classname)s documentation status -- %(Classname)s can't be\n"
+"             closed if documentation is needed.\n"
+"          "
+msgstr ""
+
+msgid "doc_issue_status++nosy"
+msgstr "Nosy List"
+
+msgid ""
+"People receiving announcements (messages) for issues with\n"
+"             this %(Classname)s, the nosy list is modified when changing\n"
+"             to this %(Classname)s\n"
+"          "
+msgstr ""
+
+msgid "doc_issue_status++order"
+msgstr "Order"
+
+msgid ""
+"Note that the %(Classname)s ordered first will also be the\n"
+"             default value.\n"
 "          "
 msgstr ""
 
@@ -2114,12 +2141,12 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "validity_date"
-msgstr "Validity date"
+msgid "need_msg"
+msgstr "Need message"
 
 msgid ""
-"Validity date of balance field. May be up to a year\n"
-"             before the freeze date.\n"
+"Changing to this %(Classname)s needs a message from the\n"
+"             user.\n"
 "          "
 msgstr ""
 
@@ -2312,9 +2339,6 @@ msgstr ""
 
 msgid "part_of.id"
 msgstr "Part of (id)"
-
-msgid "related_issues.id"
-msgstr "Related issues (id)"
 
 msgid "password"
 msgstr "Password"
@@ -2547,6 +2571,9 @@ msgid ""
 "Issues related to this %(Classname)s.\n"
 "         "
 msgstr ""
+
+msgid "related_issues.id"
+msgstr "Related issues (id)"
 
 msgid "relaxed"
 msgstr "Relaxed"
@@ -3468,6 +3495,15 @@ msgstr "Valid until"
 msgid ""
 "Expiration date for %(Classname)s. Note that the date given\n"
 "             here is *not* itself part of the validity time.\n"
+"          "
+msgstr ""
+
+msgid "validity_date"
+msgstr "Validity date"
+
+msgid ""
+"Validity date of balance field. May be up to a year\n"
+"             before the freeze date.\n"
 "          "
 msgstr ""
 
