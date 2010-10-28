@@ -491,7 +491,7 @@ _helptext          = \
           '''
       ]
     , ""'doc_issue_status'            :
-      [ ""'''%(Classname)s documentation status -- %(Classname)s can't be
+      [ ""'''%(Classname)s documentation status -- %(Classname)s can\'t be
              closed if documentation is needed.
           '''
       ]
