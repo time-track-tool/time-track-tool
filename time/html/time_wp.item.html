@@ -31,16 +31,23 @@
          (None, {'active':True})">
      <th tal:content="structure python:utils.fieldname
          (classname, 'cost_center')"/>
-     <td>
+     <td tal:define="ccs python: db.cost_center_status.filter
+                     (None, dict (active = True))">
+      <!-- maybe one day make this configurable
       <tal:block tal:replace="structure context/cost_center/field"/>
       <tal:block tal:condition="context/cost_center/is_edit_ok"
+          tal:define="ccs python: db.cost_center_status.filter
+                      (None, dict (active = True))"
           tal:replace="structure python:db.cost_center.classhelp
             ( 'id,name,description'
             , property='cost_center'
             , inputtype='radio'
             , width='600'
             , pagesize=500
+            , filter='status=%s' % ','.join (i.id for i in ccs)
             )"/>
+      -->
+      <tal:block tal:replace="structure context/cost_center/plain"/>
      </td>
      <td tal:condition="context/id" tal:content="structure python:
         utils.ExtProperty 

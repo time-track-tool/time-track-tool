@@ -458,7 +458,8 @@ properties = \
         ]
       )
     , ( 'time_project'
-      , [ 'department'
+      , [ 'cost_center'
+        , 'department'
         , 'deputy'
         , 'description'
         , 'is_public_holiday'

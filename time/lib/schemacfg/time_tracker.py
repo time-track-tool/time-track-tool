@@ -200,6 +200,7 @@ def init \
         , op_project            = Boolean   ()
         , no_overtime           = Boolean   ()
         , is_public_holiday     = Boolean   ()
+        , cost_center           = Link      ("cost_center")
         )
     time_project.setkey ("name")
 

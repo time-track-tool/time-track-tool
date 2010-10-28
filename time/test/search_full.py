@@ -1065,7 +1065,10 @@ properties = \
         ]
       )
     , ( 'time_project'
-      , [ ( 'department'
+      , [ ( 'cost_center'
+          , ['admin', 'controlling', 'project', 'project_view']
+          )
+        , ( 'department'
           , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'deputy'

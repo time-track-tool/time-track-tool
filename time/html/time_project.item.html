@@ -41,6 +41,29 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'cost_center')"/>
+     <td tal:define="ccs python: db.cost_center_status.filter
+                     (None, dict (active = True))">
+      <tal:block tal:replace="structure context/cost_center/field"/>
+      <tal:block tal:condition="context/cost_center/is_edit_ok"
+          tal:replace="structure python:db.cost_center.classhelp
+            ( 'id,name,description'
+            , property='cost_center'
+            , inputtype='radio'
+            , width='600'
+            , pagesize=500
+            , filter='status=%s' % ','.join (i.id for i in ccs)
+            )"/>
+     </td>
+     <td tal:condition="context/id" tal:content="structure python:
+        utils.ExtProperty
+          ( utils
+          , context.cost_center.name
+          , item=context.cost_center
+          ).formatlink()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'organisation')"/>
      <td tal:content="structure python:context.organisation.menu ()"/>
      <th tal:content="structure python:utils.fieldname

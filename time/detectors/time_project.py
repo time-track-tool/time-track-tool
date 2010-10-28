@@ -58,6 +58,21 @@ def new_time_project (db, cl, nodeid, new_values) :
         new_values ['op_project'] = True
 # end def new_time_project
 
+def fix_wp (db, cl, nodeid, old_values) :
+    """ Copy cost_center of time_project to time_wp if changed in
+        time_project.
+    """
+    ccn = 'cost_center'
+    cc  = cl.getnode (nodeid)
+    if  (  not old_values
+        or ccn not in old_values
+        or old_values [ccn] == cc.cost_center
+        ) :
+        return
+    for wp in db.time_wp.filter (None, dict (project = nodeid)) :
+        db.time_wp.set (wp, cost_center = cc.cost_center)
+# end def fix_wp
+
 def init (db) :
     if 'time_project' not in db.classes :
         return
@@ -66,6 +81,8 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_project.audit  ("create", new_time_project)
     db.time_project.audit  ("set",    check_time_project)
+    db.time_project.react  ("create", fix_wp)
+    db.time_project.react  ("set",    fix_wp)
 # end def init
 
 ### __END__ time_project
