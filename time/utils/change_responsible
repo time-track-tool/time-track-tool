@@ -1,0 +1,124 @@
+#!/usr/bin/python
+
+import sys
+import xmlrpclib
+from optparse import OptionParser
+from getpass  import getpass, getuser
+
+class XMLRPC (object) :
+    def __init__ (self, url) :
+        self.srvr = xmlrpclib.ServerProxy (url, allow_none = True)
+    # end def __init__
+
+    def __getattr__ (self, name) :
+        """ Delegate to our server instance with error handling """
+        n = getattr (self.srvr, name)
+        def xxx (*args, **kw) :
+            try :
+                return n (*args, **kw)
+            except StandardError, err :
+                print >> sys.stderr, err
+                exit (23)
+            except xmlrpclib.ProtocolError, err :
+                print >> sys.stderr, "%s: %s" % (err.errcode, err.errmsg)
+                exit (23)
+        return xxx
+    # end def __getattr__
+# end class XMLRPC
+
+cmd = OptionParser (usage = '%prog [options] <new-responsible>')
+cmd.add_option \
+    ( "-i", "--issue"
+    , help    = "issue number to transfer to other user"
+    , action  = "append"
+    , type    = "int"
+    , default = []
+    )
+cmd.add_option \
+    ( "-l", "--link"
+    , help    = "Link-URL to connect to (user and password are inserted)"
+    , default = \
+        "https://%(user)s:%(password)s@time-tracker.vie.at.tttech.ttt/ttt/"
+    )
+cmd.add_option \
+    ( "-m", "--message"
+    , help    = "Message to append to issue(s) for the change"
+    , default = "New Responsible"
+    )
+cmd.add_option \
+    ( "-s", "--support-issue"
+    , dest    = "support"
+    , help    = "support-issue number to transfer to other user"
+    , action  = "append"
+    , type    = "int"
+    , default = []
+    )
+cmd.add_option \
+    ( "-t", "--it-issue"
+    , dest    = "it_issue"
+    , help    = "it-issue number to transfer to other user"
+    , action  = "append"
+    , type    = "int"
+    , default = []
+    )
+cmd.add_option \
+    ( "-u", "--user"
+    , help    = "Roundup username to use for the change"
+    , default = getuser ()
+    )
+cmd.add_option \
+    ( "--issues-from-user"
+    , dest    = "issue_from_user"
+    , help    = "Transfer all issues from this user"
+    )
+cmd.add_option \
+    ( "--it-issues-from-user"
+    , dest    = "it_issue_from_user"
+    , help    = "Transfer all it-issues from this user"
+    )
+cmd.add_option \
+    ( "--support-issues-from-user"
+    , dest    = "support_from_user"
+    , help    = "Transfer all support-issues from this user"
+    )
+
+opt, args = cmd.parse_args ()
+
+if len (args) != 1 :
+    cmd.error ('Need exactly one argument: the new responsible user')
+    exit (23)
+
+password = getpass ()
+user = opt.user
+
+srvr = XMLRPC (opt.link % locals ())
+
+stati_by_cls = \
+    { 'issue'    : ( 'status'
+                   , [ 'analyzing', 'open', 'feedback'
+                     , 'escalated', 'testing', 'suspended'
+                     ]
+                   )
+    , 'support'  : ('sup_status', ['open'])
+    , 'it_issue' : ('it_issue_status', ['new', 'open', 'feedback'])
+    }
+
+for cls in 'support', 'it_issue', 'issue' :
+    username = getattr (opt, '%s_from_user' % cls)
+    if username :
+        st_class, stati = stati_by_cls [cls]
+        status = [srvr.lookup (st_class, x) for x in stati]
+        user = srvr.lookup ('user', username)
+        d = dict (responsible = user, status = status)
+        result = srvr.filter (cls, None, d)
+        if result :
+            a = getattr (opt, cls)
+            a.extend (result)
+
+print opt, args
+for cls in 'support', 'it_issue', 'issue' :
+    items = getattr (opt, cls)
+    for i in items :
+        #srvr.set ("%s%s" % (cls, i), 'responsible=%s' % args [0])
+        pass
+
