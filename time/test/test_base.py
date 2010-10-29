@@ -411,6 +411,13 @@ class Test_Case_Timetracker (_Test_Case) :
         wl_off    = self.db.work_location.lookup ('off')
         wl_trav   = self.db.work_location.lookup ('off-site/trav.')
         stat_open = self.db.time_project_status.lookup ('Open')
+        self.ccg = self.db.cost_center_group.create (name = 'CCG')
+        self.cc = self.db.cost_center.create \
+            ( name              = 'CC'
+            , cost_center_group = self.ccg
+            , organisation      = self.org
+            , status            = self.db.cost_center_status.lookup ('Open')
+            )
         self.holiday_tp = self.db.time_project.create \
             ( name = 'Public Holiday'
             , work_location     = wl_off
@@ -420,6 +427,7 @@ class Test_Case_Timetracker (_Test_Case) :
             , responsible       = '1'
             , department        = self.dep
             , status            = stat_open
+            , cost_center       = self.cc
             )
         self.unpaid_tp = self.db.time_project.create \
             ( name = 'Leave'
@@ -429,6 +437,7 @@ class Test_Case_Timetracker (_Test_Case) :
             , responsible       = '1'
             , department        = self.dep
             , status            = stat_open
+            , cost_center       = self.cc
             )
         self.travel_tp = self.db.time_project.create \
             ( name = 'Travel'
@@ -437,6 +446,7 @@ class Test_Case_Timetracker (_Test_Case) :
             , responsible       = '1'
             , department        = self.dep
             , status            = stat_open
+            , cost_center       = self.cc
             )
         self.normal_tp = self.db.time_project.create \
             ( name = 'A Project'
@@ -444,13 +454,7 @@ class Test_Case_Timetracker (_Test_Case) :
             , responsible       = self.user1
             , department        = self.dep
             , organisation      = self.org
-            )
-        self.ccg = self.db.cost_center_group.create (name = 'CCG')
-        self.cc = self.db.cost_center.create \
-            ( name              = 'CC'
-            , cost_center_group = self.ccg
-            , organisation      = self.org
-            , status            = self.db.cost_center_status.lookup ('Open')
+            , cost_center       = self.cc
             )
         self.holiday_wp = self.db.time_wp.create \
             ( name              = 'Holiday'
@@ -527,6 +531,14 @@ class Test_Case_Timetracker (_Test_Case) :
 
     def test_rename_status (self) :
         self.setup_db ()
+        # test that renaming the 'New' cost_center status will still work
+        ccs = self.db.cost_center_status.lookup ('New')
+        self.db.cost_center_status.set (ccs, name = 'Something')
+        self.cc = self.db.cost_center.create \
+            ( name              = 'CC-New'
+            , cost_center_group = self.ccg
+            , organisation      = self.org
+            )
         # test that renaming the 'New' time_project_status will still work
         tps = self.db.time_project_status.lookup ('New')
         self.db.time_project_status.set (tps, name = 'Something')
@@ -536,14 +548,7 @@ class Test_Case_Timetracker (_Test_Case) :
             , responsible       = self.user1
             , department        = self.dep
             , organisation      = self.org
-            )
-        # same for cost_center
-        ccs = self.db.cost_center_status.lookup ('New')
-        self.db.cost_center_status.set (ccs, name = 'Something')
-        self.cc = self.db.cost_center.create \
-            ( name              = 'CC-New'
-            , cost_center_group = self.ccg
-            , organisation      = self.org
+            , cost_center       = self.cc
             )
     # end def test_rename_status
 
