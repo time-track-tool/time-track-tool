@@ -22,6 +22,9 @@ class XMLRPC (object) :
             except xmlrpclib.ProtocolError, err :
                 print >> sys.stderr, "%s: %s" % (err.errcode, err.errmsg)
                 exit (23)
+            except xmlrpclib.Fault, err :
+                errmsg = err.faultString.split (':')[-1]
+                print >> sys.stderr, errmsg
         return xxx
     # end def __getattr__
 # end class XMLRPC
@@ -115,10 +118,21 @@ for cls in 'support', 'it_issue', 'issue' :
             a = getattr (opt, cls)
             a.extend (result)
 
-print opt, args
+resp = srvr.lookup ('user', args [0])
+m    = srvr.create ('msg', 'content=%s' % opt.message)
 for cls in 'support', 'it_issue', 'issue' :
     items = getattr (opt, cls)
     for i in items :
-        #srvr.set ("%s%s" % (cls, i), 'responsible=%s' % args [0])
-        pass
-
+        designator = "%s%s" % (cls, i)
+        item = srvr.display (designator, 'messages', 'nosy', 'responsible')
+        if resp == item ['responsible'] :
+            continue
+        msgs = item ['messages']
+        nosy = item ['nosy']
+        msgs.append (m)
+        msgs = ','.join (msgs)
+        srvr.set (designator, 'responsible=%s' % resp, 'messages=%s' % msgs)
+        # restore previous nosy -- reactor will restore new responsible
+        # but we remove the person calling the script from nosy if she
+        # wasn't on the nosy list before
+        srvr.set (designator, 'nosy=%s' % ','.join (nosy))
