@@ -435,11 +435,10 @@
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="formatted_class_listentry">
-     <tal:block tal:condition="python:
-      context.id and 'parent' in props and chlds">
+     <tal:block tal:condition="python: context.id and 'parent' in props">
       <tal:block tal:define=
        "chlds python:db.address.filter (None, {'parent':context.id})">
-       <table class="files">
+       <table class="files" tal:condition="chlds">
         <tr tal:define="cond python: bool
             (   context.id
             and context.is_edit_ok ()
