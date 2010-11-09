@@ -1,15 +1,32 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
-import sys
-import os
-from roundup           import date
-from roundup           import instance
-from roundup.password  import Password, encodePassword
-dir     = os.getcwd ()
-tracker = instance.open (dir)
+from time        import time
+from email.Utils import formatdate
+from smtplib     import SMTP, SMTPRecipientsRefused
+from optparse    import OptionParser
+from roundup     import instance
+
+cmd = OptionParser (usage = '%prog [options] container-issue, ...')
+cmd.add_option \
+    ('-s', '--send-email-via'
+    , dest    = 'send_email'
+    , help    = "Send as email via this server, don't report to standard output"
+    , default = None
+    )
+cmd.add_option \
+    ('-d', '--tracker-directory'
+    , dest    = "dir"
+    , help    = "Directory of the tracker to check"
+    , default = "."
+    )
+opt, args = cmd.parse_args ()
+if not len (args) :
+    cmd.error ('Need at least one container issue number')
+
+tracker = instance.open (opt.dir)
 db      = tracker.open ('admin')
 
-containers = dict ((x, db.issue.getnode (x)) for x in sys.argv [1:])
+containers = dict ((x, db.issue.getnode (x)) for x in args)
 
 emails = {} # (adr, what) to send to
 stati  = [db.status.lookup (x) for x in 'open', 'testing']
@@ -55,8 +72,32 @@ for i in issues :
             if e not in emails :
                 emails [e] = []
             emails [e].append (s)
+
+if opt.send_email :
+    date = "Date: %s" % formatdate (time (), True)
+    smtp = SMTP (opt.send_email)
+    subj = "Subject: Priority inversion for issues"
+    mime = '\n'.join \
+        (( 'Mime-Version: 1.0'
+         , 'Content-Type: text/plain; charset=UTF-8'
+         , 'Content-Transfer-Encoding: 8bit'
+        ))
+
 for e, m in emails.iteritems () :
-    print e
-    for k in m :
-        print k
-    print
+    if opt.send_email :
+        try :
+            to  = "To: %s" % e
+            frm = "From: %s" % db.config.ADMIN_EMAIL
+            m   = '\n'.join (m)
+            smtp.sendmail \
+                ( db.config.ADMIN_EMAIL
+                , 'rsc@priv.zoo' # e
+                , '\n'.join ((subj, to, frm, date, "X-" + date, mime, '\n', m))
+                )
+        except SMTPRecipientsRefused, cause :
+            print >> sys.stderr, cause
+    else :
+        print e
+        for k in m :
+            print k
+        print
