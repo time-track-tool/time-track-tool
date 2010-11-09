@@ -91,7 +91,7 @@ for e, m in emails.iteritems () :
         try :
             smtp.sendmail \
                 ( db.config.ADMIN_EMAIL
-                , 'rsc@priv.zoo' # e
+                , e
                 , '\n'.join ((subj, to, frm, date, "X-" + date, mime, '\n', m))
                 )
         except SMTPRecipientsRefused, cause :
