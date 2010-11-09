@@ -85,10 +85,10 @@ if opt.send_email :
 
 for e, m in emails.iteritems () :
     if opt.send_email :
+        to  = "To: %s" % e
+        frm = "From: %s" % db.config.ADMIN_EMAIL
+        m   = '\n'.join (m)
         try :
-            to  = "To: %s" % e
-            frm = "From: %s" % db.config.ADMIN_EMAIL
-            m   = '\n'.join (m)
             smtp.sendmail \
                 ( db.config.ADMIN_EMAIL
                 , 'rsc@priv.zoo' # e
