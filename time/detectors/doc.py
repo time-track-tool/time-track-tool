@@ -55,7 +55,7 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
         attr_lst = ('product_type', 'reference', 'artefact', 'department')
         action   = _ ('modify')
     else :
-        attr_lst = ('document_nr', 'responsible')
+        attr_lst = ('document_nr',)
         action   = _ ('specify')
 
     attrs = ", ".join (_ (a) for a in attr_lst if a in newvalues)
