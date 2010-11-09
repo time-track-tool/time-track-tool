@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -45,10 +45,12 @@ def check_duplicate_field_value (cl, project, field, value) :
 
 def check_time_wp (db, cl, nodeid, new_values) :
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
-    project = cl.get (nodeid, 'project')
+    prj = new_values.get ('project', cl.get (nodeid, 'project'))
     for i in 'name', 'wp_no' :
         if i in new_values :
-            check_duplicate_field_value (cl, project, i, new_values [i])
+            check_duplicate_field_value (cl, prj, i, new_values [i])
+    if 'project' in new_values :
+        new_values ['cost_center'] = db.time_project.get (prj, 'cost_center')
 # end def check_time_wp
 
 def new_time_wp (db, cl, nodeid, new_values) :
@@ -60,7 +62,6 @@ def new_time_wp (db, cl, nodeid, new_values) :
         , 'name'
         , 'responsible'
         , 'project'
-        , 'cost_center'
         )
     prid = new_values ['project']
     uid  = db.getuid ()
@@ -84,6 +85,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
         if i in new_values :
             check_duplicate_field_value (cl, project, i, new_values [i])
     status = db.time_project.get (project, 'status')
+    new_values ['cost_center'] = prj.cost_center
 # end def new_time_wp
 
 def init (db) :
