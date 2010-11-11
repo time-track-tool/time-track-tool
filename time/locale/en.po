@@ -4331,7 +4331,7 @@ msgid ""
 msgstr ""
 
 msgid "sup_status"
-msgstr "Supplier Status"
+msgstr "Support Status"
 
 msgid "sup_prio"
 msgstr "Priority"
