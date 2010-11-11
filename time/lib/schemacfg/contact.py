@@ -41,7 +41,6 @@ def init (db, Ext_Class, String, Link, Number, ** kw) :
             self.update_properties \
                 ( contact             = String    ()
                 , description         = String    ()
-                , contact_type        = Link      ("contact_type")
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('contact')
@@ -65,8 +64,6 @@ def init (db, Ext_Class, String, Link, Number, ** kw) :
         # end def __init__
     # end class Contact_Type_Class
     export.update (dict (Contact_Type_Class = Contact_Type_Class))
-
-    contact_type = Contact_Type_Class (db, ''"contact_type")
 
     return export
 # end def init

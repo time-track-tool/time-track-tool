@@ -27,13 +27,15 @@
 # Purpose
 #    Schema definitions for extending address with person attributes
 
-def init (db, Address_Class, Contact_Class, Link, ** kw) :
+def init (db, Address_Class, Contact_Class, Contact_Type_Class, Link, ** kw) :
     export   = {}
 
     contact = Contact_Class \
         ( db, ''"contact"
         , address             = Link      ('address')
+        , contact_type        = Link      ("contact_type")
         )
+    contact_type = Contact_Type_Class (db, ''"contact_type")
 
     export ['Person_Class'] = Address_Class
     return export

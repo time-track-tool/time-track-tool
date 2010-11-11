@@ -28,7 +28,16 @@
 #    Schema definitions for separate person class
 
 def init \
-    (db, Class, Contact_Class, Min_Issue_Class, Link, Number, String, ** kw) :
+    ( db
+    , Class
+    , Contact_Class
+    , Contact_Type_Class
+    , Min_Issue_Class
+    , Link
+    , Number
+    , String
+    , ** kw
+    ) :
     export   = {}
 
     class Person_Class (Min_Issue_Class) :
@@ -58,7 +67,9 @@ def init \
     contact = Contact_Class \
         ( db, ''"contact"
         , person              = Link      ('person')
+        , contact_type        = Link      ("contact_type")
         )
+    contact_type = Contact_Type_Class (db, ''"contact_type")
 
     return export
 # end def init
