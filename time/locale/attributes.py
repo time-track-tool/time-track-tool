@@ -40,6 +40,7 @@ schemas = \
     , 'address'
     , 'adr_ext'
     , 'adr_ptr'
+    , 'contact'
     , 'person_adr'
     , 'person_sep'
     , 'person'
@@ -53,7 +54,6 @@ schemas = \
     , 'doc'
     , 'dyndns'
     , 'lielas'
-    , 'contact'
     , 'user'
     , 'core'
     )

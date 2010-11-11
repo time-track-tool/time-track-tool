@@ -330,7 +330,7 @@ def init \
         ( db
         , ''"announcement"
         , version               = String    ()
-        , meeting_room          = Link      ("meeting_room")
+        , room                  = Link      ("room")
         , comments              = Multilink ("comment")
         , review                = Link      ("review")
         , status                = Link      ("review_status")

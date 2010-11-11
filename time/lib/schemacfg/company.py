@@ -156,15 +156,6 @@ def init \
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
-    meeting_room = Class \
-        ( db
-        , ''"meeting_room"
-        , name                  = String    ()
-        , room                  = Link      ("room")
-        , phone                 = String    ()
-        )
-    meeting_room.setkey ("name")
-
     position = Class \
         ( db
         , ''"position"
@@ -207,7 +198,6 @@ def security (db, ** kw) :
     classes = \
         [ ("department",   ["User"],  ["Controlling"])
         , ("location",     ["User"],  ["HR"])
-        , ("meeting_room", ["User"],  ["HR", "Office"])
         , ("organisation", ["User"],  ["HR", "Controlling"])
         , ("org_location", ["User"],  ["HR"])
         , ("position",     ["User"],  ["HR"])

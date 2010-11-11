@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-10-28 12:14+0200\n"
+"POT-Creation-Date: 2010-11-11 16:03+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -1140,6 +1140,12 @@ msgstr "Inhalt dieser %(Classname)s"
 msgid "content"
 msgstr "Inhalt"
 
+msgid "cost_center"
+msgstr "Kostenstelle"
+
+msgid "%(Property)s for this %(Classname)s (required)"
+msgstr "%(Property)s von ${Classname} (Angabe erforderlich)"
+
 msgid "cost_center_group.id"
 msgstr ""
 
@@ -1772,8 +1778,8 @@ msgid ""
 "             inventory number for asset tracking\n"
 "          "
 msgstr ""
-"Eindeutiger name für diese %(Classname)s, bevorzugt die"
-"Inventarnummer für die Verwaltung von Anlagegütern (asset tracking)"
+"Eindeutiger name für diese %(Classname)s, bevorzugt die Inventarnummer für "
+"die Verwaltung von Anlagegütern (asset tracking)"
 
 msgid "invoice"
 msgstr "Rechnung"
@@ -2201,8 +2207,7 @@ msgid ""
 "Changing to this %(Classname)s needs a message from the\n"
 "             user.\n"
 "          "
-msgstr ""
-"Ändern dieses %(Classname)s benötigt eine Nachricht vom Benutzer"
+msgstr "Ändern dieses %(Classname)s benötigt eine Nachricht vom Benutzer"
 
 msgid "needs.id"
 msgstr "hängt ab von (ID)"
@@ -3739,9 +3744,6 @@ msgstr "Vorlagen können nur für Adressen heruntergeladen werden"
 msgid "No files for %(tmplate)s"
 msgstr "Keine Dateien für %(tmplate)s"
 
-msgid "cost_center"
-msgstr "Kostenstelle"
-
 msgid "Sum"
 msgstr "Summe"
 
@@ -4228,9 +4230,6 @@ msgstr "Wochentag"
 msgid "opening_hours"
 msgstr "Öffnungszeiten"
 
-msgid "meeting_room"
-msgstr ""
-
 msgid "sex"
 msgstr ""
 
@@ -4463,6 +4462,9 @@ msgstr "Arbeitspaket-Gruppe"
 
 msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
+
+msgid "uc_type"
+msgstr "User-Kontakttyp"
 
 msgid "keyword"
 msgstr ""

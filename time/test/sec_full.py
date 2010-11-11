@@ -75,7 +75,6 @@ Role "hr":
  User is allowed to access user_dynamic (View for "user_dynamic" only)
  User is allowed to create daily_record_freeze (Create for "daily_record_freeze" only)
  User is allowed to create location (Create for "location" only)
- User is allowed to create meeting_room (Create for "meeting_room" only)
  User is allowed to create org_location (Create for "org_location" only)
  User is allowed to create organisation (Create for "organisation" only)
  User is allowed to create overtime_correction (Create for "overtime_correction" only)
@@ -89,7 +88,6 @@ Role "hr":
  User is allowed to edit dynamic user data if not frozen in validity span of dynamic user record (Edit for "user_dynamic" only)
  User is allowed to edit freeze record if not frozen at the given date (Edit for "daily_record_freeze": ('frozen',) only)
  User is allowed to edit location (Edit for "location" only)
- User is allowed to edit meeting_room (Edit for "meeting_room" only)
  User is allowed to edit org_location (Edit for "org_location" only)
  User is allowed to edit organisation (Edit for "organisation" only)
  User is allowed to edit overtime correction if the overtime correction is not frozen (Edit for "overtime_correction" only)
@@ -149,9 +147,7 @@ Role "nosy":
  User may get nosy messages for support (Nosy for "support" only)
 Role "office":
  User is allowed Edit on (Edit for "user": ('phone', 'internal_phone', 'external_phone', 'private_mobile', 'private_phone', 'quick_dialling', 'title', 'room', 'position') only)
- User is allowed to create meeting_room (Create for "meeting_room" only)
  User is allowed to create room (Create for "room" only)
- User is allowed to edit meeting_room (Edit for "meeting_room" only)
  User is allowed to edit room (Edit for "room" only)
 Role "project":
  User is allowed to access time_project (View for "time_project" only)
@@ -227,7 +223,6 @@ Role "user":
  User is allowed to access keyword (View for "keyword" only)
  User is allowed to access kind (View for "kind" only)
  User is allowed to access location (View for "location" only)
- User is allowed to access meeting_room (View for "meeting_room" only)
  User is allowed to access msg_keyword (View for "msg_keyword" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)

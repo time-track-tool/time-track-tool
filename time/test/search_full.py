@@ -657,18 +657,6 @@ properties = \
           )
         ]
       )
-    , ( 'meeting_room'
-      , [ ( 'name'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
-        , ( 'phone'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
-        , ( 'room'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
-        ]
-      )
     , ( 'msg'
       , [ ( 'author'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']

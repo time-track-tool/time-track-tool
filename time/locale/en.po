@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-10-28 12:14+0200\n"
+"POT-Creation-Date: 2010-11-11 16:03+0100\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -1108,6 +1108,12 @@ msgstr ""
 
 msgid "content"
 msgstr "Content"
+
+msgid "cost_center"
+msgstr "Cost Center"
+
+msgid "%(Property)s for this %(Classname)s (required)"
+msgstr ""
 
 msgid "cost_center_group.id"
 msgstr "CC Group Id"
@@ -3657,9 +3663,6 @@ msgstr ""
 msgid "No files for %(tmplate)s"
 msgstr ""
 
-msgid "cost_center"
-msgstr "Cost Center"
-
 msgid "Sum"
 msgstr ""
 
@@ -4142,9 +4145,6 @@ msgstr "Weekday"
 msgid "opening_hours"
 msgstr "Opening hours"
 
-msgid "meeting_room"
-msgstr "Meeting Room"
-
 msgid "sex"
 msgstr ""
 
@@ -4377,6 +4377,9 @@ msgstr "Work package group"
 
 msgid "user_dynamic"
 msgstr "Dynamic User Data"
+
+msgid "uc_type"
+msgstr "User-contact type"
 
 msgid "keyword"
 msgstr "Keyword"

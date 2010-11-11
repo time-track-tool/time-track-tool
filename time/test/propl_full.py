@@ -276,12 +276,6 @@ properties = \
         , 'name'
         ]
       )
-    , ( 'meeting_room'
-      , [ 'name'
-        , 'phone'
-        , 'room'
-        ]
-      )
     , ( 'msg'
       , [ 'author'
         , 'content'
