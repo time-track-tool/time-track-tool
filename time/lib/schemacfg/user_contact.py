@@ -34,7 +34,7 @@ def init (db, Address_Class, Contact_Class, Contact_Type_Class, Link, ** kw) :
     if 'room' in db.classes :
         params ['room'] = Link ('room')
     contact = Contact_Class \
-        ( db, ''"contact"
+        ( db, ''"user_contact"
         , user                = Link      ('user')
         , contact_type        = Link      ("uc_type")
         , **params
