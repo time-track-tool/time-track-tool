@@ -507,7 +507,7 @@ if 'doc_issue_status' in db.classes :
         , description = 'This issue needs documentation (not done yet)'
         , order       = 2
         , nosy        = []
-        , may_close   = False
+        , may_close   = True
         , need_msg    = True
         )
     di3 = db.doc_issue_status.create \
