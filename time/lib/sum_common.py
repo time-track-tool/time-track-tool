@@ -39,11 +39,13 @@ def time_project_viewable (db, userid, itemid) :
     """
     project = db.time_project.getnode (itemid)
     p_nosy  = dict.fromkeys (project.nosy)
-    dep     = db.department.getnode (project.department)
+    dep     = None
+    if project.department :
+        dep = db.department.getnode (project.department)
     return \
         (  userid == project.responsible
         or userid == project.deputy
-        or userid == dep.manager
+        or dep and userid == dep.manager
         or userid in p_nosy
         )
 # end def time_project_viewable
