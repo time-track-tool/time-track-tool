@@ -299,9 +299,9 @@ class Test_Case_Support_Timetracker (_Test_Case) :
 class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
     roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
+        [ 'admin', 'anonymous', 'contact', 'controlling'
         , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
-        , 'office', 'project', 'project_view', 'support', 'type', 'user'
+        , 'office', 'project', 'project_view', 'support', 'user'
         ]
     transprop_perms = transprop_full
 

@@ -1,17 +1,5 @@
 properties = \
-    [ ( 'adr_type'
-      , [ 'code'
-        , 'description'
-        , 'typecat'
-        ]
-      )
-    , ( 'adr_type_cat'
-      , [ 'code'
-        , 'description'
-        , 'type_valid'
-        ]
-      )
-    , ( 'area'
+    [ ( 'area'
       , [ 'description'
         , 'name'
         ]
@@ -68,29 +56,8 @@ properties = \
         ]
       )
     , ( 'customer'
-      , [ 'adr_type'
-        , 'affix'
-        , 'city'
-        , 'contacts'
-        , 'country'
-        , 'files'
-        , 'firstname'
-        , 'function'
-        , 'initial'
-        , 'lastname'
-        , 'lettertitle'
-        , 'lookalike_city'
-        , 'lookalike_firstname'
-        , 'lookalike_function'
-        , 'lookalike_lastname'
-        , 'lookalike_street'
-        , 'messages'
+      , [ 'contacts'
         , 'name'
-        , 'postalcode'
-        , 'salutation'
-        , 'street'
-        , 'title'
-        , 'valid'
         ]
       )
     , ( 'daily_record'
@@ -579,11 +546,6 @@ properties = \
         ]
       )
     , ( 'user_status'
-      , [ 'description'
-        , 'name'
-        ]
-      )
-    , ( 'valid'
       , [ 'description'
         , 'name'
         ]

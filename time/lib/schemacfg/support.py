@@ -107,9 +107,10 @@ def security (db, ** kw) :
         , ("support",        ["Support"],         ["Support"])
         , ("customer",       ["User", "Support"], ["Support"])
         , ("contact",        ["User", "Support"], ["Support"])
-        , ("adr_type",       ["User", "Support"], ["Support"])
-        , ("adr_type_cat",   ["User", "Support"], ["Support"])
         ]
+    if 'adr_type' in db.classes :
+        classes.append (("adr_type",     ["User", "Support"], ["Support"]))
+        classes.append (("adr_type_cat", ["User", "Support"], ["Support"]))
 
     prop_perms = \
         [

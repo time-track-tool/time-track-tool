@@ -74,9 +74,12 @@ def security (db, ** kw) :
         ]
 
     classes = \
-        [ ("contact_type"      , ["User", "Adr_Readonly"],    [])
-        , ("contact"           , ["User", "Adr_Readonly"],    ["Contact"])
+        [ ("contact_type", ["User"], [])
+        , ("contact",      ["User"], ["Contact"])
         ]
+    if 'adr_readonly' in db.security.role :
+        classes [0][1].append ('Adr_Readonly')
+        classes [1][1].append ('Adr_Readonly')
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
