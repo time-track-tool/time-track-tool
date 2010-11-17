@@ -36,6 +36,7 @@ from propl_it      import properties as properties_it
 from propl_itadr   import properties as properties_itadr
 from propl_kvats   import properties as properties_kvats
 from propl_lielas  import properties as properties_lielas
+from propl_sfull   import properties as properties_sfull
 
 from sec_abo       import security as security_abo
 from sec_adr       import security as security_adr
@@ -45,6 +46,7 @@ from sec_it        import security as security_it
 from sec_itadr     import security as security_itadr
 from sec_kvats     import security as security_kvats
 from sec_lielas    import security as security_lielas
+from sec_sfull     import security as security_sfull
 
 from search_abo    import properties as sec_search_abo
 from search_adr    import properties as sec_search_adr
@@ -54,6 +56,7 @@ from search_it     import properties as sec_search_it
 from search_itadr  import properties as sec_search_itadr
 from search_kvats  import properties as sec_search_kvats
 from search_lielas import properties as sec_search_lielas
+from search_sfull  import properties as sec_search_sfull
 
 from trans_abo     import transprop_perms as transprop_abo
 from trans_adr     import transprop_perms as transprop_adr
@@ -62,6 +65,7 @@ from trans_full    import transprop_perms as transprop_full
 from trans_itadr   import transprop_perms as transprop_itadr
 from trans_kvats   import transprop_perms as transprop_kvats
 from trans_lielas  import transprop_perms as transprop_lielas
+from trans_sfull   import transprop_perms as transprop_sfull
 
 from trans_search  import classdict  as trans_classprops
 
@@ -281,6 +285,16 @@ class _Test_Case (unittest.TestCase) :
     # end def create_test_users
 
 # end class _Test_Case
+
+class Test_Case_Support_Timetracker (_Test_Case) :
+    schemaname = 'sfull'
+    roles = \
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
+        , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'office', 'project', 'project_view', 'support', 'type', 'user'
+        ]
+    transprop_perms = transprop_sfull
+# end class Test_Case_Support_Timetracker
 
 class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
@@ -1174,6 +1188,7 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
     suite.addTest (unittest.makeSuite (Test_Case_Lielas))
+    suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
 # end def test_suite
