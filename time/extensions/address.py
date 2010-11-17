@@ -71,6 +71,28 @@ def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
     return db.adr_type.classhelp (** args)
 # end def adr_type_classhelp
 
+def contact_query (db) :
+    """ Compute default query for contact -- this uses a lot of dynamic
+        information because the class and the attributes of the class
+        having a contact may vary
+    """
+    cadr = 'address'
+    if 'contact' in db._db.classes :
+        if 'person' in db._db.contact.properties :
+            cadr = 'person'
+        elif 'customer' in db._db.contact.properties :
+            cadr = 'customer'
+    cadr_cls = db._db.getclass (cadr)
+    dargs = ('name', 'firstname', 'lastname', 'function')
+    disp  = ('%s.%s' % (cadr, c) for c in dargs if c in cadr_cls.properties)
+    sargs = ('name', 'lastname', 'firstname')
+    sort  = ('%s.%s' % (cadr, c) for c in sargs if c in cadr_cls.properties)
+    return ( '@columns=contact,contact_type,%s'
+             '&@sort=%s,contact_type&@pagesize=20&@startwith=0'
+           % (','.join (disp), ','.join (sort))
+           )
+# end def contact_query
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -78,3 +100,4 @@ def init (instance) :
     reg = instance.registerUtil
     reg ('valid_adr_types',    valid_adr_types)
     reg ('adr_type_classhelp', adr_type_classhelp)
+    reg ('contact_query',      contact_query)

@@ -29,19 +29,12 @@
  ; tplate_args     python: {}
  ; msg_box_height  python: 8
  ; may_remove_msgs python: False
- ; typecat         python:
-   (   'adr_type_cat' in db._db.classes
-   and ','.join (db._db.adr_type_cat.getnodeids ())
-   )
  ; abo_adrtype     python: utils.valid_adr_types (db, adr_type_cat = 'ABO')
  ; terse           python: utils.get_from_form (request, 'terse')
  ; quiet           python: utils.get_from_form (request, 'quiet')
- ; cadr            python: ['address', 'person', 'customer']
-                           ['contact' in db._db.classes
-                            and (    'person' in db._db.contact.properties
-                                or 'customer' in db._db.contact.properties and 2
-                                )
-                           ]
+ ; typecat         python: (   'adr_type_cat' in db._db.classes
+                           and ','.join (db._db.adr_type_cat.getnodeids ())
+                           )
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
@@ -72,16 +65,17 @@
    , ('category', '')   : '@columns=name,description,responsible,nosy,'
                           'valid,cert_sw&@sort=name&@filter=valid&'
                           '@pagesize=200&@startwith=0&valid=1'
-   , ('contact', '')    : '@columns=contact,contact_type,%(cadr)s.firstname,'
-                          '%(cadr)s.lastname,%(cadr)s.function&'
-                          '@sort=-%(cadr)s.lastname,%(cadr)s.firstname,'
-                          'contact_type&@pagesize=20&@startwith=0'
-                          % dict (cadr = cadr)
+   , ('contact', '')    : utils.contact_query (db)
    , ('cust_supp', '')  : '@pagesize=50&@startwith=0&'
                           '@columns=id,name,description,tax_id,status,attendant'
-   , ('customer', '')   : '@columns=name,salutation,title,lastname,'
-                          'firstname,function,adr_type&@sort=name&'
-                          '@pagesize=20&@startwith=0'
+   , ('customer', '')   : '@columns=%s&@sort=name&@pagesize=20&@startwith=0'
+                           % ','.join
+                              (c for c in ( 'name', 'salutation', 'title'
+                                          , 'lastname', 'firstname', 'function'
+                                          , 'adr_type'
+                                          )
+                                 if c in db._db.customer.properties
+                              )
    , ('daily_record', '')
                         : '@columns=id,user,date,status&@sort=-id&'
                           '@filter=user,date&@pagesize=20&@startwith=0&'

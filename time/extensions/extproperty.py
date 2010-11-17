@@ -58,6 +58,21 @@ def properties_dict (db, context) :
     return props
 # end def properties_dict
 
+def filtered_properties (db, utils, context, props) :
+    retprops = []
+    pdict = properties_dict (db, context)
+    for pname, attrs in props :
+        if pname not in pdict :
+            continue
+        if 'searchname' in attrs :
+            tprop = attrs ['searchname']
+            kls = db._db.getclass (context.classname)
+            if not kls.get_transitive_prop (tprop) :
+                continue
+        retprops.append (ExtProperty (utils, pdict [pname], ** attrs))
+    return retprops
+# end def filtered_properties
+
 dwidth  = 550
 dheight = 220
 #dwidth  = 460
@@ -619,4 +634,5 @@ def init (instance) :
     instance.registerUtil ('prop_as_array',            prop_as_array)
     instance.registerUtil ('get_cssclass',             get_cssclass)
     instance.registerUtil ('get_cssclass_from_status', get_cssclass_from_status)
+    instance.registerUtil ('filtered_properties',      filtered_properties)
 # end def init

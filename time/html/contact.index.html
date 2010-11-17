@@ -54,6 +54,12 @@
         )
       )
     , ('customer', dict
+        ( searchname  = 'customer.name'
+        , searchable  = True
+        , sortable    = True
+        )
+      )
+    , ('customer', dict
         ( searchname  = 'customer.lastname'
         , searchable  = False
         , sortable    = False
@@ -132,11 +138,7 @@
         )
       )
     )
-  ; props python:
-        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
-          for p in prp if p [0] in pdict
-        ]
-
+  ; props python: utils.filtered_properties (db, utils, context, prp)
   "
   tal:condition="context/is_view_ok">
 
