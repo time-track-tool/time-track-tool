@@ -64,7 +64,8 @@
       <td>
        <tal:block tal:content="structure python:context.customer.field ()"/>
        <tal:block tal:replace="structure python:db.customer.classhelp
-            ( 'name,firstname,lastname,function'
+            ( ','.join (i for i in 'name,firstname,lastname,function'.split(',')
+                        if i in db._db.customer.properties)
             , property='customer'
             , inputtype='radio'
             , width='600'
@@ -76,6 +77,23 @@
            ( utils, context.customer.name
            , item = context.customer
            ).formatlink ()"/>
+     </tr>
+     <tr tal:condition="python: context.id and context.customer"
+         tal:repeat="ct python:sorted
+         ( context.customer.contacts
+         , key = lambda x : (x.contact_type.order, x.contact)
+         )">
+      <th style="vertical-align:top"
+          tal:content="structure python:utils.ExtProperty
+          (utils, ct.contact_type, item = ct).formatlink () + '&nbsp'"/>
+      <td>
+       <a tal:condition="python: ct.contact_type.url_template"
+          tal:content="ct/contact/plain" tal:attributes="href python:
+          ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
+       <span tal:condition="python: not ct.contact_type.url_template"
+             tal:content="ct/contact/plain"/>
+      </td>
+      <td tal:content="ct/description/plain" colspan="2"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
