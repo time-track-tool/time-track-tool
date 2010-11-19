@@ -1,426 +1,494 @@
 <!-- dollarId: user.item,v 1.7 2002/08/16 04:29:04 richard Exp dollar-->
 <tal:block metal:use-macro="templates/page/macros/icing">
-<title metal:fill-slot="head_title">
- <tal:block i18n:translate="" tal:condition="context/id">
-  User 
-  <span tal:replace="string:${context/id}: ${context/username}"/>
- </tal:block>
- <tal:block i18n:translate=""
-  tal:condition="not:context/id">New User
- </tal:block>
-</title>
-<span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
-  <span tal:condition="not:context/id" i18n:translate="">New</span>
-  User<span tal:replace="context/id"/>
-</span>
+ <title metal:fill-slot="head_title">
+  <tal:block i18n:translate="" tal:condition="context/id">
+   User 
+   <span tal:replace="string:${context/id}: ${context/username}"/>
+  </tal:block>
+  <tal:block i18n:translate=""
+   tal:condition="not:context/id">New User
+  </tal:block>
+ </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+   <span tal:condition="not:context/id" i18n:translate="">New</span>
+   User<span tal:replace="context/id"/>
+ </span>
 
-<tal:block metal:fill-slot="create_or_query">
- <tal:block 
-  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
-</tal:block>
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
+ </tal:block>
 
-<tal:block metal:fill-slot="content" tal:define="formname python:'user_form'">
-<tal:block metal:use-macro="templates/page/macros/formatted_class">
-<tal:block metal:fill-slot="formatted_class_content">
- <tr tal:condition="python:'lastname' not in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'realname')"/>
-  <td tal:content="structure context/realname/field"/>
- </tr>
- <tr tal:condition="python:'firstname' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'firstname')"/>
-  <td tal:content="structure context/firstname/field"/>
-  <td tal:condition="python:context.pictures and context.pictures.is_view_ok ()"
-      rowspan="9">
-    <img width="112" alt="Photo" tal:attributes="src python:
-     context.pictures.reverse().next ().download_url ()">
-  </td>
- </tr>
- <tr tal:condition="python:'lastname' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'lastname')"/>
-  <td tal:content="structure context/lastname/field"/>
- </tr>
- <tr tal:condition="python:'nickname' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'nickname')"/>
-  <td tal:content="structure context/nickname/field"/>
- </tr>
- <tr tal:condition="python:'sex' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'sex')"/>
-  <td tal:content="structure context/sex/menu"/>
- </tr>
- <tal:block tal:condition="python:'user_dynamic' in db._db.classes">
-  <tal:block tal:condition="context/id">
-  <tr tal:define="
-    ud python:utils.act_or_latest_user_dynamic (db._db, context.id)"
-   tal:condition="python:db.user_dynamic.is_view_ok () and ud">
-   <th i18n:translate="">user_dynamic</th>
-   <td>
-     <a tal:attributes="href python:'user_dynamic%s' % ud.id">
-     dynamic user record
-     </a>
-   </td>
-  </tr>
+ <tal:block metal:fill-slot="content" tal:define="formname python:'user_form'">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
+    <tr tal:condition="python:'lastname' not in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'realname')"/>
+     <td tal:content="structure context/realname/field"/>
+    </tr>
+    <tr tal:condition="python:'firstname' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'firstname')"/>
+     <td tal:content="structure context/firstname/field"/>
+     <td tal:condition="python:context.pictures and context.pictures.is_view_ok ()"
+         rowspan="9">
+       <img width="112" alt="Photo" tal:attributes="src python:
+        context.pictures.reverse().next ().download_url ()">
+     </td>
+    </tr>
+    <tr tal:condition="python:'lastname' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'lastname')"/>
+     <td tal:content="structure context/lastname/field"/>
+    </tr>
+    <tr tal:condition="python:'nickname' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'nickname')"/>
+     <td tal:content="structure context/nickname/field"/>
+    </tr>
+    <tr tal:condition="python:'sex' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'sex')"/>
+     <td tal:content="structure context/sex/menu"/>
+    </tr>
+    <tal:block tal:condition="python:'user_dynamic' in db._db.classes">
+     <tal:block tal:condition="context/id">
+     <tr tal:define="
+       ud python:utils.act_or_latest_user_dynamic (db._db, context.id)"
+      tal:condition="python:db.user_dynamic.is_view_ok () and ud">
+      <th i18n:translate="">user_dynamic</th>
+      <td>
+        <a tal:attributes="href python:'user_dynamic%s' % ud.id">
+        dynamic user record
+        </a>
+      </td>
+     </tr>
+     </tal:block>
+    </tal:block>
+    <tr tal:condition="python:'status' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'status')"/>
+     <td tal:content="structure context/status/menu"/>
+    </tr>
+    <tr tal:condition="python:'title' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'title')"/>
+     <td tal:content="structure context/title/field"/>
+    </tr>
+    <tr tal:condition="python:
+     (   context.is_edit_ok()
+     and not ('sync_with_ldap' in bclass.properties and context.sync_with_ldap)
+     )">
+     <th tal:content="structure python:utils.fieldname('user', 'password')"/>
+     <td tal:content="structure context/password/field"/>
+    </tr>
+    <tr tal:condition="python:
+     (   context.is_edit_ok()
+     and not ('sync_with_ldap' in bclass.properties and context.sync_with_ldap)
+     )">
+     <th tal:content="structure python:utils.fieldname('user', 'confirm')"/>
+     <td tal:content="structure context/password/confirm"/>
+    </tr>
+    <tr tal:condition="context/roles/is_view_ok">
+     <th tal:content="structure python:utils.fieldname('user', 'roles')"/>
+     <td colspan="3">
+      <input tal:condition="context/id"
+             tal:replace="structure context/roles/field">
+      <input name="roles" tal:condition="not:context/id"
+             tal:attributes="value db/config/NEW_WEB_USER_ROLES">
+      <a class="classhelp" href="user?@template=role" i18n:translate=""
+         onclick="javascript:help_window('user?@template=role', '600', '400')
+                 ;return false;">(role permissions)</a>
+     </td>
+    </tr>
+    <tr tal:condition="python:'org_location' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'org_location')"/>
+     <td tal:condition="not:context/id"
+      tal:content="structure context/org_location/menu"/>
+     <td tal:condition="context/id"
+      tal:content="structure python:utils.ExtProperty
+       ( utils, context.org_location.name
+       , item = context.org_location
+       ).formatlink ()"/>
+    </tr>
+    <tr tal:condition="python:'department' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'department')"/>
+     <td tal:condition="not:context/id"
+      tal:content="structure context/department/menu"/>
+     <td tal:condition="context/id"
+      tal:content="structure python:utils.ExtProperty
+       ( utils, context.department.name
+       , item = context.department
+       ).formatlink ()"/>
+    </tr>
+    <tr>
+     <td/>
+     <td colspan="3">
+      <table class="form" border="0"
+             style="border-spacing:0px;padding-top:0px;padding-left:0px">
+       <tr tal:condition="python:'contacts' in props">
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('user_contact', 'contact_type')"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('user_contact', 'contact')" class="required"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('user_contact', 'order')"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('user_contact', 'description')"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('user_contact', 'visible')"/>
+        <th style="text-align:left"
+            tal:condition="context/is_edit_ok" i18n:translate="">
+            remove
+        </th>
+       </tr>
+       <tr tal:condition="python:'contacts' in props">
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'contact_type').menu ()"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'contact').field (size=25)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'order').field (size=3)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'description').field (size=25)"/>
+        <td/>
+        <input type="hidden" name="@link@contacts" value="contact-1"/>
+       </tr>
+       <tr tal:condition="python:'contacts' in props" tal:repeat="ct python:sorted
+           ( context.contacts
+           , key = lambda x : (x.contact_type.order, x.contact.order, x.contact)
+           )">
+        <th style="vertical-align:top"
+            tal:content="structure python:utils.ExtProperty
+            (utils, ct.contact_type, item = ct).formatlink () + '&nbsp'"/>
+        <td>
+         <a tal:condition="python: ct.contact_type.url_template"
+            tal:content="ct/contact/plain" tal:attributes="href python:
+            ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
+         <span tal:condition="python: not ct.contact_type.url_template"
+               tal:content="ct/contact/plain"/>
+         <input type="hidden" tal:attributes=
+                "value context/id;name python:'%s@user' % ct.designator()"/>
+        </td>
+        <td tal:content="ct/order/plain"/>
+        <td tal:content="ct/description/plain"/>
+        <td tal:content="ct/visible/field"/>
+        <td tal:condition="context/is_edit_ok">
+         <input tabindex="-1" type="checkbox" name="@remove@contacts"
+                tal:attributes="value ct/id">
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('user', 'phone')"/>
+     <td tal:content="structure context/phone/field"/>
+    </tr>
+    <tr tal:condition="python:'quick_dialling' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'quick_dialling')"/>
+     <td tal:content="structure context/quick_dialling/field"/>
+    </tr>
+    <tr tal:condition="python:'internal_phone' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'internal_phone')"/>
+     <td tal:content="structure context/internal_phone/field"/>
+    </tr>
+    <tr tal:condition="python:'external_phone' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'external_phone')"/>
+     <td tal:content="structure context/external_phone/field"/>
+    </tr>
+    <tr tal:condition="python:'private_phone' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'private_phone')"/>
+     <td tal:content="structure context/private_phone/field"/>
+     <th tal:content="structure python:utils.fieldname
+      ('user', 'private_phone_visible')"/>
+     <td tal:content="structure context/private_phone_visible/field"/>
+    </tr>
+    <tr tal:condition="python:'private_mobile' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'private_mobile')"/>
+     <td tal:content="structure context/private_mobile/field"/>
+     <th tal:content="structure python:utils.fieldname
+      ('user', 'private_mobile_visible')"/>
+     <td tal:content="structure context/private_mobile_visible/field"/>
+    </tr>
+    <tr tal:condition="python:'room' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'room')"/>
+     <td tal:content="structure context/room/menu"/>
+    </tr>
+    <tr tal:condition="python:'position' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'position')"/>
+     <td tal:content="structure context/position/menu"/>
+    </tr>
+    <tr tal:condition="python:'supervisor' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
+     <td>
+      <tal:block tal:define=
+        "name      string:supervisor;
+         form      formname;
+         dont_care string:don't care;
+         selected python:context.supervisor and context.supervisor.id or 0">
+       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      </tal:block>
+     </td>
+    </tr>
+    <tr tal:condition="python:'substitute' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'substitute')"/>
+     <td>
+      <tal:block tal:define=
+        "name      string:substitute;
+         form      formname;
+         dont_care string:don't care;
+         selected python:context.substitute and context.substitute.id or 0">
+       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      </tal:block>
+     </td>
+    </tr>
+    <tr tal:condition="python:'subst_active' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'subst_active')"/>
+     <td tal:content="structure context/subst_active/field"/>
+    </tr>
+    <tr tal:condition="python:'clearance_by' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'clearance_by')"/>
+     <td tal:condition="context/clearance_by/is_edit_ok">
+      <tal:block tal:define=
+        "name      string:clearance_by;
+         form      formname;
+         dont_care string:don't care;
+         selected python:context.clearance_by and context.clearance_by.id or 0">
+       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      </tal:block>
+     </td>
+     <td tal:content="context/clearance_by/plain"
+      tal:condition="not:context/clearance_by/is_edit_ok"/>
+    </tr>
+    <tr tal:condition="python:'job_description' in bclass.properties">
+     <th tal:content="structure
+         python:utils.fieldname('user', 'job_description')"/>
+     <td tal:content="structure context/job_description/multiline"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
+     <td>
+      <input tal:replace="structure context/timezone/field">
+      <span i18n:translate="">default:</span>
+      <span tal:replace="db/config/DEFAULT_TIMEZONE"/>
+     </td>
+    </tr>
+    <tr tal:condition="python:'csv_delimiter' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname ('user', 'csv_delimiter')"/>
+     <td tal:content="structure context/csv_delimiter/field"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname ('user', 'address')"/>
+     <td tal:content="structure context/address/field"/>
+    </tr>
+    <tr>
+     <th tal:content="structure
+         python:utils.fieldname ('user', 'alternate_addresses')"/>
+     <td tal:content="structure context/alternate_addresses/multiline"/>
+    </tr>
+    <tr tal:condition="python:'lunch_start' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname ('user', 'lunch_start')"/>
+     <td tal:content="structure context/lunch_start/field"/>
+    </tr>
+    <tr tal:condition="python:'lunch_duration' in bclass.properties">
+     <th tal:content="structure
+         python:utils.fieldname ('user', 'lunch_duration')"/>
+     <td tal:content="structure context/lunch_duration/field"/>
+    </tr>
+    <tr tal:condition="python:'tt_lines' in bclass.properties">
+     <th tal:content="structure
+         python:utils.fieldname ('user', 'tt_lines')"/>
+     <td tal:content="structure context/tt_lines/field"/>
+    </tr>
+    <tal:block tal:condition="python:'sync_with_ldap' in bclass.properties">
+     <tr tal:condition="context/sync_with_ldap/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'sync_with_ldap')"/>
+      <td tal:content="structure context/sync_with_ldap/field"/>
+     </tr>
+     <tr tal:condition="context/is_lotus_user/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'is_lotus_user')"/>
+      <td tal:content="structure context/is_lotus_user/field"/>
+     </tr>
+     <tr tal:condition="context/group/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'group')"/>
+      <td>
+       <tal:block tal:replace="structure context/group/field"/>
+       <tal:block tal:replace="structure python:db.group.classhelp
+        ( 'name,description'
+        , property='group'
+        , inputtype='radio'
+        , width='600'
+        , pagesize=1000 
+        )"/>
+      </td>
+     </tr>
+     <tr tal:condition="context/secondary_groups/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'secondary_groups')"/>
+      <td>
+       <tal:block tal:content="structure context/secondary_groups/field"/>
+       <tal:block tal:replace="structure python:db.group.classhelp
+        ( 'name,description'
+        , property='secondary_groups'
+        , width='600'
+        , pagesize=1000 
+        )"/>
+      </td>
+     </tr>
+     <tr tal:condition="context/uid/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'uid')"/>
+      <td tal:content="structure context/uid/field"/>
+     </tr>
+     <tr tal:condition="context/home_directory/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'home_directory')"/>
+      <td tal:content="structure context/home_directory/field"/>
+     </tr>
+     <tr tal:condition="context/login_shell/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'login_shell')"/>
+      <td tal:content="structure context/login_shell/field"/>
+     </tr>
+     <tr tal:condition="context/samba_home_drive/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_home_drive')"/>
+      <td tal:content="structure context/samba_home_drive/field"/>
+     </tr>
+     <tr tal:condition="context/samba_home_path/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_home_path')"/>
+      <td tal:content="structure context/samba_home_path/field"/>
+     </tr>
+     <tr tal:condition="context/samba_kickoff_time/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_kickoff_time')"/>
+      <td tal:content="structure context/samba_kickoff_time/field"/>
+     </tr>
+     <tr tal:condition="context/samba_logon_script/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_logon_script')"/>
+      <td tal:content="structure context/samba_logon_script/field"/>
+     </tr>
+     <tr tal:condition="context/samba_profile_path/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_profile_path')"/>
+      <td tal:content="structure context/samba_profile_path/field"/>
+     </tr>
+     <tr tal:condition="context/samba_pwd_can_change/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_pwd_can_change')"/>
+      <td tal:content="structure context/samba_pwd_can_change/field"/>
+     </tr>
+     <tr tal:condition="context/samba_pwd_last_set/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_pwd_last_set')"/>
+      <td tal:content="structure context/samba_pwd_last_set/field"/>
+     </tr>
+     <tr tal:condition="context/samba_pwd_must_change/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_pwd_must_change')"/>
+      <td tal:content="structure context/samba_pwd_must_change/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_used/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_used')"/>
+      <td tal:content="structure context/shadow_used/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_last_change/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_last_change')"/>
+      <td tal:content="structure context/shadow_last_change/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_min/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_min')"/>
+      <td tal:content="structure context/shadow_min/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_max/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_max')"/>
+      <td tal:content="structure context/shadow_max/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_warning/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_warning')"/>
+      <td tal:content="structure context/shadow_warning/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_inactive/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_inactive')"/>
+      <td tal:content="structure context/shadow_inactive/field"/>
+     </tr>
+     <tr tal:condition="context/shadow_expire/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'shadow_expire')"/>
+      <td tal:content="structure context/shadow_expire/field"/>
+     </tr>
+     <tr tal:condition="context/samba_nt_password/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_nt_password')"/>
+      <td tal:content="structure context/samba_nt_password"/>
+     </tr>
+     <tr tal:condition="context/samba_lm_password/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'samba_lm_password')"/>
+      <td tal:content="structure context/samba_lm_password"/>
+     </tr>
+     <tr tal:condition="context/user_password/is_view_ok">
+      <th tal:content="structure
+          python:utils.fieldname ('user', 'user_password')"/>
+      <td tal:content="structure context/user_password"/>
+     </tr>
+    </tal:block>
+    <tr tal:condition="python:
+     'pictures' in bclass.properties and context.pictures.is_edit_ok ()">
+     <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
+     <td>
+      <input type="file"   name="file-1@content" size="40">
+      <input type="hidden" name="@link@pictures" value="file-1">
+     </td>
+    </tr>
+   </tal:block>
   </tal:block>
  </tal:block>
- <tr tal:condition="python:'status' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'status')"/>
-  <td tal:content="structure context/status/menu"/>
- </tr>
- <tr tal:condition="python:'title' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'title')"/>
-  <td tal:content="structure context/title/field"/>
- </tr>
- <tr tal:condition="python:
-  (   context.is_edit_ok()
-  and not ('sync_with_ldap' in bclass.properties and context.sync_with_ldap)
-  )">
-  <th tal:content="structure python:utils.fieldname('user', 'password')"/>
-  <td tal:content="structure context/password/field"/>
- </tr>
- <tr tal:condition="python:
-  (   context.is_edit_ok()
-  and not ('sync_with_ldap' in bclass.properties and context.sync_with_ldap)
-  )">
-  <th tal:content="structure python:utils.fieldname('user', 'confirm')"/>
-  <td tal:content="structure context/password/confirm"/>
- </tr>
- <tr tal:condition="context/roles/is_view_ok">
-  <th tal:content="structure python:utils.fieldname('user', 'roles')"/>
-  <td colspan="3">
-   <input tal:condition="context/id"
-          tal:replace="structure context/roles/field">
-   <input name="roles" tal:condition="not:context/id"
-          tal:attributes="value db/config/NEW_WEB_USER_ROLES">
-   <a class="classhelp" href="user?@template=role" i18n:translate=""
-      onclick="javascript:help_window('user?@template=role', '600', '400')
-              ;return false;">(role permissions)</a>
-  </td>
- </tr>
- <tr tal:condition="python:'org_location' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'org_location')"/>
-  <td tal:condition="not:context/id"
-   tal:content="structure context/org_location/menu"/>
-  <td tal:condition="context/id"
-   tal:content="structure python:utils.ExtProperty
-    ( utils, context.org_location.name
-    , item = context.org_location
-    ).formatlink ()"/>
- </tr>
- <tr tal:condition="python:'department' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'department')"/>
-  <td tal:condition="not:context/id"
-   tal:content="structure context/department/menu"/>
-  <td tal:condition="context/id"
-   tal:content="structure python:utils.ExtProperty
-    ( utils, context.department.name
-    , item = context.department
-    ).formatlink ()"/>
- </tr>
- <tr>
-  <th tal:content="structure python:utils.fieldname('user', 'phone')"/>
-  <td tal:content="structure context/phone/field"/>
- </tr>
- <tr tal:condition="python:'quick_dialling' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'quick_dialling')"/>
-  <td tal:content="structure context/quick_dialling/field"/>
- </tr>
- <tr tal:condition="python:'internal_phone' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'internal_phone')"/>
-  <td tal:content="structure context/internal_phone/field"/>
- </tr>
- <tr tal:condition="python:'external_phone' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'external_phone')"/>
-  <td tal:content="structure context/external_phone/field"/>
- </tr>
- <tr tal:condition="python:'private_phone' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'private_phone')"/>
-  <td tal:content="structure context/private_phone/field"/>
-  <th tal:content="structure python:utils.fieldname
-   ('user', 'private_phone_visible')"/>
-  <td tal:content="structure context/private_phone_visible/field"/>
- </tr>
- <tr tal:condition="python:'private_mobile' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'private_mobile')"/>
-  <td tal:content="structure context/private_mobile/field"/>
-  <th tal:content="structure python:utils.fieldname
-   ('user', 'private_mobile_visible')"/>
-  <td tal:content="structure context/private_mobile_visible/field"/>
- </tr>
- <tr tal:condition="python:'room' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'room')"/>
-  <td tal:content="structure context/room/menu"/>
- </tr>
- <tr tal:condition="python:'position' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'position')"/>
-  <td tal:content="structure context/position/menu"/>
- </tr>
- <tr tal:condition="python:'supervisor' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
-  <td>
-   <tal:block tal:define="name      string:supervisor;
-                          form      formname;
-                          dont_care string:don't care;
-                          selected python:context.supervisor and context.supervisor.id or 0">
-    <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-   </tal:block>
-  </td>
- </tr>
- <tr tal:condition="python:'substitute' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'substitute')"/>
-  <td>
-   <tal:block tal:define="name      string:substitute;
-                          form      formname;
-                          dont_care string:don't care;
-                          selected python:context.substitute and context.substitute.id or 0">
-    <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-   </tal:block>
-  </td>
- </tr>
- <tr tal:condition="python:'subst_active' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'subst_active')"/>
-  <td tal:content="structure context/subst_active/field"/>
- </tr>
- <tr tal:condition="python:'clearance_by' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname('user', 'clearance_by')"/>
-  <td tal:condition="context/clearance_by/is_edit_ok">
-   <tal:block tal:define="name      string:clearance_by;
-                          form      formname;
-                          dont_care string:don't care;
-                          selected python:context.clearance_by and context.clearance_by.id or 0">
-    <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-   </tal:block>
-  </td>
-  <td tal:content="context/clearance_by/plain"
-   tal:condition="not:context/clearance_by/is_edit_ok"/>
- </tr>
- <tr tal:condition="python:'job_description' in bclass.properties">
-  <th tal:content="structure
-      python:utils.fieldname('user', 'job_description')"/>
-  <td tal:content="structure context/job_description/multiline"/>
- </tr>
- <tr>
-  <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
-  <td>
-   <input tal:replace="structure context/timezone/field">
-   <span i18n:translate="">default:</span>
-   <span tal:replace="db/config/DEFAULT_TIMEZONE"/>
-  </td>
- </tr>
- <tr tal:condition="python:'csv_delimiter' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname ('user', 'csv_delimiter')"/>
-  <td tal:content="structure context/csv_delimiter/field"/>
- </tr>
- <tr>
-  <th tal:content="structure python:utils.fieldname ('user', 'address')"/>
-  <td tal:content="structure context/address/field"/>
- </tr>
- <tr>
-  <th tal:content="structure
-      python:utils.fieldname ('user', 'alternate_addresses')"/>
-  <td tal:content="structure context/alternate_addresses/multiline"/>
- </tr>
- <tr tal:condition="python:'lunch_start' in bclass.properties">
-  <th tal:content="structure python:utils.fieldname ('user', 'lunch_start')"/>
-  <td tal:content="structure context/lunch_start/field"/>
- </tr>
- <tr tal:condition="python:'lunch_duration' in bclass.properties">
-  <th tal:content="structure
-      python:utils.fieldname ('user', 'lunch_duration')"/>
-  <td tal:content="structure context/lunch_duration/field"/>
- </tr>
- <tr tal:condition="python:'tt_lines' in bclass.properties">
-  <th tal:content="structure
-      python:utils.fieldname ('user', 'tt_lines')"/>
-  <td tal:content="structure context/tt_lines/field"/>
- </tr>
- <tal:block tal:condition="python:'sync_with_ldap' in bclass.properties">
-  <tr tal:condition="context/sync_with_ldap/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'sync_with_ldap')"/>
-   <td tal:content="structure context/sync_with_ldap/field"/>
-  </tr>
-  <tr tal:condition="context/is_lotus_user/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'is_lotus_user')"/>
-   <td tal:content="structure context/is_lotus_user/field"/>
-  </tr>
-  <tr tal:condition="context/group/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'group')"/>
-   <td>
-    <tal:block tal:replace="structure context/group/field"/>
-    <tal:block tal:replace="structure python:db.group.classhelp
-     ( 'name,description'
-     , property='group'
-     , inputtype='radio'
-     , width='600'
-     , pagesize=1000 
-     )"/>
-   </td>
-  </tr>
-  <tr tal:condition="context/secondary_groups/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'secondary_groups')"/>
-   <td>
-    <tal:block tal:content="structure context/secondary_groups/field"/>
-    <tal:block tal:replace="structure python:db.group.classhelp
-     ( 'name,description'
-     , property='secondary_groups'
-     , width='600'
-     , pagesize=1000 
-     )"/>
-   </td>
-  </tr>
-  <tr tal:condition="context/uid/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'uid')"/>
-   <td tal:content="structure context/uid/field"/>
-  </tr>
-  <tr tal:condition="context/home_directory/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'home_directory')"/>
-   <td tal:content="structure context/home_directory/field"/>
-  </tr>
-  <tr tal:condition="context/login_shell/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'login_shell')"/>
-   <td tal:content="structure context/login_shell/field"/>
-  </tr>
-  <tr tal:condition="context/samba_home_drive/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_home_drive')"/>
-   <td tal:content="structure context/samba_home_drive/field"/>
-  </tr>
-  <tr tal:condition="context/samba_home_path/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_home_path')"/>
-   <td tal:content="structure context/samba_home_path/field"/>
-  </tr>
-  <tr tal:condition="context/samba_kickoff_time/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_kickoff_time')"/>
-   <td tal:content="structure context/samba_kickoff_time/field"/>
-  </tr>
-  <tr tal:condition="context/samba_logon_script/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_logon_script')"/>
-   <td tal:content="structure context/samba_logon_script/field"/>
-  </tr>
-  <tr tal:condition="context/samba_profile_path/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_profile_path')"/>
-   <td tal:content="structure context/samba_profile_path/field"/>
-  </tr>
-  <tr tal:condition="context/samba_pwd_can_change/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_pwd_can_change')"/>
-   <td tal:content="structure context/samba_pwd_can_change/field"/>
-  </tr>
-  <tr tal:condition="context/samba_pwd_last_set/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_pwd_last_set')"/>
-   <td tal:content="structure context/samba_pwd_last_set/field"/>
-  </tr>
-  <tr tal:condition="context/samba_pwd_must_change/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_pwd_must_change')"/>
-   <td tal:content="structure context/samba_pwd_must_change/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_used/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_used')"/>
-   <td tal:content="structure context/shadow_used/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_last_change/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_last_change')"/>
-   <td tal:content="structure context/shadow_last_change/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_min/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_min')"/>
-   <td tal:content="structure context/shadow_min/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_max/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_max')"/>
-   <td tal:content="structure context/shadow_max/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_warning/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_warning')"/>
-   <td tal:content="structure context/shadow_warning/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_inactive/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_inactive')"/>
-   <td tal:content="structure context/shadow_inactive/field"/>
-  </tr>
-  <tr tal:condition="context/shadow_expire/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'shadow_expire')"/>
-   <td tal:content="structure context/shadow_expire/field"/>
-  </tr>
-  <tr tal:condition="context/samba_nt_password/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_nt_password')"/>
-   <td tal:content="structure context/samba_nt_password"/>
-  </tr>
-  <tr tal:condition="context/samba_lm_password/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'samba_lm_password')"/>
-   <td tal:content="structure context/samba_lm_password"/>
-  </tr>
-  <tr tal:condition="context/user_password/is_view_ok">
-   <th tal:content="structure
-       python:utils.fieldname ('user', 'user_password')"/>
-   <td tal:content="structure context/user_password"/>
-  </tr>
- </tal:block>
- <tr tal:condition="python:
-  'pictures' in bclass.properties and context.pictures.is_edit_ok ()">
-  <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
-  <td>
-   <input type="file"   name="file-1@content" size="40">
-   <input type="hidden" name="@link@pictures" value="file-1">
-  </td>
- </tr>
-</tal:block>
-</tal:block>
-</tal:block>
 
-<table class="files"
- tal:condition="python:
-  (   'pictures' in bclass.properties
-  and context.pictures
-  and context.pictures.is_edit_ok ()
-  )">
- <tr>
-  <th colspan="4" class="header" i18n:translate="">pictures</th>
- </tr>
- <tr>
-  <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
-  <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
-  <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
-  <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
- </tr>
- <tr tal:repeat="file context/pictures">
-  <td>
-   <img width="112" tal:attributes="src file/download_url">
-  </td>
-  <td>
-   <span tal:content="file/creator">creator's name</span>,
-   <span tal:content="file/creation">creation date</span>
-  </td>
-  <td tal:content="file/type"/>
-  <td>
-   <form style="padding:0"
-         tal:condition="context/is_edit_ok"
-         tal:attributes="action string:user${context/id}">
-    <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
-    <input type="hidden" name="@action" value="edit">
-    <input type="submit" value="remove">
-   </form>
-  </td>
- </tr>
-</table>
+ <table class="files"
+  tal:condition="python:
+   (   'pictures' in bclass.properties
+   and context.pictures
+   and context.pictures.is_edit_ok ()
+   )">
+  <tr>
+   <th colspan="4" class="header" i18n:translate="">pictures</th>
+  </tr>
+  <tr>
+   <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
+   <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
+   <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
+   <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
+  </tr>
+  <tr tal:repeat="file context/pictures">
+   <td>
+    <img width="112" tal:attributes="src file/download_url">
+   </td>
+   <td>
+    <span tal:content="file/creator">creator's name</span>,
+    <span tal:content="file/creation">creation date</span>
+   </td>
+   <td tal:content="file/type"/>
+   <td>
+    <form style="padding:0"
+          tal:condition="context/is_edit_ok"
+          tal:attributes="action string:user${context/id}">
+     <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
+     <input type="hidden" name="@action" value="edit">
+     <input type="submit" value="remove">
+    </form>
+   </td>
+  </tr>
+ </table>
 </tal:block>

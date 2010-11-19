@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2004-10 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -49,13 +49,6 @@ def fix_adr_type (db, cl, nodeid, new_values) :
         new_values ['adr_type'] = adr_type_dict.keys ()
 # end def fix_adr_type
 
-def fix_contacts (db, cl, nodeid, old_values) :
-    if old_values is None or 'contacts' in old_values :
-        for c in cl.get (nodeid, 'contacts') :
-            d = {cl.classname : nodeid}
-            db.contact.set (c, **d)
-# end def fix_contacts
-
 def check_retire_address (db, cl, nodeid, old_values) :
         oadr = None
         if old_values :
@@ -87,20 +80,6 @@ def require_country (db, cl, nodeid, new_values) :
     if not cl.key :
         common.require_attributes (_, cl, nodeid, new_values, 'country')
 # end def require_country
-
-def auto_retire_contacts (db, cl, nodeid, new_values) :
-    common.auto_retire (db, cl, nodeid, new_values, 'contacts')
-# end def auto_retire_contacts
-
-def check_contact (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'contact')
-    if nodeid :
-        common.require_attributes (_, cl, nodeid, new_values, 'contact_type')
-    if not nodeid and 'contact_type' not in new_values :
-        ct = db.contact_type.filter (None, {}, sort = [('+', 'order')])
-        assert (ct)
-        new_values ['contact_type'] = ct [0]
-# end def check_contact
 
 def check_function (db, cl, nodeid, new_values) :
     return common.check_attribute_lines (_, new_values, 'function', 2)
@@ -148,11 +127,5 @@ def init (db) :
         persclass.audit  ("create", require_cust_supp)
         persclass.audit  ("create", check_function)
         persclass.audit  ("set",    check_function)
-        persclass.audit  ("set",    auto_retire_contacts)
-        persclass.react  ("set",    fix_contacts)
-        persclass.react  ("create", fix_contacts)
         persclass.react  ("set",    check_retire)
-    if 'contact' in db.classes :
-        db.contact.audit ("create", check_contact)
-        db.contact.audit ("set",    check_contact)
 # end def init

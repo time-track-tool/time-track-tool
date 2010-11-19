@@ -320,7 +320,9 @@
        <span tal:condition="python: not ct.contact_type.url_template"
              tal:content="ct/contact/plain"/>
        <input type="hidden" tal:attributes=
-              "value context/id;name python:'%s@address' % ct.designator()"/>
+              "value context/id
+              ;name python:
+                '%s@%s' % (ct.designator(), utils.contact_backlink(db))"/>
       </td>
       <td tal:content="ct/description/plain" colspan="2"/>
       <td tal:condition="context/is_edit_ok">

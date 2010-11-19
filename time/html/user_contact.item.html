@@ -73,32 +73,56 @@
           (classname, 'contact_type')"/>
       <td tal:content="structure python:context.contact_type.menu ()"/>
      </tr>
-     <tal:block tal:define="backlink python: utils.contact_backlink (db)">
-      <tr tal:condition="python: context.id and context [backlink]">
-       <th tal:content="structure python:utils.fieldname
-           (classname, backlink)"/>
-       <td>
-        <span tal:condition="python:
-              'firstname' in db._db.getclass (backlink).properties"
-          tal:content="structure python:utils.ExtProperty
-           ( utils, context [backlink].firstname
-           , item = context [backlink]
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'order')"/>
+      <td tal:content="structure python:context.order.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'visible')"/>
+      <td tal:content="structure python:context.visible.field ()"/>
+     </tr>
+     <tr tal:condition="python: context.id and context.user">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'user')"/>
+      <td>
+       <tal:block tal:condition="python: 'firstname' in bclass.properties">
+        <span tal:content="structure python:ExtProperty
+           ( utils, context.user.firstname
+           , item = context.user
            ).formatlink ()"/>
-        <span tal:condition="python:
-              'lastname' in db._db.getclass (backlink).properties"
-          tal:content="structure python:utils.ExtProperty
-           ( utils, context [backlink].lastname
-           , item = context [backlink]
+        <span tal:content="structure python:ExtProperty
+           ( utils, context.user.lastname
+           , item = context.user
            ).formatlink ()"/>
-        <span tal:condition="python:
-              'name' in db._db.getclass (backlink).properties"
-          tal:content="structure python:utils.ExtProperty
-           ( utils, context [backlink].name
-           , item = context [backlink]
-           ).formatlink ()"/>
-       </td>
-      </tr>
-     </tal:block>
+       </tal:block>
+       <span tal:condition="python: 'firstname' not in bclass.properties">
+             tal:content="structure python:ExtProperty
+          ( utils, context.user.realname
+          , item = context.user
+          ).formatlink ()"/>
+       (<span tal:condition="python: 'nickname' in bclass.properties">
+              tal:content="structure python:ExtProperty
+           ( utils, context.user.nickname
+           , item = context.user
+           ).formatlink ()"/><span
+              tal:condition="python: 'nickname' not in bclass.properties">
+              tal:content="structure python:ExtProperty
+           ( utils, context.user.username
+           , item = context.user
+           ).formatlink ()"/>)
+      </td>
+     </tr>
+     <tr tal:condition="python:
+         context.id and 'room' in db._db.classes and context.room">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'room')"/>
+      <td tal:content="structure python:ExtProperty
+         ( utils, context.room.name
+         , item = context.room
+         ).formatlink ()"/>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

@@ -20,7 +20,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
-# $Id$
 
 from roundup.cgi.actions            import EditItemAction, NewItemAction
 from roundup.cgi.TranslationService import get_translation
@@ -71,17 +70,24 @@ def adr_type_classhelp (db, property = 'adr_type', adr_type_cat = None) :
     return db.adr_type.classhelp (** args)
 # end def adr_type_classhelp
 
-def contact_query (db) :
-    """ Compute default query for contact -- this uses a lot of dynamic
-        information because the class and the attributes of the class
-        having a contact may vary
-    """
-    cadr = 'address'
+def contact_backlink (db) :
+    cadr = None
+    if 'address' in db._db.classes :
+        cadr = 'address'
     if 'contact' in db._db.classes :
         if 'person' in db._db.contact.properties :
             cadr = 'person'
         elif 'customer' in db._db.contact.properties :
             cadr = 'customer'
+    return cadr
+# end def contact_backlink
+
+def contact_query (db) :
+    """ Compute default query for contact -- this uses a lot of dynamic
+        information because the class and the attributes of the class
+        having a contact may vary
+    """
+    cadr = contact_backlink (db)
     cadr_cls = db._db.getclass (cadr)
     dargs = ('name', 'firstname', 'lastname', 'function')
     disp  = ('%s.%s' % (cadr, c) for c in dargs if c in cadr_cls.properties)
@@ -100,4 +106,5 @@ def init (instance) :
     reg = instance.registerUtil
     reg ('valid_adr_types',    valid_adr_types)
     reg ('adr_type_classhelp', adr_type_classhelp)
+    reg ('contact_backlink',   contact_backlink)
     reg ('contact_query',      contact_query)
