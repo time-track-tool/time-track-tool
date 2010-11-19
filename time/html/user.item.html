@@ -137,21 +137,9 @@
             tal:content="structure python:utils.fieldname
             ('user_contact', 'visible')"/>
         <th style="text-align:left"
-            tal:condition="context/is_edit_ok" i18n:translate="">
+            tal:condition="context/contacts/is_edit_ok" i18n:translate="">
             remove
         </th>
-       </tr>
-       <tr tal:condition="python:'contacts' in props">
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'user_contact', -1, 'contact_type').menu ()"/>
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'user_contact', -1, 'contact').field (size=25)"/>
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'user_contact', -1, 'order').field (size=3)"/>
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'user_contact', -1, 'description').field (size=25)"/>
-        <td/>
-        <input type="hidden" name="@link@contacts" value="contact-1"/>
        </tr>
        <tr tal:condition="python:'contacts' in props" tal:repeat="ct python:sorted
            ( context.contacts
@@ -171,11 +159,27 @@
         </td>
         <td tal:content="ct/order/plain"/>
         <td tal:content="ct/description/plain"/>
-        <td tal:content="structure ct/visible/field"/>
-        <td tal:condition="context/is_edit_ok">
+        <td tal:condition="not:ct/contact_type/visible"
+            tal:content="structure ct/visible/field"/>
+        <td tal:condition="ct/contact_type/visible"
+            tal:content="structure ct/visible/plain"/>
+        <td tal:condition="context/contacts/is_edit_ok">
          <input tabindex="-1" type="checkbox" name="@remove@contacts"
                 tal:attributes="value ct/id">
         </td>
+       </tr>
+       <tr tal:condition="python:
+           'contacts' in props and db.user_contact.is_edit_ok ()">
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'contact_type').menu ()"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'contact').field (size=25)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'order').field (size=3)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'user_contact', -1, 'description').field (size=25)"/>
+        <td/>
+        <input type="hidden" name="@link@contacts" value="contact-1"/>
        </tr>
       </table>
      </td>

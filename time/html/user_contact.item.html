@@ -81,34 +81,37 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'visible')"/>
-      <td tal:content="structure python:context.visible.field ()"/>
+      <td tal:condition="context/contact_type/visible"
+          tal:content="structure python:context.visible.plain ()"/>
+      <td tal:condition="not:context/contact_type/visible"
+          tal:content="structure python:context.visible.field ()"/>
      </tr>
      <tr tal:condition="python: context.id and context.user">
       <th tal:content="structure python:utils.fieldname
           (classname, 'user')"/>
       <td>
-       <tal:block tal:condition="python: 'firstname' in bclass.properties">
-        <span tal:content="structure python:ExtProperty
+       <tal:block tal:condition="python: 'firstname' in db._db.user.properties">
+        <span tal:content="structure python:utils.ExtProperty
            ( utils, context.user.firstname
            , item = context.user
            ).formatlink ()"/>
-        <span tal:content="structure python:ExtProperty
+        <span tal:content="structure python:utils.ExtProperty
            ( utils, context.user.lastname
            , item = context.user
            ).formatlink ()"/>
        </tal:block>
-       <span tal:condition="python: 'firstname' not in bclass.properties">
-             tal:content="structure python:ExtProperty
+       <span tal:condition="python: 'firstname' not in db._db.user.properties"
+             tal:content="structure python:utils.ExtProperty
           ( utils, context.user.realname
           , item = context.user
           ).formatlink ()"/>
-       (<span tal:condition="python: 'nickname' in bclass.properties">
-              tal:content="structure python:ExtProperty
+       (<span tal:condition="python: 'nickname' in db._db.user.properties"
+              tal:content="structure python:utils.ExtProperty
            ( utils, context.user.nickname
            , item = context.user
            ).formatlink ()"/><span
-              tal:condition="python: 'nickname' not in bclass.properties">
-              tal:content="structure python:ExtProperty
+              tal:condition="python: 'nickname' not in db._db.user.properties"
+              tal:content="structure python:utils.ExtProperty
            ( utils, context.user.username
            , item = context.user
            ).formatlink ()"/>)
