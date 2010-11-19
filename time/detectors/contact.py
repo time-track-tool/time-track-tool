@@ -25,12 +25,16 @@ from roundup.cgi.TranslationService import get_translation
 
 import common
 
-def fix_contacts (db, cl, nodeid, old_values) :
+def fix_contacts (db, cl, nodeid, old_values, cls = 'contact') :
     if old_values is None or 'contacts' in old_values :
         for c in cl.get (nodeid, 'contacts') :
             d = {cl.classname : nodeid}
-            db.contact.set (c, **d)
+            db.getclass (cls).set (c, **d)
 # end def fix_contacts
+
+def fix_user_contacts (db, cl, nodeid, old_values) :
+    fix_contacts (db, cl, nodeid, old_values, cls = 'user_contact')
+# end def fix_user_contacts
 
 def auto_retire_contacts (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'contacts')
@@ -71,12 +75,12 @@ def init (db) :
         persclass.react  ("create", fix_contacts)
     if 'contacts' in db.user.properties :
         db.user.audit    ("set",    auto_retire_contacts)
-        db.user.react    ("set",    fix_contacts)
-        db.user.react    ("create", fix_contacts)
+        db.user.react    ("set",    fix_user_contacts)
+        db.user.react    ("create", fix_user_contacts)
     if 'room' in db.classes and 'contacts' in db.room.properties :
         db.room.audit    ("set",    auto_retire_contacts)
-        db.room.react    ("set",    fix_contacts)
-        db.room.react    ("create", fix_contacts)
+        db.room.react    ("set",    fix_user_contacts)
+        db.room.react    ("create", fix_user_contacts)
     if 'contact' in db.classes :
         db.contact.audit ("create", check_contact)
         db.contact.audit ("set",    check_contact)

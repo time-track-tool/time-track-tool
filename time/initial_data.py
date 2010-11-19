@@ -841,3 +841,29 @@ if 'sup_prio' in db.classes :
     db.sup_prio.create (name = "showstopper for many persons",        order = 6)
     db.sup_prio.create (name = "unknown",                             order = 7)
 
+if 'uc_type' in db.classes :
+    db.uc_type.create \
+        ( name         = 'Email'
+        , description  = 'Email address'
+        , order        = 1
+        , url_template = 'mailto:%(contact)s'
+        , visible      = True
+        )
+    db.uc_type.create \
+        ( name         = 'internal Phone'
+        , description  = 'Internal Phone number'
+        , order        = 2
+        , visible      = True
+        )
+    db.uc_type.create \
+        ( name         = 'mobile Phone'
+        , description  = 'Mobile Phone number'
+        , order        = 3
+        , visible      = True
+        )
+    db.uc_type.create \
+        ( name         = 'private Phone'
+        , description  = 'Private Phone number'
+        , order        = 4
+        , visible      = False
+        )
