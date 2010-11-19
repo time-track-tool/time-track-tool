@@ -27,19 +27,133 @@
 # Purpose
 #    Schema definitions for optional user_contact
 
-def init (db, Address_Class, Contact_Class, Contact_Type_Class, Link, ** kw) :
+from schemacfg import schemadef
+
+def init \
+    ( db
+    , Address_Class
+    , Contact_Class
+    , Contact_Type_Class
+    , Boolean
+    , Number
+    , Link
+    , Multilink
+    , ** kw
+    ) :
     export   = {}
 
     params = {}
-    if 'room' in db.classes :
+    if 'Room_Class' in kw :
+        Room_Class = kw ['Room_Class']
         params ['room'] = Link ('room')
+        class N_Room_Class (Room_Class) :
+            """ add contacts to room class
+            """
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    ( contacts               = Multilink ("user_contact")
+                    )
+                Room_Class.__init__ (self, db, classname, ** properties)
+            # end def __init__
+        # end class N_Room_Class
+        export ['Room_Class'] = N_Room_Class
+
     contact = Contact_Class \
         ( db, ''"user_contact"
         , user                = Link      ('user')
         , contact_type        = Link      ("uc_type")
+        , order               = Number    ()
+        , visible             = Boolean   ()
         , **params
         )
-    uc_type = Contact_Type_Class (db, ''"uc_type")
+    uc_type = Contact_Type_Class \
+        (db, ''"uc_type"
+        , visible             = Boolean   ()
+        )
+
+    class User_Class (kw ['User_Class']) :
+        """ add contacts to user class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( contacts               = Multilink ("user_contact")
+                )
+            kw ['User_Class'].__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class User_Class
+    export ['User_Class'] = User_Class
 
     return export
 # end def init
+
+def security (db, ** kw) :
+    classes    = \
+        ( ("uc_type",      ("User",),        ("HR", "Office"))
+        , ("user_contact", ("HR", "Office"), ())
+        )
+    prop_perms = \
+        [ ( "user_contact", "Edit", ["HR", "Office"]
+          , ("contact", "contact_type", "description", "order", "user")
+          )
+        , ( "user",         "View", ["User", "HR", "Office"]
+          , ("contacts",)
+          )
+        ]
+    p = db.security.addPermission \
+        ( name        = 'Create'
+        , klass       = 'user_contact'
+        , description = 'Create'
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('Office', p)
+    schemadef.register_class_permissions (db, classes, prop_perms)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user_contact'
+        , description = 'Search'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def contact_visible (db, userid, itemid) :
+        """User is allowed to view contact if he's the owner of the contact
+           or the contact is marked visible
+        """
+        if not itemid :
+            return False
+        c = db.user_contact.getnode (itemid)
+        if userid == c.user :
+            return True
+        return c.visible
+    # end def contact_visible
+
+    def contact_visible_editable (db, userid, itemid) :
+        """User is allowed to edit if he's the owner of the contact
+        """
+        if not itemid :
+            return False
+        c = db.user_contact.getnode (itemid)
+        if userid == c.user :
+            return True
+        return False
+    # end def contact_visible_editable
+
+    fixdoc = schemadef.security_doc_from_docstring
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_contact'
+        , check       = contact_visible
+        , description = fixdoc (contact_visible.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'user_contact'
+        , check       = contact_visible_editable
+        , description = fixdoc (contact_visible_editable.__doc__)
+        , properties  = ('visible',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+# end def security
+

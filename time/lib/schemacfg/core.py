@@ -93,6 +93,9 @@ def init \
         , description           = String    ()
         )
     user_status.setkey ("name")
+
+    if 'Room_Class' in kw :
+        room = kw ['Room_Class'] (db, ''"room")
 # end def init
 
 def security (db, ** kw) :

@@ -48,6 +48,7 @@ schemas = \
     , 'it_tracker'
     , 'min_adr'
     , 'contact'
+    , 'user_contact'
     , 'person_cust'
     , 'support'
     , 'time_tracker'

@@ -58,7 +58,6 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         ]
-
       )
     , ( 'contact_type'
       , [ ( 'description'
@@ -745,7 +744,10 @@ properties = \
         ]
       )
     , ( 'room'
-      , [ ( 'location'
+      , [ ( 'contacts'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'location'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'name'
@@ -1115,6 +1117,24 @@ properties = \
           )
         ]
       )
+    , ( 'uc_type'
+      , [ ( 'description'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'order'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'url_template'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'visible'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        ]
+      )
     , ( 'user'
       , [ ( 'address'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
@@ -1123,6 +1143,9 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'clearance_by'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'contacts'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'department'
@@ -1222,6 +1245,30 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'username'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        ]
+      )
+    , ( 'user_contact'
+      , [ ( 'contact'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'contact_type'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'description'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'order'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'room'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'user'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'visible'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         ]

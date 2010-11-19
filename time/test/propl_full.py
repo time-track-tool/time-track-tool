@@ -324,7 +324,8 @@ properties = \
         ]
       )
     , ( 'room'
-      , [ 'location'
+      , [ 'contacts'
+        , 'location'
         , 'name'
         ]
       )
@@ -478,10 +479,19 @@ properties = \
         , 'wps'
         ]
       )
+    , ( 'uc_type'
+      , [ 'description'
+        , 'name'
+        , 'order'
+        , 'url_template'
+        , 'visible'
+        ]
+      )
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'
         , 'clearance_by'
+        , 'contacts'
         , 'department'
         , 'external_phone'
         , 'firstname'
@@ -515,6 +525,16 @@ properties = \
         , 'title'
         , 'tt_lines'
         , 'username'
+        ]
+      )
+    , ( 'user_contact'
+      , [ 'contact'
+        , 'contact_type'
+        , 'description'
+        , 'order'
+        , 'room'
+        , 'user'
+        , 'visible'
         ]
       )
     , ( 'user_dynamic'

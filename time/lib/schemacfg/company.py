@@ -163,13 +163,20 @@ def init \
         )
     position.setkey ("position")
 
-    room = Class \
-        ( db
-        , ''"room"
-        , name                  = String    ()
-        , location              = Link      ("location")
-        )
-    room.setkey ("name")
+    class Room_Class (Ext_Class) :
+        """ Create room class with default attributes, may be
+            extended by other definitions.
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( name                = String    ()
+                , location            = Link      ("location")
+                )
+            self.__super.__init__ (db, classname, ** properties)
+            self.setkey (''"name")
+        # end def __init__
+    # end class Room_Class
+    export.update (dict (Room_Class = Room_Class))
 
     sex = Class \
         ( db
