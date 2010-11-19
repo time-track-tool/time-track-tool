@@ -36,6 +36,51 @@ def fix_user_contacts (db, cl, nodeid, old_values) :
     fix_contacts (db, cl, nodeid, old_values, cls = 'user_contact')
 # end def fix_user_contacts
 
+def create_email_contacts (db, cl, nodeid, new_values) :
+    email_type = db.uc_type.lookup ('Email')
+    ctct = new_values.get ('contacts', [])
+    if 'address' in new_values :
+        x = db.user_contact.create \
+            ( contact      = new_values ['address']
+            , contact_type = email_type
+            , order        = 0
+            , visible      = True
+            )
+        ctct.append (x)
+    if 'alternate_addresses' in new_values :
+        for n, a in enumerate (new_values ['alternate_addresses'].split ('\n')) :
+            a = a.strip ()
+            if not a :
+                continue
+            x = db.user_contact.create \
+                ( contact      = a
+                , contact_type = email_type
+                , order        = n + 1
+                , visible      = True
+                )
+            ctct.append (x)
+    new_values ['contacts'] = ctct
+    print "create_email_contacts:", new_values
+# end def create_email_contacts
+
+def fix_emails (db, cl, nodeid, new_values) :
+    if 'contacts' not in new_values :
+        return
+    email_type = db.uc_type.lookup ('Email')
+    emails = []
+    for c in new_values ['contacts'] :
+        if db.user_contact.get (c, 'contact_type') == email_type :
+            emails.append (db.user_contact.getnode (c))
+    alternate = []
+    for n, e in enumerate (sorted (emails, key = lambda x : x.order)) :
+        if n :
+            alternate.append (e.contact)
+        else :
+            new_values ['address'] = e.contact
+        print e.contact
+    new_values ['alternate_addresses'] = '\n'.join (alternate)
+# end def fix_emails
+
 def auto_retire_contacts (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'contacts')
 # end def auto_retire_contacts
@@ -52,9 +97,14 @@ def check_contact (db, cl, nodeid, new_values) :
 
 def new_user_contact (db, cl, nodeid, new_values) :
     if 'visible' not in new_values :
-        ct = db.contact_type.getnode (new_values ['contact_type'])
+        ct = db.uc_type.getnode (new_values ['contact_type'])
         new_values ['visible'] = ct.visible
 # end def new_user_contact
+
+def check_email (db, cl, nodeid, new_values) :
+    if 'name' in new_values and cl.get (nodeid, 'name') == 'Email' :
+        raise reject, _ ("Name Email must not be changed")
+# end def check_email
 
 def init (db) :
     global _
@@ -77,6 +127,9 @@ def init (db) :
         db.user.audit    ("set",    auto_retire_contacts)
         db.user.react    ("set",    fix_user_contacts)
         db.user.react    ("create", fix_user_contacts)
+        db.user.audit    ("create", fix_emails, priority = 120)
+        db.user.audit    ("set",    fix_emails, priority = 120)
+        db.user.audit    ("create", create_email_contacts)
     if 'room' in db.classes and 'contacts' in db.room.properties :
         db.room.audit    ("set",    auto_retire_contacts)
         db.room.react    ("set",    fix_user_contacts)
@@ -88,4 +141,6 @@ def init (db) :
         db.user_contact.audit ("create", check_contact)
         db.user_contact.audit ("create", new_user_contact, priority = 150)
         db.user_contact.audit ("set",    check_contact)
+    if 'uc_type' in db.classes :
+        db.uc_type.audit ("set", check_email)
 # end def init
