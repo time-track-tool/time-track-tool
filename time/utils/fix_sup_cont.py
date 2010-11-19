@@ -177,6 +177,7 @@ user_contact = db.user_contact.filter (None, {})
 if not user_contact :
     for u in db.user.getnodeids () :
         n    = 0
+        contacts = []
         user = db.user.getnode (u)
         internal = {}
         mobile   = {}
@@ -217,51 +218,64 @@ if not user_contact :
                 (user.private_mobile, (n, user.private_mobile_visible))
 
         for k, (n, vi) in internal.iteritems () :
-            db.user_contact.create \
+            x = db.user_contact.create \
                 ( contact      = k
                 , contact_type = db.uc_type.lookup ('internal Phone')
                 , order        = n
                 , visible      = vi
+                , user         = u
                 )
+            contacts.append (x)
         for k, (n, vi) in mobile.iteritems () :
-            db.user_contact.create \
+            x = db.user_contact.create \
                 ( contact      = k
                 , contact_type = db.uc_type.lookup ('mobile Phone')
                 , order        = n
                 , visible      = vi
+                , user         = u
                 )
+            contacts.append (x)
         for k, (n, vi) in private.iteritems () :
-            db.user_contact.create \
+            x = db.user_contact.create \
                 ( contact      = k
                 , contact_type = db.uc_type.lookup ('private Phone')
                 , order        = n
                 , visible      = vi
+                , user         = u
                 )
+            contacts.append (x)
         for k, (n, vi) in external.iteritems () :
-            db.user_contact.create \
+            x = db.user_contact.create \
                 ( contact      = k
                 , contact_type = db.uc_type.lookup ('external Phone')
                 , order        = n
                 , visible      = vi
+                , user         = u
                 )
+            contacts.append (x)
         if user.address :
-            db.user_contact.create \
+            x = db.user_contact.create \
                 ( contact      = user.address
                 , contact_type = db.uc_type.lookup ('Email')
                 , order        = 1
                 , visible      = True
+                , user         = u
                 )
+            contacts.append (x)
         if user.alternate_addresses :
             for n, a in enumerate (user.alternate_addresses.split ('\n')) :
                 a = a.strip ()
                 if not a :
                     continue
-                db.user_contact.create \
+                x = db.user_contact.create \
                     ( contact      = a
                     , contact_type = db.uc_type.lookup ('Email')
-                    , order        = n + 1
+                    , order        = n + 2
                     , visible      = True
+                    , user         = u
                     )
+                contacts.append (x)
+        db.user.set (u, contacts = contacts)
 
 
 db.commit ()
