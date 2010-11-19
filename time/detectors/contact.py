@@ -77,7 +77,6 @@ def fix_emails (db, cl, nodeid, new_values) :
             alternate.append (e.contact)
         else :
             new_values ['address'] = e.contact
-        print e.contact
     new_values ['alternate_addresses'] = '\n'.join (alternate)
 # end def fix_emails
 
@@ -94,6 +93,33 @@ def check_contact (db, cl, nodeid, new_values) :
         assert (ct)
         new_values ['contact_type'] = ct [0]
 # end def check_contact
+
+def changed_contact (db, cl, nodeid, old_values) :
+    """ Update the user address information if an email changes """
+    node = cl.getnode (nodeid)
+    if ('contact' not in old_values and 'contact_type' not in old_values) :
+        return
+    if  (   old_values ['contact']      == node.contact
+        and old_values ['contact_type'] == node.contact_type
+        ) :
+        return
+    email = db.uc_type.lookup ('Email')
+    if node.contact_type != email and old_values.get ('contact_type') != email :
+        return
+    user = db.user.getnode (node.user)
+    emails = []
+    for c in user.contacts :
+        if db.user_contact.get (c, 'contact_type') == email :
+            emails.append (db.user_contact.getnode (c))
+    alt = []
+    adr = None
+    for n, e in enumerate (sorted (emails, key = lambda x : x.order)) :
+        if n :
+            alt.append (e.contact)
+        else :
+            adr = e.contact
+    db.user.set (user.id, address = adr, alternate_addresses = '\n'.join (alt))
+# end def changed_contact
 
 def new_user_contact (db, cl, nodeid, new_values) :
     if 'visible' not in new_values :
@@ -141,6 +167,7 @@ def init (db) :
         db.user_contact.audit ("create", check_contact)
         db.user_contact.audit ("create", new_user_contact, priority = 150)
         db.user_contact.audit ("set",    check_contact)
+        db.user_contact.react ("set",    changed_contact)
     if 'uc_type' in db.classes :
         db.uc_type.audit ("set", check_email)
 # end def init
