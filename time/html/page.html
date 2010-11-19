@@ -221,6 +221,10 @@
    , ('user_dynamic', '')
                        : '@columns=id,user,valid_from,org_location&@sort=-id&'
                          '@pagesize=20&@startwith=0'
+   , ('user_contact', '')
+                        : '@columns=contact,contact_type,room,user&'
+                          '@sort=order,contact&@group=contact_type&'
+                          '@pagesize=20&@startwith=0'
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit',   '?@template=item', 1)

@@ -7,12 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-11-11 16:03+0100\n"
+"POT-Creation-Date: 2010-11-19 23:26+0100\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "invoice"
+msgstr ""
+
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+msgid "shipping"
+msgstr "shipping"
+
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+msgid "supply"
+msgstr "supply"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr ""
+
+msgid "contact"
+msgstr "Contact"
+
+msgid "Address of a personal contact"
+msgstr ""
+
+msgid "Circular logging"
+msgstr ""
 
 msgid "start and end must be on same day and start <= end."
 msgstr ""
@@ -164,6 +191,9 @@ msgstr ""
 
 #, python-format
 msgid "You may not unlink %(cls)s from %(name)s"
+msgstr ""
+
+msgid "Name Email must not be changed"
 msgstr ""
 
 #, python-format
@@ -1082,9 +1112,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "contact"
-msgstr "Contact"
-
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -1735,9 +1762,6 @@ msgid ""
 "Unique number or name for this %(Classname)s, preferrably the\n"
 "             inventory number for asset tracking\n"
 "          "
-msgstr ""
-
-msgid "invoice"
 msgstr ""
 
 msgid "Link to invoice for this %(Classname)s"
@@ -4085,27 +4109,6 @@ msgstr "New Dynamic User Data"
 msgid "split user_dynamic record"
 msgstr "Split frozen dynamic user data"
 
-msgid "Invoice Address"
-msgstr "Invoice address"
-
-msgid "shipping"
-msgstr "shipping"
-
-msgid "Shipping Address"
-msgstr "Shipping address"
-
-msgid "supply"
-msgstr "supply"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr ""
-
-msgid "Address of a personal contact"
-msgstr ""
-
-msgid "Circular logging"
-msgstr ""
-
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -4377,6 +4380,9 @@ msgstr "Work package group"
 
 msgid "user_dynamic"
 msgstr "Dynamic User Data"
+
+msgid "user_contact"
+msgstr "User contact"
 
 msgid "uc_type"
 msgstr "User-contact type"

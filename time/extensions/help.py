@@ -1580,6 +1580,13 @@ _helptext          = \
       ]
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']
+    , ""'visible'                     :
+      [ ""''' If you set this option to "YES", all time tracker users
+              can see your private %(Classname)s. If set to "No", it
+              will not be accessible for the other time tracker users
+              except HR and office.
+          '''
+      ]
     , ""'web_url'                     :
       [ ""'''Obtain IP address from IP checking page at %(Property)s
              If no method for detecting IP address is configured, this

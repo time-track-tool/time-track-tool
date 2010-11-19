@@ -7,12 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-11-11 16:03+0100\n"
+"POT-Creation-Date: 2010-11-19 23:26+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "invoice"
+msgstr "Rechnung"
+
+msgid "Invoice Address"
+msgstr "Rechnungsadresse"
+
+msgid "shipping"
+msgstr "Lieferung"
+
+msgid "Shipping Address"
+msgstr "Lieferadresse"
+
+msgid "supply"
+msgstr "Bezug"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr "Adresse zum Bezug beim Lieferanten"
+
+msgid "contact"
+msgstr "Kontakt"
+
+msgid "Address of a personal contact"
+msgstr "Adresse persönlicher Kontakt"
+
+msgid "Circular logging"
+msgstr ""
 
 msgid "start and end must be on same day and start <= end."
 msgstr ""
@@ -169,6 +196,9 @@ msgstr ""
 #, python-format
 msgid "You may not unlink %(cls)s from %(name)s"
 msgstr ""
+
+msgid "Name Email must not be changed"
+msgstr "Name 'Email' darf nicht geändert werden"
 
 #, python-format
 msgid "New %s requires a %s"
@@ -1112,9 +1142,6 @@ msgstr ""
 "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
 "müssen übereinstimmen."
 
-msgid "contact"
-msgstr "Kontakt"
-
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -1780,9 +1807,6 @@ msgid ""
 msgstr ""
 "Eindeutiger name für diese %(Classname)s, bevorzugt die Inventarnummer für "
 "die Verwaltung von Anlagegütern (asset tracking)"
-
-msgid "invoice"
-msgstr "Rechnung"
 
 msgid "Link to invoice for this %(Classname)s"
 msgstr "Verbindung zur Rechnung für %(Classname)s"
@@ -4170,27 +4194,6 @@ msgstr ""
 msgid "split user_dynamic record"
 msgstr ""
 
-msgid "Invoice Address"
-msgstr "Rechnungsadresse"
-
-msgid "shipping"
-msgstr "Lieferung"
-
-msgid "Shipping Address"
-msgstr "Lieferadresse"
-
-msgid "supply"
-msgstr "Bezug"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr "Adresse zum Bezug beim Lieferanten"
-
-msgid "Address of a personal contact"
-msgstr "Adresse persönlicher Kontakt"
-
-msgid "Circular logging"
-msgstr ""
-
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -4462,6 +4465,9 @@ msgstr "Arbeitspaket-Gruppe"
 
 msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
+
+msgid "user_contact"
+msgstr "User-Kontakt"
 
 msgid "uc_type"
 msgstr "User-Kontakttyp"
