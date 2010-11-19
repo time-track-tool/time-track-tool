@@ -282,52 +282,64 @@
       <td tal:content="structure context/valid/menu" colspan="2"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
-     <tr tal:condition="python:'contacts' in props">
+     <tr>
       <th tal:content="structure python:utils.fieldname
-          ('contact', 'contact_type')"/>
-      <th style="text-align:left"
-          tal:content="structure python:utils.fieldname
-          ('contact', 'contact')" class="required"/>
-      <th tal:content="structure python:utils.fieldname
-          ('contact', 'description')"/>
-      <th/>
-      <th style="text-align:left"
-          tal:condition="context/is_edit_ok" i18n:translate="">
-          remove
-      </th>
-     </tr>
-     <tr tal:condition="python:'contacts' in props">
-      <td tal:content="structure python:utils.new_property
-          (context, db, 'contact', -1, 'contact_type').menu ()"/>
-      <td tal:content="structure python:utils.new_property
-          (context, db, 'contact', -1, 'contact').field ()"/>
-      <td colspan="2"
-          tal:content="structure python:utils.new_property
-          (context, db, 'contact', -1, 'description').field (size=40)"/>
-      <input type="hidden" name="@link@contacts" value="contact-1"/>
-     </tr>
-     <tr tal:condition="python:'contacts' in props" tal:repeat="ct python:sorted
-         ( context.contacts
-         , key = lambda x : (x.contact_type.order, x.contact)
-         )">
-      <th style="vertical-align:top"
-          tal:content="structure python:utils.ExtProperty
-          (utils, ct.contact_type, item = ct).formatlink () + '&nbsp'"/>
-      <td>
-       <a tal:condition="python: ct.contact_type.url_template"
-          tal:content="ct/contact/plain" tal:attributes="href python:
-          ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
-       <span tal:condition="python: not ct.contact_type.url_template"
-             tal:content="ct/contact/plain"/>
-       <input type="hidden" tal:attributes=
-              "value context/id
-              ;name python:
-                '%s@%s' % (ct.designator(), utils.contact_backlink(db))"/>
-      </td>
-      <td tal:content="ct/description/plain" colspan="2"/>
-      <td tal:condition="context/is_edit_ok">
-       <input tabindex="-1" type="checkbox" name="@remove@contacts"
-              tal:attributes="value ct/id">
+          (classname, 'contacts')"/>
+      <td colspan="3">
+       <table class="form" border="0"
+              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+        <tr tal:condition="python:'contacts' in props">
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('contact', 'contact_type')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('contact', 'contact')" class="required"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('contact', 'description')"/>
+         <th/>
+         <th style="text-align:left"
+             tal:condition="context/contacts/is_edit_ok" i18n:translate="">
+             remove
+         </th>
+        </tr>
+        <tr tal:condition="python:'contacts' in props"
+            tal:repeat="ct python:sorted
+            ( context.contacts
+            , key = lambda x : (x.contact_type.order, x.contact)
+            )">
+         <th style="vertical-align:top;text-align:left"
+             tal:content="structure python:utils.ExtProperty
+             (utils, ct.contact_type, item = ct).formatlink () + '&nbsp'"/>
+         <td>
+          <a tal:condition="python: ct.contact_type.url_template"
+             tal:content="ct/contact/plain" tal:attributes="href python:
+             ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
+          <span tal:condition="python: not ct.contact_type.url_template"
+                tal:content="ct/contact/plain"/>
+          <input type="hidden" tal:attributes=
+                 "value context/id
+                 ;name python:
+                   '%s@%s' % (ct.designator(), utils.contact_backlink(db))"/>
+         </td>
+         <td tal:content="ct/description/plain" colspan="2"/>
+         <td tal:condition="context/contacts/is_edit_ok">
+          <input tabindex="-1" type="checkbox" name="@remove@contacts"
+                 tal:attributes="value ct/id">
+         </td>
+        </tr>
+        <tr tal:condition="python:'contacts' in props">
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'contact', -1, 'contact_type').menu ()"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'contact', -1, 'contact').field (size=25)"/>
+         <td colspan="2"
+             tal:content="structure python:utils.new_property
+             (context, db, 'contact', -1, 'description').field (size=25)"/>
+         <input type="hidden" name="@link@contacts" value="contact-1"/>
+        </tr>
+       </table>
       </td>
      </tr>
      <tr><td>&nbsp;</td></tr>
