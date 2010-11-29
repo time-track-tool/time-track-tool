@@ -88,15 +88,24 @@ def check_closed (db, cl, nodeid, new_values) :
         new_values ["closed"] = None
 # end def check_closed
 
+def check_require_message (db, cl, nodeid, new_values) :
+    if 'messages' in new_values :
+        return
+    for prop in ('responsible',) :
+        if prop in new_values :
+            raise Reject, _ ("Change of %s requires a message") % _ (prop)
+# end def check_require_message
+
 def init (db) :
     if 'support' not in db.classes :
         return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.support.audit ("create", new_support,   priority = 50)
-    db.support.audit ("set",    check_support, priority = 40)
+    db.support.audit ("create", new_support,            priority = 50)
+    db.support.audit ("set",    check_support,          priority = 40)
     db.support.audit ("create", audit_superseder)
     db.support.audit ("set",    audit_superseder)
-    db.support.audit ("set",    check_closed,  priority = 200)
+    db.support.audit ("set",    check_closed,           priority = 200)
+    db.support.audit ("set",    check_require_message,  priority = 200)
 # end def init

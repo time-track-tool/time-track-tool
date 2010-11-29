@@ -127,15 +127,17 @@
       <td tal:content="structure python:context.superseder.field ()"/>
      </tr>
      <tr tal:repeat="sup context/superseder">
-      <td>
-      <td colspan=3>
-       <a tal:attributes="href string:support${sup/id}">
-        <span tal:content="sup/id"/>
-        (<span tal:content="sup/it_prio"/>
-        <span tal:content="sup/responsible/username"/>)
-        <span tal:content="sup/title"/>
-       </a>
-      </td>
+      <tal:block tal:condition="python:db._db.support.hasnode (sup.id)">
+       <td/>
+       <td colspan=3>
+        <a tal:attributes="href string:support${sup/id}">
+         <span tal:content="sup/id"/>
+         (<span tal:content="sup/prio"/>
+         <span tal:content="sup/responsible/username"/>)
+         <span tal:content="sup/title"/>
+        </a>
+       </td>
+      </tal:block>
      </tr>
     </tal:block>
    </tal:block>

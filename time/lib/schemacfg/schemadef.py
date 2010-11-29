@@ -89,8 +89,11 @@ def register_confidentiality_check (db, cls, perms, * properties) :
         if not itemid :
             return True
         item = klass.getnode (itemid)
-        if not item.confidential :
-            return True
+        try :
+            if not item.confidential :
+                return True
+        except IndexError :
+            return False
         if userid in item.nosy :
             return True
         return False
