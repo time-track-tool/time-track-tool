@@ -277,5 +277,11 @@ if not user_contact :
                 contacts.append (x)
         db.user.set (u, contacts = contacts)
 
+# retire all cost_center and cost_center_group
+
+for cc in db.cost_center.getnodeids () :
+    db.cost_center.retire (cc)
+for ccg in db.cost_center_group.getnodeids () :
+    db.cost_center_group.retire (ccg)
 
 db.commit ()

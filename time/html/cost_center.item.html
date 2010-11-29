@@ -25,12 +25,10 @@
     <tr tal:condition="python:
      (   path ('context/id')
      and path ('context/cost_center_group')
-     and path ('context/organisation')
      )">
      <th i18n:translate="">number</th>
      <td colspan="3" tal:content="python:'-'.join
-      ((context.organisation.id
-      , context.cost_center_group.id
+      ((context.cost_center_group.id
       , context.id
       ))"/>
     </tr>
@@ -53,9 +51,6 @@
      <th tal:content="structure python:utils.fieldname
          (classname, 'cost_center_group')"/>
      <td tal:content="structure python:context.cost_center_group.menu ()"/>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'organisation')"/>
-     <td tal:content="structure python:context.organisation.menu ()"/>
     </tr>
    </tal:block>
   </tal:block>

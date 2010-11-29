@@ -75,8 +75,7 @@ default_hidden     = \
 durations          = \
     ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 explicit           = \
-    ""'''This selects Work packages that belong to a %(Property)s.
-         Only an explicitly chosen %(Property)s (or several) appear in
+    ""'''Only an explicitly chosen %(Property)s (or several) appear in
          the report when you also choose %(Property)s in View.
       '''
 extension          = \
@@ -147,6 +146,10 @@ realname_automatic = \
          internally. (Roundup uses this as the sender name when
          sending messages via email)
      """
+sel_wp             = \
+    ""'''This selects Work packages that belong to a %(Property)s.'''
+sel_tc             = \
+    ""'''This selects Time categories that belong to a %(Property)s.'''
 status             = \
     ""'''Status of this %(Classname)s. Automatically set on a new
          %(Classname)s if not set.
@@ -1319,8 +1322,8 @@ _helptext          = \
              time category please specify which one.
           '''
       ]
-    , ""'summary_report++cost_center' : [explicit]
-    , ""'summary_report++cost_center_group' : [explicit]
+    , ""'summary_report++cost_center' : [sel_tc, explicit]
+    , ""'summary_report++cost_center_group' : [sel_tc, explicit]
     , ""'summary_report++date'        :
       [ ""'''please specify the date in this format:
              "YYYY-MM-DD;YYYY-MM-DD". The ";" means "to" ("bis" in
@@ -1361,10 +1364,10 @@ _helptext          = \
       ]
     , ""'summary_report++supervisor'  :
       [""'''Selects the users of the chosen supervisor(s)''']
-    , ""'summary_report++time_project': [explicit]
+    , ""'summary_report++time_project': [sel_wp, explicit]
     , ""'summary_report++time_wp'     :
       [""'''Select individual work packages here.''']
-    , ""'summary_report++time_wp_group': [explicit]
+    , ""'summary_report++time_wp_group': [sel_wp, explicit]
     , ""'summary_report++user'        :
       [ ""'''You will only see users for whom you have permission or the
              project times for projects you have permission for (via

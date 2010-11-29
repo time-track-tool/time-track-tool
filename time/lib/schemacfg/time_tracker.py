@@ -60,7 +60,6 @@ def init \
         , description           = String    ()
         , status                = Link      ("cost_center_status")
         , cost_center_group     = Link      ("cost_center_group")
-        , organisation          = Link      ("organisation")
         )
     cost_center.setkey ("name")
 
