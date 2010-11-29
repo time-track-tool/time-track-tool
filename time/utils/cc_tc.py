@@ -26,12 +26,12 @@ for line in DictReader (cc_file, delimiter = ';') :
         print "Not found:", line
         continue
     tcn  = db.time_project.getnode (tcid)
-#    if cc not in ccs :
-#        ccs [cc] = db.cost_center.create \
-#            ( name              = cc
-#            , status            = st_open
-#            , cost_center_group = default
-#            )
-#    ccid = ccs [cc]
-#    db.time_project.set (tcid, cost_center = ccid)
-
+    if cc not in ccs :
+        ccs [cc] = db.cost_center.create \
+            ( name              = cc
+            , status            = st_open
+            , cost_center_group = default
+            )
+    ccid = ccs [cc]
+    db.time_project.set (tcid, cost_center = ccid)
+db.commit ()
