@@ -38,7 +38,7 @@ from roundup.cgi.TranslationService import get_translation
 import common
 
 def new_cc (db, cl, nodeid, new_values) :
-    for i in 'cost_center_group', 'organisation' :
+    for i in 'cost_center_group', :
         if i not in new_values :
             raise Reject, _ ("New %s requires a %s") % (_ (cl.classname), _ (i))
     if 'status' not in new_values :
@@ -49,7 +49,7 @@ def new_cc (db, cl, nodeid, new_values) :
 # end def new_cc
 
 def check_cc (db, cl, nodeid, new_values) :
-    for i in 'cost_center_group', 'organisation', 'status' :
+    for i in 'cost_center_group', 'status' :
         if  (  i in new_values and not new_values [i]
             or not cl.get (nodeid, i) and not i in new_values
             ) :
