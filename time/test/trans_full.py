@@ -20,9 +20,6 @@ transprop_perms = \
     , ( 'cost_center.cost_center_group.id'
       , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
       )
-    , ( 'cost_center.organisation.id'
-      , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-      )
     , ( 'issue.composed_of.id'
       , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
       )

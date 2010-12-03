@@ -60,7 +60,6 @@ def create_email_contacts (db, cl, nodeid, new_values) :
                 )
             ctct.append (x)
     new_values ['contacts'] = ctct
-    print "create_email_contacts:", new_values
 # end def create_email_contacts
 
 def fix_emails (db, cl, nodeid, new_values) :

@@ -38,7 +38,6 @@ properties = \
       , [ 'cost_center_group'
         , 'description'
         , 'name'
-        , 'organisation'
         , 'status'
         ]
       )

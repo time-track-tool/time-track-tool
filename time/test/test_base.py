@@ -429,7 +429,6 @@ class Test_Case_Timetracker (_Test_Case) :
         self.cc = self.db.cost_center.create \
             ( name              = 'CC'
             , cost_center_group = self.ccg
-            , organisation      = self.org
             , status            = self.db.cost_center_status.lookup ('Open')
             )
         self.holiday_tp = self.db.time_project.create \
@@ -551,7 +550,6 @@ class Test_Case_Timetracker (_Test_Case) :
         self.cc = self.db.cost_center.create \
             ( name              = 'CC-New'
             , cost_center_group = self.ccg
-            , organisation      = self.org
             )
         # test that renaming the 'New' time_project_status will still work
         tps = self.db.time_project_status.lookup ('New')
