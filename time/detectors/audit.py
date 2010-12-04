@@ -247,6 +247,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     # Don't allow close if doc_issue_status doesn't allow it
     if  (   dis_name in db.classes and dis_name in cl.properties
         and new_status_name == "closed"
+        and cur_status_name != "closed"
         and not (  kind_name in ["Mistaken", "Obsolete"]
                 or superseder
                 or is_container
