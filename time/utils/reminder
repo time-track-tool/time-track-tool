@@ -178,6 +178,7 @@ tracker = instance.open (tpath)
 minprio = types [type]
 
 db = tracker.open (user)
+sys.path.insert (1, os.path.join (tracker.tracker_home, 'lib'))
 from prettynode import prettynode
 
 user_reports = {}
