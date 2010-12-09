@@ -74,7 +74,8 @@
                                           , 'lastname', 'firstname', 'function'
                                           , 'adr_type'
                                           )
-                                 if c in db._db.customer.properties
+                                 if 'customer' in db._db.classes
+                                 and c in db._db.customer.properties
                               )
    , ('daily_record', '')
                         : '@columns=id,user,date,status&@sort=-id&'
