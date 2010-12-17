@@ -521,29 +521,32 @@ if 'status' in db.classes :
         status.transitions = [trans_lst [t] [0] for t in trans]
 
 if 'doc_issue_status' in db.classes :
+    all_stati  = db.status.getnodeids ()
+    testing    = db.status.lookup ("testing")
+    no_testing = [s for s in all_stati if s != testing]
     di1 = db.doc_issue_status.create \
         ( name        = 'undecided'
         , description = 'Unknown if this issue need documentation'
         , order       = 1
         , nosy        = []
-        , may_close   = False
         , need_msg    = False
+        , may_change_state_to = no_testing
         )
     di2 = db.doc_issue_status.create \
         ( name        = 'needs documentation'
         , description = 'This issue needs documentation (not done yet)'
         , order       = 2
         , nosy        = []
-        , may_close   = True
         , need_msg    = True
+        , may_change_state_to = all_stati
         )
     di3 = db.doc_issue_status.create \
         ( name        = 'no documentation'
         , description = 'This issue needs no documentation (or already done)'
         , order       = 3
         , nosy        = []
-        , may_close   = True
         , need_msg    = True
+        , may_change_state_to = all_stati
         )
     for k in di1, di2, di3 :
         db.doc_issue_status.set (k, transitions = [di1, di2, di3])

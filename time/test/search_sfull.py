@@ -349,7 +349,7 @@ properties = \
       , [ ( 'description'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
-        , ( 'may_close'
+        , ( 'may_change_state_to'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'name'
@@ -1051,7 +1051,7 @@ properties = \
       )
     , ( 'time_project'
       , [ ( 'cost_center'
-          , ['admin', 'controlling', 'project', 'project_view']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'department'
           , ['admin', 'controlling', 'project', 'project_view']

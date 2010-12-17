@@ -244,20 +244,20 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                           % nodeid
                           )
 
-    # Don't allow close if doc_issue_status doesn't allow it
+    # Don't allow state change if doc_issue_status doesn't allow it
     if  (   dis_name in db.classes and dis_name in cl.properties
-        and new_status_name == "closed"
-        and cur_status_name != "closed"
+        and new_status_name != cur_status_name
         and not (  kind_name in ["Mistaken", "Obsolete"]
                 or superseder
                 or is_container
                 )
-        and not di_status.may_close
+        and new_status not in di_status.may_change_state_to
         ) :
             dis_name_l = _ (dis_name)
             st         = di_status.name
             raise Reject, \
-                ( "[%(nodeid)s] %(dis_name_l)s = %(st)s doesn't allow close"
+                ( "[%(nodeid)s] %(dis_name_l)s = %(st)s "
+                  "doesn't allow state change to %(new_status_name)s"
                 % locals ()
                 )
 

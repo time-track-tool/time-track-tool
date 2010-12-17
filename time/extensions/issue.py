@@ -29,12 +29,7 @@
 
 def filter_status_transitions (context) :
     may_close = True
-    if  (   'doc_issue_status' in context._props
-        and (  not context.doc_issue_status
-            or not context.doc_issue_status.may_close
-            )
-        ) :
-        may_close = False
+    # there was a check for closing -- we leave the logic in
     if context.status :
         values = [t.target._value for t in context.status.transitions
                   if t.target.name != 'closed' or may_close

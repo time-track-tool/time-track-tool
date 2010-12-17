@@ -234,10 +234,11 @@ _helptext          = \
       [""'''List of users this %(Classname)s maps to''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
-    , ""'may_close'                   :
-      [ ""'''Set this to \"No\" if you want to forbid closing of an
-             issue -- at least for one %(Classname)s this needs to be
-             set to \"Yes\".
+    , ""'may_change_state_to'         :
+      [ ""'''Allowed state changes for a given %(Classname)s: Usually
+             you want to allow all states here but for some
+             %(Classname)s you may want to disallow certain states, e.g.
+             don't allow change to \"testing\".
           '''
       ]
     , ""'almax'                       :
@@ -297,6 +298,11 @@ _helptext          = \
           '''
       , miss_text
       , leave_empty
+      ]
+    , ""'category++nosy'              :
+      [ ""'''For new issues the %(Property)s is copied to the
+             %(Property)s of the new issue
+          '''
       ]
     , ""'cert_sw'                     :
       [ ""'''Mark this %(Classname)s as being certifyable software.
@@ -496,8 +502,10 @@ _helptext          = \
           '''
       ]
     , ""'doc_issue_status'            :
-      [ ""'''%(Classname)s documentation status -- %(Classname)s can\'t be
-             closed if documentation is needed.
+      [ ""'''%(Classname)s documentation status, i.e., if this
+             %(Classname)s has an impact on user documentation or needs to
+             be documented internally. Note that an %(Classname)s cannot
+             be set to "testing" with the %(Property)s "undecided".
           '''
       ]
     , ""'doc_issue_status++nosy'      :

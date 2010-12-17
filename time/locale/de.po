@@ -912,8 +912,8 @@ msgstr ""
 msgid "If selected, the user has an all-inclusive work time contract"
 msgstr ""
 
-msgid "may_close"
-msgstr "Schließen erlaubt"
+msgid "may_change_state_to"
+msgstr "mögliche Status-Änderung"
 
 msgid ""
 "Set this to \"No\" if you want to forbid closing of an\n"
@@ -1473,6 +1473,9 @@ msgstr ""
 "          "
 
 msgid "doc_issue_status++nosy"
+msgstr "Verteiler"
+
+msgid "category++nosy"
 msgstr "Verteiler"
 
 msgid ""

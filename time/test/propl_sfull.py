@@ -148,7 +148,7 @@ properties = \
       )
     , ( 'doc_issue_status'
       , [ 'description'
-        , 'may_close'
+        , 'may_change_state_to'
         , 'name'
         , 'need_msg'
         , 'nosy'

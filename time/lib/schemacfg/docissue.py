@@ -42,7 +42,7 @@ def init (db, Class, Boolean, Number, String, Link, Multilink, ** kw) :
         , transitions         = Multilink ("doc_issue_status")
         , nosy                = Multilink ("user")
         , need_msg            = Boolean   ()
-        , may_close           = Boolean   ()
+        , may_change_state_to = Multilink ("status")
         )
     docstat.setkey ("name")
 

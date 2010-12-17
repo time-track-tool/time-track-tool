@@ -179,7 +179,7 @@ Role "support":
  User is allowed to edit customer (Edit for "customer" only)
  User is allowed to edit support (Edit for "support" only)
 Role "user":
-  (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'work_location', 'op_project', 'id', 'is_public_holiday', 'creation', 'creator', 'activity', 'actor') only)
+  (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'work_location', 'op_project', 'id', 'is_public_holiday', 'creation', 'creator', 'activity', 'actor', 'cost_center') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
@@ -268,7 +268,7 @@ Role "user":
  User is allowed to see private phone if owner wants private phone accessible (View for "user": ('private_phone',) only)
  User is allowed to see time record if he is allowed to see all details on work package or User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record (View for "time_record" only)
  User is allowed to view contact if he's the owner of the contact or the contact is marked visible (View for "user_contact" only)
- User is allowed to view selected fields if booking is allowed for at least one work package for this user (View for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'work_location', 'op_project', 'id', 'is_public_holiday', 'creation', 'creator', 'activity', 'actor') only)
+ User is allowed to view selected fields if booking is allowed for at least one work package for this user (View for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'work_location', 'op_project', 'id', 'is_public_holiday', 'creation', 'creator', 'activity', 'actor', 'cost_center') only)
  User is allowed to view selected fields in work package if booking is allowed for this user (View for "time_wp": ('name', 'wp_no', 'description', 'responsible', 'project', 'time_start', 'time_end', 'durations_allowed', 'travel', 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id') only)
  User is allowed to view their own and public queries (View for "query" only)
  User is allowed to view their own files (View for "file" only)
