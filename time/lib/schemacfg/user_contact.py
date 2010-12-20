@@ -98,6 +98,9 @@ def security (db, ** kw) :
         , ( "user",         "View", ["User", "HR", "Office"]
           , ("contacts",)
           )
+        , ( "user",         "Edit", ["HR", "Office", "IT"]
+          , ("contacts",)
+          )
         ]
     p = db.security.addPermission \
         ( name        = 'Create'
