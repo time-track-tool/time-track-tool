@@ -88,6 +88,8 @@ def contact_query (db) :
         having a contact may vary
     """
     cadr = contact_backlink (db)
+    if not cadr :
+        return ''
     cadr_cls = db._db.getclass (cadr)
     dargs = ('name', 'firstname', 'lastname', 'function')
     disp  = ('%s.%s' % (cadr, c) for c in dargs if c in cadr_cls.properties)
