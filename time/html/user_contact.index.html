@@ -11,12 +11,7 @@
   ; pdict python: utils.properties_dict (db, context)
   ; prp python:
     ( ('id',           {})
-    , ('contact',      {})
-    , ('description',  {})
-    , ('contact_type', dict (multiselect=True))
-    , ('order',        {})
     , ('room',         {})
-    , ('user',         {})
     , ( 'user', dict
         ( searchname  = 'user.firstname'
         , searchable  = True
@@ -35,6 +30,23 @@
         , sortable    = True
         )
       )
+    , ( 'user', dict
+        ( searchname  = 'user.username'
+        , searchable  = True
+        , sortable    = True
+        )
+      )
+    , ( 'user', dict
+        ( searchname  = 'user.status'
+        , searchable  = True
+        , sortable    = True
+        , multiselect = True
+        )
+      )
+    , ('contact',      {})
+    , ('description',  {})
+    , ('contact_type', dict (multiselect=True))
+    , ('order',        {})
     , ('visible',      {})
     )
   ; props python: utils.filtered_properties (db, utils, context, prp)

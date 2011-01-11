@@ -223,9 +223,12 @@
                        : '@columns=id,user,valid_from,org_location&@sort=-id&'
                          '@pagesize=20&@startwith=0'
    , ('user_contact', '')
-                        : '@columns=contact,contact_type,room,user&'
-                          '@sort=order,contact&@group=contact_type&'
-                          '@pagesize=20&@startwith=0'
+                        : '@columns=room,user.firstname,user.lastname,'
+                          'user.nickname,contact,contact_type&'
+                          '@sort=room,user.lastname,user.firstname&'
+                          '@filter=user.status,contact_type&'
+                          '@pagesize=5000&@startwith=0&'
+                          'user.status=1&contact_type=2,3,5,4'
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit',   '?@template=item', 1)
