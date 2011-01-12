@@ -78,7 +78,6 @@ def init \
         , address               = String    ()
         , alternate_addresses   = String    ()
         , realname              = String    ()
-        , phone                 = String    ()
         , queries               = Multilink ("query")
         , roles                 = String    ()
         , status                = Link      ("user_status", do_journal='no')

@@ -740,9 +740,6 @@ properties = \
         , ( 'password'
           , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
           )
-        , ( 'phone'
-          , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
-          )
         , ( 'queries'
           , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
           )

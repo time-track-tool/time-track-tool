@@ -116,7 +116,6 @@ properties = \
       , [ 'address'
         , 'alternate_addresses'
         , 'password'
-        , 'phone'
         , 'queries'
         , 'realname'
         , 'roles'

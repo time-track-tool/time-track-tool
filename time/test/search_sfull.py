@@ -1212,13 +1212,7 @@ properties = \
         , ( 'department'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
-        , ( 'external_phone'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
         , ( 'firstname'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
-        , ( 'internal_phone'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'job_description'
@@ -1242,31 +1236,13 @@ properties = \
         , ( 'password'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
-        , ( 'phone'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
         , ( 'pictures'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'position'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
-        , ( 'private_mobile'
-          , ['admin']
-          )
-        , ( 'private_mobile_visible'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
-        , ( 'private_phone'
-          , ['admin']
-          )
-        , ( 'private_phone_visible'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
         , ( 'queries'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
-          )
-        , ( 'quick_dialling'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'type', 'user']
           )
         , ( 'realname'

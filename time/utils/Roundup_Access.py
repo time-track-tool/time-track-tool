@@ -757,7 +757,6 @@ class Roundup_Access (object) :
             ,  ('shadowMin',            'shadow_min')
             ,  ('shadowWarning',        'shadow_warning')
             ,  ('sn',                   'realname')
-            ,  ('telephoneNumber',      'phone')
             ,  ('uidNumber',            'uid')
             ,  ('uid',                  'username')
             ,  ('userPassword',         'user_password')
@@ -778,7 +777,7 @@ class Roundup_Access (object) :
         dnname       = 'uid'
 
         def _gecos (self) :
-            return ','.join ((self.realname, self.phone))
+            return self.realname
         # end def _gecos
         gecos = property (_gecos)
 

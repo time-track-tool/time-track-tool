@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-11-19 23:26+0100\n"
+"POT-Creation-Date: 2011-01-12 09:47+0100\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -41,75 +41,11 @@ msgstr ""
 msgid "Circular logging"
 msgstr ""
 
-msgid "start and end must be on same day and start <= end."
+msgid "letter"
 msgstr ""
 
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-msgid "No negative times are allowed"
-msgstr ""
-
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s must be set"
-msgstr ""
-
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-msgid "start"
-msgstr "Start"
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr ""
-
-msgid "Either specify duration or start/end"
-msgstr ""
-
-#, python-format
-msgid "%s: You specified new values for %s but no duration"
-msgstr ""
-
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-msgid "No weekend booking allowed"
-msgstr ""
-
-msgid "Distribution: WP must be given"
-msgstr ""
-
-msgid "dist must not exceed sum of unassigned times in week"
-msgstr ""
+msgid "address"
+msgstr "Address"
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -216,6 +152,10 @@ msgstr ""
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
+#, python-format
+msgid "%(attr)s must be set"
+msgstr ""
+
 msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
 
@@ -253,6 +193,10 @@ msgstr ""
 
 msgid "product_group"
 msgstr "Product group"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -444,6 +388,72 @@ msgid "summary_report"
 msgstr "Summary Report"
 
 #, python-format
+msgid "Change of %s requires a message"
+msgstr ""
+
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+msgid "No negative times are allowed"
+msgstr ""
+
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr ""
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
+
+#, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
 
@@ -616,16 +626,8 @@ msgid "Flag if booking of durations is allowed for this %(Classname)s."
 msgstr ""
 
 msgid ""
-"This selects Work packages that belong to a %(Property)s.\n"
-"         Only an explicitly chosen %(Property)s (or several) appear in\n"
+"Only an explicitly chosen %(Property)s (or several) appear in\n"
 "         the report when you also choose %(Property)s in View.\n"
-"      "
-msgstr ""
-
-msgid ""
-"This is an extension number of the PBX. Can be concatenated\n"
-"         with the company prefix stored in \"Organisation\" to form a\n"
-"         valid external phone number.\n"
 "      "
 msgstr ""
 
@@ -684,18 +686,6 @@ msgid "Priority for this %(Classname)s."
 msgstr ""
 
 msgid ""
-"If you set this option to \"YES\", all time tracker users can see\n"
-"         your private number. If set to \"No\", the number will not be\n"
-"         accessible for the other time tracker users except HR and\n"
-"         office. (Please be aware that you do not have to give\n"
-"         information about any private phone number at all!)\n"
-"      "
-msgstr ""
-
-msgid "Is always a full number valid on the PSTN."
-msgstr ""
-
-msgid ""
 "as a comma-separated list of ranges (a special case of a range\n"
 "         is just one number), e.g., 1-100,300-500\n"
 "      "
@@ -707,6 +697,12 @@ msgid ""
 "         internally. (Roundup uses this as the sender name when\n"
 "         sending messages via email)\n"
 "     "
+msgstr ""
+
+msgid "This selects Work packages that belong to a %(Property)s."
+msgstr ""
+
+msgid "This selects Time categories that belong to a %(Property)s."
 msgstr ""
 
 msgid ""
@@ -839,9 +835,6 @@ msgstr ""
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
 
-msgid "address"
-msgstr "Address"
-
 msgid "Address for this %(Classname)s"
 msgstr ""
 
@@ -891,9 +884,10 @@ msgid "may_change_state_to"
 msgstr "May change status to"
 
 msgid ""
-"Set this to \"No\" if you want to forbid closing of an\n"
-"             issue -- at least for one %(Classname)s this needs to be\n"
-"             set to \"Yes\".\n"
+"Allowed state changes for a given %(Classname)s: Usually\n"
+"             you want to allow all states here but for some\n"
+"             %(Classname)s you may want to disallow certain states, e.g.\n"
+"             don't allow change to \"testing\".\n"
 "          "
 msgstr ""
 
@@ -1026,6 +1020,15 @@ msgid ""
 "             to. Each category has a Category-Responsible who is\n"
 "             responsible directly after creation if not specified\n"
 "             otherwise.\n"
+"          "
+msgstr ""
+
+msgid "category++nosy"
+msgstr "Nosy List"
+
+msgid ""
+"For new issues the %(Property)s is copied to the\n"
+"             %(Property)s of the new issue\n"
 "          "
 msgstr ""
 
@@ -1431,15 +1434,14 @@ msgid "doc_issue_status"
 msgstr "Doc status"
 
 msgid ""
-"%(Classname)s documentation status -- %(Classname)s can't be\n"
-"             closed if documentation is needed.\n"
+"%(Classname)s documentation status, i.e., if this\n"
+"             %(Classname)s has an impact on user documentation or needs to\n"
+"             be documented internally. Note that an %(Classname)s cannot\n"
+"             be set to \"testing\" with the %(Property)s \"undecided\".\n"
 "          "
 msgstr ""
 
 msgid "doc_issue_status++nosy"
-msgstr "Nosy List"
-
-msgid "category++nosy"
 msgstr "Nosy List"
 
 msgid ""
@@ -1539,15 +1541,6 @@ msgid ""
 "             subtract the lunch break, e.g. specifying \"Start\" 10:00 and\n"
 "             \"End\" 18:00 will result in a duration of 7.5 hours (because\n"
 "             half an hour lunch break was subtracted).\n"
-"          "
-msgstr ""
-
-msgid "external_phone"
-msgstr "External: Other Phone Number"
-
-msgid ""
-"Long mobile or external phone number, not an extension\n"
-"             number, e.g. number at a customer side.\n"
 "          "
 msgstr ""
 
@@ -1667,8 +1660,9 @@ msgstr "Sensor interval"
 msgid "Sensor interval for %(Classname)s"
 msgstr ""
 
+#, fuzzy
 msgid "Numeric group ID"
-msgstr ""
+msgstr "Customer Group"
 
 msgid "gid_range"
 msgstr "GIDs other"
@@ -1740,12 +1734,6 @@ msgid "interface_skip"
 msgstr "Interface skip pattern"
 
 msgid "Skip any IP address before %(Property)s in output of ifconfig"
-msgstr ""
-
-msgid "internal_phone"
-msgstr "Internal: Other Phone Number"
-
-msgid "Short mobile or external phone number, e.g., 6142."
 msgstr ""
 
 msgid "interval"
@@ -1970,9 +1958,6 @@ msgstr ""
 
 msgid "lastname"
 msgstr "Last name"
-
-msgid "letter"
-msgstr ""
 
 msgid ""
 "Download of letter -- usually this will open the letter in\n"
@@ -2442,12 +2427,6 @@ msgstr "personal address"
 msgid "personal Information for this %(Classname)s"
 msgstr ""
 
-msgid "phone"
-msgstr "Internal Extension Number"
-
-msgid "Short phone number (suffix) only, e.g., 42."
-msgstr ""
-
 msgid "planned_effort"
 msgstr "Planned effort (h)"
 
@@ -2496,24 +2475,6 @@ msgstr "GIDs for persons"
 msgid "Allowed range of group ids for users"
 msgstr ""
 
-msgid "private_mobile"
-msgstr "Private Mobile Number"
-
-msgid "Private mobile phone number."
-msgstr ""
-
-msgid "private_mobile_visible"
-msgstr "Private Mobile visible"
-
-msgid "private_phone"
-msgstr "Private Phone Number"
-
-msgid "Private phone number except mobile."
-msgstr ""
-
-msgid "private_phone_visible"
-msgstr "Private Phone visible"
-
 msgid "product_type"
 msgstr "Product type"
 
@@ -2552,15 +2513,6 @@ msgid "queries"
 msgstr "Queries"
 
 msgid "Queries for this %(Classname)s"
-msgstr ""
-
-msgid "quick_dialling"
-msgstr "Internal quick dialling"
-
-msgid ""
-"Quick dialling number, e.g., for the mobile phone of the\n"
-"             user. Example: 6042\n"
-"          "
 msgstr ""
 
 msgid "realname"
@@ -2689,8 +2641,9 @@ msgstr ""
 msgid "room"
 msgstr "Room"
 
+#, fuzzy
 msgid "Room number"
-msgstr ""
+msgstr "Number"
 
 msgid "routers"
 msgstr "Routers"
@@ -3013,8 +2966,9 @@ msgstr ""
 msgid "subscriber"
 msgstr "Subscriber"
 
+#, fuzzy
 msgid "Subscriber of this subscription"
-msgstr ""
+msgstr "Subscriber Address details"
 
 msgid "subscriber.firstname"
 msgstr "Subscriber First name"
@@ -3377,8 +3331,9 @@ msgstr ""
 msgid "unit"
 msgstr "Unit"
 
+#, fuzzy
 msgid "Unit of measurement"
-msgstr ""
+msgstr "Measurement"
 
 msgid "url"
 msgstr "URL"
@@ -3546,6 +3501,17 @@ msgstr "Value"
 msgid "Value of this %(Classname)s"
 msgstr ""
 
+msgid "visible"
+msgstr ""
+
+msgid ""
+" If you set this option to \"YES\", all time tracker users\n"
+"              can see your private %(Classname)s. If set to \"No\", it\n"
+"              will not be accessible for the other time tracker users\n"
+"              except HR and office.\n"
+"          "
+msgstr ""
+
 msgid "web_url"
 msgstr "Web URL"
 
@@ -3654,11 +3620,13 @@ msgstr ""
 msgid "Remove last Device now"
 msgstr ""
 
+#, fuzzy
 msgid "Clear Measurement Data"
-msgstr ""
+msgstr "Measurement"
 
+#, fuzzy
 msgid "Clear Measurements now"
-msgstr ""
+msgstr "Measurement"
 
 msgid "Delete Database"
 msgstr ""
@@ -4458,6 +4426,9 @@ msgstr "Travel full"
 
 msgid "mail_domain"
 msgstr "Mail domain"
+
+msgid "phone"
+msgstr "Phone Number"
 
 msgid "planned"
 msgstr "Planned"

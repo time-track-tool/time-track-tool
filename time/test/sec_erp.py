@@ -103,7 +103,7 @@ Role "user":
  User is allowed to create person (Create for "person" only)
  User is allowed to create person_type (Create for "person_type" only)
  User is allowed to create queries (Create for "query" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('password', 'phone', 'queries', 'realname', 'timezone') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('password', 'queries', 'realname', 'timezone') only)
  User is allowed to edit person (Edit for "person" only)
  User is allowed to edit person_type (Edit for "person_type" only)
  User is allowed to edit their queries (Edit for "query" only)

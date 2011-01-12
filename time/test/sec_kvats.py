@@ -54,7 +54,7 @@ Role "user":
  User is allowed to create issue (Create for "issue" only)
  User is allowed to create msg (Create for "msg" only)
  User is allowed to create queries (Create for "query" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'password', 'phone', 'queries', 'realname', 'timezone') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'password', 'queries', 'realname', 'timezone') only)
  User is allowed to edit category if he is responsible for it (Edit for "category": ('nosy', 'default_part_of') only)
  User is allowed to edit their queries (Edit for "query" only)
  User is allowed to retire their queries (Retire for "query" only)

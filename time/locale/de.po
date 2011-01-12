@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2010-11-19 23:26+0100\n"
+"POT-Creation-Date: 2011-01-12 09:47+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -41,75 +41,11 @@ msgstr "Adresse persönlicher Kontakt"
 msgid "Circular logging"
 msgstr ""
 
-msgid "start and end must be on same day and start <= end."
-msgstr ""
+msgid "letter"
+msgstr "Brief"
 
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-msgid "No negative times are allowed"
-msgstr ""
-
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr "\"%(attr)s\" darf nicht geändert werden"
-
-#, python-format
-msgid "%(attr)s must be set"
-msgstr "\"%(attr)s\" muss ausgefüllt werden"
-
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-msgid "start"
-msgstr "Start"
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr "\"%(attr)s\" muss ausgefüllt werden"
-
-msgid "Either specify duration or start/end"
-msgstr ""
-
-#, python-format
-msgid "%s: You specified new values for %s but no duration"
-msgstr ""
-
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-msgid "No weekend booking allowed"
-msgstr ""
-
-msgid "Distribution: WP must be given"
-msgstr ""
-
-msgid "dist must not exceed sum of unassigned times in week"
-msgstr ""
+msgid "address"
+msgstr "Adresse"
 
 msgid "Restart of subscription only within two months"
 msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
@@ -220,6 +156,10 @@ msgstr ""
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
+#, python-format
+msgid "%(attr)s must be set"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
+
 msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
 
@@ -257,6 +197,10 @@ msgstr ""
 
 msgid "product_group"
 msgstr "Artikelgruppe"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -448,6 +392,72 @@ msgid "summary_report"
 msgstr "Zusammenfassung"
 
 #, python-format
+msgid "Change of %s requires a message"
+msgstr ""
+
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+msgid "No negative times are allowed"
+msgstr ""
+
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
+
+#, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
 
@@ -626,18 +636,10 @@ msgstr ""
 "Hinweis, ob Buchungen von Zeitdauern für diese %(Classname)s erlaubt ist"
 
 msgid ""
-"This selects Work packages that belong to a %(Property)s.\n"
-"         Only an explicitly chosen %(Property)s (or several) appear in\n"
+"Only an explicitly chosen %(Property)s (or several) appear in\n"
 "         the report when you also choose %(Property)s in View.\n"
 "      "
 msgstr ""
-
-msgid ""
-"This is an extension number of the PBX. Can be concatenated\n"
-"         with the company prefix stored in \"Organisation\" to form a\n"
-"         valid external phone number.\n"
-"      "
-msgstr " "
 
 msgid "First name for this %(Classname)s, e.g., Ralf."
 msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf."
@@ -698,18 +700,6 @@ msgid "Priority for this %(Classname)s."
 msgstr "Priorität für %(Classname)s"
 
 msgid ""
-"If you set this option to \"YES\", all time tracker users can see\n"
-"         your private number. If set to \"No\", the number will not be\n"
-"         accessible for the other time tracker users except HR and\n"
-"         office. (Please be aware that you do not have to give\n"
-"         information about any private phone number at all!)\n"
-"      "
-msgstr ""
-
-msgid "Is always a full number valid on the PSTN."
-msgstr ""
-
-msgid ""
 "as a comma-separated list of ranges (a special case of a range\n"
 "         is just one number), e.g., 1-100,300-500\n"
 "      "
@@ -722,6 +712,12 @@ msgid ""
 "         sending messages via email)\n"
 "     "
 msgstr " "
+
+msgid "This selects Work packages that belong to a %(Property)s."
+msgstr ""
+
+msgid "This selects Time categories that belong to a %(Property)s."
+msgstr ""
 
 msgid ""
 "Status of this %(Classname)s. Automatically set on a new\n"
@@ -864,9 +860,6 @@ msgstr "Datei für %(Classname)s anfügen"
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
 
-msgid "address"
-msgstr "Adresse"
-
 msgid "Address for this %(Classname)s"
 msgstr "Adresse zu diesem %(Classname)s"
 
@@ -916,9 +909,10 @@ msgid "may_change_state_to"
 msgstr "mögliche Status-Änderung"
 
 msgid ""
-"Set this to \"No\" if you want to forbid closing of an\n"
-"             issue -- at least for one %(Classname)s this needs to be\n"
-"             set to \"Yes\".\n"
+"Allowed state changes for a given %(Classname)s: Usually\n"
+"             you want to allow all states here but for some\n"
+"             %(Classname)s you may want to disallow certain states, e.g.\n"
+"             don't allow change to \"testing\".\n"
 "          "
 msgstr ""
 
@@ -1055,6 +1049,15 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "category++nosy"
+msgstr "Verteiler"
+
+msgid ""
+"For new issues the %(Property)s is copied to the\n"
+"             %(Property)s of the new issue\n"
+"          "
+msgstr ""
+
 msgid "cert_sw"
 msgstr ""
 
@@ -1173,8 +1176,9 @@ msgstr "Kostenstelle"
 msgid "%(Property)s for this %(Classname)s (required)"
 msgstr "%(Property)s von ${Classname} (Angabe erforderlich)"
 
+#, fuzzy
 msgid "cost_center_group.id"
-msgstr ""
+msgstr "Kostenstellengruppe"
 
 msgid "cost_center_status"
 msgstr ""
@@ -1263,8 +1267,9 @@ msgstr "Standard DHCP Lease-Zeit für %(Classname)s"
 msgid "default_part_of"
 msgstr ""
 
+#, fuzzy
 msgid "When a new issue is created with %(Classname)s set, but "
-msgstr ""
+msgstr "Issues die zu diesem %(Classname)s zugeordnet sind"
 
 msgid "default_server"
 msgstr "Default Server"
@@ -1281,8 +1286,9 @@ msgstr ""
 msgid "department"
 msgstr "Abteilung"
 
+#, fuzzy
 msgid "Department in which the %(Classname)s is based, e.g., SW, Sales."
-msgstr ""
+msgstr "Organisation zu welcher %(Classname)s gehört"
 
 msgid "depends"
 msgstr "hängt ab von"
@@ -1298,8 +1304,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "depends.id"
-msgstr ""
+msgstr "hängt ab von"
 
 msgid "deputy"
 msgstr ""
@@ -1395,11 +1402,12 @@ msgstr ""
 msgid "dns_servers"
 msgstr ""
 
+#, fuzzy
 msgid ""
 "DNS Servers for this %(Classname)s, used when generating\n"
 "             the DHCP configuration.\n"
 "          "
-msgstr ""
+msgstr "Router für %(Classname)s, wird für DHCP Konfiguration benötigt"
 
 msgid "do_logging"
 msgstr "Aufzeichnung"
@@ -1419,8 +1427,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "doc++responsible"
-msgstr ""
+msgstr "Document-Titel"
 
 msgid ""
 "Owner of this %(Classname)s. Depending on the state, this\n"
@@ -1429,14 +1438,16 @@ msgid ""
 "         "
 msgstr ""
 
+#, fuzzy
 msgid "doc++link"
-msgstr ""
+msgstr "Document-Titel"
 
 msgid "The location of the file in the repository or on the file server"
 msgstr ""
 
+#, fuzzy
 msgid "doc++status"
-msgstr ""
+msgstr "Dokumentenstatus"
 
 msgid ""
 "The status of the item. Can be one of \"work in progress\",\n"
@@ -1464,18 +1475,14 @@ msgid "doc_issue_status"
 msgstr "Doku status"
 
 msgid ""
-"%(Classname)s documentation status -- %(Classname)s can't be\n"
-"             closed if documentation is needed.\n"
+"%(Classname)s documentation status, i.e., if this\n"
+"             %(Classname)s has an impact on user documentation or needs to\n"
+"             be documented internally. Note that an %(Classname)s cannot\n"
+"             be set to \"testing\" with the %(Property)s \"undecided\".\n"
 "          "
 msgstr ""
-"%(Classname)s Dokumentationsstatus -- %(Classname)s kann nicht\n"
-"             geschlossen werden solange Dokumentation benötigt wird.\n"
-"          "
 
 msgid "doc_issue_status++nosy"
-msgstr "Verteiler"
-
-msgid "category++nosy"
 msgstr "Verteiler"
 
 msgid ""
@@ -1578,15 +1585,6 @@ msgid ""
 "             subtract the lunch break, e.g. specifying \"Start\" 10:00 and\n"
 "             \"End\" 18:00 will result in a duration of 7.5 hours (because\n"
 "             half an hour lunch break was subtracted).\n"
-"          "
-msgstr ""
-
-msgid "external_phone"
-msgstr ""
-
-msgid ""
-"Long mobile or external phone number, not an extension\n"
-"             number, e.g. number at a customer side.\n"
 "          "
 msgstr ""
 
@@ -1780,12 +1778,6 @@ msgstr ""
 
 msgid "Skip any IP address before %(Property)s in output of ifconfig"
 msgstr ""
-
-msgid "internal_phone"
-msgstr "Interne Durchwahl"
-
-msgid "Short mobile or external phone number, e.g., 6142."
-msgstr "Kurze mobile oder externe Telefonnummer, z.B. 6142"
 
 msgid "interval"
 msgstr "Intervall"
@@ -2021,9 +2013,6 @@ msgstr "Zuletzt benutzte UID für diese %(Classname)s"
 
 msgid "lastname"
 msgstr "Nachname"
-
-msgid "letter"
-msgstr "Brief"
 
 msgid ""
 "Download of letter -- usually this will open the letter in\n"
@@ -2387,8 +2376,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "organisation.id"
-msgstr ""
+msgstr "Organisation"
 
 msgid "owner"
 msgstr "Eigentümer"
@@ -2499,12 +2489,6 @@ msgstr "persönliche Adresse"
 msgid "personal Information for this %(Classname)s"
 msgstr "persönliche Information für %(Classname)s"
 
-msgid "phone"
-msgstr "Telefon"
-
-msgid "Short phone number (suffix) only, e.g., 42."
-msgstr "Telefonnummer(n)"
-
 msgid "planned_effort"
 msgstr ""
 
@@ -2518,8 +2502,9 @@ msgstr ""
 msgid "position"
 msgstr "Position"
 
+#, fuzzy
 msgid "%(Property)s in the company"
-msgstr ""
+msgstr "%(Property)s von ${Classname}"
 
 msgid "postalcode"
 msgstr "PLZ"
@@ -2551,24 +2536,6 @@ msgid "private_gid_range"
 msgstr "privater GID Bereich"
 
 msgid "Allowed range of group ids for users"
-msgstr ""
-
-msgid "private_mobile"
-msgstr "privates Mobiltelefon"
-
-msgid "Private mobile phone number."
-msgstr ""
-
-msgid "private_mobile_visible"
-msgstr ""
-
-msgid "private_phone"
-msgstr "private Telefonnummer"
-
-msgid "Private phone number except mobile."
-msgstr ""
-
-msgid "private_phone_visible"
 msgstr ""
 
 msgid "product_type"
@@ -2611,15 +2578,6 @@ msgstr "Abfragen"
 msgid "Queries for this %(Classname)s"
 msgstr "Abfragen für %(Classname)s"
 
-msgid "quick_dialling"
-msgstr ""
-
-msgid ""
-"Quick dialling number, e.g., for the mobile phone of the\n"
-"             user. Example: 6042\n"
-"          "
-msgstr ""
-
 msgid "realname"
 msgstr "Name"
 
@@ -2641,8 +2599,9 @@ msgstr "Nur gesetzt, wenn diese Notiz per Email empfangen wurde"
 msgid "recorder"
 msgstr "Aufzeichnung von"
 
+#, fuzzy
 msgid "Person responsible for recording findings"
-msgstr ""
+msgstr "Verantwortliche Person für dieses %(Classname)s"
 
 msgid "reference"
 msgstr ""
@@ -2748,8 +2707,9 @@ msgstr ""
 msgid "room"
 msgstr ""
 
+#, fuzzy
 msgid "Room number"
-msgstr ""
+msgstr "Nummer"
 
 msgid "routers"
 msgstr "Router"
@@ -2784,11 +2744,14 @@ msgstr ""
 msgid "samba_lm_password"
 msgstr "Samba LanManager Passwort"
 
+#, fuzzy
 msgid ""
 "Samba LAN Manager password -- automatically computed when a\n"
 "             new password is entered\n"
 "          "
 msgstr ""
+"UNIX Benutzer-Passwort, wird automatisch vom System gesetzt wenn der "
+"Benutzer das Passwort ändert."
 
 msgid "samba_logon_script"
 msgstr ""
@@ -2799,11 +2762,14 @@ msgstr "Logon-Script für diese(n) %(Classname)s"
 msgid "samba_nt_password"
 msgstr "Samba NT Passwort"
 
+#, fuzzy
 msgid ""
 "Samba NT password -- automatically computed when a\n"
 "             new password is entered\n"
 "          "
 msgstr ""
+"UNIX Benutzer-Passwort, wird automatisch vom System gesetzt wenn der "
+"Benutzer das Passwort ändert."
 
 msgid "samba_profile_path"
 msgstr ""
@@ -2909,20 +2875,27 @@ msgstr ""
 msgid "shadow_last_change"
 msgstr "Datum der letzten Änderung des Shadow-Passworts"
 
+#, fuzzy
 msgid ""
 "Time-stamp the shadow password was last changed,\n"
 "             automatically computed by the system\n"
 "          "
 msgstr ""
+"Zeitstempel wann das Passwort zuletzt geändert wurde. Wird automatisch vom "
+"System verwaltet."
 
 msgid "shadow_expire"
 msgstr ""
 
+#, fuzzy
 msgid ""
 "Date at which the users's account expires and will no longer\n"
 "             be accessible.\n"
 "          "
 msgstr ""
+"Beachten Sie, dass der zuerst sortierte %(Classname)s auch der\n"
+"             Standardwert (default) ist.\n"
+"          "
 
 msgid "shadow_inactive"
 msgstr ""
@@ -2939,20 +2912,22 @@ msgstr ""
 msgid "shadow_max"
 msgstr ""
 
+#, fuzzy
 msgid ""
 "Maximum days after last change when the shadow password must\n"
 "             be changed again.\n"
 "          "
-msgstr ""
+msgstr "Erzeugungsdatum oder Datum ab dem %(Classname)s bebucht werden kann"
 
 msgid "shadow_min"
 msgstr ""
 
+#, fuzzy
 msgid ""
 "Minimum days after last change when the shadow password may\n"
 "             be changed again.\n"
 "          "
-msgstr ""
+msgstr "Erzeugungsdatum oder Datum ab dem %(Classname)s bebucht werden kann"
 
 msgid "shadow_used"
 msgstr ""
@@ -3098,11 +3073,12 @@ msgstr "Abonnent Typ"
 msgid "substitute"
 msgstr "Vertretung"
 
+#, fuzzy
 msgid ""
 "Person who can substitute %(Classname)s for approving time\n"
 "             records.\n"
 "          "
-msgstr ""
+msgstr "Schweregrad dieses %(Classname)s für den Kunden oder Interessenten"
 
 msgid "subst_active"
 msgstr "Vertretung aktiv"
@@ -3119,8 +3095,9 @@ msgstr "Zusammenfassung"
 msgid "Short summary of this message (usually first line)"
 msgstr "Kurze Zusammenfassung (normalerweise die erste Zeile) für diese Notiz"
 
+#, fuzzy
 msgid "summary_report++VIEW"
-msgstr ""
+msgstr "Zusammenfassung"
 
 msgid ""
 "The selected items are shown in the summary report; if you\n"
@@ -3130,14 +3107,17 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++cost_center"
-msgstr ""
+msgstr "Projekt?"
 
+#, fuzzy
 msgid "summary_report++cost_center_group"
-msgstr ""
+msgstr "Kostenstellengruppe"
 
+#, fuzzy
 msgid "summary_report++date"
-msgstr ""
+msgstr "Zusammenfassung"
 
 msgid ""
 "please specify the date in this format:\n"
@@ -3150,14 +3130,18 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++department"
-msgstr ""
+msgstr "Projekt?"
 
+#, fuzzy
 msgid ""
 "Selects the users according to their placement in a\n"
 "             department\n"
 "          "
 msgstr ""
+"Status der Vorlage -- Benutzung als Briefvorlage, als Rechnungsvorlage oder "
+"keines davon"
 
 msgid "summary_report++op_project"
 msgstr "Projekt?"
@@ -3169,8 +3153,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++status"
-msgstr ""
+msgstr "Zusammenfassung"
 
 msgid ""
 "If you choose \"open, submitted and approved\" yellow times\n"
@@ -3185,8 +3170,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++summary_type"
-msgstr ""
+msgstr "Projekt?"
 
 msgid ""
 "You can form sums over weeks, months and the whole time\n"
@@ -3194,26 +3180,31 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++supervisor"
-msgstr ""
+msgstr "Projekt?"
 
 msgid "Selects the users of the chosen supervisor(s)"
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++time_project"
-msgstr ""
+msgstr "Projekt?"
 
+#, fuzzy
 msgid "summary_report++time_wp"
-msgstr ""
+msgstr "Zusammenfassung"
 
 msgid "Select individual work packages here."
 msgstr ""
 
+#, fuzzy
 msgid "summary_report++time_wp_group"
-msgstr ""
+msgstr "Projekt?"
 
+#, fuzzy
 msgid "summary_report++user"
-msgstr ""
+msgstr "Zusammenfassung"
 
 msgid ""
 "You will only see users for whom you have permission or the\n"
@@ -3266,11 +3257,14 @@ msgstr ""
 msgid "target"
 msgstr "Ziel"
 
+#, fuzzy
 msgid ""
 "Target of this %(Classname)s, only targets explicitly\n"
 "             enabled will be allowed for status changes.\n"
 "          "
 msgstr ""
+"Hinweis ob Vorlagen mit diesem %(Classname)s für Briefe verwendet werden "
+"sollen"
 
 msgid "team_members"
 msgstr ""
@@ -3299,8 +3293,9 @@ msgstr "Datum bis"
 msgid "Date when %(Classname)s is officially closed"
 msgstr "Datum wann dieses %(Classname)s geschlossen wurde"
 
+#, fuzzy
 msgid "time_project++status"
-msgstr ""
+msgstr "Projekt"
 
 msgid ""
 "Status of this %(Classname)s. Note that this status is only\n"
@@ -3310,8 +3305,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "time_project++work_location"
-msgstr ""
+msgstr "Projekt"
 
 msgid ""
 " If a value is given here, the work location will be\n"
@@ -3320,8 +3316,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "time_project_status++active"
-msgstr ""
+msgstr "Projekt"
 
 msgid ""
 "Set if this %(Classname)s is active. This determines if new\n"
@@ -3343,10 +3340,11 @@ msgstr "Zeitzone für %(Classname)s -- numerischer Zeit-Offset in Stunden"
 msgid "title"
 msgstr "Titel"
 
+#, fuzzy
 msgid ""
 "Should be an intuitive one-line description of the %(Classname)s.\n"
 "          "
-msgstr ""
+msgstr "Issues die zu diesem %(Classname)s zugeordnet sind"
 
 msgid "tmplate"
 msgstr "Vorlage"
@@ -3433,8 +3431,9 @@ msgstr "Typ Kategorie"
 msgid "Category of this %(Classname)s"
 msgstr "Kategorie für %(Classname)s"
 
+#, fuzzy
 msgid "Numeric user ID"
-msgstr ""
+msgstr "Numerische Gruppen-ID"
 
 msgid "uid_range"
 msgstr ""
@@ -3445,8 +3444,9 @@ msgstr ""
 msgid "unit"
 msgstr "Einheit"
 
+#, fuzzy
 msgid "Unit of measurement"
-msgstr ""
+msgstr "Messwert"
 
 msgid "url"
 msgstr "URL"
@@ -3526,8 +3526,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "user_dynamic++durations_allowed"
-msgstr ""
+msgstr "Dauer erlaubt"
 
 msgid "user_password"
 msgstr "Benutzer-Passwort"
@@ -3624,6 +3625,17 @@ msgstr "Wert"
 msgid "Value of this %(Classname)s"
 msgstr "Wert für diese %(Classname)s"
 
+msgid "visible"
+msgstr ""
+
+msgid ""
+" If you set this option to \"YES\", all time tracker users\n"
+"              can see your private %(Classname)s. If set to \"No\", it\n"
+"              will not be accessible for the other time tracker users\n"
+"              except HR and office.\n"
+"          "
+msgstr ""
+
 msgid "web_url"
 msgstr "Web-URL"
 
@@ -3644,8 +3656,9 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "week"
-msgstr ""
+msgstr "wöchentlich"
 
 msgid ""
 "Week for time tracking, this is an alternative for specifying\n"
@@ -3692,14 +3705,16 @@ msgid ""
 "          "
 msgstr ""
 
+#, fuzzy
 msgid "wp++durations_allowed"
-msgstr ""
+msgstr "Dauer erlaubt"
 
+#, fuzzy
 msgid ""
 "This is mainly used for special %(Classname)ss, like,\n"
 "             e.g., vacation.\n"
 "          "
-msgstr ""
+msgstr "Falls gesetzt, ist %(Classname)s gültig und kann ausgewählt werden."
 
 msgid "wps"
 msgstr ""
@@ -4544,6 +4559,9 @@ msgstr ""
 msgid "mail_domain"
 msgstr ""
 
+msgid "phone"
+msgstr "Telefon"
+
 msgid "planned"
 msgstr ""
 
@@ -4765,6 +4783,15 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid ""
+#~ "%(Classname)s documentation status -- %(Classname)s can't be\n"
+#~ "             closed if documentation is needed.\n"
+#~ "          "
+#~ msgstr ""
+#~ "%(Classname)s Dokumentationsstatus -- %(Classname)s kann nicht\n"
+#~ "             geschlossen werden solange Dokumentation benötigt wird.\n"
+#~ "          "
 
 #~ msgid "Country must be set"
 #~ msgstr "Land muss gesetzt sein"

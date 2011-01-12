@@ -127,13 +127,6 @@ def init \
                 ( nickname               = String    ()
                 , firstname              = String    ()
                 , lastname               = String    ()
-                , quick_dialling         = String    ()
-                , internal_phone         = String    ()
-                , external_phone         = String    ()
-                , private_phone          = String    ()
-                , private_phone_visible  = Boolean   ()
-                , private_mobile         = String    ()
-                , private_mobile_visible = Boolean   ()
                 , supervisor             = Link      ("user")
                 , substitute             = Link      ("user")
                 , subst_active           = Boolean   ()
@@ -222,37 +215,5 @@ def security (db, ** kw) :
 
     # HR should be able to create new users:
     db.security.addPermissionToRole ("HR", "Create", "user")
-
-    def private_phone_ok (db, userid, itemid) :
-        """Determine whether the user wants private number to be accessed"""
-        return db.user.get (itemid, 'private_phone_visible')
-    # end def private_phone_ok
-
-    def private_mobile_ok (db, userid, itemid) :
-        """Determine whether the user wants private mobile to be accessed"""
-        return db.user.get (itemid, 'private_mobile_visible')
-    # end def private_phone_ok
-
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'user'
-        , check       = private_phone_ok
-        , description = \
-            "User is allowed to see private phone if owner wants "
-            "private phone accessible"
-        , properties  = ('private_phone', )
-        )
-    db.security.addPermissionToRole('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'user'
-        , check       = private_mobile_ok
-        , description = \
-            "User is allowed to see private mobile if owner wants "
-            "private mobile accessible"
-        , properties  = ('private_mobile', )
-        )
-    db.security.addPermissionToRole('User', p)
 
 # end def security

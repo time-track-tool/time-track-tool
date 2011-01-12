@@ -53,7 +53,7 @@ Role "user":
  User is allowed to create file (Create for "file" only)
  User is allowed to create msg (Create for "msg" only)
  User is allowed to create queries (Create for "query" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'password', 'phone', 'queries', 'realname', 'timezone') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'password', 'queries', 'realname', 'timezone') only)
  User is allowed to edit device_group (Edit for "device_group" only)
  User is allowed to edit their queries (Edit for "query" only)
  User is allowed to retire their queries (Retire for "query" only)

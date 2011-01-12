@@ -456,9 +456,6 @@ properties = \
         , ( 'password'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )
-        , ( 'phone'
-          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
-          )
         , ( 'queries'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
           )

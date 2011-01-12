@@ -78,11 +78,6 @@ explicit           = \
     ""'''Only an explicitly chosen %(Property)s (or several) appear in
          the report when you also choose %(Property)s in View.
       '''
-extension          = \
-    ""'''This is an extension number of the PBX. Can be concatenated
-         with the company prefix stored in "Organisation" to form a
-         valid external phone number.
-      '''
 firstname          = \
     ""'''First name for this %(Classname)s, e.g., Ralf.'''
 function           = \
@@ -127,15 +122,6 @@ order              = \
     ""'''Items are ordered by this property in drop-down boxes etc.'''
 priority           = \
     ""'''Priority for this %(Classname)s.'''
-phone_visible      = \
-    ""'''If you set this option to "YES", all time tracker users can see
-         your private number. If set to "No", the number will not be
-         accessible for the other time tracker users except HR and
-         office. (Please be aware that you do not have to give
-         information about any private phone number at all!)
-      '''
-pstn_number        = \
-    ""'''Is always a full number valid on the PSTN.'''
 range_description  = \
     ""'''as a comma-separated list of ranges (a special case of a range
          is just one number), e.g., 1-100,300-500
@@ -238,7 +224,7 @@ _helptext          = \
       [ ""'''Allowed state changes for a given %(Classname)s: Usually
              you want to allow all states here but for some
              %(Classname)s you may want to disallow certain states, e.g.
-             don't allow change to \"testing\".
+             don\'t allow change to \"testing\".
           '''
       ]
     , ""'almax'                       :
@@ -568,12 +554,6 @@ _helptext          = \
           '''
       , green
       ]
-    , ""'external_phone'              :
-      [ ""'''Long mobile or external phone number, not an extension
-             number, e.g. number at a customer side.
-          '''
-      , pstn_number
-      ]
     , ""'fax'                         :
       [""'''FAX number for this %(Classname)s''']
     , ""'filename_format'             :
@@ -665,10 +645,6 @@ _helptext          = \
       [""'''%(Property)s to determine IP address from''']
     , ""'interface_skip'              :
       [""'''Skip any IP address before %(Property)s in output of ifconfig''']
-    , ""'internal_phone'              :
-      [ ""'''Short mobile or external phone number, e.g., 6142.'''
-      , extension
-      ]
     , ""'interval'                    :
       [ ""'''Interval for sending out an invoice in months. If the
             invoice_level is non-zero, the distance in months since the
@@ -1009,10 +985,6 @@ _helptext          = \
       [""'''Type of this %(Classname)s for Customer/Supplier''']
     , ""'person'                      :
       [""'''personal Information for this %(Classname)s''']
-    , ""'phone'                       :
-      [ ""'''Short phone number (suffix) only, e.g., 42.'''
-      , extension
-      ]
     , ""'planned_effort'              :
       [ ""'''Effort for %(Classname)s in person-hours; as it is stated
              in the Project Evaluation Sheet. Warning: This used to be in
@@ -1041,18 +1013,6 @@ _helptext          = \
       [ ""'''Allowed range of group ids for users'''
       , range_description
       ]
-    , ""'private_mobile'              :
-      [ ""'''Private mobile phone number.'''
-      , pstn_number
-      , default_hidden
-      ]
-    , ""'private_mobile_visible'      : [ phone_visible ]
-    , ""'private_phone'               :
-      [ ""'''Private phone number except mobile.'''
-      , pstn_number
-      , default_hidden
-      ]
-    , ""'private_phone_visible'       : [ phone_visible ]
     , ""'product_type'                :
       [""'''The type of the %(Classname)s.''']
     , ""'project'                     :
@@ -1069,12 +1029,6 @@ _helptext          = \
       [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :
       [""'''Queries for this %(Classname)s''']
-    , ""'quick_dialling'              :
-      [ ""'''Quick dialling number, e.g., for the mobile phone of the
-             user. Example: 6042
-          '''
-      , extension
-      ]
     , ""'realname'                    :
       [""'''Real name for this %(Classname)s''', realname_automatic]
     , ""'receipt_no'                  :
@@ -1657,9 +1611,9 @@ def combined_name (cls, attr, searchname = None) :
         a help-text exists for the combination, return the combination,
         otherwise return only the attribute. In this way we can override
         help-texts by specifying a help-text entry with the key
-        classname++attribute. The 'searchname' parameter is used when
+        classname++attribute. The \'searchname\' parameter is used when
         classes recursively reference attributes in other classes, e.g.,
-        'address.firstname'.
+        \'address.firstname\'.
     """
     if searchname:
         pname = '%s++%s' % (cls, searchname)

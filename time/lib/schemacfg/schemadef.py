@@ -170,18 +170,10 @@ def allow_user_details (db, role, permission, *additional_props) :
     """
     default_props = \
         [ 'csv_delimiter'
-        , 'external_phone'
-        , 'internal_phone'
         , 'lunch_duration'
         , 'lunch_start'
         , 'password'
-        , 'phone'
-        , 'private_mobile'
-        , 'private_mobile_visible'
-        , 'private_phone'
-        , 'private_phone_visible'
         , 'queries'
-        , 'quick_dialling'
         , 'realname'
         , 'room'
         , 'subst_active'

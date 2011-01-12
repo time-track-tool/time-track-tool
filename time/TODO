@@ -44,7 +44,6 @@ Allgemein Datenbankschema, Verhalten
     allow setting, default to key (or label prop?)
   - Maybe make the label_property settable, too
   - Keep cleartext password in Password constructor
-- Permissions Phone-Numbers + additional field for showing private phone
 - Liste Kostenstellen: CSV export broken -- use roundup_access for
   generating?
 - Script to update org_location and department in user from dyn_user (if

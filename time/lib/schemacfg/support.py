@@ -112,21 +112,7 @@ def security (db, ** kw) :
         classes.append (("adr_type",     ["User", "Support"], ["Support"]))
         classes.append (("adr_type_cat", ["User", "Support"], ["Support"]))
 
-    prop_perms = \
-        [
-#       , ( "user", "View", ["User"]
-#         , ( "activity", "actor", "address", "alternate_addresses"
-#           , "clearance_by", "creation", "creator", "department"
-#           , "external_phone", "firstname", "job_description", "lastname"
-#           , "lunch_duration", "lunch_start", "nickname", "password", "phone"
-#           , "pictures", "position", "queries", "realname", "room", "sex"
-#           , "status", "subst_active", "substitute", "supervisor", "timezone"
-#           , "title", "username", "home_directory", "login_shell"
-#           , "samba_home_drive", "samba_home_path"
-#           )
-#         )
-        ]
-
+    prop_perms = []
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)

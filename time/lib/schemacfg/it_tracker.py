@@ -159,8 +159,8 @@ def security (db, ** kw) :
         , ( "user", "View", ["User"]
           , ( "activity", "actor", "address", "alternate_addresses"
             , "clearance_by", "creation", "creator", "department"
-            , "external_phone", "firstname", "id", "job_description", "lastname"
-            , "lunch_duration", "lunch_start", "nickname", "password", "phone"
+            , "firstname", "id", "job_description", "lastname"
+            , "lunch_duration", "lunch_start", "nickname", "password"
             , "pictures", "position", "queries", "realname", "room", "sex"
             , "status", "subst_active", "substitute", "supervisor", "timezone"
             , "title", "username", "home_directory", "login_shell"

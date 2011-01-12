@@ -348,9 +348,6 @@ properties = \
         , ( 'password'
           , ['admin', 'contact', 'it', 'itview', 'type', 'user']
           )
-        , ( 'phone'
-          , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'type', 'user']
-          )
         , ( 'queries'
           , ['admin', 'contact', 'it', 'itview', 'type', 'user']
           )

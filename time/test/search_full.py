@@ -1148,13 +1148,7 @@ properties = \
         , ( 'department'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
-        , ( 'external_phone'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-          )
         , ( 'firstname'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-          )
-        , ( 'internal_phone'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'job_description'
@@ -1178,31 +1172,13 @@ properties = \
         , ( 'password'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
-        , ( 'phone'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-          )
         , ( 'pictures'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'position'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
-        , ( 'private_mobile'
-          , ['admin']
-          )
-        , ( 'private_mobile_visible'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-          )
-        , ( 'private_phone'
-          , ['admin']
-          )
-        , ( 'private_phone_visible'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-          )
         , ( 'queries'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
-          )
-        , ( 'quick_dialling'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'realname'

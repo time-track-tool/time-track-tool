@@ -86,17 +86,15 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "external_phone", "firstname"
+      , ( "clearance_by", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "phone", "pictures", "position", "private_phone", "realname"
-        , 'quick_dialling', 'internal_phone', 'private_mobile'
+        , "pictures", "position", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
         , "title", "roles", "tt_lines"
         )
       )
     , ( "user", "Edit", ["Office"]
-      , ( "phone", "internal_phone", "external_phone", "private_mobile"
-        , "private_phone", "quick_dialling", "title", "room", "position"
+      , ( "title", "room", "position"
         )
       )
     , ( "user", "Edit", ["IT"]
@@ -114,10 +112,8 @@ prop_perms = \
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
-        , "external_phone", "firstname", "job_description", "lastname"
-        , "quick_dialling", "id", "internal_phone"
-        , "private_phone_visible", "private_mobile_visible"
-        , "lunch_duration", "lunch_start", "nickname", "password", "phone"
+        , "firstname", "job_description", "lastname"
+        , "id", "lunch_duration", "lunch_start", "nickname", "password"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "home_directory", "login_shell"

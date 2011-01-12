@@ -81,9 +81,9 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "external_phone", "firstname"
+      , ( "clearance_by", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "phone", "pictures", "position", "private_phone", "realname"
+        , "pictures", "position", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
         , "title", "roles"
         )
@@ -103,8 +103,8 @@ prop_perms = \
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
-        , "external_phone", "firstname", "job_description", "lastname"
-        , "lunch_duration", "lunch_start", "nickname", "password", "phone"
+        , "firstname", "job_description", "lastname"
+        , "lunch_duration", "lunch_start", "nickname", "password"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "home_directory", "login_shell"
