@@ -160,7 +160,9 @@ def new_user (db, cl, nodeid, new_values) :
             nick = common.new_nickname (_, cl, nodeid, lfn, lln)
             if nick :
                 new_values ['nickname'] = nick
-        nickname   = new_values ['nickname']
+                nickname = new_values ['nickname']
+            else :
+                nickname = None
     if 'org_location' in db.classes :
         olo   = new_values ['org_location']
         org        = db.org_location.get   (olo, 'organisation')
@@ -173,13 +175,39 @@ def new_user (db, cl, nodeid, new_values) :
     username   = new_values ['username']
     # defaults:
     if new_values ['status'] == valid :
-        if 'nickname' in cl.properties :
+        if 'contacts' in cl.properties :
+            try :
+                email = db.uc_type.lookup ('Email')
+            except KeyError :
+                email = None
+            contacts = []
+            c = db.user_contact.create \
+                ( contact      = '@'.join (('.'.join ((lfn, lln)), maildomain))
+                , contact_type = email
+                , order        = 1
+                )
+            contacts.append (c)
+            for n, i in enumerate ((nickname, username)) :
+                if not i :
+                    continue
+                c = db.user_contact.create \
+                    ( contact      = '@'.join ((i, maildomain))
+                    , contact_type = email
+                    , order        = 2 + n
+                    )
+                contacts.append (c)
+            if 'contacts' not in new_values :
+                new_values ['contacts'] = []
+            new_values ['contacts'].extend (contacts)
+        elif 'nickname' in cl.properties :
             if 'address' not in new_values :
                 new_values ['address'] = \
                     '@'.join (('.'.join ((lfn, lln)), maildomain))
             if 'alternate_addresses' not in new_values :
                 new_values ['alternate_addresses'] = '\n'.join \
-                    (['@'.join ((i, maildomain)) for i in (nickname, lln) if i])
+                    ('@'.join ((i, maildomain))
+                     for i in (nickname, username) if i
+                    )
         if 'lunch_duration' in cl.properties :
             if 'lunch_duration' not in new_values :
                 new_values ['lunch_duration'] = .5
