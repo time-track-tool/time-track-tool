@@ -92,7 +92,7 @@ def security (db, ** kw) :
         , ("user_contact", ("HR", "Office"), ())
         )
     prop_perms = \
-        [ ( "user_contact", "Edit", ["HR", "Office"]
+        [ ( "user_contact", "Edit", ["HR", "Office", "IT"]
           , ("contact", "contact_type", "description", "order", "user")
           )
         , ( "user",         "View", ["User", "HR", "Office"]
