@@ -109,6 +109,7 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('Office', p)
+    db.security.addPermissionToRole ('IT', p)
     schemadef.register_class_permissions (db, classes, prop_perms)
     p = db.security.addPermission \
         ( name        = 'Search'
