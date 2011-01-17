@@ -337,6 +337,17 @@ _helptext          = \
              number, Homepage
           '''
       ]
+    , ""'contacts'                     :
+      [ ""'''Contact information, e.g., Email address, Phone number...
+             In order to edit a contact (e.g. phone number) please click
+             on the contact type. Given the right permissions you can
+             also create a new number in the row below. Deleting a
+             contact is done by selecting the line in the column
+             \"remove\" and then pressing \"Submit Changes\" (The
+             \"remove\" columns is available only with the right
+             permissions).
+          '''
+      ]
     , ""'contact_type'                :
       [""'''Type of contact information, e.g., Email, Phone, Fax, Homepage''']
     , ""'contact_person'              :
