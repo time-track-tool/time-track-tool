@@ -624,9 +624,11 @@
      </span>
 
      <!-- phone list -->
-     <span class="classblock">
-      <a tal:condition="python:request.user.hasPermission('View','user_contact')
-                          or request.user.hasPermission('Edit','user_contact')"
+     <span class="classblock"
+           tal:condition="python:'user_contact' in db._db.classes">
+      <a tal:condition="python:
+              request.user.hasPermission('View','user_contact')
+              or request.user.hasPermission('Edit','user_contact')"
          tal:attributes="href python:
            'user_contact?' + default_queries [('user_contact','grouped')]"
          i18n:translate="">
