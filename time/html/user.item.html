@@ -251,7 +251,7 @@
      <th tal:content="structure python:utils.fieldname ('user', 'csv_delimiter')"/>
      <td tal:content="structure context/csv_delimiter/field"/>
     </tr>
-    <tal:block tal:condition="not:context/id">
+    <tal:block tal:condition="python:'contacts' not in bclass.properties">
      <tr>
       <th tal:content="structure python:utils.fieldname ('user', 'address')"/>
       <td tal:content="structure context/address/field"/>
