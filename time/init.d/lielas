@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-11 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -26,8 +26,16 @@
 # Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
 #
 # roundup	Startup script for the roundup http server.
-#
-# Version:	$Id: adr 6851 2009-12-18 09:58:56Z ralf $
+### BEGIN INIT INFO
+# Provides:             lielas
+# Required-Start:       $local_fs $remote_fs $network $time
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Roundup http server for lielas
+### END INIT INFO
 
 DESC='Roundup HTTP-Server'
 
