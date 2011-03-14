@@ -22,7 +22,16 @@
 #
 # roundup	Startup script for the roundup http server.
 #
-# Version:	$Id$
+### BEGIN INIT INFO
+# Provides:             roundup
+# Required-Start:       $local_fs $remote_fs $network $time
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Roundup http server
+### END INIT INFO
 
 export PYTHONPATH=/usr/local/src/accounting/projects/SW/lib/python
 DESC='Roundup HTTP-Server'
