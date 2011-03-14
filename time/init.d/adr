@@ -24,7 +24,7 @@
 #
 ### BEGIN INIT INFO
 # Provides:             roundup
-# Required-Start:       $local_fs $remote_fs $network $time
+# Required-Start:       $local_fs $remote_fs $network $time postgresql
 # Required-Stop:
 # Should-Start:
 # Should-Stop:
