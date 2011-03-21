@@ -403,7 +403,7 @@ class Export_CSV_Names (Action, autosuper) :
         self.build_repr ()
 
         # and search
-        for itemid in self.klass.filter \
+        for itemid in self.klass.filter_iter \
             (self.matches, filterspec, self.sort, self.group) :
             self.client._socket_op \
                 ( writer.writerow 
@@ -539,13 +539,12 @@ class Export_CSV_Lielas (Export_CSV_Names) :
             , 'name'
             , 'adr'
             ]
-        sensors = self.db.sensor.filter \
-            (None, sensorspec, group = [('+', k) for k in sensor_sort])
 
         last_dg = last_d = None
         lines   = [[''], [''], ['Adr.'], ['date/time'], ['']]
         sids    = []
-        for s in sensors :
+        for s in self.db.sensor.filter_iter \
+            (None, sensorspec, group = [('+', k) for k in sensor_sort]) :
             s  = self.db.sensor.getnode (s)
             d  = self.db.device.getnode (s.device)
             if d.device_group :
@@ -599,15 +598,19 @@ class Export_CSV_Lielas (Export_CSV_Names) :
         # and search
         last_date = None
         line      = None
-        for itemid in self.klass.filter (self.matches, self.filterspec, sort) :
+        tz = self.klass.getprops () ['date'].offset (self.db)
+        for itemid in self.klass.filter_iter \
+            (self.matches, self.filterspec, sort) :
             item = self.klass.getnode (itemid)
             if item.date != last_date :
                 if line :
                     self.client._socket_op (writer.writerow, line)
                 last_date = item.date
                 line = [''] * (len (sids) + 2)
-                line [0] = repr_date (itemid, 'date')
-            line [index_by_sid [item.sensor]] = repr_number (itemid, 'val')
+                d = item.date.local (tz)
+                line [0] = '%2d.%02d.%04d %02d:%02d:%02d' \
+                    % (d.day, d.month, d.year, d.hour, d.minute, d.second)
+            line [index_by_sid [item.sensor]] = "%2.2f" % item.val
 
         return True_Value ()
     # end def handle
