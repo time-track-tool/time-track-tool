@@ -634,7 +634,7 @@ class Export_CSV_Lielas (Export_CSV_Names) :
                         self.client._socket_op (writer.writerow, line)
                     last_date = dt
                     line = [''] * (len (sids) + 2)
-                    dt   = datetime (*dt.timetuple ()[:6], tzinfo = UTC)
+                    dt   = datetime (tzinfo = UTC, *dt.timetuple ()[:6])
                     tp   = dt.astimezone (TZ).timetuple ()
                     line [0] = '%2d.%02d.%04d %02d:%02d:%02d' \
                         % (tp [2], tp [1], tp [0], tp [3], tp [4], tp [5])
