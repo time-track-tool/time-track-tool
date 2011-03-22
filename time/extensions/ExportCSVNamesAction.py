@@ -635,9 +635,8 @@ class Export_CSV_Lielas (Export_CSV_Names) :
                     last_date = dt
                     line = [''] * (len (sids) + 2)
                     dt   = datetime (tzinfo = UTC, *dt.timetuple ()[:6])
-                    dt.astimezone (TZ).timetuple ()
-                    line [0] = '%02d.%02d.%04d %02d:%02d:%02d' \
-                        % (tp [2], tp [1], tp [0], tp [3], tp [4], tp [5])
+                    line [0] = dt.astimezone (TZ).strftime \
+                        ('%02d.%02m.%04Y %H:%M:%S')
                 line [index_by_sid [sens]] = "%2.2f" % val
         else :
             for itemid in self.klass.filter_iter \
