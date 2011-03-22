@@ -29,9 +29,11 @@ try :
 except ImportError :
     from StringIO  import StringIO
 
+from datetime              import datetime
 from roundup.cgi.actions   import Action
 from roundup.cgi           import templating
 from roundup               import hyperdb
+from roundup.date          import get_timezone, UTC
 
 from rsclib.autosuper      import autosuper
 from rsclib.TeX_CSV_Writer import TeX_CSV_Writer
@@ -603,7 +605,7 @@ class Export_CSV_Lielas (Export_CSV_Names) :
         # mysql, too, sqlite won't work, it doesn't return date as a
         # datetime object
         if self.db.__module__.endswith ('back_postgresql') :
-            assert (int (tz) == 0)
+            TZ = get_timezone (tz)
             classname = self.klass.classname
             proptree, sql, args = self.klass._filter_sql \
                 (self.matches, self.filterspec, sort, retr=1)
@@ -632,7 +634,8 @@ class Export_CSV_Lielas (Export_CSV_Names) :
                         self.client._socket_op (writer.writerow, line)
                     last_date = dt
                     line = [''] * (len (sids) + 2)
-                    tp   = dt.timetuple ()
+                    dt   = datetime (*dt.timetuple ()[:6], tzinfo = UTC)
+                    tp   = dt.astimezone (TZ).timetuple ()
                     line [0] = '%2d.%02d.%04d %02d:%02d:%02d' \
                         % (tp [2], tp [1], tp [0], tp [3], tp [4], tp [5])
                 line [index_by_sid [sens]] = "%2.2f" % val
