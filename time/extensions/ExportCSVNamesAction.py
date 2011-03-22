@@ -599,18 +599,58 @@ class Export_CSV_Lielas (Export_CSV_Names) :
         last_date = None
         line      = None
         tz = self.klass.getprops () ['date'].offset (self.db)
-        for itemid in self.klass.filter_iter \
-            (self.matches, self.filterspec, sort) :
-            item = self.klass.getnode (itemid)
-            if item.date != last_date :
-                if line :
-                    self.client._socket_op (writer.writerow, line)
-                last_date = item.date
-                line = [''] * (len (sids) + 2)
-                d = item.date.local (tz)
-                line [0] = '%2d.%02d.%04d %02d:%02d:%02d' \
-                    % (d.day, d.month, d.year, d.hour, d.minute, d.second)
-            line [index_by_sid [item.sensor]] = "%2.2f" % item.val
+        # optimized sql version for postgres (maybe would work for
+        # mysql, too, sqlite won't work, it doesn't return date as a
+        # datetime object
+        if self.db.__module__.endswith ('back_postgresql') :
+            assert (int (tz) == 0)
+            classname = self.klass.classname
+            proptree, sql, args = self.klass._filter_sql \
+                (self.matches, self.filterspec, sort, retr=1)
+            classes = {}
+            for p in proptree :
+                if 'retrieve' in p.need_for :
+                    cn   = p.parent.classname
+                    if cn != classname :
+                        continue
+                    ptid = p.parent.id
+                    key  = (cn, ptid)
+                    if key not in classes :
+                        classes [key] = ptdict = {}
+                    classes [key][p.name] = p
+            assert (len (classes) == 1)
+            self.db.sql (sql, args)
+            while True :
+                row = self.db.cursor.fetchone ()
+                if not row : break
+                nodeid = str (row [ptdict ['id'].sql_idx])
+                sens   = str (row [ptdict ['sensor'].sql_idx])
+                dt     = row [ptdict ['date'].sql_idx]
+                val    = row [ptdict ['val'].sql_idx]
+                if dt != last_date :
+                    if line :
+                        self.client._socket_op (writer.writerow, line)
+                    last_date = dt
+                    line = [''] * (len (sids) + 2)
+                    tp   = dt.timetuple ()
+                    line [0] = '%2d.%02d.%04d %02d:%02d:%02d' \
+                        % (tp [2], tp [1], tp [0], tp [3], tp [4], tp [5])
+                line [index_by_sid [sens]] = "%2.2f" % val
+        else :
+            for itemid in self.klass.filter_iter \
+                (self.matches, self.filterspec, sort) :
+                item = self.klass.getnode (itemid)
+                if item.date != last_date :
+                    if line :
+                        self.client._socket_op (writer.writerow, line)
+                    last_date = item.date
+                    line = [''] * (len (sids) + 2)
+                    d = item.date.local (tz)
+                    line [0] = '%2d.%02d.%04d %02d:%02d:%02d' \
+                        % (d.day, d.month, d.year, d.hour, d.minute, d.second)
+                line [index_by_sid [item.sensor]] = "%2.2f" % item.val
+        if line :
+            self.client._socket_op (writer.writerow, line)
 
         return True_Value ()
     # end def handle
