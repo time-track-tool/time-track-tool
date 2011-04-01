@@ -142,6 +142,10 @@ class Delete_DB (Delete_Something) :
     # end def handle
 # end class Delete_DB
 
+def is_lielas () :
+    return True
+# end def is_lielas
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -156,4 +160,5 @@ def init (instance) :
     reg ('lielas_actions',    lielas_actions)
     reg ('sensor_query',      sensor_query)
     reg ('measurement_query', measurement_query)
+    reg ('is_lielas',         is_lielas)
 # end def init
