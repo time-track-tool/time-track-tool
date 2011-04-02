@@ -104,7 +104,11 @@
             </div>
             <div class="details_body" tal:repeat="d devs"
                  tal:attributes="id python: 'details_' + d.designator()">
-              <form id="settings_form" action="">
+              <form method="POST" tal:attributes=
+                    " id     python:'settings_form_' + d.designator()
+                    ; name   python:'settings_form_' + d.designator()
+                    ; action d/designator
+                    ">
                 <ul class="details_row">
                   <li>
                     <tal:block tal:replace="structure python:utils.fieldspan
@@ -123,6 +127,26 @@
                   </li>
                 </ul>
                 <hr/>
+                <ul class="details_row">
+                  <li>
+                    <tal:block tal:replace="structure python:utils.fieldspan
+                         ('device', 'mint')"/>
+                    <tal:block tal:replace="structure python:d.mint.field ()"/>
+                  </li>
+                  <li>
+                    <tal:block tal:replace="structure python:utils.fieldspan
+                         ('device', 'sint')"/>
+                    <tal:block tal:replace="structure python:d.sint.field ()"/>
+                  </li>
+                </ul>
+                <hr />
+                <div class="details_row">
+                  <input type="hidden" name="@action" value="edit">
+                  <input type="submit" name="submit_button"
+                         id="submit_details" value="Submit Changes"
+                         i18n:attributes="value"/>
+                </div>
+              </form>
               <div class="details_row header">
                 <tal:block tal:replace="structure python:utils.fieldspan
                   ('sensor', 'name', endswith='')"/>
