@@ -32,7 +32,6 @@
           <div class="right"></div>
         </div>
         <tal:block tal:condition="is_user">
-          <tal:block metal:define-slot="lielas_navi"/>
           <div tal:repeat="cl python:utils.menu_by_class(db)"
                tal:attributes=
                   "class python:'navi_item'+['', ' active'][cl[0]==clsname]">
@@ -57,34 +56,35 @@
         </tal:block>
       </div>
     </div>
-    <div id="content">
-      <div class="login" tal:condition="not:is_user">
-        <div id="sidebar">
-          <div class="details_header">
-              <strong>Login</strong>
-          </div>
-          <div class="details_body">
-            <form method="POST" name="login_form" id="login_form"
-                  tal:attributes="action request/base">
-              <ul class="details_row">
-                <li>
-                  <label for="name" class="desc">Name:</label>
-                  <input type="text" name="__login_name" id="name" class="value"/>
-                </li>
-                <li>
-                  <label for="gruppe" class="desc">Passwort:</label>
-                  <input type="password" name="__login_password" id="pass"
-                         class="value" />
-                </li>
-              </ul>
-              <hr/>
-              <div class="details_row">
-                <input type="submit" name="@action" id="login" value="Login"/>
-              </div>                           
-            </form>
-          </div>
-          <div class="details_footer"></div>
+    <tal:block tal:condition="is_user">
+      <tal:block metal:define-slot="content"/>
+    </tal:block>
+    <div id="content" tal:condition="not:is_user" class="login">
+      <div id="sidebar">
+        <div class="details_header">
+            <strong>Login</strong>
         </div>
+        <div class="details_body">
+          <form method="POST" name="login_form" id="login_form"
+                tal:attributes="action request/base">
+            <ul class="details_row">
+              <li>
+                <label for="name" class="desc">Name:</label>
+                <input type="text" name="__login_name" id="name" class="value"/>
+              </li>
+              <li>
+                <label for="gruppe" class="desc">Passwort:</label>
+                <input type="password" name="__login_password" id="pass"
+                       class="value" />
+              </li>
+            </ul>
+            <hr/>
+            <div class="details_row">
+              <input type="submit" name="@action" id="login" value="Login"/>
+            </div>                           
+          </form>
+        </div>
+        <div class="details_footer"></div>
       </div>
     </div>
   </div>

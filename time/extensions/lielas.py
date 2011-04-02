@@ -155,6 +155,7 @@ def menu_by_class (db) :
             , ('user',   _ ('User'),           'user?@template=lindex',  uok)
             ) if x [3]
         )
+# end def menu_by_class
 
 def init (instance) :
     global _

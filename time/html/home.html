@@ -1,5 +1,85 @@
 <tal:block tal:condition="utils/is_lielas">
   <tal:block metal:use-macro="templates/lielas/macros/icing">
+    <tal:block metal:fill-slot="content">
+      <tal:block tal:define=
+          "devs  python: db.device.filter(None, {}, sort=('+', 'name'))
+          ">
+        <div class="list_header">Device list</div>
+        <form id="form_list" action="">                                 
+          <div id="list_body">
+            <ul id="list_header">
+              <li>
+                <span class="col_collapse">
+                  <img src="@@file/lfiles/images/clear.png"
+                       width="15" height="14"
+                       id="main_collapse" alt="collapse" />
+                </span>
+                <span class="col_check">
+                  <input name="checked" type="checkbox" value=""
+                         class="selectbox" />
+                </span>
+                <span class="col_id">
+                  <a href="#" class="sort_link active" i18n:translate="">ID</a>
+                </span>
+                <span class="col_name">
+                  <a href="#" class="sort_link" i18n:translate="">Name</a>
+                </span>
+                <span class="col_device">
+                  <a href="#" class="sort_link" i18n:translate="">Device</a>
+                </span>
+                <span class="col_group">
+                  <a href="#" class="sort_link" i18n:translate="">Group</a>
+                </span>
+                <span class="col_intervall">
+                  <a href="#" class="sort_link" i18n:translate="">Interval</a>
+                </span>
+              </li>
+            </ul>
+            <ul id="list_content">
+              <tal:block tal:repeat="d devs">
+                <li class="device" tal:attributes="id d/designator" tal:define=
+                     "sens python:db.sensor.filter
+                          ( None
+                          , dict (device=d.id, is_app_sensor=True)
+                          , sort=('+','name')
+                          )
+                     ">
+                  <div class="list_row main">
+                    <span class="col_collapse">
+                      <img src="@@file/lfiles/images/clear.png"
+                           width="12" height="12" alt="collapse" />
+                    </span>
+                    <span class="col_check">
+                      <input name="checker_main" type="checkbox"
+                             value="device_01" class="selectbox" />
+                    </span>
+                    <span class="col_id"        tal:content="d/id"/>
+                    <span class="col_name"      tal:content="d/name"/>
+                    <span class="col_device"    tal:content="d/dev"/>
+                    <span class="col_group"     tal:content="d/device_group"/>
+                    <span class="col_intervall" tal:content="d/sint"/>
+                  </div>
+                  <ul tal:attributes="id python:d.designator() + '_sensor'"
+                      class="sensor">
+                    <li tal:repeat="s sens" tal:attributes="id s/designator">
+                      <div class="list_row">
+                        <span class="col_check">
+                          <input name="checker_sub" type="checkbox"
+                                 tal:attributes="value s/designator"
+                                 class="selectbox" />
+                        </span>
+                        <span class="col_name"   tal:content="s/name"/>
+                        <span class="col_device" tal:content="s/adr"/>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </tal:block>
+            </ul>
+          </div>
+        </form>
+      </tal:block>
+    </tal:block>
   </tal:block>
 </tal:block>
 <tal:block tal:condition="not:utils/is_lielas">
