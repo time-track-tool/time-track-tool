@@ -28,20 +28,29 @@
                          i18n:translate="">ID</a>
                     </span>
                     <span class="col_name">
-                      <a href="#" class="sort_link"
-                         i18n:translate="">Name</a>
+                      <a href="#" class="sort_link">
+                        <tal:block tal:replace="structure python:utils.fieldspan
+                          ('device', 'name', endswith='')"/>
+                      </a>
                     </span>
                     <span class="col_device">
-                      <a href="#" class="sort_link"
-                         i18n:translate="">Device</a>
+                      <a href="#" class="sort_link">
+                      <a href="#" class="sort_link" i18n:translate="">
+                        <tal:block tal:replace="structure python:utils.fieldspan
+                          ('device', 'dev', endswith='')"/>
+                      </a>
                     </span>
                     <span class="col_group">
-                      <a href="#" class="sort_link"
-                         i18n:translate="">Group</a>
+                      <a href="#" class="sort_link">
+                        <tal:block tal:replace="structure python:utils.fieldspan
+                          ('device', 'device_group', endswith='')"/>
+                      </a>
                     </span>
                     <span class="col_intervall">
-                      <a href="#" class="sort_link"
-                         i18n:translate="">Interval</a>
+                      <a href="#" class="sort_link">
+                        <tal:block tal:replace="structure python:utils.fieldspan
+                          ('device', 'mint', endswith='')"/>
+                      </a>
                     </span>
                   </li>
                 </ul>
@@ -115,9 +124,13 @@
                 </ul>
                 <hr/>
               <div class="details_row header">
-                <span class="desc" i18n:translate="">Sensor</span>
-                <span class="value" i18n:translate="">
-                  <span class="unit" i18n:translate="">Kanal</span>Wert
+                <tal:block tal:replace="structure python:utils.fieldspan
+                  ('sensor', 'name', endswith='')"/>
+                <span class="value">
+                  <tal:block tal:replace="structure python:utils.fieldspan
+                    ('sensor', 'adr', endswith='', csscls='unit')"/>
+                  <tal:block tal:replace="structure python:utils.fieldspan
+                    ('sensor', 'val', endswith='', csscls='default')"/>
                 </span>
               </div>
               <ul class="details_row">

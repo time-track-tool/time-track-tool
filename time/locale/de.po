@@ -1321,7 +1321,7 @@ msgid "Verbose description of %(Classname)s"
 msgstr "Ausführliche Beschreibung von %(Classname)s"
 
 msgid "dev"
-msgstr "Gerätetyp"
+msgstr "Gerät"
 
 msgid "Device type name (product)"
 msgstr ""
@@ -1336,7 +1336,7 @@ msgid "device++order"
 msgstr "Sortiernummer"
 
 msgid "device_group"
-msgstr "Gerätegruppe"
+msgstr "Gruppe"
 
 msgid ""
 "Device group for %(Classname)s -- a device may belong\n"
@@ -2845,7 +2845,7 @@ msgid "Sensor of this %(Classname)s"
 msgstr "Sensor für %(Classname)s"
 
 msgid "sensor++adr"
-msgstr "Sensoradresse"
+msgstr "Kanal"
 
 msgid "sensor++name"
 msgstr "Sensorname"
