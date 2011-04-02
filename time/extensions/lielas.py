@@ -157,6 +157,38 @@ def menu_by_class (db) :
         )
 # end def menu_by_class
 
+def latest_measurements (db, sensor, maxlen = 7) :
+    """ return the latest maxlen measurements for given sensor
+        if the sensor is an app sensor, only one measurement for status
+        sensors (battery etc)
+    """
+    result = []
+    if not sensor.is_app_sensor :
+        maxlen = 1
+    for m in db._db.measurement.filter_iter \
+        (None, dict (sensor = sensor.id), sort = ('-', 'date')) :
+        n = db._db.measurement.getnode (m)
+        result.append ((n.date, n.val))
+        if len (result) >= maxlen :
+            return result
+    return result
+# end def latest_measurements
+
+def sensors_by_device (db, is_app = True) :
+    by_dev = {}
+    searchdict = dict (is_app_sensor = is_app)
+    for s in db.sensor.filter (None, searchdict, sort = ('+', 'name')) :
+        if s.device.id not in by_dev :
+            by_dev [s.device.id] = []
+        by_dev [s.device.id].append (s)
+    return by_dev
+# end def sensors_by_device
+
+def sensor_measurements (db) :
+    """ measurements indexed by sensor """
+    return dict ((s.id, latest_measurements (db, s)) for s in db.sensor.list ())
+# end def sensor_measurements
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -164,13 +196,16 @@ def init (instance) :
     act = instance.registerAction
     reg = instance.registerUtil
 
-    act ('delete_device',     Delete_Device)
-    act ('delete_data',       Delete_Data)
-    act ('delete_db',         Delete_DB)
+    act ('delete_device',       Delete_Device)
+    act ('delete_data',         Delete_Data)
+    act ('delete_db',           Delete_DB)
 
-    reg ('lielas_actions',    lielas_actions)
-    reg ('sensor_query',      sensor_query)
-    reg ('measurement_query', measurement_query)
-    reg ('is_lielas',         is_lielas)
-    reg ('menu_by_class',     menu_by_class)
+    reg ('lielas_actions',      lielas_actions)
+    reg ('sensor_query',        sensor_query)
+    reg ('measurement_query',   measurement_query)
+    reg ('is_lielas',           is_lielas)
+    reg ('menu_by_class',       menu_by_class)
+    reg ('latest_measurements', latest_measurements)
+    reg ('sensors_by_device',   sensors_by_device)
+    reg ('sensor_measurements', sensor_measurements)
 # end def init

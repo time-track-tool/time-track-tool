@@ -541,6 +541,30 @@ input.value {
 	font-size: 12px;
 	}
 
+.details_row input {
+	float: right;
+	width: 140px;
+	padding-right: 5px;
+	border: none;
+	background-color: #f2f2f2;
+	height: 18px;
+	color: #ed6809;
+	text-align: right;
+	font-size: 12px;
+	}
+
+.details_row select {
+	float: right;
+	left: 425px;
+	top: 3px;
+	width: 140px;
+	padding-right: 5px;
+	color: #ed6809;
+	text-align: right;
+	font-size: 12px;
+	}
+	
+
 .unit {
 	float: left;
 	}
