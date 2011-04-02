@@ -146,6 +146,16 @@ def is_lielas () :
     return True
 # end def is_lielas
 
+def menu_by_class (db) :
+    uok = db.user.is_edit_ok ()
+    return \
+        ( (x [0], x [1], x [2]) for x in
+            ( ('',       _ ('Device manager'), '',                       True)
+            , ('dyndns', _ ('Configuration'),  'dyndns?@template=index', True)
+            , ('user',   _ ('User'),           'user?@template=lindex',  uok)
+            ) if x [3]
+        )
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -161,4 +171,5 @@ def init (instance) :
     reg ('sensor_query',      sensor_query)
     reg ('measurement_query', measurement_query)
     reg ('is_lielas',         is_lielas)
+    reg ('menu_by_class',     menu_by_class)
 # end def init
