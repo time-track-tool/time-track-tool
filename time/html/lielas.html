@@ -1,0 +1,93 @@
+<tal:block metal:define-macro="icing">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="de-DE" id="fb"
+ tal:define="
+   uname           python: str (request.user.username)
+ ; is_user         python: request.user.username!='anonymous'
+ ; clsname         python: getattr (context, '_classname', '')
+ ; classname       context/_classname|db/user/_classname
+   ">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title metal:define-slot="head_title">LieLas</title>
+  <link href="@@file/lielas_style.css" rel="stylesheet" type="text/css"/>
+  <link href="@@file/anytime.css" rel="stylesheet" type="text/css"/>
+  <!--
+  <script type="text/javascript" src="@@file/lfiles/js/jquery-1.4.2.min.js"/>
+  <script type="text/javascript" src="@@file/lfiles/js/anytime.js"/>
+  <script type="text/javascript" src="@@file/lfiles/js/jquery.tinysort.min.js"/>
+  <script type="text/javascript" src="@@file/lfiles/js/lielas.js"/>
+  -->
+</head>
+<body>
+  <div id="frame">
+    <div id="header">
+      <div id="version">v1.0.0</div>
+      <div id="navi">
+        <div tal:condition="not:is_user" class="navi_item active">
+          <div class="left"></div>
+          <a>Login</a>
+          <div class="right"></div>
+        </div>
+        <tal:block tal:condition="is_user">
+          <tal:block metal:define-slot="lielas_navi"/>
+          <div tal:repeat="cl python:utils.menu_by_class(db)"
+               tal:attributes=
+                  "class python:'navi_item'+['', ' active'][cl[0]==clsname]">
+            <tal:block
+               tal:define=" cn  python: cl [0]
+                          ; n   python: cl [1]
+                          ; url python: cl [2]
+                          ">
+              <div class="left"></div>
+              <a tal:attributes="href url" tal:content="n"/>
+              <div class="right"></div>
+            </tal:block>
+          </div>
+          <div class="navi_item logout">
+            <div class="left"></div>
+            <a tal:attributes=
+               "href python:request.indexargs_href ('', {'@action':'logout'})">
+               Logout
+            </a>
+            <div class="right"></div>
+          </div>
+        </tal:block>
+      </div>
+    </div>
+    <div id="content">
+      <div class="login" tal:condition="not:is_user">
+        <div id="sidebar">
+          <div class="details_header">
+              <strong>Login</strong>
+          </div>
+          <div class="details_body">
+            <form method="POST" name="login_form" id="login_form"
+                  tal:attributes="action request/base">
+              <ul class="details_row">
+                <li>
+                  <label for="name" class="desc">Name:</label>
+                  <input type="text" name="__login_name" id="name" class="value"/>
+                </li>
+                <li>
+                  <label for="gruppe" class="desc">Passwort:</label>
+                  <input type="password" name="__login_password" id="pass"
+                         class="value" />
+                </li>
+              </ul>
+              <hr/>
+              <div class="details_row">
+                <input type="submit" name="@action" id="login" value="Login"/>
+              </div>                           
+            </form>
+          </div>
+          <div class="details_footer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+</tal:block>
