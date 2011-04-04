@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-04 15:22+0200\n"
+"POT-Creation-Date: 2011-04-04 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5295,24 +5295,22 @@ msgid "Adr"
 msgstr ""
 
 #: ../html/lielas.html:197
+msgid "marked devices:"
+msgstr ""
+
+#: ../html/lielas.html:200
 msgid "export CSV"
 msgstr ""
 
-#: ../html/lielas.html:197
-msgid ""
-"marked devices:<input name=\"export\" type=\"submit\" id=\"export\" value=\"x"
-"\" />"
-msgstr ""
-
-#: ../html/lielas.html:206
+#: ../html/lielas.html:208
 msgid "Details:"
 msgstr ""
 
-#: ../html/lielas.html:261 ../html/lielas.html:339
+#: ../html/lielas.html:263 ../html/lielas.html:341
 msgid "Submit Changes"
 msgstr ""
 
-#: ../html/lielas.html:289
+#: ../html/lielas.html:291
 msgid "Status"
 msgstr ""
 

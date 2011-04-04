@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-04 14:58+0200\n"
+"POT-Creation-Date: 2011-04-04 15:37+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3928,11 +3928,20 @@ msgstr ""
 msgid "new it_issue"
 msgstr "Neues IT Issue"
 
+msgid "Logout"
+msgstr ""
+
 msgid "Device list"
 msgstr "Geräteliste"
 
 msgid "Adr"
 msgstr "Adr"
+
+msgid "marked devices:"
+msgstr "markierte Geräte:"
+
+msgid "export CSV"
+msgstr "CSV exportieren"
 
 msgid "Details:"
 msgstr ""

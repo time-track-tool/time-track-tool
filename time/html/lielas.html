@@ -48,7 +48,7 @@
           </div>
           <div class="navi_item logout">
             <div class="left"></div>
-            <a tal:attributes=
+            <a i18n:translate="" tal:attributes=
                "href python:request.indexargs_href ('', {'@action':'logout'})">
                Logout
             </a>
@@ -194,7 +194,11 @@
               </div>
               <div class="list_footer">
                 <div id="csv_export">
-                    marked devices:<input name="export" type="submit" id="export" value="CSV exportieren" />
+                  <span i18n:translate="">
+                    marked devices:
+                  </span>
+                  <input name="export" type="submit" id="export"
+                         value="export CSV" i18n:attributes="value" />
                 </div>
               </div>
             </form>
