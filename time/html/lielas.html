@@ -7,6 +7,7 @@
  ; is_user         python: request.user.username!='anonymous'
  ; clsname         python: getattr (context, '_classname', '')
  ; classname       context/_classname|db/user/_classname
+ ; locale          python: utils.getlocale (request.client, db)
    ">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -167,7 +168,8 @@
                         <span class="col_name"   tal:content="d/name" />
                         <span class="col_device" tal:content="d/dev" />
                         <span class="col_group"  tal:content="d/device_group" />
-                        <span class="col_intervall" tal:content="d/sint" />
+                        <span class="col_intervall"
+                              tal:content="python: str (int (d.mint)) + ' s'" />
                       </div>
                       <ul tal:attributes="id python:d.designator() + '_sensor'"
                           class="sensor">
@@ -345,7 +347,8 @@
                   <li tal:repeat="m python:meas[s.id]">
                     <span class="desc" tal:content="python: m[0]"/>
                     <span class="value">
-                      <tal:block tal:replace="python: m[1]"/>
+                      <tal:block tal:replace="python:
+                           locale.format ('%2.2f', m[1])"/>
                       <tal:block tal:replace="s/unit"/>
                     </span>
                   </li>

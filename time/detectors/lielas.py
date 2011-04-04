@@ -50,6 +50,13 @@ def update_device_surrogate (db, cl, nodeid, new_values) :
             db.sensor.set (sid, **nv)
 # end def update_device_surrogate
 
+def round_sint_mint (db, cl, nodeid, new_values) :
+    if 'sint' in new_values :
+        new_values ['sint'] = int (new_values ['sint'] + 0.5)
+    if 'mint' in new_values :
+        new_values ['mint'] = int (new_values ['mint'] + 0.5)
+# end def round_sint_mint
+
 def update_order (db, cl, nodeid, new_values) :
     order = new_values.get ('order')
     if order is None and nodeid :
@@ -123,7 +130,9 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.device.audit      ("set",    deny_adr)
     db.device.audit      ("set",    update_device_surrogate)
+    db.device.audit      ("set",    round_sint_mint)
     db.device.audit      ("create", update_order)
+    db.device.audit      ("create", round_sint_mint)
     db.device.react      ("set",    check_daemon_props)
     db.device.react      ("retire", notify_lielas_daemon)
     db.sensor.audit      ("set",    deny_adr)

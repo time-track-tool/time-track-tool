@@ -23,7 +23,6 @@
 
 import csv
 import re
-import locale
 try :
     from cStringIO import StringIO
 except ImportError :
@@ -39,9 +38,9 @@ from rsclib.autosuper      import autosuper
 from rsclib.TeX_CSV_Writer import TeX_CSV_Writer
 
 from extproperty           import ExtProperty
+from common                import get_num_locale
 
-# Formatting numbers according to locale settings
-locale.setlocale (locale.LC_NUMERIC, '')
+locale = None
 
 def latin1 (x) :
     return str (x).decode ('utf-8').encode ('latin1', 'replace')
@@ -269,6 +268,8 @@ class Export_CSV_Names (Action, autosuper) :
             d = self.db.user.get (self.db.getuid (), 'csv_delimiter')
             if d and len (d) == 1 :
                 self.delimiter = d
+        global locale
+        locale = get_num_locale (self.client, self.db._db)
     # end def _setup_request
 
     def _setup (self) :

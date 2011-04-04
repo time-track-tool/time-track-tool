@@ -29,6 +29,7 @@
 #
 #--
 #
+import locale
 from   roundup import roundupdb, hyperdb
 from   roundup.exceptions import Reject
 from   roundup.date       import Date, Interval, Range
@@ -1009,5 +1010,14 @@ def lookalike_computation (db, cl, nodeid, new_values) :
 def persons_for_adr (db, nodeid) :
     return db.person.filter (None, dict (address = nodeid))
 # end def adr_for_person
+
+def get_num_locale (client, db) :
+    language = client.language or db._db.config["TRACKER_LANGUAGE"]
+    import sys
+    print >> sys.stderr, ">%s<" % language
+    locale.setlocale (locale.LC_NUMERIC, locale.normalize (language))
+    return locale
+# end def get_num_locale
+
 
 ### __END__

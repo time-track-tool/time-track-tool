@@ -29,7 +29,7 @@ from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
-from common                         import user_has_role
+from common                         import user_has_role, get_num_locale
 
 _      = None
 
@@ -208,4 +208,5 @@ def init (instance) :
     reg ('latest_measurements', latest_measurements)
     reg ('sensors_by_device',   sensors_by_device)
     reg ('sensor_measurements', sensor_measurements)
+    reg ('getlocale',           get_num_locale)
 # end def init
