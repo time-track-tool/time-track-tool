@@ -1,0 +1,6 @@
+- fix i18n in extensions/summary.py
+  -> use the _ in the db
+- insert translator into db via mail-interface (!)
+- make sure db._ always returns something suitable
+- fix language in all the reactors (only *after* inserting via
+  mail-interface!)
