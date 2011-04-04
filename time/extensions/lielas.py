@@ -25,13 +25,10 @@
 
 from rsclib.iter_recipes            import grouper
 from rsclib.autosuper               import autosuper
-from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
 from common                         import user_has_role, get_num_locale
-
-_      = None
 
 # Action codes and strings used in the web-interface and as action names
 # in this module. We make sure these are properly localized here
@@ -150,9 +147,21 @@ def menu_by_class (db) :
     uok = db.user.is_edit_ok ()
     return \
         ( (x [0], x [1], x [2]) for x in
-            ( ('',       _ ('Device manager'), 'home',                   True)
-            , ('dyndns', _ ('Configuration'),  'dyndns?@template=index', True)
-            , ('user',   _ ('User'),           'user?@template=lindex',  uok)
+            ( ( ''
+              , db._ ('Device manager')
+              , 'home'
+              , True
+              )
+            , ( 'dyndns'
+              , db._ ('Configuration')
+              , 'dyndns?@template=index'
+              , True
+              )
+            , ( 'user'
+              , db._ ('User')
+              , 'user?@template=lindex'
+              , uok
+              )
             ) if x [3]
         )
 # end def menu_by_class
@@ -190,9 +199,6 @@ def sensor_measurements (db) :
 # end def sensor_measurements
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     act = instance.registerAction
     reg = instance.registerUtil
 

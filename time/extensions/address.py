@@ -22,10 +22,7 @@
 # ****************************************************************************
 
 from roundup.cgi.actions            import EditItemAction, NewItemAction
-from roundup.cgi.TranslationService import get_translation
 from rsclib.autosuper               import autosuper
-
-_ = None
 
 def valid_adr_type_cats (db, adr_type_cat = None) :
     try :
@@ -102,9 +99,6 @@ def contact_query (db) :
 # end def contact_query
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerUtil
     reg ('valid_adr_types',    valid_adr_types)
     reg ('adr_type_classhelp', adr_type_classhelp)

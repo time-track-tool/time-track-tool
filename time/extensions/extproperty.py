@@ -46,6 +46,8 @@ def propsort (p1, p2) :
 # end def propsort
 
 def sorted_properties (db, context) :
+    global _
+    _ = db._
     props = db [context._classname].properties ()
     props.sort (propsort)
     return props
@@ -208,7 +210,7 @@ class ExtProperty :
         , displayable   = True
         , sortable      = None
         , terse         = True
-        , pretty        = _
+        , pretty        = None
         , get_cssclass  = get_cssclass
         , do_classhelp  = None
         , fieldwidth    = 30
@@ -233,7 +235,7 @@ class ExtProperty :
         self.displayprop   = displayprop
         self.multiselect   = multiselect
         self.is_labelprop  = is_labelprop
-        self.pretty        = pretty or _
+        self.pretty        = pretty or prop._db._
         self.get_cssclass  = get_cssclass
         self.editable      = editable
         self.key           = None
@@ -359,7 +361,7 @@ class ExtProperty :
         if self.editable and self.prop.is_edit_ok () :
             return self.editfield ()
         if self.name != 'id' and not self.prop.is_view_ok () :
-            return _('[hidden]')
+            return self.prop._db._('[hidden]')
         if self.is_labelprop or self.force_link :
             return self.formatlink (as_link = as_link)
         elif self.lnkcls :
@@ -622,9 +624,6 @@ def get_cssclass_from_status (context) :
 # end def get_cssclass_from_status
 
 def init (instance) :
-    global _
-    _ = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     instance.registerUtil ('ExtProperty',              ExtProperty)
     instance.registerUtil ('sorted_properties',        sorted_properties)
     instance.registerUtil ('properties_dict',          properties_dict)

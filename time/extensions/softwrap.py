@@ -31,9 +31,6 @@
 #--
 
 import re
-from roundup.cgi.TranslationService import get_translation
-
-_ = str
 
 CUTOFF     = re.compile (r"(.*?)(\s+\S+)$")
 NL         = re.compile ("\r?\n")
@@ -106,9 +103,6 @@ def truncate_chars(in_str, max_len=40, append=''):
 
 
 def init (instance) :
-    global _
-    _ = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     instance.registerUtil ('soft_wrap',       soft_wrap)
     instance.registerUtil ('truncate_chars',  truncate_chars)
 # end def init

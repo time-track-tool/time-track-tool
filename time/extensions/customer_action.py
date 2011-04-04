@@ -88,17 +88,14 @@ def del_link (classname, id) :
         )
 # end def del_link
 
-def adress_button (adr_property_frm, adr_property_to) :
+def adress_button (db, adr_property_frm, adr_property_to) :
     """Compute address copy button inscription"""
-    adr_frm = _ (adr_property_frm)
-    adr_to  = _ (adr_property_to)
-    return _ (''"new %(adr_to)s from %(adr_frm)s") % locals ()
+    adr_frm = db._ (adr_property_frm)
+    adr_to  = db._ (adr_property_to)
+    return db._ (''"new %(adr_to)s from %(adr_frm)s") % locals ()
 # end def adress_button
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     actn = instance.registerAction
     actn ('create_new_address', Create_New_Address)
     util = instance.registerUtil

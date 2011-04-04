@@ -22,11 +22,8 @@
 # ****************************************************************************
 # $Id$
 
-from roundup.cgi.TranslationService import get_translation
-
-_ = None
-
 def letter_link (request, id) :
+    _ = request.client.translator.gettext
     return """<a href="%s">%s</a>""" \
         % ( request.indexargs_url
             ( 'letter'
@@ -39,8 +36,5 @@ def letter_link (request, id) :
 # end def letter_link
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerUtil
     reg ('letter_link',        letter_link)

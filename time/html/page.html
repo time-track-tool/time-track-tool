@@ -2,7 +2,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
 <html tal:define="
-   uname           python: str (request.user.username)
+   language        python: utils.set_language (request.client, db)
+ ; uname           python: str (request.user.username)
  ; classname       context/_classname|db/user/_classname
  ; Classname       python: i18n.gettext (classname)
  ; formname        python: 'itemSynopsis'
@@ -1539,7 +1540,7 @@
           "onClick python:'javascript:document.location = '
            '\'%s?@attr=%s&@frm=shipping_address&@action=create_new_address\''
            % (context.designator (), property)
-          ; value python:utils.adress_button ('shipping_address', property)
+          ; value python:utils.adress_button (db, 'shipping_address', property)
           ">
       </span>
      </td>
@@ -1549,7 +1550,7 @@
           "onClick python:'javascript:document.location = '
            '\'%s?@attr=%s&@frm=invoice_address&@action=create_new_address\''
            % (context.designator (), property)
-          ; value python:utils.adress_button ('invoice_address', property)
+          ; value python:utils.adress_button (db, 'invoice_address', property)
           ">
      </td>
     </tr>

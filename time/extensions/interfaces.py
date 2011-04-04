@@ -331,7 +331,7 @@ def welcome (db) :
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass
-    return "".join ((_ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
+    return "".join ((db._ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
 # end def welcome
 
 def color_duration (tr) :
@@ -402,9 +402,6 @@ def may_search (db, uid, classname, property) :
 # end def may_search
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
     reg ("rough_date_diff",              rough_date_diff)

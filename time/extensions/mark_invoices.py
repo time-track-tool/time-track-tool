@@ -30,7 +30,6 @@ from roundup.cgi                    import templating
 from roundup                        import hyperdb
 from roundup.date                   import Date, Interval
 from roundup.cgi.exceptions         import Redirect
-from roundup.cgi.TranslationService import get_translation
 
 try :
     import ooopy.Transforms as Transforms
@@ -41,7 +40,6 @@ except ImportError :
     from rsclib.autosuper               import autosuper
 
 Reject = ValueError
-_      = None
 
 class Invoice (Action, autosuper) :
     name = 'invoice actions'
@@ -63,14 +61,14 @@ class Invoice (Action, autosuper) :
         iv_tmplates = db.abo_price.get (aboprice, 'invoice_template')
         if not iv_tmplates :
             raise Reject, \
-                ( _ ('No invoice_template defined for all invoices: %s')
+                ( db._ ('No invoice_template defined for all invoices: %s')
                 % iv ['invoice_no']
                 )
         ivts = [db.invoice_template.getnode (i) for i in iv_tmplates]
         ivts = [i for i in ivts if i ['invoice_level'] <= iv ['n_sent']]
         if not ivts :
             raise Reject, \
-                ( _ ('No matching invoice_template for invoice %s')
+                ( db._ ('No matching invoice_template for invoice %s')
                 % iv ['invoice_no']
                 )
         max = ivts [0]
@@ -86,7 +84,7 @@ class Invoice (Action, autosuper) :
         filterspec = request.filterspec
 
         if request.classname != 'invoice' :
-            raise Reject, _ ('You can only mark invoices')
+            raise Reject, self.db._ ('You can only mark invoices')
         # get invoice_group -- if existing:
         self.invoice_group = None
         try :
@@ -157,7 +155,7 @@ class Mark_Invoice (Invoice) :
         self.now   = Date ('.')
 
         if self.marked () :
-            raise Reject, _ ('invoices are already marked')
+            raise Reject, self.db._ ('invoices are already marked')
 
         invoice = self.db.invoice
         spec = \
@@ -371,7 +369,7 @@ class Download_Letter (Action, autosuper) :
         filterspec = request.filterspec
 
         if request.classname != 'letter' :
-            raise Reject, _ ('You can only download letters')
+            raise Reject, self.db._ ('You can only download letters')
         # get id:
         try :
             self.id = request.form ['id'].value
@@ -398,6 +396,7 @@ class Personalized_Template (Download_Letter) :
         request    = templating.HTMLRequest (self.client)
         filterspec = request.filterspec
 
+        _ = self.db._
         if request.classname != 'address' :
             raise Reject, _ ('You can only download templates for an address')
         try :
@@ -438,9 +437,6 @@ class Edit_Payment_Action (EditItemAction, autosuper) :
 # end class Edit_Payment_Action
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerAction
     reg ('mark_invoice',             Mark_Invoice)
     reg ('unmark_invoice',           Unmark_Invoice)

@@ -3,7 +3,8 @@
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="de-DE" id="fb"
  tal:define="
-   uname           python: str (request.user.username)
+   language        python: utils.set_language (request.client, db)
+ ; uname           python: str (request.user.username)
  ; is_user         python: request.user.username!='anonymous'
  ; clsname         python: getattr (context, '_classname', '')
  ; classname       context/_classname|db/user/_classname

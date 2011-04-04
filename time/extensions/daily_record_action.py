@@ -119,7 +119,7 @@ def button_submit_to (db, user, date) :
                 document.edit_daily_record.submit ();
             }
             ">
-        ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
+        ''' % (db._ ("Submit to %(nickname)s" % locals ()), date)
 # end def button_submit_to
 
 def button_action (date, action, value) :
@@ -295,6 +295,7 @@ class Daily_Record_Action (Daily_Record_Common) :
 
     def handle (self) :
         uid = self.db.user.lookup (self.user)
+        _   = self.db._
         if not self.db.user.get (uid, 'supervisor') :
             f_supervisor = _ ('supervisor')
             user         = self.user
@@ -619,6 +620,7 @@ class Freeze_Action (Action, autosuper) :
     user_required_msg = ''"User is required"
     user_invalid_msg  = ''"Invalid User"
     def get_user (self) :
+        _ = self.db._
         self.request = templating.HTMLRequest (self.client)
         user         = self.request.form ['user'].value
         if not user :
@@ -631,6 +633,7 @@ class Freeze_Action (Action, autosuper) :
     # end def get_user
 
     def handle (self) :
+        _ = self.db._
         if not self.request.form ['date'].value :
             raise Reject, _ ("Date is required")
         self.date  = Date (self.request.form ['date'].value)
@@ -691,6 +694,7 @@ class Freeze_Action (Action, autosuper) :
 
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
+        _ = self.db._
         self.request = templating.HTMLRequest (self.client)
         if 'user' in self.request.form and self.request.form ['user'].value :
             raise Reject, _ ('''Don't specify a user for "Freeze all"''')
@@ -790,9 +794,6 @@ class SearchActionWithTemplate(SearchAction):
 # end class SearchActionWithTemplate
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)

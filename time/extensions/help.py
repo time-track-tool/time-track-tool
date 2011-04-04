@@ -1715,6 +1715,16 @@ def permdict (perm) :
     return d
 # end def permdict
 
+def set_language (client, db) :
+    global _
+    language = client.language
+    if not language :
+        language = db.config.TRACKER_LANGUAGE
+    db.translator = db._db.translator = client.translator
+    _ = db._db._ = db._ = db.translator.gettext
+    return language
+# end def set_language
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -1725,4 +1735,5 @@ def init (instance) :
     instance.registerUtil ('fieldspan',       fieldspan)
     instance.registerUtil ('combined_name',   combined_name)
     instance.registerUtil ('permdict',        permdict)
+    instance.registerUtil ('set_language',    set_language)
 # end def init

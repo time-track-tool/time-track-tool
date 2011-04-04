@@ -3944,7 +3944,7 @@ msgid "export CSV"
 msgstr "CSV exportieren"
 
 msgid "Details:"
-msgstr ""
+msgstr "Details:"
 
 msgid "Submit Changes"
 msgstr ""
