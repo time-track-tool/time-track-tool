@@ -150,7 +150,7 @@ def menu_by_class (db) :
     uok = db.user.is_edit_ok ()
     return \
         ( (x [0], x [1], x [2]) for x in
-            ( ('',       _ ('Device manager'), '',                       True)
+            ( ('',       _ ('Device manager'), 'home',                   True)
             , ('dyndns', _ ('Configuration'),  'dyndns?@template=index', True)
             , ('user',   _ ('User'),           'user?@template=lindex',  uok)
             ) if x [3]

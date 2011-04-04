@@ -75,17 +75,12 @@ $(document).ready(function() {
 	$('#list_content .col_id, #list_content .col_name, #list_content .col_device, #list_content .col_group, #list_content .col_intervall').each(function() {
 		$(this).click(function() {
 			
-			////////////////////////////////////////////////////////////////////////////
-			//////  HIER NACH BEDARF ANPASSEN - MOMENTAN NUR DUMMY-VERLINKUNGEN ////////
-			////////////////////////////////////////////////////////////////////////////
-			
-			// $('.active_row').removeClass('active_row');
-			// $(this).parent('.list_row').addClass('active_row');		
-			if($(this).parent().hasClass('main')) {
-				window.location.href = 'devicedetails.html';
-			} else {
-				window.location.href = 'index.html';
-			}			
+                        var listrow = $(this).parent('.list_row');
+                        var detail = '#details_' + listrow.parent().attr('id');
+                        $('.active_row').removeClass('active_row');
+                        $('.active_detail').removeClass('active_detail');
+                        listrow.addClass('active_row');
+                        $(detail).addClass('active_detail');
 		});
 	});
 

@@ -502,7 +502,12 @@ input.selectbox {
 	overflow: hidden;
 	background: url(lfiles/images/details_back_middle.png) repeat-y;
 	width: 311px;
+        display: none;
 	}
+
+.active_detail {
+        display: block;
+}
 	
 .details_row {
 	padding: 0 15px;

@@ -32,10 +32,12 @@
         <tal:block tal:condition="is_user">
           <div tal:repeat="cl python:utils.menu_by_class(db)"
                tal:attributes=
-                  "class python:'navi_item'+['', ' active'][cl[0]==clsname]">
+                  "class python:'navi_item'+['', ' active']
+                    [(  cl [0] == clsname
+                    or  (not cl [0] and clsname in ('', 'sensor', 'device'))
+                    )]">
             <tal:block
-               tal:define=" cn  python: cl [0]
-                          ; n   python: cl [1]
+               tal:define=" n   python: cl [1]
                           ; url python: cl [2]
                           ">
               <div class="left"></div>
@@ -98,6 +100,7 @@
           ; asens python: utils.sensors_by_device (db, is_app = True)
           ; ssens python: utils.sensors_by_device (db, is_app = False)
           ; meas  python: utils.sensor_measurements (db)
+          ; sel   python: (context or devs [0]).designator()
           ">
         <div id=content>
           <div id=list>
@@ -117,7 +120,7 @@
                     </span>
                     <span class="col_id">
                       <a href="#" class="sort_link active"
-                         i18n:translate="">ID</a>
+                         i18n:translate="">Adr</a>
                     </span>
                     <span class="col_name">
                       <a href="#" class="sort_link">
@@ -149,7 +152,9 @@
                 <ul id="list_content">
                   <tal:block tal:repeat="d devs">
                     <li class="device" tal:attributes="id d/designator">
-                      <div class="list_row main">
+                      <div tal:attributes="class python:
+                          'list_row main'
+                           + ['', ' active_row'][d.designator() == sel]">
                         <span class="col_collapse">
                           <img src="@@file/lfiles/images/clear.png"
                                width="12" height="12" alt="collapse" />
@@ -158,7 +163,7 @@
                           <input name="checker_main" type="checkbox"
                                  value="device_01" class="selectbox" />
                         </span>
-                        <span class="col_id"     tal:content="d/id" />
+                        <span class="col_id"     tal:content="d/adr" />
                         <span class="col_name"   tal:content="d/name" />
                         <span class="col_device" tal:content="d/dev" />
                         <span class="col_group"  tal:content="d/device_group" />
@@ -194,14 +199,24 @@
             <div class="details_header">
               <strong i18n:translate="">Details:</strong>
             </div>
-            <div class="details_body" tal:repeat="d devs"
-                 tal:attributes="id python: 'details_' + d.designator()">
+            <div tal:repeat="d devs"
+                 tal:attributes=
+                   " id    python: 'details_' + d.designator()
+                   ; class python:
+                          'details_body'
+                           + ['', ' active_detail'][d.designator() == sel]
+                   ">
               <form method="POST" tal:attributes=
                     " id     python:'settings_form_' + d.designator()
                     ; name   python:'settings_form_' + d.designator()
                     ; action d/designator
                     ">
                 <ul class="details_row">
+                  <li>
+                    <tal:block tal:replace="structure python:utils.fieldspan
+                         ('device', 'adr')" />
+                    <span class="value" tal:content="d/adr" />
+                  </li>
                   <li>
                     <tal:block tal:replace="structure python:utils.fieldspan
                          ('device', 'name')" />

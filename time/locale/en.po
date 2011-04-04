@@ -2771,13 +2771,13 @@ msgid "sensor++adr"
 msgstr "Channel"
 
 msgid "sensor++name"
-msgstr "Sensor name"
+msgstr "Channel name"
 
 msgid "sensor++order"
-msgstr "Sensor order"
+msgstr "Channel order"
 
 msgid "sensor++type"
-msgstr "Sensor type"
+msgstr "Channel type"
 
 msgid "serial_number"
 msgstr "Serial number"
