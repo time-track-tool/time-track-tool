@@ -173,7 +173,9 @@
                           class="sensor">
                         <li tal:repeat="s python:asens [d.id]"
                             tal:attributes="id s/designator">
-                          <div class="list_row">
+                          <div tal:attributes="class python:
+                              'list_row'
+                               + ['', ' active_row'][s.designator() == sel]">
                             <span class="col_check">
                               <input name="checker_sub" type="checkbox"
                                      tal:attributes="value s/designator"
