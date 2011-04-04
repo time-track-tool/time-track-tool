@@ -199,96 +199,157 @@
             <div class="details_header">
               <strong i18n:translate="">Details:</strong>
             </div>
-            <div tal:repeat="d devs"
-                 tal:attributes=
-                   " id    python: 'details_' + d.designator()
-                   ; class python:
-                          'details_body'
-                           + ['', ' active_detail'][d.designator() == sel]
-                   ">
-              <form method="POST" tal:attributes=
-                    " id     python:'settings_form_' + d.designator()
-                    ; name   python:'settings_form_' + d.designator()
-                    ; action d/designator
-                    ">
-                <ul class="details_row">
-                  <li>
-                    <tal:block tal:replace="structure python:utils.fieldspan
-                         ('device', 'adr')" />
-                    <span class="value" tal:content="d/adr" />
-                  </li>
-                  <li>
-                    <tal:block tal:replace="structure python:utils.fieldspan
-                         ('device', 'name')" />
-                    <tal:block tal:replace="structure python:d.name.field ()" />
-                  </li>
-                  <li>
-                    <tal:block tal:replace="structure python:utils.fieldspan
-                         ('device', 'dev')" />
-                    <span class="value" tal:content="d/dev" />
-                  </li>
-                  <li>
-                    <tal:block tal:replace="structure python:utils.fieldspan
-                         ('device', 'device_group')" />
-                    <tal:block tal:replace="structure d/device_group/menu" />
-                  </li>
-                </ul>
-                <hr />
-                <ul class="details_row">
-                  <li>
-                    <tal:block tal:replace="structure python:utils.fieldspan
-                         ('device', 'mint')" />
-                    <tal:block tal:replace="structure python:d.mint.field ()" />
-                  </li>
-                  <li>
-                    <tal:block tal:replace="structure python:utils.fieldspan
-                         ('device', 'sint')" />
-                    <tal:block tal:replace="structure python:d.sint.field ()" />
-                  </li>
-                </ul>
-                <hr />
-                <div class="details_row">
-                  <input type="hidden" name="@action" value="edit">
-                  <input type="submit" name="submit_button"
-                         id="submit_details" value="Submit Changes"
-                         i18n:attributes="value" />
-                </div>
-              </form>
-              <div class="details_row header">
-                <tal:block tal:replace="structure python:utils.fieldspan
-                  ('sensor', 'name', endswith='')" />
-                <span class="value">
+            <tal:block tal:repeat="d devs">
+              <div tal:attributes=
+                     " id    python: 'details_' + d.designator()
+                     ; class python:
+                            'details_body'
+                             + ['', ' active_detail'][d.designator() == sel]
+                     ">
+                <form method="POST" tal:attributes=
+                      " id     python:'settings_form_' + d.designator()
+                      ; name   python:'settings_form_' + d.designator()
+                      ; action d/designator
+                      ">
+                  <ul class="details_row">
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'adr')" />
+                      <span class="value" tal:content="d/adr" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'name')" />
+                      <tal:block
+                       tal:replace="structure python:d.name.field ()" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'dev')" />
+                      <span class="value" tal:content="d/dev" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'device_group')" />
+                      <tal:block tal:replace="structure d/device_group/menu" />
+                    </li>
+                  </ul>
+                  <hr />
+                  <ul class="details_row">
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'mint')" />
+                      <tal:block
+                       tal:replace="structure python:d.mint.field ()" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'sint')" />
+                      <tal:block
+                       tal:replace="structure python:d.sint.field ()" />
+                    </li>
+                  </ul>
+                  <hr />
+                  <div class="details_row">
+                    <input type="hidden" name="@action" value="edit">
+                    <input type="submit" name="submit_button"
+                           id="submit_details" value="Submit Changes"
+                           i18n:attributes="value" />
+                  </div>
+                </form>
+                <div class="details_row header">
                   <tal:block tal:replace="structure python:utils.fieldspan
-                    ('sensor', 'adr', endswith='', csscls='unit')" />
-                  <tal:block tal:replace="structure python:utils.fieldspan
-                    ('sensor', 'val', endswith='', csscls='default')" />
-                </span>
-              </div>
-              <ul class="details_row">
-                <li tal:repeat="s python:asens [d.id]">
-                  <span class="desc" tal:content="s/name" />
+                    ('sensor', 'name', endswith='')" />
                   <span class="value">
-                    <span class="unit" tal:content="s/adr" />
-                    <tal:block tal:condition="python:meas[s.id]">
+                    <tal:block tal:replace="structure python:utils.fieldspan
+                      ('sensor', 'adr', endswith='', csscls='unit')" />
+                    <tal:block tal:replace="structure python:utils.fieldspan
+                      ('sensor', 'val', endswith='', csscls='default')" />
+                  </span>
+                </div>
+                <ul class="details_row">
+                  <li tal:repeat="s python:asens [d.id]">
+                    <span class="desc" tal:content="s/name" />
+                    <span class="value">
+                      <span class="unit" tal:content="s/adr" />
+                      <tal:block tal:condition="python:meas[s.id]">
+                        <tal:block tal:replace="python:meas[s.id][0][1]" />
+                        <tal:block tal:replace="s/unit" />
+                      </tal:block>
+                    </span>
+                  </li>
+                </ul>
+                <div class="details_row header">
+                  <span class="desc" i18n:translate="">Status</span>
+                </div>
+                <ul class="details_row">
+                  <li tal:repeat="s python:ssens [d.id]">
+                    <span class="desc" tal:content="s/name" />
+                    <span class="value" tal:condition="python:meas[s.id]">
                       <tal:block tal:replace="python:meas[s.id][0][1]" />
                       <tal:block tal:replace="s/unit" />
-                    </tal:block>
-                  </span>
-                </li>
-              </ul>
-              <div class="details_row header">
-                <span class="desc" i18n:translate="">Status</span>
+                    </span>
+                  </li>
+                </ul>
               </div>
-              <ul class="details_row">
-                <li tal:repeat="s python:ssens [d.id]">
-                  <span class="desc" tal:content="s/name" />
-                  <span class="value" tal:condition="python:meas[s.id]">
-                    <tal:block tal:replace="python:meas[s.id][0][1]" />
-                    <tal:block tal:replace="s/unit" />
-                  </span>
-                </li>
-              </ul>
-            </div>
+              <div tal:repeat="s python:asens[d.id]"
+                   tal:attributes=
+                     " id    python: 'details_' + s.designator()
+                     ; class python:
+                            'details_body'
+                             + ['', ' active_detail'][s.designator() == sel]
+                     ">
+                <form method="POST" tal:attributes=
+                      " id     python:'settings_form_' + s.designator()
+                      ; name   python:'settings_form_' + s.designator()
+                      ; action s/designator
+                      ">
+                  <ul class="details_row">
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'adr')" />
+                      <span class="value" tal:content="s/device/adr" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('device', 'name')" />
+                      <span class="value" tal:content="s/device/name" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('sensor', 'adr')" />
+                      <span class="value" tal:content="s/adr" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('sensor', 'name')" />
+                      <tal:block
+                       tal:replace="structure python:s.name.field ()" />
+                    </li>
+                  </ul>
+                  <hr />
+                  <div class="details_row">
+                    <input type="hidden" name="@action" value="edit">
+                    <input type="submit" name="submit_button"
+                           id="submit_details" value="Submit Changes"
+                           i18n:attributes="value" />
+                  </div>
+                </form>
+                <div class="details_row header">
+                  <span class="desc"
+                   i18n.translate="">Latest measurements</span>
+                </div>
+                <ul class="details_row">
+                  <li tal:repeat="m python:meas[s.id]">
+                    <span class="desc" tal:content="python: m[0]"/>
+                    <span class="value">
+                      <tal:block tal:replace="python: m[1]"/>
+                      <tal:block tal:replace="s/unit"/>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </tal:block>
             <div class="details_footer"></div>
           </div>
         </div>
