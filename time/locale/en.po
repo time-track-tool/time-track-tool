@@ -7,45 +7,82 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-01-12 09:47+0100\n"
+"POT-Creation-Date: 2011-04-04 15:37+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "invoice"
+msgid "start and end must be on same day and start <= end."
 msgstr ""
 
-msgid "Invoice Address"
-msgstr "Invoice address"
-
-msgid "shipping"
-msgstr "shipping"
-
-msgid "Shipping Address"
-msgstr "Shipping address"
-
-msgid "supply"
-msgstr "supply"
-
-msgid "Address used for fetching supplies from supplier"
+msgid "Times must be given in quarters of an hour"
 msgstr ""
 
-msgid "contact"
-msgstr "Contact"
-
-msgid "Address of a personal contact"
+msgid "No negative times are allowed"
 msgstr ""
 
-msgid "Circular logging"
+#, python-format
+msgid "Duration must not exceed %s hours"
 msgstr ""
 
-msgid "letter"
+#, python-format
+msgid "%(attr)s may not be changed"
 msgstr ""
 
-msgid "address"
-msgstr "Address"
+#, python-format
+msgid "%(attr)s must be set"
+msgstr ""
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -83,8 +120,8 @@ msgid "Open/change only for valid subscription"
 msgstr ""
 
 msgid ""
-"\"end\" may only be changed for last invoice period: %(period_start)s-%"
-"(period_end)s"
+"\"end\" may only be changed for last invoice period: %(period_start)s-"
+"%(period_end)s"
 msgstr ""
 
 msgid "\"%(attr)s\" must be greater or equal to zero"
@@ -152,10 +189,6 @@ msgstr ""
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
-#, python-format
-msgid "%(attr)s must be set"
-msgstr ""
-
 msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
 
@@ -193,10 +226,6 @@ msgstr ""
 
 msgid "product_group"
 msgstr "Product group"
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr ""
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -389,68 +418,6 @@ msgstr "Summary Report"
 
 #, python-format
 msgid "Change of %s requires a message"
-msgstr ""
-
-msgid "start and end must be on same day and start <= end."
-msgstr ""
-
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-msgid "No negative times are allowed"
-msgstr ""
-
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr ""
-
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-msgid "start"
-msgstr "Start"
-
-msgid "Either specify duration or start/end"
-msgstr ""
-
-#, python-format
-msgid "%s: You specified new values for %s but no duration"
-msgstr ""
-
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-msgid "No weekend booking allowed"
-msgstr ""
-
-msgid "Distribution: WP must be given"
-msgstr ""
-
-msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
 #, python-format
@@ -835,6 +802,9 @@ msgstr ""
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
 
+msgid "address"
+msgstr "Address"
+
 msgid "Address for this %(Classname)s"
 msgstr ""
 
@@ -1115,9 +1085,27 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "contact"
+msgstr "Contact"
+
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
+"          "
+msgstr ""
+
+msgid "contacts"
+msgstr "Contacts"
+
+msgid ""
+"Contact information, e.g., Email address, Phone number...\n"
+"             In order to edit a contact (e.g. phone number) please click\n"
+"             on the contact type. Given the right permissions you can\n"
+"             also create a new number in the row below. Deleting a\n"
+"             contact is done by selecting the line in the column\n"
+"             \"remove\" and then pressing \"Submit Changes\" (The\n"
+"             \"remove\" columns is available only with the right\n"
+"             permissions).\n"
 "          "
 msgstr ""
 
@@ -1660,9 +1648,8 @@ msgstr "Sensor interval"
 msgid "Sensor interval for %(Classname)s"
 msgstr ""
 
-#, fuzzy
 msgid "Numeric group ID"
-msgstr "Customer Group"
+msgstr ""
 
 msgid "gid_range"
 msgstr "GIDs other"
@@ -1753,6 +1740,9 @@ msgid ""
 "Unique number or name for this %(Classname)s, preferrably the\n"
 "             inventory number for asset tracking\n"
 "          "
+msgstr ""
+
+msgid "invoice"
 msgstr ""
 
 msgid "Link to invoice for this %(Classname)s"
@@ -1958,6 +1948,9 @@ msgstr ""
 
 msgid "lastname"
 msgstr "Last name"
+
+msgid "letter"
+msgstr ""
 
 msgid ""
 "Download of letter -- usually this will open the letter in\n"
@@ -2641,9 +2634,8 @@ msgstr ""
 msgid "room"
 msgstr "Room"
 
-#, fuzzy
 msgid "Room number"
-msgstr "Number"
+msgstr ""
 
 msgid "routers"
 msgstr "Routers"
@@ -2966,9 +2958,8 @@ msgstr ""
 msgid "subscriber"
 msgstr "Subscriber"
 
-#, fuzzy
 msgid "Subscriber of this subscription"
-msgstr "Subscriber Address details"
+msgstr ""
 
 msgid "subscriber.firstname"
 msgstr "Subscriber First name"
@@ -3331,9 +3322,8 @@ msgstr ""
 msgid "unit"
 msgstr "Unit"
 
-#, fuzzy
 msgid "Unit of measurement"
-msgstr "Measurement"
+msgstr ""
 
 msgid "url"
 msgstr "URL"
@@ -3620,19 +3610,26 @@ msgstr ""
 msgid "Remove last Device now"
 msgstr ""
 
-#, fuzzy
 msgid "Clear Measurement Data"
-msgstr "Measurement"
+msgstr ""
 
-#, fuzzy
 msgid "Clear Measurements now"
-msgstr "Measurement"
+msgstr ""
 
 msgid "Delete Database"
 msgstr ""
 
 msgid "Delete Database now"
 msgstr ""
+
+msgid "Device manager"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid "User"
+msgstr "User"
 
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
@@ -3782,9 +3779,6 @@ msgstr "Number"
 msgid "Approvals pending"
 msgstr ""
 
-msgid "User"
-msgstr "User"
-
 msgid "Week"
 msgstr ""
 
@@ -3805,9 +3799,6 @@ msgstr ""
 
 msgid "Freeze user"
 msgstr ""
-
-msgid "Sensors"
-msgstr "Sensors"
 
 msgid "${classname_id} owned by ${responsible}"
 msgstr ""
@@ -3857,6 +3848,30 @@ msgstr ""
 msgid "new it_issue"
 msgstr "new IT-Issue"
 
+msgid "Logout"
+msgstr ""
+
+msgid "Device list"
+msgstr ""
+
+msgid "Adr"
+msgstr ""
+
+msgid "marked devices:"
+msgstr ""
+
+msgid "export CSV"
+msgstr ""
+
+msgid "Details:"
+msgstr ""
+
+msgid "Submit Changes"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
 msgid "Network Interfaces"
 msgstr ""
 
@@ -3894,6 +3909,9 @@ msgid "Approval"
 msgstr "Approval"
 
 msgid "User&nbsp;List"
+msgstr ""
+
+msgid "Phone&nbsp;List"
 msgstr ""
 
 msgid "-- Create --"
@@ -4026,12 +4044,6 @@ msgstr ""
 msgid "Save Selection"
 msgstr ""
 
-msgid "Extended Search"
-msgstr ""
-
-msgid "display latest measurements for this sensor"
-msgstr ""
-
 msgid "Current Work Package(s)"
 msgstr ""
 
@@ -4079,6 +4091,27 @@ msgstr "New Dynamic User Data"
 
 msgid "split user_dynamic record"
 msgstr "Split frozen dynamic user data"
+
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+msgid "shipping"
+msgstr "shipping"
+
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+msgid "supply"
+msgstr "supply"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr ""
+
+msgid "Address of a personal contact"
+msgstr ""
+
+msgid "Circular logging"
+msgstr ""
 
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
@@ -4535,9 +4568,6 @@ msgstr "to hour"
 msgid "lookalike_function"
 msgstr "Address details"
 
-msgid "contacts"
-msgstr "Contacts"
-
 msgid "lookalike_lastname"
 msgstr "Last name"
 
@@ -4651,6 +4681,9 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Document number"
+
+#~ msgid "Sensors"
+#~ msgstr "Sensors"
 
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"
