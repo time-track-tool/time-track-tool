@@ -3854,7 +3854,7 @@ msgstr ""
 msgid "Device list"
 msgstr ""
 
-msgid "Adr"
+msgid "Addr"
 msgstr ""
 
 msgid "marked devices:"

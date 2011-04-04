@@ -122,7 +122,7 @@
                     </span>
                     <span class="col_id">
                       <a href="#" class="sort_link active"
-                         i18n:translate="">Adr</a>
+                         i18n:translate="">Addr</a>
                     </span>
                     <span class="col_name">
                       <a href="#" class="sort_link">
@@ -329,11 +329,22 @@
                            ('sensor', 'adr')" />
                       <span class="value" tal:content="s/adr" />
                     </li>
+                  </ul>
+                  <hr />
+                  <ul class="details_row">
                     <li>
                       <tal:block tal:replace="structure python:utils.fieldspan
                            ('sensor', 'name')" />
                       <tal:block
                        tal:replace="structure python:s.name.field ()" />
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldspan
+                           ('sensor', 'do_logging')" />
+                      <span class="value">
+                        <tal:block
+                         tal:replace="structure python:s.do_logging.field ()" />
+                      </span>
                     </li>
                   </ul>
                   <hr />

@@ -3934,7 +3934,7 @@ msgstr ""
 msgid "Device list"
 msgstr "Geräteliste"
 
-msgid "Adr"
+msgid "Addr"
 msgstr "Adr"
 
 msgid "marked devices:"
