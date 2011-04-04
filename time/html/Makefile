@@ -1,5 +1,5 @@
 all: _generic.item.html userlist.html person.item.html person.index.html \
-     customer.index.html customer.item.html
+     customer.index.html customer.item.html device.item.html
 
 _generic.item.html: _generic.index.html
 	ln -s _generic.index.html _generic.item.html
@@ -18,3 +18,6 @@ person.index.html: address.index.html
 
 person.item.html: address.item.html
 	ln -s address.item.html person.item.html
+
+device.item.html: device.index.html
+	ln -s device.index.html device.item.html
