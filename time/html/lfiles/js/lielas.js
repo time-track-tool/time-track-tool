@@ -85,7 +85,7 @@ $(document).ready(function() {
 	});
 
 	// --------------
-	// Funktionen für Checkboxauswahl
+	// Funktionen zur Checkboxauswahl
 	// --------------
 
 	// Alle aktivieren
@@ -99,7 +99,7 @@ $(document).ready(function() {
 		});
 	});	
 
-	// Geräte-Checkboxen umschalten
+	// Device-Checkboxen umschalten
 	$(".list_row.main input").click(function(){
 		var checked_status = this.checked;
 		$(this).parents('li').find('.sensor input').each(function(){
@@ -138,12 +138,43 @@ $(document).ready(function() {
 			} else {
 				$('#list_header .active').removeClass('active');
 				$(this).addClass('active');		
-			}			
-			
+			}
+
 			sort_order = {order: 'asc'};
 			if($(this).hasClass('desc')) sort_order = {order: 'desc'};
-			$('#list_content>li').tsort(sort_class, sort_order);			
+			$('#list_content>li').tsort(sort_class, sort_order);
 		});
 	});
-		
+
+	// --------------
+	// Search form
+	// --------------
+
+	$("#query_name").focus(function(){
+            if ($(this).attr('value') == $(this).attr('title'))
+            {
+                $(this).val ('');
+            }
+	});
+
+	$("#form_filter").submit(function(){
+            var qn = $("#query_name")
+            var d  = $('#measurmentdate')
+            if (qn.attr('value') == qn.attr('title'))
+            {
+                qn.val ('');
+            }
+            d.val($('#date_from').val()+';'+$('#date_to').val())
+            alert('submitting');
+            return true;
+	});
+
+        $("#save_filter").click(function(ev){
+            $('#\\:action').val('search');
+            if (ev && ev.preventDefault) {
+                ev.preventDefault();
+                alert('preventDefault');
+            }
+            $(this).parents('form').eq(0).trigger('submit');
+        });
 });
