@@ -157,6 +157,17 @@ $(document).ready(function() {
             }
 	});
 
+	$("#queryname").change(function(){
+            $("#old_queryname").val($(this).val());
+	});
+
+	$("#filterladen").change(function(){
+            var v = $(this).attr('value');
+            var n = $(this).children('option[value="'+v+'"]').text();
+            $("#old_queryname").val(n);
+            $("#queryname").val(n);
+	});
+
 	$("#form_filter").submit(function(){
             var q = $("#queryname")
             var d = $('#measurementdate')
@@ -174,7 +185,18 @@ $(document).ready(function() {
             if ((!v || v == q.attr('title')) && ev && ev.preventDefault) {
                 ev.preventDefault();
             } else {
-                $('#\\:action').val('search');
+                $('#rup_action').val('search');
+            }
+        });
+
+        $("#load_filter").click(function(ev){
+            var q = $("#filterladen");
+            var v = q.attr('value');
+            if (!v && ev && ev.preventDefault) {
+                ev.preventDefault();
+            } else {
+                $('#rup_action').val('query_goto');
+                $('#form_filter').attr('action', v);
             }
         });
 });

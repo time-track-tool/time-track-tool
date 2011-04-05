@@ -106,9 +106,8 @@
           ">
         <div id="filter">
           <form id="form_filter" action="measurement">
-            <!-- <input type="hidden" name=":action"
-            value="export_csv_lielas"> -->
-            <input type="hidden" id=":action" name=":action" value="search">
+            <input type="hidden" id="rup_action" name=":action"
+                   value="export_csv_lielas">
             <input type="hidden" name="sensor.is_app_sensor" value="yes">
             <input type="hidden" id="measurementdate" name="date" value="">
 
@@ -175,6 +174,8 @@
             </div>
             <div class="filter_item"  class="filter_submit" id="filter_submit">
               <div class="line_wide">
+                <input name="@old-queryname" id="old_queryname" type="hidden"
+                       value=""/>
                 <input name="@queryname" id="queryname" type="text"
                        value="Save filter..." title="Save filter..."
                        i18n:attributes="value;title"/>
@@ -187,7 +188,7 @@
                           i18n:translate="">select Filter...</option>
                   <option tal:repeat="q python:db.query.filter
                     (None, dict (klass = 'measurement'), sort=('+','name'))"
-                   value="q/designator" tal:content="q/name"/>
+                   tal:attributes="value q/designator" tal:content="q/name"/>
                 </select>
                 <input name="load_filter" id=load_filter class="filterlink" 
                    type="submit" value="Load" i18n:attributes="value"/>
