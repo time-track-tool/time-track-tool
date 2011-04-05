@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-04 15:42+0200\n"
+"POT-Creation-Date: 2011-04-04 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -690,7 +690,7 @@ msgstr ""
 msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
 msgstr ""
 
-#: ../extensions/abo.py:37
+#: ../extensions/abo.py:34
 msgid "Download&nbsp;letter"
 msgstr ""
 
@@ -716,45 +716,45 @@ msgstr ""
 msgid "edit again"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:299 ../locale/attr.py:240
+#: ../extensions/daily_record_action.py:300 ../locale/attr.py:240
 #: ../locale/attr.py:999 attr.py:240 attr.py:999
 msgid "supervisor"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:301
+#: ../extensions/daily_record_action.py:302
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:619
+#: ../extensions/daily_record_action.py:620
 msgid "User is required"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:620
+#: ../extensions/daily_record_action.py:621
 msgid "Invalid User"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:635
+#: ../extensions/daily_record_action.py:638
 msgid "Date is required"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:696
+#: ../extensions/daily_record_action.py:700
 msgid "Don't specify a user for \"Freeze all\""
 msgstr ""
 
-#: ../extensions/daily_record_action.py:710
+#: ../extensions/daily_record_action.py:714
 msgid "Supervisor (in User field) is required"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:711
+#: ../extensions/daily_record_action.py:715
 msgid "Invalid Supervisor"
 msgstr ""
 
-#: ../extensions/extproperty.py:362
+#: ../extensions/extproperty.py:364
 msgid "[hidden]"
 msgstr ""
 
-#: ../extensions/extproperty.py:570
+#: ../extensions/extproperty.py:572
 msgid "Don't care"
 msgstr ""
 
@@ -4910,69 +4910,69 @@ msgstr ""
 msgid "Welcome to the "
 msgstr ""
 
-#: ../extensions/lielas.py:39
+#: ../extensions/lielas.py:36
 msgid "Remove last Device"
 msgstr ""
 
-#: ../extensions/lielas.py:39
+#: ../extensions/lielas.py:36
 msgid "Remove last Device now"
 msgstr ""
 
-#: ../extensions/lielas.py:40
+#: ../extensions/lielas.py:37
 msgid "Clear Measurement Data"
 msgstr ""
 
-#: ../extensions/lielas.py:40
+#: ../extensions/lielas.py:37
 msgid "Clear Measurements now"
 msgstr ""
 
-#: ../extensions/lielas.py:41
+#: ../extensions/lielas.py:38
 msgid "Delete Database"
 msgstr ""
 
-#: ../extensions/lielas.py:41
+#: ../extensions/lielas.py:38
 msgid "Delete Database now"
 msgstr ""
 
-#: ../extensions/lielas.py:153
+#: ../extensions/lielas.py:151
 msgid "Device manager"
 msgstr ""
 
-#: ../extensions/lielas.py:154
+#: ../extensions/lielas.py:156
 msgid "Configuration"
 msgstr ""
 
-#: ../extensions/lielas.py:155
+#: ../extensions/lielas.py:161
 msgid "User"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:66
+#: ../extensions/mark_invoices.py:64
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:73
+#: ../extensions/mark_invoices.py:71
 #, python-format
 msgid "No matching invoice_template for invoice %s"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:89
+#: ../extensions/mark_invoices.py:87
 msgid "You can only mark invoices"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:160
+#: ../extensions/mark_invoices.py:158
 msgid "invoices are already marked"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:374
+#: ../extensions/mark_invoices.py:372
 msgid "You can only download letters"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:402
+#: ../extensions/mark_invoices.py:401
 msgid "You can only download templates for an address"
 msgstr ""
 
-#: ../extensions/mark_invoices.py:411
+#: ../extensions/mark_invoices.py:410
 #, python-format
 msgid "No files for %(tmplate)s"
 msgstr ""
@@ -5068,7 +5068,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:59 ../html/_generic.item.html:59
-#: ../html/page.html:1222
+#: ../html/page.html:1223
 msgid "Download as CSV"
 msgstr ""
 
@@ -5282,39 +5282,83 @@ msgstr ""
 msgid "new it_issue"
 msgstr ""
 
-#: ../html/lielas.html:51
+#: ../html/lielas.html:52
 msgid "Logout"
 msgstr ""
 
-#: ../html/lielas.html:108
-msgid "Device list"
+#: ../html/lielas.html:114 ../html/lielas.html:127 ../html/lielas.html:142
+msgid "- all -"
 msgstr ""
 
-#: ../html/lielas.html:123
-msgid "Adr"
+#: ../html/lielas.html:144
+msgid "- empty -"
 msgstr ""
 
-#: ../html/lielas.html:197
-msgid "marked devices:"
+#: ../html/lielas.html:152
+msgid "Time range:"
 msgstr ""
 
-#: ../html/lielas.html:200
+#: ../html/lielas.html:154
+msgid "From:"
+msgstr ""
+
+#: ../html/lielas.html:157 ../html/lielas.html:165
+msgid "Select date"
+msgstr ""
+
+#: ../html/lielas.html:162
+msgid "To:"
+msgstr ""
+
+#: ../html/lielas.html:172
+msgid "Save filter..."
+msgstr ""
+
+#: ../html/lielas.html:174
+msgid "Save filter"
+msgstr ""
+
+#: ../html/lielas.html:178
+msgid "select Filter..."
+msgstr ""
+
+#: ../html/lielas.html:181
+msgid "Load"
+msgstr ""
+
+#: ../html/lielas.html:184 ../html/lielas.html:286
 msgid "export CSV"
 msgstr ""
 
-#: ../html/lielas.html:208
+#: ../html/lielas.html:186
+msgid "reset"
+msgstr ""
+
+#: ../html/lielas.html:194
+msgid "Device list"
+msgstr ""
+
+#: ../html/lielas.html:209
+msgid "Addr"
+msgstr ""
+
+#: ../html/lielas.html:283
+msgid "marked devices:"
+msgstr ""
+
+#: ../html/lielas.html:294
 msgid "Details:"
 msgstr ""
 
-#: ../html/lielas.html:263 ../html/lielas.html:341
+#: ../html/lielas.html:349 ../html/lielas.html:438
 msgid "Submit Changes"
 msgstr ""
 
-#: ../html/lielas.html:291
+#: ../html/lielas.html:377
 msgid "Status"
 msgstr ""
 
-#: ../html/lielas.html:347
+#: ../html/lielas.html:444
 msgid "Latest measurements"
 msgstr ""
 
@@ -5338,180 +5382,180 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:479
+#: ../html/page.html:480
 msgid "Welcome:"
 msgstr ""
 
-#: ../html/page.html:484
+#: ../html/page.html:485
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
-#: ../html/page.html:491
+#: ../html/page.html:492
 msgid "Login:"
 msgstr ""
 
-#: ../html/page.html:495
+#: ../html/page.html:496
 msgid "Password:"
 msgstr ""
 
-#: ../html/page.html:499
+#: ../html/page.html:500
 msgid "Remember me?:"
 msgstr ""
 
-#: ../html/page.html:535
+#: ../html/page.html:536
 msgid "Time"
 msgstr ""
 
-#: ../html/page.html:544
+#: ../html/page.html:545
 msgid "Approval"
 msgstr ""
 
-#: ../html/page.html:618
+#: ../html/page.html:619
 msgid "User&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:629
+#: ../html/page.html:630
 msgid "Phone&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:691
+#: ../html/page.html:692
 msgid "-- Create --"
 msgstr ""
 
-#: ../html/page.html:710
+#: ../html/page.html:711
 msgid "-- View / Query --"
 msgstr ""
 
-#: ../html/page.html:712
+#: ../html/page.html:713
 msgid "Manage Queries"
 msgstr ""
 
-#: ../html/page.html:863
+#: ../html/page.html:864
 msgid "Show History"
 msgstr ""
 
-#: ../html/page.html:928
+#: ../html/page.html:929
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
-#: ../html/page.html:969
+#: ../html/page.html:970
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:970
+#: ../html/page.html:971
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:971
+#: ../html/page.html:972
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:988
+#: ../html/page.html:989
 msgid "Author:"
 msgstr ""
 
-#: ../html/page.html:993
+#: ../html/page.html:994
 msgid "Date:"
 msgstr ""
 
-#: ../html/page.html:1085
+#: ../html/page.html:1086
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:1097
+#: ../html/page.html:1098
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:1102
+#: ../html/page.html:1103
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:1107
+#: ../html/page.html:1108
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:1208 ../html/query.edit.html:45
+#: ../html/page.html:1209 ../html/query.edit.html:45
 msgid "Query"
 msgstr ""
 
-#: ../html/page.html:1209
+#: ../html/page.html:1210
 msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:1215
+#: ../html/page.html:1216
 msgid "View"
 msgstr ""
 
-#: ../html/page.html:1218
+#: ../html/page.html:1219
 msgid "items per page"
 msgstr ""
 
-#: ../html/page.html:1245
+#: ../html/page.html:1246
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:1252 ../html/page.html:1274
+#: ../html/page.html:1253 ../html/page.html:1275
 msgid "- nothing -"
 msgstr ""
 
-#: ../html/page.html:1258 ../html/page.html:1280
+#: ../html/page.html:1259 ../html/page.html:1281
 msgid "Descending:"
 msgstr ""
 
-#: ../html/page.html:1267
+#: ../html/page.html:1268
 msgid "Group on:"
 msgstr ""
 
-#: ../html/page.html:1356
+#: ../html/page.html:1357
 msgid "- don't care -"
 msgstr ""
 
-#: ../html/page.html:1358
+#: ../html/page.html:1359
 msgid "- not selected -"
 msgstr ""
 
-#: ../html/page.html:1412
+#: ../html/page.html:1413
 msgid "Search full text:"
 msgstr ""
 
-#: ../html/page.html:1417
+#: ../html/page.html:1418
 msgid "(Searches also in messages)"
 msgstr ""
 
-#: ../html/page.html:1424
+#: ../html/page.html:1425
 msgid "Update view"
 msgstr ""
 
-#: ../html/page.html:1429
+#: ../html/page.html:1430
 msgid "Find"
 msgstr ""
 
-#: ../html/page.html:1441
+#: ../html/page.html:1442
 msgid "This query's name:"
 msgstr ""
 
-#: ../html/page.html:1453
+#: ../html/page.html:1454
 msgid "Update view & store this query"
 msgstr ""
 
-#: ../html/page.html:1460
+#: ../html/page.html:1461
 msgid "(If you change the name, you create a new query!!!)"
 msgstr ""
 
-#: ../html/page.html:1469
+#: ../html/page.html:1470
 msgid "Update view & store NEW query"
 msgstr ""
 
-#: ../html/page.html:1517
+#: ../html/page.html:1518
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
-#: ../html/page.html:1573
+#: ../html/page.html:1574
 msgid "New ${Name}"
 msgstr ""
 
-#: ../html/page.html:1608
+#: ../html/page.html:1609
 msgid "<span nowrap></span>"
 msgstr ""
 
