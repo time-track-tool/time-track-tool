@@ -104,6 +104,100 @@
           ; meas  python: utils.sensor_measurements (db)
           ; sel   python: (context or devs [0]).designator()
           ">
+        <div id="filter">
+          <form id="form_filter" action="measurement">
+            <!-- <input type="hidden" name=":action"
+            value="export_csv_lielas"> -->
+            <input type="hidden" id=":action" name=":action" value="search">
+            <input type="hidden" name="sensor.is_app_sensor" value="yes">
+            <input type="hidden" id="measurementdate" name="date" value="">
+
+            <div class="filter_item" id="filter_device">
+              <h3 tal:content="structure python:utils.fieldspan
+                  ('sensor', 'device', csscls='')" />
+              <select name="sensor.device" id="device_select"
+                      multiple="multiple" class="filter_selector">
+                <option value="" selected="selected"
+                        i18n:translate="">- all -</option>
+                <option tal:repeat="s python: db.device.filter
+                        (None, {}, group = ('+', 'surrogate'))"
+                        tal:content="python:s['surrogate']"
+                        tal:attributes="value s/id"/>
+              </select>
+            </div>
+            <div class="filter_item" id="filter_sensor">
+              <h3 tal:content="structure python:utils.fieldspan
+                  ('measurement', 'sensor', csscls='')" />
+              <select name="sensor" id="sensor_select" multiple="multiple"
+                      class="filter_selector">
+                <option value="" selected="selected"
+                        i18n:translate="">- all -</option>
+                <option tal:repeat="s python: db.sensor.filter
+                        ( None, {'is_app_sensor' : True}
+                        , group = ('+', 'surrogate')
+                        )"
+                        tal:content="python:s['surrogate']"
+                        tal:attributes="value s/id"/>
+              </select>
+            </div>
+            <div class="filter_item" id="filter_group">
+              <h3 tal:content="structure python:utils.fieldspan
+                  ('device', 'device_group', csscls='')" />
+              <select name="sensor.device.device_group" id="device_group_select"
+                      multiple="multiple" class="filter_selector">
+                <option value="" selected="selected"
+                        i18n:translate="">- all -</option>
+                <option value="-1" i18n:translate="">- empty -</option>
+                <option tal:repeat="s python: db.device_group.filter
+                        (None, {}, group = ('+', 'name'))"
+                        tal:content="python:s['name']"
+                        tal:attributes="value s/id"/>
+              </select>
+            </div>
+            <div class="filter_item" id="filter_time">
+              <h3 i18n:translate="">Time range:</h3>
+              <div class="line_short">
+                <label for="date_from" i18n:translate="">From:</label>
+                <input name="date_from" id="date_from" class="filter_date"
+                       type="text" />
+                <img src="@@file/lfiles/images/datepicker.png"
+                     width="28" height="20" id="datepick_from"
+                      alt="Select date" i18n:attributes="alt"/> 
+              </div>
+              <div class="line_short">
+                <label for="date_to" i18n:translate="">To:</label>
+                <input name="date_to" id="date_to" class="filter_date"
+                       type="text" />
+                <img src="@@file/lfiles/images/datepicker.png"
+                     width="28" height="20" id="datepick_to"
+                      alt="Select date" i18n:attributes="alt"/> 
+              </div>              
+            </div>
+            <div class="filter_item"  id="filter_submit">
+              <div class="line_wide">
+                <input name="@queryname" id="queryname" type="text"
+                       value="Save filter..." title="Save filter..."
+                       i18n:attributes="value;title"/>
+                <input name="save_filter" id=save_filter class="filterlink"
+                   type="submit" value="Save filter" i18n:attributes="value"/>
+              </div>
+              <div class="line_wide">
+                <select name="filterladen" id="filterladen" >
+                  <option selected="selected"
+                          i18n:translate="">select Filter...</option>
+                </select>
+                <a href="#" class="filterlink" id=load_filter
+                   i18n:translate="">Load</a>
+              </div>
+              <div class="line_wide">
+                <input name="submit" type="submit" id="filtersend"
+                       value="export CSV" i18n:attributes="value"/>
+                <input name="reset" type="reset" id="filterreset"
+                       value="reset" i18n:attributes="value"/>
+              </div>
+            </div>
+          </form>
+        </div>
         <div id=content>
           <div id=list>
             <div class="list_header" i18n:translate="">Device list</div>

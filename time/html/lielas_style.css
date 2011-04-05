@@ -125,17 +125,17 @@ a:active, a:focus {outline: none;}
 	padding-bottom: 8px;
 	}
 
-select {
-	padding: 0;
-	}
-
-select#group, select#device {
+select.filter_selector {
 	width: 150px;
 	height: 80px;
 	overflow: hidden;
 	border: 1px inset #cccccc;
 	color: #666666;
 	font-size: 12px;
+	}
+
+select {
+	padding: 0;
 	}
 
 .line_short, .line_wide {
@@ -179,7 +179,7 @@ input.filter_time {
 	font-size: 11px;
 	}
 
-#filter_submit input, #filter_submit select {
+.filter_submit input, .filter_submit select {
 	float: left;
 	}
 
@@ -190,11 +190,11 @@ input.filter_time {
 	display: inline-block;
 	}	
 
-#filter_desc {
+#filter_device {
 	width: 160px;
 	}
 
-#filter_gruppen {
+#filter_group {
 	width: 150px;
 	}
 
@@ -213,7 +213,7 @@ input.filter_time {
 	width: 195px;
 	}
 
-a.filterlink {
+.filterlink {
 	font-size: 11px;
 	font-weight: bold;
 	text-decoration: none;
@@ -221,6 +221,15 @@ a.filterlink {
 	color: #058636;
 	line-height: 20px;
 	padding-right: 5px;
+	}
+
+input.filterlink {
+        border: none;
+        padding: 0px;
+        width: auto;
+	float: right;
+	color: #058636;
+	background-color: #eeeeee;
 	}
 
 select#filterladen {
@@ -235,9 +244,10 @@ input#filterreset {
 	padding: 2px 0 6px;
 	color: #ffffff;
 	cursor: pointer;
+        float: right;
 	}
 	
-input#filtersenden {
+input#filtersend {
 	background: url(lfiles/images/button_filter.png) no-repeat left top;
 	border: none;
 	width: 104px;

@@ -150,7 +150,7 @@ $(document).ready(function() {
 	// Search form
 	// --------------
 
-	$("#query_name").focus(function(){
+	$("#queryname").focus(function(){
             if ($(this).attr('value') == $(this).attr('title'))
             {
                 $(this).val ('');
@@ -158,23 +158,23 @@ $(document).ready(function() {
 	});
 
 	$("#form_filter").submit(function(){
-            var qn = $("#query_name")
-            var d  = $('#measurmentdate')
-            if (qn.attr('value') == qn.attr('title'))
+            var q = $("#queryname")
+            var d = $('#measurementdate')
+            if (q.attr('value') == q.attr('title'))
             {
-                qn.val ('');
+                q.val ('');
             }
             d.val($('#date_from').val()+';'+$('#date_to').val())
-            alert('submitting');
             return true;
 	});
 
         $("#save_filter").click(function(ev){
-            $('#\\:action').val('search');
-            if (ev && ev.preventDefault) {
+            var q = $("#queryname");
+            var v = q.attr('value');
+            if ((!v || v == q.attr('title')) && ev && ev.preventDefault) {
                 ev.preventDefault();
-                alert('preventDefault');
+            } else {
+                $('#\\:action').val('search');
             }
-            $(this).parents('form').eq(0).trigger('submit');
         });
 });
