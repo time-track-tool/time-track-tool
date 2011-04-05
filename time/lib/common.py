@@ -1012,9 +1012,11 @@ def persons_for_adr (db, nodeid) :
 # end def adr_for_person
 
 def get_num_locale (client, db) :
-    language = client.language or db._db.config["TRACKER_LANGUAGE"]
-    import sys
-    print >> sys.stderr, ">%s<" % language
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    language = client.language or db.config["TRACKER_LANGUAGE"]
     locale.setlocale (locale.LC_NUMERIC, locale.normalize (language))
     return locale
 # end def get_num_locale
