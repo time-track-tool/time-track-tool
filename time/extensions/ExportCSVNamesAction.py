@@ -269,7 +269,7 @@ class Export_CSV_Names (Action, autosuper) :
             if d and len (d) == 1 :
                 self.delimiter = d
         global locale
-        locale = get_num_locale (self.client, self.db._db)
+        locale = get_num_locale (self.client, self.db)
     # end def _setup_request
 
     def _setup (self) :
