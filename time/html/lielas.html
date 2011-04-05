@@ -173,7 +173,7 @@
                       alt="Select date" i18n:attributes="alt"/> 
               </div>              
             </div>
-            <div class="filter_item"  id="filter_submit">
+            <div class="filter_item"  class="filter_submit" id="filter_submit">
               <div class="line_wide">
                 <input name="@queryname" id="queryname" type="text"
                        value="Save filter..." title="Save filter..."
@@ -183,11 +183,14 @@
               </div>
               <div class="line_wide">
                 <select name="filterladen" id="filterladen" >
-                  <option selected="selected"
+                  <option value="" selected="selected"
                           i18n:translate="">select Filter...</option>
+                  <option tal:repeat="q python:db.query.filter
+                    (None, dict (klass = 'measurement'), sort=('+','name'))"
+                   value="q/designator" tal:content="q/name"/>
                 </select>
-                <a href="#" class="filterlink" id=load_filter
-                   i18n:translate="">Load</a>
+                <input name="load_filter" id=load_filter class="filterlink" 
+                   type="submit" value="Load" i18n:attributes="value"/>
               </div>
               <div class="line_wide">
                 <input name="submit" type="submit" id="filtersend"
