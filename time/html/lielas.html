@@ -102,10 +102,12 @@
           ; asens python: utils.sensors_by_device (db, is_app = True)
           ; ssens python: utils.sensors_by_device (db, is_app = False)
           ; meas  python: utils.sensor_measurements (db)
-          ; sel   python: (context or devs [0]).designator()
+          ; sel   python: (  classname in ('sensor' , 'device') and context
+                          or devs [0]
+                          ).designator()
           ">
         <div id="filter">
-          <form id="form_filter" action="measurement">
+          <form method="GET" name="query" id="form_filter" action="measurement">
             <input type="hidden" id="rup_action" name=":action"
                    value="export_csv_lielas">
             <input type="hidden" name="sensor.is_app_sensor" value="yes">
