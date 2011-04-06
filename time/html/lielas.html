@@ -36,7 +36,8 @@
                tal:attributes=
                   "class python:'navi_item'+['', ' active']
                     [(  cl [0] == clsname
-                    or  (not cl [0] and clsname in ('', 'sensor', 'device'))
+                    or  (not cl [0] and clsname in
+                        ('', 'sensor', 'device', 'measurement'))
                     )]">
             <tal:block
                tal:define=" n   python: cl [1]
@@ -111,48 +112,66 @@
             <input type="hidden" id="rup_action" name=":action"
                    value="export_csv_lielas">
             <input type="hidden" name="sensor.is_app_sensor" value="yes">
-            <input type="hidden" id="measurementdate" name="date" value="">
-
+            <input type="hidden" id="measurementdate" name="date"
+                   tal:attributes="value python:
+                       request.filterspec.get('date', '')">
             <div class="filter_item" id="filter_device">
               <h3 tal:content="structure python:utils.fieldspan
                   ('sensor', 'device', csscls='')" />
               <select name="sensor.device" id="device_select"
-                      multiple="multiple" class="filter_selector">
-                <option value="" selected="selected"
-                        i18n:translate="">- all -</option>
+                      multiple="multiple" class="filter_selector"
+                      tal:define= "formval python: dict.fromkeys
+                          (request.filterspec.get('sensor.device') or [])">
+                <option value="" i18n:translate=""
+                        tal:attributes="selected not:formval">- all -</option>
                 <option tal:repeat="s python: db.device.filter
                         (None, {}, group = ('+', 'surrogate'))"
                         tal:content="python:s['surrogate']"
-                        tal:attributes="value s/id"/>
+                        tal:attributes=
+                            " value    s/id
+                            ; selected python:s.id in formval
+                            "/>
               </select>
             </div>
             <div class="filter_item" id="filter_sensor">
               <h3 tal:content="structure python:utils.fieldspan
                   ('measurement', 'sensor', csscls='')" />
               <select name="sensor" id="sensor_select" multiple="multiple"
-                      class="filter_selector">
-                <option value="" selected="selected"
-                        i18n:translate="">- all -</option>
+                      class="filter_selector" tal:define="formval python:
+                        dict.fromkeys (request.filterspec.get('sensor') or [])">
+                <option value="" i18n:translate=""
+                        tal:attributes="selected not:formval">- all -</option>
                 <option tal:repeat="s python: db.sensor.filter
                         ( None, {'is_app_sensor' : True}
                         , group = ('+', 'surrogate')
                         )"
                         tal:content="python:s['surrogate']"
-                        tal:attributes="value s/id"/>
+                        tal:attributes=
+                            " value    s/id
+                            ; selected python:s.id in formval
+                            "/>
               </select>
             </div>
             <div class="filter_item" id="filter_group">
               <h3 tal:content="structure python:utils.fieldspan
                   ('device', 'device_group', csscls='')" />
               <select name="sensor.device.device_group" id="device_group_select"
-                      multiple="multiple" class="filter_selector">
-                <option value="" selected="selected"
-                        i18n:translate="">- all -</option>
-                <option value="-1" i18n:translate="">- empty -</option>
+                      multiple="multiple" class="filter_selector"
+                      tal:define="formval python: dict.fromkeys
+                          (request.filterspec.get('sensor.device.device_group')
+                          or []
+                          )">
+                <option value="" i18n:translate=""
+                        tal:attributes="selected not:formval">- all -</option>
+                <option value="-1" tal:attributes="selected python:
+                        '-1' in formval" i18n:translate="">- empty -</option>
                 <option tal:repeat="s python: db.device_group.filter
                         (None, {}, group = ('+', 'name'))"
                         tal:content="python:s['name']"
-                        tal:attributes="value s/id"/>
+                        tal:attributes=
+                            " value    s/id
+                            ; selected python:s.id in formval
+                            "/>
               </select>
             </div>
             <div class="filter_item" id="filter_time">
@@ -174,23 +193,33 @@
                       alt="Select date" i18n:attributes="alt"/> 
               </div>              
             </div>
-            <div class="filter_item"  class="filter_submit" id="filter_submit">
+            <div class="filter_item"  class="filter_submit" id="filter_submit"
+                 tal:define=
+                   " qn  request/form/@queryname/value
+                   ; oqn request/form/@old-queryname/value
+                   ">
               <div class="line_wide">
-                <input name="@old-queryname" id="old_queryname" type="hidden"
-                       value=""/>
-                <input name="@queryname" id="queryname" type="text"
+                <input name="@queryname" id="old_queryname" type="hidden"
+                       tal:attributes="value python:qn or oqn or ''"/>
+                <input name="@old-queryname" id="queryname" type="text"
                        value="Save filter..." title="Save filter..."
-                       i18n:attributes="value;title"/>
+                       i18n:attributes="title"
+                       tal:attributes="value python:oqn or qn or ''"/>
                 <input name="save_filter" id=save_filter class="filterlink"
-                   type="submit" value="Save filter" i18n:attributes="value"/>
+                   type="submit" value="Save filter"
+                   i18n:attributes="value"/>
               </div>
               <div class="line_wide">
                 <select name="filterladen" id="filterladen" >
                   <option value="" selected="selected"
+                          tal:attributes="selected not:oqn"
                           i18n:translate="">select Filter...</option>
                   <option tal:repeat="q python:db.query.filter
                     (None, dict (klass = 'measurement'), sort=('+','name'))"
-                   tal:attributes="value q/designator" tal:content="q/name"/>
+                    tal:content="q/name" tal:attributes=
+                       " value q/designator
+                       ; selected python:oqn==q.name
+                       "/>
                 </select>
                 <input name="load_filter" id=load_filter class="filterlink" 
                    type="submit" value="Load" i18n:attributes="value"/>

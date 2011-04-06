@@ -199,4 +199,18 @@ $(document).ready(function() {
                 $('#form_filter').attr('action', v);
             }
         });
+
+        $("#measurementdate").ready(function(){
+            var d = $('#measurementdate').attr('value');
+            var ds = d.split(';');
+            if (ds.length >= 1) {
+                $("#date_from").val(ds[0]);
+            }
+            if (ds.length >= 2) {
+                $("#date_to").val(ds[1]);
+            }
+            if (ds.length == 1) {
+                $("#date_to").val(ds[0]);
+            }
+        });
 });
