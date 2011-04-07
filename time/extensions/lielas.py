@@ -159,7 +159,7 @@ def menu_by_class (db) :
               )
             , ( 'user'
               , db._ ('User')
-              , 'user?@template=lindex'
+              , 'user1?@template=lindex'
               , uok
               )
             ) if x [3]
@@ -198,6 +198,16 @@ def sensor_measurements (db) :
     return dict ((s.id, latest_measurements (db, s)) for s in db.sensor.list ())
 # end def sensor_measurements
 
+def anon_class (db, classname):
+    """ Return HTMLClass generated from classname but with _anonymous
+        property set so that the class is suitable for generation of
+        edit forms in a page.
+    """
+    cl = db [classname]
+    cl._anonymous = True
+    return cl
+# end def anon_class
+
 def init (instance) :
     act = instance.registerAction
     reg = instance.registerUtil
@@ -215,4 +225,5 @@ def init (instance) :
     reg ('sensors_by_device',   sensors_by_device)
     reg ('sensor_measurements', sensor_measurements)
     reg ('getlocale',           get_num_locale)
+    reg ('anon_class',          anon_class)
 # end def init

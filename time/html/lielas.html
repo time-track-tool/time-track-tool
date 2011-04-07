@@ -241,8 +241,8 @@
             </div>
           </form>
         </div>
-        <div id=content>
-          <div id=list>
+        <div id="content">
+          <div id="list">
             <div class="list_header" i18n:translate="">Device list</div>
             <form id="form_list" action="">                                 
               <div id="list_body">
@@ -518,4 +518,55 @@
       </tal:block>
     </tal:block>
   </tal:block>
+</tal:block>
+
+<!-- needs "u" (current user or user-class") and "action" for the @action -->
+<tal:block metal:define-macro="user_details">
+            <ul class="details_row">
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'username')" />
+                <span class="value" tal:content="structure u/username/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'realname')" />
+                <span class="value" tal:content="structure u/realname/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'address')" />
+                <span class="value" tal:content="structure u/address/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'status')" />
+                <span class="value" tal:content="structure u/status/menu"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'roles')" />
+                <span class="value" tal:content="structure u/roles/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'timezone')" />
+                <span class="value" tal:content="structure u/timezone/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'csv_delimiter')" />
+                <span class="value"
+                      tal:content="structure u/csv_delimiter/field"/>
+              </li>
+            </ul>
+            <hr />
+            <div class="details_row">
+              <input type="hidden" name="@action"
+                     tal:attributes="value rup_action">
+              <span class="buttonbox submit_details orangebutton">
+                <input type="submit" name="submit_button"
+                       value="Submit Changes" i18n:attributes="value" />
+              </span>
+            </div>
 </tal:block>

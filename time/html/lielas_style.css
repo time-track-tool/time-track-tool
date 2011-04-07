@@ -384,7 +384,7 @@ ul.sensor {
 	top: 0;
 	cursor: pointer;
 	}
-.col_device {
+.col_device, .col_email {
 	position: absolute;
 	left: 235px;
 	top: 0;
@@ -396,7 +396,7 @@ ul.sensor {
 	top: 0;
 	cursor: pointer;
 	}
-.col_intervall {
+.col_intervall, .col_tz {
 	position: absolute;
 	left: 470px;
 	top: 0;

@@ -84,6 +84,12 @@ $(document).ready(function() {
 		});
 	});
 
+        $('.list_header_link').click(function() {
+            $('.active_row').removeClass('active_row');
+            $('.active_detail').removeClass('active_detail');
+            $('#details_user_new').addClass('active_detail');
+        });
+
 	// --------------
 	// Funktionen zur Checkboxauswahl
 	// --------------
