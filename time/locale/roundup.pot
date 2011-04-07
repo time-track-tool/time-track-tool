@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-04 19:05+0200\n"
+"POT-Creation-Date: 2011-04-07 17:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5282,83 +5282,87 @@ msgstr ""
 msgid "new it_issue"
 msgstr ""
 
-#: ../html/lielas.html:52
+#: ../html/lielas.html:53
 msgid "Logout"
 msgstr ""
 
-#: ../html/lielas.html:114 ../html/lielas.html:127 ../html/lielas.html:142
+#: ../html/lielas.html:88
+msgid "Login"
+msgstr ""
+
+#: ../html/lielas.html:129 ../html/lielas.html:146 ../html/lielas.html:168
 msgid "- all -"
 msgstr ""
 
-#: ../html/lielas.html:144
+#: ../html/lielas.html:170
 msgid "- empty -"
 msgstr ""
 
-#: ../html/lielas.html:152
+#: ../html/lielas.html:182
 msgid "Time range:"
 msgstr ""
 
-#: ../html/lielas.html:154
+#: ../html/lielas.html:184
 msgid "From:"
 msgstr ""
 
-#: ../html/lielas.html:157 ../html/lielas.html:165
+#: ../html/lielas.html:187 ../html/lielas.html:195
 msgid "Select date"
 msgstr ""
 
-#: ../html/lielas.html:162
+#: ../html/lielas.html:192
 msgid "To:"
 msgstr ""
 
-#: ../html/lielas.html:172
+#: ../html/lielas.html:208
 msgid "Save filter..."
 msgstr ""
 
-#: ../html/lielas.html:174
+#: ../html/lielas.html:212
 msgid "Save filter"
 msgstr ""
 
-#: ../html/lielas.html:178
+#: ../html/lielas.html:218
 msgid "select Filter..."
 msgstr ""
 
-#: ../html/lielas.html:181
+#: ../html/lielas.html:228
 msgid "Load"
 msgstr ""
 
-#: ../html/lielas.html:184 ../html/lielas.html:286
+#: ../html/lielas.html:233 ../html/lielas.html:339
 msgid "export CSV"
 msgstr ""
 
-#: ../html/lielas.html:186
+#: ../html/lielas.html:237
 msgid "reset"
 msgstr ""
 
-#: ../html/lielas.html:194
+#: ../html/lielas.html:246
 msgid "Device list"
 msgstr ""
 
-#: ../html/lielas.html:209
+#: ../html/lielas.html:261
 msgid "Addr"
 msgstr ""
 
-#: ../html/lielas.html:283
+#: ../html/lielas.html:335
 msgid "marked devices:"
 msgstr ""
 
-#: ../html/lielas.html:294
+#: ../html/lielas.html:348 ../html/user.lindex.html:58
 msgid "Details:"
 msgstr ""
 
-#: ../html/lielas.html:349 ../html/lielas.html:438
+#: ../html/lielas.html:404 ../html/lielas.html:494 ../html/lielas.html:578
 msgid "Submit Changes"
 msgstr ""
 
-#: ../html/lielas.html:377
+#: ../html/lielas.html:432
 msgid "Status"
 msgstr ""
 
-#: ../html/lielas.html:444
+#: ../html/lielas.html:500
 msgid "Latest measurements"
 msgstr ""
 
@@ -5368,10 +5372,6 @@ msgstr ""
 
 #: ../html/machine.item.html:63
 msgid "new network_interface"
-msgstr ""
-
-#: ../html/measurement.index.html:8
-msgid "Lielas CSV"
 msgstr ""
 
 #: ../html/network_interface.item.html:67
@@ -5642,6 +5642,14 @@ msgstr ""
 
 #: ../html/user.item.html:246
 msgid "default:"
+msgstr ""
+
+#: ../html/user.lindex.html:12
+msgid "+ Add"
+msgstr ""
+
+#: ../html/user.lindex.html:12
+msgid "User <a href=\"#\" title=\"add\" class=\"list_header_link\">x</a>"
 msgstr ""
 
 #: ../html/user_dynamic.item.html:65

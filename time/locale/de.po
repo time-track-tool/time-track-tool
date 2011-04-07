@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-04 19:05+0200\n"
+"POT-Creation-Date: 2011-04-07 17:54+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3931,6 +3931,9 @@ msgstr "Neues IT Issue"
 msgid "Logout"
 msgstr ""
 
+msgid "Login"
+msgstr "Login"
+
 msgid "- all -"
 msgstr ""
 
@@ -3992,9 +3995,6 @@ msgid "Network Interfaces"
 msgstr ""
 
 msgid "new network_interface"
-msgstr ""
-
-msgid "Lielas CSV"
 msgstr ""
 
 msgid "Network Addresses"
@@ -4203,6 +4203,12 @@ msgstr "(Rollen-Zugriffsrechte)"
 
 msgid "default:"
 msgstr "Voreinstellung:"
+
+msgid "+ Add"
+msgstr "+ Hinzufügen"
+
+msgid "User <a href=\"#\" title=\"add\" class=\"list_header_link\">x</a>"
+msgstr ""
 
 msgid "new user_dynamic record"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-04 15:41+0200\n"
+"POT-Creation-Date: 2011-04-07 17:54+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3851,6 +3851,45 @@ msgstr "new IT-Issue"
 msgid "Logout"
 msgstr ""
 
+msgid "Login"
+msgstr "Login"
+
+msgid "- all -"
+msgstr ""
+
+msgid "- empty -"
+msgstr ""
+
+msgid "Time range:"
+msgstr ""
+
+msgid "From:"
+msgstr ""
+
+msgid "Select date"
+msgstr ""
+
+msgid "To:"
+msgstr ""
+
+msgid "Save filter..."
+msgstr ""
+
+msgid "Save filter"
+msgstr ""
+
+msgid "select Filter..."
+msgstr ""
+
+msgid "Load"
+msgstr ""
+
+msgid "export CSV"
+msgstr ""
+
+msgid "reset"
+msgstr ""
+
 msgid "Device list"
 msgstr ""
 
@@ -3858,9 +3897,6 @@ msgid "Addr"
 msgstr ""
 
 msgid "marked devices:"
-msgstr ""
-
-msgid "export CSV"
 msgstr ""
 
 msgid "Details:"
@@ -3880,9 +3916,6 @@ msgstr ""
 
 msgid "new network_interface"
 msgstr "new Network interface"
-
-msgid "Lielas CSV"
-msgstr ""
 
 msgid "Network Addresses"
 msgstr ""
@@ -4087,6 +4120,12 @@ msgid "(role permissions)"
 msgstr ""
 
 msgid "default:"
+msgstr ""
+
+msgid "+ Add"
+msgstr ""
+
+msgid "User <a href=\"#\" title=\"add\" class=\"list_header_link\">x</a>"
 msgstr ""
 
 msgid "new user_dynamic record"
