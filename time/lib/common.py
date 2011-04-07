@@ -1017,7 +1017,15 @@ def get_num_locale (client, db) :
     except AttributeError :
         pass
     language = client.language or db.config["TRACKER_LANGUAGE"]
-    locale.setlocale (locale.LC_NUMERIC, locale.normalize (language))
+    if not isinstance (language, list) :
+        language = [language]
+    import sys
+    print >> sys.stderr, language
+    for l in language :
+        try :
+            locale.setlocale (locale.LC_NUMERIC, locale.normalize (l))
+        except locale.Error :
+            pass
     return locale
 # end def get_num_locale
 
