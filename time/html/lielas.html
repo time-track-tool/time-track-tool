@@ -83,7 +83,11 @@
             </ul>
             <hr/>
             <div class="details_row">
-              <input type="submit" name="@action" id="login" value="Login"/>
+              <input type="hidden" name="@action" id="login" value="Login"/>
+              <span class="buttonbox submit_details orangebutton">
+                <input type="submit" name="login" id="login_button"
+                       value="Login" i18n:attributes="value"/>
+              </span>
             </div>                           
           </form>
         </div>
@@ -398,8 +402,7 @@
                     <input type="hidden" name="@action" value="edit">
                     <span class="buttonbox submit_details orangebutton">
                       <input type="submit" name="submit_button"
-                             id="submit_details" value="Submit Changes"
-                             i18n:attributes="value" />
+                             value="Submit Changes" i18n:attributes="value" />
                     </span>
                   </div>
                 </form>
@@ -489,8 +492,7 @@
                     <input type="hidden" name="@action" value="edit">
                     <span class="buttonbox submit_details orangebutton">
                       <input type="submit" name="submit_button"
-                             id="submit_details" value="Submit Changes"
-                             i18n:attributes="value" />
+                             value="Submit Changes" i18n:attributes="value" />
                     </span>
                   </div>
                 </form>

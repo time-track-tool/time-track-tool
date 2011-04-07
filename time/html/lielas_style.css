@@ -662,18 +662,6 @@ hr {
 
 .login #sidebar { float: left; }	
 
-input#login {
-	float: right;
-	border: none;
-	background: url(lfiles/images/button_change.png) no-repeat;
-	width: 76px;
-	padding: 2px 0 6px;
-	color: #ffffff;
-	cursor: pointer;
-	font-size: 11px;
-	margin: 0;
-	}
-
 /* @end */
 
 /* @group button_override */
