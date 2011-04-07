@@ -1105,7 +1105,7 @@ msgid ""
 msgstr ""
 
 msgid "confirm"
-msgstr "Wiederholung Passwort"
+msgstr "Bestätigung Passwort"
 
 msgid ""
 "Confirm the password here: first password and this entry\n"

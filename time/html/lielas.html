@@ -530,6 +530,16 @@
               </li>
               <li>
                 <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'password')" />
+                <span class="value" tal:content="structure u/password/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
+                     ('user', 'confirm')" />
+                <span class="value" tal:content="structure u/password/confirm"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldspan
                      ('user', 'realname')" />
                 <span class="value" tal:content="structure u/realname/field"/>
               </li>
