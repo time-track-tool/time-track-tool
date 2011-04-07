@@ -103,7 +103,7 @@ a:active, a:focus {outline: none;}
 	}	
 	
 .filter_item {
-	width: 170px;
+	width: 155px;
 	padding-right: 20px;
 	float: left;
 	overflow: hidden;
@@ -191,7 +191,11 @@ input.filter_time {
 	}	
 
 #filter_device {
-	width: 160px;
+	width: 155px;
+	}
+
+#filter_sensor {
+	width: 155px;
 	}
 
 #filter_group {
@@ -210,7 +214,7 @@ input.filter_time {
 	background: url(lfiles/images/filter_divider.png) no-repeat left 20px;
 	padding-top: 23px;
 	padding-left: 15px;
-	width: 195px;
+	width: 200px;
 	}
 
 .filterlink {
@@ -236,28 +240,6 @@ select#filterladen {
 	width: 130px;
 	}
 
-input#filterreset {
-	background: url(lfiles/images/button_reset.png) no-repeat left top;
-	border: none;
-	width: 83px;
-	height: auto;
-	padding: 2px 0 6px;
-	color: #ffffff;
-	cursor: pointer;
-        float: right;
-	}
-	
-input#filtersend {
-	background: url(lfiles/images/button_filter.png) no-repeat left top;
-	border: none;
-	width: 104px;
-	padding: 2px 0 6px;
-	color: #ffffff;
-	margin-right: 5px;
-	cursor: pointer;
-	height: auto;
-	}
-
 /* @end */
 	
 #content {
@@ -272,20 +254,32 @@ input#filtersend {
 	float: left;
 	width: 620px;
 	overflow: hidden;
+        position: relative;
+        min-width: 0;
 	}
 	
 .list_header {
-	width: 610px;
+	width: 590px;
 	height: 29px;
 	line-height: 29px;
-	background: url(lfiles/images/list_header.png) no-repeat;
+	background: url(lfiles/images/list_header.png) no-repeat left top;
 	color: #ffffff;
 	font-size: 15px;
 	font-weight: bold;
-	padding-left: 15px;
+	padding: 0 15px;
 	}
 
-
+a.list_header_link {
+       float: right;
+       font-size: 11px;
+       color: #ffffff;
+       text-decoration: none;
+       }
+       
+a:hover.list_header_link {
+       color: #dddddd;
+       }
+       
 ul, li {
 	margin: 0;
 	padding: 0;
@@ -440,18 +434,6 @@ ul.sensor {
 	float: left;
 	}
 
-input#export {
-	width: 104px;
-	background: url(lfiles/images/button_export.png) no-repeat left top;
-	text-align: center;
-	color: #ffffff;
-	font-size: 11px;
-	margin-left: 5px;
-	padding: 2px 0 6px;
-	cursor: pointer;
-	border: none;
-	}
-
 #change_value {
 	float: right;
 	}
@@ -468,16 +450,6 @@ select#select_group {
 input#new_value {
 	width: 90px;
 	color: #666666;
-	font-size: 11px;
-	}
-
-input#value_submit {
-	border: none;
-	background: url(lfiles/images/button_change.png) no-repeat;
-	width: 76px;
-	padding: 2px 0 6px;
-	color: #ffffff;
-	cursor: pointer;
 	font-size: 11px;
 	}
 
@@ -584,18 +556,8 @@ input.value {
 	float: left;
 	}
 
-input#submit_details {
-	background: url(lfiles/images/button_submit.png) no-repeat left top;
-	width: 170px;
-	height: 20px;
-	text-align: center;
-	color: #ffffff;
-	font-size: 11px;
-	padding: 2px 0 6px;
-	cursor: pointer;
-	border: none;
+.submit_details {
 	float: right;	
-	margin: 3px 0;
 	}
 	
 hr {
@@ -710,6 +672,54 @@ input#login {
 	cursor: pointer;
 	font-size: 11px;
 	margin: 0;
+	}
+
+/* @end */
+
+/* @group button_override */
+
+.buttonbox {
+	height: 21px;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: top;
+	font-size: 11px;
+	}
+
+.buttonbox input {
+	background: transparent url(lfiles/images/button_back_green.png) no-repeat center 2px;
+	vertical-align: top;
+	height: 21px;
+	cursor: pointer;
+	border: none;
+	padding: 0;
+	margin: 0;
+	color: #ffffff;
+	display: inline-block;
+	line-height: 21px;
+	width: auto;
+	float: left;
+	overflow: visible;
+	}
+
+.button_border_left, .button_border_right {
+	width: 5px;
+	display: inline-block;
+	height: 21px;
+	background: transparent url(lfiles/images/button_back_green.png) no-repeat left 2px;
+	float: left;
+	}
+	
+.button_border_right {
+	background-position: right 2px;
+	}	
+
+.orangebutton .button_border_left, .orangebutton .button_border_right, .orangebutton input {
+	background-image: url(lfiles/images/button_back_orange.png) !important;
+	}
+
+.graybutton .button_border_left, .graybutton .button_border_right, .graybutton input {
+	background-image: url(lfiles/images/button_back_gray.png) !important;
 	}
 
 /* @end */

@@ -146,6 +146,13 @@ $(document).ready(function() {
 		});
 	});
 
+        
+        // --------------
+        // Dynamische Button-Borders
+        // --------------
+        
+        jQuery('.buttonbox input').before('<span class="button_border_left"></span>').after('<span class="button_border_right"></span>')
+
 	// --------------
 	// Search form
 	// --------------

@@ -193,10 +193,10 @@
                       alt="Select date" i18n:attributes="alt"/> 
               </div>              
             </div>
-            <div class="filter_item"  class="filter_submit" id="filter_submit"
+            <div class="filter_item filter_submit" id="filter_submit"
                  tal:define=
-                   " qn  request/form/@queryname/value
-                   ; oqn request/form/@old-queryname/value
+                   " qn  request/form/@queryname/value|nothing
+                   ; oqn request/form/@old-queryname/value|nothing
                    ">
               <div class="line_wide">
                 <input name="@queryname" id="old_queryname" type="hidden"
@@ -225,10 +225,14 @@
                    type="submit" value="Load" i18n:attributes="value"/>
               </div>
               <div class="line_wide">
-                <input name="submit" type="submit" id="filtersend"
-                       value="export CSV" i18n:attributes="value"/>
-                <input name="reset" type="reset" id="filterreset"
-                       value="reset" i18n:attributes="value"/>
+                <span class="buttonbox greenbutton">
+                  <input name="submit" type="submit" id="filtersend"
+                         value="export CSV" i18n:attributes="value"/>
+                </span>
+                <span class="buttonbox graybutton">
+                  <input name="reset" type="reset" id="filterreset"
+                         value="reset" i18n:attributes="value"/>
+                </span>
               </div>
             </div>
           </form>
@@ -327,8 +331,10 @@
                   <span i18n:translate="">
                     marked devices:
                   </span>
-                  <input name="export" type="submit" id="export"
-                         value="export CSV" i18n:attributes="value" />
+                  <span class="buttonbox greenbutton">
+                    <input name="export" type="submit" id="export"
+                           value="export CSV" i18n:attributes="value" />
+                  </span>
                 </div>
               </div>
             </form>
@@ -390,9 +396,11 @@
                   <hr />
                   <div class="details_row">
                     <input type="hidden" name="@action" value="edit">
-                    <input type="submit" name="submit_button"
-                           id="submit_details" value="Submit Changes"
-                           i18n:attributes="value" />
+                    <span class="buttonbox submit_details orangebutton">
+                      <input type="submit" name="submit_button"
+                             id="submit_details" value="Submit Changes"
+                             i18n:attributes="value" />
+                    </span>
                   </div>
                 </form>
                 <div class="details_row header">
@@ -479,9 +487,11 @@
                   <hr />
                   <div class="details_row">
                     <input type="hidden" name="@action" value="edit">
-                    <input type="submit" name="submit_button"
-                           id="submit_details" value="Submit Changes"
-                           i18n:attributes="value" />
+                    <span class="buttonbox submit_details orangebutton">
+                      <input type="submit" name="submit_button"
+                             id="submit_details" value="Submit Changes"
+                             i18n:attributes="value" />
+                    </span>
                   </div>
                 </form>
                 <div class="details_row header">
