@@ -207,7 +207,7 @@ $(document).ready(function() {
             }
         });
 
-        $("#measurementdate").ready(function(){
+        function copy_date(){
             var d = $('#measurementdate').attr('value');
             var ds = d.split(';');
             if (ds.length >= 1) {
@@ -219,5 +219,10 @@ $(document).ready(function() {
             if (ds.length == 1) {
                 $("#date_to").val(ds[0]);
             }
+        }
+        $("#measurementdate").ready(copy_date);
+        $("#form_filter").bind('reset',function(){
+            // ugly hack to call this after form has cleared
+            setTimeout(copy_date, 1);
         });
 });
