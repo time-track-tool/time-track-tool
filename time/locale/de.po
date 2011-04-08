@@ -3200,7 +3200,7 @@ msgid ""
 msgstr ""
 
 msgid "syslog"
-msgstr ""
+msgstr "Syslog verwenden"
 
 msgid "Enable logging to syslog"
 msgstr ""
@@ -3358,7 +3358,7 @@ msgid ""
 msgstr ""
 
 msgid "tty"
-msgstr ""
+msgstr "Serielle Schnittstelle"
 
 msgid "Serial line connection to transceiver"
 msgstr ""

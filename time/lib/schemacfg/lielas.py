@@ -137,8 +137,7 @@ def security (db, ** kw) :
           , ("name", "sint", "mint", "gapint", "rec", "device_group")
           )
         , ( "sensor",      "Edit", ["User"]
-          , ("name", "type", "almin", "almax", "unit"
-            , "do_logging"
+          , ("almin", "almax", "do_logging"
             )
           )
         , ( "transceiver", "Edit", ["User"]

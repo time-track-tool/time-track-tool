@@ -479,8 +479,8 @@
                     <li>
                       <tal:block tal:replace="structure python:utils.fieldlabel
                            ('sensor', 'name')" />
-                      <tal:block
-                       tal:replace="structure python:s.name.field ()" />
+                      <span class="value"
+                       tal:content="structure python:s.name.field ()" />
                     </li>
                     <li>
                       <tal:block tal:replace="structure python:utils.fieldlabel
