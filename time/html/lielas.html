@@ -120,7 +120,7 @@
                    tal:attributes="value python:
                        request.filterspec.get('date', '')">
             <div class="filter_item" id="filter_device">
-              <h3 tal:content="structure python:utils.fieldspan
+              <h3 tal:content="structure python:utils.fieldlabel
                   ('sensor', 'device', csscls='')" />
               <select name="sensor.device" id="device_select"
                       multiple="multiple" class="filter_selector"
@@ -138,7 +138,7 @@
               </select>
             </div>
             <div class="filter_item" id="filter_sensor">
-              <h3 tal:content="structure python:utils.fieldspan
+              <h3 tal:content="structure python:utils.fieldlabel
                   ('measurement', 'sensor', csscls='')" />
               <select name="sensor" id="sensor_select" multiple="multiple"
                       class="filter_selector" tal:define="formval python:
@@ -157,7 +157,7 @@
               </select>
             </div>
             <div class="filter_item" id="filter_group">
-              <h3 tal:content="structure python:utils.fieldspan
+              <h3 tal:content="structure python:utils.fieldlabel
                   ('device', 'device_group', csscls='')" />
               <select name="sensor.device.device_group" id="device_group_select"
                       multiple="multiple" class="filter_selector"
@@ -263,27 +263,31 @@
                     </span>
                     <span class="col_name">
                       <a href="#" class="sort_link">
-                        <tal:block tal:replace="structure python:utils.fieldspan
-                          ('device', 'name', endswith='')" />
+                        <tal:block tal:replace="structure
+                             python:utils.fieldlabel
+                               ('device', 'name', endswith='')" />
                       </a>
                     </span>
                     <span class="col_device">
                       <a href="#" class="sort_link">
                       <a href="#" class="sort_link" i18n:translate="">
-                        <tal:block tal:replace="structure python:utils.fieldspan
-                          ('device', 'dev', endswith='')" />
+                        <tal:block tal:replace="structure
+                             python:utils.fieldlabel
+                               ('device', 'dev', endswith='')" />
                       </a>
                     </span>
                     <span class="col_group">
                       <a href="#" class="sort_link">
-                        <tal:block tal:replace="structure python:utils.fieldspan
-                          ('device', 'device_group', endswith='')" />
+                        <tal:block tal:replace="structure
+                             python:utils.fieldlabel
+                               ('device', 'device_group', endswith='')" />
                       </a>
                     </span>
                     <span class="col_intervall">
                       <a href="#" class="sort_link">
-                        <tal:block tal:replace="structure python:utils.fieldspan
-                          ('device', 'mint', endswith='')" />
+                        <tal:block tal:replace="structure
+                             python:utils.fieldlabel
+                               ('device', 'mint', endswith='')" />
                       </a>
                     </span>
                   </li>
@@ -361,23 +365,23 @@
                       ">
                   <ul class="details_row">
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'adr')" />
                       <span class="value" tal:content="d/adr" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'name')" />
                       <tal:block
                        tal:replace="structure python:d.name.field ()" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'dev')" />
                       <span class="value" tal:content="d/dev" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'device_group')" />
                       <tal:block tal:replace="structure d/device_group/menu" />
                     </li>
@@ -385,13 +389,13 @@
                   <hr />
                   <ul class="details_row">
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'mint')" />
                       <tal:block
                        tal:replace="structure python:d.mint.field ()" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'sint')" />
                       <tal:block
                        tal:replace="structure python:d.sint.field ()" />
@@ -407,12 +411,12 @@
                   </div>
                 </form>
                 <div class="details_row header">
-                  <tal:block tal:replace="structure python:utils.fieldspan
+                  <tal:block tal:replace="structure python:utils.fieldlabel
                     ('sensor', 'name', endswith='')" />
                   <span class="value">
-                    <tal:block tal:replace="structure python:utils.fieldspan
+                    <tal:block tal:replace="structure python:utils.fieldlabel
                       ('sensor', 'adr', endswith='', csscls='unit')" />
-                    <tal:block tal:replace="structure python:utils.fieldspan
+                    <tal:block tal:replace="structure python:utils.fieldlabel
                       ('sensor', 'val', endswith='', csscls='default')" />
                   </span>
                 </div>
@@ -455,17 +459,17 @@
                       ">
                   <ul class="details_row">
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'adr')" />
                       <span class="value" tal:content="s/device/adr" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('device', 'name')" />
                       <span class="value" tal:content="s/device/name" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('sensor', 'adr')" />
                       <span class="value" tal:content="s/adr" />
                     </li>
@@ -473,13 +477,13 @@
                   <hr />
                   <ul class="details_row">
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('sensor', 'name')" />
                       <tal:block
                        tal:replace="structure python:s.name.field ()" />
                     </li>
                     <li>
-                      <tal:block tal:replace="structure python:utils.fieldspan
+                      <tal:block tal:replace="structure python:utils.fieldlabel
                            ('sensor', 'do_logging')" />
                       <span class="value">
                         <tal:block
@@ -524,47 +528,47 @@
 <tal:block metal:define-macro="user_details">
             <ul class="details_row">
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'username')" />
                 <span class="value" tal:content="structure u/username/field"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'password')" />
                 <span class="value" tal:content="structure u/password/field"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'confirm')" />
                 <span class="value" tal:content="structure u/password/confirm"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'realname')" />
                 <span class="value" tal:content="structure u/realname/field"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'address')" />
                 <span class="value" tal:content="structure u/address/field"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'status')" />
                 <span class="value" tal:content="structure u/status/menu"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'roles')" />
                 <span class="value" tal:content="structure u/roles/field"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'timezone')" />
                 <span class="value" tal:content="structure u/timezone/field"/>
               </li>
               <li>
-                <tal:block tal:replace="structure python:utils.fieldspan
+                <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'csv_delimiter')" />
                 <span class="value"
                       tal:content="structure u/csv_delimiter/field"/>

@@ -421,7 +421,7 @@ ul.sensor {
 	padding-left: 3px;
 	}
 
-.list_footer {
+.list_footer, .settings_bottom {
 	padding: 5px 10px;
 	overflow: hidden;
 	height: 30px;
@@ -614,10 +614,15 @@ hr {
 	left: 210px;
 	top: 0px;
 	}
+
+.settings_field {
+        position: absolute;
+        left: 425px;
+        top: 0px;
+        }
 	
-.settings_row input {
+.settings_field input {
 	position: absolute;
-	left: 425px;
 	top: 3px;
 	border: none;
 	background-color: #f2f2f2;
@@ -629,9 +634,8 @@ hr {
 	padding-right: 5px;
 	}
 
-.settings_row select {
+.settings_field select {
 	position: absolute;
-	left: 425px;
 	top: 3px;
 	width: 174px;
 	}
@@ -640,22 +644,6 @@ hr {
 	margin: 5px 0;
 	}
 	
-#settings_submit {
-	background: url(lfiles/images/button_submit.png) no-repeat left top;
-	width: 170px;
-	height: 20px;
-	text-align: center;
-	color: #ffffff;
-	font-size: 11px;
-	padding: 2px 0 6px;
-	cursor: pointer;
-	border: none;
-	}
-	
-#settings_bottom {
-	background: url(lfiles/images/liste_background_bottom.png) no-repeat left bottom;
-	}
-
 /* @end */
 
 /* @group Login */

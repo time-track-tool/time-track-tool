@@ -1673,13 +1673,13 @@ def help_properties (klass) :
     return [i [1] for i in p]
 # end def help_properties
 
-def fieldspan (cls, name, searchname = None, csscls = 'desc', endswith = ':') :
+def fieldlabel (cls, name, searchname = None, csscls = 'desc', endswith = ':') :
     if not searchname : searchname = name
     prop  = combined_name (cls, name, searchname)
     if csscls :
         csscls = 'class="%s"' % csscls
-    return "<span %s>%s%s</span>" % (csscls, _ (prop), endswith)
-# end def fieldspan
+    return "<label %s>%s%s</label>" % (csscls, _ (prop), endswith)
+# end def fieldlabel
 
 def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     if not searchname : searchname = name
@@ -1732,7 +1732,7 @@ def init (instance) :
     instance.registerUtil ('helptext',        helptext)
     instance.registerUtil ('help_properties', help_properties)
     instance.registerUtil ('fieldname',       fieldname)
-    instance.registerUtil ('fieldspan',       fieldspan)
+    instance.registerUtil ('fieldlabel',      fieldlabel)
     instance.registerUtil ('combined_name',   combined_name)
     instance.registerUtil ('permdict',        permdict)
     instance.registerUtil ('set_language',    set_language)
