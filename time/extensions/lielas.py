@@ -219,6 +219,8 @@ def dyndns_default_host (db, dyndns) :
         db._db.dyndns_service.create \
             ( dyndns   = dyndns.id
             , protocol = protocol [0]
+	    , login    = 'login'
+	    , password = 'password'
             )
         ds = db.dyndns_service.list ()
     ds = ds [0]

@@ -90,6 +90,7 @@ class Server (Exec) :
             ucred = conn.getsockopt (SOL_SOCKET, SO_PEERCRED, 12)
             pid, uid, gid = unpack ('LLL', ucred)
             if uid not in self.uids :
+                self.log.error ('dyndns: denying uid: %s' % uid)
                 conn.close ()
                 continue
             while True :

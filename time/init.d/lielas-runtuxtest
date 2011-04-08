@@ -38,7 +38,7 @@ ROOTBIN=update_handler
 LIELAS_PATH=/var/www/web10/roundup/lielas
 RUNDIR=$LIELAS_PATH
 ROOTSERVER=$LIELAS_PATH/utils/$ROOTBIN
-RSPARAMS="-u $USER $LIELAS_PATH/rootsock"
+RSPARAMS="-u $USER /var/run/roundup/rootsock"
 SERIALBIN=lielas-daemon
 SERIALSERVER=/usr/local/bin/$SERIALBIN
 SERPARAMS=$LIELAS_PATH
@@ -47,7 +47,7 @@ ROOTPID=$RUNDIR/handler.pid
 SERPID=$RUNDIR/daemon.pid
 LOGFILE=$LIELAS_PATH/roundup.log
 TRACKERS="lielas=$LIELAS_PATH"
-OPTIONS="-- -p 8080 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
+OPTIONS="-- -p 8888 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
 NICENESS=0
 
 
