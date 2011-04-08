@@ -1,0 +1,49 @@
+<tal:block metal:use-macro="templates/lielas/macros/icing">
+  <tal:block metal:fill-slot="content">
+    <tal:block tal:define=
+         " u     python:db.user.getItem(db._db.getuid ())
+         ; sel   python: (  classname == 'user' and context
+                         or u
+                         ).designator()
+         ">
+      <div id="content" class="settings">
+        <div id="list">
+          <div class="list_header">Settings</div>
+          <div id="settings_body">
+            <form id="settings" action="">
+              <div class="settings_header" i18n:translate="">Device</div>
+              <div class="settings_row">
+                <div class="settings_title">User:</div>
+                <tal:block tal:replace="structure python:utils.fieldlabel
+                     ('user', 'username')" />
+                <div class="settings_field"
+                     tal:content="structure u/username/field"/>
+              </div>
+              <div class="settings_row">
+                <tal:block tal:replace="structure python:utils.fieldlabel
+                     ('user', 'password')" />
+                <div class="settings_field"
+                     tal:content="structure u/password/field"/>
+              </div>
+              <div class="settings_row">
+                <tal:block tal:replace="structure python:utils.fieldlabel
+                     ('user', 'confirm')" />
+                <div class="settings_field"
+                     tal:content="structure u/password/confirm"/>
+              </div>
+              <hr />
+              <div id="settings_bottom" class="settings_bottom">
+                <input type="hidden" name="@action" value="edit">
+                <span class="buttonbox submit_details orangebutton">
+                  <input type="submit" name="settings_submit"
+                         id="settings_submit" value="Submit Changes"
+                         i18n:attributes="value" />
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </tal:block>
+  </tal:block>
+</tal:block>

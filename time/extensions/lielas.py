@@ -154,7 +154,7 @@ def menu_by_class (db) :
               )
             , ( 'dyndns'
               , db._ ('Configuration')
-              , 'dyndns?@template=index'
+              , 'dyndns?@template=lindex'
               , True
               )
             , ( 'user'
