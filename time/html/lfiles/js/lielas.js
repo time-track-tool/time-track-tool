@@ -26,6 +26,9 @@ $(document).ready(function() {
     	$(this).unbind("click"); 
 	});
 
+        // reset password to remove 'helpful' browser behaviour 
+        $(".settings_field").children('[type="password"]').attr('value','');
+        $(".value").children('[type="password"]').attr('value','');
 	
 	// --------------
 	// Alles ein- und ausklappen
@@ -231,4 +234,5 @@ $(document).ready(function() {
             // ugly hack to call this after form has cleared
             setTimeout(copy_date, 1);
         });
+
 });

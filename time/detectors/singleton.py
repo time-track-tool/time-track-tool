@@ -41,7 +41,7 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    singletons = ["dyndns"]
+    singletons = ["dyndns", "transceiver", "umts"]
     for klass in singletons :
         if klass not in db.classes :
             continue

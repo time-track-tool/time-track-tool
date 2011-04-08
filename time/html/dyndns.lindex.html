@@ -2,6 +2,11 @@
   <tal:block metal:fill-slot="content">
     <tal:block tal:define=
          " u     python:db.user.getItem(db._db.getuid ())
+         ; t     python:(db.transceiver.list() or [None])[0]
+         ; d     python:(db.dyndns.list() or [None])[0]
+         ; dh    python:d and utils.dyndns_default_host (db, d)
+         ; ds    python:dh and dh.dyndns_service
+         ; um    python:None
          ; sel   python: (  classname == 'user' and context
                          or u
                          ).designator()
@@ -10,10 +15,10 @@
         <div id="list">
           <div class="list_header">Settings</div>
           <div id="settings_body">
-            <form id="settings" action="">
+            <form id="settings" action="" method="POST">
               <div class="settings_header" i18n:translate="">Device</div>
               <div class="settings_row">
-                <div class="settings_title">User:</div>
+                <div class="settings_title" i18n:translate="">User:</div>
                 <tal:block tal:replace="structure python:utils.fieldlabel
                      ('user', 'username')" />
                 <div class="settings_field"
@@ -31,8 +36,83 @@
                 <div class="settings_field"
                      tal:content="structure u/password/confirm"/>
               </div>
+              <tal:block tal:condition="t">
+                <hr />
+                <div class="settings_row">
+                  <div class="settings_title"
+                       i18n:translate="">Intervals for all devices:</div>
+                  <tal:block tal:replace="structure python:utils.fieldlabel
+                       ('transceiver', 'mint')" />
+                  <div class="settings_field"
+                       tal:content="structure t/mint/field"/>
+                </div>
+                <div class="settings_row">
+                  <tal:block tal:replace="structure python:utils.fieldlabel
+                       ('transceiver', 'sint')" />
+                  <div class="settings_field"
+                       tal:content="structure t/sint/field"/>
+                </div>
+                <hr />
+                <div class="settings_row">
+                  <div class="settings_title"
+                       i18n:translate="">Transceiver:</div>
+                  <tal:block tal:replace="structure python:utils.fieldlabel
+                       ('transceiver', 'tty')" />
+                  <div class="settings_field"
+                       tal:content="structure t/tty/field"/>
+                </div>
+              </tal:block>
+              <tal:block tal:condition="python: d or um">
+                <div class="settings_header" i18n:translate="">Internet</div>
+                <tal:block tal:condition="python: d">
+                  <div class="settings_row">
+                    <div class="settings_title" i18n:translate="">DynDNS:</div>
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns', 'syslog')" />
+                    <div class="settings_field"
+                         tal:content="structure d/syslog/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns', 'web_url')" />
+                    <div class="settings_field"
+                         tal:content="structure d/web_url/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns_server', 'server')" />
+                    <div class="settings_field"
+                         tal:content="structure ds/server/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns_server', 'protocol')" />
+                    <div class="settings_field"
+                         tal:content="structure ds/protocol/menu"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns_server', 'login')" />
+                    <div class="settings_field"
+                         tal:content="structure ds/login/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns_server', 'password')" />
+                    <div class="settings_field"
+                         tal:content="structure ds/password/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('dyndns_server', 'hostname')" />
+                    <div class="settings_field"
+                         tal:content="structure dh/hostname/field"/>
+                  </div>
+                </tal:block>
+              </tal:block>
               <hr />
               <div id="settings_bottom" class="settings_bottom">
+                <input type="hidden" name="@template" value="lindex">
                 <input type="hidden" name="@action" value="edit">
                 <span class="buttonbox submit_details orangebutton">
                   <input type="submit" name="settings_submit"

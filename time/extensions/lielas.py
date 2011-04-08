@@ -198,7 +198,7 @@ def sensor_measurements (db) :
     return dict ((s.id, latest_measurements (db, s)) for s in db.sensor.list ())
 # end def sensor_measurements
 
-def anon_class (db, classname):
+def anon_class (db, classname) :
     """ Return HTMLClass generated from classname but with _anonymous
         property set so that the class is suitable for generation of
         edit forms in a page.
@@ -207,6 +207,31 @@ def anon_class (db, classname):
     cl._anonymous = True
     return cl
 # end def anon_class
+
+def dyndns_default_host (db, dyndns) :
+    ds = db.dyndns_service.list ()
+    dh = db.dyndns_host.list ()
+    import sys
+    print >> sys.stderr, 'dyndns_default_host'
+    if not ds :
+        protocol = db._db.dyndns_protocol.filter(None, {})
+        print >> sys.stderr, protocol
+        db._db.dyndns_service.create \
+            ( dyndns   = dyndns.id
+            , protocol = protocol [0]
+            )
+        ds = db.dyndns_service.list ()
+    ds = ds [0]
+    if not dh :
+        db._db.dyndns_host.create \
+            ( dyndns_service = ds.id
+            , hostname       = 'hostname.dyndns.org'
+            )
+        dh = db.dyndns_service.list ()
+    db._db.commit ()
+    dh = dh [0]
+    return dh
+# end def dyndns_default_host
 
 def init (instance) :
     act = instance.registerAction
@@ -226,4 +251,5 @@ def init (instance) :
     reg ('sensor_measurements', sensor_measurements)
     reg ('getlocale',           get_num_locale)
     reg ('anon_class',          anon_class)
+    reg ('dyndns_default_host', dyndns_default_host)
 # end def init
