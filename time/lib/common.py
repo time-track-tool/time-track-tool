@@ -1019,11 +1019,10 @@ def get_num_locale (client, db) :
     language = client.language or db.config["TRACKER_LANGUAGE"]
     if not isinstance (language, list) :
         language = [language]
-    import sys
-    print >> sys.stderr, language
     for l in language :
         try :
             locale.setlocale (locale.LC_NUMERIC, locale.normalize (l))
+            break
         except locale.Error :
             pass
     return locale

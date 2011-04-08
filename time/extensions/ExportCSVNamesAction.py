@@ -29,7 +29,7 @@ except ImportError :
     from StringIO  import StringIO
 
 from datetime              import datetime
-from roundup.cgi.actions   import Action
+from roundup.cgi.actions   import Action, SearchAction
 from roundup.cgi           import templating
 from roundup               import hyperdb
 from roundup.date          import get_timezone, UTC
@@ -253,8 +253,10 @@ class Export_CSV_Names (Action, autosuper) :
     quoting        = csv.QUOTE_MINIMAL
     csv_writer     = csv.writer
 
-    def _setup_request (self) :
+    def _setup_request (self, setup_filter = False) :
         """ figure the request """
+        if setup_filter :
+            self.fakeFilterVars ()
         request    = self.request = templating.HTMLRequest (self.client)
         self.utils = templating.TemplatingUtils (self.client)
         filterspec = self.filterspec = request.filterspec
@@ -510,11 +512,11 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
 
 # end class Export_CSV_Legacy_Format
 
-class Export_CSV_Lielas (Export_CSV_Names) :
+class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
     def handle (self, outfile = None) :
         ''' Export the specified search query as special CSV format. '''
         ''' Export the specified search query as CSV. '''
-        self._setup_request ()
+        self._setup_request (True)
         self._setup         ()
 
         h                        = self.client.additional_headers
@@ -638,7 +640,7 @@ class Export_CSV_Lielas (Export_CSV_Names) :
                     dt   = datetime (tzinfo = UTC, *dt.timetuple ()[:6])
                     line [0] = dt.astimezone (TZ).strftime \
                         ('%02d.%02m.%04Y %H:%M:%S')
-                line [index_by_sid [sens]] = "%2.2f" % val
+                line [index_by_sid [sens]] = locale.format ("%2.2f", val)
         else :
             for itemid in self.klass.filter_iter \
                 (self.matches, self.filterspec, sort) :
@@ -651,7 +653,8 @@ class Export_CSV_Lielas (Export_CSV_Names) :
                     d = item.date.local (tz)
                     line [0] = '%02d.%02d.%04d %02d:%02d:%02d' \
                         % (d.day, d.month, d.year, d.hour, d.minute, d.second)
-                line [index_by_sid [item.sensor]] = "%2.2f" % item.val
+                line [index_by_sid [item.sensor]] = locale.format \
+                    ("%2.2f", item.val)
         if line :
             self.client._socket_op (writer.writerow, line)
 
