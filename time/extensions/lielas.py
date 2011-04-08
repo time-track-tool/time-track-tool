@@ -211,11 +211,8 @@ def anon_class (db, classname) :
 def dyndns_default_host (db, dyndns) :
     ds = db.dyndns_service.list ()
     dh = db.dyndns_host.list ()
-    import sys
-    print >> sys.stderr, 'dyndns_default_host'
     if not ds :
         protocol = db._db.dyndns_protocol.filter(None, {})
-        print >> sys.stderr, protocol
         db._db.dyndns_service.create \
             ( dyndns   = dyndns.id
             , protocol = protocol [0]
