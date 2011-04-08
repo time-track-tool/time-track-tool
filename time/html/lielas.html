@@ -473,6 +473,11 @@
                            ('sensor', 'adr')" />
                       <span class="value" tal:content="s/adr" />
                     </li>
+                    <li>
+                      <tal:block tal:replace="structure python:utils.fieldlabel
+                           ('sensor', 'type')" />
+                      <span class="value" tal:content="s/type" />
+                    </li>
                   </ul>
                   <hr />
                   <ul class="details_row">
