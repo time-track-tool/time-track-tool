@@ -322,8 +322,8 @@
                               'list_row'
                                + ['', ' active_row'][s.designator() == sel]">
                             <span class="col_check">
-                              <input name="checker_sub" type="checkbox"
-                                     tal:attributes="value s/designator"
+                              <input name="sensor" type="checkbox"
+                                     tal:attributes="value s/id"
                                      class="selectbox" />
                             </span>
                             <span class="col_name"   tal:content="s/name" />
@@ -368,12 +368,13 @@
                   </div>
                   <div class="changebox divider"></div>
                   <div class="changebox">
-                    <input name="@queryname" id="queryname" type="hidden"
-                           tal:attributes="value python:qn or oqn or ''"/>
-                    <input name="@old-queryname" id="old_queryname" type="text"
+                    <input name="@old-queryname" id="old_queryname"
+                           type="hidden"
+                           tal:attributes="value python:oqn or qn or ''"/>
+                    <input name="@queryname" id="queryname" type="text"
                            value="Save filter..." title="Save filter..."
                            class="queryname" i18n:attributes="title"
-                           tal:attributes="value python:oqn or qn or ''"/>
+                           tal:attributes="value python:qn or oqn or ''"/>
                     <span class="buttonbox orangebutton">
                       <input name="save_filter" id=save_filter
                          class="filterlink" type="submit" value="Save filter"

@@ -214,7 +214,7 @@ $(document).ready(function() {
             $("#queryname").val(n);
 	});
 
-	$("#form_filter").submit(function(){
+	$("#form_csv").submit(function(){
             var q = $("#queryname")
             var d = $('#measurementdate')
             if (q.attr('value') == q.attr('title'))
@@ -242,7 +242,7 @@ $(document).ready(function() {
                 ev.preventDefault();
             } else {
                 $('#rup_action').val('query_goto');
-                $('#form_filter').attr('action', v);
+                $('#form_csv').attr('action', v);
             }
         });
 

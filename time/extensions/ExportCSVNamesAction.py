@@ -534,6 +534,8 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
         for k, v in self.filterspec.iteritems () :
             if k.startswith ('sensor.') :
                 sensorspec [k [7:]] = v
+            if k == 'sensor' :
+                sensorspec ['id'] = v
 
         sensor_sort = \
             [ 'device.device_group'
