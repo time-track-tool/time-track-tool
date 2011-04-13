@@ -529,7 +529,7 @@
   </tal:block>
 </tal:block>
 
-<!-- needs "u" (current user or user-class") and "action" for the @action -->
+<!-- needs "u" (current user or user-class") and "rup_action" for the @action -->
 <tal:block metal:define-macro="user_details">
             <ul class="details_row">
               <li>
@@ -586,6 +586,42 @@
               <span class="buttonbox submit_details orangebutton">
                 <input type="submit" name="submit_button"
                        value="Submit Changes" i18n:attributes="value" />
+              </span>
+            </div>
+</tal:block>
+
+<!-- needs "dg" (current device_group) and "rup_action" for the @action -->
+<tal:block metal:define-macro="dgroup_details">
+            <ul class="details_row">
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldlabel
+                     ('device_group', 'name')" />
+                <span class="value" tal:content="structure dg/name/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldlabel
+                     ('device_group', 'order')" />
+                <span class="value" tal:content="structure dg/order/field"/>
+              </li>
+              <li>
+                <tal:block tal:replace="structure python:utils.fieldlabel
+                     ('device_group', 'description')" />
+                <span class="value" tal:content="structure dg/description/field"/>
+              </li>
+            </ul>
+            <hr />
+            <div class="details_row">
+              <input type="hidden" name="@action"
+                     tal:attributes="value rup_action">
+              <span class="buttonbox submit_details orangebutton">
+                <tal:block tal:condition="python:rup_action == 'new'">
+                  <input type="submit" name="submit_button"
+                         value="Create" i18n:attributes="value" />
+                </tal:block>
+                <tal:block tal:condition="python:rup_action != 'new'">
+                  <input type="submit" name="submit_button"
+                         value="Submit Changes" i18n:attributes="value" />
+                </tal:block>
               </span>
             </div>
 </tal:block>

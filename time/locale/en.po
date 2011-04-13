@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-07 17:54+0200\n"
+"POT-Creation-Date: 2011-04-13 10:09+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3625,11 +3625,11 @@ msgstr ""
 msgid "Device manager"
 msgstr ""
 
-msgid "Configuration"
-msgstr ""
-
 msgid "User"
 msgstr "User"
+
+msgid "Configuration"
+msgstr ""
 
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
@@ -3800,6 +3800,12 @@ msgstr ""
 msgid "Freeze user"
 msgstr ""
 
+msgid "+ Add"
+msgstr ""
+
+msgid "Details:"
+msgstr ""
+
 msgid "${classname_id} owned by ${responsible}"
 msgstr ""
 
@@ -3820,6 +3826,27 @@ msgstr ""
 
 msgid "new dyndns_service"
 msgstr "new DynDNS service"
+
+msgid "Device"
+msgstr ""
+
+msgid "User:"
+msgstr ""
+
+msgid "Intervals for all devices:"
+msgstr ""
+
+msgid "Transceiver:"
+msgstr ""
+
+msgid "Internet"
+msgstr ""
+
+msgid "DynDNS:"
+msgstr ""
+
+msgid "Submit Changes"
+msgstr ""
 
 msgid "new dyndns_host"
 msgstr "new DynDNS host"
@@ -3899,16 +3926,13 @@ msgstr ""
 msgid "marked devices:"
 msgstr ""
 
-msgid "Details:"
-msgstr ""
-
-msgid "Submit Changes"
-msgstr ""
-
 msgid "Status"
 msgstr ""
 
 msgid "Latest measurements"
+msgstr ""
+
+msgid "Create"
 msgstr ""
 
 msgid "Network Interfaces"
@@ -4120,12 +4144,6 @@ msgid "(role permissions)"
 msgstr ""
 
 msgid "default:"
-msgstr ""
-
-msgid "+ Add"
-msgstr ""
-
-msgid "User <a href=\"#\" title=\"add\" class=\"list_header_link\">x</a>"
 msgstr ""
 
 msgid "new user_dynamic record"

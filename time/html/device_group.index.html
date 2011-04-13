@@ -1,0 +1,92 @@
+<tal:block metal:use-macro="templates/lielas/macros/icing">
+  <tal:block metal:fill-slot="content">
+    <tal:block tal:define=
+         " dgrps python:db.device_group.list()
+         ; sel   python: (  classname == 'device_group' and context
+                         or dgrps[0]
+                         ).designator()
+         ">
+      <div id="content">
+        <div id="list">
+          <div class="list_header">
+            <span i18n:translate="">device_group</span>
+            <a href="#" title="add" class="list_header_link"
+               i18n:translate="">+ Add</a>
+          </div>
+          <div id="list_body">
+            <ul id="list_header">
+              <li>
+                <span class="col_id">
+                  <a href="#" class="sort_link" tal:content="structure python:
+                      utils.fieldlabel ('device_group', 'id', endswith='')"/>
+                </span>
+                <span class="col_name">
+                  <a href="#" class="sort_link" tal:content="structure python:
+                      utils.fieldlabel ('device_group', 'name', endswith='')"/>
+                </span>
+                <span class="col_desc">
+                  <a href="#" class="sort_link" tal:content="structure python:
+                      utils.fieldlabel
+                        ('device_group', 'description', endswith='')"/>
+                </span>
+                <span class="col_order">
+                  <a href="#" class="sort_link active"
+                     tal:content="structure python: utils.fieldlabel
+                        ('device_group', 'order', endswith='')"/>
+                </span>
+              </li>
+            </ul>
+            <ul id="list_content">
+              <tal:block tal:repeat="dg dgrps">
+                <li class="device" tal:attributes="id dg/designator">
+                  <div tal:attributes=
+                     "class python: 'list_row main'
+                            + ['', ' active_row'][dg.designator() == sel]
+                     ">
+                    <span class="col_id"    tal:content="dg/id" />
+                    <span class="col_name"  tal:content="dg/name" />
+                    <span class="col_desc"  tal:content="dg/description" />
+                    <span class="col_order" tal:content="dg/order" />
+                  </div>
+                </li>
+              </tal:block>
+            </ul>
+          </div>
+          <div class="list_footer"/>
+        </div>
+      </div>
+      <div id="sidebar" tal:define="rup_action string:edit">
+        <div class="details_header">
+          <strong i18n:translate="">Details:</strong>
+        </div>
+        <tal:block tal:repeat="dg dgrps">
+          <div tal:attributes=
+               " id    python: 'details_' + dg.designator()
+               ; class python:
+                       'details_body'
+                       + ['', ' active_detail'][dg.designator() == sel]
+               ">
+            <form method="POST" tal:attributes=
+                  " id         python:'settings_form_' + dg.designator()
+                  ; name       python:'settings_form_' + dg.designator()
+                  ; action     dg/designator
+                  ">
+              <input type="hidden" name="@template" value="item">
+              <ul metal:use-macro="templates/lielas/macros/dgroup_details"/>
+            </form>
+          </div>
+        </tal:block>
+        <div id="details_new" class="details_body"
+             tal:define="dg python:utils.anon_class(db, 'device_group')">
+          <form method="POST" id="settings_form_dg_new"
+                name="settings_form_dg_new" action="device_group"
+                tal:define="rup_action string:new">
+            <input type="hidden" name="@template" value="item">
+            <ul metal:use-macro="templates/lielas/macros/dgroup_details"/>
+          </form>
+        </div>
+        <div class="details_footer"></div>
+      </div>
+    </tal:block>
+  </tal:block>
+</tal:block>

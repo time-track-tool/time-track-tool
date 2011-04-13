@@ -38,10 +38,8 @@
             <ul id="list_content">
               <tal:block tal:repeat="u users">
                 <li class="device" tal:attributes="id u/designator">
-                  <div tal:attributes="class python:
-                      'list_row main'
-                      + ['', ' active_row'][u.designator() == sel]
-                      ; xyzzy python: sel">
+                  <div tal:attributes="class python: 'list_row main'
+                      + ['', ' active_row'][u.designator() == sel]">
                     <span class="col_id"    tal:content="u/id" />
                     <span class="col_name"  tal:content="u/username" />
                     <span class="col_email" tal:content="u/address" />
@@ -75,7 +73,7 @@
             </form>
           </div>
         </tal:block>
-        <div id="details_user_new" class="details_body"
+        <div id="details_new" class="details_body"
              tal:define="u python:utils.anon_class(db, 'user')">
           <form method="POST" id="settings_form_user_new"
                 name="settings_form_user_new" action="user"

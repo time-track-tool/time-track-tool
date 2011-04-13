@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-07 17:54+0200\n"
+"POT-Creation-Date: 2011-04-13 10:09+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3703,11 +3703,11 @@ msgstr "Jetzt Datenbank löschen"
 msgid "Device manager"
 msgstr "Gerätemanager"
 
-msgid "Configuration"
-msgstr "Einstellungen"
-
 msgid "User"
 msgstr "Benutzer"
+
+msgid "Configuration"
+msgstr "Einstellungen"
 
 #, python-format
 msgid "No invoice_template defined for all invoices: %s"
@@ -3880,6 +3880,12 @@ msgstr "Team einfrieren"
 msgid "Freeze user"
 msgstr "Benutzer einfrieren"
 
+msgid "+ Add"
+msgstr "+ Hinzufügen"
+
+msgid "Details:"
+msgstr "Details:"
+
 msgid "${classname_id} owned by ${responsible}"
 msgstr ""
 
@@ -3900,6 +3906,27 @@ msgstr ""
 
 msgid "new dyndns_service"
 msgstr "Neuer DynDNS Service"
+
+msgid "Device"
+msgstr "Gerät"
+
+msgid "User:"
+msgstr "Benutzer:"
+
+msgid "Intervals for all devices:"
+msgstr ""
+
+msgid "Transceiver:"
+msgstr ""
+
+msgid "Internet"
+msgstr ""
+
+msgid "DynDNS:"
+msgstr ""
+
+msgid "Submit Changes"
+msgstr ""
 
 msgid "new dyndns_host"
 msgstr "Neuer DynDNS Host"
@@ -3979,17 +4006,14 @@ msgstr "Adr"
 msgid "marked devices:"
 msgstr "markierte Geräte:"
 
-msgid "Details:"
-msgstr "Details:"
-
-msgid "Submit Changes"
-msgstr ""
-
 msgid "Status"
 msgstr "Status"
 
 msgid "Latest measurements"
 msgstr "Letzte Messungen"
+
+msgid "Create"
+msgstr "Anlegen"
 
 msgid "Network Interfaces"
 msgstr ""
@@ -4203,12 +4227,6 @@ msgstr "(Rollen-Zugriffsrechte)"
 
 msgid "default:"
 msgstr "Voreinstellung:"
-
-msgid "+ Add"
-msgstr "+ Hinzufügen"
-
-msgid "User <a href=\"#\" title=\"add\" class=\"list_header_link\">x</a>"
-msgstr ""
 
 msgid "new user_dynamic record"
 msgstr ""

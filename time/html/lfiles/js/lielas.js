@@ -75,7 +75,7 @@ $(document).ready(function() {
 	// Element bei Klick auf Name hervorheben
 	// --------------
 
-	$('#list_content .col_id, #list_content .col_name, #list_content .col_device, #list_content .col_group, #list_content .col_intervall').each(function() {
+	$('#list_content .col_id, #list_content .col_name, #list_content .col_device, #list_content .col_group, #list_content .col_intervall, #list_content .col_desc, #list_content .col_order, #list_content .col_tz').each(function() {
 		$(this).click(function() {
 			
                         var listrow = $(this).parent('.list_row');
@@ -90,7 +90,7 @@ $(document).ready(function() {
         $('.list_header_link').click(function() {
             $('.active_row').removeClass('active_row');
             $('.active_detail').removeClass('active_detail');
-            $('#details_user_new').addClass('active_detail');
+            $('#details_new').addClass('active_detail');
         });
 
 	// --------------

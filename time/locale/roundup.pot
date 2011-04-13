@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-07 17:54+0200\n"
+"POT-Creation-Date: 2011-04-13 10:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1796,8 +1796,9 @@ msgstr ""
 msgid "device++order"
 msgstr ""
 
-#: ../extensions/help.py:424 ../lib/schemacfg/lielas.py:59
-#: ../locale/attr.py:935 ../locale/attr.py:945 attr.py:935 attr.py:945
+#: ../extensions/help.py:424 ../extensions/lielas.py:156
+#: ../lib/schemacfg/lielas.py:59 ../locale/attr.py:935 ../locale/attr.py:945
+#: attr.py:935 attr.py:945
 msgid "device_group"
 msgstr ""
 
@@ -4938,12 +4939,12 @@ msgstr ""
 msgid "Device manager"
 msgstr ""
 
-#: ../extensions/lielas.py:156
-msgid "Configuration"
-msgstr ""
-
 #: ../extensions/lielas.py:161
 msgid "User"
+msgstr ""
+
+#: ../extensions/lielas.py:166
+msgid "Configuration"
 msgstr ""
 
 #: ../extensions/mark_invoices.py:64
@@ -5218,6 +5219,16 @@ msgstr ""
 msgid "Freeze user"
 msgstr ""
 
+#: ../html/device_group.index.html:13 ../html/device_group.item.html:13
+#: ../html/user.lindex.html:13
+msgid "+ Add"
+msgstr ""
+
+#: ../html/device_group.index.html:60 ../html/device_group.item.html:60
+#: ../html/lielas.html:352 ../html/user.lindex.html:57
+msgid "Details:"
+msgstr ""
+
 #: ../html/doc.item.html:7
 msgid "${classname_id} owned by ${responsible}"
 msgstr ""
@@ -5244,6 +5255,35 @@ msgstr ""
 
 #: ../html/dyndns.item.html:106
 msgid "new dyndns_service"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:19
+msgid "Device"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:21
+msgid "User:"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:42
+msgid "Intervals for all devices:"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:57
+msgid "Transceiver:"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:66
+msgid "Internet"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:69
+msgid "DynDNS:"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:118 ../html/lielas.html:408
+#: ../html/lielas.html:503 ../html/lielas.html:587 ../html/lielas.html:622
+msgid "Submit Changes"
 msgstr ""
 
 #: ../html/dyndns_service.item.html:68
@@ -5330,7 +5370,7 @@ msgstr ""
 msgid "Load"
 msgstr ""
 
-#: ../html/lielas.html:233 ../html/lielas.html:339
+#: ../html/lielas.html:233 ../html/lielas.html:343
 msgid "export CSV"
 msgstr ""
 
@@ -5346,24 +5386,20 @@ msgstr ""
 msgid "Addr"
 msgstr ""
 
-#: ../html/lielas.html:335
+#: ../html/lielas.html:339
 msgid "marked devices:"
 msgstr ""
 
-#: ../html/lielas.html:348 ../html/user.lindex.html:58
-msgid "Details:"
-msgstr ""
-
-#: ../html/lielas.html:404 ../html/lielas.html:494 ../html/lielas.html:578
-msgid "Submit Changes"
-msgstr ""
-
-#: ../html/lielas.html:432
+#: ../html/lielas.html:436
 msgid "Status"
 msgstr ""
 
-#: ../html/lielas.html:500
+#: ../html/lielas.html:509
 msgid "Latest measurements"
+msgstr ""
+
+#: ../html/lielas.html:618
+msgid "Create"
 msgstr ""
 
 #: ../html/machine.item.html:58
@@ -5642,14 +5678,6 @@ msgstr ""
 
 #: ../html/user.item.html:246
 msgid "default:"
-msgstr ""
-
-#: ../html/user.lindex.html:12
-msgid "+ Add"
-msgstr ""
-
-#: ../html/user.lindex.html:12
-msgid "User <a href=\"#\" title=\"add\" class=\"list_header_link\">x</a>"
 msgstr ""
 
 #: ../html/user_dynamic.item.html:65

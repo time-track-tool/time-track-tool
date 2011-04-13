@@ -152,15 +152,20 @@ def menu_by_class (db) :
               , 'home'
               , True
               )
-            , ( 'dyndns'
-              , db._ ('Configuration')
-              , 'dyndns?@template=lindex'
+            , ( 'device_group'
+              , db._ ('device_group')
+              , 'device_group?@template=index'
               , True
               )
             , ( 'user'
               , db._ ('User')
               , 'user1?@template=lindex'
               , uok
+              )
+            , ( 'dyndns'
+              , db._ ('Configuration')
+              , 'dyndns?@template=lindex'
+              , True
               )
             ) if x [3]
         )
