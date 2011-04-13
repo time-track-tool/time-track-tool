@@ -264,9 +264,9 @@ a.filterlink {
 	padding-right: 5px;
 	}
 
-select#filterladen {
-	width: 130px;
-	}
+input.queryname {
+        width: 100px;
+        }
 
 .changebox {
 	float: left;
