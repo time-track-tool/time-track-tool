@@ -148,6 +148,13 @@ template_by_class = \
     , 'device_group' : 'index'
     }
 
+bodyclass = \
+    { ''            : 'filter'
+    , 'device'      : 'filter'
+    , 'sensor'      : 'filter'
+    , 'measurement' : 'filter'
+    }
+
 def menu_by_class (db) :
     uok = db.user.is_edit_ok ()
     return \
@@ -263,4 +270,5 @@ def init (instance) :
     reg ('anon_class',          anon_class)
     reg ('dyndns_default_host', dyndns_default_host)
     reg ('template_by_class',   template_by_class)
+    reg ('bodyclass',           bodyclass)
 # end def init
