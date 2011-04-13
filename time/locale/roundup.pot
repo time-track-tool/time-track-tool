@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 10:09+0200\n"
+"POT-Creation-Date: 2011-04-13 16:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1796,7 +1796,7 @@ msgstr ""
 msgid "device++order"
 msgstr ""
 
-#: ../extensions/help.py:424 ../extensions/lielas.py:156
+#: ../extensions/help.py:424 ../extensions/lielas.py:168
 #: ../lib/schemacfg/lielas.py:59 ../locale/attr.py:935 ../locale/attr.py:945
 #: attr.py:935 attr.py:945
 msgid "device_group"
@@ -4935,15 +4935,15 @@ msgstr ""
 msgid "Delete Database now"
 msgstr ""
 
-#: ../extensions/lielas.py:151
+#: ../extensions/lielas.py:163
 msgid "Device manager"
 msgstr ""
 
-#: ../extensions/lielas.py:161
+#: ../extensions/lielas.py:173
 msgid "User"
 msgstr ""
 
-#: ../extensions/lielas.py:166
+#: ../extensions/lielas.py:178
 msgid "Configuration"
 msgstr ""
 
@@ -5219,13 +5219,13 @@ msgstr ""
 msgid "Freeze user"
 msgstr ""
 
-#: ../html/device_group.index.html:13 ../html/device_group.item.html:13
+#: ../html/device_group.index.html:14 ../html/device_group.item.html:14
 #: ../html/user.lindex.html:13
 msgid "+ Add"
 msgstr ""
 
-#: ../html/device_group.index.html:60 ../html/device_group.item.html:60
-#: ../html/lielas.html:352 ../html/user.lindex.html:57
+#: ../html/device_group.index.html:61 ../html/device_group.item.html:61
+#: ../html/lielas.html:367 ../html/user.lindex.html:57
 msgid "Details:"
 msgstr ""
 
@@ -5281,8 +5281,8 @@ msgstr ""
 msgid "DynDNS:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:118 ../html/lielas.html:408
-#: ../html/lielas.html:503 ../html/lielas.html:587 ../html/lielas.html:622
+#: ../html/dyndns.lindex.html:118 ../html/lielas.html:423
+#: ../html/lielas.html:518 ../html/lielas.html:602 ../html/lielas.html:637
 msgid "Submit Changes"
 msgstr ""
 
@@ -5322,83 +5322,79 @@ msgstr ""
 msgid "new it_issue"
 msgstr ""
 
-#: ../html/lielas.html:53
+#: ../html/lielas.html:58
 msgid "Logout"
 msgstr ""
 
-#: ../html/lielas.html:88
+#: ../html/lielas.html:108
 msgid "Login"
 msgstr ""
 
-#: ../html/lielas.html:129 ../html/lielas.html:146 ../html/lielas.html:168
+#: ../html/lielas.html:150 ../html/lielas.html:167 ../html/lielas.html:189
 msgid "- all -"
 msgstr ""
 
-#: ../html/lielas.html:170
+#: ../html/lielas.html:191
 msgid "- empty -"
 msgstr ""
 
-#: ../html/lielas.html:182
+#: ../html/lielas.html:203
 msgid "Time range:"
 msgstr ""
 
-#: ../html/lielas.html:184
+#: ../html/lielas.html:205
 msgid "From:"
 msgstr ""
 
-#: ../html/lielas.html:187 ../html/lielas.html:195
-msgid "Select date"
-msgstr ""
-
-#: ../html/lielas.html:192
+#: ../html/lielas.html:210
 msgid "To:"
 msgstr ""
 
-#: ../html/lielas.html:208
+#: ../html/lielas.html:223
 msgid "Save filter..."
 msgstr ""
 
-#: ../html/lielas.html:212
+#: ../html/lielas.html:227
 msgid "Save filter"
 msgstr ""
 
-#: ../html/lielas.html:218
+#: ../html/lielas.html:233
 msgid "select Filter..."
 msgstr ""
 
-#: ../html/lielas.html:228
+#: ../html/lielas.html:243
 msgid "Load"
 msgstr ""
 
-#: ../html/lielas.html:233 ../html/lielas.html:343
+#: ../html/lielas.html:248 ../html/lielas.html:358
 msgid "export CSV"
 msgstr ""
 
-#: ../html/lielas.html:237
+#: ../html/lielas.html:252
 msgid "reset"
 msgstr ""
 
-#: ../html/lielas.html:246
+#: ../html/lielas.html:261
 msgid "Device list"
 msgstr ""
 
-#: ../html/lielas.html:261
+#: ../html/lielas.html:276
 msgid "Addr"
 msgstr ""
 
-#: ../html/lielas.html:339
+#: ../html/lielas.html:354
 msgid "marked devices:"
 msgstr ""
 
-#: ../html/lielas.html:436
+#: ../html/lielas.html:451
 msgid "Status"
 msgstr ""
 
-#: ../html/lielas.html:509
+#: ../html/lielas.html:524
 msgid "Latest measurements"
 msgstr ""
 
-#: ../html/lielas.html:618
+#: ../html/lielas.html:633
 msgid "Create"
 msgstr ""
 

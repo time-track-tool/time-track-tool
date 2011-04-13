@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 10:09+0200\n"
+"POT-Creation-Date: 2011-04-13 16:04+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3891,9 +3891,6 @@ msgid "Time range:"
 msgstr ""
 
 msgid "From:"
-msgstr ""
-
-msgid "Select date"
 msgstr ""
 
 msgid "To:"

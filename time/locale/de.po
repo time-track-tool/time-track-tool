@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 10:09+0200\n"
+"POT-Creation-Date: 2011-04-13 16:04+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3973,9 +3973,6 @@ msgstr "Zeitrahmen"
 msgid "From:"
 msgstr "Von:"
 
-msgid "Select date"
-msgstr "Datum wählen"
-
 msgid "To:"
 msgstr "Bis:"
 
@@ -4823,6 +4820,9 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "Select date"
+#~ msgstr "Datum wählen"
 
 #~ msgid "Sensors"
 #~ msgstr "Sensoren"
