@@ -130,6 +130,8 @@
                   (request.filterspec.get('sensor.device') or [])
           ; formgrp python: dict.fromkeys
                   (request.filterspec.get('sensor.device.device_group') or [])
+          ; formsns python: dict.fromkeys
+                  (request.filterspec.get('sensor') or [])
           ; grps    python: dict (id=formdev.keys(),device_group=formgrp.keys())
           ; idx    python: dict ((k,v) for (k,v) in grps.iteritems() if v)
           ; devs    python: db.device.filter(None, idx, sort=('+', 'name'))
@@ -323,8 +325,11 @@
                                + ['', ' active_row'][s.designator() == sel]">
                             <span class="col_check">
                               <input name="sensor" type="checkbox"
-                                     tal:attributes="value s/id"
-                                     class="selectbox" />
+                                     tal:attributes=
+                                     " value   s/id
+                                     ; checked python:
+                                               not formsns or s.id in formsns
+                                     ">
                             </span>
                             <span class="col_name"   tal:content="s/name" />
                             <span class="col_device" tal:content="s/adr" />

@@ -128,7 +128,7 @@ $(document).ready(function() {
 	// --------------
 
 	// Alle aktivieren
-	$('input[type=checkbox]').attr('checked', true);
+	$('.selectbox').attr('checked', true);
 
 	// Alle umschalten
 	$("#list_header input").click(function(){
