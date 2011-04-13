@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 16:04+0200\n"
+"POT-Creation-Date: 2011-04-13 21:54+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3878,6 +3878,12 @@ msgstr "new IT-Issue"
 msgid "Logout"
 msgstr ""
 
+msgid "Name:"
+msgstr ""
+
+msgid "Password:"
+msgstr ""
+
 msgid "Login"
 msgstr "Login"
 
@@ -3896,19 +3902,7 @@ msgstr ""
 msgid "To:"
 msgstr ""
 
-msgid "Save filter..."
-msgstr ""
-
-msgid "Save filter"
-msgstr ""
-
-msgid "select Filter..."
-msgstr ""
-
-msgid "Load"
-msgstr ""
-
-msgid "export CSV"
+msgid "Apply filter"
 msgstr ""
 
 msgid "reset"
@@ -3920,7 +3914,22 @@ msgstr ""
 msgid "Addr"
 msgstr ""
 
-msgid "marked devices:"
+msgid "Selection:"
+msgstr ""
+
+msgid "export CSV"
+msgstr ""
+
+msgid "select Filter..."
+msgstr ""
+
+msgid "Load"
+msgstr ""
+
+msgid "Save filter..."
+msgstr ""
+
+msgid "Save filter"
 msgstr ""
 
 msgid "Status"
@@ -3951,9 +3960,6 @@ msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
 msgid "Login:"
-msgstr ""
-
-msgid "Password:"
 msgstr ""
 
 msgid "Remember me?:"

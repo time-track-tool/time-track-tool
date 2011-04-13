@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 16:04+0200\n"
+"POT-Creation-Date: 2011-04-13 21:54+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3958,6 +3958,12 @@ msgstr "Neues IT Issue"
 msgid "Logout"
 msgstr ""
 
+msgid "Name:"
+msgstr ""
+
+msgid "Password:"
+msgstr "Passwort:"
+
 msgid "Login"
 msgstr "Login"
 
@@ -3976,20 +3982,8 @@ msgstr "Von:"
 msgid "To:"
 msgstr "Bis:"
 
-msgid "Save filter..."
-msgstr "Filter speichern..."
-
-msgid "Save filter"
-msgstr "Speichern"
-
-msgid "select Filter..."
-msgstr "Filter wählen..."
-
-msgid "Load"
-msgstr "Laden"
-
-msgid "export CSV"
-msgstr "CSV exportieren"
+msgid "Apply filter"
+msgstr "Filter anwenden"
 
 msgid "reset"
 msgstr "zurücksetzen"
@@ -4000,8 +3994,23 @@ msgstr "Geräteliste"
 msgid "Addr"
 msgstr "Adr"
 
-msgid "marked devices:"
-msgstr "markierte Geräte:"
+msgid "Selection:"
+msgstr "Auswahl:"
+
+msgid "export CSV"
+msgstr "CSV exportieren"
+
+msgid "select Filter..."
+msgstr "Filter wählen..."
+
+msgid "Load"
+msgstr "Laden"
+
+msgid "Save filter..."
+msgstr "Filter speichern..."
+
+msgid "Save filter"
+msgstr "Speichern"
 
 msgid "Status"
 msgstr "Status"
@@ -4032,9 +4041,6 @@ msgstr "<b>Cookies</b> und <b>JavaScript</b> müssen eingeschaltet sein."
 
 msgid "Login:"
 msgstr "Login:"
-
-msgid "Password:"
-msgstr "Passwort:"
 
 msgid "Remember me?:"
 msgstr "Dauerhaftes Login?:"
@@ -4820,6 +4826,9 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "marked devices:"
+#~ msgstr "markierte Geräte:"
 
 #~ msgid "Select date"
 #~ msgstr "Datum wählen"
