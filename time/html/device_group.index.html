@@ -2,7 +2,7 @@
   <tal:block metal:fill-slot="content">
     <tal:block tal:define=
          " dgrps python:db.device_group.list()
-         ; sel   python: (  classname == 'device_group' and context
+         ; sel   python: (  classname == 'device_group' and ctxid and context
                          or dgrps[0]
                          ).designator()
          ">

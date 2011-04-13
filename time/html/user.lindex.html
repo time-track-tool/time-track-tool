@@ -2,7 +2,7 @@
   <tal:block metal:fill-slot="content">
     <tal:block tal:define=
          " users python:db.user.list()
-         ; sel   python: (  classname == 'user' and context
+         ; sel   python: (  classname == 'user' and ctxid and context
                          or users[0]
                          ).designator()
          ">

@@ -9,6 +9,7 @@
  ; clsname         python: getattr (context, '_classname', '')
  ; classname       context/_classname|db/user/_classname
  ; locale          python: utils.getlocale (request.client, db)
+ ; ctxid           context/id|nothing
    ">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -126,7 +127,8 @@
           ; asens python: utils.sensors_by_device (db, is_app = True)
           ; ssens python: utils.sensors_by_device (db, is_app = False)
           ; meas  python: utils.sensor_measurements (db)
-          ; sel   python: (  classname in ('sensor' , 'device') and context
+          ; sel   python: (  classname in ('sensor' , 'device')
+                             and ctxid and context
                           or devs [0]
                           ).designator()
           ">
