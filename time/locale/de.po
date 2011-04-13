@@ -3983,7 +3983,7 @@ msgid "Save filter"
 msgstr "Speichern"
 
 msgid "select Filter..."
-msgstr "Filter auswählen..."
+msgstr "Filter wählen..."
 
 msgid "Load"
 msgstr "Laden"

@@ -147,6 +147,7 @@ template_by_class = \
     { ''             : ''
     , 'device_group' : 'index'
     , 'device'       : 'index'
+    , 'measurement'  : 'index'
     }
 
 bodyclass = \

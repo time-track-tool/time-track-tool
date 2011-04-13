@@ -246,6 +246,18 @@ $(document).ready(function() {
             }
         });
 
+        $("#device_select").change(function(){
+            var v = $("#device_select").val();
+            $("#device_input").val(v);
+            $("#device_id").val(v);
+        });
+
+        $("#device_group_select").change(function(){
+            var v = $("#device_group_select").val();
+            $("#device_group_input").val(v)
+            $("#device_group").val(v);
+        });
+
         function copy_date(){
             var d = $('#measurementdate').attr('value');
             var ds = d.split(';');
