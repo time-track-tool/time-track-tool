@@ -15,7 +15,7 @@
         <div id="list">
           <div class="list_header">Settings</div>
           <div id="settings_body">
-            <form id="settings" action="" method="POST">
+            <form id="settings" action="dyndns" method="POST">
               <div class="settings_header" i18n:translate="">Device</div>
               <div class="settings_row">
                 <div class="settings_title" i18n:translate="">User:</div>
@@ -69,8 +69,14 @@
                     <div class="settings_title" i18n:translate="">DynDNS:</div>
                     <tal:block tal:replace="structure python:utils.fieldlabel
                          ('dyndns', 'syslog')" />
-                    <div class="settings_field"
-                         tal:content="structure d/syslog/field"/>
+                    <input type="hidden" id="syslog" tal:attributes=
+                           " value python: d.syslog._value
+                           ; name  python: d.syslog._formname
+                           ">
+                    <div class="settings_field">
+                      <input id="syslog_cb" type="checkbox"
+                             tal:attributes="checked d/syslog">
+                    </div>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel

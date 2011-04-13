@@ -533,9 +533,13 @@
                     <li>
                       <tal:block tal:replace="structure python:utils.fieldlabel
                            ('sensor', 'do_logging')" />
+                      <input type="hidden" id="do_logging" tal:attributes=
+                             " value python: s.do_logging._value
+                             ; name  python: s.do_logging._formname
+                             ">
                       <span class="value">
-                        <tal:block
-                         tal:replace="structure python:s.do_logging.field ()" />
+                        <input id="do_logging_cb" type="checkbox"
+                               tal:attributes="checked s/do_logging"/>
                       </span>
                     </li>
                   </ul>

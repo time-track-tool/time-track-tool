@@ -258,6 +258,18 @@ $(document).ready(function() {
             $("#device_group").val(v);
         });
 
+        // reset password to remove 'helpful' browser behaviour 
+        $(".settings_field").children('[type="password"]').attr('value','');
+        $(".value").children('[type="password"]').attr('value','');
+
+        $("#syslog_cb").change(function(){
+            $("#syslog").val($("#syslog_cb").attr('checked') * 1);
+        });
+
+        $("#do_logging_cb").change(function(){
+            $("#do_logging").val($("#do_logging_cb").attr('checked') * 1);
+        });
+
         function copy_date(){
             var d = $('#measurementdate').attr('value');
             var ds = d.split(';');
@@ -276,9 +288,5 @@ $(document).ready(function() {
             // ugly hack to call this after form has cleared
             setTimeout(copy_date, 1);
         });
-
-        // reset password to remove 'helpful' browser behaviour 
-        $(".settings_field").children('[type="password"]').attr('value','');
-        $(".value").children('[type="password"]').attr('value','');
 
 });
