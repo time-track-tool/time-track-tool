@@ -146,6 +146,7 @@ def is_lielas () :
 template_by_class = \
     { ''             : ''
     , 'device_group' : 'index'
+    , 'device'       : 'index'
     }
 
 bodyclass = \
