@@ -654,6 +654,12 @@ hr {
         top: 0px;
         }
 	
+.settings_checkbox input {
+	position: absolute;
+	top: 3px;
+        right: 18px;
+	}
+
 .settings_field input {
 	position: absolute;
 	top: 3px;
