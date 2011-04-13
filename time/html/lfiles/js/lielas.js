@@ -3,50 +3,66 @@ $(document).ready(function() {
 	// --------------
 	// Timepicker
 	// --------------
-	
-	var timepickerOptions = { 
-		format: '%d.%m.%z  %H:00',
-		labelTitle: 'Datum und Zeit ausw&auml;hlen',
-		labelHour: 'Uhrzeit',
-		labelDayOfMonth: 'Tag',
-		labelMonth: 'Monat',
-		labelYear: 'Jahr',
-		firstDOW: 1,
-		dayAbbreviations: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-		monthAbbreviations: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
-	}
-	
-  	$('img#datepick_from').click( function() {
-    	$('#date_from').AnyTime_picker(timepickerOptions).focus();
-    	$(this).unbind("click"); 
-	});
-	
-  	$('img#datepick_to').click( function() {
-    	$('#date_to').AnyTime_picker(timepickerOptions).focus();
-    	$(this).unbind("click"); 
+
+	$.datepicker.regional['de'] = {
+		closeText: 'schließen',
+		prevText: '&#x3c;zurück',
+		nextText: 'Vor&#x3e;',
+		currentText: 'heute',
+		monthNames: ['Januar','Februar','März','April','Mai','Juni',
+		'Juli','August','September','Oktober','November','Dezember'],
+		monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun',
+		'Jul','Aug','Sep','Okt','Nov','Dez'],
+		dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+		dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+		dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+		weekHeader: 'Wo',
+		dateFormat: 'dd.mm.yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
+
+	$.timepicker.regional['de'] = {
+		timeText: 'Zeit',
+		hourText: 'Stunde',
+		minuteText: 'Minute',
+		currentText: 'Jetzt',
+		closeText: 'Übernehmen' };
+
+	$.datepicker.setDefaults($.datepicker.regional['de']);
+	$.timepicker.setDefaults($.timepicker.regional['de']);
+
+	$( "#date_from" ).datetimepicker({
+		showOn: "button",
+		buttonImage: "@@file/lfiles/images/datepicker.png",
+		buttonImageOnly: true
 	});
 
-        // reset password to remove 'helpful' browser behaviour 
-        $(".settings_field").children('[type="password"]').attr('value','');
-        $(".value").children('[type="password"]').attr('value','');
-	
-	// --------------
-	// Alles ein- und ausklappen
-	// --------------
-	
-  $('img#main_collapse').each(function() {
-	$(this).click(function() {
-		if ($(this).hasClass('closed')) {
-			$('#list_content img').removeClass('closed');
-			$('ul.sensor').show('300');			
-		} else {
-			$('#list_content img').addClass('closed');		
-			$('ul.sensor').hide('300');
-		}
-		$(this).toggleClass('closed');
+	$( "#date_to" ).datetimepicker({
+		showOn: "button",
+		buttonImage: "@@file/lfiles/images/datepicker.png",
+		buttonImageOnly: true
 	});
-  });
-	
+
+
+        // --------------
+        // Alles ein- und ausklappen
+        // --------------
+ 
+   $('img#main_collapse').each(function() {
+        $(this).click(function() {
+                if ($(this).hasClass('closed')) {
+                        $('#list_content img').removeClass('closed');
+                        $('ul.sensor').show('300');
+                } else {
+                        $('#list_content img').addClass('closed');
+                        $('ul.sensor').hide('300');
+                }
+                $(this).toggleClass('closed');
+        });
+   });
+ 
 	// --------------
 	// Sensoren ein- und ausklappen
 	// --------------
@@ -234,5 +250,9 @@ $(document).ready(function() {
             // ugly hack to call this after form has cleared
             setTimeout(copy_date, 1);
         });
+
+        // reset password to remove 'helpful' browser behaviour 
+        $(".settings_field").children('[type="password"]').attr('value','');
+        $(".value").children('[type="password"]').attr('value','');
 
 });

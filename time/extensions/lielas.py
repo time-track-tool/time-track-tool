@@ -28,7 +28,7 @@ from rsclib.autosuper               import autosuper
 from roundup.cgi.actions            import Action
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
-from common                         import user_has_role, get_num_locale
+import common
 
 # Action codes and strings used in the web-interface and as action names
 # in this module. We make sure these are properly localized here
@@ -81,7 +81,7 @@ class Delete_Something (Action, autosuper) :
 
     def handle (self) :
         """ Common permission check -- we may want to add more roles here """
-        if not user_has_role (self.db, self.db.getuid (), 'Admin') :
+        if not common.user_has_role (self.db, self.db.getuid (), 'Admin') :
             raise Reject ("You are not allowed to execute this action")
     # end def handle
 # end class Delete_Something
@@ -142,6 +142,11 @@ class Delete_DB (Delete_Something) :
 def is_lielas () :
     return True
 # end def is_lielas
+
+template_by_class = \
+    { ''             : ''
+    , 'device_group' : 'index'
+    }
 
 def menu_by_class (db) :
     uok = db.user.is_edit_ok ()
@@ -253,7 +258,9 @@ def init (instance) :
     reg ('latest_measurements', latest_measurements)
     reg ('sensors_by_device',   sensors_by_device)
     reg ('sensor_measurements', sensor_measurements)
-    reg ('getlocale',           get_num_locale)
+    reg ('getlocale',           common.get_num_locale)
+    reg ('tracker_languages',   common.tracker_languages)
     reg ('anon_class',          anon_class)
     reg ('dyndns_default_host', dyndns_default_host)
+    reg ('template_by_class',   template_by_class)
 # end def init

@@ -91,6 +91,25 @@ a:active, a:focus {outline: none;}
 .navi_item.active .left, .navi_item.active .right, .navi_item.active a { background-position: 0 -35px; }
 .navi_item.logout .left, .navi_item.logout .right, .navi_item.logout a { background-position: 0 -70px; }
 
+.navi_lang {
+	height: 35px;
+	overflow: hidden;
+	float: left;
+	padding-left: 20px;
+	color: #888888;
+	font-size: 12px;
+	}
+
+.navi_lang a {
+	line-height: 40px;
+	color: #888888;
+	text-decoration: none;
+	}
+	
+.navi_lang a.active, .navi_lang a:hover {
+	color: #999999;
+	}
+	
 /* @end */
 
 /* @group Filter */
@@ -236,8 +255,22 @@ input.filterlink {
 	background-color: #eeeeee;
 	}
 
+a.filterlink {
+	font-size: 11px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #058636;
+	line-height: 20px;
+	padding-right: 5px;
+	}
+
 select#filterladen {
 	width: 130px;
+	}
+
+.changebox {
+	float: left;
+	padding-right: 10px;
 	}
 
 /* @end */
@@ -649,6 +682,19 @@ hr {
 /* @group Login */
 
 .login #sidebar { float: left; }	
+
+/* @end */
+
+/* @group timepicker */
+
+#ui-datepicker-div {
+	font-size: 12px;
+	}
+.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
 
 /* @end */
 

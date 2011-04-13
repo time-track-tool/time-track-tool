@@ -1011,7 +1011,7 @@ def persons_for_adr (db, nodeid) :
     return db.person.filter (None, dict (address = nodeid))
 # end def adr_for_person
 
-def get_num_locale (client, db) :
+def tracker_languages (client, db) :
     try :
         db = db._db
     except AttributeError :
@@ -1019,7 +1019,11 @@ def get_num_locale (client, db) :
     language = client.language or db.config["TRACKER_LANGUAGE"]
     if not isinstance (language, list) :
         language = [language]
-    for l in language :
+    return language
+# end def tracker_languages
+
+def get_num_locale (client, db) :
+    for l in tracker_languages (client, db) :
         try :
             locale.setlocale (locale.LC_NUMERIC, locale.normalize (l))
             break
@@ -1027,6 +1031,5 @@ def get_num_locale (client, db) :
             pass
     return locale
 # end def get_num_locale
-
 
 ### __END__

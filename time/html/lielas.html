@@ -18,6 +18,10 @@
   <script type="text/javascript"
           src="@@file/lfiles/js/jquery-1.4.2.min.js"></script>
   <script type="text/javascript"
+          src="@@file/lfiles/js/jquery-ui-1.8.11.custom.min.js"></script>
+  <script type="text/javascript"
+          src="@@file/lfiles/js/jquery-ui-timepicker-addon.js"></script>
+  <script type="text/javascript"
           src="@@file/lfiles/js/jquery.tinysort.min.js"></script>
   <script type="text/javascript" src="@@file/lfiles/js/lielas.js"></script>
 </head>
@@ -57,6 +61,22 @@
             <div class="right"></div>
           </div>
         </tal:block>
+        <div class="navi_lang">
+          <a tal:repeat="l python:('de', 'en')" tal:content="python:l.upper()"
+             tal:attributes=
+                 " href  python:request.indexargs_url
+                         ( clsname
+                         , { '@language':l
+                           , '@template':utils.template_by_class.get
+                                         (clsname,'lindex')
+                           }
+                         )
+                 ; class python:['', 'active']
+                                [utils.tracker_languages (request.client, db)[0]
+                                 == l
+                                ]
+                 "/>
+        </div>
       </div>
     </div>
     <tal:block tal:condition="is_user">
@@ -184,17 +204,11 @@
                 <label for="date_from" i18n:translate="">From:</label>
                 <input name="date_from" id="date_from" class="filter_date"
                        type="text" />
-                <img src="@@file/lfiles/images/datepicker.png"
-                     width="28" height="20" id="datepick_from"
-                      alt="Select date" i18n:attributes="alt"/> 
               </div>
               <div class="line_short">
                 <label for="date_to" i18n:translate="">To:</label>
                 <input name="date_to" id="date_to" class="filter_date"
                        type="text" />
-                <img src="@@file/lfiles/images/datepicker.png"
-                     width="28" height="20" id="datepick_to"
-                      alt="Select date" i18n:attributes="alt"/> 
               </div>              
             </div>
             <div class="filter_item filter_submit" id="filter_submit"
