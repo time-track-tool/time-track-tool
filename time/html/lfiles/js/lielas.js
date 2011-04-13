@@ -30,9 +30,6 @@ $(document).ready(function() {
 		currentText: 'Jetzt',
 		closeText: 'Übernehmen' };
 
-	$.datepicker.setDefaults($.datepicker.regional['de']);
-	$.timepicker.setDefaults($.timepicker.regional['de']);
-
 	$( "#date_from" ).datetimepicker({
 		showOn: "button",
 		buttonImage: "@@file/lfiles/images/datepicker.png",
@@ -44,6 +41,10 @@ $(document).ready(function() {
 		buttonImage: "@@file/lfiles/images/datepicker.png",
 		buttonImageOnly: true
 	});
+
+        l = $(".navi_lang").attr('lang')
+	$.datepicker.setDefaults($.datepicker.regional[l]);
+	$.timepicker.setDefaults($.timepicker.regional[l]);
 
 
         // --------------

@@ -61,7 +61,9 @@
             <div class="right"></div>
           </div>
         </tal:block>
-        <div class="navi_lang">
+        <div class="navi_lang" tal:define="lang python:
+               utils.tracker_languages (request.client, db)[0]"
+             tal:attributes="lang lang">
           <a tal:repeat="l python:('de', 'en')" tal:content="python:l.upper()"
              tal:attributes=
                  " href  python:request.indexargs_url
@@ -71,10 +73,7 @@
                                          (clsname,'lindex')
                            }
                          )
-                 ; class python:['', 'active']
-                                [utils.tracker_languages (request.client, db)[0]
-                                 == l
-                                ]
+                 ; class python: ['', 'active'][lang == l]
                  "/>
         </div>
       </div>
