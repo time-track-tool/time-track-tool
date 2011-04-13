@@ -2,9 +2,10 @@
   <tal:block metal:fill-slot="content">
     <tal:block tal:define=
          " dgrps python:db.device_group.list()
-         ; sel   python: (  classname == 'device_group' and ctxid and context
-                         or dgrps[0]
-                         ).designator()
+         ; xsel  python: (  classname == 'device_group' and ctxid and context
+                         or dgrps and dgrps[0]
+                         )
+         ; sel   python: xsel and xsel.designator() or 'new'
          ">
       <div id="content">
         <div id="list">
@@ -76,7 +77,8 @@
             </form>
           </div>
         </tal:block>
-        <div id="details_new" class="details_body"
+        <div id="details_new" tal:attributes="class python:
+             'details_body' +  ['', ' active_detail']['new' == sel]"
              tal:define="dg python:utils.anon_class(db, 'device_group')">
           <form method="POST" id="settings_form_dg_new"
                 name="settings_form_dg_new" action="device_group"
