@@ -17,18 +17,32 @@ $(document).ready(function() {
 		dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
 		dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
 		weekHeader: 'Wo',
-		dateFormat: 'dd.mm.yy',
+		dateFormat: 'yy-mm-dd',
 		firstDay: 1,
 		isRTL: false,
 		showMonthAfterYear: false,
-		yearSuffix: ''};
+		yearSuffix: '',
+                };
+
+	$.datepicker.regional['en'] = {
+                dateFormat: 'yy-mm-dd',
+                };
+
 
 	$.timepicker.regional['de'] = {
 		timeText: 'Zeit',
 		hourText: 'Stunde',
 		minuteText: 'Minute',
 		currentText: 'Jetzt',
-		closeText: 'Übernehmen' };
+		closeText: 'Übernehmen',
+                timeFormat: 'mm:hh',
+                separator: '.',
+                };
+
+	$.timepicker.regional['en'] = {
+                timeFormat: 'mm:hh',
+                separator: '.',
+                };
 
 	$( "#date_from" ).datetimepicker({
 		showOn: "button",
