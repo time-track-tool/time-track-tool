@@ -35,14 +35,18 @@ $(document).ready(function() {
 		minuteText: 'Minute',
 		currentText: 'Jetzt',
 		closeText: 'Übernehmen',
-                timeFormat: 'mm:hh',
+                timeFormat: 'hh:mm:ss',
                 separator: '.',
                 };
 
 	$.timepicker.regional['en'] = {
-                timeFormat: 'mm:hh',
+                timeFormat: 'hh:mm:ss',
                 separator: '.',
                 };
+
+        l = $(".navi_lang").attr('lang')
+	$.datepicker.setDefaults($.datepicker.regional[l]);
+	$.timepicker.setDefaults($.timepicker.regional[l]);
 
 	$( "#date_from" ).datetimepicker({
 		showOn: "button",
@@ -55,11 +59,6 @@ $(document).ready(function() {
 		buttonImage: "@@file/lfiles/images/datepicker.png",
 		buttonImageOnly: true
 	});
-
-        l = $(".navi_lang").attr('lang')
-	$.datepicker.setDefaults($.datepicker.regional[l]);
-	$.timepicker.setDefaults($.timepicker.regional[l]);
-
 
         // --------------
         // Alles ein- und ausklappen
