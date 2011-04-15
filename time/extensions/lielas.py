@@ -139,8 +139,8 @@ class Delete_DB (Delete_Something) :
     # end def handle
 # end class Delete_DB
 
-def is_lielas () :
-    return True
+def is_lielas (request) :
+    return request.env.get('TRACKER_NAME') == 'lielas'
 # end def is_lielas
 
 template_by_class = \

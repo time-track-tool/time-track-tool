@@ -1,7 +1,7 @@
-<tal:block tal:condition="utils/is_lielas">
+<tal:block tal:condition="python:utils.is_lielas(request)">
   <tal:block metal:use-macro="templates/lielas/macros/lielas-main"/>
 </tal:block>
-<tal:block tal:condition="not:utils/is_lielas">
+<tal:block tal:condition="python:not utils.is_lielas(request)">
   <tal:block metal:use-macro="templates/page/macros/icing">
    <title metal:fill-slot="head_title" i18n:translate="">Welcome</title>
    <tal:block metal:fill-slot="create_or_query">
