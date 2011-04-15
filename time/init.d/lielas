@@ -59,7 +59,7 @@ ROOTPID=$RUNDIR/handler.pid
 SERPID=$RUNDIR/daemon.pid
 LOGFILE=/var/log/roundup/roundup.log
 TRACKERS="lielas=$LIELAS_PATH"
-OPTIONS="-- -p 8080 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
+OPTIONS="-- -p 80 -n 0.0.0.0 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
 NICENESS=0
 
 
