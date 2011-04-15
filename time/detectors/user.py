@@ -152,7 +152,7 @@ def new_user (db, cl, nodeid, new_values) :
     id = nodeid
     sd = None
     if 'nickname' in cl.properties :
-        nickname = new_values ['nickname']
+        nickname = new_values.get ('nickname')
     if 'firstname' in cl.properties :
         fn    = new_values ['firstname']
         ln    = new_values ['lastname']

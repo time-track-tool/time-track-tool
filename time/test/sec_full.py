@@ -120,6 +120,7 @@ Role "issue_admin":
  User is allowed to edit status (Edit for "status" only)
  User is allowed to edit status_transition (Edit for "status_transition" only)
 Role "it":
+ Create (Create for "user_contact" only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)
  User is allowed Edit on (Edit for "org_location": ('smb_domain', 'dhcp_server', 'domino_dn') only)
  User is allowed Edit on (Edit for "organisation": ('domain_part',) only)
@@ -127,6 +128,7 @@ Role "it":
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username', 'is_lotus_user', 'sync_with_ldap', 'group', 'secondary_groups', 'uid', 'home_directory', 'login_shell', 'samba_home_drive', 'samba_home_path', 'samba_kickoff_time', 'samba_lm_password', 'samba_logon_script', 'samba_nt_password', 'samba_profile_path', 'samba_pwd_can_change', 'samba_pwd_last_set', 'samba_pwd_must_change', 'user_password', 'shadow_last_change', 'shadow_min', 'shadow_max', 'shadow_warning', 'shadow_inactive', 'shadow_expire', 'shadow_used') only)
  User is allowed Edit on (Edit for "user": ('contacts',) only)
  User is allowed Edit on (Edit for "user": ('is_lotus_user', 'sync_with_ldap', 'group', 'secondary_groups', 'uid', 'home_directory', 'login_shell', 'samba_home_drive', 'samba_home_path', 'samba_kickoff_time', 'samba_lm_password', 'samba_logon_script', 'samba_nt_password', 'samba_profile_path', 'samba_pwd_can_change', 'samba_pwd_last_set', 'samba_pwd_must_change', 'user_password', 'shadow_last_change', 'shadow_min', 'shadow_max', 'shadow_warning', 'shadow_inactive', 'shadow_expire', 'shadow_used') only)
+ User is allowed Edit on (Edit for "user_contact": ('contact', 'contact_type', 'description', 'order', 'user') only)
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
