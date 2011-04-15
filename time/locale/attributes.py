@@ -54,6 +54,7 @@ schemas = \
     , 'doc'
     , 'dyndns'
     , 'lielas'
+    , 'umts'
     , 'user'
     , 'core'
     )

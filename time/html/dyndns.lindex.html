@@ -6,7 +6,7 @@
          ; d     python:(db.dyndns.list() or [None])[0]
          ; dh    python:d and utils.dyndns_default_host (db, d)
          ; ds    python:dh and dh.dyndns_service
-         ; um    python:None
+         ; um    python:(db.umts.list() or [None])[0]
          ; sel   python: (  classname == 'user' and context
                          or u
                          ).designator()
@@ -113,6 +113,16 @@
                          ('dyndns_server', 'hostname')" />
                     <div class="settings_field"
                          tal:content="structure dh/hostname/field"/>
+                  </div>
+                </tal:block>
+                <tal:block tal:condition="python: um">
+                  <div class="settings_row">
+                    <div class="settings_title"
+                         i18n:translate="">UMTS-Internet-Access:</div>
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('umts', 'pin')" />
+                    <div class="settings_field"
+                         tal:content="structure um/pin/field"/>
                   </div>
                 </tal:block>
               </tal:block>

@@ -86,7 +86,7 @@ def dyndns_update (db, cl, nodeid, old_values) :
     f.close ()
     # Notify a daemon to move the file in place
     s = socket (AF_UNIX, SOCK_SEQPACKET)
-    s.connect ('/var/run/roundup/rootsock')
+    s.connect (db.config.detectors.UPDATE_SOCKET)
     s.send ('dyndns %s' % fn)
     s.close ()
 # end def dyndns_update
@@ -111,8 +111,6 @@ def dyndns_host (db, cl, nodeid, new_values) :
 # end def dyndns_host
 
 def init (db) :
-    if 'measurement' not in db.classes :
-        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

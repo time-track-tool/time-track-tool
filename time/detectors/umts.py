@@ -1,9 +1,6 @@
-#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting.
-# Reichergasse 131, A-3411 Weidling.
-# Web: http://www.runtux.com Email: office@runtux.com
-# All rights reserved
+# Copyright (C) 2011 Ralf Schlatterbeck. All rights reserved
+# Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,45 +22,27 @@
 # software without the need to publish your source-code under the GNU
 # General Public License above, contact
 # Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
-#
-#++
-# Name
-#    schema-lielas
-#
-# Purpose
-#    Specify the DB-Schema for Lielas data logger
-#    Link this file to schema.py
-#--
-#
 
-import sys, os
+import os
+from socket                         import socket, SOCK_SEQPACKET, AF_UNIX
+from roundup.exceptions             import Reject
+from roundup.cgi.TranslationService import get_translation
 
-sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-from schemacfg import schemadef
+_ = lambda x : x
 
-# sub-schema definitins to include
-# Note: order matters, core is always last.
-schemas = \
-    ( 'lielas'
-    , 'user'
-    , 'dyndns'
-    , 'umts'
-    , 'core'
-    )
+def umts_update (db, cl, nodeid, old_values) :
+    pin = cl.get (nodeid, 'pin')
+    # Notify a daemon
+    s = socket (AF_UNIX, SOCK_SEQPACKET)
+    s.connect (db.config.detectors.UPDATE_SOCKET)
+    s.send ('umtspin %s' % pin)
+    s.close ()
+# end def umts_update
 
-importer = schemadef.Importer (globals (), schemas)
-del sys.path [0:1]
-
-importer.update_security ()
-
-classes = \
-    [ ("user", ["User"], [])
-    ]
-schemadef.register_class_permissions (db, classes, [])
-
-schemadef.allow_user_details (db, 'User', 'Edit')
-
-# oh, g'wan, let anonymous access the web interface too
-# NOT really !!!
-db.security.addPermissionToRole('Anonymous', 'Web Access')
-db.security.addPermissionToRole('guest', 'Web Access')
+def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    if 'umts' in db.classes :
+        db.umts.react         ("set",    umts_update)
+# end def init

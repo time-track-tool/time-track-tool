@@ -871,3 +871,5 @@ if 'sup_prio' in db.classes :
     db.sup_prio.create (name = "showstopper for many persons",        order = 6)
     db.sup_prio.create (name = "unknown",                             order = 7)
 
+if 'umts' in db.classes :
+    db.umts.create (tty = "/dev/ttyUSB0")

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-11 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -50,10 +50,10 @@ class Server (Exec) :
         2.6.4.
     """
         
-    def __init__ (self, path, *users, **kw) :
+    def __init__ (self, socketpath, *users, **kw) :
         self.logprefix = 'root-'
         self.__super.__init__ (**kw)
-        self.path  = path
+        self.path  = socketpath
         self.users = users
         self.sock  = socket (AF_UNIX, SOCK_SEQPACKET)
         self.uids  = {}
@@ -83,6 +83,19 @@ class Server (Exec) :
             self.log.warning ('ddclient restart: %s' % line)
     # end def handle_dyndns
 
+    def handle_umtspin (self, *args) :
+        if len (args) != 1 :
+            return
+        a = args [0]
+        try :
+            f = open ('/etc/usb-dsl-pin.conf', 'w')
+            f.write  ('%s\n' % a)
+            f.close  ()
+        except IOError, cause :
+            self.log.error ('umtspin: %s' % cause)
+            return
+    # end def handle_dyndns
+
     def serve_forever (self) :
         self.sock.listen (5)
         while True :
@@ -109,7 +122,7 @@ class Server (Exec) :
 # end class Server
 
 if __name__ == "__main__" :
-    parser = OptionParser (usage = '%prog [options] <path>')
+    parser = OptionParser (usage = '%prog [options] <socketpath>')
     parser.add_option \
         ( "-u", "--user"
         , dest    = "user"

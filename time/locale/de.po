@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 21:54+0200\n"
+"POT-Creation-Date: 2011-04-15 17:16+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3925,6 +3925,9 @@ msgstr ""
 msgid "DynDNS:"
 msgstr ""
 
+msgid "UMTS-Internet-Access:"
+msgstr "UMTS-Internet-Zugriff:"
+
 msgid "Submit Changes"
 msgstr ""
 
@@ -4530,6 +4533,9 @@ msgstr "Arbeitspaket-Gruppe"
 msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
 
+msgid "umts"
+msgstr ""
+
 msgid "user_contact"
 msgstr "User-Kontakt"
 
@@ -4811,6 +4817,9 @@ msgstr ""
 
 msgid "rec"
 msgstr ""
+
+msgid "pin"
+msgstr "PIN Code"
 
 msgid "header"
 msgstr ""

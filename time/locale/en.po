@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-13 21:54+0200\n"
+"POT-Creation-Date: 2011-04-15 17:16+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3845,6 +3845,9 @@ msgstr ""
 msgid "DynDNS:"
 msgstr ""
 
+msgid "UMTS-Internet-Access:"
+msgstr ""
+
 msgid "Submit Changes"
 msgstr ""
 
@@ -4448,6 +4451,9 @@ msgstr "Work package group"
 msgid "user_dynamic"
 msgstr "Dynamic User Data"
 
+msgid "umts"
+msgstr ""
+
 msgid "user_contact"
 msgstr "User contact"
 
@@ -4729,6 +4735,9 @@ msgstr ""
 
 msgid "rec"
 msgstr "Recording type"
+
+msgid "pin"
+msgstr "PIN code"
 
 msgid "header"
 msgstr "Mail-Header"
