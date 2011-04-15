@@ -115,6 +115,11 @@ properties = \
         , 'tty'
         ]
       )
+    , ( 'umts'
+      , [ 'pin'
+        , 'tty'
+        ]
+      )
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'

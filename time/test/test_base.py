@@ -126,6 +126,7 @@ class _Test_Case (unittest.TestCase) :
         config.RDBMS_PASSWORD = "rounduptest"
         config.MAIL_DOMAIN    = "your.tracker.email.domain.example"
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
+        config.RDBMS_TEMPLATE = "template0"
         config.init_logging ()
         self.tearDown ()
         srcdir = os.path.join (os.path.dirname (__file__), '..')

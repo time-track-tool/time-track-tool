@@ -269,6 +269,15 @@ properties = \
           )
         ]
       )
+    , ( 'umts'
+      , [ ( 'pin'
+          , ["admin"]
+          )
+        , ( 'tty'
+          , ["admin"]
+          )
+        ]
+      )
     , ( 'user'
       , [ ( 'address'
           , ["admin", "user"]
