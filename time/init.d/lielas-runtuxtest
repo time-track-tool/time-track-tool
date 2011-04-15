@@ -47,7 +47,7 @@ ROOTPID=$RUNDIR/handler.pid
 SERPID=$RUNDIR/daemon.pid
 LOGFILE=$LIELAS_PATH/roundup.log
 TRACKERS="lielas=$LIELAS_PATH"
-OPTIONS="-- -p 8888 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
+OPTIONS="-- -p 8888 -n 0.0.0.0 -u $USER -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
 NICENESS=0
 
 
