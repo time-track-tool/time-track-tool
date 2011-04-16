@@ -120,7 +120,7 @@ class _Test_Case (unittest.TestCase) :
         self.backend = 'postgresql'
         self.config  = config = configuration.CoreConfig ()
         config.DATABASE       = 'db'
-        config.RDBMS_NAME     = "rounduptest"
+        config.RDBMS_NAME     = "rounduptestttt"
         config.RDBMS_HOST     = "localhost"
         config.RDBMS_USER     = "rounduptest"
         config.RDBMS_PASSWORD = "rounduptest"
@@ -818,6 +818,8 @@ class Test_Case_Timetracker (_Test_Case) :
              }
         class r : filterspec = fs
         summary_init (self.tracker)
+        ndr = self.db.daily_record.getnode ('51')
+        self.assertEqual (len (ndr.time_record), 2)
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
