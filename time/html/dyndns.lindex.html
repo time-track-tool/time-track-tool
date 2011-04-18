@@ -7,13 +7,14 @@
          ; dh    python:d and utils.dyndns_default_host (db, d)
          ; ds    python:dh and dh.dyndns_service
          ; um    python:(db.umts.list() or [None])[0]
+         ; dba   python:utils.user_has_role (db._db, request.user.id, 'Admin')
          ; sel   python: (  classname == 'user' and context
                          or u
                          ).designator()
          ">
       <div id="content" class="settings">
         <div id="list">
-          <div class="list_header">Settings</div>
+          <div class="list_header" i18n:translate="">Settings</div>
           <div id="settings_body">
             <form id="settings" action="dyndns" method="POST">
               <div class="settings_header" i18n:translate="">Device</div>
@@ -116,6 +117,7 @@
                   </div>
                 </tal:block>
                 <tal:block tal:condition="python: um">
+                  <hr />
                   <div class="settings_row">
                     <div class="settings_title"
                          i18n:translate="">UMTS-Internet-Access:</div>
@@ -127,12 +129,47 @@
                 </tal:block>
               </tal:block>
               <hr />
-              <div id="settings_bottom" class="settings_bottom">
+              <div tal:attributes="class python:
+                   ['settings_bottom','settings_action'][bool(dba)]">
                 <input type="hidden" name="@template" value="lindex">
                 <input type="hidden" name="@action" value="edit">
                 <span class="buttonbox submit_details orangebutton">
                   <input type="submit" name="settings_submit"
                          id="settings_submit" value="Submit Changes"
+                         i18n:attributes="value" />
+                </span>
+              </div>
+            </form>
+            <form id="dba_form" action="transceiver" method="POST"
+                  tal:condition="python: dba">
+              <div class="settings_header"
+                   i18n:translate="">Database Maintenance</div>
+              <div class="settings_row">
+                <div class="settings_title" i18n:translate="">Database:</div>
+                <label i18n:translate="">Database Operation:</label>
+                <div class="settings_field">
+                  <select name="database" id="database">
+                    <option></option>
+                    <option tal:repeat="a python:
+                            utils.lielas_actions.iteritems()"
+                            tal:attributes="value python:a[0]"
+                            tal:content="python:i18n.gettext(a[1][0])"/>
+                  </select>
+                </div>
+              </div>
+              <hr />
+              <div id="settings_bottom" class="settings_bottom">
+                <input type="hidden"
+                       tal:repeat="a python:utils.lielas_actions.iteritems()"
+                       tal:attributes=
+                        " id   python: 'delete_'+a[0]
+                        ; name python: i18n.gettext(a[1][2])
+                        "/>
+                <input id="dba_action" type="hidden" name="@action"
+                       value="edit">
+                <span id="dba_span" class="submit_invisible">
+                  <input type="submit" name="dba_submit"
+                         id="dba_submit" value="Submit Changes"
                          i18n:attributes="value" />
                 </span>
               </div>

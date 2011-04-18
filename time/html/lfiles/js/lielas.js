@@ -270,6 +270,19 @@ $(document).ready(function() {
             $("#do_logging").val($("#do_logging_cb").attr('checked') * 1);
         });
 
+        $("#database").change(function(){
+            var classes = "buttonbox submit_details orangebutton";
+            if($(this).val()) {
+                var action = 'delete_'+$(this).val();
+                $('#dba_submit').attr('value', $('#'+action).attr('name'));
+                $('#dba_span').attr('class', classes);
+                $('#dba_action').attr('value', action)
+            } else {
+                $('#dba_span').attr('class', "submit_invisible");
+                $('#dba_action').attr('value', 'edit')
+            }
+        });
+
         function copy_date(){
             var d = $('#measurementdate').attr('value');
             var ds = d.split(';');

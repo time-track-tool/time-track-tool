@@ -454,6 +454,14 @@ ul.sensor {
 	padding-left: 3px;
 	}
 
+.settings_action {
+	padding: 5px 10px;
+	overflow: hidden;
+	height: 30px;
+	line-height: 25px;
+	clear: both;
+	}
+
 .list_footer, .settings_bottom {
 	padding: 5px 10px;
 	overflow: hidden;
@@ -591,6 +599,10 @@ input.value {
 
 .submit_details {
 	float: right;	
+	}
+	
+.submit_invisible {
+	display: none;	
 	}
 	
 hr {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-15 17:16+0200\n"
+"POT-Creation-Date: 2011-04-18 12:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5258,37 +5258,54 @@ msgstr ""
 msgid "new dyndns_service"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:19
+#: ../html/dyndns.lindex.html:17
+msgid "Settings"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:20
 msgid "Device"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:21
+#: ../html/dyndns.lindex.html:22
 msgid "User:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:42
+#: ../html/dyndns.lindex.html:43
 msgid "Intervals for all devices:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:57
+#: ../html/dyndns.lindex.html:58
 msgid "Transceiver:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:66
+#: ../html/dyndns.lindex.html:67
 msgid "Internet"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:69
+#: ../html/dyndns.lindex.html:70
 msgid "DynDNS:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:120
+#: ../html/dyndns.lindex.html:122
 msgid "UMTS-Internet-Access:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:134 ../html/lielas.html:451
-#: ../html/lielas.html:550 ../html/lielas.html:634 ../html/lielas.html:669
+#: ../html/dyndns.lindex.html:137 ../html/dyndns.lindex.html:171
+#: ../html/lielas.html:451 ../html/lielas.html:550 ../html/lielas.html:634
+#: ../html/lielas.html:669
 msgid "Submit Changes"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:145 ../html/transceiver.del.html:21
+msgid "Database Maintenance"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:148
+msgid "Database:"
+msgstr ""
+
+#: ../html/dyndns.lindex.html:149
+msgid "Database Operation:"
 msgstr ""
 
 #: ../html/dyndns_service.item.html:68
@@ -5650,10 +5667,6 @@ msgstr ""
 
 #: ../html/time_record.comment.html:24
 msgid "Comment view"
-msgstr ""
-
-#: ../html/transceiver.del.html:21
-msgid "Database Maintenance"
 msgstr ""
 
 #: ../html/transceiver.del.html:43

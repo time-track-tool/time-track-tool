@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-15 17:16+0200\n"
+"POT-Creation-Date: 2011-04-18 12:36+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3683,10 +3683,10 @@ msgid "Welcome to the "
 msgstr "Willkommen zur "
 
 msgid "Remove last Device"
-msgstr ""
+msgstr "Letztes Gerät löschen"
 
 msgid "Remove last Device now"
-msgstr ""
+msgstr "Jetzt letztes Gerät löschen"
 
 msgid "Clear Measurement Data"
 msgstr "Messwerte löschen"
@@ -3907,6 +3907,9 @@ msgstr ""
 msgid "new dyndns_service"
 msgstr "Neuer DynDNS Service"
 
+msgid "Settings"
+msgstr "Einstellungen"
+
 msgid "Device"
 msgstr "Gerät"
 
@@ -3930,6 +3933,15 @@ msgstr "UMTS-Internet-Zugriff:"
 
 msgid "Submit Changes"
 msgstr ""
+
+msgid "Database Maintenance"
+msgstr "Datenbank Operationen"
+
+msgid "Database:"
+msgstr "Datenbank:"
+
+msgid "Database Operation:"
+msgstr "Datenbankoperation:"
 
 msgid "new dyndns_host"
 msgstr "Neuer DynDNS Host"
@@ -4203,9 +4215,6 @@ msgstr ""
 
 msgid "Comment view"
 msgstr "Kommentar-Ansicht"
-
-msgid "Database Maintenance"
-msgstr ""
 
 msgid ""
 "Links at the top of this page will permanently remove database content. This "

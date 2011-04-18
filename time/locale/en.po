@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-15 17:16+0200\n"
+"POT-Creation-Date: 2011-04-18 12:36+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3827,6 +3827,9 @@ msgstr ""
 msgid "new dyndns_service"
 msgstr "new DynDNS service"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Device"
 msgstr ""
 
@@ -3849,6 +3852,15 @@ msgid "UMTS-Internet-Access:"
 msgstr ""
 
 msgid "Submit Changes"
+msgstr ""
+
+msgid "Database Maintenance"
+msgstr ""
+
+msgid "Database:"
+msgstr ""
+
+msgid "Database Operation:"
 msgstr ""
 
 msgid "new dyndns_host"
@@ -4120,9 +4132,6 @@ msgid "Comment editing"
 msgstr ""
 
 msgid "Comment view"
-msgstr ""
-
-msgid "Database Maintenance"
 msgstr ""
 
 msgid ""
