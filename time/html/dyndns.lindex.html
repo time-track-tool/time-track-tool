@@ -53,15 +53,6 @@
                   <div class="settings_field"
                        tal:content="structure t/sint/field"/>
                 </div>
-                <hr />
-                <div class="settings_row">
-                  <div class="settings_title"
-                       i18n:translate="">Transceiver:</div>
-                  <tal:block tal:replace="structure python:utils.fieldlabel
-                       ('transceiver', 'tty')" />
-                  <div class="settings_field"
-                       tal:content="structure t/tty/field"/>
-                </div>
               </tal:block>
               <tal:block tal:condition="python: d or um">
                 <div class="settings_header" i18n:translate="">Internet</div>
