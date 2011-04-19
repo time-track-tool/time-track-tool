@@ -762,7 +762,7 @@ if 'transceiver' in db.classes :
         ( tty  = '/dev/ttyS0'
         , name = 'S0'
         , mint = 10
-        , sint = 10
+        , sint = 60
         )
     db.user.create \
         ( username = "user"
