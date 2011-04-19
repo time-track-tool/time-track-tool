@@ -285,7 +285,10 @@ $(document).ready(function() {
 
         function copy_date(){
             var d = $('#measurementdate').attr('value');
-            var ds = d.split(';');
+            var ds = '';
+            if (d) {
+                ds = d.split(';');
+            }
             if (ds.length >= 1) {
                 $("#date_from").val(ds[0]);
             }
