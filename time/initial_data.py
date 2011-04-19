@@ -759,8 +759,8 @@ if 'logstyle' in db.classes :
         )
 if 'transceiver' in db.classes :
     db.transceiver.create \
-        ( tty  = '/dev/ttyUSB0'
-        , name = 'USB0'
+        ( tty  = '/dev/ttyS0'
+        , name = 'S0'
         , mint = 10
         , sint = 10
         )
