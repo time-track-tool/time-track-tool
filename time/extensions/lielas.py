@@ -245,7 +245,7 @@ def dyndns_default_host (db, dyndns) :
             ( dyndns_service = ds.id
             , hostname       = 'hostname.dyndns.org'
             )
-        dh = db.dyndns_service.list ()
+        dh = db.dyndns_host.list ()
     db._db.commit ()
     dh = dh [0]
     return dh

@@ -102,6 +102,10 @@ def update_sensor_surrogate (db, cl, nodeid, new_values) :
 def notify_lielas_daemon (db = None, cl = None, nodeid = None, ov = None) :
     """ We search for the lielas daemon and try to send it a SIGUSR1
         signal so it will update it's state from the database.
+        Note that we also do this if the daemon has requested the update.
+        In most cases it will still be in the update routine and ignore the
+        signal anyway. If not no harm will be done, we just check twice for
+        updates.
     """
     names = ("lielas-daemon", "roundup_handler.py")
     for process in os.listdir ('/proc') :
