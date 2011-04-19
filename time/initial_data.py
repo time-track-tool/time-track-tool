@@ -759,10 +759,12 @@ if 'logstyle' in db.classes :
         )
 if 'transceiver' in db.classes :
     db.transceiver.create \
-        ( tty  = '/dev/ttyS0'
-        , name = 'S0'
-        , mint = 10
-        , sint = 60
+        ( tty          = '/dev/ttyS0'
+        , name         = 'S0'
+        , mint         = 10
+        , mint_pending = False
+        , sint         = 60
+        , sint_pending = False
         )
     db.user.create \
         ( username = "user"
