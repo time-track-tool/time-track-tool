@@ -52,9 +52,15 @@ def update_device_surrogate (db, cl, nodeid, new_values) :
 
 def round_sint_mint (db, cl, nodeid, new_values) :
     if 'sint' in new_values :
-        new_values ['sint'] = int (new_values ['sint'] + 0.5)
+        new_values ['sint'] = 60 * int (new_values ['sint'] / 60 + 0.5)
+        if new_values ['sint'] < 1 :
+            new_values ['sint'] = 60
+        if 'sint_pending' not in new_values :
+            new_values['sint_pending'] = True
     if 'mint' in new_values :
         new_values ['mint'] = int (new_values ['mint'] + 0.5)
+        if 'mint_pending' not in new_values :
+            new_values['mint_pending'] = True
 # end def round_sint_mint
 
 def update_order (db, cl, nodeid, new_values) :
@@ -142,4 +148,6 @@ def init (db) :
     db.sensor.react      ("set",    check_daemon_props)
     db.transceiver.react ("set",    check_daemon_props)
     db.transceiver.react ("retire", notify_lielas_daemon)
+    db.transceiver.audit ("set",    round_sint_mint)
+    db.transceiver.audit ("create", round_sint_mint)
 # end def init

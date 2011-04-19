@@ -51,7 +51,9 @@ def init \
         , tty                 = String    ()
         , name                = String    ()
         , sint                = Number    ()
+        , sint_pending        = Boolean   ()
         , mint                = Number    ()
+        , mint_pending        = Boolean   ()
         )
     transceiver.setkey (''"name")
 
@@ -73,7 +75,9 @@ def init \
         , surrogate           = String    ()
         , device_group        = Link      ("device_group")
         , sint                = Number    ()
+        , sint_pending        = Boolean   ()
         , mint                = Number    ()
+        , mint_pending        = Boolean   ()
         , gapint              = Number    ()
         , rec                 = Link      ("logstyle")
         , version             = String    ()
@@ -134,14 +138,16 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ( "device",      "Edit", ["User"]
-          , ("name", "sint", "mint", "gapint", "rec", "device_group")
+          , ( "name", "sint", "mint", "gapint", "rec", "device_group"
+            , "mint_pending", "sint_pending"
+            )
           )
         , ( "sensor",      "Edit", ["User"]
           , ("almin", "almax", "do_logging"
             )
           )
         , ( "transceiver", "Edit", ["User"]
-          , ("name", "tty", "sint", "mint")
+          , ("name", "tty", "sint", "mint", "mint_pending", "sint_pending")
           )
         ]
 

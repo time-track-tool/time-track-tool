@@ -44,13 +44,17 @@
                        i18n:translate="">Intervals for all devices:</div>
                   <tal:block tal:replace="structure python:utils.fieldlabel
                        ('transceiver', 'mint')" />
-                  <div class="settings_field"
+                  <div tal:attributes="class python:
+                       'settings_field'
+                       + ['',' settings_pending'][bool(t.mint_pending._value)]"
                        tal:content="structure t/mint/field"/>
                 </div>
                 <div class="settings_row">
                   <tal:block tal:replace="structure python:utils.fieldlabel
                        ('transceiver', 'sint')" />
-                  <div class="settings_field"
+                  <div tal:attributes="class python:
+                       'settings_field'
+                       + ['',' settings_pending'][bool(t.sint_pending._value)]"
                        tal:content="structure t/sint/field"/>
                 </div>
               </tal:block>

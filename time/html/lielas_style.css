@@ -592,6 +592,10 @@ input.value {
 	font-size: 12px;
 	}
 	
+.details_pending input {
+	color: #000000;
+        }
+	
 
 .unit {
 	float: left;
@@ -638,7 +642,7 @@ hr {
 	font-weight: bold;
 	font-size: 13px;
 	}
-	
+
 .settings_row {
 	width: 620px;
 	height: 30px;
@@ -690,6 +694,10 @@ hr {
 	top: 3px;
 	width: 174px;
 	}
+	
+.settings_pending input {
+	color: #000000;
+        }
 	
 #list hr {
 	margin: 5px 0;
