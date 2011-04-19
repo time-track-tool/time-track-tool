@@ -873,3 +873,6 @@ if 'sup_prio' in db.classes :
 
 if 'umts' in db.classes :
     db.umts.create (tty = "/dev/ttyUSB0")
+
+if 'email' in db.classes :
+    db.email.create (server = "smtp.example.com")

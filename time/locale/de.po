@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-18 12:36+0200\n"
+"POT-Creation-Date: 2011-04-19 12:38+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -1551,6 +1551,12 @@ msgstr "Email"
 
 msgid "Email address for this %(Classname)s"
 msgstr "Email Adresse für diese %(Classname)s"
+
+msgid "email++password"
+msgstr "SMTP Passwort"
+
+msgid "SMTP password for sending alerts"
+msgstr ""
 
 msgid "end"
 msgstr "Storniert per"
@@ -3919,9 +3925,6 @@ msgstr "Benutzer:"
 msgid "Intervals for all devices:"
 msgstr ""
 
-msgid "Transceiver:"
-msgstr ""
-
 msgid "Internet"
 msgstr ""
 
@@ -3930,6 +3933,9 @@ msgstr ""
 
 msgid "UMTS-Internet-Access:"
 msgstr "UMTS-Internet-Zugriff:"
+
+msgid "Email:"
+msgstr "Email:"
 
 msgid "Submit Changes"
 msgstr ""
@@ -4824,11 +4830,23 @@ msgstr ""
 msgid "state_changed_by"
 msgstr ""
 
+msgid "mint_pending"
+msgstr "Messintervall ausständig"
+
+msgid "sint_pending"
+msgstr "Sendeintervall ausständig"
+
 msgid "rec"
 msgstr ""
 
 msgid "pin"
 msgstr "PIN Code"
+
+msgid "user_name"
+msgstr "SMTP User Name"
+
+msgid "sender"
+msgstr "Absender-Email"
 
 msgid "header"
 msgstr ""

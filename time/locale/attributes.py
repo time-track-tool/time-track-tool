@@ -56,6 +56,7 @@ schemas = \
     , 'lielas'
     , 'umts'
     , 'user'
+    , 'email'
     , 'core'
     )
 importer = schemadef.Importer (globals (), schemas)

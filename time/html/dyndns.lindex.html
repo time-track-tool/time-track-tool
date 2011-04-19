@@ -6,7 +6,8 @@
          ; d     python:(db.dyndns.list() or [None])[0]
          ; dh    python:d and utils.dyndns_default_host (db, d)
          ; ds    python:dh and dh.dyndns_service
-         ; um    python:(db.umts.list() or [None])[0]
+         ; um    python:(db.umts.list()  or [None])[0]
+         ; em    python:(db.email.list() or [None])[0]
          ; dba   python:utils.user_has_role (db._db, request.user.id, 'Admin')
          ; sel   python: (  classname == 'user' and context
                          or u
@@ -58,7 +59,7 @@
                        tal:content="structure t/sint/field"/>
                 </div>
               </tal:block>
-              <tal:block tal:condition="python: d or um">
+              <tal:block tal:condition="python: d or um or em">
                 <div class="settings_header" i18n:translate="">Internet</div>
                 <tal:block tal:condition="python: d">
                   <div class="settings_row">
@@ -120,6 +121,35 @@
                          ('umts', 'pin')" />
                     <div class="settings_field"
                          tal:content="structure um/pin/field"/>
+                  </div>
+                </tal:block>
+                <tal:block tal:condition="python: em">
+                  <hr />
+                  <div class="settings_row">
+                    <div class="settings_title"
+                         i18n:translate="">Email:</div>
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('email', 'server')" />
+                    <div class="settings_field"
+                         tal:content="structure em/server/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('email', 'sender')" />
+                    <div class="settings_field"
+                         tal:content="structure em/sender/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('email', 'user_name')" />
+                    <div class="settings_field"
+                         tal:content="structure em/user_name/field"/>
+                  </div>
+                  <div class="settings_row">
+                    <tal:block tal:replace="structure python:utils.fieldlabel
+                         ('email', 'password')" />
+                    <div class="settings_field"
+                         tal:content="structure em/password/field"/>
                   </div>
                 </tal:block>
               </tal:block>

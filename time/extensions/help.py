@@ -554,6 +554,8 @@ _helptext          = \
       ]
     , ""'email'                       :
       [""'''Email address for this %(Classname)s''']
+    , ""'email++password'             :
+      [""'''SMTP password for sending alerts''']
     , ""'end'                         :
       [ ""'''Format xx:xx  (e.g. 17:00), is created automatically by the
              system when you specify "Start" and "Duration". Attention: If

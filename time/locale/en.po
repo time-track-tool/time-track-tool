@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-18 12:36+0200\n"
+"POT-Creation-Date: 2011-04-19 12:38+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -1514,6 +1514,12 @@ msgid "email"
 msgstr "Email"
 
 msgid "Email address for this %(Classname)s"
+msgstr ""
+
+msgid "email++password"
+msgstr "SMTP Password"
+
+msgid "SMTP password for sending alerts"
 msgstr ""
 
 msgid "end"
@@ -3839,9 +3845,6 @@ msgstr ""
 msgid "Intervals for all devices:"
 msgstr ""
 
-msgid "Transceiver:"
-msgstr ""
-
 msgid "Internet"
 msgstr ""
 
@@ -3849,6 +3852,9 @@ msgid "DynDNS:"
 msgstr ""
 
 msgid "UMTS-Internet-Access:"
+msgstr ""
+
+msgid "Email:"
 msgstr ""
 
 msgid "Submit Changes"
@@ -4742,11 +4748,23 @@ msgstr "Link/CVS location"
 msgid "state_changed_by"
 msgstr ""
 
+msgid "mint_pending"
+msgstr ""
+
+msgid "sint_pending"
+msgstr ""
+
 msgid "rec"
 msgstr "Recording type"
 
 msgid "pin"
 msgstr "PIN code"
+
+msgid "user_name"
+msgstr "SMTP User Name"
+
+msgid "sender"
+msgstr "Email Sender"
 
 msgid "header"
 msgstr "Mail-Header"
