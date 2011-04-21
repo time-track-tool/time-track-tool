@@ -2126,7 +2126,7 @@ msgid ""
 msgstr ""
 
 msgid "mint"
-msgstr "Measurement interval"
+msgstr "Interval"
 
 msgid "Measurement interval for %(Classname)s"
 msgstr ""

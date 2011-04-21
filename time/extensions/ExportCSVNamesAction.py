@@ -596,7 +596,7 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
                 sort.append ((dir, key))
                 break
         else :
-            sort.append (('-', 'date'))
+            sort.append (('+', 'date'))
         for k in sensor_sort :
             sort.append (('+', 'sensor.' + k))
 
