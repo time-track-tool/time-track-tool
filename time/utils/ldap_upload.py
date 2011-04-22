@@ -191,6 +191,7 @@ class LDAP_Converter (object) :
             if res.dn.split (',')[-4] == 'OU=obsolete' :
                 print "Obsolete LDAP user: %s" % user.username
             umap = self.attr_map ['user']
+            modlist = []
             for rk, (lk, change, method) in umap.iteritems () :
                 rupattr = user [rk]
                 if callable (rupattr and change) :
@@ -200,6 +201,7 @@ class LDAP_Converter (object) :
                         print "%s: Inserting: %s (%s)" \
                             % (user.username, lk, rupattr)
                         assert (change)
+                        modlist.append ((ldap.MOD_ADD, lk, rupattr))
                 elif len (res [lk]) != 1 :
                     print "%s: invalid length: %s" % (user.username, lk)
                 else :
@@ -213,7 +215,10 @@ class LDAP_Converter (object) :
                         else :
                             print "%s: UPDATING attribute: %s/%s >%s/%s<" % \
                                 (user.username, rk, lk, rupattr, ldattr)
-
+                            op = ldap.MOD_REPLACE
+                            if rupattr is None :
+                                op = ldap.MOD_DELETE
+                            modlist.append ((op, lk, rupattr))
             contacts = {}
             for cid in self.db.user_contact.filter \
                 ( None
@@ -238,6 +243,7 @@ class LDAP_Converter (object) :
                     p, s = ldn
                 if p not in res :
                     print "%s: Inserting: %s (%s)" % (user.username, p, cs [0])
+                    modlist.append ((ldap.MOD_ADD, p, cs [0]))
                 elif len (res [p]) != 1 :
                     print "%s: invalid length: %s" % (user.username, p)
                 else :
@@ -245,17 +251,21 @@ class LDAP_Converter (object) :
                     if ldattr != cs [0] :
                         print "%s: non-matching attribute: %s/%s %s/%s" % \
                             (user.username, ct, p, cs [0], ldattr)
+                        modlist.append ((ldap.MOD_REPLACE, p, cs [0]))
                 if s :
                     if s not in res :
                         if cs [1:] :
                             print "%s: Inserting: %s (%s)" \
                                 % (user.username, s, cs [1:])
+                            modlist.append ((ldap.MOD_ADD, s, cs [1:]))
                     else :
                         if res [1] != cs [1:] :
                             print "%s: non-matching attribute: %s/%s %s/%s" % \
                                 (user.username, ct, s, cs [1:], ldattr)
-
-
+                            modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
+            print "Modlist:"
+            for k in modlist :
+                print k
 
             if 0 and (1 or user.username == 'senn') :
                 print "User: %s: %s" % (user.username, res.dn)
