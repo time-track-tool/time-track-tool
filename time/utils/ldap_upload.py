@@ -28,12 +28,19 @@ class LDAP_Search_Result (object) :
             return result
         raise AttributeError, name
     # end def __getattr__
+
+    def __getitem__ (self, name) :
+        return self.attrs [name]
+    # end def __getitem__
 # end class LDAP_Search_Result
 
 # map roundup attributes to ldap attributes
 attribute_map = \
     { 'user' : \
-        { 'realname' : 'cn'
+        { 'realname'  : ('cn',        None)
+        , 'lastname'  : ('sn',        None)
+        , 'firstname' : ('givenname', None)
+        , 'nickname'  : ('initials',  lambda x : x.lower() )
         }
     , 'user_contact' : {}
     }
@@ -117,6 +124,16 @@ def main () :
             print "Not found:", user.username
             continue
         res = res [0]
+        for rk, (lk, method) in attribute_map ['user'].iteritems () :
+            if len (res [lk]) != 1 :
+                print "%s: invalid length: %s" % (user.username, lk)
+            ldattr = res [lk][0]
+            if method :
+                ldattr = method (ldattr)
+            if ldattr != user [rk] :
+                print "%s: non-matching attribute: %s/%s %s/%s" % \
+                    (user.username, rk, lk, user [rk], ldattr)
+
         #print "User: %s: %s" % (user.username, res.dn)
         #print "content:", res.attrs
 
