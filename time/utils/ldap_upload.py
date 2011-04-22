@@ -26,17 +26,22 @@ class LDAP_Search_Result (cidict, autosuper) :
 # map roundup attributes to ldap attributes
 attribute_map = \
     { 'user' :
-        { 'realname'  : ('cn',        None)
-        , 'lastname'  : ('sn',        None)
-        , 'firstname' : ('givenname', None)
-        , 'nickname'  : ('initials',  lambda x : x.lower() )
+        { 'realname'  : ('cn',         0, None)
+        , 'lastname'  : ('sn',         0, None)
+        , 'firstname' : ('givenname',  0, None)
+        , 'nickname'  : ( 'initials'
+                        , lambda x : x.upper ()
+                        , lambda x : x.lower()
+                        )
+        , 'title'     : ('carLicense', 1, None)
         }
     , 'user_contact' :
         { 'Email'          : ('mail',)
-        , 'internal Phone' : ('pager',           'otherPager')
+        , 'internal Phone' : ('telephoneNumber', 'otherTelephone')
         , 'mobile Phone'   : ('mobile',          'otherMobile')
-        , 'external Phone' : ('telephoneNumber', 'otherTelephone')
-        , 'private Phone'  : ('homePhone',       'otherHomePhone')
+        , 'Mobile short'   : ('pager',           'otherPager')
+#       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
+#       , 'private Phone'  : ('homePhone',       'otherHomePhone')
         }
     }
 
@@ -62,6 +67,12 @@ def main () :
         ( "-H", "--ldap-uri"
         , help    = "URI of ldap server"
         , default = 'ldap://localhost:389'
+        )
+    parser.add_option \
+        ( "-u", "--update"
+        , help    = "Update the LDAP directory with info from roundup"
+        , default = False
+        , action  = 'store_true'
         )
     parser.add_option \
         ( "-w", "--bind-password"
@@ -125,15 +136,27 @@ def main () :
         res = res [0]
         if res.dn.split (',')[-4] == 'OU=obsolete' :
             print "Obsolete LDAP user: %s" % user.username
-        for rk, (lk, method) in attribute_map ['user'].iteritems () :
-            if len (res [lk]) != 1 :
+        for rk, (lk, change, method) in attribute_map ['user'].iteritems () :
+            if lk not in res :
+                if user [rk] :
+                    print "%s: not found: %s" % (user.username, lk)
+                    assert (change)
+            elif len (res [lk]) != 1 :
                 print "%s: invalid length: %s" % (user.username, lk)
-            ldattr = res [lk][0]
-            if method :
-                ldattr = method (ldattr)
-            if ldattr != user [rk] :
-                print "%s: non-matching attribute: %s/%s %s/%s" % \
-                    (user.username, rk, lk, user [rk], ldattr)
+            else :
+                ldattr = res [lk][0]
+                if method :
+                    ldattr = method (ldattr)
+                if ldattr != user [rk] :
+                    if not change :
+                        print "%s: non-matching attribute: %s/%s %s/%s" % \
+                            (user.username, rk, lk, user [rk], ldattr)
+                    else :
+                        n = user [rk]
+                        if callable (change) :
+                            n = change (user [rk])
+                        print "%s: UPDATING     attribute: %s/%s %s/%s" % \
+                            (user.username, rk, lk, n, ldattr)
 
         contacts = {}
         for cid in db.user_contact.filter \
@@ -147,6 +170,8 @@ def main () :
                 contacts [n] = []
             contacts [n].append (contact.contact)
         for ct, cs in contacts.iteritems () :
+            if ct not in attribute_map ['user_contact'] :
+                continue
             ldn = attribute_map ['user_contact'][ct]
             if len (ldn) != 2 :
                 assert (len (ldn) == 1)
@@ -166,14 +191,22 @@ def main () :
                         (user.username, ct, p, cs [0], ldattr)
             if s :
                 if s not in res :
-                    print "%s: not found: %s" % (user.username, s)
+                    if cs [1:] :
+                        print "%s: not found: %s" % (user.username, s)
                 else :
                     if res [1] != cs [1:] :
                         print "%s: non-matching attribute: %s/%s %s/%s" % \
                             (user.username, ct, s, cs [1:], ldattr)
 
 
-        # FIXME thumbnailPhoto
+
+        # FIXME Room physicalDeliveryOfficeName
+        # FIXME Supervisor manager (LDAP cn)
+        # FIXME Substitute secretary (LDAP cn)
+        # FIXME Position title
+        # FIXME Org/Location company
+        # FIXME Department department
+        # FIXME Picture thumbnailPhoto
         if 0 and (1 or user.username == 'senn') :
             print "User: %s: %s" % (user.username, res.dn)
             print "content:", res
