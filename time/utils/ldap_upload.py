@@ -266,6 +266,8 @@ class LDAP_Converter (object) :
             print "Modlist:"
             for k in modlist :
                 print k
+            if self.opt.update :
+                self.ldcon.modify_s (res.dn, modlist)
 
             if 0 and (1 or user.username == 'senn') :
                 print "User: %s: %s" % (user.username, res.dn)
