@@ -180,11 +180,12 @@ class LDAP_Converter (object) :
             ((id, self.db.uc_type.get (id, 'name'))
              for id in self.db.uc_type.list ()
             )
-        for uid in self.db.user.filter_iter(None, {}, sort=[('+','username')]) :
+        for uid in self.db.user.filter (None, {}, sort=[('+','username')]) :
             user = self.db.user.getnode (uid)
             if user.status != valid :
                 continue
             res = self.get_ldap_user (user.username)
+            print
             if not res :
                 print "User not found:", user.username
                 continue
@@ -196,10 +197,13 @@ class LDAP_Converter (object) :
                 rupattr = user [rk]
                 if callable (rupattr and change) :
                     rupattr = change (user)
+                prupattr = rupattr
+                if rk == 'pictures' :
+                    prupattr = '<suppressed>'
                 if lk not in res :
                     if user [rk] :
                         print "%s: Inserting: %s (%s)" \
-                            % (user.username, lk, rupattr)
+                            % (user.username, lk, prupattr)
                         assert (change)
                         modlist.append ((ldap.MOD_ADD, lk, rupattr))
                 elif len (res [lk]) != 1 :
@@ -211,10 +215,10 @@ class LDAP_Converter (object) :
                     if ldattr != rupattr :
                         if not change :
                             print "%s:  attribute differs: %s/%s >%s/%s<" % \
-                                (user.username, rk, lk, rupattr, ldattr)
+                                (user.username, rk, lk, prupattr, ldattr)
                         else :
-                            print "%s: UPDATING attribute: %s/%s >%s/%s<" % \
-                                (user.username, rk, lk, rupattr, ldattr)
+                            print "%s:  Updating: %s/%s >%s/%s<" % \
+                                (user.username, rk, lk, prupattr, ldattr)
                             op = ldap.MOD_REPLACE
                             if rupattr is None :
                                 op = ldap.MOD_DELETE
@@ -249,7 +253,7 @@ class LDAP_Converter (object) :
                 else :
                     ldattr = res [p][0]
                     if ldattr != cs [0] :
-                        print "%s: non-matching attribute: %s/%s %s/%s" % \
+                        print "%s:  Updating: %s/%s %s/%s" % \
                             (user.username, ct, p, cs [0], ldattr)
                         modlist.append ((ldap.MOD_REPLACE, p, cs [0]))
                 if s :
@@ -260,12 +264,12 @@ class LDAP_Converter (object) :
                             modlist.append ((ldap.MOD_ADD, s, cs [1:]))
                     else :
                         if res [1] != cs [1:] :
-                            print "%s: non-matching attribute: %s/%s %s/%s" % \
+                            print "%s:  Updating: %s/%s %s/%s" % \
                                 (user.username, ct, s, cs [1:], ldattr)
                             modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
-            print "Modlist:"
-            for k in modlist :
-                print k
+            #print "Modlist:"
+            #for k in modlist :
+            #    print k
             if self.opt.update :
                 self.ldcon.modify_s (res.dn, modlist)
 
