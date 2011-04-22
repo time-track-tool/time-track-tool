@@ -23,17 +23,77 @@ class LDAP_Search_Result (cidict, autosuper) :
 
 # end class LDAP_Search_Result
 
+#def ldap_from_username ()
+
+def get_picture (user) :
+    """ Get picture from roundup user class """
+    p  = reversed (user.pictures)[0]
+    return user.cl.db.file.get (p, 'content')
+# end def get_picture
+
+def get_department (user) :
+    """ Get department name from roundup user class """
+    return user.cl.db.department.get (user.department, 'name')
+# end def get_department
+
+def get_org_location (user) :
+    """ Get org_location name from roundup user class """
+    return user.cl.db.org_location.get (user.org_location, 'name')
+# end def get_org_location
+
+def get_position (user) :
+    """ Get position name from roundup user class """
+    return user.cl.db.position.get (user.position, 'name')
+# end def get_room
+
+def get_room (user) :
+    """ Get room name from roundup user class """
+    return user.cl.db.room.get (user.room, 'name')
+# end def get_room
+
 # map roundup attributes to ldap attributes
-attribute_map = \
+attr_map = \
     { 'user' :
-        { 'realname'  : ('cn',         0, None)
-        , 'lastname'  : ('sn',         0, None)
-        , 'firstname' : ('givenname',  0, None)
-        , 'nickname'  : ( 'initials'
-                        , lambda x : x.upper ()
-                        , lambda x : x.lower()
-                        )
-        , 'title'     : ('carLicense', 1, None)
+        { 'department'   : ( 'Department'
+                           , get_department
+                           , None
+                           )
+        , 'firstname'    : ( 'givenname'
+                           , 0
+                           , None
+                           )
+        , 'lastname'     : ( 'sn'
+                           , 0
+                           , None
+                           )
+        , 'nickname'     : ( 'initials'
+                           , lambda x : x.nickname.upper ()
+                           , None
+                           )
+        , 'org_location' : ( 'company'
+                           , get_org_location
+                           , None
+                           )
+        , 'pictures'     : ( 'thumbnailPhoto'
+                           , get_picture
+                           , None
+                           )
+        , 'position'     : ( 'title'
+                           , get_position
+                           , None
+                           )
+        , 'realname'     : ( 'cn'
+                           , 0
+                           , None
+                           )
+        , 'room'         : ( 'physicalDeliveryOfficeName'
+                           , get_room
+                           , None
+                           )
+        , 'title'        : ( 'carLicense'
+                           , 1
+                           , None
+                           )
         }
     , 'user_contact' :
         { 'Email'          : ('mail',)
@@ -44,6 +104,128 @@ attribute_map = \
 #       , 'private Phone'  : ('homePhone',       'otherHomePhone')
         }
     }
+
+class LDAP_Converter (object) :
+    def __init__ (self, opt) :
+        self.opt   = opt
+        path       = opt.database_directory
+        tracker    = instance.open (path)
+        self.db    = tracker.open ('admin')
+
+        self.ldcon = ldap.initialize(opt.ldap_uri)
+        pw         = opt.bind_password
+        if not pw and opt.ask_bind_password :
+            pw = getpass (prompt = 'LDAP Password: ')
+        # try getting a secure connection, may want to force this later
+        try :
+            self.ldcon.start_tls_s ()
+        except ldap.LDAPError, cause :
+            pass
+        try :
+            self.ldcon.simple_bind_s (opt.bind_dn, pw or '')
+        except ldap.LDAPError, cause :
+            print >> sys.stderr, "LDAP bind failed: %s" % cause.args [0]['desc']
+            exit (42)
+    # end def __init__
+
+    def convert (self) :
+        valid = self.db.user_status.lookup ('valid')
+        contact_types = dict \
+            ((id, self.db.uc_type.get (id, 'name'))
+             for id in self.db.uc_type.list ()
+            )
+        for uid in self.db.user.filter_iter(None, {}, sort=[('+','username')]) :
+            user = self.db.user.getnode (uid)
+            if user.status != valid :
+                continue
+            result = self.ldcon.search_s \
+                ( self.opt.base_dn
+                , ldap.SCOPE_SUBTREE
+                , '(uid=%s)' % user.username
+                , None
+                )
+            res = []
+            for r in result :
+                if r [0] :
+                    res.append (LDAP_Search_Result (r))
+            assert (len (res) <= 1)
+
+            if not res :
+                print "User not found:", user.username
+                continue
+            res = res [0]
+            if res.dn.split (',')[-4] == 'OU=obsolete' :
+                print "Obsolete LDAP user: %s" % user.username
+            for rk, (lk, change, method) in attr_map ['user'].iteritems () :
+                if lk not in res :
+                    if user [rk] :
+                        print "%s: not found: %s" % (user.username, lk)
+                        assert (change)
+                elif len (res [lk]) != 1 :
+                    print "%s: invalid length: %s" % (user.username, lk)
+                else :
+                    ldattr = res [lk][0]
+                    if method :
+                        ldattr = method (ldattr)
+                    rupattr = user [rk]
+                    if callable (rupattr and change) :
+                        rupattr = change (user)
+                    if ldattr != rupattr :
+                        if not change :
+                            print "%s:  attribute differs: %s/%s >%s/%s<" % \
+                                (user.username, rk, lk, rupattr, ldattr)
+                        else :
+                            print "%s: UPDATING attribute: %s/%s >%s/%s<" % \
+                                (user.username, rk, lk, rupattr, ldattr)
+
+            contacts = {}
+            for cid in self.db.user_contact.filter \
+                ( None
+                , dict (user = user.id)
+                , sort = [('+', 'contact_type'), ('+', 'order')]
+                ) :
+                contact = self.db.user_contact.getnode (cid)
+                n = contact_types [contact.contact_type]
+                if n not in contacts :
+                    contacts [n] = []
+                contacts [n].append (contact.contact)
+            for ct, cs in contacts.iteritems () :
+                if ct not in attr_map ['user_contact'] :
+                    continue
+                ldn = attr_map ['user_contact'][ct]
+                if len (ldn) != 2 :
+                    assert (len (ldn) == 1)
+                    assert (ct == 'Email')
+                    p = ldn [0]
+                    s = None
+                else :
+                    p, s = ldn
+                if p not in res :
+                    print "%s: not found: %s (%s)" % (user.username, p, cs [0])
+                elif len (res [p]) != 1 :
+                    print "%s: invalid length: %s" % (user.username, p)
+                else :
+                    ldattr = res [p][0]
+                    if ldattr != cs [0] :
+                        print "%s: non-matching attribute: %s/%s %s/%s" % \
+                            (user.username, ct, p, cs [0], ldattr)
+                if s :
+                    if s not in res :
+                        if cs [1:] :
+                            print "%s: not found: %s" % (user.username, s)
+                    else :
+                        if res [1] != cs [1:] :
+                            print "%s: non-matching attribute: %s/%s %s/%s" % \
+                                (user.username, ct, s, cs [1:], ldattr)
+
+
+
+            # FIXME Supervisor manager (LDAP cn)
+            # FIXME Substitute secretary (LDAP cn)
+            if 0 and (1 or user.username == 'senn') :
+                print "User: %s: %s" % (user.username, res.dn)
+                print "content:", res
+    # end def convert
 
 def main () :
     parser  = OptionParser ()
@@ -90,126 +272,10 @@ def main () :
         parser.error ('No arguments please')
         exit (23)
 
-    path    = opt.database_directory
-    tracker = instance.open (path)
-    db      = tracker.open ('admin')
+    ldc = LDAP_Converter (opt)
+    ldc.convert ()
+# end def main
 
-    ldcon   = ldap.initialize(opt.ldap_uri)
-    pw      = opt.bind_password
-    if not pw and opt.ask_bind_password :
-        pw = getpass (prompt = 'LDAP Password: ')
-    # try getting a secure connection, may want to force this later
-    try :
-        ldcon.start_tls_s ()
-    except ldap.LDAPError, cause :
-        pass
-    try :
-        ldcon.simple_bind_s (opt.bind_dn, pw or '')
-    except ldap.LDAPError, cause :
-        print >> sys.stderr, "LDAP bind failed: %s" % cause.args [0]['desc']
-        exit (42)
-
-    valid = db.user_status.lookup ('valid')
-    contact_types = dict \
-        ((id, db.uc_type.get (id, 'name'))
-         for id in db.uc_type.list ()
-        )
-    for uid in db.user.filter_iter(None, {}, sort=[('+','username')]) :
-        user = db.user.getnode (uid)
-        if user.status != valid :
-            continue
-        result = ldcon.search_s \
-            ( opt.base_dn
-            , ldap.SCOPE_SUBTREE
-            , '(uid=%s)' % user.username
-            , None
-            )
-        res = []
-        for r in result :
-            if r [0] :
-                res.append (LDAP_Search_Result (r))
-        assert (len (res) <= 1)
-
-        if not res :
-            print "User not found:", user.username
-            continue
-        res = res [0]
-        if res.dn.split (',')[-4] == 'OU=obsolete' :
-            print "Obsolete LDAP user: %s" % user.username
-        for rk, (lk, change, method) in attribute_map ['user'].iteritems () :
-            if lk not in res :
-                if user [rk] :
-                    print "%s: not found: %s" % (user.username, lk)
-                    assert (change)
-            elif len (res [lk]) != 1 :
-                print "%s: invalid length: %s" % (user.username, lk)
-            else :
-                ldattr = res [lk][0]
-                if method :
-                    ldattr = method (ldattr)
-                if ldattr != user [rk] :
-                    if not change :
-                        print "%s: non-matching attribute: %s/%s %s/%s" % \
-                            (user.username, rk, lk, user [rk], ldattr)
-                    else :
-                        n = user [rk]
-                        if callable (change) :
-                            n = change (user [rk])
-                        print "%s: UPDATING     attribute: %s/%s %s/%s" % \
-                            (user.username, rk, lk, n, ldattr)
-
-        contacts = {}
-        for cid in db.user_contact.filter \
-            ( None
-            , dict (user = user.id)
-            , sort = [('+', 'contact_type'), ('+', 'order')]
-            ) :
-            contact = db.user_contact.getnode (cid)
-            n = contact_types [contact.contact_type]
-            if n not in contacts :
-                contacts [n] = []
-            contacts [n].append (contact.contact)
-        for ct, cs in contacts.iteritems () :
-            if ct not in attribute_map ['user_contact'] :
-                continue
-            ldn = attribute_map ['user_contact'][ct]
-            if len (ldn) != 2 :
-                assert (len (ldn) == 1)
-                assert (ct == 'Email')
-                p = ldn [0]
-                s = None
-            else :
-                p, s = ldn
-            if p not in res :
-                print "%s: not found: %s (%s)" % (user.username, p, cs [0])
-            elif len (res [p]) != 1 :
-                print "%s: invalid length: %s" % (user.username, p)
-            else :
-                ldattr = res [p][0]
-                if ldattr != cs [0] :
-                    print "%s: non-matching attribute: %s/%s %s/%s" % \
-                        (user.username, ct, p, cs [0], ldattr)
-            if s :
-                if s not in res :
-                    if cs [1:] :
-                        print "%s: not found: %s" % (user.username, s)
-                else :
-                    if res [1] != cs [1:] :
-                        print "%s: non-matching attribute: %s/%s %s/%s" % \
-                            (user.username, ct, s, cs [1:], ldattr)
-
-
-
-        # FIXME Room physicalDeliveryOfficeName
-        # FIXME Supervisor manager (LDAP cn)
-        # FIXME Substitute secretary (LDAP cn)
-        # FIXME Position title
-        # FIXME Org/Location company
-        # FIXME Department department
-        # FIXME Picture thumbnailPhoto
-        if 0 and (1 or user.username == 'senn') :
-            print "User: %s: %s" % (user.username, res.dn)
-            print "content:", res
 
 if __name__ == '__main__' :
     main ()
