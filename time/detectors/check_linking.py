@@ -49,6 +49,9 @@ def check_unlinking (db, cl, nodeid, new_values) :
     for prop in classprops [cl.classname] :
         if prop not in new_values :
             continue
+        # allow admin
+        if db.getuid () == '1' :
+            continue
         ids = dict.fromkeys (new_values [prop])
         for id in old_props (cl, prop, nodeid) :
             if id not in ids :
