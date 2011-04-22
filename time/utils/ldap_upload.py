@@ -4,12 +4,13 @@ import sys
 import os
 import ldap
 
-from optparse    import OptionParser
-from getpass     import getpass
-from ldap.cidict import cidict
-from roundup     import instance
+from optparse         import OptionParser
+from getpass          import getpass
+from ldap.cidict      import cidict
+from roundup          import instance
+from rsclib.autosuper import autosuper
 
-class LDAP_Search_Result (object) :
+class LDAP_Search_Result (cidict, autosuper) :
     """ Wraps an LDAP search result.
         Noteworthy detail: We use an ldap.cidict for keeping the
         attributes, this is a case-insensitive dictionary variant.
@@ -17,32 +18,26 @@ class LDAP_Search_Result (object) :
     def __init__ (self, vals) :
         assert (vals [0])
         self.dn    = vals [0]
-        self.attrs = cidict (vals [1])
+        self.__super.__init__ (vals [1])
     # end def __init__
 
-    def __getattr__ (self, name) :
-        """ Delegate to our attrs dict """
-        if not name.startswith ('__') :
-            result = getattr (self.attrs, name)
-            setattr (self, name, result)
-            return result
-        raise AttributeError, name
-    # end def __getattr__
-
-    def __getitem__ (self, name) :
-        return self.attrs [name]
-    # end def __getitem__
 # end class LDAP_Search_Result
 
 # map roundup attributes to ldap attributes
 attribute_map = \
-    { 'user' : \
+    { 'user' :
         { 'realname'  : ('cn',        None)
         , 'lastname'  : ('sn',        None)
         , 'firstname' : ('givenname', None)
         , 'nickname'  : ('initials',  lambda x : x.lower() )
         }
-    , 'user_contact' : {}
+    , 'user_contact' :
+        { 'Email'          : ('mail',)
+        , 'internal Phone' : ('pager',           'otherPager')
+        , 'mobile Phone'   : ('mobile',          'otherMobile')
+        , 'external Phone' : ('telephoneNumber', 'otherTelephone')
+        , 'private Phone'  : ('homePhone',       'otherHomePhone')
+        }
     }
 
 def main () :
@@ -104,6 +99,10 @@ def main () :
         exit (42)
 
     valid = db.user_status.lookup ('valid')
+    contact_types = dict \
+        ((id, db.uc_type.get (id, 'name'))
+         for id in db.uc_type.list ()
+        )
     for uid in db.user.filter_iter(None, {}, sort=[('+','username')]) :
         user = db.user.getnode (uid)
         if user.status != valid :
@@ -121,9 +120,11 @@ def main () :
         assert (len (res) <= 1)
 
         if not res :
-            print "Not found:", user.username
+            print "User not found:", user.username
             continue
         res = res [0]
+        if res.dn.split (',')[-4] == 'OU=obsolete' :
+            print "Obsolete LDAP user: %s" % user.username
         for rk, (lk, method) in attribute_map ['user'].iteritems () :
             if len (res [lk]) != 1 :
                 print "%s: invalid length: %s" % (user.username, lk)
@@ -134,8 +135,48 @@ def main () :
                 print "%s: non-matching attribute: %s/%s %s/%s" % \
                     (user.username, rk, lk, user [rk], ldattr)
 
-        #print "User: %s: %s" % (user.username, res.dn)
-        #print "content:", res.attrs
+        contacts = {}
+        for cid in db.user_contact.filter \
+            ( None
+            , dict (user = user.id)
+            , sort = [('+', 'contact_type'), ('+', 'order')]
+            ) :
+            contact = db.user_contact.getnode (cid)
+            n = contact_types [contact.contact_type]
+            if n not in contacts :
+                contacts [n] = []
+            contacts [n].append (contact.contact)
+        for ct, cs in contacts.iteritems () :
+            ldn = attribute_map ['user_contact'][ct]
+            if len (ldn) != 2 :
+                assert (len (ldn) == 1)
+                assert (ct == 'Email')
+                p = ldn [0]
+                s = None
+            else :
+                p, s = ldn
+            if p not in res :
+                print "%s: not found: %s (%s)" % (user.username, p, cs [0])
+            elif len (res [p]) != 1 :
+                print "%s: invalid length: %s" % (user.username, p)
+            else :
+                ldattr = res [p][0]
+                if ldattr != cs [0] :
+                    print "%s: non-matching attribute: %s/%s %s/%s" % \
+                        (user.username, ct, p, cs [0], ldattr)
+            if s :
+                if s not in res :
+                    print "%s: not found: %s" % (user.username, s)
+                else :
+                    if res [1] != cs [1:] :
+                        print "%s: non-matching attribute: %s/%s %s/%s" % \
+                            (user.username, ct, s, cs [1:], ldattr)
+
+
+        # FIXME thumbnailPhoto
+        if 0 and (1 or user.username == 'senn') :
+            print "User: %s: %s" % (user.username, res.dn)
+            print "content:", res
 
 if __name__ == '__main__' :
     main ()
