@@ -50,6 +50,8 @@ def get_room (user) :
 # end def get_room
 
 class LDAP_Converter (object) :
+    
+    forbidden = dict.fromkeys (('otherTelephone',))
 
     def __init__ (self, opt) :
         self.opt   = opt
@@ -261,12 +263,14 @@ class LDAP_Converter (object) :
                         if cs [1:] :
                             print "%s: Inserting: %s (%s)" \
                                 % (user.username, s, cs [1:])
-                            modlist.append ((ldap.MOD_ADD, s, cs [1:]))
+                            if s not in self.forbidden :
+                                modlist.append ((ldap.MOD_ADD, s, cs [1:]))
                     else :
                         if res [1] != cs [1:] :
                             print "%s:  Updating: %s/%s %s/%s" % \
                                 (user.username, ct, s, cs [1:], ldattr)
-                            modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
+                            if s not in self.forbidden :
+                                modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
             #print "Modlist:"
             #for k in modlist :
             #    print k
