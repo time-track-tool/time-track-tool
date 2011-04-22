@@ -12,12 +12,17 @@ for u in db.user.list () :
     user = db.user.getnode (u)
     if user.status != valid :
         continue
-    if user.nickname :
-        try :
-            pic = urllib.urlopen(http % user.nickname.lower()).read()
-        except IOError :
-            print "No pic for:", user.username
-            continue
+    if not user.nickname :
+        print "     no nickname:", user.username
+        continue
+    try :
+        pic = urllib.urlopen(http % user.nickname.lower()).read()
+    except IOError :
+        print "          no pic:", user.username
+        continue
+    if pic [6:10] != 'JFIF' :
+        print "     invalid pic:", user.username
+        continue
     for n, p in enumerate (reversed (user.pictures)) :
         rpic = db.file.get (p, 'content')
         # special case where pic was removed in db
