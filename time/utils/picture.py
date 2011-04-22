@@ -27,7 +27,7 @@ for u in db.user.list () :
         rpic = db.file.get (p, 'content')
         # special case where pic was removed in db
         if len (rpic) == 0 :
-            db.file.set (p, content = pic)
+            #db.file.set (p, content = pic)
             break
         if rpic == pic :
             if not n :
@@ -40,9 +40,9 @@ for u in db.user.list () :
             print "non-matching pic:", user.username
     else :
         print "      create pic:", user.username
-        f = db.file.create \
-            (name = str (user.nickname), type = 'image/jpeg', content = pic)
-        np = user.pictures
-        np.append (f)
-        db.user.set (user.id, pictures = np)
-db.commit ()
+#        f = db.file.create \
+#            (name = str (user.nickname), type = 'image/jpeg', content = pic)
+#        np = user.pictures
+#        np.append (f)
+#        db.user.set (user.id, pictures = np)
+#db.commit ()
