@@ -25,7 +25,7 @@ class LDAP_Search_Result (cidict, autosuper) :
 
 def get_picture (user) :
     """ Get picture from roundup user class """
-    p  = reversed (user.pictures)[0]
+    p  = user.pictures[-1]
     return user.cl.db.file.get (p, 'content')
 # end def get_picture
 
@@ -41,7 +41,7 @@ def get_org_location (user) :
 
 def get_position (user) :
     """ Get position name from roundup user class """
-    return user.cl.db.position.get (user.position, 'name')
+    return user.cl.db.position.get (user.position, 'position')
 # end def get_room
 
 def get_room (user) :
@@ -114,6 +114,14 @@ class LDAP_Converter (object) :
                                    , get_room
                                    , None
                                    )
+                , 'substitute'   : ( 'secretary'
+                                   , self.get_substitute
+                                   , None
+                                   )
+                , 'supervisor'   : ( 'manager'
+                                   , self.get_supervisor
+                                   , None
+                                   )
                 , 'title'        : ( 'carLicense'
                                    , 1
                                    , None
@@ -130,6 +138,24 @@ class LDAP_Converter (object) :
             }
         self.attr_map = attr_map
     # end def compute_attr_map
+
+    def get_username_attribute_dn (self, node, attribute) :
+        """ Get dn of a user Link-attribute of a node """
+        s = node [attribute]
+        if not s :
+            return s
+        s = self.db.user.get (s, 'username')
+        r = self.get_ldap_user (s)
+        return r.dn
+    # end def get_supervisor
+
+    def get_supervisor (self, user) :
+        return self.get_username_attribute_dn (user, 'supervisor')
+    # end def get_supervisor
+
+    def get_substitute (self, user) :
+        return self.get_username_attribute_dn (user, 'substitute')
+    # end def get_substitute
 
     def get_ldap_user (self, username) :
         result = self.ldcon.search_s \
@@ -166,9 +192,13 @@ class LDAP_Converter (object) :
                 print "Obsolete LDAP user: %s" % user.username
             umap = self.attr_map ['user']
             for rk, (lk, change, method) in umap.iteritems () :
+                rupattr = user [rk]
+                if callable (rupattr and change) :
+                    rupattr = change (user)
                 if lk not in res :
                     if user [rk] :
-                        print "%s: not found: %s" % (user.username, lk)
+                        print "%s: Inserting: %s (%s)" \
+                            % (user.username, lk, rupattr)
                         assert (change)
                 elif len (res [lk]) != 1 :
                     print "%s: invalid length: %s" % (user.username, lk)
@@ -176,9 +206,6 @@ class LDAP_Converter (object) :
                     ldattr = res [lk][0]
                     if method :
                         ldattr = method (ldattr)
-                    rupattr = user [rk]
-                    if callable (rupattr and change) :
-                        rupattr = change (user)
                     if ldattr != rupattr :
                         if not change :
                             print "%s:  attribute differs: %s/%s >%s/%s<" % \
@@ -210,7 +237,7 @@ class LDAP_Converter (object) :
                 else :
                     p, s = ldn
                 if p not in res :
-                    print "%s: not found: %s (%s)" % (user.username, p, cs [0])
+                    print "%s: Inserting: %s (%s)" % (user.username, p, cs [0])
                 elif len (res [p]) != 1 :
                     print "%s: invalid length: %s" % (user.username, p)
                 else :
@@ -221,7 +248,8 @@ class LDAP_Converter (object) :
                 if s :
                     if s not in res :
                         if cs [1:] :
-                            print "%s: not found: %s" % (user.username, s)
+                            print "%s: Inserting: %s (%s)" \
+                                % (user.username, s, cs [1:])
                     else :
                         if res [1] != cs [1:] :
                             print "%s: non-matching attribute: %s/%s %s/%s" % \
@@ -229,8 +257,6 @@ class LDAP_Converter (object) :
 
 
 
-            # FIXME Supervisor manager (LDAP cn)
-            # FIXME Substitute secretary (LDAP cn)
             if 0 and (1 or user.username == 'senn') :
                 print "User: %s: %s" % (user.username, res.dn)
                 print "content:", res
