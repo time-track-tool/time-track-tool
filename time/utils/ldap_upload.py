@@ -23,8 +23,6 @@ class LDAP_Search_Result (cidict, autosuper) :
 
 # end class LDAP_Search_Result
 
-#def ldap_from_username ()
-
 def get_picture (user) :
     """ Get picture from roundup user class """
     p  = reversed (user.pictures)[0]
@@ -51,61 +49,8 @@ def get_room (user) :
     return user.cl.db.room.get (user.room, 'name')
 # end def get_room
 
-# map roundup attributes to ldap attributes
-attr_map = \
-    { 'user' :
-        { 'department'   : ( 'Department'
-                           , get_department
-                           , None
-                           )
-        , 'firstname'    : ( 'givenname'
-                           , 0
-                           , None
-                           )
-        , 'lastname'     : ( 'sn'
-                           , 0
-                           , None
-                           )
-        , 'nickname'     : ( 'initials'
-                           , lambda x : x.nickname.upper ()
-                           , None
-                           )
-        , 'org_location' : ( 'company'
-                           , get_org_location
-                           , None
-                           )
-        , 'pictures'     : ( 'thumbnailPhoto'
-                           , get_picture
-                           , None
-                           )
-        , 'position'     : ( 'title'
-                           , get_position
-                           , None
-                           )
-        , 'realname'     : ( 'cn'
-                           , 0
-                           , None
-                           )
-        , 'room'         : ( 'physicalDeliveryOfficeName'
-                           , get_room
-                           , None
-                           )
-        , 'title'        : ( 'carLicense'
-                           , 1
-                           , None
-                           )
-        }
-    , 'user_contact' :
-        { 'Email'          : ('mail',)
-        , 'internal Phone' : ('telephoneNumber', 'otherTelephone')
-        , 'mobile Phone'   : ('mobile',          'otherMobile')
-        , 'Mobile short'   : ('pager',           'otherPager')
-#       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
-#       , 'private Phone'  : ('homePhone',       'otherHomePhone')
-        }
-    }
-
 class LDAP_Converter (object) :
+
     def __init__ (self, opt) :
         self.opt   = opt
         path       = opt.database_directory
@@ -126,7 +71,82 @@ class LDAP_Converter (object) :
         except ldap.LDAPError, cause :
             print >> sys.stderr, "LDAP bind failed: %s" % cause.args [0]['desc']
             exit (42)
+        self.compute_attr_map ()
     # end def __init__
+
+    # map roundup attributes to ldap attributes
+    def compute_attr_map (self) :
+        attr_map = \
+            { 'user' :
+                { 'department'   : ( 'Department'
+                                   , get_department
+                                   , None
+                                   )
+                , 'firstname'    : ( 'givenname'
+                                   , 0
+                                   , None
+                                   )
+                , 'lastname'     : ( 'sn'
+                                   , 0
+                                   , None
+                                   )
+                , 'nickname'     : ( 'initials'
+                                   , lambda x : x.nickname.upper ()
+                                   , None
+                                   )
+                , 'org_location' : ( 'company'
+                                   , get_org_location
+                                   , None
+                                   )
+                , 'pictures'     : ( 'thumbnailPhoto'
+                                   , get_picture
+                                   , None
+                                   )
+                , 'position'     : ( 'title'
+                                   , get_position
+                                   , None
+                                   )
+                , 'realname'     : ( 'cn'
+                                   , 0
+                                   , None
+                                   )
+                , 'room'         : ( 'physicalDeliveryOfficeName'
+                                   , get_room
+                                   , None
+                                   )
+                , 'title'        : ( 'carLicense'
+                                   , 1
+                                   , None
+                                   )
+                }
+            , 'user_contact' :
+                { 'Email'          : ('mail',)
+                , 'internal Phone' : ('telephoneNumber', 'otherTelephone')
+                , 'mobile Phone'   : ('mobile',          'otherMobile')
+                , 'Mobile short'   : ('pager',           'otherPager')
+        #       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
+        #       , 'private Phone'  : ('homePhone',       'otherHomePhone')
+                }
+            }
+        self.attr_map = attr_map
+    # end def compute_attr_map
+
+    def get_ldap_user (self, username) :
+        result = self.ldcon.search_s \
+            ( self.opt.base_dn
+            , ldap.SCOPE_SUBTREE
+            , '(uid=%s)' % username
+            , None
+            )
+        res = []
+        for r in result :
+            if r [0] :
+                res.append (LDAP_Search_Result (r))
+        assert (len (res) <= 1)
+        if res :
+            return res [0]
+        return None
+    # end def get_ldap_user
 
     def convert (self) :
         valid = self.db.user_status.lookup ('valid')
@@ -138,25 +158,14 @@ class LDAP_Converter (object) :
             user = self.db.user.getnode (uid)
             if user.status != valid :
                 continue
-            result = self.ldcon.search_s \
-                ( self.opt.base_dn
-                , ldap.SCOPE_SUBTREE
-                , '(uid=%s)' % user.username
-                , None
-                )
-            res = []
-            for r in result :
-                if r [0] :
-                    res.append (LDAP_Search_Result (r))
-            assert (len (res) <= 1)
-
+            res = self.get_ldap_user (user.username)
             if not res :
                 print "User not found:", user.username
                 continue
-            res = res [0]
             if res.dn.split (',')[-4] == 'OU=obsolete' :
                 print "Obsolete LDAP user: %s" % user.username
-            for rk, (lk, change, method) in attr_map ['user'].iteritems () :
+            umap = self.attr_map ['user']
+            for rk, (lk, change, method) in umap.iteritems () :
                 if lk not in res :
                     if user [rk] :
                         print "%s: not found: %s" % (user.username, lk)
@@ -190,9 +199,9 @@ class LDAP_Converter (object) :
                     contacts [n] = []
                 contacts [n].append (contact.contact)
             for ct, cs in contacts.iteritems () :
-                if ct not in attr_map ['user_contact'] :
+                if ct not in self.attr_map ['user_contact'] :
                     continue
-                ldn = attr_map ['user_contact'][ct]
+                ldn = self.attr_map ['user_contact'][ct]
                 if len (ldn) != 2 :
                     assert (len (ldn) == 1)
                     assert (ct == 'Email')
