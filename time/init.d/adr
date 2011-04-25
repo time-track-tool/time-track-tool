@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-11 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -41,7 +41,7 @@ EXECUTABLE=/usr/local/bin/$BINFILE
 PIDFILE=/var/run/roundup/server.pid
 LOGFILE=/var/log/roundup/roundup.log
 TRACKERS="todo=/var/lib/tracker/todo initiative=/var/lib/tracker/address"
-OPTIONS="-- -p 7070 -u tracker -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
+OPTIONS="-- -p 7070 -n 0.0.0.0 -u tracker -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
 NICENESS=0
 
 
