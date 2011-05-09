@@ -123,6 +123,12 @@ $(document).ready(function() {
             $('#details_new').addClass('active_detail');
         });
 
+		$('#list_content .col_email').each(function() {
+			var mailLink = $(this).text();
+			var completeLink = '<a href="mailto:' + mailLink + '" title="E-Mail">' + mailLink + '</a>';
+			$(this).html(completeLink);
+		});
+
 	// --------------
 	// Funktionen zur Checkboxauswahl
 	// --------------
@@ -190,7 +196,7 @@ $(document).ready(function() {
         // Dynamische Button-Borders
         // --------------
         
-        jQuery('.buttonbox input').before('<span class="button_border_left"></span>').after('<span class="button_border_right"></span>')
+        jQuery('.buttonbox input').before('<span class="button_border_left"></span>').after('<span class="button_border_right"></span>');
 
 	// --------------
 	// Search form

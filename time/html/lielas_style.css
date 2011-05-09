@@ -1,4 +1,7 @@
-/* @override http://lielas.keinefalschebewegung.de/lielas_style.css */
+/* @override 
+	http://lielas.keinefalschebewegung.de/lielas_style.css
+	http://project.runtux.com:8888/lielas/@@file/lielas_style.css
+*/
 
 body {
 	background: #eeeeee url(lfiles/images/background.png) repeat-x top left;
@@ -413,27 +416,41 @@ ul.sensor {
 	}
 .col_name {
 	position: absolute;
-	left: 125px;
+	left: 145px;
 	top: 0;
 	cursor: pointer;
 	}
 .col_device, .col_email, .col_desc {
 	position: absolute;
-	left: 235px;
+	left: 275px;
 	top: 0;
 	cursor: pointer;
 	}
 .col_group {
 	position: absolute;
-	left: 365px;
+	left: 405px;
 	top: 0;
 	cursor: pointer;
 	}
 .col_intervall, .col_tz, .col_order {
 	position: absolute;
-	left: 470px;
+	left: 510px;
 	top: 0;
 	cursor: pointer;
+	}
+
+.col_order {
+	left: 450px;
+	}
+
+#list_content .col_email a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px dotted;
+	}
+
+#list_content .col_email a:hover {
+	border-bottom: 1px dotted #ababab;
 	}
 
 #main_collapse {
