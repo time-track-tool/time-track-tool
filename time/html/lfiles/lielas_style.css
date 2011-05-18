@@ -4,14 +4,14 @@
 */
 
 body {
-	background: #eeeeee url(lfiles/images/background.png) repeat-x top left;
+	background: #eeeeee url(images/background.png) repeat-x top left;
 	font: 13px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 	color: #666666;
 	margin: 0;
 	position: relative;
 	}
 
-body.filter { background: #eeeeee url(lfiles/images/background_filter.png) repeat-x top left; }
+body.filter { background: #eeeeee url(images/background_filter.png) repeat-x top left; }
 
 p, h2, h3 {
 	margin: 0;
@@ -28,7 +28,7 @@ a:active, a:focus {outline: none;}
 #header {
 	height: 72px;
 	width: 1024px;
-	background: url(lfiles/images/logo.png) no-repeat right top;
+	background: url(images/logo.png) no-repeat right top;
 	position: relative;
 	}
 
@@ -58,7 +58,7 @@ a:active, a:focus {outline: none;}
 .navi_item .left {
 	width: 15px;
 	height: 35px;
-	background: url(lfiles/images/tab_left.png) no-repeat right top;
+	background: url(images/tab_left.png) no-repeat right top;
 	float: left;
 	display: block;
 	}
@@ -66,7 +66,7 @@ a:active, a:focus {outline: none;}
 .navi_item .right {
 	width: 10px;
 	height: 35px;
-	background: url(lfiles/images/tab_right.png) no-repeat left top;
+	background: url(images/tab_right.png) no-repeat left top;
 	float: left;
 	display: block;
 	}
@@ -76,7 +76,7 @@ a:active, a:focus {outline: none;}
 	color: #333333;
 	height: 35px;
 	line-height: 42px;
-	background: url(lfiles/images/tab_middle.png) repeat-x left top;
+	background: url(images/tab_middle.png) repeat-x left top;
 	overflow: hidden;
 	float: left;
 	text-decoration: none;
@@ -233,7 +233,7 @@ input.filter_time {
 	}
 
 #filter_submit {
-	background: url(lfiles/images/filter_divider.png) no-repeat left 20px;
+	background: url(images/filter_divider.png) no-repeat left 20px;
 	padding-top: 23px;
 	padding-left: 15px;
 	width: 200px;
@@ -298,7 +298,7 @@ input.queryname {
 	width: 590px;
 	height: 29px;
 	line-height: 29px;
-	background: url(lfiles/images/list_header.png) no-repeat left top;
+	background: url(images/list_header.png) no-repeat left top;
 	color: #ffffff;
 	font-size: 15px;
 	font-weight: bold;
@@ -325,7 +325,7 @@ ul, li {
 
 #list_body {
 	width: 619px;
-	background: url(lfiles/images/liste_body_background.png) repeat-y left top;
+	background: url(images/liste_body_background.png) repeat-y left top;
 	border-bottom: 1px solid #dddddd;
 	padding: 0 2px 0 0;
 	}
@@ -357,10 +357,10 @@ a.sort_link {
 a.sort_link.active {
 	color: #1a5a86;
 	padding-right: 15px;
-	background: url(lfiles/images/arrow_down.png) no-repeat right center;
+	background: url(images/arrow_down.png) no-repeat right center;
 	}
 a.sort_link.active.desc {
-	background-image: url(lfiles/images/arrow_up.png);
+	background-image: url(images/arrow_up.png);
 	}
 	
 .list_row.main {
@@ -454,17 +454,17 @@ ul.sensor {
 	}
 
 #main_collapse {
-	background: url(lfiles/images/collapse_blue_down.png) no-repeat left top;
+	background: url(images/collapse_blue_down.png) no-repeat left top;
 	}
 #main_collapse.closed {
-	background: url(lfiles/images/collapse_blue_right.png) no-repeat left top !important;
+	background: url(images/collapse_blue_right.png) no-repeat left top !important;
 	}
 
 #list_content img {
-	background: url(lfiles/images/collapse_gray_down.png) no-repeat left top;
+	background: url(images/collapse_gray_down.png) no-repeat left top;
 	}
 #list_content img.closed  {
-	background: url(lfiles/images/collapse_gray_right.png) no-repeat left top;
+	background: url(images/collapse_gray_right.png) no-repeat left top;
 	}
 
 .sort_img {
@@ -485,7 +485,7 @@ ul.sensor {
 	height: 30px;
 	line-height: 25px;
 	clear: both;
-	background: url(lfiles/images/liste_background_bottom.png) no-repeat left bottom;
+	background: url(images/liste_background_bottom.png) no-repeat left bottom;
 	}
 
 #csv_export {
@@ -531,7 +531,7 @@ input.selectbox {
 	width: 295px;
 	height: 29px;
 	line-height: 29px;
-	background: url(lfiles/images/details_header.png) no-repeat;
+	background: url(images/details_header.png) no-repeat;
 	color: #ffffff;
 	font-size: 15px;
 	font-weight: normal;
@@ -540,7 +540,7 @@ input.selectbox {
 	
 .details_body {
 	overflow: hidden;
-	background: url(lfiles/images/details_back_middle.png) repeat-y;
+	background: url(images/details_back_middle.png) repeat-y;
 	width: 311px;
         display: none;
 	}
@@ -637,14 +637,14 @@ hr {
 .details_footer {
 	height: 13px;
 	width: 311px;
-	background: url(lfiles/images/details_back_bottom.png) no-repeat left top;
+	background: url(images/details_back_bottom.png) no-repeat left top;
 	}
 
 /* @group Setting */
 
 #settings_body {
 	width: 619px;
-	background: url(lfiles/images/liste_body_background.png) repeat-y left top;
+	background: url(images/liste_body_background.png) repeat-y left top;
 	padding: 0 2px 0 0;
 	}
 	
@@ -752,7 +752,7 @@ hr {
 	}
 
 .buttonbox input {
-	background: transparent url(lfiles/images/button_back_green.png) no-repeat center 2px;
+	background: transparent url(images/button_back_green.png) no-repeat center 2px;
 	vertical-align: top;
 	height: 21px;
 	cursor: pointer;
@@ -771,7 +771,7 @@ hr {
 	width: 5px;
 	display: inline-block;
 	height: 21px;
-	background: transparent url(lfiles/images/button_back_green.png) no-repeat left 2px;
+	background: transparent url(images/button_back_green.png) no-repeat left 2px;
 	float: left;
 	}
 	
@@ -780,11 +780,11 @@ hr {
 	}	
 
 .orangebutton .button_border_left, .orangebutton .button_border_right, .orangebutton input {
-	background-image: url(lfiles/images/button_back_orange.png) !important;
+	background-image: url(images/button_back_orange.png) !important;
 	}
 
 .graybutton .button_border_left, .graybutton .button_border_right, .graybutton input {
-	background-image: url(lfiles/images/button_back_gray.png) !important;
+	background-image: url(images/button_back_gray.png) !important;
 	}
 
 /* @end */

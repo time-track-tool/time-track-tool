@@ -25,7 +25,7 @@
 # General Public License above, contact
 # Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
 #
-# roundup	Startup script for the roundup http server.
+# roundup       Startup script for the roundup http server.
 ### BEGIN INIT INFO
 # Provides:             lielas
 # Required-Start:       $local_fs $remote_fs $network $time postgresql
@@ -39,16 +39,12 @@
 
 DESC='Roundup HTTP-Server'
 
-USER=roundup
-#USER=ralf
+USER=www-data
 BINFILE=roundup-server 
 EXECUTABLE=/usr/bin/$BINFILE
-#EXECUTABLE=/usr/local/bin/$BINFILE
 ROOTBIN=update_handler
 LIELAS_PATH=/usr/local/src/lielas
-#LIELAS_PATH=/home/ralf/roundup/lielas2
 RUNDIR=/var/run/roundup
-#RUNDIR=$LIELAS_PATH
 ROOTSERVER=$LIELAS_PATH/utils/$ROOTBIN
 RSPARAMS="-u $USER $RUNDIR/rootsock"
 SERIALBIN=lielas-daemon
@@ -66,52 +62,52 @@ NICENESS=0
 test -x $EXECUTABLE || exit 0
 
 start_stop() {
-	case "$1" in
-	start)
-		printf "Starting $DESC:"
-		start-stop-daemon --start --oknodo --quiet    \
-                                  --pidfile $PIDFILE          \
-                                  --nicelevel $NICENESS       \
-				  --exec $EXECUTABLE $OPTIONS
-		printf " $BINFILE"
-		start-stop-daemon --start --oknodo --quiet    \
+        case "$1" in
+        start)
+               printf "Starting $DESC:"
+#               start-stop-daemon --start --oknodo --quiet    \
+#                                 --pidfile $PIDFILE          \
+#                                 --nicelevel $NICENESS       \
+#                                 --exec $EXECUTABLE $OPTIONS
+#               printf " $BINFILE"
+                start-stop-daemon --start --oknodo --quiet    \
                                   --pidfile $ROOTPID          \
                                   --make-pidfile --background \
                                   --nicelevel $NICENESS       \
-				  --exec $ROOTSERVER -- $RSPARAMS
-		printf " $ROOTBIN"
-		start-stop-daemon --start --oknodo --quiet    \
+                                  --exec $ROOTSERVER -- $RSPARAMS
+                printf " $ROOTBIN"
+                start-stop-daemon --start --oknodo --quiet    \
                                   --pidfile $SERPID           \
                                   --make-pidfile --background \
                                   --nicelevel $NICENESS       \
                                   --chuid $USER               \
-				  --exec $SERIALSERVER -- $SERPARAMS
-		printf " $SERIALBIN"
-		printf ".\n"
-		;;
-	stop)
-		printf "Stopping $DESC:"
-		start-stop-daemon --stop --oknodo --quiet     \
-                                  --pidfile $PIDFILE
-		printf " $BINFILE"
-		start-stop-daemon --stop --oknodo --quiet     \
+                                  --exec $SERIALSERVER -- $SERPARAMS
+                printf " $SERIALBIN"
+                printf ".\n"
+                ;;
+        stop)
+                printf "Stopping $DESC:"
+#               start-stop-daemon --stop --oknodo --quiet     \
+#                                 --pidfile $PIDFILE
+#               printf " $BINFILE"
+                start-stop-daemon --stop --oknodo --quiet     \
                                   --pidfile $ROOTPID
-		printf " $ROOTBIN"
-		start-stop-daemon --stop --oknodo --quiet     \
+                printf " $ROOTBIN"
+                start-stop-daemon --stop --oknodo --quiet     \
                                   --pidfile $SERPID
-		printf " $SERIALBIN"
-		printf ".\n"
-		;;
-	restart | force-reload)
-		start_stop stop
-		sleep 1
-		start_stop start
-		;;
-	*)
-		printf "Usage: $0 {start|stop|restart|force-reload}\n" >&2
-		exit 1
-		;;
-	esac
+                printf " $SERIALBIN"
+                printf ".\n"
+                ;;
+        restart | force-reload)
+                start_stop stop
+                sleep 1
+                start_stop start
+                ;;
+        *)
+                printf "Usage: $0 {start|stop|restart|force-reload}\n" >&2
+                exit 1
+                ;;
+        esac
 }
 
 start_stop "$@"

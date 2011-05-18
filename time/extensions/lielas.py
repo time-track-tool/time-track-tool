@@ -140,7 +140,10 @@ class Delete_DB (Delete_Something) :
 # end class Delete_DB
 
 def is_lielas (request) :
-    return request.env.get('TRACKER_NAME') == 'lielas'
+    return (  request.env.get ('TRACKER_NAME') == 'lielas'
+           or request.env.get ('REQUEST_URI', '').startswith ('/lielas')
+           or request.env.get ('SCRIPT_NAME', '').startswith ('/lielas')
+           )
 # end def is_lielas
 
 template_by_class = \
