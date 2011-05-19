@@ -52,9 +52,7 @@ def update_device_surrogate (db, cl, nodeid, new_values) :
 
 def round_sint_mint (db, cl, nodeid, new_values) :
     if 'sint' in new_values :
-        new_values ['sint'] = 60 * int (new_values ['sint'] / 60. + 0.5)
-        if new_values ['sint'] < 60 :
-            new_values ['sint'] = 60
+        new_values ['sint'] = int (new_values ['sint'] + 0.5)
         if 'sint_pending' not in new_values :
             new_values['sint_pending'] = True
     if 'mint' in new_values :

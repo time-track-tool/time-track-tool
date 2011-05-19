@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-19 12:38+0200\n"
+"POT-Creation-Date: 2011-05-19 09:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -222,7 +222,7 @@ msgstr ""
 msgid "You may link only to your own %(cls)s"
 msgstr ""
 
-#: ../detectors/check_linking.py:58
+#: ../detectors/check_linking.py:61
 #, python-format
 msgid "You may not unlink %(cls)s from %(name)s"
 msgstr ""
@@ -5236,7 +5236,7 @@ msgid "+ Add"
 msgstr ""
 
 #: ../html/device_group.index.html:61 ../html/device_group.item.html:61
-#: ../html/lielas.html:395 ../html/user.lindex.html:57
+#: ../html/lielas.html:397 ../html/user.lindex.html:57
 msgid "Details:"
 msgstr ""
 
@@ -5300,9 +5300,9 @@ msgstr ""
 msgid "Email:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:162 ../html/dyndns.lindex.html:196
-#: ../html/lielas.html:453 ../html/lielas.html:552 ../html/lielas.html:636
-#: ../html/lielas.html:671
+#: ../html/dyndns.lindex.html:162 ../html/dyndns.lindex.html:197
+#: ../html/lielas.html:455 ../html/lielas.html:554 ../html/lielas.html:638
+#: ../html/lielas.html:673
 msgid "Submit Changes"
 msgstr ""
 
@@ -5406,39 +5406,43 @@ msgstr ""
 msgid "Addr"
 msgstr ""
 
-#: ../html/lielas.html:345
-msgid "Selection:"
+#: ../html/lielas.html:318
+msgid "sec"
 msgstr ""
 
 #: ../html/lielas.html:347
+msgid "Selection:"
+msgstr ""
+
+#: ../html/lielas.html:349
 msgid "export CSV"
 msgstr ""
 
-#: ../html/lielas.html:357
+#: ../html/lielas.html:359
 msgid "select Filter..."
 msgstr ""
 
-#: ../html/lielas.html:368
+#: ../html/lielas.html:370
 msgid "Load"
 msgstr ""
 
-#: ../html/lielas.html:379
+#: ../html/lielas.html:381
 msgid "Save filter..."
 msgstr ""
 
-#: ../html/lielas.html:384
+#: ../html/lielas.html:386
 msgid "Save filter"
 msgstr ""
 
-#: ../html/lielas.html:481
+#: ../html/lielas.html:483
 msgid "Status"
 msgstr ""
 
-#: ../html/lielas.html:558
+#: ../html/lielas.html:560
 msgid "Latest measurements"
 msgstr ""
 
-#: ../html/lielas.html:667
+#: ../html/lielas.html:669
 msgid "Create"
 msgstr ""
 

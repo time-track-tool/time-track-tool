@@ -767,13 +767,6 @@ if 'transceiver' in db.classes :
         , sint_pending = False
         )
     db.user.create \
-        ( username = "user"
-        , password = adminpw
-        , address  = db.config.ADMIN_EMAIL
-        , roles    = 'User'
-        , timezone = 'Europe/Vienna'
-        )
-    db.user.create \
         ( username = "guest"
         , password = adminpw
         , address  = db.config.ADMIN_EMAIL

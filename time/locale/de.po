@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-04-19 12:38+0200\n"
+"POT-Creation-Date: 2011-05-19 09:35+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -4014,6 +4014,9 @@ msgstr "Geräteliste"
 
 msgid "Addr"
 msgstr "Adr"
+
+msgid "sec"
+msgstr "sek"
 
 msgid "Selection:"
 msgstr "Auswahl:"

@@ -313,8 +313,10 @@
                         <span class="col_name"   tal:content="d/name" />
                         <span class="col_device" tal:content="d/dev" />
                         <span class="col_group"  tal:content="d/device_group" />
-                        <span class="col_intervall"
-                              tal:content="python: str (int (d.mint)) + ' s'" />
+                        <span class="col_intervall">
+                          <span tal:content="python: int (d.mint)"/>
+                          <span i18n:translate="">sec</span>
+                        </span>
                       </div>
                       <ul tal:attributes="id python:d.designator() + '_sensor'"
                           class="sensor">
