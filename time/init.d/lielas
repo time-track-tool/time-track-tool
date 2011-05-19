@@ -28,7 +28,7 @@
 # roundup       Startup script for the roundup http server.
 ### BEGIN INIT INFO
 # Provides:             lielas
-# Required-Start:       $local_fs $remote_fs $network $time postgresql
+# Required-Start:       $local_fs $remote_fs $network $time postgresql apache2
 # Required-Stop:
 # Should-Start:
 # Should-Stop:
@@ -84,6 +84,16 @@ start_stop() {
                                   --exec $SERIALSERVER -- $SERPARAMS
                 printf " $SERIALBIN"
                 printf ".\n"
+                # Cache pre-seeding
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/js/jquery-1.4.2.min.js
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/js/jquery-ui-1.8.11.custom.min.js
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/js/jquery-ui-timepicker-addon.js
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/js/jquery.tinysort.min.js
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/js/lielas.js
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/lielas_style.css
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/@@file/lfiles/jquery-ui-1.8.11.custom.css
+                /usr/bin/wget -r -O /dev/null http://localhost/lielas/
                 ;;
         stop)
                 printf "Stopping $DESC:"
