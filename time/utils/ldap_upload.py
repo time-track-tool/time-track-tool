@@ -193,6 +193,7 @@ class LDAP_Converter (object) :
                 continue
             if res.dn.split (',')[-4] == 'OU=obsolete' :
                 print "Obsolete LDAP user: %s" % user.username
+                continue
             umap = self.attr_map ['user']
             modlist = []
             for rk, (lk, change, method) in umap.iteritems () :
@@ -211,16 +212,18 @@ class LDAP_Converter (object) :
                 elif len (res [lk]) != 1 :
                     print "%s: invalid length: %s" % (user.username, lk)
                 else :
-                    ldattr = res [lk][0]
+                    ldattr = pldattr = res [lk][0]
+		    if rk == 'pictures' :
+			pldattr = '<suppressed>'
                     if method :
                         ldattr = method (ldattr)
                     if ldattr != rupattr :
                         if not change :
                             print "%s:  attribute differs: %s/%s >%s/%s<" % \
-                                (user.username, rk, lk, prupattr, ldattr)
+                                (user.username, rk, lk, prupattr, pldattr)
                         else :
                             print "%s:  Updating: %s/%s >%s/%s<" % \
-                                (user.username, rk, lk, prupattr, ldattr)
+                                (user.username, rk, lk, prupattr, pldattr)
                             op = ldap.MOD_REPLACE
                             if rupattr is None :
                                 op = ldap.MOD_DELETE
