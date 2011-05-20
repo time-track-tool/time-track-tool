@@ -32,7 +32,7 @@
      <td tal:condition="python:context.pictures and context.pictures.is_view_ok ()"
          rowspan="9">
        <img width="112" alt="Photo" tal:attributes="src python:
-        list (sorted (context.pictures, key=lambda x: x.activity))[0]
+        list (sorted (context.pictures, reverse=1, key=lambda x: x.activity))[0]
                .download_url ()">
      </td>
     </tr>
