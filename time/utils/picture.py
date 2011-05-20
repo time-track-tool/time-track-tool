@@ -47,7 +47,6 @@ for u in db.user.list () :
                 break
         else :
             print "non-matching pic:", user.username
-            addpic (user, pic)
     else :
         print "      create pic:", user.username
         addpic (user, pic)
