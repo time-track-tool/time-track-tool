@@ -187,7 +187,6 @@ class LDAP_Converter (object) :
             if user.status != valid :
                 continue
             res = self.get_ldap_user (user.username)
-            print
             if not res :
                 print "User not found:", user.username
                 continue
@@ -269,7 +268,7 @@ class LDAP_Converter (object) :
                             if s not in self.forbidden :
                                 modlist.append ((ldap.MOD_ADD, s, cs [1:]))
                     else :
-                        if res [1] != cs [1:] :
+                        if res [s] != cs [1:] :
                             print "%s:  Updating: %s/%s %s/%s" % \
                                 (user.username, ct, s, cs [1:], ldattr)
                             if s not in self.forbidden :
