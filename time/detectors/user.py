@@ -27,7 +27,7 @@ from roundup.exceptions             import Reject
 
 import common
 import rup_utils
-from user_dynamic                   import get_user_dynamic
+from user_dynamic                   import get_user_dynamic, last_user_dynamic
 
 def common_user_checks (db, cl, nodeid, new_values) :
     ''' Make sure user properties are valid.
