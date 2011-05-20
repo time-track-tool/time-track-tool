@@ -8,6 +8,15 @@ db      = tracker.open ('admin')
 
 valid = db.user_status.lookup ('valid')
 http  = "http://www.vie.at.tttech.ttt/company/staff/pics/%s.jpg"
+
+def addpic (user, pic) :
+    f = db.file.create \
+        (name = str (user.nickname), type = 'image/jpeg', content = pic)
+    np = user.pictures
+    np.append (f)
+    db.user.set (user.id, pictures = np)
+# end def addpic
+
 for u in db.user.list () :
     user = db.user.getnode (u)
     if user.status != valid :
@@ -38,11 +47,8 @@ for u in db.user.list () :
                 break
         else :
             print "non-matching pic:", user.username
+            addpic (user, pic)
     else :
         print "      create pic:", user.username
-#        f = db.file.create \
-#            (name = str (user.nickname), type = 'image/jpeg', content = pic)
-#        np = user.pictures
-#        np.append (f)
-#        db.user.set (user.id, pictures = np)
+        addpic (user, pic)
 db.commit ()
