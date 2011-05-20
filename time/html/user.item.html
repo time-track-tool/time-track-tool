@@ -32,7 +32,8 @@
      <td tal:condition="python:context.pictures and context.pictures.is_view_ok ()"
          rowspan="9">
        <img width="112" alt="Photo" tal:attributes="src python:
-        context.pictures.reverse().next ().download_url ()">
+        list (sorted (context.pictures, key=lambda x: x.activity))[0]
+               .download_url ()">
      </td>
     </tr>
     <tr tal:condition="python:'lastname' in bclass.properties">
