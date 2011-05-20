@@ -51,7 +51,7 @@ def get_room (user) :
 
 class LDAP_Converter (object) :
     
-    forbidden = dict.fromkeys (('otherTelephone',))
+    forbidden = {}
 
     def __init__ (self, opt) :
         self.opt   = opt
