@@ -45,4 +45,4 @@ for u in db.user.list () :
 #        np = user.pictures
 #        np.append (f)
 #        db.user.set (user.id, pictures = np)
-#db.commit ()
+db.commit ()
