@@ -109,17 +109,20 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 ("%(uidname)s specified but no samba domain configured")
 # end def common_user_checks
 
-def create_dynuser (db, cl, nodeid, new_values) :
+def create_dynuser (db, cl, nodeid, old_values) :
     u = db.user.getnode (nodeid)
     s = None
     if 'user_status' in db.classes :
 	s = db.user_status.lookup ('valid')
-    if nodeid > 2 and (not s or u.status == s) :
+    olo = cl.get (nodeid, 'org_location')
+    dep = cl.get (nodeid, 'department')
+    dyn = last_user_dynamic (db, nodeid)
+    if nodeid > 2 and (not s or u.status == s) and not dyn and olo and dep :
 	db.user_dynamic.create \
 	    ( user         = nodeid
 	    , valid_from   = Date ('.')
-	    , org_location = cl.get (nodeid, 'org_location')
-	    , department   = cl.get (nodeid, 'department')
+	    , org_location = olo
+	    , department   = dep
 	    )
 # end def create_dynuser
 
@@ -142,8 +145,6 @@ def new_user (db, cl, nodeid, new_values) :
         , new_values
         , 'firstname'
         , 'lastname'
-        , 'org_location'
-        , 'department'
         , 'username'
         )
     if 'tt_lines' in cl.properties and 'tt_lines' not in new_values :
@@ -165,7 +166,8 @@ def new_user (db, cl, nodeid, new_values) :
                 nickname = new_values ['nickname']
             else :
                 nickname = None
-    if 'org_location' in db.classes :
+    maildomain = None
+    if 'org_location' in db.classes and 'org_location' in new_values :
         olo   = new_values ['org_location']
         org        = db.org_location.get   (olo, 'organisation')
         maildomain = db.organisation.get   (org, 'mail_domain')
@@ -176,7 +178,7 @@ def new_user (db, cl, nodeid, new_values) :
 
     username   = new_values ['username']
     # defaults:
-    if new_values ['status'] == valid :
+    if new_values ['status'] == valid and maildomain :
         if 'contacts' in cl.properties :
             try :
                 email = db.uc_type.lookup ('Email')
@@ -291,6 +293,7 @@ def init (db) :
     db.user.react("create", update_userlist_html)
     if 'user_dynamic' in db.classes :
         db.user.react("create", create_dynuser)
+        db.user.react("set",    create_dynuser)
     db.user.react("set"   , update_userlist_html)
     db.user.audit("retire", check_retire)
     db.user.audit("set"   , obsolete_action)
