@@ -78,6 +78,8 @@ def init \
         , serial_number    = String    ()
         , related_issues   = Multilink ("issue")
         , customer         = Link      ("customer",   do_journal='no')
+        , emails           = Multilink ("contact",    do_journal='no')
+        , send_to_customer = Boolean   ()
         )
 
     customer = Person_Class \

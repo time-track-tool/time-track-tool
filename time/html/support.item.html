@@ -140,6 +140,16 @@
        </td>
       </tal:block>
      </tr>
+     <tr tal:condition="python: context.id and context.customer"
+         tal:define="email python:db._db.contact_type.lookup ('Email')">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'emails')"/>
+      <td tal:content="structure python:context.emails.menu
+          (height=4, contact_type=email, customer=context.customer.id)"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'send_to_customer')"/>
+      <td tal:content="structure python:context.send_to_customer.field ()"/>
+    </tr>
     </tal:block>
    </tal:block>
   </tal:block>

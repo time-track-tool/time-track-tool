@@ -595,6 +595,8 @@ _helptext          = \
       [ ""'''Date of final meeting for this %(Classname)s.'''
       , date_text
       ]
+    , ""'emails'                      :
+      [""'''Customer email addresses for this %(Classname)s''']
     , ""'firstname'                   : [firstname]
     , ""'first_date'                  : [ ""'''Date of first contact''']
     , ""'fixed_in'                    :
@@ -1153,6 +1155,8 @@ _helptext          = \
              invoices are marked.
           '''
       ]
+    , ""'send_to_customer'            :
+      [""'''Send to external email addresses (customer)''']
     , ""'severity'                    :
       [ ""'''How severe is the %(Classname)s for the customer or
              stakeholder
