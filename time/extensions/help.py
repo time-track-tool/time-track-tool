@@ -701,6 +701,8 @@ _helptext          = \
       [""'''Internet protocol subnet''']
     , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
+    , ""'is_valid'                    :
+      [""'''%(Classname)s is valid''']
     , ""'is_app_sensor'               :
       [ ""'''True if this %(Classname)s is an application sensor (not the
             battery or dBm Sensor)

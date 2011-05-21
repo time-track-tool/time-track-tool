@@ -70,6 +70,7 @@
             , inputtype='radio'
             , width='600'
             , pagesize=500
+            , filter='is_valid=True'
             )"/>
       </td>
       <td colspan="2" tal:condition="context/id"
@@ -80,7 +81,7 @@
      </tr>
      <tr tal:condition="python: context.id and context.customer"
          tal:repeat="ct python:sorted
-         ( context.customer.contacts
+         ( [c for c in context.customer.contacts if c.contact_type.name != 'Email']
          , key = lambda x : (x.contact_type.order, x.contact)
          )">
       <th style="vertical-align:top"

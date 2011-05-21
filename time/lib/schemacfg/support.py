@@ -83,7 +83,8 @@ def init \
     customer = Person_Class \
         ( db
         , ''"customer"
-        , name             =  String   ()
+        , name             = String    ()
+        , is_valid         = Boolean   ()
         )
     customer.setkey ("name")
 
