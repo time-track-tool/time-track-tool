@@ -31,6 +31,10 @@
 #--
 #
 
+from email.parser                   import Parser
+from email.message                  import Message
+from email.utils                    import getaddresses
+from email.header                   import decode_header
 from roundup                        import roundupdb, hyperdb
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
@@ -88,6 +92,116 @@ def check_closed (db, cl, nodeid, new_values) :
         new_values ["closed"] = None
 # end def check_closed
 
+import sys
+
+def header_utf8 (header) :
+    parts = decode_header (header)
+    result = []
+    for txt, coding in parts :
+        if not coding :
+            # might be 8 bit
+            result.append (txt.decode ('latin1'))
+        else :
+            result.append (txt.decode (coding))
+    return (''.join (result)).encode ('utf-8')
+# end def header_utf8
+
+def find_or_create_contact (db, mail, rn, customer = None) :
+    cemail = db.contact_type.lookup ('Email')
+    sdict  = dict (contact_type = cemail, contact = mail)
+    for c in db.contact.filter (None, sdict) :
+        # filter uses substring match for strings
+        if db.contact.get (c, 'contact') == mail :
+            return c
+    rn   = header_utf8 (rn)
+    print >> sys.stderr, "after decode_header"
+    if not customer :
+        customer = db.customer.create (name = ' '.join ((rn, mail)))
+    print >> sys.stderr, "after create customer"
+    c    = db.contact.create \
+        ( contact_type = cemail
+        , contact      = mail
+        , customer     = customer
+        , description  = rn
+        )
+    print >> sys.stderr, "after create contact"
+    return c
+# end def find_or_create_contact
+
+#               # Parse To and CC headers to find more customer email
+#               # addresses. Check if these contain the same domain
+#               # part as the From.
+#               ccs = get_all ('CC')
+#               tos = get_all ('To')
+#               dom = mail.split ('@', 1) [-1]
+#               for rn, mail in getaddresses (ccs + tos) :
+#                   rn = decode_header (rn)
+#                   d  = mail.split ('@', 1) [-1]
+#                   if d == dom and not in_nosy (db, new_values, mail) :
+#                       c = find_or_create_contact (db, mail)
+
+def header_check (db, cl, nodeid, new_values) :
+    """ Check header of new messages and determine original customer
+        from that header -- only if sender is the support special
+        account (any account with system status).  If send_to_customer
+        flag is set *and* account is not a system account, munge
+        the headers and add X-ROUNDUP-CC header.
+    """
+    send_to_customer = False
+    # Be sure to alway set send_to_customer to False!
+    if 'send_to_customer' in new_values :
+        send_to_customer = new_values ['send_to_customer']
+        new_values ['send_to_customer'] = False
+    newmsgs = new_values.get ('messages')
+    if not newmsgs :
+        return
+    newmsgs = set (newmsgs)
+    if nodeid :
+        oldmsgs = set (db.cl.get (nodeid, 'messages'))
+    else :
+        oldmsgs = set ()
+    system  = db.user_status.lookup ('system')
+    cemail  = db.contact_type.lookup ('Email')
+    for m in newmsgs.difference (oldmsgs) :
+        msg    = db.msg.getnode (m)
+        h      = None
+        if msg.header :
+            h = Parser ().parsestr (msg.header, headersonly = True)
+        else :
+            h = Message ()
+        if db.user.get (msg.author, 'status') == system :
+            frm = h.get_all ('From')
+            if  (   not nodeid
+                and frm
+                and 'customer' not in new_values
+                and 'emails' not in new_values
+                ) :
+                # use only first 'From' address (there shouldn't be more)
+                rn, mail = getaddresses (frm) [0]
+                sdict = dict (contact_type = cemail, contact = mail)
+                print >> sys.stderr, "before find_or_create_contact"
+                c     = find_or_create_contact (db, mail, rn)
+                print >> sys.stderr, "after  find_or_create_contact"
+                new_values ['customer'] = db.contact.get (c, 'customer')
+                new_values ['emails']   = [c]
+                print >> sys.stderr, "after  setting new_values"
+        else :
+            if send_to_customer :
+                mails = None
+                if 'emails' in new_values :
+                    mails = new_values ['emails']
+                elif nodeid :
+                    mails = cl.get (nodeid, 'emails')
+                if mails :
+                    mails = (db.contact.get (x, 'name') for x in mails)
+                    h.add_header ('X-ROUNDUP-CC', ','.join (mails))
+        h = h.as_string ()
+        print >> sys.stderr, "after  as_string"
+        if h != '\n' and h != msg.header :
+            db.msg.set (m, header = h)
+        print >> sys.stderr, "after  set"
+# end def header_check
+
 def check_require_message (db, cl, nodeid, new_values) :
     if 'messages' in new_values :
         return
@@ -108,4 +222,6 @@ def init (db) :
     db.support.audit ("set",    audit_superseder)
     db.support.audit ("set",    check_closed,           priority = 200)
     db.support.audit ("set",    check_require_message,  priority = 200)
+    db.support.audit ("create", header_check,           priority = 200)
+    db.support.audit ("set",    header_check,           priority = 200)
 # end def init
