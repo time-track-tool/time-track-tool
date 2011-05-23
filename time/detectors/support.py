@@ -155,7 +155,7 @@ def header_check (db, cl, nodeid, new_values) :
         return
     newmsgs = set (newmsgs)
     if nodeid :
-        oldmsgs = set (db.cl.get (nodeid, 'messages'))
+        oldmsgs = set (cl.get (nodeid, 'messages'))
     else :
         oldmsgs = set ()
     system  = db.user_status.lookup ('system')
@@ -188,7 +188,7 @@ def header_check (db, cl, nodeid, new_values) :
                 elif nodeid :
                     mails = cl.get (nodeid, 'emails')
                 if mails :
-                    mails = (db.contact.get (x, 'name') for x in mails)
+                    mails = (db.contact.get (x, 'contact') for x in mails)
                     h.add_header ('X-ROUNDUP-CC', ','.join (mails))
         h = h.as_string ()
         if h != '\n' and h != msg.header :
