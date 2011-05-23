@@ -227,20 +227,14 @@ def repr_code (klass, adr_types) :
     return Repr_Code (klass)
 # end def repr_code
 
-class True_Value (object) :
-    """ A class that evaluates to True but returns a zero-length string.
+class True_Value (type("")) :
+    """ A class that evaluates to True but can return a zero-length string.
         We use this as return value from a handle routine where the
         output happend to the file descriptor
     """
     def __nonzero__ (self) :
         return True
     # end def __nonzero__
-
-    def __repr__ (self) :
-        return ''
-    # end def __repr__
-
-    __str__ = __repr__
 # end class True_Value
 
 class Export_CSV_Names (Action, autosuper) :
@@ -416,7 +410,7 @@ class Export_CSV_Names (Action, autosuper) :
                    for col in self.columns]
                   )
                 )
-        return True_Value ()
+        return True_Value ('')
     # end def handle
 # end class Export_CSV_Names
 
