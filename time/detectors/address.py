@@ -95,6 +95,11 @@ def check_retire (db, cl, nodeid, old_values) :
         cl.retire (nodeid)
 # end def check_retire
 
+def fix_is_valid (db, cl, nodeid, new_values) :
+    if 'is_valid' not in new_values :
+        new_values ['is_valid'] = True
+# end def fix_is_valid
+
 def init (db) :
     global _
     _   = get_translation \
@@ -107,6 +112,7 @@ def init (db) :
         persclass = db.person
     if 'customer' in db.classes :
         adrclass  = persclass = db.customer
+        adrclass.audit   ("create", fix_is_valid)
 
     if 'abo' in db.classes and adrclass :
         adrclass.audit   ("create", fix_adr_type)

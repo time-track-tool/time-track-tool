@@ -92,8 +92,6 @@ def check_closed (db, cl, nodeid, new_values) :
         new_values ["closed"] = None
 # end def check_closed
 
-import sys
-
 def header_utf8 (header) :
     parts = decode_header (header)
     result = []
@@ -114,17 +112,17 @@ def find_or_create_contact (db, mail, rn, customer = None) :
         if db.contact.get (c, 'contact') == mail :
             return c
     rn   = header_utf8 (rn)
-    print >> sys.stderr, "after decode_header"
     if not customer :
         customer = db.customer.create (name = ' '.join ((rn, mail)))
-    print >> sys.stderr, "after create customer"
     c    = db.contact.create \
         ( contact_type = cemail
         , contact      = mail
         , customer     = customer
         , description  = rn
         )
-    print >> sys.stderr, "after create contact"
+    contacts = db.customer.get (customer, 'contacts')
+    contacts.append (c)
+    db.customer.set (customer, contacts = contacts)
     return c
 # end def find_or_create_contact
 
@@ -179,12 +177,9 @@ def header_check (db, cl, nodeid, new_values) :
                 # use only first 'From' address (there shouldn't be more)
                 rn, mail = getaddresses (frm) [0]
                 sdict = dict (contact_type = cemail, contact = mail)
-                print >> sys.stderr, "before find_or_create_contact"
                 c     = find_or_create_contact (db, mail, rn)
-                print >> sys.stderr, "after  find_or_create_contact"
                 new_values ['customer'] = db.contact.get (c, 'customer')
                 new_values ['emails']   = [c]
-                print >> sys.stderr, "after  setting new_values"
         else :
             if send_to_customer :
                 mails = None
@@ -196,10 +191,8 @@ def header_check (db, cl, nodeid, new_values) :
                     mails = (db.contact.get (x, 'name') for x in mails)
                     h.add_header ('X-ROUNDUP-CC', ','.join (mails))
         h = h.as_string ()
-        print >> sys.stderr, "after  as_string"
         if h != '\n' and h != msg.header :
             db.msg.set (m, header = h)
-        print >> sys.stderr, "after  set"
 # end def header_check
 
 def check_require_message (db, cl, nodeid, new_values) :
