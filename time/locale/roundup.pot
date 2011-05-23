@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-21 12:24+0200\n"
+"POT-Creation-Date: 2011-05-23 12:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,108 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../cache/time_record.py:54 ../detectors/time_record.py:53
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+#: ../cache/time_record.py:56 ../cache/time_record.py:63
+#: ../detectors/time_record.py:55 ../detectors/time_record.py:62
+#: ../detectors/user.py:69
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+#: ../cache/time_record.py:61 ../detectors/time_record.py:60
+msgid "No negative times are allowed"
+msgstr ""
+
+#: ../cache/time_record.py:65 ../detectors/time_record.py:64
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#: ../cache/time_record.py:210 ../cache/time_record.py:501
+#: ../detectors/time_record.py:209 ../detectors/time_record.py:498
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr ""
+
+#: ../cache/time_record.py:213 ../detectors/daily_record_freeze.py:85
+#: ../detectors/daily_record_freeze.py:108 ../detectors/time_record.py:212
+#, python-format
+msgid "%(attr)s must be set"
+msgstr ""
+
+#: ../cache/time_record.py:218 ../cache/time_record.py:325
+#: ../cache/time_record.py:433 ../cache/time_record.py:510
+#: ../detectors/time_record.py:217 ../detectors/time_record.py:323
+#: ../detectors/time_record.py:430 ../detectors/time_record.py:507
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#: ../cache/time_record.py:253 ../detectors/time_record.py:252
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+#: ../cache/time_record.py:309 ../detectors/time_record.py:307
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#: ../cache/time_record.py:320 ../cache/time_record.py:447
+#: ../detectors/time_record.py:318 ../detectors/time_record.py:444
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#: ../cache/time_record.py:323 ../cache/time_record.py:451
+#: ../detectors/time_record.py:321 ../detectors/time_record.py:448
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#: ../cache/time_record.py:328 ../detectors/time_record.py:326
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+#: ../cache/time_record.py:357 ../detectors/time_record.py:354
+#: ../extensions/help.py:1265 ../locale/attr.py:293 attr.py:293
+msgid "start"
+msgstr ""
+
+#: ../cache/time_record.py:358 ../detectors/erp.py:47
+#: ../detectors/time_record.py:355 ../lib/common.py:947
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
+
+#: ../cache/time_record.py:360 ../detectors/time_record.py:357
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#: ../cache/time_record.py:371 ../detectors/time_record.py:368
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+#: ../cache/time_record.py:430 ../cache/time_record.py:516
+#: ../detectors/time_record.py:427 ../detectors/time_record.py:513
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+#: ../cache/time_record.py:455 ../detectors/time_record.py:452
+msgid "No weekend booking allowed"
+msgstr ""
+
+#: ../cache/time_record.py:536 ../detectors/time_record.py:533
+msgid "Distribution: WP must be given"
+msgstr ""
+
+#: ../cache/time_record.py:590 ../detectors/time_record.py:587
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
 
 #: ../detectors/abo_checks.py:35
 msgid "Restart of subscription only within two months"
@@ -154,12 +256,6 @@ msgstr ""
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
-#: ../detectors/daily_record_freeze.py:85
-#: ../detectors/daily_record_freeze.py:108 ../detectors/time_record.py:212
-#, python-format
-msgid "%(attr)s must be set"
-msgstr ""
-
 #: ../detectors/daily_record_freeze.py:89
 msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
@@ -210,11 +306,6 @@ msgstr ""
 #: ../locale/attr.py:811 ../locale/attr.py:813 attr.py:780 attr.py:811
 #: attr.py:813
 msgid "product_group"
-msgstr ""
-
-#: ../detectors/erp.py:47 ../detectors/time_record.py:355 ../lib/common.py:947
-#, python-format
-msgid "%(attr)s must be specified"
 msgstr ""
 
 #: ../detectors/erp.py:51
@@ -282,7 +373,7 @@ msgstr ""
 msgid "Change of %(doc_issue_status)s requires a message"
 msgstr ""
 
-#: ../detectors/it.py:41 ../detectors/support.py:43
+#: ../detectors/it.py:41 ../detectors/support.py:47
 #, python-format
 msgid "New %s requires a message"
 msgstr ""
@@ -306,18 +397,18 @@ msgstr ""
 msgid "it_prio"
 msgstr ""
 
-#: ../detectors/it.py:86 ../detectors/support.py:72
+#: ../detectors/it.py:86 ../detectors/support.py:76
 #, python-format
 msgid "May not set %s on new issue"
 msgstr ""
 
-#: ../detectors/it.py:86 ../detectors/it.py:89 ../detectors/support.py:72
-#: ../detectors/support.py:75 ../locale/attr.py:56 ../locale/attr.py:86
+#: ../detectors/it.py:86 ../detectors/it.py:89 ../detectors/support.py:76
+#: ../detectors/support.py:79 ../locale/attr.py:56 ../locale/attr.py:86
 #: ../locale/attr.py:537 attr.py:56 attr.py:86 attr.py:537
 msgid "superseder"
 msgstr ""
 
-#: ../detectors/it.py:89 ../detectors/support.py:75
+#: ../detectors/it.py:89 ../detectors/support.py:79
 #, python-format
 msgid "Can't set %s to yourself"
 msgstr ""
@@ -487,92 +578,9 @@ msgstr ""
 msgid "summary_report"
 msgstr ""
 
-#: ../detectors/support.py:96
+#: ../detectors/support.py:210
 #, python-format
 msgid "Change of %s requires a message"
-msgstr ""
-
-#: ../detectors/time_record.py:53
-msgid "start and end must be on same day and start <= end."
-msgstr ""
-
-#: ../detectors/time_record.py:55 ../detectors/time_record.py:62
-#: ../detectors/user.py:69
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-#: ../detectors/time_record.py:60
-msgid "No negative times are allowed"
-msgstr ""
-
-#: ../detectors/time_record.py:64
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#: ../detectors/time_record.py:209 ../detectors/time_record.py:498
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr ""
-
-#: ../detectors/time_record.py:217 ../detectors/time_record.py:323
-#: ../detectors/time_record.py:430 ../detectors/time_record.py:507
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#: ../detectors/time_record.py:252
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-#: ../detectors/time_record.py:307
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#: ../detectors/time_record.py:318 ../detectors/time_record.py:444
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#: ../detectors/time_record.py:321 ../detectors/time_record.py:448
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#: ../detectors/time_record.py:326
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-#: ../detectors/time_record.py:354 ../extensions/help.py:1265
-#: ../locale/attr.py:293 attr.py:293
-msgid "start"
-msgstr ""
-
-#: ../detectors/time_record.py:357
-msgid "Either specify duration or start/end"
-msgstr ""
-
-#: ../detectors/time_record.py:368
-#, python-format
-msgid "%s: You specified new values for %s but no duration"
-msgstr ""
-
-#: ../detectors/time_record.py:427 ../detectors/time_record.py:513
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-#: ../detectors/time_record.py:452
-msgid "No weekend booking allowed"
-msgstr ""
-
-#: ../detectors/time_record.py:533
-msgid "Distribution: WP must be given"
-msgstr ""
-
-#: ../detectors/time_record.py:587
-msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
 #: ../detectors/time_wp.py:43
@@ -5246,12 +5254,13 @@ msgstr ""
 msgid "Freeze user"
 msgstr ""
 
-#: ../html/device_group.index.html:14 ../html/user.lindex.html:13
+#: ../html/device_group.index.html:14 ../html/device_group.item.html:14
+#: ../html/user.lindex.html:13
 msgid "+ Add"
 msgstr ""
 
-#: ../html/device_group.index.html:61 ../html/lielas.html:397
-#: ../html/user.lindex.html:57
+#: ../html/device_group.index.html:61 ../html/device_group.item.html:61
+#: ../html/lielas.html:397 ../html/user.lindex.html:57
 msgid "Details:"
 msgstr ""
 
@@ -5296,7 +5305,7 @@ msgid "User:"
 msgstr ""
 
 #: ../html/dyndns.lindex.html:44
-msgid "Intervals for all devices:"
+msgid "Default Interval:"
 msgstr ""
 
 #: ../html/dyndns.lindex.html:63
