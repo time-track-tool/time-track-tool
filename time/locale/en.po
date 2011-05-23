@@ -1736,7 +1736,7 @@ msgid "Skip any IP address before %(Property)s in output of ifconfig"
 msgstr ""
 
 msgid "interval"
-msgstr "Interval"
+msgstr "Sample interval"
 
 msgid ""
 "Interval for sending out an invoice in months. If the\n"
@@ -3860,7 +3860,7 @@ msgstr ""
 msgid "User:"
 msgstr ""
 
-msgid "Intervals for all devices:"
+msgid "Default Interval:"
 msgstr ""
 
 msgid "Internet"

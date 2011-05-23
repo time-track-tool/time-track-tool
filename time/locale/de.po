@@ -2993,7 +2993,7 @@ msgid ""
 msgstr ""
 
 msgid "sint"
-msgstr "Sensor Intervall"
+msgstr "Sende Intervall"
 
 msgid "Transmit interval for %(Classname)s"
 msgstr "Übertraguns-Intervall für %(Classname)s"
@@ -3940,8 +3940,8 @@ msgstr "Gerät"
 msgid "User:"
 msgstr "Benutzer:"
 
-msgid "Intervals for all devices:"
-msgstr ""
+msgid "Default Interval:"
+msgstr "Standardintervall:"
 
 msgid "Internet"
 msgstr ""
