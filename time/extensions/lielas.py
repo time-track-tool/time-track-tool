@@ -220,6 +220,9 @@ def sensor_measurements (db) :
     return dict ((s.id, latest_measurements (db, s)) for s in db.sensor.list ())
 # end def sensor_measurements
 
+# some common strings for the web-interface for translation:
+(""' (sec):', ""' (min):')
+
 def anon_class (db, classname) :
     """ Return HTMLClass generated from classname but with _anonymous
         property set so that the class is suitable for generation of

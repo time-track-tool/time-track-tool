@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-23 12:26+0200\n"
+"POT-Creation-Date: 2011-05-27 11:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4980,6 +4980,14 @@ msgstr ""
 
 #: ../extensions/lielas.py:183
 msgid "Configuration"
+msgstr ""
+
+#: ../extensions/lielas.py:224
+msgid " (min):"
+msgstr ""
+
+#: ../extensions/lielas.py:224
+msgid " (sec):"
 msgstr ""
 
 #: ../extensions/mark_invoices.py:64

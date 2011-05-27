@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-23 12:26+0200\n"
+"POT-Creation-Date: 2011-05-27 11:30+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -2140,7 +2140,7 @@ msgstr ""
 msgid "mint"
 msgstr "Interval"
 
-msgid "Measurement interval for %(Classname)s in seconds"
+msgid "Measurement interval for %(Classname)s"
 msgstr ""
 
 msgid "New message or notice for %(Classname)s"
@@ -2934,7 +2934,7 @@ msgstr ""
 msgid "sint"
 msgstr "Transmit interval"
 
-msgid "Transmit interval for %(Classname)s in minutes"
+msgid "Transmit interval for %(Classname)s"
 msgstr ""
 
 msgid "Samba domain for this %(Classname)s"
@@ -3653,6 +3653,12 @@ msgid "User"
 msgstr "User"
 
 msgid "Configuration"
+msgstr ""
+
+msgid " (min):"
+msgstr ""
+
+msgid " (sec):"
 msgstr ""
 
 #, python-format
