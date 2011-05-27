@@ -31,10 +31,15 @@
 #--
 #
 
-from email.parser                   import Parser
-from email.message                  import Message
-from email.utils                    import getaddresses
-from email.header                   import decode_header
+email_ok = False
+try :
+    from email.parser                   import Parser
+    from email.message                  import Message
+    from email.utils                    import getaddresses
+    from email.header                   import decode_header
+    email_ok = True
+except ImportError :
+    pass
 from roundup                        import roundupdb, hyperdb
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
@@ -206,6 +211,7 @@ def check_require_message (db, cl, nodeid, new_values) :
 def init (db) :
     if 'support' not in db.classes :
         return
+    assert (email_ok)
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext

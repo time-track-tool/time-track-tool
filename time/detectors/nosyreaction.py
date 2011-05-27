@@ -26,8 +26,12 @@
 #    Send out notification emails to all the users on the nosy list.
 
 
-from email.utils  import getaddresses
-from email.parser import Parser
+try :
+    # fail at runtime if these are used
+    from email.utils  import getaddresses
+    from email.parser import Parser
+except ImportError :
+    pass
 
 from roundup import roundupdb, hyperdb
 
@@ -51,7 +55,6 @@ def nosyreaction(db, cl, nodeid, oldvalues):
         try:
             cc_emails = []
             if 'header' in db.msg.properties and db.msg.get (msgid, 'header') :
-
                 h = Parser ().parsestr (db.msg.get (msgid, 'header'), headersonly = True)
                 for rn, mail in getaddresses (h.get_all ('X-ROUNDUP-CC')) :
                     cc_emails.append (mail)
