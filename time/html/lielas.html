@@ -15,6 +15,7 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <title metal:define-slot="head_title">LieLas</title>
+  <link rel="shortcut icon" type="image/x-icon" href="@@file/lfiles/lielas.ico" />
   <link href="@@file/lfiles/lielas_style.css" rel="stylesheet" type="text/css" />
   <link href="@@file/lfiles/jquery-ui-1.8.11.custom.css" rel="stylesheet"
         type="text/css" />
@@ -117,6 +118,14 @@
         <div class="details_footer"></div>
       </div>
     </div>
+    <div tal:condition = "options/error_message | nothing"
+       class           = "error-message"
+       tal:repeat      = "m options/error_message"
+       tal:content     = "structure m"/>
+    <div tal:condition = "options/ok_message | nothing"
+       class           = "ok-message"
+       tal:repeat      = "m options/ok_message"
+       tal:content     = "structure m"/>
   </div>
 </body>
 </html>
