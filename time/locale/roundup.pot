@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-27 11:30+0200\n"
+"POT-Creation-Date: 2011-05-27 14:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -578,7 +578,7 @@ msgstr ""
 msgid "summary_report"
 msgstr ""
 
-#: ../detectors/support.py:210
+#: ../detectors/support.py:203
 #, python-format
 msgid "Change of %s requires a message"
 msgstr ""
@@ -1796,7 +1796,7 @@ msgstr ""
 msgid "device++order"
 msgstr ""
 
-#: ../extensions/help.py:424 ../extensions/lielas.py:173
+#: ../extensions/help.py:424 ../extensions/lielas.py:179
 #: ../lib/schemacfg/lielas.py:61 ../locale/attr.py:937 ../locale/attr.py:948
 #: attr.py:937 attr.py:948
 msgid "device_group"
@@ -4947,46 +4947,58 @@ msgid "Welcome to the "
 msgstr ""
 
 #: ../extensions/lielas.py:36
-msgid "Remove last Device"
-msgstr ""
-
-#: ../extensions/lielas.py:36
-msgid "Remove last Device now"
-msgstr ""
-
-#: ../extensions/lielas.py:37
 msgid "Clear Measurement Data"
 msgstr ""
 
-#: ../extensions/lielas.py:37
+#: ../extensions/lielas.py:36
 msgid "Clear Measurements now"
 msgstr ""
 
-#: ../extensions/lielas.py:38
+#: ../extensions/lielas.py:37
+msgid "'Really clear measurements now?'"
+msgstr ""
+
+#: ../extensions/lielas.py:39
+msgid "Remove last Device"
+msgstr ""
+
+#: ../extensions/lielas.py:39
+msgid "Remove last Device now"
+msgstr ""
+
+#: ../extensions/lielas.py:40
+msgid "'Really remove last device now?'"
+msgstr ""
+
+#: ../extensions/lielas.py:42
 msgid "Delete Database"
 msgstr ""
 
-#: ../extensions/lielas.py:38
+#: ../extensions/lielas.py:42
 msgid "Delete Database now"
 msgstr ""
 
-#: ../extensions/lielas.py:168
+#: ../extensions/lielas.py:43
+msgid "'Really delete database now?'"
+msgstr ""
+
+#: ../extensions/lielas.py:174
 msgid "Device manager"
 msgstr ""
 
-#: ../extensions/lielas.py:178
+#: ../extensions/lielas.py:184
 msgid "User"
 msgstr ""
 
-#: ../extensions/lielas.py:183
+#: ../extensions/lielas.py:189
 msgid "Configuration"
 msgstr ""
 
-#: ../extensions/lielas.py:224
+#: ../extensions/lielas.py:230
 msgid " (min):"
 msgstr ""
 
-#: ../extensions/lielas.py:224
+#: ../extensions/lielas.py:230
 msgid " (sec):"
 msgstr ""
 
@@ -5268,7 +5280,7 @@ msgid "+ Add"
 msgstr ""
 
 #: ../html/device_group.index.html:61 ../html/device_group.item.html:61
-#: ../html/lielas.html:397 ../html/user.lindex.html:57
+#: ../html/lielas.html:406 ../html/user.lindex.html:57
 msgid "Details:"
 msgstr ""
 
@@ -5332,9 +5344,8 @@ msgstr ""
 msgid "Email:"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:162 ../html/dyndns.lindex.html:197
-#: ../html/lielas.html:455 ../html/lielas.html:554 ../html/lielas.html:638
-#: ../html/lielas.html:673
+#: ../html/dyndns.lindex.html:162 ../html/lielas.html:464
+#: ../html/lielas.html:563 ../html/lielas.html:647 ../html/lielas.html:682
 msgid "Submit Changes"
 msgstr ""
 
@@ -5342,11 +5353,7 @@ msgstr ""
 msgid "Database Maintenance"
 msgstr ""
 
-#: ../html/dyndns.lindex.html:173
-msgid "Database:"
-msgstr ""
-
-#: ../html/dyndns.lindex.html:174
+#: ../html/dyndns.lindex.html:178
 msgid "Database Operation:"
 msgstr ""
 
@@ -5386,95 +5393,95 @@ msgstr ""
 msgid "new it_issue"
 msgstr ""
 
-#: ../html/lielas.html:60
+#: ../html/lielas.html:61
 msgid "Logout"
 msgstr ""
 
-#: ../html/lielas.html:97
+#: ../html/lielas.html:98
 msgid "Name:"
 msgstr ""
 
-#: ../html/lielas.html:101 ../html/page.html:496
+#: ../html/lielas.html:102 ../html/page.html:496
 msgid "Password:"
 msgstr ""
 
-#: ../html/lielas.html:111
+#: ../html/lielas.html:112
 msgid "Login"
 msgstr ""
 
-#: ../html/lielas.html:155 ../html/lielas.html:173
+#: ../html/lielas.html:164 ../html/lielas.html:182
 msgid "- all -"
 msgstr ""
 
-#: ../html/lielas.html:175
+#: ../html/lielas.html:184
 msgid "- empty -"
 msgstr ""
 
-#: ../html/lielas.html:189
+#: ../html/lielas.html:198
 msgid "Time range:"
 msgstr ""
 
-#: ../html/lielas.html:191
+#: ../html/lielas.html:200
 msgid "From:"
 msgstr ""
 
-#: ../html/lielas.html:196
+#: ../html/lielas.html:205
 msgid "To:"
 msgstr ""
 
-#: ../html/lielas.html:224
+#: ../html/lielas.html:233
 msgid "Apply filter"
 msgstr ""
 
-#: ../html/lielas.html:229
+#: ../html/lielas.html:238
 msgid "reset"
 msgstr ""
 
-#: ../html/lielas.html:238
+#: ../html/lielas.html:247
 msgid "Device list"
 msgstr ""
 
-#: ../html/lielas.html:264
+#: ../html/lielas.html:273
 msgid "Addr"
 msgstr ""
 
-#: ../html/lielas.html:318
+#: ../html/lielas.html:327
 msgid "sec"
 msgstr ""
 
-#: ../html/lielas.html:347
+#: ../html/lielas.html:356
 msgid "Selection:"
 msgstr ""
 
-#: ../html/lielas.html:349
+#: ../html/lielas.html:358
 msgid "export CSV"
 msgstr ""
 
-#: ../html/lielas.html:359
+#: ../html/lielas.html:368
 msgid "select Filter..."
 msgstr ""
 
-#: ../html/lielas.html:370
+#: ../html/lielas.html:379
 msgid "Load"
 msgstr ""
 
-#: ../html/lielas.html:381
+#: ../html/lielas.html:390
 msgid "Save filter..."
 msgstr ""
 
-#: ../html/lielas.html:386
+#: ../html/lielas.html:395
 msgid "Save filter"
 msgstr ""
 
-#: ../html/lielas.html:483
+#: ../html/lielas.html:492
 msgid "Status"
 msgstr ""
 
-#: ../html/lielas.html:560
+#: ../html/lielas.html:569
 msgid "Latest measurements"
 msgstr ""
 
-#: ../html/lielas.html:669
+#: ../html/lielas.html:678
 msgid "Create"
 msgstr ""
 

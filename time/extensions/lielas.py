@@ -33,9 +33,15 @@ import common
 # Action codes and strings used in the web-interface and as action names
 # in this module. We make sure these are properly localized here
 lielas_actions = dict \
-    ( device = (""'Remove last Device',     0, ""'Remove last Device now')
-    , data   = (""'Clear Measurement Data', 1, ""'Clear Measurements now')
-    , db     = (""'Delete Database',        2, ""'Delete Database now')
+    ( data   = ( ""'Clear Measurement Data', 0, ""'Clear Measurements now'
+               , ''"'Really clear measurements now?'"
+               )
+    , device = ( ""'Remove last Device',     1, ""'Remove last Device now'
+               , ''"'Really remove last device now?'"
+               )
+    , db     = ( ""'Delete Database',        2, ""'Delete Database now'
+               , ''"'Really delete database now?'"
+               )
     )
 
 # Default sensor and measurement queries -- used in the web-interface
@@ -98,7 +104,7 @@ class Delete_Device (Delete_Something) :
                 largest = adr
                 dev     = id
         if dev is None :
-            return
+            raise Redirect ('dyndns?@template=lindex')
         ids = self.db.measurement.filter (None, {'sensor.device' : dev})
         if ids :
             self.delete_measurements (ids)

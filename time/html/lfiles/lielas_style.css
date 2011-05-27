@@ -682,6 +682,10 @@ hr {
 	top: 0px;
 	}
 
+.settings_row .rowbutton {
+	padding: 0px 12px;
+	}
+
 .settings_field {
         position: absolute;
         left: 425px;

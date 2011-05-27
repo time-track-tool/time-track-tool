@@ -169,37 +169,35 @@
                   tal:condition="python: dba">
               <div class="settings_header"
                    i18n:translate="">Database Maintenance</div>
-              <div class="settings_row">
-                <div class="settings_title" i18n:translate="">Database:</div>
-                <label i18n:translate="">Database Operation:</label>
-                <div class="settings_field">
-                  <select name="database" id="database">
-                    <option></option>
-                    <option tal:repeat="a python:
-                            utils.lielas_actions.iteritems()"
-                            tal:attributes="value python:a[0]"
-                            tal:content="python:i18n.gettext(a[1][0])"/>
-                  </select>
+                <tal:block
+                  tal:repeat="a python:
+                              sorted ( utils.lielas_actions.iteritems()
+                                     , key = lambda x: x[1][1]
+                                     )">
+                  <div class="settings_row">
+                    <div tal:condition="python:not a[1][1]"
+                         class="settings_title" i18n:translate="">
+                         Database Operation:</div>
+                    <label tal:content="python:i18n.gettext(a[1][0])"/>
+                    <div class="rowbutton">
+                      <span class="buttonbox submit_details orangebutton">
+                        <input type="submit" name="dba_submit"
+                               tal:define="action
+                                   python: '\'delete_' + a[0] + '\''"
+                               tal:attributes=
+                               " id python: 'dba_submit_' + a[0]
+                               ; value python: i18n.gettext(a[1][2])
+                               ; onclick python:
+                                 'return clickaction('+action+','
+                                  +i18n.gettext(a[1][3])+')'
+                               "/>
+                      </span>
+                    </div>
+                  </div>
+                </tal:block>
+                <div class="settings_bottom">
+                  <input id="dba_action" type="hidden" name="@action" value="edit">
                 </div>
-              </div>
-              <hr />
-              <div id="settings_bottom" class="settings_bottom">
-                <input type="hidden"
-                       tal:repeat="a python:utils.lielas_actions.iteritems()"
-                       tal:attributes=
-                        " id   python: 'delete_'+a[0]
-                        ; name python: i18n.gettext(a[1][2])
-                        "/>
-                <input id="dba_action" type="hidden" name="@action"
-                       value="edit">
-                <span id="dba_span" class="submit_invisible">
-                  <span class="button_border_left"></span>
-                  <input type="submit" name="dba_submit"
-                         id="dba_submit" value="Submit Changes"
-                         i18n:attributes="value" />
-                  <span class="button_border_right"></span>
-                </span>
-              </div>
             </form>
           </div>
         </div>

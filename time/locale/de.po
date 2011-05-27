@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-27 11:30+0200\n"
+"POT-Creation-Date: 2011-05-27 14:38+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3706,23 +3706,32 @@ msgstr "(Kal.)"
 msgid "Welcome to the "
 msgstr "Willkommen zur "
 
-msgid "Remove last Device"
-msgstr "Letztes Gerät löschen"
-
-msgid "Remove last Device now"
-msgstr "Jetzt letztes Gerät löschen"
-
 msgid "Clear Measurement Data"
 msgstr "Messwerte löschen"
 
 msgid "Clear Measurements now"
 msgstr "Jetzt Messwerte löschen"
 
+msgid "'Really clear measurements now?'"
+msgstr "'Messwerte jetzt wirklich löschen?'"
+
+msgid "Remove last Device"
+msgstr "Letztes Gerät löschen"
+
+msgid "Remove last Device now"
+msgstr "Jetzt letztes Gerät löschen"
+
+msgid "'Really remove last device now?'"
+msgstr "'Jetzt letztes Gerät wirklich löschen?'"
+
 msgid "Delete Database"
 msgstr "Datenbank löschen"
 
 msgid "Delete Database now"
 msgstr "Jetzt Datenbank löschen"
+
+msgid "'Really delete database now?'"
+msgstr "'Jetzt Datenbank wirklich löschen?'"
 
 msgid "Device manager"
 msgstr "Gerätemanager"
@@ -3966,9 +3975,6 @@ msgstr ""
 
 msgid "Database Maintenance"
 msgstr "Datenbank Operationen"
-
-msgid "Database:"
-msgstr "Datenbank:"
 
 msgid "Database Operation:"
 msgstr "Datenbankoperation:"
@@ -4889,6 +4895,9 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "Database:"
+#~ msgstr "Datenbank:"
 
 #~ msgid "marked devices:"
 #~ msgstr "markierte Geräte:"

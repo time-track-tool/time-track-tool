@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-27 11:30+0200\n"
+"POT-Creation-Date: 2011-05-27 14:38+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3628,22 +3628,31 @@ msgstr ""
 msgid "Welcome to the "
 msgstr ""
 
-msgid "Remove last Device"
-msgstr ""
-
-msgid "Remove last Device now"
-msgstr ""
-
 msgid "Clear Measurement Data"
 msgstr ""
 
 msgid "Clear Measurements now"
 msgstr ""
 
+msgid "'Really clear measurements now?'"
+msgstr ""
+
+msgid "Remove last Device"
+msgstr ""
+
+msgid "Remove last Device now"
+msgstr ""
+
+msgid "'Really remove last device now?'"
+msgstr ""
+
 msgid "Delete Database"
 msgstr ""
 
 msgid "Delete Database now"
+msgstr ""
+
+msgid "'Really delete database now?'"
 msgstr ""
 
 msgid "Device manager"
@@ -3885,9 +3894,6 @@ msgid "Submit Changes"
 msgstr ""
 
 msgid "Database Maintenance"
-msgstr ""
-
-msgid "Database:"
 msgstr ""
 
 msgid "Database Operation:"
