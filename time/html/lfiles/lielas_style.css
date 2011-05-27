@@ -1,6 +1,7 @@
 /* @override 
 	http://lielas.keinefalschebewegung.de/lielas_style.css
 	http://project.runtux.com:8888/lielas/@@file/lielas_style.css
+	http://project.runtux.com:8888/lielas/@@file/lfiles/lielas_style.css
 */
 
 body {
@@ -610,7 +611,7 @@ input.value {
 	}
 	
 .details_pending input {
-	color: #000000;
+	color: #aaaaaa;
         }
 	
 
@@ -713,7 +714,7 @@ hr {
 	}
 	
 .settings_pending input {
-	color: #000000;
+	color: #aaaaaa;
         }
 	
 #list hr {
@@ -744,7 +745,7 @@ hr {
 /* @group button_override */
 
 .buttonbox {
-	height: 21px;
+	height: 22px;
 	overflow: hidden;
 	display: inline-block;
 	vertical-align: top;
@@ -752,39 +753,55 @@ hr {
 	}
 
 .buttonbox input {
-	background: transparent url(images/button_back_green.png) no-repeat center 2px;
+	background: transparent url(images/button_back_green_02.png) repeat-x center 2px;
 	vertical-align: top;
-	height: 21px;
+	height: 22px;
 	cursor: pointer;
 	border: none;
 	padding: 0;
 	margin: 0;
 	color: #ffffff;
 	display: inline-block;
-	line-height: 21px;
+	line-height: 22px;
 	width: auto;
 	float: left;
 	overflow: visible;
 	}
 
 .button_border_left, .button_border_right {
-	width: 5px;
+	width: 6px;
 	display: inline-block;
-	height: 21px;
-	background: transparent url(images/button_back_green.png) no-repeat left 2px;
+	height: 22px;
+	background: transparent url(images/button_back_green_02.png) no-repeat left -28px;
 	float: left;
 	}
 	
 .button_border_right {
-	background-position: right 2px;
+	background-position: right -28px;
 	}	
 
 .orangebutton .button_border_left, .orangebutton .button_border_right, .orangebutton input {
-	background-image: url(images/button_back_orange.png) !important;
+	background-image: url(images/button_back_orange_02.png) !important;
 	}
 
 .graybutton .button_border_left, .graybutton .button_border_right, .graybutton input {
-	background-image: url(images/button_back_gray.png) !important;
+	background-image: url(images/button_back_gray_02.png) !important;
 	}
 
 /* @end */
+
+.error-message {
+	color: #ff2222;
+	height: 20px;
+	line-height: 20px;
+	padding-left: 20px;
+	background: url(images/error_message.png) no-repeat left center;
+	}
+	
+.ok-message {
+	color: #0cb640;
+	height: 20px;
+	line-height: 20px;
+	padding-left: 20px;
+	background: url(images/ok_message.png) no-repeat left center;
+	}	

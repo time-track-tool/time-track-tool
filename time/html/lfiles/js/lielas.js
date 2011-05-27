@@ -21,11 +21,11 @@ $(document).ready(function() {
 		firstDay: 1,
 		isRTL: false,
 		showMonthAfterYear: false,
-		yearSuffix: '',
+		yearSuffix: ''
                 };
 
 	$.datepicker.regional['en'] = {
-                dateFormat: 'yy-mm-dd',
+                dateFormat: 'yy-mm-dd'
                 };
 
 
@@ -36,12 +36,12 @@ $(document).ready(function() {
 		currentText: 'Jetzt',
 		closeText: 'Übernehmen',
                 timeFormat: 'hh:mm:ss',
-                separator: '.',
+                separator: '.'
                 };
 
 	$.timepicker.regional['en'] = {
                 timeFormat: 'hh:mm:ss',
-                separator: '.',
+                separator: '.'
                 };
 
         l = $(".navi_lang").attr('lang')
