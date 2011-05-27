@@ -2140,7 +2140,7 @@ msgstr ""
 msgid "mint"
 msgstr "Interval"
 
-msgid "Measurement interval for %(Classname)s"
+msgid "Measurement interval for %(Classname)s in seconds"
 msgstr ""
 
 msgid "New message or notice for %(Classname)s"
@@ -2934,7 +2934,7 @@ msgstr ""
 msgid "sint"
 msgstr "Transmit interval"
 
-msgid "Transmit interval for %(Classname)s"
+msgid "Transmit interval for %(Classname)s in minutes"
 msgstr ""
 
 msgid "Samba domain for this %(Classname)s"
