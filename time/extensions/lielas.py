@@ -202,8 +202,15 @@ def latest_measurements (db, sensor, maxlen = 7) :
     result = []
     if not sensor.is_app_sensor :
         maxlen = 1
-    for m in db._db.measurement.filter_iter \
-        (None, dict (sensor = sensor.id), sort = ('-', 'date')) :
+    proptree, sql, args = db._db.measurement._filter_sql \
+        (None, dict (sensor = sensor.id), ('-', 'date'))
+    sql = sql + ' limit %s' % maxlen
+    cursor = db._db.conn.cursor ()
+    db._db.sql (sql, args, cursor)
+    while True :
+        m = cursor.fetchone ()
+        if not m : break
+        m = m [0]
         n = db._db.measurement.getnode (m)
         result.append ((n.date, n.val))
         if len (result) >= maxlen :
