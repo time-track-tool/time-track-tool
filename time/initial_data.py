@@ -315,7 +315,7 @@ if 'it_issue' in db.classes :
         , address  = db.config.ADMIN_EMAIL
         , status   = db.user_status.lookup ('system')
         )
-    if hasattr (db, 'sql) :
+    if hasattr (db, 'sql') :
         db.sql ('create index _it_issue_status_idx on _it_issue (_status);')
         db.sql ('create index _it_issue_it_prio_idx on _it_issue (_it_prio);')
         db.sql ('create index _it_issue_category_idx on _it_issue (_category);')
