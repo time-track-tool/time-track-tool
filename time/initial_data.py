@@ -315,7 +315,38 @@ if 'it_issue' in db.classes :
         , address  = db.config.ADMIN_EMAIL
         , status   = db.user_status.lookup ('system')
         )
+    if hasattr (db, 'sql) :
+        db.sql ('create index _it_issue_status_idx on _it_issue (_status);')
+        db.sql ('create index _it_issue_it_prio_idx on _it_issue (_it_prio);')
+        db.sql ('create index _it_issue_category_idx on _it_issue (_category);')
+        db.sql ('create index _it_issue_it_project_idx '
+                'on _it_issue (_it_project);'
+               )
+        db.sql ('create index _it_issue_responsible_idx '
+                'on _it_issue (_responsible);'
+               )
+        db.sql ('create index _it_issue_stakeholder_idx '
+                'on _it_issue (_stakeholder);'
+               )
 
+if 'daily_record' in db.classes and hasattr (db, 'sql') :
+    db.sql ('create index _daily_record_date_idx on _daily_record ( _date );')
+    db.sql ('create index _daily_record_user_idx on _daily_record ( _user );')
+
+if 'time_record' in db.classes and hasattr (db, 'sql') :
+    db.sql ('create index _time_record_wp_idx on _time_record (_wp);')
+    db.sql ('create index _time_record_daily_record_idx '
+            'on _time_record (_daily_record);'
+           )
+    db.sql ('create index _time_record_wp_daily_record_idx '
+            'on _time_record (_wp, _daily_record);'
+           )
+    db.sql ('create index _time_record_time_activity_idx '
+            'on _time_record (_time_activity);'
+           )
+    db.sql ('create index _time_record_time_activity_daily_record_idx '
+            'on _time_record (_time_activity, _daily_record);'
+           )
 
 if 'daily_record_status' in db.classes :
     daily_record_status = db.getclass ('daily_record_status')
@@ -778,6 +809,17 @@ if 'transceiver' in db.classes :
         , password = adminpw
         , address  = db.config.ADMIN_EMAIL
         , roles    = 'Logger'
+        )
+if 'measurement' in db.classes and hasattr (db, 'sql') :
+    db.sql \
+        ('create index _measurement_date_idx_ '
+         'on _measurement using btree '
+         '( _sensor'
+         ', __retired__'
+         ', (_measurement._date is not NULL) desc'
+         ', _date desc'
+         ', id'
+         ');'
         )
 
 if 'dyndns' in db.classes :
