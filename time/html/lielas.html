@@ -262,7 +262,7 @@
                   <li>
                     <span class="col_collapse">
                       <img src="@@file/lfiles/images/clear.png"
-                           width="15" height="14"
+                           width="15" height="14" class="closed"
                            id="main_collapse" alt="collapse" />
                     </span>
                     <span class="col_check">
@@ -312,6 +312,7 @@
                            + ['', ' active_row'][d.designator() == sel]">
                         <span class="col_collapse">
                           <img src="@@file/lfiles/images/clear.png"
+                               class="closed"
                                width="12" height="12" alt="collapse" />
                         </span>
                         <span class="col_check">
@@ -328,7 +329,7 @@
                         </span>
                       </div>
                       <ul tal:attributes="id python:d.designator() + '_sensor'"
-                          class="sensor">
+                          class="sensor" style="display: none">
                         <li tal:repeat="s python:asens [d.id]"
                             tal:attributes="id s/designator">
                           <div tal:attributes="class python:
