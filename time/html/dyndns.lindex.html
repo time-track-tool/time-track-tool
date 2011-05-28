@@ -44,7 +44,7 @@
                   <div class="settings_title"
                        i18n:translate="">Default Interval:</div>
                   <tal:block tal:replace="structure python:utils.fieldlabel
-                       ('transceiver', 'mint', endswith=i18n.gettext(' (min):'))" />
+                       ('transceiver', 'mint', endswith=i18n.gettext(' (sec):'))" />
                   <div tal:attributes="class python:
                        'settings_field'
                        + ['',' settings_pending'][bool(t.mint_pending._value)]"
@@ -52,7 +52,7 @@
                 </div>
                 <div class="settings_row">
                   <tal:block tal:replace="structure python:utils.fieldlabel
-                       ('transceiver', 'sint', endswith=i18n.gettext(' (sec):'))" />
+                       ('transceiver', 'sint', endswith=i18n.gettext(' (min):'))" />
                   <div tal:attributes="class python:
                        'settings_field'
                        + ['',' settings_pending'][bool(t.sint_pending._value)]"

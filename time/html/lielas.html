@@ -445,14 +445,14 @@
                     <li tal:attributes="class python:
                         ['',' details_pending'][bool(d.mint_pending._value)]">
                       <tal:block tal:replace="structure python:utils.fieldlabel
-                           ('device', 'mint', endswith=i18n.gettext(' (min):'))" />
+                           ('device', 'mint', endswith=i18n.gettext(' (sec):'))" />
                       <tal:block
                        tal:replace="structure python:d.mint.field ()" />
                     </li>
                     <li tal:attributes="class python:
                         ['',' details_pending'][bool(d.sint_pending._value)]">
                       <tal:block tal:replace="structure python:utils.fieldlabel
-                           ('device', 'sint', endswith=i18n.gettext(' (sec):'))" />
+                           ('device', 'sint', endswith=i18n.gettext(' (min):'))" />
                       <tal:block
                        tal:replace="structure python:d.sint.field ()" />
                     </li>
