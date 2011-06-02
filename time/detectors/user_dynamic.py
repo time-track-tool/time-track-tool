@@ -161,6 +161,16 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
         raise Reject, "%(ah)s must equal %(wh)s for monthly balance" % locals ()
 # end def check_overtime_parameters
 
+def update_user_olo_dept (db, user, olo, dept) :
+    userupdate = {}
+    if db.user.get (user, 'org_location') != olo :
+        userupdate ['org_location'] = olo
+    if db.user.get (user, 'department') != dept :
+        userupdate ['department'] = dept
+    if userupdate :
+        db.user.set (user, *userupdate)
+# end def update_user_olo_dept
+
 def check_user_dynamic (db, cl, nodeid, new_values) :
     old_ot = cl.get (nodeid, 'overtime_period')
     for i in 'user', :
@@ -199,7 +209,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     if  (   ('org_location' in new_values or 'department' in new_values)
         and (not val_to or last.id == nodeid or last.valid_from < val_from)
         ) :
-        db.user.set (user, org_location = olo, department = dept)
+        update_user_olo_dept (db, user, olo, dept)
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
             check_ranges (cl, nodeid, user, val_from, val_to)
@@ -260,7 +270,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         raise Reject, _ ("Frozen: %(valid_from)s") % locals ()
     last = last_user_dynamic (db, user)
     if not valid_to or not last or last.valid_from < valid_from :
-        db.user.set (user, org_location = olo, department = dept)
+        update_user_olo_dept (db, user, olo, dept)
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
     new_values ['valid_from'], new_values ['valid_to'] = \
