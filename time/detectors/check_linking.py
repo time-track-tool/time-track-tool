@@ -32,6 +32,8 @@ def old_props (cl, prop, nodeid) :
 
 def check_linking (db, cl, nodeid, new_values) :
     """ Allow linking to properties only if we created them """
+    if db.getuid () == '1' :
+        return
     for prop in classprops [cl.classname] :
         if prop not in new_values :
             continue
