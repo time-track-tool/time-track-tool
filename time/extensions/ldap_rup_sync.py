@@ -3,6 +3,7 @@
 import sys
 import ldap
 
+from optparse         import OptionParser
 from ldap.cidict      import cidict
 from rsclib.autosuper import autosuper
 from roundup.date     import Date
@@ -36,7 +37,7 @@ class LDAP_Search_Result (cidict, autosuper) :
 
 # end class LDAP_Search_Result
 
-def get_picture (user) :
+def get_picture (user, attr) :
     """ Get picture from roundup user class """
     p  = user.pictures[-1]
     return user.cl.db.file.get (p, 'content')
@@ -353,8 +354,9 @@ class LDAP_Roundup_Sync (object) :
             self.db.commit ()
     # end def sync_user_from_ldap
 
-    def sync_user_to_ldap (self, username) :
-        uid = self.db.user.lookup (username)
+    def sync_user_to_ldap (self, username, update = True) :
+        self.update = update
+        uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
         assert (user.status != self.status_system)
         luser = self.get_ldap_user_by_username (user.username)
@@ -374,28 +376,34 @@ class LDAP_Roundup_Sync (object) :
         modlist = []
         for rk, (lk, change, x) in umap.iteritems () :
             rupattr = user [rk]
-            if callable (rupattr and change) :
+            if rupattr and callable (change) :
                 rupattr = change (user, rk)
             prupattr = rupattr
             if rk == 'pictures' :
                 prupattr = '<suppressed>'
-            if lk not in res :
+                if len (rupattr) > 500000 :
+                    print "%s: Picture too large: %s" \
+                        % (user.username, len (rupattr))
+                    continue
+            if lk not in luser :
                 if user [rk] :
                     print "%s: Inserting: %s (%s)" \
                         % (user.username, lk, prupattr)
                     assert (change)
                     modlist.append ((ldap.MOD_ADD, lk, rupattr))
-            elif len (res [lk]) != 1 :
+            elif len (luser [lk]) != 1 :
                 print "%s: invalid length: %s" % (user.username, lk)
             else :
-                ldattr = res [lk][0]
+                ldattr = pldattr = luser [lk][0]
+                if rk == 'pictures' :
+                    pldattr = '<suppressed>'
                 if ldattr != rupattr :
                     if not change :
                         print "%s:  attribute differs: %s/%s >%s/%s<" % \
-                            (user.username, rk, lk, prupattr, ldattr)
+                            (user.username, rk, lk, prupattr, pldattr)
                     else :
                         print "%s:  Updating: %s/%s >%s/%s<" % \
-                            (user.username, rk, lk, prupattr, ldattr)
+                            (user.username, rk, lk, prupattr, pldattr)
                         op = ldap.MOD_REPLACE
                         if rupattr is None :
                             op = ldap.MOD_DELETE
@@ -407,7 +415,7 @@ class LDAP_Roundup_Sync (object) :
             , sort = [('+', 'contact_type'), ('+', 'order')]
             ) :
             contact = self.db.user_contact.getnode (cid)
-            n = contact_types [contact.contact_type]
+            n = self.contact_types [contact.contact_type]
             if n not in contacts :
                 contacts [n] = []
             contacts [n].append (contact.contact)
@@ -422,26 +430,26 @@ class LDAP_Roundup_Sync (object) :
                 s = None
             else :
                 p, s = ldn
-            if p not in res :
+            if p not in luser :
                 print "%s: Inserting: %s (%s)" % (user.username, p, cs [0])
                 modlist.append ((ldap.MOD_ADD, p, cs [0]))
-            elif len (res [p]) != 1 :
+            elif len (luser [p]) != 1 :
                 print "%s: invalid length: %s" % (user.username, p)
             else :
-                ldattr = res [p][0]
+                ldattr = luser [p][0]
                 if ldattr != cs [0] :
                     print "%s:  Updating: %s/%s %s/%s" % \
                         (user.username, ct, p, cs [0], ldattr)
                     modlist.append ((ldap.MOD_REPLACE, p, cs [0]))
             if s :
-                if s not in res :
+                if s not in luser :
                     if cs [1:] :
                         print "%s: Inserting: %s (%s)" \
                             % (user.username, s, cs [1:])
                         if s not in self.forbidden :
                             modlist.append ((ldap.MOD_ADD, s, cs [1:]))
                 else :
-                    if res [1] != cs [1:] :
+                    if luser [s] != cs [1:] :
                         print "%s:  Updating: %s/%s %s/%s" % \
                             (user.username, ct, s, cs [1:], ldattr)
                         if s not in self.forbidden :
@@ -449,13 +457,16 @@ class LDAP_Roundup_Sync (object) :
         #print "Modlist:"
         #for k in modlist :
         #    print k
-        if modlist and self.opt.update :
-            self.ldcon.modify_s (res.dn, modlist)
+        if modlist and self.update :
+            self.ldcon.modify_s (luser.dn, modlist)
+    # end def sync_user_to_ldap
 
-        if 0 and (1 or user.username == 'senn') :
-            print "User: %s: %s" % (user.username, res.dn)
-            print "content:", res
-    # end def convert
+    def sync_all_users_to_ldap (self) :
+        for uid in self.db.user.filter \
+            (None, dict (status = self.status_valid), sort=[('+','username')]) :
+            username = self.db.user.get (uid, 'username')
+            self.sync_user_to_ldap (username)
+    # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
 
 def main () :
@@ -504,10 +515,8 @@ def main () :
         exit (23)
 
     ldc = LDAP_Converter (opt)
-    ldc.convert ()
+    ldc.sync_all_users_to_ldap ()
 # end def main
-
-#        for uid in self.db.user.filter (None, {}, sort=[('+','username')]) :
 
 def init (instance) :
     pass
