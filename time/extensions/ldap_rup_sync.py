@@ -5,6 +5,7 @@ import ldap
 
 from ldap.cidict      import cidict
 from rsclib.autosuper import autosuper
+from roundup.date     import Date
 
 class LDAP_Search_Result (cidict, autosuper) :
     """ Wraps an LDAP search result.
@@ -231,11 +232,11 @@ class LDAP_Roundup_Sync (object) :
                 if p.content == lpic :
                     if n :
                         # refresh name to put it in front
-                        self.db.file.set (p.id, name = str (date.Date ('.')))
+                        self.db.file.set (p.id, name = str (Date ('.')))
                     break
             else :
                 f = self.db.file.create \
-                    ( name    = str (date.Date ('.'))
+                    ( name    = str (Date ('.'))
                     , content = lpic
                     , type    = 'image/jpeg'
                     )
@@ -243,7 +244,7 @@ class LDAP_Roundup_Sync (object) :
             return upicids
         else :
             f = self.db.file.create \
-                ( name    = str (date.Date ('.'))
+                ( name    = str (Date ('.'))
                 , content = lpic
                 , type    = 'image/jpeg'
                 )
@@ -264,14 +265,13 @@ class LDAP_Roundup_Sync (object) :
         changed = False
         if not luser or luser.is_obsolete :
             self.db.user.set (uid, status = self.status_obsolete)
-            print >> sys.stderr, "Obsolete: %s" % username
+            #print >> sys.stderr, "Obsolete: %s" % username
             changed = True
         else :
             d = {}
             for k, (lk, x, method) in self.attr_map ['user'].iteritems () :
                 if method :
                     v = method (luser, lk)
-                    print "Got:", lk, v
                     if v :
                         d [k] = v
             oct = []
@@ -324,10 +324,12 @@ class LDAP_Roundup_Sync (object) :
                     new_contacts.append (n.id)
                     del oldmap [k]
             for n in oldmap.itervalues () :
-                print "retire contact:", n.id
                 self.db.user_contact.retire (n.id)
                 changed = True
-            d ['contacts'] = new_contacts
+            oct = list (sorted (oct.iterkeys ()))
+            new_contacts.sort ()
+            if new_contacts != oct :
+                d ['contacts'] = new_contacts
 
             if user :
                 assert (user.status != self.status_system)
