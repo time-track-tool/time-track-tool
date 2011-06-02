@@ -299,6 +299,7 @@ class LDAP_Roundup_Sync (object) :
                             new_contacts.append (n.id)
                             if n.order != order :
                                 self.db.user_contact.set (n.id, order = order)
+                                changed = True
                             del oldmap [key]
                         else :
                             id = self.db.user_contact.create \
@@ -307,6 +308,7 @@ class LDAP_Roundup_Sync (object) :
                                 , order        = order
                                 )
                             new_contacts.append (id)
+                            changed = True
                         order += 1
             # special case of emails: we don't have "other" attributes
             # so roundup potentially has more emails which should be
@@ -318,11 +320,13 @@ class LDAP_Roundup_Sync (object) :
                     if n.order != order :
                         self.db.user_contact.set (n.id, order = order)
                         order += 1
+                        changed = True
                     new_contacts.append (n.id)
                     del oldmap [k]
             for n in oldmap.itervalues () :
                 print "retire contact:", n.id
                 self.db.user_contact.retire (n.id)
+                changed = True
             d ['contacts'] = new_contacts
 
             if user :
