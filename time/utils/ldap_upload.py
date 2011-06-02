@@ -202,6 +202,10 @@ class LDAP_Converter (object) :
                 prupattr = rupattr
                 if rk == 'pictures' :
                     prupattr = '<suppressed>'
+                    if len (rupattr) > 500000 :
+                        print "%s: Picture too large: %s" \
+                            % (user.username, len (rupattr))
+                        continue
                 if lk not in res :
                     if user [rk] :
                         print "%s: Inserting: %s (%s)" \
