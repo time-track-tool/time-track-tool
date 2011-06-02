@@ -274,6 +274,57 @@ class LDAP_Roundup_Sync (object) :
                     print "Got:", lk, v
                     if v :
                         d [k] = v
+            oct = []
+            if user :
+                oct = user.contacts
+            oct = dict ((id, self.db.user_contact.getnode (id)) for id in oct)
+            ctypes = dict \
+                ((i, self.db.uc_type.get (i, 'name'))
+                 for i in self.db.uc_type.getnodeids ()
+                )
+            oldmap = dict \
+                (((ctypes [n.contact_type], n.contact), n)
+                 for n in oct.itervalues ()
+                )
+            new_contacts = []
+            for type, lds in self.attr_map ['user_contact'].iteritems () :
+                tid = self.db.uc_type.lookup (type)
+                order = 1
+                for ld in lds :
+                    if ld not in luser : continue
+                    for ldit in luser [ld] :
+                        key = (type, ldit)
+                        if key in oldmap :
+                            n = oldmap [key]
+                            new_contacts.append (n.id)
+                            if n.order != order :
+                                self.db.user_contact.set (n.id, order = order)
+                            del oldmap [key]
+                        else :
+                            id = self.db.user_contact.create \
+                                ( contact_type = tid
+                                , contact      = ldit
+                                , order        = order
+                                )
+                            new_contacts.append (id)
+                        order += 1
+            # special case of emails: we don't have "other" attributes
+            # so roundup potentially has more emails which should be
+            # preserved
+            email = self.db.uc_type.lookup ('Email')
+            order = 2
+            for k, n in oldmap.items () :
+                if n.contact_type == email :
+                    if n.order != order :
+                        self.db.user_contact.set (n.id, order = order)
+                        order += 1
+                    new_contacts.append (n.id)
+                    del oldmap [k]
+            for n in oldmap.itervalues () :
+                print "retire contact:", n.id
+                self.db.user_contact.retire (n.id)
+            d ['contacts'] = new_contacts
+
             if user :
                 assert (user.status != self.status_system)
                 for k, v in d.items () :
