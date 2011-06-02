@@ -203,19 +203,14 @@ class LDAP_Roundup_Sync (object) :
         if not lsup :
             return None
         try :
-            self.db.user.lookup (lsup.uid)
+            return self.db.user.lookup (lsup ['uid'][0])
         except KeyError :
             pass
         return None
     # end def get_roundup_uid_from_dn_attr
 
     def get_ldap_user_by_dn (self, dn) :
-        result = self.ldcon.search_s \
-            ( self.cfg.LDAP_BASE_DN
-            , ldap.SCOPE_SUBTREE
-            , '(dn=%s)' % dn
-            , None
-            )
+        result = self.ldcon.search_s (dn, ldap.SCOPE_BASE)
         return self._get_ldap_user (result)
     # end def get_ldap_user_by_dn
 
