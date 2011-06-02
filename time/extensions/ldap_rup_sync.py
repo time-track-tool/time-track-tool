@@ -461,62 +461,13 @@ class LDAP_Roundup_Sync (object) :
             self.ldcon.modify_s (luser.dn, modlist)
     # end def sync_user_to_ldap
 
-    def sync_all_users_to_ldap (self) :
+    def sync_all_users_to_ldap (self, update = False) :
         for uid in self.db.user.filter \
             (None, dict (status = self.status_valid), sort=[('+','username')]) :
             username = self.db.user.get (uid, 'username')
-            self.sync_user_to_ldap (username)
+            self.sync_user_to_ldap (username, update)
     # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
-
-def main () :
-    parser  = OptionParser ()
-    parser.add_option \
-        ( "-b", "--base-dn"
-        , help    = "Search base (DN to search from)"
-        , default = "DC=ds1,DC=internal"
-        )
-    parser.add_option \
-        ( "-D", "--bind-dn"
-        , help    = "DN to bind to LDAP database"
-        , default = "cn=Manager,dc=example,dc=com"
-        )
-    parser.add_option \
-        ( "-d", "--database-directory"
-        , dest    = "database_directory"
-        , help    = "Directory of the roundup installation"
-        , default = '.'
-        )
-    parser.add_option \
-        ( "-H", "--ldap-uri"
-        , help    = "URI of ldap server"
-        , default = 'ldap://localhost:389'
-        )
-    parser.add_option \
-        ( "-u", "--update"
-        , help    = "Update the LDAP directory with info from roundup"
-        , default = False
-        , action  = 'store_true'
-        )
-    parser.add_option \
-        ( "-w", "--bind-password"
-        , help    = "LDAP bind password, will be asked for if not given"
-        , default = ''
-        )
-    parser.add_option \
-        ( "-W", "--ask-bind-password"
-        , help    = "Ask for bind password"
-        , action  = 'store_true'
-        , default = False
-        )
-    opt, args = parser.parse_args ()
-    if len (args) :
-        parser.error ('No arguments please')
-        exit (23)
-
-    ldc = LDAP_Converter (opt)
-    ldc.sync_all_users_to_ldap ()
-# end def main
 
 def init (instance) :
     pass
