@@ -87,21 +87,21 @@ class LDAP_Roundup_Sync (object) :
     def compute_attr_map (self) :
         attr_map = \
             { 'user' :
-                { 'department'   : ( 'Department'
+                { 'department'   : ( 'department'
                                    , get_name
                                    , self.cls_lookup (self.db.department)
                                    )
                 , 'firstname'    : ( 'givenname'
                                    , 0
-                                   , lambda x, y : x [y][0]
+                                   , lambda x, y : x.get (y, [None])[0]
                                    )
                 , 'lastname'     : ( 'sn'
                                    , 0
-                                   , lambda x, y : x [y][0]
+                                   , lambda x, y : x.get (y, [None])[0]
                                    )
                 , 'nickname'     : ( 'initials'
                                    , lambda x, y : x [y].upper ()
-                                   , lambda x, y : x [y][0].lower ()
+                                   , lambda x, y : x.get (y, [''])[0].lower ()
                                    )
                 , 'org_location' : ( 'company'
                                    , get_name
@@ -133,7 +133,7 @@ class LDAP_Roundup_Sync (object) :
                                    )
                 , 'title'        : ( 'carLicense'
                                    , 1
-                                   , lambda x, y : x.get (y, [''])[0]
+                                   , lambda x, y : x.get (y, [None])[0]
                                    )
                 }
             , 'user_contact' :
@@ -155,7 +155,7 @@ class LDAP_Roundup_Sync (object) :
         """
         def look (luser, txt) :
             try :
-                return cls.lookup (luser [txt [0]])
+                return cls.lookup (luser [txt][0])
             except KeyError :
                 pass
             return None
@@ -276,6 +276,7 @@ class LDAP_Roundup_Sync (object) :
             for k, (lk, x, method) in self.attr_map ['user'].iteritems () :
                 if method :
                     v = method (luser, lk)
+                    print "Got:", lk, v
                     if v :
                         d [k] = v
             if user :
@@ -287,11 +288,12 @@ class LDAP_Roundup_Sync (object) :
                     d ['status'] = self.status_valid
                 if d :
                     print >> sys.stderr, "Update roundup: %s" % username, d
-                    db.user.set (uid, ** d)
+                    self.db.user.set (uid, ** d)
                     changed = True
             else :
                 print >> sys.stderr, "Create roundup: %s" % username, d
                 assert (d)
+                d ['roles'] = 'User,Nosy'
                 uid = self.db.user.create (username = username, ** d)
                 changed = True
         if changed :
