@@ -35,8 +35,10 @@ def common_user_checks (db, cl, nodeid, new_values) :
         - roles specified exist
     '''
     if 'org_location' in cl.properties :
-        olo = new_values.get ('org_location') or cl.get (nodeid, 'org_location')
-        if not olo :
+        olo = new_values.get ('org_location')
+        if not olo and nodeid :
+            olo = cl.get (nodeid, 'org_location')
+        if not olo and nodeid :
             dyn = get_user_dynamic (db, nodeid, Date ('.'))
             if dyn :
                 olo = new_values ['org_location'] = dyn.org_location
