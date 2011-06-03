@@ -275,7 +275,8 @@ class LDAP_Roundup_Sync (object) :
             pass
         user  = uid and self.db.user.getnode (uid)
         # don't modify system users:
-        if user and user.status == self.status_system :
+        reserved = ('admin', 'anonymous')
+        if username in reserved or user and user.status == self.status_system :
             return
         luser = self.get_ldap_user_by_username (username)
         if not user and not luser :
