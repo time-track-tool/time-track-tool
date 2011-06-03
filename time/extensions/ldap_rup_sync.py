@@ -335,12 +335,12 @@ class LDAP_Roundup_Sync (object) :
             # preserved
             email = self.db.uc_type.lookup ('Email')
             order = 2
-            for k, n in oldmap.items () :
+            for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
                 if n.contact_type == email :
                     if n.order != order :
                         self.db.user_contact.set (n.id, order = order)
-                        order += 1
                         changed = True
+                    order += 1
                     new_contacts.append (n.id)
                     del oldmap [k]
             for n in oldmap.itervalues () :
