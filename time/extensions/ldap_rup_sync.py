@@ -381,7 +381,7 @@ class LDAP_Roundup_Sync (object) :
             prupattr = rupattr
             if rk == 'pictures' :
                 prupattr = '<suppressed>'
-                if len (rupattr) > 500000 :
+                if len (rupattr) > 102400 :
                     print "%s: Picture too large: %s" \
                         % (user.username, len (rupattr))
                     continue
