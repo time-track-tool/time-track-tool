@@ -128,6 +128,14 @@ def create_dynuser (db, cl, nodeid, old_values) :
 	    )
 # end def create_dynuser
 
+def check_email (db, contacts, email, t_email) :
+    for c in contacts :
+        contact = db.user_contact.getnode (c)
+        if (contact.contact == email and contact.contact_type == t_email) :
+            return True
+    return False
+# end def check_email
+
 def new_user (db, cl, nodeid, new_values) :
     # No checks for special accounts:
     if new_values.get ('username', None) in ['admin', 'anonymous'] :
@@ -182,28 +190,32 @@ def new_user (db, cl, nodeid, new_values) :
     # defaults:
     if new_values ['status'] == valid and maildomain :
         if 'contacts' in cl.properties :
+            if 'contacts' not in new_values :
+                new_values ['contacts'] = []
             try :
                 email = db.uc_type.lookup ('Email')
             except KeyError :
                 email = None
             contacts = []
-            c = db.user_contact.create \
-                ( contact      = '@'.join (('.'.join ((lfn, lln)), maildomain))
-                , contact_type = email
-                , order        = 1
-                )
-            contacts.append (c)
+            m = '@'.join (('.'.join ((lfn, lln)), maildomain))
+            if not check_email (db, new_values ['contacts'], m, email) :
+                c = db.user_contact.create \
+                    ( contact      = m
+                    , contact_type = email
+                    , order        = 1
+                    )
+                contacts.append (c)
             for n, i in enumerate ((nickname, username)) :
                 if not i :
                     continue
-                c = db.user_contact.create \
-                    ( contact      = '@'.join ((i, maildomain))
-                    , contact_type = email
-                    , order        = 2 + n
-                    )
-                contacts.append (c)
-            if 'contacts' not in new_values :
-                new_values ['contacts'] = []
+                m = '@'.join ((i, maildomain))
+                if not check_email (db, new_values ['contacts'], m, email) :
+                    c = db.user_contact.create \
+                        ( contact      = '@'.join ((i, maildomain))
+                        , contact_type = email
+                        , order        = 2 + n
+                        )
+                    contacts.append (c)
             new_values ['contacts'].extend (contacts)
         elif 'nickname' in cl.properties :
             if 'address' not in new_values :
