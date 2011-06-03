@@ -508,7 +508,6 @@ class LdapLoginAction (LoginAction, autosuper) :
 
     def verifyLogin (self, username, password) :
         if username in ('admin', 'anonymous') :
-            print >> sys.stderr, "sysuser:", username
             return self.__super.verifyLogin (username, password)
         sysuser = self.db.user_status.lookup ('system')
         invalid = self.db.user_status.lookup ('obsolete')
@@ -520,7 +519,6 @@ class LdapLoginAction (LoginAction, autosuper) :
         except KeyError :
             pass
         if user and user.status == sysuser :
-            print >> sys.stderr, "sysuser:", username
             return self.__super.verifyLogin (username, password)
         # sync the user
         self.client.error_message = []
@@ -530,20 +528,15 @@ class LdapLoginAction (LoginAction, autosuper) :
                 user = self.db.user.lookup  (username)
                 user = self.db.user.getnode (user)
             except KeyError :
-                print >> sys.stderr, "no such user", username
                 raise exceptions.LoginError (self._ ('Invalid login'))
             if user.status == invalid :
-                print >> sys.stderr, "invalid user", username
                 raise exceptions.LoginError (self._ ('Invalid login'))
             if not self.ldsync.bind_as_user (username, password) :
-                print >> sys.stderr, "bind failed", username
                 raise exceptions.LoginError (self._ ('Invalid login'))
             self.client.userid = user.id
         else :
             if not user or user.status == invalid :
-                print >> sys.stderr, "no ldap, invalid user", username
                 raise exceptions.LoginError (self._ ('Invalid login'))
-            print >> sys.stderr, "no ldap"
             return self.__super.verifyLogin (username, password)
     # end def verifyLogin
 # end class LdapLoginAction
