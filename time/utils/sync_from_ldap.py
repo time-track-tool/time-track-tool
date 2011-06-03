@@ -17,7 +17,4 @@ if len (sys.argv) > 2 :
     for username in sys.argv [2:] :
         l.sync_user_from_ldap (username)
 else :
-    for uid in db.user.getnodeids () :
-        username = db.user.get (uid, 'username')
-        l.sync_user_from_ldap (username)
-
+    l.sync_all_users_from_ldap ()

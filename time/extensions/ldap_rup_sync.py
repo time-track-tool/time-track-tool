@@ -17,13 +17,31 @@ class LDAP_Search_Result (cidict, autosuper) :
     """
     def __init__ (self, vals) :
         assert (vals [0])
-        self.dn    = vals [0]
+        self.dn = vals [0]
+        dn = (x.split ('=') for x in self.dn.lower ().split (','))
+        ou = dict.fromkeys (v.strip () for k, v in dn if k.strip () == 'ou')
+        self.ou = ou
         self.__super.__init__ (vals [1])
     # end def __init__
 
+    ou_obsolete = ('obsolete', 'z_test', 'vpn-umstellung')
+    dontsync    = dict.fromkeys \
+        (('vpn-cob'
+        , 'vpn-radixwartung'
+        , 'ldap-ro'
+        , 'e2etest'
+        , 'compilingpc'
+        , 'muster'
+        ))
+
     @property
     def is_obsolete (self) :
-        return self.dn.split (',')[-4] == 'OU=obsolete'
+        if 'uid' in self and self.uid [0] in self.dontsync :
+            return True
+        for i in self.ou_obsolete :
+            if i in self.ou :
+                return True
+        return False
     # end def is_obsolete
 
     def __getattr__ (self, name) :
@@ -36,7 +54,6 @@ class LDAP_Search_Result (cidict, autosuper) :
                 raise AttributeError, cause
         raise AttributeError, name
     # end def __getattr__
-
 # end class LDAP_Search_Result
 
 def get_picture (user, attr) :
@@ -180,6 +197,20 @@ class LDAP_Roundup_Sync (object) :
         return None
     # end def bind_as_user
 
+    def get_all_ldap_usernames (self) :
+        filter = '(objectclass=person)'
+        attrs  = ['uid']
+        res = self.ldcon.search_s \
+            (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, filter, attrs)
+        for r in res :
+            if not r [0] :
+                continue
+            r = LDAP_Search_Result (r)
+            if 'uid' not in r :
+                continue
+            yield (r.uid [0]).lower ()
+    # end def get_all_ldap_usernames
+
     def get_username_attribute_dn (self, node, attribute) :
         """ Get dn of a user Link-attribute of a node """
         s = node [attribute]
@@ -279,14 +310,15 @@ class LDAP_Roundup_Sync (object) :
         if username in reserved or user and user.status == self.status_system :
             return
         luser = self.get_ldap_user_by_username (username)
-        if not user and not luser :
+        if not user and (not luser or luser.is_obsolete) :
             # nothing to do
             return
         changed = False
         if not luser or luser.is_obsolete :
-            self.db.user.set (uid, status = self.status_obsolete)
-            #print >> sys.stderr, "Obsolete: %s" % username
-            changed = True
+            if user.status != self.status_obsolete :
+                print >> sys.stderr, "Obsolete: %s" % username
+                self.db.user.set (uid, status = self.status_obsolete)
+                changed = True
         else :
             d = {}
             for k, (lk, x, method) in self.attr_map ['user'].iteritems () :
@@ -366,7 +398,7 @@ class LDAP_Roundup_Sync (object) :
                 print >> sys.stderr, "Create roundup: %s" % username, d
                 assert (d)
                 d ['roles'] = self.db.config.NEW_WEB_USER_ROLES
-                uid = self.db.user.create (username = username, ** d)
+                uid = self.db.user.create (username = username.lower (), ** d)
                 changed = True
         if changed :
             pass
@@ -480,6 +512,15 @@ class LDAP_Roundup_Sync (object) :
             self.ldcon.modify_s (luser.dn, modlist)
     # end def sync_user_to_ldap
 
+    def sync_all_users_from_ldap (self) :
+        usrcls = self.db.user
+        usernames = dict.fromkeys \
+            (usrcls.get (i, 'username') for i in usrcls.getnodeids ())
+        usernames.update (dict.fromkeys (self.get_all_ldap_usernames ()))
+        for username in usernames.iterkeys () :
+            self.sync_user_from_ldap (username)
+    # end def sync_all_users_from_ldap
+
     def sync_all_users_to_ldap (self, update = False) :
         for uid in self.db.user.filter \
             (None, dict (status = self.status_valid), sort=[('+','username')]) :
@@ -541,8 +582,15 @@ class LdapLoginAction (LoginAction, autosuper) :
     # end def verifyLogin
 # end class LdapLoginAction
 
+def sync_from_ldap (db, username) :
+    """ Convenience method """
+    lds = LDAP_Roundup_Sync (db)
+    lds.sync_user_from_ldap (username)
+# end def sync_from_ldap
+
 def init (instance) :
     instance.registerAction ('login',             LdapLoginAction)
     instance.registerUtil   ('LDAP_Roundup_Sync', LDAP_Roundup_Sync)
     instance.registerUtil   ('check_ldap_config', check_ldap_config)
+    instance.registerUtil   ('sync_from_ldap',    sync_from_ldap)
 # end def init
