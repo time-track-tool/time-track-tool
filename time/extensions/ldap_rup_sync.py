@@ -3,10 +3,12 @@
 import sys
 import ldap
 
-from optparse         import OptionParser
-from ldap.cidict      import cidict
-from rsclib.autosuper import autosuper
-from roundup.date     import Date
+from optparse            import OptionParser
+from ldap.cidict         import cidict
+from rsclib.autosuper    import autosuper
+from roundup.date        import Date
+from roundup.cgi.actions import LoginAction
+from roundup.cgi         import exceptions
 
 class LDAP_Search_Result (cidict, autosuper) :
     """ Wraps an LDAP search result.
@@ -164,6 +166,19 @@ class LDAP_Roundup_Sync (object) :
         # end def look
         return look
     # end def cls_lookup
+
+    def bind_as_user (self, username, password) :
+        luser = self.get_ldap_user_by_username (username)
+        if not luser :
+            return None
+        try :
+            self.ldcon.bind_s (luser.dn, password)
+            return True
+        except ldap.LDAPError, e :
+            print >> sys.stderr, e
+            pass
+        return None
+    # end def bind_as_user
 
     def get_username_attribute_dn (self, node, attribute) :
         """ Get dn of a user Link-attribute of a node """
@@ -346,7 +361,7 @@ class LDAP_Roundup_Sync (object) :
             else :
                 print >> sys.stderr, "Create roundup: %s" % username, d
                 assert (d)
-                d ['roles'] = 'User,Nosy'
+                d ['roles'] = self.db.config.NEW_WEB_USER_ROLES
                 uid = self.db.user.create (username = username, ** d)
                 changed = True
         if changed :
@@ -469,6 +484,68 @@ class LDAP_Roundup_Sync (object) :
     # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
 
+def check_ldap_config (db) :
+    cfg = db.config.ext
+    uri = None
+    try :
+        uri = cfg.LDAP_URI
+    except KeyError :
+        pass
+    return uri
+# end def check_ldap_config
+
+class LdapLoginAction (LoginAction, autosuper) :
+    def try_ldap (self) :
+        uri = check_ldap_config (self.db)
+        if uri :
+            self.ldsync = LDAP_Roundup_Sync (self.db)
+        return bool (uri)
+    # end def try_ldap
+
+    def verifyLogin (self, username, password) :
+        if username in ('admin', 'anonymous') :
+            print >> sys.stderr, "sysuser:", username
+            return self.__super.verifyLogin (username, password)
+        sysuser = self.db.user_status.lookup ('system')
+        invalid = self.db.user_status.lookup ('obsolete')
+        # try to get user
+        user = None
+        try :
+            user = self.db.user.lookup  (username)
+            user = self.db.user.getnode (user)
+        except KeyError :
+            pass
+        if user and user.status == sysuser :
+            print >> sys.stderr, "sysuser:", username
+            return self.__super.verifyLogin (username, password)
+        # sync the user
+        self.client.error_message = []
+        if self.try_ldap () :
+            self.ldsync.sync_user_from_ldap (username)
+            try :
+                user = self.db.user.lookup  (username)
+                user = self.db.user.getnode (user)
+            except KeyError :
+                print >> sys.stderr, "no such user", username
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            if user.status == invalid :
+                print >> sys.stderr, "invalid user", username
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            if not self.ldsync.bind_as_user (username, password) :
+                print >> sys.stderr, "bind failed", username
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            self.client.userid = user.id
+        else :
+            if not user or user.status == invalid :
+                print >> sys.stderr, "no ldap, invalid user", username
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            print >> sys.stderr, "no ldap"
+            return self.__super.verifyLogin (username, password)
+    # end def verifyLogin
+# end class LdapLoginAction
+
 def init (instance) :
-    pass
+    instance.registerAction ('login',             LdapLoginAction)
+    instance.registerUtil   ('LDAP_Roundup_Sync', LDAP_Roundup_Sync)
+    instance.registerUtil   ('check_ldap_config', check_ldap_config)
 # end def init
