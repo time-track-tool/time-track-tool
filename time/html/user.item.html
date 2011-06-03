@@ -421,14 +421,17 @@
       <td tal:content="structure context/user_password"/>
      </tr>
     </tal:block>
-    <tr tal:condition="python:
+    <tal:block tal:condition="python:
      'pictures' in bclass.properties and context.pictures.is_edit_ok ()">
-     <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
-     <td>
-      <input type="file"   name="file-1@content" size="40">
-      <input type="hidden" name="@link@pictures" value="file-1">
-     </td>
-    </tr>
+     <tr><td/><td i18n:translate="">max. size of picture: 100kB</td></tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
+      <td>
+       <input type="file"   name="file-1@content" size="40">
+       <input type="hidden" name="@link@pictures" value="file-1">
+      </td>
+     </tr>
+    </tal:block>
    </tal:block>
   </tal:block>
  </tal:block>
