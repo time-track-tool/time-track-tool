@@ -1,7 +1,8 @@
 <!-- dollarId: user.item,v 1.7 2002/08/16 04:29:04 richard Exp dollar-->
 <tal:block metal:use-macro="templates/page/macros/icing">
  <title metal:fill-slot="head_title">
-  <tal:block i18n:translate="" tal:condition="context/id">
+  <tal:block i18n:translate="" tal:condition="context/id"
+   tal:define="_update python:utils.sync_from_ldap (db._db, context.username)">
    User 
    <span tal:replace="string:${context/id}: ${context/username}"/>
   </tal:block>

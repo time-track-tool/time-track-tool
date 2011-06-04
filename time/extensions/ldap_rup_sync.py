@@ -584,6 +584,8 @@ class LdapLoginAction (LoginAction, autosuper) :
 
 def sync_from_ldap (db, username) :
     """ Convenience method """
+    if not check_ldap_config (db) :
+        return
     lds = LDAP_Roundup_Sync (db)
     lds.sync_user_from_ldap (username)
 # end def sync_from_ldap
