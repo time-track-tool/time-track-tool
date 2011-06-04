@@ -504,6 +504,12 @@ class LDAP_Roundup_Sync (object) :
                             (user.username, ct, s, cs [1:], ldattr)
                         if s not in self.forbidden :
                             modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
+        for ct, fields in self.attr_map ['user_contact'].iteritems () :
+            if ct not in contacts :
+                for f in fields :
+                    if f in luser :
+                        print "%s:  Deleting: %s" % (user.username, f)
+                        modlist.append ((ldap.MOD_REPLACE, f, []))
         #print "Modlist:"
         #for k in modlist :
         #    print k
