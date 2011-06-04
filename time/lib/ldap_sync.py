@@ -23,20 +23,10 @@ class LDAP_Search_Result (cidict, autosuper) :
         self.__super.__init__ (vals [1])
     # end def __init__
 
-    ou_obsolete = ('obsolete', 'z_test', 'vpn-umstellung')
-    dontsync    = dict.fromkeys \
-        (('vpn-cob'
-        , 'vpn-radixwartung'
-        , 'ldap-ro'
-        , 'e2etest'
-        , 'compilingpc'
-        , 'muster'
-        ))
+    ou_obsolete = ('obsolete', 'z_test')
 
     @property
     def is_obsolete (self) :
-        if 'uid' in self and self.uid [0] in self.dontsync :
-            return True
         for i in self.ou_obsolete :
             if i in self.ou :
                 return True
@@ -75,6 +65,8 @@ def get_position (user, attr) :
 
 class LDAP_Roundup_Sync (object) :
     """ Sync users from LDAP to Roundup """
+
+    roundup_group = 'roundup-users'
     
     def __init__ (self, db) :
         self.db    = db
@@ -100,11 +92,25 @@ class LDAP_Roundup_Sync (object) :
             ((id, self.db.uc_type.get (id, 'name'))
              for id in self.db.uc_type.list ()
             )
-        self.compute_attr_map ()
+        self.compute_attr_map  ()
+        self.get_roundup_group ()
     # end def __init__
 
-    # map roundup attributes to ldap attributes
+    def bind_as_user (self, username, password) :
+        luser = self.get_ldap_user_by_username (username)
+        if not luser :
+            return None
+        try :
+            self.ldcon.bind_s (luser.dn, password)
+            return True
+        except ldap.LDAPError, e :
+            print >> sys.stderr, e
+            pass
+        return None
+    # end def bind_as_user
+
     def compute_attr_map (self) :
+        """ map roundup attributes to ldap attributes """
         attr_map = \
             { 'user' :
                 { 'department'   : ( 'department'
@@ -183,19 +189,6 @@ class LDAP_Roundup_Sync (object) :
         return look
     # end def cls_lookup
 
-    def bind_as_user (self, username, password) :
-        luser = self.get_ldap_user_by_username (username)
-        if not luser :
-            return None
-        try :
-            self.ldcon.bind_s (luser.dn, password)
-            return True
-        except ldap.LDAPError, e :
-            print >> sys.stderr, e
-            pass
-        return None
-    # end def bind_as_user
-
     def get_all_ldap_usernames (self) :
         filter = '(objectclass=person)'
         attrs  = ['uid']
@@ -209,6 +202,21 @@ class LDAP_Roundup_Sync (object) :
                 continue
             yield (r.uid [0]).lower ()
     # end def get_all_ldap_usernames
+
+    def get_roundup_group (self) :
+        """ Get list of members of self.roundup_group into self.members
+        """
+        f = '(&(sAMAccountName=%s)(objectclass=group))' % self.roundup_group
+        l = self.ldcon.search_s (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f)
+        results = []
+        for r in l :
+            if not r [0] : continue
+            r = LDAP_Search_Result (r)
+            results.append (r)
+        assert (len (results) == 1)
+        r = results [0]
+        self.members = dict.fromkeys (m.lower () for m in r.member)
+    # end def get_roundup_group
 
     def get_username_attribute_dn (self, node, attribute) :
         """ Get dn of a user Link-attribute of a node """
@@ -261,6 +269,10 @@ class LDAP_Roundup_Sync (object) :
         return self._get_ldap_user (result)
     # end def get_ldap_user_by_dn
 
+    def is_obsolete (self, luser) :
+        return luser.is_obsolete or luser.dn.lower () not in self.members
+    # end def is_obsolete
+
     def ldap_picture (self, luser, attr) :
         try :
             lpic = luser [attr][0]
@@ -297,7 +309,7 @@ class LDAP_Roundup_Sync (object) :
             return [f]
     # end def ldap_picture
 
-    def sync_user_from_ldap (self, username) :
+    def sync_user_from_ldap (self, username, update = True) :
         uid = None
         try :
             uid   = self.db.user.lookup  (username)
@@ -309,14 +321,15 @@ class LDAP_Roundup_Sync (object) :
         if username in reserved or user and user.status == self.status_system :
             return
         luser = self.get_ldap_user_by_username (username)
-        if not user and (not luser or luser.is_obsolete) :
+        if not user and (not luser or self.is_obsolete (luser)) :
             # nothing to do
             return
         changed = False
-        if not luser or luser.is_obsolete :
+        if not luser or self.is_obsolete (luser) :
             if user.status != self.status_obsolete :
                 print >> sys.stderr, "Obsolete: %s" % username
-                self.db.user.set (uid, status = self.status_obsolete)
+                if update :
+                    self.db.user.set (uid, status = self.status_obsolete)
                 changed = True
         else :
             d = {}
@@ -348,11 +361,11 @@ class LDAP_Roundup_Sync (object) :
                         if key in oldmap :
                             n = oldmap [key]
                             new_contacts.append (n.id)
-                            if n.order != order :
+                            if n.order != order and update :
                                 self.db.user_contact.set (n.id, order = order)
                                 changed = True
                             del oldmap [key]
-                        else :
+                        elif update :
                             id = self.db.user_contact.create \
                                 ( contact_type = tid
                                 , contact      = ldit
@@ -368,15 +381,16 @@ class LDAP_Roundup_Sync (object) :
             order = 2
             for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
                 if n.contact_type == email :
-                    if n.order != order :
+                    if n.order != order and update :
                         self.db.user_contact.set (n.id, order = order)
                         changed = True
                     order += 1
                     new_contacts.append (n.id)
                     del oldmap [k]
-            for n in oldmap.itervalues () :
-                self.db.user_contact.retire (n.id)
-                changed = True
+            if update :
+                for n in oldmap.itervalues () :
+                    self.db.user_contact.retire (n.id)
+                    changed = True
             oct = list (sorted (oct.iterkeys ()))
             new_contacts.sort ()
             if new_contacts != oct :
@@ -388,19 +402,24 @@ class LDAP_Roundup_Sync (object) :
                     if user [k] == v :
                         del d [k]
                 if user.status == self.status_obsolete :
+                    # Roles where removed when setting user obsolete
+                    # set these to default settings
                     d ['status'] = self.status_valid
+                    d ['roles']  = self.db.config.NEW_WEB_USER_ROLES
                 if d :
                     print >> sys.stderr, "Update roundup: %s" % username, d
-                    self.db.user.set (uid, ** d)
-                    changed = True
+                    if update :
+                        self.db.user.set (uid, ** d)
+                        changed = True
             else :
                 print >> sys.stderr, "Create roundup: %s" % username, d
                 assert (d)
                 d ['roles'] = self.db.config.NEW_WEB_USER_ROLES
-                uid = self.db.user.create (username = username.lower (), ** d)
-                changed = True
-        if changed :
-            pass
+                if update :
+                    uid = self.db.user.create \
+                        (username = username.lower (), ** d)
+                    changed = True
+        if changed and update:
             self.db.commit ()
     # end def sync_user_from_ldap
 
@@ -415,11 +434,11 @@ class LDAP_Roundup_Sync (object) :
             # Might want to create user in LDAP
             return
         if user.status == self.status_obsolete :
-            if not luser.is_obsolete :
+            if not self.is_obsolete (luser) :
                 print "Roundup user obsolete:", user.username
                 # Might want to move user in LDAP Tree
             return
-        if luser.is_obsolete :
+        if self.is_obsolete (luser) :
             print "Obsolete LDAP user: %s" % user.username
             return
         umap = self.attr_map ['user']
@@ -517,13 +536,13 @@ class LDAP_Roundup_Sync (object) :
             self.ldcon.modify_s (luser.dn, modlist)
     # end def sync_user_to_ldap
 
-    def sync_all_users_from_ldap (self) :
+    def sync_all_users_from_ldap (self, update = False) :
         usrcls = self.db.user
         usernames = dict.fromkeys \
             (usrcls.get (i, 'username') for i in usrcls.getnodeids ())
         usernames.update (dict.fromkeys (self.get_all_ldap_usernames ()))
         for username in usernames.iterkeys () :
-            self.sync_user_from_ldap (username)
+            self.sync_user_from_ldap (username, update = update)
     # end def sync_all_users_from_ldap
 
     def sync_all_users_to_ldap (self, update = False) :

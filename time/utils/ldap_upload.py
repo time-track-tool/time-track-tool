@@ -3,8 +3,8 @@
 import sys
 import os
 
-from optparse         import OptionParser
-from roundup          import instance
+from optparse import OptionParser
+from roundup  import instance
 
 def main () :
     # most ldap info is now fetched from extensions/config.ini
