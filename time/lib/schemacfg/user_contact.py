@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-11 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -60,8 +60,8 @@ def init \
 
     contact = Contact_Class \
         ( db, ''"user_contact"
-        , user                = Link      ('user')
-        , contact_type        = Link      ("uc_type")
+        , user                = Link      ('user',    do_journal = "no")
+        , contact_type        = Link      ("uc_type", do_journal = "no")
         , order               = Number    ()
         , visible             = Boolean   ()
         , **params
