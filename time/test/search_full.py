@@ -120,6 +120,9 @@ properties = \
       , [ ( 'contacts'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
+        , ( 'is_valid'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
         , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
@@ -914,6 +917,9 @@ properties = \
         , ( 'customer'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
+        , ( 'emails'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
         , ( 'files'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
@@ -936,6 +942,9 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'responsible'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
+          )
+        , ( 'send_to_customer'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'support', 'user']
           )
         , ( 'serial_number'

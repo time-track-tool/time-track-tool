@@ -18,6 +18,9 @@ properties = \
         , ( 'mint'
           , ['admin', 'guest', 'logger', 'user']
           )
+        , ( 'mint_pending'
+          , ['admin', 'guest', 'logger', 'user']
+          )
         , ( 'name'
           , ['admin', 'guest', 'logger', 'user']
           )
@@ -28,6 +31,9 @@ properties = \
           , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'sint'
+          , ['admin', 'guest', 'logger', 'user']
+          )
+        , ( 'sint_pending'
           , ['admin', 'guest', 'logger', 'user']
           )
         , ( 'surrogate'
@@ -127,6 +133,21 @@ properties = \
           , ["admin"]
           )
         , ( 'server'
+          , ["admin"]
+          )
+        ]
+      )
+    , ( 'email'
+      , [ ( 'password'
+          , ["admin"]
+          )
+        , ( 'sender'
+          , ["admin"]
+          )
+        , ( 'server'
+          , ["admin"]
+          )
+        , ( 'user_name'
           , ["admin"]
           )
         ]
@@ -258,10 +279,16 @@ properties = \
       , [ ( 'mint'
           , ["admin", "guest", "logger", "user"]
           )
+        , ( 'mint_pending'
+          , ["admin", "guest", "logger", "user"]
+          )
         , ( 'name'
           , ["admin", "guest", "logger", "user"]
           )
         , ( 'sint'
+          , ["admin", "guest", "logger", "user"]
+          )
+        , ( 'sint_pending'
           , ["admin", "guest", "logger", "user"]
           )
         , ( 'tty'

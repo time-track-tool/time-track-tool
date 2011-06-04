@@ -35,9 +35,9 @@ Role "logger":
  User is allowed to edit sensor (Edit for "sensor" only)
  User is allowed to edit transceiver (Edit for "transceiver" only)
 Role "user":
- User is allowed Edit on (Edit for "device": ('name', 'sint', 'mint', 'gapint', 'rec', 'device_group') only)
+ User is allowed Edit on (Edit for "device": ('name', 'sint', 'mint', 'gapint', 'rec', 'device_group', 'mint_pending', 'sint_pending') only)
  User is allowed Edit on (Edit for "sensor": ('almin', 'almax', 'do_logging') only)
- User is allowed Edit on (Edit for "transceiver": ('name', 'tty', 'sint', 'mint') only)
+ User is allowed Edit on (Edit for "transceiver": ('name', 'tty', 'sint', 'mint', 'mint_pending', 'sint_pending') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)

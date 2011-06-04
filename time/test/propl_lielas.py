@@ -6,10 +6,12 @@ properties = \
         , 'device_group'
         , 'gapint'
         , 'mint'
+        , 'mint_pending'
         , 'name'
         , 'order'
         , 'rec'
         , 'sint'
+        , 'sint_pending'
         , 'surrogate'
         , 'transceiver'
         , 'version'
@@ -53,6 +55,13 @@ properties = \
         , 'password'
         , 'protocol'
         , 'server'
+        ]
+      )
+    , ( 'email'
+      , [ 'password'
+        , 'sender'
+        , 'server'
+        , 'user_name'
         ]
       )
     , ( 'file'
@@ -110,8 +119,10 @@ properties = \
       )
     , ( 'transceiver'
       , [ 'mint'
+        , 'mint_pending'
         , 'name'
         , 'sint'
+        , 'sint_pending'
         , 'tty'
         ]
       )

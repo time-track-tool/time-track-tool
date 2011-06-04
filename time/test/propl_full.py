@@ -56,6 +56,7 @@ properties = \
       )
     , ( 'customer'
       , [ 'contacts'
+        , 'is_valid'
         , 'name'
         ]
       )
@@ -398,6 +399,7 @@ properties = \
         , 'closed'
         , 'confidential'
         , 'customer'
+        , 'emails'
         , 'files'
         , 'messages'
         , 'nosy'
@@ -406,6 +408,7 @@ properties = \
         , 'related_issues'
         , 'release'
         , 'responsible'
+        , 'send_to_customer'
         , 'serial_number'
         , 'status'
         , 'superseder'
