@@ -26,8 +26,8 @@ def main () :
         parser.error ('No arguments please')
         exit (23)
 
-    sys.path.insert (1, os.path.join (opt.database_directory, 'extensions'))
-    from ldap_rup_sync import LDAP_Roundup_Sync
+    sys.path.insert (1, os.path.join (opt.database_directory, 'lib'))
+    from ldap_sync import LDAP_Roundup_Sync
     tracker = instance.open (opt.database_directory)
     db      = tracker.open ('admin')
 
