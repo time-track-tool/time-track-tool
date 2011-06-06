@@ -301,15 +301,11 @@ class Daily_Record_Action (Daily_Record_Common) :
 
     def handle (self) :
         uid = self.db.user.lookup (self.user)
-        try :
-            _   = self.db._
-        except AttributeError :
-            pass
         if not self.db.user.get (uid, 'supervisor') :
-            f_supervisor = _ ('supervisor')
-            user         = self.user
-            msg          = _ ("No %(f_supervisor)s for %(user)s") % locals ()
-            url          = 'index?:error_message=' + msg 
+            f_supervisor = self._ ('supervisor')
+            user      = self.user
+            msg       = self._ ("No %(f_supervisor)s for %(user)s") % locals ()
+            url       = 'index?:error_message=' + msg 
             raise Redirect, url
 
         self.create_daily_records ()
@@ -629,28 +625,20 @@ class Freeze_Action (Action, autosuper) :
     user_required_msg = ''"User is required"
     user_invalid_msg  = ''"Invalid User"
     def get_user (self) :
-        try :
-            _ = self.db._
-        except AttributeError :
-            pass
         self.request = templating.HTMLRequest (self.client)
         user         = self.request.form ['user'].value
         if not user :
-            raise Reject, _ (self.user_required_msg)
+            raise Reject, self._ (self.user_required_msg)
         try :
             self.user = self.db.user.lookup (user)
         except KeyError :
-            raise Reject, _ (self.user_invalid_msg)
+            raise Reject, self._ (self.user_invalid_msg)
         return self.user
     # end def get_user
 
     def handle (self) :
-        try :
-            _ = self.db._
-        except AttributeError :
-            pass
         if not self.request.form ['date'].value :
-            raise Reject, _ ("Date is required")
+            raise Reject, self._ ("Date is required")
         self.date  = Date (self.request.form ['date'].value)
         msg = []
         for u in self.users :
@@ -709,13 +697,9 @@ class Freeze_Action (Action, autosuper) :
 
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
-        try :
-            _ = self.db._
-        except AttributeError :
-            pass
         self.request = templating.HTMLRequest (self.client)
         if 'user' in self.request.form and self.request.form ['user'].value :
-            raise Reject, _ ('''Don't specify a user for "Freeze all"''')
+            raise Reject, self._ ('''Don't specify a user for "Freeze all"''')
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle

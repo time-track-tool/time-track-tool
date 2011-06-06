@@ -596,6 +596,8 @@ class LdapLoginAction (LoginAction, autosuper) :
                 raise exceptions.LoginError (self._ ('Invalid login'))
             if user.status == invalid :
                 raise exceptions.LoginError (self._ ('Invalid login'))
+            if not password :
+                raise exceptions.LoginError (self._ ('Invalid login'))
             if not self.ldsync.bind_as_user (username, password) :
                 raise exceptions.LoginError (self._ ('Invalid login'))
             self.client.userid = user.id
