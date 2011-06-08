@@ -270,7 +270,7 @@ class LDAP_Roundup_Sync (object) :
     # end def get_ldap_user_by_dn
 
     def is_obsolete (self, luser) :
-        return luser.is_obsolete or luser.dn.lower () not in self.members
+        return luser.dn.lower () not in self.members
     # end def is_obsolete
 
     def ldap_picture (self, luser, attr) :
