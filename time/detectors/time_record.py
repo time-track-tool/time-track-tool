@@ -469,7 +469,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     ls.year  = dr.date.year
     ls.month = dr.date.month
     ls.day   = dr.date.day
-    ld       = db.user.get (dr.user, 'lunch_duration')
+    ld       = db.user.get (dr.user, 'lunch_duration') or 1
     hours    = int (ld)
     minutes  = (ld - hours) * 60
     le       = ls + Interval ('%d:%d' % (hours, minutes))
