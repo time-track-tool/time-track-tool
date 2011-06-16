@@ -55,11 +55,14 @@ def nosyreaction(db, cl, nodeid, oldvalues):
         try:
             cc_emails = []
             if 'header' in db.msg.properties and db.msg.get (msgid, 'header') :
-                h = Parser ().parsestr (db.msg.get (msgid, 'header'), headersonly = True)
-                for rn, mail in getaddresses (h.get_all ('X-ROUNDUP-CC')) :
-                    cc_emails.append (mail)
+                h = Parser ().parsestr \
+                    (db.msg.get (msgid, 'header'), headersonly = True)
+                rcc = h.get_all ('X-ROUNDUP-CC')
+                if rcc :
+                    for rn, mail in getaddresses (rcc) :
+                        cc_emails.append (mail)
             cl.nosymessage(nodeid, msgid, oldvalues, cc_emails = cc_emails)
-        except roundupdb.MessageSendError, message:
+        except roundupdb.MessageSendError, message :
             raise roundupdb.DetectorError, message
 
 def determineNewMessages(cl, nodeid, oldvalues):
