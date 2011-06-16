@@ -465,7 +465,7 @@ def new_time_record (db, cl, nodeid, new_values) :
         act    = new_values ['time_activity']
         travel = travel or db.time_activity.get (act, 'travel')
     duration = new_values.get ('duration', None)
-    ls       = Date (db.user.get (dr.user, 'lunch_start'))
+    ls       = Date (db.user.get (dr.user, 'lunch_start') or '12:00')
     ls.year  = dr.date.year
     ls.month = dr.date.month
     ls.day   = dr.date.day
