@@ -227,6 +227,7 @@ def new_user (db, cl, nodeid, new_values) :
                     ('@'.join ((i, maildomain))
                      for i in (nickname, username) if i
                     )
+    if new_values ['status'] == valid :
         if 'lunch_duration' in cl.properties :
             if 'lunch_duration' not in new_values :
                 new_values ['lunch_duration'] = .5
