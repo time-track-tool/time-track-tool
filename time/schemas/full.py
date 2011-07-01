@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-11 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -98,7 +98,7 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["IT"]
-      , ( "is_lotus_user", "sync_with_ldap", "group"
+      , ( "is_lotus_user", "sync_with_ldap", "group", "pictures"
         , "secondary_groups", "uid", "home_directory", "login_shell"
         , "samba_home_drive", "samba_home_path", "samba_kickoff_time"
         , "samba_lm_password", "samba_logon_script", "samba_nt_password"
