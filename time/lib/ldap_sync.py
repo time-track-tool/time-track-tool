@@ -407,12 +407,12 @@ class LDAP_Roundup_Sync (object) :
                     d ['status'] = self.status_valid
                     d ['roles']  = self.db.config.NEW_WEB_USER_ROLES
                 if d :
-                    print >> sys.stderr, "Update roundup: %s" % username, d
+                    print "Update roundup: %s" % username, d
                     if update :
                         self.db.user.set (uid, ** d)
                         changed = True
             else :
-                print >> sys.stderr, "Create roundup: %s" % username, d
+                print "Create roundup: %s" % username, d
                 assert (d)
                 d ['roles'] = self.db.config.NEW_WEB_USER_ROLES
                 if update :
