@@ -168,7 +168,7 @@ def update_user_olo_dept (db, user, olo, dept) :
     if db.user.get (user, 'department') != dept :
         userupdate ['department'] = dept
     if userupdate :
-        db.user.set (user, *userupdate)
+        db.user.set (user, **userupdate)
 # end def update_user_olo_dept
 
 def check_user_dynamic (db, cl, nodeid, new_values) :
