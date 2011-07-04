@@ -318,7 +318,6 @@ def init (db) :
     db.user.react("create", update_userlist_html)
     if 'user_dynamic' in db.classes :
         db.user.react("create", create_dynuser)
-        db.user.react("set",    create_dynuser)
     db.user.react("set"   , update_userlist_html)
     db.user.audit("retire", check_retire)
     db.user.audit("set"   , obsolete_action)
