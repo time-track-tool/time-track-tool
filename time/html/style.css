@@ -430,6 +430,10 @@ table.messages th.header a[href]:hover { color: #707040; }
 table.messages th.header a[href]:link  { color: #707040; }
 table.messages th.header a[href]       { color: #707040; }
 
+table.messages th a[href]:hover.external { color: green }
+table.messages th a[href]:link.external  { color: green }
+table.messages th a[href].external       { color: green }
+
 table.messages td {
   font-family: monospace;
   background-color: #efefef;

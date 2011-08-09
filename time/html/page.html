@@ -983,7 +983,11 @@
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
   <tr>
-   <th><a tal:attributes="href string:msg${msg/id}"
+   <th><a tal:attributes=
+          "href string:msg${msg/id};
+           class python: ['messages','external']
+                         [bool(utils.has_x_roundup_cc_header (db, msg))]
+          "
           tal:content="string:msg${msg/id}"></a></th>
    <th>
     <tal:block i18n:translate="">Author:</tal:block>
