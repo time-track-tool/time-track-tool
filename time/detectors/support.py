@@ -208,6 +208,13 @@ def check_require_message (db, cl, nodeid, new_values) :
             raise Reject, _ ("Change of %s requires a message") % _ (prop)
 # end def check_require_message
 
+def check_responsible_not_support (db, cl, nodeid, new_values) :
+    sup = db.user.lookup ('support')
+    rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
+    if rsp == sup :
+        raise Reject, _ ("Requires change of user (support not allowed)")
+# end def check_responsible_not_support
+
 def init (db) :
     if 'support' not in db.classes :
         return
@@ -215,12 +222,13 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.support.audit ("create", new_support,            priority = 50)
-    db.support.audit ("set",    check_support,          priority = 40)
+    db.support.audit ("set",    check_responsible_not_support, priority = 20)
+    db.support.audit ("create", new_support,                   priority = 50)
+    db.support.audit ("set",    check_support,                 priority = 40)
     db.support.audit ("create", audit_superseder)
     db.support.audit ("set",    audit_superseder)
-    db.support.audit ("set",    check_closed,           priority = 200)
-    db.support.audit ("set",    check_require_message,  priority = 200)
-    db.support.audit ("create", header_check,           priority = 200)
-    db.support.audit ("set",    header_check,           priority = 200)
+    db.support.audit ("set",    check_closed,                  priority = 200)
+    db.support.audit ("set",    check_require_message,         priority = 200)
+    db.support.audit ("create", header_check,                  priority = 200)
+    db.support.audit ("set",    header_check,                  priority = 200)
 # end def init
