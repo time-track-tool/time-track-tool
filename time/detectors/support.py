@@ -215,6 +215,18 @@ def check_responsible_not_support (db, cl, nodeid, new_values) :
         raise Reject, _ ("Requires change of user (support not allowed)")
 # end def check_responsible_not_support
 
+def remove_support_from_nosy (db, cl, nodeid, new_values) :
+    """Remove user "support" from nosy list if setting to confidential.
+    """
+    conf = new_values.get ('confidential', cl.get (nodeid, 'confidential'))
+    nosy = new_values.get ('nosy',         cl.get (nodeid, 'nosy'))
+    nosy = dict.fromkeys (nosy)
+    sup = db.user.lookup ('support')
+    if conf and sup in nosy :
+        del nosy [sup]
+        new_values ['nosy'] = nosy.keys ()
+# end def remove_support_from_nosy
+
 def init (db) :
     if 'support' not in db.classes :
         return
@@ -231,4 +243,5 @@ def init (db) :
     db.support.audit ("set",    check_require_message,         priority = 200)
     db.support.audit ("create", header_check,                  priority = 200)
     db.support.audit ("set",    header_check,                  priority = 200)
+    db.support.audit ("set",    remove_support_from_nosy,      priority = 300)
 # end def init
