@@ -101,27 +101,33 @@ def init \
     # to regular users now
 
 def security (db, ** kw) :
-    roles = [ ("Support",    "Customer support department") ]
+    roles = [ ("SupportAdmin", "Customer support department") ]
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("sup_status",     ["User"],            [])
-        , ("sup_prio",       ["User"],            [])
-        , ("support",        ["Support"],         ["Support"])
-        , ("customer",       ["User", "Support"], ["Support"])
-        , ("contact",        ["User", "Support"], ["Support"])
+        [ ("sup_status",     ["User"],                 [])
+        , ("sup_prio",       ["User"],                 [])
+        , ("support",        ["SupportAdmin"],         ["SupportAdmin"])
+        , ("customer",       ["User", "SupportAdmin"], ["SupportAdmin"])
+        , ("contact",        ["User", "SupportAdmin"], ["SupportAdmin"])
         ]
     if 'adr_type' in db.classes :
-        classes.append (("adr_type",     ["User", "Support"], ["Support"]))
-        classes.append (("adr_type_cat", ["User", "Support"], ["Support"]))
+        classes.append (( "adr_type"
+                        , ["User", "SupportAdmin"]
+                        , ["SupportAdmin"]
+                       ))
+        classes.append (( "adr_type_cat"
+                        , ["User", "SupportAdmin"]
+                        , ["SupportAdmin"]
+                       ))
 
     prop_perms = []
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
 
-    db.security.addPermissionToRole ('User',    'Create', 'support')
-    db.security.addPermissionToRole ('Support', 'Create', 'support')
+    db.security.addPermissionToRole ('User',         'Create', 'support')
+    db.security.addPermissionToRole ('SupportAdmin', 'Create', 'support')
     schemadef.register_confidentiality_check \
         (db, 'support',   ('View',))
     schemadef.register_confidentiality_check \
