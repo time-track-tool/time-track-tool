@@ -55,7 +55,7 @@ def new_support (db, cl, nodeid, new_values) :
     if 'category'     not in new_values :
         new_values ['category'] = '1'
     if 'responsible'  not in new_values :
-        new_values ['responsible'] = db.getuid ()
+        new_values ['responsible'] = db.user.lookup ('support')
     if 'prio'         not in new_values :
         new_values ['prio'] = db.sup_prio.lookup ('unknown')
     if 'confidential' not in new_values :
