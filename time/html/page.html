@@ -69,7 +69,8 @@
    , ('contact', '')    : utils.contact_query (db)
    , ('cust_supp', '')  : '@pagesize=50&@startwith=0&'
                           '@columns=id,name,description,tax_id,status,attendant'
-   , ('customer', '')   : '@columns=%s&@sort=name&@pagesize=20&@startwith=0'
+   , ('customer', '')   : '@columns=%s&@sort=name&@filter=is_valid&'
+                          '@pagesize=20&@startwith=0&is_valid=yes'
                            % ','.join
                               (c for c in ( 'name', 'salutation', 'title'
                                           , 'lastname', 'firstname', 'function'
