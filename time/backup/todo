@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TRACKER=/var/lib/tracker/todo
 BACKUPDIR=/var/lib/tracker/backup/todo

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TRACKER=/data/roundup/abo
 BACKUPDIR=/data/roundup/backup

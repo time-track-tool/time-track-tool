@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TRACKER=/var/lib/tracker/address
 BACKUPDIR=/var/lib/tracker/backup/address
