@@ -305,8 +305,8 @@ def check_alias (db, cl, nodeid, new_values) :
     olo  = new_values.get ('org_location',   cl.get (nodeid, 'org_location'))
     olon = _ ('org_location')
     if not (a2a or a2u) :
-        raise Reject, _ ("Either %s or %s must be defined") \
-            % (_ ('alias_to_alias'), _ ('alias_to_user'))
+        raise Reject, _ ("Either %(a_alias)s or %(u_alias)s must be defined") \
+          % dict (a_alias = _ ('alias_to_alias'), u_alias = _ ('alias_to_user'))
     if 'alias_to_alias' in new_values :
         new_values ['alias_to_alias'] = common.sort_uniq (a2a)
     if 'alias_to_user'  in new_values :
@@ -332,8 +332,8 @@ def new_alias (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'name', 'org_location')
     if not ('alias_to_alias' in new_values or 'alias_to_user' in new_values) :
-        raise Reject, _ ("Either %s or %s must be defined") \
-            % ('alias_to_alias', 'alias_to_user')
+        raise Reject, _ ("Either %(a_alias)s or %(u_alias)s must be defined") \
+          % dict (a_alias = _ ('alias_to_alias'), u_alias = _ ('alias_to_user'))
     name = new_values ['name']
     olo  = new_values ['org_location']
     common.check_unique (_, cl, nodeid, name = name, org_location = olo)

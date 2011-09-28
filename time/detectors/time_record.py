@@ -365,10 +365,12 @@ def check_start_end_duration \
     else :
         if not duration and duration != 0 :
             raise Reject, \
-                ( _ ("%s: You specified new values for %s but no duration")
-                % ( date.pretty (common.ymd)
-                  , ", ".join ([_ (i) for i in new_values.keys ()])
-                  )
+                ( _ ("%(date)s: You specified new values "
+                     "for %(attr)s but no duration"
+                    )
+                % dict ( date = date.pretty (common.ymd)
+                       , attr = ", ".join ([_ (i) for i in new_values.keys ()])
+                       )
                 )
         check_duration (duration, 24)
         if 'duration' in new_values :

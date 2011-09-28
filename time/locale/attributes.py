@@ -45,6 +45,7 @@ schemas = \
     , 'person_sep'
     , 'person'
     , 'pers_ext'
+    , 'support'
     , 'letter'
     , 'pers_letter'
     , 'sinvoice'

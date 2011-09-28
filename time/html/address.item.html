@@ -120,6 +120,16 @@
           class="required"/>
       <td tal:content="structure context/is_valid/field"/>
      </tr>
+     <tr tal:condition="python:'maildomain' in props">
+      <th tal:content="structure python:utils.fieldname
+               (classname, 'maildomain')" />
+      <td tal:content="structure context/maildomain/field"/>
+     </tr>
+     <tr tal:condition="python:'fromaddress' in props">
+      <th tal:content="structure python:utils.fieldname
+               (classname, 'fromaddress')" />
+      <td tal:content="structure context/fromaddress/field"/>
+     </tr>
      <tr tal:condition="python:'salutation' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'salutation')"/>
@@ -451,6 +461,11 @@
         </tr>
        </table>
       </td>
+     </tr>
+     <tr tal:condition="python:'nosygroups' in props">
+      <th tal:content="structure python:utils.fieldname
+               (classname, 'nosygroups')" />
+      <td tal:content="structure python:context.nosygroups.menu (height = 3)"/>
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="formatted_class_listentry">

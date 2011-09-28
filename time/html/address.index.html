@@ -36,6 +36,8 @@
      ( ('id',                  dict (terse = False))
      , ('name',                dict (searchable  = True,  sortable = True))
      , ('is_valid',            dict (searchable  = True,  sortable = True))
+     , ('maildomain',          dict (terse = False))
+     , ('fromaddress',         dict (terse = False))
      , ('salutation',          dict (terse = False))
      , ('title',               dict (terse = False))
      , ('lastname',            dict (searchable  = False, sortable = False))
@@ -144,6 +146,8 @@
      , ('creator',             dict (terse = False))
      , ('activity',            {})
      , ('actor',               dict (terse = False))
+     , ('nosygroups',          dict (terse = False))
+     , ('nosy',                dict (terse = False))
      )
    ;props python:
           [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

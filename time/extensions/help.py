@@ -367,6 +367,11 @@ _helptext          = \
     , ""'cust_supp'                   : [""'''%(Property)s of %(Classname)s''']
     , ""'customer_status'             : [status]
     , ""'customer_type'               : [generic_type]
+    , ""'customer++nosy'              :
+      [""'''Nosy list to use for new support issues from this
+            %(Classname)s
+         '''
+      ]
     , ""'cut_off_date'                :
       [ ""'''Date until when this %(Classname)s must be finished.'''
       , date_text
@@ -609,6 +614,12 @@ _helptext          = \
                TTP-OS 4.5.23
           '''
       ]
+    , ""'fromaddress'                 :
+      [ ""'''Address in outgoing emails to which the %(Classname)s can reply.
+             The email address provided must be one of the email
+             addresses of the roundup tracker.
+          '''
+      ]
     , ""'frozen'                      :
       [ ""'''If this is set to "yes", all time records up to this date
              as well as the dynamic user data up to this date cannot be
@@ -819,6 +830,13 @@ _helptext          = \
       [ ""'''Allowed range of user ids for machines'''
       , range_description
       ]
+    , ""'maildomain'                  :
+      [""'''Mail domain of the %(Classname)s. If there is no match for
+            an incoming support email, the mail domains are tried with
+            the username part of the email removed. If matched, the new
+            issue is associated with the customer.
+         '''
+      ]
     , ""'manager'                     :
       [""'''Responsible person of the %(Classname)s''']
     , ""'maturity_index'              :
@@ -915,6 +933,11 @@ _helptext          = \
       ]
     , ""'nosy'                        :
       [""'''People receiving announcements (messages) for %(Classname)s''']
+    , ""'nosygroups'                  :
+      [""'''Group(s) of nosy lists to use for new support issues from
+            this %(Classname)s
+         '''
+      ]
     , ""'numeric_effort'              :
       [ ""'''The estimated effort this work package has. This should be
              a fair estimation done by the Responsible of the
@@ -1698,11 +1721,13 @@ def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
     href  = prop.split ('.')[-1].split ('++')[-1]
     if csscls :
         csscls = 'class="%s"' % csscls
-    return (_ (''"""<a %s title=\"Help for %s\" href=\"javascript:help_window"""
-               """('%s?:template=property_help#%s', '500', '400')\" """
+    return (_ (''"""<a %(csscls)s title=\"Help for %(label)s\" """
+               """href=\"javascript:help_window"""
+               """('%(cls)s?:template=property_help#%(href)s', """
+               """'500', '400')\" """
                """tabindex="-1">"""
-               """%s%s</a>""" \
-              ) % (csscls, label, cls, href, label, endswith)
+               """%(label)s%(endswith)s</a>""" \
+              ) % locals ()
            )
 # end def fieldname
 

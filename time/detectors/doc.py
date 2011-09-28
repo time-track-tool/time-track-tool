@@ -131,7 +131,8 @@ def check_name \
     if name not in newvalues or not newvalues [name] :
         return
     if not regex.match (newvalues [name]) :
-        raise Reject, _ ('Malformed %s: Only %s allowed') % (_ (name), txt)
+        raise Reject, _ ('Malformed %(attr)s: Only %(name)s allowed') \
+            % dict (attr = _ (name), name = txt)
 # end def check_name
 
 def check_department (db, cl, nodeid, newvalues) :

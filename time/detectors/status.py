@@ -63,8 +63,8 @@ def check_status (db, cl, nodeid, new_values) :
         else :
             targets = o_status.transitions
         if n_status.id not in targets and not container :
-            raise Reject, _ ("Invalid Status transition: %s -> %s") \
-                % (o_status.name, n_status.name)
+            raise Reject, _ ("Invalid Status transition: %(o_s)s -> %(n_s)s") \
+                % dict (o_s = o_status.name, n_s = n_status.name)
         need_msg = True
 	if 'relaxed' in status_cl.properties and n_status.relaxed :
 	    need_msg = False

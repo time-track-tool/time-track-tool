@@ -150,8 +150,10 @@ def check_loop (_, cl, id, prop, attr, labelprop = None, ids = []) :
             attr = [attr]
         for a in attr :
             if a in ids :
-                raise Reject, _ ('"%s" loop: %s') % \
-                    (_ (prop), ','.join ([cl.get (i, labelprop) for i in ids]))
+                raise Reject, _ ('"%(prop)s" loop: %(labels)s') % dict \
+                    ( prop   = _ (prop)
+                    , labels = ','.join ([cl.get (i, labelprop) for i in ids])
+                    )
             check_loop (_, cl, a, prop, cl.get (a, prop), labelprop, ids)
             ids.pop ()
 # end def check_loop

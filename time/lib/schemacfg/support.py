@@ -87,8 +87,20 @@ def init \
         , ''"customer"
         , name             = String    ()
         , is_valid         = Boolean   ()
+        , nosy             = Multilink ("user")
+        , nosygroups       = Multilink ("mailgroup")
+        , maildomain       = String    ()
+        , fromaddress      = String    ()
         )
     customer.setkey ("name")
+
+    mailgroup = Class \
+        ( db
+        , ''"mailgroup"
+        , name             = String    ()
+        , nosy             = Multilink ("user")
+        )
+    mailgroup.setkey ("name")
 
 # end def init
 
@@ -110,6 +122,7 @@ def security (db, ** kw) :
         , ("support",        ["SupportAdmin"],         ["SupportAdmin"])
         , ("customer",       ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("contact",        ["User", "SupportAdmin"], ["SupportAdmin"])
+        , ("mailgroup",      ["User", "SupportAdmin"], ["SupportAdmin", "IT"])
         ]
     if 'adr_type' in db.classes :
         classes.append (( "adr_type"

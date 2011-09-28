@@ -7,82 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-05-27 14:38+0200\n"
+"POT-Creation-Date: 2011-09-28 18:19+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "start and end must be on same day and start <= end."
-msgstr ""
-
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-msgid "No negative times are allowed"
-msgstr ""
-
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr "\"%(attr)s\" darf nicht geändert werden"
-
-#, python-format
-msgid "%(attr)s must be set"
-msgstr "\"%(attr)s\" muss ausgefüllt werden"
-
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-msgid "start"
-msgstr "Start"
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr "\"%(attr)s\" muss ausgefüllt werden"
-
-msgid "Either specify duration or start/end"
-msgstr ""
-
-#, python-format
-msgid "%s: You specified new values for %s but no duration"
-msgstr ""
-
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-msgid "No weekend booking allowed"
-msgstr ""
-
-msgid "Distribution: WP must be given"
-msgstr ""
-
-msgid "dist must not exceed sum of unassigned times in week"
-msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
@@ -174,7 +104,7 @@ msgid "Name Email must not be changed"
 msgstr "Name 'Email' darf nicht geändert werden"
 
 #, python-format
-msgid "New %s requires a %s"
+msgid "New %(cls)s requires a %(attr)s"
 msgstr ""
 
 #, python-format
@@ -192,6 +122,10 @@ msgstr ""
 #, python-format
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
+
+#, python-format
+msgid "%(attr)s must be set"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
 msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
@@ -222,7 +156,7 @@ msgid "Selected department has no document number"
 msgstr ""
 
 #, python-format
-msgid "Malformed %s: Only %s allowed"
+msgid "Malformed %(attr)s: Only %(name)s allowed"
 msgstr ""
 
 msgid "Change to \"released\": user must be different from change to \"draft\""
@@ -230,6 +164,10 @@ msgstr ""
 
 msgid "product_group"
 msgstr "Artikelgruppe"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -383,7 +321,7 @@ msgid "%(on)s must match for alias: %(name)s->%(a2)s"
 msgstr ""
 
 #, python-format
-msgid "Either %s or %s must be defined"
+msgid "Either %(a_alias)s or %(u_alias)s must be defined"
 msgstr ""
 
 msgid "alias_to_alias"
@@ -404,7 +342,7 @@ msgid "May not create another instance of \"%s\""
 msgstr ""
 
 #, python-format
-msgid "Invalid Status transition: %s -> %s"
+msgid "Invalid Status transition: %(o_s)s -> %(n_s)s"
 msgstr ""
 
 msgid "Responsible must change for this status change"
@@ -424,6 +362,71 @@ msgstr ""
 msgid "Change of %s requires a message"
 msgstr ""
 
+msgid "Requires change of user (support not allowed)"
+msgstr ""
+
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+msgid "No negative times are allowed"
+msgstr ""
+
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr "\"%(attr)s\" darf nicht geändert werden"
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%(date)s: You specified new values for %(attr)s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
+
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
@@ -435,7 +438,7 @@ msgid "Lunchbreak must be at least half an hour."
 msgstr ""
 
 #, python-format
-msgid "%s specified for user without %s"
+msgid "%(uid)s specified for user without %(org_loc)s"
 msgstr ""
 
 msgid "uid"
@@ -3692,13 +3695,14 @@ msgid "work_location"
 msgstr ""
 
 # python-format
-#, python-format
 msgid ""
-"<a %s title=\"Help for %s\" href=\"javascript:help_window('%s?:"
-"template=property_help#%s', '500', '400')\" tabindex=\"-1\">%s%s</a>"
+"<a %(csscls)s title=\"Help for %(label)s\" href=\"javascript:help_window"
+"('%(cls)s?:template=property_help#%(href)s', '500', '400')\" tabindex=\"-1\">"
+"%(label)s%(endswith)s</a>"
 msgstr ""
-"<a %s title=\"Hilfe zu %s\" href=\"javascript:help_window('%s?:"
-"template=property_help#%s', '500', '400')\" tabindex=\"-1\">%s%s</a>"
+"<a %(csscls)s title=\"Hilfe zu %(label)s\" href=\"javascript:help_window"
+"('%(cls)s?:template=property_help#%(href)s', '500', '400')\" tabindex=\"-1\">"
+"%(label)s%(endswith)s</a>"
 
 msgid "(cal)"
 msgstr "(Kal.)"
@@ -4282,6 +4286,9 @@ msgstr "(Rollen-Zugriffsrechte)"
 msgid "default:"
 msgstr "Voreinstellung:"
 
+msgid "max. size of picture: 100kB"
+msgstr ""
+
 msgid "new user_dynamic record"
 msgstr ""
 
@@ -4318,7 +4325,7 @@ msgid "Duplicate: %s"
 msgstr ""
 
 #, python-format
-msgid "\"%s\" loop: %s"
+msgid "\"%(prop)s\" loop: %(labels)s"
 msgstr ""
 
 #, python-format
@@ -4332,6 +4339,9 @@ msgstr "%(atname)s darf nicht länger als %(length)s Zeilen sein"
 #, python-format
 msgid "%(attr)s must not be specified"
 msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
+
+msgid "Invalid login"
+msgstr "Ungültiges login"
 
 msgid "abo_price"
 msgstr "Abo/Preis"
@@ -4544,6 +4554,9 @@ msgstr "Support Issue"
 
 msgid "customer"
 msgstr "Kunde"
+
+msgid "mailgroup"
+msgstr "Email Gruppe"
 
 msgid "cost_center_group"
 msgstr "Kostenstellengruppe"
@@ -4764,14 +4777,23 @@ msgstr "Stunde von"
 msgid "to_hour"
 msgstr "Stunde bis"
 
-msgid "lookalike_function"
-msgstr "Adresszusatz"
-
 msgid "lookalike_lastname"
 msgstr "Nachname"
 
 msgid "lookalike_firstname"
 msgstr "Vorname"
+
+msgid "maildomain"
+msgstr ""
+
+msgid "nosygroups"
+msgstr "Nosy-Gruppen"
+
+msgid "lookalike_function"
+msgstr "Adresszusatz"
+
+msgid "fromaddress"
+msgstr "Absenderadresse"
 
 msgid "amount_payed"
 msgstr "Zahlungsbetrag"
@@ -4896,6 +4918,10 @@ msgstr ""
 msgid "doc_num"
 msgstr "Dokument Nummer"
 
+msgid "customer++nosy"
+msgstr "Nosy List"
+
+
 #~ msgid "Database:"
 #~ msgstr "Datenbank:"
 
@@ -4990,9 +5016,6 @@ msgstr "Dokument Nummer"
 
 #~ msgid "Template for file names used for this %(Classname)s"
 #~ msgstr "Vorlage für Dateinamen für diese %(Classname)s"
-
-#~ msgid "Valid on"
-#~ msgstr "gültig ab"
 
 #~ msgid "\"%(attr)s\" must not be filled in"
 #~ msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"

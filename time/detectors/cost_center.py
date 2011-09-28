@@ -40,7 +40,8 @@ import common
 def new_cc (db, cl, nodeid, new_values) :
     for i in 'cost_center_group', :
         if i not in new_values :
-            raise Reject, _ ("New %s requires a %s") % (_ (cl.classname), _ (i))
+            raise Reject, _ ("New %(cls)s requires a %(attr)s") \
+                % dict (cls = _ (cl.classname), attr = _ (i))
     if 'status' not in new_values :
         try :
             new_values ['status'] = db.cost_center_status.lookup ('New')

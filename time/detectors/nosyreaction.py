@@ -34,8 +34,80 @@ except ImportError :
     pass
 
 from roundup import roundupdb, hyperdb
+from roundup.mailer import Mailer, MessageSendError, encode_quopri
 
-def nosyreaction(db, cl, nodeid, oldvalues):
+def send_non_roundup_mail (db, cls, issueid, msgid, sendto) :
+    """ Send mail to customer, don't use roundup change-email
+        (nosymessage) mechanism -- so we can set different values and
+        don't confuse the customer with roundup information.
+    """
+    cn        = cls.classname
+    msg       = db.msg.getnode (msgid)
+
+    title     = cls.get (issueid, 'title') or '%s message copy' % cn
+    subject   = '[%s%s] %s' % (cn, issueid, title)
+    charset   = getattr (db.config, 'EMAIL_CHARSET', 'utf-8')
+    fromaddr  = None
+    if 'customer' in cls.properties :
+        customer = db.customer.getnode (cls.get (issueid, 'customer'))
+        fromaddr = customer.fromaddress
+    if not fromaddr :
+        fromaddr = db.config.TRACKER_EMAIL
+    user      = db.user.getnode (msg.author)
+    authname  = user.realname or user.username or ''
+    author    = (authname, fromaddr)
+
+    m = ['']
+    m.append (msg.content or '')
+    body = unicode ('\n'.join (m), 'utf-8').encode (charset)
+
+    mailer  = Mailer (db.config)
+    message = mailer.get_standard_message \
+        (sendto, subject, author, multipart = msg.files)
+    message ['Message-Id']  = msg.messageid
+    if msg.inreplyto :
+        message ['In-Reply-To'] = msg.inreplyto
+    if msg.files :
+        part = MIMEText (body)
+        part.set_charset (charset)
+        encode_quopri (part)
+        message.attach (part)
+        for f in msg.files :
+            file = db.file.getnode (f)
+            if file.type == 'text/plain' :
+                part = MIMEText (file.content)
+                try :
+                    file.content.decode ('ascii')
+                except UnicodeError :
+                    encode_quopri (part)
+                else :
+                    part ['Content-Transfer-Encoding'] = '7bit'
+            elif file.type == 'message/rfc822' :
+                main, sub = file.type.split ('/')
+                p = FeedParser ()
+                p.feed (file.content)
+                part = MIMEBase (main, sub)
+                part.set_payload ([p.close ()])
+            else :
+                type = file.type
+                if not type :
+                    type = mimetypes.guess_type (file.name) [0]
+                if type is None :
+                    type = 'application/octet-stream'
+                main, sub = type.split ('/')
+                part = MIMEBase (main, sub)
+                part.set_payload (file.content)
+                Encoders.encode_base64 (part)
+            cd = 'Content-Disposition'
+            part [cd] = 'attachment;\n filename="%s"' % file.name
+            message.attach (part)
+    else :
+        message.set_payload (body)
+        encode_quopri (message)
+    mailer.smtp_send (sendto, message.as_string ())
+# end def send_non_roundup_mail
+
+def nosyreaction(db, cl, nodeid, oldvalues) :
     ''' A standard detector is provided that watches for additions to the
         "messages" property.
 
@@ -61,7 +133,9 @@ def nosyreaction(db, cl, nodeid, oldvalues):
                 if rcc :
                     for rn, mail in getaddresses (rcc) :
                         cc_emails.append (mail)
-            cl.nosymessage(nodeid, msgid, oldvalues, cc_emails = cc_emails)
+            cl.nosymessage(nodeid, msgid, oldvalues)
+            if cc_emails :
+                send_non_roundup_mail (db, cl, nodeid, msgid, cc_emails)
         except roundupdb.MessageSendError, message :
             raise roundupdb.DetectorError, message
 

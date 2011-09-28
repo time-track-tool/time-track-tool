@@ -100,8 +100,8 @@ def common_user_checks (db, cl, nodeid, new_values) :
         common.check_unique (_, cl, nodeid, nickname = new_values ['username'])
     if 'uid' in new_values and new_values ['uid'] :
         if not olo :
-            raise Reject, _("%s specified for user without %s") \
-                % (_('uid'), _('org_location'))
+            raise Reject, _("%(uid)s specified for user without %(org_loc)s") \
+                % dict (uid = _('uid'), org_loc = _('org_location'))
         uid     = new_values ['uid']
         uidname = _ ('uid')
         id  = db.org_location.get (olo, 'smb_domain')
