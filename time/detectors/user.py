@@ -27,7 +27,10 @@ from roundup.exceptions             import Reject
 
 import common
 import rup_utils
-import ldap_sync
+try :
+    import ldap_sync
+except ImportError :
+    ldap_sync = None
 from user_dynamic                   import get_user_dynamic, last_user_dynamic
 
 def common_user_checks (db, cl, nodeid, new_values) :
@@ -322,5 +325,5 @@ def init (db) :
     db.user.audit("retire", check_retire)
     db.user.audit("set"   , obsolete_action)
     # ldap sync only on set not create (!)
-    if ldap_sync.check_ldap_config (db) :
+    if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
