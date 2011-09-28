@@ -13,4 +13,4 @@ try :
     # end def init
 except ImportError :
     def init (instance) :
-        pass
+        instance.registerUtil ('sync_from_ldap', None)
