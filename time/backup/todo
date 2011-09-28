@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 TRACKER=/var/lib/tracker/todo
 BACKUPDIR=/var/lib/tracker/backup/todo
@@ -20,7 +20,16 @@ ROUNDUP_ADMIN=/usr/local/bin/roundup-admin
 RESTORE=/var/lib/tracker/todo_restore
 RESTOREPW="xyzzy"
 
-if [ ${TRACKER} == ${RESTORE} ] ; then
+if [ ${TRACKER} = ${RESTORE} ] ; then
+    echo "READ COMMENTS. You don't want to overwrite your tracker?!"
+    exit 42
+fi
+
+RESTOREDBNAME=$(${RESTORE}/utils/getdbname ${RESTORE})
+TRACKERDBNAME=$(${TRACKER}/utils/getdbname ${TRACKER})
+
+if [ "${TRACKERDBNAME}" = "${RESTOREDBNAME}" ] ; then
+    echo "tracker and restore DB configured to use same database"
     echo "READ COMMENTS. You don't want to overwrite your tracker?!"
     exit 42
 fi

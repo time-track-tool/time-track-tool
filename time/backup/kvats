@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 TRACKER=/var/www/web10/roundup/kvats
 BACKUPDIR=/var/www/web10/roundup/backup/kvats

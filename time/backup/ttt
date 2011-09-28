@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 TRACKER=/roundup/tracker/ttt
 BACKUPDIR=/roundup/backup
