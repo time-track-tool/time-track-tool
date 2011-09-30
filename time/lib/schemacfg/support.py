@@ -91,6 +91,7 @@ def init \
         , nosygroups       = Multilink ("mailgroup")
         , maildomain       = String    ()
         , fromaddress      = String    ()
+        , confidential     = Boolean   ()
         )
     customer.setkey ("name")
 
@@ -99,6 +100,7 @@ def init \
         , ''"mailgroup"
         , name             = String    ()
         , nosy             = Multilink ("user")
+        , default_nosy     = Boolean   ()
         )
     mailgroup.setkey ("name")
 

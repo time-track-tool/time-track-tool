@@ -44,7 +44,7 @@ from roundup                        import roundupdb, hyperdb
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-from common                         import user_has_role, require_attributes
+import common
 
 def new_support (db, cl, nodeid, new_values) :
     closed = db.sup_status.lookup ('closed')
@@ -63,7 +63,7 @@ def new_support (db, cl, nodeid, new_values) :
 # end def new_support
 
 def check_support (db, cl, nodeid, new_values) :
-    require_attributes \
+    common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'title', 'category', 'status', 'prio', 'responsible'
         )
@@ -109,17 +109,37 @@ def header_utf8 (header) :
     return (''.join (result)).encode ('utf-8')
 # end def header_utf8
 
-def find_or_create_contact (db, mail, rn, customer = None) :
+def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
     cemail = db.contact_type.lookup ('Email')
     sdict  = dict (contact_type = cemail, contact = mail)
+    sdict ['customer.is_valid'] = True
     for c in db.contact.filter (None, sdict) :
+        cont = db.contact.getnode (c)
+        cust = db.customer.getnode (cont.customer)
         # filter uses substring match for strings
-        if db.contact.get (c, 'contact') == mail :
+        if cont.contact == mail and cust.is_valid :
             return c
-    rn   = header_utf8 (rn)
+    md    = mail.split ('@') [-1]
+    # this also tries subdomains, e.g., country.example.com for the
+    # incoming mail will be matched by example.com as the customer mail.
+    # Note that we don't allow toplevel domains for the customer (e.g.
+    # .com).
+    while '.' in md and not customer :
+        sdict = dict (is_valid = True, maildomain = md)
+        for cu in db.customer.filter (None, sdict) :
+            cust = db.customer.getnode (cu)
+            if cust.maildomain == md :
+                customer = cu
+                break
+        md = md.split ('.', 1) [1]
+    rn = header_utf8 (rn)
     if not customer :
-        customer = db.customer.create (name = ' '.join ((rn, mail)))
-    c    = db.contact.create \
+        customer = db.customer.create \
+            ( name        = ' '.join ((rn, mail))
+            , fromaddress = frm
+            , maildomain  = mail.split ('@') [-1]
+            )
+    c = db.contact.create \
         ( contact_type = cemail
         , contact      = mail
         , customer     = customer
@@ -182,7 +202,10 @@ def header_check (db, cl, nodeid, new_values) :
                 # use only first 'From' address (there shouldn't be more)
                 rn, mail = getaddresses (frm) [0]
                 sdict = dict (contact_type = cemail, contact = mail)
-                c     = find_or_create_contact (db, mail, rn)
+                # the from address in this mail is the support user we
+                # want as a from-address for future mails *to* this user
+                autad = db.user.get (msg.author, 'address')
+                c     = find_or_create_contact (db, mail, rn, frm = autad)
                 new_values ['customer'] = db.contact.get (c, 'customer')
                 new_values ['emails']   = [c]
         else :
@@ -208,15 +231,15 @@ def check_require_message (db, cl, nodeid, new_values) :
             raise Reject, _ ("Change of %s requires a message") % _ (prop)
 # end def check_require_message
 
-def check_responsible_not_support (db, cl, nodeid, new_values) :
+def check_resp_not_support (db, cl, nodeid, new_values) :
     sup = db.user.lookup ('support')
     rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
     if rsp == sup :
         raise Reject, _ ("Requires change of user (support not allowed)")
-# end def check_responsible_not_support
+# end def check_resp_not_support
 
 def remove_support_from_nosy (db, cl, nodeid, new_values) :
-    """Remove user "support" from nosy list if setting to confidential.
+    """ Remove user "support" from nosy list if setting to confidential.
     """
     conf = new_values.get ('confidential', cl.get (nodeid, 'confidential'))
     nosy = new_values.get ('nosy',         cl.get (nodeid, 'nosy'))
@@ -227,6 +250,83 @@ def remove_support_from_nosy (db, cl, nodeid, new_values) :
         new_values ['nosy'] = nosy.keys ()
 # end def remove_support_from_nosy
 
+def initial_props (db, cl, nodeid, new_values) :
+    """ Initial properties of support issue copied from customer.
+        Fix initial nosy list: include nosy and nosygroups from the
+        customer (if available).
+        Make issue condidential if customer has confidential flag
+    """
+    cust = new_values.get ('customer', None)
+    if not cust :
+        return
+    cust = db.customer.getnode (cust)
+    nosy = dict.fromkeys (new_values.get ('nosy', []))
+    if cust.nosy :
+        for k in cust.nosy :
+            nosy [k] = 1
+    if cust.nosygroups :
+        for g in cust.nosygroups :
+            grp = db.mailgroup.getnode (g)
+            for k in grp.nosy :
+                nosy [k] = 1
+    new_values ['nosy'] = nosy.keys ()
+    if 'confidential' not in new_values :
+        if cust.confidential :
+            new_values ['confidential'] = True
+        else :
+            new_values ['confidential'] = False
+# end def initial_props
+
+def new_customer (db, cl, nodeid, new_values) :
+    """ Some initial values for a new customer
+    """
+    support = db.user.lookup ('support')
+    if 'nosy' not in new_values and 'nosygroups' not in new_values :
+        ngs = db.mailgroup.filter (None, dict (default_nosy = True))
+        if (ngs) :
+            new_values ['nosygroups'] = ngs
+        if 'nosygroups' not in new_values :
+            new_values ['nosy'] = [support]
+    if 'fromaddress' not in new_values :
+        new_values ['fromaddress'] = db.user.get (support, 'address')
+    if 'confidential' not in new_values :
+        new_values ['confidential'] = False
+    if 'is_valid' not in new_values :
+        new_values ['is_valid'] = True
+# end def new_customer
+
+def check_maildomain (db, cl, nodeid, new_values) :
+    """ Delete maildomain if setting customer to invalid.
+        Otherwise check that maildomain isn't a duplicate and is
+        wellformed.
+    """
+    ovalid = None
+    if nodeid :
+        ovalid = cl.get (nodeid, 'is_valid')
+    valid = new_values.get ('is_valid', ovalid)
+    if not valid :
+        new_values ['maildomain'] = None
+    md = new_values.get ('maildomain', None)
+    if not md :
+        return
+    if '.' not in md :
+        raise Reject, \
+            _ ('Toplevel domain "%(maildomain)s" not allowed, '
+               'must contain "."'
+              ) \
+            % dict (maildomain = _ ('maildomain'))
+    common.check_unique (_, cl, nodeid, maildomain = md)
+# end def check_maildomain
+
+def check_retire (db, cl, nodeid, old_values) :
+    if not cl.get (nodeid, 'is_valid') :
+        cl.retire (nodeid)
+# end def check_retire
+
+def check_mailgroup (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'nosy')
+# end def check_mailgroup
+
 def init (db) :
     if 'support' not in db.classes :
         return
@@ -234,14 +334,23 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.support.audit ("set",    check_responsible_not_support, priority = 20)
-    db.support.audit ("create", new_support,                   priority = 50)
-    db.support.audit ("set",    check_support,                 priority = 40)
-    db.support.audit ("create", audit_superseder)
-    db.support.audit ("set",    audit_superseder)
-    db.support.audit ("set",    check_closed,                  priority = 200)
-    db.support.audit ("set",    check_require_message,         priority = 200)
-    db.support.audit ("create", header_check,                  priority = 200)
-    db.support.audit ("set",    header_check,                  priority = 200)
-    db.support.audit ("set",    remove_support_from_nosy,      priority = 300)
+    db.support.audit   ("set",    check_resp_not_support,   priority = 20)
+    db.support.audit   ("create", new_support,              priority = 50)
+    db.support.audit   ("set",    check_support,            priority = 40)
+    db.support.audit   ("create", audit_superseder)
+    db.support.audit   ("set",    audit_superseder)
+    db.support.audit   ("set",    check_closed,             priority = 200)
+    db.support.audit   ("set",    check_require_message,    priority = 200)
+    db.support.audit   ("create", header_check,             priority = 200)
+    db.support.audit   ("set",    header_check,             priority = 200)
+    db.support.audit   ("create", initial_props,            priority = 300)
+    db.support.audit   ("set",    remove_support_from_nosy, priority = 300)
+
+    db.customer.audit  ("create", new_customer,             priority = 90)
+    db.customer.audit  ("create", check_maildomain)
+    db.customer.audit  ("set",    check_maildomain,         priority = 150)
+    db.customer.react  ("set",    check_retire)
+
+    db.mailgroup.audit ("create", check_mailgroup)
+    db.mailgroup.audit ("set",    check_mailgroup)
 # end def init

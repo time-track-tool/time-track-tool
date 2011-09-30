@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-09-28 18:19+0200\n"
+"POT-Creation-Date: 2011-09-29 15:35+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -363,6 +363,13 @@ msgid "Change of %s requires a message"
 msgstr ""
 
 msgid "Requires change of user (support not allowed)"
+msgstr ""
+
+#, python-format
+msgid "Toplevel domain \"%(maindomain)s\" not allowed, must contain \".\""
+msgstr ""
+
+msgid "maildomain"
 msgstr ""
 
 msgid "start and end must be on same day and start <= end."
@@ -1098,7 +1105,10 @@ msgid "composed_of.id"
 msgstr ""
 
 msgid "confidential"
-msgstr ""
+msgstr "vertraulich"
+
+msgid "customer++confidential"
+msgstr "vertraulich"
 
 msgid ""
 "If set, %(Classname)s is visible only to users on the nosy\n"
@@ -1214,6 +1224,16 @@ msgstr "Kundenstatus"
 
 msgid "customer_type"
 msgstr "Kundentyp"
+
+msgid "customer++nosy"
+msgstr "Nosy List"
+
+#, fuzzy
+msgid ""
+"Nosy list to use for new support issues from this\n"
+"            %(Classname)s\n"
+"         "
+msgstr "Issues die zu diesem %(Classname)s zugeordnet sind"
 
 msgid "cut_off_date"
 msgstr ""
@@ -1650,6 +1670,16 @@ msgid ""
 "             entry for %(Property)s shall look like::\n"
 "\n"
 "               TTP-OS 4.5.23\n"
+"          "
+msgstr ""
+
+msgid "fromaddress"
+msgstr "Absenderadresse"
+
+msgid ""
+"Address in outgoing emails to which the %(Classname)s can reply.\n"
+"             The email address provided must be one of the email\n"
+"             addresses of the roundup tracker.\n"
 "          "
 msgstr ""
 
@@ -2127,6 +2157,14 @@ msgstr ""
 msgid "Allowed range of user ids for machines"
 msgstr ""
 
+msgid ""
+"Mail domain of the %(Classname)s. If there is no match for\n"
+"            an incoming support email, the mail domains are tried with\n"
+"            the username part of the email removed. If matched, the new\n"
+"            issue is associated with the customer.\n"
+"         "
+msgstr ""
+
 msgid "manager"
 msgstr ""
 
@@ -2310,6 +2348,15 @@ msgstr "Verteiler"
 
 msgid "People receiving announcements (messages) for %(Classname)s"
 msgstr "Personen die Ankündigungen (Notizen) zu %(Classname)s erhalten"
+
+msgid "nosygroups"
+msgstr "Nosy-Gruppen"
+
+msgid ""
+"Group(s) of nosy lists to use for new support issues from\n"
+"            this %(Classname)s\n"
+"         "
+msgstr ""
 
 msgid "numeric_effort"
 msgstr ""
@@ -3695,6 +3742,7 @@ msgid "work_location"
 msgstr ""
 
 # python-format
+#, python-format
 msgid ""
 "<a %(csscls)s title=\"Help for %(label)s\" href=\"javascript:help_window"
 "('%(cls)s?:template=property_help#%(href)s', '500', '400')\" tabindex=\"-1\">"
@@ -4783,17 +4831,11 @@ msgstr "Nachname"
 msgid "lookalike_firstname"
 msgstr "Vorname"
 
-msgid "maildomain"
-msgstr ""
-
-msgid "nosygroups"
-msgstr "Nosy-Gruppen"
-
 msgid "lookalike_function"
 msgstr "Adresszusatz"
 
-msgid "fromaddress"
-msgstr "Absenderadresse"
+msgid "default_nosy"
+msgstr "Standardverteiler:"
 
 msgid "amount_payed"
 msgstr "Zahlungsbetrag"
@@ -4917,10 +4959,6 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
-
-msgid "customer++nosy"
-msgstr "Nosy List"
-
 
 #~ msgid "Database:"
 #~ msgstr "Datenbank:"

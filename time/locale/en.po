@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-09-28 18:19+0200\n"
+"POT-Creation-Date: 2011-09-29 15:35+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -360,6 +360,13 @@ msgstr ""
 
 msgid "Requires change of user (support not allowed)"
 msgstr ""
+
+#, python-format
+msgid "Toplevel domain \"%(maindomain)s\" not allowed, must contain \".\""
+msgstr ""
+
+msgid "maildomain"
+msgstr "Email domain"
 
 msgid "start and end must be on same day and start <= end."
 msgstr ""
@@ -1072,6 +1079,9 @@ msgstr "Composed of (id)"
 msgid "confidential"
 msgstr ""
 
+msgid "customer++confidential"
+msgstr "confidential"
+
 msgid ""
 "If set, %(Classname)s is visible only to users on the nosy\n"
 "             list (note that the stakeholder and the responsible person\n"
@@ -1183,6 +1193,15 @@ msgstr "Customer Status"
 
 msgid "customer_type"
 msgstr "Customer type"
+
+msgid "customer++nosy"
+msgstr "Nosy List"
+
+msgid ""
+"Nosy list to use for new support issues from this\n"
+"            %(Classname)s\n"
+"         "
+msgstr ""
 
 msgid "cut_off_date"
 msgstr "Cut-off Date"
@@ -1614,6 +1633,16 @@ msgid ""
 "             entry for %(Property)s shall look like::\n"
 "\n"
 "               TTP-OS 4.5.23\n"
+"          "
+msgstr ""
+
+msgid "fromaddress"
+msgstr "From-Address"
+
+msgid ""
+"Address in outgoing emails to which the %(Classname)s can reply.\n"
+"             The email address provided must be one of the email\n"
+"             addresses of the roundup tracker.\n"
 "          "
 msgstr ""
 
@@ -2077,6 +2106,14 @@ msgstr "UIDs for machines"
 msgid "Allowed range of user ids for machines"
 msgstr ""
 
+msgid ""
+"Mail domain of the %(Classname)s. If there is no match for\n"
+"            an incoming support email, the mail domains are tried with\n"
+"            the username part of the email removed. If matched, the new\n"
+"            issue is associated with the customer.\n"
+"         "
+msgstr ""
+
 msgid "manager"
 msgstr "Manager"
 
@@ -2255,13 +2292,19 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "customer++nosy"
-msgstr "Nosy List"
-
 msgid "nosy"
 msgstr "Nosy List"
 
 msgid "People receiving announcements (messages) for %(Classname)s"
+msgstr ""
+
+msgid "nosygroups"
+msgstr "Nosy groups"
+
+msgid ""
+"Group(s) of nosy lists to use for new support issues from\n"
+"            this %(Classname)s\n"
+"         "
 msgstr ""
 
 msgid "numeric_effort"
@@ -4704,17 +4747,11 @@ msgstr "Last name"
 msgid "lookalike_firstname"
 msgstr "First name"
 
-msgid "maildomain"
-msgstr "Email domain"
-
-msgid "nosygroups"
-msgstr "Nosy groups"
-
 msgid "lookalike_function"
 msgstr "Address details"
 
-msgid "fromaddress"
-msgstr "From-Address"
+msgid "default_nosy"
+msgstr "Default nosy list"
 
 msgid "amount_payed"
 msgstr ""

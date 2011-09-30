@@ -130,6 +130,11 @@
                (classname, 'fromaddress')" />
       <td tal:content="structure context/fromaddress/field"/>
      </tr>
+     <tr tal:condition="python:'confidential' in props">
+      <th tal:content="structure python:utils.fieldname
+               (classname, 'confidential')" />
+      <td tal:content="structure context/confidential/field"/>
+     </tr>
      <tr tal:condition="python:'salutation' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'salutation')"/>
