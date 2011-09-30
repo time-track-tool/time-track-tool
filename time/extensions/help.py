@@ -72,13 +72,6 @@ default_hidden     = \
     ""'''Is hidden by default except for HR and office, except if the
          user explicitly allows the number being visible.
       '''
-default_nosy       = \
-    ""'''If this flag is selected, a new customer created without a nosy
-         list and without a nosy group will get this mail group as its
-         nosy group. If several mail groups have this flag, all will be
-         inherited by a new customer without specified nosy and nosy
-         groups.
-      '''
 durations          = \
     ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 explicit           = \
@@ -403,6 +396,14 @@ _helptext          = \
       [deadline]
     , ""'default_lease_time'          :
       [""'''Default DHCP lease time for %(Classname)s''']
+    , ""'default_nosy'                :
+      [""'''If this flag is selected, a new customer created without a nosy
+            list and without a nosy group will get this mail group as
+            its nosy group. If several mail groups have this flag, all
+            will be inherited by a new customer without specified nosy
+            and nosy groups.
+         '''
+      ]
     , ""'default_part_of'             :
       [""'''When a new issue is created with %(Classname)s set, but 'Part of'
             not set, then '%(Property)s' will be used as the default 'Part of'.

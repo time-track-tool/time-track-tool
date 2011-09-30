@@ -58,8 +58,6 @@ def new_support (db, cl, nodeid, new_values) :
         new_values ['responsible'] = db.user.lookup ('support')
     if 'prio'         not in new_values :
         new_values ['prio'] = db.sup_prio.lookup ('unknown')
-    if 'confidential' not in new_values :
-        new_values ['confidential'] = 0
 # end def new_support
 
 def check_support (db, cl, nodeid, new_values) :
@@ -234,7 +232,7 @@ def check_require_message (db, cl, nodeid, new_values) :
 def check_resp_not_support (db, cl, nodeid, new_values) :
     sup = db.user.lookup ('support')
     rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
-    if rsp == sup :
+    if rsp == sup and ('status' in new_values or 'prio' in new_values) :
         raise Reject, _ ("Requires change of user (support not allowed)")
 # end def check_resp_not_support
 
@@ -254,7 +252,7 @@ def initial_props (db, cl, nodeid, new_values) :
     """ Initial properties of support issue copied from customer.
         Fix initial nosy list: include nosy and nosygroups from the
         customer (if available).
-        Make issue condidential if customer has confidential flag
+        Make issue confidential if customer has confidential flag
     """
     cust = new_values.get ('customer', None)
     if not cust :
