@@ -68,6 +68,7 @@
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
              " use_labelprop       python:0
+             ; has_resp            python:0
              ; msg_box_height      python:4
              ; required_attributes python:
                ['country','']
@@ -134,6 +135,14 @@
       <th tal:content="structure python:utils.fieldname
                (classname, 'confidential')" />
       <td tal:content="structure context/confidential/field"/>
+     </tr>
+     <tr tal:condition="python:'responsible' in props">
+      <th tal:content="structure python:utils.fieldname
+               (classname, 'responsible')" />
+      <td>
+       <tal:block tal:replace="structure context/responsible/field"/>
+       <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
+      </td>
      </tr>
      <tr tal:condition="python:'salutation' in props">
       <th tal:content="structure python:utils.fieldname

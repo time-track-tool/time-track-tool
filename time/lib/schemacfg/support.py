@@ -92,6 +92,7 @@ def init \
         , maildomain       = String    ()
         , fromaddress      = String    ()
         , confidential     = Boolean   ()
+        , responsible      = Link      ("user")
         )
     customer.setkey ("name")
 

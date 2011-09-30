@@ -54,8 +54,6 @@ def new_support (db, cl, nodeid, new_values) :
         new_values ['status'] = db.sup_status.lookup ('open')
     if 'category'     not in new_values :
         new_values ['category'] = '1'
-    if 'responsible'  not in new_values :
-        new_values ['responsible'] = db.user.lookup ('support')
     if 'prio'         not in new_values :
         new_values ['prio'] = db.sup_prio.lookup ('unknown')
 # end def new_support
@@ -232,7 +230,7 @@ def check_require_message (db, cl, nodeid, new_values) :
 def check_resp_not_support (db, cl, nodeid, new_values) :
     sup = db.user.lookup ('support')
     rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
-    if rsp == sup and ('status' in new_values or 'prio' in new_values) :
+    if rsp == sup and ('status' in new_values or 'confidential' in new_values) :
         raise Reject, _ ("Requires change of user (support not allowed)")
 # end def check_resp_not_support
 
@@ -253,9 +251,13 @@ def initial_props (db, cl, nodeid, new_values) :
         Fix initial nosy list: include nosy and nosygroups from the
         customer (if available).
         Make issue confidential if customer has confidential flag
+        Fix responsible
     """
     cust = new_values.get ('customer', None)
+    supp = db.user.lookup ('support')
     if not cust :
+        if 'responsible' not in new_values :
+            new_values ['responsible'] = supp
         return
     cust = db.customer.getnode (cust)
     nosy = dict.fromkeys (new_values.get ('nosy', []))
@@ -273,6 +275,8 @@ def initial_props (db, cl, nodeid, new_values) :
             new_values ['confidential'] = True
         else :
             new_values ['confidential'] = False
+    if 'responsible' not in new_values :
+        new_values ['responsible'] = cust.responsible or supp
 # end def initial_props
 
 def new_customer (db, cl, nodeid, new_values) :

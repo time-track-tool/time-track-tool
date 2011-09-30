@@ -235,8 +235,14 @@ def updatenosy(db, cl, nodeid, newvalues):
         msg = db.msg
         for msgid in messages:
             if add_author in ok:
+                # don't add system users (!)
                 authid = msg.get(msgid, 'author')
-                current[authid] = 1
+                is_system = False
+                if 'status' in db.user.properties :
+                    system = db.user_status.lookup ('system')
+                    is_system = system == db.user.get (authid, 'status')
+                if not is_system :
+                    current[authid] = 1
 
             # add on the recipients of the message
             if add_recips in ok:
