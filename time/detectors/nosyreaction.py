@@ -28,8 +28,10 @@
 
 try :
     # fail at runtime if these are used
-    from email.utils  import getaddresses
-    from email.parser import Parser
+    from email.utils    import getaddresses
+    from email.parser   import Parser
+    from email.MIMEBase import MIMEBase
+    from email.MIMEText import MIMEText
 except ImportError :
     pass
 
@@ -63,7 +65,7 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto) :
 
     mailer  = Mailer (db.config)
     message = mailer.get_standard_message \
-        (sendto, subject, author, multipart = msg.files)
+        (sendto, subject, author, multipart = bool (msg.files))
     message ['Message-Id']  = msg.messageid
     if msg.inreplyto :
         message ['In-Reply-To'] = msg.inreplyto
