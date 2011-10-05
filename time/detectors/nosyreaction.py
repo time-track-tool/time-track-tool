@@ -28,6 +28,7 @@
 
 try :
     # fail at runtime if these are used
+    from email          import Encoders
     from email.utils    import getaddresses
     from email.parser   import Parser
     from email.MIMEBase import MIMEBase
