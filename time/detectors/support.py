@@ -211,9 +211,13 @@ def header_check (db, cl, nodeid, new_values) :
                     mails = new_values ['emails']
                 elif nodeid :
                     mails = cl.get (nodeid, 'emails')
-                if mails :
-                    mails = (db.contact.get (x, 'contact') for x in mails)
-                    h.add_header ('X-ROUNDUP-CC', ','.join (mails))
+                if not mails :
+                    raise Reject, \
+                        _ ("Trying to send to customer without "
+                           "configured contact-email for customer"
+                          )
+                mails = (db.contact.get (x, 'contact') for x in mails)
+                h.add_header ('X-ROUNDUP-CC', ','.join (mails))
         h = h.as_string ()
         if h != '\n' and h != msg.header :
             db.msg.set (m, header = h)
