@@ -297,8 +297,7 @@ def new_customer (db, cl, nodeid, new_values) :
         new_values ['fromaddress'] = db.user.get (support, 'address')
     if 'confidential' not in new_values :
         new_values ['confidential'] = False
-    if 'is_valid' not in new_values :
-        new_values ['is_valid'] = True
+    new_values ['is_valid'] = True
 # end def new_customer
 
 def check_maildomain (db, cl, nodeid, new_values) :

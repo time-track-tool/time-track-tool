@@ -116,7 +116,7 @@
           class="required"/>
       <td tal:content="structure context/name/field"/>
      </tr>
-     <tr tal:condition="python:'is_valid' in props">
+     <tr tal:condition="python:'is_valid' in props and context.id">
       <th tal:content="structure python:utils.fieldname (classname, 'is_valid')"
           class="required"/>
       <td tal:content="structure context/is_valid/field"/>
@@ -479,7 +479,8 @@
      <tr tal:condition="python:'nosygroups' in props">
       <th tal:content="structure python:utils.fieldname
                (classname, 'nosygroups')" />
-      <td tal:content="structure python:context.nosygroups.menu (height = 3)"/>
+      <td tal:content="structure python:context.nosygroups.menu
+        (height = 3, translate = False)"/>
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="formatted_class_listentry">
