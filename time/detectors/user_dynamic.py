@@ -304,7 +304,7 @@ def close_existing (db, cl, nodeid, old_values) :
 # end def close_existing
 
 def overtime_check (db, cl, nodeid, new_values) :
-    require_attributes (_, cl, nodeid, new_values, 'name', 'weekly', 'months')
+    require_attributes (_, cl, nodeid, new_values, 'name')
     months = new_values ['months'] = int (new_values ['months'])
     weekly = new_values ['weekly']
     same   = cl.filter (None, dict (months = months, weekly = weekly))

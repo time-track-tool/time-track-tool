@@ -55,9 +55,15 @@ properties = \
         ]
       )
     , ( 'customer'
-      , [ 'contacts'
+      , [ 'confidential'
+        , 'contacts'
+        , 'fromaddress'
         , 'is_valid'
+        , 'maildomain'
         , 'name'
+        , 'nosy'
+        , 'nosygroups'
+        , 'responsible'
         ]
       )
     , ( 'daily_record'
@@ -241,6 +247,12 @@ properties = \
         , 'country'
         , 'domain_part'
         , 'name'
+        ]
+      )
+    , ( 'mailgroup'
+      , [ 'default_nosy'
+        , 'name'
+        , 'nosy'
         ]
       )
     , ( 'msg'

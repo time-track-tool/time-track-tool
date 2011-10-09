@@ -102,10 +102,11 @@ class _Test_Case (unittest.TestCase) :
         , 'logger'
         , 'nosy'
         , 'office'
+        , 'pgp'
         , 'product'
         , 'project'
         , 'project_view'
-        , 'support'
+        , 'supportadmin'
         , 'type'
         , 'user'
         ))
@@ -254,7 +255,9 @@ class _Test_Case (unittest.TestCase) :
                     if self.db.security.hasSearchPermission (uid, cl, p) :
                         pusers.append (user)
                 perms.append (('.'.join ((cl, p)), pusers))
-        self.assertEqual (self.transprop_perms, perms)
+        for a, b in zip (self.transprop_perms, perms):
+            self.assertEqual (a, b)
+        self.assertEqual (len (self.transprop_perms), len (perms))
     # end def test_4_transprops
 
     def create_test_users (self) :
@@ -292,7 +295,7 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
         , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
-        , 'office', 'project', 'project_view', 'support', 'type', 'user'
+        , 'office', 'project', 'project_view', 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -302,7 +305,7 @@ class Test_Case_Timetracker (_Test_Case) :
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling'
         , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
-        , 'office', 'project', 'project_view', 'support', 'user'
+        , 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user'
         ]
     transprop_perms = transprop_full
 

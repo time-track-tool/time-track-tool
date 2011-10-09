@@ -135,9 +135,11 @@ Role "it":
  User is allowed to create it_category (Create for "it_category" only)
  User is allowed to create it_issue (Create for "it_issue" only)
  User is allowed to create it_project (Create for "it_project" only)
+ User is allowed to create mailgroup (Create for "mailgroup" only)
  User is allowed to edit it_category (Edit for "it_category" only)
  User is allowed to edit it_issue (Edit for "it_issue" only)
  User is allowed to edit it_project (Edit for "it_project" only)
+ User is allowed to edit mailgroup (Edit for "mailgroup" only)
  User may manipulate user Roles through the web (Web Roles)
 Role "itview":
  User is allowed to access it_issue (View for "it_issue" only)
@@ -159,6 +161,7 @@ Role "office":
  User is allowed to create uc_type (Create for "uc_type" only)
  User is allowed to edit room (Edit for "room" only)
  User is allowed to edit uc_type (Edit for "uc_type" only)
+Role "pgp":
 Role "project":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
@@ -173,15 +176,18 @@ Role "project":
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
-Role "support":
+Role "supportadmin":
  User is allowed to access contact (View for "contact" only)
  User is allowed to access customer (View for "customer" only)
+ User is allowed to access mailgroup (View for "mailgroup" only)
  User is allowed to access support (View for "support" only)
  User is allowed to create contact (Create for "contact" only)
  User is allowed to create customer (Create for "customer" only)
+ User is allowed to create mailgroup (Create for "mailgroup" only)
  User is allowed to create support (Create for "support" only)
  User is allowed to edit contact (Edit for "contact" only)
  User is allowed to edit customer (Edit for "customer" only)
+ User is allowed to edit mailgroup (Edit for "mailgroup" only)
  User is allowed to edit support (Edit for "support" only)
 Role "user":
   (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'work_location', 'op_project', 'id', 'is_public_holiday', 'creation', 'creator', 'activity', 'actor', 'cost_center') only)
@@ -222,6 +228,7 @@ Role "user":
  User is allowed to access keyword (View for "keyword" only)
  User is allowed to access kind (View for "kind" only)
  User is allowed to access location (View for "location" only)
+ User is allowed to access mailgroup (View for "mailgroup" only)
  User is allowed to access msg_keyword (View for "msg_keyword" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
