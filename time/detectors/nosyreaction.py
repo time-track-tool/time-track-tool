@@ -65,8 +65,8 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto) :
     body = unicode ('\n'.join (m), 'utf-8').encode (charset)
 
     mailer  = Mailer (db.config)
-    message = mailer.get_standard_message \
-        (sendto, subject, author, multipart = bool (msg.files))
+    message = mailer.get_standard_message (multipart = bool (msg.files))
+    mailer.set_message_attributes (message, sendto, subject, author)
     message ['Message-Id']  = msg.messageid
     if msg.inreplyto :
         message ['In-Reply-To'] = msg.inreplyto
