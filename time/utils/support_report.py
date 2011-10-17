@@ -38,10 +38,12 @@ from common import user_has_role
 tracker = instance.open (opt.dir)
 db      = tracker.open ('admin')
 
-stati   = [db.sup_status.lookup (x) for x in ('open',)]
-sissues = db.support.filter (None, dict (status=stati), sort=('+', 'creation'))
+stati   = [db.sup_status.lookup (x) for x in ('open', 'customer')]
+sissues = db.support.filter \
+    (None, dict (status=stati), sort=[('+', 'status'), ('+', 'creation')])
 sowner  = db.user.lookup ('support')
 valid   = db.user_status.lookup ('valid')
+status  = dict ((k, db.sup_status.get (k, 'name')) for k in stati)
 
 unassigned = []
 todo       = []
@@ -52,20 +54,22 @@ for i in sissues :
     else :
         todo.append (sissue)
 
-format = '%5s %s %-60s'
+format = '%5s %-8s %s %-54s'
 m = []
 if unassigned :
     m.append ('Unassigned Support Issues:')
-    m.append ('Issue Date       Title')
+    m.append ('Issue Status   Date       Title')
     for i in unassigned :
-        m.append (format % (i.id, i.creation.pretty ('%Y-%m-%d'), i.title))
+        pdate = i.creation.pretty ('%Y-%m-%d')
+        m.append (format % (i.id, status [i.status], pdate, i.title))
 if todo :
     if m :
         m.append ('')
-    m.append ('Open Support Issues:')
-    m.append ('Issue Date       Title')
+    m.append ('open/customer Support Issues:')
+    m.append ('Issue Status   Date       Title')
     for i in todo :
-        m.append (format % (i.id, i.creation.pretty ('%Y-%m-%d'), i.title))
+        pdate = i.creation.pretty ('%Y-%m-%d')
+        m.append (format % (i.id, status [i.status], pdate, i.title))
 m = '\n'.join (m)
 
 
