@@ -458,7 +458,7 @@ class ExtProperty :
     def menu (self) :
         """ Render as menu if condition, otherwise formatlink to prop """
         if self.editable :
-            return self.prop.menu ()
+            return self.prop.menu (translate=False)
         return self.deref ().formatlink ()
     # end def menu
 
@@ -489,7 +489,7 @@ class ExtProperty :
                            )
                         )
                     ))
-            return prop.menu (height=5)
+            return prop.menu (height=5, translate=False)
         try :
             return prop.field (size=self.fieldwidth)
         except TypeError :

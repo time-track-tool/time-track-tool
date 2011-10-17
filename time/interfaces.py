@@ -11,7 +11,7 @@ class parsedMessage (roundup.mailgw.parsedMessage, autosuper) :
             ) :
             msgid = self.props ['messages'][-1]
             self.db.msg.set (msgid, header = ''.join (self.message.headers))
-    # end def get_headers
+    # end def create_msg
 # end class parsedMessage
 
 class MailGW (roundup.mailgw.MailGW) :
