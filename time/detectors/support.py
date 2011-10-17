@@ -332,6 +332,19 @@ def check_mailgroup (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'nosy')
 # end def check_mailgroup
 
+def set_status (db, cl, nodeid, new_values) :
+    """ Set status to open if changing user is a system user
+        and the status isn't set explicitly and we have a message
+    """
+    system  = db.user_status.lookup ('system')
+    ustatus = db.user.get (db.getuid (), 'status')
+    if  (   'status' not in new_values
+        and ustatus == system
+        and 'messages' in new_values
+        ) :
+        new_values ['status'] = db.sup_status.lookup ('open')
+# end def set_status
+
 def init (db) :
     if 'support' not in db.classes :
         return
@@ -350,6 +363,7 @@ def init (db) :
     db.support.audit   ("set",    header_check,             priority = 200)
     db.support.audit   ("create", initial_props,            priority = 300)
     db.support.audit   ("set",    remove_support_from_nosy, priority = 300)
+    db.support.audit   ("set",    set_status,               priority = 350)
 
     db.customer.audit  ("create", new_customer,             priority = 90)
     db.customer.audit  ("create", check_maildomain)
