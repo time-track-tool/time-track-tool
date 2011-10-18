@@ -311,19 +311,34 @@ def sync_to_ldap (db, cl, nodeid, old_values) :
     ld.sync_user_to_ldap (user.username)
 # end def sync_to_ldap
 
+def check_pictures (db, cl, nodeid, new_values) :
+    pictures = new_values.get ('pictures')
+    p = list ( sorted ( pictures
+                      , reverse = 1
+                      , key = lambda x : db.file.get (x, 'activity')
+                      )
+             ) [0]
+    pict = db.file.getnode (p)
+    length = len (pict.content)
+    if length > (100 * 1024) :
+        raise Reject, _ \
+            ("maximum picture size 100kB exceeded: %(length)s") % locals ()
+# end def check_pictures
+
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     # fire before changes are made
-    db.user.audit("set"   , audit_user_fields)
-    db.user.audit("create", new_user)
-    db.user.react("create", update_userlist_html)
+    db.user.audit ("set",    audit_user_fields)
+    db.user.audit ("create", new_user)
+    db.user.react ("create", update_userlist_html)
     if 'user_dynamic' in db.classes :
-        db.user.react("create", create_dynuser)
-    db.user.react("set"   , update_userlist_html)
-    db.user.audit("retire", check_retire)
-    db.user.audit("set"   , obsolete_action)
+        db.user.react ("create", create_dynuser)
+    db.user.react ("set",    update_userlist_html)
+    db.user.audit ("retire", check_retire)
+    db.user.audit ("set",    obsolete_action)
+    db.user.audit ("set",    check_pictures)
     # ldap sync only on set not create (!)
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
