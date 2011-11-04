@@ -4,6 +4,7 @@ import sys
 import ldap
 
 from ldap.cidict         import cidict
+from ldap.controls       import SimplePagedResultsControl
 from rsclib.autosuper    import autosuper
 from roundup.date        import Date
 from roundup.cgi.actions import LoginAction
@@ -67,12 +68,14 @@ class LDAP_Roundup_Sync (object) :
     """ Sync users from LDAP to Roundup """
 
     roundup_group = 'roundup-users'
+    page_size     = 50
     
     def __init__ (self, db) :
         self.db    = db
         self.cfg   = db.config.ext
 
         self.ldcon = ldap.initialize(self.cfg.LDAP_URI)
+        self.ldcon.set_option (ldap.OPT_REFERRALS, 0)
         # try getting a secure connection, may want to force this later
         try :
             pass
@@ -190,14 +193,7 @@ class LDAP_Roundup_Sync (object) :
     # end def cls_lookup
 
     def get_all_ldap_usernames (self) :
-        filter = '(objectclass=person)'
-        attrs  = ['uid']
-        res = self.ldcon.search_s \
-            (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, filter, attrs)
-        for r in res :
-            if not r [0] :
-                continue
-            r = LDAP_Search_Result (r)
+        for r in self.paged_search_iter ('(objectclass=person)', ['uid']) :
             if 'uid' not in r :
                 continue
             yield (r.uid [0]).lower ()
@@ -308,6 +304,43 @@ class LDAP_Roundup_Sync (object) :
                 )
             return [f]
     # end def ldap_picture
+
+    def paged_search_iter (self, filter, attrs = None) :
+        lc = SimplePagedResultsControl \
+            (ldap.LDAP_CONTROL_PAGE_OID, True, (self.page_size, ''))
+        res = self.ldcon.search_ext \
+            ( self.cfg.LDAP_BASE_DN
+            , ldap.SCOPE_SUBTREE
+            , filter
+            , attrlist    = attrs
+            , serverctrls = [lc]
+            )
+        while True :
+            rtype, rdata, rmsgid, serverctrls = self.ldcon.result3 (res)
+            for r in rdata :
+                if not r [0] :
+                    continue
+                r = LDAP_Search_Result (r)
+                yield r
+            pctrls = \
+                [c for c in serverctrls
+                   if c.controlType == ldap.LDAP_CONTROL_PAGE_OID
+                ]
+            if pctrls :
+                x, cookie = pctrls [0].controlValue
+                if not cookie :
+                    break
+                lc.controlValue = (self.page_size, cookie)
+                res =  self.ldcon.search_ext \
+                    ( self.cfg.LDAP_BASE_DN
+                    , ldap.SCOPE_SUBTREE
+                    , filter
+                    , attrs
+                    , serverctrls = [lc]
+                    )
+            else :
+                break
+    # end def paged_search_iter
 
     def sync_user_from_ldap (self, username, update = True) :
         uid = None
