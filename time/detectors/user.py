@@ -313,6 +313,8 @@ def sync_to_ldap (db, cl, nodeid, old_values) :
 
 def check_pictures (db, cl, nodeid, new_values) :
     pictures = new_values.get ('pictures')
+    if not pictures :
+        return
     p = list ( sorted ( pictures
                       , reverse = 1
                       , key = lambda x : db.file.get (x, 'activity')
