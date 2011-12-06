@@ -144,7 +144,7 @@
                   (request.filterspec.get('sensor') or [])
           ; grps    python: dict (id=formdev.keys(),device_group=formgrp.keys())
           ; idx    python: dict ((k,v) for (k,v) in grps.iteritems() if v)
-          ; devs    python: db.device.filter(None, idx, sort=('+', 'name'))
+          ; devs    python: db.device.filter(None, idx, sort=('+', 'addr'))
           ; asens   python: utils.sensors_by_device (db, is_app = True)
           ; ssens   python: utils.sensors_by_device (db, is_app = False)
           ; meas    python: utils.sensor_measurements (db)
@@ -282,7 +282,6 @@
                       </a>
                     </span>
                     <span class="col_device">
-                      <a href="#" class="sort_link">
                       <a href="#" class="sort_link" i18n:translate="">
                         <tal:block tal:replace="structure
                              python:utils.fieldlabel
