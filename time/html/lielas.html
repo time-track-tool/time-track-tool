@@ -5,6 +5,7 @@
  tal:define="
    language        python: utils.set_language (request.client, db)
  ; uname           python: str (request.user.username)
+ ; tz              python: str (request.user.timezone)
  ; is_user         python: request.user.username!='anonymous'
  ; clsname         python: getattr (context, '_classname', '')
  ; classname       context/_classname|db/user/_classname
@@ -573,7 +574,7 @@
                 </div>
                 <ul class="details_row">
                   <li tal:repeat="m python:meas[s.id]">
-                    <span class="desc" tal:content="python: m[0]"/>
+                    <span class="desc" tal:content="python: m[0].local (tz)"/>
                     <span class="value">
                       <tal:block tal:replace="python:
                            locale.format ('%2.2f', m[1])"/>

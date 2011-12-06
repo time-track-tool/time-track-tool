@@ -28,6 +28,7 @@ from rsclib.autosuper               import autosuper
 from roundup.cgi.actions            import Action
 from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
+from roundup.date                   import Date
 import common
 
 # Action codes and strings used in the web-interface and as action names
@@ -212,7 +213,7 @@ def latest_measurements (db, sensor, maxlen = 7) :
         if not m : break
         m = m [0]
         n = db._db.measurement.getnode (m)
-        result.append ((n.date, n.val))
+        result.append ((Date (n.date), n.val))
         if len (result) >= maxlen :
             return result
     return result
