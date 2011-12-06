@@ -106,6 +106,7 @@ def header_utf8 (header) :
 # end def header_utf8
 
 def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
+    mail   = mail.lower ()
     cemail = db.contact_type.lookup ('Email')
     sdict  = dict (contact_type = cemail, contact = mail)
     sdict ['customer.is_valid'] = True
@@ -133,7 +134,7 @@ def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
         customer = db.customer.create \
             ( name        = ' '.join ((rn, mail))
             , fromaddress = frm
-            , maildomain  = mail.split ('@') [-1]
+            , maildomain  = (mail.split ('@') [-1]).lower ()
             )
     c = db.contact.create \
         ( contact_type = cemail
@@ -197,7 +198,6 @@ def header_check (db, cl, nodeid, new_values) :
                 ) :
                 # use only first 'From' address (there shouldn't be more)
                 rn, mail = getaddresses (frm) [0]
-                sdict = dict (contact_type = cemail, contact = mail)
                 # the from address in this mail is the support user we
                 # want as a from-address for future mails *to* this user
                 autad = db.user.get (msg.author, 'address')
@@ -320,6 +320,7 @@ def check_maildomain (db, cl, nodeid, new_values) :
                'must contain "."'
               ) \
             % dict (maildomain = _ ('maildomain'))
+    md = new_values ['maildomain'] = md.lower ()
     common.check_unique (_, cl, nodeid, maildomain = md)
 # end def check_maildomain
 

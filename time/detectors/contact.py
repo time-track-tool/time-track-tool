@@ -85,12 +85,22 @@ def auto_retire_contacts (db, cl, nodeid, new_values) :
 
 def check_contact (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'contact')
+    # get correct contact_type class
+    tc = db.getclass (cl.properties ['contact_type'].classname)
     if nodeid :
         common.require_attributes (_, cl, nodeid, new_values, 'contact_type')
     if not nodeid and 'contact_type' not in new_values :
-        ct = db.contact_type.filter (None, {}, sort = [('+', 'order')])
+        ct = tc.filter (None, {}, sort = [('+', 'order')])
         assert (ct)
         new_values ['contact_type'] = ct [0]
+    # Make emails lowercase
+    if 'contact' in new_values :
+        ct = new_values.get ('contact_type')
+        if not ct :
+            ct = cl.get (nodeid, 'contact_type')
+        name = tc.get (ct, 'name')
+        if name == 'Email' :
+            new_values ['contact'] = new_values ['contact'].lower ()
 # end def check_contact
 
 def changed_contact (db, cl, nodeid, old_values) :
