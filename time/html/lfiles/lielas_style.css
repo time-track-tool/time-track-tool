@@ -796,16 +796,17 @@ hr {
 
 .error-message {
 	color: #ff2222;
-	height: 20px;
-	line-height: 20px;
-	padding-left: 20px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 32px;
 	background: url(images/error_message.png) no-repeat left center;
 	}
 	
 .ok-message {
 	color: #0cb640;
-	height: 20px;
-	line-height: 20px;
-	padding-left: 20px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 32px;
+	padding-left: 32px;
 	background: url(images/ok_message.png) no-repeat left center;
 	}	

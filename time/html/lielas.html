@@ -82,6 +82,14 @@
         </div>
       </div>
     </div>
+    <div tal:condition = "options/error_message | nothing"
+       class           = "error-message"
+       tal:repeat      = "m options/error_message"
+       tal:content     = "structure m"/>
+    <div tal:condition = "options/ok_message | nothing"
+       class           = "ok-message"
+       tal:repeat      = "m options/ok_message"
+       tal:content     = "structure m"/>
     <tal:block tal:condition="is_user">
       <tal:block metal:define-slot="content"/>
     </tal:block>
@@ -118,14 +126,6 @@
         <div class="details_footer"></div>
       </div>
     </div>
-    <div tal:condition = "options/error_message | nothing"
-       class           = "error-message"
-       tal:repeat      = "m options/error_message"
-       tal:content     = "structure m"/>
-    <div tal:condition = "options/ok_message | nothing"
-       class           = "ok-message"
-       tal:repeat      = "m options/ok_message"
-       tal:content     = "structure m"/>
   </div>
 </body>
 </html>
