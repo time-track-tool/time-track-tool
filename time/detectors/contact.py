@@ -93,8 +93,8 @@ def check_contact (db, cl, nodeid, new_values) :
         ct = tc.filter (None, {}, sort = [('+', 'order')])
         assert (ct)
         new_values ['contact_type'] = ct [0]
-    # Make emails lowercase
-    if 'contact' in new_values :
+    # Make emails lowercase but not for user_contact
+    if 'contact' in new_values and cl.classname != 'user_contact' :
         ct = new_values.get ('contact_type')
         if not ct :
             ct = cl.get (nodeid, 'contact_type')
