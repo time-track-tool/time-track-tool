@@ -298,19 +298,21 @@ if 'uc_type' in db.classes :
 
 # users
 # create the two default users
-user = db.getclass ('user')
-user.create \
+admin = dict \
     ( username = "admin"
     , password = adminpw
-    , address  = db.config.ADMIN_EMAIL
     , roles    = "Admin"
     )
-user.create \
+
+if 'transceiver' not in db.classes :
+    admin ['address'] = db.config.ADMIN_EMAIL
+db.user.create (**admin)
+db.user.create \
     ( username = "anonymous"
     , roles    = "Anonymous"
     )
 if 'it_issue' in db.classes :
-    user.create \
+    db.user.create \
         ( username = "helpdesk"
         , address  = db.config.ADMIN_EMAIL
         , status   = db.user_status.lookup ('system')
@@ -800,14 +802,12 @@ if 'transceiver' in db.classes :
     db.user.create \
         ( username = "guest"
         , password = adminpw
-        , address  = db.config.ADMIN_EMAIL
         , roles    = 'Guest'
         , timezone = 'Europe/Vienna'
         )
     db.user.create \
         ( username = "logger"
         , password = adminpw
-        , address  = db.config.ADMIN_EMAIL
         , roles    = 'Logger'
         )
 if 'measurement' in db.classes and hasattr (db, 'sql') :

@@ -47,7 +47,10 @@ def common_user_checks (db, cl, nodeid, new_values) :
             if dyn :
                 olo = new_values ['org_location'] = dyn.org_location
                 new_values ['department']         = dyn.department
-    if new_values.has_key('address') and ' ' in new_values['address'] :
+    if  (   'address' in new_values
+        and new_values ['address']
+        and ' ' in new_values['address']
+        ) :
         raise ValueError, 'Email address must not contain spaces'
     if new_values.has_key('roles') :
         roles = new_values ['roles']
@@ -331,7 +334,6 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    # fire before changes are made
     db.user.audit ("set",    audit_user_fields)
     db.user.audit ("create", new_user)
     db.user.react ("create", update_userlist_html)
