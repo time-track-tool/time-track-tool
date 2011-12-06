@@ -103,7 +103,8 @@
                     <tal:block tal:replace="structure python:utils.fieldlabel
                          ('dyndns_server', 'password')" />
                     <div class="settings_field"
-                         tal:content="structure ds/password/field"/>
+                         tal:content="structure python:ds.password.field
+                         (type='password')"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
@@ -149,7 +150,8 @@
                     <tal:block tal:replace="structure python:utils.fieldlabel
                          ('email', 'password')" />
                     <div class="settings_field"
-                         tal:content="structure em/password/field"/>
+                         tal:content="structure python:em.password.field
+                         (type='password')"/>
                   </div>
                 </tal:block>
               </tal:block>
