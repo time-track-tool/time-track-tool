@@ -228,16 +228,20 @@ $(document).ready(function() {
             $("#queryname").val(n);
 	});
 
-	$("#form_csv").submit(function(){
+        var csv_copy = function(){
             var q = $("#queryname")
-            var d = $('#measurementdate')
+            var d1 = $('#measurementdate')
+            var d2 = $('#measurementdate_filter')
             if (q.attr('value') == q.attr('title'))
             {
                 q.val ('');
             }
-            d.val($('#date_from').val()+';'+$('#date_to').val())
+            d1.val($('#date_from').val()+';'+$('#date_to').val())
+            d2.val($('#date_from').val()+';'+$('#date_to').val())
             return true;
-	});
+	}
+	$("#form_csv").submit(csv_copy);
+	$("#form_filter").submit(csv_copy);
 
         $("#save_filter").click(function(ev){
             var q = $("#queryname");

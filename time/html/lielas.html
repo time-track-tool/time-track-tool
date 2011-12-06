@@ -157,6 +157,9 @@
         <div id="filter">
           <form method="GET" name="query" id="form_filter" action="measurement">
             <input type="hidden" id="q_action" name=":action" value="search">
+            <input type="hidden" id="measurementdate_filter" name="date"
+                   tal:attributes="value python:
+                       request.filterspec.get('date', '')">
             <div class="filter_item" id="filter_device">
               <h3 tal:content="structure python:utils.fieldlabel
                   ('sensor', 'device', csscls='')" />
