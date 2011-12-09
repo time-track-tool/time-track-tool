@@ -119,6 +119,15 @@ def init \
         , date                = Date      ()
         )
 
+    alarm = Class \
+        ( db, ''"alarm"
+        , sensor              = Link      ("sensor", do_journal = "no")
+        , val                 = Number    ()
+        , last_triggered      = Date      ()
+        , timeout             = Number    ()
+        , is_lower            = Boolean   ()
+        )
+
 # end def init
 
 def security (db, ** kw) :

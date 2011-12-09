@@ -25,8 +25,14 @@
 
 import os
 from roundup.exceptions             import Reject
+from roundup.roundupdb              import DetectorError
+from roundup.date                   import Date, Interval
+from roundup.mailer                 import Mailer, encode_quopri
+from roundup.mailer                 import MessageSendError
 from roundup.cgi.TranslationService import get_translation
+from roundup.i18n                   import get_translation
 from common                         import reject_attributes, changed_values
+from common                         import require_attributes
 from signal                         import SIGUSR1
 
 _ = lambda x : x
@@ -131,6 +137,70 @@ def check_daemon_props (db, cl, nodeid, old_values) :
             break
 # end def check_daemon_props
 
+def set_alarm (db, cl, nodeid, new_values) :
+    if 'last_triggered' not in new_values :
+        new_values ['last_triggered'] = None
+    if 'is_lower' not in new_values :
+        new_values ['is_lower'] = False
+    require_attributes (_, cl, nodeid, new_values, 'sensor')
+# end def set_alarm
+
+msg = ''"""Channel %(cname)s addr %(cadr)s of device %(dname)s addr %(dadr)s
+is %(overunder)s threshold %(threshold)s on %(timestamp)s.
+Current value is: %(value)s.
+"""
+
+def notify (db, alarm, sensor, measurement, timestamp, is_lower) :
+    sendto  = []
+    for uid in db.user.getnodeids (retired = False) :
+        adr = db.user.get (uid, 'address')
+        if adr :
+            sendto.append (adr)
+    # do nothing if no addresses to notify
+    if not adr :
+        return
+    _ = get_mail_translation (db).gettext
+    overunder = _ (''"over")
+    if is_lower :
+        overunder = _ (''"under")
+    dev = db.device.getnode (sensor.device)
+    cname = sensor.name
+    cadr  = sensor.adr
+    dname = dev.name
+    dadr  = dev.adr
+    value = measurement.val
+    threshold = alarm.val
+    m = msg % locals ()
+    mailer  = Mailer (db.config)
+    subject = ''"Sensor alert"
+    try :
+        mailer.standard_message (sendto, subject, m)
+    except MessageSendError, err :
+        raise DetectorError, err
+    db.alarm.set (alarm.id, last_triggered = timestamp)
+# end def notify
+
+def get_mail_translation (db) :
+    lang = db.config.TRACKER_LANGUAGE
+    if db.config.MAILGW_LANGUAGE :
+        lang = db.config.MAILGW_LANGUAGE
+    return get_translation (language = (lang,), tracker_home = db.config.HOME)
+# end def get_mail_translation
+
+def check_alarm (db, cl, nodeid, old_values) :
+    m = cl.getnode (nodeid)
+    s = db.sensor.getnode (m.sensor)
+    now = Date ('.')
+    for a_id in db.alarm.filter (None, dict (sensor = s.id)) :
+        a = db.alarm.getnode (a_id)
+        # default 1h for timeout
+        timeout = Interval ((a.timeout or 0) * 60 or '01:00:00')
+        if not a.last_triggered or a.last_triggered + timeout < now :
+            if a.is_lower and m.val < a.val :
+                notify (db, a, s, m, now, a.is_lower)
+            if not a.is_lower and m.val > a.val :
+                notify (db, a, s, m, now, a.is_lower)
+# end def check_alarm
 
 def init (db) :
     if 'measurement' not in db.classes :
@@ -154,4 +224,7 @@ def init (db) :
     db.transceiver.react ("retire", notify_lielas_daemon)
     db.transceiver.audit ("set",    round_sint_mint)
     db.transceiver.audit ("create", round_sint_mint)
+    db.alarm.audit       ("create", set_alarm)
+    db.alarm.audit       ("set",    set_alarm)
+    db.measurement.react ("create", check_alarm)
 # end def init

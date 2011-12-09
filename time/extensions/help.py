@@ -227,6 +227,8 @@ _helptext          = \
              don\'t allow change to \"testing\".
           '''
       ]
+    , ""'alarm++val'                  :
+      [""'''Alarm threshold value''']
     , ""'almax'                       :
       [""'''Maximum value, this or larger values trigger an alarm''']
     , ""'almin'                       :
@@ -1454,6 +1456,8 @@ _helptext          = \
           '''
       ]
     , ""'time_wp++travel'             : [travel]
+    , ""'timeout'                     :
+      [""'''Timeout when new email is sent''']
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
@@ -1717,12 +1721,19 @@ def help_properties (klass) :
     return [i [1] for i in p]
 # end def help_properties
 
-def fieldlabel (cls, name, searchname = None, csscls = 'desc', endswith = ':') :
+def fieldlabel \
+    ( cls
+    , name
+    , searchname = None
+    , csscls     = 'desc'
+    , startswith = ''
+    , endswith   = ':'
+    ) :
     if not searchname : searchname = name
     prop  = combined_name (cls, name, searchname)
     if csscls :
         csscls = 'class="%s"' % csscls
-    return "<label %s>%s%s</label>" % (csscls, _ (prop), endswith)
+    return "<label %s>%s%s%s</label>" % (csscls, startswith, _ (prop), endswith)
 # end def fieldlabel
 
 def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :

@@ -517,6 +517,17 @@
                       " id     python:'settings_form_' + s.designator()
                       ; name   python:'settings_form_' + s.designator()
                       ; action s/designator
+                      " tal:define=
+                      " lower python:
+                              ( db.alarm.filter
+                                  (None, dict (sensor = s.id, is_lower = True))
+                              or [None]
+                              ) [0]
+                      ; upper python:
+                              ( db.alarm.filter
+                                  (None, dict (sensor = s.id, is_lower = False))
+                              or [None]
+                              ) [0]
                       ">
                   <ul class="details_row">
                     <li>
@@ -559,6 +570,88 @@
                         <input id="do_logging_cb" type="checkbox"
                                tal:attributes="checked s/do_logging"/>
                       </span>
+                    </li>
+                  </ul>
+                  <div class="details_row header">
+                    <span class="desc"
+                     i18n:translate="">Alarm upper Threshold</span>
+                  </div>
+                  <ul class="details_row">
+                    <li>
+                      <tal:block tal:replace="structure python: utils.fieldlabel
+                                 ('alarm', 'val'
+                                 , endswith   = ' (%s):' % s.unit
+                                 )" />
+                      <tal:block tal:condition="not:upper">
+                        <span class="value" tal:content="
+                              structure python: utils.new_property
+                                (db.alarm, db, 'alarm', -1, 'val').field () "/>
+                        <input type="hidden" tal:attributes=
+                               " name  python: 'alarm-1@link@sensor'
+                               ; value python: 'sensor%s' % s.id
+                               " />
+                      </tal:block>
+                      <tal:block tal:condition="upper">
+                        <span class="value" tal:content="
+                              structure upper/val/field "/>
+                      </tal:block>
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python: utils.fieldlabel
+                                 ('alarm', 'timeout'
+                                 , endswith   = i18n.gettext (' (min):')
+                                 )" />
+                      <tal:block tal:condition="not:upper">
+                        <span class="value" tal:content="
+                              structure python: utils.new_property
+                                (db.alarm, db, 'alarm', -1, 'timeout').field ()
+                         "/>
+                      </tal:block>
+                      <tal:block tal:condition="upper">
+                        <span class="value" tal:content="
+                              structure upper/timeout/field "/>
+                      </tal:block>
+                    </li>
+                  </ul>
+                  <div class="details_row header">
+                    <span class="desc"
+                     i18n:translate="">Alarm lower Threshold</span>
+                  </div>
+                  <ul class="details_row">
+                    <li>
+                      <tal:block tal:replace="structure python: utils.fieldlabel
+                                 ('alarm', 'val'
+                                 , endswith   = ' (%s)' % s.unit
+                                 )" />
+                      <tal:block tal:condition="not:lower">
+                        <span class="value" tal:content="
+                              structure python: utils.new_property
+                                (db.alarm, db, 'alarm', -2, 'val').field () "/>
+                        <input type="hidden" tal:attributes=
+                               " name  python: 'alarm-2@link@sensor'
+                               ; value python: 'sensor%s' % s.id
+                               " />
+                      </tal:block>
+                      <tal:block tal:condition="lower">
+                        <span class="value" tal:content="
+                              structure lower/val/field "/>
+                      </tal:block>
+                    </li>
+                    <li>
+                      <tal:block tal:replace="structure python: utils.fieldlabel
+                                 ('alarm', 'timeout'
+                                 , endswith   = i18n.gettext (' (min)')
+                                 )" />
+                      <tal:block tal:condition="not:lower">
+                        <span class="value" tal:content="
+                              structure python: utils.new_property
+                                (db.alarm, db, 'alarm', -2, 'timeout').field ()
+                         "/>
+                      </tal:block>
+                      <tal:block tal:condition="lower">
+                        <span class="value" tal:content="
+                              structure lower/timeout/field "/>
+                      </tal:block>
                     </li>
                   </ul>
                   <hr />

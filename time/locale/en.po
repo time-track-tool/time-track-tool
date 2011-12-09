@@ -7,12 +7,82 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-09-29 15:35+0200\n"
+"POT-Creation-Date: 2011-12-09 12:22+0100\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "start and end must be on same day and start <= end."
+msgstr ""
+
+msgid "Times must be given in quarters of an hour"
+msgstr ""
+
+msgid "No negative times are allowed"
+msgstr ""
+
+#, python-format
+msgid "Duration must not exceed %s hours"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be set"
+msgstr ""
+
+#, python-format
+msgid "Frozen: %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s"
+msgstr ""
+
+msgid "Only user and Controlling may create daily records"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Booking not allowed for %(uname)s, %(date)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate record: date = %(date)s, user = %(user)s"
+msgstr ""
+
+msgid "start"
+msgstr "Start"
+
+#, python-format
+msgid "%(attr)s must be specified"
+msgstr ""
+
+msgid "Either specify duration or start/end"
+msgstr ""
+
+#, python-format
+msgid "%s: You specified new values for %s but no duration"
+msgstr ""
+
+msgid "Editing of time records only for status \"open\""
+msgstr ""
+
+msgid "No weekend booking allowed"
+msgstr ""
+
+msgid "Distribution: WP must be given"
+msgstr ""
+
+msgid "dist must not exceed sum of unassigned times in week"
+msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -119,10 +189,6 @@ msgstr ""
 msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
-#, python-format
-msgid "%(attr)s must be set"
-msgstr ""
-
 msgid "Freezing only for dates >= 10 days in the past"
 msgstr ""
 
@@ -160,10 +226,6 @@ msgstr ""
 
 msgid "product_group"
 msgstr "Product group"
-
-#, python-format
-msgid "%(attr)s must be specified"
-msgstr ""
 
 #, python-format
 msgid "Duplicate %(grp)s \"%(groupname)s\""
@@ -238,6 +300,21 @@ msgstr "Duplicate of"
 
 #, python-format
 msgid "Can't set %s to yourself"
+msgstr ""
+
+msgid ""
+"Channel %(cname)s addr %(cadr)s of sensor %(sname)s addr %(sadr)s\n"
+"is %(overunder)s threshold %(threshold)s on %(timestamp)s.\n"
+"Current value is: %(value)s.\n"
+msgstr ""
+
+msgid "over"
+msgstr ""
+
+msgid "under"
+msgstr ""
+
+msgid "Sensor alert"
 msgstr ""
 
 #, python-format
@@ -354,6 +431,10 @@ msgstr ""
 msgid "summary_report"
 msgstr "Summary Report"
 
+msgid ""
+"Trying to send to customer without configured contact-email for customer"
+msgstr ""
+
 #, python-format
 msgid "Change of %s requires a message"
 msgstr ""
@@ -362,72 +443,14 @@ msgid "Requires change of user (support not allowed)"
 msgstr ""
 
 #, python-format
-msgid "Toplevel domain \"%(maindomain)s\" not allowed, must contain \".\""
+msgid "Toplevel domain \"%(maildomain)s\" not allowed, must contain \".\""
 msgstr ""
 
 msgid "maildomain"
 msgstr "Email domain"
 
-msgid "start and end must be on same day and start <= end."
-msgstr ""
-
-msgid "Times must be given in quarters of an hour"
-msgstr ""
-
-msgid "No negative times are allowed"
-msgstr ""
-
-#, python-format
-msgid "Duration must not exceed %s hours"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s may not be changed"
-msgstr ""
-
-#, python-format
-msgid "Frozen: %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
-msgstr ""
-
-msgid "Only user and Controlling may create daily records"
-msgstr ""
-
-#, python-format
-msgid "No dynamic user data for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Booking not allowed for %(uname)s, %(date)s"
-msgstr ""
-
-#, python-format
-msgid "Duplicate record: date = %(date)s, user = %(user)s"
-msgstr ""
-
-msgid "start"
-msgstr "Start"
-
-msgid "Either specify duration or start/end"
-msgstr ""
-
 #, python-format
 msgid "%(date)s: You specified new values for %(attr)s but no duration"
-msgstr ""
-
-msgid "Editing of time records only for status \"open\""
-msgstr ""
-
-msgid "No weekend booking allowed"
-msgstr ""
-
-msgid "Distribution: WP must be given"
-msgstr ""
-
-msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
 #, python-format
@@ -456,6 +479,10 @@ msgid "%(uidname)s specified but no samba domain configured"
 msgstr ""
 
 msgid "Not allowed to retire a user"
+msgstr ""
+
+#, python-format
+msgid "maximum picture size 100kB exceeded: %(length)s"
 msgstr ""
 
 #, python-format
@@ -871,6 +898,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "alarm++val"
+msgstr "Threshold"
+
+msgid "Alarm threshold value"
+msgstr ""
+
 msgid "almax"
 msgstr "Alarm max"
 
@@ -1079,9 +1112,6 @@ msgstr "Composed of (id)"
 msgid "confidential"
 msgstr ""
 
-msgid "customer++confidential"
-msgstr "confidential"
-
 msgid ""
 "If set, %(Classname)s is visible only to users on the nosy\n"
 "             list (note that the stakeholder and the responsible person\n"
@@ -1194,6 +1224,15 @@ msgstr "Customer Status"
 msgid "customer_type"
 msgstr "Customer type"
 
+msgid "customer++confidential"
+msgstr "confidential"
+
+msgid ""
+"If this flag is set for a %(Classname)s, new support issues\n"
+"            created for this %(Classname)s will be confidential.\n"
+"         "
+msgstr ""
+
 msgid "customer++nosy"
 msgstr "Nosy List"
 
@@ -1240,6 +1279,18 @@ msgid "default_lease_time"
 msgstr "default DHCP lease time"
 
 msgid "Default DHCP lease time for %(Classname)s"
+msgstr ""
+
+msgid "default_nosy"
+msgstr "Default nosy list"
+
+msgid ""
+"If this flag is selected, a new customer created without a nosy\n"
+"            list and without a nosy group will get this mail group as\n"
+"            its nosy group. If several mail groups have this flag, all\n"
+"            will be inherited by a new customer without specified nosy\n"
+"            and nosy groups.\n"
+"         "
 msgstr ""
 
 msgid "default_part_of"
@@ -3288,6 +3339,12 @@ msgstr ""
 msgid "time_wp++travel"
 msgstr "Travel WP"
 
+msgid "timeout"
+msgstr "Timeout"
+
+msgid "Timeout when new email is sent"
+msgstr ""
+
 msgid "timezone"
 msgstr "Timezone"
 
@@ -4039,6 +4096,12 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Alarm upper Threshold"
+msgstr ""
+
+msgid "Alarm lower Threshold"
+msgstr ""
+
 msgid "Latest measurements"
 msgstr ""
 
@@ -4491,6 +4554,9 @@ msgstr ""
 msgid "logstyle"
 msgstr "Logging style"
 
+msgid "alarm"
+msgstr ""
+
 msgid "smb_machine"
 msgstr "Samba machine"
 
@@ -4750,9 +4816,6 @@ msgstr "First name"
 msgid "lookalike_function"
 msgstr "Address details"
 
-msgid "default_nosy"
-msgstr "Default nosy list"
-
 msgid "amount_payed"
 msgstr ""
 
@@ -4852,6 +4915,12 @@ msgstr ""
 msgid "rec"
 msgstr "Recording type"
 
+msgid "last_triggered"
+msgstr "Last triggered"
+
+msgid "is_lower"
+msgstr "is lower"
+
 msgid "pin"
 msgstr "PIN code"
 
@@ -4875,9 +4944,6 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Document number"
-
-#~ msgid "Sensors"
-#~ msgstr "Sensors"
 
 #~ msgid "invoice.payer.lookalike_firstname"
 #~ msgstr "Payer First name"
