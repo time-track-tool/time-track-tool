@@ -170,7 +170,7 @@ def notify (db, alarm, sensor, measurement, timestamp, is_lower) :
     dadr  = dev.adr
     value = measurement.val
     threshold = alarm.val
-    m = msg % locals ()
+    m = _ (msg) % locals ()
     mailer  = Mailer (db.config)
     subject = ''"Sensor alert"
     try :

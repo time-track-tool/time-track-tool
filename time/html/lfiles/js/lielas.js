@@ -207,6 +207,16 @@ $(document).ready(function() {
         jQuery('.buttonbox input').before('<span class="button_border_left"></span>').after('<span class="button_border_right"></span>');
 
 	// --------------
+        // content
+	// --------------
+
+        var fixlower = function(){
+            $("#is_lower").val("yes");
+	};
+        $("#lowerval").change(fixlower);
+        $("#lowertimeout").change(fixlower);
+
+	// --------------
 	// Search form
 	// --------------
 
@@ -239,7 +249,7 @@ $(document).ready(function() {
             d1.val($('#date_from').val()+';'+$('#date_to').val())
             d2.val($('#date_from').val()+';'+$('#date_to').val())
             return true;
-	}
+	};
 	$("#form_csv").submit(csv_copy);
 	$("#form_filter").submit(csv_copy);
 
@@ -303,7 +313,7 @@ $(document).ready(function() {
             if (ds.length == 1) {
                 $("#date_to").val(ds[0]);
             }
-        }
+        };
         $("#measurementdate").ready(copy_date);
         $("#form_filter").bind('reset',function(){
             // ugly hack to call this after form has cleared

@@ -143,6 +143,7 @@ def security (db, ** kw) :
         , ("measurement",  ["User", "Guest", "Logger"], ["Logger"])
         , ("sensor",       ["User", "Guest", "Logger"], ["Logger"])
         , ("transceiver",  ["User", "Guest", "Logger"], ["Logger"])
+        , ("alarm",        ["User", "Guest", "Logger"], ["User", "Logger"])
         ]
 
     prop_perms = \

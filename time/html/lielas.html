@@ -626,11 +626,14 @@
                       <tal:block tal:condition="not:lower">
                         <span class="value" tal:content="
                               structure python: utils.new_property
-                                (db.alarm, db, 'alarm', -2, 'val').field () "/>
+                                (db.alarm, db, 'alarm', -2, 'val').field
+                                    (id = 'lowerval') "/>
                         <input type="hidden" tal:attributes=
                                " name  python: 'alarm-2@link@sensor'
                                ; value python: 'sensor%s' % s.id
                                " />
+                        <input type="hidden" id="is_lower" tal:attributes=
+                               " name  python: 'alarm-2@is_lower'" />
                       </tal:block>
                       <tal:block tal:condition="lower">
                         <span class="value" tal:content="
@@ -645,7 +648,8 @@
                       <tal:block tal:condition="not:lower">
                         <span class="value" tal:content="
                               structure python: utils.new_property
-                                (db.alarm, db, 'alarm', -2, 'timeout').field ()
+                                (db.alarm, db, 'alarm', -2, 'timeout').field
+                                    (id = 'lowertimeout')
                          "/>
                       </tal:block>
                       <tal:block tal:condition="lower">
