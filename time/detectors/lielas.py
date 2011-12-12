@@ -30,7 +30,7 @@ from roundup.date                   import Date, Interval
 from roundup.mailer                 import Mailer, encode_quopri
 from roundup.mailer                 import MessageSendError
 from roundup.cgi.TranslationService import get_translation
-from roundup.i18n                   import get_translation
+from roundup.i18n                   import get_translation as mail_translation
 from common                         import reject_attributes, changed_values
 from common                         import require_attributes
 from signal                         import SIGUSR1
@@ -172,7 +172,7 @@ def notify (db, alarm, sensor, measurement, timestamp, is_lower) :
     threshold = alarm.val
     m = _ (msg) % locals ()
     mailer  = Mailer (db.config)
-    subject = ''"Sensor alert"
+    subject = _ (''"Sensor alert")
     try :
         mailer.standard_message (sendto, subject, m)
     except MessageSendError, err :
@@ -184,7 +184,9 @@ def get_mail_translation (db) :
     lang = db.config.TRACKER_LANGUAGE
     if db.config.MAILGW_LANGUAGE :
         lang = db.config.MAILGW_LANGUAGE
-    return get_translation (language = (lang,), tracker_home = db.config.HOME)
+    tr  = mail_translation (language = (lang,), tracker_home = db.config.HOME)
+    tr.set_output_charset (db.config.MAIL_CHARSET or 'utf-8')
+    return tr
 # end def get_mail_translation
 
 def check_alarm (db, cl, nodeid, old_values) :

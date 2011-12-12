@@ -312,8 +312,11 @@ msgid ""
 "Current value is: %(value)s.\n"
 msgstr ""
 "Kanal %(cname)s Adresse %(cadr)s von Gerät %(dname)s Adresse %(dadr)s\n"
-"ist %(overunder)s Schwellwert %(threshold)s um %(timestamp)s.\n"
+"ist %(overunder)s Schwellwert %(threshold)s Datum/Zeit: %(timestamp)s.\n"
 "Aktueller Wert ist: %(value)s.\n"
+
+msgid "Sensor alert"
+msgstr "Sensor Alarm"
 
 msgid "over"
 msgstr "über"
