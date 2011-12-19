@@ -51,6 +51,7 @@ schemas = \
     , 'sinvoice'
     , 'abo'
     , 'legalclient'
+    , 'support'
     , 'erp'
     , 'doc'
     , 'dyndns'

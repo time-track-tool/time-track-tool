@@ -148,6 +148,7 @@
      , ('actor',               dict (terse = False))
      , ('nosygroups',          dict (terse = False))
      , ('nosy',                dict (terse = False))
+     , ('responsible',         dict (help_props = ['firstname', 'lastname']))
      )
    ;props python:
           [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

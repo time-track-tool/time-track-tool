@@ -65,6 +65,13 @@ def init \
         )
     sup_prio.setkey ("name")
 
+    sup_classification = Class \
+        ( db
+        , ''"sup_classification"
+        , name             = String    ()
+        )
+    sup_classification.setkey ("name")
+
     Superseder_Issue_Class \
         ( db
         , ''"support"
@@ -80,6 +87,7 @@ def init \
         , customer         = Link      ("customer",   do_journal='no')
         , emails           = Multilink ("contact",    do_journal='no')
         , send_to_customer = Boolean   ()
+        , classification   = Link      ("sup_classification", do_journal='no')
         )
 
     customer = Person_Class \
@@ -126,6 +134,7 @@ def security (db, ** kw) :
         , ("customer",       ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("contact",        ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("mailgroup",      ["User", "SupportAdmin"], ["SupportAdmin", "IT"])
+        , ("classification", ["User", "SupportAdmin"], ["SupportAdmin"])
         ]
     if 'adr_type' in db.classes :
         classes.append (( "adr_type"

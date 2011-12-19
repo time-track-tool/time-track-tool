@@ -49,6 +49,12 @@
       <th tal:content="structure python:utils.fieldname (classname, 'prio')"/>
       <td tal:content="structure python:context.prio.menu ()"/>
      </tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'classification')"/>
+      <td tal:content="structure python:context.classification.menu
+          (translate=0)"/>
+     <tr>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'confidential')"/>

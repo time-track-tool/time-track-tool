@@ -10,9 +10,10 @@
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['category'],    multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['category'],       multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['classification'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['title'])
-    , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['status'],         multiselect = 1)
     , utils.ExtProperty
         ( utils, pdict ['responsible']
         , help_props   = ['firstname', 'lastname']
