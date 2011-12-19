@@ -259,6 +259,12 @@ _helptext          = \
       ]
     , ""'balance_open'                :
       [""'''Open amount not yet payed''']
+    , ""'bcc'                          :
+      [ ""'''Additional emails to send to when "'''
+      , ""'''send_to_customer'''
+      , ""'''" flag is set.'''
+      , ""''' Additional emails will not show up in mail header.'''
+      ]
     , ""'begin'                       :
       [""'''Begin of period''']
     , ""'birthdate'                   :
@@ -291,6 +297,11 @@ _helptext          = \
       [ ""'''For new issues the %(Property)s is copied to the
              %(Property)s of the new issue
           '''
+      ]
+    , ""'cc'                          :
+      [ ""'''Additional emails to send to when "'''
+      , ""'''send_to_customer'''
+      , ""'''" flag is set.'''
       ]
     , ""'cert_sw'                     :
       [ ""'''Mark this %(Classname)s as being certifyable software.

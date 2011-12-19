@@ -155,7 +155,17 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'send_to_customer')"/>
       <td tal:content="structure python:context.send_to_customer.field ()"/>
-    </tr>
+     </tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'cc')"/>
+      <td colspan="3"
+          tal:content="structure python:context.cc.field (size=70)"/>
+     <tr>
+     </tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'bcc')"/>
+      <td colspan="3"
+          tal:content="structure python:context.bcc.field (size=70)"/>
+     <tr>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

@@ -39,7 +39,7 @@ except ImportError :
 from roundup import roundupdb, hyperdb
 from roundup.mailer import Mailer, MessageSendError, encode_quopri
 
-def send_non_roundup_mail (db, cls, issueid, msgid, sendto) :
+def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
     """ Send mail to customer, don't use roundup change-email
         (nosymessage) mechanism -- so we can set different values and
         don't confuse the customer with roundup information.
@@ -107,7 +107,7 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto) :
     else :
         message.set_payload (body)
         encode_quopri (message)
-    mailer.smtp_send (sendto, message.as_string ())
+    mailer.smtp_send (sendto + bcc, message.as_string ())
 # end def send_non_roundup_mail
 
 def nosyreaction(db, cl, nodeid, oldvalues) :
@@ -129,16 +129,22 @@ def nosyreaction(db, cl, nodeid, oldvalues) :
     for msgid in determineNewMessages(cl, nodeid, oldvalues):
         try:
             cc_emails = []
+            bcc_mails = []
             if 'header' in db.msg.properties and db.msg.get (msgid, 'header') :
                 h = Parser ().parsestr \
                     (db.msg.get (msgid, 'header'), headersonly = True)
                 rcc = h.get_all ('X-ROUNDUP-CC')
+                bcc = h.get_all ('X-ROUNDUP-BCC')
                 if rcc :
                     for rn, mail in getaddresses (rcc) :
                         cc_emails.append (mail)
+                if bcc :
+                    for rn, mail in getaddresses (bcc) :
+                        bcc_mails.append (mail)
             cl.nosymessage(nodeid, msgid, oldvalues)
             if cc_emails :
-                send_non_roundup_mail (db, cl, nodeid, msgid, cc_emails)
+                send_non_roundup_mail \
+                    (db, cl, nodeid, msgid, cc_emails, bcc_mails)
         except roundupdb.MessageSendError, message :
             raise roundupdb.DetectorError, message
 

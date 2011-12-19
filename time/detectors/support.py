@@ -44,6 +44,7 @@ from roundup                        import roundupdb, hyperdb
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+from roundup.mailgw                 import uidFromAddress
 import common
 
 def new_support (db, cl, nodeid, new_values) :
@@ -106,16 +107,29 @@ def header_utf8 (header) :
 # end def header_utf8
 
 def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
+    """ Search for contact with given mail.
+        Realname (rn) is used when creating a new customer.
+        frm will be fromaddress from newly created customer.
+        If customer is already given we only search for mails *of this
+        customer* and do not create a new customer / email if not found.
+        None is returned in case a customer was given and no email was
+        found. Otherwise the contact (which might have been created)
+        will be returned.
+    """
     mail   = mail.lower ()
     cemail = db.contact_type.lookup ('Email')
     sdict  = dict (contact_type = cemail, contact = mail)
     sdict ['customer.is_valid'] = True
+    if customer :
+        sdict ['customer'] = customer
     for c in db.contact.filter (None, sdict) :
         cont = db.contact.getnode (c)
         cust = db.customer.getnode (cont.customer)
         # filter uses substring match for strings
         if cont.contact == mail and cust.is_valid :
             return c
+    if customer :
+        return None
     md    = mail.split ('@') [-1]
     # this also tries subdomains, e.g., country.example.com for the
     # incoming mail will be matched by example.com as the customer mail.
@@ -148,17 +162,6 @@ def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
     return c
 # end def find_or_create_contact
 
-#               # Parse To and CC headers to find more customer email
-#               # addresses. Check if these contain the same domain
-#               # part as the From.
-#               ccs = get_all ('CC')
-#               tos = get_all ('To')
-#               dom = mail.split ('@', 1) [-1]
-#               for rn, mail in getaddresses (ccs + tos) :
-#                   rn = decode_header (rn)
-#                   d  = mail.split ('@', 1) [-1]
-#                   if d == dom and not in_nosy (db, new_values, mail) :
-#                       c = find_or_create_contact (db, mail)
 
 def header_check (db, cl, nodeid, new_values) :
     """ Check header of new messages and determine original customer
@@ -182,8 +185,8 @@ def header_check (db, cl, nodeid, new_values) :
         oldmsgs = set ()
     system  = db.user_status.lookup ('system')
     cemail  = db.contact_type.lookup ('Email')
-    for m in newmsgs.difference (oldmsgs) :
-        msg    = db.msg.getnode (m)
+    for msgid in newmsgs.difference (oldmsgs) :
+        msg    = db.msg.getnode (msgid)
         h      = None
         if msg.header :
             h = Parser ().parsestr (msg.header, headersonly = True)
@@ -202,8 +205,26 @@ def header_check (db, cl, nodeid, new_values) :
                 # want as a from-address for future mails *to* this user
                 autad = db.user.get (msg.author, 'address')
                 c     = find_or_create_contact (db, mail, rn, frm = autad)
-                new_values ['customer'] = db.contact.get (c, 'customer')
-                new_values ['emails']   = [c]
+                cust  = new_values ['customer'] = db.contact.get (c, 'customer')
+                new_values ['emails'] = [c]
+                # Parse To and CC headers to find more customer email
+                # addresses. Check if these contain the same domain
+                # part as the From.
+                ccs = h.get_all ('CC')
+                tos = h.get_all ('To')
+                cc  = []
+                for rn, mail in getaddresses (ccs + tos) :
+                    c = find_or_create_contact (db, mail, rn, customer = cust)
+                    print "huhu", mail
+                    if c :
+                        new_values ['emails'].append (c)
+                    elif uidFromAddress (db, (rn, mail)) :
+                        print "hu?"
+                        pass
+                    else :
+                        cc.append (mail)
+                if cc :
+                    new_values ['cc'] = ', '.join (cc)
         else :
             if send_to_customer :
                 mails = None
@@ -217,10 +238,24 @@ def header_check (db, cl, nodeid, new_values) :
                            "configured contact-email for customer"
                           )
                 mails = (db.contact.get (x, 'contact') for x in mails)
-                h.add_header ('X-ROUNDUP-CC', ','.join (mails))
+                if 'cc' in new_values :
+                    cc = new_values ['cc']
+                elif nodeid :
+                    cc = cl.get (nodeid, 'cc')
+                m = ','.join (mails)
+                if cc :
+                    m = ','.join ((m, cc))
+                h.add_header ('X-ROUNDUP-CC', m)
+                print new_values, nodeid
+                if 'bcc' in new_values :
+                    bcc = new_values ['bcc']
+                elif nodeid :
+                    bcc = cl.get (nodeid, 'bcc')
+                if bcc :
+                    h.add_header ('X-ROUNDUP-BCC', bcc)
         h = h.as_string ()
         if h != '\n' and h != msg.header :
-            db.msg.set (m, header = h)
+            db.msg.set (msgid, header = h)
 # end def header_check
 
 def check_require_message (db, cl, nodeid, new_values) :
