@@ -393,6 +393,10 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'sup_classification'
+      , [ 'name'
+        ]
+      )
     , ( 'sup_prio'
       , [ 'name'
         , 'order'
@@ -407,7 +411,10 @@ properties = \
         ]
       )
     , ( 'support'
-      , [ 'category'
+      , [ 'bcc'
+        , 'category'
+        , 'cc'
+        , 'classification'
         , 'closed'
         , 'confidential'
         , 'customer'

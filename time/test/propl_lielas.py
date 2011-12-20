@@ -1,5 +1,13 @@
 properties = \
-    [ ( 'device'
+    [ ( 'alarm'
+      , [ 'is_lower'
+        , 'last_triggered'
+        , 'sensor'
+        , 'timeout'
+        , 'val'
+        ]
+      )
+    , ( 'device'
       , [ 'adr'
         , 'cls'
         , 'dev'

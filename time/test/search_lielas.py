@@ -1,5 +1,23 @@
 properties = \
-    [ ( 'device'
+    [ ( 'alarm'
+      , [ ( 'is_lower'
+          , ['admin', 'guest', 'logger', 'user']
+          )
+        , ( 'last_triggered'
+          , ['admin', 'guest', 'logger', 'user']
+          )
+        , ( 'sensor'
+          , ['admin', 'guest', 'logger', 'user']
+          )
+        , ( 'timeout'
+          , ['admin', 'guest', 'logger', 'user']
+          )
+        , ( 'val'
+          , ['admin', 'guest', 'logger', 'user']
+          )
+        ]
+      )
+    , ( 'device'
       , [ ( 'adr'
           , ['admin', 'guest', 'logger', 'user']
           )
