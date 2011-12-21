@@ -4,6 +4,7 @@ import sys
 import xmlrpclib
 from optparse import OptionParser
 from getpass  import getpass, getuser
+from urllib   import pathname2url
 
 class XMLRPC (object) :
     def __init__ (self, url) :
@@ -91,8 +92,8 @@ if len (args) != 1 :
     cmd.error ('Need exactly one argument: the new responsible user')
     exit (23)
 
-password = getpass ()
-user = opt.user
+password = pathname2url (getpass ())
+user     = opt.user
 
 srvr = XMLRPC (opt.link % locals ())
 
