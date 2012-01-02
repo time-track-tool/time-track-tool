@@ -67,6 +67,8 @@ class Repr_Str (autosuper) :
 
 class Repr_Number (Repr_Str) :
     def conv (self, x) :
+        if x is None :
+            return ""
         return locale.format ("%2.2f", x)
     # end def conv
 
