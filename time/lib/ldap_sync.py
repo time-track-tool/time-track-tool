@@ -548,14 +548,12 @@ class LDAP_Roundup_Sync (object) :
                     if cs [1:] :
                         print "%s: Inserting: %s (%s)" \
                             % (user.username, s, cs [1:])
-                        if s not in self.forbidden :
-                            modlist.append ((ldap.MOD_ADD, s, cs [1:]))
+                        modlist.append ((ldap.MOD_ADD, s, cs [1:]))
                 else :
                     if luser [s] != cs [1:] :
                         print "%s:  Updating: %s/%s %s/%s" % \
                             (user.username, ct, s, cs [1:], ldattr)
-                        if s not in self.forbidden :
-                            modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
+                        modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
         for ct, fields in self.attr_map ['user_contact'].iteritems () :
             if ct not in contacts :
                 for f in fields :
