@@ -210,8 +210,8 @@ def header_check (db, cl, nodeid, new_values) :
                 # Parse To and CC headers to find more customer email
                 # addresses. Check if these contain the same domain
                 # part as the From.
-                ccs = h.get_all ('CC')
-                tos = h.get_all ('To')
+                ccs = h.get_all ('CC') or []
+                tos = h.get_all ('To') or []
                 cc  = []
                 for rn, mail in getaddresses (ccs + tos) :
                     c = find_or_create_contact (db, mail, rn, customer = cust)
