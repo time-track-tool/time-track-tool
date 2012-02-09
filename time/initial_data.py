@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-12 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -913,3 +913,33 @@ if 'umts' in db.classes :
 
 if 'email' in db.classes :
     db.email.create (server = "smtp.example.com")
+
+if 'ham_band' in db.classes :
+    db.ham_band.create (name = '6m',   order =  100)
+    db.ham_band.create (name = '10m',  order =  200)
+    db.ham_band.create (name = '12m',  order =  300)
+    db.ham_band.create (name = '15m',  order =  400)
+    db.ham_band.create (name = '17m',  order =  500)
+    db.ham_band.create (name = '20m',  order =  600)
+    db.ham_band.create (name = '30m',  order =  700)
+    db.ham_band.create (name = '40m',  order =  800)
+    db.ham_band.create (name = '80m',  order =  900)
+    db.ham_band.create (name = '160m', order = 1000)
+
+if 'ham_mode' in db.classes :
+    db.ham_mode.create (name = 'PSK31',   order = 100)
+    db.ham_mode.create (name = 'PSK63',   order = 110)
+    db.ham_mode.create (name = 'PSK125',  order = 120)
+    db.ham_mode.create (name = 'QPSK31',  order = 200)
+    db.ham_mode.create (name = 'QPSK63',  order = 210)
+    db.ham_mode.create (name = 'QPSK125', order = 220)
+    db.ham_mode.create (name = 'MFSK16',  order = 300)
+    db.ham_mode.create (name = 'RTTY',    order = 400)
+    db.ham_mode.create (name = 'HELL',    order = 500)
+    db.ham_mode.create (name = 'OLIVIA',  order = 600)
+
+if 'qsl_type' in db.classes :
+    db.qsl_type.create (name = 'eQSL',    order = 10)
+    db.qsl_type.create (name = 'LOTW',    order = 20)
+    db.qsl_type.create (name = 'Bureau',  order = 30)
+    db.qsl_type.create (name = 'Direct',  order = 40)

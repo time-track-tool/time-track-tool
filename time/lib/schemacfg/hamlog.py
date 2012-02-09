@@ -39,26 +39,48 @@ def init \
     , Multilink
     , Boolean
     , Number
-    , Min_Issue_Class
-    , Nosy_Issue_Class
-    , Address_Class
-    , Letter_Class
     , ** kw
     ) :
 
     export   = {}
 
+    ham_call = Class \
+        ( db, ''"ham_call"
+        , call                  = String    ()
+        , name                  = String    ()
+        , qth                   = String    ()
+        , gridsquare            = String    ()
+        )
+    ham_call.setkey (''"name")
+
     ham_mode = Class \
         ( db, ''"ham_mode"
         , name                  = String    ()
+        , order                 = Number    ()
         )
     ham_mode.setkey (''"name")
 
     ham_band = Class \
         ( db, ''"ham_band"
         , name                  = String    ()
+        , order                 = Number    ()
         )
     ham_band.setkey (''"name")
+
+    qsl_type = Class \
+        ( db, ''"qsl_type"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    qsl_type.setkey (''"name")
+
+    qsl = Class \
+        ( db, ''"qsl"
+        , qsl_type              = Link      ("qsl_type", do_journal = "no")
+        , qso                   = Link      ("qso",      do_journal = "no")
+        , date_recv             = Date      ()
+        , date_sent             = Date      ()
+        )
 
     qso = Class \
         ( db, ''"qso"
@@ -73,8 +95,21 @@ def init \
         , band                  = Link      ("ham_band", do_journal = "no")
         , qth                   = String    ()
         , gridsquare            = String    ()
+        , owner                 = Link      ("ham_call", do_journal = "no")
         , messages              = Multilink ("msg")
         )
+
+    class User_Class (kw ['User_Class']) :
+        """ add some attrs to user class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( call                   = Multilink ("ham_call")
+                )
+            kw ['User_Class'].__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class User_Class
+    export.update (dict (User_Class = User_Class))
 
     return export
 # end def init
@@ -83,11 +118,18 @@ def init \
 def security (db, ** kw) :
 
     classes = \
-        [ ("ham_mode",   ["User"],    ["User"])
+        [ ("ham_call",   ["User"],    ["User"])
+        , ("ham_mode",   ["User"],    ["User"])
         , ("ham_band",   ["User"],    ["User"])
+        , ("qsl_type",   ["User"],    ["User"])
+        , ("qsl",        ["User"],    ["User"])
         , ("qso",        ["User"],    ["User"])
         ]
+    prop_perms = \
+        [ ("user", "View", ["User"], ("call",))
+        , ("user", "Edit", ["User"], ("call",))
+        ]
 
-    schemadef.register_class_permissions (db, classes, [])
+    schemadef.register_class_permissions (db, classes, prop_perms)
 # end def security
 
