@@ -97,6 +97,7 @@ def init \
         , qth                   = String    ()
         , gridsquare            = String    ()
         , country               = String    ()
+        , state                 = String    ()
         , owner                 = Link      ("ham_call", do_journal = "no")
         , messages              = Multilink ("msg")
         )
