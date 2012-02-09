@@ -58,12 +58,19 @@
       <th tal:content="structure python:utils.fieldname (classname, 'qth')"/>
       <td tal:content="structure python:context.qth.field ()"/>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'country')"/>
+      <td tal:content="structure python:context.country.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'gridsquare')"/>
       <td tal:content="structure python:context.gridsquare.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'mode')"/>
       <td tal:content="structure python:context.mode.menu ()"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'tx_pwr')"/>
+      <td tal:content="structure python:context.tx_pwr.field ()"/>
      </tr>
     </tal:block>
    </tal:block>

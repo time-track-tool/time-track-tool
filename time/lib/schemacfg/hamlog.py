@@ -85,6 +85,7 @@ def init \
     qso = Class \
         ( db, ''"qso"
         , freq                  = String    (indexme = "no")
+        , tx_pwr                = String    ()
         , call                  = String    ()
         , mode                  = Link      ("ham_mode", do_journal = "no")
         , name                  = String    ()
@@ -95,6 +96,7 @@ def init \
         , band                  = Link      ("ham_band", do_journal = "no")
         , qth                   = String    ()
         , gridsquare            = String    ()
+        , country               = String    ()
         , owner                 = Link      ("ham_call", do_journal = "no")
         , messages              = Multilink ("msg")
         )
