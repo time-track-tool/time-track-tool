@@ -118,12 +118,12 @@
        , item = context.department
        ).formatlink ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'contact' in props">
      <th tal:content="structure python:utils.fieldname('user', 'contacts')"/>
      <td colspan="3">
       <table class="form" border="0"
              style="border-spacing:0px;padding-top:0px;padding-left:0px">
-       <tr tal:condition="python:'contacts' in props">
+       <tr>
         <th style="text-align:left"
             tal:content="structure python:utils.fieldname
             ('user_contact', 'contact_type')"/>
@@ -144,7 +144,7 @@
             remove
         </th>
        </tr>
-       <tr tal:condition="python:'contacts' in props" tal:repeat="ct python:sorted
+       <tr tal:repeat="ct python:sorted
            ( context.contacts
            , key = lambda x : (x.contact_type.order, x.order, x.contact)
            )">
@@ -171,8 +171,7 @@
                 tal:attributes="value ct/id">
         </td>
        </tr>
-       <tr tal:condition="python:
-           'contacts' in props and db.user_contact.is_edit_ok ()">
+       <tr tal:condition="python: db.user_contact.is_edit_ok ()">
         <td tal:content="structure python:utils.new_property
             (context, db, 'user_contact', -1, 'contact_type').menu ()"/>
         <td tal:content="structure python:utils.new_property
@@ -423,6 +422,62 @@
       <td tal:content="structure context/user_password"/>
      </tr>
     </tal:block>
+    <tr tal:condition="python:'call' in props">
+     <th tal:content="structure python:utils.fieldname('user', 'call')"/>
+     <td colspan="3">
+      <table class="form" border="0"
+             style="border-spacing:0px;padding-top:0px;padding-left:0px">
+       <tr>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('ham_call', 'name')" class="required"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('ham_call', 'call')" class="required"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('ham_call', 'qth')"/>
+        <th style="text-align:left"
+            tal:content="structure python:utils.fieldname
+            ('ham_call', 'gridsquare')"/>
+        <th style="text-align:left"
+            tal:condition="context/call/is_edit_ok" i18n:translate="">
+            remove
+        </th>
+       </tr>
+       <tr tal:repeat="ct python:sorted
+           ( context.call
+           , key = lambda x : (x.name)
+           )">
+        <th style="vertical-align:top;text-align:left"
+            tal:content="structure python:utils.ExtProperty
+            (utils, ct.name, item = ct).formatlink () + '&nbsp'">
+         <input type="hidden" tal:attributes=
+                "value context/id;name python:'%s@user' % ct.designator()"/>
+        </th>
+        <td tal:content="ct/call/plain"/>
+        <td tal:content="ct/qth/plain"/>
+        <td tal:content="ct/gridsquare/plain"/>
+        <td tal:condition="context/call/is_edit_ok">
+         <input tabindex="-1" type="checkbox" name="@remove@call"
+                tal:attributes="value ct/id">
+        </td>
+       </tr>
+       <tr tal:condition="python: db.ham_call.is_edit_ok ()">
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'ham_call', -1, 'name').field (size=16)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'ham_call', -1, 'call').field (size=8)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'ham_call', -1, 'qth').field (size=12)"/>
+        <td tal:content="structure python:utils.new_property
+            (context, db, 'ham_call', -1, 'gridsquare').field (size=6)"/>
+        <td/>
+        <input type="hidden" name="@link@call" value="ham_call-1"/>
+       </tr>
+      </table>
+     </td>
+    </tr>
     <tal:block tal:condition="python:
      'pictures' in bclass.properties and context.pictures.is_edit_ok ()">
      <tr><td/><td i18n:translate="">max. size of picture: 100kB</td></tr>

@@ -124,10 +124,15 @@ def security (db, ** kw) :
         , ("qsl_type",   ["User"],    ["User"])
         , ("qsl",        ["User"],    ["User"])
         , ("qso",        ["User"],    ["User"])
+        , ("user",       ["User"],    ["Admin"])
         ]
     prop_perms = \
-        [ ("user", "View", ["User"], ("call",))
-        , ("user", "Edit", ["User"], ("call",))
+        [ ( "user", "View", ["User"], ("call",))
+        , ( "user", "Edit", ["User"]
+          , ("call", "password", "csv_delimiter", "address"
+            , "alternate_addresses"
+            )
+          )
         ]
 
     schemadef.register_class_permissions (db, classes, prop_perms)
