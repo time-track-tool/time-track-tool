@@ -47,6 +47,24 @@ def check_dupe_qsl_type (db, cl, nodeid, new_values) :
         raise Reject, _ ('Duplicate QSL type "%s" for QSO' % qn)
 # end def check_dupe_qsl_type
 
+def check_owner_has_qsos (db, cl, nodeid, new_values) :
+    if 'call' not in new_values :
+        return
+    oldcalls = set (cl.get (nodeid, 'call'))
+    newcalls = set (new_values ['call'])
+    deleted  = oldcalls - newcalls
+    if not deleted :
+        return
+    for call in deleted :
+        qsos = db.qso.filter (None, dict (owner = call))
+        if qsos :
+            name = db.ham_call.get (call, 'name')
+            raise Reject, _ ('Cant\'t delete "%(name)s" Call has QSOs') \
+                % locals ()
+        else :
+            db.ham_call.retire (call)
+# end def check_owner_has_qsos
+
 def init (db) :
     if 'qso' not in db.classes :
         return
@@ -54,8 +72,9 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    db.qsl.react ('set',    check_qso_empty)
-    db.qsl.audit ('create', check_dupe_qsl_type)
+    db.qsl.react  ('set',    check_qso_empty)
+    db.qsl.audit  ('create', check_dupe_qsl_type)
+    db.user.audit ('set',    check_owner_has_qsos)
 # end def init
 
 ### __END__
