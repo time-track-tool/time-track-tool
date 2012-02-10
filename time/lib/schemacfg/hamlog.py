@@ -44,6 +44,13 @@ def init \
 
     export   = {}
 
+    antenna = Class \
+        ( db, ''"antenna"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    antenna.setkey (''"name")
+
     ham_call = Class \
         ( db, ''"ham_call"
         , call                  = String    ()
@@ -100,6 +107,7 @@ def init \
         , state                 = String    ()
         , owner                 = Link      ("ham_call", do_journal = "no")
         , messages              = Multilink ("msg")
+        , antenna               = Link      ("antenna",  do_journal = "no")
         )
 
     class User_Class (kw ['User_Class']) :
@@ -125,6 +133,7 @@ def security (db, ** kw) :
         , ("ham_mode",   ["User"],    ["User"])
         , ("ham_band",   ["User"],    ["User"])
         , ("qsl_type",   ["User"],    ["User"])
+        , ("antenna",    ["User"],    ["User"])
         , ("qsl",        ["User"],    ["User"])
         , ("qso",        ["User"],    ["User"])
         , ("user",       ["User"],    ["Admin"])

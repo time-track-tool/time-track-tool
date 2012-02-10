@@ -27,6 +27,10 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'owner')"/>
+      <td tal:content="context/owner/name/plain"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'call')"/>
       <td tal:content="structure python:context.call.field ()"/>
       <th tal:content="structure python:utils.fieldname (classname, 'name')"/>
@@ -73,6 +77,11 @@
       <td tal:content="structure python:context.mode.menu ()"/>
       <th tal:content="structure python:utils.fieldname (classname, 'tx_pwr')"/>
       <td tal:content="structure python:context.tx_pwr.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'antenna')"/>
+      <td tal:content="structure python:context.antenna.menu ()" colspan="3"/>
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="after-message-box">
