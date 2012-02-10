@@ -860,6 +860,7 @@
    </tr>
 
    <tr metal:use-macro="templates/page/macros/message_box"/>
+   <tr metal:define-slot="after-message-box" />
 
    <tr tal:condition="python:
        has_files and want_files and context.files.is_edit_ok ()">

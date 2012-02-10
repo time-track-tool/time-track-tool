@@ -22,7 +22,7 @@
   <tal:block tal:define=
     " use_labelprop       python:0
     ; has_resp            python:0
-    ; required_attributes string:title
+    ; required_attributes string:call
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
@@ -74,6 +74,54 @@
       <th tal:content="structure python:utils.fieldname (classname, 'tx_pwr')"/>
       <td tal:content="structure python:context.tx_pwr.field ()"/>
      </tr>
+    </tal:block>
+    <tal:block metal:fill-slot="after-message-box">
+     <tr>
+      <td colspan=4>
+       <table class="files" tal:define="cond python:
+              bool (context.is_edit_ok and db.qsl.is_edit_ok ())">
+        <tr>
+         <th class="header" i18n:translate=""
+             tal:attributes="colspan python: cond + 3">qsl</th>
+        </tr>
+        <tr>
+         <td class="header" tal:content="structure python:utils.fieldname
+             ('qsl', 'qsl_type')" class="required"/>
+         <td class="header" tal:content="structure python:utils.fieldname
+             ('qsl', 'date_recv')"/>
+         <td class="header" tal:content="structure python:utils.fieldname
+             ('qsl', 'date_sent')"/>
+         <td class="header" tal:condition="cond" i18n:translate="">remove</td>
+        </tr>
+        <tr tal:repeat="ct python:sorted
+            ( db.qsl.filter (filterspec = dict (qso = context.id))
+            , key = lambda x : (x.qsl_type)
+            )">
+         <td style="vertical-align:top;text-align:left"
+             tal:content="structure python:utils.ExtProperty
+             (utils, ct.qsl_type, item = ct).formatlink () + '&nbsp'">
+         </td>
+         <td tal:content="python: ct.date_recv.pretty (utils.ymd)"/>
+         <td tal:content="python: ct.date_sent.pretty (utils.ymd)"/>
+         <td tal:condition="cond">
+          <input tabindex="-1" type="checkbox" value="" tal:attributes=
+                 "name  python: ct.designator () + '@qso'">
+         </td>
+        </tr>
+        <tr tal:condition="python: db.qsl.is_edit_ok ()">
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'qsl', -1, 'qsl_type').menu ()"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'qsl', -1, 'date_recv').field (size=8)"/>
+         <td tal:content="structure python:utils.new_property
+             (context, db, 'qsl', -1, 'date_sent').field (size=8)"/>
+         <td><input type="hidden" name="qsl-1@link@qso"
+                tal:attributes="value context/designator"/></td>
+        </tr>
+       </table>
+      </td>
+     </tr>
+     <tr><td>&nbsp;</td></tr>
     </tal:block>
    </tal:block>
   </tal:block>
