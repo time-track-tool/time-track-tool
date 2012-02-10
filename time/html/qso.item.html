@@ -28,7 +28,38 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'owner')"/>
-      <td tal:content="context/owner/name/plain"/>
+      <td tal:content="structure python:utils.ExtProperty
+       (utils, context.owner.name, item=context.owner).formatlink ()"/>
+      <input type="hidden" name="owner"
+             tal:attributes="value python: context.owner.id or ''"/>
+      <tal:block tal:condition="context/swl">
+       <th tal:content="structure python:utils.fieldname (classname, 'swl')"/>
+       <td tal:content="structure python:utils.ExtProperty
+        (utils, context.swl.call, item=context.swl).formatlink ()"/>
+      </tal:block>
+      <tal:block tal:condition="not:context/swl">
+       <td/>
+       <td class="header">
+        <a i18n:translate="" tal:attributes="href python:
+           'qso?:template=item&' + '&'.join
+            ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+              [ ('swl',          context.id)
+              , ('freq',         context.freq)
+              , ('band',         context.band)
+              , ('qso_start',    context.qso_start)
+              , ('qso_end',      context.qso_end)
+              , ('antenna',      context.antenna.id)
+              , ('mode',         context.mode.id)
+              , ('owner',        context.owner.id)
+              ]
+             ]
+            )">
+         add swl report
+        </a>
+       </td>
+      </tal:block>
+      <input type="hidden" name="swl"
+             tal:attributes="value python: context.swl.id or ''"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'call')"/>
@@ -85,52 +116,54 @@
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="after-message-box">
-     <tr>
-      <td colspan=4>
-       <table class="files" tal:define="cond python:
-              bool (context.is_edit_ok and db.qsl.is_edit_ok ())">
-        <tr>
-         <th class="header" i18n:translate=""
-             tal:attributes="colspan python: cond + 3">qsl</th>
-        </tr>
-        <tr>
-         <td class="header" tal:content="structure python:utils.fieldname
-             ('qsl', 'qsl_type')" class="required"/>
-         <td class="header" tal:content="structure python:utils.fieldname
-             ('qsl', 'date_recv')"/>
-         <td class="header" tal:content="structure python:utils.fieldname
-             ('qsl', 'date_sent')"/>
-         <td class="header" tal:condition="cond" i18n:translate="">remove</td>
-        </tr>
-        <tr tal:repeat="ct python:sorted
-            ( db.qsl.filter (filterspec = dict (qso = context.id))
-            , key = lambda x : (x.qsl_type)
-            )">
-         <td style="vertical-align:top;text-align:left"
-             tal:content="structure python:utils.ExtProperty
-             (utils, ct.qsl_type, item = ct).formatlink () + '&nbsp'">
-         </td>
-         <td tal:content="python: ct.date_recv.pretty (utils.ymd)"/>
-         <td tal:content="python: ct.date_sent.pretty (utils.ymd)"/>
-         <td tal:condition="cond">
-          <input tabindex="-1" type="checkbox" value="" tal:attributes=
-                 "name  python: ct.designator () + '@qso'">
-         </td>
-        </tr>
-        <tr tal:condition="python: db.qsl.is_edit_ok ()">
-         <td tal:content="structure python:utils.new_property
-             (context, db, 'qsl', -1, 'qsl_type').menu ()"/>
-         <td tal:content="structure python:utils.new_property
-             (context, db, 'qsl', -1, 'date_recv').field (size=8)"/>
-         <td tal:content="structure python:utils.new_property
-             (context, db, 'qsl', -1, 'date_sent').field (size=8)"/>
-         <td><input type="hidden" name="qsl-1@link@qso"
-                tal:attributes="value context/designator"/></td>
-        </tr>
-       </table>
-      </td>
-     </tr>
-     <tr><td>&nbsp;</td></tr>
+     <tal:block tal:condition="context/id">
+      <tr>
+       <td colspan=4>
+        <table class="files" tal:define="cond python:
+               bool (context.is_edit_ok and db.qsl.is_edit_ok ())">
+         <tr>
+          <th class="header" i18n:translate=""
+              tal:attributes="colspan python: cond + 3">qsl</th>
+         </tr>
+         <tr>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qsl', 'qsl_type')" class="required"/>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qsl', 'date_recv')"/>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qsl', 'date_sent')"/>
+          <td class="header" tal:condition="cond" i18n:translate="">remove</td>
+         </tr>
+         <tr tal:repeat="ct python:sorted
+             ( db.qsl.filter (filterspec = dict (qso = context.id))
+             , key = lambda x : (x.qsl_type)
+             )">
+          <td style="vertical-align:top;text-align:left"
+              tal:content="structure python:utils.ExtProperty
+              (utils, ct.qsl_type, item = ct).formatlink () + '&nbsp'">
+          </td>
+          <td tal:content="python: ct.date_recv.pretty (utils.ymd)"/>
+          <td tal:content="python: ct.date_sent.pretty (utils.ymd)"/>
+          <td tal:condition="cond">
+           <input tabindex="-1" type="checkbox" value="" tal:attributes=
+                  "name  python: ct.designator () + '@qso'">
+          </td>
+         </tr>
+         <tr tal:condition="python: db.qsl.is_edit_ok ()">
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'qsl', -1, 'qsl_type').menu ()"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'qsl', -1, 'date_recv').field (size=8)"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'qsl', -1, 'date_sent').field (size=8)"/>
+          <td><input type="hidden" name="qsl-1@link@qso"
+                 tal:attributes="value context/designator"/></td>
+         </tr>
+        </table>
+       </td>
+      </tr>
+      <tr><td>&nbsp;</td></tr>
+     </tal:block>
     </tal:block>
    </tal:block>
   </tal:block>

@@ -108,6 +108,7 @@ def init \
         , owner                 = Link      ("ham_call", do_journal = "no")
         , messages              = Multilink ("msg")
         , antenna               = Link      ("antenna",  do_journal = "no")
+        , swl                   = Link      ("qso")
         )
 
     class User_Class (kw ['User_Class']) :
