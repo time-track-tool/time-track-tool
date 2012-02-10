@@ -77,7 +77,7 @@ def init \
     qsl = Class \
         ( db, ''"qsl"
         , qsl_type              = Link      ("qsl_type", do_journal = "no")
-        , qso                   = Link      ("qso",      do_journal = "no")
+        , qso                   = Link      ("qso")
         , date_recv             = Date      ()
         , date_sent             = Date      ()
         )
