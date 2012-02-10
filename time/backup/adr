@@ -3,6 +3,7 @@
 TRACKER=/var/lib/tracker/address
 BACKUPDIR=/var/lib/tracker/backup/address
 ROUNDUP_ADMIN=/usr/local/bin/roundup-admin
+USE_CURRENT=1
 
 ### WARNING ###
 ### WARNING ###
@@ -20,7 +21,7 @@ ROUNDUP_ADMIN=/usr/local/bin/roundup-admin
 RESTORE=/var/lib/tracker/adr_restore
 RESTOREPW="xyzzy"
 
-if [ ${TRACKER} = ${RESTORE} ] ; then
+if [ "${TRACKER}" = "${RESTORE}" ] ; then
     echo "READ COMMENTS. You don't want to overwrite your tracker?!"
     exit 42
 fi
@@ -35,6 +36,12 @@ if [ "${TRACKERDBNAME}" = "${RESTOREDBNAME}" ] ; then
 fi
 
 dir=${BACKUPDIR}/backup-$(date +%a)
+if [ -n "$USE_CURRENT" ] ; then
+    dir=${BACKUPDIR}/current
+    old=${BACKUPDIR}/backup-$(date -d yesterday +%a)
+    rm -rf $old
+    mv ${dir} ${old}
+fi
 echo Backing up $TRACKER to $dir
 rm -rf $dir
 mkdir $dir
@@ -44,10 +51,12 @@ cp $TRACKER/config.ini $dir
 cp $RESTORE/config.ini $dir/config.ini.restore
 
 if [ -n "$RESTORE" ] ; then
-    echo Restoring from $dir to $RESTORE
+    echo Restoring from $dir to $RESTORE Restore DB: $RESTOREDBNAME
     cp $TRACKER/db/backend_name $RESTORE/db
     echo y | $ROUNDUP_ADMIN -i $RESTORE init ${RESTOREPW}
     cp $TRACKER/db/backend_name $RESTORE/db
     $ROUNDUP_ADMIN -i $RESTORE import $dir
 fi
 
+# re-create html/userlist.html in restored tracker.
+(cd $RESTORE ; utils/userlist.py)
