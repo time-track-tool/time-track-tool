@@ -29,12 +29,23 @@
 
 from   roundup.exceptions             import Reject
 from   roundup.cgi.TranslationService import get_translation
+import common
 
 def check_qso_empty (db, cl, nodeid, old_values) :
     """ Retire qsl if qso Link is removed """
     if 'qso' in old_values and not cl.get (nodeid, 'qso') :
         cl.retire (nodeid)
 # end def check_qso_empty
+
+def check_dupe_qsl_type (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'qsl_type', 'qso')
+    type = new_values ['qsl_type']
+    qso  = new_values ['qso']
+    qsl  = db.qsl.filter (None, dict (qso = qso, qsl_type = type))
+    qn   = db.qsl_type.get (type, 'name')
+    if qsl :
+        raise Reject, _ ('Duplicate QSL type "%s" for QSO' % qn)
+# end def check_dupe_qsl_type
 
 def init (db) :
     if 'qso' not in db.classes :
@@ -43,7 +54,8 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    db.qsl.react ('set', check_qso_empty)
+    db.qsl.react ('set',    check_qso_empty)
+    db.qsl.audit ('create', check_dupe_qsl_type)
 # end def init
 
 ### __END__
