@@ -158,6 +158,9 @@
                         : '@columns=id,name,description,date,locations,is_half&'
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                           'date=.%3B'
+   , ('qsl', '')        : '@sort=-date_recv,-date_sent&'
+                          '@pagesize=20&@startwith=0'
+   , ('qso', '')        : '@sort=-qso_end&@pagesize=20&@startwith=0'
    , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
@@ -374,6 +377,11 @@
      , ('support',             'Create', '?@template=item', 1)
      , ('uc_type',             'Edit',   '?@template=item', 1)
      , ('mailgroup',           'Edit',   '?@template=item', 1)
+     , ('qsl_type',            'Edit',   '?@template=item', 1)
+     , ('ham_mode',            'Edit',   '?@template=item', 1)
+     , ('ham_band',            'Edit',   '?@template=item', 1)
+     , ('qsl_type',            'Edit',   '?@template=item', 1)
+     , ('qso',                 'Edit',   '?@template=item', 1)
      )
    , ( ('cost_center',         'View', 1,               ('',''))
      , ( 'daily_record'
@@ -457,6 +465,8 @@
      , ('customer',            'View', 1,               ('',''))
      , ('support',             'View', 1,               ('',''))
      , ('user_contact',      'Search', 1,               ('',''))
+     , ('qsl',                 'View', 1,               ('',''))
+     , ('qso',                 'View', 1,               ('',''))
      )
    )
  ; menu_type     python:
