@@ -34,8 +34,27 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'qso')"/>
-      <td tal:content="structure python:context.qso.plain ()"
-          colspan="3"/>
+      <td colspan="3">
+       <span tal:content="structure python:utils.ExtProperty
+        (utils, context.qso.call, item=context.qso).formatlink ()"/>
+       &nbsp;
+       <span tal:condition="context/qso/name"
+        tal:content="structure python:utils.ExtProperty
+        (utils, context.qso.name, item=context.qso).formatlink ()"/>
+       &nbsp;
+       <span tal:content="structure python:utils.ExtProperty
+        ( utils
+        , context.qso.qso_start
+        , item=context.qso
+        , format='%Y-%m-%d.%H:%M'
+        ).formatlink ()"/>
+       &nbsp;
+       <span tal:content="structure python:utils.ExtProperty
+        (utils, context.qso.band, item=context.qso).formatlink ()"/>
+       &nbsp;
+       <span tal:content="structure python:utils.ExtProperty
+        (utils, context.qso.mode, item=context.qso).formatlink ()"/>
+      </td>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
