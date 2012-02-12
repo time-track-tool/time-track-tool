@@ -256,7 +256,6 @@ class ExtProperty :
         self.propname      = displayprop
         self.leafprop      = prop._prop
         self.force_link    = force_link
-        print "__init__:", self.searchname, self.format
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -337,7 +336,6 @@ class ExtProperty :
     # end def _set_item
 
     def formatted (self, item = None) :
-        print "formatted:", self.name, self.searchname, self.prop, self.format
         self._set_item (item)
         if  (  self.prop is None
             or isinstance (self.prop, MissingValue)
