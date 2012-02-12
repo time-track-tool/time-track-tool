@@ -153,8 +153,25 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'wont_qsl_via')" rowspan="2"/>
+      <td tal:content="structure python:context.wont_qsl_via.menu (height=2)"
+          rowspan="2"/>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'antenna')"/>
-      <td tal:content="structure python:context.antenna.menu ()" colspan="3"/>
+      <td tal:content="structure python:context.antenna.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'no_qsl_status')"/>
+      <td tal:content="python:context.qsl_s_status.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'qsl_r_status')"/>
+      <td tal:content="python:context.qsl_r_status.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'qsl_s_status')"/>
+      <td tal:content="python:context.qsl_s_status.plain ()"/>
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="after-message-box">

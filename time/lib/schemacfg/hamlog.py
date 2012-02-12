@@ -78,8 +78,17 @@ def init \
         ( db, ''"qsl_type"
         , name                  = String    ()
         , order                 = Number    ()
+        , code                  = Number    ()
         )
     qsl_type.setkey (''"name")
+
+    qsl_status = Class \
+        ( db, ''"qsl_status"
+        , name                  = String    ()
+        , code                  = Number    ()
+        )
+    qsl_status.setkey       (''"name")
+    qsl_status.setorderprop (''"code")
 
     qsl = Class \
         ( db, ''"qsl"
@@ -111,6 +120,10 @@ def init \
         , swl                   = Link      ("qso")
         , qsl_via               = String    ()
         , qso2                  = Link      ("qso")
+        , wont_qsl_via          = Multilink ("qsl_type",   do_journal = "no")
+        , qsl_r_status          = Link      ("qsl_status", do_journal = "no")
+        , qsl_s_status          = Link      ("qsl_status", do_journal = "no")
+        , no_qsl_status         = Link      ("qsl_status", do_journal = "no")
         )
     qso.setlabelprop ('call')
 
@@ -137,6 +150,7 @@ def security (db, ** kw) :
         , ("ham_mode",   ["User"],    ["User"])
         , ("ham_band",   ["User"],    ["User"])
         , ("qsl_type",   ["User"],    ["User"])
+        , ("qsl_status", ["User"],    ["User"])
         , ("antenna",    ["User"],    ["User"])
         , ("qsl",        ["User"],    ["User"])
         , ("qso",        ["User"],    ["User"])

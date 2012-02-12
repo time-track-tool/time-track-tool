@@ -939,7 +939,17 @@ if 'ham_mode' in db.classes :
     db.ham_mode.create (name = 'OLIVIA',  order = 600)
 
 if 'qsl_type' in db.classes :
-    db.qsl_type.create (name = 'eQSL',    order = 10)
-    db.qsl_type.create (name = 'LOTW',    order = 20)
-    db.qsl_type.create (name = 'Bureau',  order = 30)
-    db.qsl_type.create (name = 'Direct',  order = 40)
+    db.qsl_type.create (name = 'eQSL',    order = 10, code = 1)
+    db.qsl_type.create (name = 'LOTW',    order = 20, code = 2)
+    db.qsl_type.create (name = 'Bureau',  order = 30, code = 4)
+    db.qsl_type.create (name = 'Direct',  order = 40, code = 4)
+
+if 'qsl_status' in db.classes :
+    db.qsl_status.create (name = 'eQSL',            code = 1)
+    db.qsl_status.create (name = 'LOTW',            code = 2)
+    db.qsl_status.create (name = 'eQSL+LOTW',       code = 3)
+    db.qsl_status.create (name = 'paper',           code = 4)
+    db.qsl_status.create (name = 'eQSL+paper',      code = 5)
+    db.qsl_status.create (name = 'LOTW+paper',      code = 6)
+    db.qsl_status.create (name = 'eQSL+LOTW+paper', code = 7)
+    db.qsl_status.create (name = 'none',            code = 0)

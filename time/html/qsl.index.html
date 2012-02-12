@@ -110,6 +110,30 @@
         , searchable   = True
         , searchname   = 'qso.owner'
         )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
+        , searchname   = 'qso.wont_qsl_via'
+        , multiselect  = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
+        , searchname   = 'qso.no_qsl_status'
+        , multiselect  = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
+        , searchname   = 'qso.qsl_r_status'
+        , multiselect  = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
+        , searchname   = 'qso.qsl_s_status'
+        , multiselect  = True
+        )
     );
    "
   tal:condition="context/is_view_ok">
