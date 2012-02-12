@@ -177,6 +177,8 @@ class ExtProperty :
             and
             abo.setlabelprop ('abotype')
             must both work.
+        do_classhelp: usually determined automatically, may be used to
+            turn off classhelp for searchable properties
         filter: A dictionary of properties / values to filter on when
             displaying a menu (in a search mask) or help.
         help_filter: deprecated, a string of property/value pairs
