@@ -109,7 +109,10 @@ def init \
         , messages              = Multilink ("msg")
         , antenna               = Link      ("antenna",  do_journal = "no")
         , swl                   = Link      ("qso")
+        , qsl_via               = String    ()
+        , qso2                  = Link      ("qso")
         )
+    qso.setlabelprop ('call')
 
     class User_Class (kw ['User_Class']) :
         """ add some attrs to user class

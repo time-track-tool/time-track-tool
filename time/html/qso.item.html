@@ -37,7 +37,7 @@
        <td tal:content="structure python:utils.ExtProperty
         (utils, context.swl.call, item=context.swl).formatlink ()"/>
       </tal:block>
-      <tal:block tal:condition="not:context/swl">
+      <tal:block tal:condition="python:context.id and not context.swl">
        <td/>
        <td class="header">
         <a i18n:translate="" tal:attributes="href python:
@@ -46,8 +46,8 @@
               [ ('swl',          context.id)
               , ('freq',         context.freq)
               , ('band',         context.band)
-              , ('qso_start',    context.qso_start)
-              , ('qso_end',      context.qso_end)
+              , ('qso_start',    context.qso_start or '')
+              , ('qso_end',      context.qso_end or '')
               , ('antenna',      context.antenna.id or '')
               , ('tx_pwr',       context.tx_pwr or '')
               , ('mode',         context.mode.id)
@@ -67,6 +67,47 @@
       <td tal:content="structure python:context.call.field ()"/>
       <th tal:content="structure python:utils.fieldname (classname, 'name')"/>
       <td tal:content="structure python:context.name.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'qsl_via')"/>
+      <td tal:content="structure python:context.qsl_via.field ()"/>
+      <tal:block tal:condition="context/qso2">
+       <th tal:content="structure python:utils.fieldname (classname, 'qso2')"/>
+       <td tal:content="structure python:utils.ExtProperty
+        (utils, context.qso2.call, item=context.qso2).formatlink ()"/>
+      </tal:block>
+      <tal:block tal:condition="python: context.id and not context.qso2">
+       <td/>
+       <td class="header">
+        <a i18n:translate="" tal:attributes="href python:
+           'qso?:template=item&' + '&'.join
+            ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+              [ ('qso2',         context.id)
+              , ('freq',         context.freq)
+              , ('band',         context.band)
+              , ('qso_start',    context.qso_start or '')
+              , ('qso_end',      context.qso_end or '')
+              , ('rst_rcvd',     context.rst_rcvd or '')
+              , ('rst_sent',     context.rst_sent or '')
+              , ('qth',          context.qth or '')
+              , ('country',      context.country or '')
+              , ('gridsquare',   context.gridsquare or '')
+              , ('state',        context.state or '')
+              , ('antenna',      context.antenna.id or '')
+              , ('tx_pwr',       context.tx_pwr or '')
+              , ('mode',         context.mode.id)
+              , ('owner',        context.owner.id)
+              , ('name',         context.name or '')
+              ]
+             ]
+            )">
+         add secondary qso
+        </a>
+       </td>
+      </tal:block>
+      <input type="hidden" name="qso2"
+             tal:attributes="value python: context.qso2.id or ''"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'freq')"/>

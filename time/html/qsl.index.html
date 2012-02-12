@@ -15,80 +15,98 @@
     , utils.ExtProperty (utils, pdict ['date_sent'])
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.call'
-        , searchable  = True
+        , searchname   = 'qso.call'
+        , searchable   = True
+        , do_classhelp = False
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.name'
-        , searchable  = True
+        , searchname   = 'qso.name'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.freq'
-        , searchable  = True
+        , searchname   = 'qso.qsl_via'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.band'
-        , searchable  = True
-        , multiselect = 1
+        , searchname   = 'qso.swl'
+        , searchable   = True
+        , help_props   = ('call', 'qso_start')
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.qso_start'
-        , searchable  = True
+        , searchname   = 'qso.qso2'
+        , searchable   = True
+        , help_props   = ('call', 'qso_start')
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.qso_end'
-        , searchable  = True
+        , searchname   = 'qso.freq'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.rst_rcvd'
-        , searchable  = True
+        , searchname   = 'qso.band'
+        , searchable   = True
+        , multiselect  = 1
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.rst_sent'
-        , searchable  = True
+        , searchname   = 'qso.qso_start'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.qth'
-        , searchable  = True
+        , searchname   = 'qso.qso_end'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.country'
-        , searchable  = True
+        , searchname   = 'qso.rst_rcvd'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.state'
-        , searchable  = True
+        , searchname   = 'qso.rst_sent'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.gridsquare'
-        , searchable  = True
+        , searchname   = 'qso.qth'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.mode'
-        , searchable  = True
-        , multiselect = 1
+        , searchname   = 'qso.country'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchname  = 'qso.tx_pwr'
-        , searchable  = True
+        , searchname   = 'qso.state'
+        , searchable   = True
         )
     , utils.ExtProperty
         ( utils, pdict ['qso']
-        , searchable  = True
-        , searchname  = 'qso.owner'
+        , searchname   = 'qso.gridsquare'
+        , searchable   = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchname   = 'qso.mode'
+        , searchable   = True
+        , multiselect  = 1
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchname   = 'qso.tx_pwr'
+        , searchable   = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
+        , searchname   = 'qso.owner'
         )
     );
    "

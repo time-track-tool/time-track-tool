@@ -12,6 +12,17 @@
     ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['call'])
     , utils.ExtProperty (utils, pdict ['name'])
+    , utils.ExtProperty (utils, pdict ['qsl_via'])
+    , utils.ExtProperty
+        ( utils, pdict ['swl']
+        , searchable = 1
+        , help_props = ('call', 'qso_start')
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso2']
+        , searchable = 1
+        , help_props = ('call', 'qso_start')
+        )
     , utils.ExtProperty (utils, pdict ['freq'])
     , utils.ExtProperty (utils, pdict ['band'],  multiselect = 1)
     , utils.ExtProperty (utils, pdict ['qso_start'])
