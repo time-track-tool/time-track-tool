@@ -66,9 +66,15 @@ def check_owner_has_qsos (db, cl, nodeid, new_values) :
             db.ham_call.retire (call)
 # end def check_owner_has_qsos
 
-def fix_stati (db, cl, nodeid, old_values) :
+def fix_stati_qsl (db, cl, nodeid, old_values) :
     fix_qsl_status (db, cl.get (nodeid, 'qso'))
-# end def fix_stati
+# end def fix_stati_qsl
+
+def fix_stati_qso (db, cl, nodeid, old_values) :
+    w = 'wont_qsl_via'
+    if w in old_values and old_values [w] != cl.get (nodeid, w) :
+        fix_qsl_status (db, nodeid)
+# end def fix_stati_qso
 
 def init (db) :
     if 'qso' not in db.classes :
@@ -79,8 +85,10 @@ def init (db) :
 
     db.qsl.react  ('set',    check_qso_empty)
     db.qsl.audit  ('create', check_dupe_qsl_type)
-    db.qsl.react  ('create', fix_stati)
-    db.qsl.react  ('set',    fix_stati)
+    db.qsl.react  ('create', fix_stati_qsl)
+    db.qsl.react  ('set',    fix_stati_qsl)
+    db.qso.react  ('create', fix_stati_qso)
+    db.qso.react  ('set',    fix_stati_qso)
     db.user.audit ('set',    check_owner_has_qsos)
 # end def init
 
