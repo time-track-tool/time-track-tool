@@ -29,6 +29,7 @@
 
 from   roundup.exceptions             import Reject
 from   roundup.cgi.TranslationService import get_translation
+from   hamlib                         import fix_qsl_status
 import common
 
 def check_qso_empty (db, cl, nodeid, old_values) :
@@ -65,6 +66,10 @@ def check_owner_has_qsos (db, cl, nodeid, new_values) :
             db.ham_call.retire (call)
 # end def check_owner_has_qsos
 
+def fix_stati (db, cl, nodeid, old_values) :
+    fix_qsl_status (db, cl.get (nodeid, 'qso'))
+# end def fix_stati
+
 def init (db) :
     if 'qso' not in db.classes :
         return
@@ -74,6 +79,8 @@ def init (db) :
 
     db.qsl.react  ('set',    check_qso_empty)
     db.qsl.audit  ('create', check_dupe_qsl_type)
+    db.qsl.react  ('create', fix_stati)
+    db.qsl.react  ('set',    fix_stati)
     db.user.audit ('set',    check_owner_has_qsos)
 # end def init
 
