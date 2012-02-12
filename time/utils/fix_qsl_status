@@ -1,0 +1,14 @@
+#!/usr/bin/python
+import sys
+import os
+from roundup           import instance
+dir     = os.getcwd ()
+sys.path.insert (1, os.path.join (dir, 'lib'))
+import hamlog
+
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+for id in db.qso.getnodeids (retired = False) :
+    hamlog.fix_qsl_status (db, id)
+db.commit ()
