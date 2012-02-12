@@ -134,6 +134,11 @@
         , searchname   = 'qso.qsl_s_status'
         , multiselect  = True
         )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
+        , searchname   = 'qso.reject'
+        )
     );
    "
   tal:condition="context/is_view_ok">

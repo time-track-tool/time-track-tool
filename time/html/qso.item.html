@@ -173,6 +173,10 @@
           (classname, 'qsl_s_status')"/>
       <td tal:content="python:context.qsl_s_status.plain ()"/>
      </tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'reject')"/>
+      <td tal:content="structure python:context.reject.field ()"/>
+     <tr>
+     </tr>
     </tal:block>
     <tal:block metal:fill-slot="after-message-box">
      <tal:block tal:condition="context/id">

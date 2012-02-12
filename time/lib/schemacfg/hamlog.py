@@ -124,6 +124,7 @@ def init \
         , qsl_r_status          = Link      ("qsl_status", do_journal = "no")
         , qsl_s_status          = Link      ("qsl_status", do_journal = "no")
         , no_qsl_status         = Link      ("qsl_status", do_journal = "no")
+        , reject                = Boolean   ()
         )
     qso.setlabelprop ('call')
 
