@@ -158,9 +158,14 @@
                         : '@columns=id,name,description,date,locations,is_half&'
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                           'date=.%3B'
-   , ('qsl', '')        : '@sort=-date_recv,-date_sent&'
+   , ('qsl', '')        : '@columns=qsl_type,date_recv,date_sent,qso.call,'
+                          'qso.band,qso.qso_start,qso.qso_end,qso.rst_rcvd,'
+                          'qso.mode,qso.owner'
+                          '@sort=-date_recv,-date_sent&'
                           '@pagesize=20&@startwith=0'
-   , ('qso', '')        : '@sort=-qso_end&@pagesize=20&@startwith=0'
+   , ('qso', '')        : '@columns=call,band,qso_start,qso_end,rst_rcvd,'
+                          'mode,owner&'
+                          '@sort=-qso_end&@pagesize=20&@startwith=0'
    , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
