@@ -47,6 +47,11 @@
         , context.qso.qso_start
         , item=context.qso
         , format='%Y-%m-%d.%H:%M'
+        ).formatlink ()"/><span tal:content="structure python:utils.ExtProperty
+        ( utils
+        , context.qso.qso_end
+        , item=context.qso
+        , format='-%H:%M'
         ).formatlink ()"/>
        &nbsp;
        <span tal:content="structure python:utils.ExtProperty
