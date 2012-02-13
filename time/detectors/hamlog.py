@@ -72,7 +72,9 @@ def fix_stati_qsl (db, cl, nodeid, old_values) :
 
 def fix_stati_qso (db, cl, nodeid, old_values) :
     w = 'wont_qsl_via'
-    if w in old_values and old_values [w] != cl.get (nodeid, w) :
+    if  (  not old_values
+        or (w in old_values and old_values [w] != cl.get (nodeid, w))
+        ) :
         fix_qsl_status (db, nodeid)
 # end def fix_stati_qso
 
