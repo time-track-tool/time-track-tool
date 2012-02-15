@@ -225,6 +225,8 @@ class ExtProperty :
         , bool_tristate = True
         , force_link    = False
         ) :
+        if not hasattr (prop._db, '_') :
+            prop._db._ = _
         self.utils         = utils
         self.prop          = prop
         self.item          = item
@@ -364,7 +366,7 @@ class ExtProperty :
         if self.editable and self.prop.is_edit_ok () :
             return self.editfield ()
         if self.name != 'id' and not self.prop.is_view_ok () :
-            return self.prop._db._('[hidden]')
+            return self.pretty ('[hidden]')
         if self.is_labelprop or self.force_link :
             return self.formatlink (as_link = as_link)
         elif self.lnkcls :
@@ -628,6 +630,9 @@ def get_cssclass_from_status (context) :
 # end def get_cssclass_from_status
 
 def init (instance) :
+    global _
+    _   = get_translation \
+        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     instance.registerUtil ('ExtProperty',              ExtProperty)
     instance.registerUtil ('sorted_properties',        sorted_properties)
     instance.registerUtil ('properties_dict',          properties_dict)
