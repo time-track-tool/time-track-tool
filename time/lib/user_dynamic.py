@@ -659,9 +659,9 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
 	    (db, user, frm, to, otp, sharp, start_balance = balance)
 	balance  += rb
 	achieved  = ach
-    if balance < 1e-14 :
-        balance = 0.0
-    if achieved < 1e-14 :
+    if abs (balance)  < 1e-14 :
+        balance  = 0.0
+    if abs (achieved) < 1e-14 :
         achieved = 0.0
     #print date, balance, achieved
     return balance, achieved
