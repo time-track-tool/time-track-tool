@@ -188,9 +188,10 @@ def security (db, ** kw) :
     """
 
     roles = \
-        [ ("HR"            , "Human Ressources team"         )
-        , ("Controlling"   , "Controlling"                   )
-        , ("Office"        , "Member of Office"              )
+        [ ("HR",              "Human Resources team")
+        , ("HR-Org-Location", "Human Resources team in this Org-Location")
+        , ("Controlling",     "Controlling")
+        , ("Office",          "Member of Office")
         ]
 
     #     classname        allowed to view   /  edit

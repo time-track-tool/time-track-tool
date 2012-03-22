@@ -982,7 +982,7 @@ class Staff_Report (_Report) :
             dyn = get_user_dynamic (db, u, end)
             if  (  not dyn
                 or all_in is not None and all_in != bool (dyn.all_in)
-                or not self.permission_ok (u)
+                or not self.permission_ok (u, dyn)
                 ) :
                 del users [u]
         self.users = sorted \
@@ -1101,21 +1101,24 @@ class Staff_Report (_Report) :
         db.commit () # commit cached daily_record values
     # end def fill_container
 
-    def permission_ok (self, user) :
+    def permission_ok (self, user, dynuser) :
         if user == self.uid :
             return True
-        if self.is_allowed () :
+        if user_has_role (self.db, self.uid, 'HR') :
             return True
         if self.db.user.get (user, 'supervisor') == self.uid :
             return True
+        if user_has_role (self.db, self.uid, 'HR-Org-Location') :
+            if hr_olo_role_for_this_user_dyn (self.db, self.uid, dynuser) :
+                return True
         return False
     # end def permission_ok
 
-    def is_allowed (self) :
+    def is_allowed (self, user = None) :
         """ HR is currently allowed to view everything including some
             columns hidden for others.
         """
-        return user_has_role (self.db, self.uid, 'HR')
+        return user_has_role (self.db, self.uid, 'HR', 'HR-Org-Location')
     # end is_allowed
 
     def header_line (self, formatter) :

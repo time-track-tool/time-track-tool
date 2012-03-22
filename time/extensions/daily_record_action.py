@@ -737,6 +737,9 @@ class Split_Dynamic_User_Action (Action) :
             )
         id       = self.client.nodeid
         dyn      = self.db.user_dynamic.getnode (id)
+        perm     = self.db.security.hasPermission
+        if not perm ('Edit', self.db.getuid (), dyn) :
+            raise Reject, "Not allowed"
         fields   = dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)
         if dyn.valid_to :

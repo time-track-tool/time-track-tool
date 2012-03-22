@@ -31,6 +31,7 @@
 #
 
 import common
+import user_dynamic
 
 def time_project_viewable (db, userid, itemid) :
     """User may view time category if user is owner or deputy of time
@@ -93,11 +94,15 @@ def daily_record_viewable (db, userid, itemid) :
        substitute supervisor of the owner of the daily record (the
        supervisor relationship is transitive) or the user is the
        department manager of the owner of the daily record.
+       If user has role HR-Org-Location and is in the same Org-Location
+       as the record, it may also be seen.
     """
     if common.user_has_role (db, userid, 'HR', 'Controlling') :
         return True
     dr = db.daily_record.getnode (itemid)
     if userid == dr.user :
+        return True
+    if user_dynamic.hr_olo_role_for_this_user (db, userid, dr.user, dr.date) :
         return True
     # find departments managed by userid
     deps = db.department.filter (None, dict (manager = userid))

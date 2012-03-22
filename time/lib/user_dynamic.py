@@ -38,7 +38,7 @@ from roundup.date import Date
 
 from common       import ymd, next_search_date, end_of_period, freeze_date
 from common       import pretty_range, day, period_is_weekly, start_of_period
-from common       import week_from_date
+from common       import week_from_date, user_has_role
 from freeze       import find_prev_dr_freeze
 
 last_dynamic = None # simple one-element cache
@@ -666,3 +666,30 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
     #print date, balance, achieved
     return balance, achieved
 # end compute_balance
+
+def hr_olo_role_for_this_user_dyn (db, dbuid, userdyn) :
+    """ Given db uid has role HR-Org-Location and the given dynamic user
+        is in the same Org-Location as the uid.
+    """
+    if not user_has_role (db, dbuid, 'HR-Org-Location') :
+        return False
+    dyn = get_user_dynamic (db, dbuid, Date ('.'))
+    if not dyn :
+        return False
+    if userdyn.org_location == dyn.org_location :
+        return True
+    return False
+# end def hr_olo_role_for_this_user_dyn
+
+def hr_olo_role_for_this_user (db, dbuid, userid, date = None) :
+    """ db uid has role HR-Org-Location and the given user is in
+        the same Org-Location (on given date) as the uid.
+        Use todays date for the check if no date given.
+    """
+    if not date :
+        date = Date ('.')
+    dyn = get_user_dynamic (db, userid, date)
+    if not dyn :
+        return False
+    return hr_olo_role_for_this_user_dyn (db, dbuid, dyn)
+# end def hr_olo_role_for_this_user

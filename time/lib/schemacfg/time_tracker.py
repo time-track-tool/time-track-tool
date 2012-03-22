@@ -36,6 +36,7 @@ from roundup.date    import Interval
 from schemacfg       import schemadef
 import sum_common
 import common
+import user_dynamic
 
 def init \
     ( db
@@ -265,7 +266,7 @@ def init \
         )
     overtime_period.setkey ("name")
 
-    user_dynamic = Class \
+    ud = Class \
         ( db
         , ''"user_dynamic"
         , user                  = Link      ("user")
@@ -608,15 +609,56 @@ def security (db, ** kw) :
 
     def project_or_wp_name_visible (db, userid, itemid) :
         """User is allowed to view work package and time category names
-           if he/she is department manager or supervisor or has role HR.
+           if he/she is department manager or supervisor or has role HR
+           or HR-Org-Location.
         """
-        if common.user_has_role (db, userid, 'HR') :
+        if common.user_has_role (db, userid, 'HR', 'HR-Org-Location') :
             return True
         if db.department.filter (None, dict (manager = userid)) :
             return True
         if db.user.filter (None, dict (supervisor = userid)) :
             return True
     # end def project_or_wp_name_visible
+
+    def time_record_visible_for_hr_olo (db, userid, itemid) :
+        """User is allowed to view time record data if he/she
+           is in group HR-Org-Location and in the same Org-Location as
+           the given user
+        """
+        did = db.time_record.get (itemid, 'daily_record')
+        dr  = db.daily_record.getnode (did)
+        return user_dynamic.hr_olo_role_for_this_user \
+            (db, userid, dr.user, dr.date)
+    # end def time_record_visible_for_hr_olo
+
+    def user_dynamic_visible_for_hr_olo (db, userid, itemid) :
+        """User is allowed to view dynamic user data if he/she
+           is in group HR-Org-Location and in the same Org-Location as
+           the given user
+        """
+        dyn = db.user_dynamic.getnode (itemid)
+        return user_dynamic.hr_olo_role_for_this_user_dyn (db, userid, dyn)
+    # end def user_dynamic_visible_for_hr_olo
+
+    def overtime_corr_visible_for_hr_olo (db, userid, itemid) :
+        """User is allowed to view overtime information if he/she
+           is in group HR-Org-Location and in the same Org-Location as
+           the given user
+        """
+        ot = db.overtime_correction.getnode (itemid)
+        return user_dynamic.hr_olo_role_for_this_user \
+            (db, userid, ot.user, ot.date)
+    # end def overtime_corr_visible_for_hr_olo
+
+    def dr_freeze_visible_for_hr_olo (db, userid, itemid) :
+        """User is allowed to view freeze information if he/she
+           is in group HR-Org-Location and in the same Org-Location as
+           the given user
+        """
+        df = db.daily_record_freeze.getnode (itemid)
+        return user_dynamic.hr_olo_role_for_this_user \
+            (db, userid, df.user, df.date)
+    # end def dr_freeze_visible_for_hr_olo
 
     p = db.security.addPermission \
         ( name        = 'Edit'
@@ -785,4 +827,53 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'overtime_period')
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_record'
+        , check       = time_record_visible_for_hr_olo
+        , description = fixdoc (time_record_visible_for_hr_olo.__doc__)
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_record'
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_dynamic'
+        , check       = user_dynamic_visible_for_hr_olo
+        , description = fixdoc (user_dynamic_visible_for_hr_olo.__doc__)
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user_dynamic'
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'overtime_correction'
+        , check       = overtime_corr_visible_for_hr_olo
+        , description = fixdoc (overtime_corr_visible_for_hr_olo.__doc__)
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'overtime_correction'
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record_freeze'
+        , check       = dr_freeze_visible_for_hr_olo
+        , description = fixdoc (dr_freeze_visible_for_hr_olo.__doc__)
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'daily_record_freeze'
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
 # end def security
