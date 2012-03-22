@@ -694,7 +694,7 @@ def security (db, ** kw) :
         , klass       = 'time_project'
         , check       = time_project_responsible_and_open
         , description = fixdoc (time_project_responsible_and_open.__doc__)
-        , properties  = ('deputy', 'description', 'planned_effort', 'nosy')
+        , properties  = ('deputy', 'planned_effort', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
 
