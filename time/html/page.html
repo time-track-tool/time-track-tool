@@ -452,7 +452,7 @@
      , ('reference',           'View', 1,               ('',''))
      , ( 'summary_report'
        , 'View'
-       , utils.user_has_role (db._db, db._db.getuid (), 'hr')
+       , utils.user_has_role (db._db, db._db.getuid (), 'hr', 'hr-org-location')
        , ('Staff Report','staff')
        )
      , ('device',              'View', 1,               ('',''))

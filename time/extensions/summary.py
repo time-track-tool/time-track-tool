@@ -54,6 +54,7 @@ from user_dynamic                   import update_tr_duration, get_user_dynamic
 from user_dynamic                   import compute_balance, durations
 from user_dynamic                   import Period_Data, overtime_periods
 from user_dynamic                   import use_work_hours
+from user_dynamic                   import hr_olo_role_for_this_user_dyn
 
 day = Interval ('1d')
 
@@ -322,6 +323,7 @@ time_container_classes = \
 
 class Comparable_Container (Container, dict) :
     sortkey = 50
+
     def __str__ (self) :
         return self.name
     # end def __str__
