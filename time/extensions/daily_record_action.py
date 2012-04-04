@@ -56,6 +56,7 @@ from roundup.cgi.TranslationService import get_translation
 from common                         import pretty_range
 from common                         import week_from_date, ymd, date_range
 from common                         import weekno_year_from_day
+from common                         import user_has_role
 from common                         import from_week_number, week_freeze_date
 from user_dynamic                   import get_user_dynamic, day_work_hours
 from user_dynamic                   import round_daily_work_hours, day
@@ -738,7 +739,7 @@ class Split_Dynamic_User_Action (Action) :
         id       = self.client.nodeid
         dyn      = self.db.user_dynamic.getnode (id)
         perm     = self.db.security.hasPermission
-        if not perm ('Edit', self.db.getuid (), dyn) :
+        if not user_has_role (self.db, self.db.getuid (), 'HR') :
             raise Reject, "Not allowed"
         fields   = dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)

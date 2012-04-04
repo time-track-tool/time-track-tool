@@ -76,8 +76,9 @@
            and not context.valid_to
            and utils.dynuser_half_frozen (db._db, context)
            )"/>
-       <span nowrap tal:condition="python: context.is_edit_ok () and
-        context.id and utils.dynuser_half_frozen (db._db, context)">
+       <span nowrap tal:condition="python: context.id and
+        utils.user_has_role (db._db, request.user.id, 'HR') and
+        utils.dynuser_half_frozen (db._db, context)">
         <a i18n:translate="" tal:attributes="href python:
            'user_dynamic%s?:action=split_dynamic_user' % context.id">
            split user_dynamic record
