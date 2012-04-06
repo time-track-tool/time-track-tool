@@ -94,6 +94,7 @@ class _Test_Case (unittest.TestCase) :
         , 'doc_admin'
         , 'guest'
         , 'hr'
+        , 'hr-org-location'
         , 'invoice'
         , 'issue_admin'
         , 'it'
@@ -261,7 +262,14 @@ class _Test_Case (unittest.TestCase) :
     # end def test_4_transprops
 
     def create_test_users (self) :
-        nouserroles = ['adr_readonly', 'guest', 'logger', 'nosy', 'user']
+        nouserroles = \
+            [ 'adr_readonly'
+            , 'guest'
+            , 'hr-org-location'
+            , 'logger'
+            , 'nosy'
+            , 'user'
+            ]
         self.users = {'admin' : '1', 'anonymous' : '2'}
         for u in self.allroles :
             if u in self.users :
@@ -294,7 +302,8 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it'
+        , 'itview', 'nosy'
         , 'office', 'project', 'project_view', 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
@@ -304,7 +313,8 @@ class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it'
+        , 'itview', 'nosy'
         , 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user'
         ]
     transprop_perms = transprop_full

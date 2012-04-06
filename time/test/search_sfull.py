@@ -260,31 +260,31 @@ properties = \
       )
     , ( 'daily_record_freeze'
       , [ ( 'achieved_hours'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'balance'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'date'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'frozen'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'month_balance'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'month_validity_date'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'user'
           , ["admin", "controlling", "hr"]
           )
         , ( 'validity_date'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'week_balance'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         ]
       )
@@ -773,16 +773,16 @@ properties = \
       )
     , ( 'overtime_correction'
       , [ ( 'comment'
-          , ['admin', 'controlling', 'hr']
+          , ['admin', 'controlling', 'hr', 'hr-org-location']
           )
         , ( 'date'
-          , ['admin', 'controlling', 'hr']
+          , ['admin', 'controlling', 'hr', 'hr-org-location']
           )
         , ( 'user'
           , ['admin', 'controlling', 'hr']
           )
         , ( 'value'
-          , ['admin', 'controlling', 'hr']
+          , ['admin', 'controlling', 'hr', 'hr-org-location']
           )
         ]
       )
@@ -1165,34 +1165,34 @@ properties = \
       )
     , ( 'time_record'
       , [ ( 'comment'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'daily_record'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'dist'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'duration'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'end'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'end_generated'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'start'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'start_generated'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'time_activity'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'tr_duration'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'work_location'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
@@ -1342,43 +1342,43 @@ properties = \
       )
     , ( 'user_dynamic'
       , [ ( 'additional_hours'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'all_in'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'booking_allowed'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'daily_worktime'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'department'
           , ["admin", "hr"]
           )
         , ( 'durations_allowed'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_fri'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_mon'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_sat'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_sun'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_thu'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_tue'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'hours_wed'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'org_location'
           , ["admin", "hr"]
@@ -1387,34 +1387,34 @@ properties = \
           , ["admin", "hr"]
           )
         , ( 'supp_per_period'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'supp_weekly_hours'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'travel_full'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'user'
           , ["admin", "hr"]
           )
         , ( 'vacation_remaining'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'vacation_yearly'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'valid_from'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'valid_to'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'weekend_allowed'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'weekly_hours'
-          , ["admin", "hr"]
+          , ["admin", "hr", "hr-org-location"]
           )
         ]
       )
