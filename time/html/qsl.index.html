@@ -13,6 +13,8 @@
     , utils.ExtProperty (utils, pdict ['qsl_type'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['date_recv'], force_link = 1)
     , utils.ExtProperty (utils, pdict ['date_sent'], force_link = 1)
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty (utils, pdict ['activity'])
     , utils.ExtProperty
         ( utils, pdict ['qso']
         , searchname   = 'qso.call'
