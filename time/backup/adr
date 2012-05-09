@@ -4,6 +4,7 @@ TRACKER=/var/lib/tracker/address
 BACKUPDIR=/var/lib/tracker/backup/address
 ROUNDUP_ADMIN=/usr/local/bin/roundup-admin
 USE_CURRENT=1
+ROTATE=
 
 ### WARNING ###
 ### WARNING ###
@@ -40,7 +41,9 @@ if [ -n "$USE_CURRENT" ] ; then
     dir=${BACKUPDIR}/current
     old=${BACKUPDIR}/backup-$(date -d yesterday +%a)
     rm -rf $old
-    mv ${dir} ${old}
+    if [ -n "$ROTATE" ] ; then
+        mv ${dir} ${old}
+    fi
 fi
 echo Backing up $TRACKER to $dir
 rm -rf $dir

@@ -4,6 +4,7 @@ TRACKER=/roundup/tracker/ttt
 BACKUPDIR=/roundup/backup
 ROUNDUP_ADMIN=/usr/bin/roundup-admin
 USE_CURRENT=1
+ROTATE=
 
 ### WARNING ###
 ### WARNING ###
@@ -42,8 +43,9 @@ if [ -n "$USE_CURRENT" ] ; then
     dir=${BACKUPDIR}/current
     old=${BACKUPDIR}/backup-$(date -d yesterday +%a)
     rm -rf $old
-    echo mv ${dir} ${old}
-    mv ${dir} ${old}
+    if [ -n "$ROTATE" ] ; then
+        mv ${dir} ${old}
+    fi
 fi
 echo Backing up $TRACKER to $dir
 rm -rf $dir
