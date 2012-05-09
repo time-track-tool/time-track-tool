@@ -40,6 +40,7 @@ try :
     email_ok = True
 except ImportError :
     pass
+from itertools                      import chain
 from roundup                        import roundupdb, hyperdb
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
@@ -225,26 +226,30 @@ def header_check (db, cl, nodeid, new_values) :
                     new_values ['cc'] = ', '.join (cc)
         else :
             if send_to_customer :
-                mails = None
+                mails = []
                 if 'emails' in new_values :
                     mails = new_values ['emails']
                 elif nodeid :
                     mails = cl.get (nodeid, 'emails')
-                if not mails :
-                    raise Reject, \
-                        _ ("Trying to send to customer without "
-                           "configured contact-email for customer"
-                          )
+                mails = mails or []
                 mails = (db.contact.get (x, 'contact') for x in mails)
                 if 'cc' in new_values :
                     cc = new_values ['cc']
                 elif nodeid :
                     cc = cl.get (nodeid, 'cc')
-                m = ','.join (mails)
-                if cc :
+                m = ''
+                if mails :
+                    m = ','.join (mails)
+                if m :
                     m = ','.join ((m, cc))
+                else :
+                    m = cc
+                if not m :
+                    raise Reject, \
+                        _ ("Trying to send to customer with empty CC and "
+                           "without configured contact-email for customer"
+                          )
                 h.add_header ('X-ROUNDUP-CC', m)
-                print new_values, nodeid
                 if 'bcc' in new_values :
                     bcc = new_values ['bcc']
                 elif nodeid :
