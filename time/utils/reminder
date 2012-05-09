@@ -201,7 +201,7 @@ for user in  db.user.list () :
         if not issue.part_of and not top_level_containers.has_key (issue.id) :
             lonely_lines.append (format % pretty)
         if issue.composed_of and type == "Day" : continue
-        prio = pretty ["priority"]
+        prio = pretty ["priority"] or 0
         if pretty ["effective_prio"] is not None :
             prio = pretty ["effective_prio"]
         if int (prio) < minprio : continue
