@@ -241,7 +241,8 @@ def header_check (db, cl, nodeid, new_values) :
                 if mails :
                     m = ','.join (mails)
                 if m :
-                    m = ','.join ((m, cc))
+                    if cc :
+                        m = ','.join ((m, cc))
                 else :
                     m = cc
                 if not m :
