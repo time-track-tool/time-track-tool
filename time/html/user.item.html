@@ -118,7 +118,7 @@
        , item = context.department
        ).formatlink ()"/>
     </tr>
-    <tr tal:condition="python:'contact' in props">
+    <tr tal:condition="python:'contacts' in props">
      <th tal:content="structure python:utils.fieldname('user', 'contacts')"/>
      <td colspan="3">
       <table class="form" border="0"
