@@ -114,6 +114,8 @@ def button_submit_to (db, user, date) :
     except AttributeError :
         pass
     supervisor = db.user.get (user,       'supervisor')
+    if not supervisor :
+        return ''
     clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
     nickname   = db.user.get (clearance,  'nickname').upper ()
     return \
