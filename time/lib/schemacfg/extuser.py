@@ -49,7 +49,9 @@ def security (db, ** kw) :
         ]
     prop_perms = \
         [ ( "user",     "View", ["External"]
-          , ("username", "lastname", "firstname", "realname", "status")
+          , ( "username", "lastname", "firstname", "realname", "status"
+            , "creation", "creator", "activity", "actor"
+            )
           )
         , ( "category", "View", ["External"]
           , ("name", )
@@ -78,6 +80,15 @@ def security (db, ** kw) :
             , description = is_on_nosy.__doc__
             )
         db.security.addPermissionToRole ('External', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'user'
+        , check       = schemadef.own_user_record
+        , description = "Users are allowed to edit their password"
+        , properties  = ("password",)
+        )
+    db.security.addPermissionToRole ('External', p)
 
     p = db.security.getPermission   ('Create', 'file')
     db.security.addPermissionToRole ('External', p)

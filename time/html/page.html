@@ -634,7 +634,8 @@
      </tal:block>
 
      <!-- user list -->
-     <span class="classblock">
+     <span class="classblock"
+           tal:condition="python:db.user.title.is_view_ok ()">
       <a tal:condition="python:request.user.hasPermission('View', 'user')
                             or request.user.hasPermission('Edit', 'user')"
          tal:attributes="href python: 'user?' + default_queries [('user','')]"
@@ -645,7 +646,9 @@
 
      <!-- phone list -->
      <span class="classblock"
-           tal:condition="python:'user_contact' in db._db.classes">
+           tal:condition="python:
+           'user_contact' in db._db.classes
+           and db.contact.is_view_ok ()">
       <a tal:condition="python:
               request.user.hasPermission('View','user_contact')
               or request.user.hasPermission('Edit','user_contact')"
