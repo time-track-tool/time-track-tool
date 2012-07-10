@@ -59,6 +59,9 @@ def check_unlinking (db, cl, nodeid, new_values) :
             if id not in ids :
                 name = _ (cl.classname)
                 cls  = _ (cl.properties [prop].classname)
+                # Allow updating user pictures
+                if cls == 'File' and name == 'User' :
+                    continue
                 raise Reject, \
                     _ ("You may not unlink %(cls)s from %(name)s") % locals ()
 # end def check_unlinking
