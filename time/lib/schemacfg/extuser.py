@@ -65,6 +65,7 @@ def security (db, ** kw) :
     core.register_linkperms              (db, linkperms)
 
     def is_on_nosy (db, userid, itemid) :
+        "User is allowed to access issue if on nosy list"
         item = db.issue.getnode (itemid)
         return userid in item.nosy
     # end def is_on_nosy
@@ -86,6 +87,8 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('External', p)
 
     p = db.security.getPermission   ('Create', 'issue')
+    db.security.addPermissionToRole ('External', p)
+    p = db.security.getPermission   ('Search', 'issue')
     db.security.addPermissionToRole ('External', p)
 
     p = db.security.getPermission   ('Create', 'msg')
