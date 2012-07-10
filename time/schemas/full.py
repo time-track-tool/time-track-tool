@@ -53,6 +53,7 @@ schemas = \
     , 'support'
     , 'time_tracker'
     , 'core'
+    , 'extuser'
     )
 
 importer = schemadef.Importer (globals (), schemas)

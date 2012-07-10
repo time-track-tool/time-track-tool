@@ -157,9 +157,9 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User',         'Create', 'support')
     db.security.addPermissionToRole ('SupportAdmin', 'Create', 'support')
     schemadef.register_confidentiality_check \
-        (db, 'support',   ('View',))
+        (db, 'User', 'support',   ('View',))
     schemadef.register_confidentiality_check \
-        (db, 'support',   ('Edit',))
+        (db, 'User', 'support',   ('Edit',))
     schemadef.register_nosy_classes (db, ['support'])
     schemadef.add_search_permission (db, 'support', 'User')
 # end def security

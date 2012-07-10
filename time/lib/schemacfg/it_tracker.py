@@ -196,13 +196,13 @@ def security (db, ** kw) :
 
     db.security.addPermissionToRole ('User', 'Create', 'it_issue')
     schemadef.register_confidentiality_check \
-        (db, 'it_issue',   ('View',))
+        (db, 'User', 'it_issue',   ('View',))
     schemadef.register_confidentiality_check \
-        (db, 'it_issue',   ('Edit',), "messages", "files", "nosy")
+        (db, 'User', 'it_issue',   ('Edit',), "messages", "files", "nosy")
     schemadef.register_confidentiality_check \
-        (db, 'it_project', ('View',))
+        (db, 'User', 'it_project', ('View',))
     schemadef.register_confidentiality_check \
-        (db, 'it_project', ('Edit',), "messages", "files", "nosy")
+        (db, 'User', 'it_project', ('Edit',), "messages", "files", "nosy")
     schemadef.register_nosy_classes (db, ['it_issue', 'it_project'])
     schemadef.add_search_permission (db, 'it_issue', 'User')
     schemadef.add_search_permission (db, 'it_project', 'User')

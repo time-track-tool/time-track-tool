@@ -79,7 +79,7 @@ def register_nosy_classes (db, nosy_classes) :
         db.security.addPermissionToRole ("Nosy", p)
 # end def register_nosy_classes
 
-def register_confidentiality_check (db, cls, perms, * properties) :
+def register_confidentiality_check (db, role, cls, perms, * properties) :
     """ Register a check for confidentiality, allow access with perms if
         - confidential flag for item of cls is not set
         - user is in nosy list of item
@@ -110,7 +110,7 @@ def register_confidentiality_check (db, cls, perms, * properties) :
         if properties :
             params ['properties'] = properties
         p = db.security.addPermission (** params)
-        db.security.addPermissionToRole ('User', p)
+        db.security.addPermissionToRole (role, p)
 # end register_confidentiality_check
 
 def register_permission_by_link (db, role, perm, linkclass, * classprops) :

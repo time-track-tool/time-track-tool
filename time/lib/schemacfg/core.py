@@ -97,6 +97,30 @@ def init \
         room = kw ['Room_Class'] (db, ''"room")
 # end def init
 
+def register_linkperms (db, linkperms) :
+    for cls, roles, perms, classprops in linkperms :
+        for role in roles :
+            if role.lower () not in db.security.role :
+                continue
+            for perm in perms :
+                schemadef.register_permission_by_link \
+                    (db, role, perm, cls, * classprops)
+# end def register_linkperms
+
+def view_file(db, userid, itemid):
+    return userid == db.file.get(itemid, 'creator')
+# end def view_file
+
+def edit_query(db, userid, itemid):
+    return userid == db.query.get(itemid, 'creator')
+# end def edit_query
+
+def view_query (db, userid, itemid) :
+    private_for = db.query.get (itemid, 'private_for')
+    if not private_for : return True
+    return userid == private_for
+# end def view_query
+
 def security (db, ** kw) :
     """ See the configuration and customisation document for information
         about security setup. Assign the access and edit Permissions for
@@ -140,10 +164,6 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole('User', p)
 
-    def view_file(db, userid, itemid):
-        return userid == db.file.get(itemid, 'creator')
-    # end def view_file
-
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'file'
@@ -151,14 +171,8 @@ def security (db, ** kw) :
         , description = "User is allowed to view their own files"
         )
     db.security.addPermissionToRole('User', p)
-    for cls, roles, perms, classprops in linkperms :
-        for role in roles :
-            if role.lower () not in db.security.role :
-                continue
-            for perm in perms :
-                schemadef.register_permission_by_link \
-                    (db, role, perm, cls, * classprops)
 
+    register_linkperms (db, linkperms)
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'file'
@@ -168,11 +182,6 @@ def security (db, ** kw) :
 
 
     ### Query permissions ###
-    def view_query (db, userid, itemid) :
-        private_for = db.query.get (itemid, 'private_for')
-        if not private_for : return True
-        return userid == private_for
-    # end def view_query
 
     p = db.security.addPermission \
         ( name        = 'Search'
@@ -180,10 +189,6 @@ def security (db, ** kw) :
         , description = "User is allowed to search for their queries"
         )
     db.security.addPermissionToRole('User', p)
-
-    def edit_query(db, userid, itemid):
-        return userid == db.query.get(itemid, 'creator')
-    # end def edit_query
 
     p = db.security.addPermission \
         ( name        = 'View'
