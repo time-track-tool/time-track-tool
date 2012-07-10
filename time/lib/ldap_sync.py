@@ -48,8 +48,10 @@ class LDAP_Search_Result (cidict, autosuper) :
 
 def get_picture (user, attr) :
     """ Get picture from roundup user class """
-    p  = user.pictures[-1]
-    return user.cl.db.file.get (p, 'content')
+    db   = user.cl.db
+    pics = [db.file.getnode (i) for i in user.pictures]
+    for p in sorted (pics, reverse = True, key = lambda x : x.activity) :
+        return p.content
 # end def get_picture
 
 def get_name (user, attr) :
@@ -282,7 +284,8 @@ class LDAP_Roundup_Sync (object) :
         if uid :
             upicids = self.db.user.get (uid, 'pictures')
             pics = [self.db.file.getnode (i) for i in upicids]
-            for n, p in enumerate (sorted (pics, key = lambda x : x.activity)) :
+            for n, p in enumerate \
+                (sorted (pics, reverse = True, key = lambda x : x.activity)) :
                 if p.content == lpic :
                     if n :
                         # refresh name to put it in front
