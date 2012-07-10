@@ -278,7 +278,7 @@ class LDAP_Roundup_Sync (object) :
             return None
         uid = None
         try :
-            uid = self.db.user.lookup (luser.uid  [0])
+            uid = self.db.user.lookup (luser.uid  [0].lower ())
         except KeyError :
             pass
         if uid :
