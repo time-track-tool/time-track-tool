@@ -851,7 +851,7 @@
 
    <tr tal:condition="has_nosy">
     <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
-    <td colspan="3">
+    <td>
      <span tal:replace="structure context/nosy/field"/>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:db.user.classhelp
@@ -866,6 +866,7 @@
                (db._db.user_status.lookup (i) for i in ('valid', 'system'))
              )"/><br>
     </td>
+    <tal:block metal:define-slot="right_of_nosy" />
    </tr>
 
    <tr metal:use-macro="templates/page/macros/message_box"/>

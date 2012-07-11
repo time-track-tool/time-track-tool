@@ -33,7 +33,7 @@ from roundup.hyperdb import Class
 from schemacfg       import schemadef
 
 
-def init (db, Class, String, Link, ** kw) :
+def init (db, Class, String, Link, Multilink, ** kw) :
 
     export = {}
 
@@ -62,7 +62,7 @@ def init (db, Class, String, Link, ** kw) :
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( external_company = Link      ("external_company")
+                ( external_company = Multilink ("external_company")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
