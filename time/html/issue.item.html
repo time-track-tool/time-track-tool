@@ -259,7 +259,15 @@
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="right_of_nosy">
-     <tal:block tal:condition="python:context.external_company.is_edit_ok ()">
+     <tal:block tal:condition="python:
+                'external_company' in klass._klass.properties
+                and context.external_company.is_edit_ok ()
+                and db._db.security.hasPermission
+                    ( 'View'
+                    , context.external_company._client.userid
+                    , context.external_company._classname
+                    , context.external_company._name
+                    ) ">
       <th tal:content="structure python:utils.fieldname
            (classname, 'external_company')"/>
       <td>

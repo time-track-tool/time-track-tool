@@ -496,6 +496,23 @@
       </td>
      </tr>
     </tal:block>
+    <tr tal:condition="python:
+        'external_company' in bclass.properties
+        and context.external_company.is_edit_ok ()">
+     <th tal:content="structure
+         python:utils.fieldname ('user', 'external_company')"/>
+     <td>
+      <span tal:content="structure python:
+            context.external_company.field (size = 40)" />
+      <span tal:content="structure python:db.external_company.classhelp
+            ( 'id,name'
+            , property  = 'external_company'
+            , width     = '600'
+            , pagesize  = 500
+            , inputtype = 'radio'
+            )" />
+     </td>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>
