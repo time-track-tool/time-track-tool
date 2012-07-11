@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-12-19 11:18+0100\n"
+"POT-Creation-Date: 2012-07-11 13:03+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -174,6 +174,14 @@ msgid "price/discount must be increasing: %(pd)s"
 msgstr ""
 
 msgid "currency"
+msgstr ""
+
+#, python-format
+msgid "Duplicate QSL type \"%s\" for QSO"
+msgstr ""
+
+#, python-format
+msgid "Cant't delete \"%(name)s\" Call has QSOs"
 msgstr ""
 
 msgid "\"amount\": only numbers allowed"
@@ -370,7 +378,8 @@ msgid "summary_report"
 msgstr "Summary Report"
 
 msgid ""
-"Trying to send to customer without configured contact-email for customer"
+"Trying to send to customer with empty CC and without configured contact-"
+"email for customer"
 msgstr ""
 
 #, python-format
@@ -573,9 +582,6 @@ msgid "Supervisor (in User field) is required"
 msgstr ""
 
 msgid "Invalid Supervisor"
-msgstr ""
-
-msgid "[hidden]"
 msgstr ""
 
 msgid "Don't care"
@@ -972,6 +978,21 @@ msgstr "Open Balance"
 msgid "Open amount not yet payed"
 msgstr ""
 
+msgid "bcc"
+msgstr "BCC"
+
+msgid "Additional emails to send to when \""
+msgstr ""
+
+msgid "send_to_customer"
+msgstr "send to customer"
+
+msgid "\" flag is set."
+msgstr ""
+
+msgid " Additional emails will not show up in mail header."
+msgstr ""
+
 msgid "begin"
 msgstr ""
 
@@ -1040,6 +1061,9 @@ msgid ""
 "             %(Property)s of the new issue\n"
 "          "
 msgstr ""
+
+msgid "cc"
+msgstr "CC"
 
 msgid "cert_sw"
 msgstr "Cert Software"
@@ -1658,6 +1682,16 @@ msgid "emails"
 msgstr "Emails"
 
 msgid "Customer email addresses for this %(Classname)s"
+msgstr ""
+
+msgid "external_company"
+msgstr "Ext. Company"
+
+msgid ""
+"Company for external users used for access control: all\n"
+"            external users for a company have access if the\n"
+"            %(Classname)s is on the access list for an issue\n"
+"         "
 msgstr ""
 
 msgid "firstname"
@@ -2857,9 +2891,6 @@ msgid ""
 "             invoices are marked.\n"
 "          "
 msgstr ""
-
-msgid "send_to_customer"
-msgstr "send to customer"
 
 msgid "Send to external email addresses (customer)"
 msgstr ""
@@ -4246,6 +4277,12 @@ msgstr ""
 msgid "<span nowrap></span>"
 msgstr ""
 
+msgid "add swl report"
+msgstr ""
+
+msgid "add secondary qso"
+msgstr ""
+
 msgid "\"My Queries\" Editing - ${tracker}"
 msgstr ""
 
@@ -4525,6 +4562,33 @@ msgstr "Supplier group"
 
 msgid "supplier_status"
 msgstr "Supplier Status"
+
+msgid "Users are allowed to access their own external company"
+msgstr ""
+
+msgid "antenna"
+msgstr ""
+
+msgid "ham_call"
+msgstr "Call"
+
+msgid "ham_mode"
+msgstr "Mode"
+
+msgid "ham_band"
+msgstr "Band"
+
+msgid "qsl_type"
+msgstr "QSL type"
+
+msgid "qsl_status"
+msgstr "QSL status"
+
+msgid "qsl"
+msgstr ""
+
+msgid "qso"
+msgstr ""
 
 msgid "it_category"
 msgstr "IT-Category"
@@ -4808,12 +4872,6 @@ msgstr "to hour"
 
 msgid "classification"
 msgstr "Classification"
-
-msgid "cc"
-msgstr "CC"
-
-msgid "bcc"
-msgstr "BCC"
 
 msgid "lookalike_lastname"
 msgstr "Last name"

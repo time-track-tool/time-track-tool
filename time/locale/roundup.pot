@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-12-19 11:18+0100\n"
+"POT-Creation-Date: 2012-07-11 13:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,7 +87,7 @@ msgstr ""
 msgid "You must enter a \"title\"."
 msgstr ""
 
-#: ../detectors/audit.py:103 ../extensions/help.py:889
+#: ../detectors/audit.py:103 ../extensions/help.py:906
 #: ../lib/schemacfg/core.py:59 ../locale/attr.py:1127 attr.py:1127
 msgid "msg"
 msgstr ""
@@ -120,7 +120,7 @@ msgstr ""
 msgid "You may link only to your own %(cls)s"
 msgstr ""
 
-#: ../detectors/check_linking.py:63
+#: ../detectors/check_linking.py:66
 #, python-format
 msgid "You may not unlink %(cls)s from %(name)s"
 msgstr ""
@@ -227,12 +227,22 @@ msgstr ""
 msgid "price/discount must be increasing: %(pd)s"
 msgstr ""
 
-#: ../detectors/erp.py:98 ../extensions/help.py:367
+#: ../detectors/erp.py:98 ../extensions/help.py:378
 #: ../lib/schemacfg/sinvoice.py:51 ../locale/attr.py:695 ../locale/attr.py:721
 #: ../locale/attr.py:763 ../locale/attr.py:867 ../locale/attr.py:901
 #: ../locale/attr.py:949 attr.py:695 attr.py:721 attr.py:763 attr.py:867
 #: attr.py:901 attr.py:949
 msgid "currency"
+msgstr ""
+
+#: ../detectors/hamlog.py:48
+#, python-format
+msgid "Duplicate QSL type \"%s\" for QSO"
+msgstr ""
+
+#: ../detectors/hamlog.py:63
+#, python-format
+msgid "Cant't delete \"%(name)s\" Call has QSOs"
 msgstr ""
 
 #: ../detectors/invoice.py:103
@@ -282,7 +292,7 @@ msgstr ""
 msgid "Change of %(doc_issue_status)s requires a message"
 msgstr ""
 
-#: ../detectors/it.py:41 ../detectors/support.py:52
+#: ../detectors/it.py:41 ../detectors/support.py:54
 #, python-format
 msgid "New %s requires a message"
 msgstr ""
@@ -300,25 +310,25 @@ msgstr ""
 msgid "Must change %s, \"unknown\" is not allowed"
 msgstr ""
 
-#: ../detectors/it.py:74 ../extensions/help.py:768
+#: ../detectors/it.py:74 ../extensions/help.py:785
 #: ../lib/schemacfg/it_tracker.py:82 ../locale/attr.py:83 ../locale/attr.py:94
 #: ../locale/attr.py:106 attr.py:83 attr.py:94 attr.py:106
 msgid "it_prio"
 msgstr ""
 
-#: ../detectors/it.py:86 ../detectors/support.py:77
+#: ../detectors/it.py:86 ../detectors/support.py:79
 #, python-format
 msgid "May not set %s on new issue"
 msgstr ""
 
-#: ../detectors/it.py:86 ../detectors/it.py:89 ../detectors/support.py:77
-#: ../detectors/support.py:80 ../locale/attr.py:56 ../locale/attr.py:86
+#: ../detectors/it.py:86 ../detectors/it.py:89 ../detectors/support.py:79
+#: ../detectors/support.py:82 ../locale/attr.py:56 ../locale/attr.py:86
 #: ../locale/attr.py:537 ../locale/attr.py:650 ../locale/attr.py:820 attr.py:56
 #: attr.py:86 attr.py:537 attr.py:650 attr.py:820
 msgid "superseder"
 msgstr ""
 
-#: ../detectors/it.py:89 ../detectors/support.py:80
+#: ../detectors/it.py:89 ../detectors/support.py:82
 #, python-format
 msgid "Can't set %s to yourself"
 msgstr ""
@@ -352,7 +362,7 @@ msgstr ""
 msgid "Invalid IP \"%(ip)s\": invalid octet \"%(o)s\""
 msgstr ""
 
-#: ../detectors/nwm.py:68 ../detectors/nwm.py:206 ../extensions/help.py:728
+#: ../detectors/nwm.py:68 ../detectors/nwm.py:206 ../extensions/help.py:745
 #: ../lib/schemacfg/nwm.py:117 ../locale/attr.py:136 attr.py:136
 msgid "ip_subnet"
 msgstr ""
@@ -377,8 +387,8 @@ msgid "Machine names may not point to other CNAMEs"
 msgstr ""
 
 #: ../detectors/nwm.py:129 ../detectors/nwm.py:139 ../detectors/nwm.py:287
-#: ../detectors/nwm.py:306 ../detectors/user.py:107 ../extensions/help.py:985
-#: ../lib/schemacfg/time_tracker.py:323 ../locale/attr.py:123
+#: ../detectors/nwm.py:306 ../detectors/user.py:107 ../extensions/help.py:1002
+#: ../lib/schemacfg/time_tracker.py:324 ../locale/attr.py:123
 #: ../locale/attr.py:132 ../locale/attr.py:140 ../locale/attr.py:158
 #: ../locale/attr.py:178 ../locale/attr.py:248 ../locale/attr.py:338
 #: ../locale/attr.py:371 ../locale/attr.py:1182 attr.py:123 attr.py:132
@@ -392,19 +402,19 @@ msgstr ""
 msgid "Duplicate %(olon)s %(polo)s in %(ip)s"
 msgstr ""
 
-#: ../detectors/nwm.py:138 ../extensions/help.py:931
+#: ../detectors/nwm.py:138 ../extensions/help.py:948
 #: ../lib/schemacfg/nwm.py:172 ../locale/attr.py:154 ../locale/attr.py:157
 #: attr.py:154 attr.py:157
 msgid "network_address"
 msgstr ""
 
-#: ../detectors/nwm.py:140 ../extensions/help.py:840
+#: ../detectors/nwm.py:140 ../extensions/help.py:857
 #: ../lib/schemacfg/nwm.py:161 ../locale/attr.py:151 ../locale/attr.py:153
 #: ../locale/attr.py:188 attr.py:151 attr.py:153 attr.py:188
 msgid "machine_name"
 msgstr ""
 
-#: ../detectors/nwm.py:141 ../extensions/help.py:475 ../lib/schemacfg/nwm.py:99
+#: ../detectors/nwm.py:141 ../extensions/help.py:486 ../lib/schemacfg/nwm.py:99
 #: ../locale/attr.py:128 ../locale/attr.py:155 attr.py:128 attr.py:155
 msgid "dns_record_type"
 msgstr ""
@@ -434,12 +444,12 @@ msgstr ""
 msgid "Invalid netmask: %(mask)s"
 msgstr ""
 
-#: ../detectors/nwm.py:242 ../extensions/help.py:661 ../locale/attr.py:133
+#: ../detectors/nwm.py:242 ../extensions/help.py:678 ../locale/attr.py:133
 #: attr.py:133
 msgid "gid"
 msgstr ""
 
-#: ../detectors/nwm.py:243 ../extensions/help.py:1291
+#: ../detectors/nwm.py:243 ../extensions/help.py:1308
 #: ../lib/schemacfg/nwm.py:226 ../locale/attr.py:170 ../locale/attr.py:189
 #: ../locale/attr.py:378 attr.py:170 attr.py:189 attr.py:378
 msgid "smb_domain"
@@ -502,30 +512,32 @@ msgstr ""
 msgid "No %s may be created"
 msgstr ""
 
-#: ../detectors/summary_report.py:36 ../lib/schemacfg/time_tracker.py:145
+#: ../detectors/summary_report.py:36 ../lib/schemacfg/time_tracker.py:146
 #: ../locale/attr.py:238 attr.py:238
 msgid "summary_report"
 msgstr ""
 
-#: ../detectors/support.py:233
-msgid "Trying to send to customer without configured contact-email for customer"
+#: ../detectors/support.py:250
+msgid ""
+"Trying to send to customer with empty CC and without configured contact-email "
+"for customer"
 msgstr ""
 
-#: ../detectors/support.py:261
+#: ../detectors/support.py:270
 #, python-format
 msgid "Change of %s requires a message"
 msgstr ""
 
-#: ../detectors/support.py:268
+#: ../detectors/support.py:277
 msgid "Requires change of user (support not allowed)"
 msgstr ""
 
-#: ../detectors/support.py:349
+#: ../detectors/support.py:358
 #, python-format
 msgid "Toplevel domain \"%(maildomain)s\" not allowed, must contain \".\""
 msgstr ""
 
-#: ../detectors/support.py:352 ../extensions/help.py:848 ../locale/attr.py:673
+#: ../detectors/support.py:361 ../extensions/help.py:865 ../locale/attr.py:673
 #: ../locale/attr.py:844 attr.py:673 attr.py:844
 msgid "maildomain"
 msgstr ""
@@ -583,7 +595,7 @@ msgstr ""
 msgid "Duplicate record: date = %(date)s, user = %(user)s"
 msgstr ""
 
-#: ../detectors/time_record.py:354 ../extensions/help.py:1303
+#: ../detectors/time_record.py:354 ../extensions/help.py:1320
 #: ../locale/attr.py:293 attr.py:293
 msgid "start"
 msgstr ""
@@ -631,7 +643,7 @@ msgstr ""
 msgid "%(uid)s specified for user without %(org_loc)s"
 msgstr ""
 
-#: ../detectors/user.py:107 ../detectors/user.py:109 ../extensions/help.py:1509
+#: ../detectors/user.py:107 ../detectors/user.py:109 ../extensions/help.py:1526
 #: ../locale/attr.py:1149 attr.py:1149
 msgid "uid"
 msgstr ""
@@ -665,29 +677,29 @@ msgstr ""
 msgid "%(attr)s must be positive or empty"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:102 ../extensions/help.py:1002
-#: ../extensions/summary.py:924 ../lib/schemacfg/time_tracker.py:260
+#: ../detectors/user_dynamic.py:102 ../extensions/help.py:1019
+#: ../extensions/summary.py:926 ../lib/schemacfg/time_tracker.py:261
 #: ../locale/attr.py:316 ../locale/attr.py:325 attr.py:316 attr.py:325
 msgid "overtime_period"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:108 ../extensions/help.py:1398
-#: ../extensions/summary.py:929 ../locale/attr.py:334 attr.py:334
+#: ../detectors/user_dynamic.py:108 ../extensions/help.py:1415
+#: ../extensions/summary.py:931 ../locale/attr.py:334 attr.py:334
 msgid "supp_per_period"
 msgstr ""
 
 #: ../detectors/user_dynamic.py:111 ../detectors/user_dynamic.py:126
-#: ../extensions/help.py:1403 ../extensions/summary.py:921
+#: ../extensions/help.py:1420 ../extensions/summary.py:923
 #: ../locale/attr.py:341 attr.py:341
 msgid "supp_weekly_hours"
 msgstr ""
 
 #: ../detectors/user_dynamic.py:159 ../extensions/help.py:203
-#: ../extensions/summary.py:930 ../locale/attr.py:324 attr.py:324
+#: ../extensions/summary.py:932 ../locale/attr.py:324 attr.py:324
 msgid "additional_hours"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:160 ../extensions/help.py:1640
+#: ../detectors/user_dynamic.py:160 ../extensions/help.py:1657
 #: ../locale/attr.py:335 attr.py:335
 msgid "weekly_hours"
 msgstr ""
@@ -734,62 +746,58 @@ msgstr ""
 msgid "new %(adr_to)s from %(adr_frm)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:128
+#: ../extensions/daily_record_action.py:131
 #, python-format
 msgid "Submit to %(nickname)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:132
+#: ../extensions/daily_record_action.py:135
 msgid "approve"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:133
+#: ../extensions/daily_record_action.py:136
 msgid "deny"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:133
+#: ../extensions/daily_record_action.py:136
 msgid "edit again"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:305 ../locale/attr.py:240
+#: ../extensions/daily_record_action.py:308 ../locale/attr.py:240
 #: ../locale/attr.py:1148 attr.py:240 attr.py:1148
 msgid "supervisor"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:307
+#: ../extensions/daily_record_action.py:310
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:625
+#: ../extensions/daily_record_action.py:628
 msgid "User is required"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:626
+#: ../extensions/daily_record_action.py:629
 msgid "Invalid User"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:641
+#: ../extensions/daily_record_action.py:644
 msgid "Date is required"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:702
+#: ../extensions/daily_record_action.py:705
 msgid "Don't specify a user for \"Freeze all\""
 msgstr ""
 
-#: ../extensions/daily_record_action.py:716
+#: ../extensions/daily_record_action.py:719
 msgid "Supervisor (in User field) is required"
 msgstr ""
 
-#: ../extensions/daily_record_action.py:717
+#: ../extensions/daily_record_action.py:720
 msgid "Invalid Supervisor"
 msgstr ""
 
-#: ../extensions/extproperty.py:364
-msgid "[hidden]"
-msgstr ""
-
-#: ../extensions/extproperty.py:572
+#: ../extensions/extproperty.py:578
 msgid "Don't care"
 msgstr ""
 
@@ -869,7 +877,7 @@ msgstr ""
 msgid "%(Property)s for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:88 ../extensions/help.py:1209
+#: ../extensions/help.py:88 ../extensions/help.py:1226
 msgid "Type of %(Classname)s"
 msgstr ""
 
@@ -1312,36 +1320,59 @@ msgstr ""
 msgid "Open amount not yet payed"
 msgstr ""
 
-#: ../extensions/help.py:262 ../locale/attr.py:709 attr.py:709
+#: ../extensions/help.py:262 ../locale/attr.py:642 ../locale/attr.py:812
+#: attr.py:642 attr.py:812
+msgid "bcc"
+msgstr ""
+
+#: ../extensions/help.py:263 ../extensions/help.py:302
+msgid "Additional emails to send to when \""
+msgstr ""
+
+#: ../extensions/help.py:264 ../extensions/help.py:303
+#: ../extensions/help.py:1213 ../locale/attr.py:645 ../locale/attr.py:815
+#: attr.py:645 attr.py:815
+msgid "send_to_customer"
+msgstr ""
+
+#: ../extensions/help.py:265 ../extensions/help.py:304
+msgid "\" flag is set."
+msgstr ""
+
+#: ../extensions/help.py:266
+msgid " Additional emails will not show up in mail header."
+msgstr ""
+
+#: ../extensions/help.py:268 ../locale/attr.py:709 attr.py:709
 msgid "begin"
 msgstr ""
 
-#: ../extensions/help.py:263
+#: ../extensions/help.py:269
 msgid "Begin of period"
 msgstr ""
 
-#: ../extensions/help.py:264 ../locale/attr.py:679 ../locale/attr.py:753
+#: ../extensions/help.py:270 ../locale/attr.py:679 ../locale/attr.py:753
 #: ../locale/attr.py:850 attr.py:679 attr.py:753 attr.py:850
 msgid "birthdate"
 msgstr ""
 
-#: ../extensions/help.py:265
+#: ../extensions/help.py:271
 msgid "Date of birth for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:266
+#: ../extensions/help.py:272
 msgid "bookentry"
 msgstr ""
 
-#: ../extensions/help.py:267
+#: ../extensions/help.py:273
 msgid "Date when the payment was booked"
 msgstr ""
 
-#: ../extensions/help.py:268 ../locale/attr.py:301 attr.py:301
+#: ../extensions/help.py:274 ../locale/attr.py:301 attr.py:301
 msgid "bookers"
 msgstr ""
 
-#: ../extensions/help.py:269
+#: ../extensions/help.py:275
 msgid ""
 "Users who may book on this %(Classname)s. If nothing is\n"
 "             selected here, all users may book on this %(Classname)s (e.g.,\n"
@@ -1349,42 +1380,42 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:274 ../locale/attr.py:330 attr.py:330
+#: ../extensions/help.py:280 ../locale/attr.py:330 attr.py:330
 msgid "booking_allowed"
 msgstr ""
 
-#: ../extensions/help.py:275
+#: ../extensions/help.py:281
 msgid ""
 "User is allowed to book time records during the validity span\n"
 "             of the given %(Classname)s\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:279
+#: ../extensions/help.py:285
 msgid "Date of birth"
 msgstr ""
 
-#: ../extensions/help.py:279 ../locale/attr.py:119 ../locale/attr.py:788
+#: ../extensions/help.py:285 ../locale/attr.py:119 ../locale/attr.py:788
 #: attr.py:119 attr.py:788
 msgid "born"
 msgstr ""
 
-#: ../extensions/help.py:280
+#: ../extensions/help.py:286
 msgid "Type of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:280 ../locale/attr.py:164 attr.py:164
+#: ../extensions/help.py:286 ../locale/attr.py:164 attr.py:164
 msgid "card_type"
 msgstr ""
 
-#: ../extensions/help.py:281 ../locale/attr.py:8 ../locale/attr.py:47
+#: ../extensions/help.py:287 ../locale/attr.py:8 ../locale/attr.py:47
 #: ../locale/attr.py:75 ../locale/attr.py:98 ../locale/attr.py:649
 #: ../locale/attr.py:819 attr.py:8 attr.py:47 attr.py:75 attr.py:98 attr.py:649
 #: attr.py:819
 msgid "category"
 msgstr ""
 
-#: ../extensions/help.py:282
+#: ../extensions/help.py:288
 msgid ""
 "Category of %(Classname)s. Where this %(Classname)s belongs\n"
 "             to. Each category has a Category-Responsible who is\n"
@@ -1393,22 +1424,27 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:290
+#: ../extensions/help.py:296
 msgid "category++nosy"
 msgstr ""
 
-#: ../extensions/help.py:291
+#: ../extensions/help.py:297
 msgid ""
 "For new issues the %(Property)s is copied to the\n"
 "             %(Property)s of the new issue\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:295 ../locale/attr.py:14 attr.py:14
+#: ../extensions/help.py:301 ../locale/attr.py:638 ../locale/attr.py:808
+#: attr.py:638 attr.py:808
+msgid "cc"
+msgstr ""
+
+#: ../extensions/help.py:306 ../locale/attr.py:14 attr.py:14
 msgid "cert_sw"
 msgstr ""
 
-#: ../extensions/help.py:296
+#: ../extensions/help.py:307
 msgid ""
 "Mark this %(Classname)s as being certifyable software.\n"
 "             Certifyable software needs special handling, e.g., requires "
@@ -1417,15 +1453,15 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:301 ../locale/attr.py:990 attr.py:990
+#: ../extensions/help.py:312 ../locale/attr.py:990 attr.py:990
 msgid "city"
 msgstr ""
 
-#: ../extensions/help.py:302 ../locale/attr.py:1168 attr.py:1168
+#: ../extensions/help.py:313 ../locale/attr.py:1168 attr.py:1168
 msgid "clearance_by"
 msgstr ""
 
-#: ../extensions/help.py:303
+#: ../extensions/help.py:314
 msgid ""
 "Usually the supervisor of a person approves\n"
 "             time records. This can be delegated using this attribute. It\n"
@@ -1434,69 +1470,70 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:309 ../locale/attr.py:59 ../locale/attr.py:538
+#: ../extensions/help.py:320 ../locale/attr.py:59 ../locale/attr.py:538
 #: ../locale/attr.py:646 ../locale/attr.py:816 attr.py:59 attr.py:538
 #: attr.py:646 attr.py:816
 msgid "closed"
 msgstr ""
 
-#: ../extensions/help.py:310
+#: ../extensions/help.py:321
 msgid ""
 "When this %(Classname)s was closed. Automatically set by\n"
 "             Roundup.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:314 ../locale/attr.py:1087 attr.py:1087
+#: ../extensions/help.py:325 ../locale/attr.py:1087 attr.py:1087
 msgid "cls"
 msgstr ""
 
-#: ../extensions/help.py:315
+#: ../extensions/help.py:326
 msgid "%(Classname)s class"
 msgstr ""
 
-#: ../extensions/help.py:316 ../lib/schemacfg/address.py:85
-#: ../locale/attr.py:348 ../locale/attr.py:577 ../locale/attr.py:582
-#: ../locale/attr.py:888 attr.py:348 attr.py:577 attr.py:582 attr.py:888
+#: ../extensions/help.py:327 ../lib/schemacfg/address.py:85
+#: ../lib/schemacfg/hamlog.py:91 ../locale/attr.py:348 ../locale/attr.py:577
+#: ../locale/attr.py:582 ../locale/attr.py:888 attr.py:348 attr.py:577
+#: attr.py:582 attr.py:888
 msgid "code"
 msgstr ""
 
-#: ../extensions/help.py:317
+#: ../extensions/help.py:328
 msgid "Code of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:318
+#: ../extensions/help.py:329
 msgid "company"
 msgstr ""
 
-#: ../extensions/help.py:319
+#: ../extensions/help.py:330
 msgid "Company for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:320 ../locale/attr.py:41 ../locale/attr.py:481
+#: ../extensions/help.py:331 ../locale/attr.py:41 ../locale/attr.py:481
 #: attr.py:41 attr.py:481
 msgid "composed_of"
 msgstr ""
 
-#: ../extensions/help.py:321
+#: ../extensions/help.py:332
 msgid ""
 "Set automagically by roundup on %(Classname)ss being Part of\n"
 "             another %(Classname)s.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:325
+#: ../extensions/help.py:336
 msgid "composed_of.id"
 msgstr ""
 
-#: ../extensions/help.py:326 ../locale/attr.py:60 ../locale/attr.py:78
+#: ../extensions/help.py:337 ../locale/attr.py:60 ../locale/attr.py:78
 #: ../locale/attr.py:101 ../locale/attr.py:634 ../locale/attr.py:660
 #: ../locale/attr.py:804 ../locale/attr.py:831 attr.py:60 attr.py:78
 #: attr.py:101 attr.py:634 attr.py:660 attr.py:804 attr.py:831
 msgid "confidential"
 msgstr ""
 
-#: ../extensions/help.py:327
+#: ../extensions/help.py:338
 msgid ""
 "If set, %(Classname)s is visible only to users on the nosy\n"
 "             list (note that the stakeholder and the responsible person\n"
@@ -1504,18 +1541,18 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:332
+#: ../extensions/help.py:343
 msgid "confirm"
 msgstr ""
 
-#: ../extensions/help.py:333
+#: ../extensions/help.py:344
 msgid ""
 "Confirm the password here: first password and this entry\n"
 "             must match.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:337 ../initial_data.py:770
+#: ../extensions/help.py:348 ../initial_data.py:770
 #: ../lib/schemacfg/person_adr.py:34 ../lib/schemacfg/person_cust.py:34
 #: ../lib/schemacfg/person_sep.py:68 ../locale/attr.py:596
 #: ../locale/attr.py:598 ../locale/attr.py:610 ../locale/attr.py:612
@@ -1523,19 +1560,19 @@ msgstr ""
 msgid "contact"
 msgstr ""
 
-#: ../extensions/help.py:338
+#: ../extensions/help.py:349
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:342 ../locale/attr.py:661 ../locale/attr.py:739
+#: ../extensions/help.py:353 ../locale/attr.py:661 ../locale/attr.py:739
 #: ../locale/attr.py:832 attr.py:661 attr.py:739 attr.py:832
 msgid "contacts"
 msgstr ""
 
-#: ../extensions/help.py:343
+#: ../extensions/help.py:354
 msgid ""
 "Contact information, e.g., Email address, Phone number...\n"
 "             In order to edit a contact (e.g. phone number) please click\n"
@@ -1548,146 +1585,146 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:353 ../lib/schemacfg/person_adr.py:38
+#: ../extensions/help.py:364 ../lib/schemacfg/person_adr.py:38
 #: ../lib/schemacfg/person_cust.py:38 ../lib/schemacfg/person_sep.py:72
 #: ../locale/attr.py:597 ../locale/attr.py:601 ../locale/attr.py:614
 #: ../locale/attr.py:615 attr.py:597 attr.py:601 attr.py:614 attr.py:615
 msgid "contact_type"
 msgstr ""
 
-#: ../extensions/help.py:354
+#: ../extensions/help.py:365
 msgid "Type of contact information, e.g., Email, Phone, Fax, Homepage"
 msgstr ""
 
-#: ../extensions/help.py:355
+#: ../extensions/help.py:366
 msgid "contact_person"
 msgstr ""
 
-#: ../extensions/help.py:356
+#: ../extensions/help.py:367
 msgid "Personal information about a %(Property)s"
 msgstr ""
 
-#: ../extensions/help.py:357
+#: ../extensions/help.py:368
 msgid "Content of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:357 ../locale/attr.py:1124 ../locale/attr.py:1133
+#: ../extensions/help.py:368 ../locale/attr.py:1124 ../locale/attr.py:1133
 #: attr.py:1124 attr.py:1133
 msgid "content"
 msgstr ""
 
-#: ../extensions/help.py:358 ../extensions/summary.py:713
-#: ../lib/schemacfg/time_tracker.py:58 ../locale/attr.py:192
+#: ../extensions/help.py:369 ../extensions/summary.py:715
+#: ../lib/schemacfg/time_tracker.py:59 ../locale/attr.py:192
 #: ../locale/attr.py:254 ../locale/attr.py:280 ../locale/attr.py:310
 #: attr.py:192 attr.py:254 attr.py:280 attr.py:310
 msgid "cost_center"
 msgstr ""
 
-#: ../extensions/help.py:359
+#: ../extensions/help.py:370
 msgid "%(Property)s for this %(Classname)s (required)"
 msgstr ""
 
-#: ../extensions/help.py:360
+#: ../extensions/help.py:371
 msgid "cost_center_group.id"
 msgstr ""
 
-#: ../extensions/help.py:361 ../lib/schemacfg/time_tracker.py:78
+#: ../extensions/help.py:372 ../lib/schemacfg/time_tracker.py:79
 #: ../locale/attr.py:202 attr.py:202
 msgid "cost_center_status"
 msgstr ""
 
-#: ../extensions/help.py:362
+#: ../extensions/help.py:373
 msgid "Specifies the Phase the Cost Center is in"
 msgstr ""
 
-#: ../extensions/help.py:363
+#: ../extensions/help.py:374
 msgid "Country for this address"
 msgstr ""
 
-#: ../extensions/help.py:363 ../locale/attr.py:359 ../locale/attr.py:994
+#: ../extensions/help.py:374 ../locale/attr.py:359 ../locale/attr.py:994
 #: attr.py:359 attr.py:994
 msgid "country"
 msgstr ""
 
-#: ../extensions/help.py:364
+#: ../extensions/help.py:375
 msgid "Record creation date"
 msgstr ""
 
-#: ../extensions/help.py:364
+#: ../extensions/help.py:375
 msgid "creation"
 msgstr ""
 
-#: ../extensions/help.py:365
+#: ../extensions/help.py:376
 msgid "Person who created this record"
 msgstr ""
 
-#: ../extensions/help.py:365
+#: ../extensions/help.py:376
 msgid "creator"
 msgstr ""
 
-#: ../extensions/help.py:366
+#: ../extensions/help.py:377
 msgid "Delimiter for CSV export"
 msgstr ""
 
-#: ../extensions/help.py:366 ../locale/attr.py:1196 attr.py:1196
+#: ../extensions/help.py:377 ../locale/attr.py:1196 attr.py:1196
 msgid "csv_delimiter"
 msgstr ""
 
-#: ../extensions/help.py:368
+#: ../extensions/help.py:379
 msgid "Currency for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:369
+#: ../extensions/help.py:380
 msgid "%(Property)s of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:369 ../lib/schemacfg/erp.py:63 ../locale/attr.py:662
+#: ../extensions/help.py:380 ../lib/schemacfg/erp.py:63 ../locale/attr.py:662
 #: ../locale/attr.py:740 ../locale/attr.py:833 ../locale/attr.py:863
 #: attr.py:662 attr.py:740 attr.py:833 attr.py:863
 msgid "cust_supp"
 msgstr ""
 
-#: ../extensions/help.py:370 ../lib/schemacfg/erp.py:105 ../locale/attr.py:865
+#: ../extensions/help.py:381 ../lib/schemacfg/erp.py:105 ../locale/attr.py:865
 #: ../locale/attr.py:894 attr.py:865 attr.py:894
 msgid "customer_status"
 msgstr ""
 
-#: ../extensions/help.py:371 ../lib/schemacfg/erp.py:90 ../locale/attr.py:884
+#: ../extensions/help.py:382 ../lib/schemacfg/erp.py:90 ../locale/attr.py:884
 #: ../locale/attr.py:887 attr.py:884 attr.py:887
 msgid "customer_type"
 msgstr ""
 
-#: ../extensions/help.py:372
+#: ../extensions/help.py:383
 msgid "customer++confidential"
 msgstr ""
 
-#: ../extensions/help.py:373
+#: ../extensions/help.py:384
 msgid ""
 "If this flag is set for a %(Classname)s, new support issues\n"
 "            created for this %(Classname)s will be confidential.\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:377
+#: ../extensions/help.py:388
 msgid "customer++nosy"
 msgstr ""
 
-#: ../extensions/help.py:378
+#: ../extensions/help.py:389
 msgid ""
 "Nosy list to use for new support issues from this\n"
 "            %(Classname)s\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:382 ../locale/attr.py:553 attr.py:553
+#: ../extensions/help.py:393 ../locale/attr.py:553 attr.py:553
 msgid "cut_off_date"
 msgstr ""
 
-#: ../extensions/help.py:383
+#: ../extensions/help.py:394
 msgid "Date until when this %(Classname)s must be finished."
 msgstr ""
 
-#: ../extensions/help.py:386 ../locale/attr.py:211 ../locale/attr.py:221
+#: ../extensions/help.py:397 ../locale/attr.py:211 ../locale/attr.py:221
 #: ../locale/attr.py:226 ../locale/attr.py:233 ../locale/attr.py:252
 #: ../locale/attr.py:781 ../locale/attr.py:1003 ../locale/attr.py:1106
 #: ../locale/attr.py:1137 attr.py:211 attr.py:221 attr.py:226 attr.py:233
@@ -1695,54 +1732,54 @@ msgstr ""
 msgid "date"
 msgstr ""
 
-#: ../extensions/help.py:387
+#: ../extensions/help.py:398
 msgid "Date of this %(Classname)s.<br>"
 msgstr ""
 
-#: ../extensions/help.py:390 ../locale/attr.py:706 attr.py:706
+#: ../extensions/help.py:401 ../locale/attr.py:706 attr.py:706
 msgid "date_payed"
 msgstr ""
 
-#: ../extensions/help.py:391
+#: ../extensions/help.py:402
 msgid "Date when this %(Classname)s was payed"
 msgstr ""
 
-#: ../extensions/help.py:392 ../extensions/help.py:1705
+#: ../extensions/help.py:403 ../extensions/help.py:1722
 msgid "daily_hours"
 msgstr ""
 
-#: ../extensions/help.py:393 ../locale/attr.py:327 attr.py:327
+#: ../extensions/help.py:404 ../locale/attr.py:327 attr.py:327
 msgid "daily_worktime"
 msgstr ""
 
-#: ../extensions/help.py:394
+#: ../extensions/help.py:405
 msgid "Maximum time a person may book for a single day."
 msgstr ""
 
-#: ../extensions/help.py:395
+#: ../extensions/help.py:406
 msgid "defect++superseder"
 msgstr ""
 
-#: ../extensions/help.py:397 ../locale/attr.py:45 ../locale/attr.py:84
+#: ../extensions/help.py:408 ../locale/attr.py:45 ../locale/attr.py:84
 #: ../locale/attr.py:107 ../locale/attr.py:456 attr.py:45 attr.py:84
 #: attr.py:107 attr.py:456
 msgid "deadline"
 msgstr ""
 
-#: ../extensions/help.py:399 ../locale/attr.py:144 attr.py:144
+#: ../extensions/help.py:410 ../locale/attr.py:144 attr.py:144
 msgid "default_lease_time"
 msgstr ""
 
-#: ../extensions/help.py:400
+#: ../extensions/help.py:411
 msgid "Default DHCP lease time for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:401 ../locale/attr.py:684 ../locale/attr.py:855
+#: ../extensions/help.py:412 ../locale/attr.py:684 ../locale/attr.py:855
 #: attr.py:684 attr.py:855
 msgid "default_nosy"
 msgstr ""
 
-#: ../extensions/help.py:402
+#: ../extensions/help.py:413
 msgid ""
 "If this flag is selected, a new customer created without a nosy\n"
 "            list and without a nosy group will get this mail group as\n"
@@ -1752,19 +1789,19 @@ msgid ""
 "         "
 msgstr ""
 
-#: ../extensions/help.py:409 ../locale/attr.py:9 attr.py:9
+#: ../extensions/help.py:420 ../locale/attr.py:9 attr.py:9
 msgid "default_part_of"
 msgstr ""
 
-#: ../extensions/help.py:410
+#: ../extensions/help.py:421
 msgid "When a new issue is created with %(Classname)s set, but "
 msgstr ""
 
-#: ../extensions/help.py:414 ../locale/attr.py:1036 attr.py:1036
+#: ../extensions/help.py:425 ../locale/attr.py:1036 attr.py:1036
 msgid "default_server"
 msgstr ""
 
-#: ../extensions/help.py:415
+#: ../extensions/help.py:426
 msgid ""
 "%(Property)s for %(Classname)s: Other DNS services may use\n"
 "            the same protocol but the %(Property)s is the server of the\n"
@@ -1774,7 +1811,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:422 ../lib/schemacfg/time_tracker.py:320
+#: ../extensions/help.py:433 ../lib/schemacfg/time_tracker.py:321
 #: ../locale/attr.py:253 ../locale/attr.py:279 ../locale/attr.py:333
 #: ../locale/attr.py:350 ../locale/attr.py:1033 ../locale/attr.py:1170
 #: ../locale/attr.py:1206 ../locale/attributes.py:66 ../schemas/complex.py:57
@@ -1783,16 +1820,16 @@ msgstr ""
 msgid "department"
 msgstr ""
 
-#: ../extensions/help.py:423
+#: ../extensions/help.py:434
 msgid "Department in which the %(Classname)s is based, e.g., SW, Sales."
 msgstr ""
 
-#: ../extensions/help.py:424 ../locale/attr.py:43 ../locale/attr.py:490
+#: ../extensions/help.py:435 ../locale/attr.py:43 ../locale/attr.py:490
 #: ../locale/attr.py:509 attr.py:43 attr.py:490 attr.py:509
 msgid "depends"
 msgstr ""
 
-#: ../extensions/help.py:425
+#: ../extensions/help.py:436
 msgid ""
 "A comma seperated list of %(Classname)s IDs this\n"
 "             %(Classname)s depends on. This information is used for the\n"
@@ -1804,19 +1841,19 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:434
+#: ../extensions/help.py:445
 msgid "depends.id"
 msgstr ""
 
-#: ../extensions/help.py:435 ../locale/attr.py:271 attr.py:271
+#: ../extensions/help.py:446 ../locale/attr.py:271 attr.py:271
 msgid "deputy"
 msgstr ""
 
-#: ../extensions/help.py:436
+#: ../extensions/help.py:447
 msgid "Substitute for the responsible Person of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:437 ../locale/attr.py:6 ../locale/attr.py:10
+#: ../extensions/help.py:448 ../locale/attr.py:6 ../locale/attr.py:10
 #: ../locale/attr.py:17 ../locale/attr.py:20 ../locale/attr.py:23
 #: ../locale/attr.py:37 ../locale/attr.py:72 ../locale/attr.py:89
 #: ../locale/attr.py:110 ../locale/attr.py:122 ../locale/attr.py:129
@@ -1863,48 +1900,48 @@ msgstr ""
 msgid "description"
 msgstr ""
 
-#: ../extensions/help.py:438
+#: ../extensions/help.py:449
 msgid "Verbose description of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:439 ../locale/attr.py:1082 attr.py:1082
+#: ../extensions/help.py:450 ../locale/attr.py:1082 attr.py:1082
 msgid "dev"
 msgstr ""
 
-#: ../extensions/help.py:440
+#: ../extensions/help.py:451
 msgid "Device type name (product)"
 msgstr ""
 
-#: ../extensions/help.py:441
+#: ../extensions/help.py:452
 msgid "device++adr"
 msgstr ""
 
-#: ../extensions/help.py:442
+#: ../extensions/help.py:453
 msgid "device++name"
 msgstr ""
 
-#: ../extensions/help.py:443
+#: ../extensions/help.py:454
 msgid "device++order"
 msgstr ""
 
-#: ../extensions/help.py:444 ../extensions/lielas.py:180
+#: ../extensions/help.py:455 ../extensions/lielas.py:180
 #: ../lib/schemacfg/lielas.py:61 ../locale/attr.py:1068 ../locale/attr.py:1079
 #: attr.py:1068 attr.py:1079
 msgid "device_group"
 msgstr ""
 
-#: ../extensions/help.py:445
+#: ../extensions/help.py:456
 msgid ""
 "Device group for %(Classname)s -- a device may belong\n"
 "             to one device group which can be configured by the user.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:449 ../locale/attr.py:142 attr.py:142
+#: ../extensions/help.py:460 ../locale/attr.py:142 attr.py:142
 msgid "dhcp_range"
 msgstr ""
 
-#: ../extensions/help.py:450
+#: ../extensions/help.py:461
 msgid ""
 "Range of dynamic IP addresses for %(Classname)s -- used\n"
 "             when generating DHCP configuration. Format: Two IP addresses in\n"
@@ -1913,31 +1950,31 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:456 ../locale/attr.py:377 attr.py:377
+#: ../extensions/help.py:467 ../locale/attr.py:377 attr.py:377
 msgid "dhcp_server"
 msgstr ""
 
-#: ../extensions/help.py:457
+#: ../extensions/help.py:468
 msgid "DHCP Server for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:458 ../locale/attr.py:899 ../locale/attr.py:987
+#: ../extensions/help.py:469 ../locale/attr.py:899 ../locale/attr.py:987
 #: attr.py:899 attr.py:987
 msgid "display"
 msgstr ""
 
-#: ../extensions/help.py:459
+#: ../extensions/help.py:470
 msgid ""
 "If enabled, items with %(Classname)s will be displayed\n"
 "             in customer/supplier mask.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:463 ../locale/attr.py:289 attr.py:289
+#: ../extensions/help.py:474 ../locale/attr.py:289 attr.py:289
 msgid "dist"
 msgstr ""
 
-#: ../extensions/help.py:464
+#: ../extensions/help.py:475
 msgid ""
 "Distribute: In a first step you can enter Start and End time\n"
 "             for each day or the hours you worked during the day. In a\n"
@@ -1951,7 +1988,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:476
+#: ../extensions/help.py:487
 msgid ""
 "Type of DNS record generated. If the $(Classname)s points to\n"
 "             another %(Classname)s a CNAME is generated, otherwise an\n"
@@ -1961,30 +1998,30 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:483 ../locale/attr.py:137 attr.py:137
+#: ../extensions/help.py:494 ../locale/attr.py:137 attr.py:137
 msgid "dns_servers"
 msgstr ""
 
-#: ../extensions/help.py:484
+#: ../extensions/help.py:495
 msgid ""
 "DNS Servers for this %(Classname)s, used when generating\n"
 "             the DHCP configuration.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:488 ../locale/attr.py:1097 attr.py:1097
+#: ../extensions/help.py:499 ../locale/attr.py:1097 attr.py:1097
 msgid "do_logging"
 msgstr ""
 
-#: ../extensions/help.py:489
+#: ../extensions/help.py:500
 msgid "Log values received for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:490 ../locale/attr.py:152 attr.py:152
+#: ../extensions/help.py:501 ../locale/attr.py:152 attr.py:152
 msgid "do_reverse_mapping"
 msgstr ""
 
-#: ../extensions/help.py:491
+#: ../extensions/help.py:502
 msgid ""
 "Flag if a reverse DNS entry should be created for this\n"
 "             %(Classname)s -- should usually be enabled. If a\n"
@@ -1994,11 +2031,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:498
+#: ../extensions/help.py:509
 msgid "doc++responsible"
 msgstr ""
 
-#: ../extensions/help.py:499
+#: ../extensions/help.py:510
 msgid ""
 "Owner of this %(Classname)s. Depending on the state, this\n"
 "            shall be the author of the %(Classname)s or the reponsible\n"
@@ -2006,19 +2043,19 @@ msgid ""
 "         "
 msgstr ""
 
-#: ../extensions/help.py:504
+#: ../extensions/help.py:515
 msgid "doc++link"
 msgstr ""
 
-#: ../extensions/help.py:505
+#: ../extensions/help.py:516
 msgid "The location of the file in the repository or on the file server"
 msgstr ""
 
-#: ../extensions/help.py:506
+#: ../extensions/help.py:517
 msgid "doc++status"
 msgstr ""
 
-#: ../extensions/help.py:507
+#: ../extensions/help.py:518
 msgid ""
 "The status of the item. Can be one of \"work in progress\",\n"
 "             \"draft\", \"released\" and \"obsolete\". The latter will cause "
@@ -2029,11 +2066,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:514
+#: ../extensions/help.py:525
 msgid "doc++title"
 msgstr ""
 
-#: ../extensions/help.py:515
+#: ../extensions/help.py:526
 msgid ""
 "Should be an intuitive one-line description of the %(Classname)s\n"
 "             consisting of the &lt;short name&gt; and the &lt;long "
@@ -2043,11 +2080,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:521
+#: ../extensions/help.py:532
 msgid "doc_issue_status"
 msgstr ""
 
-#: ../extensions/help.py:522
+#: ../extensions/help.py:533
 msgid ""
 "%(Classname)s documentation status, i.e., if this\n"
 "             %(Classname)s has an impact on user documentation or needs to\n"
@@ -2056,11 +2093,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:528
+#: ../extensions/help.py:539
 msgid "doc_issue_status++nosy"
 msgstr ""
 
-#: ../extensions/help.py:529
+#: ../extensions/help.py:540
 msgid ""
 "People receiving announcements (messages) for issues with\n"
 "             this %(Classname)s, the nosy list is modified when changing\n"
@@ -2068,22 +2105,22 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:534
+#: ../extensions/help.py:545
 msgid "doc_issue_status++order"
 msgstr ""
 
-#: ../extensions/help.py:536
+#: ../extensions/help.py:547
 msgid ""
 "Note that the %(Classname)s ordered first will also be the\n"
 "             default value.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:540 ../locale/attr.py:1031 attr.py:1031
+#: ../extensions/help.py:551 ../locale/attr.py:1031 attr.py:1031
 msgid "document_nr"
 msgstr ""
 
-#: ../extensions/help.py:541
+#: ../extensions/help.py:552
 msgid ""
 "The %(Property)s is generated when the %(Classname)s is\n"
 "             created. It can be manually overwritten for an old %(Classname)"
@@ -2092,34 +2129,34 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:546 ../locale/attr.py:360 ../locale/attr.py:367
+#: ../extensions/help.py:557 ../locale/attr.py:360 ../locale/attr.py:367
 #: attr.py:360 attr.py:367
 msgid "domain_part"
 msgstr ""
 
-#: ../extensions/help.py:547
+#: ../extensions/help.py:558
 msgid ""
 "Part of a domain name. The domain name is built by\n"
 "             concatenation the names of the Organisation and the Location.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:551 ../locale/attr.py:376 attr.py:376
+#: ../extensions/help.py:562 ../locale/attr.py:376 attr.py:376
 msgid "domino_dn"
 msgstr ""
 
-#: ../extensions/help.py:552
+#: ../extensions/help.py:563
 msgid ""
 "Distinguished name for Domino users -- needed for alias\n"
 "             generation.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:556 ../locale/attr.py:296 attr.py:296
+#: ../extensions/help.py:567 ../locale/attr.py:296 attr.py:296
 msgid "duration"
 msgstr ""
 
-#: ../extensions/help.py:557
+#: ../extensions/help.py:568
 msgid ""
 "Work duration in hours, e.g. 7.25 -- only quarter hours\n"
 "             allowed, e.g., 7.10 is not allowed. The duration is created\n"
@@ -2133,20 +2170,20 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:567 ../lib/schemacfg/dyndns.py:57
+#: ../extensions/help.py:578 ../lib/schemacfg/dyndns.py:57
 #: ../locale/attr.py:1040 ../locale/attr.py:1048 attr.py:1040 attr.py:1048
 msgid "dyndns_service"
 msgstr ""
 
-#: ../extensions/help.py:568
+#: ../extensions/help.py:579
 msgid "Configured %(Property)s to use for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:569 ../locale/attr.py:57 attr.py:57
+#: ../extensions/help.py:580 ../locale/attr.py:57 attr.py:57
 msgid "earliest_start"
 msgstr ""
 
-#: ../extensions/help.py:570
+#: ../extensions/help.py:581
 msgid ""
 "When this %(Classname)s can be started to work on. Used to\n"
 "             specify external dependencies (e.g., availability of\n"
@@ -2154,29 +2191,29 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:575 ../lib/schemacfg/email.py:41
+#: ../extensions/help.py:586 ../lib/schemacfg/email.py:41
 #: ../locale/attr.py:1118 attr.py:1118
 msgid "email"
 msgstr ""
 
-#: ../extensions/help.py:576
+#: ../extensions/help.py:587
 msgid "Email address for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:577
+#: ../extensions/help.py:588
 msgid "email++password"
 msgstr ""
 
-#: ../extensions/help.py:578
+#: ../extensions/help.py:589
 msgid "SMTP password for sending alerts"
 msgstr ""
 
-#: ../extensions/help.py:579 ../locale/attr.py:297 ../locale/attr.py:710
+#: ../extensions/help.py:590 ../locale/attr.py:297 ../locale/attr.py:710
 #: attr.py:297 attr.py:710
 msgid "end"
 msgstr ""
 
-#: ../extensions/help.py:580
+#: ../extensions/help.py:591
 msgid ""
 "Format xx:xx  (e.g. 17:00), is created automatically by the\n"
 "             system when you specify \"Start\" and \"Duration\". Attention: "
@@ -2190,23 +2227,23 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:590
+#: ../extensions/help.py:601
 msgid "fax"
 msgstr ""
 
-#: ../extensions/help.py:591
+#: ../extensions/help.py:602
 msgid "FAX number for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:592 ../locale/attr.py:1014 attr.py:1014
+#: ../extensions/help.py:603 ../locale/attr.py:1014 attr.py:1014
 msgid "filename_format"
 msgstr ""
 
-#: ../extensions/help.py:593
+#: ../extensions/help.py:604
 msgid "Naming convention for a Filename"
 msgstr ""
 
-#: ../extensions/help.py:594 ../locale/attr.py:40 ../locale/attr.py:87
+#: ../extensions/help.py:605 ../locale/attr.py:40 ../locale/attr.py:87
 #: ../locale/attr.py:108 ../locale/attr.py:444 ../locale/attr.py:451
 #: ../locale/attr.py:460 ../locale/attr.py:498 ../locale/attr.py:519
 #: ../locale/attr.py:540 ../locale/attr.py:555 ../locale/attr.py:652
@@ -2221,16 +2258,16 @@ msgstr ""
 msgid "files"
 msgstr ""
 
-#: ../extensions/help.py:595
+#: ../extensions/help.py:606
 msgid "Files for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:596 ../locale/attr.py:53 ../locale/attr.py:532
+#: ../extensions/help.py:607 ../locale/attr.py:53 ../locale/attr.py:532
 #: attr.py:53 attr.py:532
 msgid "files_affected"
 msgstr ""
 
-#: ../extensions/help.py:597
+#: ../extensions/help.py:608
 msgid ""
 "The %(Property)s entry field is used to identify which\n"
 "             file(s) has/have been changed during the modifications\n"
@@ -2251,45 +2288,57 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:614 ../locale/attr.py:543 attr.py:543
+#: ../extensions/help.py:625 ../locale/attr.py:543 attr.py:543
 msgid "final_meeting_date"
 msgstr ""
 
-#: ../extensions/help.py:615
+#: ../extensions/help.py:626
 msgid "Date of final meeting for this %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:618 ../locale/attr.py:651 ../locale/attr.py:821
+#: ../extensions/help.py:629 ../locale/attr.py:651 ../locale/attr.py:821
 #: attr.py:651 attr.py:821
 msgid "emails"
 msgstr ""
 
-#: ../extensions/help.py:619
+#: ../extensions/help.py:630
 msgid "Customer email addresses for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:620 ../locale/attr.py:115 ../locale/attr.py:668
+#: ../extensions/help.py:631 ../lib/schemacfg/extcompany.py:42
+msgid "external_company"
+msgstr ""
+
+#: ../extensions/help.py:632
+msgid ""
+"Company for external users used for access control: all\n"
+"            external users for a company have access if the\n"
+"            %(Classname)s is on the access list for an issue\n"
+"         "
+msgstr ""
+
+#: ../extensions/help.py:637 ../locale/attr.py:115 ../locale/attr.py:668
 #: ../locale/attr.py:746 ../locale/attr.py:784 ../locale/attr.py:839
 #: ../locale/attr.py:1177 attr.py:115 attr.py:668 attr.py:746 attr.py:784
 #: attr.py:839 attr.py:1177
 msgid "firstname"
 msgstr ""
 
-#: ../extensions/help.py:621
+#: ../extensions/help.py:638
 msgid "Date of first contact"
 msgstr ""
 
-#: ../extensions/help.py:621 ../locale/attr.py:116 ../locale/attr.py:785
+#: ../extensions/help.py:638 ../locale/attr.py:116 ../locale/attr.py:785
 #: attr.py:116 attr.py:785
 msgid "first_date"
 msgstr ""
 
-#: ../extensions/help.py:622 ../locale/attr.py:54 ../locale/attr.py:536
+#: ../extensions/help.py:639 ../locale/attr.py:54 ../locale/attr.py:536
 #: attr.py:54 attr.py:536
 msgid "fixed_in"
 msgstr ""
 
-#: ../extensions/help.py:623
+#: ../extensions/help.py:640
 msgid ""
 "Provide the version number where you fixed it. Is needed\n"
 "             when you change the status to testing.\n"
@@ -2301,12 +2350,12 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:632 ../locale/attr.py:680 ../locale/attr.py:851
+#: ../extensions/help.py:649 ../locale/attr.py:680 ../locale/attr.py:851
 #: attr.py:680 attr.py:851
 msgid "fromaddress"
 msgstr ""
 
-#: ../extensions/help.py:633
+#: ../extensions/help.py:650
 msgid ""
 "Address in outgoing emails to which the %(Classname)s can reply.\n"
 "             The email address provided must be one of the email\n"
@@ -2314,11 +2363,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:638 ../locale/attr.py:217 attr.py:217
+#: ../extensions/help.py:655 ../locale/attr.py:217 attr.py:217
 msgid "frozen"
 msgstr ""
 
-#: ../extensions/help.py:639
+#: ../extensions/help.py:656
 msgid ""
 "If this is set to \"yes\", all time records up to this date\n"
 "             as well as the dynamic user data up to this date cannot be\n"
@@ -2326,161 +2375,161 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:644 ../locale/attr.py:666 ../locale/attr.py:744
+#: ../extensions/help.py:661 ../locale/attr.py:666 ../locale/attr.py:744
 #: ../locale/attr.py:837 attr.py:666 attr.py:744 attr.py:837
 msgid "function"
 msgstr ""
 
-#: ../extensions/help.py:645 ../locale/attr.py:1059 attr.py:1059
+#: ../extensions/help.py:662 ../locale/attr.py:1059 attr.py:1059
 msgid "fw_url"
 msgstr ""
 
-#: ../extensions/help.py:646
+#: ../extensions/help.py:663
 msgid ""
 "Obtain IP address from IP checking page of firewall at\n"
 "            %(Property)s\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:650 ../locale/attr.py:1058 attr.py:1058
+#: ../extensions/help.py:667 ../locale/attr.py:1058 attr.py:1058
 msgid "fw_skip"
 msgstr ""
 
-#: ../extensions/help.py:651
+#: ../extensions/help.py:668
 msgid ""
 "Skip any IP address before %(Property)s in output returned\n"
 "            from ip-checking page of firewall\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:655 ../locale/attr.py:1051 attr.py:1051
+#: ../extensions/help.py:672 ../locale/attr.py:1051 attr.py:1051
 msgid "fw_login"
 msgstr ""
 
-#: ../extensions/help.py:656 ../extensions/help.py:658
+#: ../extensions/help.py:673 ../extensions/help.py:675
 msgid "%(Property)s to log into firewall"
 msgstr ""
 
-#: ../extensions/help.py:657 ../locale/attr.py:1052 attr.py:1052
+#: ../extensions/help.py:674 ../locale/attr.py:1052 attr.py:1052
 msgid "fw_password"
 msgstr ""
 
-#: ../extensions/help.py:659 ../locale/attr.py:1077 attr.py:1077
+#: ../extensions/help.py:676 ../locale/attr.py:1077 attr.py:1077
 msgid "gapint"
 msgstr ""
 
-#: ../extensions/help.py:660
+#: ../extensions/help.py:677
 msgid "Sensor interval for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:662
+#: ../extensions/help.py:679
 msgid "Numeric group ID"
 msgstr ""
 
-#: ../extensions/help.py:663 ../locale/attr.py:171 attr.py:171
+#: ../extensions/help.py:680 ../locale/attr.py:171 attr.py:171
 msgid "gid_range"
 msgstr ""
 
-#: ../extensions/help.py:664
+#: ../extensions/help.py:681
 msgid "Allowed range of group ids"
 msgstr ""
 
-#: ../extensions/help.py:667 ../lib/schemacfg/nwm.py:107 ../locale/attr.py:131
+#: ../extensions/help.py:684 ../lib/schemacfg/nwm.py:107 ../locale/attr.py:131
 #: ../locale/attr.py:1184 attr.py:131 attr.py:1184
 msgid "group"
 msgstr ""
 
-#: ../extensions/help.py:668
+#: ../extensions/help.py:685
 msgid "UNIX Group for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:669 ../locale/attr.py:1185 attr.py:1185
+#: ../extensions/help.py:686 ../locale/attr.py:1185 attr.py:1185
 msgid "home_directory"
 msgstr ""
 
-#: ../extensions/help.py:670
+#: ../extensions/help.py:687
 msgid "UNIX home directory for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:671 ../lib/schemacfg/dyndns.py:72
+#: ../extensions/help.py:688 ../lib/schemacfg/dyndns.py:72
 #: ../locale/attr.py:1047 attr.py:1047
 msgid "hostname"
 msgstr ""
 
-#: ../extensions/help.py:672
+#: ../extensions/help.py:689
 msgid "Name of the host configured in the dynamic DNS service"
 msgstr ""
 
-#: ../extensions/help.py:673 ../locale/attr.py:336 attr.py:336
+#: ../extensions/help.py:690 ../locale/attr.py:336 attr.py:336
 msgid "hours_mon"
 msgstr ""
 
-#: ../extensions/help.py:674 ../locale/attr.py:332 attr.py:332
+#: ../extensions/help.py:691 ../locale/attr.py:332 attr.py:332
 msgid "hours_tue"
 msgstr ""
 
-#: ../extensions/help.py:675 ../locale/attr.py:326 attr.py:326
+#: ../extensions/help.py:692 ../locale/attr.py:326 attr.py:326
 msgid "hours_wed"
 msgstr ""
 
-#: ../extensions/help.py:676 ../locale/attr.py:337 attr.py:337
+#: ../extensions/help.py:693 ../locale/attr.py:337 attr.py:337
 msgid "hours_thu"
 msgstr ""
 
-#: ../extensions/help.py:677 ../locale/attr.py:322 attr.py:322
+#: ../extensions/help.py:694 ../locale/attr.py:322 attr.py:322
 msgid "hours_fri"
 msgstr ""
 
-#: ../extensions/help.py:678 ../locale/attr.py:345 attr.py:345
+#: ../extensions/help.py:695 ../locale/attr.py:345 attr.py:345
 msgid "hours_sat"
 msgstr ""
 
-#: ../extensions/help.py:679 ../locale/attr.py:323 attr.py:323
+#: ../extensions/help.py:696 ../locale/attr.py:323 attr.py:323
 msgid "hours_sun"
 msgstr ""
 
-#: ../extensions/help.py:680
+#: ../extensions/help.py:697
 msgid "id"
 msgstr ""
 
-#: ../extensions/help.py:681 ../locale/attr.py:663 ../locale/attr.py:741
+#: ../extensions/help.py:698 ../locale/attr.py:663 ../locale/attr.py:741
 #: ../locale/attr.py:834 attr.py:663 attr.py:741 attr.py:834
 msgid "initial"
 msgstr ""
 
-#: ../extensions/help.py:682
+#: ../extensions/help.py:699
 msgid "Initials of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:683 ../locale/attr.py:1129 attr.py:1129
+#: ../extensions/help.py:700 ../locale/attr.py:1129 attr.py:1129
 msgid "inreplyto"
 msgstr ""
 
-#: ../extensions/help.py:684
+#: ../extensions/help.py:701
 msgid "In Reply To field if this %(Classname)s was received by email"
 msgstr ""
 
-#: ../extensions/help.py:685 ../locale/attr.py:1057 attr.py:1057
+#: ../extensions/help.py:702 ../locale/attr.py:1057 attr.py:1057
 msgid "interface"
 msgstr ""
 
-#: ../extensions/help.py:686
+#: ../extensions/help.py:703
 msgid "%(Property)s to determine IP address from"
 msgstr ""
 
-#: ../extensions/help.py:687 ../locale/attr.py:1056 attr.py:1056
+#: ../extensions/help.py:704 ../locale/attr.py:1056 attr.py:1056
 msgid "interface_skip"
 msgstr ""
 
-#: ../extensions/help.py:688
+#: ../extensions/help.py:705
 msgid "Skip any IP address before %(Property)s in output of ifconfig"
 msgstr ""
 
-#: ../extensions/help.py:689 ../locale/attr.py:702 attr.py:702
+#: ../extensions/help.py:706 ../locale/attr.py:702 attr.py:702
 msgid "interval"
 msgstr ""
 
-#: ../extensions/help.py:690
+#: ../extensions/help.py:707
 msgid ""
 "Interval for sending out an invoice in months. If the\n"
 "            invoice_level is non-zero, the distance in months since the\n"
@@ -2488,174 +2537,174 @@ msgid ""
 "         "
 msgstr ""
 
-#: ../extensions/help.py:695 ../locale/attr.py:149 attr.py:149
+#: ../extensions/help.py:712 ../locale/attr.py:149 attr.py:149
 msgid "inventory_no"
 msgstr ""
 
-#: ../extensions/help.py:696
+#: ../extensions/help.py:713
 msgid ""
 "Unique number or name for this %(Classname)s, preferrably the\n"
 "             inventory number for asset tracking\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:700 ../initial_data.py:755 ../lib/schemacfg/abo.py:91
+#: ../extensions/help.py:717 ../initial_data.py:755 ../lib/schemacfg/abo.py:91
 #: ../locale/attr.py:707 ../locale/attr.py:755 ../locale/attr.py:779
 #: ../schemas/erp.py:58 attr.py:707 attr.py:755 attr.py:779
 msgid "invoice"
 msgstr ""
 
-#: ../extensions/help.py:701
+#: ../extensions/help.py:718
 msgid "Link to invoice for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:702
+#: ../extensions/help.py:719
 msgid "invoice.amount"
 msgstr ""
 
-#: ../extensions/help.py:703
+#: ../extensions/help.py:720
 msgid "invoice++amount"
 msgstr ""
 
-#: ../extensions/help.py:704
+#: ../extensions/help.py:721
 msgid "invoice.payer.firstname"
 msgstr ""
 
-#: ../extensions/help.py:705
+#: ../extensions/help.py:722
 msgid "invoice.payer.lastname"
 msgstr ""
 
-#: ../extensions/help.py:706
+#: ../extensions/help.py:723
 msgid "invoice.payer.function"
 msgstr ""
 
-#: ../extensions/help.py:707
+#: ../extensions/help.py:724
 msgid "invoice.payer.valid"
 msgstr ""
 
-#: ../extensions/help.py:708
+#: ../extensions/help.py:725
 msgid "invoice.subscriber.firstname"
 msgstr ""
 
-#: ../extensions/help.py:709
+#: ../extensions/help.py:726
 msgid "invoice.subscriber.lastname"
 msgstr ""
 
-#: ../extensions/help.py:710
+#: ../extensions/help.py:727
 msgid "invoice.subscriber.valid"
 msgstr ""
 
-#: ../extensions/help.py:711
+#: ../extensions/help.py:728
 msgid "invoice_address"
 msgstr ""
 
-#: ../extensions/help.py:712 ../extensions/help.py:1259
-#: ../extensions/help.py:1410
+#: ../extensions/help.py:729 ../extensions/help.py:1276
+#: ../extensions/help.py:1427
 msgid "Data for %(Property)s"
 msgstr ""
 
-#: ../extensions/help.py:713 ../lib/schemacfg/abo.py:101 ../locale/attr.py:720
+#: ../extensions/help.py:730 ../lib/schemacfg/abo.py:101 ../locale/attr.py:720
 #: ../locale/attr.py:756 ../locale/attr.py:773 attr.py:720 attr.py:756
 #: attr.py:773
 msgid "invoice_group"
 msgstr ""
 
-#: ../extensions/help.py:714
+#: ../extensions/help.py:731
 msgid "Link to invoice_group for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:715 ../locale/attr.py:700 attr.py:700
+#: ../extensions/help.py:732 ../locale/attr.py:700 attr.py:700
 msgid "invoice_level"
 msgstr ""
 
-#: ../extensions/help.py:716
+#: ../extensions/help.py:733
 msgid ""
 "When the customer has received more invoices than this number\n"
 "            indicates, an invoice of this type is sent.\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:720 ../lib/schemacfg/sinvoice.py:77
+#: ../extensions/help.py:737 ../lib/schemacfg/sinvoice.py:77
 #: ../locale/attr.py:770 attr.py:770
 msgid "invoice_no"
 msgstr ""
 
-#: ../extensions/help.py:721
+#: ../extensions/help.py:738
 msgid "Unique number for this invoice, generated by the system"
 msgstr ""
 
-#: ../extensions/help.py:722 ../lib/schemacfg/sinvoice.py:85
+#: ../extensions/help.py:739 ../lib/schemacfg/sinvoice.py:85
 #: ../locale/attr.py:698 ../locale/attr.py:724 attr.py:698 attr.py:724
 msgid "invoice_template"
 msgstr ""
 
-#: ../extensions/help.py:723
+#: ../extensions/help.py:740
 msgid "An OpenOffice file used as a template for this type of invoice"
 msgstr ""
 
-#: ../extensions/help.py:724 ../locale/attr.py:712 ../locale/attr.py:734
+#: ../extensions/help.py:741 ../locale/attr.py:712 ../locale/attr.py:734
 #: attr.py:712 attr.py:734
 msgid "invoices"
 msgstr ""
 
-#: ../extensions/help.py:725
+#: ../extensions/help.py:742
 msgid "List of invoices for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:726 ../locale/attr.py:143 ../locale/attr.py:161
+#: ../extensions/help.py:743 ../locale/attr.py:143 ../locale/attr.py:161
 #: attr.py:143 attr.py:161
 msgid "ip"
 msgstr ""
 
-#: ../extensions/help.py:727
+#: ../extensions/help.py:744
 msgid "Internet protocol address of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:729
+#: ../extensions/help.py:746
 msgid "Internet protocol subnet"
 msgstr ""
 
-#: ../extensions/help.py:730
+#: ../extensions/help.py:747
 msgid "is_alias"
 msgstr ""
 
-#: ../extensions/help.py:731
+#: ../extensions/help.py:748
 msgid "No real user but only an email alias"
 msgstr ""
 
-#: ../extensions/help.py:732 ../locale/attr.py:664 ../locale/attr.py:835
+#: ../extensions/help.py:749 ../locale/attr.py:664 ../locale/attr.py:835
 #: attr.py:664 attr.py:835
 msgid "is_valid"
 msgstr ""
 
-#: ../extensions/help.py:733
+#: ../extensions/help.py:750
 msgid "%(Classname)s is valid"
 msgstr ""
 
-#: ../extensions/help.py:734 ../locale/attr.py:1089 attr.py:1089
+#: ../extensions/help.py:751 ../locale/attr.py:1089 attr.py:1089
 msgid "is_app_sensor"
 msgstr ""
 
-#: ../extensions/help.py:735
+#: ../extensions/help.py:752
 msgid ""
 "True if this %(Classname)s is an application sensor (not the\n"
 "            battery or dBm Sensor)\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:739 ../locale/attr.py:1173 attr.py:1173
+#: ../extensions/help.py:756 ../locale/attr.py:1173 attr.py:1173
 msgid "is_lotus_user"
 msgstr ""
 
-#: ../extensions/help.py:740
+#: ../extensions/help.py:757
 msgid "Enable this if the %(Classname)s uses Lotus Notes for mail"
 msgstr ""
 
-#: ../extensions/help.py:741 ../locale/attr.py:276 attr.py:276
+#: ../extensions/help.py:758 ../locale/attr.py:276 attr.py:276
 msgid "is_public_holiday"
 msgstr ""
 
-#: ../extensions/help.py:742
+#: ../extensions/help.py:759
 msgid ""
 "Flag for public holiday %(Classname)s -- set this if you\n"
 "             want work packages of this %(Classname)s to be used in\n"
@@ -2663,19 +2712,19 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:747 ../locale/attr.py:1093 attr.py:1093
+#: ../extensions/help.py:764 ../locale/attr.py:1093 attr.py:1093
 msgid "is_actuator"
 msgstr ""
 
-#: ../extensions/help.py:748
+#: ../extensions/help.py:765
 msgid "This %(Classname)s allows setting a value"
 msgstr ""
 
-#: ../extensions/help.py:749
+#: ../extensions/help.py:766
 msgid "issue++deadline"
 msgstr ""
 
-#: ../extensions/help.py:751
+#: ../extensions/help.py:768
 msgid ""
 "Should only be entered on Top-Level workpackages which are\n"
 "             either one single task of work or composed of one or more\n"
@@ -2686,11 +2735,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:759
+#: ../extensions/help.py:776
 msgid "issue++title"
 msgstr ""
 
-#: ../extensions/help.py:760
+#: ../extensions/help.py:777
 msgid ""
 "Should be an intuitive one-line description of the %(Classname)s.\n"
 "             Since titles of Roundup issues are also extracted into SCI\n"
@@ -2699,30 +2748,30 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:766
+#: ../extensions/help.py:783
 msgid "it_issue++superseder"
 msgstr ""
 
-#: ../extensions/help.py:772 ../lib/schemacfg/it_tracker.py:90
+#: ../extensions/help.py:789 ../lib/schemacfg/it_tracker.py:90
 #: ../locale/attr.py:79 ../locale/attr.py:97 attr.py:79 attr.py:97
 msgid "it_project"
 msgstr ""
 
-#: ../extensions/help.py:773
+#: ../extensions/help.py:790
 msgid "Optional IT Project to which this %(Classname)s belongs"
 msgstr ""
 
-#: ../extensions/help.py:774 ../locale/attr.py:46 ../locale/attr.py:1135
+#: ../extensions/help.py:791 ../locale/attr.py:46 ../locale/attr.py:1135
 #: attr.py:46 attr.py:1135
 msgid "keywords"
 msgstr ""
 
-#: ../extensions/help.py:776 ../locale/attr.py:16 ../locale/attr.py:62
+#: ../extensions/help.py:793 ../locale/attr.py:16 ../locale/attr.py:62
 #: ../locale/attr.py:515 attr.py:16 attr.py:62 attr.py:515
 msgid "kind"
 msgstr ""
 
-#: ../extensions/help.py:777
+#: ../extensions/help.py:794
 msgid ""
 "What this issue actually is. Be sure to exactly distinguish\n"
 "             between what is actually a Bug (it is not working as\n"
@@ -2734,110 +2783,110 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:786 ../locale/attr.py:1144 attr.py:1144
+#: ../extensions/help.py:803 ../locale/attr.py:1144 attr.py:1144
 msgid "klass"
 msgstr ""
 
-#: ../extensions/help.py:787
+#: ../extensions/help.py:804
 msgid "Class for this query"
 msgstr ""
 
-#: ../extensions/help.py:788
+#: ../extensions/help.py:805
 msgid "Date of last contact"
 msgstr ""
 
-#: ../extensions/help.py:788 ../locale/attr.py:120 ../locale/attr.py:789
+#: ../extensions/help.py:805 ../locale/attr.py:120 ../locale/attr.py:789
 #: attr.py:120 attr.py:789
 msgid "last_date"
 msgstr ""
 
-#: ../extensions/help.py:789 ../locale/attr.py:181 attr.py:181
+#: ../extensions/help.py:806 ../locale/attr.py:181 attr.py:181
 msgid "last_gid"
 msgstr ""
 
-#: ../extensions/help.py:790
+#: ../extensions/help.py:807
 msgid "Last used gid in this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:791 ../locale/attr.py:177 attr.py:177
+#: ../extensions/help.py:808 ../locale/attr.py:177 attr.py:177
 msgid "last_machine_uid"
 msgstr ""
 
-#: ../extensions/help.py:792
+#: ../extensions/help.py:809
 msgid "Last used machine uid in this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:793 ../locale/attr.py:765 attr.py:765
+#: ../extensions/help.py:810 ../locale/attr.py:765 attr.py:765
 msgid "last_sent"
 msgstr ""
 
-#: ../extensions/help.py:794
+#: ../extensions/help.py:811
 msgid "Date when an invoice was last sent"
 msgstr ""
 
-#: ../extensions/help.py:795 ../locale/attr.py:182 attr.py:182
+#: ../extensions/help.py:812 ../locale/attr.py:182 attr.py:182
 msgid "last_uid"
 msgstr ""
 
-#: ../extensions/help.py:796
+#: ../extensions/help.py:813
 msgid "Last used uid in this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:797 ../locale/attr.py:117 ../locale/attr.py:669
+#: ../extensions/help.py:814 ../locale/attr.py:117 ../locale/attr.py:669
 #: ../locale/attr.py:747 ../locale/attr.py:786 ../locale/attr.py:840
 #: ../locale/attr.py:1178 attr.py:117 attr.py:669 attr.py:747 attr.py:786
 #: attr.py:840 attr.py:1178
 msgid "lastname"
 msgstr ""
 
-#: ../extensions/help.py:798 ../lib/schemacfg/abo.py:110
+#: ../extensions/help.py:815 ../lib/schemacfg/abo.py:110
 #: ../lib/schemacfg/erp.py:283 ../locale/attr.py:776 ../locale/attr.py:1001
 #: ../schemas/adr.py:61 attr.py:776 attr.py:1001
 msgid "letter"
 msgstr ""
 
-#: ../extensions/help.py:799
+#: ../extensions/help.py:816
 msgid ""
 "Download of letter -- usually this will open the letter in\n"
 "           OpenOffice\n"
 "        "
 msgstr ""
 
-#: ../extensions/help.py:803 ../locale/attr.py:733 ../locale/attr.py:758
+#: ../extensions/help.py:820 ../locale/attr.py:733 ../locale/attr.py:758
 #: ../locale/attr.py:826 attr.py:733 attr.py:758 attr.py:826
 msgid "letters"
 msgstr ""
 
-#: ../extensions/help.py:804
+#: ../extensions/help.py:821
 msgid "List of letters for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:805 ../locale/attr.py:672 ../locale/attr.py:750
+#: ../extensions/help.py:822 ../locale/attr.py:672 ../locale/attr.py:750
 #: ../locale/attr.py:843 attr.py:672 attr.py:750 attr.py:843
 msgid "lettertitle"
 msgstr ""
 
-#: ../extensions/help.py:806
+#: ../extensions/help.py:823
 msgid "Title of this person used in a letter"
 msgstr ""
 
-#: ../extensions/help.py:807 ../locale/attr.py:150 attr.py:150
+#: ../extensions/help.py:824 ../locale/attr.py:150 attr.py:150
 msgid "link_field"
 msgstr ""
 
-#: ../extensions/help.py:808
+#: ../extensions/help.py:825
 msgid ""
 "Auxiliary field for use with other software, e.g., asset\n"
 "             tracking\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:812 ../lib/schemacfg/dyndns.py:88
+#: ../extensions/help.py:829 ../lib/schemacfg/dyndns.py:88
 #: ../locale/attr.py:1060 attr.py:1060
 msgid "local_hostname"
 msgstr ""
 
-#: ../extensions/help.py:813
+#: ../extensions/help.py:830
 msgid ""
 "Hostname of the host invoking dyndns service, currently\n"
 "             defaults to localhost, there is currently no mechanism to\n"
@@ -2845,49 +2894,49 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:818 ../lib/schemacfg/time_tracker.py:321
+#: ../extensions/help.py:835 ../lib/schemacfg/time_tracker.py:322
 #: ../locale/attr.py:358 ../locale/attr.py:375 ../locale/attr.py:1205
 #: attr.py:358 attr.py:375 attr.py:1205
 msgid "location"
 msgstr ""
 
-#: ../extensions/help.py:819
+#: ../extensions/help.py:836
 msgid "Location of %(Classname)s, e.g., Vienna HQ."
 msgstr ""
 
-#: ../extensions/help.py:820 ../locale/attr.py:1042 attr.py:1042
+#: ../extensions/help.py:837 ../locale/attr.py:1042 attr.py:1042
 msgid "login"
 msgstr ""
 
-#: ../extensions/help.py:821 ../locale/attr.py:1175 attr.py:1175
+#: ../extensions/help.py:838 ../locale/attr.py:1175 attr.py:1175
 msgid "login_shell"
 msgstr ""
 
-#: ../extensions/help.py:822
+#: ../extensions/help.py:839
 msgid "UNIX login shell for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:823 ../locale/attr.py:1161 attr.py:1161
+#: ../extensions/help.py:840 ../locale/attr.py:1161 attr.py:1161
 msgid "lunch_duration"
 msgstr ""
 
-#: ../extensions/help.py:824
+#: ../extensions/help.py:841
 msgid "Preference for time tracking, duration of lunch break in hours"
 msgstr ""
 
-#: ../extensions/help.py:825 ../locale/attr.py:1190 attr.py:1190
+#: ../extensions/help.py:842 ../locale/attr.py:1190 attr.py:1190
 msgid "lunch_start"
 msgstr ""
 
-#: ../extensions/help.py:826
+#: ../extensions/help.py:843
 msgid "Preference for time tracking, start of lunch break"
 msgstr ""
 
-#: ../extensions/help.py:827 ../locale/attr.py:165 attr.py:165
+#: ../extensions/help.py:844 ../locale/attr.py:165 attr.py:165
 msgid "mac"
 msgstr ""
 
-#: ../extensions/help.py:828
+#: ../extensions/help.py:845
 msgid ""
 "MAC Address (medium access control layer) e.g. ethernet\n"
 "             hardware address. Should be six hex-numbers separated by\n"
@@ -2895,47 +2944,47 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:833 ../lib/schemacfg/nwm.py:142 ../locale/attr.py:145
+#: ../extensions/help.py:850 ../lib/schemacfg/nwm.py:142 ../locale/attr.py:145
 #: ../locale/attr.py:163 attr.py:145 attr.py:163
 msgid "machine"
 msgstr ""
 
-#: ../extensions/help.py:834
+#: ../extensions/help.py:851
 msgid ""
 "A machine connected to the network to which this\n"
 "             %(Classname)s belongs\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:838 ../locale/attr.py:173 attr.py:173
+#: ../extensions/help.py:855 ../locale/attr.py:173 attr.py:173
 msgid "machine_group"
 msgstr ""
 
-#: ../extensions/help.py:839
+#: ../extensions/help.py:856
 msgid "Group for pseudo-accounts for machines (used for Samba)"
 msgstr ""
 
-#: ../extensions/help.py:841
+#: ../extensions/help.py:858
 msgid "Link to another %(Classname)s -- converted to a CNAME."
 msgstr ""
 
-#: ../extensions/help.py:842 ../locale/attr.py:190 attr.py:190
+#: ../extensions/help.py:859 ../locale/attr.py:190 attr.py:190
 msgid "machine_uid"
 msgstr ""
 
-#: ../extensions/help.py:843
+#: ../extensions/help.py:860
 msgid "Numeric user id for this samba machine."
 msgstr ""
 
-#: ../extensions/help.py:844 ../locale/attr.py:183 attr.py:183
+#: ../extensions/help.py:861 ../locale/attr.py:183 attr.py:183
 msgid "machine_uid_range"
 msgstr ""
 
-#: ../extensions/help.py:845
+#: ../extensions/help.py:862
 msgid "Allowed range of user ids for machines"
 msgstr ""
 
-#: ../extensions/help.py:849
+#: ../extensions/help.py:866
 msgid ""
 "Mail domain of the %(Classname)s. If there is no match for\n"
 "            an incoming support email, the mail domains are tried with\n"
@@ -2944,20 +2993,20 @@ msgid ""
 "         "
 msgstr ""
 
-#: ../extensions/help.py:855 ../locale/attr.py:356 ../locale/attr.py:1212
+#: ../extensions/help.py:872 ../locale/attr.py:356 ../locale/attr.py:1212
 #: attr.py:356 attr.py:1212
 msgid "manager"
 msgstr ""
 
-#: ../extensions/help.py:856
+#: ../extensions/help.py:873
 msgid "Responsible person of the %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:857 ../locale/attr.py:68 attr.py:68
+#: ../extensions/help.py:874 ../locale/attr.py:68 attr.py:68
 msgid "maturity_index"
 msgstr ""
 
-#: ../extensions/help.py:858
+#: ../extensions/help.py:875
 msgid ""
 "Maturity index for this %(Classname)s.\n"
 "             Computed as follows: For a container the sum of all\n"
@@ -2968,43 +3017,43 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:865 ../locale/attr.py:278 attr.py:278
+#: ../extensions/help.py:882 ../locale/attr.py:278 attr.py:278
 msgid "max_hours"
 msgstr ""
 
-#: ../extensions/help.py:866
+#: ../extensions/help.py:883
 msgid ""
 "If given for a %(Classname)s restricts the number of hours\n"
 "             you can book on this %(Classname)s for a single day.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:870 ../locale/attr.py:138 attr.py:138
+#: ../extensions/help.py:887 ../locale/attr.py:138 attr.py:138
 msgid "max_lease_time"
 msgstr ""
 
-#: ../extensions/help.py:871
+#: ../extensions/help.py:888
 msgid "Maximum DHCP lease time for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:872 ../lib/schemacfg/lielas.py:116
+#: ../extensions/help.py:889 ../lib/schemacfg/lielas.py:116
 #: ../locale/attr.py:1105 attr.py:1105
 msgid "measurement"
 msgstr ""
 
-#: ../extensions/help.py:873
+#: ../extensions/help.py:890
 msgid "Measurement for a given sensor"
 msgstr ""
 
-#: ../extensions/help.py:874 ../locale/attr.py:1136 attr.py:1136
+#: ../extensions/help.py:891 ../locale/attr.py:1136 attr.py:1136
 msgid "messageid"
 msgstr ""
 
-#: ../extensions/help.py:875
+#: ../extensions/help.py:892
 msgid "Message-ID if this message was received via email"
 msgstr ""
 
-#: ../extensions/help.py:876 ../locale/attr.py:66 ../locale/attr.py:82
+#: ../extensions/help.py:893 ../locale/attr.py:66 ../locale/attr.py:82
 #: ../locale/attr.py:105 ../locale/attr.py:118 ../locale/attr.py:354
 #: ../locale/attr.py:368 ../locale/attr.py:447 ../locale/attr.py:455
 #: ../locale/attr.py:464 ../locale/attr.py:474 ../locale/attr.py:486
@@ -3023,11 +3072,11 @@ msgstr ""
 msgid "messages"
 msgstr ""
 
-#: ../extensions/help.py:877
+#: ../extensions/help.py:894
 msgid "List of messages for %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:878
+#: ../extensions/help.py:895
 msgid ""
 " Note that during\n"
 "             conversion from the old roundup tracker all existing\n"
@@ -3039,36 +3088,39 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:887 ../locale/attr.py:1067 ../locale/attr.py:1085
+#: ../extensions/help.py:904 ../locale/attr.py:1067 ../locale/attr.py:1085
 #: attr.py:1067 attr.py:1085
 msgid "mint"
 msgstr ""
 
-#: ../extensions/help.py:888
+#: ../extensions/help.py:905
 msgid "Measurement interval for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:890
+#: ../extensions/help.py:907
 msgid "New message or notice for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:891
+#: ../extensions/help.py:908
 msgid "msg_keywords"
 msgstr ""
 
-#: ../extensions/help.py:893 ../locale/attr.py:766 attr.py:766
+#: ../extensions/help.py:910 ../locale/attr.py:766 attr.py:766
 msgid "n_sent"
 msgstr ""
 
-#: ../extensions/help.py:894
+#: ../extensions/help.py:911
 msgid "Number of times this invoice was sent"
 msgstr ""
 
-#: ../extensions/help.py:895 ../lib/schemacfg/abo.py:71
+#: ../extensions/help.py:912 ../lib/schemacfg/abo.py:71
 #: ../lib/schemacfg/abo.py:81 ../lib/schemacfg/abo.py:105
 #: ../lib/schemacfg/address.py:93 ../lib/schemacfg/company.py:169
 #: ../lib/schemacfg/contact.py:63 ../lib/schemacfg/dyndns.py:54
-#: ../lib/schemacfg/erp.py:87 ../lib/schemacfg/letter.py:73
+#: ../lib/schemacfg/erp.py:87 ../lib/schemacfg/hamlog.py:52
+#: ../lib/schemacfg/hamlog.py:61 ../lib/schemacfg/hamlog.py:68
+#: ../lib/schemacfg/hamlog.py:75 ../lib/schemacfg/hamlog.py:83
+#: ../lib/schemacfg/hamlog.py:90 ../lib/schemacfg/letter.py:73
 #: ../lib/schemacfg/letter.py:82 ../lib/schemacfg/lielas.py:58
 #: ../lib/schemacfg/lielas.py:66 ../lib/schemacfg/lielas.py:113
 #: ../lib/schemacfg/sinvoice.py:55 ../lib/schemacfg/sinvoice.py:91
@@ -3127,52 +3179,52 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: ../extensions/help.py:896
+#: ../extensions/help.py:913
 msgid "Unique %(Classname)s name"
 msgstr ""
 
-#: ../extensions/help.py:897 ../locale/attr.py:168 attr.py:168
+#: ../extensions/help.py:914 ../locale/attr.py:168 attr.py:168
 msgid "name_version"
 msgstr ""
 
-#: ../extensions/help.py:898
+#: ../extensions/help.py:915
 msgid ""
 "Unique name of this %(Classname)s, including the version\n"
 "             number\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:902
+#: ../extensions/help.py:919
 msgid "need_msg"
 msgstr ""
 
-#: ../extensions/help.py:903
+#: ../extensions/help.py:920
 msgid ""
 "Changing to this %(Classname)s needs a message from the\n"
 "             user.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:907
+#: ../extensions/help.py:924
 msgid "needs.id"
 msgstr ""
 
-#: ../extensions/help.py:908 ../locale/attr.py:176 attr.py:176
+#: ../extensions/help.py:925 ../locale/attr.py:176 attr.py:176
 msgid "netbios_dd"
 msgstr ""
 
-#: ../extensions/help.py:909
+#: ../extensions/help.py:926
 msgid ""
 "Netbios datagram distribution server (NBDD) option for DHCP\n"
 "             config. Specifies list of servers in order of preference.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:913 ../locale/attr.py:180 attr.py:180
+#: ../extensions/help.py:930 ../locale/attr.py:180 attr.py:180
 msgid "netbios_ns"
 msgstr ""
 
-#: ../extensions/help.py:914
+#: ../extensions/help.py:931
 msgid ""
 "Netbios name server (NBNS) option for DHCP config. Specifies\n"
 "             list of servers in order of preference. Netbios name service\n"
@@ -3180,11 +3232,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:919 ../locale/attr.py:174 attr.py:174
+#: ../extensions/help.py:936 ../locale/attr.py:174 attr.py:174
 msgid "netbios_nodetype"
 msgstr ""
 
-#: ../extensions/help.py:920
+#: ../extensions/help.py:937
 msgid ""
 "The Netbios node type option allows NetBIOS over TCP/IP\n"
 "             clients which are configurable to be configured as described\n"
@@ -3196,46 +3248,46 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:929 ../locale/attr.py:141 attr.py:141
+#: ../extensions/help.py:946 ../locale/attr.py:141 attr.py:141
 msgid "netmask"
 msgstr ""
 
-#: ../extensions/help.py:930
+#: ../extensions/help.py:947
 msgid "IP net mask for this %(Classname)s, a number (e.g., 16)."
 msgstr ""
 
-#: ../extensions/help.py:932
+#: ../extensions/help.py:949
 msgid ""
 "Address in the network, including but not limited to IP\n"
 "             address\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:936 ../lib/schemacfg/nwm.py:182 ../locale/attr.py:160
+#: ../extensions/help.py:953 ../lib/schemacfg/nwm.py:182 ../locale/attr.py:160
 #: ../locale/attr.py:162 attr.py:160 attr.py:162
 msgid "network_interface"
 msgstr ""
 
-#: ../extensions/help.py:937
+#: ../extensions/help.py:954
 msgid ""
 "Hardware unit to connect to the network. Can be part of the\n"
 "             motherboard or can be a separate unit\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:941 ../locale/attr.py:1187 attr.py:1187
+#: ../extensions/help.py:958 ../locale/attr.py:1187 attr.py:1187
 msgid "nickname"
 msgstr ""
 
-#: ../extensions/help.py:942
+#: ../extensions/help.py:959
 msgid "Nickname (or short name) for this %(Classname)s, e.g., rsc"
 msgstr ""
 
-#: ../extensions/help.py:943 ../locale/attr.py:269 attr.py:269
+#: ../extensions/help.py:960 ../locale/attr.py:269 attr.py:269
 msgid "no_overtime"
 msgstr ""
 
-#: ../extensions/help.py:944
+#: ../extensions/help.py:961
 msgid ""
 "This flag makes sure that not more than the employee's\n"
 "             normal working time can be registered under this\n"
@@ -3243,7 +3295,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:949 ../locale/attr.py:11 ../locale/attr.py:64
+#: ../extensions/help.py:966 ../locale/attr.py:11 ../locale/attr.py:64
 #: ../locale/attr.py:80 ../locale/attr.py:103 ../locale/attr.py:272
 #: ../locale/attr.py:438 ../locale/attr.py:445 ../locale/attr.py:453
 #: ../locale/attr.py:462 ../locale/attr.py:472 ../locale/attr.py:495
@@ -3259,28 +3311,28 @@ msgstr ""
 msgid "nosy"
 msgstr ""
 
-#: ../extensions/help.py:950
+#: ../extensions/help.py:967
 msgid "People receiving announcements (messages) for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:951 ../locale/attr.py:675 ../locale/attr.py:846
+#: ../extensions/help.py:968 ../locale/attr.py:675 ../locale/attr.py:846
 #: attr.py:675 attr.py:846
 msgid "nosygroups"
 msgstr ""
 
-#: ../extensions/help.py:952
+#: ../extensions/help.py:969
 msgid ""
 "Group(s) of nosy lists to use for new support issues from\n"
 "            this %(Classname)s\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:956 ../locale/attr.py:63 ../locale/attr.py:643
+#: ../extensions/help.py:973 ../locale/attr.py:63 ../locale/attr.py:643
 #: ../locale/attr.py:813 attr.py:63 attr.py:643 attr.py:813
 msgid "numeric_effort"
 msgstr ""
 
-#: ../extensions/help.py:957
+#: ../extensions/help.py:974
 msgid ""
 "The estimated effort this work package has. This should be\n"
 "             a fair estimation done by the Responsible of the\n"
@@ -3296,38 +3348,38 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:970 ../locale/attr.py:241 ../locale/attr.py:270
+#: ../extensions/help.py:987 ../locale/attr.py:241 ../locale/attr.py:270
 #: attr.py:241 attr.py:270
 msgid "op_project"
 msgstr ""
 
-#: ../extensions/help.py:971
+#: ../extensions/help.py:988
 msgid ""
 "Flag if this %(Classname)s is a real project or just used for\n"
 "             time tracking.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:975 ../locale/attr.py:771 attr.py:771
+#: ../extensions/help.py:992 ../locale/attr.py:771 attr.py:771
 msgid "open"
 msgstr ""
 
-#: ../extensions/help.py:976
+#: ../extensions/help.py:993
 msgid ""
 "Indicates if this %(Classname)s is still open. Automatically\n"
 "             maintained by the system\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:980 ../locale/attr.py:548 attr.py:548
+#: ../extensions/help.py:997 ../locale/attr.py:548 attr.py:548
 msgid "opt_reviewers"
 msgstr ""
 
-#: ../extensions/help.py:981
+#: ../extensions/help.py:998
 msgid "Optional reviewers for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:982 ../locale/attr.py:25 ../locale/attr.py:34
+#: ../extensions/help.py:999 ../locale/attr.py:25 ../locale/attr.py:34
 #: ../locale/attr.py:92 ../locale/attr.py:95 ../locale/attr.py:112
 #: ../locale/attr.py:260 ../locale/attr.py:319 ../locale/attr.py:381
 #: ../locale/attr.py:388 ../locale/attr.py:394 ../locale/attr.py:398
@@ -3349,17 +3401,17 @@ msgstr ""
 msgid "order"
 msgstr ""
 
-#: ../extensions/help.py:983 ../lib/schemacfg/time_tracker.py:322
+#: ../extensions/help.py:1000 ../lib/schemacfg/time_tracker.py:323
 #: ../locale/attr.py:273 ../locale/attr.py:363 ../locale/attr.py:373
 #: attr.py:273 attr.py:363 attr.py:373
 msgid "organisation"
 msgstr ""
 
-#: ../extensions/help.py:984
+#: ../extensions/help.py:1001
 msgid "Organisation in which the %(Classname)s is based."
 msgstr ""
 
-#: ../extensions/help.py:986
+#: ../extensions/help.py:1003
 msgid ""
 "Organisation and location of this %(Classname)s, cartesian\n"
 "             product of organisation and location -- only the combinations\n"
@@ -3367,11 +3419,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:991
+#: ../extensions/help.py:1008
 msgid "org_location++phone"
 msgstr ""
 
-#: ../extensions/help.py:992
+#: ../extensions/help.py:1009
 msgid ""
 "Telephone-Network prefix of Telephone number for company\n"
 "             without direct inbound dialling suffix (aka extension)\n"
@@ -3379,46 +3431,46 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:997
+#: ../extensions/help.py:1014
 msgid "organisation.id"
 msgstr ""
 
-#: ../extensions/help.py:998 ../locale/attr.py:146 attr.py:146
+#: ../extensions/help.py:1015 ../locale/attr.py:146 attr.py:146
 msgid "owner"
 msgstr ""
 
-#: ../extensions/help.py:999
+#: ../extensions/help.py:1016
 msgid "User/Owner of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1000 ../lib/schemacfg/nwm.py:192 ../locale/attr.py:147
+#: ../extensions/help.py:1017 ../lib/schemacfg/nwm.py:192 ../locale/attr.py:147
 #: ../locale/attr.py:167 attr.py:147 attr.py:167
 msgid "operating_system"
 msgstr ""
 
-#: ../extensions/help.py:1001
+#: ../extensions/help.py:1018
 msgid "Operating System running on this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1003
+#: ../extensions/help.py:1020
 msgid "Period over which overtime is computed for a person"
 msgstr ""
 
-#: ../extensions/help.py:1004 ../locale/attr.py:992 attr.py:992
+#: ../extensions/help.py:1021 ../locale/attr.py:992 attr.py:992
 msgid "parent"
 msgstr ""
 
-#: ../extensions/help.py:1005
+#: ../extensions/help.py:1022
 msgid "%(Classname)s to which this %(Classname)s belongs."
 msgstr ""
 
-#: ../extensions/help.py:1006 ../locale/attr.py:58 ../locale/attr.py:351
+#: ../extensions/help.py:1023 ../locale/attr.py:58 ../locale/attr.py:351
 #: ../locale/attr.py:487 ../locale/attr.py:1207 attr.py:58 attr.py:351
 #: attr.py:487 attr.py:1207
 msgid "part_of"
 msgstr ""
 
-#: ../extensions/help.py:1007
+#: ../extensions/help.py:1024
 msgid ""
 "If you have a Top-Level work package which consists of other\n"
 "             work packages, you should enter the parent work package\n"
@@ -3432,114 +3484,114 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1018
+#: ../extensions/help.py:1035
 msgid "part_of.id"
 msgstr ""
 
-#: ../extensions/help.py:1019 ../locale/attr.py:1043 ../locale/attr.py:1119
+#: ../extensions/help.py:1036 ../locale/attr.py:1043 ../locale/attr.py:1119
 #: ../locale/attr.py:1186 attr.py:1043 attr.py:1119 attr.py:1186
 msgid "password"
 msgstr ""
 
-#: ../extensions/help.py:1020 ../locale/attr.py:743 attr.py:743
+#: ../extensions/help.py:1037 ../locale/attr.py:743 attr.py:743
 msgid "payed_abos"
 msgstr ""
 
-#: ../extensions/help.py:1021
+#: ../extensions/help.py:1038
 msgid "Subscriptions for which this %(Classname)s is paying"
 msgstr ""
 
-#: ../extensions/help.py:1022 ../locale/attr.py:711 ../locale/attr.py:759
+#: ../extensions/help.py:1039 ../locale/attr.py:711 ../locale/attr.py:759
 #: attr.py:711 attr.py:759
 msgid "payer"
 msgstr ""
 
-#: ../extensions/help.py:1023
+#: ../extensions/help.py:1040
 msgid "Address which is paying for this subscription"
 msgstr ""
 
-#: ../extensions/help.py:1024
+#: ../extensions/help.py:1041
 msgid "payer.firstname"
 msgstr ""
 
-#: ../extensions/help.py:1025 ../extensions/help.py:1026
+#: ../extensions/help.py:1042 ../extensions/help.py:1043
 msgid "payer.lastname"
 msgstr ""
 
-#: ../extensions/help.py:1027
+#: ../extensions/help.py:1044
 msgid "payer.valid"
 msgstr ""
 
-#: ../extensions/help.py:1028
+#: ../extensions/help.py:1045
 msgid "payer.adr_type"
 msgstr ""
 
-#: ../extensions/help.py:1029 ../lib/schemacfg/sinvoice.py:94
+#: ../extensions/help.py:1046 ../lib/schemacfg/sinvoice.py:94
 #: ../locale/attr.py:703 ../locale/attr.py:772 attr.py:703 attr.py:772
 msgid "payment"
 msgstr ""
 
-#: ../extensions/help.py:1030
+#: ../extensions/help.py:1047
 msgid "Amount of payment received for this invoice"
 msgstr ""
 
-#: ../extensions/help.py:1031 ../locale/attr.py:542 attr.py:542
+#: ../extensions/help.py:1048 ../locale/attr.py:542 attr.py:542
 msgid "peer_reviewers"
 msgstr ""
 
-#: ../extensions/help.py:1032
+#: ../extensions/help.py:1049
 msgid "Peer reviewers for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1033 ../locale/attr.py:727 attr.py:727
+#: ../extensions/help.py:1050 ../locale/attr.py:727 attr.py:727
 msgid "period"
 msgstr ""
 
-#: ../extensions/help.py:1034
+#: ../extensions/help.py:1051
 msgid "Subscription period in months."
 msgstr ""
 
-#: ../extensions/help.py:1035 ../locale/attr.py:767 attr.py:767
+#: ../extensions/help.py:1052 ../locale/attr.py:767 attr.py:767
 msgid "period_end"
 msgstr ""
 
-#: ../extensions/help.py:1036
+#: ../extensions/help.py:1053
 msgid "Date when this invoice period ends"
 msgstr ""
 
-#: ../extensions/help.py:1037 ../locale/attr.py:769 attr.py:769
+#: ../extensions/help.py:1054 ../locale/attr.py:769 attr.py:769
 msgid "period_start"
 msgstr ""
 
-#: ../extensions/help.py:1038
+#: ../extensions/help.py:1055
 msgid "Date when this invoice period starts"
 msgstr ""
 
-#: ../extensions/help.py:1039 ../lib/schemacfg/person_sep.py:60
+#: ../extensions/help.py:1056 ../lib/schemacfg/person_sep.py:60
 #: ../locale/attr.py:606 ../locale/attr.py:658 ../locale/attr.py:737
 #: ../locale/attr.py:829 attr.py:606 attr.py:658 attr.py:737 attr.py:829
 msgid "person_type"
 msgstr ""
 
-#: ../extensions/help.py:1040
+#: ../extensions/help.py:1057
 msgid "Type of this %(Classname)s for Customer/Supplier"
 msgstr ""
 
-#: ../extensions/help.py:1041 ../locale/attr.py:611 ../schemas/erp.py:61
+#: ../extensions/help.py:1058 ../locale/attr.py:611 ../schemas/erp.py:61
 #: attr.py:611
 msgid "person"
 msgstr ""
 
-#: ../extensions/help.py:1042
+#: ../extensions/help.py:1059
 msgid "personal Information for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1043 ../locale/attr.py:249 ../locale/attr.py:277
+#: ../extensions/help.py:1060 ../locale/attr.py:249 ../locale/attr.py:277
 #: ../locale/attr.py:309 attr.py:249 attr.py:277 attr.py:309
 msgid "planned_effort"
 msgstr ""
 
-#: ../extensions/help.py:1044
+#: ../extensions/help.py:1061
 msgid ""
 "Effort for %(Classname)s in person-hours; as it is stated\n"
 "             in the Project Evaluation Sheet. Warning: This used to be in\n"
@@ -3547,34 +3599,34 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1049 ../lib/schemacfg/company.py:154
+#: ../extensions/help.py:1066 ../lib/schemacfg/company.py:154
 #: ../locale/attr.py:1 ../locale/attr.py:2 ../locale/attr.py:1199 attr.py:1
 #: attr.py:2 attr.py:1199
 msgid "position"
 msgstr ""
 
-#: ../extensions/help.py:1050
+#: ../extensions/help.py:1067
 msgid "%(Property)s in the company"
 msgstr ""
 
-#: ../extensions/help.py:1051 ../locale/attr.py:999 attr.py:999
+#: ../extensions/help.py:1068 ../locale/attr.py:999 attr.py:999
 msgid "postalcode"
 msgstr ""
 
-#: ../extensions/help.py:1052
+#: ../extensions/help.py:1069
 msgid "Postal code for this %(Classname)s "
 msgstr ""
 
-#: ../extensions/help.py:1053 ../locale/attr.py:635 ../locale/attr.py:805
+#: ../extensions/help.py:1070 ../locale/attr.py:635 ../locale/attr.py:805
 #: attr.py:635 attr.py:805
 msgid "prio"
 msgstr ""
 
-#: ../extensions/help.py:1057 ../locale/attr.py:52 attr.py:52
+#: ../extensions/help.py:1074 ../locale/attr.py:52 attr.py:52
 msgid "priority"
 msgstr ""
 
-#: ../extensions/help.py:1059
+#: ../extensions/help.py:1076
 msgid ""
 "Should be set between 0 and 100. For the planning process\n"
 "             only issues above a specified priority level are taken into\n"
@@ -3583,36 +3635,36 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1065 ../locale/attr.py:1142 attr.py:1142
+#: ../extensions/help.py:1082 ../locale/attr.py:1142 attr.py:1142
 msgid "private_for"
 msgstr ""
 
-#: ../extensions/help.py:1066
+#: ../extensions/help.py:1083
 msgid "Flag if this is a private %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1067 ../locale/attr.py:175 attr.py:175
+#: ../extensions/help.py:1084 ../locale/attr.py:175 attr.py:175
 msgid "private_gid_range"
 msgstr ""
 
-#: ../extensions/help.py:1068
+#: ../extensions/help.py:1085
 msgid "Allowed range of group ids for users"
 msgstr ""
 
-#: ../extensions/help.py:1071 ../locale/attr.py:1007 ../locale/attr.py:1025
+#: ../extensions/help.py:1088 ../locale/attr.py:1007 ../locale/attr.py:1025
 #: attr.py:1007 attr.py:1025
 msgid "product_type"
 msgstr ""
 
-#: ../extensions/help.py:1072
+#: ../extensions/help.py:1089
 msgid "The type of the %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:1073 ../locale/attr.py:308 attr.py:308
+#: ../extensions/help.py:1090 ../locale/attr.py:308 attr.py:308
 msgid "project"
 msgstr ""
 
-#: ../extensions/help.py:1074
+#: ../extensions/help.py:1091
 msgid ""
 "%(Classname)s is part of a Time Category. With the Time\n"
 "             Category name a\n"
@@ -3620,77 +3672,77 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1079 ../locale/attr.py:1041 attr.py:1041
+#: ../extensions/help.py:1096 ../locale/attr.py:1041 attr.py:1041
 msgid "protocol"
 msgstr ""
 
-#: ../extensions/help.py:1080
+#: ../extensions/help.py:1097
 msgid "The dynamic DNS protocol to use with this %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:1081 ../locale/attr.py:552 attr.py:552
+#: ../extensions/help.py:1098 ../locale/attr.py:552 attr.py:552
 msgid "qa_representative"
 msgstr ""
 
-#: ../extensions/help.py:1082
+#: ../extensions/help.py:1099
 msgid "Representative from the QA department for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1083
+#: ../extensions/help.py:1100
 msgid "query++tmplate"
 msgstr ""
 
-#: ../extensions/help.py:1084
+#: ../extensions/help.py:1101
 msgid "HTML-template that is used for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1085 ../locale/attr.py:1160 attr.py:1160
+#: ../extensions/help.py:1102 ../locale/attr.py:1160 attr.py:1160
 msgid "queries"
 msgstr ""
 
-#: ../extensions/help.py:1086
+#: ../extensions/help.py:1103
 msgid "Queries for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1087 ../locale/attr.py:1163 attr.py:1163
+#: ../extensions/help.py:1104 ../locale/attr.py:1163 attr.py:1163
 msgid "realname"
 msgstr ""
 
-#: ../extensions/help.py:1088
+#: ../extensions/help.py:1105
 msgid "Real name for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1089 ../lib/schemacfg/sinvoice.py:100
+#: ../extensions/help.py:1106 ../lib/schemacfg/sinvoice.py:100
 #: ../locale/attr.py:704 attr.py:704
 msgid "receipt_no"
 msgstr ""
 
-#: ../extensions/help.py:1090
+#: ../extensions/help.py:1107
 msgid "Unique identification of this payment"
 msgstr ""
 
-#: ../extensions/help.py:1091 ../locale/attr.py:1130 attr.py:1130
+#: ../extensions/help.py:1108 ../locale/attr.py:1130 attr.py:1130
 msgid "recipients"
 msgstr ""
 
-#: ../extensions/help.py:1092
+#: ../extensions/help.py:1109
 msgid "Only set if message was received via email."
 msgstr ""
 
-#: ../extensions/help.py:1093 ../locale/attr.py:551 attr.py:551
+#: ../extensions/help.py:1110 ../locale/attr.py:551 attr.py:551
 msgid "recorder"
 msgstr ""
 
-#: ../extensions/help.py:1094
+#: ../extensions/help.py:1111
 msgid "Person responsible for recording findings"
 msgstr ""
 
-#: ../extensions/help.py:1095 ../locale/attr.py:1010 ../locale/attr.py:1026
+#: ../extensions/help.py:1112 ../locale/attr.py:1010 ../locale/attr.py:1026
 #: attr.py:1010 attr.py:1026
 msgid "reference"
 msgstr ""
 
-#: ../extensions/help.py:1096
+#: ../extensions/help.py:1113
 msgid ""
 "Defines the relation to a project, customer, etc. If\n"
 "            necessary, this entry is defined for new customers and/or\n"
@@ -3698,27 +3750,27 @@ msgid ""
 "         "
 msgstr ""
 
-#: ../extensions/help.py:1101 ../locale/attr.py:644 ../locale/attr.py:814
+#: ../extensions/help.py:1118 ../locale/attr.py:644 ../locale/attr.py:814
 #: attr.py:644 attr.py:814
 msgid "related_issues"
 msgstr ""
 
-#: ../extensions/help.py:1102
+#: ../extensions/help.py:1119
 msgid ""
 "Issues related to this %(Classname)s.\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:1105
+#: ../extensions/help.py:1122
 msgid "related_issues.id"
 msgstr ""
 
-#: ../extensions/help.py:1106 ../locale/attr.py:90 ../locale/attr.py:622
+#: ../extensions/help.py:1123 ../locale/attr.py:90 ../locale/attr.py:622
 #: ../locale/attr.py:792 attr.py:90 attr.py:622 attr.py:792
 msgid "relaxed"
 msgstr ""
 
-#: ../extensions/help.py:1107
+#: ../extensions/help.py:1124
 msgid ""
 "If set, when changing status, no checks about a message, the\n"
 "            priority and responsible (helpdesk) are done when changing\n"
@@ -3727,7 +3779,7 @@ msgid ""
 msgstr ""
 
 #.  just to show something in the pop-up, gets set to the last reached milestone
-#: ../extensions/help.py:1112 ../lib/schemacfg/complex.py:210
+#: ../extensions/help.py:1129 ../lib/schemacfg/complex.py:210
 #: ../locale/attr.py:69 ../locale/attr.py:386 ../locale/attr.py:465
 #: ../locale/attr.py:467 ../locale/attr.py:496 ../locale/attr.py:647
 #: ../locale/attr.py:817 attr.py:69 attr.py:386 attr.py:465 attr.py:467
@@ -3735,7 +3787,7 @@ msgstr ""
 msgid "release"
 msgstr ""
 
-#: ../extensions/help.py:1113
+#: ../extensions/help.py:1130
 msgid ""
 "The %(Property)s this %(Classname)s was found, either as\n"
 "             bug or as missing feature. For (newly reported) bugs,\n"
@@ -3746,42 +3798,42 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1121 ../extensions/help.py:1703
+#: ../extensions/help.py:1138 ../extensions/help.py:1720
 msgid "remove"
 msgstr ""
 
-#: ../extensions/help.py:1122
+#: ../extensions/help.py:1139
 msgid ""
 "Remove attached item. Will not remove item from the database,\n"
 "             it can usually still be downloaded via the History button.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1126 ../locale/attr.py:28 attr.py:28
+#: ../extensions/help.py:1143 ../locale/attr.py:28 attr.py:28
 msgid "require_msg"
 msgstr ""
 
-#: ../extensions/help.py:1127
+#: ../extensions/help.py:1144
 msgid "Require a message for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1128 ../locale/attr.py:29 attr.py:29
+#: ../extensions/help.py:1145 ../locale/attr.py:29 attr.py:29
 msgid "require_resp_change"
 msgstr ""
 
-#: ../extensions/help.py:1129
+#: ../extensions/help.py:1146
 msgid "Require change of responsible person for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1130 ../locale/attr.py:208 attr.py:208
+#: ../extensions/help.py:1147 ../locale/attr.py:208 attr.py:208
 msgid "required_overtime"
 msgstr ""
 
-#: ../extensions/help.py:1131
+#: ../extensions/help.py:1148
 msgid "Overtime preapproved by supervisor and required by project."
 msgstr ""
 
-#: ../extensions/help.py:1132 ../locale/attr.py:12 ../locale/attr.py:51
+#: ../extensions/help.py:1149 ../locale/attr.py:12 ../locale/attr.py:51
 #: ../locale/attr.py:81 ../locale/attr.py:104 ../locale/attr.py:199
 #: ../locale/attr.py:274 ../locale/attr.py:306 ../locale/attr.py:439
 #: ../locale/attr.py:446 ../locale/attr.py:454 ../locale/attr.py:463
@@ -3796,15 +3848,15 @@ msgstr ""
 msgid "responsible"
 msgstr ""
 
-#: ../extensions/help.py:1133
+#: ../extensions/help.py:1150
 msgid "Person who is responsible for the %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1134
+#: ../extensions/help.py:1151
 msgid "review++responsible"
 msgstr ""
 
-#: ../extensions/help.py:1135
+#: ../extensions/help.py:1152
 msgid ""
 "Moderator for %(Classname)s -- Note: If you do not specify\n"
 "             the moderator, you will get an indication that the field\n"
@@ -3814,133 +3866,133 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1141 ../locale/attr.py:1193 attr.py:1193
+#: ../extensions/help.py:1158 ../locale/attr.py:1193 attr.py:1193
 msgid "roles"
 msgstr ""
 
-#: ../extensions/help.py:1142
+#: ../extensions/help.py:1159
 msgid ""
 "Roles for this %(Classname)s -- to give the user more than\n"
 "             one role, enter a comma,separated,list\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1146 ../lib/schemacfg/core.py:97 ../locale/attr.py:557
+#: ../extensions/help.py:1163 ../lib/schemacfg/core.py:97 ../locale/attr.py:557
 #: ../locale/attr.py:1192 ../locale/attr.py:1203 attr.py:557 attr.py:1192
 #: attr.py:1203
 msgid "room"
 msgstr ""
 
-#: ../extensions/help.py:1147
+#: ../extensions/help.py:1164
 msgid "Room number"
 msgstr ""
 
-#: ../extensions/help.py:1148 ../locale/attr.py:139 attr.py:139
+#: ../extensions/help.py:1165 ../locale/attr.py:139 attr.py:139
 msgid "routers"
 msgstr ""
 
-#: ../extensions/help.py:1149
+#: ../extensions/help.py:1166
 msgid "Routers for this %(Classname)s, used in DHCP configuration."
 msgstr ""
 
-#: ../extensions/help.py:1150 ../locale/attr.py:659 ../locale/attr.py:738
+#: ../extensions/help.py:1167 ../locale/attr.py:659 ../locale/attr.py:738
 #: ../locale/attr.py:830 attr.py:659 attr.py:738 attr.py:830
 msgid "salutation"
 msgstr ""
 
-#: ../extensions/help.py:1151
+#: ../extensions/help.py:1168
 msgid "Salutation used for printing an address"
 msgstr ""
 
-#: ../extensions/help.py:1152 ../locale/attr.py:1159 attr.py:1159
+#: ../extensions/help.py:1169 ../locale/attr.py:1159 attr.py:1159
 msgid "samba_home_drive"
 msgstr ""
 
-#: ../extensions/help.py:1153
+#: ../extensions/help.py:1170
 msgid "Home drive for %(Classname)s in Windows"
 msgstr ""
 
-#: ../extensions/help.py:1154 ../locale/attr.py:1197 attr.py:1197
+#: ../extensions/help.py:1171 ../locale/attr.py:1197 attr.py:1197
 msgid "samba_home_path"
 msgstr ""
 
-#: ../extensions/help.py:1155
+#: ../extensions/help.py:1172
 msgid "Path to %(Classname)ss home directory"
 msgstr ""
 
-#: ../extensions/help.py:1156 ../locale/attr.py:1198 attr.py:1198
+#: ../extensions/help.py:1173 ../locale/attr.py:1198 attr.py:1198
 msgid "samba_kickoff_time"
 msgstr ""
 
-#: ../extensions/help.py:1157
+#: ../extensions/help.py:1174
 msgid "Windows time that user will automatically logged out"
 msgstr ""
 
-#: ../extensions/help.py:1158 ../locale/attr.py:1176 attr.py:1176
+#: ../extensions/help.py:1175 ../locale/attr.py:1176 attr.py:1176
 msgid "samba_lm_password"
 msgstr ""
 
-#: ../extensions/help.py:1159
+#: ../extensions/help.py:1176
 msgid ""
 "Samba LAN Manager password -- automatically computed when a\n"
 "             new password is entered\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1163 ../locale/attr.py:1195 attr.py:1195
+#: ../extensions/help.py:1180 ../locale/attr.py:1195 attr.py:1195
 msgid "samba_logon_script"
 msgstr ""
 
-#: ../extensions/help.py:1164
+#: ../extensions/help.py:1181
 msgid "Logon script for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1165 ../locale/attr.py:1158 attr.py:1158
+#: ../extensions/help.py:1182 ../locale/attr.py:1158 attr.py:1158
 msgid "samba_nt_password"
 msgstr ""
 
-#: ../extensions/help.py:1166
+#: ../extensions/help.py:1183
 msgid ""
 "Samba NT password -- automatically computed when a\n"
 "             new password is entered\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1170 ../locale/attr.py:1189 attr.py:1189
+#: ../extensions/help.py:1187 ../locale/attr.py:1189 attr.py:1189
 msgid "samba_profile_path"
 msgstr ""
 
-#: ../extensions/help.py:1171
+#: ../extensions/help.py:1188
 msgid "Path to profile for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1172 ../locale/attr.py:1194 attr.py:1194
+#: ../extensions/help.py:1189 ../locale/attr.py:1194 attr.py:1194
 msgid "samba_pwd_can_change"
 msgstr ""
 
-#: ../extensions/help.py:1173
+#: ../extensions/help.py:1190
 msgid ""
 "Earliest time the user may change the password next time.\n"
 "             set by the system to pwd_last_set if nothing else is enabled.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1177 ../locale/attr.py:1152 attr.py:1152
+#: ../extensions/help.py:1194 ../locale/attr.py:1152 attr.py:1152
 msgid "samba_pwd_last_set"
 msgstr ""
 
-#: ../extensions/help.py:1178
+#: ../extensions/help.py:1195
 msgid ""
 "Time-stamp the password was last changed, automatically\n"
 "             computed by the system\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1182 ../locale/attr.py:1155 attr.py:1155
+#: ../extensions/help.py:1199 ../locale/attr.py:1155 attr.py:1155
 msgid "samba_pwd_must_change"
 msgstr ""
 
-#: ../extensions/help.py:1183
+#: ../extensions/help.py:1200
 msgid ""
 "Latest time the user must change the password next time.\n"
 "             set by the system to end of the epoch if nothing else is "
@@ -3948,19 +4000,19 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1187 ../locale/attr.py:1181 attr.py:1181
+#: ../extensions/help.py:1204 ../locale/attr.py:1181 attr.py:1181
 msgid "secondary_groups"
 msgstr ""
 
-#: ../extensions/help.py:1188
+#: ../extensions/help.py:1205
 msgid "secondary UNIX Groups for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1189 ../locale/attr.py:760 attr.py:760
+#: ../extensions/help.py:1206 ../locale/attr.py:760 attr.py:760
 msgid "send_it"
 msgstr ""
 
-#: ../extensions/help.py:1190
+#: ../extensions/help.py:1207
 msgid ""
 "Flag indicating if this invoice should be sent. If not set,\n"
 "             this invoice will disappear from the current list of invoices. "
@@ -3971,71 +4023,66 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1196 ../locale/attr.py:645 ../locale/attr.py:815
-#: attr.py:645 attr.py:815
-msgid "send_to_customer"
-msgstr ""
-
-#: ../extensions/help.py:1197
+#: ../extensions/help.py:1214
 msgid "Send to external email addresses (customer)"
 msgstr ""
 
-#: ../extensions/help.py:1198 ../lib/schemacfg/complex.py:49
+#: ../extensions/help.py:1215 ../lib/schemacfg/complex.py:49
 #: ../locale/attr.py:32 ../locale/attr.py:49 ../locale/attr.py:379
 #: ../locale/attr.py:523 ../locale/attr.py:568 attr.py:32 attr.py:49
 #: attr.py:379 attr.py:523 attr.py:568
 msgid "severity"
 msgstr ""
 
-#: ../extensions/help.py:1199
+#: ../extensions/help.py:1216
 msgid ""
 "How severe is the %(Classname)s for the customer or\n"
 "             stakeholder\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1203 ../lib/schemacfg/lielas.py:90
+#: ../extensions/help.py:1220 ../lib/schemacfg/lielas.py:90
 #: ../locale/attr.py:1088 ../locale/attr.py:1107 ../locale/attr.py:1111
 #: attr.py:1088 attr.py:1107 attr.py:1111
 msgid "sensor"
 msgstr ""
 
-#: ../extensions/help.py:1204
+#: ../extensions/help.py:1221
 msgid "Sensor of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1205
+#: ../extensions/help.py:1222
 msgid "sensor++adr"
 msgstr ""
 
-#: ../extensions/help.py:1206
+#: ../extensions/help.py:1223
 msgid "sensor++name"
 msgstr ""
 
-#: ../extensions/help.py:1207
+#: ../extensions/help.py:1224
 msgid "sensor++order"
 msgstr ""
 
-#: ../extensions/help.py:1208
+#: ../extensions/help.py:1225
 msgid "sensor++type"
 msgstr ""
 
-#: ../extensions/help.py:1210 ../locale/attr.py:648 ../locale/attr.py:818
+#: ../extensions/help.py:1227 ../locale/attr.py:648 ../locale/attr.py:818
 #: attr.py:648 attr.py:818
 msgid "serial_number"
 msgstr ""
 
-#: ../extensions/help.py:1211
+#: ../extensions/help.py:1228
 msgid "Serial number of hardware item if applicable"
 msgstr ""
 
-#: ../extensions/help.py:1212 ../lib/schemacfg/dyndns.py:64
+#: ../extensions/help.py:1229 ../lib/schemacfg/dyndns.py:64
 #: ../lib/schemacfg/email.py:47 ../locale/attr.py:1045 ../locale/attr.py:1122
 #: attr.py:1045 attr.py:1122
 msgid "server"
 msgstr ""
 
-#: ../extensions/help.py:1213
+#: ../extensions/help.py:1230
 msgid ""
 "The %(Property)s to use for this %(Classname)s:\n"
 "            If left empty the default %(Property)s from the protocol\n"
@@ -4043,33 +4090,33 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1218 ../locale/attr.py:1171 attr.py:1171
+#: ../extensions/help.py:1235 ../locale/attr.py:1171 attr.py:1171
 msgid "shadow_last_change"
 msgstr ""
 
-#: ../extensions/help.py:1219
+#: ../extensions/help.py:1236
 msgid ""
 "Time-stamp the shadow password was last changed,\n"
 "             automatically computed by the system\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1223 ../locale/attr.py:1169 attr.py:1169
+#: ../extensions/help.py:1240 ../locale/attr.py:1169 attr.py:1169
 msgid "shadow_expire"
 msgstr ""
 
-#: ../extensions/help.py:1224
+#: ../extensions/help.py:1241
 msgid ""
 "Date at which the users's account expires and will no longer\n"
 "             be accessible.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1228 ../locale/attr.py:1154 attr.py:1154
+#: ../extensions/help.py:1245 ../locale/attr.py:1154 attr.py:1154
 msgid "shadow_inactive"
 msgstr ""
 
-#: ../extensions/help.py:1229
+#: ../extensions/help.py:1246
 msgid ""
 "Number of days of inactivity after a password has expired\n"
 "             before the account is locked. Note that when the password has\n"
@@ -4079,67 +4126,67 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1236 ../locale/attr.py:1172 attr.py:1172
+#: ../extensions/help.py:1253 ../locale/attr.py:1172 attr.py:1172
 msgid "shadow_max"
 msgstr ""
 
-#: ../extensions/help.py:1237
+#: ../extensions/help.py:1254
 msgid ""
 "Maximum days after last change when the shadow password must\n"
 "             be changed again.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1241 ../locale/attr.py:1147 attr.py:1147
+#: ../extensions/help.py:1258 ../locale/attr.py:1147 attr.py:1147
 msgid "shadow_min"
 msgstr ""
 
-#: ../extensions/help.py:1242
+#: ../extensions/help.py:1259
 msgid ""
 "Minimum days after last change when the shadow password may\n"
 "             be changed again.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1246 ../locale/attr.py:1179 attr.py:1179
+#: ../extensions/help.py:1263 ../locale/attr.py:1179 attr.py:1179
 msgid "shadow_used"
 msgstr ""
 
-#: ../extensions/help.py:1247
+#: ../extensions/help.py:1264
 msgid ""
 "Flag if shadow information should be generated, will be\n"
 "             translated to LDAP shadowFlag.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1251 ../locale/attr.py:1188 attr.py:1188
+#: ../extensions/help.py:1268 ../locale/attr.py:1188 attr.py:1188
 msgid "shadow_warning"
 msgstr ""
 
-#: ../extensions/help.py:1252
+#: ../extensions/help.py:1269
 msgid ""
 "Early warning in days before the user is required to change\n"
 "             the password.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1256 ../locale/attr.py:963 attr.py:963
+#: ../extensions/help.py:1273 ../locale/attr.py:963 attr.py:963
 msgid "shelf_life"
 msgstr ""
 
-#: ../extensions/help.py:1257
+#: ../extensions/help.py:1274
 msgid "Shelf life in months"
 msgstr ""
 
-#: ../extensions/help.py:1258
+#: ../extensions/help.py:1275
 msgid "shipping_address"
 msgstr ""
 
-#: ../extensions/help.py:1260 ../locale/attr.py:243 attr.py:243
+#: ../extensions/help.py:1277 ../locale/attr.py:243 attr.py:243
 msgid "show_all_users"
 msgstr ""
 
-#: ../extensions/help.py:1261
+#: ../extensions/help.py:1278
 msgid ""
 "If this option is selected, the result will also include\n"
 "             users that do not\n"
@@ -4150,19 +4197,19 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1269 ../locale/attr.py:242 attr.py:242
+#: ../extensions/help.py:1286 ../locale/attr.py:242 attr.py:242
 msgid "show_empty"
 msgstr ""
 
-#: ../extensions/help.py:1270
+#: ../extensions/help.py:1287
 msgid "If selected the result will also show empty records."
 msgstr ""
 
-#: ../extensions/help.py:1271 ../locale/attr.py:246 attr.py:246
+#: ../extensions/help.py:1288 ../locale/attr.py:246 attr.py:246
 msgid "show_missing"
 msgstr ""
 
-#: ../extensions/help.py:1272
+#: ../extensions/help.py:1289
 msgid ""
 "If this option is selected, the result will contain colored\n"
 "             fields where some values may be missing. Missing values can\n"
@@ -4177,44 +4224,44 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1284 ../locale/attr.py:179 attr.py:179
+#: ../extensions/help.py:1301 ../locale/attr.py:179 attr.py:179
 msgid "sid"
 msgstr ""
 
-#: ../extensions/help.py:1285
+#: ../extensions/help.py:1302
 msgid ""
 "Samba unique ID but without the last part used for user id or\n"
 "             group id information\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1289 ../locale/attr.py:1065 ../locale/attr.py:1078
+#: ../extensions/help.py:1306 ../locale/attr.py:1065 ../locale/attr.py:1078
 #: attr.py:1065 attr.py:1078
 msgid "sint"
 msgstr ""
 
-#: ../extensions/help.py:1290
+#: ../extensions/help.py:1307
 msgid "Transmit interval for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1292
+#: ../extensions/help.py:1309
 msgid "Samba domain for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1293
+#: ../extensions/help.py:1310
 msgid "smb_name"
 msgstr ""
 
-#: ../extensions/help.py:1294
+#: ../extensions/help.py:1311
 msgid "Samba name for this %(Classname)s in the samba domain"
 msgstr ""
 
-#: ../extensions/help.py:1295 ../locale/attr.py:77 ../locale/attr.py:100
+#: ../extensions/help.py:1312 ../locale/attr.py:77 ../locale/attr.py:100
 #: ../locale/attr.py:494 attr.py:77 attr.py:100 attr.py:494
 msgid "stakeholder"
 msgstr ""
 
-#: ../extensions/help.py:1296
+#: ../extensions/help.py:1313
 msgid ""
 "Person by/for whom this %(Classname)s was raised. Usually\n"
 "             defaults to the creator of the %(Classname)s, but can be\n"
@@ -4223,7 +4270,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1304
+#: ../extensions/help.py:1321
 msgid ""
 "Format xx:xx (e.g. 09:00), defines your start of work. Has to\n"
 "             be specified except for absences like e.g. holidays or sick\n"
@@ -4231,7 +4278,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1310 ../locale/attr.py:22 ../locale/attr.py:67
+#: ../extensions/help.py:1327 ../locale/attr.py:22 ../locale/attr.py:67
 #: ../locale/attr.py:76 ../locale/attr.py:99 ../locale/attr.py:193
 #: ../locale/attr.py:207 ../locale/attr.py:239 ../locale/attr.py:267
 #: ../locale/attr.py:450 ../locale/attr.py:459 ../locale/attr.py:468
@@ -4246,88 +4293,88 @@ msgstr ""
 msgid "status"
 msgstr ""
 
-#: ../extensions/help.py:1312
+#: ../extensions/help.py:1329
 msgid "There are constraints on status transitions."
 msgstr ""
 
-#: ../extensions/help.py:1314 ../locale/attr.py:996 attr.py:996
+#: ../extensions/help.py:1331 ../locale/attr.py:996 attr.py:996
 msgid "street"
 msgstr ""
 
-#: ../extensions/help.py:1315 ../locale/attr.py:782 ../locale/attr.py:1004
+#: ../extensions/help.py:1332 ../locale/attr.py:782 ../locale/attr.py:1004
 #: ../locale/attr.py:1138 attr.py:782 attr.py:1004 attr.py:1138
 msgid "subject"
 msgstr ""
 
-#: ../extensions/help.py:1316
+#: ../extensions/help.py:1333
 msgid "Short identification of %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1317 ../locale/attr.py:714 ../locale/attr.py:762
+#: ../extensions/help.py:1334 ../locale/attr.py:714 ../locale/attr.py:762
 #: attr.py:714 attr.py:762
 msgid "subscriber"
 msgstr ""
 
-#: ../extensions/help.py:1318
+#: ../extensions/help.py:1335
 msgid "Subscriber of this subscription"
 msgstr ""
 
-#: ../extensions/help.py:1319
+#: ../extensions/help.py:1336
 msgid "subscriber.firstname"
 msgstr ""
 
-#: ../extensions/help.py:1320
+#: ../extensions/help.py:1337
 msgid "subscriber.lastname"
 msgstr ""
 
-#: ../extensions/help.py:1321
+#: ../extensions/help.py:1338
 msgid "subscriber.function"
 msgstr ""
 
-#: ../extensions/help.py:1322
+#: ../extensions/help.py:1339
 msgid "subscriber.valid"
 msgstr ""
 
-#: ../extensions/help.py:1323
+#: ../extensions/help.py:1340
 msgid "subscriber.adr_type"
 msgstr ""
 
-#: ../extensions/help.py:1324 ../locale/attr.py:1162 attr.py:1162
+#: ../extensions/help.py:1341 ../locale/attr.py:1162 attr.py:1162
 msgid "substitute"
 msgstr ""
 
-#: ../extensions/help.py:1325
+#: ../extensions/help.py:1342
 msgid ""
 "Person who can substitute %(Classname)s for approving time\n"
 "             records.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1329 ../locale/attr.py:1164 attr.py:1164
+#: ../extensions/help.py:1346 ../locale/attr.py:1164 attr.py:1164
 msgid "subst_active"
 msgstr ""
 
-#: ../extensions/help.py:1330
+#: ../extensions/help.py:1347
 msgid ""
 "This field is set to \"yes\" for enabling the field\n"
 "             \"Substitute\" for delegating time record approval.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1334 ../locale/attr.py:247 ../locale/attr.py:1132
+#: ../extensions/help.py:1351 ../locale/attr.py:247 ../locale/attr.py:1132
 #: attr.py:247 attr.py:1132
 msgid "summary"
 msgstr ""
 
-#: ../extensions/help.py:1335
+#: ../extensions/help.py:1352
 msgid "Short summary of this message (usually first line)"
 msgstr ""
 
-#: ../extensions/help.py:1336
+#: ../extensions/help.py:1353
 msgid "summary_report++VIEW"
 msgstr ""
 
-#: ../extensions/help.py:1338
+#: ../extensions/help.py:1355
 msgid ""
 "The selected items are shown in the summary report; if you\n"
 "             select \"summary\" the report gives summaries over the chosen\n"
@@ -4336,19 +4383,19 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1344
+#: ../extensions/help.py:1361
 msgid "summary_report++cost_center"
 msgstr ""
 
-#: ../extensions/help.py:1345
+#: ../extensions/help.py:1362
 msgid "summary_report++cost_center_group"
 msgstr ""
 
-#: ../extensions/help.py:1346
+#: ../extensions/help.py:1363
 msgid "summary_report++date"
 msgstr ""
 
-#: ../extensions/help.py:1347
+#: ../extensions/help.py:1364
 msgid ""
 "please specify the date in this format:\n"
 "             \"YYYY-MM-DD;YYYY-MM-DD\". The \";\" means \"to\" (\"bis\" in\n"
@@ -4360,22 +4407,22 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1356
+#: ../extensions/help.py:1373
 msgid "summary_report++department"
 msgstr ""
 
-#: ../extensions/help.py:1357
+#: ../extensions/help.py:1374
 msgid ""
 "Selects the users according to their placement in a\n"
 "             department\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1361
+#: ../extensions/help.py:1378
 msgid "summary_report++op_project"
 msgstr ""
 
-#: ../extensions/help.py:1362
+#: ../extensions/help.py:1379
 msgid ""
 "Flag to search for real-projects or a non-project (just\n"
 "             used for time-tracking). Leave as don't care if it should\n"
@@ -4383,11 +4430,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1367
+#: ../extensions/help.py:1384
 msgid "summary_report++status"
 msgstr ""
 
-#: ../extensions/help.py:1368
+#: ../extensions/help.py:1385
 msgid ""
 "If you choose \"open, submitted and approved\" yellow times\n"
 "             will be those that have not yet been opened by the user.\n"
@@ -4401,46 +4448,46 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1379
+#: ../extensions/help.py:1396
 msgid "summary_report++summary_type"
 msgstr ""
 
-#: ../extensions/help.py:1380
+#: ../extensions/help.py:1397
 msgid ""
 "You can form sums over weeks, months and the whole time\n"
 "             range you have selected.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1384
+#: ../extensions/help.py:1401
 msgid "summary_report++supervisor"
 msgstr ""
 
-#: ../extensions/help.py:1385
+#: ../extensions/help.py:1402
 msgid "Selects the users of the chosen supervisor(s)"
 msgstr ""
 
-#: ../extensions/help.py:1386
+#: ../extensions/help.py:1403
 msgid "summary_report++time_project"
 msgstr ""
 
-#: ../extensions/help.py:1387
+#: ../extensions/help.py:1404
 msgid "summary_report++time_wp"
 msgstr ""
 
-#: ../extensions/help.py:1388
+#: ../extensions/help.py:1405
 msgid "Select individual work packages here."
 msgstr ""
 
-#: ../extensions/help.py:1389
+#: ../extensions/help.py:1406
 msgid "summary_report++time_wp_group"
 msgstr ""
 
-#: ../extensions/help.py:1390
+#: ../extensions/help.py:1407
 msgid "summary_report++user"
 msgstr ""
 
-#: ../extensions/help.py:1391
+#: ../extensions/help.py:1408
 msgid ""
 "You will only see users for whom you have permission or the\n"
 "             project times for projects you have permission for (via\n"
@@ -4448,22 +4495,22 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1396
+#: ../extensions/help.py:1413
 msgid "superior"
 msgstr ""
 
-#: ../extensions/help.py:1397
+#: ../extensions/help.py:1414
 msgid "Supervisor for %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1399
+#: ../extensions/help.py:1416
 msgid ""
 "Supplementary hours in Overtime period. If Overtime period\n"
 "             is not specified, this field should be left empty.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1404
+#: ../extensions/help.py:1421
 msgid ""
 "Weekly hours including the agreed supplementary hours (e.g.\n"
 "             45h), Format: xx.xx. Please round to whole quarters of an hour\n"
@@ -4471,19 +4518,19 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1409
+#: ../extensions/help.py:1426
 msgid "supply_address"
 msgstr ""
 
-#: ../extensions/help.py:1411
+#: ../extensions/help.py:1428
 msgid "support++superseder"
 msgstr ""
 
-#: ../extensions/help.py:1413 ../locale/attr.py:1150 attr.py:1150
+#: ../extensions/help.py:1430 ../locale/attr.py:1150 attr.py:1150
 msgid "sync_with_ldap"
 msgstr ""
 
-#: ../extensions/help.py:1414
+#: ../extensions/help.py:1431
 msgid ""
 "Enabled if this %(Classname)s should be synched with ldap --\n"
 "             when the user changes PW via PAM, the pw in roundup will be\n"
@@ -4491,66 +4538,66 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1419 ../locale/attr.py:1054 attr.py:1054
+#: ../extensions/help.py:1436 ../locale/attr.py:1054 attr.py:1054
 msgid "syslog"
 msgstr ""
 
-#: ../extensions/help.py:1420
+#: ../extensions/help.py:1437
 msgid "Enable logging to syslog"
 msgstr ""
 
-#: ../extensions/help.py:1421 ../locale/attr.py:31 attr.py:31
+#: ../extensions/help.py:1438 ../locale/attr.py:31 attr.py:31
 msgid "target"
 msgstr ""
 
-#: ../extensions/help.py:1422
+#: ../extensions/help.py:1439
 msgid ""
 "Target of this %(Classname)s, only targets explicitly\n"
 "             enabled will be allowed for status changes.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1426
+#: ../extensions/help.py:1443
 msgid "team_members"
 msgstr ""
 
-#: ../extensions/help.py:1427
+#: ../extensions/help.py:1444
 msgid ""
 "Persons who are assigned to the project and are allowed\n"
 "             to book their effort on this project\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1431 ../lib/schemacfg/time_tracker.py:178
+#: ../extensions/help.py:1448 ../lib/schemacfg/time_tracker.py:179
 #: ../locale/attr.py:262 ../locale/attr.py:290 attr.py:262 attr.py:290
 msgid "time_activity"
 msgstr ""
 
-#: ../extensions/help.py:1432
+#: ../extensions/help.py:1449
 msgid "Specifies the kind of work you did (e.g. meeting, ...)"
 msgstr ""
 
-#: ../extensions/help.py:1433 ../locale/attr.py:303 attr.py:303
+#: ../extensions/help.py:1450 ../locale/attr.py:303 attr.py:303
 msgid "time_start"
 msgstr ""
 
-#: ../extensions/help.py:1434
+#: ../extensions/help.py:1451
 msgid "Date when %(Classname)s officially starts"
 msgstr ""
 
-#: ../extensions/help.py:1435 ../locale/attr.py:307 attr.py:307
+#: ../extensions/help.py:1452 ../locale/attr.py:307 attr.py:307
 msgid "time_end"
 msgstr ""
 
-#: ../extensions/help.py:1436
+#: ../extensions/help.py:1453
 msgid "Date when %(Classname)s is officially closed"
 msgstr ""
 
-#: ../extensions/help.py:1437
+#: ../extensions/help.py:1454
 msgid "time_project++status"
 msgstr ""
 
-#: ../extensions/help.py:1438
+#: ../extensions/help.py:1455
 msgid ""
 "Status of this %(Classname)s. Note that this status is only\n"
 "             used for determining if new work packages may be created for\n"
@@ -4559,11 +4606,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1444
+#: ../extensions/help.py:1461
 msgid "time_project++work_location"
 msgstr ""
 
-#: ../extensions/help.py:1446
+#: ../extensions/help.py:1463
 msgid ""
 " If a value is given here, the work location will be\n"
 "             corrected for all time records booked on work packages of\n"
@@ -4571,11 +4618,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1451
+#: ../extensions/help.py:1468
 msgid "time_project_status++active"
 msgstr ""
 
-#: ../extensions/help.py:1452
+#: ../extensions/help.py:1469
 msgid ""
 "Set if this %(Classname)s is active. This determines if new\n"
 "             work packages may be created for a project with this activity\n"
@@ -4584,27 +4631,27 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1458
+#: ../extensions/help.py:1475
 msgid "time_wp++travel"
 msgstr ""
 
-#: ../extensions/help.py:1459 ../locale/attr.py:1112 attr.py:1112
+#: ../extensions/help.py:1476 ../locale/attr.py:1112 attr.py:1112
 msgid "timeout"
 msgstr ""
 
-#: ../extensions/help.py:1460
+#: ../extensions/help.py:1477
 msgid "Timeout when new email is sent"
 msgstr ""
 
-#: ../extensions/help.py:1461 ../locale/attr.py:1157 attr.py:1157
+#: ../extensions/help.py:1478 ../locale/attr.py:1157 attr.py:1157
 msgid "timezone"
 msgstr ""
 
-#: ../extensions/help.py:1462
+#: ../extensions/help.py:1479
 msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
 msgstr ""
 
-#: ../extensions/help.py:1463 ../locale/attr.py:65 ../locale/attr.py:85
+#: ../extensions/help.py:1480 ../locale/attr.py:65 ../locale/attr.py:85
 #: ../locale/attr.py:102 ../locale/attr.py:448 ../locale/attr.py:452
 #: ../locale/attr.py:461 ../locale/attr.py:471 ../locale/attr.py:483
 #: ../locale/attr.py:503 ../locale/attr.py:524 ../locale/attr.py:544
@@ -4618,50 +4665,50 @@ msgstr ""
 msgid "title"
 msgstr ""
 
-#: ../extensions/help.py:1464
+#: ../extensions/help.py:1481
 msgid ""
 "Should be an intuitive one-line description of the %(Classname)s.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1467 ../lib/schemacfg/letter.py:76
+#: ../extensions/help.py:1484 ../lib/schemacfg/letter.py:76
 #: ../locale/attr.py:691 ../locale/attr.py:699 ../locale/attr.py:1140
 #: attr.py:691 attr.py:699 attr.py:1140
 msgid "tmplate"
 msgstr ""
 
-#: ../extensions/help.py:1468
+#: ../extensions/help.py:1485
 msgid ""
 "Used for writing letters (and invoices if selected as an\n"
 "            invoice template)\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:1472 ../lib/schemacfg/letter.py:66
+#: ../extensions/help.py:1489 ../lib/schemacfg/letter.py:66
 #: ../locale/attr.py:685 ../locale/attr.py:694 attr.py:685 attr.py:694
 msgid "tmplate_status"
 msgstr ""
 
-#: ../extensions/help.py:1473
+#: ../extensions/help.py:1490
 msgid ""
 "Status of template -- used for letter template, invoice\n"
 "             template or none.\n"
 "         "
 msgstr ""
 
-#: ../extensions/help.py:1477 ../lib/schemacfg/lielas.py:50
+#: ../extensions/help.py:1494 ../lib/schemacfg/lielas.py:50
 #: ../locale/attr.py:1061 ../locale/attr.py:1080 attr.py:1061 attr.py:1080
 msgid "transceiver"
 msgstr ""
 
-#: ../extensions/help.py:1478
+#: ../extensions/help.py:1495
 msgid ""
 "Transceiver on which devices are handled via radio\n"
 "             connection\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1482 ../locale/attr.py:24 ../locale/attr.py:91
+#: ../extensions/help.py:1499 ../locale/attr.py:24 ../locale/attr.py:91
 #: ../locale/attr.py:111 ../locale/attr.py:393 ../locale/attr.py:403
 #: ../locale/attr.py:407 ../locale/attr.py:424 ../locale/attr.py:430
 #: ../locale/attr.py:623 ../locale/attr.py:793 ../locale/attr.py:1018
@@ -4670,16 +4717,16 @@ msgstr ""
 msgid "transitions"
 msgstr ""
 
-#: ../extensions/help.py:1483
+#: ../extensions/help.py:1500
 msgid "Allowed transitions to other states"
 msgstr ""
 
-#: ../extensions/help.py:1484 ../locale/attr.py:263 ../locale/attr.py:305
+#: ../extensions/help.py:1501 ../locale/attr.py:263 ../locale/attr.py:305
 #: attr.py:263 attr.py:305
 msgid "travel"
 msgstr ""
 
-#: ../extensions/help.py:1486
+#: ../extensions/help.py:1503
 msgid ""
 " In addition in reports the times booked will be halved (if\n"
 "             exceeding the expected work hours and the person is not\n"
@@ -4687,11 +4734,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1491 ../locale/attr.py:294 attr.py:294
+#: ../extensions/help.py:1508 ../locale/attr.py:294 attr.py:294
 msgid "tr_duration"
 msgstr ""
 
-#: ../extensions/help.py:1492
+#: ../extensions/help.py:1509
 msgid ""
 "Work duration in minutes including special travel computation:\n"
 "             travel times will be halved if exceeding the maximum work\n"
@@ -4699,11 +4746,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1497 ../locale/attr.py:1180 attr.py:1180
+#: ../extensions/help.py:1514 ../locale/attr.py:1180 attr.py:1180
 msgid "tt_lines"
 msgstr ""
 
-#: ../extensions/help.py:1498
+#: ../extensions/help.py:1515
 msgid ""
 "Number of new lines (per day) in time-tracker (minimum: 1,\n"
 "             maximum: 5). This is not yet working, the logic behind it is\n"
@@ -4711,66 +4758,66 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1503 ../lib/schemacfg/umts.py:54
+#: ../extensions/help.py:1520 ../lib/schemacfg/umts.py:54
 #: ../locale/attr.py:1062 ../locale/attr.py:1116 attr.py:1062 attr.py:1116
 msgid "tty"
 msgstr ""
 
-#: ../extensions/help.py:1504
+#: ../extensions/help.py:1521
 msgid "Serial line connection to transceiver"
 msgstr ""
 
-#: ../extensions/help.py:1505 ../locale/attr.py:466 ../locale/attr.py:1098
+#: ../extensions/help.py:1522 ../locale/attr.py:466 ../locale/attr.py:1098
 #: ../locale/attr.py:1125 attr.py:466 attr.py:1098 attr.py:1125
 msgid "type"
 msgstr ""
 
-#: ../extensions/help.py:1506
+#: ../extensions/help.py:1523
 msgid "Mime type of this file"
 msgstr ""
 
-#: ../extensions/help.py:1507 ../locale/attr.py:578 attr.py:578
+#: ../extensions/help.py:1524 ../locale/attr.py:578 attr.py:578
 msgid "typecat"
 msgstr ""
 
-#: ../extensions/help.py:1508
+#: ../extensions/help.py:1525
 msgid "Category of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1510
+#: ../extensions/help.py:1527
 msgid "Numeric user ID"
 msgstr ""
 
-#: ../extensions/help.py:1511 ../locale/attr.py:185 attr.py:185
+#: ../extensions/help.py:1528 ../locale/attr.py:185 attr.py:185
 msgid "uid_range"
 msgstr ""
 
-#: ../extensions/help.py:1512
+#: ../extensions/help.py:1529
 msgid "Allowed range of user ids"
 msgstr ""
 
-#: ../extensions/help.py:1515 ../locale/attr.py:1100 attr.py:1100
+#: ../extensions/help.py:1532 ../locale/attr.py:1100 attr.py:1100
 msgid "unit"
 msgstr ""
 
-#: ../extensions/help.py:1516
+#: ../extensions/help.py:1533
 msgid "Unit of measurement"
 msgstr ""
 
-#: ../extensions/help.py:1517 ../locale/attr.py:1141 attr.py:1141
+#: ../extensions/help.py:1534 ../locale/attr.py:1141 attr.py:1141
 msgid "url"
 msgstr ""
 
-#: ../extensions/help.py:1518
+#: ../extensions/help.py:1535
 msgid "Web-Link for this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1519 ../locale/attr.py:602 ../locale/attr.py:616
+#: ../extensions/help.py:1536 ../locale/attr.py:602 ../locale/attr.py:616
 #: attr.py:602 attr.py:616
 msgid "url_template"
 msgstr ""
 
-#: ../extensions/help.py:1520
+#: ../extensions/help.py:1537
 msgid ""
 "Template used when rendering the contact field for a\n"
 "             contact. You can use fields of the form \"%%(variable)s\" to\n"
@@ -4780,44 +4827,44 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1527 ../locale/attr.py:159 attr.py:159
+#: ../extensions/help.py:1544 ../locale/attr.py:159 attr.py:159
 msgid "use_dhcp"
 msgstr ""
 
-#: ../extensions/help.py:1528
+#: ../extensions/help.py:1545
 msgid ""
 "Flag if this %(Classname)s should be served by the DHCP\n"
 "             server.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1532 ../locale/attr.py:688 attr.py:688
+#: ../extensions/help.py:1549 ../locale/attr.py:688 attr.py:688
 msgid "use_for_invoice"
 msgstr ""
 
-#: ../extensions/help.py:1533
+#: ../extensions/help.py:1550
 msgid ""
 "Flag if templates with this %(Classname)s should be visible\n"
 "             in invoice templates\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1537 ../locale/attr.py:687 attr.py:687
+#: ../extensions/help.py:1554 ../locale/attr.py:687 attr.py:687
 msgid "use_for_letter"
 msgstr ""
 
-#: ../extensions/help.py:1538
+#: ../extensions/help.py:1555
 msgid ""
 "Flag if templates with this %(Classname)s should be visible\n"
 "             as letter templates\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1542 ../locale/attr.py:125 attr.py:125
+#: ../extensions/help.py:1559 ../locale/attr.py:125 attr.py:125
 msgid "use_in_ln"
 msgstr ""
 
-#: ../extensions/help.py:1543
+#: ../extensions/help.py:1560
 msgid ""
 "This %(Classname)s should be used with Lotus Notes (e.g.,\n"
 "             no delivery to a program, etc. that is only possible with\n"
@@ -4825,7 +4872,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1548 ../extensions/summary.py:1123
+#: ../extensions/help.py:1565 ../extensions/summary.py:1128
 #: ../lib/schemacfg/core.py:75 ../locale/attr.py:209 ../locale/attr.py:219
 #: ../locale/attr.py:227 ../locale/attr.py:251 ../locale/attr.py:340
 #: ../locale/attr.py:1145 attr.py:209 attr.py:219 attr.py:227 attr.py:251
@@ -4833,7 +4880,7 @@ msgstr ""
 msgid "user"
 msgstr ""
 
-#: ../extensions/help.py:1549
+#: ../extensions/help.py:1566
 msgid ""
 "When creating new freeze-records: Please select the user\n"
 "             whose time record you want to freeze\n"
@@ -4846,77 +4893,77 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1559
+#: ../extensions/help.py:1576
 msgid "user_dynamic++durations_allowed"
 msgstr ""
 
-#: ../extensions/help.py:1560 ../locale/attr.py:1151 attr.py:1151
+#: ../extensions/help.py:1577 ../locale/attr.py:1151 attr.py:1151
 msgid "user_password"
 msgstr ""
 
-#: ../extensions/help.py:1561
+#: ../extensions/help.py:1578
 msgid ""
 "UNIX user password, automatically set by the system when a\n"
 "             new password is entered.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1565
+#: ../extensions/help.py:1582
 msgid "user++address"
 msgstr ""
 
-#: ../extensions/help.py:1566
+#: ../extensions/help.py:1583
 msgid "Primary email address for this user"
 msgstr ""
 
-#: ../extensions/help.py:1567
+#: ../extensions/help.py:1584
 msgid "user++status"
 msgstr ""
 
-#: ../extensions/help.py:1568
+#: ../extensions/help.py:1585
 msgid "user++title"
 msgstr ""
 
-#: ../extensions/help.py:1569 ../locale/attr.py:1174 attr.py:1174
+#: ../extensions/help.py:1586 ../locale/attr.py:1174 attr.py:1174
 msgid "username"
 msgstr ""
 
-#: ../extensions/help.py:1570
+#: ../extensions/help.py:1587
 msgid "Login-name for this %(Classname)s, e.g., schlatterbeck"
 msgstr ""
 
-#: ../extensions/help.py:1571 ../locale/attr.py:346 attr.py:346
+#: ../extensions/help.py:1588 ../locale/attr.py:346 attr.py:346
 msgid "vacation_remaining"
 msgstr ""
 
-#: ../extensions/help.py:1572
+#: ../extensions/help.py:1589
 msgid ""
 "Remaining vacation for this user at the start of a dynamic\n"
 "             user data record.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1576 ../locale/attr.py:328 attr.py:328
+#: ../extensions/help.py:1593 ../locale/attr.py:328 attr.py:328
 msgid "vacation_yearly"
 msgstr ""
 
-#: ../extensions/help.py:1577
+#: ../extensions/help.py:1594
 msgid ""
 "Yearly vacation for this user: This is the amount of vacation\n"
 "             that is added for each year.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1581 ../locale/attr.py:1108 ../locale/attr.py:1113
+#: ../extensions/help.py:1598 ../locale/attr.py:1108 ../locale/attr.py:1113
 #: attr.py:1108 attr.py:1113
 msgid "val"
 msgstr ""
 
-#: ../extensions/help.py:1582
+#: ../extensions/help.py:1599
 msgid "Measured value"
 msgstr ""
 
-#: ../extensions/help.py:1583 ../lib/schemacfg/address.py:89
+#: ../extensions/help.py:1600 ../lib/schemacfg/address.py:89
 #: ../locale/attr.py:13 ../locale/attr.py:584 ../locale/attr.py:723
 #: ../locale/attr.py:896 ../locale/attr.py:953 ../locale/attr.py:984
 #: ../locale/attr.py:1000 attr.py:13 attr.py:584 attr.py:723 attr.py:896
@@ -4924,63 +4971,63 @@ msgstr ""
 msgid "valid"
 msgstr ""
 
-#: ../extensions/help.py:1584
+#: ../extensions/help.py:1601
 msgid ""
 "If enabled, this %(Classname)s is valid and can be\n"
 "             selected.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1588 ../locale/attr.py:339 ../locale/attr.py:352
+#: ../extensions/help.py:1605 ../locale/attr.py:339 ../locale/attr.py:352
 #: ../locale/attr.py:364 ../locale/attr.py:1208 attr.py:339 attr.py:352
 #: attr.py:364 attr.py:1208
 msgid "valid_from"
 msgstr ""
 
-#: ../extensions/help.py:1589
+#: ../extensions/help.py:1606
 msgid ""
 "Creation date, or date since when this %(Classname)s can be\n"
 "             booked at\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1594 ../locale/attr.py:342 ../locale/attr.py:355
+#: ../extensions/help.py:1611 ../locale/attr.py:342 ../locale/attr.py:355
 #: ../locale/attr.py:369 ../locale/attr.py:1211 attr.py:342 attr.py:355
 #: attr.py:369 attr.py:1211
 msgid "valid_to"
 msgstr ""
 
-#: ../extensions/help.py:1595
+#: ../extensions/help.py:1612
 msgid ""
 "Expiration date for %(Classname)s. Note that the date given\n"
 "             here is *not* itself part of the validity time.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1600 ../locale/attr.py:218 attr.py:218
+#: ../extensions/help.py:1617 ../locale/attr.py:218 attr.py:218
 msgid "validity_date"
 msgstr ""
 
-#: ../extensions/help.py:1601
+#: ../extensions/help.py:1618
 msgid ""
 "Validity date of balance field. May be up to a year\n"
 "             before the freeze date.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1605 ../locale/attr.py:228 attr.py:228
+#: ../extensions/help.py:1622 ../locale/attr.py:228 attr.py:228
 msgid "value"
 msgstr ""
 
-#: ../extensions/help.py:1606
+#: ../extensions/help.py:1623
 msgid "Value of this %(Classname)s"
 msgstr ""
 
-#: ../extensions/help.py:1607
+#: ../extensions/help.py:1624
 msgid "visible"
 msgstr ""
 
-#: ../extensions/help.py:1608
+#: ../extensions/help.py:1625
 msgid ""
 " If you set this option to \"YES\", all time tracker users\n"
 "              can see your private %(Classname)s. If set to \"No\", it\n"
@@ -4989,11 +5036,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1614 ../locale/attr.py:1055 attr.py:1055
+#: ../extensions/help.py:1631 ../locale/attr.py:1055 attr.py:1055
 msgid "web_url"
 msgstr ""
 
-#: ../extensions/help.py:1615
+#: ../extensions/help.py:1632
 msgid ""
 "Obtain IP address from IP checking page at %(Property)s\n"
 "             If no method for detecting IP address is configured, this\n"
@@ -5002,22 +5049,22 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1621 ../locale/attr.py:1053 attr.py:1053
+#: ../extensions/help.py:1638 ../locale/attr.py:1053 attr.py:1053
 msgid "web_skip"
 msgstr ""
 
-#: ../extensions/help.py:1622
+#: ../extensions/help.py:1639
 msgid ""
 "Skip any IP address before %(Property)s in output returned\n"
 "            from website\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1626
+#: ../extensions/help.py:1643
 msgid "week"
 msgstr ""
 
-#: ../extensions/help.py:1627
+#: ../extensions/help.py:1644
 msgid ""
 "Week for time tracking, this is an alternative for specifying\n"
 "             a date range: just enter the week number here (for the\n"
@@ -5026,35 +5073,35 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1633 ../locale/attr.py:213 ../locale/attr.py:343
+#: ../extensions/help.py:1650 ../locale/attr.py:213 ../locale/attr.py:343
 #: attr.py:213 attr.py:343
 msgid "weekend_allowed"
 msgstr ""
 
-#: ../extensions/help.py:1634
+#: ../extensions/help.py:1651
 msgid "Flag if booking on weekends is allowed for this %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:1635
+#: ../extensions/help.py:1652
 msgid "daily_record++weekend_allowed"
 msgstr ""
 
-#: ../extensions/help.py:1636
+#: ../extensions/help.py:1653
 msgid ""
 "Admits user to book work or travel time on this\n"
 "             weekend-day; should always be preapproved by supervisor.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1641
+#: ../extensions/help.py:1658
 msgid "Expected weekly work-time for %(Classname)s."
 msgstr ""
 
-#: ../extensions/help.py:1642 ../locale/attr.py:295 attr.py:295
+#: ../extensions/help.py:1659 ../locale/attr.py:295 attr.py:295
 msgid "wp"
 msgstr ""
 
-#: ../extensions/help.py:1643
+#: ../extensions/help.py:1660
 msgid ""
 "Only work packages where you have permission to register show\n"
 "             here. If you miss one, please contact the responsible project\n"
@@ -5062,33 +5109,33 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1648 ../locale/attr.py:300 attr.py:300
+#: ../extensions/help.py:1665 ../locale/attr.py:300 attr.py:300
 msgid "wp_no"
 msgstr ""
 
-#: ../extensions/help.py:1649
+#: ../extensions/help.py:1666
 msgid ""
 "Work package number in the project. Number must be unique for\n"
 "             the project and cannot be changed after assignment.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1653
+#: ../extensions/help.py:1670
 msgid "wp++durations_allowed"
 msgstr ""
 
-#: ../extensions/help.py:1655
+#: ../extensions/help.py:1672
 msgid ""
 "This is mainly used for special %(Classname)ss, like,\n"
 "             e.g., vacation.\n"
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1659 ../locale/attr.py:313 attr.py:313
+#: ../extensions/help.py:1676 ../locale/attr.py:313 attr.py:313
 msgid "wps"
 msgstr ""
 
-#: ../extensions/help.py:1660
+#: ../extensions/help.py:1677
 msgid ""
 "For a better handling of the work load of a project it is\n"
 "             split in to work packages. This field defines a list of work\n"
@@ -5096,13 +5143,13 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1665 ../lib/schemacfg/time_tracker.py:300
+#: ../extensions/help.py:1682 ../lib/schemacfg/time_tracker.py:301
 #: ../locale/attr.py:275 ../locale/attr.py:288 ../locale/attr.py:347
 #: attr.py:275 attr.py:288 attr.py:347
 msgid "work_location"
 msgstr ""
 
-#: ../extensions/help.py:1748
+#: ../extensions/help.py:1765
 #, python-format
 msgid ""
 "<a %(csscls)s title=\"Help for %(label)s\" href=\"javascript:help_window"
@@ -5205,57 +5252,57 @@ msgstr ""
 msgid "No files for %(tmplate)s"
 msgstr ""
 
-#: ../extensions/summary.py:737 ../extensions/summary.py:834
+#: ../extensions/summary.py:739 ../extensions/summary.py:836
 msgid "Sum"
 msgstr ""
 
-#: ../extensions/summary.py:829
+#: ../extensions/summary.py:831
 msgid "Container"
 msgstr ""
 
-#: ../extensions/summary.py:830 ../extensions/summary.py:1124
+#: ../extensions/summary.py:832 ../extensions/summary.py:1129
 msgid "time"
 msgstr ""
 
 #.  for translation in web-interface
-#: ../extensions/summary.py:913
+#: ../extensions/summary.py:915
 msgid "Staff Report"
 msgstr ""
 
-#: ../extensions/summary.py:915
+#: ../extensions/summary.py:917
 msgid "balance_start"
 msgstr ""
 
-#: ../extensions/summary.py:916
+#: ../extensions/summary.py:918
 msgid "actual_open"
 msgstr ""
 
-#: ../extensions/summary.py:917
+#: ../extensions/summary.py:919
 msgid "actual_submitted"
 msgstr ""
 
-#: ../extensions/summary.py:918
+#: ../extensions/summary.py:920
 msgid "actual_accepted"
 msgstr ""
 
-#: ../extensions/summary.py:919
+#: ../extensions/summary.py:921
 msgid "actual_all"
 msgstr ""
 
-#: ../extensions/summary.py:920
+#: ../extensions/summary.py:922
 msgid "required"
 msgstr ""
 
-#: ../extensions/summary.py:922 ../lib/schemacfg/time_tracker.py:117
+#: ../extensions/summary.py:924 ../lib/schemacfg/time_tracker.py:118
 #: ../locale/attr.py:224 attr.py:224
 msgid "overtime_correction"
 msgstr ""
 
-#: ../extensions/summary.py:923
+#: ../extensions/summary.py:925
 msgid "balance_end"
 msgstr ""
 
-#: ../extensions/summary.py:928
+#: ../extensions/summary.py:930
 msgid "achieved_supplementary"
 msgstr ""
 
@@ -5296,7 +5343,7 @@ msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 
 #: ../html/_generic.index.html:59 ../html/_generic.item.html:59
-#: ../html/page.html:1230
+#: ../html/page.html:1251
 msgid "Download as CSV"
 msgstr ""
 
@@ -5341,7 +5388,8 @@ msgstr ""
 #: ../html/network_interface.item.html:10 ../html/opening_hours.item.html:10
 #: ../html/overtime_correction.item.html:10 ../html/person.item.html:9
 #: ../html/product.item.html:10 ../html/product_price.item.html:10
-#: ../html/public_holiday.item.html:10 ../html/smb_machine.item.html:10
+#: ../html/public_holiday.item.html:10 ../html/qsl.item.html:10
+#: ../html/qso.item.html:10 ../html/smb_machine.item.html:10
 #: ../html/support.item.html:10 ../html/time_project.item.html:10
 #: ../html/time_record.item.html:10 ../html/time_wp.item.html:10
 #: ../html/time_wp_group.item.html:10 ../html/user_contact.item.html:10
@@ -5402,7 +5450,8 @@ msgstr ""
 #: ../html/network_address.item.html:7 ../html/network_interface.item.html:7
 #: ../html/opening_hours.item.html:7 ../html/overtime_correction.item.html:7
 #: ../html/product.item.html:7 ../html/product_price.item.html:7
-#: ../html/public_holiday.item.html:7 ../html/smb_machine.item.html:7
+#: ../html/public_holiday.item.html:7 ../html/qsl.item.html:7
+#: ../html/qso.item.html:7 ../html/smb_machine.item.html:7
 #: ../html/support.item.html:7 ../html/time_project.item.html:7
 #: ../html/time_record.item.html:7 ../html/time_wp.item.html:7
 #: ../html/time_wp_group.item.html:7 ../html/user_contact.item.html:7
@@ -5572,7 +5621,7 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
-#: ../html/lielas.html:111 ../html/page.html:499
+#: ../html/lielas.html:111 ../html/page.html:515
 msgid "Password:"
 msgstr ""
 
@@ -5680,177 +5729,185 @@ msgstr ""
 msgid "new network_address"
 msgstr ""
 
-#: ../html/page.html:483
+#: ../html/page.html:499
 msgid "Welcome:"
 msgstr ""
 
-#: ../html/page.html:488
+#: ../html/page.html:504
 msgid "Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled."
 msgstr ""
 
-#: ../html/page.html:495
+#: ../html/page.html:511
 msgid "Login:"
 msgstr ""
 
-#: ../html/page.html:503
+#: ../html/page.html:519
 msgid "Remember me?:"
 msgstr ""
 
-#: ../html/page.html:539
+#: ../html/page.html:555
 msgid "Time"
 msgstr ""
 
-#: ../html/page.html:548
+#: ../html/page.html:564
 msgid "Approval"
 msgstr ""
 
-#: ../html/page.html:622
+#: ../html/page.html:639
 msgid "User&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:633
+#: ../html/page.html:652
 msgid "Phone&nbsp;List"
 msgstr ""
 
-#: ../html/page.html:695
+#: ../html/page.html:714
 msgid "-- Create --"
 msgstr ""
 
-#: ../html/page.html:714
+#: ../html/page.html:733
 msgid "-- View / Query --"
 msgstr ""
 
-#: ../html/page.html:716
+#: ../html/page.html:735
 msgid "Manage Queries"
 msgstr ""
 
-#: ../html/page.html:867
+#: ../html/page.html:888
 msgid "Show History"
 msgstr ""
 
-#: ../html/page.html:932
+#: ../html/page.html:953
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
-#: ../html/page.html:973
+#: ../html/page.html:994
 msgid "Note:&nbsp;"
 msgstr ""
 
-#: ../html/page.html:974
+#: ../html/page.html:995
 msgid "highlighted"
 msgstr ""
 
-#: ../html/page.html:975
+#: ../html/page.html:996
 msgid "&nbsp;fields are required."
 msgstr ""
 
-#: ../html/page.html:996
+#: ../html/page.html:1017
 msgid "Author:"
 msgstr ""
 
-#: ../html/page.html:1001
+#: ../html/page.html:1022
 msgid "Date:"
 msgstr ""
 
-#: ../html/page.html:1093
+#: ../html/page.html:1114
 msgid "&lt;&lt;&nbsp;previous"
 msgstr ""
 
-#: ../html/page.html:1105
+#: ../html/page.html:1126
 msgid "showing ${start} - ${end} of ${length} in total"
 msgstr ""
 
-#: ../html/page.html:1110
+#: ../html/page.html:1131
 msgid "Sorry, no results found"
 msgstr ""
 
-#: ../html/page.html:1115
+#: ../html/page.html:1136
 msgid "next&nbsp;&gt;&gt;"
 msgstr ""
 
-#: ../html/page.html:1216 ../html/query.edit.html:45
+#: ../html/page.html:1237 ../html/query.edit.html:45
 msgid "Query"
 msgstr ""
 
-#: ../html/page.html:1217
+#: ../html/page.html:1238
 msgid "<span>x</span> ${title}"
 msgstr ""
 
-#: ../html/page.html:1223
+#: ../html/page.html:1244
 msgid "View"
 msgstr ""
 
-#: ../html/page.html:1226
+#: ../html/page.html:1247
 msgid "items per page"
 msgstr ""
 
-#: ../html/page.html:1253
+#: ../html/page.html:1274
 msgid "Sort on:"
 msgstr ""
 
-#: ../html/page.html:1260 ../html/page.html:1282
+#: ../html/page.html:1281 ../html/page.html:1303
 msgid "- nothing -"
 msgstr ""
 
-#: ../html/page.html:1266 ../html/page.html:1288
+#: ../html/page.html:1287 ../html/page.html:1309
 msgid "Descending:"
 msgstr ""
 
-#: ../html/page.html:1275
+#: ../html/page.html:1296
 msgid "Group on:"
 msgstr ""
 
-#: ../html/page.html:1364
+#: ../html/page.html:1385
 msgid "- don't care -"
 msgstr ""
 
-#: ../html/page.html:1366
+#: ../html/page.html:1387
 msgid "- not selected -"
 msgstr ""
 
-#: ../html/page.html:1420
+#: ../html/page.html:1441
 msgid "Search full text:"
 msgstr ""
 
-#: ../html/page.html:1425
+#: ../html/page.html:1446
 msgid "(Searches also in messages)"
 msgstr ""
 
-#: ../html/page.html:1432
+#: ../html/page.html:1453
 msgid "Update view"
 msgstr ""
 
-#: ../html/page.html:1437
+#: ../html/page.html:1458
 msgid "Find"
 msgstr ""
 
-#: ../html/page.html:1449
+#: ../html/page.html:1470
 msgid "This query's name:"
 msgstr ""
 
-#: ../html/page.html:1461
+#: ../html/page.html:1482
 msgid "Update view & store this query"
 msgstr ""
 
-#: ../html/page.html:1468
+#: ../html/page.html:1489
 msgid "(If you change the name, you create a new query!!!)"
 msgstr ""
 
-#: ../html/page.html:1477
+#: ../html/page.html:1498
 msgid "Update view & store NEW query"
 msgstr ""
 
-#: ../html/page.html:1525
+#: ../html/page.html:1546
 msgid "<span nowrap></span> <span nowrap></span>"
 msgstr ""
 
-#: ../html/page.html:1581
+#: ../html/page.html:1602
 msgid "New ${Name}"
 msgstr ""
 
-#: ../html/page.html:1616
+#: ../html/page.html:1637
 msgid "<span nowrap></span>"
+msgstr ""
+
+#: ../html/qso.item.html:43
+msgid "add swl report"
+msgstr ""
+
+#: ../html/qso.item.html:83
+msgid "add secondary qso"
 msgstr ""
 
 #: ../html/query.edit.html:4
@@ -5926,15 +5983,15 @@ msgstr ""
 msgid "<span>x</span> User"
 msgstr ""
 
-#: ../html/user.item.html:96
+#: ../html/user.item.html:99
 msgid "(role permissions)"
 msgstr ""
 
-#: ../html/user.item.html:249
+#: ../html/user.item.html:252
 msgid "default:"
 msgstr ""
 
-#: ../html/user.item.html:428
+#: ../html/user.item.html:490
 msgid "max. size of picture: 100kB"
 msgstr ""
 
@@ -5942,7 +5999,7 @@ msgstr ""
 msgid "new user_dynamic record"
 msgstr ""
 
-#: ../html/user_dynamic.item.html:81
+#: ../html/user_dynamic.item.html:82
 msgid "split user_dynamic record"
 msgstr ""
 
@@ -6004,8 +6061,8 @@ msgstr ""
 msgid "%(attr)s must not be specified"
 msgstr ""
 
-#: ../lib/ldap_sync.py:629 ../lib/ldap_sync.py:631 ../lib/ldap_sync.py:633
-#: ../lib/ldap_sync.py:635 ../lib/ldap_sync.py:639
+#: ../lib/ldap_sync.py:632 ../lib/ldap_sync.py:634 ../lib/ldap_sync.py:636
+#: ../lib/ldap_sync.py:638 ../lib/ldap_sync.py:642
 msgid "Invalid login"
 msgstr ""
 
@@ -6249,6 +6306,42 @@ msgstr ""
 msgid "supplier_status"
 msgstr ""
 
+#: ../lib/schemacfg/extcompany.py:101
+msgid "Users are allowed to access their own external company"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:48
+msgid "antenna"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:55
+msgid "ham_call"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:64
+msgid "ham_mode"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:71
+msgid "ham_band"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:78
+msgid "qsl_type"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:86
+msgid "qsl_status"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:94
+msgid "qsl"
+msgstr ""
+
+#: ../lib/schemacfg/hamlog.py:102
+msgid "qso"
+msgstr ""
+
 #: ../lib/schemacfg/it_tracker.py:50 ../locale/attr.py:71 attr.py:71
 msgid "it_category"
 msgstr ""
@@ -6340,59 +6433,59 @@ msgstr ""
 msgid "mailgroup"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:68 ../locale/attr.py:194
+#: ../lib/schemacfg/time_tracker.py:69 ../locale/attr.py:194
 #: ../locale/attr.py:197 ../locale/attr.py:245 attr.py:194 attr.py:197
 #: attr.py:245
 msgid "cost_center_group"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:87 ../locale/attr.py:206
+#: ../lib/schemacfg/time_tracker.py:88 ../locale/attr.py:206
 #: ../locale/attr.py:291 attr.py:206 attr.py:291
 msgid "daily_record"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:102 ../locale/attr.py:214 attr.py:214
+#: ../lib/schemacfg/time_tracker.py:103 ../locale/attr.py:214 attr.py:214
 msgid "daily_record_freeze"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:127 ../locale/attr.py:229 attr.py:229
+#: ../lib/schemacfg/time_tracker.py:128 ../locale/attr.py:229 attr.py:229
 msgid "daily_record_status"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:135 ../locale/attr.py:232 attr.py:232
+#: ../lib/schemacfg/time_tracker.py:136 ../locale/attr.py:232 attr.py:232
 msgid "public_holiday"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:169 ../locale/attr.py:250
+#: ../lib/schemacfg/time_tracker.py:170 ../locale/attr.py:250
 #: ../locale/attr.py:258 attr.py:250 attr.py:258
 msgid "summary_type"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:187 ../locale/attr.py:255
+#: ../lib/schemacfg/time_tracker.py:188 ../locale/attr.py:255
 #: ../locale/attr.py:266 attr.py:255 attr.py:266
 msgid "time_project"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:208 ../locale/attr.py:282 attr.py:282
+#: ../lib/schemacfg/time_tracker.py:209 ../locale/attr.py:282 attr.py:282
 msgid "time_project_status"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:217 ../locale/attr.py:210
+#: ../lib/schemacfg/time_tracker.py:218 ../locale/attr.py:210
 #: ../locale/attr.py:286 attr.py:210 attr.py:286
 msgid "time_record"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:234 ../locale/attr.py:244
+#: ../lib/schemacfg/time_tracker.py:235 ../locale/attr.py:244
 #: ../locale/attr.py:299 attr.py:244 attr.py:299
 msgid "time_wp"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:251 ../locale/attr.py:256
+#: ../lib/schemacfg/time_tracker.py:252 ../locale/attr.py:256
 #: ../locale/attr.py:312 attr.py:256 attr.py:312
 msgid "time_wp_group"
 msgstr ""
 
-#: ../lib/schemacfg/time_tracker.py:270 ../locale/attr.py:321 attr.py:321
+#: ../lib/schemacfg/time_tracker.py:271 ../locale/attr.py:321 attr.py:321
 msgid "user_dynamic"
 msgstr ""
 
@@ -6646,14 +6739,6 @@ msgstr ""
 
 #: ../locale/attr.py:636 ../locale/attr.py:806 attr.py:636 attr.py:806
 msgid "classification"
-msgstr ""
-
-#: ../locale/attr.py:638 ../locale/attr.py:808 attr.py:638 attr.py:808
-msgid "cc"
-msgstr ""
-
-#: ../locale/attr.py:642 ../locale/attr.py:812 attr.py:642 attr.py:812
-msgid "bcc"
 msgstr ""
 
 #: ../locale/attr.py:665 ../locale/attr.py:742 ../locale/attr.py:836

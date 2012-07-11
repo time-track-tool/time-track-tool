@@ -628,6 +628,12 @@ _helptext          = \
       ]
     , ""'emails'                      :
       [""'''Customer email addresses for this %(Classname)s''']
+    , ""'external_company'            :
+      [""'''Company for external users used for access control: all
+            external users for a company have access if the
+            %(Classname)s is on the access list for an issue
+         '''
+      ]
     , ""'firstname'                   : [firstname]
     , ""'first_date'                  : [ ""'''Date of first contact''']
     , ""'fixed_in'                    :

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2011-12-19 11:18+0100\n"
+"POT-Creation-Date: 2012-07-11 13:03+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -179,6 +179,14 @@ msgstr "Rabatt muss mit dem Preis steigen: %(pd)s"
 
 msgid "currency"
 msgstr "Währung"
+
+#, python-format
+msgid "Duplicate QSL type \"%s\" for QSO"
+msgstr ""
+
+#, python-format
+msgid "Cant't delete \"%(name)s\" Call has QSOs"
+msgstr ""
 
 msgid "\"amount\": only numbers allowed"
 msgstr "\"Betrag\": nur Zahlen erlaubt"
@@ -377,7 +385,8 @@ msgid "summary_report"
 msgstr ""
 
 msgid ""
-"Trying to send to customer without configured contact-email for customer"
+"Trying to send to customer with empty CC and without configured contact-"
+"email for customer"
 msgstr ""
 
 #, python-format
@@ -582,9 +591,6 @@ msgstr ""
 
 msgid "Invalid Supervisor"
 msgstr ""
-
-msgid "[hidden]"
-msgstr "[unsichtbar]"
 
 msgid "Don't care"
 msgstr "Nicht suchen"
@@ -1000,6 +1006,21 @@ msgstr "Offen"
 msgid "Open amount not yet payed"
 msgstr "Noch nicht bezahlter Betrag"
 
+msgid "bcc"
+msgstr "BCC"
+
+msgid "Additional emails to send to when \""
+msgstr ""
+
+msgid "send_to_customer"
+msgstr "an Kunden senden"
+
+msgid "\" flag is set."
+msgstr ""
+
+msgid " Additional emails will not show up in mail header."
+msgstr ""
+
 msgid "begin"
 msgstr "Beginn"
 
@@ -1069,6 +1090,9 @@ msgid ""
 "             %(Property)s of the new issue\n"
 "          "
 msgstr ""
+
+msgid "cc"
+msgstr "CC"
 
 msgid "cert_sw"
 msgstr ""
@@ -1697,6 +1721,16 @@ msgid "emails"
 msgstr "Emails"
 
 msgid "Customer email addresses for this %(Classname)s"
+msgstr ""
+
+msgid "external_company"
+msgstr ""
+
+msgid ""
+"Company for external users used for access control: all\n"
+"            external users for a company have access if the\n"
+"            %(Classname)s is on the access list for an issue\n"
+"         "
 msgstr ""
 
 msgid "firstname"
@@ -2921,9 +2955,6 @@ msgstr ""
 "Hinweis, ob diese Rechnung versendet werden soll. Falls nicht gesetzt, "
 "verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese Rechnung "
 "weder versendet, noch als gesendet markiert."
-
-msgid "send_to_customer"
-msgstr "an Kunden senden"
 
 msgid "Send to external email addresses (customer)"
 msgstr ""
@@ -4332,6 +4363,12 @@ msgstr "Neue ${Name}"
 msgid "<span nowrap></span>"
 msgstr ""
 
+msgid "add swl report"
+msgstr ""
+
+msgid "add secondary qso"
+msgstr ""
+
 msgid "\"My Queries\" Editing - ${tracker}"
 msgstr "\"Meine Abfragen\" bearbeiten - ${tracker}"
 
@@ -4611,6 +4648,33 @@ msgstr "Lieferantengruppe"
 
 msgid "supplier_status"
 msgstr "Lieferantenstatus"
+
+msgid "Users are allowed to access their own external company"
+msgstr ""
+
+msgid "antenna"
+msgstr ""
+
+msgid "ham_call"
+msgstr ""
+
+msgid "ham_mode"
+msgstr ""
+
+msgid "ham_band"
+msgstr ""
+
+msgid "qsl_type"
+msgstr "QSL Typ"
+
+msgid "qsl_status"
+msgstr "QSL Status"
+
+msgid "qsl"
+msgstr "QSL"
+
+msgid "qso"
+msgstr "QSO"
 
 msgid "it_category"
 msgstr "IT Kategorie"
@@ -4895,12 +4959,6 @@ msgstr "Stunde bis"
 msgid "classification"
 msgstr "Klassifikation"
 
-msgid "cc"
-msgstr "CC"
-
-msgid "bcc"
-msgstr "BCC"
-
 msgid "lookalike_lastname"
 msgstr "Nachname"
 
@@ -5038,6 +5096,9 @@ msgstr ""
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "[hidden]"
+#~ msgstr "[unsichtbar]"
 
 #~ msgid "Database:"
 #~ msgstr "Datenbank:"
