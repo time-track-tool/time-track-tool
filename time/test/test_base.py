@@ -194,6 +194,21 @@ class _Test_Case (unittest.TestCase) :
     def test_2_security (self) :
         self.db = self.tracker.open ('admin')
         secdesc = self.security_desc.split ('\n')
+        sd2     = []
+        # sorting: python dicts are no longer stable from call to call
+        for x in secdesc :
+            if '[' in x :
+                x0, x1 =  x.split ('[', 1)
+                x1, x2 = x1.split (']', 1)
+                x1 = ', '.join (sorted (x1.split (', ')))
+                x = x0 + '[' + x1 + ']' + x2
+            if '": (' in x :
+                x0, x1 =  x.split ('": (', 1)
+                x1, x2 = x1.split (') only', 1)
+                x1 = ', '.join (sorted (x1.split (', ')))
+                x = x0 + '": (' + x1 + ') only' + x2
+            sd2.append (x)
+        secdesc = sd2
         s = []
         s.append (secdesc [0])
         s.append (secdesc [1])
@@ -205,10 +220,13 @@ class _Test_Case (unittest.TestCase) :
                 d = permission.__dict__
                 if permission.klass :
                     if permission.properties :
+                        p = { 'properties'
+                            : type (d ['properties'])
+                                   (sorted (d ['properties']))
+                            }
                         perms.append \
-                            (' %(description)s (%(name)s for "%(klass)s"'
-                             ': %(properties)s only)'
-                            % d
+                            ( ' %(description)s (%(name)s for "%(klass)s"' %d
+                            + ': %(properties)s only)' % p
                             )
                     else :
                         perms.append \
