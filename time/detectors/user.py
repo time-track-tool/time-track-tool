@@ -330,6 +330,19 @@ def check_pictures (db, cl, nodeid, new_values) :
             ("maximum picture size 100kB exceeded: %(length)s") % locals ()
 # end def check_pictures
 
+def check_ext_company (db, cl, nodeid, new_values) :
+    st_ext = db.user_status.lookup ('external')
+    if 'status' in new_values :
+        if new_values ['status'] == st_ext :
+            new_values ['roles'] = 'External,Nosy'
+    st = new_values.get ('status')
+    if not st and nodeid :
+        st = cl.get (nodeid, 'status')
+    if 'external_company' in new_values or 'status' in new_values :
+        if st != st_ext :
+            new_values ['external_company'] = None
+# end def check_ext_company
+
 def init (db) :
     global _
     _   = get_translation \
@@ -339,6 +352,9 @@ def init (db) :
     db.user.react ("create", update_userlist_html)
     if 'user_dynamic' in db.classes :
         db.user.react ("create", create_dynuser)
+    if 'external_company' in db.classes :
+        db.user.audit ("create", check_ext_company)
+        db.user.audit ("set",    check_ext_company)
     db.user.react ("set",    update_userlist_html)
     db.user.audit ("retire", check_retire)
     db.user.audit ("set",    obsolete_action)

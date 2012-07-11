@@ -505,11 +505,12 @@
       <span tal:content="structure python:
             context.external_company.field (size = 40)" />
       <span tal:content="structure python:db.external_company.classhelp
-            ( 'id,name'
+            ( 'name,id'
             , property  = 'external_company'
             , width     = '600'
             , pagesize  = 500
             , inputtype = 'radio'
+            , form      = 'user_form'
             )" />
      </td>
     </tr>

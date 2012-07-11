@@ -283,6 +283,13 @@ def new_doc_issue_status (db, cl, nodeid, new_values) :
             (None, {}, sort = [('+', 'order')]) [0]
 # end new_doc_issue_status
 
+def add_ext_company (db, cl, nodeid, new_values) :
+    """ Add external company to new issue of a user if the user has one """
+    user = db.user.getnode (db.getuid ())
+    if 'external_company' not in new_values and user.external_company :
+        new_values ['external_company'] = [user.external_company]
+# end def add_ext_company
+
 
 def init (db) :
     if 'issue' not in db.classes :
@@ -310,4 +317,6 @@ def init (db) :
     if 'doc_issue_status' in db.issue.properties :
         db.issue.audit ("set",    doc_issue_status)
         db.issue.audit ("create", new_doc_issue_status)
+    if 'external_company' in db.issue.properties :
+        db.issue.audit ("create", add_ext_company)
 # end def init
