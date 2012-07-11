@@ -72,6 +72,13 @@ def security (db, ** kw) :
         return userid in item.nosy
     # end def is_on_nosy
 
+    def ext_company_access (db, userid, itemid) :
+        "Users are allowed to access issue if their external company has access"
+        ec = db.user.get (userid, 'external_company')
+        ecs = db.issue.get (itemid, 'external_company')
+        return ecs and ec in ecs
+    # end def ext_company_access
+
     # don't allow external_company for External
     issue_props = [p for p in db.issue.properties.iterkeys ()
                    if p != 'external_company'
@@ -86,6 +93,16 @@ def security (db, ** kw) :
             , properties  = issue_props
             )
         db.security.addPermissionToRole ('External', p)
+        if 'external_company' in db.issue.properties :
+            p = db.security.addPermission \
+                ( name        = perm
+                , klass       = 'issue'
+                , check       = ext_company_access
+                , description = ext_company_access.__doc__
+                , properties  = issue_props
+                )
+            db.security.addPermissionToRole ('External', p)
+
 
     p = db.security.addPermission \
         ( name        = 'Edit'
