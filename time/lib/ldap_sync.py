@@ -92,7 +92,7 @@ class LDAP_Roundup_Sync (object) :
             exit (42)
         self.status_valid    = self.db.user_status.lookup ('valid')
         self.status_obsolete = self.db.user_status.lookup ('obsolete')
-        self.status_system   = self.db.user_status.lookup ('system')
+        self.status_sync     = (self.status_valid, self.status_obsolete)
         self.contact_types = dict \
             ((id, self.db.uc_type.get (id, 'name'))
              for id in self.db.uc_type.list ()
@@ -354,7 +354,9 @@ class LDAP_Roundup_Sync (object) :
         user  = uid and self.db.user.getnode (uid)
         # don't modify system users:
         reserved = ('admin', 'anonymous')
-        if username in reserved or user and user.status == self.status_system :
+        if  (  username in reserved
+            or user and user.status not in self.status_sync
+            ) :
             return
         luser = self.get_ldap_user_by_username (username)
         if not user and (not luser or self.is_obsolete (luser)) :
@@ -433,7 +435,7 @@ class LDAP_Roundup_Sync (object) :
                 d ['contacts'] = new_contacts
 
             if user :
-                assert (user.status != self.status_system)
+                assert (user.status in self.status_sync)
                 for k, v in d.items () :
                     if user [k] == v :
                         del d [k]
@@ -463,7 +465,7 @@ class LDAP_Roundup_Sync (object) :
         self.update = update
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
-        assert (user.status != self.status_system)
+        assert (user.status in self.status_sync)
         luser = self.get_ldap_user_by_username (user.username)
         if not luser :
             print "LDAP user not found:", user.username

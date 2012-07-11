@@ -72,12 +72,18 @@ def security (db, ** kw) :
         return userid in item.nosy
     # end def is_on_nosy
 
+    # don't allow external_company for External
+    issue_props = [p for p in db.issue.properties.iterkeys ()
+                   if p != 'external_company'
+                  ]
+
     for perm in ('View', 'Edit') :
         p = db.security.addPermission \
             ( name        = perm
             , klass       = 'issue'
             , check       = is_on_nosy
             , description = is_on_nosy.__doc__
+            , properties  = issue_props
             )
         db.security.addPermissionToRole ('External', p)
 

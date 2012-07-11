@@ -46,7 +46,7 @@ def init (db, Class, Boolean, Number, String, Link, Multilink, ** kw) :
         )
     docstat.setkey ("name")
 
-    class Optional_Doc_Issue_Class (kw ['Optional_Doc_Issue_Class']) :
+    class DI_Optional_Doc_Issue_Class (kw ['Optional_Doc_Issue_Class']) :
         """ extends the normal Optional_Doc_Issue_Class with doc_issue_status
         """
         def __init__ (self, db, classname, ** properties) :
@@ -55,8 +55,8 @@ def init (db, Class, Boolean, Number, String, Link, Multilink, ** kw) :
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
-    # end class Optional_Doc_Issue_Class
-    export ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
+    # end class DI_Optional_Doc_Issue_Class
+    export ['Optional_Doc_Issue_Class'] = DI_Optional_Doc_Issue_Class
     return export
 # end def init
 
