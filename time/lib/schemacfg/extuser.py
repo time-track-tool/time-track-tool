@@ -45,7 +45,6 @@ def security (db, ** kw) :
         , ("severity",          ["External"],    [])
         , ("status",            ["External"],    [])
         , ("status_transition", ["External"],    [])
-        , ("user_status",       ["External"],    [])
         ]
     prop_perms = \
         [ ( "user",     "View", ["External"]
@@ -81,7 +80,7 @@ def security (db, ** kw) :
 
     # don't allow external_company for External
     issue_props = [p for p in db.issue.properties.iterkeys ()
-                   if p != 'external_company'
+                   if p not in ('external_company', 'confidential')
                   ]
 
     for perm in ('View', 'Edit') :

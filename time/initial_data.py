@@ -953,3 +953,5 @@ if 'qsl_status' in db.classes :
     db.qsl_status.create (name = 'LOTW+paper',      code = 6)
     db.qsl_status.create (name = 'eQSL+LOTW+paper', code = 7)
     db.qsl_status.create (name = 'none',            code = 0)
+if 'external_company' in db.classes :
+    user_status.create (name = "external", description = "External user")

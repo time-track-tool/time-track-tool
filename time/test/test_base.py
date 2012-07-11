@@ -92,6 +92,7 @@ class _Test_Case (unittest.TestCase) :
         , 'controlling'
         , 'discount'
         , 'doc_admin'
+        , 'external'
         , 'guest'
         , 'hr'
         , 'hr-org-location'
@@ -217,9 +218,13 @@ class _Test_Case (unittest.TestCase) :
                 else:
                     perms.append (' %(description)s (%(name)s)' % d)
             s.extend (sorted (dict.fromkeys (perms).keys ()))
+        lr1 = lr2 = None
         for s1, s2 in zip (secdesc, s) :
-            #print >> sys.stderr, s1, s1
-            self.assertEqual (s1, s2)
+            if s1.startswith ('Role') :
+                lr1 = s1
+            if s2.startswith ('Role') :
+                lr2 = s2
+            self.assertEqual ((lr1, s1), (lr2, s2))
     # end def test_2_security
 
     def test_3_search (self) :
@@ -269,6 +274,7 @@ class _Test_Case (unittest.TestCase) :
             , 'logger'
             , 'nosy'
             , 'user'
+            , 'external'
             ]
         self.users = {'admin' : '1', 'anonymous' : '2'}
         for u in self.allroles :
@@ -312,8 +318,8 @@ class Test_Case_Support_Timetracker (_Test_Case) :
 class Test_Case_Timetracker (_Test_Case) :
     schemaname = 'full'
     roles = \
-        [ 'admin', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it'
+        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
+        , 'external', 'hr', 'hr-org-location', 'issue_admin', 'it'
         , 'itview', 'nosy'
         , 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user'
         ]

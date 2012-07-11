@@ -136,6 +136,10 @@ properties = \
         , 'transitions'
         ]
       )
+    , ( 'external_company'
+      , [ 'name'
+        ]
+      )
     , ( 'file'
       , [ 'content'
         , 'name'
@@ -155,6 +159,7 @@ properties = \
         , 'doc_issue_status'
         , 'earliest_start'
         , 'effective_prio'
+        , 'external_company'
         , 'files'
         , 'files_affected'
         , 'fixed_in'
@@ -514,6 +519,7 @@ properties = \
         , 'clearance_by'
         , 'contacts'
         , 'department'
+        , 'external_company'
         , 'firstname'
         , 'job_description'
         , 'lastname'

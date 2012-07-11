@@ -331,7 +331,10 @@ def check_pictures (db, cl, nodeid, new_values) :
 # end def check_pictures
 
 def check_ext_company (db, cl, nodeid, new_values) :
-    st_ext = db.user_status.lookup ('external')
+    try :
+        st_ext = db.user_status.lookup ('external')
+    except KeyError :
+        st_ext = None
     if 'status' in new_values :
         if new_values ['status'] == st_ext :
             new_values ['roles'] = 'External,Nosy'
