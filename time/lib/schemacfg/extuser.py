@@ -79,7 +79,7 @@ def security (db, ** kw) :
     # end def ext_company_access
 
     # don't allow external_company for External
-    issue_props = [p for p in db.issue.properties.iterkeys ()
+    issue_props = [p for p in db.issue.getprops ().iterkeys ()
                    if p not in ('external_company', 'confidential')
                   ]
 
