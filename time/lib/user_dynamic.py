@@ -39,7 +39,6 @@ from roundup.date import Date
 from common       import ymd, next_search_date, end_of_period, freeze_date
 from common       import pretty_range, day, period_is_weekly, start_of_period
 from common       import week_from_date, user_has_role
-from common       import start_of_month, end_of_month
 from freeze       import find_prev_dr_freeze, find_next_dr_freeze, frozen
 
 last_dynamic = None # simple one-element cache
@@ -695,13 +694,18 @@ def hr_olo_role_for_this_user (db, dbuid, userid, date = None) :
     return hr_olo_role_for_this_user_dyn (db, dbuid, dyn)
 # end def hr_olo_role_for_this_user
 
-def has_required_overtime (db, user, frm) :
+def required_overtime (db, user, frm) :
+    """ If required_overtime flag is set for dynamic user record at frm,
+        we return the overtime_period belonging to this dyn user record.
+        Otherwise return None.
+    """
     dyn = get_user_dynamic (db, user, frm)
     if dyn and dyn.overtime_period :
         otp = db.overtime_period.getnode (dyn.overtime_period)
-        return otp.required_overtime
-    return False
-# end def has_required_overtime
+        if otp.required_overtime :
+            return otp
+    return None
+# end def required_overtime
 
 def invalidate_tr_duration (db, uid, v_frm, v_to) :
     """ Invalidate all cached tr_duration_ok values in all daily records
@@ -714,8 +718,9 @@ def invalidate_tr_duration (db, uid, v_frm, v_to) :
         Make sure the tr_duration_ok is *really* set even if our cached
         value is None.
     """
-    if has_required_overtime (db, uid, v_frm) :
-        start = start_of_month (v_frm)
+    otp = required_overtime (db, uid, v_frm)
+    if otp :
+        start = start_of_period (v_frm, otp)
         if frozen (db, user, m) :
             freeze = find_next_dr_freeze (db, user, start)
             start  = freeze.date
@@ -725,8 +730,9 @@ def invalidate_tr_duration (db, uid, v_frm, v_to) :
     if v_to is None :
         pdate = v_frm.pretty (ymd) + ';'
     else :
-        if has_required_overtime (db, uid, v_to) :
-            v_to = end_of_month (v_to)
+        otp = required_overtime (db, uid, v_to)
+        if otp  :
+            v_to = end_of_period (v_to, otp)
         pdate = ';'.join ((v_frm.pretty (ymd), v_to.pretty (ymd)))
     for dr in db.daily_record.filter (None, dict (date = pdate, user = uid)) :
         db.daily_record.set (dr, tr_duration_ok = 0)
