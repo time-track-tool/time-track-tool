@@ -201,6 +201,7 @@ def init \
         , no_overtime           = Boolean   ()
         , is_public_holiday     = Boolean   ()
         , cost_center           = Link      ("cost_center")
+        , overtime_reduction    = Boolean   ()
         )
     time_project.setkey ("name")
 
@@ -263,6 +264,7 @@ def init \
         , order                 = Number    ()
         , weekly                = Boolean   ()
         , months                = Number    ()
+        , required_overtime     = Boolean   ()
         )
     overtime_period.setkey ("name")
 

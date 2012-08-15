@@ -1018,6 +1018,13 @@ _helptext          = \
       [""'''Operating System running on this %(Classname)s''']
     , ""'overtime_period'             :
       [""'''Period over which overtime is computed for a person''']
+    , ""'overtime_period++required_overtime' :
+      [""'''Given overtime is required for the period.''']
+    , ""'overtime_reduction'          :
+      [""'''Don't count hours booked on this %(Classname)s
+            for required overtime.
+         '''
+      ]
     , ""'parent'                      :
       [""'''%(Classname)s to which this %(Classname)s belongs.''']
     , ""'part_of'                     :

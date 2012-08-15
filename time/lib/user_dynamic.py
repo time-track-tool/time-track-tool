@@ -39,7 +39,8 @@ from roundup.date import Date
 from common       import ymd, next_search_date, end_of_period, freeze_date
 from common       import pretty_range, day, period_is_weekly, start_of_period
 from common       import week_from_date, user_has_role
-from freeze       import find_prev_dr_freeze
+from common       import start_of_month, end_of_month
+from freeze       import find_prev_dr_freeze, find_next_dr_freeze, frozen
 
 last_dynamic = None # simple one-element cache
 
@@ -693,3 +694,43 @@ def hr_olo_role_for_this_user (db, dbuid, userid, date = None) :
         return False
     return hr_olo_role_for_this_user_dyn (db, dbuid, dyn)
 # end def hr_olo_role_for_this_user
+
+def has_required_overtime (db, user, frm) :
+    dyn = get_user_dynamic (db, user, frm)
+    if dyn and dyn.overtime_period :
+        otp = db.overtime_period.getnode (dyn.overtime_period)
+        return otp.required_overtime
+    return False
+# end def has_required_overtime
+
+def invalidate_tr_duration (db, uid, v_frm, v_to) :
+    """ Invalidate all cached tr_duration_ok values in all daily records
+        in the given range for the given uid.
+        We modify v_frm and/or v_to if these use required_overtime in
+        their overtime_period: In that case we need to invalidate the
+        whole month.
+        We also invalidate computations on v_to (which is too far) but
+        these get recomputed (we're in a non-frozen range anyway).
+        Make sure the tr_duration_ok is *really* set even if our cached
+        value is None.
+    """
+    if has_required_overtime (db, uid, v_frm) :
+        start = start_of_month (v_frm)
+        if frozen (db, user, m) :
+            freeze = find_next_dr_freeze (db, user, start)
+            start  = freeze.date
+            assert (start <= v_frm)
+        v_frm = start
+
+    if v_to is None :
+        pdate = v_frm.pretty (ymd) + ';'
+    else :
+        if has_required_overtime (db, uid, v_to) :
+            v_to = end_of_month (v_to)
+        pdate = ';'.join ((v_frm.pretty (ymd), v_to.pretty (ymd)))
+    for dr in db.daily_record.filter (None, dict (date = pdate, user = uid)) :
+        db.daily_record.set (dr, tr_duration_ok = 0)
+        db.daily_record.set (dr, tr_duration_ok = None)
+# end def invalidate_tr_duration
+
+#END
