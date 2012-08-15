@@ -288,6 +288,8 @@ def close_existing (db, cl, nodeid, old_values) :
 # end def close_existing
 
 def overtime_check (db, cl, nodeid, new_values) :
+    if not nodeid and 'required_overtime' not in new_values :
+        new_values ['required_overtime'] = False
     require_attributes \
         (_, cl, nodeid, new_values
         , 'name', 'months', 'weekly', 'required_overtime'

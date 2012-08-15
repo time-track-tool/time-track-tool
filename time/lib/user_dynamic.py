@@ -260,6 +260,12 @@ def update_tr_duration (db, dr)  :
     if dyn :
         tr_full = dyn.travel_full
         wh      = round_daily_work_hours (day_work_hours (dyn, dr.date))
+        if dyn.overtime_period :
+            otp = db.overtime_period.getnode (dyn.overtime_period)
+            if otp.required_overtime :
+                rotp, wd, rq = required_overtime_params \
+                    (db, user, date, dyn, period)
+                wh += rq
     trs     = []
     trvl_tr = {}
     for t in dr.time_record :
@@ -286,7 +292,6 @@ def update_tr_duration (db, dr)  :
 # end def update_tr_duration
 
 daily_record_cache = {}
-dr_user_date       = {}
 
 def _update_empty_dr (user, date, next) :
     d = next
@@ -309,13 +314,6 @@ def get_daily_record (db, user, date) :
         else :
             start = now
             end   = date
-        if user in dr_user_date :
-            s, e = dr_user_date [user]
-            assert (start < s or end > e)
-            if start > s :
-                start = e + day
-            if end < e :
-                end = s - day
         range = pretty_range (start, end)
         drs = db.daily_record.filter \
             (None, dict (user = user, date = range), sort = ('+', 'date'))
@@ -329,6 +327,92 @@ def get_daily_record (db, user, date) :
     return daily_record_cache [(user, pdate)]
 # end def get_daily_record
 
+cache_required_overtime_quotient = {}
+# FIXME: Call this.
+def invalidate_cache_required_overtime_quotient () :
+    cache_required_overtime_quotient = {}
+# end def invalidate_cache_required_overtime_quotient
+
+def req_overtime_quotient (db, user, date) :
+    """ Compute the required overtime for this day as a quotient of
+        - duration of packages without overtime_reduction 
+        - overall duration of day
+        we use a cache.
+    """
+    if (user, date) in cache_required_overtime_quotient :
+        return cache_required_overtime_quotient [(user, date)]
+    dr  = get_daily_record (db, user, date)
+    otr = 0.0
+    all = 0.0
+    for t in dr.time_record :
+        tr = db.time_record.getnode (t)
+        wp = db.time_wp.getnode (tr.wp)
+        pr = db.time_project.getnode (wp.project)
+        if pr.overtime_reduction :
+            otr += tr.duration
+        all += tr.duration
+    # If we wanted to set the required overtime to 0 for a
+    # holiday or other payed leave, we'd use
+    # otd = float (not otr)
+    # instead of the following averaging expression:
+    otd = ((all - otr) / all)
+    cache_required_overtime_quotient [(user, date)] = otd
+    return otd
+# end def req_overtime_quotient
+
+cache_required_overtime_in_period = {}
+
+# FIXME: Call this.
+def invalidate_cache_required_overtime_in_period () :
+    cache_required_overtime_in_period = {}
+# end def invalidate_cache_required_overtime_in_period
+
+def required_overtime_in_period (db, user, date, period) :
+    """ Loop over a whole period and compute the required overtime in
+        that period and the number of workdays in that period.
+        Return a tuple of overtime, workdays.
+    """
+    assert period.required_overtime
+    sop = start_of_period (date, period)
+    eop = end_of_period   (date, period)
+    if (user, sop) in cache_required_overtime_in_period :
+        return cache_required_overtime_in_period [(user, sop)]
+    wd   = 0.0
+    spp  = 0.0
+    date = sop
+    while date <= eop :
+        dyn   = get_user_dynamic (db, user, date)
+        is_wd = is_work_day (dyn, date)
+        wd += 1.0 * is_wd
+        if period.id == dyn.overtime_period :
+            otd  = req_overtime_quotient (db, user, date)
+            spp += dyn.supp_per_period * otd
+        date += day
+    # otdsum (the sum of all overtime day ratios, sum of otd above)
+    # spp / otdsum is dyn.supp_per_period if supp_per_period doesn't change
+    # otherwise we get a weighted average
+    # then we have to multiply the weighted average with the quotient of
+    # overtime_days and workdays (otd / wd), this yields
+    # (otdsum / wd) * (spp / otdsum)
+    # which can be reduced to (spp / wd)
+    # that's why we don't compute otdsum.
+    r = cache_required_overtime_in_period [(user, sop)] = (spp / wd, wd)
+    return r
+# end def required_overtime_in_period
+
+def required_overtime_params (db, user, date, dyn, period) :
+    """ Convenience method returning all required overtime parameters.
+        The tuple (overtime, workdays, overtime_quotient)
+    """
+    if dyn and period and period.required_overtime :
+        spp = dyn.supp_per_period
+        rotp, wd = required_overtime_in_period (db, user, date, period)
+        rq = req_overtime_quotient (db, user, date) * spp / wd
+        return (rotp, wd, rq)
+    return (0.0, 1.0, 0.0)
+# end def required_overtime_params
+
+
 class Duration (object) :
     def __init__ \
         ( self
@@ -339,8 +423,10 @@ class Duration (object) :
         , supp_weekly_hours = 0
         , additional_hours  = 0
         , dr_status         = None
-        , require_overtime  = None
         , supp_per_period   = 0
+        , req_overtime_pp   = 0.0
+        , work_days         = 1.0
+        , required_overtime = 0.0
         ) :
         self.db                = db
         self.dyn               = dyn
@@ -349,8 +435,10 @@ class Duration (object) :
         self.supp_weekly_hours = supp_weekly_hours
         self.additional_hours  = additional_hours
         self.dr_status         = dr_status
-        self.require_overtime  = require_overtime
         self.supp_per_period   = supp_per_period
+        self.req_overtime_pp   = req_overtime_pp
+        self.work_days         = work_days
+        self.required_overtime = required_overtime
         if dyn :
             self.supp_per_period = dyn.supp_per_period
     # end def __init__
@@ -361,6 +449,11 @@ def durations (db, user, date) :
     wday  = gmtime (date.timestamp ())[6]
     dyn   = get_user_dynamic (db, user, date)
     if dyn :
+        if dyn.overtime_period :
+            period = db.overtime_period.getnode (dyn.overtime_period)
+        else :
+            period = None
+        rotp, wd, rq = required_overtime_params (db, user, date, dyn, period)
         dc = Duration \
             ( db, dyn
             , day_work_hours    = day_work_hours (dyn, date)
@@ -370,12 +463,14 @@ def durations (db, user, date) :
             , additional_hours  = \
                 (dyn.additional_hours  or 0) * is_work_day (dyn, date)
                 / work_days (dyn)
+            , req_overtime_pp   = rotp
+            , work_days         = wd
+            , required_overtime = rq
             )
         dr = get_daily_record (db, user, date)
         if dr :
             dc.tr_duration      = update_tr_duration (db, dr)
             dc.dr_status        = dr.status
-            dc.require_overtime = dr.required_overtime
     else :
         dc = Duration (db)
     return dc
@@ -695,9 +790,9 @@ def hr_olo_role_for_this_user (db, dbuid, userid, date = None) :
 # end def hr_olo_role_for_this_user
 
 def required_overtime (db, user, frm) :
-    """ If required_overtime flag is set for dynamic user record at frm,
-        we return the overtime_period belonging to this dyn user record.
-        Otherwise return None.
+    """ If required_overtime flag is set for overtime_period of dynamic
+        user record at frm, we return the overtime_period belonging to
+        this dyn user record. Otherwise return None.
     """
     dyn = get_user_dynamic (db, user, frm)
     if dyn and dyn.overtime_period :

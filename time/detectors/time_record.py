@@ -43,6 +43,7 @@ from time                           import gmtime
 
 import common
 from user_dynamic                   import get_user_dynamic, day_work_hours
+from user_dynamic                   import invalidate_tr_duration
 from freeze                         import frozen
 
 def check_timestamps (start, end, date) :
