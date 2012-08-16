@@ -23,6 +23,7 @@ import os
 import shutil
 import sys
 import unittest
+import logging
 
 import user1_time, user2_time, user3_time
 
@@ -157,6 +158,7 @@ class _Test_Case (unittest.TestCase) :
     # end def setup_tracker
 
     def setUp (self) :
+        self.log           = logging.getLogger ('roundup.test')
         self.properties    = globals () ['properties_' + self.schemaname]
         self.security_desc = globals () ['security_'   + self.schemaname]
         self.search_desc   = globals () ['sec_search_' + self.schemaname]
@@ -175,6 +177,7 @@ class _Test_Case (unittest.TestCase) :
     # end def tearDown
 
     def test_0_roles (self) :
+        self.log.debug ('test_0_roles')
         self.db = self.tracker.open ('admin')
         roles = list (sorted (self.db.security.role.iterkeys ()))
         self.assertEqual (roles, self.roles)
@@ -183,6 +186,7 @@ class _Test_Case (unittest.TestCase) :
     # end def test_0_roles
 
     def test_1_schema (self) :
+        self.log.debug ('test_1_schema')
         self.db = self.tracker.open ('admin')
         classnames = sorted (self.db.getclasses ())
         for (cl, props), cls in zip (self.properties, classnames) :
@@ -192,6 +196,7 @@ class _Test_Case (unittest.TestCase) :
     # end def test_1_schema
 
     def test_2_security (self) :
+        self.log.debug ('test_2_security')
         self.db = self.tracker.open ('admin')
         secdesc = self.security_desc.split ('\n')
         sd2     = []
@@ -246,6 +251,7 @@ class _Test_Case (unittest.TestCase) :
     # end def test_2_security
 
     def test_3_search (self) :
+        self.log.debug ('test_3_search')
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         classnames = sorted (self.db.getclasses ())
@@ -263,6 +269,7 @@ class _Test_Case (unittest.TestCase) :
 
     transprop_perms = []
     def test_4_transprops (self) :
+        self.log.debug ('test_4_transprops')
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         perms = []
@@ -545,6 +552,7 @@ class Test_Case_Timetracker (_Test_Case) :
                 , cost_center       = self.cc
                 )
         self.db.commit ()
+        self.log.debug ("End of setup")
     # end def setup_db
 
     def setup_user3 (self) :
@@ -581,6 +589,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def setup_user3
 
     def test_rename_status (self) :
+        self.log.debug ('test_rename_status')
         self.setup_db ()
         # test that renaming the 'New' cost_center status will still work
         ccs = self.db.cost_center_status.lookup ('New')
@@ -603,6 +612,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_rename_status
 
     def test_user1 (self) :
+        self.log.debug ('test_user1')
         self.setup_db ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)
@@ -814,6 +824,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_user1
 
     def test_user2 (self) :
+        self.log.debug ('test_user2')
         self.setup_db ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
@@ -924,6 +935,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_user2
 
     def test_user3 (self) :
+        self.log.debug ('test_user3')
         self.setup_db ()
         self.setup_user3 ()
         self.db.close ()
@@ -965,6 +977,11 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_user3
 
     def concurrency (self, method) :
+        """ Ensure that no cached values from previous transaction are used.
+            It is no concurrency test (which would fail due to a
+            concurrent update) in the sense that we have two concurrent
+            transactions.
+        """
         trid = '4'
         self.setup_db ()
         self.db.close ()
@@ -981,17 +998,24 @@ class Test_Case_Timetracker (_Test_Case) :
         drid = self.db1.time_record.get (trid, 'daily_record')
         tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
         dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
+        self.log.debug ("db1.commit after time_record.set")
         self.db1.commit ()
 
         dr  = self.db2.daily_record.getnode (drid)
         dud = dr.tr_duration_ok
         tr  = self.db2.time_record.getnode (trid)
         dut = tr.tr_duration
+        self.log.debug ("db2.commit - 1 after get")
         self.db2.commit ()
         update_tr_duration (self.db2, dr)
+        self.log.debug ("db2.commit - 2 after update_tr_duration")
         self.db2.commit ()
 
+        self.db1.commit ()
+
+        self.log.debug ("before method")
         method (drid, trid)
+        self.log.debug ("after  method")
         self.db1.commit ()
 
         self.db1.clearCache ()
@@ -1013,18 +1037,22 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def concurrency_set
 
     def test_concurrency_create (self) :
+        self.log.debug ('test_concurrency_create')
         self.concurrency (self.concurrency_create)
     # end def test_concurrency_create
 
     def test_concurrency_retire (self) :
+        self.log.debug ('test_concurrency_retire')
         self.concurrency (self.concurrency_retire)
     # end def test_concurrency_retire
 
     def test_concurrency_set (self) :
+        self.log.debug ('test_concurrency_set')
         self.concurrency (self.concurrency_set)
     # end def test_concurrency_set
 
     def test_maturity_index (self) :
+        self.log.debug ('test_maturity_index')
         self.db = self.tracker.open ('admin')
         user = self.db.user.create \
             ( username = 'user'
@@ -1133,6 +1161,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_maturity_index
 
     def test_tr_duration (self) :
+        self.log.debug ('test_tr_duration')
         trid = '4'
         self.setup_db ()
         self.db.close ()
