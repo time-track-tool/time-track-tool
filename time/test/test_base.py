@@ -1111,8 +1111,7 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [13][11], '9.58')
         self.assertEqual (lines [14] [6], '40.00')
         self.assertEqual (lines [14] [8], '40.09')
-        # FIXME self.assertEqual (lines [14][11], '9.48')
-        # AssertionError: '8.98' != '9.48'
+        self.assertEqual (lines [14][11], '9.48')
         self.assertEqual (lines [15] [6], '40.75')
         self.assertEqual (lines [15] [8], '40.17')
         self.assertEqual (lines [15][11], '10.07')

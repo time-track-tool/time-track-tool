@@ -422,6 +422,8 @@ class Duration (object) :
     def __init__ \
         ( self
         , db
+        , user
+        , date
         , dyn               = None
         , tr_duration       = 0
         , day_work_hours    = 0
@@ -435,6 +437,8 @@ class Duration (object) :
         ) :
         self.db                = db
         self.dyn               = dyn
+        self.user              = user
+        self.date              = date
         self.tr_duration       = tr_duration
         self.day_work_hours    = day_work_hours
         self.supp_weekly_hours = supp_weekly_hours
@@ -447,6 +451,10 @@ class Duration (object) :
         if dyn :
             self.supp_per_period = dyn.supp_per_period
     # end def __init__
+
+    def __str__ (self) :
+        return "Duration (%(user)s, %(date)s)" % self.__dict__
+    __repr__ = __str__
 # end class Duration
 
 def durations (db, user, date) :
@@ -460,7 +468,10 @@ def durations (db, user, date) :
             period = None
         rotp, wd, rq = required_overtime_params (db, user, date, dyn, period)
         dc = Duration \
-            ( db, dyn
+            ( db
+            , user
+            , date
+            , dyn
             , day_work_hours    = day_work_hours (dyn, date)
             , supp_weekly_hours = \
                 (dyn.supp_weekly_hours or 0) * is_work_day (dyn, date)
@@ -477,7 +488,7 @@ def durations (db, user, date) :
             dc.tr_duration      = update_tr_duration (db, dr)
             dc.dr_status        = dr.status
     else :
-        dc = Duration (db)
+        dc = Duration (db, user, date)
     return dc
 # end def durations
 
@@ -535,10 +546,6 @@ class Period_Data (object) :
             oc        = overtime_corrections.get (date.pretty (ymd), [])
             for o in oc :
                 self.overtime_balance += o.value or 0
-            if date > end :
-                assert (0)
-                work  = 0.0
-                req   = 0.0
             if use_additional :
                 over  = dur.additional_hours
             if period.required_overtime :
@@ -722,18 +729,20 @@ def compute_running_balance \
         pd  = Period_Data (db, user, p_date, eop, period, p_balance, corr)
         p_balance += pd.overtime_balance
 	p_achieved = pd.achieved_supp
-        #print "OTB:", pd.overtime_balance, pd.achieved_supp
+        #print "OTB:", p_date, eop, pd.overtime_balance, pd.achieved_supp
         p_date = eop + day
     #print "pdate: %(p_date)s, end: %(end)s, date: %(date)s" % locals ()
+    #print "bal:", p_balance - start_balance
     assert (p_date <= date + day)
     eop = end_of_period (date, period)
-    if sharp_end and date != eop and p_date < date :
+    if sharp_end and date != eop and p_date <= date :
         #print "OTBSE:", p_date.pretty (ymd), date.pretty (ymd),
         pd = Period_Data (db, user, p_date, date, period, p_balance, corr)
         p_balance += pd.overtime_balance
 	p_achieved = pd.achieved_supp
 	#print eop.pretty (ymd), "%.02f %.02f %.02f" \
 	#    % (pd.overtime_balance, pd.achieved_supp, pd.overtime_per_period)
+    #print "bal:", p_balance - start_balance
     return p_balance - start_balance, p_achieved
 # end def compute_running_balance
 
