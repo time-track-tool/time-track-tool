@@ -920,6 +920,7 @@ class Staff_Report (_Report) :
         , ""'actual_accepted'
         , ""'actual_all'
         , ""'required'
+        , ""'supp_hours_2'
         , ""'supp_weekly_hours'
         , ""'overtime_correction'
         , ""'balance_end'
@@ -1051,6 +1052,7 @@ class Staff_Report (_Report) :
         container ['actual_submitted']       = 0
         container ['actual_accepted']        = 0
         container ['required']               = 0
+        container ['supp_hours_2']           = 0
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = 0
         container ['achieved_supplementary'] = ''
@@ -1091,8 +1093,9 @@ class Staff_Report (_Report) :
             if dur.dr_status :
                 f = 'actual_' + self.stati [dur.dr_status]
                 container [f] += dur.tr_duration
-            container ['required']          += \
-                dur.day_work_hours * (do_week or do_perd)
+            wh = dur.day_work_hours * (do_week or do_perd)
+            container ['required']          += wh
+            container ['supp_hours_2']      += wh + dur.required_overtime
             container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
 	    container ['additional_hours']  += dur.additional_hours  * do_perd
             d = d + day

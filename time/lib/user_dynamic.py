@@ -264,7 +264,7 @@ def update_tr_duration (db, dr)  :
             otp = db.overtime_period.getnode (dyn.overtime_period)
             if otp.required_overtime :
                 rotp, wd, rq = required_overtime_params \
-                    (db, user, date, dyn, period)
+                    (db, dr.user, dr.date, dyn, otp)
                 wh += rq
     trs     = []
     trvl_tr = {}
@@ -328,8 +328,7 @@ def get_daily_record (db, user, date) :
 # end def get_daily_record
 
 cache_required_overtime_quotient = {}
-# FIXME: Call this.
-def invalidate_cache_required_overtime_quotient () :
+def invalidate_cache_required_overtime_quotient (*args) :
     cache_required_overtime_quotient = {}
 # end def invalidate_cache_required_overtime_quotient
 
@@ -339,31 +338,33 @@ def req_overtime_quotient (db, user, date) :
         - overall duration of day
         we use a cache.
     """
-    if (user, date) in cache_required_overtime_quotient :
-        return cache_required_overtime_quotient [(user, date)]
+    key = (user, str (date))
+    if key in cache_required_overtime_quotient :
+        return cache_required_overtime_quotient [key]
     dr  = get_daily_record (db, user, date)
     otr = 0.0
     all = 0.0
-    for t in dr.time_record :
-        tr = db.time_record.getnode (t)
-        wp = db.time_wp.getnode (tr.wp)
-        pr = db.time_project.getnode (wp.project)
-        if pr.overtime_reduction :
-            otr += tr.duration
-        all += tr.duration
+    if dr :
+        for t in dr.time_record :
+            tr = db.time_record.getnode (t)
+            wp = db.time_wp.getnode (tr.wp)
+            pr = db.time_project.getnode (wp.project)
+            if pr.overtime_reduction :
+                otr += tr.duration
+            all += tr.duration
     # If we wanted to set the required overtime to 0 for a
     # holiday or other payed leave, we'd use
     # otd = float (not otr)
     # instead of the following averaging expression:
-    otd = ((all - otr) / all)
-    cache_required_overtime_quotient [(user, date)] = otd
+    otd = 0.0
+    if all :
+        otd = ((all - otr) / all)
+    cache_required_overtime_quotient [key] = otd
     return otd
 # end def req_overtime_quotient
 
 cache_required_overtime_in_period = {}
-
-# FIXME: Call this.
-def invalidate_cache_required_overtime_in_period () :
+def invalidate_cache_required_overtime_in_period (*args) :
     cache_required_overtime_in_period = {}
 # end def invalidate_cache_required_overtime_in_period
 
@@ -375,8 +376,9 @@ def required_overtime_in_period (db, user, date, period) :
     assert period.required_overtime
     sop = start_of_period (date, period)
     eop = end_of_period   (date, period)
-    if (user, sop) in cache_required_overtime_in_period :
-        return cache_required_overtime_in_period [(user, sop)]
+    key = (user, str (sop))
+    if key in cache_required_overtime_in_period :
+        return cache_required_overtime_in_period [key]
     wd   = 0.0
     spp  = 0.0
     date = sop
@@ -396,7 +398,7 @@ def required_overtime_in_period (db, user, date, period) :
     # (otdsum / wd) * (spp / otdsum)
     # which can be reduced to (spp / wd)
     # that's why we don't compute otdsum.
-    r = cache_required_overtime_in_period [(user, sop)] = (spp / wd, wd)
+    r = cache_required_overtime_in_period [key] = (spp / wd, wd)
     return r
 # end def required_overtime_in_period
 
@@ -493,9 +495,11 @@ class Period_Data (object) :
         required              = 0.0
         worked                = 0.0
         over_per              = 0.0
+        over_per_2            = 0.0
         days                  = 0.0
         self.achieved_supp    = 0.0
         self.overtime_balance = 0.0
+        self.req_overtime     = 0.0
 	self.start_balance    = start_balance
 	self.period           = period
         date                  = start_of_period (start, self.period)
@@ -517,6 +521,13 @@ class Period_Data (object) :
 		and dur.dyn.overtime_period == self.period.id
 		and dur.supp_per_period
 		) or 0
+            self.req_overtime += \
+		(   period.months
+		and dur.dyn
+		and dur.dyn.overtime_period == self.period.id
+                and self.period.required_overtime
+		and dur.required_overtime
+		) or 0
         assert (days)
         self.overtime_per_period = over_per / days
         date                     = start
@@ -525,7 +536,6 @@ class Period_Data (object) :
             work      = dur.tr_duration
             req       = dur.day_work_hours
             over      = dur.supp_weekly_hours
-            addition  = dur.additional_hours
             do_over   = use_work_hours (db, dur.dyn, period)
             oc        = overtime_corrections.get (date.pretty (ymd), [])
             for o in oc :
@@ -536,6 +546,8 @@ class Period_Data (object) :
                 req   = 0.0
             if use_additional :
                 over  = dur.additional_hours
+            if period.required_overtime :
+                over  = req + dur.required_overtime
             overtime += over * do_over
 	    if period.months and date <= end :
 		overtadd += dur.additional_hours * do_over
@@ -553,18 +565,18 @@ class Period_Data (object) :
 		self._consolidate ()
             # increment at end (!)
             date += day
-                         
+
         if not period.weekly :
             overtime += self.overtime_per_period
         if worked > overtadd and period.months :
 	    if period.weekly :
 	        self.achieved_supp += min (worked, overtime) - overtadd
-	    else :
+	    elif not period.required_overtime :
 		self.achieved_supp += worked - overtadd
         if worked > overtime :
             self.overtime_balance += worked - overtime
         elif worked < required :
-            self.overtime_balance += worked - required
+            self.overtime_balance += worked - (required + self.req_overtime)
 	self._consolidate  ()
         self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
     # end def __init__
@@ -816,8 +828,8 @@ def invalidate_tr_duration (db, uid, v_frm, v_to) :
     otp = required_overtime (db, uid, v_frm)
     if otp :
         start = start_of_period (v_frm, otp)
-        if frozen (db, user, m) :
-            freeze = find_next_dr_freeze (db, user, start)
+        if frozen (db, uid, start) :
+            freeze = find_next_dr_freeze (db, uid, start)
             start  = freeze.date
             assert (start <= v_frm)
         v_frm = start

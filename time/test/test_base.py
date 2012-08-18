@@ -707,13 +707,26 @@ class Test_Case_Timetracker (_Test_Case) :
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [0] [0], 'User')
+        self.assertEqual (lines [0] [1], 'Time Period')
+        self.assertEqual (lines [0] [2], 'Balance Start')
+        self.assertEqual (lines [0] [3], 'Actual open')
+        self.assertEqual (lines [0] [4], 'Actual submitted')
+        self.assertEqual (lines [0] [5], 'Actual accepted')
+        self.assertEqual (lines [0] [6], 'Actual all')
+        self.assertEqual (lines [0] [7], 'required')
+        self.assertEqual (lines [0] [8], 'supp_hours_2')
+        self.assertEqual (lines [0] [9], 'Supplementary hours')
+        self.assertEqual (lines [0][10], 'Overtime correction')
+        self.assertEqual (lines [0][11], 'Balance End')
+        self.assertEqual (lines [0][12], 'Overtime period')
         self.assertEqual (lines [1] [1], 'WW 36/2008')
         self.assertEqual (lines [2] [1], 'WW 37/2008')
         self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
-        self.assertEqual (lines [1][10], '15.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
-        self.assertEqual (lines [3] [9], '910.0')
+        self.assertEqual (lines [1][11], '15.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [3][10], '910.0')
         fs = { 'user'         : [self.user1]
              , 'date'         : '2009-12-21;2010-01-03'
              , 'summary_type' : [2, 4]
@@ -724,9 +737,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
 
         for d in ('2006-12-31', '2007-12-31') :
             f = self.db.daily_record_freeze.create \
@@ -788,9 +801,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
 
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
@@ -818,9 +831,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
     # end def test_user1
 
     def test_user2 (self) :
@@ -874,9 +887,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2008')
         self.assertEqual (lines [2] [1], 'WW 1/2009')
         self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
 
         fs = { 'user'         : [self.user2]
              , 'date'         : '2009-12-21;2010-01-03'
@@ -889,9 +902,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '113.12')
-        self.assertEqual (lines [2][10], '113.12')
-        self.assertEqual (lines [3][10], '113.12')
+        self.assertEqual (lines [1][11], '113.12')
+        self.assertEqual (lines [2][11], '113.12')
+        self.assertEqual (lines [3][11], '113.12')
         f = self.db.daily_record_freeze.create \
             ( user           = self.user2
             , frozen         = True
@@ -953,27 +966,27 @@ class Test_Case_Timetracker (_Test_Case) :
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
         self.assertEqual (lines [0]  [1], 'Time Period')
-        self.assertEqual (lines [0] [12], 'Achieved supplementary hours')
+        self.assertEqual (lines [0] [13], 'Achieved supplementary hours')
         self.assertEqual (lines [1]  [1], 'WW 53/2009')
         self.assertEqual (lines [2]  [1], 'WW 1/2010')
         self.assertEqual (lines [16] [6], '57.62')
-        self.assertEqual (lines [16] [8], '45.00')
-        self.assertEqual (lines [16][10], '12.62')
-        self.assertEqual (lines [16][12], '5.00')
+        self.assertEqual (lines [16] [9], '45.00')
+        self.assertEqual (lines [16][11], '12.62')
+        self.assertEqual (lines [16][13], '5.00')
         self.assertEqual (lines [17] [6], '52.88')
-        self.assertEqual (lines [17] [8], '45.00')
-        self.assertEqual (lines [17][10], '20.50')
-        self.assertEqual (lines [17][12], '10.00')
+        self.assertEqual (lines [17] [9], '45.00')
+        self.assertEqual (lines [17][11], '20.50')
+        self.assertEqual (lines [17][13], '10.00')
         self.assertEqual (lines [18] [1], 'WW 17/2010')
         self.assertEqual (lines [18] [6], '38.50')
-        self.assertEqual (lines [18] [8], '45.00')
-        self.assertEqual (lines [18][10], '20.50')
-        self.assertEqual (lines [18][12], '10.00')
+        self.assertEqual (lines [18] [9], '45.00')
+        self.assertEqual (lines [18][11], '20.50')
+        self.assertEqual (lines [18][13], '10.00')
         self.assertEqual (lines [19] [1], 'WW 18/2010')
         self.assertEqual (lines [19] [6], '38.50')
-        self.assertEqual (lines [19] [8], '45.00')
-        self.assertEqual (lines [19][10], '20.50')
-        self.assertEqual (lines [19][12], '10.00')
+        self.assertEqual (lines [19] [9], '45.00')
+        self.assertEqual (lines [19][11], '20.50')
+        self.assertEqual (lines [19][13], '10.00')
     # end def test_user3
 
     def concurrency (self, method) :
