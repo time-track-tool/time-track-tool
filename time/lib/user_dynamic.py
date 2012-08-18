@@ -332,12 +332,14 @@ def invalidate_cache_required_overtime_quotient (*args) :
     cache_required_overtime_quotient = {}
 # end def invalidate_cache_required_overtime_quotient
 
-def req_overtime_quotient (db, user, date) :
+def req_overtime_quotient (db, dyn, user, date) :
     """ Compute the required overtime for this day as a quotient of
         - duration of packages without overtime_reduction 
         - overall duration of day
         we use a cache.
     """
+    if not dyn :
+        return 0.0
     key = (user, str (date))
     if key in cache_required_overtime_quotient :
         return cache_required_overtime_quotient [key]
@@ -356,9 +358,10 @@ def req_overtime_quotient (db, user, date) :
     # holiday or other payed leave, we'd use
     # otd = float (not otr)
     # instead of the following averaging expression:
-    otd = 0.0
+    otd = 1.0
     if all :
         otd = ((all - otr) / all)
+    otd *= is_work_day (dyn, date)
     cache_required_overtime_quotient [key] = otd
     return otd
 # end def req_overtime_quotient
@@ -387,7 +390,7 @@ def required_overtime_in_period (db, user, date, period) :
         is_wd = is_work_day (dyn, date)
         wd += 1.0 * is_wd
         if period.id == dyn.overtime_period :
-            otd  = req_overtime_quotient (db, user, date)
+            otd  = req_overtime_quotient (db, dyn, user, date)
             spp += dyn.supp_per_period * otd
         date += day
     # otdsum (the sum of all overtime day ratios, sum of otd above)
@@ -409,7 +412,7 @@ def required_overtime_params (db, user, date, dyn, period) :
     if dyn and period and period.required_overtime :
         spp = dyn.supp_per_period
         rotp, wd = required_overtime_in_period (db, user, date, period)
-        rq = req_overtime_quotient (db, user, date) * spp / wd
+        rq = req_overtime_quotient (db, dyn, user, date) * spp / wd
         return (rotp, wd, rq)
     return (0.0, 1.0, 0.0)
 # end def required_overtime_params
