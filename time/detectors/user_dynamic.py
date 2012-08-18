@@ -304,7 +304,10 @@ def overtime_check (db, cl, nodeid, new_values) :
         weekly = new_values ['weekly']
     else :
         weekly = cl.get (nodeid, 'weekly')
-    rov    = new_values ['required_overtime']
+    if 'required_overtime' in new_values :
+        rov    = new_values ['required_overtime']
+    else :
+        rov    = cl.get (nodeid, 'required_overtime')
     same   = cl.filter \
         (None, dict (months = months, weekly = weekly, required_overtime = rov))
     mname  = _ ("months")
