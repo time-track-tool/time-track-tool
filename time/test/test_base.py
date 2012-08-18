@@ -536,7 +536,7 @@ class Test_Case_Timetracker (_Test_Case) :
             )
         self.travel_wp = self.db.time_wp.create \
             ( name               = 'Travel'
-            , project            = self.holiday_tp
+            , project            = self.travel_tp
             , time_start         = date.Date ('2004-01-01')
             , travel             = True
             , responsible        = '1'
@@ -1039,6 +1039,17 @@ class Test_Case_Timetracker (_Test_Case) :
         user4_time.import_data_4 (self.db, self.user4)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user4, date = '2012-05-04'))
+        self.assertEqual (len (dr), 1)
+        dr = self.db.daily_record.getnode (dr [0])
+        tr = dr.time_record
+        self.assertEqual (len (tr), 1)
+        tr = self.db.time_record.getnode (tr [0])
+        self.assertEqual (tr.duration, 12)
+        self.assertEqual (tr.tr_duration, None)
+        update_tr_duration (self.db, dr)
+        self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
         summary_init (self.tracker)
         fs = { 'user'         : [self.user4]
              , 'date'         : '2012-01-01;2012-05-31'
@@ -1114,10 +1125,8 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [18] [6], '41.75')
         self.assertEqual (lines [18] [8], '40.17')
         self.assertEqual (lines [18][11], '16.90')
-        # FIXME self.assertEqual (lines [19] [6], '41.55')
-        # AssertionError: '41.25' != '41.55'
-        # FIXME self.assertEqual (lines [19] [8], '39.75')
-        # AssertionError: '39.44' != '39.75'
+        self.assertEqual (lines [19] [6], '41.55')
+        self.assertEqual (lines [19] [8], '39.75')
         self.assertEqual (lines [19][11], '18.71')
         self.assertEqual (lines [20] [6], '43.00')
         self.assertEqual (lines [20] [8], '40.02')
@@ -1138,15 +1147,11 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [27] [6], '175.50')
         self.assertEqual (lines [27] [8], '168.42')
         self.assertEqual (lines [27][11], '16.07')
-        # FIXME self.assertEqual (lines [28] [6], '185.30')
-        # AssertionError: '185.00' != '185.30'
-        # FIXMEself.assertEqual (lines [28] [8], '183.64')
-        # AssertionError: '183.34' != '183.64'
+        self.assertEqual (lines [28] [6], '185.30')
+        self.assertEqual (lines [28] [8], '183.64')
         self.assertEqual (lines [28][11], '17.73')
-        # FIXME self.assertEqual (lines [29] [6], '889.30')
-        # AssertionError: '889.00' != '889.30'
-        # FIXME self.assertEqual (lines [29] [8], '871.57')
-        # AssertionError: '871.27' != '871.57'
+        self.assertEqual (lines [29] [6], '889.30')
+        self.assertEqual (lines [29] [8], '871.57')
         self.assertEqual (lines [29][11], '17.73')
     # end def test_user4
 
