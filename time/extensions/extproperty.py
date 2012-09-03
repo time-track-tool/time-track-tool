@@ -38,6 +38,7 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
 from roundup.hyperdb                import Link, Multilink, Boolean
+from rup_utils                      import get_valid_user_stati
 
 _ = None
 
@@ -477,7 +478,8 @@ class ExtProperty :
     # end def editfield
 
     def menu_or_field (self, db) :
-        prop = self.prop
+        prop  = self.prop
+        stati = get_valid_user_stati (db)
         if self.is_link_or_multilink :
             if prop._prop.classname == 'user' :
                 return ' '.join \
@@ -489,10 +491,7 @@ class ExtProperty :
                           [isinstance (self.prop, MultilinkHTMLProperty)]
                         , width='600'
                         , pagesize=500
-                        , filter='status=%s' % ','.join
-                           (db._db.user_status.lookup (i)
-                            for i in ('valid', 'system')
-                           )
+                        , filter='status=%s' % ','.join (stati)
                         )
                     ))
             return prop.menu (height=5, translate=False)

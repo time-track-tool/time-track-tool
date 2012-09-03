@@ -24,6 +24,10 @@ from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
 
 import common
+try :
+    import ldap_sync
+except ImportError :
+    ldap_sync = None
 
 def fix_contacts (db, cl, nodeid, old_values, cls = 'contact') :
     if old_values is None or 'contacts' in old_values :
@@ -141,6 +145,16 @@ def check_email (db, cl, nodeid, new_values) :
         raise reject, _ ("Name Email must not be changed")
 # end def check_email
 
+def sync_to_ldap (db, cl, nodeid, old_values) :
+    node = cl.getnode (nodeid)
+    user = db.user.getnode (node.user)
+    ld   = ldap_sync.LDAP_Roundup_Sync (db)
+    if user.status not in ld.status_sync :
+        return
+    ld.sync_user_to_ldap (user.username)
+# end def sync_to_ldap
+
+
 def init (db) :
     global _
     _   = get_translation \
@@ -177,6 +191,9 @@ def init (db) :
         db.user_contact.audit ("create", new_user_contact, priority = 150)
         db.user_contact.audit ("set",    check_contact)
         db.user_contact.react ("set",    changed_contact)
+        # ldap sync only on set not create (!)
+        if ldap_sync and ldap_sync.check_ldap_config (db) :
+            db.user_contact.react ("set", sync_to_ldap, priority = 200)
     if 'uc_type' in db.classes :
         db.uc_type.audit ("set", check_email)
 # end def init

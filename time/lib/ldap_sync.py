@@ -9,6 +9,7 @@ from rsclib.autosuper    import autosuper
 from roundup.date        import Date
 from roundup.cgi.actions import LoginAction
 from roundup.cgi         import exceptions
+from rup_utils           import get_valid_user_stati
 
 class LDAP_Search_Result (cidict, autosuper) :
     """ Wraps an LDAP search result.
@@ -610,8 +611,10 @@ class LdapLoginAction (LoginAction, autosuper) :
     def verifyLogin (self, username, password) :
         if username in ('admin', 'anonymous') :
             return self.__super.verifyLogin (username, password)
-        sysuser = self.db.user_status.lookup ('system')
-        invalid = self.db.user_status.lookup ('obsolete')
+        valuser  = self.db.user_status.lookup ('valid')
+        invalid  = self.db.user_status.lookup ('obsolete')
+        sysusers = dict.fromkeys (get_valid_user_stati (self.db))
+        del sysusers [valuser]
         # try to get user
         user = None
         try :
@@ -619,7 +622,7 @@ class LdapLoginAction (LoginAction, autosuper) :
             user = self.db.user.getnode (user)
         except KeyError :
             pass
-        if user and user.status == sysuser :
+        if user and user.status in sysusers :
             return self.__super.verifyLogin (username, password)
         # sync the user
         self.client.error_message = []
