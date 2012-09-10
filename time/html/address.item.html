@@ -390,6 +390,11 @@
          <td tal:content="structure python:'%02d' % oh.to_hour"/>
          <td>:</td>
          <td tal:content="structure python:'%02d' % oh.to_minute"/>
+         <td tal:condition="context/contacts/is_edit_ok">
+          remove:
+          <input tabindex="-1" type="checkbox" name="@remove@opening_hours"
+                 tal:attributes="value oh/id">
+         </td>
         </tr>
         <tr>
          <td style="padding-left:0px"
