@@ -101,9 +101,11 @@
                  ;return false;">(role permissions)</a>
      </td>
     </tr>
-    <tal:block tal:condition="python:context.room.is_view_ok ()">
+    <tal:block tal:condition=
+        "python:'room' in bclass.properties and context.room.is_view_ok ()">
      <tr tal:condition="python:'org_location' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname('user', 'org_location')"/>
+      <th tal:content="structure
+          python:utils.fieldname('user', 'org_location')"/>
       <td tal:condition="not:context/id"
        tal:content="structure context/org_location/menu"/>
       <td tal:condition="context/id"
@@ -269,7 +271,9 @@
       <td tal:content="structure context/alternate_addresses/multiline"/>
      </tr>
     </tal:block>
-     <tal:block tal:condition="python:context.lunch_start.is_view_ok ()">
+    <tal:block tal:condition=
+        "python:'lunch_start' in bclass.properties
+                 and context.lunch_start.is_view_ok ()">
      <tr tal:condition="python:'lunch_start' in bclass.properties">
       <th tal:content="structure python:utils.fieldname ('user', 'lunch_start')"/>
       <td tal:content="structure context/lunch_start/field"/>
