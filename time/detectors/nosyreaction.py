@@ -107,7 +107,25 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
     else :
         message.set_payload (body)
         encode_quopri (message)
-    mailer.smtp_send (sendto + bcc, message.as_string ())
+    # we try to send the mail as helpdesk. This sends failing mails back
+    # to the tracker and creates an it-issue (provided the helpdesk user
+    # has "User" role for permission). Note that we use a secondary
+    # email of helpdesk (not the one with highest order). If there is no
+    # helpdesk user or the helpdesk user doesn't have more than one
+    # email we fall back to the admin email.
+    try :
+        email    = db.uc_type.lookup ('Email')
+        helpdesk = db.user.getnode (db.user.lookup ('helpdesk'))
+        contacts = (db.user_contact.getnode (c) for c in helpdesk.contacts)
+        contacts = (c for c in contacts if c.contact_type == email)
+        contacts = tuple (sorted (contacts, key = lambda x : x.order))
+        if len (contacts) < 2 :
+            frm = self.config.ADMIN_EMAIL
+        else :
+            frm = contacts [1].contact
+    except KeyError :
+        frm = self.config.ADMIN_EMAIL
+    mailer.smtp_send (sendto + bcc, message.as_string (), frm)
 # end def send_non_roundup_mail
 
 def nosyreaction(db, cl, nodeid, oldvalues) :
