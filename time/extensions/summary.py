@@ -920,7 +920,6 @@ class Staff_Report (_Report) :
         , ""'actual_accepted'
         , ""'actual_all'
         , ""'required'
-        , ""'supp_hours_2'
         , ""'supp_weekly_hours'
         , ""'overtime_correction'
         , ""'balance_end'
@@ -931,6 +930,7 @@ class Staff_Report (_Report) :
         ( (""'achieved_supplementary', 0)
         , (""'supp_per_period',        1)
         , (""'additional_hours',       1)
+        , (""'supp_hours_2',           1)
         )
 
     def __init__ (self, db, request, utils, is_csv = False) :
@@ -1095,7 +1095,8 @@ class Staff_Report (_Report) :
                 container [f] += dur.tr_duration
             wh = dur.day_work_hours * (do_week or do_perd)
             container ['required']          += wh
-            container ['supp_hours_2']      += wh + dur.required_overtime
+            if period.required_overtime :
+                container ['supp_hours_2']  += wh + dur.required_overtime
             container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
 	    container ['additional_hours']  += dur.additional_hours  * do_perd
             d = d + day
