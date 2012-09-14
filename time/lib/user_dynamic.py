@@ -191,6 +191,8 @@ def use_work_hours (db, dynuser, period) :
     period_id  = dynuser.overtime_period
     if period_is_weekly (period) :
         overtime = dynuser.supp_weekly_hours
+    if period.required_overtime :
+        overtime = True
     return bool (dynuser.weekly_hours and overtime and period_id == period.id)
 # end def use_work_hours
 
