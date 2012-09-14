@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2012-08-15 11:34+0200\n"
+"POT-Creation-Date: 2012-09-14 08:38+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -554,9 +554,9 @@ msgstr ""
 msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
 msgstr ""
 
+#, python-format
 msgid "Only one of %(rname)s, %(wname)s is allowed"
-msgstr ""
-"Höchstens eines von \"%(rname)s\", %(wname)s darf ausgefüllt werden"
+msgstr "Höchstens eines von \"%(rname)s\", %(wname)s darf ausgefüllt werden"
 
 msgid "Download&nbsp;letter"
 msgstr "Brief&nbsp;laden"
@@ -2542,6 +2542,12 @@ msgstr "Betriebssystem dieser %(Classname)s"
 msgid "Period over which overtime is computed for a person"
 msgstr ""
 
+msgid "overtime_period++required_overtime"
+msgstr "vereinbarte Überstunden"
+
+msgid "Given overtime is required for the period."
+msgstr ""
+
 msgid "overtime_reduction"
 msgstr ""
 
@@ -3470,6 +3476,9 @@ msgid "actual_all"
 msgstr ""
 
 msgid "required"
+msgstr ""
+
+msgid "supp_hours_2"
 msgstr ""
 
 msgid "overtime_correction"

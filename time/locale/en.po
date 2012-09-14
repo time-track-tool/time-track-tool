@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2012-08-15 12:14+0200\n"
+"POT-Creation-Date: 2012-09-14 08:38+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -3402,6 +3402,9 @@ msgstr "Actual all"
 
 msgid "required"
 msgstr ""
+
+msgid "supp_hours_2"
+msgstr "Supp. hours average"
 
 msgid "overtime_correction"
 msgstr "Overtime correction"

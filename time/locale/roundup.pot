@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2012-08-15 12:14+0200\n"
+"POT-Creation-Date: 2012-09-14 08:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgid "Thawed freeze records before %(date)s"
 msgstr ""
 
 #: ../detectors/daily_record_freeze.py:85
-#: ../detectors/daily_record_freeze.py:108 ../detectors/time_record.py:212
+#: ../detectors/daily_record_freeze.py:108 ../detectors/time_record.py:213
 #, python-format
 msgid "%(attr)s must be set"
 msgstr ""
@@ -212,7 +212,7 @@ msgstr ""
 msgid "product_group"
 msgstr ""
 
-#: ../detectors/erp.py:47 ../detectors/time_record.py:356 ../lib/common.py:949
+#: ../detectors/erp.py:47 ../detectors/time_record.py:357 ../lib/common.py:949
 #, python-format
 msgid "%(attr)s must be specified"
 msgstr ""
@@ -542,86 +542,86 @@ msgstr ""
 msgid "maildomain"
 msgstr ""
 
-#: ../detectors/time_record.py:53
+#: ../detectors/time_record.py:54
 msgid "start and end must be on same day and start <= end."
 msgstr ""
 
-#: ../detectors/time_record.py:55 ../detectors/time_record.py:62
+#: ../detectors/time_record.py:56 ../detectors/time_record.py:63
 #: ../detectors/user.py:78
 msgid "Times must be given in quarters of an hour"
 msgstr ""
 
-#: ../detectors/time_record.py:60
+#: ../detectors/time_record.py:61
 msgid "No negative times are allowed"
 msgstr ""
 
-#: ../detectors/time_record.py:64
+#: ../detectors/time_record.py:65
 #, python-format
 msgid "Duration must not exceed %s hours"
 msgstr ""
 
-#: ../detectors/time_record.py:209 ../detectors/time_record.py:501
+#: ../detectors/time_record.py:210 ../detectors/time_record.py:502
 #, python-format
 msgid "%(attr)s may not be changed"
 msgstr ""
 
-#: ../detectors/time_record.py:217 ../detectors/time_record.py:324
-#: ../detectors/time_record.py:433 ../detectors/time_record.py:510
+#: ../detectors/time_record.py:218 ../detectors/time_record.py:325
+#: ../detectors/time_record.py:434 ../detectors/time_record.py:511
 #, python-format
 msgid "Frozen: %(uname)s, %(date)s"
 msgstr ""
 
-#: ../detectors/time_record.py:252
+#: ../detectors/time_record.py:253
 #, python-format
 msgid "Denied state change: %(old_status)s->%(status)s"
 msgstr ""
 
-#: ../detectors/time_record.py:308
+#: ../detectors/time_record.py:309
 msgid "Only user and Controlling may create daily records"
 msgstr ""
 
-#: ../detectors/time_record.py:319 ../detectors/time_record.py:447
+#: ../detectors/time_record.py:320 ../detectors/time_record.py:448
 #, python-format
 msgid "No dynamic user data for %(uname)s, %(date)s"
 msgstr ""
 
-#: ../detectors/time_record.py:322 ../detectors/time_record.py:451
+#: ../detectors/time_record.py:323 ../detectors/time_record.py:452
 #, python-format
 msgid "Booking not allowed for %(uname)s, %(date)s"
 msgstr ""
 
-#: ../detectors/time_record.py:327
+#: ../detectors/time_record.py:328
 #, python-format
 msgid "Duplicate record: date = %(date)s, user = %(user)s"
 msgstr ""
 
-#: ../detectors/time_record.py:355 ../extensions/help.py:1327
+#: ../detectors/time_record.py:356 ../extensions/help.py:1327
 #: ../locale/attr.py:294 attr.py:294
 msgid "start"
 msgstr ""
 
-#: ../detectors/time_record.py:358
+#: ../detectors/time_record.py:359
 msgid "Either specify duration or start/end"
 msgstr ""
 
-#: ../detectors/time_record.py:369
+#: ../detectors/time_record.py:370
 #, python-format
 msgid "%(date)s: You specified new values for %(attr)s but no duration"
 msgstr ""
 
-#: ../detectors/time_record.py:430 ../detectors/time_record.py:516
+#: ../detectors/time_record.py:431 ../detectors/time_record.py:517
 msgid "Editing of time records only for status \"open\""
 msgstr ""
 
-#: ../detectors/time_record.py:455
+#: ../detectors/time_record.py:456
 msgid "No weekend booking allowed"
 msgstr ""
 
-#: ../detectors/time_record.py:536
+#: ../detectors/time_record.py:537
 msgid "Distribution: WP must be given"
 msgstr ""
 
-#: ../detectors/time_record.py:590
+#: ../detectors/time_record.py:591
 msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
@@ -667,87 +667,87 @@ msgstr ""
 msgid "maximum picture size 100kB exceeded: %(length)s"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:70
+#: ../detectors/user_dynamic.py:72
 #, python-format
 msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:85
+#: ../detectors/user_dynamic.py:87
 #, python-format
 msgid "%(attr)s must be positive or empty"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:103 ../extensions/help.py:1019
-#: ../extensions/summary.py:926 ../lib/schemacfg/time_tracker.py:262
+#: ../detectors/user_dynamic.py:105 ../extensions/help.py:1019
+#: ../extensions/summary.py:927 ../lib/schemacfg/time_tracker.py:262
 #: ../locale/attr.py:317 ../locale/attr.py:327 attr.py:317 attr.py:327
 msgid "overtime_period"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:109 ../extensions/help.py:1422
-#: ../extensions/summary.py:931 ../locale/attr.py:336 attr.py:336
+#: ../detectors/user_dynamic.py:111 ../extensions/help.py:1422
+#: ../extensions/summary.py:932 ../locale/attr.py:336 attr.py:336
 msgid "supp_per_period"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:112 ../detectors/user_dynamic.py:127
-#: ../extensions/help.py:1427 ../extensions/summary.py:923
+#: ../detectors/user_dynamic.py:114 ../detectors/user_dynamic.py:129
+#: ../extensions/help.py:1427 ../extensions/summary.py:924
 #: ../locale/attr.py:343 attr.py:343
 msgid "supp_weekly_hours"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:160 ../extensions/help.py:203
-#: ../extensions/summary.py:932 ../locale/attr.py:326 attr.py:326
+#: ../detectors/user_dynamic.py:162 ../extensions/help.py:203
+#: ../extensions/summary.py:933 ../locale/attr.py:326 attr.py:326
 msgid "additional_hours"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:161 ../extensions/help.py:1664
+#: ../detectors/user_dynamic.py:163 ../extensions/help.py:1664
 #: ../locale/attr.py:337 attr.py:337
 msgid "weekly_hours"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:208
+#: ../detectors/user_dynamic.py:210
 #, python-format
 msgid "Frozen: %(old_from)s"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:254
+#: ../detectors/user_dynamic.py:256
 #, python-format
 msgid "Frozen: %(valid_from)s"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:297 ../locale/attr.py:320 attr.py:320
+#: ../detectors/user_dynamic.py:313 ../locale/attr.py:320 attr.py:320
 msgid "months"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:298 ../locale/attr.py:318 attr.py:318
+#: ../detectors/user_dynamic.py:314 ../locale/attr.py:318 attr.py:318
 msgid "weekly"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:299 ../locale/attr.py:208 ../locale/attr.py:319
+#: ../detectors/user_dynamic.py:315 ../locale/attr.py:208 ../locale/attr.py:319
 #: attr.py:208 attr.py:319
 msgid "required_overtime"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:302
+#: ../detectors/user_dynamic.py:318
 #, python-format
 msgid "No entries with same %(mname)s, %(wname)s, %(rname)s allowed"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:306
+#: ../detectors/user_dynamic.py:322
 #, python-format
 msgid "One of %(mname)s, %(wname)s must be specified"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:309
+#: ../detectors/user_dynamic.py:325
 #, python-format
 msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:313
+#: ../detectors/user_dynamic.py:329
 #, python-format
 msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
 msgstr ""
 
-#: ../detectors/user_dynamic.py:317
+#: ../detectors/user_dynamic.py:333
 #, python-format
 msgid "Only one of %(rname)s, %(wname)s is allowed"
 msgstr ""
@@ -4246,7 +4246,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: ../extensions/help.py:1572 ../extensions/summary.py:1128
+#: ../extensions/help.py:1572 ../extensions/summary.py:1131
 #: ../lib/schemacfg/core.py:75 ../locale/attr.py:209 ../locale/attr.py:219
 #: ../locale/attr.py:227 ../locale/attr.py:251 ../locale/attr.py:342
 #: ../locale/attr.py:1147 attr.py:209 attr.py:219 attr.py:227 attr.py:251
@@ -4638,7 +4638,7 @@ msgstr ""
 msgid "Container"
 msgstr ""
 
-#: ../extensions/summary.py:832 ../extensions/summary.py:1129
+#: ../extensions/summary.py:832 ../extensions/summary.py:1132
 msgid "time"
 msgstr ""
 
@@ -4671,16 +4671,20 @@ msgstr ""
 msgid "required"
 msgstr ""
 
-#: ../extensions/summary.py:924 ../lib/schemacfg/time_tracker.py:118
+#: ../extensions/summary.py:923
+msgid "supp_hours_2"
+msgstr ""
+
+#: ../extensions/summary.py:925 ../lib/schemacfg/time_tracker.py:118
 #: ../locale/attr.py:224 attr.py:224
 msgid "overtime_correction"
 msgstr ""
 
-#: ../extensions/summary.py:925
+#: ../extensions/summary.py:926
 msgid "balance_end"
 msgstr ""
 
-#: ../extensions/summary.py:930
+#: ../extensions/summary.py:931
 msgid "achieved_supplementary"
 msgstr ""
 
