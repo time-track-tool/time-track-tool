@@ -64,8 +64,6 @@ Role "external":
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed to access area (View for "area" only)
  User is allowed to access doc_issue_status (View for "doc_issue_status" only)
- User is allowed to access issue if on nosy list (Edit for "issue": ['id', 'activity', 'actor', 'creation', 'creator', 'files', 'composed_of', 'planned_begin', 'depends', 'planned_end', 'deadline', 'keywords', 'category', 'needs', 'severity', 'area', 'responsible', 'priority', 'files_affected', 'doc_issue_status', 'fixed_in', 'cur_est_end', 'superseder', 'earliest_start', 'part_of', 'closed', 'cur_est_begin', 'kind', 'numeric_effort', 'nosy', 'title', 'messages', 'status', 'maturity_index', 'release', 'effective_prio'] only)
- User is allowed to access issue if on nosy list (View for "issue": ['id', 'activity', 'actor', 'creation', 'creator', 'files', 'composed_of', 'planned_begin', 'depends', 'planned_end', 'deadline', 'keywords', 'category', 'needs', 'severity', 'area', 'responsible', 'priority', 'files_affected', 'doc_issue_status', 'fixed_in', 'cur_est_end', 'superseder', 'earliest_start', 'part_of', 'closed', 'cur_est_begin', 'kind', 'numeric_effort', 'nosy', 'title', 'messages', 'status', 'maturity_index', 'release', 'effective_prio'] only)
  User is allowed to access keyword (View for "keyword" only)
  User is allowed to access kind (View for "kind" only)
  User is allowed to access msg_keyword (View for "msg_keyword" only)
