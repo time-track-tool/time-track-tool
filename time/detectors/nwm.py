@@ -34,7 +34,7 @@ import re
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from operator                       import or_
-from rsclib.IP4_Address             import IP4_Address
+from rsclib.IP_Address              import IP4_Address
 
 import common
 
