@@ -351,10 +351,11 @@ def req_overtime_quotient (db, dyn, user, date) :
     if dr :
         for t in dr.time_record :
             tr = db.time_record.getnode (t)
-            wp = db.time_wp.getnode (tr.wp)
-            pr = db.time_project.getnode (wp.project)
-            if pr.overtime_reduction :
-                otr += tr.duration
+            if tr.wp :
+                wp = db.time_wp.getnode (tr.wp)
+                pr = db.time_project.getnode (wp.project)
+                if pr.overtime_reduction :
+                    otr += tr.duration
             all += tr.duration
     # If we wanted to set the required overtime to 0 for a
     # holiday or other payed leave, we'd use
