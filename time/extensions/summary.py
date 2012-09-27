@@ -1074,7 +1074,7 @@ class Staff_Report (_Report) :
         supp_pp = {}
         d = start
         while d <= end :
-            do_perd = do_week = False
+            do_perd = do_week = do_ovt = False
             dur = durations (db, u, d)
             db.commit () # immediately commit cached tr_duration if changed
             for period in periods :
@@ -1086,6 +1086,7 @@ class Staff_Report (_Report) :
                     (   period.weekly
                     and use_work_hours (db, dur.dyn, period)
                     )
+                do_ovt  = do_ovt or period.required_overtime
 	    if dur.supp_per_period :
 		supp_pp [str (int (dur.supp_per_period))] = True
             assert (not dur.tr_duration or dur.dr_status)
@@ -1095,7 +1096,7 @@ class Staff_Report (_Report) :
                 container [f] += dur.tr_duration
             wh = dur.day_work_hours * (do_week or do_perd)
             container ['required']          += wh
-            if period.required_overtime :
+            if do_ovt :
                 container ['supp_hours_2']  += wh + dur.required_overtime
             container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
 	    container ['additional_hours']  += dur.additional_hours  * do_perd
