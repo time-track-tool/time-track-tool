@@ -621,7 +621,6 @@ class Test_Case_Timetracker (_Test_Case) :
             , hours_wed         = 7.75
             , hours_thu         = 7.75
             , hours_fri         = 7.5
-            , additional_hours  = 38.5
             , supp_per_period   = 7
             , overtime_period   = p
             , weekend_allowed   = True
@@ -756,7 +755,7 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [0] [5], 'Actual accepted')
         self.assertEqual (lines [0] [6], 'Actual all')
         self.assertEqual (lines [0] [7], 'required')
-        self.assertEqual (lines [0] [8], 'supp_hours_2')
+        self.assertEqual (lines [0] [8], 'Supp. hours average')
         self.assertEqual (lines [0] [9], 'Supplementary hours')
         self.assertEqual (lines [0][10], 'Overtime correction')
         self.assertEqual (lines [0][11], 'Balance End')
@@ -1061,7 +1060,7 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (len (lines), 31)
         self.assertEqual (lines  [0] [1], 'Time Period')
         self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'supp_hours_2')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
         self.assertEqual (lines  [0][11], 'Balance End')
         self.assertEqual (lines  [1] [1], 'WW 52/2011')
         self.assertEqual (lines  [2] [1], 'WW 1/2012')
