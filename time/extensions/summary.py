@@ -1101,7 +1101,7 @@ class Staff_Report (_Report) :
             container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
 	    container ['additional_hours']  += dur.additional_hours  * do_perd
             d = d + day
-	cont = [', '.join (supp_pp.iterkeys ())]
+	cont = [' / '.join (supp_pp.iterkeys ())]
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)
