@@ -24,10 +24,12 @@ import shutil
 import sys
 import unittest
 import logging
+import csv
 
-import user1_time, user2_time, user3_time, user4_time
+import user1_time, user2_time, user3_time, user4_time, user5_time
 
 from operator import mul
+from StringIO import StringIO
 
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
@@ -628,6 +630,103 @@ class Test_Case_Timetracker (_Test_Case) :
         self.db.commit ()
     # end def setup_user4
 
+    def setup_user5 (self) :
+        self.username5 = 'testuser5'
+        self.user5 = self.db.user.create \
+            ( username     = self.username5
+            , firstname    = 'Nummer5'
+            , lastname     = 'User5'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # public holidays
+        vienna = self.db.location.lookup ('Vienna')
+        hd = \
+            ( ("New Year's Day", "Neujahr",             "2012-01-01")
+            , ("Epiphany",       "Heilige drei K.",     "2012-01-06")
+            , ("Easter Monday",  "Ostermontag",         "2012-04-09")
+            , ("May Day",        "Tag der Arbeit",      "2012-05-01")
+            , ("Ascension Day",  "Christi Himmelfahrt", "2012-05-17")
+            , ("Pentecost",      "Pfingstsonntag",      "2012-05-27")
+            , ("Pentecost",      "Pfingsmontag",        "2012-05-28")
+            , ("Corpus Christi", "Fronleichnam",        "2012-06-07")
+            , ("Assumption",     "Himmelfahrt",         "2012-08-15")
+            )
+        for name, desc, dt in hd :
+            dt = date.Date (dt)
+            self.db.public_holiday.create \
+                ( name        = name
+                , description = desc
+                , date        = dt
+                , locations   = [vienna]
+                )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user5))
+        self.assertEqual (len (ud), 1)
+        ud = self.db.user_dynamic.getnode (ud [0])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        week = self.db.overtime_period.lookup ('week')
+
+        self.db.user_dynamic.set \
+            ( ud.id
+            , valid_from        = date.Date ('2012-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = week
+            , weekend_allowed   = True
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user5
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2012-03-15')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_per_period   = 7
+            , overtime_period   = p
+            , weekend_allowed   = True
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user5
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2012-06-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 41.0
+            , additional_hours  = 40.0
+            , overtime_period   = week
+            , weekend_allowed   = True
+            )
+        self.db.commit ()
+    # end def setup_user5
+
     def test_rename_status (self) :
         self.log.debug ('test_rename_status')
         self.setup_db ()
@@ -1152,6 +1251,141 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [29] [8], '871.57')
         self.assertEqual (lines [29][11], '17.73')
     # end def test_user4
+
+    def test_user5 (self) :
+        self.log.debug ('test_user5')
+        self.setup_db ()
+        self.setup_user5 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username5)
+        user5_time.import_data_5 (self.db, self.user5)
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user5]
+             , 'date'         : '2012-01-01;2012-09-28'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 51)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0] [9], 'Supplementary hours')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [0][12], 'Overtime period')
+        self.assertEqual (lines  [1] [1], 'WW 52/2011')
+        self.assertEqual (lines  [2] [1], 'WW 1/2012')
+        self.assertEqual (lines [41] [1], 'January 2012')
+        self.assertEqual (lines [49] [1], 'September 2012')
+        self.assertEqual (lines [50] [1], '2012-01-01;2012-09-28')
+        self.assertEqual (lines  [1] [2], '0.00') # balance_start
+
+        # Actual all
+        for n, v in enumerate \
+            ((   "0.00",  "38.50",  "41.50",  "41.00",  "38.50",  "40.50"
+            ,   "43.50",  "42.00",  "44.50",  "38.50",  "44.50",  "45.50"
+            ,   "39.25",  "43.50",  "35.00",  "44.00",  "44.25",  "42.00"
+            ,   "39.75",  "39.00",  "38.50",  "41.50",  "41.00",  "43.75"
+            ,   "39.00",  "38.50",  "39.25",  "38.50",  "38.50",  "38.50"
+            ,   "42.00",  "38.50",  "47.75",  "43.25",  "29.50",   "0"
+            ,    "0",      "0",      "0",      "0.00", "176.25", "177.00"
+            ,  "188.00", "173.00", "182.75", "169.75", "173.50", "143.00"
+            ,    "0.00", "1383.25"
+            )) :
+            self.assertEqual (lines [n + 1][6], v)
+        # Supp. hours average
+        for n, v in enumerate \
+            ((   "0",      "0",      "0",     "0",     "0",    "0"
+            ,    "0",      "0",      "0",     "0",     "0",    "39.14"
+            ,   "40.09",  "40.09",  "40.17", "39.83", "40.17", "40.17"
+            ,   "39.75",  "40.02",  "39.72", "40.02", "39.41",  "0"
+            ,    "0",      "0",      "0",     "0",     "0",     "0"
+            ,    "0",      "0",      "0",     "0",     "0",     "0"
+            ,    "0",      "0",      "0",     "0",     "0",     "0"
+            ,  "173.07", "168.42", "183.34",  "0",     "0",     "0"
+            ,    "0",   "1518.07"
+            )) :
+            self.assertEqual (lines [n + 1][8], v)
+        # Supplementary hours
+        for n, v in enumerate \
+            ((   "0.00",  "38.50",  "38.50",  "38.50",  "38.50",  "38.50"
+            ,   "38.50",  "38.50",  "38.50",  "38.50",  "38.50",  "23.10"
+            ,    "0",      "0",      "0",      "0",      "0",      "0"
+            ,    "0",      "0",      "0",      "0",      "8.20",  "41.00"
+            ,   "41.00",  "41.00",  "41.00",  "41.00",  "41.00",  "41.00"
+            ,   "41.00",  "41.00",  "41.00",  "41.00",  "41.00",  "41.00"
+            ,   "41.00",  "41.00",  "41.00",  "41.00", "169.40", "161.70"
+            ,   "77.00",   "0",      "0",    "172.20", "180.40", "188.60"
+            , "164.00", "1113.30"
+            )) :
+            self.assertEqual (lines [n + 1][9], v)
+        for n, v in enumerate \
+            ((    "0.00",    "0.00",    "3.00",    "5.50",  "5.50",  "7.50"
+            ,    "12.50",   "16.00",   "22.00",   "22.00", "28.00", "34.51"
+            ,    "33.67",   "37.08",   "31.92",   "36.08", "40.17", "42.00"
+            ,    "42.00",   "40.98",   "39.76",   "41.24", "42.13", "44.88"
+            ,    "44.88",   "44.88",   "44.88",   "44.88", "44.88", "44.88"
+            ,    "45.88",   "45.88",   "52.63",   "54.88", "45.88",  "7.38"
+            ,   "-31.12",  "-69.62", "-108.12", "-146.62",  "6.85", "22.15"
+            ,    "37.08",   "41.67",   "41.08",   "44.88", "45.88",  "7.38"
+            ,  "-146.62", "-146.62"
+            )) :
+            self.assertEqual (lines [n + 1][11], v)
+        off = 1
+        for n in xrange (11) :
+            self.assertEqual (lines [n + off][12], "week")
+        off += 11
+        self.assertEqual (lines [off][12], "week, monthly average required")
+        off += 1
+        for n in xrange (10) :
+            self.assertEqual (lines [n + off][12], "monthly average required")
+        off += 10
+        self.assertEqual (lines [off][12], "monthly average required, week")
+        off += 1
+        for n in xrange (19) :
+            self.assertEqual (lines [n + off][12], "week")
+        off += 19
+        self.assertEqual (lines [off][12], "week, monthly average required")
+        self.assertEqual (lines [off + 1][12], "monthly average required")
+        self.assertEqual (lines [off + 2][12], "monthly average required")
+        self.assertEqual (lines [off + 3][12], "week")
+        self.assertEqual (lines [off + 4][12], "week")
+        self.assertEqual (lines [off + 5][12], "week")
+        self.assertEqual (lines [off + 6][12], "week")
+        self.assertEqual \
+            (lines [off + 7][12], "week, monthly average required, week")
+
+        off = 1
+        for n in xrange (11) :
+            self.assertEqual (lines [off + n][14], "")
+        off += 11
+        self.assertEqual (lines [off]    [14], "7 => 3.82")
+        self.assertEqual (lines [off + 1][14], "7 => 3.82")
+        self.assertEqual (lines [off + 2][14], "7")
+        off += 3
+        for n in xrange (4) :
+            self.assertEqual (lines [off + n][14], "7 => 6.67")
+        off += 4
+        self.assertEqual (lines [off][14], "7")
+        off += 1
+        for n in xrange (4) :
+            self.assertEqual (lines [off + n][14], "7 => 6.09")
+        off += 4
+        for n in xrange (19) :
+            self.assertEqual (lines [off + n][14], "")
+        off += 19
+        self.assertEqual (lines [off]    [14], "7 => 3.82")
+        self.assertEqual (lines [off + 1][14], "7 => 6.67")
+        self.assertEqual (lines [off + 2][14], "7 => 6.09")
+        off += 3
+        for n in xrange (4) :
+            self.assertEqual (lines [off + n][14], "")
+        off += 4
+        self.assertEqual (lines [off]    [14], "7")
+    # end def test_user5
 
     def concurrency (self, method) :
         """ Ensure that no cached values from previous transaction are used.

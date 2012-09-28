@@ -1070,7 +1070,9 @@ class Staff_Report (_Report) :
             if not period_is_weekly (period) :
                 self.need_period = True
 		pd  = Period_Data (db, user, s, e, period, 0.0)
-		effective_overtime.append ('=> %.2f' % pd.overtime_per_period)
+                opp = pd.overtime_per_period
+                if opp is not None :
+                    effective_overtime.append ('=> %.2f' % opp)
         supp_pp = {}
         d = start
         while d <= end :

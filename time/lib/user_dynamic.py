@@ -525,12 +525,21 @@ class Period_Data (object) :
 	except TypeError :
 		s, e, p = eop + day, eop + day, self.period
 	assert (p.id == self.period.id)
+        opp = 0
         while date <= eop :
             days     += 1.0
 	    d         = date
             date     += day
 	    if d < s or d > e : continue
             dur       = durations (db, user, d)
+
+            if  (   period.required_overtime
+                and dur.dyn.overtime_period == period.id
+                ) :
+                if opp == 0 :
+                    opp = dur.req_overtime_pp
+                elif opp != dur.req_overtime_pp :
+                    opp = None
             over_per += \
 		(   period.months
 		and dur.dyn
@@ -538,8 +547,11 @@ class Period_Data (object) :
 		and dur.supp_per_period
 		) or 0
         assert (days)
-        self.overtime_per_period = over_per / days
-        date                     = start
+        if period.required_overtime :
+            self.overtime_per_period = opp
+        else :
+            self.overtime_per_period = over_per / days
+        date = start
         while date <= end :
             dur       = durations (db, user, date)
             work      = dur.tr_duration
@@ -594,8 +606,6 @@ class Period_Data (object) :
                 self.overtime_balance += worked - required
 	self._consolidate  ()
         self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
-        if period.required_overtime :
-            self.overtime_per_period = overtime
     # end def __init__
 
     def _consolidate (self) :
