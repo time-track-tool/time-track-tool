@@ -594,6 +594,8 @@ class Period_Data (object) :
                 self.overtime_balance += worked - required
 	self._consolidate  ()
         self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
+        if period.required_overtime :
+            self.overtime_per_period = overtime
     # end def __init__
 
     def _consolidate (self) :
