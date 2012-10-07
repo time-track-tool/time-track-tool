@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2012-07-11 13:03+0200\n"
+"POT-Creation-Date: 2012-09-14 08:38+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -534,8 +534,11 @@ msgstr "Monate"
 msgid "weekly"
 msgstr "wöchentlich"
 
+msgid "required_overtime"
+msgstr "angeordnete Überstunden"
+
 #, python-format
-msgid "No entries with same number of %(mname)s / %(wname)s allowed"
+msgid "No entries with same %(mname)s, %(wname)s, %(rname)s allowed"
 msgstr ""
 
 #, python-format
@@ -546,6 +549,14 @@ msgstr ""
 #, python-format
 msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
 msgstr ""
+
+#, python-format
+msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
+msgstr ""
+
+#, python-format
+msgid "Only one of %(rname)s, %(wname)s is allowed"
+msgstr "Höchstens eines von \"%(rname)s\", %(wname)s darf ausgefüllt werden"
 
 msgid "Download&nbsp;letter"
 msgstr "Brief&nbsp;laden"
@@ -2531,493 +2542,16 @@ msgstr "Betriebssystem dieser %(Classname)s"
 msgid "Period over which overtime is computed for a person"
 msgstr ""
 
-msgid "parent"
-msgstr "Hauptadresse"
+msgid "overtime_period++required_overtime"
+msgstr "vereinbarte Überstunden"
 
-msgid "%(Classname)s to which this %(Classname)s belongs."
-msgstr "%(Classname)s zu welcher diese %(Classname)s gehört"
-
-msgid "part_of"
+msgid "Given overtime is required for the period."
 msgstr ""
 
-msgid ""
-"If you have a Top-Level work package which consists of other\n"
-"             work packages, you should enter the parent work package\n"
-"             here. This information is needed for the planning process in\n"
-"             order to define what %(Classname)ss compose a larger\n"
-"             project, e.g., Define one Top-Level work package Some New\n"
-"             Feature which is composed of Design, Build Hardware, Write\n"
-"             Software, Put all parts together, and Test. In the\n"
-"             search-mask you can enter\n"
-"             \"-1\" here to find only Top-Level container work packages.\n"
-"          "
+msgid "overtime_reduction"
 msgstr ""
 
-msgid "part_of.id"
-msgstr ""
-
-msgid "password"
-msgstr "Passwort"
-
-msgid "payed_abos"
-msgstr "Zahler für"
-
-msgid "Subscriptions for which this %(Classname)s is paying"
-msgstr "Abos für welche diese %(Classname)s bezahlt"
-
-msgid "payer"
-msgstr "Zahler"
-
-msgid "Address which is paying for this subscription"
-msgstr "Adresse welche für dieses Abo bezahlt"
-
-msgid "payer.firstname"
-msgstr "Zahler Vorname"
-
-msgid "payer.lastname"
-msgstr "Zahler Nachname"
-
-msgid "payer.valid"
-msgstr "Zahler gültig"
-
-msgid "payer.adr_type"
-msgstr "Zahler Typ"
-
-msgid "payment"
-msgstr "Zahlung"
-
-msgid "Amount of payment received for this invoice"
-msgstr "Betrag der bereits bezahlt wurde"
-
-msgid "peer_reviewers"
-msgstr ""
-
-msgid "Peer reviewers for this %(Classname)s"
-msgstr "Reviewer für %(Classname)s"
-
-msgid "period"
-msgstr "Laufzeit"
-
-msgid "Subscription period in months."
-msgstr "Rechnungsperiode in Monaten"
-
-msgid "period_end"
-msgstr "Datum bis"
-
-msgid "Date when this invoice period ends"
-msgstr "Datum wann diese Rechnungsperiode endet"
-
-msgid "period_start"
-msgstr "Datum von"
-
-msgid "Date when this invoice period starts"
-msgstr "Datum wann diese Rechnungsperiode beginnt"
-
-msgid "person_type"
-msgstr "Personen-Typ"
-
-msgid "Type of this %(Classname)s for Customer/Supplier"
-msgstr "Typ der %(Classname)s für diesen Kunden/Lieferanten"
-
-msgid "person"
-msgstr "persönliche Adresse"
-
-msgid "personal Information for this %(Classname)s"
-msgstr "persönliche Information für %(Classname)s"
-
-msgid "planned_effort"
-msgstr ""
-
-msgid ""
-"Effort for %(Classname)s in person-hours; as it is stated\n"
-"             in the Project Evaluation Sheet. Warning: This used to be in\n"
-"             person days, so you have to convert old values to hours!\n"
-"          "
-msgstr ""
-
-msgid "position"
-msgstr "Position"
-
-msgid "%(Property)s in the company"
-msgstr "%(Property)s in der Firma"
-
-msgid "postalcode"
-msgstr "PLZ"
-
-msgid "Postal code for this %(Classname)s "
-msgstr "Postleitzahl für diese %(Classname)s"
-
-msgid "prio"
-msgstr "Priorität"
-
-msgid "priority"
-msgstr "Priorität"
-
-msgid ""
-"Should be set between 0 and 100. For the planning process\n"
-"             only issues above a specified priority level are taken into\n"
-"             account. On creation of a new issue, the priority is\n"
-"             automatically set to 100.\n"
-"          "
-msgstr ""
-
-msgid "private_for"
-msgstr "privat von"
-
-msgid "Flag if this is a private %(Classname)s"
-msgstr "Hinweis, ob dies eine private %(Classname)s ist"
-
-msgid "private_gid_range"
-msgstr "privater GID Bereich"
-
-msgid "Allowed range of group ids for users"
-msgstr ""
-
-msgid "product_type"
-msgstr "Artikel-Typ"
-
-msgid "The type of the %(Classname)s."
-msgstr "Typ für diese %(Classname)s"
-
-msgid "project"
-msgstr ""
-
-msgid ""
-"%(Classname)s is part of a Time Category. With the Time\n"
-"             Category name a\n"
-"             %(Classname)s can be clearly  identified\n"
-"          "
-msgstr ""
-
-msgid "protocol"
-msgstr "Protokoll"
-
-msgid "The dynamic DNS protocol to use with this %(Classname)s."
-msgstr "Dynamisches DNS Protokoll für diese %(Classname)s"
-
-msgid "qa_representative"
-msgstr ""
-
-msgid "Representative from the QA department for this %(Classname)s"
-msgstr "Repräsentant der QA Abteilung für %(Classname)s"
-
-msgid "query++tmplate"
-msgstr "HTML-Vorlage"
-
-msgid "HTML-template that is used for this %(Classname)s"
-msgstr "HTML-Vorlage welche für diese %(Classname)s benutzt wird"
-
-msgid "queries"
-msgstr "Abfragen"
-
-msgid "Queries for this %(Classname)s"
-msgstr "Abfragen für %(Classname)s"
-
-msgid "realname"
-msgstr "Name"
-
-msgid "Real name for this %(Classname)s"
-msgstr "Vor- und Nachname für %(Classname)s"
-
-msgid "receipt_no"
-msgstr "BelegNr"
-
-msgid "Unique identification of this payment"
-msgstr "Eindeutige Identifikation für diese Zahlung"
-
-msgid "recipients"
-msgstr "Empfänger"
-
-msgid "Only set if message was received via email."
-msgstr "Nur gesetzt, wenn diese Notiz per Email empfangen wurde"
-
-msgid "recorder"
-msgstr "Aufzeichnung von"
-
-msgid "Person responsible for recording findings"
-msgstr ""
-
-msgid "reference"
-msgstr ""
-
-msgid ""
-"Defines the relation to a project, customer, etc. If\n"
-"            necessary, this entry is defined for new customers and/or\n"
-"            products when the project starts.\n"
-"         "
-msgstr ""
-
-msgid "related_issues"
-msgstr "zugehörige Issues"
-
-msgid ""
-"Issues related to this %(Classname)s.\n"
-"         "
-msgstr "Issues die zu diesem %(Classname)s zugeordnet sind"
-
-msgid "related_issues.id"
-msgstr "zugehörige Issues (id)"
-
-msgid "relaxed"
-msgstr ""
-
-msgid ""
-"If set, when changing status, no checks about a message, the\n"
-"            priority and responsible (helpdesk) are done when changing\n"
-"            to this status.\n"
-"         "
-msgstr ""
-
-#.  just to show something in the pop-up, gets set to the last reached milestone
-msgid "release"
-msgstr "Release"
-
-msgid ""
-"The %(Property)s this %(Classname)s was found, either as\n"
-"             bug or as missing feature. For (newly reported) bugs,\n"
-"             %(Property)s *must* be specified. Enter the release name\n"
-"             or, if applicable, the name and version of the tool (e.g.,\n"
-"             \"TTP-Plan 4.3.72\"). For change requests you may enter the\n"
-"             currently used release.\n"
-"          "
-msgstr ""
-
-msgid "remove"
-msgstr "löschen"
-
-msgid ""
-"Remove attached item. Will not remove item from the database,\n"
-"             it can usually still be downloaded via the History button.\n"
-"          "
-msgstr ""
-
-msgid "require_msg"
-msgstr ""
-
-msgid "Require a message for this %(Classname)s"
-msgstr "Benötige eine Notizen zu %(Classname)s"
-
-msgid "require_resp_change"
-msgstr ""
-
-msgid "Require change of responsible person for this %(Classname)s"
-msgstr "Verantwortliche Person für %(Classname)s muss geändert werden"
-
-msgid "required_overtime"
-msgstr "angeordnete Überstunden"
-
-msgid "Overtime preapproved by supervisor and required by project."
-msgstr ""
-
-msgid "responsible"
-msgstr ""
-
-msgid "Person who is responsible for the %(Classname)s"
-msgstr "Verantwortliche Person für dieses %(Classname)s"
-
-msgid "review++responsible"
-msgstr ""
-
-msgid ""
-"Moderator for %(Classname)s -- Note: If you do not specify\n"
-"             the moderator, you will get an indication that the field\n"
-"             \"Responsible\" must be filled in -- the moderator is "
-"reponsible for\n"
-"             %(Classname)s.\n"
-"          "
-msgstr ""
-
-msgid "roles"
-msgstr "Rollen"
-
-msgid ""
-"Roles for this %(Classname)s -- to give the user more than\n"
-"             one role, enter a comma,separated,list\n"
-"          "
-msgstr ""
-"Rollen für %(Classname)s -- falls mehr als eine Rolle vergeben wird, sind "
-"die Rollen durch Komma,zu,trennen."
-
-msgid "room"
-msgstr ""
-
-msgid "Room number"
-msgstr "Raum-Nummer"
-
-msgid "routers"
-msgstr "Router"
-
-msgid "Routers for this %(Classname)s, used in DHCP configuration."
-msgstr "Router für %(Classname)s, wird für DHCP Konfiguration benötigt"
-
-msgid "salutation"
-msgstr "Anrede"
-
-msgid "Salutation used for printing an address"
-msgstr "Anrede für diese Adresse"
-
-msgid "samba_home_drive"
-msgstr ""
-
-msgid "Home drive for %(Classname)s in Windows"
-msgstr "Heimatverzeichnis für %(Classname)s in Windows"
-
-msgid "samba_home_path"
-msgstr ""
-
-msgid "Path to %(Classname)ss home directory"
-msgstr "Pfad zu %(Classname)ss Heimatverzeichnis"
-
-msgid "samba_kickoff_time"
-msgstr ""
-
-msgid "Windows time that user will automatically logged out"
-msgstr ""
-
-msgid "samba_lm_password"
-msgstr "Samba LanManager Passwort"
-
-msgid ""
-"Samba LAN Manager password -- automatically computed when a\n"
-"             new password is entered\n"
-"          "
-msgstr ""
-
-msgid "samba_logon_script"
-msgstr ""
-
-msgid "Logon script for %(Classname)s"
-msgstr "Logon-Script für diese(n) %(Classname)s"
-
-msgid "samba_nt_password"
-msgstr "Samba NT Passwort"
-
-msgid ""
-"Samba NT password -- automatically computed when a\n"
-"             new password is entered\n"
-"          "
-msgstr ""
-
-msgid "samba_profile_path"
-msgstr ""
-
-msgid "Path to profile for %(Classname)s"
-msgstr "Pfad zum Profile für %(Classname)s"
-
-msgid "samba_pwd_can_change"
-msgstr ""
-
-msgid ""
-"Earliest time the user may change the password next time.\n"
-"             set by the system to pwd_last_set if nothing else is enabled.\n"
-"          "
-msgstr ""
-
-msgid "samba_pwd_last_set"
-msgstr ""
-
-msgid ""
-"Time-stamp the password was last changed, automatically\n"
-"             computed by the system\n"
-"          "
-msgstr ""
-"Zeitstempel wann das Passwort zuletzt geändert wurde. Wird automatisch vom "
-"System verwaltet."
-
-msgid "samba_pwd_must_change"
-msgstr ""
-
-msgid ""
-"Latest time the user must change the password next time.\n"
-"             set by the system to end of the epoch if nothing else is "
-"enabled.\n"
-"          "
-msgstr ""
-
-msgid "secondary_groups"
-msgstr ""
-
-msgid "secondary UNIX Groups for this %(Classname)s"
-msgstr "Sekundäre UNIX-Gruppen für %(Classname)s"
-
-msgid "send_it"
-msgstr "senden?"
-
-msgid ""
-"Flag indicating if this invoice should be sent. If not set,\n"
-"             this invoice will disappear from the current list of invoices. "
-"It\n"
-"             is not sent when generating invoices and is not marked when "
-"sent\n"
-"             invoices are marked.\n"
-"          "
-msgstr ""
-"Hinweis, ob diese Rechnung versendet werden soll. Falls nicht gesetzt, "
-"verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese Rechnung "
-"weder versendet, noch als gesendet markiert."
-
-msgid "Send to external email addresses (customer)"
-msgstr ""
-
-msgid "severity"
-msgstr ""
-
-msgid ""
-"How severe is the %(Classname)s for the customer or\n"
-"             stakeholder\n"
-"          "
-msgstr "Schweregrad dieses %(Classname)s für den Kunden oder Interessenten"
-
-msgid "sensor"
-msgstr "Sensor"
-
-msgid "Sensor of this %(Classname)s"
-msgstr "Sensor für %(Classname)s"
-
-msgid "sensor++adr"
-msgstr "Kanal"
-
-msgid "sensor++name"
-msgstr "Kanalname"
-
-msgid "sensor++order"
-msgstr "Sortiernummer"
-
-msgid "sensor++type"
-msgstr "Kanaltyp"
-
-msgid "serial_number"
-msgstr "Seriennummer"
-
-msgid "Serial number of hardware item if applicable"
-msgstr "Hardware Seriennummer falls vorhanden"
-
-msgid "server"
-msgstr "Server"
-
-msgid ""
-"The %(Property)s to use for this %(Classname)s:\n"
-"            If left empty the default %(Property)s from the protocol\n"
-"            configuration is used.\n"
-"          "
-msgstr ""
-
-msgid "shadow_last_change"
-msgstr "Datum der letzten Änderung des Shadow-Passworts"
-
-msgid ""
-"Time-stamp the shadow password was last changed,\n"
-"             automatically computed by the system\n"
-"          "
-msgstr ""
-
-msgid "shadow_expire"
-msgstr ""
-
-msgid ""
-"Date at which the users's account expires and will no longer\n"
-"             be accessible.\n"
-"          "
+msgid "Don"
 msgstr ""
 
 msgid "shadow_inactive"
@@ -3827,6 +3361,9 @@ msgstr ""
 msgid "work_location"
 msgstr ""
 
+msgid "remove"
+msgstr "löschen"
+
 # python-format
 #, python-format
 msgid ""
@@ -3939,6 +3476,9 @@ msgid "actual_all"
 msgstr ""
 
 msgid "required"
+msgstr ""
+
+msgid "supp_hours_2"
 msgstr ""
 
 msgid "overtime_correction"
@@ -4504,7 +4044,13 @@ msgstr "Wochentag"
 msgid "opening_hours"
 msgstr "Öffnungszeiten"
 
+msgid "position"
+msgstr "Position"
+
 msgid "sex"
+msgstr ""
+
+msgid "severity"
 msgstr ""
 
 msgid "milestone"
@@ -4549,6 +4095,10 @@ msgstr ""
 msgid "document"
 msgstr ""
 
+#.  just to show something in the pop-up, gets set to the last reached milestone
+msgid "release"
+msgstr "Release"
+
 msgid "feature"
 msgstr ""
 
@@ -4577,8 +4127,14 @@ msgstr "Abfrage"
 msgid "user_status"
 msgstr "Benutzerstatus"
 
+msgid "room"
+msgstr ""
+
 msgid "dyndns_protocol"
 msgstr ""
+
+msgid "server"
+msgstr "Server"
 
 msgid "dyndns_host"
 msgstr "DynDNS Host"
@@ -4697,6 +4253,9 @@ msgstr "Gerät"
 msgid "surrogate"
 msgstr ""
 
+msgid "sensor"
+msgstr "Sensor"
+
 msgid "logstyle"
 msgstr ""
 
@@ -4705,6 +4264,9 @@ msgstr ""
 
 msgid "smb_machine"
 msgstr ""
+
+msgid "person_type"
+msgstr "Personen-Typ"
 
 msgid "User is allowed %(perm)s on"
 msgstr "Benutzer darf %(perm)s auf"
@@ -4718,6 +4280,12 @@ msgid ""
 "User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
 "item with %(perm)s permission"
 msgstr ""
+
+msgid "payment"
+msgstr "Zahlung"
+
+msgid "receipt_no"
+msgstr "BelegNr"
 
 msgid "sup_status"
 msgstr "Supportstatus"
@@ -4782,11 +4350,20 @@ msgstr "User-Kontakt"
 msgid "uc_type"
 msgstr "User-Kontakttyp"
 
+msgid "responsible"
+msgstr ""
+
 msgid "keyword"
 msgstr ""
 
 msgid "status_transition"
 msgstr "Statusübergang"
+
+msgid "require_msg"
+msgstr ""
+
+msgid "require_resp_change"
+msgstr ""
 
 msgid "msg_keyword"
 msgstr ""
@@ -4803,7 +4380,13 @@ msgstr "Geplantes Ende bis"
 msgid "needs"
 msgstr "hängt ab von"
 
+msgid "priority"
+msgstr "Priorität"
+
 msgid "cur_est_end"
+msgstr ""
+
+msgid "part_of"
 msgstr ""
 
 msgid "cur_est_begin"
@@ -4811,6 +4394,15 @@ msgstr ""
 
 msgid "effective_prio"
 msgstr ""
+
+msgid "relaxed"
+msgstr ""
+
+msgid "routers"
+msgstr "Router"
+
+msgid "private_gid_range"
+msgstr "privater GID Bereich"
 
 msgid "pdc"
 msgstr "PDC"
@@ -4833,6 +4425,9 @@ msgstr ""
 msgid "locations"
 msgstr "Orte"
 
+msgid "planned_effort"
+msgstr ""
+
 msgid "is_staff"
 msgstr ""
 
@@ -4844,6 +4439,9 @@ msgstr ""
 
 msgid "durations_allowed"
 msgstr "Dauer erlaubt"
+
+msgid "project"
+msgstr ""
 
 msgid "travel_full"
 msgstr ""
@@ -4932,6 +4530,15 @@ msgstr ""
 msgid "fixed_until"
 msgstr ""
 
+msgid "peer_reviewers"
+msgstr ""
+
+msgid "recorder"
+msgstr "Aufzeichnung von"
+
+msgid "qa_representative"
+msgstr ""
+
 msgid "comments"
 msgstr "Kommentare"
 
@@ -4956,8 +4563,23 @@ msgstr "Stunde von"
 msgid "to_hour"
 msgstr "Stunde bis"
 
+msgid "person"
+msgstr "persönliche Adresse"
+
+msgid "prio"
+msgstr "Priorität"
+
 msgid "classification"
 msgstr "Klassifikation"
+
+msgid "related_issues"
+msgstr "zugehörige Issues"
+
+msgid "serial_number"
+msgstr "Seriennummer"
+
+msgid "salutation"
+msgstr "Anrede"
 
 msgid "lookalike_lastname"
 msgstr "Nachname"
@@ -4968,8 +4590,26 @@ msgstr "Vorname"
 msgid "lookalike_function"
 msgstr "Adresszusatz"
 
+msgid "payer"
+msgstr "Zahler"
+
+msgid "period"
+msgstr "Laufzeit"
+
+msgid "payed_abos"
+msgstr "Zahler für"
+
+msgid "send_it"
+msgstr "senden?"
+
+msgid "period_end"
+msgstr "Datum bis"
+
 msgid "amount_payed"
 msgstr "Zahlungsbetrag"
+
+msgid "period_start"
+msgstr "Datum von"
 
 msgid "act_number"
 msgstr "Kontonummer"
@@ -5040,11 +4680,23 @@ msgstr ""
 msgid "lot"
 msgstr "Charge"
 
+msgid "parent"
+msgstr "Hauptadresse"
+
 msgid "lookalike_street"
 msgstr "Straße"
 
 msgid "lookalike_city"
 msgstr "Ort"
+
+msgid "postalcode"
+msgstr "PLZ"
+
+msgid "product_type"
+msgstr "Artikel-Typ"
+
+msgid "reference"
+msgstr ""
 
 msgid "doc_status"
 msgstr "Dokumentenstatus"
@@ -5057,6 +4709,12 @@ msgstr ""
 
 msgid "state_changed_by"
 msgstr ""
+
+msgid "protocol"
+msgstr "Protokoll"
+
+msgid "password"
+msgstr "Passwort"
 
 msgid "mint_pending"
 msgstr "Messintervall ausständig"
@@ -5082,11 +4740,35 @@ msgstr "SMTP User Name"
 msgid "sender"
 msgstr "Absender-Email"
 
+msgid "recipients"
+msgstr "Empfänger"
+
 msgid "header"
+msgstr ""
+
+msgid "private_for"
+msgstr "privat von"
+
+msgid "samba_pwd_last_set"
+msgstr ""
+
+msgid "samba_pwd_must_change"
 msgstr ""
 
 msgid "job_description"
 msgstr "Stellenbeschreibung"
+
+msgid "samba_nt_password"
+msgstr "Samba NT Passwort"
+
+msgid "samba_home_drive"
+msgstr ""
+
+msgid "queries"
+msgstr "Abfragen"
+
+msgid "realname"
+msgstr "Name"
 
 msgid "pictures"
 msgstr ""
@@ -5094,8 +4776,210 @@ msgstr ""
 msgid "timing_info"
 msgstr ""
 
+msgid "shadow_expire"
+msgstr ""
+
+msgid "shadow_last_change"
+msgstr "Datum der letzten Änderung des Shadow-Passworts"
+
+msgid "samba_lm_password"
+msgstr "Samba LanManager Passwort"
+
+msgid "secondary_groups"
+msgstr ""
+
+msgid "samba_profile_path"
+msgstr ""
+
+msgid "roles"
+msgstr "Rollen"
+
+msgid "samba_pwd_can_change"
+msgstr ""
+
+msgid "samba_logon_script"
+msgstr ""
+
+msgid "samba_home_path"
+msgstr ""
+
+msgid "samba_kickoff_time"
+msgstr ""
+
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "%(Classname)s to which this %(Classname)s belongs."
+#~ msgstr "%(Classname)s zu welcher diese %(Classname)s gehört"
+
+#~ msgid "Subscriptions for which this %(Classname)s is paying"
+#~ msgstr "Abos für welche diese %(Classname)s bezahlt"
+
+#~ msgid "Address which is paying for this subscription"
+#~ msgstr "Adresse welche für dieses Abo bezahlt"
+
+#~ msgid "payer.firstname"
+#~ msgstr "Zahler Vorname"
+
+#~ msgid "payer.lastname"
+#~ msgstr "Zahler Nachname"
+
+#~ msgid "payer.valid"
+#~ msgstr "Zahler gültig"
+
+#~ msgid "payer.adr_type"
+#~ msgstr "Zahler Typ"
+
+#~ msgid "Amount of payment received for this invoice"
+#~ msgstr "Betrag der bereits bezahlt wurde"
+
+#~ msgid "Peer reviewers for this %(Classname)s"
+#~ msgstr "Reviewer für %(Classname)s"
+
+#~ msgid "Subscription period in months."
+#~ msgstr "Rechnungsperiode in Monaten"
+
+#~ msgid "Date when this invoice period ends"
+#~ msgstr "Datum wann diese Rechnungsperiode endet"
+
+#~ msgid "Date when this invoice period starts"
+#~ msgstr "Datum wann diese Rechnungsperiode beginnt"
+
+#~ msgid "Type of this %(Classname)s for Customer/Supplier"
+#~ msgstr "Typ der %(Classname)s für diesen Kunden/Lieferanten"
+
+#~ msgid "personal Information for this %(Classname)s"
+#~ msgstr "persönliche Information für %(Classname)s"
+
+#~ msgid "%(Property)s in the company"
+#~ msgstr "%(Property)s in der Firma"
+
+#~ msgid "Postal code for this %(Classname)s "
+#~ msgstr "Postleitzahl für diese %(Classname)s"
+
+#~ msgid "Flag if this is a private %(Classname)s"
+#~ msgstr "Hinweis, ob dies eine private %(Classname)s ist"
+
+#~ msgid "The type of the %(Classname)s."
+#~ msgstr "Typ für diese %(Classname)s"
+
+#~ msgid "The dynamic DNS protocol to use with this %(Classname)s."
+#~ msgstr "Dynamisches DNS Protokoll für diese %(Classname)s"
+
+#~ msgid "Representative from the QA department for this %(Classname)s"
+#~ msgstr "Repräsentant der QA Abteilung für %(Classname)s"
+
+#~ msgid "query++tmplate"
+#~ msgstr "HTML-Vorlage"
+
+#~ msgid "HTML-template that is used for this %(Classname)s"
+#~ msgstr "HTML-Vorlage welche für diese %(Classname)s benutzt wird"
+
+#~ msgid "Queries for this %(Classname)s"
+#~ msgstr "Abfragen für %(Classname)s"
+
+#~ msgid "Real name for this %(Classname)s"
+#~ msgstr "Vor- und Nachname für %(Classname)s"
+
+#~ msgid "Unique identification of this payment"
+#~ msgstr "Eindeutige Identifikation für diese Zahlung"
+
+#~ msgid "Only set if message was received via email."
+#~ msgstr "Nur gesetzt, wenn diese Notiz per Email empfangen wurde"
+
+#~ msgid ""
+#~ "Issues related to this %(Classname)s.\n"
+#~ "         "
+#~ msgstr "Issues die zu diesem %(Classname)s zugeordnet sind"
+
+#~ msgid "related_issues.id"
+#~ msgstr "zugehörige Issues (id)"
+
+#~ msgid "Require a message for this %(Classname)s"
+#~ msgstr "Benötige eine Notizen zu %(Classname)s"
+
+#~ msgid "Require change of responsible person for this %(Classname)s"
+#~ msgstr "Verantwortliche Person für %(Classname)s muss geändert werden"
+
+#~ msgid "Person who is responsible for the %(Classname)s"
+#~ msgstr "Verantwortliche Person für dieses %(Classname)s"
+
+#~ msgid ""
+#~ "Roles for this %(Classname)s -- to give the user more than\n"
+#~ "             one role, enter a comma,separated,list\n"
+#~ "          "
+#~ msgstr ""
+#~ "Rollen für %(Classname)s -- falls mehr als eine Rolle vergeben wird, sind "
+#~ "die Rollen durch Komma,zu,trennen."
+
+#~ msgid "Room number"
+#~ msgstr "Raum-Nummer"
+
+#~ msgid "Routers for this %(Classname)s, used in DHCP configuration."
+#~ msgstr "Router für %(Classname)s, wird für DHCP Konfiguration benötigt"
+
+#~ msgid "Salutation used for printing an address"
+#~ msgstr "Anrede für diese Adresse"
+
+#~ msgid "Home drive for %(Classname)s in Windows"
+#~ msgstr "Heimatverzeichnis für %(Classname)s in Windows"
+
+#~ msgid "Path to %(Classname)ss home directory"
+#~ msgstr "Pfad zu %(Classname)ss Heimatverzeichnis"
+
+#~ msgid "Logon script for %(Classname)s"
+#~ msgstr "Logon-Script für diese(n) %(Classname)s"
+
+#~ msgid "Path to profile for %(Classname)s"
+#~ msgstr "Pfad zum Profile für %(Classname)s"
+
+#~ msgid ""
+#~ "Time-stamp the password was last changed, automatically\n"
+#~ "             computed by the system\n"
+#~ "          "
+#~ msgstr ""
+#~ "Zeitstempel wann das Passwort zuletzt geändert wurde. Wird automatisch "
+#~ "vom System verwaltet."
+
+#~ msgid "secondary UNIX Groups for this %(Classname)s"
+#~ msgstr "Sekundäre UNIX-Gruppen für %(Classname)s"
+
+#~ msgid ""
+#~ "Flag indicating if this invoice should be sent. If not set,\n"
+#~ "             this invoice will disappear from the current list of "
+#~ "invoices. It\n"
+#~ "             is not sent when generating invoices and is not marked when "
+#~ "sent\n"
+#~ "             invoices are marked.\n"
+#~ "          "
+#~ msgstr ""
+#~ "Hinweis, ob diese Rechnung versendet werden soll. Falls nicht gesetzt, "
+#~ "verschwindet diese Rechnung aus deraktuellen Liste. Dann wird diese "
+#~ "Rechnung weder versendet, noch als gesendet markiert."
+
+#~ msgid ""
+#~ "How severe is the %(Classname)s for the customer or\n"
+#~ "             stakeholder\n"
+#~ "          "
+#~ msgstr "Schweregrad dieses %(Classname)s für den Kunden oder Interessenten"
+
+#~ msgid "Sensor of this %(Classname)s"
+#~ msgstr "Sensor für %(Classname)s"
+
+#~ msgid "sensor++adr"
+#~ msgstr "Kanal"
+
+#~ msgid "sensor++name"
+#~ msgstr "Kanalname"
+
+#~ msgid "sensor++order"
+#~ msgstr "Sortiernummer"
+
+#~ msgid "sensor++type"
+#~ msgstr "Kanaltyp"
+
+#~ msgid "Serial number of hardware item if applicable"
+#~ msgstr "Hardware Seriennummer falls vorhanden"
 
 #~ msgid "[hidden]"
 #~ msgstr "[unsichtbar]"

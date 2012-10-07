@@ -18,7 +18,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from UserDict                       import UserDict
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 
@@ -101,99 +100,8 @@ def fix_is_valid (db, cl, nodeid, new_values) :
         new_values ['is_valid'] = True
 # end def fix_is_valid
 
-class adict (UserDict) :
-    def __getattr__ (self, key) :
-        if key in self :
-            return self [key]
-        raise AttributeError, key
-    # end def __getattr__
-# end class adict
-
-def check_open_hours (db, cl, nodeid, new_values) :
-    if not nodeid :
-        if 'from_minute' not in new_values :
-            new_values ['from_minute'] = 0
-        if 'to_minute' not in new_values :
-            new_values ['to_minute'] = 0
-    common.require_attributes \
-        ( _, cl, nodeid, new_values
-        , 'from_hour', 'from_minute', 'to_hour', 'to_minute', 'weekday'
-        )
-    common.check_attribute_range \
-        (_, new_values, 0, 59, 'from_minute', 'to_minute')
-    common.check_attribute_range \
-        (_, new_values, 0, 23, 'from_hour',   'to_hour')
-    if nodeid and adrclass :
-        adr = adrclass.filter (None, dict (opening_hours = nodeid))
-        assert len (adr) <= 1
-        if len (adr) :
-            wd  = new_values.get \
-                ('weekday', db.opening_hours.get (nodeid, 'weekday'))
-            oh1 = adict ()
-            for k in 'from_hour', 'from_minute', 'to_hour', 'to_minute' :
-                oh1 [k] = new_values.get (k, cl.get (nodeid, k))
-            for ohid in adrclass.get (adr [0], 'opening_hours') :
-                if ohid == nodeid :
-                    continue
-                oh = db.opening_hours.getnode (ohid)
-                if wd == oh.weekday :
-                    check_oh_overlap (db, wd, oh1, oh)
-# end def check_open_hours
-
-def retire_unlinked_opening_hours (db, cl, nodeid, new_values) :
-    if 'opening_hours' in new_values :
-        op = new_values ['opening_hours']
-        old_op = cl.get (nodeid, 'opening_hours')
-        opd  = dict.fromkeys (op)
-        # retire missing:
-        for op in old_op :
-            if op not in opd :
-                db.opening_hours.retire (op)
-# end def retire_unlinked_opening_hours
-
-def check_oh_overlap (db, wd, oh1, oh2) :
-    mf1 = oh1.from_hour * 60 + oh1.from_minute
-    mt1 = oh1.to_hour   * 60 + oh1.to_minute
-    mf2 = oh2.from_hour * 60 + oh2.from_minute
-    mt2 = oh2.to_hour   * 60 + oh2.to_minute
-    if (mf1 <= mf2 < mt1 or mf2 <= mf1 < mt2) :
-        weekday = db.weekday.get (wd, 'name')
-        oh1fh = oh1.from_hour
-        oh1fm = oh1.from_minute
-        oh1th = oh1.to_hour
-        oh1tm = oh1.to_minute
-        oh2fh = oh2.from_hour
-        oh2fm = oh2.from_minute
-        oh2th = oh2.to_hour
-        oh2tm = oh2.to_minute
-        raise Reject, _(''
-            "%(oh1fh)2d:%(oh1fm)02d-%(oh1th)2d:%(oh1tm)02d /"
-            "%(oh2fh)2d:%(oh2fm)02d-%(oh2th)2d:%(oh2tm)02d "
-            "overlap for %(weekday)s"
-            ) % locals ()
-# end def check_oh_overlap
-
-def check_open_hours_for_adr (db, cl, nodeid, new_values) :
-    op = []
-    if 'opening_hours' in new_values :
-        op = new_values ['opening_hours']
-    elif nodeid :
-        op = cl.get (nodeid, 'opening_hours')
-    op = [db.opening_hours.getnode (i) for i in op]
-    by_weekday = {}
-    for oh in op :
-        if oh.weekday not in by_weekday :
-            by_weekday [oh.weekday] = []
-        by_weekday [oh.weekday].append (oh)
-    # overlap check
-    for wd, op in by_weekday.iteritems () :
-        for n, oh1 in enumerate (op) :
-            for i in xrange (n + 1, len (op)) :
-                check_oh_overlap (db, wd, oh1, op [i])
-# end def check_open_hours_for_adr
-
 def init (db) :
-    global _, adrclass
+    global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
@@ -226,11 +134,4 @@ def init (db) :
         persclass.audit  ("create", check_function)
         persclass.audit  ("set",    check_function)
         persclass.react  ("set",    check_retire)
-    if 'opening_hours' in db.classes :
-        db.opening_hours.audit ("create", check_open_hours)
-        db.opening_hours.audit ("set",    check_open_hours)
-        if adrclass :
-            adrclass.audit ("set",    retire_unlinked_opening_hours)
-            adrclass.audit ("create", check_open_hours_for_adr)
-            adrclass.audit ("set",    check_open_hours_for_adr)
 # end def init

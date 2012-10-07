@@ -39,15 +39,6 @@ def abo_max_invoice (db, abo) :
     return maxinv
 # end def abo_max_invoice
 
-def get_valid_user_stati (db) :
-    stati = []
-    for i in db.user_status.filter (None, {}) :
-        us = db.user_status.getnode (i)
-        if us.name != 'obsolete' :
-            stati.append (us.id)
-    return stati
-# end def get_valid_user_stati
-
 def uni (x) :
     return x.decode ("latin1").encode ("utf-8")
 # end def uni
@@ -165,8 +156,13 @@ def update_userlist_html (db, cl = None) :
     # all 'real' users
     spec = {}
     if 'status' in cl.properties :
-        spec = dict (status = get_valid_user_stati (db))
-    users = cl.filter (None, filterspec = spec, sort = ("+", "username"))
+        valid  = db.user_status.lookup ('valid')
+        system = db.user_status.lookup ('system')
+        spec  = { 'status' : [valid, system] }
+    users      = cl.filter ( None # full text search
+                           , filterspec = spec
+                           , sort       = ("+", "username")
+                           )
     if users :
         options  = [OPTION_FMT % (id, cl.get (id, "username")) for id in users]
 
@@ -190,7 +186,8 @@ def update_userlist_html (db, cl = None) :
     # invalid users here, so use the same filterspec.
     spec = {}
     if 'status' in cl.properties :
-        spec   = dict (status = get_valid_user_stati (db))
+        status = [db.user_status.lookup (s) for s in 'valid', 'system']
+        spec   = {"status" : status}
     users    = cl.filter ( None # full text search
                          , filterspec = spec
                          , sort       = ("+", "username")

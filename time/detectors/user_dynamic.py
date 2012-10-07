@@ -34,6 +34,9 @@ from roundup.cgi.TranslationService import get_translation
 
 from freeze       import frozen
 from user_dynamic import last_user_dynamic, day, wdays, round_daily_work_hours
+from user_dynamic import invalidate_tr_duration
+from user_dynamic import invalidate_cache_required_overtime_quotient
+from user_dynamic import invalidate_cache_required_overtime_in_period
 from common       import require_attributes, overtime_period_week, ymd
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
@@ -105,16 +108,20 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
         op = db.overtime_period.getnode (X.overtime_period)
 
     if op and not op.months and X.supp_per_period is not None :
-	spp = _ ("supp_per_period")
-	raise Reject, "%(spp)s must be empty for this %(ov)s" % locals ()
+        spp = _ ("supp_per_period")
+        raise Reject, "%(spp)s must be empty for this %(ov)s" % locals ()
     if op and not op.weekly and X.supp_weekly_hours is not None :
-	swh = _ ("supp_weekly_hours")
-	raise Reject, "%(swh)s must be empty for this %(ov)s" % locals ()
+        swh = _ ("supp_weekly_hours")
+        raise Reject, "%(swh)s must be empty for this %(ov)s" % locals ()
+    if op and op.required_overtime and X.additional_hours is not None :
+       ah = _ ("additional_hours")
+       raise Reject, "%(ah)s must be empty for this %(ov)s" % locals ()
 
     for f in ov_req :
         # don't allow 0 for additional_hours
         if  (   op
-	    and op.months
+            and op.months
+            and not op.required_overtime
             and (  getattr (X, f, None) is None
                 or f == 'additional_hours' and not getattr (X, f, None)
                 )
@@ -153,9 +160,10 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
         setattr (X, 'weekly_hours', sum)
     if  (   op
         and not op.weekly
-	and op.months
-	and X.additional_hours != X.weekly_hours
-	) :
+        and op.months
+        and not op.required_overtime
+        and X.additional_hours != X.weekly_hours
+        ) :
         ah = _ ('additional_hours')
         wh = _ ('weekly_hours')
         raise Reject, "%(ah)s must equal %(wh)s for monthly balance" % locals ()
@@ -231,23 +239,6 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         invalidate_tr_duration (db, user, use_to, None)
 # end def check_user_dynamic
 
-def invalidate_tr_duration (db, user, v_frm, v_to) :
-    """ Invalidate all cached tr_duration_ok values in all daily records
-        in the given range for the given user.
-        We also invalidate computations on v_to (which is too far) but
-        these get recomputed (we're in a non-frozen range anyway).
-        Make sure the tr_duration_ok is *really* set even if our cached
-        value is None.
-    """
-    if v_to is None :
-        pdate = v_frm.pretty (ymd) + ';'
-    else :
-        pdate = ';'.join ((v_frm.pretty (ymd), v_to.pretty (ymd)))
-    for dr in db.daily_record.filter (None, dict (date = pdate, user = user)) :
-        db.daily_record.set (dr, tr_duration_ok = 0)
-        db.daily_record.set (dr, tr_duration_ok = None)
-# end def invalidate_tr_duration
-
 def set_otp_if_all_in (db, cl, nodeid, new_values) :
     if 'all_in' in new_values and new_values ['all_in'] :
         new_values ['overtime_period'] = None
@@ -304,15 +295,32 @@ def close_existing (db, cl, nodeid, old_values) :
 # end def close_existing
 
 def overtime_check (db, cl, nodeid, new_values) :
-    require_attributes (_, cl, nodeid, new_values, 'name')
-    months = new_values ['months'] = int (new_values ['months'])
-    weekly = new_values ['weekly']
-    same   = cl.filter (None, dict (months = months, weekly = weekly))
+    if not nodeid and 'required_overtime' not in new_values :
+        new_values ['required_overtime'] = False
+    require_attributes \
+        (_, cl, nodeid, new_values
+        , 'name', 'months', 'weekly', 'required_overtime'
+        )
+    if 'months' in new_values :
+        months = new_values ['months'] = int (new_values ['months'])
+    else :
+        months = int (cl.get (nodeid, 'months'))
+    if 'weekly' in new_values :
+        weekly = new_values ['weekly']
+    else :
+        weekly = cl.get (nodeid, 'weekly')
+    if 'required_overtime' in new_values :
+        rov    = new_values ['required_overtime']
+    else :
+        rov    = cl.get (nodeid, 'required_overtime')
+    same   = cl.filter \
+        (None, dict (months = months, weekly = weekly, required_overtime = rov))
     mname  = _ ("months")
     wname  = _ ("weekly")
+    rname  = _ ("required_overtime")
     if same and (len (same) > 1 or same [0] != nodeid) :
         raise Reject, _ \
-            ("No entries with same number of %(mname)s / %(wname)s allowed") \
+            ("No entries with same %(mname)s, %(wname)s, %(rname)s allowed") \
             % locals ()
     if not months and not weekly :
         raise Reject, _ \
@@ -321,6 +329,13 @@ def overtime_check (db, cl, nodeid, new_values) :
         raise Reject, _ \
             ("Invalid number of %(mname)s, must be 0 or a divisor of 12") \
             % locals ()
+    if rov and months != 1 :
+        raise Reject, _ \
+            ("Invalid number of %(mname)s, must be 1 if %(rname)s is given") \
+            % locals ()
+    if rov and weekly :
+        raise Reject, _ \
+            ("Only one of %(rname)s, %(wname)s is allowed") % locals ()
 # end def overtime_check
 
 def init (db) :
@@ -336,6 +351,8 @@ def init (db) :
     db.user_dynamic.react    ("create", close_existing)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
+    db.registerClearCacheCallback (invalidate_cache_required_overtime_quotient)
+    db.registerClearCacheCallback (invalidate_cache_required_overtime_in_period)
 # end def init
 
 ### __END__ user_dynamic

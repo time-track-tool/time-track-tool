@@ -920,6 +920,7 @@ class Staff_Report (_Report) :
         , ""'actual_accepted'
         , ""'actual_all'
         , ""'required'
+        , ""'supp_hours_2'
         , ""'supp_weekly_hours'
         , ""'overtime_correction'
         , ""'balance_end'
@@ -1051,6 +1052,7 @@ class Staff_Report (_Report) :
         container ['actual_submitted']       = 0
         container ['actual_accepted']        = 0
         container ['required']               = 0
+        container ['supp_hours_2']           = 0
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = 0
         container ['achieved_supplementary'] = ''
@@ -1068,11 +1070,13 @@ class Staff_Report (_Report) :
             if not period_is_weekly (period) :
                 self.need_period = True
 		pd  = Period_Data (db, user, s, e, period, 0.0)
-		effective_overtime.append ('=> %.2f' % pd.overtime_per_period)
+                opp = pd.overtime_per_period
+                if opp is not None :
+                    effective_overtime.append ('=> %.2f' % opp)
         supp_pp = {}
         d = start
         while d <= end :
-            do_perd = do_week = False
+            do_perd = do_week = do_ovt = False
             dur = durations (db, u, d)
             db.commit () # immediately commit cached tr_duration if changed
             for period in periods :
@@ -1084,6 +1088,7 @@ class Staff_Report (_Report) :
                     (   period.weekly
                     and use_work_hours (db, dur.dyn, period)
                     )
+                do_ovt  = do_ovt or period.required_overtime
 	    if dur.supp_per_period :
 		supp_pp [str (int (dur.supp_per_period))] = True
             assert (not dur.tr_duration or dur.dr_status)
@@ -1091,12 +1096,14 @@ class Staff_Report (_Report) :
             if dur.dr_status :
                 f = 'actual_' + self.stati [dur.dr_status]
                 container [f] += dur.tr_duration
-            container ['required']          += \
-                dur.day_work_hours * (do_week or do_perd)
+            wh = dur.day_work_hours * (do_week or do_perd)
+            container ['required']          += wh
+            if do_ovt :
+                container ['supp_hours_2']  += wh + dur.required_overtime
             container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
 	    container ['additional_hours']  += dur.additional_hours  * do_perd
             d = d + day
-	cont = [', '.join (supp_pp.iterkeys ())]
+	cont = [' / '.join (supp_pp.iterkeys ())]
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)

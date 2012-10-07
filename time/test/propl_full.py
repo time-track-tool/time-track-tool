@@ -307,6 +307,7 @@ properties = \
       , [ 'months'
         , 'name'
         , 'order'
+        , 'required_overtime'
         , 'weekly'
         ]
       )
@@ -457,6 +458,7 @@ properties = \
         , 'nosy'
         , 'op_project'
         , 'organisation'
+        , 'overtime_reduction'
         , 'planned_effort'
         , 'responsible'
         , 'status'

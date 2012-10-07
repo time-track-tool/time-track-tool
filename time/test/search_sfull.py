@@ -796,6 +796,9 @@ properties = \
         , ( 'order'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'required_overtime'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
         , ( 'weekly'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
@@ -1135,6 +1138,9 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'organisation'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'overtime_reduction'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'planned_effort'

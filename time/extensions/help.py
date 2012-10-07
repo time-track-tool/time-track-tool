@@ -1018,6 +1018,13 @@ _helptext          = \
       [""'''Operating System running on this %(Classname)s''']
     , ""'overtime_period'             :
       [""'''Period over which overtime is computed for a person''']
+    , ""'overtime_period++required_overtime' :
+      [""'''Given overtime is required for the period.''']
+    , ""'overtime_reduction'          :
+      [""'''Don't count hours booked on this %(Classname)s
+            for required overtime.
+         '''
+      ]
     , ""'parent'                      :
       [""'''%(Classname)s to which this %(Classname)s belongs.''']
     , ""'part_of'                     :
@@ -1421,6 +1428,21 @@ _helptext          = \
       [ ""'''Weekly hours including the agreed supplementary hours (e.g.
              45h), Format: xx.xx. Please round to whole quarters of an hour
              (e.g. 0.5 means a half-hour).
+
+             The calculation of the system "supplementary hours" -
+             weekly in the staff report (independant of the number of
+             hours, be it 38.5h sharp or 40 or 42 or 45 on demand) is
+             not made in accordance with the daily required hours (7.75,
+             Fri: 7.5) but by division through 5 over the week.
+             
+             E.g.
+             person has 38.5h sharp system, and changes during a week to
+             other system. The required hours for the days in the 38.5h
+             sharp system are 7.7 per day (=38.5/5).  Inconsistencies
+             occuring in the course of a change to another work-time
+             system (esp. when there are paid leave times during such a
+             week of change), must be repaired manually (i.e. by
+             Overtime Correction).
           '''
       ]
     , ""'supply_address'              :

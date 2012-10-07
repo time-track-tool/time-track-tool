@@ -330,17 +330,17 @@ class Roundup_Access (object) :
         # end def __init__
 
         def _ip_netmask (self) :
-            return self.ip.subnet_mask
+            return self.ip.subnet_mask ()
         # end def _ip_netmask
         ip_netmask = property (_ip_netmask)
 
         def _ip_broadcast (self) :
-            return self.ip.broadcast_address
+            return self.ip.broadcast_address ()
         # end def _ip_broadcast
         ip_broadcast = property (_ip_broadcast)
 
         def _ip_subnet (self) :
-            return self.ip.net
+            return self.ip.__class__ (self.ip.ip)
         # end def _ip_subnet
         ip_subnet = property (_ip_subnet)
 

@@ -43,6 +43,7 @@ from time                           import gmtime
 
 import common
 from user_dynamic                   import get_user_dynamic, day_work_hours
+from user_dynamic                   import invalidate_tr_duration
 from freeze                         import frozen
 
 def check_timestamps (start, end, date) :
@@ -270,7 +271,8 @@ def update_timerecs (db, time_record_id, set_it) :
     trecs   = trecs.keys ()
     trecs.sort ()
     if trecs != trecs_o :
-        db.daily_record.set (drec_id, tr_duration_ok = 0)
+        dr = db.daily_record.getnode (drec_id)
+        invalidate_tr_duration (db, dr.user, dr.date, dr.date)
         db.daily_record.set \
             ( drec_id
             , time_record    = [str (i) for i in trecs]
@@ -634,8 +636,8 @@ def check_for_retire_and_duration (db, cl, nodeid, old_values) :
         cl.retire (nodeid)
     elif common.changed_values (old_values, cl, nodeid) != ['tr_duration'] :
         drid = cl.get (nodeid, 'daily_record')
-        db.daily_record.set (drid, tr_duration_ok = 0)
-        db.daily_record.set (drid, tr_duration_ok = None)
+        dr = db.daily_record.getnode (drid)
+        invalidate_tr_duration (db, dr.user, dr.date, dr.date)
 # end def check_for_retire_and_duration
 
 def check_retire (db, cl, nodeid, dummy) :

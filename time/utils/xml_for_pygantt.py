@@ -58,10 +58,7 @@ import re
 from   getopt                  import getopt, GetoptError
 from   roundup                 import instance, date
 from   xml.sax.saxutils        import escape
-try :
-    from xml.etree.ElementTree   import Element, SubElement, ElementTree
-except ImportError :
-    from elementtree.ElementTree import Element, SubElement, ElementTree
+from   elementtree.ElementTree import Element, SubElement, ElementTree
 
 class Pygantt_XML :
     """Queries the Roundup DB and creates XML output for pygantt."""
@@ -271,8 +268,9 @@ class Pygantt_XML :
             tt = SubElement (tree, "timetable", id = day)
             SubElement (tt, "dayoff", type = "weekday").text = day
             week.append (day)
-        # get *all* stati:
-        stati = self.db.user_status.filter (None, {})
+        stati = [self.db.user_status.lookup (i)
+                 for i in ("valid", "obsolete", "system")
+                ]
         for uid in self.db.user.filter (None, dict (status = stati)) :
             dyn = self.get_user_dynamic (self.db, uid, self.now)
             if not dyn :

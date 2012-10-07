@@ -84,14 +84,14 @@ def security (db, ** kw) :
                   ]
 
     for perm in ('View', 'Edit') :
-        #p = db.security.addPermission \
-        #    ( name        = perm
-        #    , klass       = 'issue'
-        #    , check       = is_on_nosy
-        #    , description = is_on_nosy.__doc__
-        #    , properties  = issue_props
-        #    )
-        #db.security.addPermissionToRole ('External', p)
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'issue'
+            , check       = is_on_nosy
+            , description = is_on_nosy.__doc__
+            , properties  = issue_props
+            )
+        db.security.addPermissionToRole ('External', p)
         if 'external_company' in db.issue.properties :
             p = db.security.addPermission \
                 ( name        = perm

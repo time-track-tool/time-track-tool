@@ -945,7 +945,7 @@ def require_attributes (_, cl, nodeid, new_values, * attributes) :
         if a not in cl.properties :
             continue
         attr = _ (a)
-        if not nodeid and (a not in new_values or new_values [a] is None):
+        if not nodeid and (a not in new_values or new_values [a] is None) :
             raise Reject, _ (''"%(attr)s must be specified") % locals ()
         elif nodeid and new_values.get (a, cl.get (nodeid, a)) is None :
             raise Reject, _ (''"%(attr)s must not be empty") % locals ()
@@ -967,14 +967,6 @@ def reject_attributes (_, new_values, * attributes) :
         if a in new_values :
             raise Reject, _ (''"%(attr)s must not be specified") % locals ()
 # end def reject_attributes
-
-def check_attribute_range (_, new_values, lower, upper, * attributes) :
-    for a in attributes :
-        v = new_values.get (a)
-        if v is not None and v < lower or v > upper :
-            name = _ (a)
-            raise Reject, _ (''"Invalid %(name)s: %(v)s" % locals ())
-# end def check_attribute_range
 
 def default_status (new_values, status_class, valid = True, status = 'status') :
     """ Set a default status for a new item if none is given.

@@ -23,10 +23,13 @@ import os
 import shutil
 import sys
 import unittest
+import logging
+import csv
 
-import user1_time, user2_time, user3_time
+import user1_time, user2_time, user3_time, user4_time, user5_time
 
 from operator import mul
+from StringIO import StringIO
 
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
@@ -157,6 +160,7 @@ class _Test_Case (unittest.TestCase) :
     # end def setup_tracker
 
     def setUp (self) :
+        self.log           = logging.getLogger ('roundup.test')
         self.properties    = globals () ['properties_' + self.schemaname]
         self.security_desc = globals () ['security_'   + self.schemaname]
         self.search_desc   = globals () ['sec_search_' + self.schemaname]
@@ -175,6 +179,7 @@ class _Test_Case (unittest.TestCase) :
     # end def tearDown
 
     def test_0_roles (self) :
+        self.log.debug ('test_0_roles')
         self.db = self.tracker.open ('admin')
         roles = list (sorted (self.db.security.role.iterkeys ()))
         self.assertEqual (roles, self.roles)
@@ -183,6 +188,7 @@ class _Test_Case (unittest.TestCase) :
     # end def test_0_roles
 
     def test_1_schema (self) :
+        self.log.debug ('test_1_schema')
         self.db = self.tracker.open ('admin')
         classnames = sorted (self.db.getclasses ())
         for (cl, props), cls in zip (self.properties, classnames) :
@@ -192,6 +198,7 @@ class _Test_Case (unittest.TestCase) :
     # end def test_1_schema
 
     def test_2_security (self) :
+        self.log.debug ('test_2_security')
         self.db = self.tracker.open ('admin')
         secdesc = self.security_desc.split ('\n')
         sd2     = []
@@ -246,6 +253,7 @@ class _Test_Case (unittest.TestCase) :
     # end def test_2_security
 
     def test_3_search (self) :
+        self.log.debug ('test_3_search')
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         classnames = sorted (self.db.getclasses ())
@@ -263,6 +271,7 @@ class _Test_Case (unittest.TestCase) :
 
     transprop_perms = []
     def test_4_transprops (self) :
+        self.log.debug ('test_4_transprops')
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         perms = []
@@ -465,86 +474,89 @@ class Test_Case_Timetracker (_Test_Case) :
         stat_open = self.db.time_project_status.lookup ('Open')
         self.ccg = self.db.cost_center_group.create (name = 'CCG')
         self.cc = self.db.cost_center.create \
-            ( name              = 'CC'
-            , cost_center_group = self.ccg
-            , status            = self.db.cost_center_status.lookup ('Open')
+            ( name               = 'CC'
+            , cost_center_group  = self.ccg
+            , status             = self.db.cost_center_status.lookup ('Open')
             )
         self.holiday_tp = self.db.time_project.create \
             ( name = 'Public Holiday'
-            , work_location     = wl_off
-            , op_project        = False
-            , no_overtime       = True
-            , is_public_holiday = True
-            , responsible       = '1'
-            , department        = self.dep
-            , status            = stat_open
-            , cost_center       = self.cc
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , overtime_reduction = True
+            , is_public_holiday  = True
+            , responsible        = '1'
+            , department         = self.dep
+            , status             = stat_open
+            , cost_center        = self.cc
             )
         self.unpaid_tp = self.db.time_project.create \
             ( name = 'Leave'
-            , work_location     = wl_off
-            , op_project        = False
-            , no_overtime       = True
-            , responsible       = '1'
-            , department        = self.dep
-            , status            = stat_open
-            , cost_center       = self.cc
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , department         = self.dep
+            , status             = stat_open
+            , cost_center        = self.cc
             )
         self.travel_tp = self.db.time_project.create \
             ( name = 'Travel'
-            , work_location     = wl_trav
-            , op_project        = False
-            , responsible       = '1'
-            , department        = self.dep
-            , status            = stat_open
-            , cost_center       = self.cc
+            , work_location      = wl_trav
+            , op_project         = False
+            , responsible        = '1'
+            , department         = self.dep
+            , status             = stat_open
+            , cost_center        = self.cc
             )
         self.normal_tp = self.db.time_project.create \
             ( name = 'A Project'
-            , op_project        = True
-            , responsible       = self.user1
-            , department        = self.dep
-            , organisation      = self.org
-            , cost_center       = self.cc
+            , op_project         = True
+            , responsible        = self.user1
+            , department         = self.dep
+            , organisation       = self.org
+            , cost_center        = self.cc
             )
         self.holiday_wp = self.db.time_wp.create \
-            ( name              = 'Holiday'
-            , project           = self.holiday_tp
-            , time_start        = date.Date ('2004-01-01')
-            , durations_allowed = True
-            , responsible       = '1'
-            , bookers           = [self.user1, self.user2]
-            , cost_center       = self.cc
+            ( name               = 'Holiday'
+            , project            = self.holiday_tp
+            , time_start         = date.Date ('2004-01-01')
+            , durations_allowed  = True
+            , responsible        = '1'
+            , bookers            = [self.user1, self.user2]
+            , cost_center        = self.cc
             )
         self.unpaid_wp = self.db.time_wp.create \
-            ( name              = 'Unpaid'
-            , project           = self.holiday_tp
-            , time_start        = date.Date ('2004-01-01')
-            , durations_allowed = True
-            , responsible       = '1'
-            , bookers           = [self.user1, self.user2]
-            , cost_center       = self.cc
+            ( name               = 'Unpaid'
+            , project            = self.holiday_tp
+            , time_start         = date.Date ('2004-01-01')
+            , durations_allowed  = True
+            , responsible        = '1'
+            , bookers            = [self.user1, self.user2]
+            , cost_center        = self.cc
             )
         self.travel_wp = self.db.time_wp.create \
-            ( name              = 'Travel'
-            , project           = self.holiday_tp
-            , time_start        = date.Date ('2004-01-01')
-            , travel            = True
-            , responsible       = '1'
-            , bookers           = [self.user1, self.user2]
-            , cost_center       = self.cc
+            ( name               = 'Travel'
+            , project            = self.travel_tp
+            , time_start         = date.Date ('2004-01-01')
+            , travel             = True
+            , responsible        = '1'
+            , bookers            = [self.user1, self.user2]
+            , cost_center        = self.cc
             )
         for i in xrange (40) :
             self.db.time_wp.create \
-                ( name              = 'Work Package %s' % i
-                , project           = self.normal_tp
-                , time_start        = date.Date ('2004-01-01')
-                , travel            = True
-                , responsible       = '1'
-                , bookers           = [self.user1, self.user2]
-                , cost_center       = self.cc
+                ( name           = 'Work Package %s' % i
+                , project        = self.normal_tp
+                , time_start     = date.Date ('2004-01-01')
+                , travel         = True
+                , responsible    = '1'
+                , bookers        = [self.user1, self.user2]
+                , cost_center    = self.cc
                 )
         self.db.commit ()
+        self.log.debug ("End of setup")
     # end def setup_db
 
     def setup_user3 (self) :
@@ -580,7 +592,143 @@ class Test_Case_Timetracker (_Test_Case) :
         self.db.commit ()
     # end def setup_user3
 
+    def setup_user4 (self) :
+        self.username4 = 'testuser4'
+        self.user4 = self.db.user.create \
+            ( username     = self.username4
+            , firstname    = 'Nummer4'
+            , lastname     = 'User4'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user4))
+        self.assertEqual (len (ud), 1)
+        p = self.db.overtime_period.create \
+            ( name              = 'month average'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from        = date.Date ('2012-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_per_period   = 7
+            , overtime_period   = p
+            , weekend_allowed   = True
+            )
+        self.db.commit ()
+    # end def setup_user4
+
+    def setup_user5 (self) :
+        self.username5 = 'testuser5'
+        self.user5 = self.db.user.create \
+            ( username     = self.username5
+            , firstname    = 'Nummer5'
+            , lastname     = 'User5'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # public holidays
+        vienna = self.db.location.lookup ('Vienna')
+        hd = \
+            ( ("New Year's Day", "Neujahr",             "2012-01-01")
+            , ("Epiphany",       "Heilige drei K.",     "2012-01-06")
+            , ("Easter Monday",  "Ostermontag",         "2012-04-09")
+            , ("May Day",        "Tag der Arbeit",      "2012-05-01")
+            , ("Ascension Day",  "Christi Himmelfahrt", "2012-05-17")
+            , ("Pentecost",      "Pfingstsonntag",      "2012-05-27")
+            , ("Pentecost",      "Pfingsmontag",        "2012-05-28")
+            , ("Corpus Christi", "Fronleichnam",        "2012-06-07")
+            , ("Assumption",     "Himmelfahrt",         "2012-08-15")
+            )
+        for name, desc, dt in hd :
+            dt = date.Date (dt)
+            self.db.public_holiday.create \
+                ( name        = name
+                , description = desc
+                , date        = dt
+                , locations   = [vienna]
+                )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user5))
+        self.assertEqual (len (ud), 1)
+        ud = self.db.user_dynamic.getnode (ud [0])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        week = self.db.overtime_period.lookup ('week')
+
+        self.db.user_dynamic.set \
+            ( ud.id
+            , valid_from        = date.Date ('2012-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = week
+            , weekend_allowed   = True
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user5
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2012-03-15')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_per_period   = 7
+            , overtime_period   = p
+            , weekend_allowed   = True
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user5
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2012-06-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 41.0
+            , additional_hours  = 40.0
+            , overtime_period   = week
+            , weekend_allowed   = True
+            )
+        self.db.commit ()
+    # end def setup_user5
+
     def test_rename_status (self) :
+        self.log.debug ('test_rename_status')
         self.setup_db ()
         # test that renaming the 'New' cost_center status will still work
         ccs = self.db.cost_center_status.lookup ('New')
@@ -603,6 +751,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_rename_status
 
     def test_user1 (self) :
+        self.log.debug ('test_user1')
         self.setup_db ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)
@@ -697,13 +846,26 @@ class Test_Case_Timetracker (_Test_Case) :
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [0] [0], 'User')
+        self.assertEqual (lines [0] [1], 'Time Period')
+        self.assertEqual (lines [0] [2], 'Balance Start')
+        self.assertEqual (lines [0] [3], 'Actual open')
+        self.assertEqual (lines [0] [4], 'Actual submitted')
+        self.assertEqual (lines [0] [5], 'Actual accepted')
+        self.assertEqual (lines [0] [6], 'Actual all')
+        self.assertEqual (lines [0] [7], 'required')
+        self.assertEqual (lines [0] [8], 'Supp. hours average')
+        self.assertEqual (lines [0] [9], 'Supplementary hours')
+        self.assertEqual (lines [0][10], 'Overtime correction')
+        self.assertEqual (lines [0][11], 'Balance End')
+        self.assertEqual (lines [0][12], 'Overtime period')
         self.assertEqual (lines [1] [1], 'WW 36/2008')
         self.assertEqual (lines [2] [1], 'WW 37/2008')
         self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
-        self.assertEqual (lines [1][10], '15.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
-        self.assertEqual (lines [3] [9], '910.0')
+        self.assertEqual (lines [1][11], '15.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [3][10], '910.0')
         fs = { 'user'         : [self.user1]
              , 'date'         : '2009-12-21;2010-01-03'
              , 'summary_type' : [2, 4]
@@ -714,9 +876,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
 
         for d in ('2006-12-31', '2007-12-31') :
             f = self.db.daily_record_freeze.create \
@@ -778,9 +940,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
 
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
@@ -808,12 +970,13 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
     # end def test_user1
 
     def test_user2 (self) :
+        self.log.debug ('test_user2')
         self.setup_db ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
@@ -863,9 +1026,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2008')
         self.assertEqual (lines [2] [1], 'WW 1/2009')
         self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
-        self.assertEqual (lines [1][10], '0.00')
-        self.assertEqual (lines [2][10], '0.00')
-        self.assertEqual (lines [3][10], '0.00')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
 
         fs = { 'user'         : [self.user2]
              , 'date'         : '2009-12-21;2010-01-03'
@@ -878,9 +1041,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][10], '113.12')
-        self.assertEqual (lines [2][10], '113.12')
-        self.assertEqual (lines [3][10], '113.12')
+        self.assertEqual (lines [1][11], '113.12')
+        self.assertEqual (lines [2][11], '113.12')
+        self.assertEqual (lines [3][11], '113.12')
         f = self.db.daily_record_freeze.create \
             ( user           = self.user2
             , frozen         = True
@@ -924,6 +1087,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_user2
 
     def test_user3 (self) :
+        self.log.debug ('test_user3')
         self.setup_db ()
         self.setup_user3 ()
         self.db.close ()
@@ -941,30 +1105,294 @@ class Test_Case_Timetracker (_Test_Case) :
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
         self.assertEqual (lines [0]  [1], 'Time Period')
-        self.assertEqual (lines [0] [12], 'Achieved supplementary hours')
+        self.assertEqual (lines [0] [13], 'Achieved supplementary hours')
         self.assertEqual (lines [1]  [1], 'WW 53/2009')
         self.assertEqual (lines [2]  [1], 'WW 1/2010')
         self.assertEqual (lines [16] [6], '57.62')
-        self.assertEqual (lines [16] [8], '45.00')
-        self.assertEqual (lines [16][10], '12.62')
-        self.assertEqual (lines [16][12], '5.00')
+        self.assertEqual (lines [16] [9], '45.00')
+        self.assertEqual (lines [16][11], '12.62')
+        self.assertEqual (lines [16][13], '5.00')
         self.assertEqual (lines [17] [6], '52.88')
-        self.assertEqual (lines [17] [8], '45.00')
-        self.assertEqual (lines [17][10], '20.50')
-        self.assertEqual (lines [17][12], '10.00')
+        self.assertEqual (lines [17] [9], '45.00')
+        self.assertEqual (lines [17][11], '20.50')
+        self.assertEqual (lines [17][13], '10.00')
         self.assertEqual (lines [18] [1], 'WW 17/2010')
         self.assertEqual (lines [18] [6], '38.50')
-        self.assertEqual (lines [18] [8], '45.00')
-        self.assertEqual (lines [18][10], '20.50')
-        self.assertEqual (lines [18][12], '10.00')
+        self.assertEqual (lines [18] [9], '45.00')
+        self.assertEqual (lines [18][11], '20.50')
+        self.assertEqual (lines [18][13], '10.00')
         self.assertEqual (lines [19] [1], 'WW 18/2010')
         self.assertEqual (lines [19] [6], '38.50')
-        self.assertEqual (lines [19] [8], '45.00')
-        self.assertEqual (lines [19][10], '20.50')
-        self.assertEqual (lines [19][12], '10.00')
+        self.assertEqual (lines [19] [9], '45.00')
+        self.assertEqual (lines [19][11], '20.50')
+        self.assertEqual (lines [19][13], '10.00')
     # end def test_user3
 
+    def test_user4 (self) :
+        self.log.debug ('test_user4')
+        self.setup_db ()
+        self.setup_user4 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username4)
+        user4_time.import_data_4 (self.db, self.user4)
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user4, date = '2012-05-04'))
+        self.assertEqual (len (dr), 1)
+        dr = self.db.daily_record.getnode (dr [0])
+        tr = dr.time_record
+        self.assertEqual (len (tr), 1)
+        tr = self.db.time_record.getnode (tr [0])
+        self.assertEqual (tr.duration, 12)
+        self.assertEqual (tr.tr_duration, None)
+        update_tr_duration (self.db, dr)
+        self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user4]
+             , 'date'         : '2012-01-01;2012-05-31'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 31)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [1] [1], 'WW 52/2011')
+        self.assertEqual (lines  [2] [1], 'WW 1/2012')
+        self.assertEqual (lines [24] [1], 'January 2012')
+        self.assertEqual (lines [28] [1], 'May 2012')
+        self.assertEqual (lines [29] [1], '2012-01-01;2012-05-31')
+        self.assertEqual (lines  [1] [2], '0.00') # balance_start
+
+        self.assertEqual (lines  [1] [6], '0')
+        self.assertEqual (lines  [1] [8], '0.00')
+        self.assertEqual (lines  [1][11], '0.00')
+        self.assertEqual (lines  [2] [6], '40.00')
+        self.assertEqual (lines  [2] [8], '39.77')
+        self.assertEqual (lines  [2][11], '0.23')
+        self.assertEqual (lines  [3] [6], '38.75')
+        self.assertEqual (lines  [3] [8], '40.09')
+        self.assertEqual (lines  [3][11], '-1.11')
+        self.assertEqual (lines  [4] [6], '40.25')
+        self.assertEqual (lines  [4] [8], '40.09')
+        self.assertEqual (lines  [4][11], '-0.95')
+        self.assertEqual (lines  [5] [6], '40.75')
+        self.assertEqual (lines  [5] [8], '40.09')
+        self.assertEqual (lines  [5][11], '-0.30')
+        self.assertEqual (lines  [6] [6], '38.50')
+        self.assertEqual (lines  [6] [8], '40.14')
+        self.assertEqual (lines  [6][11], '-1.93')
+        self.assertEqual (lines  [7] [6], '38.50')
+        self.assertEqual (lines  [7] [8], '38.50')
+        self.assertEqual (lines  [7][11], '-1.93')
+        self.assertEqual (lines  [8] [6], '45.00')
+        self.assertEqual (lines  [8] [8], '40.17')
+        self.assertEqual (lines  [8][11], '2.90')
+        self.assertEqual (lines  [9] [6], '41.75')
+        self.assertEqual (lines  [9] [8], '40.17')
+        self.assertEqual (lines  [9][11], '4.48')
+        self.assertEqual (lines [10] [6], '40.75')
+        self.assertEqual (lines [10] [8], '40.14')
+        self.assertEqual (lines [10][11], '5.10')
+        self.assertEqual (lines [11] [6], '41.75')
+        self.assertEqual (lines [11] [8], '40.09')
+        self.assertEqual (lines [11][11], '6.76')
+        self.assertEqual (lines [12] [6], '41.75')
+        self.assertEqual (lines [12] [8], '40.09')
+        self.assertEqual (lines [12][11], '8.42')
+        self.assertEqual (lines [13] [6], '41.25')
+        self.assertEqual (lines [13] [8], '40.09')
+        self.assertEqual (lines [13][11], '9.58')
+        self.assertEqual (lines [14] [6], '40.00')
+        self.assertEqual (lines [14] [8], '40.09')
+        self.assertEqual (lines [14][11], '9.48')
+        self.assertEqual (lines [15] [6], '40.75')
+        self.assertEqual (lines [15] [8], '40.17')
+        self.assertEqual (lines [15][11], '10.07')
+        self.assertEqual (lines [16] [6], '42.50')
+        self.assertEqual (lines [16] [8], '39.83')
+        self.assertEqual (lines [16][11], '12.73')
+        self.assertEqual (lines [17] [6], '42.75')
+        self.assertEqual (lines [17] [8], '40.17')
+        self.assertEqual (lines [17][11], '15.32')
+        self.assertEqual (lines [18] [6], '41.75')
+        self.assertEqual (lines [18] [8], '40.17')
+        self.assertEqual (lines [18][11], '16.90')
+        self.assertEqual (lines [19] [6], '41.55')
+        self.assertEqual (lines [19] [8], '39.75')
+        self.assertEqual (lines [19][11], '18.71')
+        self.assertEqual (lines [20] [6], '43.00')
+        self.assertEqual (lines [20] [8], '40.02')
+        self.assertEqual (lines [20][11], '21.69')
+        self.assertEqual (lines [21] [6], '38.50')
+        self.assertEqual (lines [21] [8], '39.72')
+        self.assertEqual (lines [21][11], '20.47')
+
+        self.assertEqual (lines [24] [6], '175.25')
+        self.assertEqual (lines [24] [8], '176.18')
+        self.assertEqual (lines [24][11], '-0.93')
+        self.assertEqual (lines [25] [6], '174.00')
+        self.assertEqual (lines [25] [8], '167.08')
+        self.assertEqual (lines [25][11], '5.98')
+        self.assertEqual (lines [26] [6], '179.25')
+        self.assertEqual (lines [26] [8], '176.25')
+        self.assertEqual (lines [26][11], '8.98')
+        self.assertEqual (lines [27] [6], '175.50')
+        self.assertEqual (lines [27] [8], '168.42')
+        self.assertEqual (lines [27][11], '16.07')
+        self.assertEqual (lines [28] [6], '185.30')
+        self.assertEqual (lines [28] [8], '183.64')
+        self.assertEqual (lines [28][11], '17.73')
+        self.assertEqual (lines [29] [6], '889.30')
+        self.assertEqual (lines [29] [8], '871.57')
+        self.assertEqual (lines [29][11], '17.73')
+    # end def test_user4
+
+    def test_user5 (self) :
+        self.log.debug ('test_user5')
+        self.setup_db ()
+        self.setup_user5 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username5)
+        user5_time.import_data_5 (self.db, self.user5)
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user5]
+             , 'date'         : '2012-01-01;2012-09-28'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 51)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0] [9], 'Supplementary hours')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [0][12], 'Overtime period')
+        self.assertEqual (lines  [1] [1], 'WW 52/2011')
+        self.assertEqual (lines  [2] [1], 'WW 1/2012')
+        self.assertEqual (lines [41] [1], 'January 2012')
+        self.assertEqual (lines [49] [1], 'September 2012')
+        self.assertEqual (lines [50] [1], '2012-01-01;2012-09-28')
+        self.assertEqual (lines  [1] [2], '0.00') # balance_start
+
+        # Actual all
+        for n, v in enumerate \
+            ((   "0.00",  "38.50",  "41.50",  "41.00",  "38.50",  "40.50"
+            ,   "43.50",  "42.00",  "44.50",  "38.50",  "44.50",  "45.50"
+            ,   "39.25",  "43.50",  "35.00",  "44.00",  "44.25",  "42.00"
+            ,   "39.75",  "39.00",  "38.50",  "41.50",  "41.00",  "43.75"
+            ,   "39.00",  "38.50",  "39.25",  "38.50",  "38.50",  "38.50"
+            ,   "42.00",  "38.50",  "47.75",  "43.25",  "29.50",   "0"
+            ,    "0",      "0",      "0",      "0.00", "176.25", "177.00"
+            ,  "188.00", "173.00", "182.75", "169.75", "173.50", "143.00"
+            ,    "0.00", "1383.25"
+            )) :
+            self.assertEqual (lines [n + 1][6], v)
+        # Supp. hours average
+        for n, v in enumerate \
+            ((   "0",      "0",      "0",     "0",     "0",    "0"
+            ,    "0",      "0",      "0",     "0",     "0",    "39.14"
+            ,   "40.09",  "40.09",  "40.17", "39.83", "40.17", "40.17"
+            ,   "39.75",  "40.02",  "39.72", "40.02", "39.41",  "0"
+            ,    "0",      "0",      "0",     "0",     "0",     "0"
+            ,    "0",      "0",      "0",     "0",     "0",     "0"
+            ,    "0",      "0",      "0",     "0",     "0",     "0"
+            ,  "173.07", "168.42", "183.34",  "0",     "0",     "0"
+            ,    "0",   "1518.07"
+            )) :
+            self.assertEqual (lines [n + 1][8], v)
+        # Supplementary hours
+        for n, v in enumerate \
+            ((   "0.00",  "38.50",  "38.50",  "38.50",  "38.50",  "38.50"
+            ,   "38.50",  "38.50",  "38.50",  "38.50",  "38.50",  "23.10"
+            ,    "0",      "0",      "0",      "0",      "0",      "0"
+            ,    "0",      "0",      "0",      "0",      "8.20",  "41.00"
+            ,   "41.00",  "41.00",  "41.00",  "41.00",  "41.00",  "41.00"
+            ,   "41.00",  "41.00",  "41.00",  "41.00",  "41.00",  "41.00"
+            ,   "41.00",  "41.00",  "41.00",  "41.00", "169.40", "161.70"
+            ,   "77.00",   "0",      "0",    "172.20", "180.40", "188.60"
+            , "164.00", "1113.30"
+            )) :
+            self.assertEqual (lines [n + 1][9], v)
+        for n, v in enumerate \
+            ((    "0.00",    "0.00",    "3.00",    "5.50",  "5.50",  "7.50"
+            ,    "12.50",   "16.00",   "22.00",   "22.00", "28.00", "34.51"
+            ,    "33.67",   "37.08",   "31.92",   "36.08", "40.17", "42.00"
+            ,    "42.00",   "40.98",   "39.76",   "41.24", "42.13", "44.88"
+            ,    "44.88",   "44.88",   "44.88",   "44.88", "44.88", "44.88"
+            ,    "45.88",   "45.88",   "52.63",   "54.88", "45.88",  "7.38"
+            ,   "-31.12",  "-69.62", "-108.12", "-146.62",  "6.85", "22.15"
+            ,    "37.08",   "41.67",   "41.08",   "44.88", "45.88",  "7.38"
+            ,  "-146.62", "-146.62"
+            )) :
+            self.assertEqual (lines [n + 1][11], v)
+        off = 1
+        for n in xrange (11) :
+            self.assertEqual (lines [n + off][12], "week")
+        off += 11
+        self.assertEqual (lines [off][12], "week, monthly average required")
+        off += 1
+        for n in xrange (10) :
+            self.assertEqual (lines [n + off][12], "monthly average required")
+        off += 10
+        self.assertEqual (lines [off][12], "monthly average required, week")
+        off += 1
+        for n in xrange (19) :
+            self.assertEqual (lines [n + off][12], "week")
+        off += 19
+        self.assertEqual (lines [off][12], "week, monthly average required")
+        self.assertEqual (lines [off + 1][12], "monthly average required")
+        self.assertEqual (lines [off + 2][12], "monthly average required")
+        self.assertEqual (lines [off + 3][12], "week")
+        self.assertEqual (lines [off + 4][12], "week")
+        self.assertEqual (lines [off + 5][12], "week")
+        self.assertEqual (lines [off + 6][12], "week")
+        self.assertEqual \
+            (lines [off + 7][12], "week, monthly average required, week")
+
+        off = 1
+        for n in xrange (11) :
+            self.assertEqual (lines [off + n][14], "")
+        off += 11
+        self.assertEqual (lines [off]    [14], "7 => 3.82")
+        self.assertEqual (lines [off + 1][14], "7 => 3.82")
+        self.assertEqual (lines [off + 2][14], "7")
+        off += 3
+        for n in xrange (4) :
+            self.assertEqual (lines [off + n][14], "7 => 6.67")
+        off += 4
+        self.assertEqual (lines [off][14], "7")
+        off += 1
+        for n in xrange (4) :
+            self.assertEqual (lines [off + n][14], "7 => 6.09")
+        off += 4
+        for n in xrange (19) :
+            self.assertEqual (lines [off + n][14], "")
+        off += 19
+        self.assertEqual (lines [off]    [14], "7 => 3.82")
+        self.assertEqual (lines [off + 1][14], "7 => 6.67")
+        self.assertEqual (lines [off + 2][14], "7 => 6.09")
+        off += 3
+        for n in xrange (4) :
+            self.assertEqual (lines [off + n][14], "")
+        off += 4
+        self.assertEqual (lines [off]    [14], "7")
+    # end def test_user5
+
     def concurrency (self, method) :
+        """ Ensure that no cached values from previous transaction are used.
+            It is no concurrency test (which would fail due to a
+            concurrent update) in the sense that we have two concurrent
+            transactions.
+        """
         trid = '4'
         self.setup_db ()
         self.db.close ()
@@ -981,17 +1409,24 @@ class Test_Case_Timetracker (_Test_Case) :
         drid = self.db1.time_record.get (trid, 'daily_record')
         tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
         dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
+        self.log.debug ("db1.commit after time_record.set")
         self.db1.commit ()
 
         dr  = self.db2.daily_record.getnode (drid)
         dud = dr.tr_duration_ok
         tr  = self.db2.time_record.getnode (trid)
         dut = tr.tr_duration
+        self.log.debug ("db2.commit - 1 after get")
         self.db2.commit ()
         update_tr_duration (self.db2, dr)
+        self.log.debug ("db2.commit - 2 after update_tr_duration")
         self.db2.commit ()
 
+        self.db1.commit ()
+
+        self.log.debug ("before method")
         method (drid, trid)
+        self.log.debug ("after  method")
         self.db1.commit ()
 
         self.db1.clearCache ()
@@ -1013,18 +1448,22 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def concurrency_set
 
     def test_concurrency_create (self) :
+        self.log.debug ('test_concurrency_create')
         self.concurrency (self.concurrency_create)
     # end def test_concurrency_create
 
     def test_concurrency_retire (self) :
+        self.log.debug ('test_concurrency_retire')
         self.concurrency (self.concurrency_retire)
     # end def test_concurrency_retire
 
     def test_concurrency_set (self) :
+        self.log.debug ('test_concurrency_set')
         self.concurrency (self.concurrency_set)
     # end def test_concurrency_set
 
     def test_maturity_index (self) :
+        self.log.debug ('test_maturity_index')
         self.db = self.tracker.open ('admin')
         user = self.db.user.create \
             ( username = 'user'
@@ -1133,6 +1572,7 @@ class Test_Case_Timetracker (_Test_Case) :
     # end def test_maturity_index
 
     def test_tr_duration (self) :
+        self.log.debug ('test_tr_duration')
         trid = '4'
         self.setup_db ()
         self.db.close ()

@@ -201,6 +201,7 @@ def init \
         , no_overtime           = Boolean   ()
         , is_public_holiday     = Boolean   ()
         , cost_center           = Link      ("cost_center")
+        , overtime_reduction    = Boolean   ()
         )
     time_project.setkey ("name")
 
@@ -263,6 +264,7 @@ def init \
         , order                 = Number    ()
         , weekly                = Boolean   ()
         , months                = Number    ()
+        , required_overtime     = Boolean   ()
         )
     overtime_period.setkey ("name")
 
@@ -386,7 +388,7 @@ def security (db, ** kw) :
           )
         , ( "time_project"
           , ["Project_View", "Project", "Controlling"]
-          , ["Project"]
+          , []
           )
         , ( "time_record"
           , ["HR", "Controlling"]
@@ -431,6 +433,16 @@ def security (db, ** kw) :
           )
         , ( "daily_record", "Edit", ["HR"]
           , ("required_overtime", "weekend_allowed")
+          )
+        , ( "time_project", "Edit", ["Project"]
+          , ("department", "deputy", "description", "max_hours", "name"
+            , "nosy", "op_project", "organisation", "planned_effort"
+            , "responsible", "status"
+            )
+          )
+        , ( "time_project", "Edit", ["HR"]
+          , ("is_public_holiday", "no_overtime", "overtime_reduction"
+            )
           )
         ]
 
@@ -793,7 +805,7 @@ def security (db, ** kw) :
         ( 'name', 'description', 'responsible', 'deputy', 'organisation'
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
-        , 'cost_center'
+        , 'cost_center', 'overtime_reduction'
         )
     p = db.security.addPermission \
         ( name        = 'View'
@@ -810,6 +822,8 @@ def security (db, ** kw) :
         , properties  = tp_properties
         )
     db.security.addPermissionToRole ('User', p)
+
+    db.security.addPermissionToRole ('Project', 'Create', 'time_project')
 
     for klass in 'time_project', 'time_wp' :
         p = db.security.addPermission \
