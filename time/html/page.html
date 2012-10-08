@@ -637,7 +637,8 @@
      <!-- user list -->
      <span class="classblock"
            tal:condition="python:
-               'title' in bclass.properties and db.user.title.is_view_ok ()">
+               'title' in db._db.user.properties
+               and db.user.title.is_view_ok ()">
       <a tal:condition="python:request.user.hasPermission('View', 'user')
                             or request.user.hasPermission('Edit', 'user')"
          tal:attributes="href python: 'user?' + default_queries [('user','')]"
