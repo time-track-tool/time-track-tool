@@ -159,6 +159,8 @@ def day_work_hours (dynuser, date) :
 # end def day_work_hours
 
 def _day_work_hours (dynuser, wday) :
+    if not dynuser :
+        return 0
     hours = dynuser ['hours_' + wdays [wday]]
     if hours is not None :
         return hours
@@ -392,7 +394,7 @@ def required_overtime_in_period (db, user, date, period) :
         dyn   = get_user_dynamic (db, user, date)
         is_wd = is_work_day (dyn, date)
         wd += 1.0 * is_wd
-        if period.id == dyn.overtime_period :
+        if dyn and period.id == dyn.overtime_period :
             otd  = req_overtime_quotient (db, dyn, user, date)
             spp += dyn.supp_per_period * otd
         date += day
