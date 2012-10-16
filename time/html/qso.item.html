@@ -203,7 +203,7 @@
              )">
           <td style="vertical-align:top;text-align:left"
               tal:content="structure python:utils.ExtProperty
-              (utils, ct.qsl_type, item = ct).formatlink () + '&nbsp'">
+              (utils, ct.qsl_type, item = ct).formatlink () + '&nbsp;'">
           </td>
           <td tal:content="python: ct.date_recv.pretty (utils.ymd)"/>
           <td tal:content="python: ct.date_sent.pretty (utils.ymd)"/>

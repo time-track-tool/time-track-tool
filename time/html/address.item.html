@@ -340,7 +340,7 @@
             )">
          <th style="vertical-align:top;text-align:left"
              tal:content="structure python:utils.ExtProperty
-             (utils, ct.contact_type, item = ct).formatlink () + '&nbsp'"/>
+             (utils, ct.contact_type, item = ct).formatlink () + '&nbsp;'"/>
          <td>
           <a tal:condition="python: ct.contact_type.url_template"
              tal:content="ct/contact/plain" tal:attributes="href python:

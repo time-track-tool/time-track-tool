@@ -184,7 +184,7 @@
                                    and str (i.status) == 'open'
                                    and not frozen"
              tal:content="structure python:
-                 pdict ['w_allo'].colonlabel (':&nbsp')
+                 pdict ['w_allo'].colonlabel (':&nbsp;')
                  + i.weekend_allowed.field ()"/>
            </td>
            <td colspan="2" nowrap>
@@ -193,7 +193,7 @@
                                    and str (i.status) != 'accepted'
                                    and not frozen"
              tal:content="structure python:
-                 pdict ['r_over'].colonlabel (':&nbsp')
+                 pdict ['r_over'].colonlabel (':&nbsp;')
                  + i.required_overtime.field ()"/>
            </td>
            <td class="subhead"/>
