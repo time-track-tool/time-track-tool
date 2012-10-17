@@ -55,6 +55,9 @@ def security (db, ** kw) :
         , ( "category", "View", ["External"]
           , ("name", )
           )
+        , ( "user_status", "View", ["External"]
+          , ("name", )
+          )
         ]
     linkperms = \
         [ ("file", ["External"], ['View', 'Edit'], linkclass_iter (db, "file"))
