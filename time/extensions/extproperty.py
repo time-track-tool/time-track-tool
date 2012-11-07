@@ -490,8 +490,8 @@ class ExtProperty :
                         , width='600'
                         , pagesize=500
                         , filter='status=%s' % ','.join
-                           (db._db.user_status.lookup (i)
-                            for i in ('valid', 'system')
+                           (db._db.user_status.filter
+                              (None, dict (is_nosy = True))
                            )
                         )
                     ))

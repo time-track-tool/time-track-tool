@@ -156,9 +156,8 @@ def update_userlist_html (db, cl = None) :
     # all 'real' users
     spec = {}
     if 'status' in cl.properties :
-        valid  = db.user_status.lookup ('valid')
-        system = db.user_status.lookup ('system')
-        spec  = { 'status' : [valid, system] }
+        stati = db.user_status.filter (None, dict (is_nosy = True))
+        spec  = { 'status' : stati }
     users      = cl.filter ( None # full text search
                            , filterspec = spec
                            , sort       = ("+", "username")
@@ -186,8 +185,8 @@ def update_userlist_html (db, cl = None) :
     # invalid users here, so use the same filterspec.
     spec = {}
     if 'status' in cl.properties :
-        status = [db.user_status.lookup (s) for s in 'valid', 'system']
-        spec   = {"status" : status}
+        stati  = db.user_status.filter (None, dict (is_nosy = True))
+        spec   = {"status" : stati}
     users    = cl.filter ( None # full text search
                          , filterspec = spec
                          , sort       = ("+", "username")

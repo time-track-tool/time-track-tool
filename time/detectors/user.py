@@ -274,8 +274,12 @@ def audit_user_fields(db, cl, nodeid, new_values):
                 , 'department'
                 ) :
                 if n in new_values and new_values [n] is None :
-                    raise Reject, "%(attr)s may not be undefined" \
-                        % {'attr' : _ (n)}
+                    dyn = get_user_dynamic (db, nodeid, Date ('.'))
+                    if dyn :
+                        new_values [n] = getattr (dyn, n)
+                    else :
+                        raise Reject, "%(attr)s may not be undefined" \
+                            % {'attr' : _ (n)}
             common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
@@ -307,10 +311,9 @@ def obsolete_action (db, cl, nodeid, new_values) :
 
 def sync_to_ldap (db, cl, nodeid, old_values) :
     user = cl.getnode (nodeid)
-    system = db.user_status.lookup ('system')
-    if user.status == system :
-        return
     ld   = ldap_sync.LDAP_Roundup_Sync (db)
+    if user.status not in ld.status_sync :
+        return
     ld.sync_user_to_ldap (user.username)
 # end def sync_to_ldap
 
@@ -336,8 +339,11 @@ def check_ext_company (db, cl, nodeid, new_values) :
     except KeyError :
         st_ext = None
     if 'status' in new_values :
-        if new_values ['status'] == st_ext :
-            new_values ['roles'] = 'External,Nosy'
+        if st_ext and new_values ['status'] == st_ext :
+            roles = db.user_status.get (st_ext, 'roles')
+            if not roles :
+                roles = 'External,Nosy'
+            new_values ['roles'] = roles
     st = new_values.get ('status')
     if not st and nodeid :
         st = cl.get (nodeid, 'status')
@@ -345,6 +351,12 @@ def check_ext_company (db, cl, nodeid, new_values) :
         if st != st_ext :
             new_values ['external_company'] = None
 # end def check_ext_company
+
+def check_user_status (db, cl, nodeid, new_values) :
+    if 'ldap_group' in new_values :
+        common.check_unique \
+            (_, cl, nodeid, ldap_group = new_values ['ldap_group'])
+# end def check_user_status
 
 def init (db) :
     global _
@@ -365,3 +377,6 @@ def init (db) :
     # ldap sync only on set not create (!)
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
+    if 'user_status' in db.classes :
+        db.user_status.audit ("create", check_user_status)
+        db.user_status.audit ("set",    check_user_status)

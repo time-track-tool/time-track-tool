@@ -55,6 +55,7 @@ schemas = \
     , 'person_cust'
     , 'support'
     , 'time_tracker'
+    , 'ldap'
     , 'core'
     , 'extuser'
     )

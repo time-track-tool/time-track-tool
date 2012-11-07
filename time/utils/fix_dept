@@ -1,0 +1,39 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+sys.path.insert (1, os.path.join (dir, 'lib'))
+from user_dynamic import last_user_dynamic
+
+valid = db.user_status.lookup ('valid')
+
+for uid in db.user.filter (None, dict (status = valid)) :
+    user = db.user.getnode (uid)
+    dyn  = last_user_dynamic (db, uid)
+    if not dyn :
+        continue
+    if dyn.department != user.department :
+        d1 = d2 = None
+        if user.department :
+            d1 = db.department.get (user.department, 'name')
+        if dyn.department :
+            d2 = db.department.get (dyn.department,  'name')
+        print "inconsistent department for %s: user: %s dyn: %s" % \
+            (user.username, d1, d2)
+        db.user.set (uid, department = dyn.department)
+    if dyn.org_location != user.org_location :
+        o1 = o2 = None
+        if user.org_location :
+            o1 = db.org_location.get (user.org_location, 'name')
+        if dyn.org_location :
+            o2 = db.org_location.get (dyn.org_location,  'name')
+        print "inconsistent org_location for %s: user: %s dyn: %s" % \
+            (user.username, o1, o2)
+        db.user.set (uid, org_location = dyn.org_location)
+
+db.commit()

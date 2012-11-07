@@ -223,6 +223,7 @@ class Importer (object) :
         Multilink    = globals ['Multilink']
         Link         = globals ['Link']
         String       = globals ['String']
+        Boolean      = globals ['Boolean']
 
         class Ext_Mixin (autosuper) :
             """ create a class with some default attributes
@@ -320,6 +321,22 @@ class Importer (object) :
             # end def __init__
         # end class Msg_Class
 
+        User_Status_Ancestor = Ext_Class
+        class User_Status_Class (Ext_Class) :
+            """ Create User_Status_Class with default attributes.
+            """
+            def __init__ (self, db, classname, ** properties) :
+                self.update_properties \
+                    ( name                  = String    ()
+                    , description           = String    ()
+                    , is_nosy               = Boolean   ()
+                    )
+                User_Status_Ancestor.__init__ \
+                    (self, db, classname, ** properties)
+                self.setkey ('name')
+            # end def __init___
+        # end class User_Status_Class
+
         globals ['Ext_Class']                = Ext_Class
         globals ['Msg_Class']                = Msg_Class
         globals ['Ext_Mixin']                = Ext_Mixin
@@ -328,6 +345,7 @@ class Importer (object) :
         globals ['Full_Issue_Class']         = Full_Issue_Class
         globals ['Superseder_Issue_Class']   = Superseder_Issue_Class
         globals ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
+        globals ['User_Status_Class']        = User_Status_Class
 
         for s in schemas :
             m = __import__ ('.'.join (('schemacfg', s)))

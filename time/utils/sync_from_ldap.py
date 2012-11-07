@@ -21,9 +21,6 @@ def main () :
         , action  = 'store_true'
         )
     opt, args = parser.parse_args ()
-    if len (args) :
-        parser.error ('No arguments please')
-        exit (23)
 
     sys.path.insert (1, os.path.join (opt.database_directory, 'lib'))
     from ldap_sync import LDAP_Roundup_Sync

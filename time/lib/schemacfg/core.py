@@ -85,13 +85,8 @@ def init \
         )
     user.setkey ('username')
 
-    user_status = Class \
-        ( db
-        , ''"user_status"
-        , name                  = String    ()
-        , description           = String    ()
-        )
-    user_status.setkey ("name")
+    if 'User_Status_Class' in kw :
+        user_status = kw ['User_Status_Class'] (db, ''"user_status")
 
     if 'Room_Class' in kw :
         room = kw ['Room_Class'] (db, ''"room")

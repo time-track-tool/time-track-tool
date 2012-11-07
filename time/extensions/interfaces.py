@@ -366,11 +366,9 @@ def get_from_form (request, name) :
 # end def get_from_form
 
 def user_classhelp (db, property='responsible', inputtype = 'radio') :
-    try :
-        valid  = db._db.user_status.lookup ('valid')
-        system = db._db.user_status.lookup ('system')
-        status = ';status=%s,%s' % (valid, system)
-    except KeyError :
+    status = ';' + ','.join \
+        (db.user_status.filter (None, dict (is_nosy = True)))
+    if status == ';' :
         status = ''
     return db.user.classhelp \
         ( ','.join (n for n in

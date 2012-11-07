@@ -265,9 +265,12 @@ if 'severity' in db.classes :
 if 'user_status' in db.classes :
     # user status must come first.
     user_status = db.getclass ('user_status')
-    user_status.create (name = "valid",    description = "Valid user")
-    user_status.create (name = "obsolete", description = "No longer valid")
-    user_status.create (name = "system",   description = "Needed by system")
+    user_status.create \
+        (name = "valid",    is_nosy = True,  description = "Valid user")
+    user_status.create \
+        (name = "obsolete", is_nosy = False, description = "No longer valid")
+    user_status.create \
+        (name = "system",   is_nosy = True,  description = "Needed by system")
 
 if 'uc_type' in db.classes :
     db.uc_type.create \

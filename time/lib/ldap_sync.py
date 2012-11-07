@@ -72,11 +72,24 @@ class LDAP_Roundup_Sync (object) :
     roundup_group = 'roundup-users'
     page_size     = 50
     
-    def __init__ (self, db) :
-        self.db    = db
-        self.cfg   = db.config.ext
+    def __init__ (self, db, update_roundup = None, update_ldap = None) :
+        self.db             = db
+        self.cfg            = db.config.ext
+        self.update_ldap    = update_ldap
+        self.update_roundup = update_roundup
 
-        self.ldcon = ldap.initialize(self.cfg.LDAP_URI)
+        for k in 'update_ldap', 'update_roundup' :
+            if getattr (self, k) is None :
+                # try finding out via config, default to True
+                try :
+                    update = getattr (self.cfg, 'LDAP_' + k.upper ())
+                except AttributeError :
+                    update = 'yes'
+                setattr (self, k, False)
+                if update.lower () in ('yes', 'true') :
+                    setattr (self, k, True)
+
+        self.ldcon = ldap.initialize (self.cfg.LDAP_URI)
         self.ldcon.set_option (ldap.OPT_REFERRALS, 0)
         # try getting a secure connection, may want to force this later
         try :
@@ -88,11 +101,18 @@ class LDAP_Roundup_Sync (object) :
             self.ldcon.simple_bind_s \
                 (self.cfg.LDAP_BIND_DN, self.cfg.LDAP_PASSWORD)
         except ldap.LDAPError, cause :
-            print >> sys.stderr, "LDAP bind failed: %s" % cause.args [0]['desc']
-            exit (42)
-        self.status_valid    = self.db.user_status.lookup ('valid')
-        self.status_obsolete = self.db.user_status.lookup ('obsolete')
-        self.status_sync     = (self.status_valid, self.status_obsolete)
+            raise
+            #print >> sys.stderr,"LDAP bind failed: %s" % cause.args [0]['desc']
+        self.valid_stati     = []
+        self.status_obsolete = db.user_status.lookup ('obsolete')
+        self.status_sync     = [self.status_obsolete]
+        self.ldap_groups     = {}
+        for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
+            st = db.user_status.getnode (id)
+            if st.ldap_group :
+                self.status_sync.append (id)
+                self.valid_stati.append (id)
+                self.ldap_groups [id] = st.ldap_group
         self.contact_types = dict \
             ((id, self.db.uc_type.get (id, 'name'))
              for id in self.db.uc_type.list ()
@@ -144,7 +164,8 @@ class LDAP_Roundup_Sync (object) :
                                    )
                 , 'position'     : ( 'title'
                                    , get_position
-                                   , self.cls_lookup (self.db.position)
+                                   , self.cls_lookup 
+                                        (self.db.position, 'position')
                                    )
                 , 'realname'     : ( 'cn'
                                    , 0
@@ -152,7 +173,14 @@ class LDAP_Roundup_Sync (object) :
                                    )
                 , 'room'         : ( 'physicalDeliveryOfficeName'
                                    , get_name
-                                   , self.cls_lookup (self.db.room)
+                                   , self.cls_lookup
+                                        ( self.db.room
+                                        , 'name'
+                                        , dict (location
+                                               = self.db.location.lookup
+                                                ('Wien')
+                                               )
+                                        )
                                    )
                 , 'substitute'   : ( 'secretary'
                                    , self.get_username_attribute_dn
@@ -179,16 +207,26 @@ class LDAP_Roundup_Sync (object) :
         self.attr_map = attr_map
     # end def compute_attr_map
 
-    def cls_lookup (self, cls) :
+    def cls_lookup (self, cls, insert_attr_name = None, params = None) :
         """ Generate a lookup method (non-failing) for the given class.
             Needed for easy check if an LDAP attribute exists as a
             roundup class. We need the roundup class in a closure.
         """
         def look (luser, txt) :
             try :
-                return cls.lookup (luser [txt][0])
+                key = luser [txt][0]
+            except KeyError :
+                return None
+            try :
+                return cls.lookup (key)
             except KeyError :
                 pass
+            if insert_attr_name :
+                print "Update roundup: new %s: %s" % (cls.classname, key)
+                if self.update_roundup :
+                    d = params or {}
+                    d [insert_attr_name] = key
+                    return cls.create (** d)
             return None
         # end def look
         return look
@@ -202,18 +240,29 @@ class LDAP_Roundup_Sync (object) :
     # end def get_all_ldap_usernames
 
     def get_roundup_group (self) :
-        """ Get list of members of self.roundup_group into self.members
+        """ Get list of members of self.ldap_groups into self.members
+            The value stored under the member is the group.
+            Implementation note: We sort by the key of self.ldap_groups,
+            this is by numeric user_status id. This means later
+            user_status will overwrite earlier user_status if a user is
+            in several groups. This usually means he will get the lower
+            credentials as the first group in self.ldap_groups is the
+            normal user group.
         """
-        f = '(&(sAMAccountName=%s)(objectclass=group))' % self.roundup_group
-        l = self.ldcon.search_s (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f)
-        results = []
-        for r in l :
-            if not r [0] : continue
-            r = LDAP_Search_Result (r)
-            results.append (r)
-        assert (len (results) == 1)
-        r = results [0]
-        self.members = dict.fromkeys (m.lower () for m in r.member)
+        self.members = {}
+        for us_id, gname in sorted (self.ldap_groups.iteritems ()) :
+            f = '(&(sAMAccountName=%s)(objectclass=group))' % gname
+            l = self.ldcon.search_s \
+                (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f)
+            results = []
+            for r in l :
+                if not r [0] : continue
+                r = LDAP_Search_Result (r)
+                results.append (r)
+            assert (len (results) == 1)
+            r = results [0]
+            names = dict.fromkeys ((m.lower () for m in r.member), us_id)
+            self.members.update (names)
     # end def get_roundup_group
 
     def get_username_attribute_dn (self, node, attribute) :
@@ -345,7 +394,9 @@ class LDAP_Roundup_Sync (object) :
                 break
     # end def paged_search_iter
 
-    def sync_user_from_ldap (self, username, update = True) :
+    def sync_user_from_ldap (self, username, update = None) :
+        if update is not None :
+            self.update_roundup = update
         uid = None
         try :
             uid   = self.db.user.lookup  (username)
@@ -366,7 +417,7 @@ class LDAP_Roundup_Sync (object) :
         if not luser or self.is_obsolete (luser) :
             if user.status != self.status_obsolete :
                 print >> sys.stderr, "Obsolete: %s" % username
-                if update :
+                if self.update_roundup :
                     self.db.user.set (uid, status = self.status_obsolete)
                 changed = True
         else :
@@ -399,11 +450,11 @@ class LDAP_Roundup_Sync (object) :
                         if key in oldmap :
                             n = oldmap [key]
                             new_contacts.append (n.id)
-                            if n.order != order and update :
+                            if n.order != order and self.update_roundup :
                                 self.db.user_contact.set (n.id, order = order)
                                 changed = True
                             del oldmap [key]
-                        elif update :
+                        elif self.update_roundup :
                             id = self.db.user_contact.create \
                                 ( contact_type = tid
                                 , contact      = ldit
@@ -419,13 +470,13 @@ class LDAP_Roundup_Sync (object) :
             order = 2
             for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
                 if n.contact_type == email :
-                    if n.order != order and update :
+                    if n.order != order and self.update_roundup :
                         self.db.user_contact.set (n.id, order = order)
                         changed = True
                     order += 1
                     new_contacts.append (n.id)
                     del oldmap [k]
-            if update :
+            if self.update_roundup :
                 for n in oldmap.itervalues () :
                     self.db.user_contact.retire (n.id)
                     changed = True
@@ -434,35 +485,44 @@ class LDAP_Roundup_Sync (object) :
             if new_contacts != oct :
                 d ['contacts'] = new_contacts
 
+            new_status_id = self.members [luser.dn.lower ()]
+            assert (new_status_id)
+            new_status = self.db.user_status.getnode (new_status_id)
+            roles = new_status.roles
+            if not roles :
+                roles = self.db.config.NEW_WEB_USER_ROLES
             if user :
                 assert (user.status in self.status_sync)
                 for k, v in d.items () :
                     if user [k] == v :
                         del d [k]
-                if user.status == self.status_obsolete :
-                    # Roles where removed when setting user obsolete
-                    # set these to default settings
-                    d ['status'] = self.status_valid
-                    d ['roles']  = self.db.config.NEW_WEB_USER_ROLES
+                if user.status != new_status_id :
+                    # Roles were removed when setting user obsolete
+                    # Also need to adapt roles if user.status changes
+                    # set these to default settings for this status
+                    d ['roles']  = roles
+                    d ['status'] = new_status_id
                 if d :
                     print "Update roundup: %s" % username, d
-                    if update :
+                    if self.update_roundup :
                         self.db.user.set (uid, ** d)
                         changed = True
             else :
-                print "Create roundup: %s" % username, d
                 assert (d)
-                d ['roles'] = self.db.config.NEW_WEB_USER_ROLES
-                if update :
+                d ['roles']  = roles
+                d ['status'] = new_status_id
+                print "Create roundup: %s" % username, d
+                if self.update_roundup :
                     uid = self.db.user.create \
                         (username = username.lower (), ** d)
                     changed = True
-        if changed and update:
+        if changed and self.update_roundup :
             self.db.commit ()
     # end def sync_user_from_ldap
 
-    def sync_user_to_ldap (self, username, update = True) :
-        self.update = update
+    def sync_user_to_ldap (self, username, update = None) :
+        if update is not None :
+            self.update_ldap = update
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
         assert (user.status in self.status_sync)
@@ -568,24 +628,33 @@ class LDAP_Roundup_Sync (object) :
         #print "Modlist:"
         #for k in modlist :
         #    print k
-        if modlist and self.update :
+        if modlist and self.update_ldap :
             self.ldcon.modify_s (luser.dn, modlist)
+        elif modlist :
+            print "No ldap updates performed"
     # end def sync_user_to_ldap
 
-    def sync_all_users_from_ldap (self, update = False) :
+    def sync_all_users_from_ldap (self, update = None) :
+        if update is not None :
+            self.update_roundup = update
         usrcls = self.db.user
         usernames = dict.fromkeys \
             (usrcls.get (i, 'username') for i in usrcls.getnodeids ())
         usernames.update (dict.fromkeys (self.get_all_ldap_usernames ()))
         for username in usernames.iterkeys () :
-            self.sync_user_from_ldap (username, update = update)
+            self.sync_user_from_ldap (username)
     # end def sync_all_users_from_ldap
 
-    def sync_all_users_to_ldap (self, update = False) :
+    def sync_all_users_to_ldap (self, update = None) :
+        if update is not None :
+            self.update_ldap = update
         for uid in self.db.user.filter \
-            (None, dict (status = self.status_valid), sort=[('+','username')]) :
+            ( None
+            , dict (status = ','.join (self.valid_stati))
+            , sort = [('+','username')]
+            ) :
             username = self.db.user.get (uid, 'username')
-            self.sync_user_to_ldap (username, update)
+            self.sync_user_to_ldap (username)
     # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
 
@@ -610,7 +679,6 @@ class LdapLoginAction (LoginAction, autosuper) :
     def verifyLogin (self, username, password) :
         if username in ('admin', 'anonymous') :
             return self.__super.verifyLogin (username, password)
-        sysuser = self.db.user_status.lookup ('system')
         invalid = self.db.user_status.lookup ('obsolete')
         # try to get user
         user = None
@@ -619,8 +687,6 @@ class LdapLoginAction (LoginAction, autosuper) :
             user = self.db.user.getnode (user)
         except KeyError :
             pass
-        if user and user.status == sysuser :
-            return self.__super.verifyLogin (username, password)
         # sync the user
         self.client.error_message = []
         if self.try_ldap () :
@@ -632,6 +698,8 @@ class LdapLoginAction (LoginAction, autosuper) :
                 raise exceptions.LoginError (self._ ('Invalid login'))
             if user.status == invalid :
                 raise exceptions.LoginError (self._ ('Invalid login'))
+            if user.status not in self.ldsync.status_sync :
+                return self.__super.verifyLogin (username, password)
             if not password :
                 raise exceptions.LoginError (self._ ('Invalid login'))
             if not self.ldsync.bind_as_user (username, password) :
