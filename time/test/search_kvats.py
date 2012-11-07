@@ -300,6 +300,9 @@ properties = \
       , [ ( 'description'
           , ['admin', 'issue_admin', 'user']
           )
+        , ( 'is_nosy'
+          , ['admin', 'issue_admin', 'user']
+          )
         , ( 'name'
           , ['admin', 'issue_admin', 'user']
           )

@@ -764,6 +764,9 @@ properties = \
       , [ ( 'description'
           , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
           )
+        , ( 'is_nosy'
+          , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
+          )
         , ( 'name'
           , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
           )

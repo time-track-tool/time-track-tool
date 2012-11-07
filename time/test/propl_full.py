@@ -588,7 +588,10 @@ properties = \
       )
     , ( 'user_status'
       , [ 'description'
+        , 'is_nosy'
+        , 'ldap_group'
         , 'name'
+        , 'roles'
         ]
       )
     , ( 'work_location'

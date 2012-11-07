@@ -156,6 +156,7 @@ properties = \
       )
     , ( 'user_status'
       , [ 'description'
+        , 'is_nosy'
         , 'name'
         ]
       )
