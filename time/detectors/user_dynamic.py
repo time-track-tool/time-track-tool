@@ -35,8 +35,6 @@ from roundup.cgi.TranslationService import get_translation
 from freeze       import frozen
 from user_dynamic import last_user_dynamic, day, wdays, round_daily_work_hours
 from user_dynamic import invalidate_tr_duration
-from user_dynamic import invalidate_cache_required_overtime_quotient
-from user_dynamic import invalidate_cache_required_overtime_in_period
 from common       import require_attributes, overtime_period_week, ymd
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
@@ -351,8 +349,6 @@ def init (db) :
     db.user_dynamic.react    ("create", close_existing)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
-    db.registerClearCacheCallback (invalidate_cache_required_overtime_quotient)
-    db.registerClearCacheCallback (invalidate_cache_required_overtime_in_period)
 # end def init
 
 ### __END__ user_dynamic

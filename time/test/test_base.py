@@ -1175,6 +1175,12 @@ class Test_Case_Timetracker (_Test_Case) :
         user4_time.import_data_4 (self.db, self.user4)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
+        #from roundup.admin import AdminTool
+        #t = AdminTool ()
+        #t.tracker_home = '.'
+        #t.db = self.db
+        #t.verbose = False
+        #t.do_export (['/var/tmp/user4'])
         dr = self.db.daily_record.filter \
             (None, dict (user = self.user4, date = '2012-05-04'))
         self.assertEqual (len (dr), 1)

@@ -41,36 +41,35 @@ from common       import pretty_range, day, period_is_weekly, start_of_period
 from common       import week_from_date, user_has_role
 from freeze       import find_prev_dr_freeze, find_next_dr_freeze, frozen
 
-last_dynamic = None # simple one-element cache
-
 def get_user_dynamic (db, user, date) :
     """ Get a user_dynamic record by user and date.
         Return None if no record could be found.
     """
-    global last_dynamic
     user = str  (user)
     date = Date (date)
-    # Guard against db that was closed, may throw various tracebacks,
-    # some are not StandardError (Yechchch)
+    # last_dynamic: Simple one-element cache as attribute of db
     try :
-        if last_dynamic is not None :
-            x = last_dynamic.user
-    except :
-        last_dynamic = None
-    if  (   last_dynamic
-        and last_dynamic.user == user
-        and last_dynamic.valid_from < date
-        and (not last_dynamic.valid_to or last_dynamic.valid_to > date)
-        ) :
-        return last_dynamic
+        if  (   db.last_dynamic
+            and db.last_dynamic.user == user
+            and db.last_dynamic.valid_from < date
+            and (  not db.last_dynamic.valid_to
+                or db.last_dynamic.valid_to > date
+                )
+            ) :
+            return db.last_dynamic
+    except AttributeError :
+        db.last_dynamic = None
+        def last_dynamic_clear (db) :
+            db.last_dynamic = None
+        db.registerClearCacheCallback (last_dynamic_clear, db)
     ids = db.user_dynamic.filter \
         ( None, dict (user = user, valid_from = date.pretty (';%Y-%m-%d'))
         , group = ('-', 'valid_from')
         )
     if ids :
-        last_dynamic = db.user_dynamic.getnode (ids [0])
-        if not last_dynamic.valid_to or last_dynamic.valid_to > date :
-            return last_dynamic
+        db.last_dynamic = db.user_dynamic.getnode (ids [0])
+        if not db.last_dynamic.valid_to or db.last_dynamic.valid_to > date :
+            return db.last_dynamic
     return None
 # end def get_user_dynamic
 
@@ -295,12 +294,10 @@ def update_tr_duration (db, dr)  :
     return sum
 # end def update_tr_duration
 
-daily_record_cache = {}
-
-def _update_empty_dr (user, date, next) :
+def _update_empty_dr (db, user, date, next) :
     d = next
     while d <= date :
-        daily_record_cache [(user, d.pretty (ymd))] = None
+        db.daily_record_cache [(user, d.pretty (ymd))] = None
         d = d + day
 # end def _update_empty_dr
 
@@ -311,7 +308,12 @@ def get_daily_record (db, user, date) :
     pdate = date.pretty (ymd)
     date  = Date (pdate)
     now   = Date (Date ('.').pretty (ymd))
-    if (user, pdate) not in daily_record_cache :
+    if not getattr (db, 'daily_record_cache', None) :
+        db.daily_record_cache = {}
+        def daily_record_cache_clear (db) :
+            db.daily_record_cache = {}
+        db.registerClearCacheCallback (daily_record_cache_clear, db)
+    if (user, pdate) not in db.daily_record_cache :
         if date < now :
             start = date
             end   = now
@@ -324,17 +326,12 @@ def get_daily_record (db, user, date) :
         next = start
         for drid in drs :
             dr = db.daily_record.getnode (drid)
-            _update_empty_dr (user, dr.date, next)
-            daily_record_cache [(user, dr.date.pretty (ymd))] = dr
+            _update_empty_dr (db, user, dr.date, next)
+            db.daily_record_cache [(user, dr.date.pretty (ymd))] = dr
             next = dr.date + day
-        _update_empty_dr (user, end, next)
-    return daily_record_cache [(user, pdate)]
+        _update_empty_dr (db, user, end, next)
+    return db.daily_record_cache [(user, pdate)]
 # end def get_daily_record
-
-cache_required_overtime_quotient = {}
-def invalidate_cache_required_overtime_quotient (*args) :
-    cache_required_overtime_quotient = {}
-# end def invalidate_cache_required_overtime_quotient
 
 def req_overtime_quotient (db, dyn, user, date) :
     """ Compute the required overtime for this day as a quotient of
@@ -345,8 +342,14 @@ def req_overtime_quotient (db, dyn, user, date) :
     if not dyn :
         return 0.0
     key = (user, str (date))
-    if key in cache_required_overtime_quotient :
-        return cache_required_overtime_quotient [key]
+    if not getattr (db, 'cache_required_overtime_quotient', None) :
+        def cache_required_overtime_quotient_clear (db) :
+            db.cache_required_overtime_quotient = {}
+        db.registerClearCacheCallback \
+            (cache_required_overtime_quotient_clear, db)
+        db.cache_required_overtime_quotient = {}
+    if key in db.cache_required_overtime_quotient :
+        return db.cache_required_overtime_quotient [key]
     dr  = get_daily_record (db, user, date)
     otr = 0.0
     all = 0.0
@@ -367,14 +370,9 @@ def req_overtime_quotient (db, dyn, user, date) :
     if all :
         otd = ((all - otr) / all)
     otd *= is_work_day (dyn, date)
-    cache_required_overtime_quotient [key] = otd
+    db.cache_required_overtime_quotient [key] = otd
     return otd
 # end def req_overtime_quotient
-
-cache_required_overtime_in_period = {}
-def invalidate_cache_required_overtime_in_period (*args) :
-    cache_required_overtime_in_period = {}
-# end def invalidate_cache_required_overtime_in_period
 
 def required_overtime_in_period (db, user, date, period) :
     """ Loop over a whole period and compute the required overtime in
@@ -385,8 +383,14 @@ def required_overtime_in_period (db, user, date, period) :
     sop = start_of_period (date, period)
     eop = end_of_period   (date, period)
     key = (user, str (sop))
-    if key in cache_required_overtime_in_period :
-        return cache_required_overtime_in_period [key]
+    if not getattr (db, 'cache_required_overtime_in_period', None) :
+        def cache_required_overtime_in_period_clear (db) :
+            db.cache_required_overtime_in_period = {}
+        db.registerClearCacheCallback \
+            (cache_required_overtime_in_period_clear, db)
+        db.cache_required_overtime_in_period = {}
+    if key in db.cache_required_overtime_in_period :
+        return db.cache_required_overtime_in_period [key]
     wd   = 0.0
     spp  = 0.0
     date = sop
@@ -406,7 +410,7 @@ def required_overtime_in_period (db, user, date, period) :
     # (otdsum / wd) * (spp / otdsum)
     # which can be reduced to (spp / wd)
     # that's why we don't compute otdsum.
-    r = cache_required_overtime_in_period [key] = (spp / wd, wd)
+    r = db.cache_required_overtime_in_period [key] = (spp / wd, wd)
     return r
 # end def required_overtime_in_period
 

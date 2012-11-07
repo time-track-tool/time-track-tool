@@ -63,7 +63,6 @@ def time_wp_viewable (db, userid, itemid) :
         )
 # end def time_wp_viewable
 
-sup_cache = {}
 def supervised_users (db, uid = None, use_sv = True) :
     """ Recursively compute the users for which the given uid is
         supervisor. If uid in not given (None), the current database
@@ -71,8 +70,14 @@ def supervised_users (db, uid = None, use_sv = True) :
     """
     if not uid :
         uid = db.getuid ()
-    if uid in sup_cache :
-        return sup_cache [uid]
+    try :
+        if uid in db.sup_cache :
+            return db.sup_cache [uid]
+    except AttributeError :
+        def sup_cache_clear (db) :
+            db.sup_cache = {}
+        db.registerClearCacheCallback (sup_cache_clear, db)
+        db.sup_cache = {}
     if use_sv :
         sv            = dict ((u, 1) for u in db.user.find (substitute = uid))
     else :
@@ -83,8 +88,8 @@ def supervised_users (db, uid = None, use_sv = True) :
     for u in users :
         if u != uid :
             trans_users.extend (supervised_users (db, u, False))
-    sup_cache [uid] = dict ((u, 1) for u in users + trans_users)
-    return sup_cache [uid]
+    db.sup_cache [uid] = dict ((u, 1) for u in users + trans_users)
+    return db.sup_cache [uid]
 # end def supervised_users
 
 def daily_record_viewable (db, userid, itemid) :
