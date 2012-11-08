@@ -435,7 +435,8 @@ def security (db, ** kw) :
           , ("required_overtime", "weekend_allowed")
           )
         , ( "time_project", "Edit", ["Project"]
-          , ("department", "deputy", "description", "max_hours", "name"
+          , ( "cost_center"
+            , "department", "deputy", "description", "max_hours", "name"
             , "nosy", "op_project", "organisation", "planned_effort"
             , "responsible", "status"
             )

@@ -162,7 +162,7 @@ Role "office":
  User is allowed to create room (Create for "room" only)
  User is allowed to edit room (Edit for "room" only)
 Role "project":
- User is allowed Edit on (Edit for "time_project": ('department', 'deputy', 'description', 'max_hours', 'name', 'nosy', 'op_project', 'organisation', 'planned_effort', 'responsible', 'status') only)
+ User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'max_hours', 'name', 'nosy', 'op_project', 'organisation', 'planned_effort', 'responsible', 'status') only)
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
  User is allowed to create time_project (Create for "time_project" only)
