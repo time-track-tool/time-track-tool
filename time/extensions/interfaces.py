@@ -366,10 +366,10 @@ def get_from_form (request, name) :
 # end def get_from_form
 
 def user_classhelp (db, property='responsible', inputtype = 'radio') :
-    status = ';' + ','.join \
-        (db.user_status.filter (None, dict (is_nosy = True)))
-    if status == ';' :
-        status = ''
+    status = ','.join \
+        (db._db.user_status.filter (None, dict (is_nosy = True)))
+    if status :
+        status = ';status=' + status
     return db.user.classhelp \
         ( ','.join (n for n in
                     'username,nickname,firstname,lastname'.split(',')
