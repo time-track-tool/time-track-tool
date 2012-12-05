@@ -385,11 +385,11 @@
              (utils, oh.weekday, item = oh).formatlink ()"/>
          <td tal:content="structure python:'%02d' % oh.from_hour"/>
          <td>:</td>
-         <td tal:content="structure python:'%02d' % oh.from_minute"/>
+         <td tal:content="structure python:'%02d' % (oh.from_minute or 0)"/>
          <td>-</td>
          <td tal:content="structure python:'%02d' % oh.to_hour"/>
          <td>:</td>
-         <td tal:content="structure python:'%02d' % oh.to_minute"/>
+         <td tal:content="structure python:'%02d' % (oh.to_minute or 0)"/>
         </tr>
         <tr>
          <td style="padding-left:0px"
