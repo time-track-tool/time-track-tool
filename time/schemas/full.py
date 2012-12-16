@@ -44,6 +44,7 @@ from schemacfg import schemadef
 # core (e.g. extuser)
 schemas = \
     ( 'company'
+    , 'user'
     , 'docissue'
     , 'extcompany'
     , 'issue'
