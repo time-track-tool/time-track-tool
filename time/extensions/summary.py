@@ -55,6 +55,7 @@ from user_dynamic                   import compute_balance, durations
 from user_dynamic                   import Period_Data, overtime_periods
 from user_dynamic                   import use_work_hours
 from user_dynamic                   import hr_olo_role_for_this_user_dyn
+from request_util                   import True_Value
 
 day = Interval ('1d')
 
@@ -452,7 +453,10 @@ class _Report (autosuper) :
 
     def as_csv (self) :
         io             = StringIO ()
-        self.csvwriter = csv.writer (io, dialect = 'excel', delimiter = ',')
+        d              = ','
+        if 'csv_delimiter' in self.db.user.properties :
+            d = self.db.user.get (self.uid, 'csv_delimiter') or d
+        self.csvwriter = csv.writer (io, dialect = 'excel', delimiter = d)
         self.csv_line (self.header_line (self.csv_item))
         self._output  (self.csv_line, self.csv_item)
         return io.getvalue ()
@@ -471,6 +475,8 @@ class Summary_Report (_Report) :
             db = db._db
         except AttributeError :
             pass
+        self.db         = db
+        self.uid        = db.getuid ()
         filterspec      = request.filterspec
         sort_by         = request.sort
         group_by        = request.group
@@ -1167,7 +1173,7 @@ class Staff_Report (_Report) :
 # end class Staff_Report
 
 class CSV_Report (Action, autosuper) :
-    def handle (self) :
+    def handle (self, outfile = None) :
         request                   = templating.HTMLRequest     (self.client)
         self.utils                = templating.TemplatingUtils (self.client)
         h                         = self.client.additional_headers
@@ -1177,8 +1183,12 @@ class CSV_Report (Action, autosuper) :
         if self.client.env ['REQUEST_METHOD'] == 'HEAD' :
             # all done, return a dummy string
             return 'dummy'
+        io = outfile
+        if io is None :
+            io = self.client.wfile
         report = self.report_class (self.db, request, self.utils, is_csv = True)
-        return report.as_csv ()
+        print >> io, report.as_csv ()
+        return True_Value
     # end def handle
 # end class CSV_Report
 

@@ -39,6 +39,7 @@ from rsclib.TeX_CSV_Writer import TeX_CSV_Writer
 
 from extproperty           import ExtProperty
 from common                import get_num_locale
+from request_util          import True_Value
 
 locale = None
 
@@ -228,16 +229,6 @@ def repr_code (klass, adr_types) :
     # end class Repr_Code
     return Repr_Code (klass)
 # end def repr_code
-
-class True_Value (type("")) :
-    """ A class that evaluates to True but can return a zero-length string.
-        We use this as return value from a handle routine where the
-        output happend to the file descriptor
-    """
-    def __nonzero__ (self) :
-        return True
-    # end def __nonzero__
-# end class True_Value
 
 class Export_CSV_Names (Action, autosuper) :
     name           = 'export'

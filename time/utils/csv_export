@@ -17,6 +17,14 @@ class Request :
 
 parser = OptionParser (usage = '%prog [options] <class>')
 parser.add_option \
+    ( "-a", "--action"
+    , dest    = "action"
+    , help    = "Action for CSV output (selects CSV class), "
+                "for summary/staff report use CSV_Summary_Report or "
+                "CSV_Staff_Report, respectively."
+    , default = 'Export_CSV_Names'
+    )
+parser.add_option \
     ( "-c", "--column"
     , dest    = "column"
     , help    = "Column in database, can be specified more than once,"
@@ -36,12 +44,6 @@ parser.add_option \
     , help    = "Filter-column=value in DB, can be specified more than once"
     , default = []
     , action  = 'append'
-    )
-parser.add_option \
-    ( "-t", "--format"
-    , dest    = "format"
-    , help    = "Format for CSV output (selects CSV class)"
-    , default = 'Names'
     )
 parser.add_option \
     ( "-g", "--group"
@@ -86,6 +88,7 @@ tracker = instance.open (dir)
 db      = tracker.open (opt.user)
 sys.path.insert (1, os.path.join (dir, 'extensions'))
 from ExportCSVNamesAction import *
+from summary              import CSV_Summary_Report, CSV_Staff_Report
 
 classname = args [0]
 
@@ -95,6 +98,7 @@ if opt.query :
     env ['QUERY_STRING'] = opt.query.split ('?', 1) [-1]
 else :
     query = []
+    query.append ('@action=%s'  % opt.action)
     query.append ('@columns=%s' % ','.join (opt.column))
     query.append ('@group=%s'   % ','.join (opt.group))
     query.append ('@sort=%s'    % ','.join (opt.sort))
@@ -109,7 +113,17 @@ cli.language  = None
 cli.classname = classname
 cli.userid    = db.getuid ()
 
-cls = globals () ['Export_CSV_' + opt.format]
+action = 'ExportCSVNamesAction'
+if ':action' in cli.form :
+    action = cli.form [':action'].value.lower ()
+elif '@action' in cli.form :
+    action = cli.form ['@action'].value.lower ()
+
+try :
+    cls = tracker.cgi_actions [action]
+except KeyError :
+    cls = globals () [action]
+
 exp = cls (cli)
 if opt.outfile != '-' :
     out = open (opt.outfile, "w")
