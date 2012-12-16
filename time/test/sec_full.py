@@ -318,7 +318,7 @@ Role "user":
  User is allowed to create support (Create for "support" only)
  User is allowed to create time_record (Create for "time_record" only)
  User is allowed to create time_wp (Create for "time_wp" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
  User is allowed to edit category if he is responsible for it (Edit for "category": ('nosy', 'default_part_of') only)
  User is allowed to edit daily record if he is owner or supervisor (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed to edit daily record if he is owner or supervisor (View for "daily_record": ('status', 'time_record') only)

@@ -520,6 +520,7 @@ properties = \
         , 'alternate_addresses'
         , 'clearance_by'
         , 'contacts'
+        , 'csv_delimiter'
         , 'department'
         , 'external_company'
         , 'firstname'
