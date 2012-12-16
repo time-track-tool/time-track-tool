@@ -940,6 +940,8 @@ class Staff_Report (_Report) :
         )
 
     def __init__ (self, db, request, utils, is_csv = False) :
+        timestamp    = time.time ()
+        db.log_info ("staff_report: %s" % timestamp)
         self.htmldb  = db
         try :
             db = db._db
@@ -998,6 +1000,7 @@ class Staff_Report (_Report) :
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
             )
+        db.log_info  ("staff_report: users: %s" % (time.time () - timestamp))
         self.values      = values = {}
         self.need_period = False
         period_objects   = dict (week = period_week, month = period_month)
@@ -1021,6 +1024,10 @@ class Staff_Report (_Report) :
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
                         date = eop + day
+                db.log_info \
+                    ( "staff_report: %s/%s: %s"
+                    % (period, u, time.time () - timestamp)
+                    )
         db.commit () # commit cached daily_record values
     # end def __init__
 
@@ -1121,8 +1128,11 @@ class Staff_Report (_Report) :
             return True
         if user_has_role (self.db, self.uid, 'HR') :
             return True
-        if self.db.user.get (user, 'supervisor') == self.uid :
-            return True
+        supi = user
+        while supi :
+            supi = self.db.user.get (supi, 'supervisor')
+            if supi == self.uid :
+                return True
         if user_has_role (self.db, self.uid, 'HR-Org-Location') :
             if hr_olo_role_for_this_user_dyn (self.db, self.uid, dynuser) :
                 return True
