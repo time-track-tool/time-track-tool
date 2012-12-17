@@ -941,7 +941,6 @@ class Staff_Report (_Report) :
 
     def __init__ (self, db, request, utils, is_csv = False) :
         timestamp    = time.time ()
-        db.log_info ("staff_report: %s" % timestamp)
         self.htmldb  = db
         try :
             db = db._db
@@ -949,6 +948,7 @@ class Staff_Report (_Report) :
             pass
         self.db      = db
         self.uid     = db.getuid ()
+        db.log_info  ("staff_report: %s" % timestamp)
         stati        = (db.daily_record_status.getnode (i)
                         for i in db.daily_record_status.getnodeids ()
                        )
