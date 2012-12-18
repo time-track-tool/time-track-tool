@@ -451,11 +451,7 @@
      , ('doc',                 'View', 1,               ('',''))
      , ('artefact',            'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
-     , ( 'summary_report'
-       , 'View'
-       , utils.user_has_role (db._db, db._db.getuid (), 'hr', 'hr-org-location')
-       , ('Staff Report','staff')
-       )
+     , ('summary_report',     'View', 1, ('Staff Report','staff'))
      , ('device',              'View', 1,               ('',''))
      , ('device_group',        'View', 1,               ('',''))
      , ('logstyle',            'View', 1,               ('',''))
