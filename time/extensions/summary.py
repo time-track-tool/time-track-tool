@@ -1073,11 +1073,11 @@ class Staff_Report (_Report) :
 
 	bal       = compute_balance (db, u, start - day, True) [0]
 	container ['balance_start'] += bal
-	db.commit () # immediately commit cached tr_duration if changed
+	#db.commit () # immediately commit cached tr_duration if changed
 	bal, asup = compute_balance (db, u, end,         True)
 	container ['balance_end']   += bal
 	container ['achieved_supplementary'] = asup
-	db.commit () # immediately commit cached tr_duration if changed
+	#db.commit () # immediately commit cached tr_duration if changed
         for s, e, period in otp :
 	    #print "otp:", period.name, s.pretty (ymd), e.pretty (ymd)
             if not period_is_weekly (period) :
@@ -1091,7 +1091,7 @@ class Staff_Report (_Report) :
         while d <= end :
             do_perd = do_week = do_ovt = False
             dur = durations (db, u, d)
-            db.commit () # immediately commit cached tr_duration if changed
+            #db.commit () # immediately commit cached tr_duration if changed
             for period in periods :
                 do_perd = do_perd or \
                     (   not period_is_weekly (period)
@@ -1120,7 +1120,7 @@ class Staff_Report (_Report) :
 	if len (effective_overtime) == 1 :
 	    cont.append (effective_overtime [0])
 	container ['supp_per_period'] = ' '.join (cont)
-        db.commit () # commit cached daily_record values
+        # db.commit () # commit cached daily_record values
     # end def fill_container
 
     def permission_ok (self, user, dynuser) :

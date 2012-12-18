@@ -27,6 +27,7 @@ import logging
 import csv
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
+import user7_time
 
 from operator import mul
 from StringIO import StringIO
@@ -765,6 +766,45 @@ class Test_Case_Timetracker (_Test_Case) :
         self.db.commit ()
     # end def setup_user6
 
+    def setup_user7 (self) :
+        self.username7 = 'testuser7'
+        self.user7 = self.db.user.create \
+            ( username     = self.username7
+            , firstname    = 'Nummer7'
+            , lastname     = 'User7'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user7))
+        self.assertEqual (len (ud), 1)
+        ud = self.db.user_dynamic.getnode (ud [0])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+
+        self.db.user_dynamic.set \
+            ( ud.id
+            , valid_from        = date.Date ('2012-11-15')
+            , valid_to          = date.Date ('2013-05-16')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_per_period   = 15.0
+            , overtime_period   = p
+            )
+        self.db.commit ()
+    # end def setup_user7
+
     def test_rename_status (self) :
         self.log.debug ('test_rename_status')
         self.setup_db ()
@@ -1462,6 +1502,40 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines  [1] [2], '0.00') # balance_start
         self.assertEqual (lines [10][11], '9.59') # balance_end
     # end def test_user6
+
+    def test_user7 (self) :
+        self.log.debug ('test_user7')
+        self.setup_db ()
+        self.setup_user7 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username7)
+        user7_time.import_data_7 (self.db, self.user7)
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user7]
+             , 'date'         : '2012-11-15;2012-12-18'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 10)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0] [9], 'Supplementary hours')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [0][12], 'Overtime period')
+        self.assertEqual (lines  [1] [1], 'WW 46/2012')
+        self.assertEqual (lines  [7] [1], 'November 2012')
+        self.assertEqual (lines  [8] [1], 'December 2012')
+        self.assertEqual (lines  [9] [1], '2012-11-15;2012-12-18')
+        self.assertEqual (lines  [7] [7], '92.25')
+        self.assertEqual (lines  [7] [8], '100.43')
+        self.assertEqual (lines  [1] [2], '0.00') # balance_start
+        self.assertEqual (lines  [9][11], '3.80') # balance_end
+    # end def test_user7
 
     def concurrency (self, method) :
         """ Ensure that no cached values from previous transaction are used.

@@ -397,6 +397,9 @@ def required_overtime_in_period (db, user, date, period) :
     while date <= eop :
         dyn   = get_user_dynamic (db, user, date)
         is_wd = is_work_day (dyn, date)
+        if not dyn :
+            wday  = gmtime (date.timestamp ())[6]
+            is_wd = wday < 5
         wd += 1.0 * is_wd
         if dyn and period.id == dyn.overtime_period :
             otd  = req_overtime_quotient (db, dyn, user, date)
