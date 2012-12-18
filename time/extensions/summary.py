@@ -1195,10 +1195,10 @@ class CSV_Report (Action, autosuper) :
             return 'dummy'
         io = outfile
         if io is None :
-            io = self.client.wfile
+            io = self.client.request.wfile
         report = self.report_class (self.db, request, self.utils, is_csv = True)
         print >> io, report.as_csv ()
-        return True_Value
+        return True_Value ()
     # end def handle
 # end class CSV_Report
 
