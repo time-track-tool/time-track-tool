@@ -6,6 +6,9 @@ try :
     from ldap_sync import check_ldap_config, sync_from_ldap
 
     def init (instance) :
+	if not check_ldap_config (instance) :
+	    instance.registerUtil ('sync_from_ldap', None)
+	    return
         instance.registerAction ('login',             LdapLoginAction)
         instance.registerUtil   ('LDAP_Roundup_Sync', LDAP_Roundup_Sync)
         instance.registerUtil   ('check_ldap_config', check_ldap_config)

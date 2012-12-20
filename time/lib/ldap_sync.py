@@ -659,6 +659,9 @@ class LDAP_Roundup_Sync (object) :
 # end LDAP_Roundup_Sync
 
 def check_ldap_config (db) :
+    """ The given db can also be an instance, it just has to have a config
+        object as an attribute.
+    """
     cfg = db.config.ext
     uri = None
     try :
