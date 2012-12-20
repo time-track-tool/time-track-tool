@@ -848,7 +848,7 @@
    <tal:block metal:use-macro="templates/page/macros/responsible"/>
    <tal:block metal:define-slot="formatted_class_content"/>
 
-   <tr tal:condition="has_nosy">
+   <tr tal:condition="python:has_nosy and context.nosy.is_view_ok ()">
     <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
     <td>
      <span tal:replace="structure context/nosy/field"/>

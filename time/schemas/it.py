@@ -41,6 +41,7 @@ from schemacfg import schemadef
 # Note: order matters, core is always last.
 schemas = \
     ( 'it_tracker'
+    , 'ituser'
     , 'user'
     , 'core'
     )

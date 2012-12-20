@@ -27,9 +27,11 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
+      <tal:block tal:condition="python: context.category.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu ()"/>
+      </tal:block>
       <th tal:content="structure python:utils.fieldname
           (classname, 'deadline')"/>
       <td tal:content="structure python:context.deadline.field ()"/>
@@ -38,9 +40,11 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()"/>
+      <tal:block tal:condition="python: context.it_prio.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           (classname, 'it_prio')"/>
       <td tal:content="structure python:context.it_prio.menu ()"/>
+      </tal:block>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -69,7 +73,7 @@
        </tal:block>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python: context.it_project.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           (classname, 'it_project')"/>
       <td>
@@ -83,7 +87,7 @@
                   )"/>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python: context.it_project.is_view_ok ()">
       <td>
       <td colspan=3 tal:condition="python: context.it_project and context.id">
        <a tal:attributes="href string:it_project${context/it_project/id}">
@@ -94,12 +98,13 @@
        </a>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python: context.superseder.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           (classname, 'superseder')"/>
       <td tal:content="structure python:context.superseder.field ()"/>
      </tr>
-     <tr tal:repeat="sup context/superseder">
+     <tr tal:repeat="sup context/superseder"
+         tal:condition="python: context.superseder.is_view_ok ()">
       <td>
       <td colspan=3>
        <a tal:attributes="href string:it_issue${sup/id}">
