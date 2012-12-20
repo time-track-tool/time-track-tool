@@ -4,6 +4,7 @@ import sys
 
 from imaplib             import IMAP4
 from rsclib.autosuper    import autosuper
+from roundup.password    import Password
 from roundup.cgi.actions import LoginAction
 from roundup.cgi         import exceptions
 
@@ -13,7 +14,7 @@ class IMAP_Roundup_Sync (object) :
     roundup_group = 'roundup-users'
     page_size     = 50
     
-    def __init__ (self, db, imapadr, update_roundup = None) :
+    def __init__ (self, db, update_roundup = None) :
         self.db             = db
         self.cfg            = db.config.ext
         self.update_roundup = update_roundup
@@ -50,6 +51,7 @@ class IMAP_Roundup_Sync (object) :
 
     def sync_user_from_imap (self, username, status, pw = None, update = None) :
         reserved = ('admin', 'anonymous')
+        assert username not in reserved
         if update is not None :
             self.update_roundup = update
         uid = None
@@ -57,19 +59,27 @@ class IMAP_Roundup_Sync (object) :
             uid   = self.db.user.lookup  (username)
         except KeyError :
             pass
-        # nothing to do if user not existing and imap says it's obsolete
-        if not user :
-            assert username not in reserved
+        if uid :
+            roles = ''
+            if status == self.status_valid :
+                roles = self.db.config.NEW_WEB_USER_ROLES
+            if self.update_roundup :
+                self.db.user.set (uid, status = status, roles = roles)
+        else :
+            # nothing to do if user not existing and imap says it's obsolete
             if status == self.status_obsolete :
                 return
             else :
                 assert status == self.status_valid
-                uid = self.db.user.create \
-                    ( username = username
-                    , password = pw
-                    , address  = username
-                    )
-        db.commit ()
+                if self.update_roundup :
+                    roles = self.db.config.NEW_WEB_USER_ROLES
+                    uid   = self.db.user.create \
+                        ( username = username
+                        , password = Password (pw)
+                        , address  = username
+                        , roles    = roles
+                        )
+        self.db.commit ()
     # end def sync_user_from_imap
 
 # end IMAP_Roundup_Sync
@@ -104,6 +114,7 @@ class ImapLoginAction (LoginAction, autosuper) :
         if username in ('admin', 'anonymous') :
             return self.__super.verifyLogin (username, password)
         obsolete = self.db.user_status.lookup ('obsolete')
+        user = None
         try :
             user = self.db.user.lookup  (username)
             user = self.db.user.getnode (user)

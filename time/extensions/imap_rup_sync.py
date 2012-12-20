@@ -2,7 +2,7 @@
 # -*- coding: iso-8859-1 -*-
 
 try :
-    from imap_sync import ImapLoginAction check_imap_config
+    from imap_sync import ImapLoginAction, check_imap_config
 
     def init (instance) :
 	if not check_imap_config (instance) :
