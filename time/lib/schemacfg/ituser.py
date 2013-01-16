@@ -70,7 +70,7 @@ def security (db, ** kw) :
             ( name        = perm
             , klass       = 'it_issue'
             , check       = is_on_nosy
-            , description = is_on_nosy.__doc__
+            , description = is_on_nosy.__doc__.strip ()
             , properties  = props
             )
         db.security.addPermissionToRole ('ITuser', p)
@@ -98,7 +98,7 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'user'
         , check       = is_it_staff
-        , description = is_it_staff.__doc__
+        , description = is_it_staff.__doc__.strip ()
         , properties  = ("username", "realname")
         )
     db.security.addPermissionToRole ('ITuser', p)
@@ -110,8 +110,9 @@ def security (db, ** kw) :
             p = db.security.getPermission   ('Search', klass)
         except ValueError :
             p = db.security.addPermission \
-                ( name  = 'Search'
-                , klass = klass
+                ( name        = 'Search'
+                , klass       = klass
+                , description = 'User is allowed to search for %s' % klass
                 )
         db.security.addPermissionToRole ('ITuser', p)
     db.security.addPermissionToRole ('ITuser', p)
@@ -119,10 +120,9 @@ def security (db, ** kw) :
         p = db.security.getPermission   ('View', 'file', check = core.view_file)
     except ValueError :
         p = db.security.addPermission \
-            ( name  = 'Search'
+            ( name  = 'View'
             , klass = 'file'
             , check = core.view_file
-            , description = core.view_file.__doc__
             )
     db.security.addPermissionToRole ('ITuser', p)
 
@@ -140,20 +140,20 @@ def security (db, ** kw) :
                 (perm, 'query', check = core.edit_query)
         except ValueError :
             p = db.security.addPermission \
-                ( name  = perm
-                , klass = 'query'
-                , check = core.edit_query
-                , description = core.edit_query.__doc__
+                ( name        = perm
+                , klass       = 'query'
+                , check       = core.edit_query
+                , description = core.edit_query.__doc__.strip ()
                 )
         db.security.addPermissionToRole ('ITuser', p)
     try :
         p = db.security.getPermission ('View', 'query', check = core.view_query)
     except ValueError :
         p = db.security.addPermission \
-            ( name  = perm
+            ( name  = 'View'
             , klass = 'query'
             , check = core.view_query
-            , description = core.view_query.__doc__
+            , description = core.view_query.__doc__.strip ()
             )
     db.security.addPermissionToRole ('ITuser', p)
 

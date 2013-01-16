@@ -1,13 +1,13 @@
 properties = \
     [ ( 'file'
       , [ ( 'content'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'name'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'type'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         ]
       )
@@ -25,13 +25,13 @@ properties = \
           , ["admin", "it", "itview", "user"]
           )
         , ( 'confidential'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         , ( 'deadline'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         , ( 'files'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         , ( 'it_prio'
           , ["admin", "it", "itview", "user"]
@@ -40,7 +40,7 @@ properties = \
           , ["admin", "it", "itview", "user"]
           )
         , ( 'messages'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         , ( 'nosy'
           , ["admin", "it", "itview", "user"]
@@ -52,31 +52,31 @@ properties = \
           , ["admin", "it", "itview", "user"]
           )
         , ( 'status'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         , ( 'superseder'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         , ( 'title'
-          , ["admin", "it", "itview", "user"]
+          , ["admin", "it", "ituser", "itview", "user"]
           )
         ]
       )
     , ( 'it_issue_status'
       , [ ( 'description'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'name'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'order'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'relaxed'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'transitions'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         ]
 
@@ -146,46 +146,46 @@ properties = \
           , ['admin', 'it', 'itview', 'user']
           )
         , ( 'content'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'date'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'files'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'inreplyto'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'messageid'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'recipients'
           , ['admin', 'it', 'itview', 'user']
           )
         , ( 'summary'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'type'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         ]
       )
     , ( 'query'
       , [ ( 'klass'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'name'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'private_for'
           , ['admin', 'it', 'itview', 'user']
           )
         , ( 'tmplate'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         , ( 'url'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it', 'ituser', 'itview', 'user']
           )
         ]
       )

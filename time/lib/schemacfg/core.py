@@ -103,14 +103,17 @@ def register_linkperms (db, linkperms) :
 # end def register_linkperms
 
 def view_file(db, userid, itemid):
+    """ Users are allowed to view their files """
     return userid == db.file.get(itemid, 'creator')
 # end def view_file
 
 def edit_query(db, userid, itemid):
+    """ Users are allowed to edit their queries """
     return userid == db.query.get(itemid, 'creator')
 # end def edit_query
 
 def view_query (db, userid, itemid) :
+    """ Users are allowed to view their own and public queries """
     private_for = db.query.get (itemid, 'private_for')
     if not private_for : return True
     return userid == private_for
