@@ -1811,14 +1811,14 @@ class Test_Case_Lielas (_Test_Case) :
 
 def test_suite () :
     suite = unittest.TestSuite ()
-    #suite.addTest (unittest.makeSuite (Test_Case_Abo))
-    #suite.addTest (unittest.makeSuite (Test_Case_Adr))
-    #suite.addTest (unittest.makeSuite (Test_Case_ERP))
+    suite.addTest (unittest.makeSuite (Test_Case_Abo))
+    suite.addTest (unittest.makeSuite (Test_Case_Adr))
+    suite.addTest (unittest.makeSuite (Test_Case_ERP))
     suite.addTest (unittest.makeSuite (Test_Case_IT))
-    #suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
-    #suite.addTest (unittest.makeSuite (Test_Case_Kvats))
-    #suite.addTest (unittest.makeSuite (Test_Case_Lielas))
-    #suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
-    #suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
+    suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
+    suite.addTest (unittest.makeSuite (Test_Case_Kvats))
+    suite.addTest (unittest.makeSuite (Test_Case_Lielas))
+    suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
+    suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     return suite
 # end def test_suite
