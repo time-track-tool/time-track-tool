@@ -79,8 +79,9 @@ sys.path.insert (0, os.path.abspath ('lib'))
 sys.path.insert (0, os.path.abspath ('extensions'))
 from user_dynamic import update_tr_duration, compute_balance
 from user_dynamic import overtime_periods, first_user_dynamic, next_user_dynamic
-from summary import Staff_Report
-from summary import init as summary_init
+from summary      import Staff_Report
+from summary      import init as summary_init
+from common       import ymd
 
 class _Test_Case (unittest.TestCase) :
     count = 0
@@ -819,22 +820,6 @@ class Test_Case_Timetracker (_Test_Case) :
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user8))
         self.assertEqual (len (ud), 1)
-        week = self.db.overtime_period.lookup ('week')
-        self.db.user_dynamic.set \
-            ( ud [0]
-            , valid_from        = date.Date ('2012-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , supp_weekly_hours = 42.0
-            , additional_hours  = 40.0
-            , overtime_period   = week
-            )
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
             , months            = 1
@@ -842,12 +827,9 @@ class Test_Case_Timetracker (_Test_Case) :
             , required_overtime = True
             , order             = 3
             )
-
-        self.db.user_dynamic.create \
-            ( user              = self.user8
-            , org_location      = self.olo
-            , department        = self.dep
-            , valid_from        = date.Date ('2012-10-01')
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from        = date.Date ('2012-12-31')
             , booking_allowed   = True
             , vacation_yearly   = 25
             , all_in            = False
@@ -1601,38 +1583,65 @@ class Test_Case_Timetracker (_Test_Case) :
         self.db.close ()
         self.db = self.tracker.open (self.username8)
         user8_time.import_data_8 (self.db, self.user8)
-#        f = self.db.daily_record_freeze.create \
-#            ( user           = self.user8
-#            , frozen         = True
-#            , date           = date.Date ('2012-12-31')
-#            )
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        dtstart = date.Date ('2012-11-01')
-        dtend   = date.Date ('2013-01-06')
-        yend    = date.Date ('2012-12-31')
-        tbl = \
-            ( (dtstart,                  date.Date ('2012-11-30'))
-            , (date.Date ('2012-12-01'), date.Date ('2012-12-30'))
-            , (yend,                     yend)
-            , (date.Date ('2013-01-01'), dtend)
-            )
-        for n, (s, e, p) in enumerate \
-            (overtime_periods (self.db, self.user8, dtstart, dtend)) :
-            self.assertEqual (p.name, 'monthly average required')
-            print >> sys.stderr, "enumerate-otp", s, e
-            #self.assertEqual ((n, (s, e)), (n, tbl [n]))
         summary_init (self.tracker)
         fs = { 'user'         : [self.user8]
              , 'date'         : '2013-01-01;2013-01-16'
              , 'summary_type' : [2, 3, 4]
              }
-#        fs = { 'user'         : [self.user8]
-#             , 'date'         : '2012-12-30;2013-01-16'
-#             , 'summary_type' : [2, 3, 4]
-#             }
         class r : filterspec = fs
+        self.user8_staff_report (r, '-0.33', '2.32')
+        self.db.close ()
+
+        self.db = self.tracker.open (self.username8)
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user8))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.set (ud [0], valid_from = date.Date ('2012-12-24'))
+        self.db.user_dynamic.create \
+            ( org_location      = self.olo
+            , department        = self.dep
+            , user              = self.user8
+            , valid_from        = date.Date ('2012-12-17')
+            , valid_to          = date.Date ('2012-12-24')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , additional_hours  = 40
+            , supp_weekly_hours = 42
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            )
+        dr = self.db.daily_record.create \
+            ( user = self.user8
+            , date = date.Date ('2012-12-28')
+            )
+        self.db.time_record.create \
+            ( daily_record  = dr
+            , duration      = 8.0
+            , work_location = '5'
+            , wp            = '5'
+            )
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user8
+            , frozen         = True
+            , date           = date.Date ('2012-12-31')
+            )
+        self.db.commit ()
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.validity_date.pretty (ymd), "2012-12-31")
+        self.db.close ()
+
+        self.db = self.tracker.open (self.username0)
+        self.user8_staff_report (r, '-71.00', '-68.35')
+    # end def test_user8
+
+    def user8_staff_report (self, r, balance_start, balance_end) :
         sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 6)
@@ -1647,9 +1656,9 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines  [5] [1], '2013-01-01;2013-01-16')
         self.assertEqual (lines  [4] [7], '92.50')
         self.assertEqual (lines  [4] [8], '95.85')
-        self.assertEqual (lines  [1] [2], '5.78') # balance_start
-        self.assertEqual (lines  [5][11], '8.44') # balance_end
-    # end def test_user8
+        self.assertEqual (lines  [1] [2], balance_start)
+        self.assertEqual (lines  [5][11], balance_end)
+    # end def user8_staff_report
 
     def concurrency (self, method) :
         """ Ensure that no cached values from previous transaction are used.

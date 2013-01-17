@@ -67,11 +67,20 @@ def check_thawed_records (db, user, date) :
 # end def check_thawed_records
 
 def min_freeze (db, user, date) :
-    """ Compute minimum freeze date over all monthly periods """
+    """ Compute minimum freeze date over all monthly periods.
+        We loop over all the dyn user records to find the last date when
+        that period was active and compare the freeze_date to the
+        current freeze_date. Only if these match is the period
+        considered for selecting the min_freeze.
+    """
+
     periods = overtime_periods (db, user, start_of_year (date), date)
     freeze  = date
     for s, e, p in periods :
 	x = freeze_date (date, p)
+        y = freeze_date (e,    p)
+        if y < x :
+            continue
 	if x < freeze :
 	    freeze = x
     return freeze

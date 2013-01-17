@@ -187,7 +187,7 @@ def use_work_hours (db, dynuser, period) :
         we want the result for week/month/year).
     """
     if not dynuser :
-	return False
+        return False
     overtime   = dynuser.additional_hours
     period_id  = dynuser.overtime_period
     if period_is_weekly (period) :
@@ -394,6 +394,7 @@ def required_overtime_in_period (db, user, date, period) :
     wd   = 0.0
     spp  = 0.0
     date = sop
+    #print >> sys.stderr, sop, eop
     while date <= eop :
         dyn   = get_user_dynamic (db, user, date)
         is_wd = is_work_day (dyn, date)
@@ -525,21 +526,21 @@ class Period_Data (object) :
         days                  = 0.0
         self.achieved_supp    = 0.0
         self.overtime_balance = 0.0
-	self.start_balance    = start_balance
-	self.period           = period
+        self.start_balance    = start_balance
+        self.period           = period
         date                  = start_of_period (start, self.period)
-	eop                   = end_of_period   (end,   self.period)
-	try :
-		s, e, p       = overtime_period (db, user, start, end, period)
-	except TypeError :
-		s, e, p = eop + day, eop + day, self.period
-	assert (p.id == self.period.id)
+        eop                   = end_of_period   (end,   self.period)
+        try :
+            s, e, p           = overtime_period (db, user, start, end, period)
+        except TypeError :
+            s, e, p           = eop + day, eop + day, self.period
+        assert (p.id == self.period.id)
         opp = 0
         while date <= eop :
             days     += 1.0
-	    d         = date
+            d         = date
             date     += day
-	    if d < s or d > e : continue
+            if d < s or d > e : continue
             dur       = durations (db, user, d)
 
             if  (   period.required_overtime
@@ -548,13 +549,14 @@ class Period_Data (object) :
                 if opp == 0 :
                     opp = dur.req_overtime_pp
                 elif opp != dur.req_overtime_pp :
+                    #print >> sys.stderr, "Oops:", opp, dur.req_overtime_pp
                     opp = None
             over_per += \
-		(   period.months
-		and dur.dyn
-		and dur.dyn.overtime_period == self.period.id
-		and dur.supp_per_period
-		) or 0
+                (   period.months
+                and dur.dyn
+                and dur.dyn.overtime_period == self.period.id
+                and dur.supp_per_period
+                ) or 0
         assert (days)
         if period.required_overtime :
             self.overtime_per_period = opp
@@ -575,8 +577,8 @@ class Period_Data (object) :
             if period.required_overtime :
                 over  = req + dur.required_overtime
             overtime += over * do_over
-	    if period.months and date <= end :
-		overtadd += dur.additional_hours * do_over
+            if period.months and date <= end :
+                overtadd += dur.additional_hours * do_over
             required += req  * do_over
             worked   += work * do_over
             eow       = week_from_date (date) [1]
@@ -594,17 +596,17 @@ class Period_Data (object) :
                     elif worked < required :
                         self.overtime_balance += worked - required
                 overtadd = overtime = worked = required = 0.0
-		self._consolidate ()
+                self._consolidate ()
             # increment at end (!)
             date += day
 
         if not period.weekly and not period.required_overtime :
             overtime += self.overtime_per_period
         if worked > overtadd and period.months :
-	    if period.weekly :
-	        self.achieved_supp += min (worked, overtime) - overtadd
-	    elif not period.required_overtime :
-		self.achieved_supp += worked - overtadd
+            if period.weekly :
+                self.achieved_supp += min (worked, overtime) - overtadd
+            elif not period.required_overtime :
+                self.achieved_supp += worked - overtadd
         if worked > overtime :
             self.overtime_balance += worked - overtime
         elif period.required_overtime :
@@ -613,31 +615,31 @@ class Period_Data (object) :
         else :
             if worked < required :
                 self.overtime_balance += worked - required
-	self._consolidate  ()
+        self._consolidate  ()
         self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
     # end def __init__
 
     def _consolidate (self) :
-	""" consolidate overtime_balance and achieved_supp:
-	    - achieved_supp must not exceed overtime_per_period
-	      exceeding hours are added to overtime_balance
-	    - if balance is negative, use hours from achieved first
-	"""
+        """ consolidate overtime_balance and achieved_supp:
+            - achieved_supp must not exceed overtime_per_period
+              exceeding hours are added to overtime_balance
+            - if balance is negative, use hours from achieved first
+        """
         if self.period.months and self.period.weekly :
             if self.achieved_supp > self.overtime_per_period :
                 self.overtime_balance += \
                     self.achieved_supp - self.overtime_per_period
                 self.achieved_supp = self.overtime_per_period
-	    if self.overtime_balance + self.start_balance < 0 :
-		#print "Balance underrun:",
-		#print self.overtime_balance + self.start_balance,
-		#print self.achieved_supp
-		to_add = min \
-		    ( self.achieved_supp
-		    , - (self.overtime_balance + self.start_balance)
-		    )
-		self.overtime_balance  += to_add
-		self.achieved_supp     -= to_add
+            if self.overtime_balance + self.start_balance < 0 :
+                #print "Balance underrun:",
+                #print self.overtime_balance + self.start_balance,
+                #print self.achieved_supp
+                to_add = min \
+                    ( self.achieved_supp
+                    , - (self.overtime_balance + self.start_balance)
+                    )
+                self.overtime_balance  += to_add
+                self.achieved_supp     -= to_add
     # end def _consolidate
 # end class Period_Data
 
@@ -650,38 +652,38 @@ def overtime_periods (db, user, start, end) :
     while (dyn and dyn.valid_from <= end) :
         if dyn.overtime_period :
             ot  = db.overtime_period.getnode (dyn.overtime_period)
-	    frm = max (dyn.valid_from, start)
-	    to  = end
-	    if dyn.valid_to :
-		to = min (dyn.valid_to - day, end)
-	    if periods and periods [-1][2].id == ot.id :
-		periods [-1][1] = to
-	    else :
-		periods.append ([frm, to, ot])
+            frm = max (dyn.valid_from, start)
+            to  = end
+            if dyn.valid_to :
+                to = min (dyn.valid_to - day, end)
+            if periods and periods [-1][2].id == ot.id :
+                periods [-1][1] = to
+            else :
+                periods.append ([frm, to, ot])
         dyn = next_user_dynamic (db, dyn)
     return periods
 # end def overtime_periods
 
 def overtime_period (db, user, start, end, period) :
     """ Return triple start, end, period for the given date which represents a
-	contiguous range of the same overtime_period in this users dynamic user
-	data
+        contiguous range of the same overtime_period in this users dynamic user
+        data
     """
     periods = []
     sop     = start_of_period (start, period)
     eop     = end_of_period   (end,   period)
     otp     = overtime_periods (db, user, sop, eop)
     for s, e, p in otp :
-	#print period.id, p.id, start, s, e, end
-	if  (   p.id == period.id
-	    and start >= s and start < e or end > s and end <= e
-	    ) :
-	    periods.append ((s, e, p))
+        #print period.id, p.id, start, s, e, end
+        if  (   p.id == period.id
+            and start >= s and start < e or end > s and end <= e
+            ) :
+            periods.append ((s, e, p))
     #print user, sop, eop, otp
     # this fails if somebody has the idea of switching twice within a week or so
     assert (len (periods) <= 1)
     if not periods :
-	return None
+        return None
     return periods [0]
 # end def overtime_period
 
@@ -706,14 +708,14 @@ def compute_saved_balance (db, user, start, date, not_after = False) :
     period = None
     dyn = get_user_dynamic (db, user, date)
     if dyn and dyn.overtime_period :
-	period = db.overtime_period.getnode (dyn.overtime_period)
+        period = db.overtime_period.getnode (dyn.overtime_period)
     eop = date
     if period and not not_after :
         eop = end_of_period (date + day, period)
     r = find_prev_dr_freeze (db, user, eop)
     if r :
-	achieved = bool (date == r.validity_date) * r.achieved_hours
-	return r.balance, r.validity_date, achieved
+        achieved = bool (date == r.validity_date) * r.achieved_hours
+        return r.balance, r.validity_date, achieved
     return 0.0, None, 0.0
 # end def compute_saved_balance
 
@@ -744,28 +746,43 @@ def compute_running_balance \
         oc  = db.overtime_correction.getnode (c)
         dyn = get_user_dynamic (db, user, oc.date)
         if dyn and use_work_hours (db, dyn, period) :
-	    d = oc.date.pretty (ymd)
-	    if d not in corr :
-		corr [d] = []
+            d = oc.date.pretty (ymd)
+            if d not in corr :
+                corr [d] = []
             corr [d].append (oc)
-    while p_date < end :
+    while p_date <= end :
         eop = end_of_period (p_date, period)
+        #print >> sys.stderr, "OTB1: pd: %s d: %s e:%s eop:%s" \
+        #    % ( p_date.pretty (ymd)
+        #      , date.pretty   (ymd)
+        #      , end.pretty    (ymd)
+        #      , eop.pretty    (ymd)
+        #      )
         pd  = Period_Data (db, user, p_date, eop, period, p_balance, corr)
         p_balance += pd.overtime_balance
-	p_achieved = pd.achieved_supp
-        #print "OTB:", p_date, eop, pd.overtime_balance, pd.achieved_supp
+        p_achieved = pd.achieved_supp
+        #print >> sys.stderr, "OTB1: bal:%.2f as:%.2f" \
+        #    % (pd.overtime_balance, pd.achieved_supp)
         p_date = eop + day
     #print "pdate: %(p_date)s, end: %(end)s, date: %(date)s" % locals ()
     #print "bal:", p_balance - start_balance
     assert (p_date <= date + day)
     eop = end_of_period (date, period)
+    #print >> sys.stderr, "before 2nd call", sharp_end, date, eop, p_date, end
     if sharp_end and date != eop and p_date <= date :
-        #print "OTBSE:", p_date.pretty (ymd), date.pretty (ymd),
+        #print >> sys.stderr, "OTB2: pd: %s d: %s e:%s eop:%s" \
+        #    % ( p_date.pretty (ymd)
+        #      , date.pretty   (ymd)
+        #      , end.pretty    (ymd)
+        #      , eop.pretty    (ymd)
+        #      )
         pd = Period_Data (db, user, p_date, date, period, p_balance, corr)
         p_balance += pd.overtime_balance
-	p_achieved = pd.achieved_supp
-	#print eop.pretty (ymd), "%.02f %.02f %.02f" \
-	#    % (pd.overtime_balance, pd.achieved_supp, pd.overtime_per_period)
+        p_achieved = pd.achieved_supp
+        #print >> sys.stderr, "OTB2: bal:%.2f as:%.2f" \
+        #    % (pd.overtime_balance, pd.achieved_supp)
+        #print eop.pretty (ymd), "%.02f %.02f %.02f" \
+        #    % (pd.overtime_balance, pd.achieved_supp, pd.overtime_per_period)
     #print "bal:", p_balance - start_balance
     return p_balance - start_balance, p_achieved
 # end def compute_running_balance
@@ -791,19 +808,20 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
         (db, user, start, date, not_after)
     if n_start :
         start = n_start + day # start after freeze date
+    #print >> sys.stderr, "OTP:", start, date
     periods   = overtime_periods (db, user, start, date)
     if periods :
-	end   = periods [-1][1]
+        end   = periods [-1][1]
     for frm, to, otp in periods :
         # compute sharp end for intermediate periods *and* if the last
         # period happens to end before our end date in which case we
         # need to take the last several days of the last period into
         # account.
-	sharp = sharp_end or to != end or end < date
-	rb, ach = compute_running_balance \
-	    (db, user, frm, to, otp, sharp, start_balance = balance)
-	balance  += rb
-	achieved  = ach
+        sharp = sharp_end or to != end or end < date
+        rb, ach = compute_running_balance \
+            (db, user, frm, to, otp, sharp, start_balance = balance)
+        balance  += rb
+        achieved  = ach
     if abs (balance)  < 1e-14 :
         balance  = 0.0
     if abs (achieved) < 1e-14 :
