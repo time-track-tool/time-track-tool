@@ -719,6 +719,22 @@ def compute_saved_balance (db, user, start, date, not_after = False) :
     return 0.0, None, 0.0
 # end def compute_saved_balance
 
+def overtime_corr (db, user, start, end) :
+    """ Return overtime corrections in given time range. """
+    cids = db.overtime_correction.filter \
+        (None, dict (user = user, date = pretty_range (start, end)))
+    corr = {}
+    for c in cids :
+        oc  = db.overtime_correction.getnode (c)
+        dyn = get_user_dynamic (db, user, oc.date)
+        if dyn :
+            d = oc.date.pretty (ymd)
+            if d not in corr :
+                corr [d] = []
+            corr [d].append (oc)
+    return corr
+# end def overtime_corr
+
 def compute_running_balance \
     (db, user, start, date, period, sharp_end = False, start_balance = 0.0) :
     """ Compute the overtime balance at the given date.
@@ -739,17 +755,7 @@ def compute_running_balance \
     p_balance  = start_balance
     p_achieved = 0
 
-    cids = db.overtime_correction.filter \
-        (None, dict (user = user, date = pretty_range (p_date, c_end)))
-    corr = {}
-    for c in cids :
-        oc  = db.overtime_correction.getnode (c)
-        dyn = get_user_dynamic (db, user, oc.date)
-        if dyn and use_work_hours (db, dyn, period) :
-            d = oc.date.pretty (ymd)
-            if d not in corr :
-                corr [d] = []
-            corr [d].append (oc)
+    corr = overtime_corr (db, user, p_date, c_end)
     while p_date <= end :
         eop = end_of_period (p_date, period)
         #print >> sys.stderr, "OTB1: pd: %s d: %s e:%s eop:%s" \
@@ -822,6 +828,11 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
             (db, user, frm, to, otp, sharp, start_balance = balance)
         balance  += rb
         achieved  = ach
+    if not periods :
+        corr = overtime_corr (db, user, start, date)
+        for cs in corr.itervalues () :
+            for c in cs :
+                balance += c.value or 0
     if abs (balance)  < 1e-14 :
         balance  = 0.0
     if abs (achieved) < 1e-14 :

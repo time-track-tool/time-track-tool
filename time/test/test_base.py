@@ -844,6 +844,40 @@ class Test_Case_Timetracker (_Test_Case) :
         self.db.commit ()
     # end def setup_user8
 
+    def setup_user9 (self) :
+        self.username9 = 'testuser9'
+        self.user9 = self.db.user.create \
+            ( username     = self.username9
+            , firstname    = 'Nummer9'
+            , lastname     = 'User9'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user9))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from        = date.Date ('2012-12-31')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , overtime_period   = None
+            )
+        self.db.overtime_correction.create \
+            ( user    = self.user9
+            , value   = 45.0
+            , comment = 'Test overtime correction'
+            , date    = date.Date ('2013-01-01')
+            )
+        self.db.commit ()
+    # end def setup_user9
+
     def test_rename_status (self) :
         self.log.debug ('test_rename_status')
         self.setup_db ()
@@ -1659,6 +1693,44 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines  [1] [2], balance_start)
         self.assertEqual (lines  [5][11], balance_end)
     # end def user8_staff_report
+
+    def test_user9 (self) :
+        self.log.debug ('test_user9')
+        self.setup_db ()
+        self.setup_user9 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username9)
+        # No typo: Re-use data from user8
+        user8_time.import_data_8 (self.db, self.user9)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user9]
+             , 'date'         : '2013-01-01;2013-01-16'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 6)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0] [9], 'Supplementary hours')
+        self.assertEqual (lines  [0][10], 'Overtime correction')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [0][12], 'Overtime period')
+        self.assertEqual (lines  [1] [1], 'WW 1/2013')
+        self.assertEqual (lines  [1][10], '45.0')
+        self.assertEqual (lines  [4] [1], 'January 2013')
+        self.assertEqual (lines  [5] [1], '2013-01-01;2013-01-16')
+        self.assertEqual (lines  [5][10], '45.0')
+        self.assertEqual (lines  [4] [7], '0.00')
+        self.assertEqual (lines  [4] [8], '0')
+        self.assertEqual (lines  [1] [2], '0.00')
+        self.assertEqual (lines  [5][11], '45.00')
+    # end def test_user9
 
     def concurrency (self, method) :
         """ Ensure that no cached values from previous transaction are used.
