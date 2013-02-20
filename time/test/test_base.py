@@ -27,7 +27,7 @@ import logging
 import csv
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
-import user7_time, user8_time
+import user7_time, user8_time, user10_time
 
 from operator import mul
 from StringIO import StringIO
@@ -861,13 +861,13 @@ class Test_Case_Timetracker (_Test_Case) :
             , valid_from        = date.Date ('2012-12-31')
             , booking_allowed   = True
             , vacation_yearly   = 25
-            , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
             , hours_thu         = 7.75
             , hours_fri         = 7.5
             , overtime_period   = None
+            , all_in            = False
             )
         self.db.overtime_correction.create \
             ( user    = self.user9
@@ -877,6 +877,65 @@ class Test_Case_Timetracker (_Test_Case) :
             )
         self.db.commit ()
     # end def setup_user9
+
+    def setup_user10 (self) :
+        self.username10 = 'testuser10'
+        self.user10 = self.db.user.create \
+            ( username     = self.username10
+            , firstname    = 'Nummer10'
+            , lastname     = 'User10'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user10))
+        self.assertEqual (len (ud), 1)
+        ud = self.db.user_dynamic.getnode (ud [0])
+        week = self.db.overtime_period.lookup ('week')
+        self.db.user_dynamic.set \
+            ( ud.id
+            , valid_from        = date.Date ('2011-12-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 45.0
+            , additional_hours  = 40.0
+            , overtime_period   = week
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user10
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2012-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , overtime_period   = None
+            , all_in            = True
+            )
+        self.db.overtime_correction.create \
+            ( user    = self.user10
+            , value   = 76.38
+            , comment = 'Test overtime correction'
+            , date    = date.Date ('2011-12-28')
+            )
+        self.db.overtime_correction.create \
+            ( user    = self.user10
+            , value   = -76.38
+            , comment = 'Test overtime correction'
+            , date    = date.Date ('2012-12-28')
+            )
+        self.db.commit ()
+    # end def setup_user10
 
     def test_rename_status (self) :
         self.log.debug ('test_rename_status')
@@ -1731,6 +1790,49 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (lines  [1] [2], '0.00')
         self.assertEqual (lines  [5][11], '45.00')
     # end def test_user9
+
+    def test_user10 (self) :
+        self.log.debug ('test_user10')
+        self.setup_db ()
+        self.setup_user10 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username10)
+        user10_time.import_data_10 (self.db, self.user10)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user10]
+             , 'date'         : '2012-12-01;2013-01-31'
+             , 'summary_type' : [2, 3, 4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 14)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0] [9], 'Supplementary hours')
+        self.assertEqual (lines  [0][10], 'Overtime correction')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [0][12], 'Overtime period')
+        self.assertEqual (lines  [1] [1], 'WW 48/2012')
+        self.assertEqual (lines  [5][10], '-76.38')
+        self.assertEqual (lines [11] [1], 'December 2012')
+        self.assertEqual (lines [12] [1], 'January 2013')
+        self.assertEqual (lines [13] [1], '2012-12-01;2013-01-31')
+        self.assertEqual (lines [13][10], '-76.38')
+        self.assertEqual (lines  [1] [7], '0.00')
+        self.assertEqual (lines [13] [7], '0.00')
+        self.assertEqual (lines  [1] [8], '0')
+        self.assertEqual (lines [13] [8], '0')
+        self.assertEqual (lines  [1] [9], '0')
+        self.assertEqual (lines [13] [9], '0')
+        self.assertEqual (lines  [1] [2], '76.38')
+        self.assertEqual (lines [13] [2], '76.38')
+        self.assertEqual (lines [13][11], '0.00')
+    # end def test_user10
 
     def concurrency (self, method) :
         """ Ensure that no cached values from previous transaction are used.

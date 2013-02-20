@@ -816,6 +816,7 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
         start = n_start + day # start after freeze date
     #print >> sys.stderr, "OTP:", start, date
     periods   = overtime_periods (db, user, start, date)
+    corr = overtime_corr (db, user, start, date)
     if periods :
         end   = periods [-1][1]
     for frm, to, otp in periods :
@@ -828,11 +829,12 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
             (db, user, frm, to, otp, sharp, start_balance = balance)
         balance  += rb
         achieved  = ach
-    if not periods :
-        corr = overtime_corr (db, user, start, date)
-        for cs in corr.itervalues () :
-            for c in cs :
-                balance += c.value or 0
+        for d in overtime_corr (db, user, frm, to) :
+            del corr [d]
+    # overtime corrections not yet covered:
+    for cs in corr.itervalues () :
+        for c in cs :
+            balance += c.value or 0
     if abs (balance)  < 1e-14 :
         balance  = 0.0
     if abs (achieved) < 1e-14 :
