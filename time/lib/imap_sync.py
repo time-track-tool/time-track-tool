@@ -29,7 +29,11 @@ class IMAP_Roundup_Sync (object) :
             if update.lower () in ('yes', 'true') :
                 self.update_roundup = True
         # find out if we should update user roles from default
-        self.update_roles = getattr (self.cfg, 'IMAP_UPDATE_ROLES', True)
+        self.update_roles = getattr (self.cfg, 'IMAP_UPDATE_ROLES', 'True')
+        if self.update_roles in ('yes', 'true') :
+            self.update_roles = True
+        else :
+            self.update_roles = False
 
         self.imap = IMAP4 (* check_imap_config (self.db))
 
