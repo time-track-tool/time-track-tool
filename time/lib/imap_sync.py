@@ -66,7 +66,7 @@ class IMAP_Roundup_Sync (object) :
         except KeyError :
             pass
         if uid :
-            user  = db.user.getnode (uid)
+            user  = self.db.user.getnode (uid)
             roles = ''
             if status == self.status_valid :
                 roles = self.db.config.NEW_WEB_USER_ROLES
