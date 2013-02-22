@@ -28,6 +28,8 @@ class IMAP_Roundup_Sync (object) :
             self.update_roundup = False
             if update.lower () in ('yes', 'true') :
                 self.update_roundup = True
+        # find out if we should update user roles from default
+        self.update_roles = getattr (self.cfg, 'IMAP_UPDATE_ROLES', True)
 
         self.imap = IMAP4 (* check_imap_config (self.db))
 
@@ -60,10 +62,13 @@ class IMAP_Roundup_Sync (object) :
         except KeyError :
             pass
         if uid :
+            user  = db.user.getnode (uid)
             roles = ''
             if status == self.status_valid :
                 roles = self.db.config.NEW_WEB_USER_ROLES
-            if self.update_roundup :
+            if  (   self.update_roundup
+                and (self.update_roles or user.status != self.status_valid)
+                ) :
                 self.db.user.set (uid, status = status, roles = roles)
         else :
             # nothing to do if user not existing and imap says it's obsolete
