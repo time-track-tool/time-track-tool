@@ -553,13 +553,25 @@ if 'status' in db.classes and 'status_transition' in db.classes :
     for name, x, trans in status_lst :
         status             = db.status.getnode (db.status.lookup (name))
         status.transitions = [trans_lst [t] [0] for t in trans]
-else :
-    db.status.create \
-        (name = "open",      description = "Open Issue")
-    db.status.create \
-        (name = "closed",    description = "Done")
-    db.status.create \
-        (name = "postponed", description = "Not currently being worked on")
+elif 'status' in db.classes :
+    st_o = db.status.create \
+        ( name        = "open"
+        , description = "Open Issue"
+        , order       = 1
+        )
+    st_c = db.status.create \
+        ( name        = "closed"
+        , description = "Done"
+        , order       = 2
+        )
+    st_p = db.status.create \
+        ( name        = "postponed"
+        , description = "Not currently being worked on"
+        , order       = 3
+        )
+    db.status.set (st_o, transitions = [st_c, st_p])
+    db.status.set (st_c, transitions = [st_o, st_p])
+    db.status.set (st_p, transitions = [st_o, st_c])
 
 if 'prio' in db.classes :
     db.prio.create (name = "nice to have", order =  10)
