@@ -40,7 +40,8 @@ from schemacfg import schemadef
 # sub-schema definitins to include
 # Note: order matters, core is always last.
 schemas = \
-    ( 'issue'
+    ( 'keyword'
+    , 'issue'
     , 'core'
     )
 
