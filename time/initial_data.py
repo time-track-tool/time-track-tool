@@ -513,11 +513,9 @@ if 'msg_keyword' in db.classes :
         , description = "Documentation of Design"
         )
 
-if 'status' in db.classes :
+if 'status' in db.classes and 'status_transition' in db.classes :
     ### Since status refers to status_transition and status_transition refers to
     ### status, this needs to be done in three steps
-
-    assert "status_transition" in db.classes, "status needs status_transition"
 
     status_lst = \
         ( ('analyzing', 'Require Analysis', ('o_wo_msg', 'e', 'c'))
@@ -555,6 +553,19 @@ if 'status' in db.classes :
     for name, x, trans in status_lst :
         status             = db.status.getnode (db.status.lookup (name))
         status.transitions = [trans_lst [t] [0] for t in trans]
+else :
+    db.status.create \
+        (name = "open",      description = "Open Issue")
+    db.status.create \
+        (name = "closed",    description = "Done")
+    db.status.create \
+        (name = "postponed", description = "Not currently being worked on")
+
+if 'prio' in db.classes :
+    db.prio.create (name = "nice to have", order =  10)
+    db.prio.create (name = "high",         order =  20)
+    db.prio.create (name = "showstopper",  order =  30)
+    db.prio.create (name = "unknown",      order = 100)
 
 if 'doc_issue_status' in db.classes :
     all_stati  = db.status.getnodeids ()

@@ -71,13 +71,6 @@ def init \
         )
     kind.setkey ("name")
 
-    keyword = Class \
-        ( db, "keyword"
-        , name                = String    (indexme = 'no')
-        , description         = String    (indexme = 'no')
-        )
-    keyword.setkey ("name")
-
     stat = Class \
         ( db, "status"
         , name                = String    (indexme = 'no')
@@ -167,7 +160,6 @@ def security (db, ** kw) :
         [ ("issue",             ["Issue_Admin"], ["Issue_Admin"])
         , ("area",              ["User"],        ["Issue_Admin"])
         , ("category",          ["User"],        ["Issue_Admin"])
-        , ("keyword",           ["User"],        ["Issue_Admin"])
         , ("kind",              ["User"],        ["Issue_Admin"])
         , ("msg_keyword",       ["User"],        ["Issue_Admin"])
         , ("status",            ["User"],        ["Issue_Admin"])

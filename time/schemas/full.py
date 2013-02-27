@@ -47,6 +47,7 @@ schemas = \
     , 'user'
     , 'docissue'
     , 'extcompany'
+    , 'keyword'
     , 'issue'
     , 'doc'
     , 'it_tracker'

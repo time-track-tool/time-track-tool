@@ -43,6 +43,7 @@ from schemacfg import schemadef
 schemas = \
     ( 'company'
     , 'docissue'
+    , 'keyword'
     , 'issue'
     , 'doc'
     , 'it_tracker'
