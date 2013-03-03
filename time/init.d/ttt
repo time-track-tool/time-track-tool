@@ -1,0 +1,76 @@
+#!/bin/sh -e
+# Copyright (C) 2003 TTTech Computertechnik GmbH. All rights reserved
+# Schönbrunnerstraße 7, A--1040 Wien, Austria. office@@tttech.com
+# ****************************************************************************
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# ****************************************************************************
+#
+# roundup	Startup script for the roundup http server.
+#
+# Version:	$Id: roundup,v 1.5.2.1 2005/08/25 11:12:33 schlatterbeck Exp $
+### BEGIN INIT INFO
+# Provides: roundup
+# Required-Start:
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Description:    Start the roundup HTTP server daemon
+### END INIT INFO
+
+DESC='Roundup HTTP-Server'
+
+BINFILE=roundup-server 
+EXECUTABLE=/usr/bin/$BINFILE
+test -x $EXECUTABLE || exit 5
+PIDFILE=/var/run/roundup/server.pid
+#LOGFILE=/var/log/roundup/roundup.log
+#TRACKERS=ttt=/roundup/tracker/ttt
+OPTIONS="-C /etc/roundup/server.ini"
+NICENESS=-5
+
+. /etc/rc.status
+
+rc_reset
+
+start_stop() {
+	case "$1" in
+	start)
+		echo "Starting $DESC:"
+		startproc -p $PIDFILE -n $NICENESS $EXECUTABLE $OPTIONS
+		rc_status -v
+		;;
+	stop)
+		echo "Stopping $DESC:"
+		killproc -p $PIDFILE -TERM $BINFILE
+		rc_status -v
+		;;
+	restart | force-reload)
+                $0 stop
+                $0 start
+                rc_status
+		;;
+	*)
+		printf "Usage: $0 {start|stop|restart|force-reload}\n" >&2
+		exit 1
+		;;
+	esac
+}
+
+start_stop "$@"
+
+rc_exit
