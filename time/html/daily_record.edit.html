@@ -36,7 +36,7 @@
     ; edit_ok python: (  uid == user
                       or utils.user_has_role (db._db, uid, 'controlling')
                       )
-    ; nlines  python: db._db.user.get (uid, 'tt_lines') or 1
+    ; nlines  python: int (db._db.user.get (uid, 'tt_lines')) or 1
     ; is_hr   python: utils.user_has_role (db._db, uid, 'hr')
     ; mod_ok  python: edit_ok or is_hr
     ; aprv_ok python: user != uid and (is_hr or user in approval_for)
