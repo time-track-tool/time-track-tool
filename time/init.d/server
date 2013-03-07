@@ -55,7 +55,7 @@ start_stop() {
 		start-stop-daemon --start --oknodo --quiet \
                                   --pidfile $PIDFILE \
                                   --nicelevel $NICENESS \
-				  --exec $EXECUTABLE $OPTIONS
+				  --exec $EXECUTABLE -- $OPTIONS
 		printf " $BINFILE"
 		printf ".\n"
 		;;
