@@ -31,8 +31,6 @@
      <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
      <td>
       <span tal:replace="structure context/date/field"/>
-      <span tal:replace="structure python:utils.date_help
-            (request, context.date)"/>
      </td>
      <th tal:content="structure python:utils.fieldname (classname, 'is_half')"/>
      <td tal:content="structure python:context.is_half.field ()"/>
