@@ -162,23 +162,22 @@ def update_userlist_html (db, cl = None) :
                            , filterspec = spec
                            , sort       = ("+", "username")
                            )
-    if users :
-        options  = [OPTION_FMT % (id, cl.get (id, "username")) for id in users]
+    options  = [OPTION_FMT % (id, cl.get (id, "username")) for id in users]
 
-        f.write (USER_SINGLE % { "macro_name"  : "user"
-                               , "option_list" : "\n".join (options)
-                               }
-                )
-        f.write (USER_MULTI  % { "macro_name"  : "user_multi"
-                               , "option_list" : "\n".join (options)
-                               , "condition"   : "context [name].is_edit_ok ()"
-                               }
-                )
-        f.write (USER_MULTI  % { "macro_name"  : "user_multi_read"
-                               , "option_list" : "\n".join (options)
-                               , "condition"   : "True"
-                               }
-                )
+    f.write (USER_SINGLE % { "macro_name"  : "user"
+                           , "option_list" : "\n".join (options)
+                           }
+            )
+    f.write (USER_MULTI  % { "macro_name"  : "user_multi"
+                           , "option_list" : "\n".join (options)
+                           , "condition"   : "context [name].is_edit_ok ()"
+                           }
+            )
+    f.write (USER_MULTI  % { "macro_name"  : "user_multi_read"
+                           , "option_list" : "\n".join (options)
+                           , "condition"   : "True"
+                           }
+            )
 
     # all users (incl. mail alias users)
     # RSC: now there are no mail alias users -- and we don't want
@@ -191,14 +190,13 @@ def update_userlist_html (db, cl = None) :
                          , filterspec = spec
                          , sort       = ("+", "username")
                          )
-    if users :
-        options  = [OPTION_FMT % (id, cl.get (id, "username")) for id in users]
+    options  = [OPTION_FMT % (id, cl.get (id, "username")) for id in users]
 
-        f.write (USER_MULTI  % { "macro_name"  : "nosy_multi"
-                               , "option_list" : "\n".join (options)
-                               , "condition"   : "True"
-                               }
-                )
+    f.write (USER_MULTI  % { "macro_name"  : "nosy_multi"
+                           , "option_list" : "\n".join (options)
+                           , "condition"   : "True"
+                           }
+            )
 
     f.close ()
     shutil.move (tmpname, os.path.join (root, userlist))
