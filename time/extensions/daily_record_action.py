@@ -117,7 +117,8 @@ def button_submit_to (db, user, date) :
     if not supervisor :
         return ''
     clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
-    nickname   = db.user.get (clearance,  'nickname').upper ()
+    clearer    = db.user.getnode (clearance)
+    nickname   = (clearer.nickname or '').upper () or clearer.username
     return \
         '''<input type="button" value="%s"
             onClick="
