@@ -10,7 +10,7 @@
  ; head_title      Classname
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
- ; login           python: False
+ ; login           request/form/:login/value | nothing
  ; is_user         python: request.user.username!='anonymous'
                            or (db.issue.is_view_ok () and not login)
  ; labelprop       klass/_klass/labelprop
@@ -530,6 +530,21 @@
         <input type="submit" name="@action" value="Login">
        </td>
       </tr>
+      <tr tal:condition="python:request.user.hasPermission
+           ('Register', 'user')">
+       <td colspan="2" align="center">
+	<a href="user?@template=register"
+           tal:condition="python:request.user.hasPermission
+           ('Register', 'user')" i18n:translate="">Register</a>
+       </td>
+      </tr>
+      <tr tal:condition="python:request.user.hasPermission
+           ('Register', 'user')">
+       <td colspan="2" align="center">
+	<a href="user?@template=forgotten" i18n:translate="">
+          Lost&nbsp;your&nbsp;login?</a>
+       </td>
+      </tr>
      </table>
      <script language="javascript">
      <!--
@@ -675,8 +690,12 @@
 
      <!-- logout -->
      <span class="classblock">
-      <a tal:attributes="href python:request.indexargs_href
+      <a tal:condition="python:request.user.username!='anonymous'"
+         tal:attributes="href python:request.indexargs_href
          ('', {'@action':'logout'})">Logout</a>
+      <a tal:condition="python:request.user.username=='anonymous'"
+         tal:attributes="href python:request.indexargs_href
+         ('', {':login':'1'})">Login</a>
      </span>
    </tr>
    <tal:block metal:define-slot="menu_slot"/>
