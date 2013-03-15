@@ -10,7 +10,9 @@
  ; head_title      Classname
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
+ ; login           python: False
  ; is_user         python: request.user.username!='anonymous'
+                           or (db.issue.is_view_ok () and not login)
  ; labelprop       klass/_klass/labelprop
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
@@ -666,7 +668,7 @@
      </span>
 
      <!-- username -> link to own profile -->
-     <span class="classblock">
+     <span class="classblock" tal:condition="request/user/username/is_view_ok">
       <a tal:attributes="href string:user${request/user/id}"
          tal:content="string:${request/user/username}"></a>
      </span>
@@ -738,7 +740,8 @@
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
    <option value="" i18n:translate="">-- View / Query --
    </option>
-   <option value="query?@template=edit" i18n:translate="">Manage Queries
+   <option tal:condition="db/query/is_view_ok"
+    value="query?@template=edit" i18n:translate="">Manage Queries
    </option>
    <tal:block
     tal:repeat="k python: sorted
