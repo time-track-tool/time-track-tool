@@ -384,13 +384,49 @@ def part_of_changed (db, cl, nodeid, newvalues) :
                 validate_composed_of (db, new_part_of_id)
 # end def part_of_changed
 
+def set_default_responsible (db, cl, nodeid, newvalues) :
+    """Set admin as responsible if responsible is empty.
+       This auditor should be tried *after* other methods of setting a
+       responsible person have failed (or are unavailable).
+    """
+    if 'responsible' not in newvalues :
+        responsible = db.user.lookup ("admin")
+        newvalues ["responsible"] = responsible
+# end def set_default_responsible
+
+def set_default_prio (db, cl, nodeid, newvalues) :
+    """Set maximum prio if not yet set for a new issue.
+       This auditor should be tried *after* other methods of setting a
+       priority have failed.
+    """
+    if 'priority' not in newvalues :
+        prio = db.prio.filter (None, {}, sort = ('-', 'order'))
+        newvalues ['priority'] = prio [0]
+# end def set_default_prio
+
+def set_default_status (db, cl, nodeid, newvalues) :
+    """Set minimum status if not yet set for a new issue.
+       This auditor should be tried *after* other methods of setting a
+       status have failed.
+    """
+    if 'status' not in newvalues :
+        status = db.status.filter (None, {}, sort = ('+', 'order'))
+        newvalues ['status'] = status [0]
+# end def set_default_status
+
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'issue' not in db.classes :
         return
-    db.issue.audit ("create", limit_new_entry)
-    db.issue.audit ("set",    limit_transitions)
-    db.issue.audit ("set",    part_of_changed)
+    if 'kind' in db.classes :
+        db.issue.audit ("create", limit_new_entry)
+        db.issue.audit ("set",    limit_transitions)
+    elif 'prio' in db.classes :
+        db.issue.audit ("create", set_default_responsible, priority = 200)
+        db.issue.audit ("create", set_default_status,      priority = 200)
+        db.issue.audit ("create", set_default_prio,        priority = 200)
+    if 'part_of' in db.issue.properties :
+        db.issue.audit ("set",    part_of_changed)
 # end def init

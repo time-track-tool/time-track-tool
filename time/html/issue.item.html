@@ -40,7 +40,8 @@
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
-     <tr>
+     <tr tal:condition="python:
+        'category' in bclass.properties or 'release' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu (valid = True)"/>
@@ -48,7 +49,8 @@
           (classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:
+        'area' in bclass.properties or 'deadline' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'area')"/>
       <td tal:content="structure python:context.area.menu ()"/>
@@ -56,7 +58,8 @@
           (classname, 'deadline')"/>
       <td tal:content="structure python:context.deadline.field ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:
+        'kind' in bclass.properties or 'earliest_start' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'kind')"/>
       <td tal:content="structure python:context.kind.menu ()"/>
@@ -76,7 +79,12 @@
       <td rowspan="4"
        tal:content="structure python:context.keywords.menu (height = 4)"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:'prio' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'priority')"/>
+      <td tal:content="structure python:context.priority.menu ()"/>
+     </tr>
+     <tr tal:condition="python: 'severity' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'severity')"/>
       <td tal:content="structure python:context.severity.menu ()"/>
@@ -94,35 +102,42 @@
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'numeric_effort')"/>
-      <td tal:content="structure
-          python:context.numeric_effort.field (size = 15)"/>
+      <tal:block tal:condition="python: 'numeric_effort' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'numeric_effort')"/>
+       <td tal:content="structure
+           python:context.numeric_effort.field (size = 15)"/>
+      </tal:block>
      </tr>
-     <tr tal:condition="context/id">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'priority')"/>
-      <td>
-       <table border=0 cellpadding=0 cellspacing=0>
-        <tr>
-         <td tal:content="structure python:context.priority.field (size = 7)"/>
-         <th tal:content="structure python:utils.fieldname
-            (classname, 'effective_prio')"/>
-         <td tal:content="context/effective_prio/plain"/>
-        </tr>
-       </table>
-      </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'planned_begin')"/>
-      <td>
-       <nobr tal:condition="context/planned_begin/plain"
-             tal:content="structure python:'%s .. %s'
-             % ( context.planned_begin.pretty (format = utils.ymd)
-               , context.planned_end.pretty   (format = utils.ymd)
-               ) "/>
-      </td>
-     </tr>
-     <tr>
+     <tal:block tal:condition="python:'prio' not in db._db.classes">
+      <tr tal:condition="context/id">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'priority')"/>
+       <td>
+        <table border=0 cellpadding=0 cellspacing=0>
+         <tr>
+          <td tal:content="structure python:context.priority.field (size = 7)"/>
+          <th tal:content="structure python:utils.fieldname
+             (classname, 'effective_prio')"/>
+          <td tal:content="context/effective_prio/plain"/>
+         </tr>
+        </table>
+       </td>
+       <tal:block tal:condition="python:'planned_begin' in bclass.properties">
+        <th tal:content="structure python:utils.fieldname
+            (classname, 'planned_begin')"/>
+        <td>
+         <nobr tal:condition="context/planned_begin/plain"
+               tal:content="structure python:'%s .. %s'
+               % ( context.planned_begin.pretty (format = utils.ymd)
+                 , context.planned_end.pretty   (format = utils.ymd)
+                 ) "/>
+        </td>
+       </tal:block>
+      </tr>
+     </tal:block>
+     <tr tal:condition="python:
+        'part_of' in bclass.properties or 'cur_est_begin' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'part_of')"/>
       <td>
@@ -143,7 +158,7 @@
                ) "/>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'part_of' in bclass.properties">
       <th/>
       <td tal:condition="context/part_of/plain">
        <font size="-1" tal:define=
@@ -175,75 +190,90 @@
         </font>
        </span>
       </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'depends')"/>
-      <td>
-       <span tal:content="structure python:context.depends.field ()"/>
-       <span tal:condition="context/depends/plain"
-        tal:define="attr string:expand_depends; text expand_text">
-        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
-        <br>
-        <font size="-1" tal:define=
-         " issues context/depends/reverse
-         ; attr   python:'depends'
-         ; expand expand_depends
-         ; hide   python:False
-         ">
-         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
-        </font>
-       </span>
-      </td>
-     </tr>
-     <tr tal:condition="context/id">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'composed_of')"/>
-      <td>
-       <tal:block tal:condition="context/composed_of/plain">
-        <tal:block tal:define="attr string:expand_composed_of; text expand_text">
+      <tal:block tal:condition="python:'depends' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'depends')"/>
+       <td>
+        <span tal:content="structure python:context.depends.field ()"/>
+        <span tal:condition="context/depends/plain"
+         tal:define="attr string:expand_depends; text expand_text">
          <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+         <br>
+         <font size="-1" tal:define=
+          " issues context/depends/reverse
+          ; attr   python:'depends'
+          ; expand expand_depends
+          ; hide   python:False
+          ">
+          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+         </font>
+        </span>
+       </td>
+      </tal:block>
+     </tr>
+     <tr tal:condition="context/id">
+      <tal:block
+       tal:condition="python:'composed_of' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'composed_of')"/>
+       <td>
+        <tal:block tal:condition="context/composed_of/plain">
+         <tal:block tal:define=" attr string:expand_composed_of
+                               ; text expand_text">
+          <tal:block
+           metal:use-macro="templates/issue/macros/expandable_entity"/>
+         </tal:block>
+         <tal:block tal:define="attr string:show_closed; text hide_text">
+          <tal:block
+           metal:use-macro="templates/issue/macros/expandable_entity"/>
+         </tal:block>
+         <br>
+         <font size="-1" tal:define=
+          " issues context/composed_of/reverse
+          ; attr   python:'composed_of'
+          ; expand expand_composed_of
+          ; hide   not:show_closed
+          ">
+          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+         </font>
         </tal:block>
-        <tal:block tal:define="attr string:show_closed; text hide_text">
+       </td>
+      </tal:block>
+      <tal:block tal:condition="python:'needs' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'needs')"/>
+       <td>
+        <span tal:content="structure python:context.needs.field ()"/>
+        <span tal:condition="context/needs/plain"
+         tal:define="attr string:expand_needs; text expand_text">
          <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
-        </tal:block>
-        <br>
-        <font size="-1" tal:define=
-         " issues context/composed_of/reverse
-         ; attr   python:'composed_of'
-         ; expand expand_composed_of
-         ; hide   not:show_closed
-         ">
-         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
-        </font>
-       </tal:block>
-      </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'needs')"/>
-      <td>
-       <span tal:content="structure python:context.needs.field ()"/>
-       <span tal:condition="context/needs/plain"
-        tal:define="attr string:expand_needs; text expand_text">
-        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
-        <br>
-        <font size="-1" tal:define=
-         " issues context/needs/reverse
-         ; attr   python:'needs'
-         ; expand expand_needs
-         ; hide   python:False
-         ">
-         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
-        </font>
-       </span>
-      </td>
+         <br>
+         <font size="-1" tal:define=
+          " issues context/needs/reverse
+          ; attr   python:'needs'
+          ; expand expand_needs
+          ; hide   python:False
+          ">
+          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+         </font>
+        </span>
+       </td>
+      </tal:block>
      </tr>
      <tr tal:condition="context/id">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'fixed_in')"/>
-      <td tal:content="structure python:context.fixed_in.field ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'closed')"/>
-      <td tal:content="context/closed/plain"/>
+      <tal:block tal:condition="python:'fixed_in' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'fixed_in')"/>
+       <td tal:content="structure python:context.fixed_in.field ()"/>
+      </tal:block>
+      <tal:block tal:condition="python:'closed' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'closed')"/>
+       <td tal:content="context/closed/plain"/>
+      </tal:block>
      </tr>
-     <tr tal:condition="context/id">
+     <tr tal:condition="python:
+         context.id and 'files_affected' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'files_affected')"/>
       <td colspan="3">
@@ -251,7 +281,8 @@
         name="files_affected" wrap="hard" rows="2" cols="65"/>
       </td>
      </tr>
-     <tr tal:condition="context/id">
+     <tr tal:condition="python:
+         context.id and 'maturity_index' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'maturity_index')"/>
       <td colspan="3" tal:content="context/maturity_index/plain">

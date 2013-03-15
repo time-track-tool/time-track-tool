@@ -297,23 +297,27 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.issue.audit ("set",    loopchecks)
-    db.issue.audit ("create", loopchecks)
-    db.issue.audit ("set",    update_eff_prio)
-    db.issue.audit ("create", update_eff_prio)
     db.issue.audit ("create", forbidden_props)
-    db.issue.audit ("create", check_part_of)
-    db.issue.audit ("set",    check_part_of)
-    db.issue.react ("set",    update_children,              priority =  50)
-    db.issue.react ("set",    status_updated,               priority =  49)
-    db.issue.audit ("set",    composed_of_updated,          priority = 200)
-    db.issue.audit ("set",    composed_of_updated,          priority = 200)
-    db.issue.audit ("set",    set_maturity_index,           priority = 300)
-    db.issue.audit ("create", set_maturity_index,           priority = 300)
-    db.issue.react ("set",    update_maturity_index)
-    db.issue.react ("create", creat_update_maturity_index)
-    db.issue.audit ("set",    fix_effort)
-    db.issue.audit ("create", fix_effort)
+    if 'effective_prio' in db.issue.properties :
+        db.issue.audit ("set",    update_eff_prio)
+        db.issue.audit ("create", update_eff_prio)
+    if 'composed_of' in db.issue.properties :
+        db.issue.audit ("set",    loopchecks)
+        db.issue.audit ("create", loopchecks)
+        db.issue.audit ("create", check_part_of)
+        db.issue.audit ("set",    check_part_of)
+        db.issue.react ("set",    status_updated,           priority =  49)
+        db.issue.react ("set",    update_children,          priority =  50)
+        db.issue.audit ("set",    composed_of_updated,      priority = 200)
+        db.issue.audit ("set",    composed_of_updated,      priority = 200)
+    if 'maturity_index' in db.issue.properties :
+        db.issue.audit ("set",    set_maturity_index,       priority = 300)
+        db.issue.audit ("create", set_maturity_index,       priority = 300)
+        db.issue.react ("set",    update_maturity_index)
+        db.issue.react ("create", creat_update_maturity_index)
+    if 'numeric_effort' in db.issue.properties :
+        db.issue.audit ("set",    fix_effort)
+        db.issue.audit ("create", fix_effort)
     if 'doc_issue_status' in db.issue.properties :
         db.issue.audit ("set",    doc_issue_status)
         db.issue.audit ("create", new_doc_issue_status)

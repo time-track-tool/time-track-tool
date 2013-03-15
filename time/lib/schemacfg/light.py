@@ -35,7 +35,7 @@ from schemacfg       import schemadef
 def init \
     ( db
     , Class
-    , Optional_Doc_Issue_Class
+    , Superseder_Issue_Class
     , Ext_Mixin
     , String
     , Date
@@ -50,7 +50,8 @@ def init \
         , name                = String    (indexme = 'no')
         , description         = String    (indexme = 'no')
         , transitions         = Multilink ("status")
-        , order               = String    (indexme = 'no')
+        , order               = Number    ()
+        , relaxed             = Boolean   ()
         )
     stat.setkey ("name")
 
@@ -62,7 +63,7 @@ def init \
         )
     prio.setkey ("name")
 
-    Optional_Doc_Issue_Class \
+    Superseder_Issue_Class \
         ( db, "issue"
         , keywords              = Multilink ("keyword", do_journal = 'no')
         , priority              = Link      ("prio",    do_journal = 'no')

@@ -558,16 +558,19 @@ elif 'status' in db.classes :
         ( name        = "open"
         , description = "Open Issue"
         , order       = 1
+        , relaxed     = False
         )
     st_c = db.status.create \
         ( name        = "closed"
         , description = "Done"
         , order       = 2
+        , relaxed     = False
         )
     st_p = db.status.create \
         ( name        = "postponed"
         , description = "Not currently being worked on"
         , order       = 3
+        , relaxed     = False
         )
     db.status.set (st_o, transitions = [st_c, st_p])
     db.status.set (st_c, transitions = [st_o, st_p])
@@ -915,7 +918,7 @@ if 'dyndns' in db.classes :
 if 'sup_status' in db.classes :
     open = db.sup_status.create \
         ( name        = 'open'
-        , description = 'New or open supprt issue'
+        , description = 'New or open support issue'
         , order       = 1
         )
     closed = db.sup_status.create \

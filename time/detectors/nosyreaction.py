@@ -207,6 +207,7 @@ def updatenosy(db, cl, nodeid, newvalues):
     for k in 'responsible', 'stakeholder' :
         if k not in props :
             continue
+        item = None
         if k in newvalues :
             item = newvalues [k]
         elif nodeid :
