@@ -73,4 +73,12 @@ prop_perms = []
 schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details         (db, 'User', 'Edit')
 
+db.security.addPermission \
+    ( name='Register'
+    , klass='user'
+    , description='User is allowed to register new user'
+    )
 db.security.addPermissionToRole('Anonymous', 'Web Access')
+db.security.addPermissionToRole('Anonymous', 'Register', 'user')
+for cl in 'issue', 'file', 'msg', 'keyword', 'prio', 'status':
+    db.security.addPermissionToRole('Anonymous', 'View', cl)
