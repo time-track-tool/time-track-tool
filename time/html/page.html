@@ -759,7 +759,7 @@
           onChange="javascript:document.location=document.forms['menubar'].elements['query'].options[document.forms['menubar'].elements['query'].options.selectedIndex].value; ">
    <option value="" i18n:translate="">-- View / Query --
    </option>
-   <option tal:condition="db/query/is_view_ok"
+   <option tal:condition="db/query/is_edit_ok"
     value="query?@template=edit" i18n:translate="">Manage Queries
    </option>
    <tal:block

@@ -4745,8 +4745,8 @@ msgstr "Document number"
 #~ msgid "payer.adr_type"
 #~ msgstr "Payer Address type"
 
-#~ msgid "query++tmplate"
-#~ msgstr "Query template"
+msgid "query++tmplate"
+msgstr "Query template"
 
 #~ msgid "related_issues.id"
 #~ msgstr "Related issues (id)"

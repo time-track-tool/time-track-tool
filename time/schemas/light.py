@@ -34,7 +34,8 @@
 import sys, os
 
 sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-from schemacfg import schemadef
+from schemacfg      import schemadef
+from schemacfg.core import view_query
 
 # sub-schema definitins to include
 # Note: order matters, core is always last
@@ -92,3 +93,10 @@ for cl in 'issue', 'file', 'msg', 'keyword', 'prio', 'status':
     db.security.addPermissionToRole('Anonymous', 'View', cl)
     db.security.addPermissionToRole('User', 'View', cl)
 db.security.addPermissionToRole('User', 'Edit', 'issue')
+
+# Allow anonymous to see public queries
+p = db.security.getPermission   ('View', 'query', check = view_query)
+db.security.addPermissionToRole ('Anonymous', p)
+p = db.security.getPermission   ('Search', 'query')
+db.security.addPermissionToRole ('Anonymous', p)
+
