@@ -77,7 +77,7 @@ prop_perms = \
 
 schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details \
-    (db, 'User', 'Edit', 'address', 'alternate_addresses')
+    (db, 'User', 'Edit', 'address', 'alternate_addresses', 'timezone')
 schemadef.allow_user_details \
     (db, 'User', 'View', 'creator', 'creation', 'activity', 'actor')
 

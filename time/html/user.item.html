@@ -251,15 +251,15 @@
           python:utils.fieldname('user', 'job_description')"/>
       <td tal:content="structure context/job_description/multiline"/>
      </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
-      <td>
-       <input tal:replace="structure context/timezone/field">
-       <span i18n:translate="">default:</span>
-       <span tal:replace="db/config/DEFAULT_TIMEZONE"/>
-      </td>
-     </tr>
     </tal:block>
+    <tr tal:condition="python: 'timezone' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'timezone')"/>
+     <td>
+      <input tal:replace="structure context/timezone/field">
+      <span i18n:translate="">default:</span>
+      <span tal:replace="db/config/DEFAULT_TIMEZONE"/>
+     </td>
+    </tr>
     <tr tal:condition="python:'csv_delimiter' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          ('user', 'csv_delimiter')"/>
