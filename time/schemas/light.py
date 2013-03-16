@@ -67,11 +67,19 @@ classes = \
     , ("query"               , [],  [])
     ]
 
-prop_perms = []
+prop_perms = \
+    [ ( "user", "View", ["User"]
+      , ( "firstname", "lastname", "id"
+        , "pictures", "realname", "username", "status"
+        )
+      )
+    ]
 
-# For PGP-Processing we need a role
 schemadef.register_class_permissions (db, classes, prop_perms)
-schemadef.allow_user_details         (db, 'User', 'Edit')
+schemadef.allow_user_details \
+    (db, 'User', 'Edit', 'address', 'alternate_addresses')
+schemadef.allow_user_details \
+    (db, 'User', 'View', 'creator', 'creation', 'activity', 'actor')
 
 db.security.addPermission \
     ( name='Register'
@@ -82,3 +90,5 @@ db.security.addPermissionToRole('Anonymous', 'Web Access')
 db.security.addPermissionToRole('Anonymous', 'Register', 'user')
 for cl in 'issue', 'file', 'msg', 'keyword', 'prio', 'status':
     db.security.addPermissionToRole('Anonymous', 'View', cl)
+    db.security.addPermissionToRole('User', 'View', cl)
+db.security.addPermissionToRole('User', 'Edit', 'issue')

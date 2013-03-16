@@ -88,5 +88,5 @@ def security (db, ** kw) :
     schemadef.register_class_permissions     (db, classes, ())
     schemadef.register_nosy_classes          (db, ['issue'])
     db.security.addPermissionToRole          ('User', 'Create', 'issue')
-    schemadef.add_search_permission (db, 'issue', 'User')
+    schemadef.add_search_permission          (db, 'issue', 'User')
 # end def security
