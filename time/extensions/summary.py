@@ -934,7 +934,7 @@ class Staff_Report (_Report) :
         )
     #####     field                    allow for all (HR only if unset)
     period_fields = \
-        ( (""'achieved_supplementary', 0)
+        ( (""'achieved_supplementary', 1)
         , (""'supp_per_period',        1)
         , (""'additional_hours',       1)
         )
