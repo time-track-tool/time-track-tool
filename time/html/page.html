@@ -12,7 +12,10 @@
  ; bclass          python: db._db.getclass (classname) or default
  ; login           request/form/:login/value | nothing
  ; is_user         python: request.user.username!='anonymous'
-                           or (db.issue.is_view_ok () and not login)
+                           or (   'issue' in db._db.classes
+                              and db.issue.is_view_ok ()
+                              and not login
+                              )
  ; labelprop       klass/_klass/labelprop
  ; props           python: klass._klass.getprops ()
  ; has_msgs        python: 'messages'    in props
