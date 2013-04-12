@@ -236,7 +236,7 @@ class LDAP_Roundup_Sync (object) :
         for r in self.paged_search_iter ('(objectclass=person)', ['uid']) :
             if 'uid' not in r :
                 continue
-            yield (r.uid [0]).lower ()
+            yield (r.uid [0])
     # end def get_all_ldap_usernames
 
     def get_roundup_group (self) :
@@ -327,7 +327,7 @@ class LDAP_Roundup_Sync (object) :
             return None
         uid = None
         try :
-            uid = self.db.user.lookup (luser.uid  [0].lower ())
+            uid = self.db.user.lookup (luser.uid  [0])
         except KeyError :
             pass
         if uid :
@@ -514,7 +514,7 @@ class LDAP_Roundup_Sync (object) :
                 print "Create roundup: %s" % username, d
                 if self.update_roundup :
                     uid = self.db.user.create \
-                        (username = username.lower (), ** d)
+                        (username = username, ** d)
                     changed = True
         if changed and self.update_roundup :
             self.db.commit ()
