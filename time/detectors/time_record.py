@@ -634,7 +634,9 @@ def check_time_record (db, cl, nodeid, new_values) :
 def check_for_retire_and_duration (db, cl, nodeid, old_values) :
     if cl.get (nodeid, 'duration') is None :
         cl.retire (nodeid)
-    elif common.changed_values (old_values, cl, nodeid) != ['tr_duration'] :
+    elif (common.changed_values (old_values, cl, nodeid)
+         not in (['tr_duration'], [])
+         ) :
         drid = cl.get (nodeid, 'daily_record')
         dr = db.daily_record.getnode (drid)
         invalidate_tr_duration (db, dr.user, dr.date, dr.date)

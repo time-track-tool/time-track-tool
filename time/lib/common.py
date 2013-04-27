@@ -842,6 +842,8 @@ def _period_start_end (date, period) :
         (<Date 2010-01-01.00:00:00.000>, False)
         >>> _period_start_end (Date ('2010-05-02'), P (1, 12))
         (<Date 2010-01-01.00:00:00.000>, False)
+        >>> _period_start_end (Date ('2013-02-08'), P (0, 1))
+        (<Date 2013-02-01.00:00:00.000>, False)
     """
     if period_is_weekly (period) :
         start, end = week_from_date (date)
