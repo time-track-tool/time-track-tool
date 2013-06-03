@@ -18,6 +18,12 @@
         , searchable  = True
         , help_sort   = 'project'
         )
+    , utils.ExtProperty
+        ( utils, pdict ['wps']
+        , help_props  = ['project', 'name', 'wp_no', 'cost_center']
+        , searchable  = False
+        , searchname  = 'wps.id'
+        )
     );
    "
   tal:condition="context/is_view_ok">

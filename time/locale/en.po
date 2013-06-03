@@ -1208,7 +1208,10 @@ msgid "%(Property)s for this %(Classname)s (required)"
 msgstr ""
 
 msgid "cost_center_group.id"
-msgstr "CC Group Id"
+msgstr "Cost Center Group Id"
+
+msgid "cost_center.id"
+msgstr "Cost Center Id"
 
 msgid "cost_center_status"
 msgstr "Cost Center Status"
@@ -2467,8 +2470,26 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "department.id"
+msgstr "Department Id"
+
 msgid "organisation.id"
 msgstr "Org Id"
+
+msgid "daily_record.user.id"
+msgstr "User Id"
+
+msgid "wp.id"
+msgstr "Work package Id"
+
+msgid "time_wp.id"
+msgstr "Work package Id"
+
+msgid "time_wp_group.id"
+msgstr "Work package group Id"
+
+msgid "wps.id"
+msgstr "Work package Ids"
 
 msgid "owner"
 msgstr "Owner"
@@ -4246,6 +4267,9 @@ msgstr "Summary type"
 
 msgid "time_project"
 msgstr "Time Category"
+
+msgid "time_project.id"
+msgstr "Time Category Id"
 
 msgid "time_project_status"
 msgstr "Time Category Status"

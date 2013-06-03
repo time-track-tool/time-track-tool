@@ -368,6 +368,7 @@ _helptext          = \
     , ""'content'                     : [""'''Content of %(Classname)s''']
     , ""'cost_center'                 :
       [""'''%(Property)s for this %(Classname)s (required)''']
+    , ""'cost_center.id'              : [help_id]
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
       [""'''Specifies the Phase the Cost Center is in''']
@@ -401,6 +402,12 @@ _helptext          = \
     , ""'date_payed'                  :
       [""'''Date when this %(Classname)s was payed''']
     , ""'daily_hours'                 : [daily_hours]
+    , ""'daily_record++weekend_allowed' :
+      [ ""'''Admits user to book work or travel time on this
+             weekend-day; should always be preapproved by supervisor.
+          '''
+      ]
+    , ""'daily_record.user.id'        : [help_id]
     , ""'daily_worktime'              :
       [""'''Maximum time a person may book for a single day.''']
     , ""'defect++superseder'          :
@@ -432,6 +439,7 @@ _helptext          = \
       ]
     , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
+    , ""'department.id'               : [help_id]
     , ""'depends'                     :
       [ ""'''A comma seperated list of %(Classname)s IDs this
              %(Classname)s depends on. This information is used for the
@@ -1494,7 +1502,10 @@ _helptext          = \
              be created for a project with this status.
           '''
       ]
+    , ""'time_project.id'             : [help_id]
     , ""'time_wp++travel'             : [travel]
+    , ""'time_wp.id'                  : [help_id]
+    , ""'time_wp_group.id'            : [help_id]
     , ""'timeout'                     :
       [""'''Timeout when new email is sent''']
     , ""'timezone'                    :
@@ -1671,11 +1682,6 @@ _helptext          = \
       ]
     , ""'weekend_allowed'             :
       [""'''Flag if booking on weekends is allowed for this %(Classname)s.''']
-    , ""'daily_record++weekend_allowed' :
-      [ ""'''Admits user to book work or travel time on this
-             weekend-day; should always be preapproved by supervisor.
-          '''
-      ]
     , ""'weekly_hours'                :
       [""'''Expected weekly work-time for %(Classname)s.''']
     , ""'wp'                          :
@@ -1684,6 +1690,7 @@ _helptext          = \
              manager
           '''
       ]
+    , ""'wp.id'                       : [help_id]
     , ""'wp_no'                       :
       [ ""'''Work package number in the project. Number must be unique for
              the project and cannot be changed after assignment.
@@ -1701,6 +1708,7 @@ _helptext          = \
              packages for this %(Classname)s
           '''
       ]
+    , ""'wps.id'                      : [help_id]
     , ""'work_location'               : [work_loc]
     }
 

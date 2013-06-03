@@ -9,20 +9,30 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    props python:
-    ( utils.ExtProperty
-        ( utils, pdict ['organisation']
-        , searchname  = 'organisation.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['id'])
+    ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['name'])
     , utils.ExtProperty (utils, pdict ['description'])
     , utils.ExtProperty (utils, pdict ['responsible'],   multiselect = 1)
     , utils.ExtProperty (utils, pdict ['deputy'],        multiselect = 1)
     , utils.ExtProperty (utils, pdict ['organisation'],  multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['organisation']
+        , searchname  = 'organisation.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['department'],    multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['department']
+        , searchname  = 'department.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['status'],        multiselect = 1)
     , utils.ExtProperty (utils, pdict ['cost_center'],   multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['cost_center']
+        , searchname  = 'cost_center.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['planned_effort'])
     , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['max_hours'])

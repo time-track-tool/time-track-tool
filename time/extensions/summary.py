@@ -211,6 +211,14 @@ class Container (autosuper) :
     def as_html (self) :
         return cgi.escape (str (self))
     # end def as_html
+
+    def __getattr__ (self, name) :
+        """ Provide a default for all sorts of ids """
+        if name.endswith ('.id') :
+            return ''
+        raise AttributeError (name)
+    # end def __getattr__
+
 # end class Container
 
 class Time_Container (Container) :
@@ -370,10 +378,39 @@ class WP_Container (Comparable_Container, dict) :
         self.name      = klass.get (id, 'name')
         self.verbname  = verbname
 
+        # defaults for id computation
+        self.time_wp_id           = ''
+        self.time_wp_group_id     = ''
+        self.cost_center_id       = ''
+        self.cost_center_group_id = ''
+        self.time_project_id      = ''
+
+        tp  = None
+        cc  = None
+        ccg = None
         if klass.classname == 'time_wp' :
             self.sortkey = 30
-            p = klass.db.time_project.get (klass.get (id, 'project'), 'name')
+            wp = klass.getnode (id)
+            tp = klass.db.time_project.getnode (wp.project)
+            p  = tp.name
             self.name  = '/'.join ((p, self.name))
+            self.time_wp_id = ('time_wp', id)
+        elif klass.classname == 'time_project' :
+            tp = klass.getnode (id)
+        elif klass.classname == 'time_wp_group' :
+            self.time_wp_group_id = ('time_wp_group_id', wpg.id)
+        elif klass.classname == 'cost_center' :
+            cc  = klass.getnode (id)
+        elif klass.classname == 'cost_center_group' :
+            ccg = klass.getnode (id)
+        if tp :
+            self.time_project_id = ('time_project', tp.id)
+            cc = klass.db.cost_center.getnode (tp.cost_center)
+        if cc :
+            self.cost_center_id = ('cost_center', cc.id)
+            ccg = klass.db.cost_center_group.getnode (cc.cost_center_group)
+        if ccg :
+            self.cost_center_group_id = ('cost_center_group', ccg.id)
     # end def __init__
     
     def __repr__ (self) :
@@ -383,6 +420,8 @@ class WP_Container (Comparable_Container, dict) :
     # end def __repr__
 
     def __str__ (self) :
+        if not self.verbname :
+            return "%s %s" % (_ (self.classname), self.name)
         return "%s %s %s" % (_ (self.classname), self.name, self.verbname)
     # end def __str__
 
@@ -396,6 +435,13 @@ class WP_Container (Comparable_Container, dict) :
     def __hash__ (self) :
         return hash ((self.__class__, self.classname, self.id))
     # end def __hash__
+
+    def __getattr__ (self, name) :
+        if name.endswith ('.id') :
+            return getattr (self, name.replace ('.', '_'))
+        return self.__super.__getattr__ (name)
+    # end def __getattr__
+
 # end class WP_Container
 
 class _Report (autosuper) :
@@ -471,6 +517,8 @@ class Summary_Report (_Report) :
         FIXME: Check where we need naive dates...
     """
     def __init__ (self, db, request, utils, is_csv = False) :
+        self.htmldb     = db
+        self.utils      = utils
         try :
             db = db._db
         except AttributeError :
@@ -713,7 +761,7 @@ class Summary_Report (_Report) :
         wps         = dict ((tr.wp.id, 1) for tr in time_recs)
         for w in wps.iterkeys () :
             wp_containers.append \
-                ( WP_Container 
+                ( WP_Container
                     ( db.time_wp, w
                     , 'time_wp' in self.columns
                     , [''
@@ -832,9 +880,22 @@ class Summary_Report (_Report) :
         self.wp_containers   = wp_containers
     # end def __init__
 
+    id_attrs = \
+        [ '.'.join ((x, 'id')) for x in
+            ( 'time_wp'
+            , 'time_project'
+            , 'time_wp_group'
+            , 'cost_center'
+            , 'cost_center_group'
+            )
+        ]
+
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('Container')))
+        for k in self.id_attrs :
+            if k in self.columns :
+                line.append (formatter (_ (k)))
         line.append (formatter (_ ('time')))
         if 'user' in self.columns :
             for u in self.usernames :
@@ -846,10 +907,26 @@ class Summary_Report (_Report) :
         return line
     # end def header_line
 
-    def _output_line (self, wpc, type, idx, formatter) :
+    def _output_line (self, wpc, typ, idx, formatter) :
         line = []
-        tc   = self.time_containers [type][idx]
+        tc   = self.time_containers [typ][idx]
         line.append (formatter (wpc))
+        for k in self.id_attrs :
+            if k in self.columns :
+                col = getattr (wpc, k)
+                if col :
+                    try :
+                        cls = getattr (self.htmldb, col [0])
+                        itm = cls.getItem (col [1])
+                        col = self.utils.ExtProperty \
+                            ( self.utils
+                            , itm.name
+                            , item = itm
+                            , displayprop = 'id'
+                            )
+                    except AttributeError :
+                        col = col [1]
+                line.append (formatter (col))
         line.append (formatter (tc))
         if 'user' in self.columns :
             for u in self.usernames :

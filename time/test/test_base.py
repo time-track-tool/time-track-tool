@@ -1939,6 +1939,34 @@ class Test_Case_Timetracker (_Test_Case) :
         wp           = hcit.wp
         utils        = templating.TemplatingUtils (cli)
         e = utils.ExtProperty \
+            ( utils, hcit.duration, item = hcit
+            , searchable = True
+            , force_link = True
+            )
+        r = '<a tabindex="-1" class="run" href="time_record1">2.0</a>'
+        self.assertEqual (e.as_listentry (), r)
+        e = utils.ExtProperty \
+            ( utils, hcit.duration, item = hcit
+            , searchable  = True
+            , force_link  = True
+            , displayprop = 'id'
+            )
+        r = '<a tabindex="-1" class="run" href="time_record1">1</a>'
+        self.assertEqual (e.as_listentry (), r)
+        e = utils.ExtProperty \
+            ( utils, dr
+            , searchable = True
+            )
+        r = '<a tabindex="-1" class="" href="daily_record1">2009-12-08</a>'
+        self.assertEqual (e.as_listentry (), r)
+        e = utils.ExtProperty \
+            ( utils, dr
+            , searchname = 'daily_record.id'
+            , searchable = True
+            )
+        r = '<a tabindex="-1" class="" href="daily_record1">1</a>'
+        self.assertEqual (e.as_listentry (), r)
+        e = utils.ExtProperty \
             ( utils, dr
             , searchname = 'daily_record.user'
             , searchable = True

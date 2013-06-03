@@ -27,14 +27,39 @@
       , help_props = ['project', 'name']
       , searchable = True
       )
+    , time_wp_id        = utils.ExtProperty 
+      ( utils, pdict ['time_wp']
+      , searchable = False
+      , searchname = 'time_wp.id'
+      )
     , time_project      = utils.ExtProperty
       (utils, pdict ['time_project'],      multiselect = 1)
+    , time_project_id   = utils.ExtProperty
+      ( utils, pdict ['time_project']
+      , searchable = False
+      , searchname = 'time_project.id'
+      )
     , time_wp_group     = utils.ExtProperty
       (utils, pdict ['time_wp_group'],     multiselect = 1)
+    , time_wp_group_id  = utils.ExtProperty
+      ( utils, pdict ['time_wp_group']
+      , searchable = False
+      , searchname = 'time_wp_group.id'
+      )
     , cost_center       = utils.ExtProperty
       (utils, pdict ['cost_center'],       multiselect = 1)
+    , cost_center_id    = utils.ExtProperty
+      ( utils, pdict ['cost_center']
+      , searchable = False
+      , searchname = 'cost_center.id'
+      )
     , cost_center_group = utils.ExtProperty 
       (utils, pdict ['cost_center_group'], multiselect = 1)
+    , cost_center_group_id = utils.ExtProperty
+      ( utils, pdict ['cost_center_group']
+      , searchable = False
+      , searchname = 'cost_center_group.id'
+      )
     , summary_type      = utils.ExtProperty
       (utils, pdict ['summary_type'],      multiselect = 1)
     , summary           = utils.ExtProperty
@@ -58,8 +83,10 @@
   <tal:block tal:replace="structure python:sr.as_html ()"/>
   <tal:block tal:define=
       " fpkeys python:
-        [ 'user', 'time_wp', 'time_project', 'time_wp_group', 'cost_center'
-        , 'cost_center_group', 'summary', 'planned_effort'
+        [ 'user', 'time_wp', 'time_wp_id', 'time_project', 'time_project_id'
+        , 'time_wp_group', 'time_wp_group_id', 'cost_center', 'cost_center_id'
+        , 'cost_center_group', 'cost_center_group_id', 'summary'
+        , 'planned_effort'
         ]
       ; props python: [myprops [p] for p in sorted (fpkeys)]
       ; propkeys       python:
