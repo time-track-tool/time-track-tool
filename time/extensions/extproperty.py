@@ -396,6 +396,11 @@ class ExtProperty :
         """
         p = prop or self.prop
 
+        for i in self.searchname.split ('.')[1:] :
+            if i == 'id' :
+                break
+            last_p = p
+            p      = p [i]
         if self.propname == 'id' :
             lp = self.lnkcls.labelprop ()
             if lp == 'id' :
@@ -407,9 +412,6 @@ class ExtProperty :
                 , get_cssclass = self.get_cssclass
                 , displayprop  = 'id'
                 )
-        for i in self.searchname.split ('.')[1:] :
-            last_p = p
-            p      = p [i]
         if  (   self.propname
             and (isinstance (p, _HTMLItem) or hasattr (p._prop, 'classname'))
             ) :

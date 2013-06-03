@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-13 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -1908,6 +1908,58 @@ class Test_Case_Timetracker (_Test_Case) :
         self.log.debug ('test_concurrency_set')
         self.concurrency (self.concurrency_set)
     # end def test_concurrency_set
+
+    def test_extproperty (self) :
+        self.log.debug ('test_extproperty')
+        class Request :
+            """ Fake html request """
+            rfile = None
+            def start_response (self, a, b) :
+                pass
+        # end class Request
+        self.setup_db ()
+        dr = self.db.daily_record.create \
+            ( user = self.user1
+            , date = date.Date ('2009-12-08')
+            )
+        self.db.time_record.create \
+            ( daily_record  = dr
+            , duration      = 2.0
+            , work_location = '5'
+            , wp            = '1'
+            )
+        request      = Request ()
+        env          = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
+        cli          = self.tracker.Client (self.tracker, request, env, None)
+        cli.db       = self.db
+        cli.language = None
+        cli.userid   = self.db.getuid ()
+        hcit         = templating.HTMLItem (cli, 'time_record', 1)
+        dr           = hcit.daily_record
+        wp           = hcit.wp
+        utils        = templating.TemplatingUtils (cli)
+        e = utils.ExtProperty \
+            ( utils, dr
+            , searchname = 'daily_record.user'
+            , searchable = True
+            )
+        r = '<a tabindex="-1" class="" href="user5">testuser1</a>'
+        self.assertEqual (e.as_listentry (), r)
+        e = utils.ExtProperty \
+            ( utils, dr
+            , searchname = 'daily_record.user.id'
+            , searchable = False
+            )
+        r = '<a tabindex="-1" class="" href="user5">5</a>'
+        self.assertEqual (e.as_listentry (), r)
+        e = utils.ExtProperty \
+            ( utils, wp
+            , searchname = 'wp.id'
+            , searchable = False
+            )
+        r = '<a tabindex="-1" class="" href="time_wp1">1</a>'
+        self.assertEqual (e.as_listentry (), r)
+    # end def test_extproperty
 
     def test_maturity_index (self) :
         self.log.debug ('test_maturity_index')
