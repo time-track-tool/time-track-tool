@@ -79,14 +79,14 @@
     </tr>
     <tr tal:condition="python:
      (   context.password.is_edit_ok()
-     and not ('sync_with_ldap' in bclass.properties and context.sync_with_ldap)
+     and not (utils.imaplogin or utils.sync_from_ldap)
      )">
      <th tal:content="structure python:utils.fieldname('user', 'password')"/>
      <td tal:content="structure context/password/field"/>
     </tr>
     <tr tal:condition="python:
      (   context.password.is_edit_ok()
-     and not ('sync_with_ldap' in bclass.properties and context.sync_with_ldap)
+     and not (utils.imaplogin or utils.sync_from_ldap)
      )">
      <th tal:content="structure python:utils.fieldname('user', 'confirm')"/>
      <td tal:content="structure context/password/confirm"/>

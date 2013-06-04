@@ -6,10 +6,12 @@ try :
 
     def init (instance) :
 	if not check_imap_config (instance) :
+            instance.registerUtil ('imaplogin', False)
 	    return
         instance.registerAction ('login', ImapLoginAction)
+        instance.registerUtil ('imaplogin', True)
     # end def init
 except ImportError :
     def init (instance) :
-        pass
+        instance.registerUtil ('imaplogin', False)
     # end def init
