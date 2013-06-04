@@ -298,6 +298,33 @@ def add_ext_user (db, cl, nodeid, new_values) :
         new_values ['external_users'] = [db.getuid ()]
 # end def add_ext_user
 
+def check_ext_user_container (db, cl, nodeid, new_values) :
+    """ Check that new responsible of a container isn't an external
+        user (role External).
+    """
+    co = new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
+    u  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
+    if co and common.user_has_role (db, u, 'External') :
+        if 'responsible' in new_values :
+            raise Reject, _ \
+                ("External user may not be responsible for container")
+        else :
+            raise Reject, _ \
+                ("Operation would create a container "
+                 "with an external user as owner"
+                )
+# end def check_ext_user_container
+
+def check_ext_user_part_of (db, cl, nodeid, new_values) :
+    if 'part_of' in new_values :
+        container = new_values ['part_of']
+        if  (not db.security.hasPermission
+                ('View', db.getuid (), cl.classname, 'title', container)
+            ) :
+            raise Reject, _ \
+                ("Part of can be set to visible container only")
+# end def check_ext_user_part_of
+
 
 def init (db) :
     if 'issue' not in db.classes :
@@ -333,4 +360,7 @@ def init (db) :
         db.issue.audit ("create", add_ext_company)
     if 'external_users' in db.issue.properties :
         db.issue.audit ("create", add_ext_user)
+        db.issue.audit ("set",    check_ext_user_container)
+        db.issue.audit ("create", check_ext_user_part_of)
+        db.issue.audit ("set",    check_ext_user_part_of)
 # end def init
