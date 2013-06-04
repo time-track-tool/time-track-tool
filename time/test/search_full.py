@@ -314,12 +314,6 @@ properties = \
           )
         ]
       )
-    , ( 'external_company'
-      , [ ( 'name'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
-          )
-        ]
-      )
     , ( 'file'
       , [ ( 'content'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -369,7 +363,7 @@ properties = \
         , ( 'effective_prio'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
-        , ( 'external_company'
+        , ( 'external_users'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'files'
@@ -379,6 +373,9 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'fixed_in'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'inherit_ext'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'keywords'
@@ -1220,17 +1217,14 @@ properties = \
         , ( 'department'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
-        , ( 'external_company'
-          , ['admin']
-          )
         , ( 'firstname'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'job_description'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'lastname'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'lunch_duration'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -1239,7 +1233,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'nickname'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'org_location'
           , ['admin']
@@ -1257,7 +1251,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'realname'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'roles'
           , ['admin', 'controlling']

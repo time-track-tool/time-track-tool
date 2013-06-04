@@ -136,10 +136,6 @@ properties = \
         , 'transitions'
         ]
       )
-    , ( 'external_company'
-      , [ 'name'
-        ]
-      )
     , ( 'file'
       , [ 'content'
         , 'name'
@@ -159,10 +155,11 @@ properties = \
         , 'doc_issue_status'
         , 'earliest_start'
         , 'effective_prio'
-        , 'external_company'
+        , 'external_users'
         , 'files'
         , 'files_affected'
         , 'fixed_in'
+        , 'inherit_ext'
         , 'keywords'
         , 'kind'
         , 'maturity_index'
@@ -522,7 +519,6 @@ properties = \
         , 'contacts'
         , 'csv_delimiter'
         , 'department'
-        , 'external_company'
         , 'firstname'
         , 'job_description'
         , 'lastname'

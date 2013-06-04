@@ -153,7 +153,8 @@ def security (db, ** kw) :
             ( name  = 'View'
             , klass = 'query'
             , check = core.view_query
-            , description = core.view_query.__doc__.strip ()
+            , description = schemadef.security_doc_from_docstring
+                (core.view_query.__doc__)
             )
     db.security.addPermissionToRole ('ITuser', p)
 

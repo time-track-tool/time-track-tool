@@ -90,7 +90,8 @@ def security (db, ** kw) :
                 ( name        = perm
                 , klass       = 'issue'
                 , check       = ext_company_access
-                , description = ext_company_access.__doc__
+                , description = schemadef.security_doc_from_docstring
+                    (ext_company_access.__doc__)
                 , properties  = issue_props
                 )
             db.security.addPermissionToRole ('External', p)
@@ -120,7 +121,8 @@ def security (db, ** kw) :
                 ( name        = perm
                 , klass       = 'issue'
                 , check       = ext_user_access
-                , description = ext_user_access.__doc__
+                , description = schemadef.security_doc_from_docstring
+                    (ext_user_access.__doc__)
                 , properties  = issue_props
                 )
             db.security.addPermissionToRole ('External', p)
@@ -138,7 +140,8 @@ def security (db, ** kw) :
                 ( name        = perm
                 , klass       = 'issue'
                 , check       = is_on_nosy
-                , description = is_on_nosy.__doc__
+                , description = schemadef.security_doc_from_docstring
+                    (is_on_nosy.__doc__)
                 , properties  = issue_props
                 )
             db.security.addPermissionToRole ('External', p)
@@ -147,7 +150,7 @@ def security (db, ** kw) :
         ( name        = 'Edit'
         , klass       = 'user'
         , check       = schemadef.own_user_record
-        , description = "Users are allowed to edit their password"
+        , description = "Users are allowed to edit some of their details"
         , properties  = ("password", "timezone", "csv_delimiter")
         )
     db.security.addPermissionToRole ('External', p)
@@ -155,7 +158,7 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'user'
         , check       = schemadef.own_user_record
-        , description = "Users are allowed to edit their password"
+        , description = "Users are allowed to view some of their details"
         , properties  = 
             ( "username", "realname", "firstname", "lastname"
             , "creation", "creator", "activity", "actor"

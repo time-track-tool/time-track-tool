@@ -198,7 +198,8 @@ def security (db, ** kw) :
         ( name        = 'View'
         , klass       = 'query'
         , check       = view_query
-        , description = "User is allowed to view their own and public queries"
+        , description = schemadef.security_doc_from_docstring
+            (view_query.__doc__)
         )
     db.security.addPermissionToRole('User', p)
     p = db.security.addPermission \
