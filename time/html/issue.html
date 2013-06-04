@@ -12,7 +12,8 @@
      <tal:block tal:define="items python:reversed
       ( sorted
        ( [i for i in items
-          if i.status.plain () != 'closed' or not hide
+          if i.title.is_view_ok ()
+             and (i.status.plain () != 'closed' or not hide)
          ]
        , key = lambda x : (str (x.status), -int (x.id))
        )
@@ -23,7 +24,8 @@
 
 <tal:block metal:define-macro="rec_issue_loop">
  <tal:block tal:repeat="item items">
-  <nobr><span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
+  <nobr>
+   <span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
    <a tal:attributes="href string:issue${item/id};
                       class item/status;
                       title python:item.title.plain ()"

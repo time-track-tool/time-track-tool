@@ -67,7 +67,8 @@
      </tr>
      </tal:block>
     </tal:block>
-    <tr tal:condition="python:'status' in bclass.properties">
+    <tr tal:condition="python:
+        'status' in bclass.properties and context.status.is_view_ok ()">
      <th tal:content="structure python:utils.fieldname('user', 'status')"/>
      <td tal:content="structure context/status/menu"/>
     </tr>

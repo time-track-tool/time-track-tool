@@ -290,6 +290,14 @@ def add_ext_company (db, cl, nodeid, new_values) :
         new_values ['external_company'] = [user.external_company]
 # end def add_ext_company
 
+def add_ext_user (db, cl, nodeid, new_values) :
+    """ Add user to external_users of new issue if user has role
+        External.
+    """
+    if common.user_has_role (db, db.getuid (), 'External') :
+        new_values ['external_users'] = [db.getuid ()]
+# end def add_ext_user
+
 
 def init (db) :
     if 'issue' not in db.classes :
@@ -323,4 +331,6 @@ def init (db) :
         db.issue.audit ("create", new_doc_issue_status)
     if 'external_company' in db.issue.properties :
         db.issue.audit ("create", add_ext_company)
+    if 'external_users' in db.issue.properties :
+        db.issue.audit ("create", add_ext_user)
 # end def init

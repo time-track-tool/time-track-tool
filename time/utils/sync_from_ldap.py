@@ -16,7 +16,7 @@ def main () :
         )
     parser.add_option \
         ( "-u", "--update"
-        , help    = "Update the LDAP directory with info from roundup"
+        , help    = "Update the roundup with info from LDAP directory"
         , default = False
         , action  = 'store_true'
         )

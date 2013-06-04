@@ -113,10 +113,16 @@ def edit_query(db, userid, itemid):
 # end def edit_query
 
 def view_query (db, userid, itemid) :
-    """ Users are allowed to view their own and public queries """
-    private_for = db.query.get (itemid, 'private_for')
-    if not private_for : return True
-    return userid == private_for
+    """ Users are allowed to view their own and public queries for
+        classes where they have search permission
+    """
+    q = db.query.getnode (itemid)
+    if not q.private_for :
+        if not q.klass :
+            return False
+        prop = db.getclass (q.klass).getkey ()
+        return db.security.hasSearchPermission (userid, q.klass, prop)
+    return userid == q.private_for
 # end def view_query
 
 def security (db, ** kw) :

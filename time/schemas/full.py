@@ -45,8 +45,8 @@ from schemacfg import schemadef
 schemas = \
     ( 'company'
     , 'user'
+    , 'external_users'
     , 'docissue'
-    , 'extcompany'
     , 'keyword'
     , 'issue'
     , 'doc'

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2012 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2012-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -26,6 +26,8 @@
 #
 # Purpose
 #    Role and access rights for external user
+#    Include this last, *after* core as it extends the permissions
+#    defined in core.
 
 from roundup.hyperdb import Class
 from schemacfg       import schemadef, core
@@ -47,12 +49,10 @@ def security (db, ** kw) :
         , ("status_transition", ["External"],    [])
         ]
     prop_perms = \
-        [ ( "user",     "View", ["External"]
-          , ( "username", "lastname", "firstname", "realname", "status"
-            , "creation", "creator", "activity", "actor"
-            )
+        [ ( "user",        "View", ["External"]
+          , ("username", "nickname")
           )
-        , ( "category", "View", ["External"]
+        , ( "category",    "View", ["External"]
           , ("name", )
           )
         , ( "user_status", "View", ["External"]
@@ -68,34 +68,24 @@ def security (db, ** kw) :
     schemadef.register_class_permissions (db, classes, prop_perms)
     core.register_linkperms              (db, linkperms)
 
-    def is_on_nosy (db, userid, itemid) :
-        "User is allowed to access issue if on nosy list"
-        item = db.issue.getnode (itemid)
-        return userid in item.nosy
-    # end def is_on_nosy
-
-    def ext_company_access (db, userid, itemid) :
-        "Users are allowed to access issue if their external company has access"
-        ec = db.user.get (userid, 'external_company')
-        ecs = db.issue.get (itemid, 'external_company')
-        return ecs and ec in ecs
-    # end def ext_company_access
-
-    # don't allow external_company for External
+    # don't allow external_company or External for some issue attributes
+    exceptions = dict.fromkeys \
+        (('external_company', 'confidential', 'external_users', 'inherit_ext'))
     issue_props = [p for p in db.issue.getprops ().iterkeys ()
-                   if p not in ('external_company', 'confidential')
+                   if p not in exceptions
                   ]
 
-    for perm in ('View', 'Edit') :
-        p = db.security.addPermission \
-            ( name        = perm
-            , klass       = 'issue'
-            , check       = is_on_nosy
-            , description = is_on_nosy.__doc__
-            , properties  = issue_props
-            )
-        db.security.addPermissionToRole ('External', p)
-        if 'external_company' in db.issue.properties :
+    if 'external_company' in db.issue.properties :
+        def ext_company_access (db, userid, itemid) :
+            """ Users are allowed to access issue
+                if their external company has access
+            """
+            ec = db.user.get (userid, 'external_company')
+            ecs = db.issue.get (itemid, 'external_company')
+            return ecs and ec in ecs
+        # end def ext_company_access
+
+        for perm in ('View', 'Edit') :
             p = db.security.addPermission \
                 ( name        = perm
                 , klass       = 'issue'
@@ -105,13 +95,71 @@ def security (db, ** kw) :
                 )
             db.security.addPermissionToRole ('External', p)
 
+    if 'external_users' in db.issue.properties :
+        def ext_user_access (db, userid, itemid) :
+            """ External users are allowed to access issue
+                if they are on the list of allowed external users or
+                there is a transitive permission via containers.
+            """
+            issue = db.issue.getnode (itemid)
+            while True :
+                if issue.external_users and userid in issue.external_users :
+                    return True
+                if not issue.part_of :
+                    break
+                # check parent permissions for non-container or if the
+                # container defines inherit_ext
+                if issue.composed_of and not issue.inherit_ext :
+                    break
+                issue = db.issue.getnode (issue.part_of)
+            return False
+        # end def ext_company_access
+
+        for perm in ('View', 'Edit') :
+            p = db.security.addPermission \
+                ( name        = perm
+                , klass       = 'issue'
+                , check       = ext_user_access
+                , description = ext_user_access.__doc__
+                , properties  = issue_props
+                )
+            db.security.addPermissionToRole ('External', p)
+
+    # Currently *never* allow any rights from being on nosy list
+    if False :
+        def is_on_nosy (db, userid, itemid) :
+            "User is allowed to access issue if on nosy list"
+            item = db.issue.getnode (itemid)
+            return userid in item.nosy
+        # end def is_on_nosy
+
+        for perm in ('View', 'Edit') :
+            p = db.security.addPermission \
+                ( name        = perm
+                , klass       = 'issue'
+                , check       = is_on_nosy
+                , description = is_on_nosy.__doc__
+                , properties  = issue_props
+                )
+            db.security.addPermissionToRole ('External', p)
 
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'user'
         , check       = schemadef.own_user_record
         , description = "Users are allowed to edit their password"
-        , properties  = ("password",)
+        , properties  = ("password", "timezone", "csv_delimiter")
+        )
+    db.security.addPermissionToRole ('External', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user'
+        , check       = schemadef.own_user_record
+        , description = "Users are allowed to edit their password"
+        , properties  = 
+            ( "username", "realname", "firstname", "lastname"
+            , "creation", "creator", "activity", "actor"
+            )
         )
     db.security.addPermissionToRole ('External', p)
 

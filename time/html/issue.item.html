@@ -89,7 +89,7 @@
           (classname, 'severity')"/>
       <td tal:content="structure python:context.severity.menu ()"/>
      </tr>
-     <tr tal:condition="python:'doc_issue_status' in klass._klass.properties">
+     <tr tal:condition="python:'doc_issue_status' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'doc_issue_status')"/>
       <td tal:content="structure python:context.doc_issue_status.menu ()"/>
@@ -141,10 +141,13 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'part_of')"/>
       <td>
-       <span tal:content="structure python:context.part_of.field ()"/>
-       <tal:block tal:condition="context/part_of/plain"
-        tal:define="attr string:expand_part_of; text expand_text">
-        <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+       <tal:block tal:condition="python:
+        not context.id or context.part_of.title.is_view_ok ()">
+        <span tal:content="structure python:context.part_of.field ()"/>
+        <tal:block tal:condition="context/part_of/plain"
+         tal:define="attr string:expand_part_of; text expand_text">
+         <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+        </tal:block>
        </tal:block>
       </td>
       <th tal:condition="context/id"
@@ -282,16 +285,27 @@
       </td>
      </tr>
      <tr tal:condition="python:
-         context.id and 'maturity_index' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'maturity_index')"/>
-      <td colspan="3" tal:content="context/maturity_index/plain">
-      </td>
+         context.id
+         and (  'maturity_index' in bclass.properties
+             or 'inherit_ext'    in bclass.properties
+             ) ">
+      <tal:block tal:condition="python:'maturity_index' in bclass.properties">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'maturity_index')"/>
+       <td tal:content="context/maturity_index/plain" />
+      </tal:block>
+      <tal:block tal:condition="python:
+       'inherit_ext' in bclass.properties and context.inherit_ext.is_view_ok ()
+      ">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'inherit_ext')"/>
+       <td tal:content="structure context/inherit_ext/field" />
+      </tal:block>
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="right_of_nosy">
      <tal:block tal:condition="python:
-                'external_company' in klass._klass.properties
+                'external_company' in bclass.properties
                 and context.external_company.is_edit_ok ()
                 and db._db.security.hasPermission
                     ( 'View'
@@ -308,6 +322,25 @@
              , property = 'external_company'
              , width    = '600'
              , pagesize = 500
+             )" />
+      </td>
+     </tal:block>
+     <tal:block tal:condition="python:
+                    'external_users' in bclass.properties
+                and (  context.id and context.external_users.is_view_ok ()
+                    or not context.id
+                       and utils.user_has_role (db._db, request.user.id, 'User')
+                    )">
+      <th tal:content="structure python:utils.fieldname
+           (classname, 'external_users')"/>
+      <td>
+       <span tal:content="structure context/external_users/field" />
+       <span tal:content="structure python:db.user.classhelp
+             ( 'username,id'
+             , property = 'external_users'
+             , width    = '600'
+             , pagesize = 500
+             , filter   = 'roles=Extern'
              )" />
       </td>
      </tal:block>

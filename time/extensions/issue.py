@@ -31,15 +31,14 @@ def filter_status_transitions (context) :
     may_close = True
     # there was a check for closing -- we leave the logic in
     if context.status :
-        if 'status_transitions' in context._db.classes :
-            values = [t.target._value for t in context.status.transitions
+        if 'status_transition' in context._db.classes :
+            values = [t.target.id for t in context.status.transitions
                       if t.target.name != 'closed' or may_close
                      ]
         else :
             values = [t.id for t in context.status.transitions
                       if t.name != 'closed' or may_close
                      ]
-        print values
         return {'id' : values}
     return {}
 # end def filter_status_transitions

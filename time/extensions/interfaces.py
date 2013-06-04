@@ -384,7 +384,7 @@ def user_classhelp (db, property='responsible', inputtype = 'radio') :
 # end def user_classhelp
 
 def nickname (db, user) :
-    if 'nickname' in db._db.user.properties :
+    if 'nickname' in db._db.user.properties and user.nickname.is_view_ok () :
         return user.nickname.plain ()
     return user.username.plain ()
 # end def nickname
