@@ -247,6 +247,14 @@ class _Test_Case (unittest.TestCase) :
                     perms.append (' %(description)s (%(name)s)' % d)
             s.extend (sorted (dict.fromkeys (perms).keys ()))
         lr1 = lr2 = None
+        l1 = len (secdesc)
+        l2 = len (s)
+        if l1 < l2 :
+            for k in xrange (l2 - l1) :
+                secdesc.append ('')
+        if l2 < l1 :
+            for k in xrange (l1 - l2) :
+                s.append ('')
         for s1, s2 in zip (secdesc, s) :
             if s1.startswith ('Role') :
                 lr1 = s1
