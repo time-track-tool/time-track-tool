@@ -54,7 +54,7 @@ def check_timestamps (start, end, date) :
         raise Reject, _ ("start and end must be on same day and start <= end.")
     if start.timestamp () % 900 or end.timestamp () % 900 :
         raise Reject, _ ("Times must be given in quarters of an hour")
-# end def check_timestamp
+# end def check_timestamps
 
 def check_duration (d, max = 0) :
     if d < 0 :
@@ -365,15 +365,6 @@ def check_start_end_duration \
         new_values ['start']    = dstart.pretty (hour_format)
         new_values ['end']      = dend.pretty   (hour_format)
     else :
-        if not duration and duration != 0 :
-            raise Reject, \
-                ( _ ("%(date)s: You specified new values "
-                     "for %(attr)s but no duration"
-                    )
-                % dict ( date = date.pretty (common.ymd)
-                       , attr = ", ".join ([_ (i) for i in new_values.keys ()])
-                       )
-                )
         check_duration (duration, 24)
         if 'duration' in new_values :
             new_values ['duration'] = duration
@@ -517,6 +508,17 @@ def check_time_record (db, cl, nodeid, new_values) :
         raise Reject, _ ('Editing of time records only for status "open"')
     # allow empty duration to delete record
     if 'duration' in new_values and new_values ['duration'] is None :
+        keys = dict.fromkeys (new_values.iterkeys ())
+        del keys ['duration']
+        if len (keys) > 0 :
+            raise Reject, \
+                ( _ ("%(date)s: You specified new values "
+                     "for %(attr)s but no duration"
+                    )
+                % dict ( date = date.pretty (common.ymd)
+                       , attr = ", ".join ([_ (i) for i in keys])
+                       )
+                )
         return
     check_generated (new_values)
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
