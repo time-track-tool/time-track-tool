@@ -120,7 +120,7 @@ def view_query (db, userid, itemid) :
     if not q.private_for :
         if not q.klass :
             return False
-        prop = db.getclass (q.klass).getkey ()
+        prop = db.getclass (q.klass).labelprop ()
         return db.security.hasSearchPermission (userid, q.klass, prop)
     return userid == q.private_for
 # end def view_query

@@ -794,6 +794,12 @@ def security (db, ** kw) :
         , properties  = wp_properties
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_wp'
+        , properties  = wp_properties
+        )
+    db.security.addPermissionToRole ('User', p)
     schemadef.add_search_permission (db, 'time_wp', 'User', wp_properties)
     p = db.security.addPermission \
         ( name        = 'View'
