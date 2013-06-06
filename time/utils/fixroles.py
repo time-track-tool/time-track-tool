@@ -16,7 +16,7 @@ cmd = OptionParser ()
 cmd.add_option \
     ( '-a', '--action'
     , dest   = 'action'
-    , help   = 'Really destroy retired queries (do a commit)'
+    , help   = 'Really remove roles (do a commit)'
     , action = 'store_true'
     )
 cmd.add_option \
