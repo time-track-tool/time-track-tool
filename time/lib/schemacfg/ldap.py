@@ -39,7 +39,7 @@ def init \
 
     User_Status_Ancestor = kw.get ('User_Status_Class', Ext_Class)
     class User_Status_Class (User_Status_Ancestor) :
-        """ add some attrs to user class
+        """ Add some attrs for tracking ldap behaviour
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
