@@ -4,6 +4,8 @@ import os
 import sys
 import stat
 
+lockfile_path = '/var/run/roundup'
+
 normpath = os.path.normpath
 options  = []
 l        = len (sys.argv)
@@ -15,9 +17,14 @@ if l < 3 :
 if l > 4 :
     options = sys.argv [4:]
 
-lockfile = normpath ('/var/run/roundup/mailgw.lock')
+lockfile = normpath (os.path.join (lockfile_path, 'mailgw.lock'))
 if l > 3 :
     lockfile = sys.argv [3]
+else :
+    try :
+        os.mkdir (lockfile_path)
+    except IOError :
+        pass
 tracker  = sys.argv [1]
 server   = sys.argv [2]
 mailgw   = "roundup-mailgw %s '%s' imap '%s'" % \
