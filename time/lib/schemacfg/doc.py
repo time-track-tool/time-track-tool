@@ -102,7 +102,9 @@ def init \
 
 
 def security (db, ** kw) :
-    roles      = (("Doc_Admin", "Admin for documents (e.g. QM)"),)
+    roles      = ( ("Doc_Admin", "Admin for documents (e.g. QM)")
+                 , ("Nosy",      "Allowed on nosy list")
+                 )
     prop_perms = (("department", "Edit", ("Doc_Admin", ), ("doc_num", )), )
     classes    = \
         ( ("doc"         , ("User",), ("Doc_Admin", "User"))

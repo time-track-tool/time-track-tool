@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,23 +22,26 @@
 # ****************************************************************************
 #++
 # Name
-#    person_adr
+#    contact_sec
 #
 # Purpose
-#    Schema definitions for extending address with person attributes
+#    Security settings for contact classes
 
-import contact_sec
+from schemacfg import schemadef
 
-def init (db, Address_Class, Contact_Class, Contact_Type_Class, Link, ** kw) :
-    export   = {}
+def security (db, ** kw) :
+    roles = \
+        [ ("Contact"       , "Allowed to add/change address data")
+        ]
 
-    contact = Contact_Class \
-        ( db, ''"contact"
-        , address             = Link      ('address')
-        , contact_type        = Link      ("contact_type")
-        )
-    contact_type = Contact_Type_Class (db, ''"contact_type")
+    classes = \
+        [ ("contact_type", ["User"], [])
+        , ("contact",      ["User"], ["Contact"])
+        ]
+    if 'adr_readonly' in db.security.role :
+        classes [0][1].append ('Adr_Readonly')
+        classes [1][1].append ('Adr_Readonly')
 
-    export ['Person_Class'] = Address_Class
-    return export
-# end def init
+    schemadef.register_roles             (db, roles)
+    schemadef.register_class_permissions (db, classes, [])
+# end def security

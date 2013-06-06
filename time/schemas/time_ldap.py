@@ -46,6 +46,8 @@ schemas = \
     ( 'company'
     , 'user'
     , 'doc'
+    , 'min_adr'
+    , 'contact'
     , 'user_contact'
     , 'time_tracker'
     , 'ldap'

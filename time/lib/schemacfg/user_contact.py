@@ -87,18 +87,21 @@ def init \
 # end def init
 
 def security (db, ** kw) :
+    user_roles = ["HR", "Office"]
+    if 'it' in db.security.role :
+        user_roles.append ("IT")
     classes    = \
         ( ("uc_type",      ("User",),        ("HR", "Office"))
         , ("user_contact", ("HR", "Office"), ())
         )
     prop_perms = \
-        [ ( "user_contact", "Edit", ["HR", "Office", "IT"]
+        [ ( "user_contact", "Edit", user_roles
           , ("contact", "contact_type", "description", "order", "user")
           )
         , ( "user",         "View", ["User", "HR", "Office"]
           , ("contacts",)
           )
-        , ( "user",         "Edit", ["HR", "Office", "IT"]
+        , ( "user",         "Edit", user_roles
           , ("contacts",)
           )
         ]
@@ -109,7 +112,8 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('Office', p)
-    db.security.addPermissionToRole ('IT', p)
+    if 'it' in db.security.role :
+        db.security.addPermissionToRole ('IT', p)
     schemadef.register_class_permissions (db, classes, prop_perms)
     p = db.security.addPermission \
         ( name        = 'Search'

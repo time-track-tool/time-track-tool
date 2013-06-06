@@ -27,6 +27,8 @@
 # Purpose
 #    Schema definitions for separate person class
 
+import contact_sec
+
 def init \
     ( db
     , Class

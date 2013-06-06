@@ -67,20 +67,3 @@ def init (db, Ext_Class, String, Link, Number, ** kw) :
 
     return export
 # end def init
-
-def security (db, ** kw) :
-    roles = \
-        [ ("Contact"       , "Allowed to add/change address data")
-        ]
-
-    classes = \
-        [ ("contact_type", ["User"], [])
-        , ("contact",      ["User"], ["Contact"])
-        ]
-    if 'adr_readonly' in db.security.role :
-        classes [0][1].append ('Adr_Readonly')
-        classes [1][1].append ('Adr_Readonly')
-
-    schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, [])
-# end def security

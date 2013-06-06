@@ -27,6 +27,8 @@
 # Purpose
 #    Schema definitions for extending customer with person attributes
 
+import contact_sec
+
 def init (db, Address_Class, Contact_Class, Contact_Type_Class, Link, ** kw) :
     export   = {}
 
