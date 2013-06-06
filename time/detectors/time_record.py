@@ -512,8 +512,8 @@ def check_time_record (db, cl, nodeid, new_values) :
         del keys ['duration']
         if len (keys) > 0 :
             raise Reject, \
-                ( _ ("%(date)s: You specified new values "
-                     "for %(attr)s but no duration"
+                ( _ ("%(date)s: No duration means delete record but "
+                     "you specified new values for %(attr)s"
                     )
                 % dict ( date = date.pretty (common.ymd)
                        , attr = ", ".join ([_ (i) for i in keys])
