@@ -674,7 +674,7 @@
      <span class="classblock"
            tal:condition="python:
            'user_contact' in db._db.classes
-           and db.contact.is_view_ok ()">
+           and db.user_contact.is_view_ok ()">
       <a tal:condition="python:
               request.user.hasPermission('View','user_contact')
               or request.user.hasPermission('Edit','user_contact')"
