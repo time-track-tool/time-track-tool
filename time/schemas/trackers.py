@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -23,10 +23,10 @@
 #
 #++
 # Name
-#    schema-kvats
+#    schema-trackers
 #
 # Purpose
-#    Specify the DB-Schema for an extended tracker
+#    Specify the DB-Schema for several trackers in one
 #    Link this file to schema.py
 #--
 #
@@ -34,16 +34,27 @@
 import sys, os
 
 sys.path.insert (0, os.path.join (db.config.HOME, 'lib'))
-sys.path.insert (0, os.path.join (db.config.HOME, 'schema'))
 from common    import clearance_by
 from schemacfg import schemadef
 
 # sub-schema definitins to include
-# Note: order matters, core is always last.
+# Note: order matters, core is always last
+# -- except for modules that extend the standard permission scheme in
+# core (e.g. extuser)
 schemas = \
-    ( 'issue'
+    ( 'user'
+    , 'external_users'
+    , 'docissue'
+    , 'keyword'
+    , 'issue'
     , 'it_tracker'
+    , 'min_adr'
+    , 'contact'
+    , 'person_cust'
+    , 'support'
+    , 'ldap'
     , 'core'
+    , 'extuser'
     )
 
 importer = schemadef.Importer (globals (), schemas)
@@ -58,19 +69,39 @@ del sys.path [0:1]
 # to regular users now
 
 importer.update_security ()
-schemadef.allow_user_details (db, 'User', 'Edit')
 
-perms = [ ( "user", "View", ["User"]
-          , ( "username"
-            , "realname"
-            , "creation"
-            , "creator"
-            , "activity"
-            , "actor"
-            )
-          )
-        ]
-schemadef.register_class_permissions (db, [], perms)
+#     classname        allowed to view   /  edit
+classes = \
+    [ ("file"                , [],               [])
+    , ("msg"                 , [],               [])
+    , ("query"               , ["Issue_Admin"],  ["Issue_Admin"])
+    ]
+
+prop_perms = \
+    [ ( "user", "Edit", ["IT"]
+      , ( "address", "alternate_addresses", "nickname", "password"
+        , "timezone", "username"
+        )
+      )
+    , ( "user", "Edit", ["IT"]
+      , ( "firstname", "lastname", "realname", "status", "roles"
+        )
+      )
+    , ( "user", "View", ["User"]
+      , ( "activity", "actor", "address", "alternate_addresses", "creation"
+        , "creator", "firstname", "lastname", "id", "nickname", "realname"
+        , "status", "timezone", "title", "username"
+        )
+      )
+    ]
+
+# For PGP-Processing we need a role
+schemadef.register_roles             (db, [('PGP', 'Roles that require PGP')])
+schemadef.register_class_permissions (db, classes, prop_perms)
+schemadef.allow_user_details         (db, 'User', 'Edit')
+
+# editing of roles:
+db.security.addPermissionToRole ('IT', 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
