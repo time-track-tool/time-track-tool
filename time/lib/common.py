@@ -1036,4 +1036,40 @@ def get_num_locale (client, db) :
     return locale
 # end def get_num_locale
 
+def update_emails (db, uid, verbose = False) :
+    """ Update address and alternate_addresses of a user from the
+        contacts of this user. Used by changed_contact reactor and can
+        be used in scripts to sync contacts.
+    """
+    user   = db.user.getnode (uid)
+    emails = []
+    o_alt  = {}
+    if user.alternate_addresses :
+        o_alt  = dict.fromkeys \
+            (x.strip () for x in user.alternate_addresses.split ('\n'))
+    email = db.uc_type.lookup ('Email')
+    for c in user.contacts :
+        if db.user_contact.get (c, 'contact_type') == email :
+            emails.append (db.user_contact.getnode (c))
+    alt = {}
+    adr = None
+    for n, e in enumerate (sorted (emails, key = lambda x : x.order)) :
+        if n :
+            alt [e.contact] = None
+        else :
+            adr = e.contact
+    d = {}
+    if adr != user.address :
+        d ['address'] = adr
+    if alt != o_alt :
+        d ['alternate_addresses'] = '\n'.join (alt)
+    if d :
+        if verbose :
+            print "Updating %s %s" \
+                % ( user.username
+                  , ' '.join (': '.join ((k, v)) for k, v in d.iteritems ())
+                  )
+        db.user.set (user.id, ** d)
+# end def update_emails
+
 ### __END__

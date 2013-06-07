@@ -14,8 +14,8 @@ db      = tracker.open ('admin')
 
 cmd = OptionParser ()
 cmd.add_option \
-    ( '-a', '--action'
-    , dest   = 'action'
+    ( '-u', '--update'
+    , dest   = 'update'
     , help   = 'Really remove roles (do a commit)'
     , action = 'store_true'
     )
@@ -52,5 +52,5 @@ for uid in db.user.getnodeids () :
     if change :
         db.user.set (uid, roles = ','.join (roles.iterkeys ()))
 
-if opt.action :
+if opt.update :
     db.commit()

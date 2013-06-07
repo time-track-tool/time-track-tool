@@ -110,24 +110,13 @@ def changed_contact (db, cl, nodeid, old_values) :
         return
     if  (   old_values ['contact']      == node.contact
         and old_values ['contact_type'] == node.contact_type
+        and old_values ['order']        == node.order
         ) :
         return
     email = db.uc_type.lookup ('Email')
     if node.contact_type != email and old_values.get ('contact_type') != email :
         return
-    user = db.user.getnode (node.user)
-    emails = []
-    for c in user.contacts :
-        if db.user_contact.get (c, 'contact_type') == email :
-            emails.append (db.user_contact.getnode (c))
-    alt = []
-    adr = None
-    for n, e in enumerate (sorted (emails, key = lambda x : x.order)) :
-        if n :
-            alt.append (e.contact)
-        else :
-            adr = e.contact
-    db.user.set (user.id, address = adr, alternate_addresses = '\n'.join (alt))
+    common.update_emails (db, node.user)
 # end def changed_contact
 
 def new_user_contact (db, cl, nodeid, new_values) :

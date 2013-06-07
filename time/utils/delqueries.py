@@ -33,8 +33,8 @@ cmd.add_option \
     , action = 'store_true'
     )
 cmd.add_option \
-    ( '-a', '--action'
-    , dest   = 'action'
+    ( '-u', '--update'
+    , dest   = 'update'
     , help   = 'Really destroy retired queries (do a commit)'
     , action = 'store_true'
     )
@@ -54,5 +54,5 @@ for uid in db.user.getnodeids () :
 for qid in db.query.getnodeids () :
     delq (qid, txt = ' remaining ')
 
-if opt.action :
+if opt.update :
     db.commit()
