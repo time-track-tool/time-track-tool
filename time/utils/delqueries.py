@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import os
 from roundup           import instance
-from roundup.password  import Password, encodePassword
 from optparse          import OptionParser
 
 dir     = os.getcwd ()
