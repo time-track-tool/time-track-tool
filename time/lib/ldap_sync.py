@@ -3,6 +3,7 @@
 import sys
 import ldap
 
+from copy                import copy
 from ldap.cidict         import cidict
 from ldap.controls       import SimplePagedResultsControl
 from rsclib.autosuper    import autosuper
@@ -113,10 +114,12 @@ class LDAP_Roundup_Sync (object) :
                 self.status_sync.append (id)
                 self.valid_stati.append (id)
                 self.ldap_groups [id] = st
-        self.contact_types = dict \
-            ((id, self.db.uc_type.get (id, 'name'))
-             for id in self.db.uc_type.list ()
-            )
+        self.contact_types = {}
+        if 'uc_type' in self.db.classes :
+            self.contact_types = dict \
+                ((id, self.db.uc_type.get (id, 'name'))
+                 for id in self.db.uc_type.list ()
+                )
         self.compute_attr_map  ()
         self.get_roundup_group ()
     # end def __init__
@@ -135,67 +138,100 @@ class LDAP_Roundup_Sync (object) :
     # end def bind_as_user
 
     def compute_attr_map (self) :
-        """ map roundup attributes to ldap attributes """
-        attr_map = \
-            { 'user' :
-                { 'department'   : ( 'department'
-                                   , get_name
-                                   , self.cls_lookup (self.db.department)
-                                   )
-                , 'firstname'    : ( 'givenname'
-                                   , 0
-                                   , lambda x, y : x.get (y, [None])[0]
-                                   )
-                , 'lastname'     : ( 'sn'
-                                   , 0
-                                   , lambda x, y : x.get (y, [None])[0]
-                                   )
-                , 'nickname'     : ( 'initials'
-                                   , lambda x, y : x [y].upper ()
-                                   , lambda x, y : x.get (y, [''])[0].lower ()
-                                   )
-                , 'org_location' : ( 'company'
-                                   , get_name
-                                   , self.cls_lookup (self.db.org_location)
-                                   )
-                , 'pictures'     : ( 'thumbnailPhoto'
-                                   , get_picture
-                                   , self.ldap_picture
-                                   )
-                , 'position'     : ( 'title'
-                                   , get_position
-                                   , self.cls_lookup 
-                                        (self.db.position, 'position')
-                                   )
-                , 'realname'     : ( 'cn'
-                                   , 0
-                                   , None
-                                   )
-                , 'room'         : ( 'physicalDeliveryOfficeName'
-                                   , get_name
-                                   , self.cls_lookup
-                                        ( self.db.room
-                                        , 'name'
-                                        , dict (location
-                                               = self.db.location.lookup
-                                                ('Wien')
-                                               )
-                                        )
-                                   )
-                , 'substitute'   : ( 'secretary'
-                                   , self.get_username_attribute_dn
-                                   , self.get_roundup_uid_from_dn_attr
-                                   )
-                , 'supervisor'   : ( 'manager'
-                                   , self.get_username_attribute_dn
-                                   , self.get_roundup_uid_from_dn_attr
-                                   )
-                , 'title'        : ( 'carLicense'
-                                   , 1
-                                   , lambda x, y : x.get (y, [None])[0]
-                                   )
-                }
-            , 'user_contact' :
+        """ Map roundup attributes to ldap attributes
+            for 'user' we have a dict indexed by user attribute and
+            store a 3-tuple:
+            - Name of ldap attribute
+            - method or function to convert from roundup to ldap
+              alternatively a value that evaluates to True or False,
+              False means we don't sync to ldap, True means we use the
+              roundup attribute without modification.
+            - method or function to convert from ldap to roundup
+            for user_contact we have a dict indexed by uc_type name
+            storing the primary ldap attribute and an optional secondary
+            attribute of type list.
+        """
+        attr_map = dict (user = dict ())
+        attr_u   = attr_map ['user']
+        props    = self.db.user.properties
+        if 'department' in props :
+            attr_u ['department'] = \
+                ( 'department'
+                , get_name
+                , self.cls_lookup (self.db.department)
+                )
+        if 'firstname' in props :
+            attr_u ['firstname'] = \
+                ( 'givenname'
+                , 0
+                , lambda x, y : x.get (y, [None])[0]
+                )
+        if 'lastname' in props :
+            attr_u ['lastname'] = \
+                ( 'sn'
+                , 0
+                , lambda x, y : x.get (y, [None])[0]
+                )
+        if 'nickname' in props :
+            attr_u ['nickname'] = \
+                ( 'initials'
+                , lambda x, y : x [y].upper ()
+                , lambda x, y : x.get (y, [''])[0].lower ()
+                )
+        if 'org_location' in props :
+            attr_u ['org_location'] = \
+                ( 'company'
+                , get_name
+                , self.cls_lookup (self.db.org_location)
+                )
+        if 'picture' in props :
+            attr_u ['pictures'] = \
+                ( 'thumbnailPhoto'
+                , get_picture
+                , self.ldap_picture
+                )
+        if 'position' in props :
+            attr_u ['position'] = \
+                ( 'title'
+                , get_position
+                , self.cls_lookup (self.db.position, 'position')
+                )
+        if 'realname' in props :
+            attr_u ['realname'] = \
+                ( 'cn'
+                , 0
+                , None
+                )
+        if 'room' in props :
+            attr_u ['room'] = \
+                ( 'physicalDeliveryOfficeName'
+                , get_name
+                , self.cls_lookup
+                    ( self.db.room
+                    , 'name'
+                    , dict (location = self.db.location.lookup ('Wien'))
+                    )
+                )
+        if 'substitute' in props :
+            attr_u ['substitute'] = \
+                ( 'secretary'
+                , self.get_username_attribute_dn
+                , self.get_roundup_uid_from_dn_attr
+                )
+        if 'supervisor' in props :
+            attr_u ['supervisor'] = \
+                ( 'manager'
+                , self.get_username_attribute_dn
+                , self.get_roundup_uid_from_dn_attr
+                )
+        if 'title' in props :
+            attr_u ['title'] = \
+                ( 'carLicense'
+                , 1
+                , lambda x, y : x.get (y, [None])[0]
+                )
+        if self.contact_types :
+            attr_map ['user_contact'] = \
                 { 'Email'          : ('mail',)
                 , 'internal Phone' : ('telephoneNumber', 'otherTelephone')
                 , 'mobile Phone'   : ('mobile',          'otherMobile')
@@ -203,7 +239,12 @@ class LDAP_Roundup_Sync (object) :
         #       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
         #       , 'private Phone'  : ('homePhone',       'otherHomePhone')
                 }
-            }
+        else :
+            attr_u ['address'] = \
+                ( 'mail'
+                , 0
+                , self.set_roundup_email_address
+                )
         self.attr_map = attr_map
     # end def compute_attr_map
 
@@ -231,6 +272,42 @@ class LDAP_Roundup_Sync (object) :
         # end def look
         return look
     # end def cls_lookup
+
+    def set_roundup_email_address (self, luser, txt) :
+        """ Look up email of ldap user and do email processing in case
+            roundup is configured for only the standard 'address' and
+            'alternate_addresses' attributes. Old email settings are
+            retained.
+        """
+        try :
+            mail = luser [txt][0]
+        except KeyError :
+            return None
+        uid = None
+        try :
+            uid = self.db.user.lookup (luser.uid  [0])
+        except KeyError :
+            pass
+        if not uid :
+            return mail
+        user = self.db.user.getnode (uid)
+        # unchanged ?
+        if user.address == mail :
+            return mail
+        aa = dict.fromkeys \
+            (x.strip () for x in user.alternate_addresses.split ('\n'))
+        oldaa = copy (aa)
+        aa [user.address] = None
+        if mail in aa :
+            del aa [mail]
+        if aa != oldaa :
+            print "Update roundup: %s alternate_addresses = %s" \
+                % (user.username, ','.join (aa.iterkeys ()))
+            if self.update_roundup :
+                self.db.user.set \
+                    (uid, alternate_addresses = '\n'.join (aa.iterkeys ()))
+        return mail
+    # end def set_roundup_email_address
 
     def get_all_ldap_usernames (self) :
         for r in self.paged_search_iter ('(objectclass=person)', ['uid']) :
@@ -404,6 +481,66 @@ class LDAP_Roundup_Sync (object) :
                 break
     # end def paged_search_iter
 
+    def sync_contacts_from_ldap (luser, user) :
+        oct = []
+        if user :
+            oct = user.contacts
+        oct = dict ((id, self.db.user_contact.getnode (id)) for id in oct)
+        ctypes = dict \
+            ((i, self.db.uc_type.get (i, 'name'))
+             for i in self.db.uc_type.getnodeids ()
+            )
+        oldmap = dict \
+            (((ctypes [n.contact_type], n.contact), n)
+             for n in oct.itervalues ()
+            )
+        new_contacts = []
+        for type, lds in self.attr_map ['user_contact'].iteritems () :
+            tid = self.db.uc_type.lookup (type)
+            order = 1
+            for ld in lds :
+                if ld not in luser : continue
+                for ldit in luser [ld] :
+                    key = (type, ldit)
+                    if key in oldmap :
+                        n = oldmap [key]
+                        new_contacts.append (n.id)
+                        if n.order != order and self.update_roundup :
+                            self.db.user_contact.set (n.id, order = order)
+                            changed = True
+                        del oldmap [key]
+                    elif self.update_roundup :
+                        id = self.db.user_contact.create \
+                            ( contact_type = tid
+                            , contact      = ldit
+                            , order        = order
+                            )
+                        new_contacts.append (id)
+                        changed = True
+                    order += 1
+        # special case of emails: we don't have "other" attributes
+        # so roundup potentially has more emails which should be
+        # preserved
+        email = self.db.uc_type.lookup ('Email')
+        order = 2
+        for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
+            if n.contact_type == email :
+                if n.order != order and self.update_roundup :
+                    self.db.user_contact.set (n.id, order = order)
+                    changed = True
+                order += 1
+                new_contacts.append (n.id)
+                del oldmap [k]
+        if self.update_roundup :
+            for n in oldmap.itervalues () :
+                self.db.user_contact.retire (n.id)
+                changed = True
+        oct = list (sorted (oct.iterkeys ()))
+        new_contacts.sort ()
+        if new_contacts != oct :
+            d ['contacts'] = new_contacts
+    # end def sync_contacts_from_ldap
+
     def sync_user_from_ldap (self, username, update = None) :
         if update is not None :
             self.update_roundup = update
@@ -437,64 +574,9 @@ class LDAP_Roundup_Sync (object) :
                     v = method (luser, lk)
                     if v :
                         d [k] = v
-            oct = []
-            if user :
-                oct = user.contacts
-            oct = dict ((id, self.db.user_contact.getnode (id)) for id in oct)
-            ctypes = dict \
-                ((i, self.db.uc_type.get (i, 'name'))
-                 for i in self.db.uc_type.getnodeids ()
-                )
-            oldmap = dict \
-                (((ctypes [n.contact_type], n.contact), n)
-                 for n in oct.itervalues ()
-                )
-            new_contacts = []
-            for type, lds in self.attr_map ['user_contact'].iteritems () :
-                tid = self.db.uc_type.lookup (type)
-                order = 1
-                for ld in lds :
-                    if ld not in luser : continue
-                    for ldit in luser [ld] :
-                        key = (type, ldit)
-                        if key in oldmap :
-                            n = oldmap [key]
-                            new_contacts.append (n.id)
-                            if n.order != order and self.update_roundup :
-                                self.db.user_contact.set (n.id, order = order)
-                                changed = True
-                            del oldmap [key]
-                        elif self.update_roundup :
-                            id = self.db.user_contact.create \
-                                ( contact_type = tid
-                                , contact      = ldit
-                                , order        = order
-                                )
-                            new_contacts.append (id)
-                            changed = True
-                        order += 1
-            # special case of emails: we don't have "other" attributes
-            # so roundup potentially has more emails which should be
-            # preserved
-            email = self.db.uc_type.lookup ('Email')
-            order = 2
-            for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
-                if n.contact_type == email :
-                    if n.order != order and self.update_roundup :
-                        self.db.user_contact.set (n.id, order = order)
-                        changed = True
-                    order += 1
-                    new_contacts.append (n.id)
-                    del oldmap [k]
-            if self.update_roundup :
-                for n in oldmap.itervalues () :
-                    self.db.user_contact.retire (n.id)
-                    changed = True
-            oct = list (sorted (oct.iterkeys ()))
-            new_contacts.sort ()
-            if new_contacts != oct :
-                d ['contacts'] = new_contacts
 
+            if self.contact_types :
+                self.sync_contacts_from_ldap (luser, user)
             new_status_id = self.members [luser.dn.lower ()]
             assert (new_status_id)
             new_status = self.db.user_status.getnode (new_status_id)
@@ -529,6 +611,59 @@ class LDAP_Roundup_Sync (object) :
         if changed and self.update_roundup :
             self.db.commit ()
     # end def sync_user_from_ldap
+
+    def sync_contacts_to_ldap (self, user, luser, modlist) :
+        contacts = {}
+        for cid in self.db.user_contact.filter \
+            ( None
+            , dict (user = user.id)
+            , sort = [('+', 'contact_type'), ('+', 'order')]
+            ) :
+            contact = self.db.user_contact.getnode (cid)
+            n = self.contact_types [contact.contact_type]
+            if n not in contacts :
+                contacts [n] = []
+            contacts [n].append (contact.contact)
+        for ct, cs in contacts.iteritems () :
+            if ct not in self.attr_map ['user_contact'] :
+                continue
+            ldn = self.attr_map ['user_contact'][ct]
+            if len (ldn) != 2 :
+                assert (len (ldn) == 1)
+                assert (ct == 'Email')
+                p = ldn [0]
+                s = None
+            else :
+                p, s = ldn
+            if p not in luser :
+                print "%s: Inserting: %s (%s)" % (user.username, p, cs [0])
+                modlist.append ((ldap.MOD_ADD, p, cs [0]))
+            elif len (luser [p]) != 1 :
+                print "%s: invalid length: %s" % (user.username, p)
+            else :
+                ldattr = luser [p][0]
+                if ldattr != cs [0] :
+                    print "%s:  Updating: %s/%s %s/%s" % \
+                        (user.username, ct, p, cs [0], ldattr)
+                    modlist.append ((ldap.MOD_REPLACE, p, cs [0]))
+            if s :
+                if s not in luser :
+                    if cs [1:] :
+                        print "%s: Inserting: %s (%s)" \
+                            % (user.username, s, cs [1:])
+                        modlist.append ((ldap.MOD_ADD, s, cs [1:]))
+                else :
+                    if luser [s] != cs [1:] :
+                        print "%s:  Updating: %s/%s %s/%s" % \
+                            (user.username, ct, s, cs [1:], ldattr)
+                        modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
+        for ct, fields in self.attr_map ['user_contact'].iteritems () :
+            if ct not in contacts :
+                for f in fields :
+                    if f in luser :
+                        print "%s:  Deleting: %s" % (user.username, f)
+                        modlist.append ((ldap.MOD_REPLACE, f, []))
+    # end def sync_contacts_to_ldap
 
     def sync_user_to_ldap (self, username, update = None) :
         if update is not None :
@@ -585,56 +720,8 @@ class LDAP_Roundup_Sync (object) :
                         if rupattr is None :
                             op = ldap.MOD_DELETE
                         modlist.append ((op, lk, rupattr))
-        contacts = {}
-        for cid in self.db.user_contact.filter \
-            ( None
-            , dict (user = user.id)
-            , sort = [('+', 'contact_type'), ('+', 'order')]
-            ) :
-            contact = self.db.user_contact.getnode (cid)
-            n = self.contact_types [contact.contact_type]
-            if n not in contacts :
-                contacts [n] = []
-            contacts [n].append (contact.contact)
-        for ct, cs in contacts.iteritems () :
-            if ct not in self.attr_map ['user_contact'] :
-                continue
-            ldn = self.attr_map ['user_contact'][ct]
-            if len (ldn) != 2 :
-                assert (len (ldn) == 1)
-                assert (ct == 'Email')
-                p = ldn [0]
-                s = None
-            else :
-                p, s = ldn
-            if p not in luser :
-                print "%s: Inserting: %s (%s)" % (user.username, p, cs [0])
-                modlist.append ((ldap.MOD_ADD, p, cs [0]))
-            elif len (luser [p]) != 1 :
-                print "%s: invalid length: %s" % (user.username, p)
-            else :
-                ldattr = luser [p][0]
-                if ldattr != cs [0] :
-                    print "%s:  Updating: %s/%s %s/%s" % \
-                        (user.username, ct, p, cs [0], ldattr)
-                    modlist.append ((ldap.MOD_REPLACE, p, cs [0]))
-            if s :
-                if s not in luser :
-                    if cs [1:] :
-                        print "%s: Inserting: %s (%s)" \
-                            % (user.username, s, cs [1:])
-                        modlist.append ((ldap.MOD_ADD, s, cs [1:]))
-                else :
-                    if luser [s] != cs [1:] :
-                        print "%s:  Updating: %s/%s %s/%s" % \
-                            (user.username, ct, s, cs [1:], ldattr)
-                        modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
-        for ct, fields in self.attr_map ['user_contact'].iteritems () :
-            if ct not in contacts :
-                for f in fields :
-                    if f in luser :
-                        print "%s:  Deleting: %s" % (user.username, f)
-                        modlist.append ((ldap.MOD_REPLACE, f, []))
+        if self.contact_types :
+            self.sync_contacts_to_ldap (user, luser, modlist)
         #print "Modlist:"
         #for k in modlist :
         #    print k
