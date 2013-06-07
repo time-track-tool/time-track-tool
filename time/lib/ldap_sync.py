@@ -112,7 +112,7 @@ class LDAP_Roundup_Sync (object) :
             if st.ldap_group :
                 self.status_sync.append (id)
                 self.valid_stati.append (id)
-                self.ldap_groups [id] = st.ldap_group
+                self.ldap_groups [id] = st
         self.contact_types = dict \
             ((id, self.db.uc_type.get (id, 'name'))
              for id in self.db.uc_type.list ()
@@ -241,7 +241,8 @@ class LDAP_Roundup_Sync (object) :
 
     def get_roundup_group (self) :
         """ Get list of members of self.ldap_groups into self.members
-            The value stored under the member is the group.
+            The value stored under the member is the group (the
+            user_status.id).
             Implementation note: We sort by the key of self.ldap_groups,
             this is by numeric user_status id. This means later
             user_status will overwrite earlier user_status if a user is
@@ -250,7 +251,8 @@ class LDAP_Roundup_Sync (object) :
             normal user group.
         """
         self.members = {}
-        for us_id, gname in sorted (self.ldap_groups.iteritems ()) :
+        for us_id, ustatus in sorted (self.ldap_groups.iteritems ()) :
+            gname = ustatus.ldap_group
             f = '(&(sAMAccountName=%s)(objectclass=group))' % gname
             l = self.ldcon.search_s \
                 (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f)
@@ -317,7 +319,15 @@ class LDAP_Roundup_Sync (object) :
     # end def get_ldap_user_by_dn
 
     def is_obsolete (self, luser) :
-        return luser.dn.lower () not in self.members
+        """ Either the user is not in one of the ldap groups anymore or
+            the group has no roles which means the user should be
+            deleted.
+        """
+        ldn = luser.dn.lower ()
+        return \
+            (  ldn not in self.members
+            or not self.ldap_groups [self.members [ldn]].roles
+            )
     # end def is_obsolete
 
     def ldap_picture (self, luser, attr) :
