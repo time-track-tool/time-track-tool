@@ -481,7 +481,7 @@ class LDAP_Roundup_Sync (object) :
                 break
     # end def paged_search_iter
 
-    def sync_contacts_from_ldap (luser, user) :
+    def sync_contacts_from_ldap (self, luser, user) :
         oct = []
         if user :
             oct = user.contacts
