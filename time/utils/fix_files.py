@@ -105,14 +105,26 @@ class File_Checker (autosuper) :
                         referenced [int (k)] = True
                 else :
                     referenced [int (items)] = True
+        destroy_list = []
         for id in self.nodeids () :
             if id not in referenced :
-                jresult, jmsg = self.check_journal (id)
-                if not jresult or self.opt.verbose :
-                    print >> sys.stderr, "%s %s not referenced: %s" \
-                        % (self.classname, id, jmsg)
-                if self.opt.update and not jresult :
-                    self.cls.destroy (id)
+                if self.opt.no_journalcheck :
+                    print >> sys.stderr, "%%s not referenced" \
+                        % (self.classname, id)
+                else :
+                    jresult, jmsg = self.check_journal (id)
+                    if not jresult or self.opt.verbose :
+                        print >> sys.stderr, "%s%s not referenced: %s" \
+                            % (self.classname, id, jmsg)
+                    if self.opt.update and not jresult :
+                        destroy_list.append (str (id))
+        if destroy_list :
+            sql = 'delete from %s__journal where nodeid in (%s)' \
+                % (self.classname, ','.join (self.db.arg for x in destroy_list))
+            self.db.sql (sql, destroy_list)
+            for id in destroy_list :
+                print id
+                self.cls.destroy (id)
     # end def check_refs
 
     def nodeids (self) :
@@ -150,6 +162,12 @@ cmd.add_option \
     ( '-f', '--no-file-consistency'
     , dest    = 'no_file_consistency'
     , help    = "Don't do file consistency check"
+    , action  = 'store_true'
+    )
+cmd.add_option \
+    ( '-j', '--no-journalcheck'
+    , dest    = 'no_journalcheck'
+    , help    = "Don't do journal check for unreferenced files"
     , action  = 'store_true'
     )
 cmd.add_option \
