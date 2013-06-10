@@ -647,6 +647,14 @@ _helptext          = \
             %(Classname)s is on the access list for an issue
          '''
       ]
+    , ""'external_users'              :
+      [""'''Used for access control: all
+            configured external users have access to this issue -- and
+            if the issue is a container to all sub-issues.
+            Containers inherit the permissions of the next higher
+            container only if the \'Inherit permissions\' flag is set.
+         '''
+      ]
     , ""'firstname'                   : [firstname]
     , ""'first_date'                  : [ ""'''Date of first contact''']
     , ""'fixed_in'                    :
@@ -708,6 +716,13 @@ _helptext          = \
     , ""'hours_sat'                   : [daily_hours]
     , ""'hours_sun'                   : [daily_hours]
     , ""'id'                          : [help_id]
+    , ""'inherit_ext'                 :
+      [""'''If this flag is set, and an issue is a container, it inerits
+            external user permissions from the next higher-level
+            container. Note that normal issues inherit the permissions
+            of their container in any case.
+         '''
+      ]
     , ""'initial'                     :
       [""'''Initials of this %(Classname)s''']
     , ""'inreplyto'                   :
