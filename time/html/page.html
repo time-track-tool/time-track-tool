@@ -73,7 +73,7 @@
                           '@sort=name&@group=cost_center_group&'
                           '@filter=status&@pagesize=20&@startwith=0&'
                           'status=5,1,2,4'
-   , ('category', '')   : '@columns=name,description,responsible,nosy,'
+   , ('category', '')   : '@columns=name,description,responsible,prodcat,'
                           'valid,cert_sw&@sort=name&@filter=valid&'
                           '@pagesize=200&@startwith=0&valid=1'
    , ('contact', '')    : utils.contact_query (db)
@@ -342,6 +342,7 @@
      , ('keyword',             'Edit',   '?@template=item', 1)
      , ('status',              'Edit',   '?@template=item', 1)
      , ('doc_issue_status',    'Edit',   '?@template=item', 1)
+     , ('prodcat',             'Edit',   '?@template=item', 1)
      , ('sup_classification',  'Edit',   '?@template=item', 1)
      , ('sup_status',          'Edit',   '?@template=item', 1)
      , ('msg_keyword',         'Edit',   '?@template=item', 1)

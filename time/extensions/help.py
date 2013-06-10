@@ -99,8 +99,7 @@ lastname           = \
 leave_empty        = \
     ""'''Leave this field empty if unsure.'''
 keywords           = \
-    ""'''Some %(Property)s for tagging your issue -- can be useful
-         for querying.
+    ""'''Some %(Property)s for tagging -- can be useful for querying.
       '''
 maturity_index_table = Structured_Text \
     ( ('=' * 20 + '  ') * 3 + '\n'
@@ -204,6 +203,11 @@ _helptext          = \
       [""'''Austrian-Law: time above 38.5 hours per week''']
     , ""'address'                     :
       [""'''Address for this %(Classname)s''']
+    , ""'address.lookalike_city'      : [city]
+    , ""'address.lookalike_firstname' : [firstname]
+    , ""'address.lookalike_function'  : [function]
+    , ""'address.lookalike_lastname'  : [lastname]
+    , ""'address.lookalike_street'    : [street]
     , ""'address++valid'              : [address_valid]
     , ""'address++title'              : [academic_title]
     , ""'adr'                         : [adr]
@@ -425,8 +429,9 @@ _helptext          = \
          '''
       ]
     , ""'default_part_of'             :
-      [""'''When a new issue is created with %(Classname)s set, but 'Part of'
-            not set, then '%(Property)s' will be used as the default 'Part of'.
+      [""'''When a new issue is created with %(Classname)s set, but
+            \'Part of\' not set, then \'%(Property)s\' will be used as the
+            default \'Part of\'.
          '''
       ]
     , ""'default_server'              :
@@ -728,8 +733,18 @@ _helptext          = \
     , ""'invoice++amount'             : [invoice_amount]
     , ""'invoice.payer.firstname'     : [firstname]
     , ""'invoice.payer.lastname'      : [lastname]
+    , ""'invoice.payer.lookalike_city'      : [city]
+    , ""'invoice.payer.lookalike_firstname' : [firstname]
+    , ""'invoice.payer.lookalike_function'  : [function]
+    , ""'invoice.payer.lookalike_lastname'  : [lastname]
+    , ""'invoice.payer.lookalike_street'    : [street]
     , ""'invoice.payer.function'      : [function]
     , ""'invoice.payer.valid'         : [address_valid]
+    , ""'invoice.subscriber.lookalike_city'      : [city]
+    , ""'invoice.subscriber.lookalike_firstname' : [firstname]
+    , ""'invoice.subscriber.lookalike_function'  : [function]
+    , ""'invoice.subscriber.lookalike_lastname'  : [lastname]
+    , ""'invoice.subscriber.lookalike_street'    : [street]
     , ""'invoice.subscriber.firstname': [firstname]
     , ""'invoice.subscriber.lastname' : [lastname]
     , ""'invoice.subscriber.valid'    : [address_valid]
@@ -796,6 +811,8 @@ _helptext          = \
       ]
     , ""'it_project'                  :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
+    , ""'keyword'                     :
+      [keywords]
     , ""'keywords'                    :
       [keywords]
     , ""'kind'                        :
@@ -1029,7 +1046,7 @@ _helptext          = \
     , ""'overtime_period++required_overtime' :
       [""'''Given overtime is required for the period.''']
     , ""'overtime_reduction'          :
-      [""'''Don't count hours booked on this %(Classname)s
+      [""'''Don\'t count hours booked on this %(Classname)s
             for required overtime.
          '''
       ]
@@ -1054,8 +1071,11 @@ _helptext          = \
     , ""'payer'                       :
       [""'''Address which is paying for this subscription''']
     , ""'payer.firstname'             : [firstname]
+    , ""'payer.function'              : [function]
     , ""'payer.lastname'              : [lastname]
-    , ""'payer.lastname'              : [function]
+    , ""'payer.lookalike_firstname'   : [firstname]
+    , ""'payer.lookalike_lastname'    : [lastname]
+    , ""'payer.lookalike_function'    : [function]
     , ""'payer.valid'                 : [address_valid]
     , ""'payer.adr_type'              : [generic_type]
     , ""'payment'                     :
@@ -1072,6 +1092,9 @@ _helptext          = \
       [""'''Type of this %(Classname)s for Customer/Supplier''']
     , ""'person'                      :
       [""'''personal Information for this %(Classname)s''']
+    , ""'person.lookalike_firstname'  : [firstname]
+    , ""'person.lookalike_function'   : [function]
+    , ""'person.lookalike_lastname'   : [lastname]
     , ""'planned_effort'              :
       [ ""'''Effort for %(Classname)s in person-hours; as it is stated
              in the Project Evaluation Sheet. Warning: This used to be in
@@ -1100,6 +1123,8 @@ _helptext          = \
       [ ""'''Allowed range of group ids for users'''
       , range_description
       ]
+    , ""'prodcat'                     :
+      [""'''Used for classifying products''']
     , ""'product_type'                :
       [""'''The type of the %(Classname)s.''']
     , ""'project'                     :
@@ -1348,6 +1373,9 @@ _helptext          = \
       [""'''Short identification of %(Classname)s''']
     , ""'subscriber'                  :
       [""'''Subscriber of this subscription''']
+    , ""'subscriber.lookalike_firstname' : [firstname]
+    , ""'subscriber.lookalike_function'  : [function]
+    , ""'subscriber.lookalike_lastname'  : [lastname]
     , ""'subscriber.firstname'        : [firstname]
     , ""'subscriber.lastname'         : [lastname]
     , ""'subscriber.function'         : [function]

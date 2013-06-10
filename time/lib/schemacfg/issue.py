@@ -52,6 +52,13 @@ def init \
         )
     area.setkey ("name")
 
+    prodcat = Class \
+        ( db, "prodcat"
+        , name                = String    (indexme = 'no')
+        , valid               = Boolean   ()
+        )
+    prodcat.setkey ("name")
+
     category = Class \
         ( db, "category"
         , name                = String    (indexme = 'no')
@@ -61,6 +68,7 @@ def init \
         , valid               = Boolean   ()
         , cert_sw             = Boolean   ()
         , default_part_of     = Link      ("issue")
+        , prodcat             = Link      ("prodcat")
         )
     category.setkey ("name")
 
@@ -162,6 +170,7 @@ def security (db, ** kw) :
         , ("category",          ["User"],        ["Issue_Admin"])
         , ("kind",              ["User"],        ["Issue_Admin"])
         , ("msg_keyword",       ["User"],        ["Issue_Admin"])
+        , ("prodcat",           ["User"],        ["Issue_Admin"])
         , ("status",            ["User"],        ["Issue_Admin"])
         , ("status_transition", ["User"],        ["Issue_Admin"])
         , ("severity",          ["User"],        ["Issue_Admin"])
