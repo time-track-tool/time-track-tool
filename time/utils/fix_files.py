@@ -25,8 +25,9 @@ class File_Checker (autosuper) :
     # end def __init__
 
     def check (self) :
-        self.walk        ()
-        self.check_files ()
+        if not self.opt.no_file_consistency :
+            self.walk        ()
+            self.check_files ()
         if self.opt.reference :
             self.check_refs ()
     # end def check
@@ -34,7 +35,8 @@ class File_Checker (autosuper) :
     def check_files (self) :
         for id in self.nodeids () :
             if id not in self.files :
-                print >> sys.stderr, "File missing for %s" % id
+                if not self.opt.ignore_missing :
+                    print >> sys.stderr, "File missing for %s" % id
             elif self.files [id][1] :
                 print >> sys.stderr, "File %s: ext: %s" \
                     % (id, self.files [id][1])
@@ -46,6 +48,48 @@ class File_Checker (autosuper) :
                 print >> sys.stderr, "No %s object for file %s%s" \
                     % (self.classname, r, ext)
     # end def check_files
+
+    def check_journal (self, id) :
+        """ Loop over journal and check link/unlink events.
+            If we find a link or unlink to an existing class/prop we're
+            happy and return a nonzero exit code. An unlink event
+            generally trumps a link event.
+        """
+        journal = self.db.getjournal (self.classname, id)
+        r = 0
+        s = 'No link found'
+        for j in journal :
+            if j [3] == 'unlink' :
+                if  (j [4][0] in self.db.classes) :
+                    if (j [4][2] in self.db.getclass (j [4][0]).properties) :
+                        if self.db.hasnode (j [4][0], j [4][1]) :
+                            return (1, 'Unlinked from %s%s.%s' % j [4])
+                        elif not r :
+                            s = 'Unlink from non-existing %s%s.%s' % j [4]
+                    else :
+                        if not r :
+                            s = 'Unlink from non-existing property %s.%s' \
+                                % (j [4][0], j [4][2])
+                else :
+                    if not r :
+                        s = 'Unlink from non-existing class %s.%s' \
+                            % (j [4][0], j [4][2])
+            elif j [3] == 'link' :
+                if  (j [4][0] in self.db.classes) :
+                    if (j [4][2] in self.db.getclass (j [4][0]).properties) :
+                        if self.db.hasnode (j [4][0], j [4][1]) :
+                            s = 'Linked to %s%s.%s' % j [4]
+                            r = 1
+                        elif not r and not s.startswith ('Unlink') :
+                            s = 'Link to non-existing %s%s.%s' % j [4]
+                    elif not r and not s.startswith ('Unlink') :
+                            s = 'Link to non-existing property %s.%s' \
+                                % (j [4][0], j [4][2])
+                elif not r and not s.startswith ('Unlink') :
+                    s = 'Link to non-existing class %s.%s' \
+                        % (j [4][0], j [4][2])
+        return (r, s)
+    # end def check_journal
 
     def check_refs (self) :
         """ Check if all class objects are referenced by some other
@@ -63,8 +107,12 @@ class File_Checker (autosuper) :
                     referenced [int (items)] = True
         for id in self.nodeids () :
             if id not in referenced :
-                print >> sys.stderr, "%s %s not referenced" \
-                    % (self.classname, id)
+                jresult, jmsg = self.check_journal (id)
+                if not jresult or self.opt.verbose :
+                    print >> sys.stderr, "%s %s not referenced: %s" \
+                        % (self.classname, id, jmsg)
+                if not jresult :
+                    self.cls.destroy (id)
     # end def check_refs
 
     def nodeids (self) :
@@ -99,6 +147,18 @@ cmd.add_option \
     , default = 'file'
     )
 cmd.add_option \
+    ( '-f', '--no-file-consistency'
+    , dest    = 'no_file_consistency'
+    , help    = "Don't do file consistency check"
+    , action  = 'store_true'
+    )
+cmd.add_option \
+    ( '-m', '--ignore-missing'
+    , dest    = 'ignore_missing'
+    , help    = 'Ignore missing files'
+    , action  = 'store_true'
+    )
+cmd.add_option \
     ( '-r', '--reference'
     , dest    = 'reference'
     , help    = 'Check if files are referenced by another object'
@@ -114,6 +174,12 @@ cmd.add_option \
     ( '-u', '--update'
     , dest    = 'update'
     , help    = 'Really destroy files/remove disk files (do a commit)'
+    , action  = 'store_true'
+    )
+cmd.add_option \
+    ( '-v', '--verbose'
+    , dest    = 'verbose'
+    , help    = 'Verbose output'
     , action  = 'store_true'
     )
 opt, args = cmd.parse_args ()
