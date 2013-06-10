@@ -37,16 +37,16 @@ class File_Checker (autosuper) :
             if id not in self.files :
                 if not self.opt.ignore_missing :
                     print >> sys.stderr, "File missing for %s" % id
-            elif self.files [id][1] :
+            elif self.files [id][2] :
                 print >> sys.stderr, "File %s: ext: %s" \
                     % (id, self.files [id][1])
         for id in sorted (self.files.iterkeys ()) :
-            try :
-                f = self.cls.getnode (id)
-            except IndexError :
-                r, ext = self.files [id]
+            if not self.cls.hasnode (id) :
+                d, r, ext = self.files [id]
                 print >> sys.stderr, "No %s object for file %s%s" \
                     % (self.classname, r, ext)
+                if self.opt.update :
+                    os.unlink (os.path.join (self.dir, d, r + ext))
     # end def check_files
 
     def check_journal (self, id) :
@@ -111,7 +111,7 @@ class File_Checker (autosuper) :
                 if not jresult or self.opt.verbose :
                     print >> sys.stderr, "%s %s not referenced: %s" \
                         % (self.classname, id, jmsg)
-                if not jresult :
+                if self.opt.update and not jresult :
                     self.cls.destroy (id)
     # end def check_refs
 
@@ -134,7 +134,7 @@ class File_Checker (autosuper) :
                     ff = self.files [id]
                     print >> sys.stderr, "Duplicate filename: %s/%s%s %s/%s%s" \
                         % (d, ff [0], ff [1], d, root, ext)
-                self.files [id] = (root, ext)
+                self.files [id] = (d, root, ext)
     # end def walk
 
 # end class File_Checker
