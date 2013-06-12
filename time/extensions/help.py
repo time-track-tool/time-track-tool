@@ -1140,6 +1140,10 @@ _helptext          = \
       ]
     , ""'prodcat'                     :
       [""'''Used for classifying products''']
+    , ""'product_family'              :
+      [""'''The %(Property)s of the %(Classname)s.''']
+    , ""'product_family.id'           :
+      [""'''The Id of %(Property)s.''']
     , ""'product_type'                :
       [""'''The type of the %(Classname)s.''']
     , ""'project'                     :
@@ -1148,6 +1152,10 @@ _helptext          = \
              %(Classname)s can be clearly  identified
           '''
       ]
+    , ""'project_type'                :
+      [""'''The %(Property)s of the %(Classname)s.''']
+    , ""'project_type.id'           :
+      [""'''The Id of %(Property)s.''']
     , ""'protocol'                    :
       [""'''The dynamic DNS protocol to use with this %(Classname)s.''']
     , ""'qa_representative'           :
@@ -1195,6 +1203,10 @@ _helptext          = \
              it can usually still be downloaded via the History button.
           '''
       ]
+    , ""'reporting_group'             :
+      [""'''The %(Property)s of the %(Classname)s.''']
+    , ""'reporting_group.id'          :
+      [""'''The Id of %(Property)s.''']
     , ""'require_msg'                 :
       [""'''Require a message for this %(Classname)s''']
     , ""'require_resp_change'         :

@@ -33,6 +33,24 @@
         , searchname  = 'cost_center.id'
         , searchable  = False
         )
+    , utils.ExtProperty (utils, pdict ['reporting_group'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['reporting_group']
+        , searchname  = 'reporting_group.id'
+        , searchable  = False
+        )
+    , utils.ExtProperty (utils, pdict ['product_family'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['product_family']
+        , searchname  = 'product_family.id'
+        , searchable  = False
+        )
+    , utils.ExtProperty (utils, pdict ['project_type'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['project_type']
+        , searchname  = 'project_type.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['planned_effort'])
     , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['max_hours'])

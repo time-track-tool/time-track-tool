@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -163,7 +163,36 @@ def init \
         , show_missing          = Boolean   ()
         , all_in                = Boolean   ()
         , op_project            = Boolean   ()
+        , reporting_group       = Link      ("reporting_group")
+        , product_family        = Link      ("product_family")
+        , project_type          = Link      ("project_type")
         )
+
+    reporting_group = Class \
+        ( db
+        , ''"reporting_group"
+        , name                  = String    ()
+        , description           = String    ()
+        , responsible           = Link      ("user")
+        )
+    reporting_group.setkey ("name")
+
+    product_family = Class \
+        ( db
+        , ''"product_family"
+        , name                  = String    ()
+        , description           = String    ()
+        , responsible           = Link      ("user")
+        )
+    product_family.setkey ("name")
+
+    project_type = Class \
+        ( db
+        , ''"project_type"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    project_type.setkey ("name")
 
     summary_type = Class \
         ( db
@@ -202,6 +231,9 @@ def init \
         , is_public_holiday     = Boolean   ()
         , cost_center           = Link      ("cost_center")
         , overtime_reduction    = Boolean   ()
+        , reporting_group       = Link      ("reporting_group")
+        , product_family        = Link      ("product_family")
+        , project_type          = Link      ("project_type")
         )
     time_project.setkey ("name")
 

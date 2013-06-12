@@ -109,7 +109,7 @@ class File_Checker (autosuper) :
         for id in self.nodeids () :
             if id not in referenced :
                 if self.opt.no_journalcheck :
-                    print >> sys.stderr, "%%s not referenced" \
+                    print >> sys.stderr, "%s%s not referenced" \
                         % (self.classname, id)
                 else :
                     jresult, jmsg = self.check_journal (id)

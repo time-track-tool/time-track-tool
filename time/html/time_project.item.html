@@ -64,6 +64,19 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'reporting_group')"/>
+     <td tal:content="structure python:context.reporting_group.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'product_family')"/>
+     <td tal:content="structure python:context.product_family.menu ()"/>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'project_type')"/>
+     <td tal:content="structure python:context.project_type.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'organisation')"/>
      <td tal:content="structure python:context.organisation.menu ()"/>
      <th tal:content="structure python:utils.fieldname

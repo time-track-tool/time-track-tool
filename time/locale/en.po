@@ -5249,6 +5249,24 @@ msgstr "is nosy"
 msgid "doc_num"
 msgstr "Document number"
 
+msgid "project_type"
+msgstr "Project type"
+
+msgid "product_family"
+msgstr "Product family"
+
+msgid "reporting_group"
+msgstr "Reporting group"
+
+msgid "project_type.id"
+msgstr "Project type Id"
+
+msgid "product_family.id"
+msgstr "Product family Id"
+
+msgid "reporting_group.id"
+msgstr "Reporting group Id"
+
 msgid "external_users"
 msgstr "External users"
 

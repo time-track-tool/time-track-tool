@@ -76,6 +76,27 @@
       (utils, pdict ['planned_effort'])
     , op_project        = utils.ExtProperty
       (utils, pdict ['op_project'])
+    , reporting_group   = utils.ExtProperty
+      (utils, pdict ['reporting_group'], multiselect = 1)
+    , reporting_group_id = utils.ExtProperty
+        ( utils, pdict ['reporting_group']
+        , searchname  = 'reporting_group.id'
+        , searchable  = False
+        )
+    , product_family = utils.ExtProperty
+      (utils, pdict ['product_family'], multiselect = 1)
+    , product_family_id = utils.ExtProperty
+        ( utils, pdict ['product_family']
+        , searchname  = 'product_family.id'
+        , searchable  = False
+        )
+    , project_type = utils.ExtProperty
+      (utils, pdict ['project_type'], multiselect = 1)
+    , project_type_id = utils.ExtProperty
+        ( utils, pdict ['project_type']
+        , searchname  = 'project_type.id'
+        , searchable  = False
+        )
     );
     sr   python: utils.Summary_Report (db, request, utils)
    "
@@ -86,14 +107,17 @@
         [ 'user', 'time_wp', 'time_wp_id', 'time_project', 'time_project_id'
         , 'time_wp_group', 'time_wp_group_id', 'cost_center', 'cost_center_id'
         , 'cost_center_group', 'cost_center_group_id', 'summary'
-        , 'planned_effort'
+        , 'planned_effort', 'reporting_group', 'reporting_group_id'
+        , 'product_family', 'product_family_id', 'project_type'
+        , 'project_type_id'
         ]
       ; props python: [myprops [p] for p in sorted (fpkeys)]
       ; propkeys       python:
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
         , 'time_project', 'time_wp_group', 'cost_center', 'cost_center_group'
+        , 'op_project', 'reporting_group', 'product_family', 'project_type'
         , 'summary_type', 'status', 'show_all_users', 'show_empty'
-        , 'show_missing', 'op_project'
+        , 'show_missing'
         )
       ; sprops         python: [myprops [p] for p in propkeys]
       ; multi_props    python: [p for p in sprops if p.multiselect]
