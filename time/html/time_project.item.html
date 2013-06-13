@@ -64,20 +64,19 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'reporting_group')" rowspan="3"/>
-     <td rowspan="3"
-         tal:content="structure python:context.reporting_group.menu
-         (height = 5)"/>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'product_family')"/>
-     <td tal:content="structure python:context.product_family.menu ()"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname
          (classname, 'project_type')"/>
      <td tal:content="structure python:context.project_type.menu ()"/>
     </tr>
-    <tr></tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'reporting_group')"/>
+     <td tal:content="structure python:context.reporting_group.menu
+         (height = 5)"/>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'product_family')"/>
+     <td tal:content="structure python:context.product_family.menu
+         (height = 5)"/>
+    </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'organisation')"/>

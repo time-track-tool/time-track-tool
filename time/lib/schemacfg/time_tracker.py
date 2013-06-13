@@ -233,7 +233,7 @@ def init \
         , cost_center           = Link      ("cost_center")
         , overtime_reduction    = Boolean   ()
         , reporting_group       = Multilink ("reporting_group")
-        , product_family        = Link      ("product_family")
+        , product_family        = Multilink ("product_family")
         , project_type          = Link      ("project_type")
         )
     time_project.setkey ("name")
