@@ -22,6 +22,13 @@
       (utils, pdict ['supervisor'])
     , org_location      = utils.ExtProperty
       (utils, pdict ['org_location'],      multiselect = 1)
+    , organisation      = utils.ExtProperty
+      (utils, pdict ['organisation'],      multiselect = 1)
+    , organisation_id  = utils.ExtProperty
+      ( utils, pdict ['organisation']
+      , searchable = False
+      , searchname = 'organisation.id'
+      )
     , time_wp           = utils.ExtProperty 
       ( utils, pdict ['time_wp']
       , help_props = ['project', 'name']
@@ -109,7 +116,7 @@
         , 'cost_center_group', 'cost_center_group_id', 'summary'
         , 'planned_effort', 'reporting_group', 'reporting_group_id'
         , 'product_family', 'product_family_id', 'project_type'
-        , 'project_type_id'
+        , 'project_type_id', 'organisation', 'organisation_id'
         ]
       ; props python: [myprops [p] for p in sorted (fpkeys)]
       ; propkeys       python:

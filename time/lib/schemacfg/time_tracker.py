@@ -149,6 +149,7 @@ def init \
         , department            = Link      ("department")
         , supervisor            = Link      ("user")
         , org_location          = Link      ("org_location")
+        , organisation          = Link      ("organisation")
         , time_wp               = Link      ("time_wp")
         , time_wp_group         = Link      ("time_wp_group")
         , cost_center           = Link      ("cost_center")

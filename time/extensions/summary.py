@@ -384,10 +384,18 @@ class WP_Container (Comparable_Container, dict) :
         self.cost_center_id       = ''
         self.cost_center_group_id = ''
         self.time_project_id      = ''
+        self.reporting_group_id   = ''
+        self.product_family_id    = ''
+        self.project_type_id      = ''
+        self.organisation_id      = ''
 
         tp  = None
         cc  = None
         ccg = None
+        rg  = None
+        pf  = None
+        pt  = None
+        org = None
         if klass.classname == 'time_wp' :
             self.sortkey = 30
             wp = klass.getnode (id)
@@ -403,14 +411,37 @@ class WP_Container (Comparable_Container, dict) :
             cc  = klass.getnode (id)
         elif klass.classname == 'cost_center_group' :
             ccg = klass.getnode (id)
+        elif klass.classname == 'reporting_group' :
+            rg  = klass.getnode (id)
+        elif klass.classname == 'product_family' :
+            pf  = klass.getnode (id)
+        elif klass.classname == 'project_type' :
+            pt  = klass.getnode (id)
         if tp :
             self.time_project_id = ('time_project', tp.id)
-            cc = klass.db.cost_center.getnode (tp.cost_center)
+            if tp.cost_center :
+                cc  = klass.db.cost_center.getnode     (tp.cost_center)
+            if tp.reporting_group :
+                rg  = klass.db.reporting_group.getnode (tp.reporting_group)
+            if tp.product_family :
+                pf  = klass.db.product_family.getnode  (tp.product_family)
+            if tp.project_type :
+                pt  = klass.db.project_type.getnode    (tp.project_type)
+            if tp.organisation :
+                org = klass.db.organisation.getnode    (tp.organisation)
         if cc :
             self.cost_center_id = ('cost_center', cc.id)
             ccg = klass.db.cost_center_group.getnode (cc.cost_center_group)
         if ccg :
             self.cost_center_group_id = ('cost_center_group', ccg.id)
+        if rg :
+            self.reporting_group_id   = ('reporting_group', rg.id)
+        if pf :
+            self.product_family_id    = ('product_family', pf.id)
+        if pt :
+            self.project_type_id      = ('project_type', pt.id)
+        if org :
+            self.organisation_id      = ('organisation', org.id)
     # end def __init__
     
     def __repr__ (self) :
@@ -634,6 +665,67 @@ class Summary_Report (_Report) :
         db.log_info ("summary_report: native wp: %s (%s)"
             % (len (wp), time.time () - timestamp))
 
+        by_project_attr = []
+        pts         = filterspec.get ('project_type',    [])
+        for pt in pts :
+            prj = db.time_project.filter (None, dict (project_type = pt))
+            if not prj :
+                continue
+            by_project_attr.extend (prj)
+            pwps = db.time_wp.find (project = prj)
+            if not pwps :
+                continue
+            if pt != '-1' :
+                wp_containers.append \
+                    ( WP_Container
+                        ( db.project_type, pt
+                        , 'project_type' in self.columns
+                          or 'project_type.id' in self.columns
+                        , ''
+                        , [ (x, 1) for x in pwps ]
+                        )
+                    )
+            wp.update ((x, 1) for x in pwps)
+        rgs         = filterspec.get ('reporting_group',    [])
+        for rg in rgs :
+            prj = db.time_project.filter (None, dict (reporting_group = rg))
+            if not prj :
+                continue
+            by_project_attr.extend (prj)
+            pwps = db.time_wp.find (project = prj)
+            if not pwps :
+                continue
+            if rg != '-1' :
+                wp_containers.append \
+                    ( WP_Container
+                        ( db.reporting_group, rg
+                        , 'reporting_group' in self.columns
+                          or 'reporting_group.id' in self.columns
+                        , ''
+                        , [ (x, 1) for x in pwps ]
+                        )
+                    )
+            wp.update ((x, 1) for x in pwps)
+        pfs         = filterspec.get ('product_family',     [])
+        for pf in pfs :
+            prj = db.time_project.filter (None, dict (product_family = pf))
+            if not prj :
+                continue
+            by_project_attr.extend (prj)
+            pwps = db.time_wp.find (project = prj)
+            if not pwps :
+                continue
+            if pf != '-1' :
+                wp_containers.append \
+                    ( WP_Container
+                        ( db.product_family, pf
+                        , 'product_family' in self.columns
+                          or 'product_family.id' in self.columns
+                        , ''
+                        , [ (x, 1) for x in pwps ]
+                        )
+                    )
+            wp.update ((x, 1) for x in pwps)
         wpgs        = filterspec.get ('time_wp_group',     [])
         for wpg in wpgs :
             wp_containers.append \
@@ -653,7 +745,7 @@ class Summary_Report (_Report) :
                 (None, dict (op_project = op_project))
         projects    = filterspec.get ('time_project',      [])
         db.log_info ("summary_report: projects: %s" % projects)
-        for p in projects + selected_by_op_project :
+        for p in projects + selected_by_op_project + by_project_attr :
             pwps = db.time_wp.find (project = p)
             db.log_info ("summary_report: project: %s wp: %s" % (p, pwps))
             wp_containers.append \
@@ -698,11 +790,14 @@ class Summary_Report (_Report) :
         db.log_info ("summary_report: ccgs: %s (%s)"
             % (len (wp), time.time () - timestamp))
         if  (    not wp
-            and 'time_wp'           not in filterspec
-            and 'time_wp_group'     not in filterspec
-            and 'time_project'      not in filterspec
-            and 'cost_center'       not in filterspec
-            and 'cost_center_group' not in filterspec
+            and 'time_wp'            not in filterspec
+            and 'time_wp_group'      not in filterspec
+            and 'time_project'       not in filterspec
+            and 'cost_center'        not in filterspec
+            and 'cost_center_group'  not in filterspec
+            and 'product_family'     not in filterspec
+            and 'project_type'       not in filterspec
+            and 'reporting_group'    not in filterspec
             ) :
             wp = dict ((w, 1) for w in db.time_wp.getnodeids ())
         db.log_info ("summary_report: wp-default: n_wp: %s (%s)"
@@ -887,13 +982,27 @@ class Summary_Report (_Report) :
             , 'time_wp_group'
             , 'cost_center'
             , 'cost_center_group'
+            , 'organisation'
+            , 'product_family'
+            , 'project_type'
+            , 'reporting_group'
             )
+        ]
+
+    name_attrs = \
+        [ 'organisation'
+        , 'product_family'
+        , 'project_type'
+        , 'reporting_group'
         ]
 
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('Container')))
         for k in self.id_attrs :
+            if k in self.columns :
+                line.append (formatter (_ (k)))
+        for k in self.name_attrs :
             if k in self.columns :
                 line.append (formatter (_ (k)))
         line.append (formatter (_ ('time')))
@@ -911,6 +1020,21 @@ class Summary_Report (_Report) :
         line = []
         tc   = self.time_containers [typ][idx]
         line.append (formatter (wpc))
+        for k in self.id_attrs :
+            if k in self.columns :
+                col = getattr (wpc, k)
+                if col :
+                    try :
+                        cls = getattr (self.htmldb, col [0])
+                        itm = cls.getItem (col [1])
+                        col = self.utils.ExtProperty \
+                            ( self.utils
+                            , itm.name
+                            , item = itm
+                            )
+                    except AttributeError :
+                        col = col [1]
+                line.append (formatter (col))
         for k in self.id_attrs :
             if k in self.columns :
                 col = getattr (wpc, k)
