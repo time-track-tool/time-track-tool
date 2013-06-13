@@ -984,3 +984,9 @@ if 'qsl_status' in db.classes :
     db.qsl_status.create (name = 'none',            code = 0)
 if 'external_company' in db.classes :
     user_status.create (name = "external", description = "External user")
+if 'project_type' in db.classes :
+    db.project_type.create (order = 1, name = 'Initial Development')
+    db.project_type.create (order = 2, name = 'Further Development')
+    db.project_type.create (order = 3, name = 'Maintenance')
+    db.project_type.create (order = 4, name = 'Support')
+    db.project_type.create (order = 5, name = 'Engineering')
