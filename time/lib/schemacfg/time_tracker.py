@@ -232,7 +232,7 @@ def init \
         , is_public_holiday     = Boolean   ()
         , cost_center           = Link      ("cost_center")
         , overtime_reduction    = Boolean   ()
-        , reporting_group       = Link      ("reporting_group")
+        , reporting_group       = Multilink ("reporting_group")
         , product_family        = Link      ("product_family")
         , project_type          = Link      ("project_type")
         )

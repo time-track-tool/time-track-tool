@@ -421,8 +421,6 @@ class WP_Container (Comparable_Container, dict) :
             self.time_project_id = ('time_project', tp.id)
             if tp.cost_center :
                 cc  = klass.db.cost_center.getnode     (tp.cost_center)
-            if tp.reporting_group :
-                rg  = klass.db.reporting_group.getnode (tp.reporting_group)
             if tp.product_family :
                 pf  = klass.db.product_family.getnode  (tp.product_family)
             if tp.project_type :
