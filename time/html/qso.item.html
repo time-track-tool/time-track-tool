@@ -179,7 +179,11 @@
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="after-message-box">
-     <tal:block tal:condition="context/id">
+     <tal:block tal:condition="context/id"
+         tal:define="
+            qso2 python:db.qso.filter (filterspec = dict (qso2 = context.id))
+          ; swl  python:db.qso.filter (filterspec = dict (swl  = context.id)) 
+          ">
       <tr>
        <td colspan=4>
         <table class="files" tal:define="cond python:
@@ -221,6 +225,58 @@
               (context, db, 'qsl', -1, 'date_sent').field (size=8)"/>
           <td><input type="hidden" name="qsl-1@link@qso"
                  tal:attributes="value context/designator"/></td>
+         </tr>
+        </table>
+       </td>
+      </tr>
+      <tr tal:condition="qso2">
+       <td colspan=4>
+        <table class="files">
+         <tr>
+          <th class="header" i18n:translate="" colspan="2">2nd QSO</th>
+         </tr>
+         <tr>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qso', 'call')"/>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qso', 'name')"/>
+         </tr>
+         <tr tal:repeat="ct python:sorted
+             (qso2, key = lambda x : (x.call))">
+          <td style="vertical-align:top;text-align:left"
+              tal:content="structure python:utils.ExtProperty
+              (utils, ct.call, item = ct).formatlink () + '&nbsp;'">
+          </td>
+          <td style="vertical-align:top;text-align:left"
+              tal:content="structure python:utils.ExtProperty
+              (utils, ct.name, item = ct).formatlink () + '&nbsp;'">
+          </td>
+         </tr>
+        </table>
+       </td>
+      </tr>
+      <tr tal:condition="swl">
+       <td colspan=4>
+        <table class="files">
+         <tr>
+          <th class="header" i18n:translate="" colspan="2">SWL reports</th>
+         </tr>
+         <tr>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qso', 'call')"/>
+          <td class="header" tal:content="structure python:utils.fieldname
+              ('qso', 'name')"/>
+         </tr>
+         <tr tal:repeat="ct python:sorted
+             (swl, key = lambda x : (x.call))">
+          <td style="vertical-align:top;text-align:left"
+              tal:content="structure python:utils.ExtProperty
+              (utils, ct.call, item = ct).formatlink () + '&nbsp;'">
+          </td>
+          <td style="vertical-align:top;text-align:left"
+              tal:content="structure python:utils.ExtProperty
+              (utils, ct.name, item = ct).formatlink () + '&nbsp;'">
+          </td>
          </tr>
         </table>
        </td>

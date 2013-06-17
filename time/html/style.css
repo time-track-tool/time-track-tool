@@ -478,6 +478,21 @@ table.files td.header {
   background-color: white;
 }
 
+table.files td.header a[href] {
+  font-weight: bold;
+  color: #333;
+}
+
+table.files td.header a[href]:hover {
+  font-weight: bold;
+  color: #333;
+}
+
+table.files td.header a[href]:link {
+  font-weight: bold;
+  color: #333;
+}
+
 table.files th a[href]:hover { color: #333 }
 table.files th a[href]:link  { color: #333 }
 table.files th a[href]       { color: #333 }
