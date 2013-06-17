@@ -10,6 +10,7 @@ properties = \
         , 'description'
         , 'name'
         , 'nosy'
+        , 'prodcat'
         , 'responsible'
         , 'valid'
         ]
@@ -82,6 +83,11 @@ properties = \
     , ( 'msg_keyword'
       , [ 'description'
         , 'name'
+        ]
+      )
+    , ( 'prodcat'
+      , [ 'name'
+        , 'valid'
         ]
       )
     , ( 'query'

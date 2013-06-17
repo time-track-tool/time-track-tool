@@ -28,6 +28,7 @@ properties = \
         , 'description'
         , 'name'
         , 'nosy'
+        , 'prodcat'
         , 'responsible'
         , 'valid'
         ]
@@ -343,9 +344,25 @@ properties = \
       , [ 'position'
         ]
       )
+    , ( 'prodcat'
+      , [ 'name'
+        , 'valid'
+        ]
+      )
+    , ( 'product_family'
+      , [ 'description'
+        , 'name'
+        , 'responsible'
+        ]
+      )
     , ( 'product_type'
       , [ 'description'
         , 'name'
+        ]
+      )
+    , ( 'project_type'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'public_holiday'
@@ -367,6 +384,12 @@ properties = \
     , ( 'reference'
       , [ 'description'
         , 'name'
+        ]
+      )
+    , ( 'reporting_group'
+      , [ 'description'
+        , 'name'
+        , 'responsible'
         ]
       )
     , ( 'room'
@@ -406,7 +429,11 @@ properties = \
         , 'department'
         , 'op_project'
         , 'org_location'
+        , 'organisation'
         , 'planned_effort'
+        , 'product_family'
+        , 'project_type'
+        , 'reporting_group'
         , 'show_all_users'
         , 'show_empty'
         , 'show_missing'
@@ -487,6 +514,9 @@ properties = \
         , 'organisation'
         , 'overtime_reduction'
         , 'planned_effort'
+        , 'product_family'
+        , 'project_type'
+        , 'reporting_group'
         , 'responsible'
         , 'status'
         , 'work_location'

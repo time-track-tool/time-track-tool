@@ -48,6 +48,7 @@ schemas = \
     , 'letter'
     , 'sinvoice'
     , 'erp'
+    , 'contact_sec'
     , 'core'
     )
 

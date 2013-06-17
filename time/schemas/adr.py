@@ -51,6 +51,7 @@ schemas = \
     , 'pers_ext'
     , 'letter'
     , 'pers_letter'
+    , 'contact_sec'
     , 'core'
     )
 

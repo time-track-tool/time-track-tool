@@ -49,6 +49,7 @@ schemas = \
     , 'person_adr'
     , 'person'
     , 'pers_ext'
+    , 'contact_sec'
     , 'core'
     )
 

@@ -53,6 +53,7 @@ schemas = \
     , 'person'
     , 'support'
     , 'time_tracker'
+    , 'contact_sec'
     , 'core'
     )
 

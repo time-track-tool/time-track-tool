@@ -24,6 +24,9 @@ properties = \
         , ( 'nosy'
           , ['admin', 'issue_admin', 'user']
           )
+        , ( 'prodcat'
+          , ['admin', 'issue_admin', 'user']
+          )
         , ( 'responsible'
           , ['admin', 'issue_admin', 'user']
           )
@@ -202,6 +205,15 @@ properties = \
           , ['admin', 'issue_admin', 'user']
           )
         , ( 'name'
+          , ['admin', 'issue_admin', 'user']
+          )
+        ]
+      )
+    , ( 'prodcat'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'user']
+          )
+        , ( 'valid'
           , ['admin', 'issue_admin', 'user']
           )
         ]

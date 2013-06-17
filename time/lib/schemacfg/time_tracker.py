@@ -403,6 +403,18 @@ def security (db, ** kw) :
           , ["User"]
           , ["HR", "Controlling"]
           )
+        , ( "product_family"
+          , ["User"]
+          , ["HR", "Controlling"]
+          )
+        , ( "project_type"
+          , ["User"]
+          , ["HR", "Controlling"]
+          )
+        , ( "reporting_group"
+          , ["User"]
+          , ["HR", "Controlling"]
+          )
         , ( "summary_report"
           , ["User"]
           , []
@@ -846,6 +858,7 @@ def security (db, ** kw) :
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
         , 'cost_center', 'overtime_reduction'
+        , 'product_family', 'project_type', 'reporting_group'
         )
     p = db.security.addPermission \
         ( name        = 'View'

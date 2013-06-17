@@ -58,6 +58,7 @@ schemas = \
     , 'support'
     , 'time_tracker'
     , 'ldap'
+    , 'contact_sec'
     , 'core'
     , 'extuser'
     )

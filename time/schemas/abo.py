@@ -52,6 +52,7 @@ schemas = \
     , 'pers_letter'
     , 'sinvoice'
     , 'abo'
+    , 'contact_sec'
     , 'core'
     )
 
