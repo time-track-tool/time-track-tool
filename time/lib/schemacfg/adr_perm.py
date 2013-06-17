@@ -34,6 +34,10 @@ def init (db, Address_Class, Link, ** kw) :
 # end def init
 
 def security (db, ** kw) :
+    roles = \
+        [ ("Contact"       , "Allowed to add/change address data")
+        ]
+
     classes = \
         [ ("file",          ["User", "Adr_Readonly"],            ["User"])
         , ("msg",           ["User", "Adr_Readonly"],            ["User"])
@@ -60,6 +64,7 @@ def security (db, ** kw) :
           )
         ]
 
+    schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
     schemadef.allow_user_details \
         (db, 'User',         'Edit', 'address', 'alternate_addresses')

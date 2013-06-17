@@ -75,10 +75,15 @@ def init \
 # end def init
 
 def security (db, ** kw) :
+    roles = \
+        [ ("Contact"       , "Allowed to add/change address data")
+        ]
+
     classes = \
         [ ("opening_hours"     , ["User"],    ["Contact"])
         , ("weekday"           , ["User"],    [])
         ]
 
+    schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
 # end def security
