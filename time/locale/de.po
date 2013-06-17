@@ -105,7 +105,7 @@ msgstr "Name 'Email' darf nicht geändert werden"
 
 #, python-format
 msgid "New %(cls)s requires a %(attr)s"
-msgstr ""
+msgstr "%(cls)s benötigt %(attr)s"
 
 #, python-format
 msgid "%(attr)s may not be undefined"
@@ -113,7 +113,7 @@ msgstr "\"%(attr)s\" darf nicht gelöscht werden"
 
 #, python-format
 msgid "Already frozen: %(date)s"
-msgstr ""
+msgstr "Bereits gefroren: %(date)s"
 
 #, python-format
 msgid "No dyn. user rec for %(user)s %(date)s"
@@ -391,7 +391,7 @@ msgid "No %s may be created"
 msgstr ""
 
 msgid "summary_report"
-msgstr ""
+msgstr "Projektbericht"
 
 msgid ""
 "Trying to send to customer with empty CC and without configured contact-"
@@ -517,27 +517,27 @@ msgid "%(attr)s must be positive or empty"
 msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
 
 msgid "overtime_period"
-msgstr ""
+msgstr "Überstundenperiode"
 
 msgid "supp_per_period"
-msgstr ""
+msgstr "Überstunden pro Periode"
 
 msgid "supp_weekly_hours"
-msgstr ""
+msgstr "Überstunden pro Woche"
 
 msgid "additional_hours"
-msgstr ""
+msgstr "Zusatzstunden"
 
 msgid "weekly_hours"
-msgstr ""
+msgstr "Wöchentliche Stunden"
 
 #, python-format
 msgid "Frozen: %(old_from)s"
-msgstr ""
+msgstr "Gefroren: %(old_from)s"
 
 #, python-format
 msgid "Frozen: %(valid_from)s"
-msgstr ""
+msgstr "Gefroren: %(valid_from)s"
 
 msgid "months"
 msgstr "Monate"
@@ -1278,10 +1278,10 @@ msgid "cost_center.id"
 msgstr "Kostenstellen-Id"
 
 msgid "cost_center_group.id"
-msgstr "Kostenstellengruppe-ID"
+msgstr "Kostenstellengruppen-ID"
 
 msgid "cost_center_status"
-msgstr ""
+msgstr "Kostenstellenstatus"
 
 msgid "Specifies the Phase the Cost Center is in"
 msgstr ""
@@ -1365,7 +1365,7 @@ msgid "daily_hours"
 msgstr ""
 
 msgid "daily_record++weekend_allowed"
-msgstr ""
+msgstr "Wochenende erlaubt"
 
 msgid ""
 "Admits user to book work or travel time on this\n"
@@ -1455,7 +1455,7 @@ msgid "depends.id"
 msgstr ""
 
 msgid "deputy"
-msgstr ""
+msgstr "Vertretung"
 
 msgid "Substitute for the responsible Person of %(Classname)s"
 msgstr "Vertretung der verantwortlichen Person für diese %(Classname)s"
@@ -1721,7 +1721,7 @@ msgid "SMTP password for sending alerts"
 msgstr ""
 
 msgid "end"
-msgstr "Storniert per"
+msgstr "Ende"
 
 msgid ""
 "Format xx:xx  (e.g. 17:00), is created automatically by the\n"
@@ -2123,7 +2123,7 @@ msgid "Enable this if the %(Classname)s uses Lotus Notes for mail"
 msgstr ""
 
 msgid "is_public_holiday"
-msgstr ""
+msgstr "ist Feiertag"
 
 msgid ""
 "Flag for public holiday %(Classname)s -- set this if you\n"
@@ -2172,10 +2172,10 @@ msgid "Optional IT Project to which this %(Classname)s belongs"
 msgstr "Optionales IT Projekt zu welchem diese %(Classname)s gehört"
 
 msgid "keyword"
-msgstr ""
+msgstr "Schlüsselwort"
 
 msgid "keywords"
-msgstr ""
+msgstr "Schlüsselworte"
 
 msgid "kind"
 msgstr "Art"
@@ -2516,7 +2516,7 @@ msgid "Nickname (or short name) for this %(Classname)s, e.g., rsc"
 msgstr "Spitzname (oder Kurzname) für %(Classname)s, z.B. rsc"
 
 msgid "no_overtime"
-msgstr ""
+msgstr "keine Überstunden"
 
 msgid ""
 "This flag makes sure that not more than the employee's\n"
@@ -2559,7 +2559,7 @@ msgid ""
 msgstr ""
 
 msgid "op_project"
-msgstr ""
+msgstr "ist Projekt"
 
 msgid ""
 "Flag if this %(Classname)s is a real project or just used for\n"
@@ -2628,16 +2628,16 @@ msgid "Operating System running on this %(Classname)s"
 msgstr "Betriebssystem dieser %(Classname)s"
 
 msgid "Period over which overtime is computed for a person"
-msgstr ""
+msgstr "Periode über welche Überstunden für diese Person berechnet werden"
 
 msgid "overtime_period++required_overtime"
 msgstr "vereinbarte Überstunden"
 
 msgid "Given overtime is required for the period."
-msgstr ""
+msgstr "Angegebene Überstunden sind in dieser Periode erforderlich"
 
 msgid "overtime_reduction"
-msgstr ""
+msgstr "Überstundenreduktion"
 
 msgid ""
 "Don't count hours booked on this %(Classname)s\n"
@@ -2933,13 +2933,13 @@ msgid ""
 msgstr ""
 
 msgid "require_msg"
-msgstr ""
+msgstr "Nachricht erforderlich"
 
 msgid "Require a message for this %(Classname)s"
 msgstr "Benötige eine Notizen zu %(Classname)s"
 
 msgid "require_resp_change"
-msgstr ""
+msgstr "Änderung Verantwortlicher nötig"
 
 msgid "Require change of responsible person for this %(Classname)s"
 msgstr "Verantwortliche Person für %(Classname)s muss geändert werden"
@@ -2977,7 +2977,7 @@ msgstr ""
 "die Rollen durch Komma,zu,trennen."
 
 msgid "room"
-msgstr ""
+msgstr "Raum"
 
 msgid "Room number"
 msgstr "Raum-Nummer"
@@ -3382,13 +3382,13 @@ msgid ""
 msgstr ""
 
 msgid "summary_report++cost_center"
-msgstr ""
+msgstr "Kostenstelle"
 
 msgid "summary_report++cost_center_group"
-msgstr ""
+msgstr "Kostenstellengruppe"
 
 msgid "summary_report++date"
-msgstr ""
+msgstr "Datum"
 
 msgid ""
 "please specify the date in this format:\n"
@@ -3402,7 +3402,7 @@ msgid ""
 msgstr ""
 
 msgid "summary_report++department"
-msgstr ""
+msgstr "Abteilung"
 
 msgid ""
 "Selects the users according to their placement in a\n"
@@ -3452,19 +3452,19 @@ msgid "Selects the users of the chosen supervisor(s)"
 msgstr ""
 
 msgid "summary_report++time_project"
-msgstr ""
+msgstr "Projekt"
 
 msgid "summary_report++time_wp"
-msgstr ""
+msgstr "Arbeitspaket"
 
 msgid "Select individual work packages here."
 msgstr ""
 
 msgid "summary_report++time_wp_group"
-msgstr ""
+msgstr "Arbeitspaketgruppe"
 
 msgid "summary_report++user"
-msgstr ""
+msgstr "Benutzer"
 
 msgid ""
 "You will only see users for whom you have permission or the\n"
@@ -3566,7 +3566,7 @@ msgid "Date when %(Classname)s is officially closed"
 msgstr "Datum wann dieses %(Classname)s geschlossen wurde"
 
 msgid "time_project++status"
-msgstr ""
+msgstr "Projektstatus"
 
 msgid ""
 "Status of this %(Classname)s. Note that this status is only\n"
@@ -3577,7 +3577,7 @@ msgid ""
 msgstr ""
 
 msgid "time_project++work_location"
-msgstr ""
+msgstr "Arbeitsort"
 
 msgid ""
 " If a value is given here, the work location will be\n"
@@ -3587,7 +3587,7 @@ msgid ""
 msgstr ""
 
 msgid "time_project_status++active"
-msgstr ""
+msgstr "aktiv"
 
 msgid ""
 "Set if this %(Classname)s is active. This determines if new\n"
@@ -3988,7 +3988,7 @@ msgid ""
 msgstr ""
 
 msgid "wps"
-msgstr ""
+msgstr "Arbeitspakete"
 
 msgid ""
 "For a better handling of the work load of a project it is\n"
@@ -4001,7 +4001,7 @@ msgid "wps.id"
 msgstr ""
 
 msgid "work_location"
-msgstr ""
+msgstr "Arbeitsort"
 
 # python-format
 #, python-format
@@ -4097,7 +4097,7 @@ msgstr "Zeit"
 
 #.  for translation in web-interface
 msgid "Staff Report"
-msgstr ""
+msgstr "Überstundenbericht"
 
 msgid "balance_start"
 msgstr "Akkumulierte Zeit Start"
@@ -4121,13 +4121,13 @@ msgid "supp_hours_2"
 msgstr ""
 
 msgid "overtime_correction"
-msgstr ""
+msgstr "Überstundenkorrektur"
 
 msgid "balance_end"
 msgstr "Akkumulierte Zeit Ende"
 
 msgid "achieved_supplementary"
-msgstr ""
+msgstr "Erreichte Zusatzstunden"
 
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
@@ -4994,16 +4994,16 @@ msgid "cost_center_group"
 msgstr "Kostenstellengruppe"
 
 msgid "daily_record"
-msgstr ""
+msgstr "Tageseintrag"
 
 msgid "daily_record_freeze"
-msgstr ""
+msgstr "eingefroren ab"
 
 msgid "daily_record_status"
-msgstr ""
+msgstr "Tageseintragsstatus"
 
 msgid "public_holiday"
-msgstr ""
+msgstr "Feiertag"
 
 msgid "summary_type"
 msgstr "Typ der Zusammenfassung"
@@ -5012,16 +5012,16 @@ msgid "time_project"
 msgstr "Projekt"
 
 msgid "time_project_status"
-msgstr ""
+msgstr "Projektstatus"
 
 msgid "time_record"
-msgstr ""
+msgstr "Stundeneintrag"
 
 msgid "time_wp"
-msgstr ""
+msgstr "Arbeitspaket"
 
 msgid "time_wp_group"
-msgstr "Arbeitspaket-Gruppe"
+msgstr "Arbeitspaketgruppe"
 
 msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
@@ -5039,13 +5039,13 @@ msgid "status_transition"
 msgstr "Statusübergang"
 
 msgid "msg_keyword"
-msgstr ""
+msgstr "Nachrichten Schlüsselwort"
 
 msgid "issue"
 msgstr "Issue"
 
 msgid "planned_begin"
-msgstr ""
+msgstr "geplanter Start"
 
 msgid "planned_end"
 msgstr "Geplantes Ende bis"
@@ -5078,7 +5078,7 @@ msgid "week_balance"
 msgstr "Akkumulierte Zeit Ende"
 
 msgid "is_half"
-msgstr ""
+msgstr "halber Feiertag"
 
 msgid "locations"
 msgstr "Orte"
