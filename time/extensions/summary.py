@@ -389,6 +389,12 @@ class WP_Container (Comparable_Container, dict) :
         self.project_type_id      = ''
         self.organisation_id      = ''
 
+        # defaults for name computation
+        self.organisation    = ''
+        self.product_family  = ''
+        self.project_type    = ''
+        self.reporting_group = ''
+
         tp  = None
         cc  = None
         ccg = None
@@ -432,12 +438,16 @@ class WP_Container (Comparable_Container, dict) :
             self.cost_center_group_id = ('cost_center_group', ccg.id)
         if rg :
             self.reporting_group_id   = ('reporting_group', rg.id)
+            self.reporting_group      = ('reporting_group', rg.name)
         if pf :
             self.product_family_id    = ('product_family', pf.id)
+            self.product_family       = ('product_family', pf.name)
         if pt :
             self.project_type_id      = ('project_type', pt.id)
+            self.project_type         = ('project_type', pt.name)
         if org :
             self.organisation_id      = ('organisation', org.id)
+            self.organisation         = ('organisation', org.name)
     # end def __init__
     
     def __repr__ (self) :
@@ -995,10 +1005,10 @@ class Summary_Report (_Report) :
     def header_line (self, formatter) :
         line = []
         line.append (formatter (_ ('Container')))
-        for k in self.id_attrs :
+        for k in self.name_attrs :
             if k in self.columns :
                 line.append (formatter (_ (k)))
-        for k in self.name_attrs :
+        for k in self.id_attrs :
             if k in self.columns :
                 line.append (formatter (_ (k)))
         line.append (formatter (_ ('time')))
@@ -1016,9 +1026,9 @@ class Summary_Report (_Report) :
         line = []
         tc   = self.time_containers [typ][idx]
         line.append (formatter (wpc))
-        for k in self.id_attrs :
+        for k in self.name_attrs :
             if k in self.columns :
-                col = getattr (wpc, k)
+                col = getattr (wpc, k, None)
                 if col :
                     try :
                         cls = getattr (self.htmldb, col [0])

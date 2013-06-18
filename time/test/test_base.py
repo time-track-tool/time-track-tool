@@ -27,7 +27,7 @@ import logging
 import csv
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
-import user7_time, user8_time, user10_time
+import user7_time, user8_time, user10_time, user11_time
 
 from operator import mul
 from StringIO import StringIO
@@ -87,7 +87,7 @@ sys.path.insert (0, os.path.abspath ('lib'))
 sys.path.insert (0, os.path.abspath ('extensions'))
 from user_dynamic import update_tr_duration, compute_balance
 from user_dynamic import overtime_periods, first_user_dynamic, next_user_dynamic
-from summary      import Staff_Report
+from summary      import Staff_Report, Summary_Report
 from summary      import init as summary_init
 from common       import ymd
 
@@ -353,48 +353,7 @@ class _Test_Case (unittest.TestCase) :
 
 # end class _Test_Case
 
-class Test_Case_Support_Timetracker (_Test_Case) :
-    schemaname = 'sfull'
-    roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it'
-        , 'itview', 'nosy'
-        , 'office', 'project', 'project_view', 'supportadmin', 'type', 'user'
-        ]
-    transprop_perms = transprop_sfull
-# end class Test_Case_Support_Timetracker
-
-class Test_Case_Timetracker (_Test_Case) :
-    schemaname = 'time'
-    schemafile = 'time_ldap'
-    roles = \
-        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
-        , 'hr-org-location', 'nosy', 'office', 'pgp', 'project'
-        , 'project_view', 'user'
-        ]
-    transprop_perms = transprop_time
-# end class Test_Case_Timetracker
-
-class Test_Case_Tracker (_Test_Case) :
-    schemaname = 'track'
-    schemafile = 'trackers'
-    roles = \
-        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
-        , 'itview', 'nosy', 'pgp', 'supportadmin', 'user'
-        ]
-    transprop_perms = transprop_track
-# end class Test_Case_Tracker
-
-class Test_Case_Fulltracker (_Test_Case) :
-    schemaname = 'full'
-    roles = \
-        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
-        , 'external', 'hr', 'hr-org-location', 'issue_admin', 'it'
-        , 'itview', 'nosy'
-        , 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user'
-        ]
-    transprop_perms = transprop_full
-
+class _Test_Case_Summary (_Test_Case) :
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.db.overtime_period.create \
@@ -423,6 +382,9 @@ class Test_Case_Fulltracker (_Test_Case) :
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
             )
+        roles = 'User,Nosy,HR,controlling,project,ITView,IT'.split (',')
+        sec   = self.db.security
+        roles = ','.join (x for x in roles if x.lower () in sec.role)
         self.username0 = 'testuser0'
         self.user0 = self.db.user.create \
             ( username     = self.username0
@@ -430,7 +392,7 @@ class Test_Case_Fulltracker (_Test_Case) :
             , lastname     = 'User0'
             , org_location = self.olo
             , department   = self.dep
-            , roles        = 'User,Nosy,HR,controlling,project,ITView,IT'
+            , roles        = roles
             )
         self.username1 = 'testuser1'
         self.user1 = self.db.user.create \
@@ -601,6 +563,244 @@ class Test_Case_Fulltracker (_Test_Case) :
         self.db.commit ()
         self.log.debug ("End of setup")
     # end def setup_db
+
+# end class _Test_Case_Summary
+
+
+class Test_Case_Support_Timetracker (_Test_Case) :
+    schemaname = 'sfull'
+    roles = \
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
+        , 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it'
+        , 'itview', 'nosy'
+        , 'office', 'project', 'project_view', 'supportadmin', 'type', 'user'
+        ]
+    transprop_perms = transprop_sfull
+# end class Test_Case_Support_Timetracker
+
+class Test_Case_Timetracker (_Test_Case_Summary) :
+    schemaname = 'time'
+    schemafile = 'time_ldap'
+    roles = \
+        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
+        , 'hr-org-location', 'nosy', 'office', 'pgp', 'project'
+        , 'project_view', 'user'
+        ]
+    transprop_perms = transprop_time
+
+    def setup_user11 (self) :
+        self.username11 = 'testuser11'
+        self.user11 = self.db.user.create \
+            ( username     = self.username11
+            , firstname    = 'Nummer11'
+            , lastname     = 'User11'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        # create initial dyn_user record for user
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
+        self.assertEqual (len (ud), 1)
+        ud = self.db.user_dynamic.getnode (ud [0])
+        week = self.db.overtime_period.lookup ('week')
+        self.db.user_dynamic.set \
+            ( ud.id
+            , valid_from        = date.Date ('2011-12-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 45.0
+            , additional_hours  = 40.0
+            , overtime_period   = week
+            )
+        self.db.product_family.create \
+            (name = 'Family test',  responsible = self.user11)
+        self.db.product_family.create \
+            (name = 'Family xyzzy', responsible = self.user11)
+        self.db.reporting_group.create \
+            (name = 'RG test',  responsible = self.user11)
+        self.db.reporting_group.create \
+            (name = 'RG xyzzy', responsible = self.user11)
+        self.db.time_project.set \
+            ( '4'
+            , reporting_group = ['1']
+            , product_family  = ['1']
+            , project_type    = '2'
+            )
+        self.db.time_project.set \
+            ( '3'
+            , reporting_group = ['2']
+            , product_family  = ['2']
+            , project_type    = '4'
+            )
+        self.db.commit ()
+    # end def setup_user11
+
+    def test_user11 (self) :
+        self.log.debug ('test_user11')
+        self.setup_db ()
+        self.setup_user11 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username11)
+        user11_time.import_data_11 (self.db, self.user11)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user11]
+             , 'date'         : '2013-06-01;2013-06-30'
+             , 'summary_type' : [2, 4]
+             }
+        cols = \
+            [ 'product_family'
+            , 'product_family.id'
+            , 'project_type'
+            , 'project_type.id'
+            , 'reporting_group'
+            , 'reporting_group.id'
+            , 'time_wp'
+            , 'user'
+            , 'summary'
+            ]
+
+        class r :
+            filterspec = fs
+            columns = cols
+            sort = None
+            group = None
+            classname = 'summary_report'
+
+        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines),     10)
+        self.assertEqual (len (lines [0]), 10)
+        self.assertEqual (lines [0][0], 'Level')
+        self.assertEqual (lines [0][1], 'Product family')
+        self.assertEqual (lines [0][2], 'Project type')
+        self.assertEqual (lines [0][3], 'Reporting group')
+        self.assertEqual (lines [0][4], 'Product family Id')
+        self.assertEqual (lines [0][5], 'Project type Id')
+        self.assertEqual (lines [0][6], 'Reporting group Id')
+        self.assertEqual (lines [0][7], 'Time Period')
+        self.assertEqual (lines [0][8], 'testuser11')
+        self.assertEqual (lines [0][9], 'Sum')
+        self.assertEqual (lines [1][0], 'Work package A Project/Work Package 0')
+        self.assertEqual (lines [1][1], '')
+        self.assertEqual (lines [1][2], 'Further Development')
+        self.assertEqual (lines [1][3], '')
+        self.assertEqual (lines [1][4], '')
+        self.assertEqual (lines [1][5], '2')
+        self.assertEqual (lines [1][6], '')
+        self.assertEqual (lines [1][7], 'WW 23/2013')
+        self.assertEqual (lines [1][8], '5.00')
+        self.assertEqual (lines [1][9], '5.00')
+        self.assertEqual (lines [2][0], 'Work package A Project/Work Package 0')
+        self.assertEqual (lines [2][1], '')
+        self.assertEqual (lines [2][2], 'Further Development')
+        self.assertEqual (lines [2][3], '')
+        self.assertEqual (lines [2][4], '')
+        self.assertEqual (lines [2][5], '2')
+        self.assertEqual (lines [2][6], '')
+        self.assertEqual (lines [2][7], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [2][8], '5.00')
+        self.assertEqual (lines [2][9], '5.00')
+        self.assertEqual (lines [3][0], 'Work package Public Holiday/Holiday')
+        self.assertEqual (lines [3][1], '')
+        self.assertEqual (lines [3][2], '')
+        self.assertEqual (lines [3][3], '')
+        self.assertEqual (lines [3][4], '')
+        self.assertEqual (lines [3][5], '')
+        self.assertEqual (lines [3][6], '')
+        self.assertEqual (lines [3][7], 'WW 24/2013')
+        self.assertEqual (lines [3][8], '1.00')
+        self.assertEqual (lines [3][9], '1.00')
+        self.assertEqual (lines [4][0], 'Work package Public Holiday/Holiday')
+        self.assertEqual (lines [4][1], '')
+        self.assertEqual (lines [4][2], '')
+        self.assertEqual (lines [4][3], '')
+        self.assertEqual (lines [4][4], '')
+        self.assertEqual (lines [4][5], '')
+        self.assertEqual (lines [4][6], '')
+        self.assertEqual (lines [4][7], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [4][8], '1.00')
+        self.assertEqual (lines [4][9], '1.00')
+        self.assertEqual (lines [5][0], 'Work package Travel/Travel')
+        self.assertEqual (lines [5][1], '')
+        self.assertEqual (lines [5][2], 'Support')
+        self.assertEqual (lines [5][3], '')
+        self.assertEqual (lines [5][4], '')
+        self.assertEqual (lines [5][5], '4')
+        self.assertEqual (lines [5][6], '')
+        self.assertEqual (lines [5][7], 'WW 24/2013')
+        self.assertEqual (lines [5][8], '2.00')
+        self.assertEqual (lines [5][9], '2.00')
+        self.assertEqual (lines [6][0], 'Work package Travel/Travel')
+        self.assertEqual (lines [6][1], '')
+        self.assertEqual (lines [6][2], 'Support')
+        self.assertEqual (lines [6][3], '')
+        self.assertEqual (lines [6][4], '')
+        self.assertEqual (lines [6][5], '4')
+        self.assertEqual (lines [6][6], '')
+        self.assertEqual (lines [6][7], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [6][8], '2.00')
+        self.assertEqual (lines [6][9], '2.00')
+        self.assertEqual (lines [7][0], 'Sum')
+        self.assertEqual (lines [7][1], '')
+        self.assertEqual (lines [7][2], '')
+        self.assertEqual (lines [7][3], '')
+        self.assertEqual (lines [7][4], '')
+        self.assertEqual (lines [7][5], '')
+        self.assertEqual (lines [7][6], '')
+        self.assertEqual (lines [7][7], 'WW 23/2013')
+        self.assertEqual (lines [7][8], '5.00')
+        self.assertEqual (lines [7][9], '5.00')
+        self.assertEqual (lines [8][0], 'Sum')
+        self.assertEqual (lines [8][1], '')
+        self.assertEqual (lines [8][2], '')
+        self.assertEqual (lines [8][3], '')
+        self.assertEqual (lines [8][4], '')
+        self.assertEqual (lines [8][5], '')
+        self.assertEqual (lines [8][6], '')
+        self.assertEqual (lines [8][7], 'WW 24/2013')
+        self.assertEqual (lines [8][8], '3.00')
+        self.assertEqual (lines [8][9], '3.00')
+        self.assertEqual (lines [9][0], 'Sum')
+        self.assertEqual (lines [9][1], '')
+        self.assertEqual (lines [9][2], '')
+        self.assertEqual (lines [9][3], '')
+        self.assertEqual (lines [9][4], '')
+        self.assertEqual (lines [9][5], '')
+        self.assertEqual (lines [9][6], '')
+        self.assertEqual (lines [9][7], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [9][8], '8.00')
+        self.assertEqual (lines [9][9], '8.00')
+    # end def test_user11
+
+# end class Test_Case_Timetracker
+
+class Test_Case_Tracker (_Test_Case) :
+    schemaname = 'track'
+    schemafile = 'trackers'
+    roles = \
+        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
+        , 'itview', 'nosy', 'pgp', 'supportadmin', 'user'
+        ]
+    transprop_perms = transprop_track
+# end class Test_Case_Tracker
+
+class Test_Case_Fulltracker (_Test_Case_Summary) :
+    schemaname = 'full'
+    roles = \
+        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
+        , 'external', 'hr', 'hr-org-location', 'issue_admin', 'it'
+        , 'itview', 'nosy'
+        , 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user'
+        ]
+    transprop_perms = transprop_full
 
     def setup_user3 (self) :
         self.username3 = 'testuser3'
