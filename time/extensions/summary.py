@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -965,7 +965,7 @@ class Summary_Report (_Report) :
                 t  = time_recs [tidx]
                 for tcp in tc_pointers.iterkeys () :
                     tc = time_containers [tcp][tc_pointers [tcp]]
-                    for wpc in containers_by_wp [t.wp.id] :
+                    for wpc in containers_by_wp.get (t.wp.id, []) :
                         tc. add_sum (wpc, t)
                         wpc.add_sum (tc,  t)
                 tidx += 1
