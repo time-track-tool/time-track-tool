@@ -197,10 +197,13 @@ class LDAP_Roundup_Sync (object) :
                 , self.cls_lookup (self.db.position, 'position')
                 )
         if 'realname' in props :
+            g = lambda x, y : x.get (y, [None])[0]
+            if 'firstname' in props :
+                g = None
             attr_u ['realname'] = \
                 ( 'cn'
                 , 0
-                , None
+                , g
                 )
         if 'room' in props :
             attr_u ['room'] = \
