@@ -41,6 +41,8 @@ from propl_itadr   import properties as properties_itadr
 from propl_kvats   import properties as properties_kvats
 from propl_lielas  import properties as properties_lielas
 from propl_sfull   import properties as properties_sfull
+from propl_tt      import properties as properties_time
+from propl_track   import properties as properties_track
 
 from sec_abo       import security as security_abo
 from sec_adr       import security as security_adr
@@ -51,6 +53,8 @@ from sec_itadr     import security as security_itadr
 from sec_kvats     import security as security_kvats
 from sec_lielas    import security as security_lielas
 from sec_sfull     import security as security_sfull
+from sec_tt        import security as security_time
+from sec_track     import security as security_track
 
 from search_abo    import properties as sec_search_abo
 from search_adr    import properties as sec_search_adr
@@ -61,6 +65,8 @@ from search_itadr  import properties as sec_search_itadr
 from search_kvats  import properties as sec_search_kvats
 from search_lielas import properties as sec_search_lielas
 from search_sfull  import properties as sec_search_sfull
+from search_tt     import properties as sec_search_time
+from search_track  import properties as sec_search_track
 
 from trans_abo     import transprop_perms as transprop_abo
 from trans_adr     import transprop_perms as transprop_adr
@@ -70,6 +76,8 @@ from trans_itadr   import transprop_perms as transprop_itadr
 from trans_kvats   import transprop_perms as transprop_kvats
 from trans_lielas  import transprop_perms as transprop_lielas
 from trans_sfull   import transprop_perms as transprop_sfull
+from trans_tt      import transprop_perms as transprop_time
+from trans_track   import transprop_perms as transprop_track
 
 from trans_search  import classdict  as trans_classprops
 
@@ -87,6 +95,7 @@ class _Test_Case (unittest.TestCase) :
     count = 0
     db = None
     roles = ['admin']
+    schemafile = None
     allroles = dict.fromkeys \
         (('abo'
         , 'abo+invoice'
@@ -125,6 +134,7 @@ class _Test_Case (unittest.TestCase) :
             If directory exists, it is wiped out before the operation.
         """
         self.__class__.count += 1
+        self.schemafile = self.schemafile or self.schemaname
         self.dirname = '_test_init_%s' % self.count
         self.backend = 'postgresql'
         self.config  = config = configuration.CoreConfig ()
@@ -142,7 +152,7 @@ class _Test_Case (unittest.TestCase) :
         os.mkdir (self.dirname)
         for f in ( 'detectors', 'extensions', 'html', 'initial_data.py'
                  , 'lib', 'locale', 'schema'
-                 , 'schemas/%s.py' % self.schemaname
+                 , 'schemas/%s.py' % self.schemafile
                  , 'TEMPLATE-INFO.txt', 'utils'
                  ) :
             ft = f
@@ -355,6 +365,27 @@ class Test_Case_Support_Timetracker (_Test_Case) :
 # end class Test_Case_Support_Timetracker
 
 class Test_Case_Timetracker (_Test_Case) :
+    schemaname = 'time'
+    schemafile = 'time_ldap'
+    roles = \
+        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
+        , 'hr-org-location', 'nosy', 'office', 'pgp', 'project'
+        , 'project_view', 'user'
+        ]
+    transprop_perms = transprop_time
+# end class Test_Case_Timetracker
+
+class Test_Case_Tracker (_Test_Case) :
+    schemaname = 'track'
+    schemafile = 'trackers'
+    roles = \
+        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
+        , 'itview', 'nosy', 'pgp', 'supportadmin', 'user'
+        ]
+    transprop_perms = transprop_track
+# end class Test_Case_Tracker
+
+class Test_Case_Fulltracker (_Test_Case) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
@@ -2137,7 +2168,7 @@ class Test_Case_Timetracker (_Test_Case) :
         self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
         self.assertEqual (self.db.daily_record.get (drid, 'tr_duration_ok'), 8)
     # end def test_tr_duration
-# end class Test_Case_Timetracker
+# end class Test_Case_Fulltracker
 
 class Test_Case_Abo (_Test_Case) :
     schemaname = 'abo'
@@ -2202,6 +2233,8 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
     suite.addTest (unittest.makeSuite (Test_Case_Lielas))
     suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
+    suite.addTest (unittest.makeSuite (Test_Case_Fulltracker))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
+    suite.addTest (unittest.makeSuite (Test_Case_Tracker))
     return suite
 # end def test_suite
