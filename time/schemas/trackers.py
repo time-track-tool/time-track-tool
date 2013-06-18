@@ -106,6 +106,14 @@ schemadef.allow_user_details         (db, 'User', 'Edit')
 # editing of roles:
 db.security.addPermissionToRole ('IT', 'Web Roles')
 
+# allow search of users for normal users
+p = db.security.addPermission \
+    ( name        = 'Search'
+    , klass       = 'user'
+    , properties  = ('realname', )
+    )
+db.security.addPermissionToRole ('User', p)
+
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')

@@ -119,6 +119,7 @@ Role "supportadmin":
  User is allowed to edit sup_classification (Edit for "sup_classification" only)
  User is allowed to edit support (Edit for "support" only)
 Role "user":
+  (Search for "user": ('realname',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
