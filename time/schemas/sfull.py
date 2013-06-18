@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -41,7 +41,8 @@ from schemacfg import schemadef
 # sub-schema definitins to include
 # Note: order matters, core is always last.
 schemas = \
-    ( 'company'
+    ( 'nickname'
+    , 'company'
     , 'docissue'
     , 'keyword'
     , 'issue'

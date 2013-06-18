@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004-11 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -43,7 +43,8 @@ from schemacfg import schemadef
 # -- except for modules that extend the standard permission scheme in
 # core (e.g. extuser)
 schemas = \
-    ( 'company'
+    ( 'nickname'
+    , 'company'
     , 'user'
     , 'external_users'
     , 'docissue'

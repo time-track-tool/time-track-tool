@@ -2232,9 +2232,9 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
     suite.addTest (unittest.makeSuite (Test_Case_Lielas))
-    suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
-    suite.addTest (unittest.makeSuite (Test_Case_Fulltracker))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     suite.addTest (unittest.makeSuite (Test_Case_Tracker))
+    suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
+    suite.addTest (unittest.makeSuite (Test_Case_Fulltracker))
     return suite
 # end def test_suite

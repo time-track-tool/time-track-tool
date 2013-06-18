@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2009-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,7 @@
 #--
 #
 
-def init \
-    ( db
-    , String
-    , Ext_Class
-    , ** kw
-    ) :
+def init (db, String, Ext_Class, ** kw) :
     export = {}
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)

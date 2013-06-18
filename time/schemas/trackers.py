@@ -43,6 +43,7 @@ from schemacfg import schemadef
 # core (e.g. extuser)
 schemas = \
     ( 'user'
+    , 'nickname'
     , 'external_users'
     , 'docissue'
     , 'keyword'
@@ -72,9 +73,11 @@ importer.update_security ()
 
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file"                , [],               [])
-    , ("msg"                 , [],               [])
-    , ("query"               , ["Issue_Admin"],  ["Issue_Admin"])
+    [ ("file",         [],               [])
+    , ("msg",          [],               [])
+    , ("query",        ["Issue_Admin"],  ["Issue_Admin"])
+    , ("contact",      ["User"],         ["SupportAdmin"])
+    , ("contact_type", ["User"],         ["SupportAdmin"])
     ]
 
 prop_perms = \

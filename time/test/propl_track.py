@@ -273,16 +273,6 @@ properties = \
         , 'username'
         ]
       )
-    , ( 'user_contact'
-      , [ 'contact'
-        , 'contact_type'
-        , 'description'
-        , 'order'
-        , 'room'
-        , 'user'
-        , 'visible'
-        ]
-      )
     , ( 'user_status'
       , [ 'description'
         , 'is_nosy'

@@ -452,15 +452,6 @@ properties = \
           )
         ]
       )
-    , ( 'product_type'
-      , [ ( 'description'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'name'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        ]
-      )
     , ( 'query'
       , [ ( 'klass'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -479,27 +470,6 @@ properties = \
           )
         ]
       )
-    , ( 'reference'
-      , [ ( 'description'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'name'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        ]
-      )
-    , ( 'room'
-      , [ ( 'contacts'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'location'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'name'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        ]
-      )
     , ( 'severity'
       , [ ( 'abbreviation'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -509,12 +479,6 @@ properties = \
           )
         , ( 'order'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        ]
-      )
-    , ( 'sex'
-      , [ ( 'name'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         ]
       )
@@ -649,24 +613,6 @@ properties = \
           )
         ]
       )
-    , ( 'uc_type'
-      , [ ( 'description'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'name'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'order'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'url_template'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'visible'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        ]
-      )
     , ( 'user'
       , [ ( 'address'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -674,46 +620,13 @@ properties = \
         , ( 'alternate_addresses'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'clearance_by'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'contacts'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
         , ( 'csv_delimiter'
           , ['admin']
-          )
-        , ( 'department'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'firstname'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'job_description'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'lastname'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'lunch_duration'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'lunch_start'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'nickname'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'org_location'
-          , ['admin']
-          )
         , ( 'password'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'pictures'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'position'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'queries'
@@ -723,64 +636,16 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'roles'
-          , ['admin', 'controlling']
-          )
-        , ( 'room'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'sex'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin']
           )
         , ( 'status'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'subst_active'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'substitute'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'supervisor'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'timezone'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'timing_info'
-          , ['admin']
-          )
-        , ( 'title'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'tt_lines'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
         , ( 'username'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        ]
-      )
-    , ( 'user_contact'
-      , [ ( 'contact'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'contact_type'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'description'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'order'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'room'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'user'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'visible'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         ]
       )
