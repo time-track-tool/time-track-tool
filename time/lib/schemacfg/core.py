@@ -57,7 +57,7 @@ def init \
         )
 
     msg = Msg_Class  (db , ''"msg")
-    msg.setorderprop ('creation')
+    msg.setorderprop ('date')
 
     query = Class \
         ( db
