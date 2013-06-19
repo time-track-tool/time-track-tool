@@ -484,7 +484,7 @@ class LDAP_Roundup_Sync (object) :
                 break
     # end def paged_search_iter
 
-    def sync_contacts_from_ldap (self, luser, user) :
+    def sync_contacts_from_ldap (self, luser, user, udict) :
         oct = []
         if user :
             oct = user.contacts
@@ -541,7 +541,7 @@ class LDAP_Roundup_Sync (object) :
         oct = list (sorted (oct.iterkeys ()))
         new_contacts.sort ()
         if new_contacts != oct :
-            d ['contacts'] = new_contacts
+            udict ['contacts'] = new_contacts
     # end def sync_contacts_from_ldap
 
     def sync_user_from_ldap (self, username, update = None) :
@@ -579,7 +579,7 @@ class LDAP_Roundup_Sync (object) :
                         d [k] = v
 
             if self.contact_types :
-                self.sync_contacts_from_ldap (luser, user)
+                self.sync_contacts_from_ldap (luser, user, d)
             new_status_id = self.members [luser.dn.lower ()]
             assert (new_status_id)
             new_status = self.db.user_status.getnode (new_status_id)
