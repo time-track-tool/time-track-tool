@@ -177,6 +177,14 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('External', p)
     p = db.security.getPermission   ('Search', 'issue')
     db.security.addPermissionToRole ('External', p)
+    # need search permission on username + id if we want to search for
+    # user Link/Multilink properties on issue (e.g. responsible, nosy, ..)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user'
+        , properties  = ("username", "nickname", "id")
+        )
+    db.security.addPermissionToRole ('External', p)
 
     p = db.security.getPermission   ('Create', 'msg')
     db.security.addPermissionToRole ('External', p)
