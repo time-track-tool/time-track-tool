@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -87,3 +87,9 @@ schemadef.allow_user_details \
 db.security.addPermissionToRole('Anonymous', 'Web Access')
 
 importer.update_security ()
+# allow search of users for IT
+p = db.security.addPermission \
+    ( name        = 'Search'
+    , klass       = 'user'
+    )
+db.security.addPermissionToRole ('IT', p)
