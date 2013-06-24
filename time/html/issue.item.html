@@ -142,7 +142,7 @@
           (classname, 'part_of')"/>
       <td>
        <tal:block tal:condition="python:
-        not context.id or context.part_of.title.is_view_ok ()">
+        not context.id or context.part_of.is_view_ok ()">
         <span tal:content="structure python:context.part_of.field ()"/>
         <tal:block tal:condition="context/part_of/plain"
          tal:define="attr string:expand_part_of; text expand_text">

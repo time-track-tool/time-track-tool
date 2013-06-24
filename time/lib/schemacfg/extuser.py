@@ -114,7 +114,7 @@ def security (db, ** kw) :
                     break
                 issue = db.issue.getnode (issue.part_of)
             return False
-        # end def ext_company_access
+        # end def ext_user_access
 
         for perm in ('View', 'Edit') :
             p = db.security.addPermission \
