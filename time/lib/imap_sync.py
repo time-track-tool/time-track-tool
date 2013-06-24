@@ -87,6 +87,7 @@ class IMAP_Roundup_Sync (object) :
                         , password = Password (pw)
                         , address  = username
                         , roles    = roles
+                        , timezone = 'Europe/Vienna'
                         )
         self.db.commit ()
     # end def sync_user_from_imap
