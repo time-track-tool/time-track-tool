@@ -15,13 +15,18 @@ db      = tracker.open ('admin')
 
 def delq (qid, txt = ' ', retired = False) :
     q = db.query.getnode (qid)
-    if q.klass not in db.classes or retired and db.query.is_retired (qid) :
-        print "Deleting%squery for class %s" % (txt, q.klass)
-        db.query.destroy (qid)
-        return 1
-    else :
-        print "Keeping %squery for class %s" % (txt, q.klass)
-        return 0
+    try :
+        if q.klass not in db.classes or retired and db.query.is_retired (qid) :
+            print "Deleting%squery for class %s" % (txt, q.klass)
+            db.query.destroy (qid)
+            return 1
+        else :
+            print "Keeping %squery for class %s" % (txt, q.klass)
+            return 0
+    except IndexError :
+        pass
+    except AttributeError :
+        pass
 # end def delq
 
 cmd = OptionParser ()
@@ -44,10 +49,13 @@ if len (args) :
 
 for uid in db.user.getnodeids () :
     u  = db.user.getnode (uid)
-    qs = dict.fromkeys (u.queries)
+    qs = dict.fromkeys (getattr (u, 'queries', []))
     for qid in u.queries :
         if delq (qid, retired = opt.retired) :
-            del qs [qid]
+            try :
+                del qs [qid]
+            except KeyError :
+                pass
     db.user.set (uid, queries = list (qs.iterkeys ()))
 
 for qid in db.query.getnodeids () :
