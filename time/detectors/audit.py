@@ -88,7 +88,8 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     status = newvalues ["status"]
 
     if not category :
-        category = newvalues ['category'] = db.category.lookup ('pending')
+        catid = newvalues ['category'] = db.category.lookup ('pending')
+        category = db.category.getnode (catid)
     if not area :
         try :
             area = newvalues ['area']     = db.area.lookup ('SW')
@@ -111,11 +112,13 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
 
     # Set `part_of` to the category default if not given.
     if not part_of :
-        newvalues ["part_of"] = db.category.get (category, "default_part_of")
+        newvalues ["part_of"] = category.default_part_of
 
     # Set `responsible` to the category's responsible.
     if not responsible :
-        responsible = db.category.get (category, "responsible")
+        responsible = category.responsible
+        if not responsible :
+            raise Reject, _('No responsible for category "%s"') % category.name
         newvalues ["responsible"] = responsible
 
     if not user_has_role (db, responsible, 'Nosy') :
@@ -127,10 +130,13 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     # Set `nosy` to contain the creator, the responsible,
     # and the category's nosy list.
     nosy     = newvalues.get   ("nosy", [])
-    cat_nosy = db.category.get (category, "nosy")
-    cat_resp = db.category.get (category, "responsible")
+    cat_nosy = category.nosy
+    cat_resp = category.responsible
     creator  = newvalues.get   ("creator")
-    nosy     = union (nosy, cat_nosy, [creator, responsible, cat_resp])
+    addnosy  = [creator, responsible]
+    if cat_resp :
+        addnosy.append (cat_resp)
+    nosy     = union (nosy, cat_nosy, addnosy)
     newvalues ["nosy"] = filter (None, nosy)
 
     # It is meaningless to create obsolete or mistaken issues.
