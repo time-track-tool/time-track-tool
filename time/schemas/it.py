@@ -76,8 +76,13 @@ prop_perms = \
         , "samba_home_drive", "samba_home_path"
         )
       )
+    , ( "user", "Edit", ["IT"]
+      , ( "realname", "csv_delimiter"
+        )
+      )
     ]
 
+importer.update_security ()
 schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details \
     (db, 'User', 'Edit', 'address', 'alternate_addresses')
@@ -86,7 +91,6 @@ schemadef.allow_user_details \
 # NOT really !!!
 db.security.addPermissionToRole('Anonymous', 'Web Access')
 
-importer.update_security ()
 # allow search of users for IT
 p = db.security.addPermission \
     ( name        = 'Search'
