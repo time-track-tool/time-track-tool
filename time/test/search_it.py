@@ -197,7 +197,7 @@ properties = \
           , ['admin', 'it', 'itview', 'user']
           )
         , ( 'csv_delimiter'
-          , ["admin"]
+          , ['admin', 'it']
           )
         , ( 'password'
           , ['admin', 'it', 'itview', 'user']
@@ -209,7 +209,7 @@ properties = \
           , ['admin', 'it', 'itview', 'user']
           )
         , ( 'roles'
-          , ["admin"]
+          , ['admin', 'it']
           )
         , ( 'status'
           , ['admin', 'it', 'itview', 'user']

@@ -76,6 +76,10 @@ prop_perms = \
         , "samba_home_drive", "samba_home_path"
         )
       )
+    , ( "user", "View", ["IT"]
+      , ( "roles",
+        )
+      )
     , ( "user", "Edit", ["IT"]
       , ( "realname", "csv_delimiter"
         )
