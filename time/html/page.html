@@ -910,7 +910,15 @@
    <tr tal:condition="python:
        has_files and want_files and context.files.is_edit_ok ()">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
-    <td colspan="3"><input type="file" name="@file" size="40"/></td>
+    <td colspan="3">
+      <input type="file" name="@file" size="40"/>
+      <tal:block tal:condition="python:
+           utils.Size_Limit (db, 'LIMIT_FILE_SIZE')">
+        &nbsp;Max:&nbsp;
+        <span tal:content="python:
+              utils.Size_Limit (db, 'LIMIT_FILE_SIZE')"/>
+      </tal:block>
+    </td>
    </tr>
 
    <tr>

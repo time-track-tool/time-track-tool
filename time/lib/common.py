@@ -1083,7 +1083,7 @@ class Size_Limit (object) :
         except AttributeError :
             limit = None
         if isinstance (limit, str) :
-            if limit.endswith ('k') :
+            if limit.endswith ('k') or limit.endswith ('K') :
                 limit = int (limit [:-1]) * 1024
             elif limit.endswith ('M') :
                 limit = int (limit [:-1]) * 1024 * 1024
