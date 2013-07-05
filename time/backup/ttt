@@ -7,4 +7,4 @@ rm -rf /roundup/backup/current/file-files
 rm -rf /roundup/backup/current/msg-files
 
 /roundup/tracker/ttt/backup/ttt_time
-/roundup/tracker/ttt/backup/ttt_issue
+/roundup/tracker/issue/backup/ttt_issue
