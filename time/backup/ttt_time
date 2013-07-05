@@ -2,4 +2,4 @@
 
 mkdir -p /roundup/backup/current/ttt
 rsync -a /roundup/tracker/ttt/ /roundup/backup/current/ttt
-pg_dump ttt > /roundup/backup/current/ttt.dump
+su -c 'pg_dump ttt' tracker > /roundup/backup/current/ttt.dump
