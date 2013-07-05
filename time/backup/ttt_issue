@@ -1,5 +1,5 @@
 #!/bin/sh
 
 mkdir -p /roundup/backup/current/issue
-rsync -a /roundup/tracker/issue/ /roundup/backup/current/issue
+rsync -a --delete /roundup/tracker/issue/ /roundup/backup/current/issue
 su -c 'pg_dump issue' tracker > /roundup/backup/current/issue.dump

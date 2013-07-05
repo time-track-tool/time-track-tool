@@ -1,5 +1,5 @@
 #!/bin/sh
 
 mkdir -p /roundup/backup/current/ttt
-rsync -a /roundup/tracker/ttt/ /roundup/backup/current/ttt
+rsync -a --delete /roundup/tracker/ttt/ /roundup/backup/current/ttt
 su -c 'pg_dump ttt' tracker > /roundup/backup/current/ttt.dump
