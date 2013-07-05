@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # clean up old backup format stuff
-rm -f /roundup/backup/current/*.csv
-rm -f /roundup/backup/current/code
-rm -f /roundup/backup/current/file-files
-rm -f /roundup/backup/current/msg-files
+rm  -f /roundup/backup/current/*.csv
+rm -rf /roundup/backup/current/code
+rm -rf /roundup/backup/current/file-files
+rm -rf /roundup/backup/current/msg-files
 
 /roundup/tracker/ttt/backup/ttt_time
 /roundup/tracker/ttt/backup/ttt_issue
