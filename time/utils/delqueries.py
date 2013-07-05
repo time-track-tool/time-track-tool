@@ -56,7 +56,10 @@ for uid in db.user.getnodeids () :
                 del qs [qid]
             except KeyError :
                 pass
-    db.user.set (uid, queries = list (qs.iterkeys ()))
+    try :
+        db.user.set (uid, queries = list (qs.iterkeys ()))
+    except KeyError, reason :
+        print "Ignoring KeyError: %s" % reason
 
 for qid in db.query.getnodeids () :
     delq (qid, txt = ' remaining ')
