@@ -498,7 +498,14 @@
     </tr>
     <tal:block tal:condition="python:
      'pictures' in bclass.properties and context.pictures.is_edit_ok ()">
-     <tr><td/><td i18n:translate="">max. size of picture: 100kB</td></tr>
+     <tr>
+       <td/>
+       <td tal:condition="python: utils.Size_Limit (db, 'LIMIT_PICTURE_SIZE')"
+           i18n:translate="">max. size of picture: 
+         <span tal:content="python:
+               utils.Size_Limit (db, 'LIMIT_PICTURE_SIZE')"/>
+       </td>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname ('user', 'pictures')"/>
       <td>

@@ -45,6 +45,7 @@ from user_dynamic                   import next_user_dynamic, prev_user_dynamic
 from user_dynamic                   import update_tr_duration
 from common                         import clearance_by, ymd, persons_for_adr
 from common                         import user_has_role, monthstart_twoweeksago
+from common                         import Size_Limit
 
 def localecollate (s) :
     old = locale.getlocale (locale.LC_COLLATE)
@@ -438,3 +439,4 @@ def init (instance) :
     reg ("persons_for_adr",              persons_for_adr)
     reg ("indexargs_dict",               indexargs_dict)
     reg ("may_search",                   may_search)
+    reg ("Size_Limit",                   Size_Limit)

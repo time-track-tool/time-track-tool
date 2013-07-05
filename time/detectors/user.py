@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -318,6 +318,9 @@ def sync_to_ldap (db, cl, nodeid, old_values) :
 # end def sync_to_ldap
 
 def check_pictures (db, cl, nodeid, new_values) :
+    limit = common.Size_Limit (db, 'LIMIT_PICTURE_SIZE')
+    if not limit :
+        return
     pictures = new_values.get ('pictures')
     if not pictures :
         return
@@ -328,9 +331,9 @@ def check_pictures (db, cl, nodeid, new_values) :
              ) [0]
     pict = db.file.getnode (p)
     length = len (pict.content)
-    if length > (100 * 1024) :
+    if length > limit.limit :
         raise Reject, _ \
-            ("maximum picture size 100kB exceeded: %(length)s") % locals ()
+            ("Maximum picture size %(limit)s exceeded: %(length)s") % locals ()
 # end def check_pictures
 
 def check_ext_company (db, cl, nodeid, new_values) :

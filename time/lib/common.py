@@ -1072,4 +1072,41 @@ def update_emails (db, uid, verbose = False) :
         db.user.set (user.id, ** d)
 # end def update_emails
 
+class Size_Limit (object) :
+    def __init__ (self, db, config) :
+        try :
+            db = db._db
+        except AttributeError :
+            pass
+        try :
+            limit = getattr (db.config.ext, config)
+        except AttributeError :
+            limit = None
+        if isinstance (limit, str) :
+            if limit.endswith ('k') :
+                limit = int (limit [:-1]) * 1024
+            elif limit.endswith ('M') :
+                limit = int (limit [:-1]) * 1024 * 1024
+            else :
+                limit = int (limit)
+        self.limit = limit
+    # end def __init__
+
+    def __str__ (self) :
+        if self.limit is None :
+            return 'No limit'
+        if self.limit % (1024 * 1024) == 0 :
+            return "%sM" % (self.limit / (1024 * 1024))
+        if self.limit % 1024 == 0 :
+            return "%sk" % (self.limit / 1024)
+        return "%s" % self.limit
+    # end def __str__
+    __repr__ = __str__
+
+    def __nonzero__ (self) :
+        return bool (self.limit)
+    # end def __nonzero__
+
+# end class Size_Limit
+
 ### __END__
