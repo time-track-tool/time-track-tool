@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p /roundup/backup/current/issue
+rsync -a /roundup/tracker/issue /roundup/backup/current/issue
+pg_dump issue > /roundup/backup/current/issue.dump

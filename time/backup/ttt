@@ -1,91 +1,10 @@
 #!/bin/sh
 
-TRACKER=/roundup/tracker/ttt
-BACKUPDIR=/roundup/backup
-ROUNDUP_ADMIN=/usr/bin/roundup-admin
-USE_CURRENT=1
-ROTATE=
+# clean up old backup format stuff
+rm -f /roundup/backup/current/*.csv
+rm -f /roundup/backup/current/code
+rm -f /roundup/backup/current/file-files
+rm -f /roundup/backup/current/msg-files
 
-### WARNING ###
-### WARNING ###
-### WARNING ###
-# If the following is specified, an import will be done for the given
-# tracker with the data exported from the tracker above. ALL DATA WILL
-# BE DESTROYED in the RESTORE tracker!!!!!
-# Make sure -- if you are using the same backend for the RESTORE
-# tracker, that it uses a different database from the TRACKER to backup!
-# This means the "name" property in the "[rdbms]" section of
-# "config.ini" *must* be different for both trackers !!!
-### WARNING ###
-### WARNING ###
-### WARNING ###
-RESTORE=/roundup/tracker/xyzzy
-RESTOREPW="xyzzy"
-
-if [ "${TRACKER}" = "${RESTORE}" ] ; then
-    echo "READ COMMENTS. You don't want to overwrite your tracker?!"
-    exit 42
-fi
-
-RESTOREDBNAME=$(${RESTORE}/utils/getdbname ${RESTORE})
-TRACKERDBNAME=$(${TRACKER}/utils/getdbname ${TRACKER})
-
-if [ "${TRACKERDBNAME}" = "${RESTOREDBNAME}" ] ; then
-    echo "tracker and restore DB configured to use same database"
-    echo "READ COMMENTS. You don't want to overwrite your tracker?!"
-    exit 42
-fi
-
-echo TRACKER db=$TRACKERDBNAME, RESTORE db=$RESTOREDBNAME
-
-dir=${BACKUPDIR}/backup-$(date +%a)
-if [ -n "$USE_CURRENT" ] ; then
-    dir=${BACKUPDIR}/current
-    old=${BACKUPDIR}/backup-$(date -d yesterday +%a)
-    rm -rf $old
-    if [ -n "$ROTATE" ] ; then
-        mv ${dir} ${old}
-    fi
-fi
-echo Backing up $TRACKER to $dir
-rm -rf $dir
-#echo "Vor dropcache vor Backup, nach rm"
-#cat /proc/slabinfo | grep ext3
-#/roundup/bin/dropcache
-#echo "Nach dropcache"
-#cat /proc/slabinfo | grep ext3
-mkdir $dir
-mkdir $dir/code
-cp -a $(find -H ${TRACKER} -mindepth 1 -maxdepth 1 \! -name db) $dir/code
-
-$ROUNDUP_ADMIN -i $TRACKER export $dir
-#echo "Vor dropcache nach backup (export)"
-#cat /proc/slabinfo | grep ext3
-#/roundup/bin/dropcache
-#echo "Nach dropcache"
-#cat /proc/slabinfo | grep ext3
-
-if [ -n "$RESTORE" ] ; then
-    echo Restoring from $dir to $RESTORE Restore DB: $RESTOREDBNAME
-    cp $TRACKER/db/backend_name $RESTORE/db
-    echo y | $ROUNDUP_ADMIN -i $RESTORE init ${RESTOREPW}
-    psql $RESTOREDBNAME << EOF
-    delete from _overtime_period;
-    delete from _status;
-    delete from _status_transition;
-    delete from _user;
-    delete from _severity;
-    delete from _time_project_status;
-    delete from _user_status;
-EOF
-    cp $TRACKER/db/backend_name $RESTORE/db
-    $ROUNDUP_ADMIN -i $RESTORE import $dir
-fi
-#echo "Vor dropcache nach restore"
-#cat /proc/slabinfo | grep ext3
-#/roundup/bin/dropcache
-#echo "Nach dropcache"
-#cat /proc/slabinfo | grep ext3
-
-# re-create html/userlist.html in restored tracker.
-(cd $RESTORE ; utils/userlist.py)
+/roundup/tracker/ttt/backup/ttt_time
+/roundup/tracker/ttt/backup/ttt_issue
