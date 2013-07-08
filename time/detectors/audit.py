@@ -70,7 +70,10 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
        and correctly complete missing fields.
     """
     title       = newvalues.get    ("title")
-    category    = newvalues.get    ("category")
+    category    = None
+    catid       = newvalues.get    ("category")
+    if catid :
+        category = db.category.getnode (catid)
     area        = newvalues.get    ("area")
     kind        = newvalues.get    ("kind")
     responsible = newvalues.get    ("responsible")
@@ -82,7 +85,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     analyzing   = db.status.lookup ("analyzing")
 
     if  (  "status" not in newvalues
-        or not initial_status_ok (db, newvalues ["status"], category)
+        or not initial_status_ok (db, newvalues ["status"], catid)
         ) :
         newvalues ["status"] = analyzing
     status = newvalues ["status"]
