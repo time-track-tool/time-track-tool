@@ -13,7 +13,7 @@ db      = tracker.open ('admin')
     If additional --retired flag is given, destroy retired queries, too.
 """
 
-def delq (qid, txt = ' ', retired = False) :
+def delq (qid, txt = ' ', retired = False, verbose = False) :
     q = db.query.getnode (qid)
     try :
         if q.klass not in db.classes or retired and db.query.is_retired (qid) :
@@ -21,7 +21,8 @@ def delq (qid, txt = ' ', retired = False) :
             db.query.destroy (qid)
             return 1
         else :
-            print "Keeping %squery for class %s" % (txt, q.klass)
+            if verbose :
+                print "Keeping %squery for class %s" % (txt, q.klass)
             return 0
     except IndexError :
         pass
@@ -42,6 +43,12 @@ cmd.add_option \
     , help   = 'Really destroy retired queries (do a commit)'
     , action = 'store_true'
     )
+cmd.add_option \
+    ( '-v', '--verbose'
+    , dest   = 'verbose'
+    , help   = 'Verbose output'
+    , action = 'store_true'
+    )
 opt, args = cmd.parse_args ()
 if len (args) :
     cmd.error ('No arguments please')
@@ -51,6 +58,13 @@ for uid in db.user.getnodeids () :
     u  = db.user.getnode (uid)
     qs = dict.fromkeys (u.queries)
     ch = False
+    allq = db.query.filter (None, dict (private_for = uid))
+    diff = set (allq).difference (qs)
+    if diff :
+        print "Restoring some queries for user %s: %s" \
+            % (uid, ', '.join (sorted (list (diff))))
+        qs.update (dict.fromkeys (allq))
+        ch = True
     for qid in qs.keys () :
         q = db.query.getnode (qid)
         try :
@@ -61,16 +75,17 @@ for uid in db.user.getnodeids () :
             ch = True
             continue
 
-        if delq (qid, retired = opt.retired) :
+        if delq (qid, retired = opt.retired, verbose = opt.verbose) :
             try :
                 del qs [qid]
+                ch = True
             except KeyError :
                 pass
     if ch :
         db.user.set (uid, queries = qs.keys ())
 
 for qid in db.query.getnodeids () :
-    delq (qid, txt = ' remaining ')
+    delq (qid, txt = ' remaining ', verbose = opt.verbose)
 
 if opt.update :
     db.commit()
