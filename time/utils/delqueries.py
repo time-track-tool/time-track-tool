@@ -49,17 +49,25 @@ if len (args) :
 
 for uid in db.user.getnodeids () :
     u  = db.user.getnode (uid)
-    qs = dict.fromkeys (getattr (u, 'queries', []))
-    for qid in u.queries :
+    qs = dict.fromkeys (u.queries)
+    ch = False
+    for qid in qs.keys () :
+        q = db.query.getnode (qid)
+        try :
+            n = q.name
+        except IndexError :
+            print "deleting missing query %s from user %s" % (qid, uid)
+            del qs [qid]
+            ch = True
+            continue
+
         if delq (qid, retired = opt.retired) :
             try :
                 del qs [qid]
             except KeyError :
                 pass
-    try :
-        db.user.set (uid, queries = list (qs.iterkeys ()))
-    except KeyError, reason :
-        print "Ignoring KeyError: %s" % reason
+    if ch :
+        db.user.set (uid, queries = qs.keys ())
 
 for qid in db.query.getnodeids () :
     delq (qid, txt = ' remaining ')
