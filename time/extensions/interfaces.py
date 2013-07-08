@@ -360,9 +360,12 @@ def until_now () :
 # end def until_now
 
 def get_from_form (request, name) :
-    for key in ('@' + name, ':' + name):
-        if request.form.has_key (key):
-            return request.form [key].value.strip()
+    try :
+        for key in ('@' + name, ':' + name):
+            if request.form.has_key (key):
+                return request.form [key].value.strip()
+    except TypeError:
+        pass
     return ''
 # end def get_from_form
 
