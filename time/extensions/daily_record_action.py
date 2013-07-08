@@ -108,6 +108,8 @@ def button_submit_to (db, user, date) :
         get the supervisor of the user and check if clearance is
         delegated.
     """
+    if not date :
+        return ''
     db = db._db
     try :
         _ = db._
@@ -135,6 +137,8 @@ def button_submit_to (db, user, date) :
 def button_action (date, action, value) :
     """ Create a button for time-tracking actions """
     ''"approve", ''"deny", ''"edit again"
+    if not date :
+        return ''
     return \
         '''<input type="button" value="%s"
             onClick="

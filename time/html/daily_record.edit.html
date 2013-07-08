@@ -54,6 +54,7 @@
        is_accepted  python:utils.batch_has_status (batch, 'accepted');
        form_date    python:request.form.getvalue ('date') or nothing;
        frozen       python:utils.range_frozen (db._db, user, form_date);
+       daterange    python:request.filterspec.get('date')
       ">
       <table class="list">
        <tr class="time-nav">
@@ -324,17 +325,17 @@
          <td colspan="2">
           <tal:block tal:condition="python:is_open and not frozen"
            tal:replace="structure python:utils.button_submit_to
-           (db, user, request.filterspec ['date'])">
+           (db, user, daterange)">
           </tal:block>
           <tal:block tal:condition="python:
            not is_open and is_submitted and not aprv_ok and not frozen"
            tal:replace="structure python:utils.button_action
-            (request.filterspec ['date'], 'deny', i18n.gettext ('edit again'))">
+            (daterange, 'deny', i18n.gettext ('edit again'))">
           </tal:block>
           <tal:block tal:condition="python:
            not is_open and is_hr and is_accepted and not frozen"
            tal:replace="structure python:utils.button_action
-            (request.filterspec ['date'], 'reopen', i18n.gettext ('edit again'))">
+            (daterange, 'reopen', i18n.gettext ('edit again'))">
           </tal:block>
          </td>
          <td>
@@ -352,12 +353,12 @@
          <td colspan="2">
           <tal:block tal:condition="not:frozen"
            tal:replace="structure python:utils.button_action
-           (request.filterspec ['date'], 'deny', i18n.gettext ('deny'))"/>
+           (daterange, 'deny', i18n.gettext ('deny'))"/>
          </td>
          <td>
           <tal:block tal:condition="not:frozen"
            tal:replace="structure python:utils.button_action
-           (request.filterspec ['date'], 'approve', i18n.gettext ('approve'))"/>
+           (daterange, 'approve', i18n.gettext ('approve'))"/>
          </td>
         </tr>
        </tal:block>
