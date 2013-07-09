@@ -86,6 +86,11 @@ prop_perms = \
         , "timezone", "username"
         )
       )
+    , ( "user", "View", ["IT"]
+      , ( "roles"
+        ,
+        )
+      )
     , ( "user", "Edit", ["IT"]
       , ( "firstname", "lastname", "realname", "status", "roles"
         )
