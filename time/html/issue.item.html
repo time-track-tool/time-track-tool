@@ -221,8 +221,8 @@
            (classname, 'composed_of')"/>
        <td>
         <tal:block tal:condition="context/composed_of/plain">
-         <tal:block tal:define=" attr string:expand_composed_of
-                               ; text expand_text">
+         <tal:block tal:define=" text expand_text
+                               ; attr string:expand_composed_of">
           <tal:block
            metal:use-macro="templates/issue/macros/expandable_entity"/>
          </tal:block>
