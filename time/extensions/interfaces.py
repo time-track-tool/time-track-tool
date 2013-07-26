@@ -374,11 +374,13 @@ def user_props (db) :
         db = db._db
     except AttributeError :
         pass
-    props = ['username', 'nickname', 'firstname', 'lastname']
-    props = dict ((x, 1) for x in props if x in db.user.properties)
+    props = dict (username = 0, nickname = 1, firstname = 2, lastname = 3)
+    props = dict \
+        ((k, v) for k, v in props.iteritems () if k in db.user.properties)
     if 'firstname' not in props :
-        props ['realname'] = 1
-    return ','.join (props.iterkeys ())
+        props ['realname'] = 5
+    return ','.join \
+        (x [0] for x in sorted (props.iteritems (), key = lambda x : x [1]))
 # end def user_props
 
 def user_classhelp (db, property='responsible', inputtype = 'radio') :
