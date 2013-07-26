@@ -1,0 +1,85 @@
+#!/bin/sh
+
+# Nagios script to check backup
+# Need to give the -b/--basename option for the basename of the backup to
+# check.
+# We check that the given directory (-d or --directory option) contains
+# - database dump with given basename
+# - tracker copy with given basename
+# In addition expected disk usage for database dump and/or tracker copy can be
+# given (-u --dump-disk-usage for the db dump, -U, --tracker-disk-usage for the
+# tracker directory copy) it is checked that the disk-usage is at least the
+# given size.
+# We check for a lock file that is held during the backup to avoid giving
+# wrong alarms during backup (-l or --lockfile option)
+
+usage="Usage: $0 -b|--basename bn \
+       [-d|--directory dir] [-h|--help] [-l|--lockfile lock] \
+       [-u|--dump-disk-usage d_usage] [-U|--tracker-disk-usage t_usage]"
+# defaults
+dir=/roundup/backup/current
+lock="$dir/backup-in-progress"
+ddu=0
+ddt=0
+
+OPT=$(getopt -o b:d:hl:u:U:                      \
+     --long basename:,directory:,help,lockfile:   \
+     --long dump-disk-usage:,tracker-disk-usage: \
+     -- "$@"                                     \
+     )
+eval set -- "$OPT"
+while true ; do
+    case "$1" in
+        -b|--basename)            bn="$2" ; shift 2 ;;
+        -d|--directory)          dir="$2" ; shift 2 ;;
+        -h|--help)               echo $usage 1>&2 ; shift ; exit 3 ;;
+        -l|--lockfile)          lock="$2" ; shift 2 ;;
+        -u|--dump-disk-usage)    ddu="$2" ; shift 2 ;;
+        -U|--tracker-disk-usage) ddt="$2" ; shift 2 ;;
+        --) shift ; break ;;
+        *) echo "Internal error: $1" 1>&2 ; exit 3 ;;
+    esac
+done
+
+if [ -f $lock ] ; then
+    touch -d 'now - 24 hours' /tmp/backup-check
+    if [ /tmp/backup-check -nt $lock ] ; then
+        rm -f /tmp/backup-check
+        echo "Backup lock too old"
+        exit 2
+    fi
+    rm -f /tmp/backup-check
+    echo "Backup in progress"
+    exit 0
+fi
+
+if [ ! -d "$dir/$bn" ] ; then
+    echo "Not existing: $dir/$bn"
+    exit 2
+fi
+
+if [ ! -f "$dir/$bn.dump" ] ; then
+    echo "Not existing: $dir/$bn.dump"
+    exit 2
+fi
+
+if ! grep -q "PostgreSQL database dump complete" "$dir/$bn.dump" ; then
+    echo "Database dump truncated: $dir/$bn.dump"
+    exit 2
+fi
+
+tab=$(echo -e '\t')
+addu=$(du "$dir/$bn.dump" | cut -d"$tab" -f1)
+if [ $addu -lt $ddu ] ; then
+    echo "$dir/$bn.dump is too small: got $addu expect $ddu"
+    exit 2
+fi
+
+addt=$(du -s "$dir/$bn"      | cut -d"$tab" -f1)
+if [ $addt -lt $ddt ] ; then
+    echo "$dir/$bn is too small: got $addt expect $ddt"
+    exit 2
+fi
+
+echo "Backup for $dir/$bn OK"
+exit 0
