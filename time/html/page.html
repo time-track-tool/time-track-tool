@@ -890,14 +890,11 @@
      <span tal:replace="structure context/nosy/field"/>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:db.user.classhelp
-             ( ','.join (n for n in
-                         'username,nickname,firstname,lastname'.split(',')
-                         if n in db._db.user.properties
-                        )
+             ( utils.user_props (db)
              , property='nosy'
              , width='600'
              , pagesize=500
-             , filter='status=%s' % ','.join
+             , filter='status=%s;roles=Nosy' % ','.join
                (db._db.user_status.lookup (i) for i in ('valid', 'system'))
              )"/><br>
     </td>

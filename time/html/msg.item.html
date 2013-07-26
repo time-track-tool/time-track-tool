@@ -31,7 +31,7 @@
       <td>
        <span tal:content="structure context/author/field"/>
        <tal:block tal:replace="structure python:db.user.classhelp
-             ( 'username,nickname,firstname,lastname'
+             ( utils.user_props (db)
              , property='author'
              , filter='status=%s' % db._db.user_status.lookup ('valid')
              , inputtype='radio'

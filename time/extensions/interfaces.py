@@ -369,16 +369,25 @@ def get_from_form (request, name) :
     return ''
 # end def get_from_form
 
+def user_props (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    props = ['username', 'nickname', 'firstname', 'lastname']
+    props = dict ((x, 1) for x in props if x in db.user.properties)
+    if 'firstname' not in props :
+        props ['realname'] = 1
+    return ','.join (props.iterkeys ())
+# end def user_props
+
 def user_classhelp (db, property='responsible', inputtype = 'radio') :
     status = ','.join \
         (db._db.user_status.filter (None, dict (is_nosy = True)))
     if status :
         status = ';status=' + status
     return db.user.classhelp \
-        ( ','.join (n for n in
-                    'username,nickname,firstname,lastname'.split(',')
-                    if n in db._db.user.properties
-                   )
+        ( user_props (db)
         , property  = property
         , filter    = 'roles=Nosy' + status
         , inputtype = inputtype
@@ -443,3 +452,4 @@ def init (instance) :
     reg ("indexargs_dict",               indexargs_dict)
     reg ("may_search",                   may_search)
     reg ("Size_Limit",                   Size_Limit)
+    reg ("user_props",                   user_props)

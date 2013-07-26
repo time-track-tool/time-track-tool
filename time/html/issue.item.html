@@ -336,7 +336,7 @@
       <td>
        <span tal:content="structure context/external_users/field" />
        <span tal:content="structure python:db.user.classhelp
-             ( 'username,id'
+             ( utils.user_props (db)
              , property = 'external_users'
              , width    = '600'
              , pagesize = 500

@@ -223,7 +223,7 @@
        <td>
         <tal:block tal:content="structure python:context.attendant.field ()"/>
         <tal:block tal:replace="structure python:db.user.classhelp
-             ( 'username,realname'
+             ( utils.user_props (db)
              , property='attendant'
              , inputtype='radio'
              , width='600'
