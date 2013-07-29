@@ -5,7 +5,7 @@ from roundup           import instance
 tracker = instance.open ('.')
 db      = tracker.open ('admin')
 
-for id in db.contact.getnodeids () :
+for id in db.contact.getnodeids (retired = False) :
     # Set to something invalid. This will trigger the auditor.
     db.contact.set (id, callerid = '+')
     print db.contact.get (id, 'callerid')
