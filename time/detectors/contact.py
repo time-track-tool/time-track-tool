@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-13 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -18,12 +18,15 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+import string
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 
 from roundup.cgi.TranslationService import get_translation
 
 import common
+
+digits = dict.fromkeys (string.digits)
 
 def fix_contacts (db, cl, nodeid, old_values, cls = 'contact') :
     if old_values is None or 'contacts' in old_values :
@@ -103,6 +106,28 @@ def check_contact (db, cl, nodeid, new_values) :
             new_values ['contact'] = new_values ['contact'].lower ()
 # end def check_contact
 
+def fix_callerid (db, cl, nodeid, new_values) :
+    """ Create callerid information consisting of digits as coming in
+        via phone line.
+    """
+    if 'contact' in new_values or 'callerid' in new_values :
+        ct = new_values.get ('contact')
+        if not ct :
+            ct = cl.get (nodeid, 'contact')
+        x  = ''.join (x for x in ct if x in digits)
+        if ct.startswith ('+') :
+            x = '+' + x
+        cc = getattr (db.config.ext, 'TELEPHONY_COUNTRY_CODE', '43')
+        ac = getattr (db.config.ext, 'TELEPHONY_AREA_CODE',    '2243')
+        if x.startswith ('+' + cc + ac) :
+            x = x [len(cc+ac)+1:]
+        elif x.startswith ('+' + cc) :
+            x = '0' + x [len(cc)+1:]
+        elif x.startswith ('+') :
+            x = '00' + x [1:]
+        new_values ['callerid'] = x
+# end def fix_callerid
+
 def changed_contact (db, cl, nodeid, old_values) :
     """ Update the user address information if an email changes """
     node = cl.getnode (nodeid)
@@ -161,6 +186,9 @@ def init (db) :
     if 'contact' in db.classes :
         db.contact.audit ("create", check_contact)
         db.contact.audit ("set",    check_contact)
+        if 'callerid' in db.contact.properties :
+            db.contact.audit ("create", fix_callerid, priority = 120)
+            db.contact.audit ("set",    fix_callerid, priority = 120)
     if 'user_contact' in db.classes :
         db.user_contact.audit ("create", check_contact)
         db.user_contact.audit ("create", new_user_contact, priority = 150)
