@@ -3,7 +3,7 @@
 import sys
 from roundup           import instance
 tracker = instance.open ('.')
-db      = tracker.open ('schlatterbeck')
+db      = tracker.open ('admin')
 
 for id in db.contact.getnodeids () :
     # Set to something invalid. This will trigger the auditor.
