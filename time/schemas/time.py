@@ -43,7 +43,8 @@ from schemacfg import schemadef
 # -- except for modules that extend the standard permission scheme in
 # core (e.g. extuser)
 schemas = \
-    ( 'company'
+    ( 'nickname'
+    , 'company'
     , 'user'
     , 'time_tracker'
     , 'core'
