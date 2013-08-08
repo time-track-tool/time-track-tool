@@ -81,7 +81,7 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["IT"]
-      , ( "realname", "csv_delimiter"
+      , ( "realname", "csv_delimiter", "roles"
         )
       )
     ]
