@@ -288,6 +288,11 @@
       <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
       <td tal:content="structure context/city/field" colspan="2"/>
      </tr>
+     <tr tal:condition="python:'province' in props">
+      <th tal:content="structure python:utils.fieldname 
+        (classname, 'province')" />
+      <td tal:content="structure context/province/field"/>
+     </tr>
      <tr tal:condition="python:'parent' in props">
       <th tal:content="structure python:utils.fieldname (classname, 'parent')"/>
       <td nowrap colspan="3">

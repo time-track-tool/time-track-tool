@@ -99,6 +99,30 @@
               , searchable   = True
               )
        )
+     , ('province',            dict (searchable  = False, sortable = False))
+     , ( 'address'
+       , dict ( searchable   = False
+              , sortable     = False
+              , searchname   = 'address.province'
+              )
+       )
+     , ( 'lookalike_province'
+       , dict ( displayable  = False
+              , terse        = False
+              , helpname     = 'province'
+              , searchable   = True
+              , sortable     = True
+              )
+       )
+     , ( 'address'
+       , dict ( displayable  = False
+              , terse        = False
+              , helpname     = 'province'
+              , searchname   = 'address.lookalike_province'
+              , searchable   = True
+              , sortable     = True
+              )
+       )
      , ('city',                dict (searchable  = False, sortable = False))
      , ( 'address'
        , dict ( searchable   = False
