@@ -1158,6 +1158,8 @@ _helptext          = \
       [""'''The Id of %(Property)s.''']
     , ""'protocol'                    :
       [""'''The dynamic DNS protocol to use with this %(Classname)s.''']
+    , ""'province'                    :
+      [""'''Province where this person lives.''']
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
     , ""'query++tmplate'              :

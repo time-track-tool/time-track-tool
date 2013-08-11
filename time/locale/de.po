@@ -5350,6 +5350,12 @@ msgstr "ist Verteiler"
 msgid "doc_num"
 msgstr "Dokument Nummer"
 
+msgid "province"
+msgstr "Bundesland"
+
+msgid "Province where this person lives."
+msgstr "Bundesland für diese Person."
+
 #~ msgid "When a new issue is created with %(Classname)s set, but "
 #~ msgstr "Wenn ein neues Issue mit gesetztem %(Classname)s erzeugt wird, aber"
 
