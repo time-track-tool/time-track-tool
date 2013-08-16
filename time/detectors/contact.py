@@ -25,8 +25,7 @@ from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
 
 import common
-
-digits = dict.fromkeys (string.digits)
+from   libcontact import cid
 
 def fix_contacts (db, cl, nodeid, old_values, cls = 'contact') :
     if old_values is None or 'contacts' in old_values :
@@ -106,26 +105,38 @@ def check_contact (db, cl, nodeid, new_values) :
             new_values ['contact'] = new_values ['contact'].lower ()
 # end def check_contact
 
-def fix_callerid (db, cl, nodeid, new_values) :
+def retire_callerid (db, cl, nodeid, new_values) :
+    """ Destroy (yes, really) all callerids linking to us (should be
+        only one but this is not checked)
+    """
+    ids = db.callerid.filter (None, dict (contact = nodeid))
+    for id in ids :
+        db.callerid.destroy (id)
+# end def retire_callerid
+
+def new_callerid (db, cl, nodeid, old_values) :
+    c  = cl.getnode (nodeid)
+    if not db.contact_type.get (c.contact_type, 'use_callerid') :
+        return
+    ct = cl.get (nodeid, 'contact')
+    db.callerid.create (number = cid (db, ct), contact = nodeid)
+# end def new_callerid
+
+def fix_callerid (db, cl, nodeid, old_values) :
     """ Create callerid information consisting of digits as coming in
         via phone line.
     """
-    if 'contact' in new_values or 'callerid' in new_values :
-        ct = new_values.get ('contact')
-        if not ct :
-            ct = cl.get (nodeid, 'contact')
-        x  = ''.join (x for x in ct if x in digits)
-        if ct.startswith ('+') :
-            x = '+' + x
-        cc = getattr (db.config.ext, 'TELEPHONY_COUNTRY_CODE', '43')
-        ac = getattr (db.config.ext, 'TELEPHONY_AREA_CODE',    '2243')
-        if x.startswith ('+' + cc + ac) :
-            x = x [len(cc+ac)+1:]
-        elif x.startswith ('+' + cc) :
-            x = '0' + x [len(cc)+1:]
-        elif x.startswith ('+') :
-            x = '00' + x [1:]
-        new_values ['callerid'] = x
+    c   = cl.getnode (nodeid)
+    if not db.contact_type.get (c.contact_type, 'use_callerid') :
+        return
+    ct  = c.contact
+    ids = db.callerid.filter (None, dict (contact = nodeid))
+    if not ids :
+        db.callerid.create (number = cid (db, ct), contact = nodeid)
+    else :
+        assert len (ids) == 1
+        id = ids [0]
+        db.callerid.set (id, number = cid (db, ct), contact = nodeid)
 # end def fix_callerid
 
 def changed_contact (db, cl, nodeid, old_values) :
@@ -186,9 +197,10 @@ def init (db) :
     if 'contact' in db.classes :
         db.contact.audit ("create", check_contact)
         db.contact.audit ("set",    check_contact)
-        if 'callerid' in db.contact.properties :
-            db.contact.audit ("create", fix_callerid, priority = 120)
-            db.contact.audit ("set",    fix_callerid, priority = 120)
+        if 'callerid' in db.classes :
+            db.contact.react ("create", new_callerid, priority = 120)
+            db.contact.react ("set",    fix_callerid, priority = 120)
+            db.contact.react ("retire", retire_callerid)
     if 'user_contact' in db.classes :
         db.user_contact.audit ("create", check_contact)
         db.user_contact.audit ("create", new_user_contact, priority = 150)

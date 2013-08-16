@@ -4,9 +4,21 @@ import sys
 from roundup           import instance
 tracker = instance.open ('.')
 db      = tracker.open ('admin')
+from libcontact import cid
+
+types = db.contact_type.filter (None, dict (use_callerid = True))
+types = dict.fromkeys (types)
 
 for id in db.contact.getnodeids (retired = False) :
     # Set to something invalid. This will trigger the auditor.
-    db.contact.set (id, callerid = '+')
-    print db.contact.get (id, 'callerid')
+    c = db.contact.getnode (id)
+    if c.contact_type not in types :
+        continue
+    c_ids = db.callerid.filter (None, dict (contact = id))
+    if not c_ids :
+        db.callerid.create (number = cid (db, c.contact), contact = id)
+    else :
+        assert len (c_ids) == 1
+        c_id = c_ids [0]
+        db.callerid.set (c_id, number = cid (db, c.contact), contact = id)
 db.commit ()

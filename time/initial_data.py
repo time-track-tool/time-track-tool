@@ -666,9 +666,6 @@ if 'contact_type' in db.classes :
         , description  = 'Telefonnummer mobil'
         , order        = 2
         )
-if 'contact' in db.classes and 'callerid' in db.contact.properties :
-    db.sql ('create index _contact_callerid_idx on _contact (_callerid);')
-
 if 'customer_status' in db.classes :
     db.customer_status.create \
         ( name         = uni ('gültig')
