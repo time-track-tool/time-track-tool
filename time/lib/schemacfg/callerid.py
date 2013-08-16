@@ -53,3 +53,10 @@ def init (db, Class, Contact_Type_Class, Boolean, Link, String, ** kw) :
 
     return export
 # end def init
+
+def security (db, ** kw) :
+    classes = \
+        [ ("callerid", ["User"], [])
+        ]
+    schemadef.register_class_permissions (db, classes, [])
+# end def security
