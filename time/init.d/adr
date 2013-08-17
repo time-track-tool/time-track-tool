@@ -40,7 +40,8 @@ BINFILE=roundup-server
 EXECUTABLE=/usr/local/bin/$BINFILE
 PIDFILE=/var/run/roundup/server.pid
 LOGFILE=/var/log/roundup/roundup.log
-TRACKERS="todo=/var/lib/tracker/todo initiative=/var/lib/tracker/address"
+TRACKERS="todo=/var/lib/tracker/todo initiative=/var/lib/tracker/address
+          qso=/var/lib/tracker/hamlog time=/var/lib/tracker/time"
 OPTIONS="-- -p 7070 -n 0.0.0.0 -u tracker -d $PIDFILE -l $LOGFILE -t fork $TRACKERS"
 NICENESS=0
 
@@ -51,6 +52,8 @@ start_stop() {
 	case "$1" in
 	start)
 		printf "Starting $DESC:"
+                mkdir -p /var/run/roundup
+                chown tracker /var/run/roundup
 		start-stop-daemon --start --oknodo --quiet \
                                   --pidfile $PIDFILE \
                                   --nicelevel $NICENESS \
