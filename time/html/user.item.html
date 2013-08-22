@@ -266,6 +266,11 @@
          ('user', 'csv_delimiter')"/>
      <td tal:content="structure context/csv_delimiter/field"/>
     </tr>
+    <tr tal:condition="python:'sip_device' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname
+         ('user', 'sip_device')"/>
+     <td tal:content="structure context/sip_device/menu"/>
+    </tr>
     <tal:block tal:condition="python:'contacts' not in bclass.properties">
      <tr>
       <th tal:content="structure python:utils.fieldname ('user', 'address')"/>

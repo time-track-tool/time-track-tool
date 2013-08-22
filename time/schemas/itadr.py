@@ -53,6 +53,7 @@ schemas = \
     , 'person'
     , 'pers_ext'
     , 'pers_prov'
+    , 'sip'
     , 'contact_sec'
     , 'core'
     )
