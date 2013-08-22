@@ -61,6 +61,7 @@ class Dial (Action) :
         f = urlopen (url)
         f.read  ()
         f.close ()
+        raise Redirect, "address%s" % contact.address
     # end def handle
 
 # end class Dial
