@@ -42,7 +42,7 @@ def init (db, Class, Link, String, ** kw) :
         , pbx_password        = String    ()
         , pbx_hostname        = String    ()
         )
-    sip_device.setkey (''"mac_address")
+    sip_device.setkey (''"name")
 
     class User_Class (kw ['User_Class']) :
         """ add sip_device to user class
@@ -78,5 +78,5 @@ def security (db, ** kw) :
           )
         ]
     schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, [])
+    schemadef.register_class_permissions (db, classes, prop_perms)
 # end def security

@@ -64,7 +64,25 @@ del sys.path [0:1]
 
 Person_Class (db, ''"address")
 
+prop_perms = \
+    [ ( "user", "View", ["IT"]
+      , ( "roles",
+        )
+      )
+    , ( "user", "Edit", ["IT"]
+      , ( "realname", "csv_delimiter", "roles"
+        )
+      )
+    ]
+
 importer.update_security ()
+schemadef.register_class_permissions (db, [], prop_perms)
+# allow search of users for IT
+p = db.security.addPermission \
+    ( name        = 'Search'
+    , klass       = 'user'
+    )
+db.security.addPermissionToRole ('IT', p)
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
