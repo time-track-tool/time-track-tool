@@ -30,6 +30,7 @@
 from urllib                 import urlopen
 from roundup.cgi.actions    import Action
 from roundup.cgi            import templating
+from roundup.cgi.exceptions import Redirect
 
 class Dial (Action) :
 
