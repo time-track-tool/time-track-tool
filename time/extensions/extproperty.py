@@ -188,6 +188,8 @@ class ExtProperty :
         helpname: Name used for looking up helptext, can be overridden
             in case the class uses shadowed attributes for searching
             (e.g. lookalike_city)
+        url_template: A (transitive) property of our item that tells us
+            how to format this property as a link
 
         Internal attributes:
         name: name of the property
@@ -224,6 +226,7 @@ class ExtProperty :
         , help_sort     = None
         , bool_tristate = True
         , force_link    = False
+        , url_template  = None
         ) :
         if not hasattr (prop._db, '_') :
             prop._db._ = _
@@ -259,6 +262,7 @@ class ExtProperty :
         self.propname      = displayprop
         self.leafprop      = prop._prop
         self.force_link    = force_link
+        self.url_template  = url_template
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -367,6 +371,19 @@ class ExtProperty :
             return self.editfield ()
         if self.name != 'id' and not self.prop.is_view_ok () :
             return self.pretty ('[hidden]')
+        if self.url_template :
+            tpl = self.item
+            for t in self.url_template.split ('.') :
+                print "TPL:", tpl
+                tpl = tpl [t]
+            print "TPL:", tpl
+            tpl = str (tpl)
+            if tpl :
+                print "UT:", self.url_template
+                return '<a href="%s">%s</a>' \
+                    % (tpl % self.item, self.formatted ())
+            else :
+                return self.formatted ()
         if self.is_labelprop or self.force_link :
             return self.formatlink (as_link = as_link)
         elif self.lnkcls :
