@@ -297,8 +297,10 @@ class LDAP_Roundup_Sync (object) :
         # unchanged ?
         if user.address == mail :
             return mail
-        aa = dict.fromkeys \
-            (x.strip () for x in user.alternate_addresses.split ('\n'))
+        aa = {}
+        if user.alternate_addresses :
+            aa = dict.fromkeys \
+                (x.strip () for x in user.alternate_addresses.split ('\n'))
         oldaa = copy (aa)
         aa [user.address] = None
         if mail in aa :
