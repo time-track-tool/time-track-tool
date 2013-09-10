@@ -38,10 +38,10 @@ def cid (db, ct) :
         x = '+' + x
     cc = getattr (db.config.ext, 'TELEPHONY_COUNTRY_CODE', '43')
     ac = getattr (db.config.ext, 'TELEPHONY_AREA_CODE',    '2243')
-    if x.startswith ('+' + cc + ac) :
-        x = x [len(cc+ac)+1:]
+    if ac and x.startswith ('+' + cc + ac) :
+        x = x [len (cc+ac) + 1:]
     elif x.startswith ('+' + cc) :
-        x = '0' + x [len(cc)+1:]
+        x = '0' + x [len (cc) + 1:]
     elif x.startswith ('+') :
         x = '00' + x [1:]
     return x
