@@ -12,6 +12,7 @@ Role "admin":
 Role "anonymous":
  User may access the web interface (Web Access)
 Role "external":
+  (Search for "user": ('id', 'nickname', 'username') only)
  External users are allowed to access issue if they are on the list of allowed external users or there is a transitive permission via containers (Edit for "issue": ['activity', 'actor', 'area', 'category', 'closed', 'composed_of', 'creation', 'creator', 'cur_est_begin', 'cur_est_end', 'deadline', 'depends', 'doc_issue_status', 'earliest_start', 'effective_prio', 'files', 'files_affected', 'fixed_in', 'id', 'keywords', 'kind', 'maturity_index', 'messages', 'needs', 'nosy', 'numeric_effort', 'part_of', 'planned_begin', 'planned_end', 'priority', 'release', 'responsible', 'severity', 'status', 'superseder', 'title'] only)
  External users are allowed to access issue if they are on the list of allowed external users or there is a transitive permission via containers (View for "issue": ['activity', 'actor', 'area', 'category', 'closed', 'composed_of', 'creation', 'creator', 'cur_est_begin', 'cur_est_end', 'deadline', 'depends', 'doc_issue_status', 'earliest_start', 'effective_prio', 'files', 'files_affected', 'fixed_in', 'id', 'keywords', 'kind', 'maturity_index', 'messages', 'needs', 'nosy', 'numeric_effort', 'part_of', 'planned_begin', 'planned_end', 'priority', 'release', 'responsible', 'severity', 'status', 'superseder', 'title'] only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
@@ -80,6 +81,7 @@ Role "it":
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
  User is allowed Edit on (Edit for "user": ('firstname', 'lastname', 'realname', 'roles', 'status') only)
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
+ User is allowed View on (View for "user": ('roles',) only)
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
  User is allowed to create it_category (Create for "it_category" only)

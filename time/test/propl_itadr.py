@@ -16,10 +16,13 @@ properties = \
         , 'lookalike_firstname'
         , 'lookalike_function'
         , 'lookalike_lastname'
+        , 'lookalike_province'
         , 'lookalike_street'
         , 'messages'
         , 'opening_hours'
+        , 'parent'
         , 'postalcode'
+        , 'province'
         , 'salutation'
         , 'street'
         , 'title'
@@ -38,6 +41,11 @@ properties = \
         , 'type_valid'
         ]
       )
+    , ( 'callerid'
+      , [ 'contact'
+        , 'number'
+        ]
+      )
     , ( 'contact'
       , [ 'address'
         , 'contact'
@@ -50,6 +58,7 @@ properties = \
         , 'name'
         , 'order'
         , 'url_template'
+        , 'use_callerid'
         ]
       )
     , ( 'file'
@@ -141,6 +150,16 @@ properties = \
         , 'url'
         ]
       )
+    , ( 'sip_device'
+      , [ 'http_password'
+        , 'http_username'
+        , 'mac_address'
+        , 'name'
+        , 'pbx_hostname'
+        , 'pbx_password'
+        , 'pbx_username'
+        ]
+      )
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'
@@ -149,6 +168,7 @@ properties = \
         , 'queries'
         , 'realname'
         , 'roles'
+        , 'sip_device'
         , 'status'
         , 'timezone'
         , 'username'

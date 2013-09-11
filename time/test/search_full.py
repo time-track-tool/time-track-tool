@@ -295,7 +295,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'nosy'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'order'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -367,7 +367,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'external_users'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'files'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -397,7 +397,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'nosy'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'numeric_effort'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -418,7 +418,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'responsible'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'severity'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -610,7 +610,7 @@ properties = \
       )
     , ( 'msg'
       , [ ( 'author'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'content'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -634,7 +634,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'recipients'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'subject'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -796,7 +796,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'private_for'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'tmplate'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']

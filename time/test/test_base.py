@@ -96,6 +96,7 @@ class _Test_Case (unittest.TestCase) :
     db = None
     roles = ['admin']
     schemafile = None
+    maxDiff = None
     allroles = dict.fromkeys \
         (('abo'
         , 'abo+invoice'
@@ -119,6 +120,7 @@ class _Test_Case (unittest.TestCase) :
         , 'logger'
         , 'nosy'
         , 'office'
+        , 'pbx'
         , 'pgp'
         , 'product'
         , 'project'
@@ -2642,7 +2644,7 @@ class Test_Case_ITAdr (_Test_Case) :
     schemaname = 'itadr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
-        , 'itview', 'nosy', 'type', 'user'
+        , 'itview', 'nosy', 'pbx', 'type', 'user'
         ]
     transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr

@@ -109,7 +109,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'nosy'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'order'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -169,7 +169,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'external_users'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'files'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -199,7 +199,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'nosy'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'numeric_effort'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -220,7 +220,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'responsible'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'severity'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -397,7 +397,7 @@ properties = \
       )
     , ( 'msg'
       , [ ( 'author'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'content'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -421,7 +421,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'recipients'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'subject'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -460,7 +460,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'private_for'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'tmplate'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -636,7 +636,7 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'roles'
-          , ['admin']
+          , ['admin', 'it']
           )
         , ( 'status'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']

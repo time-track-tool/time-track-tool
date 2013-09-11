@@ -63,6 +63,7 @@ Role "doc_admin":
  User is allowed to edit product_type (Edit for "product_type" only)
  User is allowed to edit reference (Edit for "reference" only)
 Role "external":
+  (Search for "user": ('id', 'nickname', 'username') only)
  External users are allowed to access issue if they are on the list of allowed external users or there is a transitive permission via containers (Edit for "issue": ['activity', 'actor', 'area', 'category', 'closed', 'composed_of', 'creation', 'creator', 'cur_est_begin', 'cur_est_end', 'deadline', 'depends', 'doc_issue_status', 'earliest_start', 'effective_prio', 'files', 'files_affected', 'fixed_in', 'id', 'keywords', 'kind', 'maturity_index', 'messages', 'needs', 'nosy', 'numeric_effort', 'part_of', 'planned_begin', 'planned_end', 'priority', 'release', 'responsible', 'severity', 'status', 'superseder', 'title'] only)
  External users are allowed to access issue if they are on the list of allowed external users or there is a transitive permission via containers (View for "issue": ['activity', 'actor', 'area', 'category', 'closed', 'composed_of', 'creation', 'creator', 'cur_est_begin', 'cur_est_end', 'deadline', 'depends', 'doc_issue_status', 'earliest_start', 'effective_prio', 'files', 'files_affected', 'fixed_in', 'id', 'keywords', 'kind', 'maturity_index', 'messages', 'needs', 'nosy', 'numeric_effort', 'part_of', 'planned_begin', 'planned_end', 'priority', 'release', 'responsible', 'severity', 'status', 'superseder', 'title'] only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
@@ -220,7 +221,7 @@ Role "office":
  User is allowed to edit uc_type (Edit for "uc_type" only)
 Role "pgp":
 Role "project":
- User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'max_hours', 'name', 'nosy', 'op_project', 'organisation', 'planned_effort', 'responsible', 'status') only)
+ User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'max_hours', 'name', 'nosy', 'op_project', 'organisation', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status') only)
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
  User is allowed to create time_project (Create for "time_project" only)
