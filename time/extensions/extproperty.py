@@ -374,12 +374,9 @@ class ExtProperty :
         if self.url_template :
             tpl = self.item
             for t in self.url_template.split ('.') :
-                print "TPL:", tpl
                 tpl = tpl [t]
-            print "TPL:", tpl
             tpl = str (tpl)
             if tpl :
-                print "UT:", self.url_template
                 return '<a href="%s">%s</a>' \
                     % (tpl % self.item, self.formatted ())
             else :
