@@ -34,6 +34,7 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , DateHTMLProperty          \
                                          , StringHTMLProperty        \
                                          , _HTMLItem                 \
+                                         , HTMLProperty              \
                                          , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
@@ -426,15 +427,16 @@ class ExtProperty :
                 , get_cssclass = self.get_cssclass
                 , displayprop  = 'id'
                 )
+        # TODO: Handle multilinks in the transitive search
+        # this will also be needed in callers of deref, e.g.,
+        # formatlink etc... they need to be aware that the result
+        # can be a list. The resulting deref is probably a recursive
+        # function.
         if  (   self.propname
             and (isinstance (p, _HTMLItem) or hasattr (p._prop, 'classname'))
+            and not isinstance (p, MultilinkHTMLProperty)
             ) :
             last_p = p
-            # TODO: Handle multilinks in the transitive search
-            # this will also be needed in callers of deref, e.g.,
-            # formatlink etc... they need to be aware that the result
-            # can be a list. The resulting deref is probably a recursive
-            # function.
             p      = p [self.propname]
         return self.__class__ \
             ( self.utils, p
