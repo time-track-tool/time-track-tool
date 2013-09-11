@@ -869,19 +869,19 @@ msgid "Address for this %(Classname)s"
 msgstr ""
 
 msgid "address.lookalike_city"
-msgstr "Subscriber Address details"
+msgstr "City"
 
 msgid "address.lookalike_firstname"
-msgstr "Subscriber First name"
+msgstr "First name"
 
 msgid "address.lookalike_function"
-msgstr "Subscriber Address details"
+msgstr "Address details"
 
 msgid "address.lookalike_lastname"
-msgstr "Subscriber Last name"
+msgstr "Last name"
 
 msgid "address.lookalike_street"
-msgstr "Subscriber Address details"
+msgstr "Street"
 
 msgid "address++valid"
 msgstr "valid"
