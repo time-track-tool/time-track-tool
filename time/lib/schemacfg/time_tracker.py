@@ -484,10 +484,12 @@ def security (db, ** kw) :
             , "department", "deputy", "description", "max_hours", "name"
             , "nosy", "op_project", "organisation", "planned_effort"
             , "responsible", "status"
+            , 'product_family', 'project_type', 'reporting_group'
             )
           )
         , ( "time_project", "Edit", ["HR"]
-          , ("is_public_holiday", "no_overtime", "overtime_reduction"
+          , ( "is_public_holiday", "no_overtime", "overtime_reduction"
+            , 'product_family', 'project_type', 'reporting_group'
             )
           )
         ]
