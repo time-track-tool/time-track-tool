@@ -237,14 +237,14 @@
                  utils.work_packages_javascript
                    (name, wpsdict, r.wp.id or -1)"/>
              <span tal:condition="not:editable" tal:content="structure python:
-              '&nbsp;'.join
+              r.wp and '&nbsp;'.join
                ([utils.ExtProperty
                  ( utils, i [0]
                  , item        = i [1]
                  , displayprop = i [2]
                  ).as_listentry ()
                  for i in ((r.wp.project,r.wp,None),(r.wp,r,'wp_no'),(r.wp,r,None))
-               ])
+               ]) or ''
               "/>
             </td>
             <td class="nb" tal:content="structure python: utils.ExtProperty
