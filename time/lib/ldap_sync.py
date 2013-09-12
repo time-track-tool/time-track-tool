@@ -19,9 +19,8 @@ class LDAP_Search_Result (cidict, autosuper) :
     def __init__ (self, vals) :
         assert (vals [0])
         self.dn = vals [0]
-        dn = (x.split ('=') for x in self.dn.lower ().split (','))
-        ou = dict.fromkeys (v.strip () for k, v in dn if k.strip () == 'ou')
-        self.ou = ou
+        dn = ldap.dn.str2dn (self.dn.lower ())
+        self.ou = dict.fromkeys (k [0][1] for k in dn if k [0][0] == 'ou')
         self.__super.__init__ (vals [1])
     # end def __init__
 
@@ -70,7 +69,6 @@ def get_position (user, attr) :
 class LDAP_Roundup_Sync (object) :
     """ Sync users from LDAP to Roundup """
 
-    roundup_group = 'roundup-users'
     page_size     = 50
     
     def __init__ (self, db, update_roundup = None, update_ldap = None) :
@@ -450,8 +448,20 @@ class LDAP_Roundup_Sync (object) :
     # end def ldap_picture
 
     def paged_search_iter (self, filter, attrs = None) :
-        lc = SimplePagedResultsControl \
-            (ldap.LDAP_CONTROL_PAGE_OID, True, (self.page_size, ''))
+        # Test vor version 2.3 API
+        try :
+            lc = SimplePagedResultsControl \
+                (ldap.LDAP_CONTROL_PAGE_OID, True, (self.page_size, ''))
+            api_version = 3
+        except AttributeError :
+            # New version 2.4 API
+            lc = SimplePagedResultsControl \
+                (True, size = self.page_size, cookie = '')
+            sc = \
+                { SimplePagedResultsControl.controlType :
+                    SimplePagedResultsControl
+                }
+            api_version = 4
         res = self.ldcon.search_ext \
             ( self.cfg.LDAP_BASE_DN
             , ldap.SCOPE_SUBTREE
@@ -460,21 +470,34 @@ class LDAP_Roundup_Sync (object) :
             , serverctrls = [lc]
             )
         while True :
-            rtype, rdata, rmsgid, serverctrls = self.ldcon.result3 (res)
+            params = (res,)
+            if api_version == 3 :
+                rtype, rdata, rmsgid, serverctrls = self.ldcon.result3 (res)
+                pctrls = \
+                    [c for c in serverctrls
+                       if c.controlType == ldap.LDAP_CONTROL_PAGE_OID
+                    ]
+            else :
+                rtype, rdata, rmsgid, serverctrls = self.ldcon.result3 \
+                    (res, resp_ctrl_classes = sc)
+                pctrls = \
+                    [c for c in serverctrls
+                       if c.controlType == SimplePagedResultsControl.controlType
+                    ]
             for r in rdata :
                 if not r [0] :
                     continue
                 r = LDAP_Search_Result (r)
                 yield r
-            pctrls = \
-                [c for c in serverctrls
-                   if c.controlType == ldap.LDAP_CONTROL_PAGE_OID
-                ]
             if pctrls :
-                x, cookie = pctrls [0].controlValue
+                if api_version == 3 :
+                    x, cookie = pctrls [0].controlValue
+                    lc.controlValue = (self.page_size, cookie)
+                else :
+                    cookie = pctrls [0].cookie
+                    lc.cookie = cookie
                 if not cookie :
                     break
-                lc.controlValue = (self.page_size, cookie)
                 res =  self.ldcon.search_ext \
                     ( self.cfg.LDAP_BASE_DN
                     , ldap.SCOPE_SUBTREE
