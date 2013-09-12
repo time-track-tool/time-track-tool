@@ -4,6 +4,7 @@ import sys
 import ldap
 
 from copy                import copy
+from traceback           import print_exc
 from ldap.cidict         import cidict
 from ldap.controls       import SimplePagedResultsControl
 from rsclib.autosuper    import autosuper
@@ -767,7 +768,11 @@ class LDAP_Roundup_Sync (object) :
             (usrcls.get (i, 'username') for i in usrcls.getnodeids ())
         usernames.update (dict.fromkeys (self.get_all_ldap_usernames ()))
         for username in usernames.iterkeys () :
-            self.sync_user_from_ldap (username)
+            try :
+                self.sync_user_from_ldap (username)
+            except Exception :
+                print >> sys.stderr, "Error synchronizing user %s" % username
+                print_exc ()
     # end def sync_all_users_from_ldap
 
     def sync_all_users_to_ldap (self, update = None) :
