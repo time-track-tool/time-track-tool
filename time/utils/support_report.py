@@ -12,11 +12,12 @@ from roundup     import instance
 class Support_Report (object) :
 
     def __init__ (self, opt) :
-        tracker = instance.open (opt.dir)
-        self.db = tracker.open ('admin')
+        self.opt = opt
+        tracker  = instance.open (opt.dir)
+        self.db  = tracker.open ('admin')
 
-        stati   = [self.db.sup_status.lookup (x) for x in ('open', 'customer')]
-        sissues = self.db.support.filter \
+        stati    = [self.db.sup_status.lookup (x) for x in ('open', 'customer')]
+        sissues  = self.db.support.filter \
             ( None
             , dict (status=stati)
             , sort=[('+', 'status'), ('+', 'creation')]
@@ -157,9 +158,7 @@ class Support_Report (object) :
             try :
                 mail = '\n'.join \
                     ((subj, to, frm, date, "X-" + date, mime, '\n', m))
-                #smtp.sendmail \
-                print \
-                    (self.db.config.ADMIN_EMAIL, addr, mail)
+                smtp.sendmail (self.db.config.ADMIN_EMAIL, addr, mail)
             except SMTPRecipientsRefused, cause :
                 print (cause, file = sys.stderr)
 
