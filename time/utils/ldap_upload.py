@@ -31,7 +31,7 @@ def main () :
     lds = LDAP_Roundup_Sync (db)
     if len (args) :
         for username in args :
-            lds.sync_user_to_ldap (username)
+            lds.sync_user_to_ldap (username, update = opt.update)
     else :
         lds.sync_all_users_to_ldap (update = opt.update)
 # end def main
