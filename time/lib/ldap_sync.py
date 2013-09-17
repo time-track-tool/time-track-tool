@@ -153,6 +153,11 @@ class LDAP_Roundup_Sync (object) :
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
         props    = self.db.user.properties
+        attr_u ['id'] = \
+            ( 'employeenumber'
+            , 1
+            , None
+            )
         if 'department' in props :
             attr_u ['department'] = \
                 ( 'department'

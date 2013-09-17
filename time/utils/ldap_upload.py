@@ -22,9 +22,6 @@ def main () :
         , action  = 'store_true'
         )
     opt, args = parser.parse_args ()
-    if len (args) :
-        parser.error ('No arguments please')
-        exit (23)
 
     sys.path.insert (1, os.path.join (opt.database_directory, 'lib'))
     from ldap_sync import LDAP_Roundup_Sync
@@ -32,7 +29,11 @@ def main () :
     db      = tracker.open ('admin')
 
     lds = LDAP_Roundup_Sync (db)
-    lds.sync_all_users_to_ldap (update = opt.update)
+    if len (args) :
+        for username in args :
+            lds.sync_user_to_ldap (username)
+    else :
+        lds.sync_all_users_to_ldap (update = opt.update)
 # end def main
 
 
