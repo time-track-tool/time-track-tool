@@ -785,7 +785,7 @@ class LDAP_Roundup_Sync (object) :
             self.update_ldap = update
         for uid in self.db.user.filter \
             ( None
-            , dict (status = ','.join (self.valid_stati))
+            , dict (status = self.valid_stati)
             , sort = [('+','username')]
             ) :
             username = self.db.user.get (uid, 'username')
