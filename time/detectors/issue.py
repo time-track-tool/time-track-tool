@@ -109,10 +109,11 @@ def update_container_status (db, cl, id, new_values = {}) :
             suspended = False
     status = cl.get (id, 'status')
     if closed :
-        if new_values :
-            new_values ['status'] = stat_closed
-        else :
-            cl.set (id, status = stat_closed)
+        if False :
+            if new_values :
+                new_values ['status'] = stat_closed
+            else :
+                cl.set (id, status = stat_closed)
     elif suspended :
         if new_values :
             new_values ['status'] = stat_susp
@@ -140,21 +141,46 @@ def composed_of_updated (db, cl, nodeid, new_values) :
         update_container_status (db, cl, nodeid, new_values)
 # end def composed_of_updated
 
+def check_container_status (db, cl, nodeid, new_values) :
+    """ Don't allow closing of container with open issues.
+        We only need to check the first level, because
+        container-children will not be in status closed if they have
+        open children.
+    """
+    closed = db.status.lookup ('closed')
+    open   = db.status.lookup ('open')
+    if 'status' not in new_values :
+        return
+    status = new_values ['status']
+    if status not in (open, closed) :
+        open_n   = db.status.get (open,   'name')
+        closed_n = db.status.get (closed, 'name')
+        raise Reject, _ \
+            ("Container status must be %(open_n)s or %(closed_n)s") % locals ()
+    if status != closed :
+        return
+    composed_of = new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
+    if not composed_of :
+        return
+    for child in composed_of :
+        if cl.get (child, 'status') != closed :
+            raise Reject, _ ("Can't close container with non-closed children")
+# end def check_container_status
+
 def check_part_of (db, cl, nodeid, new_values) :
     p_id = new_values.get ('part_of')
+    if not p_id and nodeid :
+        p_id = cl.get (nodeid, 'part_of')
     if not p_id :
         return
-    obsolete = db.kind.lookup ('Obsolete')
-    mistaken = db.kind.lookup ('Mistaken')
+    obsolete = db.kind.lookup   ('Obsolete')
+    mistaken = db.kind.lookup   ('Mistaken')
     part_of = cl.getnode (p_id)
     if part_of.kind in (mistaken, obsolete) :
         raise Reject, _ ("May not be part of Obsolete or Mistaken container")
     open   = db.status.lookup ('open')
-    closed = db.status.lookup ('closed')
-    if part_of.status not in (open, closed) :
-        raise Reject, _ ("Parent container must be in state open or closed")
-    if part_of.status == closed and not part_of.composed_of :
-        raise Reject, _ ("Tried to make this issue part of a closed issue")
+    if part_of.status != open :
+        raise Reject, _ ("Parent container must be in state open")
 # end def check_part_of
 
 def no_autoclose_container (db, cl, nodeid, new_values) :
@@ -341,10 +367,18 @@ def init (db) :
         db.issue.audit ("create", loopchecks)
         db.issue.audit ("create", check_part_of)
         db.issue.audit ("set",    check_part_of)
-        db.issue.react ("set",    status_updated,           priority =  49)
+        db.issue.audit ("set",    check_container_status)
+        # No longer automagically open/close containers, instead
+        # - Don't allow adding issue to closed container
+        # - Don't allow re-open of closed issue in closed container
+        # - forbit all other operations on issues in closed container
+        # - Don't allow closing of container with non-closed issues
+        # -> see check_part_of
+        if False :
+            db.issue.react ("set",    status_updated,           priority =  49)
+            db.issue.audit ("set",    composed_of_updated,      priority = 200)
+            db.issue.audit ("set",    composed_of_updated,      priority = 200)
         db.issue.react ("set",    update_children,          priority =  50)
-        db.issue.audit ("set",    composed_of_updated,      priority = 200)
-        db.issue.audit ("set",    composed_of_updated,      priority = 200)
     if 'maturity_index' in db.issue.properties :
         db.issue.audit ("set",    set_maturity_index,       priority = 300)
         db.issue.audit ("create", set_maturity_index,       priority = 300)
