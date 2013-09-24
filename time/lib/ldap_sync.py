@@ -77,6 +77,7 @@ class LDAP_Roundup_Sync (object) :
         self.cfg            = db.config.ext
         self.update_ldap    = update_ldap
         self.update_roundup = update_roundup
+        self.objectclass    = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
 
         for k in 'update_ldap', 'update_roundup' :
             if getattr (self, k) is None :
@@ -319,7 +320,8 @@ class LDAP_Roundup_Sync (object) :
     # end def set_roundup_email_address
 
     def get_all_ldap_usernames (self) :
-        for r in self.paged_search_iter ('(objectclass=person)', ['uid']) :
+        q = '(objectclass=%s)' % self.objectclass
+        for r in self.paged_search_iter (q, ['uid']) :
             if 'uid' not in r :
                 continue
             yield (r.uid [0])
@@ -378,7 +380,7 @@ class LDAP_Roundup_Sync (object) :
         result = self.ldcon.search_s \
             ( self.cfg.LDAP_BASE_DN
             , ldap.SCOPE_SUBTREE
-            , '(uid=%s)' % username
+            , '(&(uid=%s)(objectclass=%s))' % (username, self.objectclass)
             , None
             )
         return self._get_ldap_user (result)
