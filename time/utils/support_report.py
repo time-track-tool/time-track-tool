@@ -49,10 +49,14 @@ class Support_Report (object) :
         """ Append to all users which are concerned with the customer of
             this support issue.
         """
-        self.append_msg ('', sissue, heading, idx)
+        if not sissue.customer :
+            cstname = '-'
+        else :
+            customer = self.db.customer.getnode (sissue.customer)
+            cstname  = customer.name
+        self.append_msg ('', sissue, heading, idx, cstname)
         if not sissue.customer :
             return
-        customer = self.db.customer.getnode (sissue.customer)
         users = dict.fromkeys (customer.nosy or [])
         if customer.responsible :
             users [customer.responsible] = None
@@ -65,10 +69,10 @@ class Support_Report (object) :
         if not users :
             self.nonosy_customers [customer.id] = customer
         for u in users :
-            self.append_msg (u, sissue, heading, idx)
+            self.append_msg (u, sissue, heading, idx, cstname)
     # end def append_mails
 
-    def append_msg (self, key, sissue, heading, idx) :
+    def append_msg (self, key, sissue, heading, idx, cstname) :
         if key not in self.raw_messages :
             self.raw_messages [key] = [[], []]
         mm = self.raw_messages [key]
@@ -76,9 +80,10 @@ class Support_Report (object) :
             mm [idx].append (heading)
             mm [idx].append \
                 ('Issue Status   Date       Responsible    Classification    '
-                 'Serial Number\n      Title\n      Related Issues'
+                 'Serial Number\n      Customer\n      Title\n'
+                 '      Related Issues\n'
                 )
-        mm [idx].append (self.pretty_issue (sissue))
+        mm [idx].append (self.pretty_issue (sissue, cstname))
     # end def append_msg
 
     def build_mails (self) :
@@ -105,8 +110,11 @@ class Support_Report (object) :
             self.formatted_messages [u] = '\n'.join (parts)
     # end def build_mails
 
-    def pretty_issue (self, sissue) :
-        format = '%5s %-8s %10s %-14.14s %-17.17s %-20.20s\n      %-73.73s%s'
+    def pretty_issue (self, sissue, cstname) :
+        fmt   = \
+            ( '%5s %-8s %10s %-14.14s %-17.17s %-20.20s'
+              '\n      %-73.73s\n      %-73.73s%s\n'
+            )
         pdate = sissue.creation.pretty ('%Y-%m-%d')
         user  = self.db.user.get (sissue.responsible, 'username')
         cls   = self.classification [sissue.classification]
@@ -115,8 +123,10 @@ class Support_Report (object) :
         if sissue.related_issues :
             ri = '\n      %s' % ', '.join (sissue.related_issues)
         i = sissue
-        return format % \
-            (i.id, self.status [i.status], pdate, user, cls, ser, i.title, ri)
+        return fmt % \
+            ( i.id, self.status [i.status], pdate, user, cls, ser
+            , cstname, i.title, ri
+            )
     # end def pretty_issue
 
     def output (self, fp) :
