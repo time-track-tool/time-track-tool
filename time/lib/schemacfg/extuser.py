@@ -50,7 +50,7 @@ def security (db, ** kw) :
         ]
     prop_perms = \
         [ ( "user",        "View", ["External"]
-          , ("username", "nickname")
+          , ("username", "nickname", "status")
           )
         , ( "category",    "View", ["External"]
           , ("name", )
