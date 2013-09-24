@@ -3,7 +3,7 @@
 import xmlrpclib
 from   mod_python import apache
 
-url = 'https://%(username)s:%(password)s@time-tracker.vie.at.tttech.ttt/ttt/'
+url = 'https://%(username)s:%(password)s@issue-tracker.vie.at.tttech.ttt/ttt/xmlrpc'
 
 def authenhandler (req) :
     """Called by mod_python to handle Apache's authentication phase"""
