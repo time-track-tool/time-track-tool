@@ -149,7 +149,7 @@ def check_container_status (db, cl, nodeid, new_values) :
     """
     closed = db.status.lookup ('closed')
     open   = db.status.lookup ('open')
-    if 'status' not in new_values :
+    if 'status' not in new_values or not composed_of :
         return
     status = new_values ['status']
     if status not in (open, closed) :
@@ -160,8 +160,6 @@ def check_container_status (db, cl, nodeid, new_values) :
     if status != closed :
         return
     composed_of = new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
-    if not composed_of :
-        return
     for child in composed_of :
         if cl.get (child, 'status') != closed :
             raise Reject, _ ("Can't close container with non-closed children")
