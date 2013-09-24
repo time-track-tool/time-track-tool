@@ -27,10 +27,10 @@ def authenhandler (req) :
         status   = server.display ('user%s' % userid, 'status') ['status']
         status   = server.display ('user_status%s' % status, 'name') ['name']
     except xmlrpclib.Fault, err :
-        log.error (str (err))
+        log.error ("User %s: %s" % (username, str (err)))
         return apache.HTTP_UNAUTHORIZED
     except xmlrpclib.ProtocolError, err :
-        log.error (str (err))
+        log.error ("User %s: %s" % (username, str (err)))
         return apache.HTTP_UNAUTHORIZED
     if status != 'external' :
         log.warn ("Try to login from non-external user %s" % username)
