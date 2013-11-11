@@ -189,7 +189,7 @@ class LDAP_Roundup_Sync (object) :
                 , get_name
                 , self.cls_lookup (self.db.org_location)
                 )
-        if 'picture' in props :
+        if 'pictures' in props :
             attr_u ['pictures'] = \
                 ( 'thumbnailPhoto'
                 , get_picture
@@ -456,7 +456,7 @@ class LDAP_Roundup_Sync (object) :
     # end def ldap_picture
 
     def paged_search_iter (self, filter, attrs = None) :
-        # Test vor version 2.3 API
+        # Test for version 2.3 API
         try :
             lc = SimplePagedResultsControl \
                 (ldap.LDAP_CONTROL_PAGE_OID, True, (self.page_size, ''))
