@@ -94,8 +94,10 @@ def new_freeze_record (db, cl, nodeid, new_values) :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
     date = new_values ['date']
     user = new_values ['user']
-    if date >= Date ('.-10d') :
-        raise Reject, _ ("Freezing only for dates >= 10 days in the past")
+    days = getattr (db.config.ext, 'TTT_FREEZE_DAYS', '10')
+    if date >= Date ('.-%sd' % days) :
+        raise Reject, _ \
+            ("Freezing only for dates >= %s days in the past" % days)
     date.hour = date.minute = date.second = 0
     if 'frozen' not in new_values :
         new_values ['frozen'] = True
