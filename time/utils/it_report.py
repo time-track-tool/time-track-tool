@@ -33,14 +33,19 @@ class IT_Report (object) :
     def build_mails (self) :
         header = '   ID Status   Date       Title'
         format = '%5s %-8s %10s %-53.53s'
+        fmt2   = ' ' * 14 + ' %-63.63s'
         for i in self.issues :
             pdate = i.creation.pretty ('%Y-%m-%d')
             key   = i.responsible
             if key not in self.messages :
                 self.messages [key] = []
                 self.messages [key].append (header)
+                self.messages [key].append ('')
             self.messages [key].append \
                 (format % (i.id, self.status [i.status], pdate, i.title))
+            self.messages [key].append \
+                (fmt2 % (self.db.config.TRACKER_WEB + i.cl.classname + i.id))
+            self.messages [key].append ('')
         formatted_messages = {}
         for u, v in self.messages.iteritems () :
             formatted_messages [u] = '\n'.join (v)
