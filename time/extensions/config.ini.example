@@ -1,0 +1,18 @@
+[ldap]
+uri      = ldap://ldap02.example.com:389
+bind_dn  = CN=system roundup-ldap,OU=users,OU=vie,OU=ttt,DC=ds1,DC=internal
+password = geheim
+base_dn  = OU=company,DC=ds1,DC=internal
+update_ldap    = False
+update_roundup = True
+
+[imap]
+#host = example.net
+##port is default
+
+[limit]
+picture_size = 10k
+file_size    = 100k
+
+[ttt]
+freeze_days = 0
