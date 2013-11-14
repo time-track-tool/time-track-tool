@@ -8,6 +8,7 @@ from roundup  import instance
 from optparse import OptionParser
 
 splitre = re.compile (r'[ +_/&-]+')
+
 def normalize_name (name) :
     """ Normalize a name from different case etc.
         We assume unicode input.
@@ -40,105 +41,138 @@ def normalize_name (name) :
     return x
 # end def normalize_name
 
-def update_table (cls, nodedict, usedict, key, params) :
-    if key in nodedict :
-        # Update name on first match if we have a new spelling
-        if not usedict [key] and nodedict [key].name != params ['name'] :
-            cls.set (nodedict [key].id, name = params ['name'])
-    else :
-        id = cls.create (** params)
-        nodedict [key] = db.prodcat.getnode (id)
-    usedict [key] = True
-    return nodedict [key]
-# end def update_table
+class Product_Sync (object) :
 
-dir     = os.getcwd ()
+    levels  = \
+        { 'Product Line'     : 1
+        , 'Product Use Case' : 2
+        , 'Product Family'   : 3
+        , 'Artikelnummer'    : 4
+        }
 
-cmd = OptionParser ()
-cmd.add_option \
-    ( '-d', '--directory'
-    , dest    = 'dir'
-    , help    = 'Tracker instance directory'
-    , default = dir
-    )
-cmd.add_option \
-    ( '-u', '--update'
-    , dest   = 'update'
-    , help   = 'Really do synchronisation'
-    , action = 'store_true'
-    )
-cmd.add_option \
-    ( '-v', '--verbose'
-    , dest   = 'verbose'
-    , help   = 'Verbose output'
-    , action = 'store_true'
-    )
-opt, args = cmd.parse_args ()
-if len (args) != 1 :
-    cmd.error ('Need input file')
-    sys.exit  (23)
+    def __init__ (self, opt, args) :
+        self.opt      = opt
+        self.args     = args
+        tracker       = instance.open (opt.dir)
+        self.db       = db = tracker.open ('admin')
+        self.prodcats = {}
+        self.prodused = {}
+        for id in db.prodcat.getnodeids (retired = False) :
+            pd  = db.prodcat.getnode (id)
+            key = (normalize_name (pd.name.decode ('utf-8')), pd.level)
+            self.prodused [key] = False
+            self.prodcats [key] = pd.id
 
-tracker = instance.open (opt.dir)
-db      = tracker.open ('admin')
+        self.bu_s     = {}
+        self.bu_used  = {}
+        for id in db.business_unit.getnodeids (retired = False) :
+            bu  = db.business_unit.getnode (id)
+            key = normalize_name (bu.name.decode ('utf-8'))
+            self.bu_used [key] = False
+            self.bu_s    [key] = bu.id
 
-prodcats = {}
-prodused = {}
-for id in db.prodcat.getnodeids (retired = False) :
-    pd  = db.prodcat.getnode (id)
-    key = (normalize_name (pd.name.decode ('utf-8')), pd.level)
-    prodused [key] = False
-    prodcats [key] = pd
+        self.products  = {}
+        self.pr_used   = {}
+        for id in db.product.getnodeids (retired = False) :
+            pr  = db.product.getnode (id)
+            key = normalize_name (pr.name.decode ('utf-8'))
+            self.pr_used  [key] = False
+            self.products [key] = pr.id
+    # end def __init__
 
-business_units = {}
-bu_used        = {}
-for id in db.business_unit.getnodeids (retired = False) :
-    bu  = db.business_unit.getnode (id)
-    key = normalize_name (pd.name.decode ('utf-8'))
-    bu_used        [key] = False
-    business_units [key] = bu
+    def sync (self) :
+        dr = DictReader (open (self.args [0], 'r'), delimiter = '\t')
 
-products = {}
-pr_used  = {}
-for id in db.product.getnodeids (retired = False) :
-    pr  = db.product.getnode (id)
-    key = normalize_name (pr.name.decode ('utf-8'))
-    pr_used  [key] = False
-    products [key] = pr
+        for rec in dr :
+            for k, lvl in self.levels.iteritems () :
+                v = rec [k].strip ().decode ('latin1')
+                if not v or v == '0' or v == '1' :
+                    continue
+                key = (normalize_name (v), lvl)
+                par = dict \
+                    (name = v.encode ('utf-8'), level = lvl, valid = True)
+                r = self.update_table \
+                    (self.db.prodcat, self.prodcats, self.prodused, key, par)
+                if lvl == 4 :
+                    pc4 = r
 
-dr = DictReader (open (args [0], 'r'), delimiter = '\t')
-levels = \
-    { 'Product Line'     : 1
-    , 'Product Use Case' : 2
-    , 'Product Family'   : 3
-    , 'Artikelnummer'    : 4
-    }
+            v   = rec ['Selling BU'].decode ('latin1')
+            key = normalize_name (v)
+            par = dict (name = v.encode ('utf-8'), valid = True)
+            bu  = None
+            if v and v != 'ALL-BUSINESS-UNITS' and v != '0' :
+                bu  = self.update_table \
+                    (self.db.business_unit, self.bu_s, self.bu_used, key, par)
 
-for rec in dr :
-    for k, lvl in levels.iteritems () :
-        v = rec [k].strip ().decode ('latin1')
-        if not v or v == '0' or v == '1' :
-            continue
-        key = (normalize_name (v), lvl)
-        par = dict (name = v.encode ('utf-8'), level = lvl, valid = True)
-        r = update_table (db.prodcat, prodcats, prodused, key, par)
-        if lvl == 4 :
-            pc4 = r
+            v   = rec ['Artikelbeschreibung'].decode ('latin1')
+            key = normalize_name (v)
+            par = dict \
+                ( name          = v.encode ('utf-8')
+                , prodcat       = pc4
+                , business_unit = bu
+                , is_series     = False
+                , valid         = True
+                )
+            self.update_table \
+                (self.db.product, self.products, self.pr_used, key, par)
+        self.validity (self.db.prodcat,       self.prodcats, self.prodused)
+        self.validity (self.db.business_unit, self.bu_s,     self.bu_used)
+        self.validity (self.db.product,       self.products, self.pr_used)
+        if self.opt.update :
+            self.db.commit()
+    # end def sync
 
-    v   = rec ['Selling BU'].decode ('latin1')
-    key = normalize_name (v)
-    par = dict (name = v.encode ('utf-8'), valid = True)
-    bu  = update_table (db.business_unit, business_units, bu_used, key, par)
+    def update_table (self, cls, nodedict, usedict, key, params) :
+        if key in nodedict :
+            # Update name on first match if we have a new spelling
+            if not usedict [key] :
+                name = cls.get (nodedict [key], 'name')
+                if name != params ['name'] :
+                    cls.set (nodedict [key], name = params ['name'])
+        else :
+            id = cls.create (** params)
+            nodedict [key] = id
+        usedict [key] = True
+        return nodedict [key]
+    # end def update_table
 
-    v   = rec ['Artikelbeschreibung'].decode ('latin1')
-    key = normalize_name (v)
-    par = dict \
-        ( name          = v.encode ('utf-8')
-        , prodcat       = pc4.id
-        , business_unit = bu.id
-        , is_series     = False
-        , valid         = True
+    def validity (self, cls, nodedict, usedict) :
+        for k, v in usedict.iteritems () :
+            id = nodedict [k]
+            cls.set (id, valid = v)
+    # end def validity
+
+# end class Product_Sync
+
+def main () :
+    dir     = os.getcwd ()
+
+    cmd = OptionParser ()
+    cmd.add_option \
+        ( '-d', '--directory'
+        , dest    = 'dir'
+        , help    = 'Tracker instance directory'
+        , default = dir
         )
-    update_table (db.product, products, pr_used, key, par)
+    cmd.add_option \
+        ( '-u', '--update'
+        , dest   = 'update'
+        , help   = 'Really do synchronisation'
+        , action = 'store_true'
+        )
+    cmd.add_option \
+        ( '-v', '--verbose'
+        , dest   = 'verbose'
+        , help   = 'Verbose output'
+        , action = 'store_true'
+        )
+    opt, args = cmd.parse_args ()
+    if len (args) != 1 :
+        cmd.error ('Need input file')
+        sys.exit  (23)
 
-if opt.update :
-    db.commit()
+    ps = Product_Sync (opt, args)
+    ps.sync ()
+
+if __name__ == '__main__' :
+    main ()
