@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -46,51 +46,14 @@ def init \
     , Number
     , ** kw
     ) :
-    sup_status = Class \
-        ( db
-        , ''"sup_status"
-        , name             = String    ()
-        , description      = String    ()
-        , transitions      = Multilink ("sup_status")
-        , order            = Number    ()
-	, relaxed          = Boolean   ()
-        )
-    sup_status.setkey ("name")
 
-    sup_prio = Class \
+    business_unit = Class \
         ( db
-        , ''"sup_prio"
+        , ''"business_unit"
         , name             = String    ()
-        , order            = Number    ()
+        , valid            = Boolean   ()
         )
-    sup_prio.setkey ("name")
-
-    sup_classification = Class \
-        ( db
-        , ''"sup_classification"
-        , name             = String    ()
-        )
-    sup_classification.setkey ("name")
-
-    Superseder_Issue_Class \
-        ( db
-        , ''"support"
-        , category         = Link      ("category",   do_journal='no')
-        , closed           = Date      ()
-        , confidential     = Boolean   ()
-        , numeric_effort   = Number    ()
-        , prio             = Link      ("sup_prio",   do_journal='no')
-        , release          = String    ()
-        , status           = Link      ("sup_status", do_journal='no')
-        , serial_number    = String    ()
-        , related_issues   = Multilink ("issue")
-        , customer         = Link      ("customer",   do_journal='no')
-        , emails           = Multilink ("contact",    do_journal='no')
-        , send_to_customer = Boolean   ()
-        , classification   = Link      ("sup_classification", do_journal='no')
-        , cc               = String    ()
-        , bcc              = String    ()
-        )
+    business_unit.setkey ("name")
 
     customer = Person_Class \
         ( db
@@ -101,8 +64,14 @@ def init \
         , nosygroups       = Multilink ("mailgroup")
         , maildomain       = String    ()
         , fromaddress      = String    ()
+        , rmafrom          = String    ()
+        , suppclaimfrom    = String    ()
         , confidential     = Boolean   ()
         , responsible      = Link      ("user")
+        , business_unit    = Link      ("business_unit")
+        , is_customer      = Boolean   ()
+        , is_supplier      = Boolean   ()
+        , customer_code    = String    ()
         )
     customer.setkey ("name")
 
@@ -114,6 +83,94 @@ def init \
         , default_nosy     = Boolean   ()
         )
     mailgroup.setkey ("name")
+
+    product = Class \
+        ( db
+        , ''"product"
+        , name             = String    ()
+        , prodcat          = Link      ("prodcat")
+        , business_unit    = Link      ("business_unit")
+        , is_series        = Boolean   ()
+        , valid            = Boolean   ()
+        )
+    product.setkey ("name")
+
+    sup_classification = Class \
+        ( db
+        , ''"sup_classification"
+        , name             = String    ()
+        , valid            = Boolean   ()
+        )
+    sup_classification.setkey ("name")
+
+    sup_execution = Class \
+        ( db
+        , ''"sup_execution"
+        , name             = String    ()
+        , order            = Number    ()
+        )
+    sup_execution.setkey ("name")
+
+    sup_prio = Class \
+        ( db
+        , ''"sup_prio"
+        , name             = String    ()
+        , order            = Number    ()
+        )
+    sup_prio.setkey ("name")
+
+    sup_status = Class \
+        ( db
+        , ''"sup_status"
+        , name             = String    ()
+        , description      = String    ()
+        , transitions      = Multilink ("sup_status")
+        , order            = Number    ()
+	, relaxed          = Boolean   ()
+        )
+    sup_status.setkey ("name")
+
+    sup_type = Class \
+        ( db
+        , ''"sup_type"
+        , name             = String    ()
+        , order            = Number    ()
+        )
+    sup_type.setkey ("name")
+
+    Superseder_Issue_Class \
+        ( db
+        , ''"support"
+        , category         = Link      ("category",   do_journal='no')
+        , closed           = Date      ()
+        , satisfied        = Date      ()
+        , first_reply      = Date      ()
+        , analysis_start   = Date      ()
+        , analysis_end     = Date      ()
+        , goods_received   = Date      ()
+        , goods_sent       = Date      ()
+        , confidential     = Boolean   ()
+        , numeric_effort   = Number    ()
+        , prio             = Link      ("sup_prio",   do_journal='no')
+        , release          = String    ()
+        , status           = Link      ("sup_status", do_journal='no')
+        , serial_number    = String    ()
+        , related_issues   = Multilink ("issue")
+        , related_support  = Multilink ("support")
+        , customer         = Link      ("customer",   do_journal='no')
+        , emails           = Multilink ("contact",    do_journal='no')
+        , send_to_customer = Boolean   ()
+        , classification   = Link      ("sup_classification", do_journal='no')
+        , cc               = String    ()
+        , bcc              = String    ()
+        , type             = Link      ("sup_type")
+        , execution        = Link      ("sup_execution")
+        , number_effected  = Number    ()
+        , warranty         = Boolean   ()
+        , lot              = String    ()
+        , product          = Link      ("product")
+        , prodcat          = Link      ("prodcat")
+        )
 
 # end def init
 
@@ -132,6 +189,10 @@ def security (db, ** kw) :
     classes = \
         [ ("sup_status",     ["User"],                 [])
         , ("sup_prio",       ["User"],                 [])
+        , ("sup_type",       ["User"],                 [])
+        , ("sup_execution",  ["User"],                 [])
+        , ("business_unit",  ["User"],                 [])
+        , ("product",        ["User"],                 [])
         , ("support",        ["SupportAdmin"],         ["SupportAdmin"])
         , ("customer",       ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("contact",        ["User", "SupportAdmin"], ["SupportAdmin"])

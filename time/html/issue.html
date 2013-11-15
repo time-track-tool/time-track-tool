@@ -28,12 +28,16 @@
    <span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
    <a tal:attributes="href string:issue${item/id};
                       class item/status;
-                      title python:item.title.plain ()"
+                      title python:item.title.plain ();"
+      tal:define="hsv python: hasattr (item, 'severity') or ''
+                 ;sv  python: (getattr (item, 'severity', '')
+                          and str (item.severity.abbreviation) + ', '
+                          or hsv and '-, ')"
       tal:content="structure python:
-       '<code>%s</code> (<code>%s, %s, %s</code>): %s' %
+       '<code>%s</code> (<code>%s, %s%s</code>): %s' %
         ( str (item.id)
         , item.status.plain () [0].upper ()
-        , (item.severity and item.severity.abbreviation or '-')
+        , sv
         , utils.nickname (db, item.responsible).lower ()
         , utils.truncate_chars (item.title.plain (), 40, '...')
         )"/>

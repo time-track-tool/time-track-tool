@@ -56,8 +56,10 @@ def init \
         ( db, "prodcat"
         , name                = String    (indexme = 'no')
         , valid               = Boolean   ()
+        , level               = Number    ()
+        , parent              = Link      ("prodcat")
         )
-    prodcat.setkey ("name")
+    prodcat.setlabelprop ("name")
 
     category = Class \
         ( db, "category"
@@ -170,7 +172,7 @@ def security (db, ** kw) :
         , ("category",          ["User"],        ["Issue_Admin"])
         , ("kind",              ["User"],        ["Issue_Admin"])
         , ("msg_keyword",       ["User"],        ["Issue_Admin"])
-        , ("prodcat",           ["User"],        ["Issue_Admin"])
+        , ("prodcat",           ["User"],        [])
         , ("status",            ["User"],        ["Issue_Admin"])
         , ("status_transition", ["User"],        ["Issue_Admin"])
         , ("severity",          ["User"],        ["Issue_Admin"])

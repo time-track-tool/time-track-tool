@@ -27,6 +27,13 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'type')"/>
+      <td tal:content="structure python:context.type.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'execution')"/>
+      <td tal:content="structure python:context.execution.menu ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu ()"/>
@@ -36,84 +43,99 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'release')"/>
-      <td tal:content="structure python:context.release.field ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'serial_number')"/>
-      <td tal:content="structure python:context.serial_number.field ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
           (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu (translate=0)"/>
       <th tal:content="structure python:utils.fieldname (classname, 'prio')"/>
       <td tal:content="structure python:context.prio.menu ()"/>
      </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'classification')"/>
       <td tal:content="structure python:context.classification.menu
           (translate=0)"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'release')"/>
+      <td tal:content="structure python:context.release.field ()"/>
+     </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'product')"/>
+      <td>
+       <tal:block tal:content="structure python:context.product.field () "/>
+       <tal:block tal:replace="structure python:db.product.classhelp
+            ( 'name,prodcat.name'
+            , property='product'
+            , inputtype='radio'
+            , width='600'
+            , pagesize=5000
+            , filter='is_valid=True'
+            )"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'prodcat')"/>
+      <td tal:content="structure python:context.prodcat.menu (translate=0)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'lot')"/>
+      <td tal:content="structure python:context.lot.field () "/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'warranty')"/>
+      <td tal:content="structure python:context.warranty.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'analysis_start')"/>
+      <td tal:content="structure context/analysis_start/field"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'analysis_end')"/>
+      <td tal:content="structure context/analysis_end/field"/>
+     <tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'goods_received')"/>
+      <td tal:content="structure context/goods_received/field"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'goods_sent')"/>
+      <td tal:content="structure context/goods_sent/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'first_reply')"/>
+      <td tal:content="context/first_reply/plain"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'satisfied')"/>
+      <td tal:content="context/satisfied/plain"/>
+     <tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'closed')"/>
       <td tal:content="context/closed/plain"/>
      </tr>
-     <tr><td>&nbsp;</td></tr>
+
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'customer')"/>
+          (classname, 'serial_number')"/>
       <td>
-       <tal:block tal:content="structure python:context.customer.field ()"/>
-       <tal:block tal:replace="structure python:db.customer.classhelp
-            ( ','.join (i for i in 'name,firstname,lastname,function'.split(',')
-                        if i in db._db.customer.properties)
-            , property='customer'
-            , inputtype='radio'
-            , width='600'
-            , pagesize=500
-            , filter='is_valid=True'
-            )"/>
+       <textarea tal:content="python:context.serial_number or ''"
+        rows="4" name="serial_number" wrap="hard" cols="40" />
       </td>
-      <td colspan="2" tal:condition="context/id"
-          tal:content="structure python:utils.ExtProperty
-           ( utils, context.customer.name
-           , item = context.customer
-           ).formatlink ()"/>
-     </tr>
-     <tr tal:condition="python: context.id and context.customer"
-         tal:repeat="ct python:sorted
-         ( [c for c in context.customer.contacts if c.contact_type.name != 'Email']
-         , key = lambda x : (x.contact_type.order, x.contact)
-         )">
-      <th style="vertical-align:top"
-          tal:content="structure python:utils.ExtProperty
-          (utils, ct.contact_type, item = ct).formatlink () + '&nbsp;'"/>
-      <td>
-       <a tal:condition="python: ct.contact_type.url_template"
-          tal:content="ct/contact/plain" tal:attributes="href python:
-          ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
-       <span tal:condition="python: not ct.contact_type.url_template"
-             tal:content="ct/contact/plain"/>
-      </td>
-      <td tal:content="ct/description/plain" colspan="2"/>
-     </tr>
-     <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'responsible')"/>
-      <td>
-       <tal:block tal:replace="structure python:context.responsible.field ()"/>
-       <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
-      </td>
+          (classname, 'number_effected')"/>
+      <td tal:content="structure context/number_effected/field"/>
      </tr>
+
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'related_issues')"/>
       <td tal:content="structure python:context.related_issues.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'related_support')"/>
+      <td tal:content="structure python:context.related_support.field ()"/>
      </tr>
      <tr>
       <th/>
@@ -121,6 +143,17 @@
        <font size="-1" tal:define=
         " issues python: context.related_issues
         ; attr   python: 'related_issues'
+        ; expand python: False
+        ; hide   python: False
+        ">
+        <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+       </font>
+      </td>
+      <th/>
+      <td tal:condition="context/related_support/plain">
+       <font size="-1" tal:define=
+        " issues python: context.related_support
+        ; attr   python: 'related_support'
         ; expand python: False
         ; hide   python: False
         ">
@@ -146,6 +179,47 @@
        </td>
       </tal:block>
      </tr>
+     <tr><td>&nbsp;</td></tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'customer')"/>
+      <td>
+       <tal:block tal:content="structure python:context.customer.field ()"/>
+       <tal:block tal:replace="structure python:db.customer.classhelp
+            ( ','.join (i for i in 'name,firstname,lastname,function'.split(',')
+                        if i in db._db.customer.properties)
+            , property='customer'
+            , inputtype='radio'
+            , width='600'
+            , pagesize=500
+            , filter='is_valid=True'
+            )"/>
+      </td>
+      <td colspan="2" tal:condition="context/id"
+          tal:content="structure python:utils.ExtProperty
+           ( utils, context.customer.name
+           , item = context.customer
+           ).formatlink ()"/>
+     </tr>
+     <tr tal:condition="python: context.id and context.customer"
+         tal:repeat="ct python:sorted
+         ( [c for c in context.customer.contacts
+            if c.contact_type.name != 'Email'
+           ]
+         , key = lambda x : (x.contact_type.order, x.contact)
+         )">
+      <th style="vertical-align:top"
+          tal:content="structure python:utils.ExtProperty
+          (utils, ct.contact_type, item = ct).formatlink () + '&nbsp;'"/>
+      <td>
+       <a tal:condition="python: ct.contact_type.url_template"
+          tal:content="ct/contact/plain" tal:attributes="href python:
+          ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
+       <span tal:condition="python: not ct.contact_type.url_template"
+             tal:content="ct/contact/plain"/>
+      </td>
+      <td tal:content="ct/description/plain" colspan="2"/>
+     </tr>
      <tr tal:condition="python: context.id and context.customer"
          tal:define="email python:db._db.contact_type.lookup ('Email')">
       <th tal:content="structure python:utils.fieldname
@@ -156,15 +230,23 @@
           (classname, 'send_to_customer')"/>
       <td tal:content="structure python:context.send_to_customer.field ()"/>
      </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'cc')"/>
       <td colspan="3"
           tal:content="structure python:context.cc.field (size=70)"/>
-     <tr>
      </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'bcc')"/>
       <td colspan="3"
           tal:content="structure python:context.bcc.field (size=70)"/>
+     </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'responsible')"/>
+      <td>
+       <tal:block tal:replace="structure python:context.responsible.field ()"/>
+       <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
+      </td>
      </tr>
     </tal:block>
    </tal:block>

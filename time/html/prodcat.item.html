@@ -1,0 +1,54 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block 
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1"
+       tal:content="Classname"></span>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+   " use_labelprop  python: True
+   ; msg_box_height python: 3
+   ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'parent')"/>
+      <td tal:content="structure python:
+          (context.parent or '') and utils.ExtProperty
+              (utils, context.parent, item = context).formatlink ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'level')"/>
+      <td tal:content="python:context.level.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'valid')"/>
+      <td tal:content="python:context.valid.plain ()"/>
+     </tr>
+     <tr>
+      <th/>
+      <td colspan="3">
+       <tal:block tal:content="structure python:utils.prodcat_parents
+            (db, utils, context)"/>
+      </td>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

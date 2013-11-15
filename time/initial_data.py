@@ -925,8 +925,14 @@ if 'sup_status' in db.classes :
         , description = 'Done support issue'
         , order       = 2
         )
-    db.sup_status.set (open,   transitions = [closed])
-    db.sup_status.set (closed, transitions = [open])
+    satisfied = db.sup_status.create \
+        ( name        = 'satisfied'
+        , description = 'Customer is satisfied'
+        , order       = 3
+        )
+    db.sup_status.set (open,      transitions = [closed, satisfied])
+    db.sup_status.set (closed,    transitions = [open, satisfied])
+    db.sup_status.set (satisfied, transitions = [open, closed])
 
 if 'sup_prio' in db.classes :
     db.sup_prio.create (name = "assistance",                          order = 2)
@@ -989,3 +995,15 @@ if 'project_type' in db.classes :
     db.project_type.create (order = 3, name = 'Maintenance')
     db.project_type.create (order = 4, name = 'Support')
     db.project_type.create (order = 5, name = 'Engineering')
+if 'sup_type' in db.classes :
+    db.sup_type.create (order = 1, name = 'Support Issue')
+    db.sup_type.create (order = 2, name = 'RMA Issue')
+    db.sup_type.create (order = 3, name = 'Supplier Claim')
+    db.sup_type.create (order = 4, name = 'Other')
+if 'sup_execution' in db.classes :
+    db.sup_execution.create (order = 1, name = 'Repair')
+    db.sup_execution.create (order = 2, name = 'Replace')
+    db.sup_execution.create (order = 3, name = 'Refund')
+    db.sup_execution.create (order = 4, name = 'Return')
+if 'prodcat' in db.classes :
+    db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _level);')

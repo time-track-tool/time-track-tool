@@ -25,20 +25,43 @@
    ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
-     <tr>
+     <tr tal:condition="python: 'business_unit' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'business_unit')"/>
+      <td tal:content="structure python:context.business_unit.plain ()"/>
+     </tr>
+     <tr tal:condition="python: 'is_series' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'is_series')"/>
+      <td tal:content="structure python:context.is_series.plain ()"/>
+     </tr>
+     <tr tal:condition="python: 'valid' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'valid')"/>
+      <td tal:content="structure python:context.valid.plain ()"/>
+     </tr>
+     <tr tal:condition="python: 'prodcat' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'prodcat')"/>
+      <td colspan="3">
+       <tal:block tal:content="structure python:utils.prodcat_parents
+            (db, utils, context.prodcat)"/>
+      </td>
+     </tr>
+     <tr tal:condition="python: 'description' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"
        colspan="3"/>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'status' in bclass.properties">
       <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'product_group')"/>
       <td tal:content="structure python:context.product_group.menu ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'measuring_unit' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'measuring_unit')"/>
       <td tal:content="structure python:context.measuring_unit.menu ()"/>
@@ -46,7 +69,7 @@
           (classname, 'packaging_unit')"/>
       <td tal:content="structure python:context.packaging_unit.menu ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'minimum_inventory' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'minimum_inventory')"/>
       <td tal:content="structure python:context.minimum_inventory.field ()"/>
@@ -54,7 +77,7 @@
           (classname, 'shelf_life_code')"/>
       <td tal:content="structure python:context.shelf_life_code.menu ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'use_lot' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'use_lot')"/>
       <td tal:content="structure python:context.use_lot.field ()"/>
@@ -62,7 +85,7 @@
           (classname, 'proceeds_group')"/>
       <td tal:content="structure python:context.proceeds_group.menu ()"/>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'product_price' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'product_price')"/>
       <td colspan="3">

@@ -8,19 +8,51 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['status'],          multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['product_group'],   multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['measuring_unit'],  multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['packaging_unit'],  multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['minimum_inventory'])
-    , utils.ExtProperty (utils, pdict ['shelf_life_code'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['proceeds_group'],  multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['use_lot'])
+   prp python:
+    ( ('id',                {})
+    , ('name',              {})
+    , ('description',       {})
+    , ('status',            dict (multiselect = 1))
+    , ('product_group',     dict (multiselect = 1))
+    , ('measuring_unit',    dict (multiselect = 1))
+    , ('packaging_unit',    dict (multiselect = 1))
+    , ('minimum_inventory', {})
+    , ('shelf_life_code',   dict (multiselect = 1))
+    , ('proceeds_group',    dict (multiselect = 1))
+    , ('use_lot',           {})
+    , ('business_unit',     dict (multiselect = 1))
+    , ('is_series',         {})
+    , ('valid',             {})
+    , ('prodcat',           dict (filter = dict (level = 4)))
+    , ('prodcat'
+      , dict ( searchname  = 'prodcat.parent'
+             , filter      = dict (level = 3)
+             , searchable  = True
+             , sortable    = True
+             , multiselect = True
+             )
+      )
+    , ('prodcat'
+      , dict ( searchname  = 'prodcat.parent.parent'
+             , filter      = dict (level = 2)
+             , searchable  = True
+             , sortable    = True
+             , multiselect = True
+             )
+      )
+    , ('prodcat'
+      , dict ( searchname  = 'prodcat.parent.parent.parent'
+             , filter      = dict (level = 1)
+             , searchable  = True
+             , sortable    = True
+             , multiselect = True
+             )
+      )
     );
+   props python:
+     [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+       for p in prp if p [0] in pdict
+     ]
    "
   tal:condition="context/is_view_ok">
 

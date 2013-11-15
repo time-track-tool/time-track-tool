@@ -83,14 +83,21 @@ class Product_Sync (object) :
     def sync (self) :
         dr = DictReader (open (self.args [0], 'r'), delimiter = '\t')
 
+        skey = lambda x : x [1]
         for rec in dr :
-            for k, lvl in self.levels.iteritems () :
+            r = pc4 = None
+            for k, lvl in sorted (self.levels.iteritems (), key = skey) :
                 v = rec [k].strip ().decode ('latin1')
                 if not v or v == '0' or v == '1' :
-                    continue
+                    r = None
+                    break
                 key = (normalize_name (v), lvl)
                 par = dict \
-                    (name = v.encode ('utf-8'), level = lvl, valid = True)
+                    ( name   = v.encode ('utf-8')
+                    , level  = lvl
+                    , valid  = True
+                    , parent = r
+                    )
                 r = self.update_table \
                     (self.db.prodcat, self.prodcats, self.prodused, key, par)
                 if lvl == 4 :
@@ -113,8 +120,9 @@ class Product_Sync (object) :
                 , is_series     = False
                 , valid         = True
                 )
-            self.update_table \
-                (self.db.product, self.products, self.pr_used, key, par)
+            if v and v != '0' and pc4 :
+                self.update_table \
+                    (self.db.product, self.products, self.pr_used, key, par)
         self.validity (self.db.prodcat,       self.prodcats, self.prodused)
         self.validity (self.db.business_unit, self.bu_s,     self.bu_used)
         self.validity (self.db.product,       self.products, self.pr_used)
@@ -126,9 +134,14 @@ class Product_Sync (object) :
         if key in nodedict :
             # Update name on first match if we have a new spelling
             if not usedict [key] :
-                name = cls.get (nodedict [key], 'name')
-                if name != params ['name'] :
-                    cls.set (nodedict [key], name = params ['name'])
+                node = cls.getnode (nodedict [key])
+                d = {}
+                if node.name != params ['name'] :
+                    d ['name'] = params ['name']
+                if 'parent' in params and node.parent != params ['parent'] :
+                    d ['parent'] = params ['parent']
+                if d :
+                    cls.set (nodedict [key], ** d)
         else :
             id = cls.create (** params)
             nodedict [key] = id

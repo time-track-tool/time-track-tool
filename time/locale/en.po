@@ -1776,7 +1776,7 @@ msgid ""
 msgstr ""
 
 msgid "fromaddress"
-msgstr "From-Address"
+msgstr "Support From-Address"
 
 msgid ""
 "Address in outgoing emails to which the %(Classname)s can reply.\n"
@@ -3054,7 +3054,7 @@ msgid "sensor++type"
 msgstr "Channel type"
 
 msgid "serial_number"
-msgstr "Serial number"
+msgstr "Serial numbers"
 
 msgid "Serial number of hardware item if applicable"
 msgstr ""
@@ -4884,7 +4884,7 @@ msgid "support"
 msgstr "Support issue"
 
 msgid "customer"
-msgstr "Customer"
+msgstr "Customer/Supplier"
 
 msgid "mailgroup"
 msgstr "Email group"
@@ -5187,7 +5187,7 @@ msgid "on_stock"
 msgstr ""
 
 msgid "lot"
-msgstr "Lot number"
+msgstr "Lot code"
 
 msgid "lookalike_street"
 msgstr "Street"
@@ -5275,3 +5275,64 @@ msgstr "Inherit permissions"
 
 msgid "province"
 msgstr "Province"
+
+msgid "sup_type"
+msgstr "Type"
+
+msgid "business_unit"
+msgstr "Business Unit"
+
+msgid "rmafrom"
+msgstr "RMA From-Address"
+
+msgid "suppclaimfrom"
+msgstr "Supplier-Claim From-Address"
+
+msgid "is_supplier"
+msgstr "Is supplier"
+
+msgid "is_customer"
+msgstr "Is customer"
+
+msgid "customer_code"
+msgstr "Customer/Supplier Code"
+
+msgid "is_series"
+msgstr "Series production"
+
+msgid "execution"
+msgstr "Execution"
+
+msgid "sup_execution"
+msgstr "Execution"
+
+msgid "satisfied"
+msgstr "Satisfied"
+
+msgid "first_reply"
+msgstr "First reply"
+
+msgid "analysis_start"
+msgstr "Analysis start"
+
+msgid "analysis_end"
+msgstr "Analysis end"
+
+msgid "goods_received"
+msgstr "Goods received"
+
+msgid "goods_sent"
+msgstr "Goods sent"
+
+msgid "related_support"
+msgstr "Related support issues"
+
+msgid "number_effected"
+msgstr "Number effected"
+
+msgid "warranty"
+msgstr "Warranty in effect"
+
+msgid "level"
+msgstr "Level"
+

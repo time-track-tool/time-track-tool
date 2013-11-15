@@ -1823,7 +1823,13 @@ msgid ""
 msgstr ""
 
 msgid "fromaddress"
-msgstr "Absenderadresse"
+msgstr "Absenderadresse Support"
+
+msgid "rmafrom"
+msgstr "Absenderadresse RMA"
+
+msgid "suppclaimfrom"
+msgstr "Absenderadresse Supplier-Claim"
 
 msgid ""
 "Address in outgoing emails to which the %(Classname)s can reply.\n"
@@ -3129,7 +3135,7 @@ msgid "sensor++type"
 msgstr "Kanaltyp"
 
 msgid "serial_number"
-msgstr "Seriennummer"
+msgstr "Seriennummern"
 
 msgid "Serial number of hardware item if applicable"
 msgstr "Hardware Seriennummer falls vorhanden"
@@ -4985,7 +4991,7 @@ msgid "support"
 msgstr "Support Issue"
 
 msgid "customer"
-msgstr "Kunde"
+msgstr "Kunde/Lieferant"
 
 msgid "mailgroup"
 msgstr "Email Gruppe"
@@ -5431,3 +5437,57 @@ msgstr "Bundesland für diese Person."
 
 #~ msgid "account_number"
 #~ msgstr "Kontonummer"
+
+msgid "sup_type"
+msgstr "Typ"
+
+msgid "business_unit"
+msgstr "Business Unit"
+
+msgid "is_supplier"
+msgstr "ist Lieferant"
+
+msgid "is_customer"
+msgstr "ist Kunde"
+
+msgid "customer_code"
+msgstr "Kunden/Lieferanten-Code"
+
+msgid "is_series"
+msgstr "Serienprodukt"
+
+msgid "execution"
+msgstr "Ausführung"
+
+msgid "sup_execution"
+msgstr "Ausführung"
+
+msgid "satisfied"
+msgstr "zufrieden"
+
+msgid "first_reply"
+msgstr "erste Antwort"
+
+msgid "analysis_start"
+msgstr "Analyse start"
+
+msgid "analysis_end"
+msgstr "Analyse beendet"
+
+msgid "goods_received"
+msgstr "Wareneingang"
+
+msgid "goods_sent"
+msgstr "Warenausgang"
+
+msgid "related_support"
+msgstr "zugehörige Support Issues"
+
+msgid "number_effected"
+msgstr "Anzahl betroffen"
+
+msgid "warranty"
+msgstr "Garantie gültig"
+
+msgid "level"
+msgstr "Ebene"

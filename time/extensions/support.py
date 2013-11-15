@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2011 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2011-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -49,7 +49,19 @@ def has_x_roundup_cc_header (db, msg) :
     return False
 # end def has_x_roundup_cc_header
 
+def prodcat_parents (db, utils, prodcat) :
+    x = []
+    parent = prodcat
+    for n in range (int (prodcat.level), 0, -1) :
+        ep = utils.ExtProperty (utils, parent.name, item = parent)
+        x.append (ep.formatlink ())
+        parent = parent.parent
+    #return '&laquo;&raquo;'.join (x)
+    return '&raquo;'.join (x)
+# end def prodcat_parents
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('has_x_roundup_cc_header', has_x_roundup_cc_header)
+    reg ('prodcat_parents',         prodcat_parents)
 # end def init
