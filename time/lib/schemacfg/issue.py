@@ -54,12 +54,13 @@ def init \
 
     prodcat = Class \
         ( db, "prodcat"
+        , fullname            = String    (indexme = 'no')
         , name                = String    (indexme = 'no')
         , valid               = Boolean   ()
         , level               = Number    ()
         , parent              = Link      ("prodcat")
         )
-    prodcat.setlabelprop ("name")
+    prodcat.setlabelprop ("fullname")
 
     category = Class \
         ( db, "category"

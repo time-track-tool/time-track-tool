@@ -162,8 +162,10 @@
                           'function,address.postalcode,address.city&'
                           '@filter=valid&valid=1&@search_text=&'
                           '@queryname='
+   , ('prodcat', '')    : '@columns=name,level&'
+                          ':filter=status&:pagesize=50&:startwith=0&status=1'
    , ('product', '')    : '@columns=name,product_group,measuring_unit,'
-                          'packaging_unit,minimum_inventory&'
+                          'packaging_unit,minimum_inventory,business_unit&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
    , ('public_holiday', '')
                         : '@columns=id,name,description,date,locations,is_half&'
@@ -342,7 +344,6 @@
      , ('keyword',             'Edit',   '?@template=item', 1)
      , ('status',              'Edit',   '?@template=item', 1)
      , ('doc_issue_status',    'Edit',   '?@template=item', 1)
-     , ('prodcat',             'Edit',   '?@template=item', 1)
      , ('sup_classification',  'Edit',   '?@template=item', 1)
      , ('sup_status',          'Edit',   '?@template=item', 1)
      , ('msg_keyword',         'Edit',   '?@template=item', 1)
@@ -462,6 +463,7 @@
      , ('legalclient',         'View', 1,               ('',''))
      , ('cust_supp',           'View', 1,               ('',''))
      , ('discount_group',      'View', 1,               ('',''))
+     , ('prodcat',             'View', 1,               ('',''))
      , ('product',             'View', 1,               ('',''))
      , ('contact',             'View', 1,               ('',''))
      , ('doc',                 'View', 1,               ('',''))

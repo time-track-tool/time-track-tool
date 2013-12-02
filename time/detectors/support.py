@@ -385,7 +385,47 @@ def set_status (db, cl, nodeid, new_values) :
         new_values ['status'] = db.sup_status.lookup ('open')
 # end def set_status
 
+def check_prodcat (db, cl, nodeid, new_values) :
+    """ Check that prodcat parent linking and level counting is correct,
+        set fullname property.
+    """
+    if 'valid' in new_values and not new_values ['valid'] :
+        return
+    common.require_attributes (_, cl, nodeid, new_values, 'name')
+    if 'name' in new_values :
+        name = new_values ['name']
+    else :
+        name = cl.get (nodeid, 'name')
+    if 'parent' not in new_values :
+        if nodeid :
+            parent = cl.get (nodeid, 'parent')
+        else :
+            parent = None
+    else :
+        parent = new_values ['parent']
+    if parent :
+        parent = cl.getnode (parent)
+    lvl = 1
+    if parent :
+        lvl = parent.level + 1
+    level = new_values.get ('level', lvl)
+    if level != lvl :
+        raise Reject, _ ('Level must be %s' % lvl)
+    if level > 4 :
+        raise Reject, _ ('Max. %s is ') % _ ('level')
+    new_values ['level'] = level
+    fn = [name]
+    if parent :
+        if not parent.fullname :
+            raise Reject, _ ("Parent %s doesn't have fullname") % parent.name
+        fn.append (parent.fullname)
+    new_values ['fullname'] = '.'.join (fn)
+# end def check_prodcat
+
 def init (db) :
+    if 'prodcat' in db.classes :
+        db.prodcat.audit ("set",    check_prodcat)
+        db.prodcat.audit ("create", check_prodcat)
     if 'support' not in db.classes :
         return
     assert (email_ok)
