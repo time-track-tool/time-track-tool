@@ -59,7 +59,8 @@ class Product_Sync (object) :
         self.prodused = {}
         for id in db.prodcat.getnodeids (retired = False) :
             pd  = db.prodcat.getnode (id)
-            key = (normalize_name (pd.name.decode ('utf-8')), pd.level)
+            nn  = normalize_name (pd.name.decode ('utf-8'))
+            key = (nn, pd.parent, pd.level)
             self.prodused [key] = False
             self.prodcats [key] = pd.id
 
@@ -91,7 +92,7 @@ class Product_Sync (object) :
                 if not v or v == '0' or v == '1' :
                     r = None
                     break
-                key = (normalize_name (v), lvl)
+                key = (normalize_name (v), r, lvl)
                 par = dict \
                     ( name   = v.encode ('utf-8')
                     , level  = lvl
@@ -100,6 +101,8 @@ class Product_Sync (object) :
                     )
                 r = self.update_table \
                     (self.db.prodcat, self.prodcats, self.prodused, key, par)
+                if self.opt.verbose :
+                    print "Update Prodcat: %s: %s" % (key, r)
                 if lvl == 4 :
                     pc4 = r
 
@@ -121,8 +124,10 @@ class Product_Sync (object) :
                 , valid         = True
                 )
             if v and v != '0' and pc4 :
-                self.update_table \
+                p = self.update_table \
                     (self.db.product, self.products, self.pr_used, key, par)
+                if self.opt.verbose :
+                    print "Update Product: %s: %s" % (key, p)
         self.validity (self.db.prodcat,       self.prodcats, self.prodused)
         self.validity (self.db.business_unit, self.bu_s,     self.bu_used)
         self.validity (self.db.product,       self.products, self.pr_used)
@@ -140,6 +145,11 @@ class Product_Sync (object) :
                     d ['name'] = params ['name']
                 if 'parent' in params and node.parent != params ['parent'] :
                     d ['parent'] = params ['parent']
+                if 'prodcat' in params and node.prodcat != params ['prodcat'] :
+                    d ['prodcat'] = params ['prodcat']
+                bu = 'business_unit'
+                if bu in params and node.business_unit != params [bu] :
+                    d [bu] = params [bu]
                 if d :
                     cls.set (nodedict [key], ** d)
         else :
@@ -188,4 +198,8 @@ def main () :
     ps.sync ()
 
 if __name__ == '__main__' :
+    import codecs
+    import locale
+    import sys
+    sys.stdout = codecs.getwriter (locale.getpreferredencoding ())(sys.stdout)
     main ()

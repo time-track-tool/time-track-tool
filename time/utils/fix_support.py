@@ -10,9 +10,9 @@ tracker = instance.open (dir)
 db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
 
-n = '_prodcat__name__level_key'
+n = '_prodcat__name__parent_key'
 db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT IF EXISTS %s;' % n)
-db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _level);')
+db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _parent);')
 
 types = \
     [ dict (order = 1, name = 'Support Issue')
