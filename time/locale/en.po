@@ -2747,6 +2747,18 @@ msgstr ""
 msgid "prodcat"
 msgstr "Product category"
 
+msgid "prodcat++parent"
+msgstr "Product category parent"
+
+msgid "prodcat.parent"
+msgstr "Product category level 3"
+
+msgid "prodcat.parent.parent"
+msgstr "Product category level 2"
+
+msgid "prodcat.parent.parent.parent"
+msgstr "Product category level 1"
+
 msgid "Used for classifying products"
 msgstr ""
 
@@ -3433,6 +3445,9 @@ msgstr "Supply Address"
 
 msgid "support++superseder"
 msgstr "Duplicate of"
+
+msgid "support++type"
+msgstr "Type"
 
 msgid "sync_with_ldap"
 msgstr "Synch with LDAP"

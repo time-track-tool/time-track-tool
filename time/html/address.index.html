@@ -40,7 +40,12 @@
      , ('fromaddress',         dict (terse = False))
      , ('rmafrom',             dict (terse = False))
      , ('suppclaimfrom',       dict (terse = False))
-     , ('business_unit',       dict (terse = False, multiselect = True))
+     , ('business_unit',       dict
+        (terse = False
+        , multiselect = True
+        , filter      = {'valid' : True}
+        )
+       )
      , ('salutation',          dict (terse = False))
      , ('title',               dict (terse = False))
      , ('lastname',            dict (searchable  = False, sortable = False))

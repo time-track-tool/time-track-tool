@@ -287,6 +287,8 @@ _helptext          = \
           '''
       ]
     , ""'born'                        : [""'''Date of birth''']
+    , ""'business_unit'               :
+      [""'''%(Property)s responsible for this %(Classname)s''']
     , ""'card_type'                   : [""'''Type of this %(Classname)s''']
     , ""'category'                    :
       [ ""'''Category of %(Classname)s. Where this %(Classname)s belongs
@@ -801,6 +803,8 @@ _helptext          = \
       ]
     , ""'is_actuator'                 :
       [""'''This %(Classname)s allows setting a value''']
+    , ""'is_series'                   :
+      [""'''This is turned on when the %(Classname)s is a series product''']
     , ""'issue++deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are
@@ -1140,6 +1144,17 @@ _helptext          = \
       ]
     , ""'prodcat'                     :
       [""'''Used for classifying products''']
+    , ""'prodcat++parent'             :
+      [""'''Product category which is the parent of the current product
+            category
+         '''
+      ]
+    , ""'prodcat.parent'              :
+      [""'''Product category level 3''']
+    , ""'prodcat.parent.parent'       :
+      [""'''Product category level 2''']
+    , ""'prodcat.parent.parent.parent':
+      [""'''Product category level 1''']
     , ""'product_family'              :
       [""'''The %(Property)s of the %(Classname)s.''']
     , ""'product_family.id'           :
@@ -1222,6 +1237,14 @@ _helptext          = \
              the moderator, you will get an indication that the field
              "Responsible" must be filled in -- the moderator is reponsible for
              %(Classname)s.
+          '''
+      ]
+    , ""'rmafrom'                     :
+      [ ""'''Address in outgoing emails to which the %(Classname)s can reply.
+             The email address provided must be one of the email
+             addresses of the roundup tracker.
+             This address is used when the support issue in question is
+             of type RMA.
           '''
       ]
     , ""'roles'                       :
@@ -1510,10 +1533,20 @@ _helptext          = \
              Overtime Correction).
           '''
       ]
+    , ""'suppclaimfrom'               :
+      [ ""'''Address in outgoing emails to which the %(Classname)s can reply.
+             The email address provided must be one of the email
+             addresses of the roundup tracker.
+             This address is used when the support issue in question is
+             of type supplier claim.
+          '''
+      ]
     , ""'supply_address'              :
       [""'''Data for %(Property)s''']
     , ""'support++superseder'         :
       [superseder, multiple_allowed]
+    , ""'support++type'               :
+      [""'Type of %(Classname)s']
     , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
              when the user changes PW via PAM, the pw in roundup will be
