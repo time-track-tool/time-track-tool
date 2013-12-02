@@ -646,8 +646,10 @@
        <td tal:content="structure python:utils.ExtProperty
         (utils, ca.product.name, item=ca.product).formatlink ()"/>
       </tr>
-      <tr colspan="2">
-       <td tal:content="python:ca.description"/>
+      <tr>
+       <td colspan="2" class="content">
+        <pre tal:content="python:ca.description"/>
+       </td>
       </tr>
      </tal:block>
     </tal:block>
