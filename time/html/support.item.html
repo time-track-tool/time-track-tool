@@ -60,8 +60,9 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'product')"/>
-      <td>
-       <tal:block tal:content="structure python:context.product.field () "/>
+      <td colspan="3">
+       <tal:block tal:content="structure python:context.product.field
+         (size=65) "/>
        <tal:block tal:replace="structure python:db.product.classhelp
             ( 'name,prodcat.name'
             , property='product'
