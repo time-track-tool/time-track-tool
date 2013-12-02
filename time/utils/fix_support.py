@@ -89,4 +89,18 @@ for si in db.support.getnodeids () :
 for c in db.sup_classification.getnodeids () :
     db.sup_classification.set (c, valid = True)
 
+for cid in db.customer.getnodeids (retired = False) :
+    cu = db.customer.getnode (cid)
+    settings = {}
+    if not cu.is_customer and not cu.is_supplier :
+        settings ['is_customer'] = True
+        settings ['is_supplier'] = False
+    if cu.fromaddress :
+        if not cu.rmafrom :
+            settings ['rmafrom']       = cu.fromaddress
+        if not cu.suppclaimfrom :
+            settings ['suppclaimfrom'] = cu.fromaddress
+    if settings :
+        db.customer.set (cid, ** settings)
+
 db.commit ()
