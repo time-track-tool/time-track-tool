@@ -170,7 +170,7 @@ class Product_Sync (object) :
 def main () :
     dir     = os.getcwd ()
 
-    cmd = OptionParser ()
+    cmd = OptionParser ("Usage: %prog [options] inputfile")
     cmd.add_option \
         ( '-d', '--directory'
         , dest    = 'dir'
