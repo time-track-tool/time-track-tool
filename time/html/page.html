@@ -89,6 +89,9 @@
                                  if 'customer' in db._db.classes
                                  and c in db._db.customer.properties
                               )
+   , ('customer_agreement', '') :
+                          '@pagesize=50&@startwith=0&'
+                          '@columns=id,customer,product'
    , ('daily_record', '')
                         : '@columns=id,user,date,status&@sort=-id&'
                           '@filter=user,date&@pagesize=20&@startwith=0&'
@@ -367,6 +370,7 @@
      , ('adr_type_cat',        'Create', '?@template=item', 1)
      , ('currency',            'Edit',   '?@template=item', 1)
      , ('customer',            'Create', '?@template=item', 1)
+     , ('customer_agreement',  'Edit',   '?@template=item', 1)
      , ('tmplate',             'Edit',   '?@template=item', 1)
      , ('tmplate_status',      'Edit',   '?@template=item', 1)
      , ('legalclient',         'Edit',   '?@template=item', 1)
@@ -484,6 +488,7 @@
      , ('dyndns',              'View', 1,               ('',''))
      , ('dyndns_protocol',     'View', 1,               ('',''))
      , ('customer',            'View', 1,               ('',''))
+     , ('customer_agreement',  'View', 1,               ('',''))
      , ('support',             'View', 1,               ('',''))
      , ('user_contact',      'Search', 1,               ('',''))
      , ('qsl',                 'View', 1,               ('',''))

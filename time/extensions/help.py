@@ -385,6 +385,7 @@ _helptext          = \
     , ""'currency'                    :
       [""'''Currency for this %(Classname)s''']
     , ""'cust_supp'                   : [""'''%(Property)s of %(Classname)s''']
+    , ""'customer'                    : [""'''%(Property)s of %(Classname)s''']
     , ""'customer_status'             : [status]
     , ""'customer_type'               : [generic_type]
     , ""'customer++confidential'      :
@@ -1155,6 +1156,7 @@ _helptext          = \
       [""'''Product category level 2''']
     , ""'prodcat.parent.parent.parent':
       [""'''Product category level 1''']
+    , ""'product'                     : [""'''%(Property)s of %(Classname)s''']
     , ""'product_family'              :
       [""'''The %(Property)s of the %(Classname)s.''']
     , ""'product_family.id'           :

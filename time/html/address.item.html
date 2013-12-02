@@ -607,5 +607,52 @@
 
    </tal:block>
   </tal:block>
+  <tal:block tal:condition="python:
+       context.id and 'customer_agreement' in db._db.classes"
+   tal:define="cas python:db.customer_agreement.filter
+    ( None
+    , {'customer' : context.id}
+    , sort=[('+', 'product'),('+','description')]
+    )">
+   <table class="files">
+    <tr>
+     <th class="header" i18n:translate="" colspan="1">Customer agreements</th>
+     <td class="header">
+      <a i18n:translate="" tal:attributes="href python:
+       'customer_agreement?:template=item&' + '&'.join
+        ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+          [('customer', context.id)]
+         ]
+        )">
+      new customer_agreement
+      </a>
+     </td>
+    </tr>
+    <tal:block tal:condition="cas">
+     <tal:block tal:define="n python:'customer_agreement'">
+      <tr>
+       <th tal:content="structure python:utils.fieldname (n, 'id')"/>
+       <th tal:content="structure python:utils.fieldname (n, 'product')"/>
+      </tr>
+      <tr>
+       <th colspan="2"
+        tal:content="structure python:utils.fieldname (n, 'description')"/>
+      </tr>
+     </tal:block>
+     <tal:block tal:repeat="ca cas">
+      <tr>
+       <td tal:content="structure python:utils.ExtProperty
+        (utils, utils.properties_dict (db, ca) ['id'], item=ca).formatlink ()"/>
+       <td tal:content="structure python:utils.ExtProperty
+        (utils, ca.product.name, item=ca.product).formatlink ()"/>
+      </tr>
+      <tr colspan="2">
+       <td tal:content="python:ca.description"/>
+      </tr>
+     </tal:block>
+    </tal:block>
+   </table>
+  </tal:block>
  </tal:block>
+
 </tal:block>

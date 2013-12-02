@@ -1280,6 +1280,9 @@ msgstr "Customer/Supplier"
 msgid "customer_status"
 msgstr "Customer Status"
 
+msgid "customer_agreement"
+msgstr "Customer agreement"
+
 msgid "customer_type"
 msgstr "Customer type"
 

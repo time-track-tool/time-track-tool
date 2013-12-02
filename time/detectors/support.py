@@ -422,6 +422,24 @@ def check_prodcat (db, cl, nodeid, new_values) :
     new_values ['fullname'] = '.'.join (fn)
 # end def check_prodcat
 
+def cust_agree (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'description')
+    customer = product = None
+    if 'customer' in new_values :
+        customer = new_values ['customer']
+    elif nodeid :
+        customer = cl.get (nodeid, 'customer')
+    if 'product' in new_values :
+        product = new_values ['product']
+    elif nodeid :
+        product = cl.get (nodeid, 'product')
+    if not customer and not product :
+        raise Reject \
+            ( _ ("At least one of %(customer)s or %(product)s must be defined") 
+            % dict ((k, _ (k)) for k in ('product', 'customer'))
+            )
+# end def cust_agree
+
 def init (db) :
     if 'prodcat' in db.classes :
         db.prodcat.audit ("set",    check_prodcat)
@@ -452,4 +470,7 @@ def init (db) :
 
     db.mailgroup.audit ("create", check_mailgroup)
     db.mailgroup.audit ("set",    check_mailgroup)
+
+    db.customer_agreement.audit ("create", cust_agree)
+    db.customer_agreement.audit ("set",    cust_agree)
 # end def init

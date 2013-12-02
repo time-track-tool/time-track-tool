@@ -75,6 +75,16 @@ def init \
         )
     customer.setkey ("name")
 
+    customer_agreement = Class \
+        ( db
+        , ''"customer_agreement"
+        , customer         = Link      ("customer")
+        , product          = Link      ("product")
+        , description      = String    ()
+        )
+    customer_agreement.setlabelprop ("customer")
+    customer_agreement.setorderprop ("description")
+
     mailgroup = Class \
         ( db
         , ''"mailgroup"
@@ -198,6 +208,8 @@ def security (db, ** kw) :
         , ("contact",        ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("mailgroup",      ["User", "SupportAdmin"], ["SupportAdmin", "IT"])
         , ("sup_classification",
+                             ["User", "SupportAdmin"], ["SupportAdmin"])
+        , ("customer_agreement",
                              ["User", "SupportAdmin"], ["SupportAdmin"])
         ]
     if 'adr_type' in db.classes :
