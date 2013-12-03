@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2013-06-10 17:45+0200\n"
+"POT-Creation-Date: 2013-12-03 12:21+0100\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -85,6 +85,10 @@ msgid "An effort estimation is required for issues to skip analyzing"
 msgstr ""
 
 #, python-format
+msgid "No responsible for category \"%s\""
+msgstr "Keine verantwortliche Person für \"%s\""
+
+#, python-format
 msgid "'%s' is not a valid user (need 'Nosy' role)!"
 msgstr ""
 
@@ -127,7 +131,8 @@ msgstr ""
 msgid "%(attr)s must be set"
 msgstr "\"%(attr)s\" muss ausgefüllt werden"
 
-msgid "Freezing only for dates >= 10 days in the past"
+#, python-format
+msgid "Freezing only for dates >= %s days in the past"
 msgstr ""
 
 #, python-format
@@ -181,6 +186,10 @@ msgid "currency"
 msgstr "Währung"
 
 #, python-format
+msgid "Maximum file size %(limit)s exceeded: %(length)s"
+msgstr ""
+
+#, python-format
 msgid "Duplicate QSL type \"%s\" for QSO"
 msgstr ""
 
@@ -208,13 +217,17 @@ msgstr "\"%(attr)s\" darf nicht gelöscht werden"
 msgid "New issue may not define \"%s\""
 msgstr ""
 
+#, python-format
+msgid "Container status must be %(open_n)s or %(closed_n)s"
+msgstr ""
+
+msgid "Can't close container with non-closed children"
+msgstr ""
+
 msgid "May not be part of Obsolete or Mistaken container"
 msgstr ""
 
-msgid "Parent container must be in state open or closed"
-msgstr ""
-
-msgid "Tried to make this issue part of a closed issue"
+msgid "Parent container must be in state open"
 msgstr ""
 
 msgid "Containers may not be Obsolete/Mistaken"
@@ -373,6 +386,10 @@ msgid "May not retire if dependencies exist"
 msgstr ""
 
 #, python-format
+msgid "Invalid Class: %(klass)s"
+msgstr ""
+
+#, python-format
 msgid "May not create another instance of \"%s\""
 msgstr ""
 
@@ -410,6 +427,25 @@ msgid "Toplevel domain \"%(maildomain)s\" not allowed, must contain \".\""
 msgstr ""
 
 msgid "maildomain"
+msgstr ""
+
+#, python-format
+msgid "Level must be %s"
+msgstr ""
+
+#, python-format
+msgid "Max. %s is "
+msgstr ""
+
+msgid "level"
+msgstr "Ebene"
+
+#, python-format
+msgid "Parent %s doesn't have fullname"
+msgstr ""
+
+#, python-format
+msgid "At least one of %(customer)s or %(product)s must be defined"
 msgstr ""
 
 msgid "start and end must be on same day and start <= end."
@@ -505,7 +541,7 @@ msgid "Not allowed to retire a user"
 msgstr ""
 
 #, python-format
-msgid "maximum picture size 100kB exceeded: %(length)s"
+msgid "Maximum picture size %(limit)s exceeded: %(length)s"
 msgstr ""
 
 #, python-format
@@ -1106,6 +1142,12 @@ msgstr "Geburtsdatum"
 msgid "born"
 msgstr "geboren am"
 
+msgid "business_unit"
+msgstr "Business Unit"
+
+msgid "%(Property)s responsible for this %(Classname)s"
+msgstr "%(Property)s verantwortlich für %(Classname)s"
+
 msgid "Type of this %(Classname)s"
 msgstr "Typ für diese %(Classname)s"
 
@@ -1317,6 +1359,9 @@ msgid "%(Property)s of %(Classname)s"
 msgstr "%(Property)s von %(Classname)s"
 
 msgid "cust_supp"
+msgstr "Kunde/Lieferant"
+
+msgid "customer"
 msgstr "Kunde/Lieferant"
 
 msgid "customer_status"
@@ -1799,6 +1844,18 @@ msgid ""
 "         "
 msgstr ""
 
+msgid "external_users"
+msgstr ""
+
+msgid ""
+"Used for access control: all\n"
+"            configured external users have access to this issue -- and\n"
+"            if the issue is a container to all sub-issues.\n"
+"            Containers inherit the permissions of the next higher\n"
+"            container only if the 'Inherit permissions' flag is set.\n"
+"         "
+msgstr ""
+
 msgid "firstname"
 msgstr "Vorname"
 
@@ -1824,12 +1881,6 @@ msgstr ""
 
 msgid "fromaddress"
 msgstr "Absenderadresse Support"
-
-msgid "rmafrom"
-msgstr "Absenderadresse RMA"
-
-msgid "suppclaimfrom"
-msgstr "Absenderadresse Supplier-Claim"
 
 msgid ""
 "Address in outgoing emails to which the %(Classname)s can reply.\n"
@@ -1934,6 +1985,17 @@ msgstr ""
 
 msgid "id"
 msgstr "ID"
+
+msgid "inherit_ext"
+msgstr ""
+
+msgid ""
+"If this flag is set, and an issue is a container, it inerits\n"
+"            external user permissions from the next higher-level\n"
+"            container. Note that normal issues inherit the permissions\n"
+"            of their container in any case.\n"
+"         "
+msgstr ""
 
 msgid "initial"
 msgstr "Initialen"
@@ -2143,6 +2205,12 @@ msgstr "Aktuator"
 
 msgid "This %(Classname)s allows setting a value"
 msgstr "%(Classname)s erlaubt das Setzen von Werten"
+
+msgid "is_series"
+msgstr "Serienprodukt"
+
+msgid "This is turned on when the %(Classname)s is a series product"
+msgstr "Eingeschaltet wenn %(Classname)s ein Serienprodukt ist"
 
 msgid "issue++deadline"
 msgstr "Zieldatum"
@@ -2820,6 +2888,48 @@ msgstr "Produktkategorie"
 msgid "Used for classifying products"
 msgstr ""
 
+msgid "prodcat++parent"
+msgstr "Vorfahre dieser Produktkategorie"
+
+msgid ""
+"Product category which is the parent of the current product\n"
+"            category\n"
+"         "
+msgstr ""
+
+msgid "prodcat.parent"
+msgstr "Produktkategorie Ebene 3"
+
+msgid "Product category level 3"
+msgstr "Produktkategorie Ebene 3"
+
+msgid "prodcat.parent.parent"
+msgstr "Produktkategorie Ebene 2"
+
+msgid "Product category level 2"
+msgstr "Produktkategorie Ebene 2"
+
+msgid "prodcat.parent.parent.parent"
+msgstr "Produktkategorie Ebene 1"
+
+msgid "Product category level 1"
+msgstr "Produktkategorie Ebene 1"
+
+msgid "product"
+msgstr "Artikel"
+
+msgid "product_family"
+msgstr "Produktfamilie"
+
+msgid "The %(Property)s of the %(Classname)s."
+msgstr "%(Property)s von %(Classname)s"
+
+msgid "product_family.id"
+msgstr "Produktfamilien-ID"
+
+msgid "The Id of %(Property)s."
+msgstr "Id von %(Property)s"
+
 msgid "product_type"
 msgstr "Artikel-Typ"
 
@@ -2836,11 +2946,23 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "project_type"
+msgstr "Projekttyp"
+
+msgid "project_type.id"
+msgstr "Projekttyp-ID"
+
 msgid "protocol"
 msgstr "Protokoll"
 
 msgid "The dynamic DNS protocol to use with this %(Classname)s."
 msgstr "Dynamisches DNS Protokoll für diese %(Classname)s"
+
+msgid "province"
+msgstr "Bundesland"
+
+msgid "Province where this person lives."
+msgstr "Bundesland für diese Person."
 
 msgid "qa_representative"
 msgstr ""
@@ -2938,6 +3060,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "reporting_group"
+msgstr "Reporting-Gruppe"
+
+msgid "reporting_group.id"
+msgstr "Reporting-Gruppen-ID"
+
 msgid "require_msg"
 msgstr "Nachricht erforderlich"
 
@@ -2968,6 +3096,18 @@ msgid ""
 "             \"Responsible\" must be filled in -- the moderator is "
 "reponsible for\n"
 "             %(Classname)s.\n"
+"          "
+msgstr ""
+
+msgid "rmafrom"
+msgstr "Absenderadresse RMA"
+
+msgid ""
+"Address in outgoing emails to which the %(Classname)s can reply.\n"
+"             The email address provided must be one of the email\n"
+"             addresses of the roundup tracker.\n"
+"             This address is used when the support issue in question is\n"
+"             of type RMA.\n"
 "          "
 msgstr ""
 
@@ -3043,8 +3183,8 @@ msgid ""
 "             new password is entered\n"
 "          "
 msgstr ""
-"Samba NT Passwort, wird automatisch vom System gesetzt wenn der "
-"Benutzer das Passwort ändert."
+"Samba NT Passwort, wird automatisch vom System gesetzt wenn der Benutzer das "
+"Passwort ändert."
 
 msgid "samba_profile_path"
 msgstr ""
@@ -3137,8 +3277,8 @@ msgstr "Kanaltyp"
 msgid "serial_number"
 msgstr "Seriennummern"
 
-msgid "Serial number of hardware item if applicable"
-msgstr "Hardware Seriennummer falls vorhanden"
+msgid "Serial numbers of hardware items if applicable, one per line"
+msgstr "Seriennummern der Waren, zeilenweise"
 
 msgid "server"
 msgstr "Server"
@@ -3513,11 +3653,26 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "suppclaimfrom"
+msgstr "Absenderadresse Supplier-Claim"
+
+msgid ""
+"Address in outgoing emails to which the %(Classname)s can reply.\n"
+"             The email address provided must be one of the email\n"
+"             addresses of the roundup tracker.\n"
+"             This address is used when the support issue in question is\n"
+"             of type supplier claim.\n"
+"          "
+msgstr ""
+
 msgid "supply_address"
 msgstr "Bezugsanschrift"
 
 msgid "support++superseder"
 msgstr "Duplikat von"
+
+msgid "support++type"
+msgstr "Typ"
 
 msgid "sync_with_ldap"
 msgstr ""
@@ -4135,6 +4290,9 @@ msgstr "Akkumulierte Zeit Ende"
 msgid "achieved_supplementary"
 msgstr "Erreichte Zusatzstunden"
 
+msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
+msgstr ""
+
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
 "Zum Editieren von ${Classname} auf das Feld unter &quot;${labelprop}&quot; "
@@ -4212,11 +4370,14 @@ msgstr "Neue abgeleitete Adresse"
 msgid "Address used in"
 msgstr "Adresse verwendet in"
 
+msgid "Customer agreements"
+msgstr "Kundenvereinbarung"
+
+msgid "new customer_agreement"
+msgstr "neue Kundenvereinbarung"
+
 msgid "${classname_id} created by ${creator}"
 msgstr ""
-
-msgid "number"
-msgstr "Nummer"
 
 msgid "Approvals pending"
 msgstr ""
@@ -4560,6 +4721,12 @@ msgstr ""
 msgid "add secondary qso"
 msgstr ""
 
+msgid "2nd QSO"
+msgstr ""
+
+msgid "SWL reports"
+msgstr "SWL-Reporte"
+
 msgid "\"My Queries\" Editing - ${tracker}"
 msgstr "\"Meine Abfragen\" bearbeiten - ${tracker}"
 
@@ -4651,7 +4818,7 @@ msgstr "(Rollen-Zugriffsrechte)"
 msgid "default:"
 msgstr "Voreinstellung:"
 
-msgid "max. size of picture: 100kB"
+msgid "max. size of picture: <span></span>"
 msgstr ""
 
 msgid "Registering with ${tracker}"
@@ -4762,6 +4929,12 @@ msgstr "Wochentag"
 
 msgid "opening_hours"
 msgstr "Öffnungszeiten"
+
+msgid "callerid"
+msgstr ""
+
+msgid "number"
+msgstr "Nummer"
 
 msgid "sex"
 msgstr ""
@@ -4878,9 +5051,6 @@ msgstr "Pharmaref. Bezirk"
 msgid "proceeds_group"
 msgstr "Erlösgruppe"
 
-msgid "product"
-msgstr "Artikel"
-
 msgid "product_price"
 msgstr "Artikelpreis"
 
@@ -4978,23 +5148,32 @@ msgid ""
 "item with %(perm)s permission"
 msgstr ""
 
-msgid "sup_status"
-msgstr "Supportstatus"
+msgid "sip_device"
+msgstr "SIP-Endgerät"
 
-msgid "sup_prio"
-msgstr "Priorität"
+msgid "customer_agreement"
+msgstr "Kundenvereinbarung"
+
+msgid "mailgroup"
+msgstr "Email Gruppe"
 
 msgid "sup_classification"
 msgstr ""
 
+msgid "sup_execution"
+msgstr "Ausführung"
+
+msgid "sup_prio"
+msgstr "Priorität"
+
+msgid "sup_status"
+msgstr "Supportstatus"
+
+msgid "sup_type"
+msgstr "Typ"
+
 msgid "support"
 msgstr "Support Issue"
-
-msgid "customer"
-msgstr "Kunde/Lieferant"
-
-msgid "mailgroup"
-msgstr "Email Gruppe"
 
 msgid "cost_center_group"
 msgstr "Kostenstellengruppe"
@@ -5040,6 +5219,9 @@ msgstr "User-Kontakt"
 
 msgid "uc_type"
 msgstr "User-Kontakttyp"
+
+msgid "fullname"
+msgstr "voller Name"
 
 msgid "status_transition"
 msgstr "Statusübergang"
@@ -5212,17 +5394,59 @@ msgstr "Stunde von"
 msgid "to_hour"
 msgstr "Stunde bis"
 
-msgid "classification"
-msgstr "Klassifikation"
+msgid "is_supplier"
+msgstr "ist Lieferant"
 
 msgid "lookalike_lastname"
 msgstr "Nachname"
 
+msgid "customer_code"
+msgstr "Kunden/Lieferanten-Code"
+
 msgid "lookalike_firstname"
 msgstr "Vorname"
 
+msgid "is_customer"
+msgstr "ist Kunde"
+
 msgid "lookalike_function"
 msgstr "Adresszusatz"
+
+msgid "warranty"
+msgstr "Garantie gültig"
+
+msgid "first_reply"
+msgstr "erste Antwort"
+
+msgid "satisfied"
+msgstr "zufrieden"
+
+msgid "goods_received"
+msgstr "Wareneingang"
+
+msgid "number_effected"
+msgstr "Anzahl betroffen"
+
+msgid "classification"
+msgstr "Klassifikation"
+
+msgid "analysis_end"
+msgstr "Analyse beendet"
+
+msgid "goods_sent"
+msgstr "Warenausgang"
+
+msgid "lot"
+msgstr "Charge"
+
+msgid "related_support"
+msgstr "zugehörige Support Issues"
+
+msgid "analysis_start"
+msgstr "Analyse start"
+
+msgid "execution"
+msgstr "Ausführung"
 
 msgid "amount_payed"
 msgstr "Zahlungsbetrag"
@@ -5293,9 +5517,6 @@ msgstr "Lagerort"
 msgid "on_stock"
 msgstr ""
 
-msgid "lot"
-msgstr "Charge"
-
 msgid "lookalike_street"
 msgstr "Straße"
 
@@ -5355,12 +5576,6 @@ msgstr "ist Verteiler"
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
-
-msgid "province"
-msgstr "Bundesland"
-
-msgid "Province where this person lives."
-msgstr "Bundesland für diese Person."
 
 #~ msgid "When a new issue is created with %(Classname)s set, but "
 #~ msgstr "Wenn ein neues Issue mit gesetztem %(Classname)s erzeugt wird, aber"
@@ -5437,57 +5652,3 @@ msgstr "Bundesland für diese Person."
 
 #~ msgid "account_number"
 #~ msgstr "Kontonummer"
-
-msgid "sup_type"
-msgstr "Typ"
-
-msgid "business_unit"
-msgstr "Business Unit"
-
-msgid "is_supplier"
-msgstr "ist Lieferant"
-
-msgid "is_customer"
-msgstr "ist Kunde"
-
-msgid "customer_code"
-msgstr "Kunden/Lieferanten-Code"
-
-msgid "is_series"
-msgstr "Serienprodukt"
-
-msgid "execution"
-msgstr "Ausführung"
-
-msgid "sup_execution"
-msgstr "Ausführung"
-
-msgid "satisfied"
-msgstr "zufrieden"
-
-msgid "first_reply"
-msgstr "erste Antwort"
-
-msgid "analysis_start"
-msgstr "Analyse start"
-
-msgid "analysis_end"
-msgstr "Analyse beendet"
-
-msgid "goods_received"
-msgstr "Wareneingang"
-
-msgid "goods_sent"
-msgstr "Warenausgang"
-
-msgid "related_support"
-msgstr "zugehörige Support Issues"
-
-msgid "number_effected"
-msgstr "Anzahl betroffen"
-
-msgid "warranty"
-msgstr "Garantie gültig"
-
-msgid "level"
-msgstr "Ebene"
