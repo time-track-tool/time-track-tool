@@ -385,6 +385,40 @@ def set_status (db, cl, nodeid, new_values) :
         new_values ['status'] = db.sup_status.lookup ('open')
 # end def set_status
 
+def set_prodcat (db, cl, nodeid, new_values) :
+    """ Set level-3 product category for support issue depending on
+        product and category.
+        - product setting overrules explicit prodcat or category setting
+        - explicit prodcat overrules category
+        - category.prodcat is last resort
+    """
+    if 'prodcat' in new_values :
+        pc = new_values ['prodcat']
+    elif nodeid :
+        pc = cl.get (nodeid, 'prodcat')
+    if 'product' in new_values :
+        prod = new_values ['product']
+    elif nodeid :
+        prod = cl.get (nodeid, 'product')
+    if prod :
+        prod = db.product.getnode (prod)
+        pcp  = db.prodcat.getnode (db.prodcat.get (prod.prodcat, 'parent'))
+        assert pcp.level == 3
+        if pcp.id != pc :
+            new_values ['prodcat'] = pcp.id
+            return
+    if pc :
+        return
+    if 'category' in new_values :
+        cat = new_values ['category']
+    elif nodeid :
+        cat = cl.get (nodeid, 'category')
+    if cat :
+        pcc = db.category.get (cat, 'prodcat')
+        if pcc :
+            new_values ['prodcat'] = pcc
+# end def set_prodcat
+
 def check_prodcat (db, cl, nodeid, new_values) :
     """ Check that prodcat parent linking and level counting is correct,
         set fullname property.
@@ -462,6 +496,8 @@ def init (db) :
     db.support.audit   ("create", initial_props,            priority = 300)
     db.support.audit   ("set",    remove_support_from_nosy, priority = 300)
     db.support.audit   ("set",    set_status,               priority = 350)
+    db.support.audit   ("create", set_prodcat,              priority = 400)
+    db.support.audit   ("set",    set_prodcat,              priority = 400)
 
     db.customer.audit  ("create", new_customer,             priority = 90)
     db.customer.audit  ("create", check_maildomain)
