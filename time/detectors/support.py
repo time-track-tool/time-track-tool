@@ -101,6 +101,11 @@ def serial_num (db, cl, nodeid, new_values) :
     new_values ['serial_number']   = '\n'.join (sn) or None
 # end def serial_num
 
+def initial_values (db, cl, nodeid, new_values) :
+    if 'type' not in new_values :
+        new_values ['type'] = db.sup_type.lookup ('Support Issue')
+# end def initial_values
+
 def check_dates (db, cl, nodeid, new_values) :
     oldst  = cl.get (nodeid, "status")
     status = new_values.get ("status", None)
@@ -420,6 +425,7 @@ def set_prodcat (db, cl, nodeid, new_values) :
         - explicit prodcat overrules category
         - category.prodcat is last resort
     """
+    pc = prod = cat = None
     if 'prodcat' in new_values :
         pc = new_values ['prodcat']
     elif nodeid :
@@ -519,6 +525,7 @@ def init (db) :
     db.support.audit   ("set",    audit_superseder)
     db.support.audit   ("create", serial_num)
     db.support.audit   ("set",    serial_num)
+    db.support.audit   ("create", initial_values)
     db.support.audit   ("set",    check_dates,              priority = 200)
     db.support.audit   ("set",    check_require_message,    priority = 200)
     db.support.audit   ("create", header_check,             priority = 200)

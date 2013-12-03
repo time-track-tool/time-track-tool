@@ -264,7 +264,10 @@
     </tal:block>
     <tal:block metal:fill-slot="before_messages">
      <tal:block tal:condition="python:
-          context.id and 'customer_agreement' in db._db.classes">
+          (   context.id
+          and context.customer
+          and 'customer_agreement' in db._db.classes
+          )">
       <tal:block tal:define="
         fil python:[ {'customer'  : context.customer.id, 'product' : '-1'}
                    , { 'customer' : [context.customer.id, '-1']
