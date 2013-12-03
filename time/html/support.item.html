@@ -264,53 +264,54 @@
     </tal:block>
     <tal:block metal:fill-slot="before_messages">
      <tal:block tal:condition="python:
-          context.id and 'customer_agreement' in db._db.classes"
-      tal:define="
-       fil python:[ {'customer'  : context.customer.id, 'product' : '-1'}
-                  , { 'customer' : [context.customer.id, '-1']
-                    , 'product'  : [context.product.id,  '-1']
-                    }
-                  ][bool(context.product)];
-       cas python:db.customer_agreement.filter (None, fil)">
-      <table class="files" tal:condition="cas">
-       <tr>
-        <th colspan="3" class="header" i18n:translate="">
-         Customer agreements
-        </th>
-       </tr>
-       <tal:block>
-        <tal:block tal:define="n python:'customer_agreement'">
-         <tr>
-          <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-          <th tal:content="structure python:utils.fieldname (n, 'customer')"/>
-          <th tal:content="structure python:utils.fieldname (n, 'product')"/>
-         </tr>
-         <tr>
-          <th colspan="3"
-           tal:content="structure python:utils.fieldname (n, 'description')"/>
-         </tr>
+          context.id and 'customer_agreement' in db._db.classes">
+      <tal:block tal:define="
+        fil python:[ {'customer'  : context.customer.id, 'product' : '-1'}
+                   , { 'customer' : [context.customer.id, '-1']
+                     , 'product'  : [context.product.id,  '-1']
+                     }
+                   ][bool(context.product)];
+        cas python:db.customer_agreement.filter (None, fil)">
+       <table class="files" tal:condition="cas">
+        <tr>
+         <th colspan="3" class="header" i18n:translate="">
+          Customer agreements
+         </th>
+        </tr>
+        <tal:block>
+         <tal:block tal:define="n python:'customer_agreement'">
+          <tr>
+           <th tal:content="structure python:utils.fieldname (n, 'id')"/>
+           <th tal:content="structure python:utils.fieldname (n, 'customer')"/>
+           <th tal:content="structure python:utils.fieldname (n, 'product')"/>
+          </tr>
+          <tr>
+           <th colspan="3"
+            tal:content="structure python:utils.fieldname (n, 'description')"/>
+          </tr>
+         </tal:block>
+         <tal:block tal:repeat="ca python:sorted
+           (cas, key = lambda x : (x.customer, x.product, x.description))">
+          <tr>
+           <td tal:content="structure python:utils.ExtProperty
+            ( utils
+            , utils.properties_dict (db, ca) ['id']
+            , item=ca
+            ).formatlink ()"/>
+           <td tal:content="structure python:utils.ExtProperty
+            (utils, ca.customer.name, item=ca.customer).formatlink ()"/>
+           <td tal:content="structure python:utils.ExtProperty
+            (utils, ca.product.name, item=ca.product).formatlink ()"/>
+          </tr>
+          <tr>
+           <td colspan="3" class="content">
+            <pre tal:content="python:ca.description"/>
+           </td>
+          </tr>
+         </tal:block>
         </tal:block>
-        <tal:block tal:repeat="ca python:sorted
-          (cas, key = lambda x : (x.customer, x.product, x.description))">
-         <tr>
-          <td tal:content="structure python:utils.ExtProperty
-           ( utils
-           , utils.properties_dict (db, ca) ['id']
-           , item=ca
-           ).formatlink ()"/>
-          <td tal:content="structure python:utils.ExtProperty
-           (utils, ca.customer.name, item=ca.customer).formatlink ()"/>
-          <td tal:content="structure python:utils.ExtProperty
-           (utils, ca.product.name, item=ca.product).formatlink ()"/>
-         </tr>
-         <tr>
-          <td colspan="3" class="content">
-           <pre tal:content="python:ca.description"/>
-          </td>
-         </tr>
-        </tal:block>
-       </tal:block>
-      </table>
+       </table>
+      </tal:block>
      </tal:block>
     </tal:block>
    </tal:block>
