@@ -60,8 +60,37 @@ def prodcat_parents (db, utils, prodcat) :
     return '&raquo;'.join (x)
 # end def prodcat_parents
 
+def serial (db, node, sn) :
+    ser = db.support.filter (None, dict (serial_number = sn))
+    ser = [s for s in ser if s.id != node.id]
+    return ser
+# end def serial
+
+def serials (db, node) :
+    if not node.serial_number :
+        return []
+    tpl = \
+        ("support?"
+         ":columns=id,title,type,status,responsible,customer&:sort=id"
+         "&:filter=serial_number&:pagesize=20&:startwith=0&serial_number=%s"
+        )
+    serials = (s.strip () for s in str (node.serial_number).split ('\n'))
+    serials = dict ((s, len (serial (db, node, s))) for s in serials if s)
+    r   = []
+    for s, l in serials.iteritems () :
+        if not l :
+            continue
+        r.append \
+            (""'Serial <a href="%s">%s</a> '
+               'occurs %s times in other support issues'
+            % (tpl % s, s, l)
+            )
+    return r
+# end def serials
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('has_x_roundup_cc_header', has_x_roundup_cc_header)
     reg ('prodcat_parents',         prodcat_parents)
+    reg ('serials',                 serials)
 # end def init

@@ -133,7 +133,15 @@
           (classname, 'number_effected')"/>
       <td tal:content="structure context/number_effected/field"/>
      </tr>
-
+     <tal:block tal:define="ser python:utils.serials (db, context)">
+      <tal:block tal:condition="python: context.id and ser"
+       tal:repeat="s python:enumerate (ser)">
+       <tr>
+        <th/>
+        <td colspan="3" tal:content="structure python: s [1]"/>
+       </tr>
+      </tal:block>
+     </tal:block>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'related_issues')"/>
