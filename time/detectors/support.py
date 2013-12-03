@@ -101,17 +101,24 @@ def serial_num (db, cl, nodeid, new_values) :
     new_values ['serial_number']   = '\n'.join (sn) or None
 # end def serial_num
 
-def check_closed (db, cl, nodeid, new_values) :
+def check_dates (db, cl, nodeid, new_values) :
     oldst  = cl.get (nodeid, "status")
     status = new_values.get ("status", None)
     if 'status' not in new_values or oldst == status :
         return
     status_name = db.sup_status.get (status, 'name')
+    now = Date ('.')
     if status_name == 'closed' :
-        new_values ["closed"] = Date ('.')
+        new_values ["closed"] = now
+        if not cl.get (nodeid, 'satisfied') :
+            new_values ["satisfied"] = now
     else :
         new_values ["closed"] = None
-# end def check_closed
+    if status_name == 'satisfied' :
+        new_values ["satisfied"] = now
+    if status_name in ['open', 'customer'] :
+        new_values ["satisfied"] = None
+# end def check_dates
 
 def header_utf8 (header) :
     parts = decode_header (header)
@@ -275,6 +282,9 @@ def header_check (db, cl, nodeid, new_values) :
                     bcc = cl.get (nodeid, 'bcc')
                 if bcc :
                     h.add_header ('X-ROUNDUP-BCC', bcc)
+                # Time-Stamp of first reply to customer
+                if not nodeid or not cl.get (nodeid, 'first_reply') :
+                    new_values ['first_reply'] = Date ('.')
         h = h.as_string ()
         if h != '\n' and h != msg.header :
             db.msg.set (msgid, header = h)
@@ -509,7 +519,7 @@ def init (db) :
     db.support.audit   ("set",    audit_superseder)
     db.support.audit   ("create", serial_num)
     db.support.audit   ("set",    serial_num)
-    db.support.audit   ("set",    check_closed,             priority = 200)
+    db.support.audit   ("set",    check_dates,              priority = 200)
     db.support.audit   ("set",    check_require_message,    priority = 200)
     db.support.audit   ("create", header_check,             priority = 200)
     db.support.audit   ("set",    header_check,             priority = 200)

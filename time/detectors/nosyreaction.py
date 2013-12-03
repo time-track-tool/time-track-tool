@@ -39,6 +39,13 @@ except ImportError :
 from roundup import roundupdb, hyperdb
 from roundup.mailer import Mailer, MessageSendError, encode_quopri
 
+fromprops_by_type = \
+    { 'Support Issue'  : 'fromaddress'
+    , 'Other'          : 'fromaddress'
+    , 'RMA Issue'      : 'rmafrom'
+    , 'Supplier Claim' : 'suppclaimfrom'
+    }
+
 def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
     """ Send mail to customer, don't use roundup change-email
         (nosymessage) mechanism -- so we can set different values and
@@ -47,13 +54,18 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
     cn        = cls.classname
     msg       = db.msg.getnode (msgid)
 
-    title     = cls.get (issueid, 'title') or '%s message copy' % cn
+    issue     = cls.getnode (issueid)
+    title     = issue.title or '%s message copy' % cn
     subject   = '[%s%s] %s' % (cn, issueid, title)
     charset   = getattr (db.config, 'EMAIL_CHARSET', 'utf-8')
     fromaddr  = None
     if 'customer' in cls.properties :
-        customer = db.customer.getnode (cls.get (issueid, 'customer'))
-        fromaddr = customer.fromaddress
+        customer = db.customer.getnode (issue.customer)
+        if 'type' in cls.properties and 'rmafrom' in db.customer.properties :
+            type = db.sup_type.get (issue.type, 'name')
+            fromaddr = getattr (customer, fromprops_by_type.get (type))
+        if not fromaddr :
+            fromaddr = customer.fromaddress
     if not fromaddr :
         fromaddr = db.config.TRACKER_EMAIL
     user      = db.user.getnode (msg.author)
