@@ -83,6 +83,24 @@ def audit_superseder (db, cl, nodeid, new_values) :
         new_values ["status"] = db.sup_status.lookup ('closed')
 # end def audit_superseder
 
+def serial_num (db, cl, nodeid, new_values) :
+    if  (   'serial_number'   not in new_values
+        and 'number_effected' not in new_values
+        ) :
+        return
+    if 'serial_number' in new_values :
+        sn = new_values ['serial_number']
+    elif nodeid :
+        sn = cl.get (nodeid, 'serial_number')
+    if not sn :
+        return
+    sn = [s.strip () for s in sn.split ('\n')]
+    sn = [s.upper () for s in sn if s]
+    if len (sn) :
+        new_values ['number_effected'] = len (sn)
+    new_values ['serial_number']   = '\n'.join (sn) or None
+# end def serial_num
+
 def check_closed (db, cl, nodeid, new_values) :
     oldst  = cl.get (nodeid, "status")
     status = new_values.get ("status", None)
@@ -489,6 +507,8 @@ def init (db) :
     db.support.audit   ("set",    check_support,            priority = 40)
     db.support.audit   ("create", audit_superseder)
     db.support.audit   ("set",    audit_superseder)
+    db.support.audit   ("create", serial_num)
+    db.support.audit   ("set",    serial_num)
     db.support.audit   ("set",    check_closed,             priority = 200)
     db.support.audit   ("set",    check_require_message,    priority = 200)
     db.support.audit   ("create", header_check,             priority = 200)
