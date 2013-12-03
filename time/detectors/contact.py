@@ -127,16 +127,22 @@ def fix_callerid (db, cl, nodeid, old_values) :
         via phone line.
     """
     c   = cl.getnode (nodeid)
-    if not db.contact_type.get (c.contact_type, 'use_callerid') :
+    ct  = db.contact_type.getnode (c.contact_type)
+    ot  = db.contact_type.getnode (old_values.get ('contact_type', ct.id))
+    if not ot.use_callerid and not ct.use_callerid :
         return
     ct  = c.contact
     ids = db.callerid.filter (None, dict (contact = nodeid))
     if not ids :
-        db.callerid.create (number = cid (db, ct), contact = nodeid)
+        if ct.use_callerid :
+            db.callerid.create (number = cid (db, ct), contact = nodeid)
     else :
         assert len (ids) == 1
         id = ids [0]
-        db.callerid.set (id, number = cid (db, ct), contact = nodeid)
+        if ct.use_callerid :
+            db.callerid.set (id, number = cid (db, ct), contact = nodeid)
+        else :
+            db.callerid.destroy (id)
 # end def fix_callerid
 
 def changed_contact (db, cl, nodeid, old_values) :
