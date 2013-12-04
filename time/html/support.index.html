@@ -15,6 +15,7 @@
     , utils.ExtProperty (utils, pdict ['classification'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['title'])
     , utils.ExtProperty (utils, pdict ['status'],         multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['type'],           multiselect = 1)
     , utils.ExtProperty
         ( utils, pdict ['responsible']
         , help_props   = ['firstname', 'lastname']
@@ -24,6 +25,15 @@
     , utils.ExtProperty (utils, pdict ['release'])
     , utils.ExtProperty (utils, pdict ['serial_number'])
     , utils.ExtProperty (utils, pdict ['customer'])
+    , utils.ExtProperty (utils, pdict ['product'])
+    , utils.ExtProperty
+        ( utils, pdict ['prodcat']
+        , multiselect = 1
+        , filter      = dict (level = 3, valid = True)
+        , searchable  = True
+        , sortable    = True
+        )
+    , utils.ExtProperty (utils, pdict ['emails'])
     , utils.ExtProperty
         ( utils, pdict ['related_issues']
         , searchable   = True
@@ -33,6 +43,16 @@
     , utils.ExtProperty
         ( utils, pdict ['related_issues']
         , searchname   = 'related_issues.id'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['related_support']
+        , searchable   = True
+        , sortable     = False
+        , do_classhelp = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['related_support']
+        , searchname   = 'related_support.id'
         )
     , utils.ExtProperty (utils, pdict ['superseder'])
     , utils.ExtProperty
@@ -46,9 +66,17 @@
         )
     , utils.ExtProperty (utils, pdict ['cc'])
     , utils.ExtProperty (utils, pdict ['bcc'])
+    , utils.ExtProperty (utils, pdict ['lot'])
     , utils.ExtProperty (utils, pdict ['creation'])
     , utils.ExtProperty (utils, pdict ['activity'])
+    , utils.ExtProperty (utils, pdict ['analysis_start'])
+    , utils.ExtProperty (utils, pdict ['analysis_end'])
+    , utils.ExtProperty (utils, pdict ['goods_received'])
+    , utils.ExtProperty (utils, pdict ['goods_sent'])
+    , utils.ExtProperty (utils, pdict ['first_reply'])
+    , utils.ExtProperty (utils, pdict ['satisfied'])
     , utils.ExtProperty (utils, pdict ['closed'])
+    , utils.ExtProperty (utils, pdict ['warranty'])
     );
    "
   tal:condition="context/is_view_ok">
