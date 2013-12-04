@@ -10,8 +10,12 @@ tracker = instance.open (dir)
 db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
 
-n = '_prodcat__name__parent_key'
-db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT IF EXISTS %s;' % n)
+# newer postgres
+#n = '_prodcat__name__parent_key'
+#db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT IF EXISTS %s;' % n)
+# old postgres on Suse
+n = '_prodcat__name_key'
+db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT %s;' % n)
 db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _parent);')
 
 types = \
