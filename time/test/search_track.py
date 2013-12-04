@@ -8,6 +8,15 @@ properties = \
           )
         ]
       )
+    , ( 'business_unit'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'valid'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
     , ( 'category'
       , [ ( 'cert_sw'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -66,13 +75,25 @@ properties = \
         ]
       )
     , ( 'customer'
-      , [ ( 'confidential'
+      , [ ( 'business_unit'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'confidential'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'contacts'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'customer_code'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'fromaddress'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'is_customer'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'is_supplier'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'is_valid'
@@ -91,6 +112,24 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'responsible'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'rmafrom'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'suppclaimfrom'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'customer_agreement'
+      , [ ( 'customer'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'description'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'product'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         ]
@@ -444,7 +483,34 @@ properties = \
         ]
       )
     , ( 'prodcat'
-      , [ ( 'name'
+      , [ ( 'fullname'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'level'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'parent'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'valid'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'product'
+      , [ ( 'business_unit'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'is_series'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'prodcat'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'valid'
@@ -516,6 +582,18 @@ properties = \
       , [ ( 'name'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'valid'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'sup_execution'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         ]
       )
     , ( 'sup_prio'
@@ -547,8 +625,23 @@ properties = \
           )
         ]
       )
+    , ( 'sup_type'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
     , ( 'support'
-      , [ ( 'bcc'
+      , [ ( 'analysis_end'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'analysis_start'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'bcc'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'category'
@@ -572,7 +665,22 @@ properties = \
         , ( 'emails'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'execution'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'files'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'first_reply'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'goods_received'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'goods_sent'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'lot'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'messages'
@@ -581,19 +689,34 @@ properties = \
         , ( 'nosy'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'number_effected'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'numeric_effort'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'prio'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'prodcat'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'product'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'related_issues'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'related_support'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'release'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'responsible'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'satisfied'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'send_to_customer'
@@ -609,6 +732,12 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'title'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'type'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'warranty'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         ]

@@ -210,7 +210,16 @@ properties = \
         ]
       )
     , ( 'prodcat'
-      , [ ( 'name'
+      , [ ( 'fullname'
+          , ['admin', 'issue_admin', 'user']
+          )
+        , ( 'level'
+          , ['admin', 'issue_admin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'user']
+          )
+        , ( 'parent'
           , ['admin', 'issue_admin', 'user']
           )
         , ( 'valid'

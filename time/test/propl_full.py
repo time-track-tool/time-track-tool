@@ -10,6 +10,11 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'business_unit'
+      , [ 'name'
+        , 'valid'
+        ]
+      )
     , ( 'category'
       , [ 'cert_sw'
         , 'default_part_of'
@@ -56,15 +61,27 @@ properties = \
         ]
       )
     , ( 'customer'
-      , [ 'confidential'
+      , [ 'business_unit'
+        , 'confidential'
         , 'contacts'
+        , 'customer_code'
         , 'fromaddress'
+        , 'is_customer'
+        , 'is_supplier'
         , 'is_valid'
         , 'maildomain'
         , 'name'
         , 'nosy'
         , 'nosygroups'
         , 'responsible'
+        , 'rmafrom'
+        , 'suppclaimfrom'
+        ]
+      )
+    , ( 'customer_agreement'
+      , [ 'customer'
+        , 'description'
+        , 'product'
         ]
       )
     , ( 'daily_record'
@@ -314,7 +331,18 @@ properties = \
         ]
       )
     , ( 'prodcat'
-      , [ 'name'
+      , [ 'fullname'
+        , 'level'
+        , 'name'
+        , 'parent'
+        , 'valid'
+        ]
+      )
+    , ( 'product'
+      , [ 'business_unit'
+        , 'is_series'
+        , 'name'
+        , 'prodcat'
         , 'valid'
         ]
       )
@@ -425,6 +453,12 @@ properties = \
       )
     , ( 'sup_classification'
       , [ 'name'
+        , 'valid'
+        ]
+      )
+    , ( 'sup_execution'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'sup_prio'
@@ -440,8 +474,15 @@ properties = \
         , 'transitions'
         ]
       )
+    , ( 'sup_type'
+      , [ 'name'
+        , 'order'
+        ]
+      )
     , ( 'support'
-      , [ 'bcc'
+      , [ 'analysis_end'
+        , 'analysis_start'
+        , 'bcc'
         , 'category'
         , 'cc'
         , 'classification'
@@ -449,19 +490,31 @@ properties = \
         , 'confidential'
         , 'customer'
         , 'emails'
+        , 'execution'
         , 'files'
+        , 'first_reply'
+        , 'goods_received'
+        , 'goods_sent'
+        , 'lot'
         , 'messages'
         , 'nosy'
+        , 'number_effected'
         , 'numeric_effort'
         , 'prio'
+        , 'prodcat'
+        , 'product'
         , 'related_issues'
+        , 'related_support'
         , 'release'
         , 'responsible'
+        , 'satisfied'
         , 'send_to_customer'
         , 'serial_number'
         , 'status'
         , 'superseder'
         , 'title'
+        , 'type'
+        , 'warranty'
         ]
       )
     , ( 'time_activity'
