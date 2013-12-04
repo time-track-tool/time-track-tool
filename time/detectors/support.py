@@ -453,6 +453,35 @@ def set_prodcat (db, cl, nodeid, new_values) :
             new_values ['prodcat'] = pcc
 # end def set_prodcat
 
+mandatory_by_type = \
+    { 'RMA Issue'      : ( 'business_unit', 'classification', 'customer'
+                         , 'prodcat', 'product', 'warranty'
+                         )
+    , 'Supplier Claim' : ( 'business_unit', 'classification', 'customer'
+                         , 'warranty'
+                         )
+    , 'Support Issue'  : ( 'business_unit', 'classification', 'customer'
+                         , 'prodcat'
+                         )
+    , 'Other'          : ( 'business_unit', 'classification', 'customer'
+                         )
+    }
+
+def check_params (db, cl, nodeid, new_values) :
+    """ Check for existence of mandatory parameters
+    """
+    if 'status' not in new_values :
+        return
+    common.require_attributes (_, cl, nodeid, new_values, 'type')
+    type = new_values.get ('type')
+    if not type :
+        type = cl.get (nodeid, 'type')
+    required = mandatory_by_type [db.sup_type.get (type, 'name')]
+    common.require_attributes (_, cl, nodeid, new_values, * required)
+    if new_values ['status'] == db.sup_status.lookup ('closed') :
+        common.require_attributes (_, cl, nodeid, new_values, 'execution')
+# end def check_params
+
 def check_prodcat (db, cl, nodeid, new_values) :
     """ Check that prodcat parent linking and level counting is correct,
         set fullname property.
@@ -535,6 +564,7 @@ def init (db) :
     db.support.audit   ("set",    set_status,               priority = 350)
     db.support.audit   ("create", set_prodcat,              priority = 400)
     db.support.audit   ("set",    set_prodcat,              priority = 400)
+    db.support.audit   ("set",    check_params,             priority = 450)
 
     db.customer.audit  ("create", new_customer,             priority = 90)
     db.customer.audit  ("create", check_maildomain)
