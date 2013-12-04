@@ -84,6 +84,12 @@ for si in db.support.getnodeids () :
             db.support.set (si, type = support_issue)
     elif sup.title.startswith ('RMA') :
         db.support.set (si, type = rma_issue)
+    # Loop over messages in id order and find first customer mail
+    for m in sorted (int (i) for i in sup.messages) :
+        msg = db.msg.getnode (str (m))
+        if msg.header and 'X-ROUNDUP-CC' in msg.header :
+            db.support.set (si, first_reply = msg.date)
+            break
 
 # Set all existing classifications to valid
 for c in db.sup_classification.getnodeids () :
