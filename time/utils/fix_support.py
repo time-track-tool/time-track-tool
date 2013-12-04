@@ -18,10 +18,14 @@ def fix_tables (tracker) :
         db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT IF EXISTS %s;' % n)
     except Exception :
         # old postgres on Suse
+        db.rollback ()
+        db.close ()
         db = tracker.open ('admin')
         n = '_prodcat__name_key'
         db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT %s;' % n)
     db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _parent);')
+    db.commit ()
+    db.close ()
 # end def fix_tables
 
 fix_tables (tracker)
