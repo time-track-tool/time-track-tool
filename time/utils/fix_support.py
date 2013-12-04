@@ -10,13 +10,21 @@ tracker = instance.open (dir)
 db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
 
-# newer postgres
-#n = '_prodcat__name__parent_key'
-#db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT IF EXISTS %s;' % n)
-# old postgres on Suse
-n = '_prodcat__name_key'
-db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT %s;' % n)
-db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _parent);')
+def fix_tables (tracker) :
+    db = tracker.open ('admin')
+    try :
+        # newer postgres
+        n = '_prodcat__name__parent_key'
+        db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT IF EXISTS %s;' % n)
+    except Exception :
+        # old postgres on Suse
+        db = tracker.open ('admin')
+        n = '_prodcat__name_key'
+        db.sql ('ALTER TABLE _prodcat DROP CONSTRAINT %s;' % n)
+    db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _parent);')
+# end def fix_tables
+
+fix_tables (tracker)
 
 types = \
     [ dict (order = 1, name = 'Support Issue')
