@@ -101,8 +101,6 @@ class Product_Sync (object) :
                     )
                 r = self.update_table \
                     (self.db.prodcat, self.prodcats, self.prodused, key, par)
-                if self.opt.verbose :
-                    print "Update Prodcat: %s: %s" % (key, r)
                 if lvl == 4 :
                     pc4 = r
 
@@ -126,8 +124,6 @@ class Product_Sync (object) :
             if v and v != '0' and pc4 :
                 p = self.update_table \
                     (self.db.product, self.products, self.pr_used, key, par)
-                if self.opt.verbose :
-                    print "Update Product: %s: %s" % (key, p)
         self.validity (self.db.prodcat,       self.prodcats, self.prodused)
         self.validity (self.db.business_unit, self.bu_s,     self.bu_used)
         self.validity (self.db.product,       self.products, self.pr_used)
@@ -152,8 +148,12 @@ class Product_Sync (object) :
                     d [bu] = params [bu]
                 if d :
                     cls.set (nodedict [key], ** d)
+                    if self.opt.verbose :
+                        print "Update %s: %s: %s" % (cls.classname, key, d)
         else :
             id = cls.create (** params)
+            if self.opt.verbose :
+                print "Create %s: %s: %s" % (cls.classname, key, params)
             nodedict [key] = id
         usedict [key] = True
         return nodedict [key]
