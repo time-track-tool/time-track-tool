@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -620,8 +620,10 @@ dynuser_copyfields = \
 
 def dynuser_half_frozen (db, dyn) :
     userid   = dyn.user.id
-    val_from = dyn.valid_from._value
+    val_from = Date (str (dyn.valid_from._value))
     val_to   = dyn.valid_to._value
+    if val_to :
+        val_to = Date (str (val_to))
     return \
         (   frozen (db, userid, val_from)
         and (val_to and not frozen (db, userid, val_to - day) or not val_to)
