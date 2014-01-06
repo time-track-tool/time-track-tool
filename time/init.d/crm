@@ -21,6 +21,16 @@
 # ****************************************************************************
 #
 # roundup	Startup script for the roundup http server.
+### BEGIN INIT INFO
+# Provides:             roundup_crm
+# Required-Start:       $local_fs $remote_fs $network $time
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Roundup http server for crm
+### END INIT INFO
 
 DESC='Roundup HTTP-Server'
 
