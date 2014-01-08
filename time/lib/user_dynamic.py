@@ -543,7 +543,8 @@ class Period_Data (object) :
             if d < s or d > e : continue
             dur       = durations (db, user, d)
 
-            if  (   period.required_overtime
+            if  (   dur.dyn
+                and period.required_overtime
                 and dur.dyn.overtime_period == period.id
                 ) :
                 if opp == 0 :
