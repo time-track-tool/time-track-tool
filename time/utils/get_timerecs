@@ -4,9 +4,10 @@ import sys
 import os
 from roundup           import date
 from roundup           import instance
-from roundup.password  import Password, encodePassword
+from roundup.hyperdb   import Link, Multilink, Date
+from optparse          import OptionParser
 
-def mail () :
+def main () :
     dir = os.getcwd ()
     cmd = OptionParser ("Usage: %prog [options] user daterange")
     cmd.add_option \
@@ -27,7 +28,8 @@ def mail () :
         sys.exit (23)
 
     sys.path.insert (0, os.path.join (opt.dir, 'lib'))
-    from common import ymd
+    from common       import ymd
+    from user_dynamic import first_user_dynamic, next_user_dynamic
     tracker = instance.open (opt.dir)
     db      = tracker.open ('admin')
 
@@ -41,7 +43,10 @@ def mail () :
 
     print "from roundup import date"
     print ""
-    print "def import_data_%s (db, user) :" % userid
+    if opt.dynuser :
+        print "def import_data_%s (db, user, dep, olo) :" % userid
+    else :
+        print "def import_data_%s (db, user) :" % userid
     ident = '    '
     for dri in db.daily_record.filter (None, filter) :
         dr = db.daily_record.getnode (dri)
@@ -81,5 +86,52 @@ def mail () :
             if new_wpid :
                 print ident, "    , wp            = '%s'" % new_wpid
             print ident, "    )"
+    if opt.dynuser :
+        dates = sdate.split (';')
+        if len (dates) == 2 :
+            dstart, dend = dates
+            dstart = date.Date (dstart)
+            dend   = date.Date (dend)
+        else :
+            assert len (dates) == 1
+            dstart = date.Date (dates [0])
+            dend   = None
+        ud = first_user_dynamic (db, user = userid, date = dstart)
+        while ud :
+            if ud.overtime_period :
+                otp = db.overtime_period.getnode (ud.overtime_period)
+                print ident, \
+                    ( "sd = dict (months = %s, required_overtime = %s,"
+                      " weekly = %s)"
+                    % (otp.months, otp.required_overtime, otp.weekly)
+                    )
+                print ident, "otp = db.overtime_period.filter (None, sd)"
+                print ident, "assert len (otp) == 1"
+                print ident, "otp = otp [0]"
+            else :
+                print ident, "otp = None"
+            print ident, "db.user_dynamic.create \\"
+            for n, (pname, prop) in enumerate \
+                (db.user_dynamic.properties.iteritems ()) :
+                if isinstance (prop, Link) or isinstance (prop, Multilink) :
+                    continue
+                delim = ['(', ','][bool (n)]
+                value = getattr (ud, pname)
+                if value is None :
+                    continue
+                if isinstance (prop, Date) :
+                    value = 'date.Date (%s)' % value
+                print ident, "    %s %-18s = %s" \
+                    % (delim, pname, value)
+            print ident, "    , department         = dep"
+            print ident, "    , org_location       = olo"
+            print ident, "    , overtime_period    = otp"
+            print ident, "    )"
+            ud = next_user_dynamic (db, ud)
+            if dend and ud.valid_from > dend :
+                break
     print ident, "db.commit ()"
     print "# end def import_data_%s" % userid
+
+if __name__ == '__main__' :
+    main ()
