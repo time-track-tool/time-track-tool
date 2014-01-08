@@ -27,7 +27,7 @@ import logging
 import csv
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
-import user7_time, user8_time, user10_time, user11_time
+import user7_time, user8_time, user10_time, user11_time, user12_time
 
 from operator import mul
 from StringIO import StringIO
@@ -1017,6 +1017,63 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [4][4], '2013-06-01;2013-06-30')
         self.assertEqual (lines [4][5], '2.00')
     # end def test_user11
+
+    def setup_user12 (self) :
+        self.username12 = 'testuser12'
+        self.user12 = self.db.user.create \
+            ( username     = self.username12
+            , firstname    = 'Nummer12'
+            , lastname     = 'User12'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user12))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.retire (ud [0])
+        self.db.commit ()
+    # end def setup_user12
+
+    def test_user12 (self) :
+        self.log.debug ('test_user12')
+        self.setup_db ()
+        self.setup_user12 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username12)
+        user12_time.import_data_12 (self.db, self.user12, self.dep, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary_init (self.tracker)
+        fs = { 'user'         : [self.user12]
+             , 'date'         : '2013-01-01;2013-12-31'
+             , 'summary_type' : [4]
+             }
+        class r : filterspec = fs
+        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 6)
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [8], 'Supp. hours average')
+        self.assertEqual (lines  [0] [9], 'Supplementary hours')
+        self.assertEqual (lines  [0][11], 'Balance End')
+        self.assertEqual (lines  [0][12], 'Overtime period')
+        self.assertEqual (lines  [1] [1], 'WW 1/2013')
+        self.assertEqual (lines  [4] [1], 'January 2013')
+        self.assertEqual (lines  [5] [1], '2013-01-01;2013-01-16')
+        self.assertEqual (lines  [4] [7], '92.50')
+        self.assertEqual (lines  [4] [8], '95.85')
+        self.assertEqual (lines  [1] [2], balance_start)
+        self.assertEqual (lines  [5][11], balance_end)
+        self.db.close ()
+    # end def test_user12
 
 # end class Test_Case_Timetracker
 
