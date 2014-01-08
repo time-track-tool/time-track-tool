@@ -128,7 +128,7 @@ def main () :
             print ident, "    , overtime_period    = otp"
             print ident, "    )"
             ud = next_user_dynamic (db, ud)
-            if dend and ud.valid_from > dend :
+            if ud and dend and ud.valid_from > dend :
                 break
     print ident, "db.commit ()"
     print "# end def import_data_%s" % userid
