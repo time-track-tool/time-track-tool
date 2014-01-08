@@ -48,44 +48,6 @@ def main () :
     else :
         print "def import_data_%s (db, user) :" % userid
     ident = '    '
-    for dri in db.daily_record.filter (None, filter) :
-        dr = db.daily_record.getnode (dri)
-        print ident, "dr = db.daily_record.create \\"
-        print ident, "    ( user = user"
-        print ident, "    , date = date.Date ('%s')" % dr.date.pretty (ymd)
-        print ident, "    )"
-        for tri in dr.time_record :
-            tr = db.time_record.getnode (tri)
-            print ident, "db.time_record.create \\"
-            print ident, "    ( daily_record  = dr"
-            if tr.start :
-                print ident, "    , start         = '%s'" % tr.start
-                print ident, "    , end           = '%s'" % tr.end
-            else :
-                print ident, "    , duration      = %s" % tr.duration
-            if tr.time_activity :
-                print ident, "    , time_activity = '%s'" % tr.time_activity
-            print ident, "    , work_location = '%s'" % tr.work_location
-            if tr.wp in wpdict :
-                new_wpid = wpdict [tr.wp]
-            elif tr.wp is None :
-                new_wpid = None
-            else :
-                wp = db.time_wp.getnode (tr.wp)
-                tp = db.time_project.getnode (wp.project)
-                if wp.travel :
-                    new_wpid = 3
-                elif tp.is_public_holiday :
-                    new_wpid = 1
-                elif tp.no_overtime :
-                    new_wpid = 2
-                else :
-                    wpmax += 1
-                    new_wpid = wpmax
-                wpdict [tr.wp] = new_wpid
-            if new_wpid :
-                print ident, "    , wp            = '%s'" % new_wpid
-            print ident, "    )"
     if opt.dynuser :
         dates = sdate.split (';')
         if len (dates) == 2 :
@@ -120,16 +82,57 @@ def main () :
                 if value is None :
                     continue
                 if isinstance (prop, Date) :
-                    value = 'date.Date (%s)' % value
+                    value = 'date.Date ("%s")' % value
                 print ident, "    %s %-18s = %s" \
                     % (delim, pname, value)
             print ident, "    , department         = dep"
             print ident, "    , org_location       = olo"
             print ident, "    , overtime_period    = otp"
+            print ident, "    , user               = user"
             print ident, "    )"
             ud = next_user_dynamic (db, ud)
             if ud and dend and ud.valid_from > dend :
                 break
+    for dri in db.daily_record.filter (None, filter) :
+        dr = db.daily_record.getnode (dri)
+        print ident, "dr = db.daily_record.create \\"
+        print ident, "    ( user = user"
+        print ident, "    , date = date.Date ('%s')" % dr.date.pretty (ymd)
+        print ident, "    , weekend_allowed   = %s"  % dr.weekend_allowed
+        print ident, "    , required_overtime = %s"  % dr.required_overtime
+        print ident, "    )"
+        for tri in dr.time_record :
+            tr = db.time_record.getnode (tri)
+            print ident, "db.time_record.create \\"
+            print ident, "    ( daily_record  = dr"
+            if tr.start :
+                print ident, "    , start         = '%s'" % tr.start
+                print ident, "    , end           = '%s'" % tr.end
+            else :
+                print ident, "    , duration      = %s" % tr.duration
+            if tr.time_activity :
+                print ident, "    , time_activity = '%s'" % tr.time_activity
+            print ident, "    , work_location = '%s'" % tr.work_location
+            if tr.wp in wpdict :
+                new_wpid = wpdict [tr.wp]
+            elif tr.wp is None :
+                new_wpid = None
+            else :
+                wp = db.time_wp.getnode (tr.wp)
+                tp = db.time_project.getnode (wp.project)
+                if wp.travel :
+                    new_wpid = 3
+                elif tp.is_public_holiday :
+                    new_wpid = 1
+                elif tp.no_overtime :
+                    new_wpid = 2
+                else :
+                    wpmax += 1
+                    new_wpid = wpmax
+                wpdict [tr.wp] = new_wpid
+            if new_wpid :
+                print ident, "    , wp            = '%s'" % new_wpid
+            print ident, "    )"
     print ident, "db.commit ()"
     print "# end def import_data_%s" % userid
 
