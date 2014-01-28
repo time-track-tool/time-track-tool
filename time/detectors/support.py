@@ -457,13 +457,11 @@ mandatory_by_type = \
     { 'RMA Issue'      : ( 'business_unit', 'classification', 'customer'
                          , 'prodcat', 'product', 'warranty'
                          )
-    , 'Supplier Claim' : ( 'business_unit', 'classification', 'customer'
-                         , 'warranty'
+    , 'Supplier Claim' : ( 'business_unit', 'customer', 'warranty'
                          )
-    , 'Support Issue'  : ( 'business_unit', 'classification', 'customer'
-                         , 'prodcat'
+    , 'Support Issue'  : ( 'business_unit', 'customer'
                          )
-    , 'Other'          : ( 'business_unit', 'classification', 'customer'
+    , 'Other'          : ( 'business_unit', 'customer'
                          )
     }
 
@@ -476,9 +474,11 @@ def check_params (db, cl, nodeid, new_values) :
     type = new_values.get ('type')
     if not type :
         type = cl.get (nodeid, 'type')
-    required = mandatory_by_type [db.sup_type.get (type, 'name')]
+    type     = db.sup_type.get (type, 'name')
+    required = mandatory_by_type [type]
+    closed   = db.sup_status.lookup ('closed')
     common.require_attributes (_, cl, nodeid, new_values, * required)
-    if new_values ['status'] == db.sup_status.lookup ('closed') :
+    if type == 'RMA Issue' and new_values ['status'] == closed :
         common.require_attributes (_, cl, nodeid, new_values, 'execution')
 # end def check_params
 
