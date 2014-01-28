@@ -60,9 +60,17 @@ def prodcat_parents (db, utils, prodcat) :
     return '&raquo;'.join (x)
 # end def prodcat_parents
 
+def serial_match (sn, serials) :
+    sns = (s.strip () for s in str (serials).split ('\n'))
+    sns = dict.fromkeys (s for s in sns if s)
+    return sn in sns
+# end def serial_match
+
 def serial (db, node, sn) :
     ser = db.support.filter (None, dict (serial_number = sn))
-    ser = [s for s in ser if s.id != node.id]
+    ser = [s for s in ser
+           if s.id != node.id and serial_match (sn, s.serial_number)
+          ]
     return ser
 # end def serial
 
@@ -72,10 +80,11 @@ def serials (db, node) :
     tpl = \
         ("support?"
          ":columns=id,title,type,status,responsible,customer&:sort=id"
-         "&:filter=serial_number&:pagesize=20&:startwith=0&serial_number=%s"
+         "&:filter=id&:pagesize=20&:startwith=0&id=%s"
         )
     serials = (s.strip () for s in str (node.serial_number).split ('\n'))
-    serials = dict ((s, len (serial (db, node, s))) for s in serials if s)
+    sns     = dict ((s, serial (db, node, s)) for s in serials if s)
+    serials = dict ((s, len (v)) for s, v in sns.iteritems ())
     r   = []
     for s, l in serials.iteritems () :
         if not l :
@@ -83,7 +92,7 @@ def serials (db, node) :
         r.append \
             (""'Serial <a href="%s">%s</a> '
                'occurs %s times in other support issues'
-            % (tpl % s, s, l)
+            % (tpl % ','.join (k.id for k in sns [s]), s, l)
             )
     return r
 # end def serials
