@@ -13,6 +13,13 @@
     , ('customer',          {})
     , ('product',           {})
     , ('description',       {})
+    , ( 'product'
+      , dict ( searchable = True
+             , sortable   = True
+             , searchname = 'product.prodcat.name'
+             , helpname   = 'product.prodcat.name'
+             )
+      )
     );
    props python:
      [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

@@ -56,6 +56,14 @@
             ) "/>
       </td>
      </tr>
+     <tr tal:condition="context/product">
+      <th tal:content="structure python:utils.fieldname
+        (context, 'product.prodcat.name')"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.product.prodcat.name
+        , item = context.product.prodcat
+        ).formatlink ()"/>
+     </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'description')"/>

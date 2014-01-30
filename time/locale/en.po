@@ -2820,6 +2820,9 @@ msgstr ""
 msgid "prodcat"
 msgstr "Product category"
 
+msgid "product.prodcat.name"
+msgstr "Product number"
+
 msgid "Used for classifying products"
 msgstr ""
 
