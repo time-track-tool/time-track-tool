@@ -82,7 +82,8 @@ class Product_Sync (object) :
     # end def __init__
 
     def sync (self) :
-        dr = DictReader (open (self.args [0], 'r'), delimiter = '\t')
+        dr = DictReader \
+            (open (self.args [0], 'r'), delimiter = self.opt.delimiter)
 
         skey = lambda x : x [1]
         for rec in dr :
@@ -176,6 +177,12 @@ def main () :
         , dest    = 'dir'
         , help    = 'Tracker instance directory'
         , default = dir
+        )
+    cmd.add_option \
+        ( '-D', '--Delimiter'
+        , dest    = 'delimiter'
+        , help    = 'CSV delimiter'
+        , default = '\t'
         )
     cmd.add_option \
         ( '-u', '--update'
