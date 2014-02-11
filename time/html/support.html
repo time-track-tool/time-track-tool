@@ -1,0 +1,42 @@
+<tal:block metal:define-macro="support_list">
+    <!-- issues: list of support issues -->
+    <!-- expand_var: name of cgi variable to use for expand/collapse all -->
+    <span tal:condition="issues"
+          tal:define="items        issues;
+                      indent       python:0;">
+      <tal:block metal:use-macro="templates/support/macros/rec_support_list" />
+    </span>
+</tal:block>
+
+<tal:block metal:define-macro="rec_support_list">
+     <tal:block tal:define="items python:reversed
+      ( sorted
+       ( [i for i in items
+          if i.title.is_view_ok ()
+             and (i.status.plain () != 'closed' or not hide)
+         ]
+       , key = lambda x : (str (x.status), -int (x.id))
+       )
+      )">
+      <tal:block metal:use-macro="templates/support/macros/rec_support_loop" />
+     </tal:block>
+</tal:block>
+
+<tal:block metal:define-macro="rec_support_loop">
+ <tal:block tal:repeat="item items">
+  <nobr>
+   <span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
+   <a tal:attributes="href string:support${item/id};
+                      class item/status;
+                      title python:item.title.plain ();"
+      tal:content="structure python:
+       '<code>%s</code> (<code>%s, %s</code>): %s' %
+        ( str (item.id)
+        , item.status.plain () [0].upper ()
+        , utils.nickname (db, item.responsible).lower ()
+        , utils.truncate_chars (item.title.plain (), 40, '...')
+        )"/>
+  </nobr>
+  <br />
+ </tal:block>
+</tal:block>
