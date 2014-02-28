@@ -31,6 +31,8 @@
 #--
 
 import re
+import cgi
+from roundup.cgi.templating import StringHTMLProperty
 
 CUTOFF     = re.compile (r"(.*?)(\s+\S+)$")
 NL         = re.compile ("\r?\n")
@@ -70,6 +72,16 @@ def soft_wrap (in_str, width=80) :
     return '\n'.join (result)
 # end def soft_wrap
 
+def hyperlinked_soft_wrap (content, width = 120) :
+    """ Wrap like in soft_wrap then hyperlink as in
+        msg.content.hyperlinked.
+    """
+    s = soft_wrap  (content.plain (), width)
+    s = cgi.escape (s)
+    s = content.hyper_re.sub (content._hyper_repl, s)
+    return s
+# end def hyperlinked_soft_wrap
+
 def truncate_chars(in_str, max_len=40, append=''):
     """truncates a String on a word boundary.
 
@@ -103,6 +115,7 @@ def truncate_chars(in_str, max_len=40, append=''):
 
 
 def init (instance) :
-    instance.registerUtil ('soft_wrap',       soft_wrap)
-    instance.registerUtil ('truncate_chars',  truncate_chars)
+    instance.registerUtil ('soft_wrap',             soft_wrap)
+    instance.registerUtil ('truncate_chars',        truncate_chars)
+    instance.registerUtil ('hyperlinked_soft_wrap', hyperlinked_soft_wrap)
 # end def init

@@ -1088,7 +1088,8 @@
   </tr>
   <tr>
    <td colspan="4" class="content">
-    <pre tal:content="structure msg/content/hyperlinked">content</pre>
+    <pre tal:content="structure python:utils.hyperlinked_soft_wrap
+        (msg.content, 120)" />
    </td>
   </tr>
   </tal:block>
