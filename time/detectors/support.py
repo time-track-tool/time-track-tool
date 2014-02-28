@@ -454,7 +454,7 @@ def set_prodcat (db, cl, nodeid, new_values) :
 # end def set_prodcat
 
 mandatory_by_type = \
-    { 'RMA Issue'      : ( 'business_unit', 'classification', 'customer'
+    { 'RMA Issue'      : ( 'business_unit', 'customer'
                          , 'prodcat', 'product', 'warranty'
                          )
     , 'Supplier Claim' : ( 'business_unit', 'customer', 'warranty'
@@ -480,7 +480,8 @@ def check_params (db, cl, nodeid, new_values) :
     closed   = db.sup_status.lookup ('closed')
     common.require_attributes (_, cl, nodeid, new_values, * required)
     if type == 'RMA Issue' and new_values ['status'] == closed :
-        common.require_attributes (_, cl, nodeid, new_values, 'execution')
+        common.require_attributes \
+            (_, cl, nodeid, new_values, 'execution', 'classification')
 # end def check_params
 
 def check_prodcat (db, cl, nodeid, new_values) :
