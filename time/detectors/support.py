@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-14 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -468,7 +468,8 @@ mandatory_by_type = \
 def check_params (db, cl, nodeid, new_values) :
     """ Check for existence of mandatory parameters
     """
-    if 'status' not in new_values :
+    st_open = db.sup_status.lookup ('open')
+    if 'status' not in new_values or new_values ['status'] == st_open :
         return
     common.require_attributes (_, cl, nodeid, new_values, 'type')
     type = new_values.get ('type')
