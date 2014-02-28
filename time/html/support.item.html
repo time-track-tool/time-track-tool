@@ -52,7 +52,7 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'classification')"/>
       <td tal:content="structure python:context.classification.menu
-          (translate=0)"/>
+          (translate=0, valid=True)"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>

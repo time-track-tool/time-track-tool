@@ -12,7 +12,12 @@
     ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['confidential'])
     , utils.ExtProperty (utils, pdict ['category'],       multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['classification'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils
+        , pdict ['classification']
+        , multiselect = 1
+        , filter      = {'valid' : True}
+        )
     , utils.ExtProperty (utils, pdict ['title'])
     , utils.ExtProperty (utils, pdict ['status'],         multiselect = 1)
     , utils.ExtProperty (utils, pdict ['type'],           multiselect = 1)
