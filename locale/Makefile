@@ -1,7 +1,5 @@
 # Extract translatable strings from Roundup sources,
 # update and compile all existing translations
-#
-# $Id$
 
 # tool locations
 XPOT ?= xpot
