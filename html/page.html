@@ -7,7 +7,8 @@
  ; classname       context/_classname|db/user/_classname
  ; Classname       python: i18n.gettext (classname)
  ; formname        python: 'itemSynopsis'
- ; head_title      Classname
+ ; ctx_id          python: (context and context.id) or ''
+ ; head_title      python: Classname + ' ' + ctx_id
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
  ; login           request/form/:login/value | nothing
