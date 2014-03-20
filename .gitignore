@@ -14,3 +14,10 @@
 .#*
 .*.swp
 .DS_store
+config.ini
+log.debug
+log.ini
+log.test
+schema.py
+server.ini
+ssl.pem
