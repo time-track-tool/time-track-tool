@@ -40,10 +40,12 @@ from roundup import roundupdb, hyperdb
 from roundup.mailer import Mailer, MessageSendError, encode_quopri
 
 fromprops_by_type = \
-    { 'Support Issue'  : 'fromaddress'
-    , 'Other'          : 'fromaddress'
-    , 'RMA Issue'      : 'rmafrom'
-    , 'Supplier Claim' : 'suppclaimfrom'
+    { 'Support Issue'      : 'fromaddress'
+    , 'Other'              : 'fromaddress'
+    , 'RMA Issue'          : 'rmafrom'
+    , 'Supplier Claim'     : 'suppclaimfrom'
+    , 'Supplier Claim RMA' : 'suppclaimfrom'
+    , 'Supplier Claim IGC' : 'suppclaimfrom'
     }
 
 def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :

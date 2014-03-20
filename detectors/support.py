@@ -453,16 +453,18 @@ def set_prodcat (db, cl, nodeid, new_values) :
             new_values ['prodcat'] = pcc
 # end def set_prodcat
 
+suppclaim = ('business_unit', 'customer', 'warranty')
 mandatory_by_type = \
-    { 'RMA Issue'      : ( 'business_unit', 'customer'
-                         , 'prodcat', 'product', 'warranty'
-                         )
-    , 'Supplier Claim' : ( 'business_unit', 'customer', 'warranty'
-                         )
-    , 'Support Issue'  : ( 'business_unit', 'customer'
-                         )
-    , 'Other'          : ( 'business_unit', 'customer'
-                         )
+    { 'RMA Issue'          : ( 'business_unit', 'customer'
+                             , 'prodcat', 'product', 'warranty'
+                             )
+    , 'Supplier Claim'     : suppclaim
+    , 'Supplier Claim RMA' : suppclaim
+    , 'Supplier Claim IGC' : suppclaim
+    , 'Support Issue'      : ( 'business_unit', 'customer'
+                             )
+    , 'Other'              : ( 'business_unit', 'customer'
+                             )
     }
 
 def check_params (db, cl, nodeid, new_values) :
