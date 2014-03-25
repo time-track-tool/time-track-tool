@@ -5326,7 +5326,7 @@ msgid "goods_received"
 msgstr "Goods received"
 
 msgid "number_effected"
-msgstr "Number effected"
+msgstr "Number affected"
 
 msgid "classification"
 msgstr "Classification"
