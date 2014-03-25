@@ -13,8 +13,10 @@ db      = tracker.open ('admin')
 
 def fix_products () :
     names = {}
-    for id in db.product.getnodeids () :
+    for id in db.product.getnodeids (retired = False) :
         prd = db.product.getnode (id)
+        if prd.prodcat is None :
+            continue
         pc  = db.prodcat.getnode (prd.prodcat)
         assert (pc.level == 4)
         if pc.name in names :
@@ -47,7 +49,7 @@ lvl_names = ['product_line', 'product_use_case', 'product_family']
 
 def fix_prodcats () :
     lvl = [{}, {}, {}]
-    for id in db.prodcat.getnodeids () :
+    for id in db.prodcat.getnodeids (retired = False) :
         pc = db.prodcat.getnode (id)
         if pc.level > 3 :
             #print "retire level 4: prodcat%s" % id
@@ -63,9 +65,10 @@ def fix_prodcats () :
                     % (lvl_names [lv], lv, p, id, lvl [lv][name])
                 db.product.set (p, ** {lvl_names [lv] : lvl [lv][name]})
             print "retire level %s: prodcat%s" % (lv + 1, id)
+            db.prodcat.retire (id)
         else :
             lvl [lv][name] = id
 
 fix_products ()
 fix_prodcats ()
-db.commit()
+#db.commit()
