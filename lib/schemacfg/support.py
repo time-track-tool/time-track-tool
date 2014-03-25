@@ -181,6 +181,7 @@ def init \
         , lot              = String    ()
         , product          = Link      ("product")
         , prodcat          = Link      ("prodcat")
+        , external_ref     = String    ()
         )
 
 # end def init

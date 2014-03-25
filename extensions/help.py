@@ -614,6 +614,8 @@ _helptext          = \
           '''
       , green
       ]
+    , ""'external_ref'                :
+      [""'''%(Property)s at supplier/customer for this %(Classname)s''']
     , ""'fax'                         :
       [""'''FAX number for this %(Classname)s''']
     , ""'filename_format'             :

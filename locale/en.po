@@ -5477,3 +5477,6 @@ msgstr "is nosy"
 
 msgid "doc_num"
 msgstr "Document number"
+
+msgid "external_ref"
+msgstr "External reference"
