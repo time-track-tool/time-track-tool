@@ -45,6 +45,30 @@
             (db, utils, context.prodcat)"/>
       </td>
      </tr>
+     <tr tal:condition="python: 'product_family' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'product_family')"/>
+      <td colspan="3">
+       <tal:block tal:content="structure python:utils.prodcat_parents
+            (db, utils, context.product_family)"/>
+      </td>
+     </tr>
+     <tr tal:condition="python: 'product_use_case' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'product_use_case')"/>
+      <td colspan="3">
+       <tal:block tal:content="structure python:utils.prodcat_parents
+            (db, utils, context.product_use_case)"/>
+      </td>
+     </tr>
+     <tr tal:condition="python: 'product_line' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'product_line')"/>
+      <td colspan="3">
+       <tal:block tal:content="structure python:utils.prodcat_parents
+            (db, utils, context.product_line)"/>
+      </td>
+     </tr>
      <tr tal:condition="python: 'description' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'description')"/>

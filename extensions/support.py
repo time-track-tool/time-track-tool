@@ -52,11 +52,12 @@ def has_x_roundup_cc_header (db, msg) :
 def prodcat_parents (db, utils, prodcat) :
     x = []
     parent = prodcat
-    for n in range (int (prodcat.level), 0, -1) :
+    for n in range (int (prodcat.level or 0), 0, -1) :
         ep = utils.ExtProperty (utils, parent.name, item = parent)
         x.append (ep.formatlink ())
         parent = parent.parent
-    #return '&laquo;&raquo;'.join (x)
+        if not parent :
+            break
     return '&raquo;'.join (x)
 # end def prodcat_parents
 

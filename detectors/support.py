@@ -436,7 +436,7 @@ def set_prodcat (db, cl, nodeid, new_values) :
         prod = cl.get (nodeid, 'product')
     if prod :
         prod = db.product.getnode (prod)
-        pcp  = db.prodcat.getnode (db.prodcat.get (prod.prodcat, 'parent'))
+        pcp  = db.prodcat.getnode (prod.product_family)
         assert pcp.level == 3
         if pcp.id != pc :
             new_values ['prodcat'] = pcp.id
@@ -487,8 +487,7 @@ def check_params (db, cl, nodeid, new_values) :
 # end def check_params
 
 def check_prodcat (db, cl, nodeid, new_values) :
-    """ Check that prodcat parent linking and level counting is correct,
-        set fullname property.
+    """ Check that prodcat level is correct.
     """
     if 'valid' in new_values and not new_values ['valid'] :
         return
@@ -497,30 +496,11 @@ def check_prodcat (db, cl, nodeid, new_values) :
         name = new_values ['name']
     else :
         name = cl.get (nodeid, 'name')
-    if 'parent' not in new_values :
-        if nodeid :
-            parent = cl.get (nodeid, 'parent')
-        else :
-            parent = None
-    else :
-        parent = new_values ['parent']
-    if parent :
-        parent = cl.getnode (parent)
-    lvl = 1
-    if parent :
-        lvl = parent.level + 1
-    level = new_values.get ('level', lvl)
-    if level != lvl :
-        raise Reject, _ ('Level must be %s' % lvl)
+    level = new_values.get ('level')
+    if not level :
+        new_values ['level'] = 1
     if level > 4 :
         raise Reject, _ ('Max. %s is ') % _ ('level')
-    new_values ['level'] = level
-    fn = [name]
-    if parent :
-        if not parent.fullname :
-            raise Reject, _ ("Parent %s doesn't have fullname") % parent.name
-        fn.append (parent.fullname)
-    new_values ['fullname'] = '.'.join (fn)
 # end def check_prodcat
 
 def cust_agree (db, cl, nodeid, new_values) :

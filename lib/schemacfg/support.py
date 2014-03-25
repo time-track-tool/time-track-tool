@@ -98,11 +98,14 @@ def init \
         ( db
         , ''"product"
         , name             = String    ()
+        , description      = String    ()
         , prodcat          = Link      ("prodcat")
+        , product_family   = Link      ("prodcat")
+        , product_use_case = Link      ("prodcat")
+        , product_line     = Link      ("prodcat")
         , business_unit    = Link      ("business_unit")
         , is_series        = Boolean   ()
         , valid            = Boolean   ()
-        , description      = String    ()
         )
     product.setkey ("name")
 
