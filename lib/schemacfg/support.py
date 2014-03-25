@@ -102,6 +102,7 @@ def init \
         , business_unit    = Link      ("business_unit")
         , is_series        = Boolean   ()
         , valid            = Boolean   ()
+        , description      = String    ()
         )
     product.setkey ("name")
 
