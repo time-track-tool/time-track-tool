@@ -23,12 +23,6 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'parent')"/>
-      <td tal:content="structure python:
-          (context.parent or '') and utils.ExtProperty
-              (utils, context.parent, item = context).formatlink ()"/>
-     </tr>
-     <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'level')"/>
       <td tal:content="python:context.level.plain ()"/>
      </tr>

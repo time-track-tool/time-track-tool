@@ -14,9 +14,13 @@ def normalize_name (name) :
         We assume unicode input.
     >>> print normalize_name ('Projects + Other')
     PROJECTS-OTHER
+    >>> print normalize_name ('  Projects + Other  ')
+    PROJECTS-OTHER
     >>> print normalize_name ('PROJECTS-OTHER')
     PROJECTS-OTHER
     >>> print normalize_name ('PROJECTS+OTHER')
+    PROJECTS-OTHER
+    >>> print normalize_name ('PROJECTS-OTHERS')
     PROJECTS-OTHER
     >>> print normalize_name ('Other')
     OTHER
@@ -38,6 +42,8 @@ def normalize_name (name) :
     x = '-'.join (l for l in splitre.split (name.upper ()) if l)
     if x == 'OTHERS' :
         x = 'OTHER'
+    if x == 'PROJECTS-OTHERS' :
+        x = 'PROJECTS-OTHER'
     return x
 # end def normalize_name
 
@@ -47,7 +53,6 @@ class Product_Sync (object) :
         { 'Product Line'     : 1
         , 'Product Use Case' : 2
         , 'Product Family'   : 3
-        , 'Artikelnummer'    : 4
         }
 
     def __init__ (self, opt, args) :
@@ -60,7 +65,7 @@ class Product_Sync (object) :
         for id in db.prodcat.getnodeids (retired = False) :
             pd  = db.prodcat.getnode (id)
             nn  = normalize_name (pd.name.decode ('utf-8'))
-            key = (nn, pd.parent, pd.level)
+            key = (nn, int (pd.level))
             self.prodused [key] = False
             self.prodcats [key] = pd.id
 
@@ -87,25 +92,28 @@ class Product_Sync (object) :
 
         skey = lambda x : x [1]
         for rec in dr :
-            r = pc4 = None
+            pcats = []
             for k, lvl in sorted (self.levels.iteritems (), key = skey) :
-                v = rec [k].strip ().decode ('latin1')
+                v = rec [k].strip ().decode (self.opt.encoding)
                 if not v or v == '0' or v == '1' :
-                    r = None
                     break
-                key = (normalize_name (v), r, lvl)
+                key = (normalize_name (v), lvl)
                 par = dict \
                     ( name   = v.encode ('utf-8')
                     , level  = lvl
                     , valid  = True
-                    , parent = r
                     )
                 r = self.update_table \
                     (self.db.prodcat, self.prodcats, self.prodused, key, par)
-                if lvl == 4 :
-                    pc4 = r
+                pcats.append (r)
 
-            v   = rec ['Selling BU'].decode ('latin1')
+            v   = rec ['BU Owner'].decode (self.opt.encoding)
+            sbu = rec ['Selling BU'].decode (self.opt.encoding)
+            if sbu == u'0' or sbu == u'ALL-BUSINESS-UNITS' :
+                sbu = []
+            else :
+                sbu = sbu.split ('+')
+                sbu = [normalize_name (x) for x in sbu]
             key = normalize_name (v)
             par = dict (name = v.encode ('utf-8'), valid = True)
             bu  = None
@@ -113,16 +121,24 @@ class Product_Sync (object) :
                 bu  = self.update_table \
                     (self.db.business_unit, self.bu_s, self.bu_used, key, par)
 
-            v   = rec ['Artikelbeschreibung'].decode ('latin1')
+            v   = rec ['Artikelnummer'].decode (self.opt.encoding)
+            d   = rec ['Artikelbeschreibung'].decode (self.opt.encoding)
+            if bu and sbu and key not in sbu :
+                if self.opt.verbose :
+                    print "Skipping %s Not owning BU: %s (%s)" % (v, sbu, key)
+                continue
             key = normalize_name (v)
-            par = dict \
-                ( name          = v.encode ('utf-8')
-                , prodcat       = pc4
-                , business_unit = bu
-                , is_series     = False
-                , valid         = True
-                )
-            if v and v != '0' and pc4 :
+            if v and v != '0' and len (pcats) == 3 :
+                par = dict \
+                    ( name             = v.encode ('utf-8')
+                    , description      = d.encode ('utf-8')
+                    , business_unit    = bu
+                    , is_series        = False
+                    , valid            = True
+                    , product_family   = pcats [2]
+                    , product_use_case = pcats [1]
+                    , product_line     = pcats [0]
+                    )
                 p = self.update_table \
                     (self.db.product, self.products, self.pr_used, key, par)
         self.validity (self.db.prodcat,       self.prodcats, self.prodused)
@@ -144,6 +160,9 @@ class Product_Sync (object) :
                     d ['parent'] = params ['parent']
                 if 'prodcat' in params and node.prodcat != params ['prodcat'] :
                     d ['prodcat'] = params ['prodcat']
+                for a in 'product_family', 'product_line', 'product_use_case' :
+                    if a in params and getattr (node, a) != params [a] :
+                        d [a] = params [a]
                 bu = 'business_unit'
                 if bu in params and node.business_unit != params [bu] :
                     d [bu] = params [bu]
@@ -163,6 +182,8 @@ class Product_Sync (object) :
     def validity (self, cls, nodedict, usedict) :
         for k, v in usedict.iteritems () :
             id = nodedict [k]
+            if not v and self.opt.verbose :
+                print "Invalidating %s: %s" % (cls.classname, k)
             cls.set (id, valid = v)
     # end def validity
 
@@ -183,6 +204,12 @@ def main () :
         , dest    = 'delimiter'
         , help    = 'CSV delimiter'
         , default = '\t'
+        )
+    cmd.add_option \
+        ( '-E', '--Encoding'
+        , dest    = 'encoding'
+        , help    = 'CSV character encoding'
+        , default = 'utf-8'
         )
     cmd.add_option \
         ( '-u', '--update'

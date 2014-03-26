@@ -27,26 +27,22 @@
       )
     , ('is_series',         {})
     , ('valid',             {})
-    , ('prodcat',           dict (filter = dict (level = 4, valid = True)))
-    , ('prodcat'
-      , dict ( searchname  = 'prodcat.parent'
-             , filter      = dict (level = 3, valid = True)
+    , ('product_family'
+      , dict ( filter      = dict (level = 3, valid = True)
              , searchable  = True
              , sortable    = True
              , multiselect = True
              )
       )
-    , ('prodcat'
-      , dict ( searchname  = 'prodcat.parent.parent'
-             , filter      = dict (level = 2, valid = True)
+    , ('product_use_case'
+      , dict ( filter      = dict (level = 2, valid = True)
              , searchable  = True
              , sortable    = True
              , multiselect = True
              )
       )
-    , ('prodcat'
-      , dict ( searchname  = 'prodcat.parent.parent.parent'
-             , filter      = dict (level = 1, valid = True)
+    , ('product_line'
+      , dict ( filter      = dict (level = 1, valid = True)
              , searchable  = True
              , sortable    = True
              , multiselect = True

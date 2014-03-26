@@ -55,7 +55,7 @@ def prodcat_parents (db, utils, prodcat) :
     for n in range (int (prodcat.level or 0), 0, -1) :
         ep = utils.ExtProperty (utils, parent.name, item = parent)
         x.append (ep.formatlink ())
-        parent = parent.parent
+        parent = getattr (parent, 'parent', None)
         if not parent :
             break
     return '&raquo;'.join (x)

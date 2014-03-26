@@ -57,7 +57,6 @@ def init \
         , name                = String    (indexme = 'no')
         , valid               = Boolean   ()
         , level               = Number    ()
-        , parent              = Link      ("prodcat")
         )
     prodcat.setlabelprop ("name")
 

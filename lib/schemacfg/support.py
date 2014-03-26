@@ -99,7 +99,6 @@ def init \
         , ''"product"
         , name             = String    ()
         , description      = String    ()
-        , prodcat          = Link      ("prodcat")
         , product_family   = Link      ("prodcat")
         , product_use_case = Link      ("prodcat")
         , product_line     = Link      ("prodcat")

@@ -1160,7 +1160,11 @@ _helptext          = \
       [""'''Product category level 1''']
     , ""'product'                     : [""'''%(Property)s of %(Classname)s''']
     , ""'product_family'              :
-      [""'''The %(Property)s of the %(Classname)s.''']
+      [""'''The %(Property)s of the %(Classname)s (level 3 classification).''']
+    , ""'product_use_case'            :
+      [""'''The %(Property)s of the %(Classname)s (level 2 classification).''']
+    , ""'product_line'                :
+      [""'''The %(Property)s of the %(Classname)s (level 1 classification).''']
     , ""'product_family.id'           :
       [""'''The Id of %(Property)s.''']
     , ""'product_type'                :
