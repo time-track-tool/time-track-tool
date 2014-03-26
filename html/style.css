@@ -180,8 +180,9 @@ table.searchform th a[href].header       { color: #333 }
 table.form {
   padding: 2px;
   border-spacing: 0;
-  border-collapse: separate;
+  border-collapse: collapse;
   vertical-align: top;
+  border: 0;
 }
 
 table.form th {
@@ -242,7 +243,7 @@ table.form td {
   color: #333;
   empty-cells: show;
   vertical-align: top;
-  padding-right: 1em
+  padding-right: 1em;
 }
 
 table.form td.optional {
@@ -252,6 +253,33 @@ table.form td.optional {
 
 table.form td.html {
   color: #777;
+}
+
+table.rule tbody tr:first-child td {
+  padding-top: 1em;
+  border-top:    1px solid #338;
+}
+
+table.rule tbody tr:last-child td {
+  padding-bottom: 1em;
+  border-bottom: 1px solid #338;
+}
+
+table.rule tbody tr:first-child th {
+  padding-top: 1em;
+  border-top:    1px solid #338;
+}
+
+table.rule tbody tr:last-child th {
+  padding-bottom: 1em;
+  border-bottom: 1px solid #338;
+}
+
+/* usage for explicit rules: <tr class="rule"><td colspan="4" /></tr> */
+table.form tr.rule td {
+  border-style:  solid;
+  border-top:    1px solid #338;
+  border-bottom: 1px solid #338;
 }
 
 table.form a.header {

@@ -39,6 +39,8 @@
  ; abo_adrtype     python: utils.valid_adr_types (db, adr_type_cat = 'ABO')
  ; terse           python: utils.get_from_form (request, 'terse')
  ; quiet           python: utils.get_from_form (request, 'quiet')
+ ; show_creation   python: True
+ ; form_class      python: 'form'
  ; typecat         python: (   'adr_type_cat' in db._db.classes
                            and ','.join (db._db.adr_type_cat.getnodeids ())
                            )
@@ -877,7 +879,7 @@
 
   <input type="hidden" name="@template" value="item">
 
-  <table class="form" border="0" style="border-spacing:0px">
+  <table tal:attributes="class python:form_class">
    <tr tal:condition="use_labelprop">
     <th class="required"
      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
@@ -991,7 +993,7 @@
     </tr>
    </tal:block>
   </table>
-  <p tal:condition="context/id" i18n:translate="">
+  <p tal:condition="python:context.id and show_creation" i18n:translate="">
    Created on
    <b i18n:name="creation" tal:content="python:context.creation.pretty
       ('%Y-%m-%d %H:%M:%S')"/> by
