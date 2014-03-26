@@ -110,10 +110,10 @@
        <td>
         <tal:block tal:content="structure python:context.product.field () "/>
         <tal:block tal:replace="structure python:db.product.classhelp
-             ( 'name,prodcat.name'
+             ( 'name,description'
              , property='product'
              , inputtype='radio'
-             , width='600'
+             , width='1000'
              , pagesize=5000
              , filter='is_valid=True'
              )"/>
