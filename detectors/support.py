@@ -496,7 +496,10 @@ def check_prodcat (db, cl, nodeid, new_values) :
         name = new_values ['name']
     else :
         name = cl.get (nodeid, 'name')
-    level = new_values.get ('level')
+    if 'level' in new_values :
+        level = new_values.get ('level')
+    elif nodeid :
+        level = cl.get (nodeid, 'level')
     if not level :
         new_values ['level'] = 1
     if level > 4 :
