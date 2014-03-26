@@ -71,4 +71,4 @@ def fix_prodcats () :
 
 fix_products ()
 fix_prodcats ()
-#db.commit()
+db.commit()
