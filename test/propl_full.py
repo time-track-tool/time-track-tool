@@ -331,18 +331,19 @@ properties = \
         ]
       )
     , ( 'prodcat'
-      , [ 'fullname'
-        , 'level'
+      , [ 'level'
         , 'name'
-        , 'parent'
         , 'valid'
         ]
       )
     , ( 'product'
       , [ 'business_unit'
+        , 'description'
         , 'is_series'
         , 'name'
-        , 'prodcat'
+        , 'product_family'
+        , 'product_line'
+        , 'product_use_case'
         , 'valid'
         ]
       )
@@ -491,6 +492,7 @@ properties = \
         , 'customer'
         , 'emails'
         , 'execution'
+        , 'external_ref'
         , 'files'
         , 'first_reply'
         , 'goods_received'

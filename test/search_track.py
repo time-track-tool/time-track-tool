@@ -483,16 +483,10 @@ properties = \
         ]
       )
     , ( 'prodcat'
-      , [ ( 'fullname'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'level'
+      , [ ( 'level'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'name'
-          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
-          )
-        , ( 'parent'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'valid'
@@ -504,13 +498,22 @@ properties = \
       , [ ( 'business_unit'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'description'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'is_series'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'name'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'prodcat'
+        , ( 'product_family'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'product_line'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'product_use_case'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'valid'
@@ -666,6 +669,9 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'execution'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'external_ref'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'files'

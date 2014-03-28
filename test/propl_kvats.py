@@ -86,10 +86,8 @@ properties = \
         ]
       )
     , ( 'prodcat'
-      , [ 'fullname'
-        , 'level'
+      , [ 'level'
         , 'name'
-        , 'parent'
         , 'valid'
         ]
       )
