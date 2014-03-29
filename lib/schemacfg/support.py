@@ -181,7 +181,7 @@ def init \
         , number_effected  = Number    ()
         , warranty         = Boolean   ()
         , lot              = String    ()
-        , product          = Link      ("product")
+        , product          = Link      ("product", try_id_parsing='no')
         , prodcat          = Link      ("prodcat")
         , external_ref     = String    ()
         )
