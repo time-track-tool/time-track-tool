@@ -273,13 +273,14 @@
                          if i in db._db.customer.getprops())
              , property='customer'
              , inputtype='radio'
-             , width='600'
+             , width='800'
              , pagesize=500
              , filter='is_valid=True'
                + ['',';is_supplier=True']
                  [str (context.type).startswith ('Supplier')]
                + ['',';is_customer=True']
                  [   bool (context.type)
+                 and not str (context.type) == 'Other'
                  and not str (context.type).startswith ('Supplier')
                  ]
              )"/>
