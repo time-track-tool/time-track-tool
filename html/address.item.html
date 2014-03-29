@@ -119,17 +119,17 @@
           class="required"/>
       <td tal:content="structure context/is_valid/field"/>
      </tr>
-     <tr tal:condition="python:'is_customer' in props and context.id">
+     <tr tal:condition="python:'is_customer' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'is_customer')"/>
       <td tal:content="structure context/is_customer/field"/>
      </tr>
-     <tr tal:condition="python:'is_supplier' in props and context.id">
+     <tr tal:condition="python:'is_supplier' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'is_supplier')"/>
       <td tal:content="structure context/is_supplier/field"/>
      </tr>
-     <tr tal:condition="python:'customer_code' in props and context.id">
+     <tr tal:condition="python:'customer_code' in props">
       <th tal:content="structure python:utils.fieldname
           (classname, 'customer_code')"/>
       <td tal:content="structure context/customer_code/field"/>
