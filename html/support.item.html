@@ -19,7 +19,7 @@
   <tal:block tal:define=
     " use_labelprop       python:0
     ; has_resp            python:0
-    ; required_attributes string:title
+    ; required_attributes string:title,customer
     ; show_creation       python:False
     ; form_class          python:'form rule'
     ">
@@ -38,6 +38,9 @@
            tal:content="structure python:context [labelprop].field (size=60)"/>
       </tr>
       <tr>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'status')"/>
+       <td tal:content="structure python:context.status.menu (translate=0)"/>
        <th>
         <tal:block tal:condition="context/id"
          tal:content="structure python:utils.fieldname
@@ -50,11 +53,10 @@
             , item = context.customer
             ).formatlink ()"/>
        </td>
-       <th tal:content="structure python:utils.fieldname
-           (classname, 'status')"/>
-       <td tal:content="structure python:context.status.menu (translate=0)"/>
       </tr>
       <tr>
+       <th tal:content="structure python:utils.fieldname (classname, 'prio')"/>
+       <td tal:content="structure python:context.prio.menu ()"/>
        <th>
         <tal:block tal:condition="context/id"
          tal:content="structure python:utils.fieldname
@@ -67,11 +69,8 @@
             , item = context.responsible
             ).formatlink ()"/>
        </td>
-       <th tal:content="structure python:utils.fieldname (classname, 'prio')"/>
-       <td tal:content="structure python:context.prio.menu ()"/>
       </tr>
       <tr>
-       <th/><td/>
        <th tal:content="structure python:utils.fieldname
            (classname, 'confidential')"/>
        <td tal:content="structure python:context.confidential.field ()"/>
