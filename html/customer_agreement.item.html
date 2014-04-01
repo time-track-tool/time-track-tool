@@ -29,7 +29,7 @@
       <td>
        <tal:block tal:content="structure python:context.customer.field ()"/>
        <tal:block tal:replace="structure python:db.customer.classhelp
-            ( 'id,name'
+            ( 'name'
             , property='customer'
             , inputtype='radio'
             , width='600'
@@ -44,7 +44,7 @@
       <td>
        <tal:block tal:content="structure python:context.product.field ()"/>
        <tal:block tal:replace="structure python:db.product.classhelp
-            ( 'id,name,prodcat.parent'
+            ( 'name,product_family'
             , property='product'
             , inputtype='radio'
             , width='600'
@@ -54,11 +54,18 @@
       </td>
      </tr>
      <tr tal:condition="context/product">
-      <th tal:content="structure python:utils.fieldname
-        (context, 'product.prodcat.name')"/>
+      <th/>
       <td tal:content="structure python:utils.ExtProperty
-        ( utils, context.product.prodcat.name
-        , item = context.product.prodcat
+        ( utils, context.product.name
+        , item = context.product
+        ).formatlink ()"/>
+     </tr>
+     <tr tal:condition="context/product">
+      <th tal:content="structure python:utils.fieldname
+        ('product', 'product_family')"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.product.product_family.name
+        , item = context.product.product_family
         ).formatlink ()"/>
      </tr>
      <tr>

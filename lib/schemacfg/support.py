@@ -79,7 +79,7 @@ def init \
         ( db
         , ''"customer_agreement"
         , customer         = Link      ("customer")
-        , product          = Link      ("product")
+        , product          = Link      ("product", try_id_parsing='no')
         , description      = String    ()
         )
     customer_agreement.setlabelprop ("customer")

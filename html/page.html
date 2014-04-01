@@ -94,7 +94,8 @@
                               )
    , ('customer_agreement', '') :
                           '@pagesize=50&@startwith=0&'
-                          '@columns=id,customer,product,product.prodcat.name'
+                          '@columns=id,customer,product,'
+                          'product.product_family.name'
    , ('daily_record', '')
                         : '@columns=id,user,date,status&@sort=-id&'
                           '@filter=user,date&@pagesize=20&@startwith=0&'
