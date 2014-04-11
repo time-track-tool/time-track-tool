@@ -404,7 +404,8 @@ def required_overtime_in_period (db, user, date, period) :
         wd += 1.0 * is_wd
         if dyn and period.id == dyn.overtime_period :
             otd  = req_overtime_quotient (db, dyn, user, date)
-            spp += dyn.supp_per_period * otd
+            if dyn.supp_per_period :
+                spp += dyn.supp_per_period * otd
         date += day
     # otdsum (the sum of all overtime day ratios, sum of otd above)
     # spp / otdsum is dyn.supp_per_period if supp_per_period doesn't change
@@ -423,7 +424,7 @@ def required_overtime_params (db, user, date, dyn, period) :
         The tuple (overtime, workdays, overtime_quotient)
     """
     if dyn and period and period.required_overtime :
-        spp = dyn.supp_per_period
+        spp = dyn.supp_per_period or 0
         rotp, wd = required_overtime_in_period (db, user, date, period)
         rq = req_overtime_quotient (db, dyn, user, date) * spp / wd
         return (rotp, wd, rq)
