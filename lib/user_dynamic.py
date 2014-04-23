@@ -415,7 +415,11 @@ def required_overtime_in_period (db, user, date, period) :
     # (otdsum / wd) * (spp / otdsum)
     # which can be reduced to (spp / wd)
     # that's why we don't compute otdsum.
-    r = db.cache_required_overtime_in_period [key] = (spp / wd, wd)
+    if not spp :
+        # probably wd is also 0 here, avoid division by zero
+        r = db.cache_required_overtime_in_period [key] = (0.0, wd)
+    else :
+        r = db.cache_required_overtime_in_period [key] = (spp / wd, wd)
     return r
 # end def required_overtime_in_period
 
@@ -426,7 +430,11 @@ def required_overtime_params (db, user, date, dyn, period) :
     if dyn and period and period.required_overtime :
         spp = dyn.supp_per_period or 0
         rotp, wd = required_overtime_in_period (db, user, date, period)
-        rq = req_overtime_quotient (db, dyn, user, date) * spp / wd
+        if not spp :
+            # probably wd is also 0 here, avoid division by zero
+            rq = 0.0
+        else :
+            rq = req_overtime_quotient (db, dyn, user, date) * spp / wd
         return (rotp, wd, rq)
     return (0.0, 1.0, 0.0)
 # end def required_overtime_params
