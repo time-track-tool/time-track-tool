@@ -4045,6 +4045,9 @@ msgstr ""
 msgid "wp.id"
 msgstr "Work package Id"
 
+msgid "time_wp.wp_no"
+msgstr "Work package number"
+
 msgid "wp_no"
 msgstr "Work package number"
 

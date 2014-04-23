@@ -158,6 +158,10 @@ view               = \
          %(Classname)s. Select here which columns you want to view in
          the results.
       '''
+wp_no              = \
+    ""'''Work package number in the project. Number must be unique for
+         the project and cannot be changed after assignment.
+      '''
 
 _helptext          = \
     { ""'VIEW'                        : [view]
@@ -1603,6 +1607,7 @@ _helptext          = \
     , ""'time_project.id'             : [help_id]
     , ""'time_wp++travel'             : [travel]
     , ""'time_wp.id'                  : [help_id]
+    , ""'time_wp.wp_no'               : [wp_no]
     , ""'time_wp_group.id'            : [help_id]
     , ""'timeout'                     :
       [""'''Timeout when new email is sent''']
@@ -1789,11 +1794,7 @@ _helptext          = \
           '''
       ]
     , ""'wp.id'                       : [help_id]
-    , ""'wp_no'                       :
-      [ ""'''Work package number in the project. Number must be unique for
-             the project and cannot be changed after assignment.
-          '''
-      ]
+    , ""'wp_no'                       : [wp_no]
     , ""'wp++durations_allowed'       :
       [ durations
       , ""'''This is mainly used for special %(Classname)ss, like,

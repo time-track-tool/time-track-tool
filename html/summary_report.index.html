@@ -39,6 +39,11 @@
       , searchable = False
       , searchname = 'time_wp.id'
       )
+    , time_wp_no        = utils.ExtProperty 
+      ( utils, pdict ['time_wp']
+      , searchable = False
+      , searchname = 'time_wp.wp_no'
+      )
     , time_project      = utils.ExtProperty
       (utils, pdict ['time_project'],      multiselect = 1)
     , time_project_id   = utils.ExtProperty
@@ -111,7 +116,8 @@
   <tal:block tal:replace="structure python:sr.as_html ()"/>
   <tal:block tal:define=
       " fpkeys python:
-        [ 'user', 'time_wp', 'time_wp_id', 'time_project', 'time_project_id'
+        [ 'user', 'time_wp', 'time_wp_id', 'time_wp_no', 'time_project'
+        , 'time_project_id'
         , 'time_wp_group', 'time_wp_group_id', 'cost_center', 'cost_center_id'
         , 'cost_center_group', 'cost_center_group_id', 'summary'
         , 'planned_effort', 'reporting_group', 'reporting_group_id'

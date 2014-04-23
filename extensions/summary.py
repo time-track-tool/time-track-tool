@@ -380,6 +380,7 @@ class WP_Container (Comparable_Container, dict) :
 
         # defaults for id computation
         self.time_wp_id           = ''
+        self.time_wp_no           = ''
         self.time_wp_group_id     = ''
         self.cost_center_id       = ''
         self.cost_center_group_id = ''
@@ -409,6 +410,7 @@ class WP_Container (Comparable_Container, dict) :
             p  = tp.name
             self.name  = '/'.join ((p, self.name))
             self.time_wp_id = ('time_wp', id)
+            self.time_wp_no = ('time_wp', wp.wp_no)
         elif klass.classname == 'time_project' :
             tp = klass.getnode (id)
         elif klass.classname == 'time_wp_group' :
@@ -1011,6 +1013,8 @@ class Summary_Report (_Report) :
         for k in self.id_attrs :
             if k in self.columns :
                 line.append (formatter (_ (k)))
+        if 'time_wp.wp_no' in self.columns :
+            line.append (formatter (_ ('time_wp.wp_no')))
         line.append (formatter (_ ('time')))
         if 'user' in self.columns :
             for u in self.usernames :
@@ -1057,6 +1061,20 @@ class Summary_Report (_Report) :
                     except AttributeError :
                         col = col [1]
                 line.append (formatter (col))
+        if 'time_wp.wp_no' in self.columns :
+            col = getattr (wpc, 'time_wp_no', None)
+            if col :
+                try :
+                    cls = getattr (self.htmldb, col [0])
+                    itm = cls.getItem (col [1])
+                    col = self.utils.ExtProperty \
+                        ( self.utils
+                        , itm.wp_no
+                        , item = itm
+                        )
+                except AttributeError :
+                    col = col [1]
+            line.append (formatter (col))
         line.append (formatter (tc))
         if 'user' in self.columns :
             for u in self.usernames :
