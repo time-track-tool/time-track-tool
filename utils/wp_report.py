@@ -34,15 +34,16 @@ class WP_Report (object) :
               'Expire     Project/Work Package Title'
             % self.opt.days
             )
-        format = '%10s %-67.67s\n           %-67.67s'
+        format = '%10s %-67.67s\n           %-67.67s\n           %s'
         for i in self.wps :
             pdate = i.time_end.pretty ('%Y-%m-%d')
             key   = i.responsible
             prj   = self.db.time_project.get (i.project, 'name')
+            url   = self.db.config.TRACKER_WEB + i.cl.classname + i.id
             if key not in self.messages :
                 self.messages [key] = []
                 self.messages [key].append (header)
-            self.messages [key].append (format % (pdate, prj, i.name))
+            self.messages [key].append (format % (pdate, prj, i.name, url))
         formatted_messages = {}
         for u, v in self.messages.iteritems () :
             formatted_messages [u] = '\n'.join (v)
