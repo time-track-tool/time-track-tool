@@ -30,19 +30,19 @@ class WP_Report (object) :
 
     def build_mails (self) :
         header = \
-            ( 'The following work packages expire during the next %s days\n'
-              'Expire     Work Package Title'
+            ( 'The following work packages expire during the next %s days\n\n'
+              'Expire     Project/Work Package Title'
             % self.opt.days
             )
-        format = '%10s %-67.67'
+        format = '%10s %-67.67s\n           %-67.67s'
         for i in self.wps :
             pdate = i.time_end.pretty ('%Y-%m-%d')
             key   = i.responsible
+            prj   = self.db.time_project.get (i.project, 'name')
             if key not in self.messages :
                 self.messages [key] = []
                 self.messages [key].append (header)
-                self.messages [key].append ('')
-            self.messages [key].append (format % (pdate, i.title))
+            self.messages [key].append (format % (pdate, prj, i.name))
         formatted_messages = {}
         for u, v in self.messages.iteritems () :
             formatted_messages [u] = '\n'.join (v)
