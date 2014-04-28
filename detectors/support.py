@@ -88,6 +88,7 @@ def serial_num (db, cl, nodeid, new_values) :
         and 'number_effected' not in new_values
         ) :
         return
+    sn = None
     if 'serial_number' in new_values :
         sn = new_values ['serial_number']
     elif nodeid :
