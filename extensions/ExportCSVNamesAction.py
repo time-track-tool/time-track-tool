@@ -399,7 +399,20 @@ class Export_CSV_Names (Action, autosuper) :
             (self.matches, filterspec, self.sort, self.group) :
             self.client._socket_op \
                 ( writer.writerow 
-                , ([self.represent [col] (itemid, col)
+                , ([['', self.represent [col] (itemid, col)]
+                    [  self.hasPermission
+                        ( 'View'
+                        , itemid    = itemid
+                        , classname = self.request.classname
+                        , property  = col
+                        )
+                    or self.hasPermission
+                        ( 'Edit'
+                        , itemid    = itemid
+                        , classname = self.request.classname
+                        , property  = col
+                        )
+                    ]
                    for col in self.columns]
                   )
                 )
