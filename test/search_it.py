@@ -200,7 +200,7 @@ properties = \
           , ['admin', 'it']
           )
         , ( 'password'
-          , ['admin', 'it', 'itview', 'user']
+          , ['admin', 'it']
           )
         , ( 'queries'
           , ['admin', 'it', 'itview', 'user']

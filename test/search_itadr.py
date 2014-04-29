@@ -391,7 +391,7 @@ properties = \
           , ['admin', 'it']
           )
         , ( 'password'
-          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
+          , ['admin', 'it']
           )
         , ( 'queries'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']

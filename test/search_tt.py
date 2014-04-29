@@ -751,7 +751,7 @@ properties = \
           , ['admin']
           )
         , ( 'password'
-          , ['admin', 'controlling', 'doc_admin', 'hr', 'office', 'pgp', 'project', 'project_view', 'user']
+          , ['admin']
           )
         , ( 'pictures'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'office', 'pgp', 'project', 'project_view', 'user']

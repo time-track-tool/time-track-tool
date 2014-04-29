@@ -272,7 +272,7 @@ properties = \
           , ['admin']
           )
         , ( 'password'
-          , ['admin', 'contact', 'letter', 'type', 'user']
+          , ['admin']
           )
         , ( 'queries'
           , ['admin', 'contact', 'letter', 'type', 'user']

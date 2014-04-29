@@ -159,11 +159,6 @@ def security (db, ** kw) :
         ]
     prop_perms = \
         [ ( "user", "View", ["User"], ("call",))
-        , ( "user", "Edit", ["User"]
-          , ("call", "password", "csv_delimiter", "address"
-            , "alternate_addresses"
-            )
-          )
         ]
 
     schemadef.register_class_permissions (db, classes, prop_perms)

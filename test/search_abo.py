@@ -454,7 +454,7 @@ properties = \
           , ['admin']
           )
         , ( 'password'
-          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+          , ['admin']
           )
         , ( 'queries'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']

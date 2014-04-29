@@ -107,7 +107,7 @@ prop_perms = \
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator", "department"
         , "firstname", "job_description", "lastname"
-        , "id", "lunch_duration", "lunch_start", "nickname", "password"
+        , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "home_directory", "login_shell"
