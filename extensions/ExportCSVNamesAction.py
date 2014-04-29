@@ -400,14 +400,8 @@ class Export_CSV_Names (Action, autosuper) :
             self.client._socket_op \
                 ( writer.writerow 
                 , ([['', self.represent [col] (itemid, col)]
-                    [  self.hasPermission
+                    [self.hasPermission
                         ( 'View'
-                        , itemid    = itemid
-                        , classname = self.request.classname
-                        , property  = col
-                        )
-                    or self.hasPermission
-                        ( 'Edit'
                         , itemid    = itemid
                         , classname = self.request.classname
                         , property  = col
