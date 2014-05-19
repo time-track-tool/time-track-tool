@@ -148,13 +148,13 @@ td.date, th.date {
 
 p.ok-message {
   background-color: #22bb22;
-  padding: 5px;
+  padding: 0px;
   color: white;
   font-weight: bold;
 }
 p.error-message {
   background-color: #bb2222;
-  padding: 5px;
+  padding: 0px;
   color: white;
   font-weight: bold;
 }
