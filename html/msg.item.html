@@ -44,7 +44,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
-      <td tal:content="context/date"/>
+      <td tal:content="structure context/date/field"/>
      </tr>
      <tr tal:condition="python:'subject' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
