@@ -11,7 +11,24 @@ db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
 from linking import linkclass_iter
 
-for user in sys.argv [1:] :
+if sys.argv [1] == 'all' :
+    users = {}
+    d = {}
+    m = 0
+    for u in db.user.getnodeids () :
+        x = int (u)
+        d [x] = 1
+        if x > m :
+            m = x
+    for u in range (m) :
+        if u in d :
+            continue
+        users [u] = 1
+    users = [str (x) for x in sorted (users.keys ())]
+else :
+    users = sys.argv [1:]
+
+for user in users :
     print "User:", user
     for cn, prop in linkclass_iter (db, 'user') :
         cls = db.getclass (cn)
