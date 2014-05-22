@@ -1,0 +1,21 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+from roundup.password  import Password, encodePassword
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+sys.path.insert (1, os.path.join (dir, 'lib'))
+from linking import linkclass_iter
+
+for user in sys.argv [1:] :
+    print "User:", user
+    for cn, prop in linkclass_iter (db, 'user') :
+        cls = db.getclass (cn)
+        result = cls.filter (None, {prop : user})
+        if result :
+            print "    Class: %s %s" % (cn, result)
+
