@@ -68,7 +68,7 @@ def main () :
             db.user.get (user, 'username')
         except IndexError :
             ok = True
-        if not ok :
+        if not ok and opt.fix :
             print >> sys.stderr, "User %s not missing" % user
             sys.exit (23)
         print "User:", user
