@@ -65,8 +65,8 @@ def main () :
     for user in users :
         ok = False
         try :
-            db.user.getnode (user)
-        except KeyError :
+            db.user.get (user, 'username')
+        except IndexError :
             ok = True
         if not ok :
             print >> sys.stderr, "User %s not missing" % user
