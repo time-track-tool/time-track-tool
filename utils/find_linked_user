@@ -63,6 +63,14 @@ def main () :
         users = args
 
     for user in users :
+        ok = False
+        try :
+            db.user.getnode (user)
+        except KeyError :
+            ok = True
+        if not ok :
+            print >> sys.stderr, "User %s not missing" % user
+            sys.exit (23)
         print "User:", user
         for cn, prop in linkclass_iter (db, 'user') :
             cls = db.getclass (cn)
