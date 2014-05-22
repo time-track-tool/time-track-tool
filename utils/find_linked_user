@@ -17,5 +17,12 @@ for user in sys.argv [1:] :
         cls = db.getclass (cn)
         result = cls.filter (None, {prop : user})
         if result :
-            print "    Class: %s %s" % (cn, result)
+            print "    Class.prop: %s.%s %s" % (cn, prop, result)
+    for cl in db.getclasses () :
+        db.sql \
+            ( 'select * from %s__journal where tag = %s' % (cl, db.arg)
+            , (user,)
+            )
+        for line in db.sql_fetchiter () :
+            print "    journal %s: %s" % (cl, line)
 
