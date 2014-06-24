@@ -21,6 +21,7 @@
 import string
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
+from roundup.hyperdb                import Link
 
 from roundup.cgi.TranslationService import get_translation
 
@@ -105,6 +106,21 @@ def check_contact (db, cl, nodeid, new_values) :
             new_values ['contact'] = new_values ['contact'].lower ()
 # end def check_contact
 
+def relink_contact (db, cl, nodeid, old_values) :
+    for n, l in cl.properties.iteritems () :
+       if n == 'contact_type' :
+          continue
+       if isinstance (l, Link) :
+          pn = n
+          adrcls = db.getclass (l.classname)
+          break
+    contact = cl.getnode  (nodeid)
+    if contact [pn] :
+        adr = adrcls.getnode (contact [pn])
+        if contact.id not in adr.contacts :
+            adrcls.set (adr.id, contacts = adr.contacts + [contact.id])
+# end def relink_contact
+
 def retire_callerid (db, cl, nodeid, new_values) :
     """ Destroy (yes, really) all callerids linking to us (should be
         only one but this is not checked)
@@ -145,18 +161,20 @@ def fix_callerid (db, cl, nodeid, old_values) :
 
 def changed_contact (db, cl, nodeid, old_values) :
     """ Update the user address information if an email changes """
-    node = cl.getnode (nodeid)
+    contact = cl.getnode (nodeid)
     if ('contact' not in old_values and 'contact_type' not in old_values) :
         return
-    if  (   old_values ['contact']      == node.contact
-        and old_values ['contact_type'] == node.contact_type
-        and old_values ['order']        == node.order
+    if  (   old_values ['contact']      == contact.contact
+        and old_values ['contact_type'] == contact.contact_type
+        and old_values ['order']        == contact.order
         ) :
         return
     email = db.uc_type.lookup ('Email')
-    if node.contact_type != email and old_values.get ('contact_type') != email :
+    if  (   contact.contact_type != email
+        and old_values.get ('contact_type') != email
+        ):
         return
-    common.update_emails (db, node.user)
+    common.update_emails (db, contact.user)
 # end def changed_contact
 
 def new_user_contact (db, cl, nodeid, new_values) :
@@ -170,11 +188,7 @@ def check_email (db, cl, nodeid, new_values) :
         raise reject, _ ("Name Email must not be changed")
 # end def check_email
 
-def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
+def _get_persclass (db) :
     persclass = None
     if 'address' in db.classes :
         persclass = db.address
@@ -182,7 +196,15 @@ def init (db) :
         persclass = db.person
     if 'customer' in db.classes :
         persclass = db.customer
+    return persclass
+# end def _get_persclass
 
+def init (db) :
+    global _
+    _   = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+
+    persclass = _get_persclass (db)
     if persclass :
         persclass.audit  ("set",    auto_retire_contacts)
         persclass.react  ("set",    fix_contacts)
@@ -199,17 +221,21 @@ def init (db) :
         db.room.react    ("set",    fix_user_contacts)
         db.room.react    ("create", fix_user_contacts)
     if 'contact' in db.classes :
-        db.contact.audit ("create", check_contact)
-        db.contact.audit ("set",    check_contact)
+        db.contact.audit ("create",  check_contact)
+        db.contact.audit ("set",     check_contact)
+        db.contact.react ("set",     relink_contact)
+        db.contact.react ("restore", relink_contact)
         if 'callerid' in db.classes :
             db.contact.react ("create", new_callerid, priority = 120)
             db.contact.react ("set",    fix_callerid, priority = 120)
             db.contact.react ("retire", retire_callerid)
     if 'user_contact' in db.classes :
-        db.user_contact.audit ("create", check_contact)
-        db.user_contact.audit ("create", new_user_contact, priority = 150)
-        db.user_contact.audit ("set",    check_contact)
-        db.user_contact.react ("set",    changed_contact)
+        db.user_contact.audit ("create",  check_contact)
+        db.user_contact.audit ("create",  new_user_contact, priority = 150)
+        db.user_contact.audit ("set",     check_contact)
+        db.user_contact.react ("set",     changed_contact)
+        db.user_contact.react ("set",     relink_contact)
+        db.user_contact.react ("restore", relink_contact)
     if 'uc_type' in db.classes :
         db.uc_type.audit ("set", check_email)
 # end def init
