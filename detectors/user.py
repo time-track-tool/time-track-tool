@@ -361,6 +361,16 @@ def check_user_status (db, cl, nodeid, new_values) :
             (_, cl, nodeid, ldap_group = new_values ['ldap_group'])
 # end def check_user_status
 
+def deny_system_user (db, cl, nodeid, new_values) :
+    """ Deny user creation by system users
+    """
+    system = db.user_status.lookup ('system')
+    status = db.user.get (db.getuid (), 'status')
+    print "Trying to create user:", new_values
+    if status == system :
+        raise Reject, _ ("System users may not create users")
+# end def deny_system_user
+
 def init (db) :
     global _
     _   = get_translation \
@@ -383,3 +393,4 @@ def init (db) :
     if 'user_status' in db.classes :
         db.user_status.audit ("create", check_user_status)
         db.user_status.audit ("set",    check_user_status)
+        db.user.audit        ("create", deny_system_user)

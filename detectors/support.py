@@ -249,7 +249,7 @@ def header_check (db, cl, nodeid, new_values) :
                     c = find_or_create_contact (db, mail, rn, customer = cust)
                     if c :
                         new_values ['emails'].append (c)
-                    elif uidFromAddress (db, (rn, mail)) :
+                    elif uidFromAddress (db, (rn, mail), create = 0) :
                         pass
                     else :
                         cc.append (mail)

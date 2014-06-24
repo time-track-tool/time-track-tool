@@ -1,0 +1,96 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from optparse          import OptionParser
+from roundup           import instance
+
+def main () :
+    parser  = OptionParser ()
+    parser.add_option \
+        ( "-a", "--all"
+        , help    = "Iterate over all missing users"
+        , default = False
+        , action  = 'store_true'
+        )
+    parser.add_option \
+        ( "-d", "--database-directory"
+        , dest    = "database_directory"
+        , help    = "Directory of the roundup installation"
+        , default = '.'
+        )
+    parser.add_option \
+        ( "-f", "--fix"
+        , help    = "Fix (i.e. delete) offending user from tables"
+        , default = False
+        , action  = 'store_true'
+        )
+    parser.add_option \
+        ( "-u", "--update"
+        , help    = "Really apply fix (do database update)"
+        , default = False
+        , action  = 'store_true'
+        )
+    opt, args = parser.parse_args ()
+    dir       = opt.database_directory
+    tracker   = instance.open (dir)
+    db        = tracker.open ('admin')
+    sys.path.insert (1, os.path.join (dir, 'lib'))
+    from linking import linkclass_iter
+
+    if opt.all and opt.fix :
+        print >> sys.stderr, "Won't fix for all"
+        sys.exit (23)
+
+    if opt.all :
+        if args :
+            print >> sys.stderr, "--all only without arguments"
+            sys.exit (23)
+        users = {}
+        d = {}
+        m = 0
+        for u in db.user.getnodeids () :
+            x = int (u)
+            d [x] = 1
+            if x > m :
+                m = x
+        for u in range (m) :
+            if u in d :
+                continue
+            users [u] = 1
+        users = [str (x) for x in sorted (users.keys ())]
+    else :
+        users = args
+
+    for user in users :
+        ok = False
+        try :
+            db.user.get (user, 'username')
+        except IndexError :
+            ok = True
+        if not ok and opt.fix :
+            print >> sys.stderr, "User %s not missing" % user
+            sys.exit (23)
+        print "User:", user
+        for cn, prop in linkclass_iter (db, 'user') :
+            cls = db.getclass (cn)
+            result = cls.filter (None, {prop : user})
+            if result :
+                print "    Class.prop: %s.%s %s" % (cn, prop, result)
+            if opt.fix :
+                for id in result :
+                    x = dict.fromkeys (cls.get (id, prop))
+                    del x [user]
+                    cls.set (id, **{prop : x})
+        for cl in db.getclasses () :
+            db.sql \
+                ( 'select * from %s__journal where tag = %s' % (cl, db.arg)
+                , (user,)
+                )
+            for line in db.sql_fetchiter () :
+                print "    journal %s: %s" % (cl, line)
+    if opt.update and opt.fix :
+        db.commit ()
+
+if __name__ == '__main__' :
+    main ()
