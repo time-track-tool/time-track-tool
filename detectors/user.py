@@ -364,8 +364,12 @@ def check_user_status (db, cl, nodeid, new_values) :
 def deny_system_user (db, cl, nodeid, new_values) :
     """ Deny user creation by system users
     """
+    # admin *may* create users
+    uid = db.getuid ()
+    if uid <= 1 :
+        return
     system = db.user_status.lookup ('system')
-    status = db.user.get (db.getuid (), 'status')
+    status = db.user.get (uid, 'status')
     print "Trying to create user:", new_values
     if status == system :
         raise Reject, _ ("System users may not create users")
