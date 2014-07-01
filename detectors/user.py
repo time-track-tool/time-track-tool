@@ -366,7 +366,7 @@ def deny_system_user (db, cl, nodeid, new_values) :
     """
     # admin *may* create users
     uid = db.getuid ()
-    if uid <= 1 :
+    if int (uid) <= 1 :
         return
     system = db.user_status.lookup ('system')
     status = db.user.get (uid, 'status')
