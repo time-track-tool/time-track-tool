@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2013-12-03 12:21+0100\n"
+"POT-Creation-Date: 2014-08-01 12:40+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -430,19 +430,11 @@ msgid "maildomain"
 msgstr ""
 
 #, python-format
-msgid "Level must be %s"
-msgstr ""
-
-#, python-format
 msgid "Max. %s is "
 msgstr ""
 
 msgid "level"
 msgstr "Ebene"
-
-#, python-format
-msgid "Parent %s doesn't have fullname"
-msgstr ""
 
 #, python-format
 msgid "At least one of %(customer)s or %(product)s must be defined"
@@ -544,6 +536,9 @@ msgstr ""
 msgid "Maximum picture size %(limit)s exceeded: %(length)s"
 msgstr ""
 
+msgid "System users may not create users"
+msgstr ""
+
 #, python-format
 msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
 msgstr ""
@@ -604,6 +599,17 @@ msgstr ""
 #, python-format
 msgid "Only one of %(rname)s, %(wname)s is allowed"
 msgstr "Höchstens eines von \"%(rname)s\", %(wname)s darf ausgefüllt werden"
+
+msgid "No vacation for all-in allowed"
+msgstr ""
+
+#, python-format
+msgid "Wrong month: %(vm)s"
+msgstr ""
+
+#, python-format
+msgid "Wrong day of month: %(vm)s-%(vd)s"
+msgstr ""
 
 msgid "Download&nbsp;letter"
 msgstr "Brief&nbsp;laden"
@@ -830,6 +836,12 @@ msgstr ""
 "angezeigt. Hier können Sie auswählen, welche Spalten in der Darstellung der "
 "Ergebnisse angezeigt werden sollen."
 
+msgid ""
+"Work package number in the project. Number must be unique for\n"
+"         the project and cannot be changed after assignment.\n"
+"      "
+msgstr ""
+
 msgid "VIEW"
 msgstr "Felder"
 
@@ -994,17 +1006,6 @@ msgstr ""
 msgid "If selected, the user has an all-inclusive work time contract"
 msgstr ""
 
-msgid "may_change_state_to"
-msgstr "mögliche Status-Änderung"
-
-msgid ""
-"Allowed state changes for a given %(Classname)s: Usually\n"
-"             you want to allow all states here but for some\n"
-"             %(Classname)s you may want to disallow certain states, e.g.\n"
-"             don't allow change to \"testing\".\n"
-"          "
-msgstr ""
-
 msgid "alarm++val"
 msgstr "Schwelle"
 
@@ -1040,6 +1041,33 @@ msgstr ""
 
 msgid "Announcements for this %(Classname)s"
 msgstr "Ankündigungen für %(Classname)s"
+
+msgid "approval_required"
+msgstr "genehmigungspflichtig"
+
+msgid ""
+"Only for absence %(Classname)s: Employee must seek approval\n"
+"            via leave submission before booking.\n"
+"         "
+msgstr ""
+"Nur für Abwesenheits-%(Classname)s: Mitarbeiter muss\n"
+" Abwesenheit von Vorgesetztem genehmigen lassen bevor gebucht wird.\n"
+
+msgid "approval_hr"
+msgstr "Genehmigung durch HR"
+
+msgid ""
+"Only for absence %(Classname)s: Employee must seek approval,\n"
+"            but approval may not be granted by supervisor but by a\n"
+"            special HR role. This field implies\n"
+"         "
+msgstr ""
+"Nur für Abwesenheits-%(Classname)s: Mitarbeiter muss\n"
+" Abwesenheit genehmigen lassen, aber Genehmigung wird von HR erteilt.\n"
+" Dieses Feld setzt automatisch"
+
+msgid "\"approval_required\"."
+msgstr "\"genehmigungspflichtig\"."
 
 msgid "area"
 msgstr ""
@@ -1582,7 +1610,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Type of DNS record generated. If the $(Classname)s points to\n"
+"Type of DNS record generated. If the %(Classname)s points to\n"
 "             another %(Classname)s a CNAME is generated, otherwise an\n"
 "             A-record is assumed. If no DNS information should be\n"
 "             generated, this field should be set to \"invalid\".\n"
@@ -1780,6 +1808,12 @@ msgid ""
 "             half an hour lunch break was subtracted).\n"
 "          "
 msgstr ""
+
+msgid "external_ref"
+msgstr ""
+
+msgid "%(Property)s at supplier/customer for this %(Classname)s"
+msgstr "%(Property)s beim Kunden/Lieferanten für %(Classname)s"
 
 msgid "fax"
 msgstr "Fax"
@@ -2455,6 +2489,17 @@ msgstr ""
 msgid "Maximum DHCP lease time for %(Classname)s"
 msgstr "Maximale DHCP Lease-Zeit für %(Classname)s"
 
+msgid "may_change_state_to"
+msgstr "mögliche Status-Änderung"
+
+msgid ""
+"Allowed state changes for a given %(Classname)s: Usually\n"
+"             you want to allow all states here but for some\n"
+"             %(Classname)s you may want to disallow certain states, e.g.\n"
+"             don't allow change to \"testing\".\n"
+"          "
+msgstr ""
+
 msgid "measurement"
 msgstr "Messwert"
 
@@ -2921,8 +2966,20 @@ msgstr "Artikel"
 msgid "product_family"
 msgstr "Produktfamilie"
 
-msgid "The %(Property)s of the %(Classname)s."
-msgstr "%(Property)s von %(Classname)s"
+msgid "The %(Property)s of the %(Classname)s (level 3 classification)."
+msgstr "%(Property)s von %(Classname)s (Level 3)"
+
+msgid "product_use_case"
+msgstr "Produkt Use-Case"
+
+msgid "The %(Property)s of the %(Classname)s (level 2 classification)."
+msgstr "%(Property)s von %(Classname)s (Level 2)"
+
+msgid "product_line"
+msgstr "Produktlinie"
+
+msgid "The %(Property)s of the %(Classname)s (level 1 classification)."
+msgstr "%(Property)s von %(Classname)s (Level 1)"
 
 msgid "product_family.id"
 msgstr "Produktfamilien-ID"
@@ -2948,6 +3005,9 @@ msgstr ""
 
 msgid "project_type"
 msgstr "Projekttyp"
+
+msgid "The %(Property)s of the %(Classname)s."
+msgstr "%(Property)s von %(Classname)s"
 
 msgid "project_type.id"
 msgstr "Projekttyp-ID"
@@ -3767,6 +3827,9 @@ msgstr ""
 msgid "time_wp.id"
 msgstr "Arbeitspaket-Id"
 
+msgid "time_wp.wp_no"
+msgstr "Arbeitspaket Nr."
+
 msgid "time_wp_group.id"
 msgstr "Arbeitspaket-Gruppen-Id"
 
@@ -4009,6 +4072,17 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "vacation_day"
+msgstr "Urlaubsstichtag-Tag"
+
+msgid ""
+"%(Property)s when new year for this person starts.\n"
+"          "
+msgstr ""
+
+msgid "vacation_month"
+msgstr "Urlaubsstichtag-Monat"
+
 msgid "vacation_yearly"
 msgstr ""
 
@@ -4131,12 +4205,6 @@ msgid "wp.id"
 msgstr ""
 
 msgid "wp_no"
-msgstr ""
-
-msgid ""
-"Work package number in the project. Number must be unique for\n"
-"             the project and cannot be changed after assignment.\n"
-"          "
 msgstr ""
 
 msgid "wp++durations_allowed"
@@ -4751,6 +4819,12 @@ msgstr "löschen"
 msgid "Save Selection"
 msgstr "Auswahl speichern"
 
+msgid "<th>Created&nbsp;</th> <td> ${creation} by ${creator} </td>"
+msgstr ""
+
+msgid "<th>Last changed&nbsp;</th> <td> ${activity} by ${actor} </td>"
+msgstr ""
+
 msgid "Current Work Package(s)"
 msgstr ""
 
@@ -4866,6 +4940,9 @@ msgstr ""
 
 msgid "split user_dynamic record"
 msgstr ""
+
+msgid "vacation_date"
+msgstr "Urlaubsstichtag"
 
 msgid "Invoice Address"
 msgstr "Rechnungsadresse"
@@ -5211,6 +5288,15 @@ msgstr "Arbeitspaketgruppe"
 msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
 
+msgid "vacation_status"
+msgstr "Urlaubs-Status"
+
+msgid "vacation_submission"
+msgstr ""
+
+msgid "vacation"
+msgstr "Urlaub"
+
 msgid "umts"
 msgstr ""
 
@@ -5219,9 +5305,6 @@ msgstr "User-Kontakt"
 
 msgid "uc_type"
 msgstr "User-Kontakttyp"
-
-msgid "fullname"
-msgstr "voller Name"
 
 msgid "status_transition"
 msgstr "Statusübergang"
@@ -5285,6 +5368,18 @@ msgstr "Dauer erlaubt"
 
 msgid "travel_full"
 msgstr ""
+
+msgid "first_day"
+msgstr "erster Tag"
+
+msgid "last_day"
+msgstr "letzter Tag"
+
+msgid "correction"
+msgstr "Korrektur"
+
+msgid "days"
+msgstr "Tage"
 
 msgid "mail_domain"
 msgstr ""
@@ -5576,6 +5671,12 @@ msgstr "ist Verteiler"
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "leave_type"
+#~ msgstr "Abwesenheitstyp"
+
+#~ msgid "fullname"
+#~ msgstr "voller Name"
 
 #~ msgid "When a new issue is created with %(Classname)s set, but "
 #~ msgstr "Wenn ein neues Issue mit gesetztem %(Classname)s erzeugt wird, aber"

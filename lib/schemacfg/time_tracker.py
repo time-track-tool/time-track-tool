@@ -50,7 +50,6 @@ def init \
     , Department_Class
     , Location_Class
     , Organisation_Class
-    , Org_Location_Class
     , ** kw
     ) :
     export = {}
@@ -235,6 +234,8 @@ def init \
         , reporting_group       = Multilink ("reporting_group")
         , product_family        = Multilink ("product_family")
         , project_type          = Link      ("project_type")
+        , approval_required     = Boolean   ()
+        , approval_hr           = Boolean   ()
         )
     time_project.setkey ("name")
 
@@ -311,8 +312,9 @@ def init \
         , travel_full           = Boolean   ()
         , durations_allowed     = Boolean   ()
         , weekend_allowed       = Boolean   ()
-        , vacation_remaining    = Number    ()
         , vacation_yearly       = Number    ()
+        , vacation_month        = Number    ()
+        , vacation_day          = Number    ()
         , daily_worktime        = Number    ()
         , weekly_hours          = Number    ()
         , supp_weekly_hours     = Number    ()
@@ -329,6 +331,56 @@ def init \
         , all_in                = Boolean   ()
         , additional_hours      = Number    ()
         , overtime_period       = Link      ("overtime_period")
+        )
+
+    vacation_status = Class \
+        ( db
+        , ''"vacation_status"
+        , name                  = String ()
+        , order                 = Number ()
+        , transitions           = Multilink ("vacation_status")
+        )
+    vacation_status.setkey ("name")
+
+    vacation_submission = Class \
+        ( db
+        , ''"vacation_submission"
+        , user                  = Link      ("user")
+        , first_day             = Date      (offset = 0)
+        , last_day              = Date      (offset = 0)
+        , status                = Link      ("vacation_status")
+        , time_wp               = Link      ("time_wp")
+        )
+
+    # Remaining vacation starting with given date if absolute is True,
+    # Interpreted as relative correction if absolute = False, relative
+    # to last vacation. Note that to start vacation reporting at least
+    # one starting vacation_correction record with absolute = True must
+    # exist.  Vacation reporting is started with that date. Note that
+    # the date does *not* belong to the computation, to start reporting
+    # with 2014-01-01 a vacation_correction record with exactly that
+    # date must exist and the carry-over from the last year is in
+    # 'days'.
+    vacation_correction = Class \
+        ( db
+        , ''"vacation_correction"
+        , user                  = Link      ("user")
+        , date                  = Date      (offset = 0)
+        , absolute              = Boolean   ()
+        , days                  = Number    ()
+        )
+
+    # Only for reporting mask, no records will ever be created
+    vacation_report = Class \
+        ( db
+        , ''"vacation_report"
+        , user                  = Link      ("user")
+        , supervisor            = Link      ("user")
+        , department            = Link      ("department")
+        , organisation          = Link      ("organisation")
+        , org_location          = Link      ("org_location")
+        , time_project          = Link      ("time_project")
+        , date                  = Date      (offset = 0)
         )
 
     work_location = Class \
@@ -351,12 +403,26 @@ def init \
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    class Org_Location_Class (kw ['Org_Location_Class']) :
+        """ Add some attributes needed for time tracker
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Org_Location_Class']
+            self.update_properties \
+                ( vacation_legal_year        = Boolean   ()
+                , vacation_yearly            = Number    ()
+                )
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Org_Location_Class
+    export.update (dict (Org_Location_Class = Org_Location_Class))
+    Org_Location_Class (db, ''"org_location")
+
     # Some classes defined elsewhere which are required (and possibly
     # extended in several other include files)
     Department_Class   (db, ''"department")
     Location_Class     (db, ''"location")
     Organisation_Class (db, ''"organisation")
-    Org_Location_Class (db, ''"org_location")
 
     return export
 # end def init
@@ -371,8 +437,10 @@ def init \
 
 def security (db, ** kw) :
     roles = \
-        [ ("Project",      "Project Office")
-        , ("Project_View", "May view project data")
+        [ ("Project",           "Project Office")
+        , ("Project_View",      "May view project data")
+        , ("HR-vacation",       "May approve vacation and special leave")
+        , ("HR-leave-approval", "Approve paid vacation beyond normal vacation")
         ]
 
     #     classname
@@ -467,6 +535,14 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
+        , ( "vacation_status"
+          , ["User"]
+          , []
+          )
+        , ( "vacation_correction"
+          , ["HR", "HR-vacation"]
+          , ["HR-vacation"]
+          )
         ]
 
     prop_perms = \
@@ -499,6 +575,7 @@ def security (db, ** kw) :
     # For the following the use is regulated by auditors.
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
+    db.security.addPermissionToRole ('User', 'Create', 'vacation_submission')
 
     fixdoc = schemadef.security_doc_from_docstring
 
@@ -544,6 +621,12 @@ def security (db, ** kw) :
         ownerid = db.daily_record.get (dr, 'user')
         return userid == ownerid
     # end def own_time_record
+
+    def own_vacation_submission (db, userid, itemid) :
+        """ User may edit own vacation submissions. """
+        ownerid = db.vacation_submission.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_vacation_submission
 
     def may_see_time_record (db, userid, itemid) :
         """User is allowed to see time record if he is allowed to see
@@ -783,6 +866,16 @@ def security (db, ** kw) :
             , description = fixdoc (own_time_record.__doc__)
             )
         db.security.addPermissionToRole ('User', p)
+
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'vacation_submission'
+            , check       = own_vacation_submission
+            , description = fixdoc (own_vacation_submission.__doc__)
+            , properties  = ('first_day', 'last_day', 'status', 'time_wp')
+            )
+        db.security.addPermissionToRole ('User', p)
+        db.security.addPermissionToRole ('HR-vacation', p)
 
     p = db.security.addPermission \
         ( name        = 'View'

@@ -113,6 +113,14 @@
       (classname, 'overtime_reduction')"/>
      <td tal:content="structure python:context.overtime_reduction.field ()"/>
     </tr>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'approval_required')"/>
+     <td tal:content="structure python:context.approval_required.field ()"/>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'approval_hr')"/>
+     <td tal:content="structure python:context.approval_hr.field ()"/>
+    <tr>
+    </tr>
    </tal:block>
   </tal:block>
   <tal:block tal:condition="context/is_view_ok"

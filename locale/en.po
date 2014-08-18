@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2013-12-03 12:21+0100\n"
+"POT-Creation-Date: 2014-08-01 12:40+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -423,19 +423,11 @@ msgid "maildomain"
 msgstr "Email domain"
 
 #, python-format
-msgid "Level must be %s"
-msgstr ""
-
-#, python-format
 msgid "Max. %s is "
 msgstr ""
 
 msgid "level"
 msgstr "Level"
-
-#, python-format
-msgid "Parent %s doesn't have fullname"
-msgstr ""
 
 #, python-format
 msgid "At least one of %(customer)s or %(product)s must be defined"
@@ -537,6 +529,9 @@ msgstr ""
 msgid "Maximum picture size %(limit)s exceeded: %(length)s"
 msgstr ""
 
+msgid "System users may not create users"
+msgstr ""
+
 #, python-format
 msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
 msgstr ""
@@ -595,6 +590,17 @@ msgstr ""
 
 #, python-format
 msgid "Only one of %(rname)s, %(wname)s is allowed"
+msgstr ""
+
+msgid "No vacation for all-in allowed"
+msgstr ""
+
+#, python-format
+msgid "Wrong month: %(vm)s"
+msgstr ""
+
+#, python-format
+msgid "Wrong day of month: %(vm)s-%(vd)s"
 msgstr ""
 
 msgid "Download&nbsp;letter"
@@ -803,6 +809,12 @@ msgid ""
 "      "
 msgstr ""
 
+msgid ""
+"Work package number in the project. Number must be unique for\n"
+"         the project and cannot be changed after assignment.\n"
+"      "
+msgstr ""
+
 msgid "VIEW"
 msgstr "View"
 
@@ -961,17 +973,6 @@ msgstr "All in"
 msgid "If selected, the user has an all-inclusive work time contract"
 msgstr ""
 
-msgid "may_change_state_to"
-msgstr "May change status to"
-
-msgid ""
-"Allowed state changes for a given %(Classname)s: Usually\n"
-"             you want to allow all states here but for some\n"
-"             %(Classname)s you may want to disallow certain states, e.g.\n"
-"             don't allow change to \"testing\".\n"
-"          "
-msgstr ""
-
 msgid "alarm++val"
 msgstr "Threshold"
 
@@ -1007,6 +1008,28 @@ msgstr "Announcements"
 
 msgid "Announcements for this %(Classname)s"
 msgstr ""
+
+msgid "approval_required"
+msgstr "Approval required"
+
+msgid ""
+"Only for absence %(Classname)s: Employee must seek approval\n"
+"            via leave submission before booking.\n"
+"         "
+msgstr ""
+
+msgid "approval_hr"
+msgstr "Approval by HR"
+
+msgid ""
+"Only for absence %(Classname)s: Employee must seek approval,\n"
+"            but approval may not be granted by supervisor but by a\n"
+"            special HR role. This field implies\n"
+"         "
+msgstr ""
+
+msgid "\"approval_required\"."
+msgstr "\"Approval required\"."
 
 msgid "area"
 msgstr "Area"
@@ -1538,7 +1561,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Type of DNS record generated. If the $(Classname)s points to\n"
+"Type of DNS record generated. If the %(Classname)s points to\n"
 "             another %(Classname)s a CNAME is generated, otherwise an\n"
 "             A-record is assumed. If no DNS information should be\n"
 "             generated, this field should be set to \"invalid\".\n"
@@ -1732,6 +1755,12 @@ msgid ""
 "             \"End\" 18:00 will result in a duration of 7.5 hours (because\n"
 "             half an hour lunch break was subtracted).\n"
 "          "
+msgstr ""
+
+msgid "external_ref"
+msgstr "External reference"
+
+msgid "%(Property)s at supplier/customer for this %(Classname)s"
 msgstr ""
 
 msgid "fax"
@@ -2394,6 +2423,17 @@ msgstr "maximum DHCP lease time"
 msgid "Maximum DHCP lease time for %(Classname)s"
 msgstr ""
 
+msgid "may_change_state_to"
+msgstr "May change status to"
+
+msgid ""
+"Allowed state changes for a given %(Classname)s: Usually\n"
+"             you want to allow all states here but for some\n"
+"             %(Classname)s you may want to disallow certain states, e.g.\n"
+"             don't allow change to \"testing\".\n"
+"          "
+msgstr ""
+
 msgid "measurement"
 msgstr "Measurement"
 
@@ -2820,9 +2860,6 @@ msgstr ""
 msgid "prodcat"
 msgstr "Product category"
 
-msgid "product.prodcat.name"
-msgstr "Product number"
-
 msgid "Used for classifying products"
 msgstr ""
 
@@ -2859,13 +2896,19 @@ msgstr "Product"
 msgid "product_family"
 msgstr "Product family"
 
+msgid "The %(Property)s of the %(Classname)s (level 3 classification)."
+msgstr ""
+
 msgid "product_use_case"
 msgstr "Product use-case"
+
+msgid "The %(Property)s of the %(Classname)s (level 2 classification)."
+msgstr ""
 
 msgid "product_line"
 msgstr "Product line"
 
-msgid "The %(Property)s of the %(Classname)s."
+msgid "The %(Property)s of the %(Classname)s (level 1 classification)."
 msgstr ""
 
 msgid "product_family.id"
@@ -2892,6 +2935,9 @@ msgstr ""
 
 msgid "project_type"
 msgstr "Project type"
+
+msgid "The %(Property)s of the %(Classname)s."
+msgstr ""
 
 msgid "project_type.id"
 msgstr "Project type Id"
@@ -3696,6 +3742,9 @@ msgstr "Travel WP"
 msgid "time_wp.id"
 msgstr "Work package Id"
 
+msgid "time_wp.wp_no"
+msgstr "Work package number"
+
 msgid "time_wp_group.id"
 msgstr "Work package group Id"
 
@@ -3924,6 +3973,17 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "vacation_day"
+msgstr "Vacation date (day)"
+
+msgid ""
+"%(Property)s when new year for this person starts.\n"
+"          "
+msgstr ""
+
+msgid "vacation_month"
+msgstr "Vacation date (month)"
+
 msgid "vacation_yearly"
 msgstr "Yearly vacation"
 
@@ -4045,17 +4105,8 @@ msgstr ""
 msgid "wp.id"
 msgstr "Work package Id"
 
-msgid "time_wp.wp_no"
-msgstr "Work package number"
-
 msgid "wp_no"
 msgstr "Work package number"
-
-msgid ""
-"Work package number in the project. Number must be unique for\n"
-"             the project and cannot be changed after assignment.\n"
-"          "
-msgstr ""
 
 msgid "wp++durations_allowed"
 msgstr "Durations allowed"
@@ -4661,6 +4712,12 @@ msgstr ""
 msgid "Save Selection"
 msgstr ""
 
+msgid "<th>Created&nbsp;</th> <td> ${creation} by ${creator} </td>"
+msgstr ""
+
+msgid "<th>Last changed&nbsp;</th> <td> ${activity} by ${actor} </td>"
+msgstr ""
+
 msgid "Current Work Package(s)"
 msgstr ""
 
@@ -4776,6 +4833,9 @@ msgstr "New Dynamic User Data"
 
 msgid "split user_dynamic record"
 msgstr "Split frozen dynamic user data"
+
+msgid "vacation_date"
+msgstr "Vacation date"
 
 msgid "Invoice Address"
 msgstr "Invoice address"
@@ -5121,6 +5181,15 @@ msgstr "Work package group"
 msgid "user_dynamic"
 msgstr "Dynamic User Data"
 
+msgid "vacation_status"
+msgstr "Vacation status"
+
+msgid "vacation_submission"
+msgstr "Vacation submission"
+
+msgid "vacation"
+msgstr "Vacation"
+
 msgid "umts"
 msgstr ""
 
@@ -5129,9 +5198,6 @@ msgstr "User contact"
 
 msgid "uc_type"
 msgstr "User-contact type"
-
-msgid "fullname"
-msgstr "Full name"
 
 msgid "status_transition"
 msgstr "Status Transition"
@@ -5195,6 +5261,18 @@ msgstr "Durations allowed"
 
 msgid "travel_full"
 msgstr "Travel full"
+
+msgid "first_day"
+msgstr "First day"
+
+msgid "last_day"
+msgstr "Last day"
+
+msgid "correction"
+msgstr "Correction"
+
+msgid "days"
+msgstr ""
 
 msgid "mail_domain"
 msgstr "Mail domain"
@@ -5487,5 +5565,11 @@ msgstr "is nosy"
 msgid "doc_num"
 msgstr "Document number"
 
-msgid "external_ref"
-msgstr "External reference"
+#~ msgid "leave_type"
+#~ msgstr "Leave-type"
+
+#~ msgid "product.prodcat.name"
+#~ msgstr "Product number"
+
+#~ msgid "fullname"
+#~ msgstr "Full name"

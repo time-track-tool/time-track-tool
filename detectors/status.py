@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -51,8 +51,6 @@ def check_status (db, cl, nodeid, new_values) :
         o_status  = status_cl.getnode (oldstatus)
         trans_cl  = db.getclass (status_cl.properties ['transitions'].classname)
         extended  = trans_cl is not status_cl
-        old_resp  = cl.get (nodeid, "responsible")
-        new_resp  = new_values.get ("responsible", old_resp)
         container = \
             'composed_of' in cl.properties and cl.get (nodeid, 'composed_of')
         if o_status.id == n_status.id :
@@ -69,8 +67,10 @@ def check_status (db, cl, nodeid, new_values) :
 	if 'relaxed' in status_cl.properties and n_status.relaxed :
 	    need_msg = False
         if extended and not container :
-            target = targets [n_status.id]
-            need_msg = target.require_msg
+            old_resp  = cl.get (nodeid, "responsible")
+            new_resp  = new_values.get ("responsible", old_resp)
+            target    = targets [n_status.id]
+            need_msg  = target.require_msg
             if target.require_resp_change and new_resp == old_resp :
                 raise Reject, _ \
                     ("Responsible must change for this status change")
@@ -87,7 +87,10 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    status_classes = ['it_issue', 'it_project', 'issue', 'doc', 'support']
+    status_classes = \
+        ['it_issue', 'it_project', 'issue'
+        , 'doc', 'support', 'vacation_submission'
+        ]
     for cl in status_classes :
         if cl not in db.classes :
             continue

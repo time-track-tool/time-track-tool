@@ -113,11 +113,21 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'vacation_remaining')"/>
-      <td tal:content="structure python:context.vacation_remaining.field ()"/>
-      <th tal:content="structure python:utils.fieldname
           (classname, 'vacation_yearly')"/>
       <td tal:content="structure python:context.vacation_yearly.field ()"/>
+      <th><a title="Help for vacation day / month"
+             i18n:translate=""
+             href="javascript:help_window
+               ('user_dynamic?:template=property_help#vacation_day'
+               , '500', '400'
+               )"
+             tabindex="-1">vacation_date</a></th>
+      <td>
+       <span tal:content="structure python:context.vacation_month.field (4)"/>
+       -
+       <span tal:content="structure python:context.vacation_day.field (4)"/>
+       (month-day)
+      </td>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

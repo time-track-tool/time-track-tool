@@ -32,6 +32,8 @@ import user7_time, user8_time, user10_time, user11_time, user12_time
 from operator import mul
 from StringIO import StringIO
 
+from roundup.exceptions import Reject
+
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
 from propl_erp     import properties as properties_erp
@@ -376,15 +378,18 @@ class _Test_Case_Summary (_Test_Case) :
             , address = 'Vienna, Austria'
             )
         self.olo = self.db.org_location.create \
-            ( name         = 'The Org, Vienna'
-            , location     = self.loc
-            , organisation = self.org
+            ( name                = 'The Org, Vienna'
+            , location            = self.loc
+            , organisation        = self.org
+            , vacation_legal_year = False
+            , vacation_yearly     = 25
             )
         self.dep = self.db.department.create \
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
             )
         roles = 'User,Nosy,HR,controlling,project,ITView,IT'.split (',')
+        roles.append ('HR-leave-approval')
         sec   = self.db.security
         roles = ','.join (x for x in roles if x.lower () in sec.role)
         self.username0 = 'testuser0'
@@ -404,6 +409,11 @@ class _Test_Case_Summary (_Test_Case) :
             , org_location = self.olo
             , department   = self.dep
             )
+        # Small change of race condition if running this test at
+        # midnight, think we can live with this.
+        now = date.Date ('.')
+        self.month, self.day = now.get_tuple () [1:3]
+        self.db.org_location.set (self.olo, vacation_legal_year = True)
         self.username2 = 'testuser2'
         self.user2 = self.db.user.create \
             ( username     = self.username2
@@ -411,6 +421,7 @@ class _Test_Case_Summary (_Test_Case) :
             , lastname     = 'User2'
             , org_location = self.olo
             , department   = self.dep
+            , supervisor   = self.user1
             )
         # create initial dyn_user record for each user
         # others will follow during tests
@@ -507,6 +518,8 @@ class _Test_Case_Summary (_Test_Case) :
             , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
             )
         self.travel_tp = self.db.time_project.create \
             ( name = 'Travel'
@@ -525,6 +538,29 @@ class _Test_Case_Summary (_Test_Case) :
             , organisation       = self.org
             , cost_center        = self.cc
             )
+        self.vacation_tp = self.db.time_project.create \
+            ( name = 'Vacation'
+            , op_project         = False
+            , responsible        = self.user1
+            , department         = self.dep
+            , organisation       = self.org
+            , approval_required  = True
+            , cost_center        = self.cc
+            , no_overtime        = True
+            , overtime_reduction = True
+            )
+        self.flexi_tp = self.db.time_project.create \
+            ( name = 'Flexi'
+            , op_project         = False
+            , responsible        = self.user1
+            , department         = self.dep
+            , organisation       = self.org
+            , approval_required  = True
+            , approval_hr        = False
+            , cost_center        = self.cc
+            , max_hours          = 0
+            , no_overtime        = True
+            )
         self.holiday_wp = self.db.time_wp.create \
             ( name               = 'Holiday'
             , project            = self.holiday_tp
@@ -536,7 +572,7 @@ class _Test_Case_Summary (_Test_Case) :
             )
         self.unpaid_wp = self.db.time_wp.create \
             ( name               = 'Unpaid'
-            , project            = self.holiday_tp
+            , project            = self.unpaid_tp
             , time_start         = date.Date ('2004-01-01')
             , durations_allowed  = True
             , responsible        = '1'
@@ -562,6 +598,26 @@ class _Test_Case_Summary (_Test_Case) :
                 , bookers        = [self.user1, self.user2]
                 , cost_center    = self.cc
                 )
+        self.vacation_wp = self.db.time_wp.create \
+            ( name               = 'Vacation'
+            , project            = self.vacation_tp
+            , time_start         = date.Date ('2004-01-01')
+            , travel             = False
+            , responsible        = '1'
+            , bookers            = [self.user1, self.user2]
+            , cost_center        = self.cc
+            , durations_allowed  = True
+            )
+        self.flexi_wp = self.db.time_wp.create \
+            ( name               = 'Flexi'
+            , project            = self.flexi_tp
+            , time_start         = date.Date ('2004-01-01')
+            , travel             = False
+            , responsible        = '1'
+            , bookers            = [self.user1, self.user2]
+            , cost_center        = self.cc
+            , durations_allowed  = True
+            )
         self.db.commit ()
         self.log.debug ("End of setup")
     # end def setup_db
@@ -1075,6 +1131,240 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines  [1][11], '71.13')
         self.db.close ()
     # end def test_user12
+
+    def test_vacation (self) :
+        self.log.debug ('test_vacation')
+        self.setup_db ()
+        st_open = self.db.vacation_status.lookup ('open')
+        st_subm = self.db.vacation_status.lookup ('submitted')
+        st_accp = self.db.vacation_status.lookup ('accepted')
+        st_decl = self.db.vacation_status.lookup ('declined')
+        st_carq = self.db.vacation_status.lookup ('cancel requested')
+        st_canc = self.db.vacation_status.lookup ('cancelled')
+        ud  = self.db.user_dynamic.filter \
+            (None, dict (user = self.user1), sort = [('+', 'valid_from')]) [0]
+        dyn = self.db.user_dynamic.getnode (ud)
+        self.assertEqual (dyn.vacation_yearly, 25)
+        # Small change of race condition if running this test at
+        # midnight, think we can live with this.
+        self.assertEqual (dyn.vacation_month, self.month)
+        self.assertEqual (dyn.vacation_day, self.day)
+        ud  = self.db.user_dynamic.filter (None, dict (user = self.user2)) [0]
+        dyn = self.db.user_dynamic.getnode (ud)
+        self.assertEqual (dyn.vacation_yearly, 25)
+        self.assertEqual (dyn.vacation_month, 1)
+        self.assertEqual (dyn.vacation_day, 1)
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        self.assertRaises (Reject, self.db.vacation_submission.create)
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-20')
+            )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-20')
+            , last_day  = date.Date ('2013-12-31')
+            )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-20')
+            , last_day  = date.Date ('2013-12-31')
+            , time_wp   = self.holiday_wp
+            )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-20')
+            , last_day  = date.Date ('2013-12-31')
+            , time_wp   = self.vacation_wp
+            , user      = self.user1
+            )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-20')
+            , last_day  = date.Date ('2013-12-31')
+            , time_wp   = self.vacation_wp
+            , user      = self.user2
+            , status    = self.db.vacation_status.lookup ('accepted')
+            )
+        vs = self.db.vacation_submission.create \
+            ( first_day = date.Date ('2013-12-22')
+            , last_day  = date.Date ('2013-12-22')
+            , time_wp   = self.vacation_wp
+            )
+        un = self.db.vacation_submission.create \
+            ( first_day = date.Date ('2013-12-02')
+            , last_day  = date.Date ('2013-12-02')
+            , time_wp   = self.unpaid_wp
+            )
+        u2 = self.db.vacation_submission.create \
+            ( first_day = date.Date ('2013-12-03')
+            , last_day  = date.Date ('2013-12-03')
+            , time_wp   = self.unpaid_wp
+            )
+        za = self.db.vacation_submission.create \
+            ( first_day = date.Date ('2013-12-04')
+            , last_day  = date.Date ('2013-12-04')
+            , time_wp   = self.flexi_wp
+            )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-20')
+            , last_day  = date.Date ('2013-12-31')
+            , time_wp   = self.vacation_wp
+            )
+        self.db.vacation_submission.set \
+            ( vs
+            , first_day = date.Date ('2013-12-20')
+            , last_day  = date.Date ('2013-12-31')
+            )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.create
+            , first_day = date.Date ('2013-12-22')
+            , last_day  = date.Date ('2013-12-22')
+            , time_wp   = self.vacation_wp
+            )
+        for st in (st_accp, st_decl, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.vacation_submission.set (vs, status = st_subm)
+        for st in (st_accp, st_decl, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.vacation_submission.set (vs, status = st_open)
+        self.db.vacation_submission.set (vs, status = st_subm)
+        self.db.vacation_submission.set (un, status = st_subm)
+        self.db.vacation_submission.set (u2, status = st_subm)
+        self.db.vacation_submission.set (za, status = st_subm)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        for st in (st_open, st_accp, st_decl, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , za
+                , status = st
+                )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        for st in (st_open, st_accp, st_decl, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , za
+                , status = st
+                )
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        for st in (st_open, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.vacation_submission.set (vs, status = st_accp)
+        self.db.vacation_submission.set (za, status = st_accp)
+        for st in (st_accp, st_decl) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , un
+                , status = st
+                )
+        for st in (st_decl, st_subm) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        for x in (vs, un) :
+            for st in (st_open, st_carq, st_canc) :
+                self.assertRaises \
+                    ( Reject, self.db.vacation_submission.set
+                    , x
+                    , status = st
+                    )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        self.db.vacation_submission.set (un, status = st_decl)
+        self.db.vacation_submission.set (u2, status = st_accp)
+        for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , za
+                , status = st
+                )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        for x in (vs, un) :
+            for st in (st_open, st_subm, st_canc) :
+                self.assertRaises \
+                    ( Reject, self.db.vacation_submission.set
+                    , x
+                    , status = st
+                    )
+        for st in (st_accp, st_carq) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , un
+                , status = st
+                )
+        self.assertRaises \
+            ( Reject, self.db.vacation_submission.set
+            , vs
+            , status = st_decl
+            )
+        self.db.vacation_submission.set (vs, status = st_carq)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        for st in (st_open, st_subm, st_accp, st_decl, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        for st in (st_open, st_subm, st_decl) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.vacation_submission.set (vs, status = st_accp)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        self.db.vacation_submission.set (vs, status = st_carq)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.db.vacation_submission.set (vs, status = st_canc)
+        for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
+            self.assertRaises \
+                ( Reject, self.db.vacation_submission.set
+                , vs
+                , status = st
+                )
+        self.db.close ()
+    # end def test_vacation
 
 # end class Test_Case_Timetracker
 

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -30,6 +30,7 @@
 #
 
 from roundup.exceptions             import Reject
+from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
 
 from freeze       import frozen
@@ -269,11 +270,35 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     check_overtime_parameters (db, cl, nodeid, new_values)
     invalidate_tr_duration \
         (db, user, new_values ['valid_from'], new_values ['valid_to'])
-    # FIXME: Todo: compute remaining vacation from old dyn record and
-    # all time tracking data for this user.
-    # No: if vacation data is missing look up backwards until a vacation
-    # record is found
+    orgl = db.org_location.getnode (olo)
+    if 'vacation_month' not in new_values and 'vacation_day' not in new_values :
+        if orgl.vacation_legal_year :
+            new_values ['vacation_month'] = 1
+            new_values ['vacation_day']   = 1
+        else :
+            d = new_values ['valid_from']
+            month, day = (int (x) for x in d.get_tuple () [1:3])
+            if month == 2 and day == 29 :
+                day = 28
+            new_values ['vacation_month'] = month
+            new_values ['vacation_day']   = day
+    if orgl.vacation_yearly and 'vacation_yearly' not in new_values :
+        new_values ['vacation_yearly'] = orgl.vacation_yearly
 # end def new_user_dynamic
+
+def new_user_dyn_react (db, cl, nodeid, old_values) :
+    """ If this is the first user_dynamic record for this user: create
+        initial vacation_correction record.
+    """
+    dyn  = cl.getnode (nodeid)
+    ud   = db.user_dynamic.filter (None, dict (user = dyn.user))
+    if len (ud) == 1 :
+        assert ud [0] == nodeid
+        year = dyn.valid_from.get_tuple () [0]
+        date = Date ('%s-%s-%s' % (year, dyn.vacation_month, dyn.vacation_day))
+        db.vacation_correction.create \
+            (user = user, date = date, absolute = True, days = 0)
+# end def new_user_dyn_react
 
 def close_existing (db, cl, nodeid, old_values) :
     """ Check if there is already a user_dynamic record with no valid_to
@@ -335,6 +360,59 @@ def overtime_check (db, cl, nodeid, new_values) :
         raise Reject, _ \
             ("Only one of %(rname)s, %(wname)s is allowed") % locals ()
 # end def overtime_check
+
+def vacation_check (db, cl, nodeid, new_values) :
+    mlist = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if 'vacation_month' not in new_values and 'vacation_day' not in new_values :
+        return
+    vm = new_values.get ('vacation_month')
+    vd = new_values.get ('vacation_day')
+    if vm is None and nodeid :
+        vm = cl.get (nodeid, 'vacation_month')
+    if vd is None and nodeid :
+        vd = cl.get (nodeid, 'vacation_day')
+    if vm is not None or vd is not None :
+        ai = new_values.get ('all_in')
+        if ai is None and nodeid :
+            ai = cl.get (nodeidm, 'all_in')
+        if ai :
+            raise Reject (_ ("No vacation for all-in allowed"))
+    # require both, month *and* day (and number of days)
+    require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'vacation_day'
+        , 'vacation_month'
+        , 'vacation_yearly'
+        )
+    vm = int (vm)
+    vd = int (vd)
+    vy = int (vacation_yearly)
+    if vm < 1 or vm > 12 :
+        raise Reject (_ ("Wrong month: %(vm)s" % locals ()))
+    if vd < 1 or vd > mlist [vm - 1] :
+        raise Reject (_ ("Wrong day of month: %(vm)s-%(vd)s" % locals ()))
+    new_values ['vacation_yearly'] = vy
+    new_values ['vacation_month']  = vm
+    new_values ['vacation_day']    = vd
+# end def vacation_check
+
+def vacation_balance (db, cl, nodeid, old_values) :
+    # If it's the first non-all-in user_dyn record, we create the
+    # initial vacation balance record
+    ud = cl.getnode (nodeid)
+    if ud.all_in :
+        return
+    uid = db.getuid ()
+    v = db.vacation.filter (None, dict (user = uid))
+    if v :
+        return
+    ud = db.user_dynamic.filter (None, dict (user = uid, all_in = False))
+    if ud :
+        return
+    now = Date ('.')
+    date = Date ('%s-%s-%s' % (now.year, ud.vacation_month, ud.vacation_day))
+    db.vacation.create (user = uid, date = date, days = 0, correction = 0)
+# end def vacation_balance
 
 def init (db) :
     if 'user_dynamic' not in db.classes :

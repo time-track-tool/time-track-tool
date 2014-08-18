@@ -228,13 +228,6 @@ _helptext          = \
       [""'''List of users this %(Classname)s maps to''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
-    , ""'may_change_state_to'         :
-      [ ""'''Allowed state changes for a given %(Classname)s: Usually
-             you want to allow all states here but for some
-             %(Classname)s you may want to disallow certain states, e.g.
-             don\'t allow change to \"testing\".
-          '''
-      ]
     , ""'alarm++val'                  :
       [""'''Alarm threshold value''']
     , ""'almax'                       :
@@ -247,6 +240,18 @@ _helptext          = \
       [""'''Amount payed''']
     , ""'announcements'               :
       [""'''Announcements for this %(Classname)s''']
+    , ""'approval_required'           :
+      [""'''Only for absence %(Classname)s: Employee must seek approval
+            via leave submission before booking.
+         '''
+      ]
+    , ""'approval_hr'           :
+      [""'''Only for absence %(Classname)s: Employee must seek approval,
+            but approval may not be granted by supervisor but by a
+            special HR role. This field implies
+         '''
+      ,  ""'''\"approval_required\".'''
+      ]
     , ""'area'                        :
       [ ""'''Where this issue belongs to.'''
       , miss_text
@@ -504,7 +509,7 @@ _helptext          = \
           '''
       ]
     , ""'dns_record_type'             :
-      [ ""'''Type of DNS record generated. If the $(Classname)s points to
+      [ ""'''Type of DNS record generated. If the %(Classname)s points to
              another %(Classname)s a CNAME is generated, otherwise an
              A-record is assumed. If no DNS information should be
              generated, this field should be set to "invalid".
@@ -937,6 +942,13 @@ _helptext          = \
       ]
     , ""'max_lease_time'              :
       [""'''Maximum DHCP lease time for %(Classname)s''']
+    , ""'may_change_state_to'         :
+      [ ""'''Allowed state changes for a given %(Classname)s: Usually
+             you want to allow all states here but for some
+             %(Classname)s you may want to disallow certain states, e.g.
+             don\'t allow change to \"testing\".
+          '''
+      ]
     , ""'measurement'                 :
       [""'''Measurement for a given sensor''']
     , ""'messageid'                   :
@@ -1724,6 +1736,14 @@ _helptext          = \
     , ""'vacation_remaining'          :
       [ ""'''Remaining vacation for this user at the start of a dynamic
              user data record.
+          '''
+      ]
+    , ""'vacation_day'                :
+      [ ""'''%(Property)s when new year for this person starts.
+          '''
+      ]
+    , ""'vacation_month'              :
+      [ ""'''%(Property)s when new year for this person starts.
           '''
       ]
     , ""'vacation_yearly'             :
