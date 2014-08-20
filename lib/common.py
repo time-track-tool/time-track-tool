@@ -280,6 +280,14 @@ def user_has_role (db, uid, * role) :
     return False
 # end def user_has_role
 
+def get_uids_with_role (db, role) :
+    users = []
+    for uid in db.user.getnodeids (retired = False) :
+        if user_has_role (db, uid, role) :
+            users.append (uid)
+    return users
+# end def get_users_with_role
+
 def clearance_by (db, userid, only_subs = False) :
     assert (userid)
     sv = db.user.get (userid, 'supervisor')

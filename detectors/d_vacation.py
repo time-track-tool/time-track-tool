@@ -125,9 +125,7 @@ def check_submission (db, cl, nodeid, new_values) :
             clearer = common.clearance_by (db, old.user)
             if  (  not ok
                 and (   (uid in clearer and not tp.approval_hr)
-                    or  (   common.user_has_role (db, uid, 'HR-leave-approval')
-                        and tp.approval_hr
-                        )
+                    or  common.user_has_role (db, uid, 'HR-leave-approval')
                     )
                 ) :
                 if  (   old_status == 'submitted'
@@ -155,15 +153,24 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     new_status = vs.status
     accepted   = db.vacation_status.lookup ('accepted')
     declined   = db.vacation_status.lookup ('declined')
+    submitted  = db.vacation_status.lookup ('submitted')
+    cancelled  = db.vacation_status.lookup ('cancelled')
     if old_status == new_status :
         return
     dt  = common.pretty_range (vs.first_day, vs.last_day)
     drs = db.daily_record.filter (None, dict (user = vs.user, date = dt))
     trs = db.time_record.filter (None, dict (daily_record = drs))
+    tp  = db.time_project.getnode (db.time_wp.get (vs.time_wp, 'project'))
     if new_status == accepted :
         handle_accept  (db, vs, trs, old_status)
     elif new_status == declined :
-        handle_decline (db, vs, trs)
+        handle_decline (db, vs)
+    elif new_status == submitted :
+        # FIXME: also check if wp over yearly vacation
+        hr_only = tp.approval_hr
+        handle_submit  (db, vs, hr_only)
+    elif new_status == cancelled :
+        handle_cancel  (db, vs, trs)
 # end def state_change_reactor
 
 def handle_accept (db, vs, trs, old_status) :
@@ -171,13 +178,19 @@ def handle_accept (db, vs, trs, old_status) :
     warn  = []
     for trid in trs :
         tr  = db.time_record.getnode (trid)
-        wp  = db.time_wp.getnode (tr.wp)
-        tp  = db.time_project.getnode (wp.project)
+        wp  = tp = None
+        if tr.wp is not None :
+            wp  = db.time_wp.getnode (tr.wp)
+            tp  = db.time_project.getnode (wp.project)
         trd = db.daily_record.get (tr.daily_record, 'date')
-        if not tp.is_public_holiday :
-            dt = trd.pretty (common.ymd)
-            if wp != vs.time_wp :
-                warn.append ((dt, tp.name, wp.name, tr.duration))
+        if tp is None or not tp.is_public_holiday :
+            if wp is None or wp.id != vs.time_wp :
+                dt = trd.pretty (common.ymd)
+                st = tr.start or ''
+                en = tr.end   or ''
+                wn = (wp and wp.name) or ''
+                tn = (tp and tp.name) or ''
+                warn.append ((dt, tn, wn, st, en, tr.duration))
             db.time_record.retire (trid)
     d = vs.first_day
     off = db.work_location.lookup ('off')
@@ -206,24 +219,24 @@ def handle_accept (db, vs, trs, old_status) :
         subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s not cancelled' % locals ()
         content = 'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n' \
                 % locals ()
-        content += "Please contact your supervisor\n"
+        content += "Please contact your supervisor.\n"
     else :
-        subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s approved' % locals ()
+        subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s accepted' % locals ()
         content = ('Your absence request "%(tpn)s/%(wpn)s" '
-                   'has been approved.\n'
+                   'has been accepted.\n'
                   % locals ()
                   )
     if warn :
         content = [content]
-        content.append ("")
         content.append \
             ("The following existing time records have been deleted:")
         tdl = wdl = 0
         for w in warn :
             tdl = max (tdl, len (w [1]))
             wdl = max (wdl, len (w [2]))
-        fmt = "%%s: %%%ds / %%%ds duration: %%s" % (tdl, wdl)
-        content.append (fmt % tuple (w))
+        fmt = "%%s: %%%ds / %%%ds %%5s-%%5s duration: %%s" % (tdl, wdl)
+        for w in warn :
+            content.append (fmt % w)
         content = '\n'.join (content)
     try :
         mailer.standard_message ((email,), subject, content)
@@ -231,7 +244,18 @@ def handle_accept (db, vs, trs, old_status) :
         raise roundupdb.DetectorError, message
 # end def handle_accept
 
-def handle_decline (db, vs, trs) :
+def handle_cancel (db, vs, trs) :
+    for trid in trs :
+        tr  = db.time_record.getnode (trid)
+        wp  = db.time_wp.getnode (tr.wp)
+        tp  = db.time_project.getnode (wp.project)
+        trd = db.daily_record.get (tr.daily_record, 'date')
+        if not tp.is_public_holiday :
+            assert tp.approval_required
+            db.time_record.retire (trid)
+# end def handle_cancel
+
+def handle_decline (db, vs) :
     mailer  = roundupdb.Mailer (db.config)
     now     = Date ('.')
     wp      = db.time_wp.getnode (vs.time_wp)
@@ -250,9 +274,37 @@ def handle_decline (db, vs, trs) :
         raise roundupdb.DetectorError, message
 # end def handle_decline
 
-# FIXME: Side-effects for state transitions
-# - Email
-# - Creating daily record / creating/removing time_record
+def handle_submit (db, vs, hr_only) :
+    mailer  = roundupdb.Mailer (db.config)
+    now     = Date ('.')
+    wp      = db.time_wp.getnode (vs.time_wp)
+    user    = db.user.getnode (vs.user)
+    # always send to supervisor (and/or substitute), too.
+    emails  = [db.user.get (x, 'address')
+               for x in common.clearance_by (db, vs.user)
+              ]
+    if hr_only :
+        emails.extend \
+            (db.user.get (u, 'address')
+             for u in common.get_uids_with_role (db, 'HR-leave-approval')
+            )
+    wpn     = wp.name
+    tpn     = db.time_project.get (wp.project, 'name')
+    fday    = vs.first_day.pretty (common.ymd)
+    lday    = vs.last_day.pretty  (common.ymd)
+    realnm  = user.realname
+    nick    = user.nickname.upper ()
+    url     = 'FIXME'
+    subject = 'Leave request "%(wpn)s" from %(nick)s' % locals ()
+    content = '%(realnm)s has submitted a leave request "%(wpn)s".' % locals ()
+    if hr_only :
+        content += "\nNeeds approval by HR."
+    content += '\n' + url
+    try :
+        mailer.standard_message (emails, subject, content)
+    except roundupdb.MessageSendError, message :
+        raise roundupdb.DetectorError, message
+# end def handle_decline
 
 def init (db) :
     global _

@@ -88,11 +88,10 @@ from roundup       import instance, configuration, init, password, date
 from roundup.cgi   import templating
 sys.path.insert (0, os.path.abspath ('lib'))
 sys.path.insert (0, os.path.abspath ('extensions'))
-from user_dynamic import update_tr_duration, compute_balance
-from user_dynamic import overtime_periods, first_user_dynamic, next_user_dynamic
-from summary      import Staff_Report, Summary_Report
-from summary      import init as summary_init
-from common       import ymd, pretty_range
+
+import common
+import summary
+import user_dynamic
 
 class _Test_Case (unittest.TestCase) :
     count = 0
@@ -403,6 +402,16 @@ class _Test_Case_Summary (_Test_Case) :
             , department   = self.dep
             , roles        = roles
             )
+        cts  = self.db.user.get (self.user0, 'contacts')
+        cmin = 0xFFFF
+        mail = self.db.uc_type.lookup ('Email')
+        m    = None
+        for ctid in cts :
+            ct = self.db.user_contact.getnode (ctid)
+            if ct.contact_type == mail and ct.order < cmin :
+                cmin = ct.order
+                m    = ct.id
+        self.db.user_contact.set (m, contact = 'user0@test.test')
         self.username1 = 'testuser1'
         self.user1 = self.db.user.create \
             ( username     = self.username1
@@ -411,6 +420,16 @@ class _Test_Case_Summary (_Test_Case) :
             , org_location = self.olo
             , department   = self.dep
             )
+        cts  = self.db.user.get (self.user1, 'contacts')
+        cmin = 0xFFFF
+        mail = self.db.uc_type.lookup ('Email')
+        m    = None
+        for ctid in cts :
+            ct = self.db.user_contact.getnode (ctid)
+            if ct.contact_type == mail and ct.order < cmin :
+                cmin = ct.order
+                m    = ct.id
+        self.db.user_contact.set (m, contact = 'user1@test.test')
         # Small change of race condition if running this test at
         # midnight, think we can live with this.
         now = date.Date ('.')
@@ -590,8 +609,9 @@ class _Test_Case_Summary (_Test_Case) :
             , bookers            = [self.user1, self.user2]
             , cost_center        = self.cc
             )
+        self.wps = []
         for i in xrange (40) :
-            self.db.time_wp.create \
+            wp = self.db.time_wp.create \
                 ( name           = 'Work Package %s' % i
                 , project        = self.normal_tp
                 , time_start     = date.Date ('2004-01-01')
@@ -600,6 +620,7 @@ class _Test_Case_Summary (_Test_Case) :
                 , bookers        = [self.user1, self.user2]
                 , cost_center    = self.cc
                 )
+            self.wps.append (wp)
         self.vacation_wp = self.db.time_wp.create \
             ( name               = 'Vacation'
             , project            = self.vacation_tp
@@ -712,7 +733,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user11]
              , 'date'         : '2013-06-01;2013-06-30'
              , 'summary_type' : [2, 4]
@@ -736,7 +757,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             group = None
             classname = 'summary_report'
 
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]), 10)
@@ -844,7 +866,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         del cols [4]
         del cols [2]
         del cols [0]
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]),  7)
@@ -932,7 +955,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               , 'summary_type': [2, 4]
               }
             )
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     1)
         self.assertEqual (len (lines [0]), 4)
@@ -942,7 +966,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [0][3], 'Sum')
 
         cols [0] = 'reporting_group'
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
@@ -962,7 +987,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         cols [0] = 'product_family'
         fs ['product_family'] = '1'
         del fs ['reporting_group']
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
@@ -982,7 +1008,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         cols [0] = 'project_type'
         fs ['project_type'] = '4'
         del fs ['product_family']
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
@@ -1002,7 +1029,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         cols.append ('organisation.id')
         cols.append ('time_wp.id')
         cols.append ('time_wp')
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     5)
         self.assertEqual (len (lines [0]), 6)
@@ -1040,7 +1068,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         cols [1] = 'organisation'
         self.assertEqual \
             (cols, ['project_type', 'organisation', 'time_wp.id', 'time_wp'])
-        sr = Summary_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     5)
         self.assertEqual (len (lines [0]), 6)
@@ -1108,13 +1137,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user12]
              , 'date'         : '2013-01-01;2013-12-31'
              , 'summary_type' : [4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 2)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -1264,6 +1294,26 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2010-01-06')
             )
+        dt = date.Date ('2009-12-22')
+        dr = self.db.daily_record.filter \
+            ( None
+            , dict
+                ( user = self.user2
+                , date = common.pretty_range (dt, dt)
+                )
+            )
+        self.assertEqual (len (dr), 1)
+        self.db.time_record.create \
+            ( daily_record = dr [0]
+            , start        = '08:00'
+            , end          = '10:00'
+            , wp           = self.wps [0]
+            )
+        self.db.time_record.create \
+            ( daily_record = dr [0]
+            , start        = '10:00'
+            , end          = '11:00'
+            )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
             , first_day = date.Date ('2009-12-22')
@@ -1277,7 +1327,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , status = st
                 )
         vsn  = self.db.vacation_submission.getnode (vs)
-        dt   = pretty_range (vsn.first_day, vsn.last_day)
+        dt   = common.pretty_range (vsn.first_day, vsn.last_day)
         drs  = self.db.daily_record.filter \
             ( None
             , dict (user = self.user2, date = dt)
@@ -1285,9 +1335,23 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         self.assertEqual (len (drs), 18)
         trs = self.db.time_record.filter (None, dict (daily_record = drs))
-        # Stephanitag is on Saturday
-        self.assertEqual (len (trs), 5)
+        # Stephanitag is on Saturday, two extra records for deletion
+        self.assertEqual (len (trs), 5 + 2)
         self.db.vacation_submission.set (vs, status = st_subm)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave request "Vacation" from TUR')
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a leave request "Vacation".\n'
+              'FIXME'
+            )
+        os.unlink (maildebug)
         for st in (st_accp, st_decl, st_carq, st_canc) :
             self.assertRaises \
                 ( Reject, self.db.vacation_submission.set
@@ -1296,27 +1360,79 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 )
         self.db.vacation_submission.set (vs, status = st_open)
         self.db.vacation_submission.set (vs, status = st_subm)
+        os.unlink (maildebug)
         self.db.vacation_submission.set (un, status = st_subm)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave request "Unpaid" from TUR')
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test, user0@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a leave request "Unpaid".\n'
+              'Needs approval by HR.\n'
+              'FIXME'
+            )
+        os.unlink (maildebug)
         self.db.vacation_submission.set (u2, status = st_subm)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave request "Unpaid" from TUR')
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test, user0@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a leave request "Unpaid".\n'
+              'Needs approval by HR.\n'
+              'FIXME'
+            )
+        os.unlink (maildebug)
         self.db.vacation_submission.set (za, status = st_subm)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave request "Flexi" from TUR')
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a leave request "Flexi".\n'
+              'FIXME'
+            )
+        os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        for st in (st_open, st_accp, st_decl, st_carq, st_canc) :
-            self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
-                , za
-                , status = st
-                )
+        for v in za, vs :
+            for st in (st_open, st_carq, st_canc) :
+                self.assertRaises \
+                    ( Reject, self.db.vacation_submission.set
+                    , v
+                    , status = st
+                    )
+        self.db.vacation_submission.set (za, status = st_accp)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave "Flexi" 2009-12-04-2009-12-04 accepted')
+            , ('precedence', 'bulk')
+            , ('to',         'test.user@example.com')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Your absence request "Flexi/Flexi" has been accepted.'
+            )
+        os.unlink (maildebug)
         self.db.commit ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username0)
-        for st in (st_open, st_accp, st_decl, st_carq, st_canc) :
-            self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
-                , za
-                , status = st
-                )
         self.db.close ()
         self.db = self.tracker.open (self.username1)
         for st in (st_open, st_carq, st_canc) :
@@ -1326,25 +1442,21 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , status = st
                 )
         self.db.vacation_submission.set (vs, status = st_accp)
-        x = open (maildebug, 'r').read ()
-        e = Parser ().parsestr (x)
-        for h, t in \
-            ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 approved')
-            , ('precedence', 'bulk')
-            , ('to',         'test.user@example.com')
-            , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
-            self.assertEqual (e [h], t)
-        self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Your absence request "Vacation/Vacation" has been approved.'
+        vsn  = self.db.vacation_submission.getnode (vs)
+        dt   = common.pretty_range (vsn.first_day, vsn.last_day)
+        drs  = self.db.daily_record.filter \
+            ( None
+            , dict (user = vsn.user, date = dt)
+            , [('+', 'date')]
             )
-        os.unlink (maildebug)
-        self.db.vacation_submission.set (za, status = st_accp)
-        x = open (maildebug, 'r').read ()
-        e = Parser ().parsestr (x)
+        self.assertEqual (len (drs), 18)
+        trs = self.db.time_record.filter (None, dict (daily_record = drs))
+        # Stephanitag is on Saturday, vacation records for weekdays and
+        # half public holidays
+        self.assertEqual (len (trs), 5 + 10)
+        e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Flexi" 2009-12-04-2009-12-04 approved')
+            ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 accepted')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1352,7 +1464,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Your absence request "Flexi/Flexi" has been approved.'
+            , 'Your absence request "Vacation/Vacation" has been accepted.\n\n'
+              'The following existing time records have been deleted:\n'
+              '2009-12-22: A Project / Work Package 0 08:00-10:00 duration: 2.0'
+              '\n'
+              '2009-12-22:           /                10:00-11:00 duration: 1.0'
             )
         os.unlink (maildebug)
         for st in (st_accp, st_decl) :
@@ -1378,7 +1494,34 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.close ()
         self.db = self.tracker.open (self.username0)
         self.db.vacation_submission.set (un, status = st_decl)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave "Unpaid" 2009-12-02-2009-12-02 declined')
+            , ('precedence', 'bulk')
+            , ('to',         'test.user@example.com')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Your absence request "Leave/Unpaid" has been declined.\n'
+              'Please contact your supervisor.'
+            )
+        os.unlink (maildebug)
         self.db.vacation_submission.set (u2, status = st_accp)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave "Unpaid" 2009-12-03-2009-12-03 accepted')
+            , ('precedence', 'bulk')
+            , ('to',         'test.user@example.com')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Your absence request "Leave/Unpaid" has been accepted.'
+            )
+        os.unlink (maildebug)
         for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
             self.assertRaises \
                 ( Reject, self.db.vacation_submission.set
@@ -1410,7 +1553,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        for st in (st_open, st_subm, st_accp, st_decl, st_canc) :
+        for st in (st_open, st_subm, st_decl) :
             self.assertRaises \
                 ( Reject, self.db.vacation_submission.set
                 , vs
@@ -1425,6 +1568,21 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , status = st
                 )
         self.db.vacation_submission.set (vs, status = st_accp)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 '
+                             'not cancelled')
+            , ('precedence', 'bulk')
+            , ('to',         'test.user@example.com')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Your cancel request "Vacation/Vacation" was not granted.\n'
+              'Please contact your supervisor.'
+            )
+        os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
@@ -1433,6 +1591,18 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.close ()
         self.db = self.tracker.open (self.username1)
         self.db.vacation_submission.set (vs, status = st_canc)
+        vsn  = self.db.vacation_submission.getnode (vs)
+        dt   = common.pretty_range (vsn.first_day, vsn.last_day)
+        drs  = self.db.daily_record.filter \
+            ( None
+            , dict (user = vsn.user, date = dt)
+            , [('+', 'date')]
+            )
+        self.assertEqual (len (drs), 18)
+        trs = self.db.time_record.filter (None, dict (daily_record = drs))
+        # Stephanitag is on Saturday, vacation records for weekdays and
+        # half public holidays
+        self.assertEqual (len (trs), 5)
         for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
             self.assertRaises \
                 ( Reject, self.db.vacation_submission.set
@@ -1887,7 +2057,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         dr = self.db.daily_record.filter \
             (None, dict (user = self.user1, date = '2006-01-23')) [0]
         dr = self.db.daily_record.getnode (dr)
-        update_tr_duration (self.db, dr)
+        user_dynamic.update_tr_duration (self.db, dr)
         self.assertEqual (dr.tr_duration_ok, 0)
         self.db.user_dynamic.create \
             ( user              = self.user1
@@ -1962,8 +2132,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
              , 'summary_type' : [2, 4]
              }
         class r : filterspec = fs
-        summary_init (self.tracker)
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        summary.init (self.tracker)
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
         self.assertEqual (lines [0] [0], 'User')
@@ -1991,7 +2162,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
              , 'summary_type' : [2, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
@@ -2021,41 +2193,42 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
 
-        dyn = first_user_dynamic (self.db, self.user1)
+        dyn = user_dynamic.first_user_dynamic (self.db, self.user1)
         self.assertEqual (dyn.valid_from, date.Date ('2005-09-01'))
-        op  = overtime_periods \
+        op  = user_dynamic.overtime_periods \
             (self.db, self.user1, dyn.valid_from, date.Date ('2009-12-31'))
         self.assertEqual (len (op), 1)
         self.assertEqual (op [0][0], date.Date ('2005-10-01'))
         self.assertEqual (op [0][1], date.Date ('2008-09-10'))
         self.assertEqual (op [0][2].name, 'week')
-        dyn = next_user_dynamic (self.db, dyn)
+        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
         self.assertEqual (dyn.valid_from, date.Date ('2005-10-01'))
-        dyn = next_user_dynamic (self.db, dyn)
+        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
         self.assertEqual (dyn.valid_from, date.Date ('2006-01-01'))
         self.assertEqual (dyn.overtime_period, None)
 
-        bal = compute_balance \
+        bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
         self.assertEqual (bal, (0.0, 0))
-        bal = compute_balance \
+        bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
         self.assertEqual (bal, (0.0, 0))
-        bal = compute_balance \
+        bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
         self.assertEqual (bal, (0.0, 0))
 
-        bal = compute_balance \
+        bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
         self.assertEqual (bal, (0.0, 0))
-        bal = compute_balance \
+        bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
         self.assertEqual (bal, (0.0, 0))
-        bal = compute_balance \
+        bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
         self.assertEqual (bal, (0.0, 0))
 
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
@@ -2085,7 +2258,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
 
         self.db.clearCache ()
 
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
@@ -2137,10 +2311,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
              , 'summary_type' : [2, 4]
              }
         class r : filterspec = fs
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         ndr = self.db.daily_record.getnode ('51')
         self.assertEqual (len (ndr.time_record), 2)
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
         self.assertEqual (lines [1] [1], 'WW 52/2008')
@@ -2155,7 +2330,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
              , 'summary_type' : [2, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
         self.assertEqual (lines [1] [1], 'WW 52/2009')
@@ -2177,12 +2353,12 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         dr1 = self.db.daily_record.filter \
             (None, dict (user = self.user2, date = '2009-12-31')) [0]
         dr1 = self.db.daily_record.getnode (dr1)
-        update_tr_duration (self.db, dr1)
+        user_dynamic.update_tr_duration (self.db, dr1)
         self.assertEqual (dr1.tr_duration_ok, 7.75)
         dr2 = self.db.daily_record.filter \
             (None, dict (user = self.user2, date = '2010-01-01')) [0]
         dr2 = self.db.daily_record.getnode (dr2)
-        update_tr_duration (self.db, dr2)
+        user_dynamic.update_tr_duration (self.db, dr2)
         self.assertEqual (dr2.tr_duration_ok, 7.5)
         self.db.user_dynamic.create \
             ( user              = self.user2
@@ -2215,13 +2391,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         user3_time.import_data_3 (self.db, self.user3)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user3]
              , 'date'         : '2010-01-01;2010-05-31'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
         self.assertEqual (lines [0]  [1], 'Time Period')
@@ -2272,15 +2449,16 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         tr = self.db.time_record.getnode (tr [0])
         self.assertEqual (tr.duration, 12)
         self.assertEqual (tr.tr_duration, None)
-        update_tr_duration (self.db, dr)
+        user_dynamic.update_tr_duration (self.db, dr)
         self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user4]
              , 'date'         : '2012-01-01;2012-05-31'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2387,13 +2565,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         user5_time.import_data_5 (self.db, self.user5)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user5]
              , 'date'         : '2012-01-01;2012-09-28'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 51)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2522,13 +2701,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         user6_time.import_data_6 (self.db, self.user6)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user6]
              , 'date'         : '2012-09-01;2012-10-08'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 11)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2554,13 +2734,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         user7_time.import_data_7 (self.db, self.user7)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user7]
              , 'date'         : '2012-11-15;2012-12-18'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 10)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2589,7 +2770,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user8]
              , 'date'         : '2013-01-01;2013-01-16'
              , 'summary_type' : [2, 3, 4]
@@ -2637,7 +2818,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             )
         self.db.commit ()
         f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.validity_date.pretty (ymd), "2012-12-31")
+        self.assertEqual (f.validity_date.pretty (common.ymd), "2012-12-31")
         self.db.close ()
 
         self.db = self.tracker.open (self.username0)
@@ -2645,7 +2826,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     # end def test_user8
 
     def user8_staff_report (self, r, balance_start, balance_end) :
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 6)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2674,13 +2856,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user9]
              , 'date'         : '2013-01-01;2013-01-16'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 6)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2711,13 +2894,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        summary_init (self.tracker)
+        summary.init (self.tracker)
         fs = { 'user'         : [self.user10]
              , 'date'         : '2012-12-01;2013-01-31'
              , 'summary_type' : [2, 3, 4]
              }
         class r : filterspec = fs
-        sr = Staff_Report (self.db, r, templating.TemplatingUtils (None))
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 14)
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -2775,7 +2959,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         dut = tr.tr_duration
         self.log.debug ("db2.commit - 1 after get")
         self.db2.commit ()
-        update_tr_duration (self.db2, dr)
+        user_dynamic.update_tr_duration (self.db2, dr)
         self.log.debug ("db2.commit - 2 after update_tr_duration")
         self.db2.commit ()
 
@@ -3032,7 +3216,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.clearCache ()
 
         dr = self.db.daily_record.getnode (drid)
-        update_tr_duration (self.db, dr)
+        user_dynamic.update_tr_duration (self.db, dr)
         self.db.commit ()
         self.db.clearCache ()
         self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)

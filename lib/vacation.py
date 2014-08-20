@@ -43,6 +43,8 @@ def try_create_public_holiday (db, daily_record, date, user) :
         trs = db.time_record.filter (None, dict (daily_record = daily_record))
         for tr in trs :
             wp = db.time_record.get (tr, 'wp')
+            if wp is None :
+                continue
             tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
             if tp.is_public_holiday :
                 return
