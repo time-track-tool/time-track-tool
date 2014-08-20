@@ -33,10 +33,9 @@ from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
 
-from freeze       import frozen
-from user_dynamic import last_user_dynamic, day, wdays, round_daily_work_hours
-from user_dynamic import invalidate_tr_duration
-from common       import require_attributes, overtime_period_week, ymd
+import common
+import freeze
+import user_dynamic
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -81,13 +80,13 @@ def check_vacation (attr, new_values) :
         vacation = new_values [attr]
         if vacation is None :
             return
-        if vacation <= 0 and attr != 'vacation_remaining' :
+        if vacation <= 0 :
             raise Reject, \
                 _ ( "%(attr)s must be positive or empty") % locals ()
 # end def check_vacation
 
 def hours_iter () :
-    return ('hours_' + wday for wday in wdays)
+    return ('hours_' + wday for wday in user_dynamic.wdays)
 
 def check_overtime_parameters (db, cl, nodeid, new_values) :
     class X : pass
@@ -142,7 +141,7 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
         if 'weekly_hours' in new_values and X.weekly_hours :
             maybe_daily = False
             h = X.weekly_hours
-            d = round_daily_work_hours (h / 5.)
+            d = user_dynamic.round_daily_work_hours (h / 5.)
             for f in hours_iter () :
                 daily = min (d, h)
                 new_values [f] = daily
@@ -183,7 +182,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
-    require_attributes \
+    common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'valid_from'
         , 'org_location'
@@ -198,11 +197,11 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     # Note: The valid_to date is *not* part of the validity interval of
     # the user_dynamic record. So when checking for frozen status we
     # can allow exactly the valid_to date.
-    otw = overtime_period_week (db)
-    if  (   frozen (db, user, old_from)
+    otw = common.overtime_period_week (db)
+    if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
-            or frozen (db, user, val_to)
+            or freeze.frozen (db, user, val_to)
             )
         and (  db.getuid () != '1'
             or old_ot
@@ -210,9 +209,8 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             or new_values != dict (overtime_period = otw.id)
             )
         ) :
-        #print user, val_to, day, val_to - day, new_values.keys ()
         raise Reject, _ ("Frozen: %(old_from)s") % locals ()
-    last = last_user_dynamic (db, user)
+    last = user_dynamic.last_user_dynamic (db, user)
     if  (   ('org_location' in new_values or 'department' in new_values)
         and (not val_to or last.id == nodeid or last.valid_from < val_from)
         ) :
@@ -223,10 +221,9 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
     check_overtime_parameters (db, cl, nodeid, new_values)
-    for i in 'vacation_yearly', 'vacation_remaining' :
-        check_vacation (i, new_values)
-    if not frozen (db, user, old_from) :
-        invalidate_tr_duration (db, user, val_from, val_to)
+    check_vacation ('vacation_yearly', new_values)
+    if not freeze.frozen (db, user, old_from) :
+        user_dynamic.invalidate_tr_duration (db, user, val_from, val_to)
     else :
         old_to = cl.get (nodeid, 'valid_to')
         use_to = val_to
@@ -235,7 +232,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
                 use_to = min (old_to, val_to)
             else :
                 use_to = old_to
-        invalidate_tr_duration (db, user, use_to, None)
+        user_dynamic.invalidate_tr_duration (db, user, use_to, None)
 # end def check_user_dynamic
 
 def set_otp_if_all_in (db, cl, nodeid, new_values) :
@@ -244,7 +241,7 @@ def set_otp_if_all_in (db, cl, nodeid, new_values) :
 # end def set_otp_if_all_in
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
-    require_attributes \
+    common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'user'
         , 'valid_from'
@@ -256,49 +253,67 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     valid_to   = new_values.get ('valid_to', None)
     olo        = new_values ['org_location']
     dept       = new_values ['department']
-    if frozen (db, user, valid_from) :
+    if freeze.frozen (db, user, valid_from) :
         raise Reject, _ ("Frozen: %(valid_from)s") % locals ()
-    last = last_user_dynamic (db, user)
+    last = user_dynamic.last_user_dynamic (db, user)
     if not valid_to or not last or last.valid_from < valid_from :
         update_user_olo_dept (db, user, olo, dept)
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
     new_values ['valid_from'], new_values ['valid_to'] = \
         check_ranges (cl, nodeid, user, valid_from, valid_to)
-    for i in 'vacation_yearly', 'vacation_remaining' :
-        check_vacation (i, new_values)
     check_overtime_parameters (db, cl, nodeid, new_values)
-    invalidate_tr_duration \
+    user_dynamic.invalidate_tr_duration \
         (db, user, new_values ['valid_from'], new_values ['valid_to'])
     orgl = db.org_location.getnode (olo)
+    prev_dyn = user_dynamic.find_user_dynamic (db, user, valid_from, '-')
     if 'vacation_month' not in new_values and 'vacation_day' not in new_values :
-        if orgl.vacation_legal_year :
+        if prev_dyn :
+            new_values ['vacation_month'] = prev_dyn.vacation_month
+            new_values ['vacation_day']   = prev_dyn.vacation_day
+        elif orgl.vacation_legal_year :
             new_values ['vacation_month'] = 1
             new_values ['vacation_day']   = 1
         else :
             d = new_values ['valid_from']
-            month, day = (int (x) for x in d.get_tuple () [1:3])
-            if month == 2 and day == 29 :
-                day = 28
+            month, mday = (int (x) for x in d.get_tuple () [1:3])
+            if month == 2 and mday == 29 :
+                mday = 28
             new_values ['vacation_month'] = month
-            new_values ['vacation_day']   = day
-    if orgl.vacation_yearly and 'vacation_yearly' not in new_values :
-        new_values ['vacation_yearly'] = orgl.vacation_yearly
+            new_values ['vacation_day']   = mday
+    if 'vacation_yearly' not in new_values :
+        if prev_dyn :
+            new_values ['vacation_yearly'] = prev_dyn.vacation_yearly
+        elif orgl.vacation_yearly :
+            new_values ['vacation_yearly'] = orgl.vacation_yearly
+    check_vacation ('vacation_yearly', new_values)
+    if 'vacation_yearly' in new_values :
+        common.require_attributes \
+            (_, cl, nodeid, new_values, 'vacation_month', 'vacation_day')
 # end def new_user_dynamic
 
-def new_user_dyn_react (db, cl, nodeid, old_values) :
+def user_dyn_react (db, cl, nodeid, old_values) :
     """ If this is the first user_dynamic record for this user: create
         initial vacation_correction record.
     """
     dyn  = cl.getnode (nodeid)
+    if not dyn.vacation_yearly :
+        return
     ud   = db.user_dynamic.filter (None, dict (user = dyn.user))
     if len (ud) == 1 :
         assert ud [0] == nodeid
         year = dyn.valid_from.get_tuple () [0]
-        date = Date ('%s-%s-%s' % (year, dyn.vacation_month, dyn.vacation_day))
-        db.vacation_correction.create \
-            (user = user, date = date, absolute = True, days = 0)
-# end def new_user_dyn_react
+        date = Date \
+            ('%s-%02d-%02d' % (year, dyn.vacation_month, dyn.vacation_day))
+        if old_values is None :
+            db.vacation_correction.create \
+                (user = dyn.user, date = date, absolute = True, days = 0)
+        else :
+            vc = db.vacation_correction.filter (None, dict (user = dyn.user))
+            if len (vc) == 1 :
+                db.vacation_correction.set \
+                    (vc [0], date = date, absolute = True, days = 0)
+# end def user_dyn_react
 
 def close_existing (db, cl, nodeid, old_values) :
     """ Check if there is already a user_dynamic record with no valid_to
@@ -320,7 +335,7 @@ def close_existing (db, cl, nodeid, old_values) :
 def overtime_check (db, cl, nodeid, new_values) :
     if not nodeid and 'required_overtime' not in new_values :
         new_values ['required_overtime'] = False
-    require_attributes \
+    common.require_attributes \
         (_, cl, nodeid, new_values
         , 'name', 'months', 'weekly', 'required_overtime'
         )
@@ -378,7 +393,7 @@ def vacation_check (db, cl, nodeid, new_values) :
         if ai :
             raise Reject (_ ("No vacation for all-in allowed"))
     # require both, month *and* day (and number of days)
-    require_attributes \
+    common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'vacation_day'
         , 'vacation_month'
@@ -425,6 +440,8 @@ def init (db) :
     db.user_dynamic.audit    ("create", set_otp_if_all_in, priority = 20)
     db.user_dynamic.audit    ("set",    set_otp_if_all_in, priority = 20)
     db.user_dynamic.react    ("create", close_existing)
+    db.user_dynamic.react    ("create", user_dyn_react)
+    db.user_dynamic.react    ("set",    user_dyn_react)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
 # end def init

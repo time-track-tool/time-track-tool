@@ -41,10 +41,11 @@ from roundup.cgi.TranslationService import get_translation
 from operator                       import add
 from time                           import gmtime
 
-import common
-from user_dynamic                   import get_user_dynamic, day_work_hours
-from user_dynamic                   import invalidate_tr_duration
 from freeze                         import frozen
+
+import common
+import user_dynamic
+import vacation
 
 def check_timestamps (start, end, date) :
     start.year  = end.year  = date.year
@@ -100,7 +101,7 @@ def time_records_consistent (db, cl, nodeid) :
     uid      = cl.get (nodeid, 'user')
     uname    = db.user.get (uid, 'username')
     msgs     = []
-    dynamic  = get_user_dynamic (db, uid, date)
+    dynamic  = user_dynamic.get_user_dynamic (db, uid, date)
     if not dynamic :
         raise Reject, "No dynamic user data for %(uname)s, %(date)s" % locals ()
     if not dynamic.booking_allowed :
@@ -112,7 +113,7 @@ def time_records_consistent (db, cl, nodeid) :
     trec_notravel   = []
     need_break_recs = []
     noover_sum      = 0
-    daily_hours     = day_work_hours (dynamic, date)
+    daily_hours     = user_dynamic.day_work_hours (dynamic, date)
     for tr in trec :
         tr_pr  = pretty_time_record (tr, date, uname)
         act    = tr.time_activity
@@ -272,7 +273,7 @@ def update_timerecs (db, time_record_id, set_it) :
     trecs.sort ()
     if trecs != trecs_o :
         dr = db.daily_record.getnode (drec_id)
-        invalidate_tr_duration (db, dr.user, dr.date, dr.date)
+        user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
         db.daily_record.set \
             ( drec_id
             , time_record    = [str (i) for i in trecs]
@@ -314,7 +315,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
-    dyn  = get_user_dynamic (db, user, date)
+    dyn  = user_dynamic.get_user_dynamic (db, user, date)
     if not dyn and uid != '1' :
         raise Reject, \
             _ ("No dynamic user data for %(uname)s, %(date)s") % locals ()
@@ -408,6 +409,40 @@ def check_generated (new_values) :
         new_values   ['end_generated'] = False
 # end def check_generated
 
+def leave_wp (db, dr, wp, start, end, duration) :
+    if not wp :
+        return False
+    if start or end or not duration :
+        return False
+    tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
+    if not tp.approval_required :
+        return False
+    dts = ';%s' % dr.date.pretty (common.ymd)
+    dte = '%s;' % dr.date.pretty (common.ymd)
+    db.log_debug ("Before vacation submission filter")
+    vs = db.vacation_submission.filter \
+        (None, dict (user = dr.user, first_day = dts, last_day = dte))
+    if not vs :
+        return False
+    db.log_debug ("After vacation submission filter")
+    assert len (vs) == 1
+    vs = db.vacation_submission.getnode (vs [0])
+    if vs.status != db.vacation_status.lookup ('accepted') :
+        return False
+    clearer = common.clearance_by (db, dr.user)
+    uid     = db.getuid ()
+    vd      = vacation.vacation_duration (db, dr.user, dr.date)
+    if not vd :
+        return False
+    if vd != duration :
+        return False
+    if  (  uid in clearer and not tp.approval_hr
+        or user_has_role (db, uid, 'HR-leave-approval') and tp.approval_hr
+        ) :
+        return True
+    return False
+# end def leave_wp
+
 def new_time_record (db, cl, nodeid, new_values) :
     """ auditor on time_record
     """
@@ -423,15 +458,19 @@ def new_time_record (db, cl, nodeid, new_values) :
     if frozen (db, dr.user, dr.date) :
         date = dr.date
         raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
+    start    = new_values.get ('start',    None)
+    end      = new_values.get ('end',      None)
+    duration = new_values.get ('duration', None)
     if  (   uid != dr.user
         and not common.user_has_role (db, uid, 'controlling')
         and not common.user_has_role (db, uid, 'admin')
+        and not leave_wp (db, dr, new_values.get ('wp'), start, end, duration) 
         ) :
         raise Reject, _ \
             ( ("Only %(uname)s and Controlling may create time records")
             % locals ()
             )
-    dynamic  = get_user_dynamic (db, dr.user, dr.date)
+    dynamic  = user_dynamic.get_user_dynamic (db, dr.user, dr.date)
     date     = dr.date.pretty (common.ymd)
     if not dynamic :
         if uid != '1' :
@@ -445,9 +484,6 @@ def new_time_record (db, cl, nodeid, new_values) :
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6) :
                 raise Reject, _ ('No weekend booking allowed')
-    start    = new_values.get ('start',    None)
-    end      = new_values.get ('end',      None)
-    duration = new_values.get ('duration', None)
     dstart, dend = check_start_end_duration \
         (dr.date, start, end, duration, new_values)
     if 'work_location' not in new_values :
@@ -641,7 +677,7 @@ def check_for_retire_and_duration (db, cl, nodeid, old_values) :
          ) :
         drid = cl.get (nodeid, 'daily_record')
         dr = db.daily_record.getnode (drid)
-        invalidate_tr_duration (db, dr.user, dr.date, dr.date)
+        user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
 # end def check_for_retire_and_duration
 
 def check_retire (db, cl, nodeid, dummy) :

@@ -21,10 +21,12 @@
 # ****************************************************************************
 
 from roundup.exceptions             import Reject
-from roundup.date                   import Interval
+from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
-from common import reject_attributes, ymd, clearance_by, require_attributes
-from common import user_has_role
+from roundup                        import roundupdb
+
+import common
+import vacation
 
 def check_range (db, nodeid, uid, first_day, last_day) :
     """ Check length of range and if there are any records in the given
@@ -36,7 +38,7 @@ def check_range (db, nodeid, uid, first_day, last_day) :
     """
     if (last_day - first_day) > Interval ('30d') :
         raise Reject (_ ("Max. 30 days for single vacation submission"))
-    range = ';'.join ((first_day.pretty (ymd), last_day.pretty (ymd)))
+    range = common.pretty_range (first_day, last_day)
     both  = (first_day.pretty (';%Y-%m-%d'), last_day.pretty ('%Y-%m-%d;'))
     for f, l in ((range, None), (None, range), both) :
         d = dict (user = uid)
@@ -63,7 +65,7 @@ def new_submission (db, cl, nodeid, new_values) :
     """
     uid = db.getuid ()
     st_open = db.vacation_status.lookup ('open')
-    require_attributes \
+    common.require_attributes \
         (_, cl, nodeid, new_values, 'first_day', 'last_day', 'time_wp')
     if 'user' not in new_values :
         user = new_values ['user'] = uid
@@ -77,7 +79,7 @@ def new_submission (db, cl, nodeid, new_values) :
         raise Reject (_ ('Initial status must be "open"'))
     if 'status' not in new_values :
         new_values ['status'] = st_open
-    if user != uid and not user_has_role (db, uid, 'HR-vacation') :
+    if user != uid and not common.user_has_role (db, uid, 'HR-vacation') :
         raise Reject \
             (_ ("Only special role may create submission for other user"))
 # end def new_submission
@@ -91,14 +93,15 @@ def check_submission (db, cl, nodeid, new_values) :
         change is at least possible (although we still have to check the
         role).
     """
-    reject_attributes (_, new_values, 'user')
+    common.reject_attributes (_, new_values, 'user')
     old = cl.getnode (nodeid)
     uid = db.getuid ()
     old_status = db.vacation_status.get (old.status, 'name')
     new_status = db.vacation_status.get \
         (new_values.get ('status', old.status), 'name')
     if old_status != new_status or old_status != 'open' :
-        reject_attributes (_, new_values, 'first_day', 'last_day', 'time_wp')
+        common.reject_attributes \
+            (_, new_values, 'first_day', 'last_day', 'time_wp')
     first_day = new_values.get ('first_day', cl.get (nodeid, 'first_day'))
     last_day  = new_values.get ('last_day',  cl.get (nodeid, 'last_day'))
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
@@ -106,7 +109,7 @@ def check_submission (db, cl, nodeid, new_values) :
     check_wp    (db, time_wp)
     if old_status != new_status :
         # Allow special HR role to do any (possible) state changes
-        if user_has_role (db, uid, 'HR-vacation') :
+        if common.user_has_role (db, uid, 'HR-vacation') :
             ok = True
         else :
             ok = False
@@ -119,10 +122,10 @@ def check_submission (db, cl, nodeid, new_values) :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
                     ok = True
-            clearer = clearance_by (db, old.user)
+            clearer = common.clearance_by (db, old.user)
             if  (  not ok
                 and (   (uid in clearer and not tp.approval_hr)
-                    or  (   user_has_role (db, uid, 'HR-leave-approval')
+                    or  (   common.user_has_role (db, uid, 'HR-leave-approval')
                         and tp.approval_hr
                         )
                     )
@@ -141,6 +144,112 @@ def vac_report (db, cl, nodeid, new_values) :
     raise Reject (_ ("Creation of vacation report is not allowed"))
 # end def vac_report
 
+def daily_recs (db, cl, nodeid, old_values) :
+    vs = cl.getnode (nodeid)
+    vacation.create_daily_recs (db, vs.user, vs.first_day, vs.last_day)
+# end def daily_recs
+
+def state_change_reactor (db, cl, nodeid, old_values) :
+    vs         = cl.getnode (nodeid)
+    old_status = old_values.get ('status')
+    new_status = vs.status
+    accepted   = db.vacation_status.lookup ('accepted')
+    declined   = db.vacation_status.lookup ('declined')
+    if old_status == new_status :
+        return
+    dt  = common.pretty_range (vs.first_day, vs.last_day)
+    drs = db.daily_record.filter (None, dict (user = vs.user, date = dt))
+    trs = db.time_record.filter (None, dict (daily_record = drs))
+    if new_status == accepted :
+        handle_accept  (db, vs, trs, old_status)
+    elif new_status == declined :
+        handle_decline (db, vs, trs)
+# end def state_change_reactor
+
+def handle_accept (db, vs, trs, old_status) :
+    cancr = db.vacation_status.lookup ('cancel requested')
+    warn  = []
+    for trid in trs :
+        tr  = db.time_record.getnode (trid)
+        wp  = db.time_wp.getnode (tr.wp)
+        tp  = db.time_project.getnode (wp.project)
+        trd = db.daily_record.get (tr.daily_record, 'date')
+        if not tp.is_public_holiday :
+            dt = trd.pretty (common.ymd)
+            if wp != vs.time_wp :
+                warn.append ((dt, tp.name, wp.name, tr.duration))
+            db.time_record.retire (trid)
+    d = vs.first_day
+    off = db.work_location.lookup ('off')
+    while (d <= vs.last_day) :
+        vd = vacation.vacation_duration (db, vs.user, d)
+        if vd :
+            dt = common.pretty_range (d, d)
+            dr = db.daily_record.filter (None, dict (user = vs.user, date = dt))
+            assert len (dr) == 1
+            db.time_record.create \
+                ( daily_record  = dr [0]
+                , duration      = vd
+                , work_location = off
+                , wp            = vs.time_wp
+                )
+        d += common.day
+    mailer  = roundupdb.Mailer (db.config)
+    now     = Date ('.')
+    wp      = db.time_wp.getnode (vs.time_wp)
+    email   = db.user.get (vs.user, 'address')
+    wpn     = wp.name
+    tpn     = db.time_project.get (wp.project, 'name')
+    fday    = vs.first_day.pretty (common.ymd)
+    lday    = vs.last_day.pretty  (common.ymd)
+    if old_status == cancr :
+        subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s not cancelled' % locals ()
+        content = 'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n' \
+                % locals ()
+        content += "Please contact your supervisor\n"
+    else :
+        subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s approved' % locals ()
+        content = ('Your absence request "%(tpn)s/%(wpn)s" '
+                   'has been approved.\n'
+                  % locals ()
+                  )
+    if warn :
+        content = [content]
+        content.append ("")
+        content.append \
+            ("The following existing time records have been deleted:")
+        tdl = wdl = 0
+        for w in warn :
+            tdl = max (tdl, len (w [1]))
+            wdl = max (wdl, len (w [2]))
+        fmt = "%%s: %%%ds / %%%ds duration: %%s" % (tdl, wdl)
+        content.append (fmt % tuple (w))
+        content = '\n'.join (content)
+    try :
+        mailer.standard_message ((email,), subject, content)
+    except roundupdb.MessageSendError, message :
+        raise roundupdb.DetectorError, message
+# end def handle_accept
+
+def handle_decline (db, vs, trs) :
+    mailer  = roundupdb.Mailer (db.config)
+    now     = Date ('.')
+    wp      = db.time_wp.getnode (vs.time_wp)
+    email   = db.user.get (vs.user, 'address')
+    wpn     = wp.name
+    tpn     = db.time_project.get (wp.project, 'name')
+    fday    = vs.first_day.pretty (common.ymd)
+    lday    = vs.last_day.pretty  (common.ymd)
+    subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s declined' % locals ()
+    content = 'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n' \
+            % locals ()
+    content += "Please contact your supervisor.\n"
+    try :
+        mailer.standard_message ((email,), subject, content)
+    except roundupdb.MessageSendError, message :
+        raise roundupdb.DetectorError, message
+# end def handle_decline
+
 # FIXME: Side-effects for state transitions
 # - Email
 # - Creating daily record / creating/removing time_record
@@ -155,5 +264,8 @@ def init (db) :
     # Status is checked with prio 200, we come later.
     db.vacation_submission.audit ("set",    check_submission, priority = 300)
     db.vacation_submission.audit ("create", new_submission)
+    db.vacation_submission.react ("create", daily_recs, priority = 80)
+    db.vacation_submission.react ("set",    daily_recs, priority = 80)
+    db.vacation_submission.react ("set",    state_change_reactor)
     db.vacation_report.audit     ("create", vac_report)
 # end def init

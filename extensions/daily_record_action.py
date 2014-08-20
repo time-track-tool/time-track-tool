@@ -53,17 +53,11 @@ from roundup.date                   import Date, Interval, Range
 from roundup                        import hyperdb
 from roundup.cgi.TranslationService import get_translation
 
-from common                         import pretty_range
-from common                         import week_from_date, ymd, date_range
-from common                         import weekno_year_from_day
-from common                         import user_has_role
-from common                         import from_week_number, week_freeze_date
-from user_dynamic                   import get_user_dynamic, day_work_hours
-from user_dynamic                   import round_daily_work_hours, day
-from user_dynamic                   import last_user_dynamic, find_user_dynamic
-from freeze                         import frozen, range_frozen
-from freeze                         import prev_dr_freeze, next_dr_freeze
-from rup_utils                      import translate
+import common
+import freeze
+import rup_utils
+import user_dynamic
+import vacation
 
 _ = lambda x : x
 
@@ -72,10 +66,10 @@ def prev_week (db, request) :
         db  = db._db
     except AttributeError :
         pass
-    start, end = date_range (db, request.filterspec)
+    start, end = common.date_range (db, request.filterspec)
     n_end   = start - Interval ('1d')
     n_start = n_end - Interval ('6d')
-    date    = pretty_range (n_start, n_end)
+    date    = common.pretty_range (n_start, n_end)
     return \
         '''javascript:
             if(submit_once()) {
@@ -90,10 +84,10 @@ def next_week (db, request) :
         db  = db._db
     except AttributeError :
         pass
-    start, end = date_range (db, request.filterspec)
+    start, end = common.date_range (db, request.filterspec)
     n_start = end     + Interval ('1d')
     n_end   = n_start + Interval ('6d')
-    date    = pretty_range (n_start, n_end)
+    date    = common.pretty_range (n_start, n_end)
     return \
         '''javascript:
             if(submit_once()) {
@@ -197,46 +191,6 @@ def time_url (request, classname) :
         """ % locals ()
 # end def time_url
 
-def try_create_public_holiday (db, daily_record, date, user) :
-    dyn = get_user_dynamic (db, user, date)
-    wh  = day_work_hours   (dyn, date)
-    if wh :
-        loc = db.org_location.get (dyn.org_location, 'location')
-        hol = db.public_holiday.filter \
-            (None, {'date' : pretty_range (date, date), 'locations' : loc})
-        if hol and wh :
-            wp  = None
-            try :
-                ok  = db.time_project_status.lookup ('Open')
-                prj = db.time_project.filter \
-                    (None, dict (is_public_holiday = True, status = ok))
-                wps = db.time_wp.filter \
-                    (None, dict (project = prj, bookers = user))
-                for wpid in wps :
-                    w = db.time_wp.getnode (wpid)
-                    if  (   w.time_start <= date
-                        and (not w.time_end or date < w.time_end)
-                        ) :
-                        wp = wpid
-                        break
-            except (IndexError, KeyError) :
-                pass
-            holiday = db.public_holiday.getnode (hol [0])
-            comment = holiday.name
-            if holiday.description :
-                comment = '\n'.join ((holiday.name, holiday.description))
-            if holiday.is_half :
-                wh = wh / 2.
-            wh = round_daily_work_hours (wh)
-            db.time_record.create \
-                ( daily_record  = daily_record
-                , duration      = wh
-                , wp            = wp
-                , comment       = comment
-                , work_location = db.work_location.lookup ('off')
-                )
-# end def try_create_public_holiday
-
 class Daily_Record_Common (Action, autosuper) :
     """ Methods for creation of daily records that do not yet exist """
 
@@ -254,17 +208,17 @@ class Daily_Record_Common (Action, autosuper) :
         filterspec      = request.filterspec
         columns         = request.columns
         assert (request.classname == 'daily_record')
-        start, end      = date_range (self.db, filterspec)
+        start, end      = common.date_range (self.db, filterspec)
         self.start      = start
         self.end        = end
         max             = start + Interval ('31d')
         if end > max :
             msg = \
                 ( "Error: Interval may not exceed one month: %s"
-                % ' to '.join ([i.pretty (ymd) for i in (start, end)])
+                % ' to '.join ([i.pretty (common.ymd) for i in (start, end)])
                 )
             end = max
-            request.filterspec ['date'] = pretty_range (start, end)
+            request.filterspec ['date'] = common.pretty_range (start, end)
             url = request.indexargs_url \
                 ( ''
                 , { ':action'        : 'search'
@@ -290,7 +244,7 @@ class Daily_Record_Common (Action, autosuper) :
                     , weekend_allowed   = False
                     , required_overtime = False
                     )
-                try_create_public_holiday (self.db, x, d, self.user)
+                vacation.try_create_public_holiday (self.db, x, d, self.user)
                 self.db.commit ()
             except Reject :
                 pass
@@ -318,7 +272,7 @@ class Daily_Record_Action (Daily_Record_Common) :
 
         self.create_daily_records ()
         self.request.filterspec = \
-            { 'date' : pretty_range (self.start, self.end)
+            { 'date' : common.pretty_range (self.start, self.end)
             , 'user' : [self.user]
             }
         url = self.request.indexargs_url \
@@ -361,7 +315,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     def handle (self) :
         self.create_daily_records ()
         self.request.filterspec = \
-            { 'date' : pretty_range (self.start, self.end)
+            { 'date' : common.pretty_range (self.start, self.end)
             , 'user' : [self.user]
             }
         # insert into form for new request objects
@@ -392,7 +346,8 @@ class Weekno_Action (Daily_Record_Edit_Action) :
         except ValueError :
             year = Date ('.').year
             weekno = int (weeknostr)
-        filterspec ['date'] = pretty_range (* from_week_number (year, weekno))
+        filterspec ['date'] = common.pretty_range \
+            (* common.from_week_number (year, weekno))
         try :
             return self.__super.handle ()
         except Redirect :
@@ -507,7 +462,8 @@ def approvals_pending (db, request, userlist) :
             , group = [('-', 'date')]
             )
         if last_frozen :
-            fdate = db.daily_record_freeze.get (last_frozen [0], 'date') + day
+            fdate = db.daily_record_freeze.get (last_frozen [0], 'date') \
+                  + common.day
             find_user ['date'] = fdate.pretty ('%Y-%m-%d;')
         dr_per_user = db.daily_record.filter (None, find_user)
         pending [u] = {}
@@ -515,15 +471,15 @@ def approvals_pending (db, request, userlist) :
             earliest = latest = None
             for p in dr_per_user :
                 date = db.daily_record.get (p, 'date')
-                week, year = weekno_year_from_day (date)
+                week, year = common.weekno_year_from_day (date)
                 if not earliest or date < earliest :
                     earliest = date
                 if not latest   or date > latest :
                     latest   = date
-                start, end = week_from_date (date)
+                start, end = common.week_from_date (date)
                 if fdate and start < fdate :
                     start = fdate
-                filter ['date'] = pretty_range (start, end)
+                filter ['date'] = common.pretty_range (start, end)
                 filter ['user'] = u
                 pending [u][(year, week)] = \
                     [ None
@@ -533,25 +489,25 @@ def approvals_pending (db, request, userlist) :
             interval = latest - earliest
             for k in pending [u].iterkeys () :
                 if interval < Interval ('31d') :
-                    filter ['date'] = pretty_range (earliest, latest)
+                    filter ['date'] = common.pretty_range (earliest, latest)
                     pending [u][k][0] = request.indexargs_url ('', editdict)
                 else :
                     pending [u][k][0] = pending [u][k][1]
         else :
-            dyn = last_user_dynamic (db, u)
+            dyn = user_dynamic.last_user_dynamic (db, u)
             if not dyn :
                 print u, "no dyn"
             if dyn and (not dyn.valid_to or not fdate or dyn.valid_to > fdate) :
                 date = now
                 if dyn.valid_to and dyn.valid_to < date :
                     date = dyn.valid_to
-                week, year = weekno_year_from_day (date)
-                start, end = week_from_date (date)
+                week, year = common.weekno_year_from_day (date)
+                start, end = common.week_from_date (date)
                 if fdate and start < fdate :
                     start = fdate
                 if dyn.valid_to and dyn.valid_to < end :
                     end   = dyn.valid_to
-                filter ['date'] = pretty_range (start, end)
+                filter ['date'] = common.pretty_range (start, end)
                 filter ['user'] = u
                 url = request.indexargs_url ('', editdict)
                 pending [u][(year, week)] = [url, url, 'done']
@@ -568,13 +524,13 @@ def daysum (db, daily_record, format = None) :
 # end def daysum
 
 def weeksum (db, drid, format = None) :
-    start, end = week_from_date (db.daily_record.get (drid, 'date'))
+    start, end = common.week_from_date (db.daily_record.get (drid, 'date'))
     user       = db.daily_record.get (drid, 'user')
     d   = start
     sum = 0.
     while d <= end :
         dr   = db.daily_record.filter \
-            (None, dict (date = pretty_range (d, d), user = user))
+            (None, dict (date = common.pretty_range (d, d), user = user))
         if len (dr) == 0 :
             d = d + Interval ('1d')
             continue
@@ -625,8 +581,11 @@ def dynuser_half_frozen (db, dyn) :
     if val_to :
         val_to = Date (str (val_to))
     return \
-        (   frozen (db, userid, val_from)
-        and (val_to and not frozen (db, userid, val_to - day) or not val_to)
+        (   freeze.frozen (db, userid, val_from)
+        and (   val_to
+            and not freeze.frozen (db, userid, val_to - common.day)
+            or  not val_to
+            )
         )
 # end def dynuser_half_frozen
 
@@ -653,13 +612,14 @@ class Freeze_Action (Action, autosuper) :
         msg = []
         for u in self.users :
             date = self.date
-            dyn  = get_user_dynamic (self.db, u, date)
+            dyn  = user_dynamic.get_user_dynamic (self.db, u, date)
             if not dyn :
-                dyn = find_user_dynamic (self.db, u, date, direction = '-')
+                dyn = user_dynamic.find_user_dynamic \
+                    (self.db, u, date, direction = '-')
                 if dyn :
                     # there must be a valid_to date, otherwise
                     # get_user_dynamic would have found something above
-                    date = dyn.valid_to - day
+                    date = dyn.valid_to - common.day
                     assert (date < self.date)
             if dyn :
                 try :
@@ -748,14 +708,15 @@ class Split_Dynamic_User_Action (Action) :
         id       = self.client.nodeid
         dyn      = self.db.user_dynamic.getnode (id)
         perm     = self.db.security.hasPermission
-        if not user_has_role (self.db, self.db.getuid (), 'HR') :
+        if not common.user_has_role (self.db, self.db.getuid (), 'HR') :
             raise Reject, "Not allowed"
         fields   = dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)
         if dyn.valid_to :
-            date = pretty_range (dyn.valid_from, dyn.valid_to - day)
+            date = common.pretty_range \
+                (dyn.valid_from, dyn.valid_to - common.day)
         else :
-            date = dyn.valid_from.pretty (ymd) + ';'
+            date = dyn.valid_from.pretty (common.ymd) + ';'
         
         frozen   = self.db.daily_record_freeze.filter \
             ( None
@@ -764,7 +725,7 @@ class Split_Dynamic_User_Action (Action) :
             )
         assert (frozen)
         frozen               = self.db.daily_record_freeze.getnode (frozen [0])
-        splitdate            = frozen.date + day
+        splitdate            = frozen.date + common.day
         self.db.user_dynamic.set (id, valid_to = splitdate)
         param ['valid_from'] = splitdate
         newid                = self.db.user_dynamic.create (** param)
@@ -804,7 +765,7 @@ class SearchActionWithTemplate(SearchAction):
             if not isinstance (value, list) :
                 value = [value]
             for v in value :
-                v.value = translate (v.value)
+                v.value = rup_utils.translate (v.value)
     # end def fakeFilterVars
 # end class SearchActionWithTemplate
 
@@ -831,7 +792,7 @@ def init (instance) :
     util ('prev_week',                prev_week)
     util ("button_submit_to",         button_submit_to)
     util ("button_action",            button_action)
-    util ('weekno_year',              weekno_year_from_day)
+    util ('weekno_year',              common.weekno_year_from_day)
     util ('daysum',                   daysum)
     util ('weeksum',                  weeksum)
     util ("approvals_pending",        approvals_pending)
@@ -839,12 +800,12 @@ def init (instance) :
     util ("freeze_all_script",        freeze_all_script)
     util ("freeze_supervisor_script", freeze_supervisor_script)
     util ("freeze_user_script",       freeze_user_script)
-    util ("frozen",                   frozen)
-    util ("range_frozen",             range_frozen)
+    util ("frozen",                   freeze.frozen)
+    util ("range_frozen",             freeze.range_frozen)
     util ("time_url",                 time_url)
-    util ("next_dr_freeze",           next_dr_freeze)
-    util ("prev_dr_freeze",           prev_dr_freeze)
-    util ("week_freeze_date",         week_freeze_date)
+    util ("next_dr_freeze",           freeze.next_dr_freeze)
+    util ("prev_dr_freeze",           freeze.prev_dr_freeze)
+    util ("week_freeze_date",         common.week_freeze_date)
     util ("dynuser_half_frozen",      dynuser_half_frozen)
     util ("dynuser_copyfields",       dynuser_copyfields)
 # end def init

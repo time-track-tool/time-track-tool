@@ -29,8 +29,9 @@ import csv
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
 import user7_time, user8_time, user10_time, user11_time, user12_time
 
-from operator import mul
-from StringIO import StringIO
+from operator     import mul
+from StringIO     import StringIO
+from email.parser import Parser
 
 from roundup.exceptions import Reject
 
@@ -91,7 +92,7 @@ from user_dynamic import update_tr_duration, compute_balance
 from user_dynamic import overtime_periods, first_user_dynamic, next_user_dynamic
 from summary      import Staff_Report, Summary_Report
 from summary      import init as summary_init
-from common       import ymd
+from common       import ymd, pretty_range
 
 class _Test_Case (unittest.TestCase) :
     count = 0
@@ -150,6 +151,7 @@ class _Test_Case (unittest.TestCase) :
         config.MAIL_DOMAIN    = "your.tracker.email.domain.example"
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
         config.RDBMS_TEMPLATE = "template0"
+        config.MAIL_DEBUG     = "maildebug"
         config.init_logging ()
         self.tearDown ()
         srcdir = os.path.join (os.path.dirname (__file__), '..')
@@ -1134,7 +1136,50 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
 
     def test_vacation (self) :
         self.log.debug ('test_vacation')
+        maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2009-12-24')
+            , description = 'Heiligabend'
+            , is_half     = True
+            , locations   = [self.loc]
+            , name        = 'Heiligabend'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2009-12-25')
+            , description = 'Weihnachten'
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Weihnachten'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2009-12-26')
+            , description = 'Stephanitag'
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Stephanitag'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2009-12-31')
+            , description = 'Silvester'
+            , is_half     = True
+            , locations   = [self.loc]
+            , name        = 'Silvester'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2010-01-01')
+            , description = 'Neujahr'
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Neujahr'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2010-01-06')
+            , description = 'Heilige drei Koenige'
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Heilige drei Koenige'
+            )
         st_open = self.db.vacation_status.lookup ('open')
         st_subm = self.db.vacation_status.lookup ('submitted')
         st_accp = self.db.vacation_status.lookup ('accepted')
@@ -1154,74 +1199,75 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (dyn.vacation_yearly, 25)
         self.assertEqual (dyn.vacation_month, 1)
         self.assertEqual (dyn.vacation_day, 1)
+        self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
         self.assertRaises (Reject, self.db.vacation_submission.create)
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-20')
+            , first_day = date.Date ('2009-12-20')
             )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-20')
-            , last_day  = date.Date ('2013-12-31')
+            , first_day = date.Date ('2009-12-20')
+            , last_day  = date.Date ('2009-12-31')
             )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-20')
-            , last_day  = date.Date ('2013-12-31')
+            , first_day = date.Date ('2009-12-20')
+            , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.holiday_wp
             )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-20')
-            , last_day  = date.Date ('2013-12-31')
+            , first_day = date.Date ('2009-12-20')
+            , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.vacation_wp
             , user      = self.user1
             )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-20')
-            , last_day  = date.Date ('2013-12-31')
+            , first_day = date.Date ('2009-12-20')
+            , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.vacation_wp
             , user      = self.user2
             , status    = self.db.vacation_status.lookup ('accepted')
             )
         vs = self.db.vacation_submission.create \
-            ( first_day = date.Date ('2013-12-22')
-            , last_day  = date.Date ('2013-12-22')
+            ( first_day = date.Date ('2009-12-22')
+            , last_day  = date.Date ('2009-12-22')
             , time_wp   = self.vacation_wp
             )
         un = self.db.vacation_submission.create \
-            ( first_day = date.Date ('2013-12-02')
-            , last_day  = date.Date ('2013-12-02')
+            ( first_day = date.Date ('2009-12-02')
+            , last_day  = date.Date ('2009-12-02')
             , time_wp   = self.unpaid_wp
             )
         u2 = self.db.vacation_submission.create \
-            ( first_day = date.Date ('2013-12-03')
-            , last_day  = date.Date ('2013-12-03')
+            ( first_day = date.Date ('2009-12-03')
+            , last_day  = date.Date ('2009-12-03')
             , time_wp   = self.unpaid_wp
             )
         za = self.db.vacation_submission.create \
-            ( first_day = date.Date ('2013-12-04')
-            , last_day  = date.Date ('2013-12-04')
+            ( first_day = date.Date ('2009-12-04')
+            , last_day  = date.Date ('2009-12-04')
             , time_wp   = self.flexi_wp
             )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-20')
-            , last_day  = date.Date ('2013-12-31')
+            , first_day = date.Date ('2009-12-20')
+            , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.vacation_wp
             )
         self.db.vacation_submission.set \
             ( vs
-            , first_day = date.Date ('2013-12-20')
-            , last_day  = date.Date ('2013-12-31')
+            , first_day = date.Date ('2009-12-20')
+            , last_day  = date.Date ('2010-01-06')
             )
         self.assertRaises \
             ( Reject, self.db.vacation_submission.create
-            , first_day = date.Date ('2013-12-22')
-            , last_day  = date.Date ('2013-12-22')
+            , first_day = date.Date ('2009-12-22')
+            , last_day  = date.Date ('2009-12-22')
             , time_wp   = self.vacation_wp
             )
         for st in (st_accp, st_decl, st_carq, st_canc) :
@@ -1230,6 +1276,17 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , vs
                 , status = st
                 )
+        vsn  = self.db.vacation_submission.getnode (vs)
+        dt   = pretty_range (vsn.first_day, vsn.last_day)
+        drs  = self.db.daily_record.filter \
+            ( None
+            , dict (user = self.user2, date = dt)
+            , [('+', 'date')]
+            )
+        self.assertEqual (len (drs), 18)
+        trs = self.db.time_record.filter (None, dict (daily_record = drs))
+        # Stephanitag is on Saturday
+        self.assertEqual (len (trs), 5)
         self.db.vacation_submission.set (vs, status = st_subm)
         for st in (st_accp, st_decl, st_carq, st_canc) :
             self.assertRaises \
@@ -1269,7 +1326,35 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , status = st
                 )
         self.db.vacation_submission.set (vs, status = st_accp)
+        x = open (maildebug, 'r').read ()
+        e = Parser ().parsestr (x)
+        for h, t in \
+            ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 approved')
+            , ('precedence', 'bulk')
+            , ('to',         'test.user@example.com')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Your absence request "Vacation/Vacation" has been approved.'
+            )
+        os.unlink (maildebug)
         self.db.vacation_submission.set (za, status = st_accp)
+        x = open (maildebug, 'r').read ()
+        e = Parser ().parsestr (x)
+        for h, t in \
+            ( ('subject',    'Leave "Flexi" 2009-12-04-2009-12-04 approved')
+            , ('precedence', 'bulk')
+            , ('to',         'test.user@example.com')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Your absence request "Flexi/Flexi" has been approved.'
+            )
+        os.unlink (maildebug)
         for st in (st_accp, st_decl) :
             self.assertRaises \
                 ( Reject, self.db.vacation_submission.set
