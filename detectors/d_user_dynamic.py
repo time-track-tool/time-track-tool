@@ -287,14 +287,11 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         elif orgl.vacation_yearly :
             new_values ['vacation_yearly'] = orgl.vacation_yearly
     check_vacation ('vacation_yearly', new_values)
-    if 'vacation_yearly' in new_values :
-        common.require_attributes \
-            (_, cl, nodeid, new_values, 'vacation_month', 'vacation_day')
 # end def new_user_dynamic
 
 def user_dyn_react (db, cl, nodeid, old_values) :
     """ If this is the first user_dynamic record for this user: create
-        initial vacation_correction record.
+        or update initial vacation_correction record.
     """
     dyn  = cl.getnode (nodeid)
     if not dyn.vacation_yearly :
@@ -378,30 +375,28 @@ def overtime_check (db, cl, nodeid, new_values) :
 
 def vacation_check (db, cl, nodeid, new_values) :
     mlist = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    if 'vacation_month' not in new_values and 'vacation_day' not in new_values :
+    if  (   'vacation_yearly'  not in new_values
+        and 'vacation_month'   not in new_values
+        and 'vacation_day'     not in new_values
+        ) :
         return
+    # if one attribute is defined, all need to be
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'vacation_month', 'vacation_day', 'vacation_yearly'
+        )
     vm = new_values.get ('vacation_month')
     vd = new_values.get ('vacation_day')
+    vy = new_values.get ('vacation_yearly')
     if vm is None and nodeid :
         vm = cl.get (nodeid, 'vacation_month')
     if vd is None and nodeid :
         vd = cl.get (nodeid, 'vacation_day')
-    if vm is not None or vd is not None :
-        ai = new_values.get ('all_in')
-        if ai is None and nodeid :
-            ai = cl.get (nodeidm, 'all_in')
-        if ai :
-            raise Reject (_ ("No vacation for all-in allowed"))
-    # require both, month *and* day (and number of days)
-    common.require_attributes \
-        ( _, cl, nodeid, new_values
-        , 'vacation_day'
-        , 'vacation_month'
-        , 'vacation_yearly'
-        )
+    if vy is None and nodeid :
+        vy = cl.get (nodeid, 'vacation_yearly')
     vm = int (vm)
     vd = int (vd)
-    vy = int (vacation_yearly)
+    vy = int (vy)
     if vm < 1 or vm > 12 :
         raise Reject (_ ("Wrong month: %(vm)s" % locals ()))
     if vd < 1 or vd > mlist [vm - 1] :
@@ -411,24 +406,6 @@ def vacation_check (db, cl, nodeid, new_values) :
     new_values ['vacation_day']    = vd
 # end def vacation_check
 
-def vacation_balance (db, cl, nodeid, old_values) :
-    # If it's the first non-all-in user_dyn record, we create the
-    # initial vacation balance record
-    ud = cl.getnode (nodeid)
-    if ud.all_in :
-        return
-    uid = db.getuid ()
-    v = db.vacation.filter (None, dict (user = uid))
-    if v :
-        return
-    ud = db.user_dynamic.filter (None, dict (user = uid, all_in = False))
-    if ud :
-        return
-    now = Date ('.')
-    date = Date ('%s-%s-%s' % (now.year, ud.vacation_month, ud.vacation_day))
-    db.vacation.create (user = uid, date = date, days = 0, correction = 0)
-# end def vacation_balance
-
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -437,6 +414,8 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.user_dynamic.audit    ("create", new_user_dynamic)
     db.user_dynamic.audit    ("set",    check_user_dynamic)
+    db.user_dynamic.audit    ("create", vacation_check, priority = 120)
+    db.user_dynamic.audit    ("set",    vacation_check, priority = 120)
     db.user_dynamic.audit    ("create", set_otp_if_all_in, priority = 20)
     db.user_dynamic.audit    ("set",    set_otp_if_all_in, priority = 20)
     db.user_dynamic.react    ("create", close_existing)

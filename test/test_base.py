@@ -459,6 +459,8 @@ class _Test_Case_Summary (_Test_Case) :
             , hours_wed       = 7.75
             , hours_thu       = 7.75
             , hours_fri       = 7.5
+            , vacation_month  = 9
+            , vacation_day    = 1
             )
         self.db.user_dynamic.create \
             ( user              = self.user1
@@ -496,6 +498,14 @@ class _Test_Case_Summary (_Test_Case) :
             , hours_fri        = 7.5
             , supp_per_period  = 40
             , additional_hours = 40
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user0))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.set \
+            ( ud [0]
+            , valid_from     = date.Date ('2013-02-02')
+            , vacation_day   = 2
+            , vacation_month = 2
             )
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
@@ -1168,6 +1178,21 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.log.debug ('test_vacation')
         maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
+        s   = [('+', 'user'), ('+', 'date')]
+        vcs = self.db.vacation_correction.filter (None, {}, sort = s)
+        self.assertEqual (len (vcs), 3)
+        d = dict \
+            (( ('1', (self.user0, date.Date ('2013-02-02')))
+            ,  ('2', (self.user1, date.Date ('2005-09-01')))
+            ,  ('3', (self.user2, date.Date ('2008-01-01')))
+            ))
+        for id in vcs :
+            vc = self.db.vacation_correction.getnode (id)
+            self.assertEqual (vc.user, d [id][0])
+            self.assertEqual (vc.date, d [id][1])
+            self.assertEqual (vc.days, 0)
+            self.assertEqual (vc.absolute, True)
+        self.assertEqual (len (vcs), 3)
         self.db.public_holiday.create \
             ( date        = date.Date ('2009-12-24')
             , description = 'Heiligabend'
@@ -1220,10 +1245,6 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             (None, dict (user = self.user1), sort = [('+', 'valid_from')]) [0]
         dyn = self.db.user_dynamic.getnode (ud)
         self.assertEqual (dyn.vacation_yearly, 25)
-        # Small change of race condition if running this test at
-        # midnight, think we can live with this.
-        self.assertEqual (dyn.vacation_month, self.month)
-        self.assertEqual (dyn.vacation_day, self.day)
         ud  = self.db.user_dynamic.filter (None, dict (user = self.user2)) [0]
         dyn = self.db.user_dynamic.getnode (ud)
         self.assertEqual (dyn.vacation_yearly, 25)
