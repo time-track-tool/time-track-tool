@@ -92,6 +92,7 @@ sys.path.insert (0, os.path.abspath ('extensions'))
 import common
 import summary
 import user_dynamic
+import vacation
 
 class _Test_Case (unittest.TestCase) :
     count = 0
@@ -1184,6 +1185,26 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.log.debug ('test_vacation')
         maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
+        for d in '2008-11-03', '2008-11-30', '2008-12-31' :
+            dt = date.Date (d)
+            self.assertEqual \
+                ( vacation.consolidated_vacation (self.db, self.user2, dt)
+                , (28. + 31.) * 25. / 365.
+                )
+            self.assertEqual \
+                ( vacation.remaining_vacation (self.db, self.user2, dt)
+                , (28. + 31.) * 25. / 365.
+                )
+        for d in '2009-01-01', '2009-01-30', '2009-12-31' :
+            dt = date.Date (d)
+            self.assertEqual \
+                ( vacation.consolidated_vacation (self.db, self.user2, dt)
+                , (28. + 31.) * 25. / 365. + 25.
+                )
+            self.assertEqual \
+                ( vacation.remaining_vacation (self.db, self.user2, dt)
+                , (28. + 31.) * 25. / 365. + 25.
+                )
         s   = [('+', 'user'), ('+', 'date')]
         vcs = self.db.vacation_correction.filter (None, {}, sort = s)
         self.assertEqual (len (vcs), 3)

@@ -123,8 +123,9 @@ def check_submission (db, cl, nodeid, new_values) :
                 if old_status == 'submitted' and new_status == 'open' :
                     ok = True
             clearer = common.clearance_by (db, old.user)
+            hr_only = need_hr_approval (db, tp, old.user, first_day, last_day)
             if  (  not ok
-                and (   (uid in clearer and not tp.approval_hr)
+                and (   (uid in clearer and not hr_only)
                     or  common.user_has_role (db, uid, 'HR-leave-approval')
                     )
                 ) :
@@ -147,6 +148,14 @@ def daily_recs (db, cl, nodeid, old_values) :
     vacation.create_daily_recs (db, vs.user, vs.first_day, vs.last_day)
 # end def daily_recs
 
+def need_hr_approval (db, tp, user, first_day, last_day) :
+    day = common.day
+    ed  = vacation.next_yearly_vacation_date (db, user, last_day + day) - day
+    vac = vacation.remaining_vacation (db, user, ed)
+    dur = vacation.leave_days (db, user, first_day, last_day)
+    return tp.approval_hr or tp.is_vacation and (vac - dur < 0)
+# end def need_hr_approval
+
 def state_change_reactor (db, cl, nodeid, old_values) :
     vs         = cl.getnode (nodeid)
     old_status = old_values.get ('status')
@@ -166,8 +175,7 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     elif new_status == declined :
         handle_decline (db, vs)
     elif new_status == submitted :
-        # FIXME: also check if wp over yearly vacation
-        hr_only = tp.approval_hr
+        hr_only = need_hr_approval (db, tp, vs.user, vs.first_day, vs.last_day)
         handle_submit  (db, vs, hr_only)
     elif new_status == cancelled :
         handle_cancel  (db, vs, trs)
