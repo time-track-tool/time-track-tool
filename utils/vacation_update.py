@@ -11,20 +11,22 @@ db      = tracker.open ('admin')
 
 sys.path.insert (1, os.path.join (dir, 'lib'))
 
+#      Name                      approval_hr is_vacation
 tc_names = \
-    { 'Nursing-leave'         : True
-    , 'Special-leave'         : True
-    , 'Special-leave-Italy'   : True
-    , 'Special-leave-Japan'   : True
-    , 'Special-leave-Romania' : True
-    , 'Unpaid-leave'          : True
-    , 'Vacation'              : False
-    , 'Comp\\Flexi-Time'      : False
+    { 'Nursing-leave'         : (True,  False)
+    , 'Special-leave'         : (True,  False)
+    , 'Special-leave-Italy'   : (True,  False)
+    , 'Special-leave-Japan'   : (True,  False)
+    , 'Special-leave-Romania' : (True,  False)
+    , 'Unpaid-leave'          : (True,  False)
+    , 'Vacation'              : (False, True)
+    , 'Comp\\Flexi-Time'      : (False, False)
     }
 
-for n, req in tc_names.iteritems () :
+for n, (hr, v) in tc_names.iteritems () :
     tp = db.time_project.lookup (n)
-    db.time_project.set (tp, approval_required = True, approval_hr = req)
+    db.time_project.set \
+        (tp, approval_required = True, approval_hr = hr, is_vacation = v)
 
 vstatus = \
     { 'open'             : 1

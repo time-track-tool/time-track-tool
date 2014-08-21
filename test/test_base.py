@@ -576,6 +576,7 @@ class _Test_Case_Summary (_Test_Case) :
         self.vacation_tp = self.db.time_project.create \
             ( name = 'Vacation'
             , op_project         = False
+            , is_vacation        = True
             , responsible        = self.user1
             , department         = self.dep
             , organisation       = self.org

@@ -558,6 +558,9 @@ properties = \
         , ( 'is_public_holiday'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
+        , ( 'is_vacation'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
         , ( 'max_hours'
           , ['admin', 'controlling', 'project', 'project_view']
           )

@@ -229,6 +229,7 @@ def init \
         , op_project            = Boolean   ()
         , no_overtime           = Boolean   ()
         , is_public_holiday     = Boolean   ()
+        , is_vacation           = Boolean   ()
         , cost_center           = Link      ("cost_center")
         , overtime_reduction    = Boolean   ()
         , reporting_group       = Multilink ("reporting_group")
@@ -573,8 +574,8 @@ def security (db, ** kw) :
             )
           )
         , ( "time_project", "Edit", ["HR"]
-          , ( "is_public_holiday", "no_overtime", "overtime_reduction"
-            , "approval_required", "approval_hr"
+          , ( "is_public_holiday", "is_vacation", "no_overtime"
+            , "overtime_reduction", "approval_required", "approval_hr"
             )
           )
         ]
@@ -960,7 +961,8 @@ def security (db, ** kw) :
     tp_properties = \
         ( 'name', 'description', 'responsible', 'deputy', 'organisation'
         , 'status', 'work_location', 'op_project', 'id'
-        , 'is_public_holiday', 'creation', 'creator', 'activity', 'actor'
+        , 'is_public_holiday', 'is_vacation', 'creation', 'creator'
+        , 'activity', 'actor'
         , 'cost_center', 'overtime_reduction'
         , 'product_family', 'project_type', 'reporting_group'
         )

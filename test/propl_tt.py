@@ -246,6 +246,7 @@ properties = \
         , 'deputy'
         , 'description'
         , 'is_public_holiday'
+        , 'is_vacation'
         , 'max_hours'
         , 'name'
         , 'no_overtime'
