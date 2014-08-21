@@ -300,6 +300,8 @@ properties = \
         , 'name'
         , 'organisation'
         , 'phone'
+        , 'vacation_legal_year'
+        , 'vacation_yearly'
         ]
       )
     , ( 'organisation'
@@ -526,7 +528,9 @@ properties = \
         ]
       )
     , ( 'time_project'
-      , [ 'cost_center'
+      , [ 'approval_hr'
+        , 'approval_required'
+        , 'cost_center'
         , 'department'
         , 'deputy'
         , 'description'
@@ -660,7 +664,8 @@ properties = \
         , 'supp_weekly_hours'
         , 'travel_full'
         , 'user'
-        , 'vacation_remaining'
+        , 'vacation_day'
+        , 'vacation_month'
         , 'vacation_yearly'
         , 'valid_from'
         , 'valid_to'
@@ -674,6 +679,37 @@ properties = \
         , 'ldap_group'
         , 'name'
         , 'roles'
+        ]
+      )
+    , ( 'vacation_correction'
+      , [ 'absolute'
+        , 'date'
+        , 'days'
+        , 'user'
+        ]
+      )
+    , ( 'vacation_report'
+      , [ 'date'
+        , 'department'
+        , 'org_location'
+        , 'organisation'
+        , 'supervisor'
+        , 'time_project'
+        , 'user'
+        ]
+      )
+    , ( 'vacation_status'
+      , [ 'name'
+        , 'order'
+        , 'transitions'
+        ]
+      )
+    , ( 'vacation_submission'
+      , [ 'first_day'
+        , 'last_day'
+        , 'status'
+        , 'time_wp'
+        , 'user'
         ]
       )
     , ( 'work_location'

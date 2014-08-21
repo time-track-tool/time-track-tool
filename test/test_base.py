@@ -112,7 +112,9 @@ class _Test_Case (unittest.TestCase) :
         , 'external'
         , 'guest'
         , 'hr'
+        , 'hr-leave-approval'
         , 'hr-org-location'
+        , 'hr-vacation'
         , 'invoice'
         , 'issue_admin'
         , 'it'
@@ -127,6 +129,7 @@ class _Test_Case (unittest.TestCase) :
         , 'product'
         , 'project'
         , 'project_view'
+        , 'staff-report'
         , 'supportadmin'
         , 'type'
         , 'user'
@@ -320,16 +323,17 @@ class _Test_Case (unittest.TestCase) :
     # end def test_4_transprops
 
     def create_test_users (self) :
-        nouserroles = \
-            [ 'adr_readonly'
-            , 'guest'
-            , 'hr-org-location'
-            , 'ituser'
-            , 'logger'
-            , 'nosy'
-            , 'user'
-            , 'external'
-            ]
+        nouserroles = dict.fromkeys \
+            (( 'adr_readonly'
+            ,  'external'
+            ,  'guest'
+            ,  'hr-org-location'
+            ,  'ituser'
+            ,  'logger'
+            ,  'nosy'
+            ,  'staff-report'
+            ,  'user'
+            ))
         self.users = {'admin' : '1', 'anonymous' : '2'}
         for u in self.allroles :
             if u in self.users :
@@ -662,9 +666,10 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'hr-org-location', 'issue_admin', 'it'
-        , 'itview', 'nosy'
-        , 'office', 'project', 'project_view', 'supportadmin', 'type', 'user'
+        , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'office', 'project', 'project_view', 'staff-report'
+        , 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -674,8 +679,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     schemafile = 'time_ldap'
     roles = \
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
-        , 'hr-org-location', 'nosy', 'office', 'pgp', 'project'
-        , 'project_view', 'user'
+        , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'nosy'
+        , 'office', 'pgp', 'project', 'project_view', 'staff-report', 'user'
         ]
     transprop_perms = transprop_time
 
@@ -1658,9 +1663,10 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
-        , 'external', 'hr', 'hr-org-location', 'issue_admin', 'it'
-        , 'itview', 'nosy'
-        , 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user'
+        , 'external', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'office', 'pgp', 'project', 'project_view', 'staff-report'
+        , 'supportadmin', 'user'
         ]
     transprop_perms = transprop_full
 

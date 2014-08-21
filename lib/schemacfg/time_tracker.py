@@ -441,6 +441,7 @@ def security (db, ** kw) :
         , ("Project_View",      "May view project data")
         , ("HR-vacation",       "May approve vacation and special leave")
         , ("HR-leave-approval", "Approve paid vacation beyond normal vacation")
+        , ("staff-report",      "May view staff report")
         ]
 
     #     classname
@@ -540,7 +541,15 @@ def security (db, ** kw) :
           , []
           )
         , ( "vacation_correction"
-          , ["HR", "HR-vacation"]
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
+          , ["HR-vacation"]
+          )
+        , ( "vacation_report"
+          , ["User"]
+          , []
+          )
+        , ( "vacation_submission"
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
           )
         ]
@@ -565,6 +574,7 @@ def security (db, ** kw) :
           )
         , ( "time_project", "Edit", ["HR"]
           , ( "is_public_holiday", "no_overtime", "overtime_reduction"
+            , "approval_required", "approval_hr"
             )
           )
         ]

@@ -21,6 +21,8 @@ Role "controlling":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_record (View for "time_record" only)
  User is allowed to access time_wp (View for "time_wp" only)
+ User is allowed to access vacation_correction (View for "vacation_correction" only)
+ User is allowed to access vacation_submission (View for "vacation_submission" only)
  User is allowed to create cost_center (Create for "cost_center" only)
  User is allowed to create cost_center_group (Create for "cost_center_group" only)
  User is allowed to create cost_center_status (Create for "cost_center_status" only)
@@ -64,7 +66,7 @@ Role "hr":
  Create (Create for "user_contact" only)
  User is allowed Edit on (Edit for "daily_record": ('required_overtime', 'weekend_allowed') only)
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
- User is allowed Edit on (Edit for "time_project": ('is_public_holiday', 'no_overtime', 'overtime_reduction') only)
+ User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_public_holiday', 'no_overtime', 'overtime_reduction') only)
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'title', 'roles', 'tt_lines') only)
  User is allowed Edit on (Edit for "user": ('contacts',) only)
@@ -75,6 +77,8 @@ Role "hr":
  User is allowed to access time_record (View for "time_record" only)
  User is allowed to access user_contact (View for "user_contact" only)
  User is allowed to access user_dynamic (View for "user_dynamic" only)
+ User is allowed to access vacation_correction (View for "vacation_correction" only)
+ User is allowed to access vacation_submission (View for "vacation_submission" only)
  User is allowed to create daily_record_freeze (Create for "daily_record_freeze" only)
  User is allowed to create location (Create for "location" only)
  User is allowed to create org_location (Create for "org_location" only)
@@ -106,6 +110,9 @@ Role "hr":
  User is allowed to edit time_record (Edit for "time_record" only)
  User is allowed to edit uc_type (Edit for "uc_type" only)
  User may manipulate user Roles through the web (Web Roles)
+Role "hr-leave-approval":
+ User is allowed to access vacation_correction (View for "vacation_correction" only)
+ User is allowed to access vacation_submission (View for "vacation_submission" only)
 Role "hr-org-location":
   (Search for "daily_record_freeze" only)
   (Search for "overtime_correction" only)
@@ -115,6 +122,15 @@ Role "hr-org-location":
  User is allowed to view freeze information if he/she is in group HR-Org-Location and in the same Org-Location as the given user (View for "daily_record_freeze" only)
  User is allowed to view overtime information if he/she is in group HR-Org-Location and in the same Org-Location as the given user (View for "overtime_correction" only)
  User is allowed to view time record data if he/she is in group HR-Org-Location and in the same Org-Location as the given user (View for "time_record" only)
+Role "hr-vacation":
+ User is allowed to access vacation_correction (View for "vacation_correction" only)
+ User is allowed to access vacation_submission (View for "vacation_submission" only)
+ User is allowed to create vacation_correction (Create for "vacation_correction" only)
+ User is allowed to create vacation_submission (Create for "vacation_submission" only)
+ User is allowed to edit vacation_correction (Edit for "vacation_correction" only)
+ User is allowed to edit vacation_submission (Edit for "vacation_submission" only)
+ User may edit own vacation submissions (Edit for "vacation_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
+ User may edit own vacation submissions (View for "vacation_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
 Role "office":
@@ -143,6 +159,7 @@ Role "project":
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
+Role "staff-report":
 Role "user":
   (Search for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_public_holiday', 'name', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
@@ -181,6 +198,8 @@ Role "user":
  User is allowed to access time_wp_group (View for "time_wp_group" only)
  User is allowed to access uc_type (View for "uc_type" only)
  User is allowed to access user_status (View for "user_status" only)
+ User is allowed to access vacation_report (View for "vacation_report" only)
+ User is allowed to access vacation_status (View for "vacation_status" only)
  User is allowed to access work_location (View for "work_location" only)
  User is allowed to create daily_record (Create for "daily_record" only)
  User is allowed to create doc (Create for "doc" only)
@@ -189,6 +208,7 @@ Role "user":
  User is allowed to create queries (Create for "query" only)
  User is allowed to create time_record (Create for "time_record" only)
  User is allowed to create time_wp (Create for "time_wp" only)
+ User is allowed to create vacation_submission (Create for "vacation_submission" only)
  User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
  User is allowed to edit daily record if he is owner or supervisor (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed to edit daily record if he is owner or supervisor (View for "daily_record": ('status', 'time_record') only)
@@ -214,6 +234,8 @@ Role "user":
  User may access the web interface (Web Access)
  User may edit own time_records (Edit for "time_record" only)
  User may edit own time_records (View for "time_record" only)
+ User may edit own vacation submissions (Edit for "vacation_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
+ User may edit own vacation submissions (View for "vacation_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
  User may use the email interface (Email Access)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
  User may view work package if responsible for it, if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_wp" only)
