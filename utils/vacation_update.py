@@ -52,4 +52,10 @@ for k, t in transitions.iteritems () :
     tr = [db.leave_status.lookup (x) for x in t]
     db.leave_status.set (id, transitions = tr)
 
+try :
+    db.daily_record_status.lookup ('vacation')
+except KeyError :
+    db.daily_record_status.create \
+        (name = 'leave', description = "Accepted leave")
+
 db.commit()

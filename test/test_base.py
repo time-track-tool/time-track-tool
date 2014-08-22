@@ -1311,6 +1311,22 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , user      = self.user2
             , status    = self.db.leave_status.lookup ('accepted')
             )
+        # Request for 0 days (date is a Saturday)
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.create
+            , first_day = date.Date ('2009-12-19')
+            , last_day  = date.Date ('2009-12-19')
+            , time_wp   = self.vacation_wp
+            , user      = self.user2
+            )
+        # Request for 0 days (date is a public holiday)
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.create
+            , first_day = date.Date ('2009-12-26')
+            , last_day  = date.Date ('2009-12-26')
+            , time_wp   = self.vacation_wp
+            , user      = self.user2
+            )
         vs = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
@@ -1480,6 +1496,15 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Your absence request "Flexi/Flexi" has been accepted.'
             )
         os.unlink (maildebug)
+        dt = self.db.leave_submission.get (za, 'first_day')
+        dt = common.pretty_range (dt, dt)
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = dt))
+        self.assertEqual (len (dr), 1)
+        tr = self.db.time_record.filter \
+            (None, {'daily_record' : dr, 'wp.project.approval_required' : True})
+        self.assertEqual (len (tr), 1)
+        self.assertEqual (self.db.time_record.get (tr [0], 'duration'), 0)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)

@@ -26,6 +26,8 @@ from roundup.cgi.TranslationService import get_translation
 from roundup                        import roundupdb
 
 import common
+import freeze
+import user_dynamic
 import vacation
 
 def check_range (db, nodeid, uid, first_day, last_day) :
@@ -73,6 +75,8 @@ def new_submission (db, cl, nodeid, new_values) :
         user = new_values ['user']
     first_day = new_values ['first_day']
     last_day  = new_values ['last_day']
+    if freeze.frozen (db, user, first_day) :
+        raise Reject (_ ("Frozen"))
     check_range (db, None, user, first_day, last_day)
     check_wp    (db, new_values ['time_wp'])
     if 'status' in new_values and new_values ['status'] != st_open :
@@ -82,6 +86,10 @@ def new_submission (db, cl, nodeid, new_values) :
     if user != uid and not common.user_has_role (db, uid, 'HR-vacation') :
         raise Reject \
             (_ ("Only special role may create submission for other user"))
+    vacation.create_daily_recs (db, user, first_day, last_day)
+    if vacation.leave_days (db, user, first_day, last_day) == 0 :
+        raise Reject (_ ("Vacation request for 0 days"))
+    check_dr_status (db, user, first_day, last_day, 'open')
 # end def new_submission
 
 def check_submission (db, cl, nodeid, new_values) :
@@ -94,8 +102,9 @@ def check_submission (db, cl, nodeid, new_values) :
         role).
     """
     common.reject_attributes (_, new_values, 'user')
-    old = cl.getnode (nodeid)
-    uid = db.getuid ()
+    old  = cl.getnode (nodeid)
+    uid  = db.getuid ()
+    user = old.user
     old_status = db.leave_status.get (old.status, 'name')
     new_status = db.leave_status.get \
         (new_values.get ('status', old.status), 'name')
@@ -104,9 +113,15 @@ def check_submission (db, cl, nodeid, new_values) :
             (_, new_values, 'first_day', 'last_day', 'time_wp')
     first_day = new_values.get ('first_day', cl.get (nodeid, 'first_day'))
     last_day  = new_values.get ('last_day',  cl.get (nodeid, 'last_day'))
+    if freeze.frozen (db, user, first_day) :
+        raise Reject (_ ("Frozen"))
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
-    check_range (db, nodeid, old.user, first_day, last_day)
+    check_range (db, nodeid, user, first_day, last_day)
     check_wp    (db, time_wp)
+    if old_status in ('open', 'submitted') :
+        check_dr_status (db, user, first_day, last_day, 'open')
+    if old_status in ('accepted', 'cancel requested') :
+        check_dr_status (db, user, first_day, last_day, 'leave')
     if old_status != new_status :
         # Allow special HR role to do any (possible) state changes
         if common.user_has_role (db, uid, 'HR-vacation') :
@@ -115,15 +130,15 @@ def check_submission (db, cl, nodeid, new_values) :
             ok = False
             tp = db.time_project.getnode \
                 (db.time_wp.get (old.time_wp, 'project'))
-            if not ok and uid == old.user :
+            if not ok and uid == user :
                 if old_status == 'open' and new_status == 'submitted' :
                     ok = True
                 if old_status == 'accepted' :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
                     ok = True
-            clearer = common.clearance_by (db, old.user)
-            hr_only = need_hr_approval (db, tp, old.user, first_day, last_day)
+            clearer = common.clearance_by (db, user)
+            hr_only = need_hr_approval (db, tp, user, first_day, last_day)
             if  (  not ok
                 and (   (uid in clearer and not hr_only)
                     or  common.user_has_role (db, uid, 'HR-leave-approval')
@@ -147,6 +162,23 @@ def daily_recs (db, cl, nodeid, old_values) :
     vs = cl.getnode (nodeid)
     vacation.create_daily_recs (db, vs.user, vs.first_day, vs.last_day)
 # end def daily_recs
+
+def check_dr_status (db, user, first_day, last_day, st_name) :
+    # All daily records must be in state status
+    dt = common.pretty_range (first_day, last_day)
+    dr = db.daily_record.filter (None, dict (user = user, date = dt))
+    st = db.daily_record_status.lookup (st_name)
+    for drid in dr :
+        if st != db.daily_record.get (drid, 'status') :
+            raise Reject \
+                (_ ('Daily record not in status "%(st_name)s"') % locals ())
+    # If not open, *all* daily records must exist
+    # Maybe this should be an assertion...
+    if st_name != 'open' :
+        iv = last_day + common.day - first_day
+        if len (dr) != vacation.interval_days (iv) :
+            raise Reject (_ ('Daily records must exist'))
+# end def check_dr_status
 
 def need_hr_approval (db, tp, user, first_day, last_day) :
     day = common.day
@@ -184,37 +216,44 @@ def state_change_reactor (db, cl, nodeid, old_values) :
 def handle_accept (db, vs, trs, old_status) :
     cancr = db.leave_status.lookup ('cancel requested')
     warn  = []
-    for trid in trs :
-        tr  = db.time_record.getnode (trid)
-        wp  = tp = None
-        if tr.wp is not None :
-            wp  = db.time_wp.getnode (tr.wp)
-            tp  = db.time_project.getnode (wp.project)
-        trd = db.daily_record.get (tr.daily_record, 'date')
-        if tp is None or not tp.is_public_holiday :
-            if wp is None or wp.id != vs.time_wp :
-                dt = trd.pretty (common.ymd)
-                st = tr.start or ''
-                en = tr.end   or ''
-                wn = (wp and wp.name) or ''
-                tn = (tp and tp.name) or ''
-                warn.append ((dt, tn, wn, st, en, tr.duration))
-            db.time_record.retire (trid)
-    d = vs.first_day
-    off = db.work_location.lookup ('off')
-    while (d <= vs.last_day) :
-        ld = vacation.leave_duration (db, vs.user, d)
-        if ld :
+    if old_status != cancr :
+        for trid in trs :
+            tr  = db.time_record.getnode (trid)
+            wp  = tp = None
+            if tr.wp is not None :
+                wp  = db.time_wp.getnode (tr.wp)
+                tp  = db.time_project.getnode (wp.project)
+            trd = db.daily_record.get (tr.daily_record, 'date')
+            if tp is None or not tp.is_public_holiday :
+                if wp is None or wp.id != vs.time_wp :
+                    dt = trd.pretty (common.ymd)
+                    st = tr.start or ''
+                    en = tr.end   or ''
+                    wn = (wp and wp.name) or ''
+                    tn = (tp and tp.name) or ''
+                    warn.append ((dt, tn, wn, st, en, tr.duration))
+                db.time_record.retire (trid)
+        d = vs.first_day
+        off = db.work_location.lookup ('off')
+        while (d <= vs.last_day) :
+            ld = du = vacation.leave_duration (db, vs.user, d)
             dt = common.pretty_range (d, d)
             dr = db.daily_record.filter (None, dict (user = vs.user, date = dt))
+            wp = db.time_wp.getnode (vs.time_wp)
+            tp = db.time_project.getnode (wp.project)
+            if tp.max_hours is not None :
+                du = min (ld, tp.max_hours)
             assert len (dr) == 1
-            db.time_record.create \
-                ( daily_record  = dr [0]
-                , duration      = ld
-                , work_location = off
-                , wp            = vs.time_wp
-                )
-        d += common.day
+            if ld :
+                db.time_record.create \
+                    ( daily_record  = dr [0]
+                    , duration      = du
+                    , work_location = off
+                    , wp            = vs.time_wp
+                    )
+            leave = db.daily_record_status.lookup ('leave')
+            db.daily_record.set (dr [0], status = leave)
+            d += common.day
     mailer  = roundupdb.Mailer (db.config)
     now     = Date ('.')
     wp      = db.time_wp.getnode (vs.time_wp)
@@ -253,6 +292,7 @@ def handle_accept (db, vs, trs, old_status) :
 # end def handle_accept
 
 def handle_cancel (db, vs, trs) :
+    drs = {}
     for trid in trs :
         tr  = db.time_record.getnode (trid)
         wp  = db.time_wp.getnode (tr.wp)
@@ -261,6 +301,10 @@ def handle_cancel (db, vs, trs) :
         if not tp.is_public_holiday :
             assert tp.approval_required
             db.time_record.retire (trid)
+        drs [tr.daily_record] = 1
+    for dr in drs :
+        st_open = db.daily_record_status.lookup ('open')
+        db.daily_record.set (dr, status = st_open)
 # end def handle_cancel
 
 def handle_decline (db, vs) :
@@ -327,5 +371,5 @@ def init (db) :
     db.leave_submission.react ("create", daily_recs, priority = 80)
     db.leave_submission.react ("set",    daily_recs, priority = 80)
     db.leave_submission.react ("set",    state_change_reactor)
-    db.vacation_report.audit     ("create", vac_report)
+    db.vacation_report.audit  ("create", vac_report)
 # end def init

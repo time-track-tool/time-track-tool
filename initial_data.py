@@ -367,6 +367,10 @@ if 'daily_record_status' in db.classes :
         ( name        = "accepted"
         , description = "Accepted by supervisor"
         )
+    daily_record_status.create \
+        ( name        = "leave"
+        , description = "Accepted leave"
+        )
 
 if 'work_location' in db.classes :
     work_location = db.getclass ('work_location')

@@ -205,7 +205,9 @@ def check_daily_record (db, cl, nodeid, new_values) :
            but don't allow accepting own records
          - From submitted to open     by supervisor or by HR or by user
          - From accepted  to open     by HR
-         - From open to vacation if an accepted leave_submission exists
+         - From open to leave if an accepted leave_submission exists
+         - From leave to open if leave_submissions exist which are *all*
+           in state cancel
     """
     for i in 'user', 'date' :
         if i in new_values and db.getuid () != '1' :
@@ -236,10 +238,19 @@ def check_daily_record (db, cl, nodeid, new_values) :
     vs_exists = False
     st_accp = db.leave_status.lookup ('accepted')
     vs = vacation.leave_submissions_on_date (db, user, date)
+    # All leave submissions in state cancelled?
+    cn = db.leave_status.lookup ('cancelled')
+    vs_cancelled = True
+    if not vs :
+        vs_cancelled = False
+    for v in vs :
+        if v.status != cn :
+            vs_cancelled = False
+            break
     vs = [v for v in vs if v.status == st_accp]
     if vs :
         assert len (vs) == 1
-        vs_exists = True
+        vs_accepted = True
 
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
@@ -259,7 +270,10 @@ def check_daily_record (db, cl, nodeid, new_values) :
                   and is_hr
                   )
                or (   status == 'leave'     and old_status == 'open'
-                  and vs_exists
+                  and vs_accepted
+                  )
+               or (   status == 'open'      and old_status == 'leave'
+                  and vs_cancelled
                   )
                ) :
             raise Reject, \
@@ -316,8 +330,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
     user  = new_values ['user']
     uname = db.user.get (user, 'username')
     if  (   uid != user
-        and not common.user_has_role (db, uid, 'controlling')
-        and not common.user_has_role (db, uid, 'admin')
+        and not common.user_has_role (db, uid, 'controlling', 'admin')
         ) :
         raise Reject, _ ("Only user and Controlling may create daily records")
     common.reject_attributes (_, new_values, 'time_record')
@@ -439,7 +452,9 @@ def leave_wp (db, dr, wp, start, end, duration) :
     clearer = common.clearance_by (db, dr.user)
     uid     = db.getuid ()
     ld      = vacation.leave_duration (db, dr.user, dr.date)
-    if not ld :
+    if tp.max_hours is not None :
+        ld = min (ld, tp.max_hours)
+    if not ld and tp.max_hours != 0 :
         return False
     if ld != duration :
         return False
@@ -469,8 +484,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
     if  (   uid != dr.user
-        and not common.user_has_role (db, uid, 'controlling')
-        and not common.user_has_role (db, uid, 'admin')
+        and not common.user_has_role (db, uid, 'controlling', 'admin')
         and not leave_wp (db, dr, new_values.get ('wp'), start, end, duration) 
         ) :
         raise Reject, _ \
@@ -694,13 +708,40 @@ def fix_daily_recs_after_retire (db, cl, nodeid, dummy) :
 
 def check_retire (db, cl, nodeid, new_values) :
     assert not new_values
-    st_open = db.daily_record_status.lookup ('open')
+    uid      = db.getuid ()
+    st_open  = db.daily_record_status.lookup ('open')
+    st_leave = db.daily_record_status.lookup ('leave')
     tr = cl.getnode (nodeid)
     dr = db.daily_record.getnode (tr.daily_record)
-    if not dr.status == st_open :
-        raise Reject (_ ("Retire of time records only in status open"))
     if frozen (db, dr.user, dr.date) :
         raise Reject (_ ("Can't retire frozen time record"))
+    allowed = True
+    if dr.status == st_open :
+        if  (   uid != dr.user
+            and not common.user_has_role (db, uid, 'controlling', 'admin')
+            ) :
+            # Must have a leave submission in status accepted, then we
+            # can retire existing records
+            ac = db.leave_status.lookup ('accepted')
+            vs = vacation.leave_submissions_on_date (db, dr.user, dr.date)
+            vs = [v for v in vs if v.status == ac]
+            if not vs :
+                allowed = False
+    else :
+        if dr.status == st_leave :
+            # All leave submissions must be in state cancelled
+            cn = db.leave_status.lookup ('cancelled')
+            vs = vacation.leave_submissions_on_date (db, dr.user, dr.date)
+            if not vs :
+                allowed = False
+            for v in vs :
+                if v.status != cn :
+                    allowed = False
+                    break
+        else :
+            allowed = False
+    if not allowed :
+        raise Reject (_ ("Permission denied"))
 # end def check_retire
 
 def send_mail_on_deny (db, cl, nodeid, old_values) :
