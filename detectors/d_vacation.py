@@ -37,7 +37,7 @@ def check_range (db, nodeid, uid, first_day, last_day) :
         existing interval).
     """
     if (last_day - first_day) > Interval ('30d') :
-        raise Reject (_ ("Max. 30 days for single vacation submission"))
+        raise Reject (_ ("Max. 30 days for single leave submission"))
     range = common.pretty_range (first_day, last_day)
     both  = (first_day.pretty (';%Y-%m-%d'), last_day.pretty ('%Y-%m-%d;'))
     for f, l in ((range, None), (None, range), both) :
@@ -46,7 +46,7 @@ def check_range (db, nodeid, uid, first_day, last_day) :
             d ['first_day'] = f
         if l :
             d ['last_day'] = l
-        r = [x for x in db.vacation_submission.filter (None, d) if x != nodeid]
+        r = [x for x in db.leave_submission.filter (None, d) if x != nodeid]
         if r :
             raise Reject \
                 (_ ("You already have vacation requests in this time range"))
@@ -60,11 +60,11 @@ def check_wp (db, wp_id) :
 # end def check_wp
 
 def new_submission (db, cl, nodeid, new_values) :
-    """ Check that new vacation submission is allowed and has sensible
+    """ Check that new leave submission is allowed and has sensible
         parameters
     """
     uid = db.getuid ()
-    st_open = db.vacation_status.lookup ('open')
+    st_open = db.leave_status.lookup ('open')
     common.require_attributes \
         (_, cl, nodeid, new_values, 'first_day', 'last_day', 'time_wp')
     if 'user' not in new_values :
@@ -85,7 +85,7 @@ def new_submission (db, cl, nodeid, new_values) :
 # end def new_submission
 
 def check_submission (db, cl, nodeid, new_values) :
-    """ Check that changes to a vacation submission are ok.
+    """ Check that changes to a leave submission are ok.
         We basically allow changes of first_day, last_day, and time_wp
         in status 'open'. The user must never change. The status
         transitions are bound to certain roles. Note that this auditor
@@ -96,8 +96,8 @@ def check_submission (db, cl, nodeid, new_values) :
     common.reject_attributes (_, new_values, 'user')
     old = cl.getnode (nodeid)
     uid = db.getuid ()
-    old_status = db.vacation_status.get (old.status, 'name')
-    new_status = db.vacation_status.get \
+    old_status = db.leave_status.get (old.status, 'name')
+    new_status = db.leave_status.get \
         (new_values.get ('status', old.status), 'name')
     if old_status != new_status or old_status != 'open' :
         common.reject_attributes \
@@ -160,10 +160,10 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     vs         = cl.getnode (nodeid)
     old_status = old_values.get ('status')
     new_status = vs.status
-    accepted   = db.vacation_status.lookup ('accepted')
-    declined   = db.vacation_status.lookup ('declined')
-    submitted  = db.vacation_status.lookup ('submitted')
-    cancelled  = db.vacation_status.lookup ('cancelled')
+    accepted   = db.leave_status.lookup ('accepted')
+    declined   = db.leave_status.lookup ('declined')
+    submitted  = db.leave_status.lookup ('submitted')
+    cancelled  = db.leave_status.lookup ('cancelled')
     if old_status == new_status :
         return
     dt  = common.pretty_range (vs.first_day, vs.last_day)
@@ -182,7 +182,7 @@ def state_change_reactor (db, cl, nodeid, old_values) :
 # end def state_change_reactor
 
 def handle_accept (db, vs, trs, old_status) :
-    cancr = db.vacation_status.lookup ('cancel requested')
+    cancr = db.leave_status.lookup ('cancel requested')
     warn  = []
     for trid in trs :
         tr  = db.time_record.getnode (trid)
@@ -203,14 +203,14 @@ def handle_accept (db, vs, trs, old_status) :
     d = vs.first_day
     off = db.work_location.lookup ('off')
     while (d <= vs.last_day) :
-        vd = vacation.vacation_duration (db, vs.user, d)
-        if vd :
+        ld = vacation.leave_duration (db, vs.user, d)
+        if ld :
             dt = common.pretty_range (d, d)
             dr = db.daily_record.filter (None, dict (user = vs.user, date = dt))
             assert len (dr) == 1
             db.time_record.create \
                 ( daily_record  = dr [0]
-                , duration      = vd
+                , duration      = ld
                 , work_location = off
                 , wp            = vs.time_wp
                 )
@@ -319,13 +319,13 @@ def init (db) :
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-    if 'vacation_submission' not in db.classes :
+    if 'leave_submission' not in db.classes :
         return
     # Status is checked with prio 200, we come later.
-    db.vacation_submission.audit ("set",    check_submission, priority = 300)
-    db.vacation_submission.audit ("create", new_submission)
-    db.vacation_submission.react ("create", daily_recs, priority = 80)
-    db.vacation_submission.react ("set",    daily_recs, priority = 80)
-    db.vacation_submission.react ("set",    state_change_reactor)
+    db.leave_submission.audit ("set",    check_submission, priority = 300)
+    db.leave_submission.audit ("create", new_submission)
+    db.leave_submission.react ("create", daily_recs, priority = 80)
+    db.leave_submission.react ("set",    daily_recs, priority = 80)
+    db.leave_submission.react ("set",    state_change_reactor)
     db.vacation_report.audit     ("create", vac_report)
 # end def init

@@ -334,22 +334,22 @@ def init \
         , overtime_period       = Link      ("overtime_period")
         )
 
-    vacation_status = Class \
+    leave_status = Class \
         ( db
-        , ''"vacation_status"
+        , ''"leave_status"
         , name                  = String ()
         , order                 = Number ()
-        , transitions           = Multilink ("vacation_status")
+        , transitions           = Multilink ("leave_status")
         )
-    vacation_status.setkey ("name")
+    leave_status.setkey ("name")
 
-    vacation_submission = Class \
+    leave_submission = Class \
         ( db
-        , ''"vacation_submission"
+        , ''"leave_submission"
         , user                  = Link      ("user")
         , first_day             = Date      (offset = 0)
         , last_day              = Date      (offset = 0)
-        , status                = Link      ("vacation_status")
+        , status                = Link      ("leave_status")
         , time_wp               = Link      ("time_wp")
         )
 
@@ -537,7 +537,7 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
-        , ( "vacation_status"
+        , ( "leave_status"
           , ["User"]
           , []
           )
@@ -549,7 +549,7 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
-        , ( "vacation_submission"
+        , ( "leave_submission"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
           )
@@ -586,7 +586,7 @@ def security (db, ** kw) :
     # For the following the use is regulated by auditors.
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
-    db.security.addPermissionToRole ('User', 'Create', 'vacation_submission')
+    db.security.addPermissionToRole ('User', 'Create', 'leave_submission')
 
     fixdoc = schemadef.security_doc_from_docstring
 
@@ -633,11 +633,11 @@ def security (db, ** kw) :
         return userid == ownerid
     # end def own_time_record
 
-    def own_vacation_submission (db, userid, itemid) :
-        """ User may edit own vacation submissions. """
-        ownerid = db.vacation_submission.get (itemid, 'user')
+    def own_leave_submission (db, userid, itemid) :
+        """ User may edit own leave submissions. """
+        ownerid = db.leave_submission.get (itemid, 'user')
         return userid == ownerid
-    # end def own_vacation_submission
+    # end def own_leave_submission
 
     def may_see_time_record (db, userid, itemid) :
         """User is allowed to see time record if he is allowed to see
@@ -880,9 +880,9 @@ def security (db, ** kw) :
 
         p = db.security.addPermission \
             ( name        = perm
-            , klass       = 'vacation_submission'
-            , check       = own_vacation_submission
-            , description = fixdoc (own_vacation_submission.__doc__)
+            , klass       = 'leave_submission'
+            , check       = own_leave_submission
+            , description = fixdoc (own_leave_submission.__doc__)
             , properties  = ('first_day', 'last_day', 'status', 'time_wp')
             )
         db.security.addPermissionToRole ('User', p)

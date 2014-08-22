@@ -620,6 +620,36 @@ properties = \
           )
         ]
       )
+    , ( 'leave_status'
+      , [ ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'order'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'transitions'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'leave_submission'
+      , [ ( 'first_day'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'last_day'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'status'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'time_wp'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'user'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        ]
+      )
     , ( 'location'
       , [ ( 'address'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -1665,36 +1695,6 @@ properties = \
           )
         , ( 'user'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
-          )
-        ]
-      )
-    , ( 'vacation_status'
-      , [ ( 'name'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
-          )
-        , ( 'order'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
-          )
-        , ( 'transitions'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
-          )
-        ]
-      )
-    , ( 'vacation_submission'
-      , [ ( 'first_day'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
-          )
-        , ( 'last_day'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
-          )
-        , ( 'status'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
-          )
-        , ( 'time_wp'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
-          )
-        , ( 'user'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         ]
       )

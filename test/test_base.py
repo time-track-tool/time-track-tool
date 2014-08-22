@@ -1262,12 +1262,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , locations   = [self.loc]
             , name        = 'Heilige drei Koenige'
             )
-        st_open = self.db.vacation_status.lookup ('open')
-        st_subm = self.db.vacation_status.lookup ('submitted')
-        st_accp = self.db.vacation_status.lookup ('accepted')
-        st_decl = self.db.vacation_status.lookup ('declined')
-        st_carq = self.db.vacation_status.lookup ('cancel requested')
-        st_canc = self.db.vacation_status.lookup ('cancelled')
+        st_open = self.db.leave_status.lookup ('open')
+        st_subm = self.db.leave_status.lookup ('submitted')
+        st_accp = self.db.leave_status.lookup ('accepted')
+        st_decl = self.db.leave_status.lookup ('declined')
+        st_carq = self.db.leave_status.lookup ('cancel requested')
+        st_canc = self.db.leave_status.lookup ('cancelled')
         ud  = self.db.user_dynamic.filter \
             (None, dict (user = self.user1), sort = [('+', 'valid_from')]) [0]
         dyn = self.db.user_dynamic.getnode (ud)
@@ -1280,64 +1280,64 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
-        self.assertRaises (Reject, self.db.vacation_submission.create)
+        self.assertRaises (Reject, self.db.leave_submission.create)
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2009-12-31')
             )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.holiday_wp
             )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.vacation_wp
             , user      = self.user1
             )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.vacation_wp
             , user      = self.user2
-            , status    = self.db.vacation_status.lookup ('accepted')
+            , status    = self.db.leave_status.lookup ('accepted')
             )
-        vs = self.db.vacation_submission.create \
+        vs = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
             , time_wp   = self.vacation_wp
             )
-        un = self.db.vacation_submission.create \
+        un = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-02')
             , last_day  = date.Date ('2009-12-02')
             , time_wp   = self.unpaid_wp
             )
-        u2 = self.db.vacation_submission.create \
+        u2 = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-03')
             , last_day  = date.Date ('2009-12-03')
             , time_wp   = self.unpaid_wp
             )
-        za = self.db.vacation_submission.create \
+        za = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-04')
             , last_day  = date.Date ('2009-12-04')
             , time_wp   = self.flexi_wp
             )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.vacation_wp
             )
-        self.db.vacation_submission.set \
+        self.db.leave_submission.set \
             ( vs
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2010-01-06')
@@ -1363,18 +1363,18 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , end          = '11:00'
             )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.create
+            ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
             , time_wp   = self.vacation_wp
             )
         for st in (st_accp, st_decl, st_carq, st_canc) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
-        vsn  = self.db.vacation_submission.getnode (vs)
+        vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)
         drs  = self.db.daily_record.filter \
             ( None
@@ -1385,7 +1385,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         trs = self.db.time_record.filter (None, dict (daily_record = drs))
         # Stephanitag is on Saturday, two extra records for deletion
         self.assertEqual (len (trs), 5 + 2)
-        self.db.vacation_submission.set (vs, status = st_subm)
+        self.db.leave_submission.set (vs, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave request "Vacation" from TUR')
@@ -1402,14 +1402,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         os.unlink (maildebug)
         for st in (st_accp, st_decl, st_carq, st_canc) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
-        self.db.vacation_submission.set (vs, status = st_open)
-        self.db.vacation_submission.set (vs, status = st_subm)
+        self.db.leave_submission.set (vs, status = st_open)
+        self.db.leave_submission.set (vs, status = st_subm)
         os.unlink (maildebug)
-        self.db.vacation_submission.set (un, status = st_subm)
+        self.db.leave_submission.set (un, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave request "Unpaid" from TUR')
@@ -1425,7 +1425,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'FIXME'
             )
         os.unlink (maildebug)
-        self.db.vacation_submission.set (u2, status = st_subm)
+        self.db.leave_submission.set (u2, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave request "Unpaid" from TUR')
@@ -1441,7 +1441,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'FIXME'
             )
         os.unlink (maildebug)
-        self.db.vacation_submission.set (za, status = st_subm)
+        self.db.leave_submission.set (za, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave request "Flexi" from TUR')
@@ -1462,11 +1462,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for v in za, vs :
             for st in (st_open, st_carq, st_canc) :
                 self.assertRaises \
-                    ( Reject, self.db.vacation_submission.set
+                    ( Reject, self.db.leave_submission.set
                     , v
                     , status = st
                     )
-        self.db.vacation_submission.set (za, status = st_accp)
+        self.db.leave_submission.set (za, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave "Flexi" 2009-12-04-2009-12-04 accepted')
@@ -1485,12 +1485,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db = self.tracker.open (self.username1)
         for st in (st_open, st_carq, st_canc) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
-        self.db.vacation_submission.set (vs, status = st_accp)
-        vsn  = self.db.vacation_submission.getnode (vs)
+        self.db.leave_submission.set (vs, status = st_accp)
+        vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)
         drs  = self.db.daily_record.filter \
             ( None
@@ -1521,27 +1521,27 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         os.unlink (maildebug)
         for st in (st_accp, st_decl) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , un
                 , status = st
                 )
         for st in (st_decl, st_subm) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
         for x in (vs, un) :
             for st in (st_open, st_carq, st_canc) :
                 self.assertRaises \
-                    ( Reject, self.db.vacation_submission.set
+                    ( Reject, self.db.leave_submission.set
                     , x
                     , status = st
                     )
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        self.db.vacation_submission.set (un, status = st_decl)
+        self.db.leave_submission.set (un, status = st_decl)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave "Unpaid" 2009-12-02-2009-12-02 declined')
@@ -1556,7 +1556,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'Please contact your supervisor.'
             )
         os.unlink (maildebug)
-        self.db.vacation_submission.set (u2, status = st_accp)
+        self.db.leave_submission.set (u2, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave "Unpaid" 2009-12-03-2009-12-03 accepted')
@@ -1572,7 +1572,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         os.unlink (maildebug)
         for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , za
                 , status = st
                 )
@@ -1582,28 +1582,28 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for x in (vs, un) :
             for st in (st_open, st_subm, st_canc) :
                 self.assertRaises \
-                    ( Reject, self.db.vacation_submission.set
+                    ( Reject, self.db.leave_submission.set
                     , x
                     , status = st
                     )
         for st in (st_accp, st_carq) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , un
                 , status = st
                 )
         self.assertRaises \
-            ( Reject, self.db.vacation_submission.set
+            ( Reject, self.db.leave_submission.set
             , vs
             , status = st_decl
             )
-        self.db.vacation_submission.set (vs, status = st_carq)
+        self.db.leave_submission.set (vs, status = st_carq)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
         for st in (st_open, st_subm, st_decl) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
@@ -1611,11 +1611,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db = self.tracker.open (self.username1)
         for st in (st_open, st_subm, st_decl) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
-        self.db.vacation_submission.set (vs, status = st_accp)
+        self.db.leave_submission.set (vs, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 '
@@ -1634,12 +1634,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
-        self.db.vacation_submission.set (vs, status = st_carq)
+        self.db.leave_submission.set (vs, status = st_carq)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)
-        self.db.vacation_submission.set (vs, status = st_canc)
-        vsn  = self.db.vacation_submission.getnode (vs)
+        self.db.leave_submission.set (vs, status = st_canc)
+        vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)
         drs  = self.db.daily_record.filter \
             ( None
@@ -1653,7 +1653,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (len (trs), 5)
         for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
@@ -1662,7 +1662,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db = self.tracker.open (self.username2)
         for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
             self.assertRaises \
-                ( Reject, self.db.vacation_submission.set
+                ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )

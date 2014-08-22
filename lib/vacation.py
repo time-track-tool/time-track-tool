@@ -103,6 +103,16 @@ def create_daily_recs (db, user, first_day, last_day) :
         d += common.day
 # end def create_daily_recs
 
+def leave_submissions_on_date (db, user, date) :
+    """ Return all vacation records that overlap with the given date
+    """
+    dts = ';%s' % date.pretty (common.ymd)
+    dte = '%s;' % date.pretty (common.ymd)
+    vs = db.leave_submission.filter \
+        (None, dict (user = user, first_day = dts, last_day = dte))
+    return [db.leave_submission.getnode (v) for v in vs]
+# end def leave_submissions_on_date
+
 def leave_days (db, user, first_day, last_day) :
     d = first_day
     s = 0.0
@@ -111,15 +121,15 @@ def leave_days (db, user, first_day, last_day) :
         if not dyn :
             continue
         wh = user_dynamic.day_work_hours (dyn, d)
-        vd = vacation_duration (db, user, d)
-        if vd != 0 :
-            s += (vd / wh * 2 + 1) / 2
+        ld = leave_duration (db, user, d)
+        if ld != 0 :
+            s += (ld / wh * 2 + 1) / 2
         d += common.day
     return s
 # end def leave_days
 
-def vacation_duration (db, user, date) :
-    """ Duration of vacation on a single day to be booked. """
+def leave_duration (db, user, date) :
+    """ Duration of leave on a single day to be booked. """
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = user_dynamic.day_work_hours (dyn, date)
     if not wh :
@@ -139,7 +149,7 @@ def vacation_duration (db, user, date) :
             bk += tr.duration
     assert bk <= wh
     return wh - bk
-# end def vacation_duration
+# end def leave_duration
 
 def next_yearly_vacation_date (db, user, date) :
     d = date + common.day

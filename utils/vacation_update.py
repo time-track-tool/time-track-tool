@@ -44,12 +44,12 @@ transitions = \
     }
 for k, v in sorted (vstatus.iteritems (), key = lambda x : x [1]) :
     try :
-        val = db.vacation_status.lookup (k)
+        val = db.leave_status.lookup (k)
     except KeyError :
-        db.vacation_status.create (name = k, order = v)
+        db.leave_status.create (name = k, order = v)
 for k, t in transitions.iteritems () :
-    id = db.vacation_status.lookup (k)
-    tr = [db.vacation_status.lookup (x) for x in t]
-    db.vacation_status.set (id, transitions = tr)
+    id = db.leave_status.lookup (k)
+    tr = [db.leave_status.lookup (x) for x in t]
+    db.leave_status.set (id, transitions = tr)
 
 db.commit()

@@ -205,6 +205,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
            but don't allow accepting own records
          - From submitted to open     by supervisor or by HR or by user
          - From accepted  to open     by HR
+         - From open to vacation if an accepted leave_submission exists
     """
     for i in 'user', 'date' :
         if i in new_values and db.getuid () != '1' :
@@ -232,6 +233,14 @@ def check_daily_record (db, cl, nodeid, new_values) :
     else :
         may_give_clearance = False
 
+    vs_exists = False
+    st_accp = db.leave_status.lookup ('accepted')
+    vs = vacation.leave_submissions_on_date (db, user, date)
+    vs = [v for v in vs if v.status == st_accp]
+    if vs :
+        assert len (vs) == 1
+        vs_exists = True
+
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
     if status != old_status :
@@ -248,6 +257,9 @@ def check_daily_record (db, cl, nodeid, new_values) :
                   )
                or (   status == 'open'      and old_status == 'accepted'
                   and is_hr
+                  )
+               or (   status == 'leave'     and old_status == 'open'
+                  and vs_exists
                   )
                ) :
             raise Reject, \
@@ -417,24 +429,19 @@ def leave_wp (db, dr, wp, start, end, duration) :
     tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
     if not tp.approval_required :
         return False
-    dts = ';%s' % dr.date.pretty (common.ymd)
-    dte = '%s;' % dr.date.pretty (common.ymd)
-    db.log_debug ("Before vacation submission filter")
-    vs = db.vacation_submission.filter \
-        (None, dict (user = dr.user, first_day = dts, last_day = dte))
+    vs = vacation.leave_submissions_on_date (db, dr.user, dr.date)
     if not vs :
         return False
-    db.log_debug ("After vacation submission filter")
     assert len (vs) == 1
-    vs = db.vacation_submission.getnode (vs [0])
-    if vs.status != db.vacation_status.lookup ('accepted') :
+    vs = vs [0]
+    if vs.status != db.leave_status.lookup ('accepted') :
         return False
     clearer = common.clearance_by (db, dr.user)
     uid     = db.getuid ()
-    vd      = vacation.vacation_duration (db, dr.user, dr.date)
-    if not vd :
+    ld      = vacation.leave_duration (db, dr.user, dr.date)
+    if not ld :
         return False
-    if vd != duration :
+    if ld != duration :
         return False
     if  (  uid in clearer and not tp.approval_hr
         or user_has_role (db, uid, 'HR-leave-approval') and tp.approval_hr
@@ -680,9 +687,20 @@ def check_for_retire_and_duration (db, cl, nodeid, old_values) :
         user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
 # end def check_for_retire_and_duration
 
-def check_retire (db, cl, nodeid, dummy) :
+def fix_daily_recs_after_retire (db, cl, nodeid, dummy) :
     """ remove ourselves from the daily record """
     update_timerecs (db, nodeid, False)
+# end def fix_daily_recs_after_retire
+
+def check_retire (db, cl, nodeid, new_values) :
+    assert not new_values
+    st_open = db.daily_record_status.lookup ('open')
+    tr = cl.getnode (nodeid)
+    dr = db.daily_record.getnode (tr.daily_record)
+    if not dr.status == st_open :
+        raise Reject (_ ("Retire of time records only in status open"))
+    if frozen (db, dr.user, dr.date) :
+        raise Reject (_ ("Can't retire frozen time record"))
 # end def check_retire
 
 def send_mail_on_deny (db, cl, nodeid, old_values) :
@@ -726,7 +744,8 @@ def init (db) :
     db.time_record.audit  ("set",    check_time_record)
     db.time_record.react  ("create", update_time_record_in_daily_record)
     db.time_record.react  ("set",    check_for_retire_and_duration)
-    db.time_record.react  ("retire", check_retire)
+    db.time_record.audit  ("retire", check_retire)
+    db.time_record.react  ("retire", fix_daily_recs_after_retire)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
     db.daily_record.react ("set",    send_mail_on_deny)

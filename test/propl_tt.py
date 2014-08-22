@@ -91,6 +91,20 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'leave_status'
+      , [ 'name'
+        , 'order'
+        , 'transitions'
+        ]
+      )
+    , ( 'leave_submission'
+      , [ 'first_day'
+        , 'last_day'
+        , 'status'
+        , 'time_wp'
+        , 'user'
+        ]
+      )
     , ( 'location'
       , [ 'address'
         , 'country'
@@ -407,20 +421,6 @@ properties = \
         , 'organisation'
         , 'supervisor'
         , 'time_project'
-        , 'user'
-        ]
-      )
-    , ( 'vacation_status'
-      , [ 'name'
-        , 'order'
-        , 'transitions'
-        ]
-      )
-    , ( 'vacation_submission'
-      , [ 'first_day'
-        , 'last_day'
-        , 'status'
-        , 'time_wp'
         , 'user'
         ]
       )
