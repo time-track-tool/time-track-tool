@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-08-01 12:40+0200\n"
+"POT-Creation-Date: 2014-08-23 12:09+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -114,6 +114,109 @@ msgstr "%(cls)s benötigt %(attr)s"
 #, python-format
 msgid "%(attr)s may not be undefined"
 msgstr "\"%(attr)s\" darf nicht gelöscht werden"
+
+#, python-format
+msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be positive or empty"
+msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
+
+msgid "overtime_period"
+msgstr "Überstundenperiode"
+
+msgid "supp_per_period"
+msgstr "Überstunden pro Periode"
+
+msgid "supp_weekly_hours"
+msgstr "Überstunden pro Woche"
+
+msgid "additional_hours"
+msgstr "Zusatzstunden"
+
+msgid "weekly_hours"
+msgstr "Wöchentliche Stunden"
+
+#, python-format
+msgid "Frozen: %(old_from)s"
+msgstr "Gefroren: %(old_from)s"
+
+#, python-format
+msgid "Frozen: %(valid_from)s"
+msgstr "Gefroren: %(valid_from)s"
+
+msgid "months"
+msgstr "Monate"
+
+msgid "weekly"
+msgstr "wöchentlich"
+
+msgid "required_overtime"
+msgstr "angeordnete Überstunden"
+
+#, python-format
+msgid "No entries with same %(mname)s, %(wname)s, %(rname)s allowed"
+msgstr ""
+
+#, python-format
+msgid "One of %(mname)s, %(wname)s must be specified"
+msgstr ""
+"Mindestens eines von \"%(mname)s\" oder %(wname)s muss ausgefüllt werden"
+
+#, python-format
+msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
+msgstr ""
+
+#, python-format
+msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
+msgstr ""
+
+#, python-format
+msgid "Only one of %(rname)s, %(wname)s is allowed"
+msgstr "Höchstens eines von \"%(rname)s\", %(wname)s darf ausgefüllt werden"
+
+#, python-format
+msgid "Wrong month: %(vm)s"
+msgstr ""
+
+#, python-format
+msgid "Wrong day of month: %(vm)s-%(vd)s"
+msgstr ""
+
+msgid "Max. 30 days for single leave submission"
+msgstr ""
+
+msgid "You already have vacation requests in this time range"
+msgstr ""
+
+msgid "No approval required for work package"
+msgstr ""
+
+msgid "Frozen"
+msgstr "eingefroren"
+
+msgid "Initial status must be \"open\""
+msgstr ""
+
+msgid "Only special role may create submission for other user"
+msgstr ""
+
+msgid "Vacation request for 0 days"
+msgstr ""
+
+msgid "Permission denied"
+msgstr ""
+
+msgid "Creation of vacation report is not allowed"
+msgstr ""
+
+#, python-format
+msgid "Daily record not in status \"%(st_name)s\""
+msgstr ""
+
+msgid "Daily records must exist"
+msgstr "Daily records müssen existieren"
 
 #, python-format
 msgid "Already frozen: %(date)s"
@@ -504,6 +607,9 @@ msgstr ""
 msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
+msgid "Can't retire frozen time record"
+msgstr ""
+
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
@@ -537,78 +643,6 @@ msgid "Maximum picture size %(limit)s exceeded: %(length)s"
 msgstr ""
 
 msgid "System users may not create users"
-msgstr ""
-
-#, python-format
-msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s must be positive or empty"
-msgstr "\"%(attr)s\" muss größer oder gleich 0 sein"
-
-msgid "overtime_period"
-msgstr "Überstundenperiode"
-
-msgid "supp_per_period"
-msgstr "Überstunden pro Periode"
-
-msgid "supp_weekly_hours"
-msgstr "Überstunden pro Woche"
-
-msgid "additional_hours"
-msgstr "Zusatzstunden"
-
-msgid "weekly_hours"
-msgstr "Wöchentliche Stunden"
-
-#, python-format
-msgid "Frozen: %(old_from)s"
-msgstr "Gefroren: %(old_from)s"
-
-#, python-format
-msgid "Frozen: %(valid_from)s"
-msgstr "Gefroren: %(valid_from)s"
-
-msgid "months"
-msgstr "Monate"
-
-msgid "weekly"
-msgstr "wöchentlich"
-
-msgid "required_overtime"
-msgstr "angeordnete Überstunden"
-
-#, python-format
-msgid "No entries with same %(mname)s, %(wname)s, %(rname)s allowed"
-msgstr ""
-
-#, python-format
-msgid "One of %(mname)s, %(wname)s must be specified"
-msgstr ""
-"Mindestens eines von \"%(mname)s\" oder %(wname)s muss ausgefüllt werden"
-
-#, python-format
-msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
-msgstr ""
-
-#, python-format
-msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
-msgstr ""
-
-#, python-format
-msgid "Only one of %(rname)s, %(wname)s is allowed"
-msgstr "Höchstens eines von \"%(rname)s\", %(wname)s darf ausgefüllt werden"
-
-msgid "No vacation for all-in allowed"
-msgstr ""
-
-#, python-format
-msgid "Wrong month: %(vm)s"
-msgstr ""
-
-#, python-format
-msgid "Wrong day of month: %(vm)s-%(vd)s"
 msgstr ""
 
 msgid "Download&nbsp;letter"
@@ -4723,7 +4757,7 @@ msgstr "vorwärts&nbsp;&gt;&gt;"
 msgid "Query"
 msgstr "Abfrage"
 
-msgid "<span>x</span> ${title}"
+msgid "<div></div> <span>x</span> ${title}"
 msgstr ""
 
 msgid "View"
@@ -4943,6 +4977,9 @@ msgstr ""
 
 msgid "vacation_date"
 msgstr "Urlaubsstichtag"
+
+msgid "Days"
+msgstr ""
 
 msgid "Invoice Address"
 msgstr "Rechnungsadresse"
@@ -5288,14 +5325,17 @@ msgstr "Arbeitspaketgruppe"
 msgid "user_dynamic"
 msgstr "Dynamische Benutzerdaten"
 
-msgid "vacation_status"
-msgstr "Urlaubs-Status"
+msgid "leave_status"
+msgstr "Abwesenheitsstatus"
 
-msgid "vacation_submission"
-msgstr ""
+msgid "leave_submission"
+msgstr "Abwesenheitsmeldung"
 
-msgid "vacation"
-msgstr "Urlaub"
+msgid "vacation_correction"
+msgstr "Urlaubskorrektur"
+
+msgid "vacation_report"
+msgstr "Urlaubs-Report"
 
 msgid "umts"
 msgstr ""
@@ -5357,6 +5397,9 @@ msgstr "Orte"
 msgid "is_staff"
 msgstr ""
 
+msgid "is_vacation"
+msgstr "Urlaub"
+
 msgid "end_generated"
 msgstr ""
 
@@ -5375,17 +5418,20 @@ msgstr "erster Tag"
 msgid "last_day"
 msgstr "letzter Tag"
 
-msgid "correction"
-msgstr "Korrektur"
+msgid "absolute"
+msgstr ""
 
 msgid "days"
 msgstr "Tage"
 
-msgid "mail_domain"
-msgstr ""
-
 msgid "phone"
 msgstr "Telefon"
+
+msgid "vacation_legal_year"
+msgstr "Urlaubsstichtag Kalenderjahr"
+
+msgid "mail_domain"
+msgstr ""
 
 msgid "planned"
 msgstr ""
@@ -5671,6 +5717,12 @@ msgstr "ist Verteiler"
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "vacation_status"
+#~ msgstr "Urlaubs-Status"
+
+#~ msgid "correction"
+#~ msgstr "Korrektur"
 
 #~ msgid "leave_type"
 #~ msgstr "Abwesenheitstyp"

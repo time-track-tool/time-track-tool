@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-08-01 12:40+0200\n"
+"POT-Creation-Date: 2014-08-23 12:09+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -109,6 +109,108 @@ msgstr ""
 
 #, python-format
 msgid "%(attr)s may not be undefined"
+msgstr ""
+
+#, python-format
+msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s must be positive or empty"
+msgstr ""
+
+msgid "overtime_period"
+msgstr "Overtime period"
+
+msgid "supp_per_period"
+msgstr "Supp. hours / period"
+
+msgid "supp_weekly_hours"
+msgstr "Supplementary hours"
+
+msgid "additional_hours"
+msgstr "Additional hours"
+
+msgid "weekly_hours"
+msgstr "Weekly hours"
+
+#, python-format
+msgid "Frozen: %(old_from)s"
+msgstr ""
+
+#, python-format
+msgid "Frozen: %(valid_from)s"
+msgstr ""
+
+msgid "months"
+msgstr "Months"
+
+msgid "weekly"
+msgstr "Weekly"
+
+msgid "required_overtime"
+msgstr "Req. overtime"
+
+#, python-format
+msgid "No entries with same %(mname)s, %(wname)s, %(rname)s allowed"
+msgstr ""
+
+#, python-format
+msgid "One of %(mname)s, %(wname)s must be specified"
+msgstr ""
+
+#, python-format
+msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
+msgstr ""
+
+#, python-format
+msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
+msgstr ""
+
+#, python-format
+msgid "Only one of %(rname)s, %(wname)s is allowed"
+msgstr ""
+
+#, python-format
+msgid "Wrong month: %(vm)s"
+msgstr ""
+
+#, python-format
+msgid "Wrong day of month: %(vm)s-%(vd)s"
+msgstr ""
+
+msgid "Max. 30 days for single leave submission"
+msgstr ""
+
+msgid "You already have vacation requests in this time range"
+msgstr ""
+
+msgid "No approval required for work package"
+msgstr ""
+
+msgid "Frozen"
+msgstr ""
+
+msgid "Initial status must be \"open\""
+msgstr ""
+
+msgid "Only special role may create submission for other user"
+msgstr ""
+
+msgid "Vacation request for 0 days"
+msgstr ""
+
+msgid "Permission denied"
+msgstr ""
+
+msgid "Creation of vacation report is not allowed"
+msgstr ""
+
+#, python-format
+msgid "Daily record not in status \"%(st_name)s\""
+msgstr ""
+
+msgid "Daily records must exist"
 msgstr ""
 
 #, python-format
@@ -497,6 +599,9 @@ msgstr ""
 msgid "dist must not exceed sum of unassigned times in week"
 msgstr ""
 
+msgid "Can't retire frozen time record"
+msgstr ""
+
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
@@ -530,77 +635,6 @@ msgid "Maximum picture size %(limit)s exceeded: %(length)s"
 msgstr ""
 
 msgid "System users may not create users"
-msgstr ""
-
-#, python-format
-msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
-msgstr ""
-
-#, python-format
-msgid "%(attr)s must be positive or empty"
-msgstr ""
-
-msgid "overtime_period"
-msgstr "Overtime period"
-
-msgid "supp_per_period"
-msgstr "Supp. hours / period"
-
-msgid "supp_weekly_hours"
-msgstr "Supplementary hours"
-
-msgid "additional_hours"
-msgstr "Additional hours"
-
-msgid "weekly_hours"
-msgstr "Weekly hours"
-
-#, python-format
-msgid "Frozen: %(old_from)s"
-msgstr ""
-
-#, python-format
-msgid "Frozen: %(valid_from)s"
-msgstr ""
-
-msgid "months"
-msgstr "Months"
-
-msgid "weekly"
-msgstr "Weekly"
-
-msgid "required_overtime"
-msgstr "Req. overtime"
-
-#, python-format
-msgid "No entries with same %(mname)s, %(wname)s, %(rname)s allowed"
-msgstr ""
-
-#, python-format
-msgid "One of %(mname)s, %(wname)s must be specified"
-msgstr ""
-
-#, python-format
-msgid "Invalid number of %(mname)s, must be 0 or a divisor of 12"
-msgstr ""
-
-#, python-format
-msgid "Invalid number of %(mname)s, must be 1 if %(rname)s is given"
-msgstr ""
-
-#, python-format
-msgid "Only one of %(rname)s, %(wname)s is allowed"
-msgstr ""
-
-msgid "No vacation for all-in allowed"
-msgstr ""
-
-#, python-format
-msgid "Wrong month: %(vm)s"
-msgstr ""
-
-#, python-format
-msgid "Wrong day of month: %(vm)s-%(vd)s"
 msgstr ""
 
 msgid "Download&nbsp;letter"
@@ -4616,7 +4650,7 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
-msgid "<span>x</span> ${title}"
+msgid "<div></div> <span>x</span> ${title}"
 msgstr ""
 
 msgid "View"
@@ -4836,6 +4870,9 @@ msgstr "Split frozen dynamic user data"
 
 msgid "vacation_date"
 msgstr "Vacation date"
+
+msgid "Days"
+msgstr ""
 
 msgid "Invoice Address"
 msgstr "Invoice address"
@@ -5181,14 +5218,17 @@ msgstr "Work package group"
 msgid "user_dynamic"
 msgstr "Dynamic User Data"
 
-msgid "vacation_status"
-msgstr "Vacation status"
+msgid "leave_status"
+msgstr "Leave status"
 
-msgid "vacation_submission"
-msgstr "Vacation submission"
+msgid "leave_submission"
+msgstr "Leave submission"
 
-msgid "vacation"
-msgstr "Vacation"
+msgid "vacation_correction"
+msgstr "Vacation correction"
+
+msgid "vacation_report"
+msgstr "Vacation report"
 
 msgid "umts"
 msgstr ""
@@ -5250,6 +5290,9 @@ msgstr "Locations"
 msgid "is_staff"
 msgstr "Needed by staff report"
 
+msgid "is_vacation"
+msgstr "is vacation"
+
 msgid "end_generated"
 msgstr ""
 
@@ -5268,17 +5311,20 @@ msgstr "First day"
 msgid "last_day"
 msgstr "Last day"
 
-msgid "correction"
-msgstr "Correction"
+msgid "absolute"
+msgstr ""
 
 msgid "days"
 msgstr ""
 
-msgid "mail_domain"
-msgstr "Mail domain"
-
 msgid "phone"
 msgstr "Phone Number"
+
+msgid "vacation_legal_year"
+msgstr "Vacation legal year"
+
+msgid "mail_domain"
+msgstr "Mail domain"
 
 msgid "planned"
 msgstr "Planned"
@@ -5564,6 +5610,12 @@ msgstr "is nosy"
 
 msgid "doc_num"
 msgstr "Document number"
+
+#~ msgid "vacation_status"
+#~ msgstr "Vacation status"
+
+#~ msgid "correction"
+#~ msgstr "Correction"
 
 #~ msgid "leave_type"
 #~ msgstr "Leave-type"

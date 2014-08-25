@@ -176,6 +176,39 @@ table.searchform th a[href]:hover.header { color: #333 }
 table.searchform th a[href]:link.header  { color: #333 }
 table.searchform th a[href].header       { color: #333 }
 
+table.searchform {
+    background-color: #e0c0c0;
+}
+table.searchform th.main {
+    background-color: #C08080;
+    visibility: visible;
+}
+form.unmapped tr {
+    visibility: collapse;
+}
+form.unmapped td {
+    visibility: collapse;
+}
+form.unmapped th {
+    visibility: collapse;
+}
+form.unmapped table.searchform tr:first-child {
+    visibility: visible;
+}
+table.searchform th div {
+    background: url(lfiles/images/collapse_gray_down.png) no-repeat left top;
+    width: 12px;
+    height: 12px;
+    display: inline;
+    border: 1px solid #CCC;
+    position: absolute;
+    left: 4px;
+}
+form.unmapped table.searchform th div {
+    background: url(lfiles/images/collapse_gray_right.png) no-repeat left top;
+    visibility: visible;
+}
+
 /* style for forms */
 table.form {
   padding: 2px;

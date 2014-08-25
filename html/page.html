@@ -41,6 +41,7 @@
  ; quiet           python: utils.get_from_form (request, 'quiet')
  ; show_creation   python: True
  ; form_class      python: 'form'
+ ; queryform_class python: ''
  ; typecat         python: (   'adr_type_cat' in db._db.classes
                            and ','.join (db._db.adr_type_cat.getnodeids ())
                            )
@@ -416,6 +417,11 @@
      , ('reporting_group',     'Edit',   '?@template=item', 1)
      , ('product_family',      'Edit',   '?@template=item', 1)
      , ('project_type',        'Edit',   '?@template=item', 1)
+     , ( 'leave_submission'
+       , 'Edit'
+       , '?@template=item'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR-vacation')
+       )
      )
    , ( ('cost_center',         'View', 1,               ('',''))
      , ( 'daily_record'
@@ -511,6 +517,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
   <link rel="stylesheet" type="text/css" href="@@file/style.css">
   <script tal:replace="structure request/base_javascript"></script>
+  <script type="text/javascript"
+            src="@@file/lfiles/js/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript"
+            src="@@file/lfiles/js/formhandler.js"></script>
  </head>
  <body class="body">
   <table class="body" align="center" valign="middle"
@@ -1280,16 +1290,18 @@
 <!-- needs terse, props, multi_props, sort_props, nomulti_props, csv_link -->
 <tal:block metal:define-macro="search_form">
  <!-- query specification form -->
- <form method="GET" name="query" tal:attributes="action request/classname">
+ <form method="GET" name="query"
+  tal:attributes="action request/classname; class queryform_class">
   <tal:block metal:define-slot="search_variables"/>
   <input type="hidden" name=":action" value="searchwithtemplate">
   <input type="hidden" name=":startwith"
    tal:attributes="value request/startwith">
   <input type="hidden" name=":template"
    tal:attributes="value python:request.template or 'index'">
-  <table border="0" bgcolor="#e0c0c0" class="searchform">
+  <table border="0" class="searchform">
    <tr>
-    <th bgcolor="#C08080" i18n:translate="" colspan="5">
+    <th i18n:translate="" colspan="5" class="main">
+     <div tal:condition="python:queryform_class"></div>
      <span i18n:translate="">Query</span>
      <span tal:replace="head_title" i18n:name="title"/>
     </th>
