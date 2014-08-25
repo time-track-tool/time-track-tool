@@ -1,87 +1,40 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-<tal:block metal:fill-slot="create_or_query">
- <tal:block 
-  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
-</tal:block>
-
-<tal:block metal:fill-slot="content">
- <tal:block tal:define=
-  "batch request/batch;
-   use_labelprop python:False;
-   queryform_class python: 'unmapped';
-   pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['first_day'], displayable = False)
-    , utils.ExtProperty (utils, pdict ['last_day'], displayable = False)
-    , utils.ExtProperty
-        ( utils, pdict ['time_wp']
-        , help_filter = 'project.approval_required=True'
-        , searchable  = True
-        , displayable = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['status']
-        , multiselect = True
-        , displayable = False
-        )
-    );
-   multi_props   python: [p for p in props if p.multiselect];
-   sort_props    python: [p for p in props if p.sortable];
-   nomulti_props python: [p for p in props if not p.multiselect];
-   csv_link      python:request.indexargs_url
-    (classname, {'@action':'export_vacation_submission'});
-   do_fulltext   python: True;
-   do_pagesize   python: True;
-   "
-  tal:condition="context/is_view_ok">
-
-  <tal:block tal:condition="context/is_view_ok">
-   <table class="list" border="1">
-    <tr>
-     <th tal:content="python:props[0].i18nlabel"/>
-     <th tal:content="python:props[1].i18nlabel"/>
-     <th i18n:translate="">Days</th>
-     <th tal:content="python:props[2].i18nlabel"/>
-     <th tal:content="python:props[3].i18nlabel"/>
-    </tr>
-    <tal:block metal:use-macro="templates/page/macros/search_nav"/>
-    <tal:block tal:repeat="i batch">
-     <tr tal:condition="python:
-       request.group and batch.propchanged (*[g[1] for g in request.group])">
-      <th colspan="5" class="group">
-       <tal:block tal:repeat="gr request/group">
-        <tal:block tal:content="python:i[gr[1]]"/>
-       </tal:block>
-      </th>
-     </tr>
-     <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
-      <tal:block tal:repeat="prop python:props [0:1]">
-       <td tal:content="structure python:props.as_listentry (i)"/>
-      </tal:block>
-      <td />
-      <tal:block tal:repeat="prop python:props [2:3]">
-       <td tal:content="structure python:props.as_listentry (i)"/>
-      </tal:block>
-     </tr>
-    </tal:block>
-   </table>
-  </tal:block>
-
-  <h3><span i18n:translate="">New</span> <span tal:content="Classname"/></h3>
-  <tal:block metal:use-macro="templates/page/macros/formatted_class">
-   <tal:block metal:fill-slot="formatted_class_content">
-    <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'first_day')"/>
-     <td tal:content="structure python:context.first_day.field ()"/>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'last_day')"/>
-     <td tal:content="structure python:context.last_day.field ()"/>
-    </tr>
-   </tal:block>
-  </tal:block>
-
-  <tal:block metal:use-macro="templates/page/macros/search_form"/>
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
  </tal:block>
-</tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+   "batch request/batch;
+    use_labelprop python:False;
+    pdict python: utils.properties_dict (db, context);
+    props python:
+     ( utils.ExtProperty (utils, pdict ['user'])
+     , utils.ExtProperty (utils, pdict ['first_day'], is_labelprop = True)
+     , utils.ExtProperty (utils, pdict ['last_day'],  is_labelprop = True)
+     , utils.ExtProperty
+         ( utils, pdict ['time_wp']
+         , filter = { 'approval_required' : True }
+         , searchable  = True
+         , multiselect = True
+         , searchname  = 'time_wp.project'
+         )
+     , utils.ExtProperty
+         ( utils, pdict ['time_wp']
+         , filter = { 'project.approval_required' : True }
+         , searchable  = True
+         , multiselect = True
+         )
+     , utils.ExtProperty
+         ( utils, pdict ['status']
+         , multiselect = True
+         )
+     );
+    "
+   tal:condition="context/is_view_ok">
+   <tal:block metal:use-macro="templates/page/macros/search_results"/>
+   <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+  </tal:block>
+ </tal:block>
 </tal:block>

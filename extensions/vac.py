@@ -27,3 +27,4 @@ def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',          vacation.valid_wps)
     reg ('valid_leave_wps',    vacation.valid_leave_wps)
+    reg ('leave_days',         vacation.leave_days)

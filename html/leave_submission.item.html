@@ -49,6 +49,15 @@
           (classname, 'last_day')" class="required"/>
       <td tal:content="structure python:context.last_day.field ()"/>
      </tr>
+     <tr tal:condition="context/id">
+      <th i18n:translate="">Days</th>
+      <td tal:content="python: utils.leave_days
+          ( db._db
+          , context.user.id
+          , context.first_day._value
+          , context.last_day._value
+          )"/>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'time_wp')"/>
