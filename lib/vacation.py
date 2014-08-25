@@ -29,6 +29,8 @@
 #--
 #
 
+from math import ceil
+
 import roundup.date
 import common
 import user_dynamic
@@ -123,7 +125,7 @@ def leave_days (db, user, first_day, last_day) :
         wh = user_dynamic.day_work_hours (dyn, d)
         ld = leave_duration (db, user, d)
         if ld != 0 :
-            s += (ld / wh * 2 + 1) / 2
+            s += ceil (ld / wh * 2) / 2.
         d += common.day
     return s
 # end def leave_days
@@ -231,7 +233,7 @@ def remaining_vacation (db, user, date, consolidated = None) :
     vac = consolidated
     # All time recs with vacation wp up to date
     ds  = [('+', 'date')]
-    vtp = db.time_project.filter (None, dict (is_public_holiday = True))
+    vtp = db.time_project.filter (None, dict (is_vacation = True))
     assert vtp
     vwp = db.time_wp.filter (None, dict (project = vtp))
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
@@ -244,7 +246,7 @@ def remaining_vacation (db, user, date, consolidated = None) :
         dyn = user_dynamic.get_user_dynamic (db, user, dr.date)
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
-        vac -= (tr.duration / wh * 2 + 1) / 2.
+        vac -= ceil (tr.duration / wh * 2) / 2.
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     dt  = common.pretty_range (vc.date + common.day, date)

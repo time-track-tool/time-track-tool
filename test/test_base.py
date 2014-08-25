@@ -1233,6 +1233,34 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (vc.absolute, True)
         self.assertEqual (len (vcs), 3)
         self.db.public_holiday.create \
+            ( date        = date.Date ('2008-12-24')
+            , description = 'Heiligabend'
+            , is_half     = True
+            , locations   = [self.loc]
+            , name        = 'Heiligabend'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2008-12-25')
+            , description = 'Weihnachten'
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Weihnachten'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2008-12-26')
+            , description = 'Stephanitag'
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Stephanitag'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2008-12-31')
+            , description = 'Silvester'
+            , is_half     = True
+            , locations   = [self.loc]
+            , name        = 'Silvester'
+            )
+        self.db.public_holiday.create \
             ( date        = date.Date ('2009-12-24')
             , description = 'Heiligabend'
             , is_half     = True
@@ -1354,6 +1382,23 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , last_day  = date.Date ('2009-12-04')
             , time_wp   = self.flexi_wp
             )
+        # First year: 4.04 days vacation, this is rounded *up* so user
+        # should be able to request 5 days and supervisor should be able
+        # to accept this.
+        v2 = self.db.leave_submission.create \
+            ( first_day = date.Date ('2008-12-22')
+            , last_day  = date.Date ('2008-12-31')
+            , time_wp   = self.vacation_wp
+            )
+        self.db.leave_submission.set (v2, status = st_subm)
+        vac2 = self.db.leave_submission.getnode (v2)
+        self.assertEqual \
+            ( vacation.leave_days
+                (self.db, self.user2, vac2.first_day, vac2.last_day)
+            , 5
+            )
+        os.unlink (maildebug)
+
         self.assertRaises \
             ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
@@ -1411,7 +1456,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (vs, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Vacation" from TUR')
+            ( ('subject',    'Leave request "Vacation/Vacation" from TUR')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1419,7 +1464,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Vacation".\n'
+            , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
               'FIXME'
             )
         os.unlink (maildebug)
@@ -1435,7 +1480,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (un, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Unpaid" from TUR')
+            ( ('subject',    'Leave request "Unpaid/Leave" from TUR')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1443,7 +1488,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Unpaid".\n'
+            , 'Test User2 has submitted a leave request "Unpaid/Leave".\n'
               'Needs approval by HR.\n'
               'FIXME'
             )
@@ -1451,7 +1496,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (u2, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Unpaid" from TUR')
+            ( ('subject',    'Leave request "Unpaid/Leave" from TUR')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1459,7 +1504,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Unpaid".\n'
+            , 'Test User2 has submitted a leave request "Unpaid/Leave".\n'
               'Needs approval by HR.\n'
               'FIXME'
             )
@@ -1467,7 +1512,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (za, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Flexi" from TUR')
+            ( ('subject',    'Leave request "Flexi/Flexi" from TUR')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1475,7 +1520,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Flexi".\n'
+            , 'Test User2 has submitted a leave request "Flexi/Flexi".\n'
               'FIXME'
             )
         os.unlink (maildebug)
@@ -1521,6 +1566,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , vs
                 , status = st
                 )
+        # Should be possible that user1 sets this:
+        self.db.leave_submission.set (v2, status = st_accp)
+        os.unlink (maildebug)
         self.db.leave_submission.set (vs, status = st_accp)
         vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)
@@ -1698,7 +1746,50 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , vs
                 , status = st
                 )
+        # should go through, although existing cancelled record
+        vs = self.db.leave_submission.create \
+            ( first_day = date.Date ('2009-12-22')
+            , last_day  = date.Date ('2009-12-22')
+            )
+        self.db.leave_submission.set (vs, status = st_subm)
+        # should go through, although existing declined record
+        za = self.db.leave_submission.create \
+            ( first_day = date.Date ('2009-12-02')
+            , last_day  = date.Date ('2009-12-02')
+            , time_wp   = self.flexi_wp
+            )
+        self.db.leave_submission.set (za, status = st_subm)
+        os.unlink (maildebug)
+        # Another vacation in 2008 which is already fully booked
+        v3 = self.db.leave_submission.create \
+            ( first_day = date.Date ('2008-12-02')
+            , last_day  = date.Date ('2008-12-02')
+            )
+        self.db.leave_submission.set (v3, status = st_subm)
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave request "Vacation/Vacation" from TUR')
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
+              'FIXME'
+            )
+        os.unlink (maildebug)
+        self.db.commit ()
         self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        # supervisor can't accept/decline this, 2008 already fully booked
+        for st in (st_open, st_accp, st_decl, st_carq, st_canc) :
+            self.assertRaises \
+                ( Reject, self.db.leave_submission.set
+                , v3
+                , status = st
+                )
     # end def test_vacation
 
 # end class Test_Case_Timetracker

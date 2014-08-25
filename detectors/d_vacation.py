@@ -20,6 +20,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+from math                           import ceil
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
@@ -42,8 +43,11 @@ def check_range (db, nodeid, uid, first_day, last_day) :
         raise Reject (_ ("Max. 30 days for single leave submission"))
     range = common.pretty_range (first_day, last_day)
     both  = (first_day.pretty (';%Y-%m-%d'), last_day.pretty ('%Y-%m-%d;'))
+    stati = [x for x in db.leave_status.getnodeids (retired = False)
+             if db.leave_status.get (x, 'name') not in ('declined', 'cancelled')
+            ]
     for f, l in ((range, None), (None, range), both) :
-        d = dict (user = uid)
+        d = dict (user = uid, status = stati)
         if f :
             d ['first_day'] = f
         if l :
@@ -204,14 +208,18 @@ def check_dr_status (db, user, first_day, last_day, st_name) :
             raise Reject (_ ('Daily records must exist'))
 # end def check_dr_status
 
-def need_hr_approval (db, tp, user, first_day, last_day) :
+def need_hr_approval (db, tp, user, first_day, last_day, booked = False) :
     day = common.day
-    ed  = vacation.next_yearly_vacation_date (db, user, last_day + day) - day
+    ed  = vacation.next_yearly_vacation_date (db, user, last_day) - day
     vac = vacation.remaining_vacation (db, user, ed)
     if vac is None :
         raise Reject (_ ("No initial vacation correction for this user"))
     dur = vacation.leave_days (db, user, first_day, last_day)
-    return tp.approval_hr or tp.is_vacation and (vac - dur < 0)
+    # don't count duration if this is already booked, so we would count
+    # this vacation twice.
+    if booked :
+        dur = 0
+    return tp.approval_hr or tp.is_vacation and (ceil (vac) - dur < 0)
 # end def need_hr_approval
 
 def state_change_reactor (db, cl, nodeid, old_values) :
@@ -233,7 +241,8 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     elif new_status == declined :
         handle_decline (db, vs)
     elif new_status == submitted :
-        hr_only = need_hr_approval (db, tp, vs.user, vs.first_day, vs.last_day)
+        hr_only = need_hr_approval \
+            (db, tp, vs.user, vs.first_day, vs.last_day, booked = True)
         handle_submit  (db, vs, hr_only)
     elif new_status == cancelled :
         handle_cancel  (db, vs, trs)
@@ -373,8 +382,9 @@ def handle_submit (db, vs, hr_only) :
     realnm  = user.realname
     nick    = user.nickname.upper ()
     url     = 'FIXME'
-    subject = 'Leave request "%(wpn)s" from %(nick)s' % locals ()
-    content = '%(realnm)s has submitted a leave request "%(wpn)s".' % locals ()
+    subject = 'Leave request "%(wpn)s/%(tpn)s" from %(nick)s' % locals ()
+    content = '%(realnm)s has submitted a leave request "%(wpn)s/%(tpn)s".' \
+            % locals ()
     if hr_only :
         content += "\nNeeds approval by HR."
     content += '\n' + url
