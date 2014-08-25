@@ -54,11 +54,15 @@ def check_range (db, nodeid, uid, first_day, last_day) :
                 (_ ("You already have vacation requests in this time range"))
 # end def check_range
 
-def check_wp (db, wp_id) :
+def check_wp (db, wp_id, user, first_day, last_day) :
     wp = db.time_wp.getnode (wp_id)
     tp = db.time_project.getnode (wp.project)
     if not tp.approval_required :
         raise Reject (_ ("No approval required for work package"))
+    if user not in wp.bookers and wp.bookers :
+        raise Reject (_ ("User may not book on work package"))
+    if first_day < wp.time_start or wp.time_end and last_day > wp.time_end :
+        raise Reject (_ ("Work package not valid during vacation time"))
 # end def check_wp
 
 def new_submission (db, cl, nodeid, new_values) :
@@ -67,18 +71,29 @@ def new_submission (db, cl, nodeid, new_values) :
     """
     uid = db.getuid ()
     st_open = db.leave_status.lookup ('open')
-    common.require_attributes \
-        (_, cl, nodeid, new_values, 'first_day', 'last_day', 'time_wp')
     if 'user' not in new_values :
         user = new_values ['user'] = uid
     else :
         user = new_values ['user']
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'first_day', 'last_day', 'user')
     first_day = new_values ['first_day']
     last_day  = new_values ['last_day']
+    if 'time_wp' not in new_values :
+        wps = vacation.valid_leave_wps \
+            ( db
+            , db.user.get (user, 'username')
+            , last_day
+            , [('-', 'project.is_vacation'), ('-', 'project.approval_hr')]
+            )
+        if wps :
+            new_values ['time_wp'] = wps [0]
+
+    common.require_attributes (_, cl, nodeid, new_values, 'time_wp')
     if freeze.frozen (db, user, first_day) :
         raise Reject (_ ("Frozen"))
     check_range (db, None, user, first_day, last_day)
-    check_wp    (db, new_values ['time_wp'])
+    check_wp    (db, new_values ['time_wp'], user, first_day, last_day)
     if 'status' in new_values and new_values ['status'] != st_open :
         raise Reject (_ ('Initial status must be "open"'))
     if 'status' not in new_values :
@@ -90,6 +105,15 @@ def new_submission (db, cl, nodeid, new_values) :
     if vacation.leave_days (db, user, first_day, last_day) == 0 :
         raise Reject (_ ("Vacation request for 0 days"))
     check_dr_status (db, user, first_day, last_day, 'open')
+    # Check dyn user parameters
+    d = first_day
+    while d <= last_day :
+        dyn = user_dynamic.get_user_dynamic (db, user, d)
+        if not dyn.vacation_yearly :
+            raise Reject (_ ("No yearly vacation for this user"))
+        if dyn.vacation_day is None or dyn.vacation_month is None :
+            raise Reject (_ ("Vacation date setting is missing"))
+        d += common.day
 # end def new_submission
 
 def check_submission (db, cl, nodeid, new_values) :
@@ -117,7 +141,7 @@ def check_submission (db, cl, nodeid, new_values) :
         raise Reject (_ ("Frozen"))
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
     check_range (db, nodeid, user, first_day, last_day)
-    check_wp    (db, time_wp)
+    check_wp    (db, time_wp, user, first_day, last_day)
     if old_status in ('open', 'submitted') :
         check_dr_status (db, user, first_day, last_day, 'open')
     if old_status in ('accepted', 'cancel requested') :
@@ -184,6 +208,8 @@ def need_hr_approval (db, tp, user, first_day, last_day) :
     day = common.day
     ed  = vacation.next_yearly_vacation_date (db, user, last_day + day) - day
     vac = vacation.remaining_vacation (db, user, ed)
+    if vac is None :
+        raise Reject (_ ("No initial vacation correction for this user"))
     dur = vacation.leave_days (db, user, first_day, last_day)
     return tp.approval_hr or tp.is_vacation and (vac - dur < 0)
 # end def need_hr_approval
@@ -358,6 +384,24 @@ def handle_submit (db, vs, hr_only) :
         raise roundupdb.DetectorError, message
 # end def handle_decline
 
+def check_correction (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'user', 'date', 'day')
+    user = new_values.get ('user')
+    if user is None :
+        user = cl.get (nodeid, 'user')
+    date = new_values.get ('date')
+    if date is None :
+        date = cl.get (nodeid, 'date')
+    if freeze.frozen (db, user, date) :
+        # Allow admin to add (initial) absolute correction
+        if  (  nodeid is not None
+            or db.getuid () != '1'
+            or not new_values.get ('absolute')
+            ) :
+            raise Reject (_ ("Frozen"))
+# end def check_correction
+
 def init (db) :
     global _
     _   = get_translation \
@@ -372,4 +416,6 @@ def init (db) :
     db.leave_submission.react ("set",    daily_recs, priority = 80)
     db.leave_submission.react ("set",    state_change_reactor)
     db.vacation_report.audit  ("create", vac_report)
+    db.vacation_correction.audit ("create", check_correction)
+    db.vacation_correction.audit ("set",    check_correction)
 # end def init

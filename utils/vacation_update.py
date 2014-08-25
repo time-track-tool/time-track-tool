@@ -2,6 +2,8 @@
 # -*- coding: iso-8859-1 -*-
 import sys
 import os
+import csv
+from math              import ceil
 from roundup           import date
 from roundup           import instance
 from roundup.password  import Password, encodePassword
@@ -10,6 +12,8 @@ tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
 sys.path.insert (1, os.path.join (dir, 'lib'))
+import common
+import user_dynamic
 
 #      Name                      approval_hr is_vacation
 tc_names = \
@@ -52,10 +56,68 @@ for k, t in transitions.iteritems () :
     tr = [db.leave_status.lookup (x) for x in t]
     db.leave_status.set (id, transitions = tr)
 
+for p in db.time_project.getnodeids (retired = False) :
+    tp = db.time_project.getnode (p)
+    d  = {}
+    if not tp.is_vacation :
+        d ['is_vacation'] = False
+    if not tp.approval_required :
+        d ['approval_required'] = False
+    if not tp.approval_hr :
+        d ['approval_hr'] = False
+    # Don't try to set something when cost_center is empty
+    # this would throw a reject
+    if not tp.cost_center :
+        d = None
+    if d :
+        db.time_project.set (p, ** d)
 try :
-    db.daily_record_status.lookup ('vacation')
+    db.daily_record_status.lookup ('leave')
 except KeyError :
     db.daily_record_status.create \
         (name = 'leave', description = "Accepted leave")
+
+s2014 = date.Date ('2014-01-01')
+for u in db.user.getnodeids (retired = False) :
+    user = db.user.getnode (u)
+    dyn  = user_dynamic.act_or_latest_user_dynamic (db, u)
+    while dyn and (not dyn.valid_to or dyn.valid_to >= s2014) :
+        if dyn.vacation_yearly :
+            if dyn.vacation_day is None or dyn.vacation_month is None :
+                db.user_dynamic.set \
+                    (dyn.id, vacation_month = 1, vacation_day = 1)
+        dyn = user_dynamic.prev_user_dynamic (db, dyn)
+
+broken_int = dict.fromkeys \
+    (('2.56'
+    ,
+    ))
+if len (sys.argv) == 2 :
+    fd = open (sys.argv [1], 'r')
+    cr = csv.reader (fd, delimiter = ';')
+    dt = common.pretty_range (s2014, s2014)
+    for line in cr :
+        if line [0] == 'Username' :
+            continue
+        username = line [0].strip ().lower ()
+        try :
+            user = db.user.lookup (username)
+        except KeyError :
+            # Special hacks for my data, without disclosing usernames
+            if username.startswith ('l') :
+                username = 'L' + username [1:]
+            else :
+                username = 'g' + username
+            user = db.user.lookup (username)
+        rounded = line [5]
+        exact   = float (line [9])
+        if rounded not in broken_int :
+            assert int (rounded) == float (rounded)
+            assert ceil (exact) == int (rounded)
+        vc = db.vacation_correction.filter \
+            (None, dict (user = user, date = dt, absolute = True))
+        if not vc :
+            db.vacation_correction.create \
+                (absolute = True, date = s2014, user = user, days = exact)
 
 db.commit()

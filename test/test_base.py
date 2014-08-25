@@ -543,6 +543,9 @@ class _Test_Case_Summary (_Test_Case) :
             , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
+            , approval_required  = False
+            , approval_hr        = False
+            , is_vacation        = False
             )
         self.unpaid_tp = self.db.time_project.create \
             ( name = 'Leave'
@@ -556,6 +559,7 @@ class _Test_Case_Summary (_Test_Case) :
             , cost_center        = self.cc
             , approval_required  = True
             , approval_hr        = True
+            , is_vacation        = False
             )
         self.travel_tp = self.db.time_project.create \
             ( name = 'Travel'
@@ -565,6 +569,9 @@ class _Test_Case_Summary (_Test_Case) :
             , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
+            , approval_required  = False
+            , approval_hr        = False
+            , is_vacation        = False
             )
         self.normal_tp = self.db.time_project.create \
             ( name = 'A Project'
@@ -573,18 +580,22 @@ class _Test_Case_Summary (_Test_Case) :
             , department         = self.dep
             , organisation       = self.org
             , cost_center        = self.cc
+            , approval_required  = False
+            , approval_hr        = False
+            , is_vacation        = False
             )
         self.vacation_tp = self.db.time_project.create \
             ( name = 'Vacation'
             , op_project         = False
-            , is_vacation        = True
             , responsible        = self.user1
             , department         = self.dep
             , organisation       = self.org
-            , approval_required  = True
             , cost_center        = self.cc
             , no_overtime        = True
             , overtime_reduction = True
+            , approval_required  = True
+            , approval_hr        = False
+            , is_vacation        = True
             )
         self.flexi_tp = self.db.time_project.create \
             ( name = 'Flexi'
@@ -592,11 +603,12 @@ class _Test_Case_Summary (_Test_Case) :
             , responsible        = self.user1
             , department         = self.dep
             , organisation       = self.org
-            , approval_required  = True
-            , approval_hr        = False
             , cost_center        = self.cc
             , max_hours          = 0
             , no_overtime        = True
+            , approval_required  = True
+            , approval_hr        = False
+            , is_vacation        = False
             )
         self.holiday_wp = self.db.time_wp.create \
             ( name               = 'Holiday'
@@ -1289,11 +1301,6 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-20')
             , last_day  = date.Date ('2009-12-31')
-            )
-        self.assertRaises \
-            ( Reject, self.db.leave_submission.create
-            , first_day = date.Date ('2009-12-20')
-            , last_day  = date.Date ('2009-12-31')
             , time_wp   = self.holiday_wp
             )
         self.assertRaises \
@@ -1327,10 +1334,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , time_wp   = self.vacation_wp
             , user      = self.user2
             )
+        # time_wp = self.vacation_wp is the default
         vs = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
-            , time_wp   = self.vacation_wp
             )
         un = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-02')

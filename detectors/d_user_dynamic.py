@@ -198,6 +198,8 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     # the user_dynamic record. So when checking for frozen status we
     # can allow exactly the valid_to date.
     otw = common.overtime_period_week (db)
+    vac_fix = list (sorted (new_values.keys ())) \
+           == ['vacation_day', 'vacation_month'] and db.getuid () == '1'
     if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
@@ -208,6 +210,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             or not otw
             or new_values != dict (overtime_period = otw.id)
             )
+        and not vac_fix
         ) :
         raise Reject, _ ("Frozen: %(old_from)s") % locals ()
     last = user_dynamic.last_user_dynamic (db, user)
@@ -220,19 +223,20 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             check_ranges (cl, nodeid, user, val_from, val_to)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    check_overtime_parameters (db, cl, nodeid, new_values)
-    check_vacation ('vacation_yearly', new_values)
-    if not freeze.frozen (db, user, old_from) :
-        user_dynamic.invalidate_tr_duration (db, user, val_from, val_to)
-    else :
-        old_to = cl.get (nodeid, 'valid_to')
-        use_to = val_to
-        if old_to :
-            if val_to :
-                use_to = min (old_to, val_to)
-            else :
-                use_to = old_to
-        user_dynamic.invalidate_tr_duration (db, user, use_to, None)
+    if not vac_fix :
+        check_overtime_parameters (db, cl, nodeid, new_values)
+        check_vacation ('vacation_yearly', new_values)
+        if not freeze.frozen (db, user, old_from) :
+            user_dynamic.invalidate_tr_duration (db, user, val_from, val_to)
+        else :
+            old_to = cl.get (nodeid, 'valid_to')
+            use_to = val_to
+            if old_to :
+                if val_to :
+                    use_to = min (old_to, val_to)
+                else :
+                    use_to = old_to
+            user_dynamic.invalidate_tr_duration (db, user, use_to, None)
 # end def check_user_dynamic
 
 def set_otp_if_all_in (db, cl, nodeid, new_values) :
