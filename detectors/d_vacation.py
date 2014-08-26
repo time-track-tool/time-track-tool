@@ -69,6 +69,12 @@ def check_wp (db, wp_id, user, first_day, last_day) :
         raise Reject (_ ("Work package not valid during vacation time"))
 # end def check_wp
 
+def fix_dates (new_values) :
+    for d in ('first_day', 'last_day') :
+        if d in new_values :
+            new_values [d] = common.fix_date (new_values [d])
+# end def fix_dates
+
 def new_submission (db, cl, nodeid, new_values) :
     """ Check that new leave submission is allowed and has sensible
         parameters
@@ -83,6 +89,7 @@ def new_submission (db, cl, nodeid, new_values) :
         (_, cl, nodeid, new_values, 'first_day', 'last_day', 'user')
     first_day = new_values ['first_day']
     last_day  = new_values ['last_day']
+    fix_dates (new_values)
     if 'time_wp' not in new_values :
         wps = vacation.valid_leave_wps \
             ( db
@@ -139,6 +146,7 @@ def check_submission (db, cl, nodeid, new_values) :
     if old_status != new_status or old_status != 'open' :
         common.reject_attributes \
             (_, new_values, 'first_day', 'last_day', 'time_wp')
+    fix_dates (new_values)
     first_day = new_values.get ('first_day', cl.get (nodeid, 'first_day'))
     last_day  = new_values.get ('last_day',  cl.get (nodeid, 'last_day'))
     if freeze.frozen (db, user, first_day) :

@@ -32,9 +32,79 @@ def user_leave_submissions (db, context) :
     return ls
 # end def user_leave_submissions
 
+class Leave_Buttons (object) :
+    user_buttons = dict \
+        (( ('open',             ( ('submitted',        ""'Submit to %(sunick)s')
+                                , ('cancelled',        ""'Cancel')
+                                )
+           )                   
+         , ('submitted',        (('open',              ""'Edit again'), ))
+         , ('accepted',         (('cancel requested',  ""'Request Cancel'), ))
+        ))
+
+    approve_buttons = dict \
+        (( ('submitted',        ( ('accepted',         ""'Accept')
+                                , ('declined',         ""'Decline')
+                                )
+           )
+         , ('cancel requested', ( ('cancelled',        ""'Allow cancel')
+                                , ('accepted',         ""'Decline cancel')
+                                )
+           )
+        ))
+
+    def __init__ (self, db) :
+        self.htmldb    = db
+        self.db        = db._db
+        self.st_open   = self.db.leave_status.lookup ('open')
+        self.st_subm   = self.db.leave_status.lookup ('submitted')
+        self.st_accp   = self.db.leave_status.lookup ('accepted')
+        self.st_cncr   = self.db.leave_status.lookup ('cancel requested')
+        self.uid       = self.db.getuid ()
+    # end def __init__
+
+    def button (self, newstate, msg) :
+        msg = msg % self.__dict__
+        designator = self.ep_status.item.designator ()
+        return \
+            '''<input type="button" value="%(msg)s" onClick="
+               if (submit_once ()) {
+                   document.forms.edit_leave_submission
+                       ['%(designator)s@status'].value = '%(newstate)s';
+                   document.forms.edit_leave_submission.submit ();
+               }">
+            ''' % locals ()
+    # end def button
+
+    def generate (self, ep_status) :
+        """ Buttons in leave submission forms (edit or approval)
+        """
+        ret            = []
+        self.ep_status = ep_status
+        self.user      = ep_status.item.user.id
+        self.sunick    = str (ep_status.item.user.supervisor.nickname).upper ()
+        stname         = str (ep_status.prop.name)
+        if (self.uid == self.user and stname in self.user_buttons) :
+            for b in self.user_buttons [stname] :
+                ret.append (self.button (*b))
+        elif (  self.uid in common.clearance_by (self.db, self.user)
+             or common.user_has_role (self.db, self.uid, 'HR-leave-approval')
+             ) and stname in self.approve_buttons :
+            for b in self.approve_buttons [stname] :
+                ret.append (self.button (*b))
+        if ret :
+            ret.append \
+                ( '<input type="hidden" name="%s@status" value=%s>'
+                % (ep_status.item.designator (), stname)
+                )
+        return ''.join (ret)
+    # end def generate
+# end class Leave_Buttons
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',              vacation.valid_wps)
     reg ('valid_leave_wps',        vacation.valid_leave_wps)
     reg ('leave_days',             vacation.leave_days)
     reg ('user_leave_submissions', user_leave_submissions)
+    reg ('Leave_Buttons',          Leave_Buttons)

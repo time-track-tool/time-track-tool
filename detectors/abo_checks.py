@@ -24,7 +24,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 from rup_utils                      import abo_max_invoice
-from common                         import ymd
+from common                         import ymd, fix_date
 
 month  = Interval ('1m')
 month2 = Interval ('2m')
@@ -191,12 +191,6 @@ def update_adr_type_in_address (db, cl, nodeid, oldvalues) :
     types.append (type)
     db.address.set (adr, adr_type = types)
 # end def update_adr_type_in_address
-
-def fix_date (date) :
-    if date :
-        return Date (date.pretty (ymd))
-    return date
-# end fix_date
 
 def retire_if_zero_period (db, cl, nodeid, oldvalues) :
     if 'end' in oldvalues :

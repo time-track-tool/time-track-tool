@@ -1117,4 +1117,10 @@ class Size_Limit (object) :
 
 # end class Size_Limit
 
+def fix_date (date) :
+    if date :
+        return Date (date.pretty (ymd))
+    return date
+# end fix_date
+
 ### __END__
