@@ -16,64 +16,8 @@
  </tal:block> 
 
  <tal:block metal:fill-slot="content">
-  <tal:block tal:define=
-      " use_labelprop python:0
-      ; required_attributes python:
-        'first_day,last_day' + [',user',''][bool (context.id)]
-      ">
-   <tal:block metal:use-macro="templates/page/macros/formatted_class">
-    <tal:block metal:fill-slot="formatted_class_content">
-     <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'user')"
-          tal:attributes="class python: ['required',''][bool (context.id)]"/>
-      <tal:block tal:condition="python: not context.id">
-       <td>
-        <span tal:content="structure python:context.user.field ()" />
-        <span tal:replace="structure python:db.user.classhelp
-              ( utils.user_props (db)
-              , property='user'
-              , inputtype='radio'
-              , width='600'
-              , filter='status=%s' % db._db.user_status.lookup ('valid')
-              , pagesize=500
-              )"/>
-       </td>
-      </tal:block>
-      <td tal:condition="python: context.id"
-          tal:content="structure python:context.user.plain ()" />
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'first_day')" class="required"/>
-      <td tal:content="structure python:context.first_day.field ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'last_day')" class="required"/>
-      <td tal:content="structure python:context.last_day.field ()"/>
-     </tr>
-     <tr tal:condition="context/id">
-      <th i18n:translate="">Days</th>
-      <td tal:content="python: utils.leave_days
-          ( db._db
-          , context.user.id
-          , context.first_day._value
-          , context.last_day._value
-          )"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'time_wp')"/>
-      <td tal:content="structure python:context.time_wp.menu
-         ( additional = ['project']
-         , id = utils.valid_leave_wps (db._db, username = context.user.plain ())
-         ) "/>
-      <th tal:condition="python: context.id"
-          tal:content="structure python:utils.fieldname (classname, 'status')"/>
-      <td tal:condition="python: context.id"
-          tal:content="structure python:context.status.menu ()"/>
-      <td tal:condition="python: not context.id"
-          tal:content="structure python:context.status.plain ()"/>
-     </tr>
-    </tal:block>
-   </tal:block>
+  <tal:block tal:define="user python:context.user.id; show_user python:1">
+   <tal:block metal:use-macro="templates/leave_submission/macros/editform" />
   </tal:block>
  </tal:block>
 

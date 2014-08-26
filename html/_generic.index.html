@@ -83,7 +83,7 @@
       prop._name not in ('id','date','author') and prop._name != keyprop">
    <th tal:content="structure python:utils.fieldname (classname, prop._name)"/>
    <td tal:content="structure python:utils.ExtProperty
-       (utils, prop, item = context).menu_or_field (db)"/>
+       (utils, prop, item = context).menu_or_field ()"/>
   </tr>
  </tal:block>
  <tr metal:use-macro="templates/page/macros/message_box" />

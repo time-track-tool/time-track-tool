@@ -21,10 +21,20 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+import common
 import vacation
+from   roundup.date import Date
+
+def user_leave_submissions (db, context) :
+    dt  = '%s;' % Date ('. - 14m').pretty (common.ymd)
+    uid = db._db.getuid ()
+    ls = db.leave_submission.filter (None, dict (user = uid, first_day = dt))
+    return ls
+# end def user_leave_submissions
 
 def init (instance) :
     reg = instance.registerUtil
-    reg ('valid_wps',          vacation.valid_wps)
-    reg ('valid_leave_wps',    vacation.valid_leave_wps)
-    reg ('leave_days',         vacation.leave_days)
+    reg ('valid_wps',              vacation.valid_wps)
+    reg ('valid_leave_wps',        vacation.valid_leave_wps)
+    reg ('leave_days',             vacation.leave_days)
+    reg ('user_leave_submissions', user_leave_submissions)

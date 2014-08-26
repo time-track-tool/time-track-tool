@@ -86,7 +86,7 @@ def new_submission (db, cl, nodeid, new_values) :
     if 'time_wp' not in new_values :
         wps = vacation.valid_leave_wps \
             ( db
-            , db.user.get (user, 'username')
+            , user
             , last_day
             , [('-', 'project.is_vacation'), ('-', 'project.approval_hr')]
             )
@@ -420,12 +420,12 @@ def init (db) :
     if 'leave_submission' not in db.classes :
         return
     # Status is checked with prio 200, we come later.
-    db.leave_submission.audit ("set",    check_submission, priority = 300)
-    db.leave_submission.audit ("create", new_submission)
-    db.leave_submission.react ("create", daily_recs, priority = 80)
-    db.leave_submission.react ("set",    daily_recs, priority = 80)
-    db.leave_submission.react ("set",    state_change_reactor)
-    db.vacation_report.audit  ("create", vac_report)
+    db.leave_submission.audit    ("set",    check_submission, priority = 300)
+    db.leave_submission.audit    ("create", new_submission)
+    db.leave_submission.react    ("create", daily_recs, priority = 80)
+    db.leave_submission.react    ("set",    daily_recs, priority = 80)
+    db.leave_submission.react    ("set",    state_change_reactor)
+    db.vacation_report.audit     ("create", vac_report)
     db.vacation_correction.audit ("create", check_correction)
     db.vacation_correction.audit ("set",    check_correction)
 # end def init

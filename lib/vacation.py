@@ -286,7 +286,7 @@ def consolidated_vacation (db, user, date, vc = None) :
     return vac
 # end def consolidated_vacation
 
-def valid_wps (db, filter, username = None, date = None, srt = None) :
+def valid_wps (db, filter, user = None, date = None, srt = None) :
     # FIXME: One day we want to refactore 'work_packages' in
     # extensions/interfaces to use this.
     srt  = srt or [('+', 'id')]
@@ -294,21 +294,18 @@ def valid_wps (db, filter, username = None, date = None, srt = None) :
     date = date or roundup.date.Date ('.')
     d    = dict (time_start = ';%s' % date.pretty (common.ymd))
     d.update (filter)
-    wps = []
-    if username :
-        for bookers in ['-1', db.user.lookup (username)] :
-            d ['bookers'] = bookers
-            wps.extend (db.time_wp.filter (None, d, srt))
-    else :
-        wps.extend (db.time_wp.filter (None, d, srt))
-    wps = [db.time_wp.getnode (w) for w in wps]
-    wps = [w for w in wps if not w.time_end or w.time_end > date]
+    # If we put bookers into the sql query we end up with a full table
+    # scan on bookers (>20s)
+    wps  = [db.time_wp.getnode (w) for w in db.time_wp.filter (None, d, srt)]
+    wps  = [w for w in wps if not w.time_end or w.time_end > date]
+    if user :
+        wps = [w for w in wps if not w.bookers or user in w.bookers]
     return [w.id for w in wps]
 # end def valid_wps
 
-def valid_leave_wps (db, username = None, date = None, srt = None) :
+def valid_leave_wps (db, user = None, date = None, srt = None) :
     d = {'project.approval_required' : True}
-    return valid_wps (db, d, username, date, srt)
+    return valid_wps (db, d, user, date, srt)
 # end def valid_leave_wps
 
 ### __END__

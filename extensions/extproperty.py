@@ -197,7 +197,8 @@ class ExtProperty :
         key: key attribute
         label: label of the field in html.
         i18nlabel: i18n translated label
-
+        additional: additional properties in a menu, see menu
+        popcal: Display popup calendar on date properties on edit
     """
     def __init__ \
         ( self
@@ -219,7 +220,7 @@ class ExtProperty :
         , pretty        = None
         , get_cssclass  = get_cssclass
         , do_classhelp  = None
-        , fieldwidth    = 30
+        , fieldwidth    = None
         , format        = None
         , filter        = None
         , help_props    = None
@@ -228,6 +229,9 @@ class ExtProperty :
         , bool_tristate = True
         , force_link    = False
         , url_template  = None
+        , additional    = []
+        , menuheight    = 5
+        , popcal        = True
         ) :
         if not hasattr (prop._db, '_') :
             prop._db._ = _
@@ -253,7 +257,6 @@ class ExtProperty :
         self.sortable      = sortable
         self.terse         = terse
         self.do_classhelp  = do_classhelp
-        self.fieldwidth    = fieldwidth
         self.format        = format
         self.filter        = filter
         self.help_props    = help_props or []
@@ -264,6 +267,10 @@ class ExtProperty :
         self.leafprop      = prop._prop
         self.force_link    = force_link
         self.url_template  = url_template
+        self.additional    = additional
+        self.fieldwidth    = fieldwidth or self.default_fieldwidth ()
+        self.menuheight    = menuheight
+        self.popcal        = popcal
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -337,11 +344,19 @@ class ExtProperty :
         return hasattr (self.prop._prop, 'classname')
     is_link_or_multilink = property (_is_link_or_multilink)
 
-    def _set_item (self, item = None) :
+    def _set_item (self, item = None, prop = None) :
+        if not prop :
+            prop = self.name
         if item :
             self.item = item
-            self.prop = item [self.name]
+            self.prop = item [prop]
     # end def _set_item
+
+    def default_fieldwidth (self) :
+        if self.is_link_or_multilink and self.prop._prop.classname == 'user' :
+            return 60
+        return 30
+    # end def default_fieldwidth
 
     def formatted (self, item = None) :
         self._set_item (item)
@@ -399,7 +414,7 @@ class ExtProperty :
 
     as_html = as_listentry
 
-    def deref (self, prop = None) :
+    def deref (self, prop = None, searchname = None) :
         """
             from an item get the property prop. This does some recursive
             magic: If prop consists of a path across several other Link
@@ -410,8 +425,9 @@ class ExtProperty :
             labelprop and set the displayprop to 'id'.
         """
         p = prop or self.prop
+        searchname = searchname or self.searchname
 
-        for i in self.searchname.split ('.')[1:] :
+        for i in searchname.split ('.')[1:] :
             if i == 'id' :
                 break
             last_p = p
@@ -479,14 +495,22 @@ class ExtProperty :
               )
     # end def formatlink
 
-    def menu (self) :
+    def menu (self, item = None, ** p) :
         """ Render as menu if condition, otherwise formatlink to prop """
+        self._set_item (item)
         if self.editable :
-            return self.prop.menu (translate=False)
+            p.setdefault ('height', self.menuheight)
+            p.update (self.filter)
+            return self.prop.menu \
+                ( translate  = False
+                , additional = self.additional
+                , ** p
+                )
         return self.deref ().formatlink ()
     # end def menu
 
-    def editfield (self) :
+    def editfield (self, item = None) :
+        self._set_item (item)
         parameters = {}
         if not isinstance (self.prop, BooleanHTMLProperty) :
             parameters ['size'] = self.fieldwidth
@@ -494,31 +518,50 @@ class ExtProperty :
             % self.item [self.name].field (** parameters)
     # end def editfield
 
-    def menu_or_field (self, db) :
+    def menu_or_field (self, item = None, editable = True) :
+        self._set_item (item)
+        if editable is not None :
+            self.editable = editable
         prop = self.prop
-        if self.is_link_or_multilink :
-            if prop._prop.classname == 'user' :
-                return ' '.join \
-                    (( prop.field (size = 60)
-                    ,  db.user.classhelp \
-                        ( 'username,lastname,firstname,nickname'
-                        , property=self.searchname
-                        , inputtype='%s' % ('radio', 'checkbox')
-                          [isinstance (self.prop, MultilinkHTMLProperty)]
-                        , width='600'
-                        , pagesize=500
-                        , filter='status=%s' % ','.join
-                           (db._db.user_status.filter
-                              (None, dict (is_nosy = True))
-                           )
-                        )
-                    ))
-            return prop.menu (height=5, translate=False)
-        try :
-            return prop.field (size=self.fieldwidth)
-        except TypeError :
-            pass
-        return prop.field ()
+        if self.editable :
+            if self.is_link_or_multilink :
+                if prop._prop.classname == 'user' :
+                    return ' '.join \
+                        (( prop.field (size = self.fieldwidth)
+                        ,  db.user.classhelp \
+                            ( 'username,lastname,firstname,nickname'
+                            , property=self.searchname
+                            , inputtype='%s' % ('radio', 'checkbox')
+                              [isinstance (self.prop, MultilinkHTMLProperty)]
+                            , width='600'
+                            , pagesize=500
+                            , filter='status=%s' % ','.join
+                               (db._db.user_status.filter
+                                  (None, dict (is_nosy = True))
+                               )
+                            )
+                        ))
+                return self.menu ()
+            if not isinstance (self.prop, BooleanHTMLProperty) :
+                fprops = dict (size = self.fieldwidth)
+            if isinstance (self.prop, DateHTMLProperty) :
+                fprops ['popcal'] = self.popcal
+            try :
+                return prop.field (** fprops)
+            except TypeError :
+                pass
+            return prop.field ()
+        else :
+            if self.additional :
+                x = self.as_listentry ()
+                p = self.deref ()
+                z = []
+                for k in self.additional :
+                    p._set_item (p.item, k)
+                    z.append (p.as_listentry ())
+                x += ' (' + ','.join (z) + ')'
+                return x
+            return self.as_listentry ()
     # end def menu_or_field
 
     def colonlabel (self, delimiter = ':') :
