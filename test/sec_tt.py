@@ -111,6 +111,7 @@ Role "hr":
  User is allowed to edit uc_type (Edit for "uc_type" only)
  User may manipulate user Roles through the web (Web Roles)
 Role "hr-leave-approval":
+ User is allowed Edit on (Edit for "leave_submission": ('status',) only)
  User is allowed to access leave_submission (View for "leave_submission" only)
  User is allowed to access vacation_correction (View for "vacation_correction" only)
 Role "hr-org-location":
@@ -129,8 +130,6 @@ Role "hr-vacation":
  User is allowed to create vacation_correction (Create for "vacation_correction" only)
  User is allowed to edit leave_submission (Edit for "leave_submission" only)
  User is allowed to edit vacation_correction (Edit for "vacation_correction" only)
- User may edit own leave submissions (Edit for "leave_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
- User may edit own leave submissions (View for "leave_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
 Role "office":
@@ -223,6 +222,8 @@ Role "user":
  User is allowed to search for their queries (Search for "query" only)
  User is allowed to see time record if he is allowed to see all details on work package or User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record. If user has role HR-Org-Location and is in the same Org-Location as the record, it may also be seen (View for "time_record" only)
  User is allowed to view contact if he's the owner of the contact or the contact is marked visible (View for "user_contact" only)
+ User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (Edit for "leave_submission": ('status',) only)
+ User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (View for "leave_submission" only)
  User is allowed to view selected fields if booking is allowed for at least one work package for this user (View for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_public_holiday', 'is_vacation', 'name', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
  User is allowed to view selected fields in work package if booking is allowed for this user (View for "time_wp": ('name', 'wp_no', 'description', 'responsible', 'project', 'time_start', 'time_end', 'durations_allowed', 'travel', 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id') only)
  User is allowed to view their own files (View for "file" only)
@@ -232,14 +233,15 @@ Role "user":
  User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_wp": ('name', 'project') only)
  User is allowed to view/edit workpackage if he is owner or project responsible/deputy (Edit for "time_wp": ('description', 'time_start', 'time_end', 'bookers', 'planned_effort') only)
  User may access the web interface (Web Access)
- User may edit own leave submissions (Edit for "leave_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
- User may edit own leave submissions (View for "leave_submission": ('first_day', 'last_day', 'status', 'time_wp') only)
+ User may edit own leave submissions (Edit for "leave_submission": ('first_day', 'last_day', 'status', 'time_wp', 'user') only)
+ User may edit own leave submissions (View for "leave_submission": ('first_day', 'last_day', 'status', 'time_wp', 'user') only)
  User may edit own time_records (Edit for "time_record" only)
  User may edit own time_records (View for "time_record" only)
  User may use the email interface (Email Access)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
  User may view work package if responsible for it, if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_wp" only)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
+ search leave_submission (Search for "leave_submission" only)
  search time_record (Search for "time_record" only)
  search time_wp (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
 """.strip ()

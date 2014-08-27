@@ -223,19 +223,19 @@ properties = \
       )
     , ( 'leave_submission'
       , [ ( 'first_day'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'last_day'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'status'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'time_wp'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'user'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         ]
       )

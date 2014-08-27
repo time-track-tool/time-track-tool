@@ -578,6 +578,9 @@ def security (db, ** kw) :
             , "overtime_reduction", "approval_required", "approval_hr"
             )
           )
+        , ( "leave_submission", "Edit", ["HR-leave-approval"]
+          , ("status",)
+          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -587,6 +590,7 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
     db.security.addPermissionToRole ('User', 'Create', 'leave_submission')
+    schemadef.add_search_permission (db, 'leave_submission', 'User')
 
     fixdoc = schemadef.security_doc_from_docstring
 
@@ -638,6 +642,19 @@ def security (db, ** kw) :
         ownerid = db.leave_submission.get (itemid, 'user')
         return userid == ownerid
     # end def own_leave_submission
+
+    def approval_for_leave_submission (db, userid, itemid) :
+        """User is allowed to view leave submission if he is the supervisor
+           or the person to whom approvals are delegated.
+
+           Viewing is allowed by the supervisor or the person to whom
+           approvals are delegated.
+        """
+        ownerid   = db.leave_submission.get (itemid, 'user')
+        clearance = clearance_by (db, ownerid)
+        return userid in clearance
+    # end def approval_for_time_record
+
 
     def may_see_time_record (db, userid, itemid) :
         """User is allowed to see time record if he is allowed to see
@@ -883,10 +900,27 @@ def security (db, ** kw) :
             , klass       = 'leave_submission'
             , check       = own_leave_submission
             , description = fixdoc (own_leave_submission.__doc__)
-            , properties  = ('first_day', 'last_day', 'status', 'time_wp')
+            , properties  = \
+                ('user', 'first_day', 'last_day', 'status', 'time_wp')
             )
         db.security.addPermissionToRole ('User', p)
-        db.security.addPermissionToRole ('HR-vacation', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'leave_submission'
+        , check       = approval_for_leave_submission
+        , description = fixdoc (approval_for_leave_submission.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'leave_submission'
+        , check       = approval_for_leave_submission
+        , description = fixdoc (approval_for_leave_submission.__doc__)
+        , properties  = ('status',)
+        )
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'View'
