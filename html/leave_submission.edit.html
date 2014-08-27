@@ -8,74 +8,11 @@
   <tal:block tal:define=
    "batch python:utils.user_leave_submissions (db, context);
     use_labelprop python: False;
-    pdict python:dict ((x._name, x) for x in db.leave_submission.properties ());
-    props python:
-     ( utils.ExtProperty
-         ( utils, pdict ['first_day']
-         , displayable = False
-         , fieldwidth  = 12
-         , popcal      = False
-         )
-     , utils.ExtProperty
-         ( utils, pdict ['last_day']
-         , displayable = False
-         , fieldwidth  = 12
-         , popcal      = False
-         )
-     , utils.ExtProperty
-         ( utils, pdict ['time_wp']
-         , searchable  = True
-         , displayable = False
-         , additional  = ['project']
-         , filter      = dict
-            (id = utils.valid_leave_wps (db._db, user = db._db.getuid ()))
-         )
-     , utils.ExtProperty
-         ( utils, pdict ['status']
-         , multiselect = True
-         , displayable = False
-         )
-     );
-     buttons python: utils.Leave_Buttons (db)
-    "
-   tal:condition="context/is_view_ok">
-
-   <tal:block tal:condition="context/is_view_ok">
-    <form method="POST" onsubmit="return submit_once()"
-          enctype="multipart/form-data" action="leave_submission"
-          name="edit_leave_submission">
-     <input type="hidden" name="@action"   value="edit">
-     <input type="hidden" name="@template" value="edit">
-     <table class="list" border="1">
-      <tr>
-       <tal:block tal:repeat="prop python:props">
-        <th tal:content="python: prop.i18nlabel" />
-       </tal:block>
-       <th i18n:translate="">Days</th>
-       <th i18n:translate="">Action</th>
-      </tr>
-      <tal:block tal:repeat="i batch">
-       <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
-        <tal:block tal:repeat="prop python:props">
-         <tal:block tal:define="edit python:
-              i.status.plain () == 'open' and prop.name != 'status'">
-          <td tal:content="structure python:prop.menu_or_field
-                  (item = i, editable = edit)"/>
-         </tal:block>
-        </tal:block>
-        <td tal:content="python:utils.leave_days
-            ( db._db
-            , db._db.getuid ()
-            , props [0].prop._value
-            , props [1].prop._value
-            )"/>
-        <td tal:content="structure python: buttons.generate (props [3])"/>
-       </tr>
-      </tal:block>
-     </table>
-    </form>
-   </tal:block>
-
+    do_user python: False;
+    tplname python: 'edit';
+   ">
+   <tal:block metal:use-macro=
+    "templates/leave_submission/macros/edit_leave_submission" />
    <h3><span i18n:translate="">New</span> <span tal:content="Classname"/></h3>
    <tal:block tal:define="
         user python:db._db.getuid ();

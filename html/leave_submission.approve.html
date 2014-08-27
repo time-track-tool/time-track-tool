@@ -1,0 +1,17 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block 
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+   "batch python:utils.approve_leave_submissions (db, context);
+    do_user python: True;
+    tplname python: 'approve';
+   ">
+   <tal:block metal:use-macro=
+    "templates/leave_submission/macros/edit_leave_submission" />
+  </tal:block>
+ </tal:block>
+</tal:block>

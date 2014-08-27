@@ -32,6 +32,17 @@ def user_leave_submissions (db, context) :
     return ls
 # end def user_leave_submissions
 
+def approve_leave_submissions (db, context) :
+    uid = db._db.getuid ()
+    st  = ('submitted', 'cancel requested')
+    st  = [db._db.leave_status.lookup (x) for x in st]
+    d   = dict (status = st)
+    if not common.user_has_role (db._db, uid, 'HR-leave-approval') :
+        d ['user'] = db._db.user.find (supervisor = uid)
+    ls  = db.leave_submission.filter (None, d)
+    return ls
+# end def approve_leave_submissions
+
 class Leave_Buttons (object) :
     user_buttons = dict \
         (( ('open',             ( ('submitted',        ""'Submit to %(sunick)s')
@@ -103,8 +114,9 @@ class Leave_Buttons (object) :
 
 def init (instance) :
     reg = instance.registerUtil
-    reg ('valid_wps',              vacation.valid_wps)
-    reg ('valid_leave_wps',        vacation.valid_leave_wps)
-    reg ('leave_days',             vacation.leave_days)
-    reg ('user_leave_submissions', user_leave_submissions)
-    reg ('Leave_Buttons',          Leave_Buttons)
+    reg ('valid_wps',                 vacation.valid_wps)
+    reg ('valid_leave_wps',           vacation.valid_leave_wps)
+    reg ('leave_days',                vacation.leave_days)
+    reg ('user_leave_submissions',    user_leave_submissions)
+    reg ('approve_leave_submissions', approve_leave_submissions)
+    reg ('Leave_Buttons',             Leave_Buttons)

@@ -34,6 +34,7 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , DateHTMLProperty          \
                                          , StringHTMLProperty        \
                                          , _HTMLItem                 \
+                                         , HTMLClass                 \
                                          , HTMLProperty              \
                                          , propclasses, MissingValue
 from roundup.cgi.TranslationService import get_translation
@@ -235,6 +236,7 @@ class ExtProperty :
         ) :
         if not hasattr (prop._db, '_') :
             prop._db._ = _
+        self.db            = prop._db
         self.utils         = utils
         self.prop          = prop
         self.item          = item
@@ -526,9 +528,11 @@ class ExtProperty :
         if self.editable :
             if self.is_link_or_multilink :
                 if prop._prop.classname == 'user' :
+                    client = self.item._client
+                    classhelp = HTMLClass (client, 'user').classhelp
                     return ' '.join \
                         (( prop.field (size = self.fieldwidth)
-                        ,  db.user.classhelp \
+                        ,  classhelp \
                             ( 'username,lastname,firstname,nickname'
                             , property=self.searchname
                             , inputtype='%s' % ('radio', 'checkbox')
@@ -536,7 +540,7 @@ class ExtProperty :
                             , width='600'
                             , pagesize=500
                             , filter='status=%s' % ','.join
-                               (db._db.user_status.filter
+                               (self.db.user_status.filter
                                   (None, dict (is_nosy = True))
                                )
                             )

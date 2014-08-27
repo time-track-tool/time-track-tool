@@ -1,3 +1,75 @@
+<tal:block metal:define-macro="edit_leave_submission">
+ <tal:block tal:define="
+   pdict python:dict ((x._name, x) for x in db.leave_submission.properties ());
+   props python:
+    ( utils.ExtProperty
+        ( utils, pdict ['user']
+        , fieldwidth  = 12
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['first_day']
+        , fieldwidth  = 12
+        , popcal      = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['last_day']
+        , fieldwidth  = 12
+        , popcal      = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['time_wp']
+        , additional  = ['project']
+        , filter      = dict
+           (id = utils.valid_leave_wps (db._db, user = db._db.getuid ()))
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['status']
+        , multiselect = True
+        )
+    );
+    buttons python: utils.Leave_Buttons (db)
+   "
+   tal:condition="context/is_view_ok">
+  <tal:block tal:condition="context/is_view_ok">
+   <form method="POST" onsubmit="return submit_once()"
+         enctype="multipart/form-data" action="leave_submission"
+         name="edit_leave_submission">
+    <input type="hidden" name="@action"   value="edit">
+    <input type="hidden" name="@template" tal:attributes="value tplname">
+    <table class="list" border="1">
+     <tr>
+      <tal:block tal:repeat="prop python:props [not do_user:]">
+       <th tal:content="python: prop.i18nlabel" />
+      </tal:block>
+      <th i18n:translate="">Days</th>
+      <th i18n:translate="">Action</th>
+     </tr>
+     <tal:block tal:repeat="i batch">
+      <tal:block
+       tal:define="sideffect python:props [0].menu_or_field (item = i)" />
+      <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
+       <tal:block tal:repeat="prop python:props [not do_user:]">
+        <tal:block tal:define="edit python:
+             i.status.plain () == 'open' and prop.name != 'status'">
+         <td tal:content="structure python:prop.menu_or_field
+                 (item = i, editable = edit)"/>
+        </tal:block>
+       </tal:block>
+       <td tal:content="python:utils.leave_days
+           ( db._db
+           , props [0].prop.id
+           , props [1].prop._value
+           , props [2].prop._value
+           )"/>
+       <td tal:content="structure python: buttons.generate (props [4])"/>
+      </tr>
+     </tal:block>
+    </table>
+   </form>
+  </tal:block>
+ </tal:block>
+</tal:block>
+
 <tal:block metal:define-macro="editform">
  <tal:block tal:define=
    " use_labelprop python:0
