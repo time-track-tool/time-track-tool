@@ -39,6 +39,8 @@ def check_range (db, nodeid, uid, first_day, last_day) :
         day *and* the last day is larger (new interval is contained in
         existing interval).
     """
+    if first_day > last_day :
+        raise Reject (_ ("First day may not be after last day"))
     if (last_day - first_day) > Interval ('30d') :
         raise Reject (_ ("Max. 30 days for single leave submission"))
     range = common.pretty_range (first_day, last_day)
@@ -154,6 +156,10 @@ def check_submission (db, cl, nodeid, new_values) :
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
     check_range (db, nodeid, user, first_day, last_day)
     check_wp    (db, time_wp, user, first_day, last_day)
+    if 'first_day' in new_values or 'last_day' in new_values :
+        vacation.create_daily_recs (db, user, first_day, last_day)
+        if vacation.leave_days (db, user, first_day, last_day) == 0 :
+            raise Reject (_ ("Vacation request for 0 days"))
     if old_status in ('open', 'submitted') :
         check_dr_status (db, user, first_day, last_day, 'open')
     if old_status in ('accepted', 'cancel requested') :

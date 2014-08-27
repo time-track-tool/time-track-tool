@@ -1362,6 +1362,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , time_wp   = self.vacation_wp
             , user      = self.user2
             )
+        # first/last exchanged
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.create
+            , first_day = date.Date ('2009-12-27')
+            , last_day  = date.Date ('2009-12-26')
+            , time_wp   = self.vacation_wp
+            , user      = self.user2
+            )
         # time_wp = self.vacation_wp is the default
         vs = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-22')
@@ -1381,6 +1389,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( first_day = date.Date ('2009-12-04')
             , last_day  = date.Date ('2009-12-04')
             , time_wp   = self.flexi_wp
+            )
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.set
+            , za
+            , first_day = date.Date ('2009-12-05')
             )
         # First year: 4.04 days vacation, this is rounded *up* so user
         # should be able to request 5 days and supervisor should be able
