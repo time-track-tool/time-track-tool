@@ -118,16 +118,23 @@ def new_submission (db, cl, nodeid, new_values) :
     if vacation.leave_days (db, user, first_day, last_day) == 0 :
         raise Reject (_ ("Vacation request for 0 days"))
     check_dr_status (db, user, first_day, last_day, 'open')
-    # Check dyn user parameters
+    check_dyn_user_params (db, user, first_day, last_day)
+# end def new_submission
+
+def check_dyn_user_params (db, user, first_day, last_day) :
     d = first_day
+    code = -1 # Code is either None or a string, can't be numeric
     while d <= last_day :
         dyn = user_dynamic.get_user_dynamic (db, user, d)
         if not dyn.vacation_yearly :
             raise Reject (_ ("No yearly vacation for this user"))
         if dyn.vacation_day is None or dyn.vacation_month is None :
             raise Reject (_ ("Vacation date setting is missing"))
+        if code != dyn.vcode and code != -1 :
+            raise Reject (_ ("Differing vacation codes in range"))
+        code = dyn.vcode
         d += common.day
-# end def new_submission
+# end def check_dyn_user_params
 
 def check_submission (db, cl, nodeid, new_values) :
     """ Check that changes to a leave submission are ok.
@@ -160,6 +167,7 @@ def check_submission (db, cl, nodeid, new_values) :
         vacation.create_daily_recs (db, user, first_day, last_day)
         if vacation.leave_days (db, user, first_day, last_day) == 0 :
             raise Reject (_ ("Vacation request for 0 days"))
+        check_dyn_user_params (db, user, first_day, last_day)
     if old_status in ('open', 'submitted') :
         check_dr_status (db, user, first_day, last_day, 'open')
     if old_status in ('accepted', 'cancel requested') :
@@ -180,7 +188,9 @@ def check_submission (db, cl, nodeid, new_values) :
                 if old_status == 'submitted' and new_status == 'open' :
                     ok = True
             clearer = common.clearance_by (db, user)
-            hr_only = need_hr_approval (db, tp, user, first_day, last_day)
+            dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
+            vcod    = dyn.vcode
+            hr_only = need_hr_approval (db, tp, user, vcod, first_day, last_day)
             if  (  not ok
                 and (   (uid in clearer and not hr_only)
                     or  common.user_has_role (db, uid, 'HR-leave-approval')
@@ -222,10 +232,10 @@ def check_dr_status (db, user, first_day, last_day, st_name) :
             raise Reject (_ ('Daily records must exist'))
 # end def check_dr_status
 
-def need_hr_approval (db, tp, user, first_day, last_day, booked = False) :
+def need_hr_approval (db, tp, user, vcod, first_day, last_day, booked = False) :
     day = common.day
-    ed  = vacation.next_yearly_vacation_date (db, user, last_day) - day
-    vac = vacation.remaining_vacation (db, user, ed)
+    ed  = vacation.next_yearly_vacation_date (db, user, vcod, last_day) - day
+    vac = vacation.remaining_vacation (db, user, vcod, ed)
     if vac is None :
         raise Reject (_ ("No initial vacation correction for this user"))
     dur = vacation.leave_days (db, user, first_day, last_day)
@@ -255,8 +265,10 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     elif new_status == declined :
         handle_decline (db, vs)
     elif new_status == submitted :
+        dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
+        vcod    = dyn.vcode
         hr_only = need_hr_approval \
-            (db, tp, vs.user, vs.first_day, vs.last_day, booked = True)
+            (db, tp, vs.user, vcod, vs.first_day, vs.last_day, booked = True)
         handle_submit  (db, vs, hr_only)
     elif new_status == cancelled :
         handle_cancel  (db, vs, trs)

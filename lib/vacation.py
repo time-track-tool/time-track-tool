@@ -106,7 +106,7 @@ def create_daily_recs (db, user, first_day, last_day) :
 # end def create_daily_recs
 
 def leave_submissions_on_date (db, user, date) :
-    """ Return all vacation records that overlap with the given date
+    """ Return all leave records that overlap with the given date
     """
     dts = ';%s' % date.pretty (common.ymd)
     dte = '%s;' % date.pretty (common.ymd)
@@ -153,9 +153,9 @@ def leave_duration (db, user, date) :
     return wh - bk
 # end def leave_duration
 
-def next_yearly_vacation_date (db, user, date) :
+def next_yearly_vacation_date (db, user, vcode, date) :
     d = date + common.day
-    dyn = vac_get_user_dynamic (db, user, d)
+    dyn = vac_get_user_dynamic (db, user, vcode, d)
     if not dyn :
         return None
     y = int (d.get_tuple () [0])
@@ -172,16 +172,25 @@ def next_yearly_vacation_date (db, user, date) :
         if dyn.valid_to > next_date :
             # valid dyn record
             return next_date
-        ndyn = user_dynamic.next_user_dynamic (db, dyn)
-        if not ndyn or ndyn.valid_from > next_date :
+        ndyn = vac_next_user_dynamic (db, dyn)
+        if  (  not ndyn
+            or ndyn.valid_from > next_date
+            or ndyn.vcode != vcode
+            ) :
             # use last dyn record, no next or too far in the future
             return next_date
-        dyn = ndyn
+        dyn  = ndyn
+        yday = dyn.vacation_day
+        ymon = dyn.vacation_month
+        next_date = roundup.date.Date ('%04d-%02d-%02d' % (y, ymon, yday))
+        if next_date < d :
+            next_date = roundup.date.Date \
+                ('%04d-%02d-%02d' % (y + 1, ymon, yday))
 # end def next_yearly_vacation_date
 
-def prev_yearly_vacation_date (db, user, date) :
+def prev_yearly_vacation_date (db, user, vcode, date) :
     d = date - common.day
-    dyn = vac_get_user_dynamic (db, user, d)
+    dyn = vac_get_user_dynamic (db, user, vcode, d)
     if not dyn or dyn.valid_from > d :
         return None
     y = int (d.get_tuple () [0])
@@ -192,10 +201,15 @@ def prev_yearly_vacation_date (db, user, date) :
             ('%04d-%02d-%02d' % (y - 1, dyn.vacation_month, dyn.vacation_day))
     assert prev_date < date
     while dyn.valid_from > prev_date :
-        ndyn = user_dynamic.prev_user_dynamic (db, dyn)
-        if not ndyn :
+        dyn = vac_prev_user_dynamic (db, dyn)
+        if not dyn :
             return None
-        dyn = ndyn
+        yday = dyn.vacation_day
+        ymon = dyn.vacation_month
+        prev_date = roundup.date.Date ('%04d-%02d-%02d' % (y, ymon, yday))
+        if prev_date >= date :
+            prev_date = roundup.date.Date \
+                ('%04d-%02d-%02d' % (y - 1, ymon, yday))
     return prev_date
 # end def prev_yearly_vacation_date
 
@@ -223,29 +237,35 @@ def interval_days (iv) :
     return t [3] * t [0]
 # end def interval_days
 
-def get_vacation_correction (db, user, date) :
+def get_vacation_correction (db, user, vcode, date) :
     """ Get latest absolute vacation_correction.
     """
     dt = ";%s" % date.pretty (common.ymd)
-    vc = db.vacation_correction.filter \
-        ( None
-        , dict (user = user, absolute = True, date = dt)
-        , sort = [('-', 'date')]
+    d = dict \
+        ( user          = user
+        , absolute      = True
+        , date          = dt
         )
-    if not vc :
+    if vcode is not None :
+        d ['vcode'] = vcode
+    vcs = db.vacation_correction.filter (None, d, sort = [('-', 'date')])
+    if not vcs :
         return
-    return db.vacation_correction.getnode (vc [0])
+    for id in vcs :
+        vc = db.vacation_correction.getnode (id)
+        if vc.vcode == vcode :
+            return vc
 # end def get_vacation_correction
 
-def remaining_vacation (db, user, date, consolidated = None) :
+def remaining_vacation (db, user, vcode, date, consolidated = None) :
     """ Compute remaining vacation on the given date
     """
-    vc = get_vacation_correction (db, user, date)
+    vc = get_vacation_correction (db, user, vcode, date)
     if not vc :
         return
     dt = common.pretty_range (vc.date, date)
     if consolidated is None :
-        consolidated = consolidated_vacation (db, user, date, vc)
+        consolidated = consolidated_vacation (db, user, vcode, date, vc)
     vac = consolidated
     # All time recs with vacation wp up to date
     ds  = [('+', 'date')]
@@ -260,31 +280,37 @@ def remaining_vacation (db, user, date, consolidated = None) :
         tr  = db.time_record.getnode  (tid)
         dr  = db.daily_record.getnode (tr.daily_record)
         dyn = user_dynamic.get_user_dynamic (db, user, dr.date)
+        if dyn.vcode != vcode :
+            continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
         vac -= ceil (tr.duration / wh * 2) / 2.
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     dt  = common.pretty_range (vc.date + common.day, date)
-    vcs = db.vacation_correction.filter \
-        (None, dict (user = user, date = dt), sort = ds)
+    d   = dict (user = user, date = dt)
+    if vcode is not None :
+        d ['vcode'] = vcode
+    vcs = db.vacation_correction.filter (None, d, sort = ds)
     for vcid in vcs :
         vc = db.vacation_correction.getnode (vcid)
+        if vc.vcode != vcode :
+            continue
         assert not vc.absolute
         vac += vc.days
     return vac
 # end def remaining_vacation
 
-def consolidated_vacation (db, user, date, vc = None) :
+def consolidated_vacation (db, user, vcode, date, vc = None) :
     """ Compute remaining vacation on the given date
     """
-    vc  = vc or get_vacation_correction (db, user, date)
+    vc  = vc or get_vacation_correction (db, user, vcode, date)
     if not vc :
         return None
     dt  = common.pretty_range (vc.date, date)
-    ed  = next_yearly_vacation_date (db, user, date)
+    ed  = next_yearly_vacation_date (db, user, vcode, date)
     d   = vc.date
-    dyn = vac_get_user_dynamic (db, user, d)
+    dyn = vac_get_user_dynamic (db, user, vcode, d)
     if dyn.valid_to and dyn.valid_to < d :
         return None
     vac = float (vc.days)
@@ -297,7 +323,7 @@ def consolidated_vacation (db, user, date, vc = None) :
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to < eoy :
             yd = float (common.ydays (dyn.valid_to))
             vac += interval_days (dyn.valid_to - d) * dyn.vacation_yearly / yd
-            dyn = user_dynamic.next_user_dynamic (db, dyn)
+            dyn = vac_next_user_dynamic (db, dyn)
         elif eoy < ed :
             yd = float (common.ydays (eoy))
             iv = eoy + common.day - d
@@ -332,7 +358,7 @@ def valid_leave_wps (db, user = None, date = None, srt = None) :
     return valid_wps (db, d, user, date, srt)
 # end def valid_leave_wps
 
-def vac_get_user_dynamic (db, user, date) :
+def vac_get_user_dynamic (db, user, vcode, date) :
     """ Get user_dynamic record for a vacation computation on the given
         date. Note that there are cases where no dyn user record exists
         exactly for the date but before -- or after. If the record
@@ -345,9 +371,25 @@ def vac_get_user_dynamic (db, user, date) :
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     if not dyn :
         dyn = user_dynamic.find_user_dynamic (db, user, date, '-')
+    if dyn and dyn.vcode != vcode :
+        dyn = vac_prev_user_dynamic (db, dyn)
     if not dyn :
         dyn = user_dynamic.find_user_dynamic (db, user, date, '+')
+    if dyn.vcode != vcode :
+        dyn = vac_next_user_dynamic (db, dyn)
     return dyn
 # end def vac_get_user_dynamic
 
+def vac_next_user_dynamic (db, dyn) :
+    dyn = user_dynamic.next_user_dynamic (db, dyn)
+    while dyn and dyn.vcode != vcode :
+        dyn = user_dynamic.next_user_dynamic (db, dyn)
+    return dyn
+# end def vac_next_user_dynamic
+
+def vac_prev_user_dynamic (db, dyn) :
+    dyn = user_dynamic.prev_user_dynamic (db, dyn)
+    while dyn and dyn.vcode != vcode :
+        dyn = user_dynamic.prev_user_dynamic (db, dyn)
+    return dyn
 ### __END__

@@ -1633,6 +1633,9 @@ properties = \
         , ( 'valid_to'
           , ["admin", "hr", "hr-org-location"]
           )
+        , ( 'vcode'
+          , ["admin", "hr", "hr-org-location"]
+          )
         , ( 'weekend_allowed'
           , ["admin", "hr", "hr-org-location"]
           )
@@ -1670,6 +1673,9 @@ properties = \
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         , ( 'user'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'vcode'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         ]

@@ -1200,21 +1200,21 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for d in '2008-11-03', '2008-11-30', '2008-12-31' :
             dt = date.Date (d)
             self.assertEqual \
-                ( vacation.consolidated_vacation (self.db, self.user2, dt)
+                ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
                 , (28. + 31.) * 25. / 366.
                 )
             self.assertEqual \
-                ( vacation.remaining_vacation (self.db, self.user2, dt)
+                ( vacation.remaining_vacation (self.db, self.user2, None, dt)
                 , (28. + 31.) * 25. / 366.
                 )
         for d in '2009-01-01', '2009-01-30', '2009-12-31' :
             dt = date.Date (d)
             self.assertEqual \
-                ( vacation.consolidated_vacation (self.db, self.user2, dt)
+                ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
                 , (28. + 31.) * 25. / 366. + 25.
                 )
             self.assertEqual \
-                ( vacation.remaining_vacation (self.db, self.user2, dt)
+                ( vacation.remaining_vacation (self.db, self.user2, None, dt)
                 , (28. + 31.) * 25. / 366. + 25.
                 )
         s   = [('+', 'user'), ('+', 'date')]

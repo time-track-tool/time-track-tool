@@ -1435,32 +1435,36 @@ class Vacation_Report (_Report) :
         users         = sum_common.get_users (db, filterspec, start, end)
         min_user_date = {}
         user_vc       = {}
+        self.user_vcodes = {}
         for u in users.keys () :
             srt = [('+', 'date')]
-            vc  = db.vacation_correction.filter \
+            vcs = db.vacation_correction.filter \
                 (None, dict (user = u, absolute = True), sort = srt)
-            if not vc :
+            if not vcs :
                 del users [u]
                 continue
-            vc = db.vacation_correction.getnode (vc [0])
-            if start :
-                md = min_user_date [u] = max (vc.date, start)
-            else :
-                md = min_user_date [u] = vc.date
-            if end and min_user_date [u] > end :
-                del users [u]
-                continue
-            dyn = user_dynamic.get_user_dynamic (db, u, md)
-            if not dyn :
-                dyn = user_dynamic.find_user_dynamic (db, u, md, '-')
-            if not dyn :
-                dyn = user_dynamic.find_user_dynamic (db, u, md)
-            if  (  not dyn or (dyn.valid_from and dyn.valid_from > end)
-                or not self.permission_ok (u, dyn)
-                ) :
-                del users [u]
-                continue
-            user_vc [u] = vc
+            vcodes = {}
+            for id in vcs :
+                vc = db.vacation_correction.getnode (id)
+                if vc.vcode not in vcodes :
+                    vcodes [vc.vcode] = vc
+            for vcod in vcodes :
+                vc = vcodes [vcod]
+                if start :
+                    md = min_user_date [(u, vcod)] = max (vc.date, start)
+                else :
+                    md = min_user_date [(u, vcod)] = vc.date
+                if end and min_user_date [(u, vcod)] > end :
+                    continue
+                dyn = vacation.vac_get_user_dynamic (db, u, vcod, md)
+                if  (  not dyn or (dyn.valid_from and dyn.valid_from > end)
+                    or not self.permission_ok (u, dyn)
+                    ) :
+                    continue
+                user_vc [(u, vcod)] = vc
+                if u not in self.user_vcodes :
+                    self.user_vcodes [u] = []
+                self.user_vcodes [u].append (vcod)
         self.users = sorted \
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
@@ -1470,56 +1474,66 @@ class Vacation_Report (_Report) :
         year = Interval ('1y')
         ld   = None
         for u in self.users :
-            yday  = vacation.next_yearly_vacation_date \
-                (db, u, min_user_date [u]) - day
-            d     = yday
-            carry = None
-            if d :
-                pd = vacation.prev_yearly_vacation_date (db, u, d)
-                #print user_vc [u].days, user_vc [u].date, pd
-                if user_vc [u].date == pd :
-                    carry = user_vc [u].days
-                else :
-                    carry = vacation.remaining_vacation (db, u, pd - day)
-            carry = carry or 0.0
-            ltot  = carry
-            #print yday, carry, d, end
-            while d and d <= end :
-                container = Day_Container (d)
-                container ['user'] = db.user.get (u, 'username')
-                dyn = vacation.vac_get_user_dynamic (db, u, d)
-                ent = {}
-                while (dyn and dyn.valid_from < d) :
-                    ent [dyn.vacation_yearly] = 1
-                    dyn = user_dynamic.next_user_dynamic (db, dyn)
-                v = list (sorted (ent.keys ()))
-                # Use '..' as separator to prevent excel from computing
-                # difference if exported to excel
-                if len (v) > 1 :
-                    container ['yearly entitlement'] = \
-                        '%s .. %s' % (v [0], v [-1])
-                else :
-                    container ['yearly entitlement'] = v [0]
-                container ['carry forward'] = carry
-                cons = vacation.consolidated_vacation (db, u, d)
-                container ['entitlement total'] = cons - ltot + carry
-                container ['yearly prorated'] = cons - ltot
-                container ['remaining vacation'] = carry = \
-                    vacation.remaining_vacation (db, u, d, cons)
-                ltot = cons
+            if u not in self.user_vcodes :
+                continue
+            for vcod in self.user_vcodes [u] :
+                yday  = vacation.next_yearly_vacation_date \
+                    (db, u, vcod, min_user_date [(u, vcod)]) - day
+                d     = yday
+                carry = None
+                if d :
+                    pd = vacation.prev_yearly_vacation_date (db, u, vcod, d)
+                    #print user_vc [(u, vcod)].days,
+                    #print user_vc [(u, vcod)].date, pd
+                    if user_vc [(u, vcod)].date == pd :
+                        carry = user_vc [(u, vcod)].days
+                    else :
+                        carry = vacation.remaining_vacation \
+                            (db, u, vcod, pd - day)
+                carry = carry or 0.0
+                ltot  = carry
+                #print yday, carry, d, end
+                while d and d <= end :
+                    container = Day_Container (d)
+                    if not vcod :
+                        container ['user'] = db.user.get (u, 'username')
+                    else :
+                        container ['user'] = '/'.join \
+                            ((db.user.get (u, 'username'), vcod))
+                    dyn = vacation.vac_get_user_dynamic (db, u, vcod, d)
+                    ent = {}
+                    while (dyn and dyn.valid_from < d) :
+                        ent [dyn.vacation_yearly] = 1
+                        dyn = vacation.vac_next_user_dynamic (db, dyn)
+                    v = list (sorted (ent.keys ()))
+                    # Use '..' as separator to prevent excel from computing
+                    # difference if exported to excel
+                    if len (v) > 1 :
+                        container ['yearly entitlement'] = \
+                            '%s .. %s' % (v [0], v [-1])
+                    else :
+                        container ['yearly entitlement'] = v [0]
+                    container ['carry forward'] = carry
+                    cons = vacation.consolidated_vacation (db, u, vcod, d)
+                    container ['entitlement total'] = cons - ltot + carry
+                    container ['yearly prorated'] = cons - ltot
+                    container ['remaining vacation'] = carry = \
+                        vacation.remaining_vacation (db, u, vcod, d, cons)
+                    ltot = cons
 
-                if u not in self.values :
-                    self.values [u] = []
-                self.values [u].append (container)
+                    if (u, vcod) not in self.values :
+                        self.values [(u, vcod)] = []
+                    self.values [(u, vcod)].append (container)
 
-                nd = vacation.next_yearly_vacation_date (db, u, d + day)
-                ld = d
-                hv = common.user_has_role (self.db, self.uid, 'HR-vacation')
-                # Allow intermediate dates only for hr-vacation role
-                if nd > end and d < end and hv :
-                    d = end
-                else :
-                    d = nd - day
+                    nd = vacation.next_yearly_vacation_date \
+                        (db, u, vcod, d + day)
+                    ld = d
+                    hv = common.user_has_role (self.db, self.uid, 'HR-vacation')
+                    # Allow intermediate dates only for hr-vacation role
+                    if nd > end and d < end and hv :
+                        d = end
+                    else :
+                        d = nd - day
     # end def __init__
 
     def permission_ok (self, user, dynuser) :
@@ -1550,20 +1564,23 @@ class Vacation_Report (_Report) :
 
     def _output (self, line_formatter, item_formatter) :
         for u in self.users :
-            user = self.db.user.get (u, 'username')
-            if u not in self.values :
+            if u not in self.user_vcodes :
                 continue
-            for container in self.values [u] :
-                line  = []
-                line.append (item_formatter (user))
-                line.append (item_formatter (container))
-                for f in self.fields :
-                    line.append (item_formatter (container [f]))
-                if self.need_period :
-                    for f, perm in self.period_fields :
-                        if perm or self.is_allowed () :
-                            line.append (item_formatter (container [f]))
-                line_formatter (line)
+            user = self.db.user.get (u, 'username')
+            for vcod in self.user_vcodes [u] :
+                if (u, vcod) not in self.values :
+                    continue
+                for container in self.values [(u, vcod)] :
+                    line  = []
+                    line.append (item_formatter (user))
+                    line.append (item_formatter (container))
+                    for f in self.fields :
+                        line.append (item_formatter (container [f]))
+                    if self.need_period :
+                        for f, perm in self.period_fields :
+                            if perm or self.is_allowed () :
+                                line.append (item_formatter (container [f]))
+                    line_formatter (line)
     # end def _output
 
 # end class Staff_Report

@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -316,6 +316,7 @@ def init \
         , vacation_yearly       = Number    ()
         , vacation_month        = Number    ()
         , vacation_day          = Number    ()
+        , vcode                 = String    ()
         , daily_worktime        = Number    ()
         , weekly_hours          = Number    ()
         , supp_weekly_hours     = Number    ()
@@ -369,6 +370,7 @@ def init \
         , date                  = Date      (offset = 0)
         , absolute              = Boolean   ()
         , days                  = Number    ()
+        , vcode                 = String    ()
         )
 
     # Only for reporting mask, no records will ever be created

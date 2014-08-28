@@ -694,6 +694,7 @@ properties = \
         , 'vacation_yearly'
         , 'valid_from'
         , 'valid_to'
+        , 'vcode'
         , 'weekend_allowed'
         , 'weekly_hours'
         ]
@@ -709,6 +710,7 @@ properties = \
         , 'date'
         , 'days'
         , 'user'
+        , 'vcode'
         ]
       )
     , ( 'vacation_report'
