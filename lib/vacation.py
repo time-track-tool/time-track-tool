@@ -155,11 +155,7 @@ def leave_duration (db, user, date) :
 
 def next_yearly_vacation_date (db, user, date) :
     d = date + common.day
-    dyn = user_dynamic.get_user_dynamic (db, user, d)
-    if not dyn :
-        dyn = user_dynamic.find_user_dynamic (db, user, d, '-')
-    if not dyn :
-        dyn = user_dynamic.find_user_dynamic (db, user, d, '+')
+    dyn = vac_get_user_dynamic (db, user, d)
     if not dyn :
         return None
     y = int (d.get_tuple () [0])
@@ -182,6 +178,26 @@ def next_yearly_vacation_date (db, user, date) :
             return next_date
         dyn = ndyn
 # end def next_yearly_vacation_date
+
+def prev_yearly_vacation_date (db, user, date) :
+    d = date - common.day
+    dyn = vac_get_user_dynamic (db, user, d)
+    if not dyn or dyn.valid_from > d :
+        return None
+    y = int (d.get_tuple () [0])
+    prev_date = roundup.date.Date \
+        ('%04d-%02d-%02d' % (y, dyn.vacation_month, dyn.vacation_day))
+    if prev_date >= date :
+        prev_date = roundup.date.Date \
+            ('%04d-%02d-%02d' % (y - 1, dyn.vacation_month, dyn.vacation_day))
+    assert prev_date < date
+    while dyn.valid_from > prev_date :
+        ndyn = user_dynamic.prev_user_dynamic (db, dyn)
+        if not ndyn :
+            return None
+        dyn = ndyn
+    return prev_date
+# end def prev_yearly_vacation_date
 
 def interval_days (iv) :
     """ Compute number of days in a roundup.date Interval. The
@@ -268,20 +284,28 @@ def consolidated_vacation (db, user, date, vc = None) :
     dt  = common.pretty_range (vc.date, date)
     ed  = next_yearly_vacation_date (db, user, date)
     d   = vc.date
-    dyn = user_dynamic.get_user_dynamic (db, user, d)
-    if not dyn :
-        dyn = user_dynamic.find_user_dynamic (db, user, d)
+    dyn = vac_get_user_dynamic (db, user, d)
+    if dyn.valid_to and dyn.valid_to < d :
+        return None
     vac = float (vc.days)
     while dyn and d < ed :
         if dyn.valid_from > d :
             d = dyn.valid_from
             continue
         assert not dyn.valid_to or dyn.valid_to > d
-        if dyn.valid_to and dyn.valid_to <= ed :
-            vac += interval_days (dyn.valid_to - d) * dyn.vacation_yearly / 365.
+        eoy = roundup.date.Date ('%s-12-31' % d.year)
+        if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to < eoy :
+            yd = float (common.ydays (dyn.valid_to))
+            vac += interval_days (dyn.valid_to - d) * dyn.vacation_yearly / yd
             dyn = user_dynamic.next_user_dynamic (db, dyn)
+        elif eoy < ed :
+            yd = float (common.ydays (eoy))
+            iv = eoy + common.day - d
+            vac += interval_days (iv) * dyn.vacation_yearly / yd
+            d  = eoy + common.day
         else :
-            vac += interval_days (ed - d) * dyn.vacation_yearly / 365.
+            yd = float (common.ydays (ed - common.day))
+            vac += interval_days (ed - d) * dyn.vacation_yearly / yd
             d = ed
     return vac
 # end def consolidated_vacation
@@ -307,5 +331,23 @@ def valid_leave_wps (db, user = None, date = None, srt = None) :
     d = {'project.approval_required' : True}
     return valid_wps (db, d, user, date, srt)
 # end def valid_leave_wps
+
+def vac_get_user_dynamic (db, user, date) :
+    """ Get user_dynamic record for a vacation computation on the given
+        date. Note that there are cases where no dyn user record exists
+        exactly for the date but before -- or after. If the record
+        starts a vacation period (e.g. an initial absolute vacation
+        correction) there doesn't necessarily already exist a dynamic
+        user record. On the other hand when computing the vacation at
+        the end of a period no dyn user record may be available anymore
+        (e.g., because the person has left).
+    """
+    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    if not dyn :
+        dyn = user_dynamic.find_user_dynamic (db, user, date, '-')
+    if not dyn :
+        dyn = user_dynamic.find_user_dynamic (db, user, date, '+')
+    return dyn
+# end def vac_get_user_dynamic
 
 ### __END__

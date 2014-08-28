@@ -30,6 +30,7 @@
 #--
 #
 import locale
+import datetime
 from   roundup import roundupdb, hyperdb
 from   roundup.exceptions import Reject
 from   roundup.date       import Date, Interval, Range
@@ -1122,5 +1123,31 @@ def fix_date (date) :
         return Date (date.pretty (ymd))
     return date
 # end fix_date
+
+def ydays (ydate) :
+    """ Return number of days in given year, parameter is either a
+        roundup.date.Date object or an integer year.
+
+    >>> ydays (2000)
+    366
+    >>> ydays (2001)
+    365
+    >>> ydays (2004)
+    366
+    >>> ydays (2016)
+    366
+    >>> ydays (Date ('2016-01-01'))
+    366
+    >>> ydays (Date ('2016-12-01'))
+    366
+    >>> ydays (Date ('2016-12-31'))
+    366
+    """
+    if isinstance (ydate, int) :
+        ydate = datetime.date (ydate, 12, 31)
+    else :
+        ydate = datetime.date (ydate.year, 12, 31)
+    return ydate.timetuple().tm_yday
+# end def ydays
 
 ### __END__

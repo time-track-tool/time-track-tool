@@ -121,3 +121,41 @@ def daily_record_viewable (db, userid, itemid) :
         or dr.user in supervised_users (db, userid)
         )
 # end def daily_record_viewable
+
+def get_users (db, filterspec, start, end) :
+    """ Get all users in filterspec (including department, organisation,
+        etc. where the user belongs to the given entity via a valid dyn
+        user record between start and end)
+    """
+    users = filterspec.get ('user', [])
+    sv    = dict ((i, 1) for i in filterspec.get ('supervisor', []))
+    svu   = []
+    if sv :
+        svu = db.user.find (supervisor = sv)
+    users = dict ((u, 1) for u in users + svu)
+    found = bool (users)
+    olo   = None
+    if 'organisation' in filterspec :
+        olo = db.org_location.filter \
+            (None, organisation = filterspec ['organisation'])
+    for cl in 'department', 'org_location', 'org' :
+        if cl == 'org' :
+            cl = 'org_location'
+            spec = olo
+        else :
+            spec = filterspec.get (cl, [])
+        if spec :
+            found_users = True
+            for i in db.user_dynamic.filter \
+                ( None
+                , {cl : spec, 'valid_from' : end.pretty (';%Y-%m-%d')}
+                ) :
+                ud = db.user_dynamic.getnode (i)
+                if  (   ud.valid_from <= end
+                    and (not ud.valid_to or ud.valid_to > start)
+                    ) :
+                    users [ud.user] = 1
+    if not found :
+        users = dict ((i, 1) for i in db.user.getnodeids (retired = False))
+    return users
+# end def get_users
