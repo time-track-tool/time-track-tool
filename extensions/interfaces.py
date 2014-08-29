@@ -39,13 +39,9 @@ from roundup.date                   import Date, Interval
 from copy                           import copy
 from xml.sax.saxutils               import escape
 
-from user_dynamic                   import get_user_dynamic
-from user_dynamic                   import act_or_latest_user_dynamic
-from user_dynamic                   import next_user_dynamic, prev_user_dynamic
-from user_dynamic                   import update_tr_duration
-from common                         import clearance_by, ymd, persons_for_adr
-from common                         import user_has_role, monthstart_twoweeksago
-from common                         import Size_Limit
+import common
+import user_dynamic
+import vacation
 
 def localecollate (s) :
     old = locale.getlocale (locale.LC_COLLATE)
@@ -242,22 +238,15 @@ def work_packages (db, daily_record, editable = True) :
     """
     if not editable :
         return []
-    from time import time
-    date       = daily_record.date
-    filterspec = \
-        { 'bookers'    : daily_record.user.id
-        , 'time_start' : ';%s' % date
-        }
-    x1 = db._db.time_wp.filter (None, filterspec)
-    #print "1st query", time () - timestamp, daily_record.user.id, date
-    filterspec ['bookers'] = '-1'
-    x2 = db._db.time_wp.filter (None, filterspec)
-    #print "2nd query", time () - timestamp
-    wps = (db.time_wp.getItem (k) for k in x1 + x2)
-    x = [wp for wp in wps if not wp.time_end or wp.time_end >= date]
-    #print "filtering", time () - timestamp
-    srt = lambda z: (localecollate (z.project), localecollate (z.name))
-    return sorted (x, key = srt)
+    date = daily_record.date
+    user = daily_record.user.id
+    filt = {'project.approval_required' : False}
+    srt  = [('+', 'project.name'), ('+', 'name')]
+    wps  = vacation.valid_wps \
+        (db._db, filter = filt, date = date, user = user, srt = srt)
+    wps  = (db.time_wp.getItem (k) for k in wps)
+    srt  = lambda z: (localecollate (z.project), localecollate (z.name))
+    return sorted (wps, key = srt)
 # end def work_packages
 
 def work_packages_selector (wps) :
@@ -298,7 +287,7 @@ def u_sorted (vals, keys, fun = str) :
 def weekend_allowed (db, daily_record) :
     user, date = [str (daily_record [i]) for i in 'user', 'date']
     user = db.user.lookup (user)
-    dyn = get_user_dynamic (db, user, date)
+    dyn = user_dynamic.get_user_dynamic (db, user, date)
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
 
@@ -345,7 +334,7 @@ def color_duration (tr) :
     if tr.time_activity and tr.time_activity.id in travel_act:
         if not tr.tr_duration or tr.activity < tr.daily_record.activity :
             id = tr.daily_record.id
-            update_tr_duration (db, db.daily_record.getnode (id))
+            user_dynamic.update_tr_duration (db, db.daily_record.getnode (id))
             db.commit()
         return 'travel'
     return ''
@@ -435,23 +424,23 @@ def init (instance) :
     reg ("sorted",                       u_sorted)
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)
-    reg ("clearance_by",                 clearance_by)
-    reg ("user_has_role",                user_has_role)
+    reg ("clearance_by",                 common.clearance_by)
+    reg ("user_has_role",                common.user_has_role)
     reg ("welcome",                      welcome)
-    reg ("monthstart_twoweeksago",       monthstart_twoweeksago)
-    reg ("get_user_dynamic",             get_user_dynamic)
-    reg ("next_user_dynamic",            next_user_dynamic)
-    reg ("prev_user_dynamic",            prev_user_dynamic)
-    reg ("act_or_latest_user_dynamic",   act_or_latest_user_dynamic)
-    reg ("ymd",                          ymd)
+    reg ("monthstart_twoweeksago",       common.monthstart_twoweeksago)
+    reg ("get_user_dynamic",             user_dynamic.get_user_dynamic)
+    reg ("next_user_dynamic",            user_dynamic.next_user_dynamic)
+    reg ("prev_user_dynamic",            user_dynamic.prev_user_dynamic)
+    reg ("act_or_latest_user_dynamic",  user_dynamic.act_or_latest_user_dynamic)
+    reg ("ymd",                          common.ymd)
     reg ("color_duration",               color_duration)
     reg ("now",                          now)
     reg ("until_now",                    until_now)
     reg ("get_from_form",                get_from_form)
     reg ("user_classhelp",               user_classhelp)
     reg ("nickname",                     nickname)
-    reg ("persons_for_adr",              persons_for_adr)
+    reg ("persons_for_adr",              common.persons_for_adr)
     reg ("indexargs_dict",               indexargs_dict)
     reg ("may_search",                   may_search)
-    reg ("Size_Limit",                   Size_Limit)
+    reg ("Size_Limit",                   common.Size_Limit)
     reg ("user_props",                   user_props)

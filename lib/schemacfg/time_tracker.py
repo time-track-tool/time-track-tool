@@ -281,6 +281,7 @@ def init \
         , durations_allowed     = Boolean   ()
         , cost_center           = Link      ("cost_center")
         , travel                = Boolean   ()
+        , is_public             = Boolean   ()
         )
 
     time_wp_group = Class \

@@ -275,6 +275,10 @@
                           '@filter=user.status,contact_type&'
                           '@pagesize=5000&@startwith=0&'
                           'user.status=1&contact_type=2,3,5,6'
+   , ('vacation_report', '')
+                        : '@filter=user&'
+                          '@pagesize=200&@startwith=0&'
+                          'user=%s' % uid
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit',   '?@template=item', 1)
@@ -512,6 +516,7 @@
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('leave_submission',    'View', 1,               ('',''))
+     , ('vacation_report',     'View', 1,               ('',''))
      )
    )
  ; menu_type     python:
@@ -615,10 +620,16 @@
         Time
        </a>
       </span>
+      <span class="classblock">
+       <a i18n:translate="" href="leave_submission?@template=edit">
+        Leave
+       </a>
+      </span>
      </span>
 
      <!-- approval if user can approve records -->
-     <span tal:condition="approval_for" class="classblock">
+     <span tal:condition="approval_for">
+      <span class="classblock">
        <a i18n:translate="" tal:attributes="href python:
         [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
           % ','.join (approval_for.keys ())
@@ -628,6 +639,12 @@
          ]">
         Approval
        </a>
+      </span>
+      <span class="classblock">
+       <a i18n:translate="" href="leave_submission?@template=approve">
+        Approve Leaves
+       </a>
+      </span>
      </span>
 
      <!-- custom classes with "New" Button -->

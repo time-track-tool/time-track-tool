@@ -88,6 +88,10 @@ for u in db.user.getnodeids (retired = False) :
                     (dyn.id, vacation_month = 1, vacation_day = 1)
         dyn = user_dynamic.prev_user_dynamic (db, dyn)
 
+for wpid in db.time_wp.getnodeids (retired = False) :
+    # Reactor will update is_public to the correct value
+    db.time_wp.set (wpid, is_public = False)
+
 broken_int = dict.fromkeys \
     (('2.56'
     ,

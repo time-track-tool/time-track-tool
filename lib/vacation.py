@@ -382,20 +382,22 @@ def consolidated_vacation (db, user, vcode, date, vc = None) :
     return vac
 # end def consolidated_vacation
 
-def valid_wps (db, filter, user = None, date = None, srt = None) :
-    # FIXME: One day we want to refactore 'work_packages' in
-    # extensions/interfaces to use this.
+def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     srt  = srt or [('+', 'id')]
     wps  = {}
     date = date or roundup.date.Date ('.')
     d    = dict (time_start = ';%s' % date.pretty (common.ymd))
     d.update (filter)
-    # If we put bookers into the sql query we end up with a full table
-    # scan on bookers (>20s)
-    wps  = [db.time_wp.getnode (w) for w in db.time_wp.filter (None, d, srt)]
-    wps  = [w for w in wps if not w.time_end or w.time_end > date]
+
     if user :
-        wps = [w for w in wps if not w.bookers or user in w.bookers]
+        d1  = dict (d, is_public = True)
+        wp1 = db.time_wp.filter (None, d1, srt)
+        d2  = dict (d, bookers = user)
+        wp2 = db.time_wp.filter (None, d2, srt)
+        wps = [db.time_wp.getnode (w) for w in wp1 + wp2]
+    else :
+        wps = [db.time_wp.getnode (w) for w in db.time_wp.filter (None, d, srt)]
+    wps  = [w for w in wps if not w.time_end or w.time_end > date]
     return [w.id for w in wps]
 # end def valid_wps
 
@@ -427,14 +429,16 @@ def vac_get_user_dynamic (db, user, vcode, date) :
 # end def vac_get_user_dynamic
 
 def vac_next_user_dynamic (db, dyn) :
-    dyn = user_dynamic.next_user_dynamic (db, dyn)
+    vcode = dyn.vcode
+    dyn   = user_dynamic.next_user_dynamic (db, dyn)
     while dyn and dyn.vcode != vcode :
         dyn = user_dynamic.next_user_dynamic (db, dyn)
     return dyn
 # end def vac_next_user_dynamic
 
 def vac_prev_user_dynamic (db, dyn) :
-    dyn = user_dynamic.prev_user_dynamic (db, dyn)
+    vcode = dyn.vcode
+    dyn   = user_dynamic.prev_user_dynamic (db, dyn)
     while dyn and dyn.vcode != vcode :
         dyn = user_dynamic.prev_user_dynamic (db, dyn)
     return dyn
