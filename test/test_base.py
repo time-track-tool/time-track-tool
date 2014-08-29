@@ -1478,7 +1478,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
-              'FIXME'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
             )
         os.unlink (maildebug)
         for st in (st_accp, st_decl, st_carq, st_canc) :
@@ -1493,7 +1493,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (un, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Unpaid/Leave" from TUR')
+            ( ('subject',    'Leave request "Leave/Unpaid" from TUR')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1501,15 +1501,15 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Unpaid/Leave".\n'
+            , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
-              'FIXME'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Unpaid/Leave" from TUR')
+            ( ('subject',    'Leave request "Leave/Unpaid" from TUR')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1517,9 +1517,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (e [h], t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Unpaid/Leave".\n'
+            , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
-              'FIXME'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (za, status = st_subm)
@@ -1534,7 +1534,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Flexi/Flexi".\n'
-              'FIXME'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -1550,7 +1550,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (za, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Flexi" 2009-12-04-2009-12-04 accepted')
+            ( ('subject',    'Leave "Flexi/Flexi" '
+                             '2009-12-04-2009-12-04 accepted')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1597,7 +1598,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (len (trs), 5 + 10)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 accepted')
+            ( ('subject',    'Leave "Vacation/Vacation" '
+                             '2009-12-20-2010-01-06 accepted')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1637,7 +1639,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (un, status = st_decl)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Unpaid" 2009-12-02-2009-12-02 declined')
+            ( ('subject',    'Leave "Leave/Unpaid" '
+                             '2009-12-02-2009-12-02 declined')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1652,7 +1655,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (u2, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Unpaid" 2009-12-03-2009-12-03 accepted')
+            ( ('subject',    'Leave "Leave/Unpaid" '
+                             '2009-12-03-2009-12-03 accepted')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
@@ -1711,7 +1715,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (vs, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Vacation" 2009-12-20-2010-01-06 '
+            ( ('subject',    'Leave "Vacation/Vacation" 2009-12-20-2010-01-06 '
                              'not cancelled')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
@@ -1790,7 +1794,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
-              'FIXME'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
             )
         os.unlink (maildebug)
         self.db.commit ()

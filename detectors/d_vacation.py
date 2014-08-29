@@ -324,14 +324,15 @@ def handle_accept (db, vs, trs, old_status) :
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
     if old_status == cancr :
-        subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s not cancelled' % locals ()
+        subject = 'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s ' \
+                  'not cancelled' % locals ()
         content = 'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n' \
                 % locals ()
         content += "Please contact your supervisor.\n"
     else :
-        subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s accepted' % locals ()
-        content = ('Your absence request "%(tpn)s/%(wpn)s" '
-                   'has been accepted.\n'
+        subject = 'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted' \
+                % locals ()
+        content = ('Your absence request "%(tpn)s/%(wpn)s" has been accepted.\n'
                   % locals ()
                   )
     if warn :
@@ -377,7 +378,7 @@ def handle_decline (db, vs) :
     tpn     = db.time_project.get (wp.project, 'name')
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
-    subject = 'Leave "%(wpn)s" %(fday)s-%(lday)s declined' % locals ()
+    subject = 'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s declined' % locals ()
     content = 'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n' \
             % locals ()
     content += "Please contact your supervisor.\n"
@@ -407,9 +408,9 @@ def handle_submit (db, vs, hr_only) :
     lday    = vs.last_day.pretty  (common.ymd)
     realnm  = user.realname
     nick    = user.nickname.upper ()
-    url     = 'FIXME'
-    subject = 'Leave request "%(wpn)s/%(tpn)s" from %(nick)s' % locals ()
-    content = '%(realnm)s has submitted a leave request "%(wpn)s/%(tpn)s".' \
+    url     = '%sleave_submission?@template=approve' % db.config.TRACKER_WEB
+    subject = 'Leave request "%(tpn)s/%(wpn)s" from %(nick)s' % locals ()
+    content = '%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".' \
             % locals ()
     if hr_only :
         content += "\nNeeds approval by HR."
