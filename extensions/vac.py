@@ -116,6 +116,7 @@ def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',                 vacation.valid_wps)
     reg ('valid_leave_wps',           vacation.valid_leave_wps)
+    reg ('valid_leave_projects',      vacation.valid_leave_projects)
     reg ('leave_days',                vacation.leave_days)
     reg ('user_leave_submissions',    user_leave_submissions)
     reg ('approve_leave_submissions', approve_leave_submissions)

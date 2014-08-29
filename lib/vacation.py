@@ -406,6 +406,10 @@ def valid_leave_wps (db, user = None, date = None, srt = None) :
     return valid_wps (db, d, user, date, srt)
 # end def valid_leave_wps
 
+def valid_leave_projects (db) :
+    return db.time_project.filter (None, dict (approval_required = True))
+# end def valid_leave_projects
+
 def vac_get_user_dynamic (db, user, vcode, date) :
     """ Get user_dynamic record for a vacation computation on the given
         date. Note that there are cases where no dyn user record exists

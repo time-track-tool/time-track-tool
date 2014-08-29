@@ -14,22 +14,22 @@
      , utils.ExtProperty (utils, pdict ['first_day'], is_labelprop = True)
      , utils.ExtProperty (utils, pdict ['last_day'],  is_labelprop = True)
      , utils.ExtProperty
-         ( utils, pdict ['time_wp']
-         , filter = { 'approval_required' : True }
-         , searchable  = True
-         , multiselect = True
-         , searchname  = 'time_wp.project'
-         )
+        ( utils, pdict ['time_wp']
+        , searchable  = True
+        , multiselect = True
+        , searchname  = 'time_wp.project'
+        , filter      = dict (id = utils.valid_leave_projects (db._db))
+        )
      , utils.ExtProperty
-         ( utils, pdict ['time_wp']
-         , filter = { 'project.approval_required' : True }
-         , searchable  = True
-         , multiselect = True
-         )
+        ( utils, pdict ['time_wp']
+        , filter = dict (id = utils.valid_leave_wps (db._db))
+        , searchable  = True
+        , multiselect = True
+        )
      , utils.ExtProperty
-         ( utils, pdict ['status']
-         , multiselect = True
-         )
+        ( utils, pdict ['status']
+        , multiselect = True
+        )
      );
     "
    tal:condition="context/is_view_ok">
