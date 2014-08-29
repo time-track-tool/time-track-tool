@@ -1395,9 +1395,10 @@ class Vacation_Report (_Report) :
         , ""'yearly prorated'
         , ""'carry forward'
         , ""'entitlement total'
-        #, ""'approved days'
+        , ""'approved days'
+        , ""'vacation time'
         , ""'remaining vacation'
-        #, ""'additional submitted'
+        , ""'additional submitted'
         )
 
     def __init__ (self, db, request, utils, is_csv = False) :
@@ -1411,6 +1412,9 @@ class Vacation_Report (_Report) :
         self.db      = db
         self.uid     = db.getuid ()
         db.log_info  ("vacation_report: %s" % timestamp)
+        st_accp = db.leave_status.lookup ('accepted')
+        st_cnrq = db.leave_status.lookup ('cancel requested')
+        st_subm = db.leave_status.lookup ('submitted')
         self.request = request
         self.utils   = utils
         filterspec   = request.filterspec
@@ -1472,13 +1476,13 @@ class Vacation_Report (_Report) :
         db.log_info  ("vacation_report: users: %s" % (time.time () - timestamp))
         self.values = values = {}
         year = Interval ('1y')
-        ld   = None
         for u in self.users :
             if u not in self.user_vcodes :
                 continue
             for vcod in self.user_vcodes [u] :
                 yday  = vacation.next_yearly_vacation_date \
                     (db, u, vcod, min_user_date [(u, vcod)]) - day
+                ld    = None
                 d     = yday
                 carry = None
                 if d :
@@ -1490,6 +1494,8 @@ class Vacation_Report (_Report) :
                     else :
                         carry = vacation.remaining_vacation \
                             (db, u, vcod, pd - day)
+                if ld is None :
+                    ld = pd
                 carry = carry or 0.0
                 ltot  = carry
                 #print yday, carry, d, end
@@ -1519,6 +1525,14 @@ class Vacation_Report (_Report) :
                     container ['yearly prorated'] = cons - ltot
                     container ['remaining vacation'] = carry = \
                         vacation.remaining_vacation (db, u, vcod, d, cons)
+                    container ['approved days'] = \
+                        vacation.vacation_submission_days \
+                            (db, u, vcod, ld, d, st_accp, st_cnrq)
+                    container ['additional submitted'] = \
+                        vacation.vacation_submission_days \
+                            (db, u, vcod, ld, d, st_subm)
+                    container ['vacation time'] = vacation.vacation_time_sum \
+                        (db, u, vcod, ld, d)
                     ltot = cons
 
                     if (u, vcod) not in self.values :

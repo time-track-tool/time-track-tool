@@ -153,6 +153,40 @@ def leave_duration (db, user, date) :
     return wh - bk
 # end def leave_duration
 
+def vacation_submission_days (db, user, vcode, start, end, * stati) :
+    """ Sum vacation submissions with the given status in the given time
+        range for the given user and vcode.
+    """
+    dt   = common.pretty_range (start, end)
+    dts  = ';%s' % start.pretty (common.ymd)
+    dte  = '%s;' % end.pretty   (common.ymd)
+    vwp  = vacation_wps (db)
+    d    = dict (user = user, status = list (stati), time_wp = vwp)
+    d1   = dict (d, first_day = dt)
+    vs1  = db.leave_submission.filter (None, d1)
+    d2   = dict (d, last_day = dt)
+    vs2  = db.leave_submission.filter (None, d2)
+    d3   = dict (d, first_day = dts, last_day = dte)
+    vs3  = db.leave_submission.filter (None, d3)
+    vss  = dict.fromkeys (vs1 + vs2 + vs3).keys ()
+    vss  = [db.leave_submission.getnode (i) for i in vss]
+    days = 0.0
+    for vs in vss :
+        first_day = vs.first_day
+        last_day  = vs.last_day
+        dyn = user_dynamic.get_user_dynamic (db, user, first_day)
+        if dyn.vcode != vcode :
+            continue
+        if first_day < start :
+            assert vs.last_day > start
+            first_day = start
+        if last_day > end :
+            assert vs.first_day < end
+            last_day  = end
+        days += leave_days (db, user, first_day, last_day)
+    return days
+# end def vacation_submission_days
+
 def next_yearly_vacation_date (db, user, vcode, date) :
     d = date + common.day
     dyn = vac_get_user_dynamic (db, user, vcode, d)
@@ -257,6 +291,34 @@ def get_vacation_correction (db, user, vcode, date) :
             return vc
 # end def get_vacation_correction
 
+def vacation_wps (db) :
+    # All time recs with vacation wp in range
+    vtp = db.time_project.filter (None, dict (is_vacation = True))
+    assert vtp
+    vwp = db.time_wp.filter (None, dict (project = vtp))
+    return vwp
+# end def vacation_wps
+
+def vacation_time_sum (db, user, vcode, start, end) :
+    dt  = common.pretty_range (start, end)
+    dr  = db.daily_record.filter (None, dict (user = user, date = dt))
+    dtt = [('+', 'daily_record.date')]
+    vwp = vacation_wps (db)
+    trs = db.time_record.filter \
+        (None, dict (daily_record = dr, wp = vwp), sort = dtt)
+    vac = 0.0
+    for tid in trs :
+        tr  = db.time_record.getnode  (tid)
+        dr  = db.daily_record.getnode (tr.daily_record)
+        dyn = user_dynamic.get_user_dynamic (db, user, dr.date)
+        if dyn.vcode != vcode :
+            continue
+        wh  = user_dynamic.day_work_hours (dyn, dr.date)
+        assert wh
+        vac += ceil (tr.duration / wh * 2) / 2.
+    return vac
+# end def vacation_time_sum
+
 def remaining_vacation (db, user, vcode, date, consolidated = None) :
     """ Compute remaining vacation on the given date
     """
@@ -267,30 +329,14 @@ def remaining_vacation (db, user, vcode, date, consolidated = None) :
     if consolidated is None :
         consolidated = consolidated_vacation (db, user, vcode, date, vc)
     vac = consolidated
-    # All time recs with vacation wp up to date
-    ds  = [('+', 'date')]
-    vtp = db.time_project.filter (None, dict (is_vacation = True))
-    assert vtp
-    vwp = db.time_wp.filter (None, dict (project = vtp))
-    dr  = db.daily_record.filter (None, dict (user = user, date = dt))
-    dtt = [('+', 'daily_record.date')]
-    trs = db.time_record.filter \
-        (None, dict (daily_record = dr, wp = vwp), sort = dtt)
-    for tid in trs :
-        tr  = db.time_record.getnode  (tid)
-        dr  = db.daily_record.getnode (tr.daily_record)
-        dyn = user_dynamic.get_user_dynamic (db, user, dr.date)
-        if dyn.vcode != vcode :
-            continue
-        wh  = user_dynamic.day_work_hours (dyn, dr.date)
-        assert wh
-        vac -= ceil (tr.duration / wh * 2) / 2.
+    vac -= vacation_time_sum (db, user, vcode, vc.date, date)
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     dt  = common.pretty_range (vc.date + common.day, date)
     d   = dict (user = user, date = dt)
     if vcode is not None :
         d ['vcode'] = vcode
+    ds  = [('+', 'date')]
     vcs = db.vacation_correction.filter (None, d, sort = ds)
     for vcid in vcs :
         vc = db.vacation_correction.getnode (vcid)
