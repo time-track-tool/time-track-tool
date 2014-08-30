@@ -1466,6 +1466,9 @@ properties = \
         , ( 'durations_allowed'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'is_public'
+          , ['admin', 'controlling', 'project', 'project_view']
+          )
         , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )

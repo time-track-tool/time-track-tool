@@ -79,10 +79,6 @@ def new_time_wp (db, cl, nodeid, new_values) :
     prid = new_values ['project']
     uid  = db.getuid ()
     prj  = db.time_project.getnode (prid)
-    if 'approval_required' not in new_values :
-        new_values ['approval_required'] = False
-    if 'approval_hr' not in new_values :
-        new_values ['approval_hr'] = False
     if  (  uid != prj.responsible
         and uid != prj.deputy
         and not common.user_has_role (db, uid, 'Project')

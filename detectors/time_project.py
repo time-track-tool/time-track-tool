@@ -42,13 +42,20 @@ def check_time_project (db, cl, nodeid, new_values) :
     wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
     if not wl :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
-    common.require_attributes (_, cl, nodeid, new_values, 'cost_center')
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'cost_center', 'approval_hr', 'approval_required'
+        )
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'name', 'responsible')
     if 'work_location' not in new_values :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
+    if 'approval_required' not in new_values :
+        new_values ['approval_required'] = False
+    if 'approval_hr' not in new_values :
+        new_values ['approval_hr'] = False
     common.check_name_len (_, new_values ['name'])
     if 'status' not in new_values :
         try :

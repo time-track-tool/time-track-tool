@@ -622,6 +622,7 @@ properties = \
         , 'cost_center'
         , 'description'
         , 'durations_allowed'
+        , 'is_public'
         , 'name'
         , 'planned_effort'
         , 'project'
