@@ -36,6 +36,7 @@ try :
 except ImportError :
     from StringIO  import StringIO
 
+from math                           import ceil
 from roundup.date                   import Date, Interval
 from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
@@ -1497,6 +1498,9 @@ class Vacation_Report (_Report) :
                 if ld is None :
                     ld = pd
                 carry = carry or 0.0
+                # Round up to next multiple of 0.5 days
+                if not common.user_has_role (self.db, self.uid, 'HR-vacation') :
+                    carry = ceil (2 * carry) / 2.
                 ltot  = carry
                 #print yday, carry, d, end
                 while d and d <= end :
@@ -1521,6 +1525,9 @@ class Vacation_Report (_Report) :
                         container ['yearly entitlement'] = v [0]
                     container ['carry forward'] = carry
                     cons = vacation.consolidated_vacation (db, u, vcod, d)
+                    if not common.user_has_role \
+                        (self.db, self.uid, 'HR-vacation') :
+                        cons = ceil (2 * cons) / 2.
                     container ['entitlement total'] = cons - ltot + carry
                     container ['yearly prorated'] = cons - ltot
                     container ['remaining vacation'] = carry = \
