@@ -319,20 +319,22 @@ def vacation_time_sum (db, user, vcode, start, end) :
     return vac
 # end def vacation_time_sum
 
-def remaining_vacation (db, user, vcode, date, consolidated = None) :
+def remaining_vacation (db, user, vcode, date, cons = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     vc = get_vacation_correction (db, user, vcode, date)
     if not vc :
         return
-    dt = common.pretty_range (vc.date, date)
-    if consolidated is None :
-        consolidated = consolidated_vacation (db, user, vcode, date, vc)
-    vac = consolidated
-    vac -= vacation_time_sum (db, user, vcode, vc.date, date)
+    ed  = next_yearly_vacation_date (db, user, vcode, date)
+    if not to_eoy :
+        ed = min (ed, date)
+    if cons is None :
+        cons = consolidated_vacation (db, user, vcode, date, vc, to_eoy)
+    vac = cons
+    vac -= vacation_time_sum (db, user, vcode, vc.date, ed)
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
-    dt  = common.pretty_range (vc.date + common.day, date)
+    dt  = common.pretty_range (vc.date + common.day, ed)
     d   = dict (user = user, date = dt)
     if vcode is not None :
         d ['vcode'] = vcode
@@ -347,14 +349,15 @@ def remaining_vacation (db, user, vcode, date, consolidated = None) :
     return vac
 # end def remaining_vacation
 
-def consolidated_vacation (db, user, vcode, date, vc = None) :
+def consolidated_vacation (db, user, vcode, date, vc = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     vc  = vc or get_vacation_correction (db, user, vcode, date)
     if not vc :
         return None
-    dt  = common.pretty_range (vc.date, date)
     ed  = next_yearly_vacation_date (db, user, vcode, date)
+    if not to_eoy :
+        ed = min (ed, date + common.day)
     d   = vc.date
     dyn = vac_get_user_dynamic (db, user, vcode, d)
     if dyn.valid_to and dyn.valid_to < d :

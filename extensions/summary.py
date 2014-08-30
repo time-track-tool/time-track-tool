@@ -1412,6 +1412,7 @@ class Vacation_Report (_Report) :
             pass
         self.db      = db
         self.uid     = db.getuid ()
+        self.hv = hv = common.user_has_role (self.db, self.uid, 'HR-vacation')
         db.log_info  ("vacation_report: %s" % timestamp)
         st_accp = db.leave_status.lookup ('accepted')
         st_cnrq = db.leave_status.lookup ('cancel requested')
@@ -1499,7 +1500,7 @@ class Vacation_Report (_Report) :
                     ld = pd
                 carry = carry or 0.0
                 # Round up to next multiple of 0.5 days
-                if not common.user_has_role (self.db, self.uid, 'HR-vacation') :
+                if not hv :
                     carry = ceil (2 * carry) / 2.
                 ltot  = carry
                 #print yday, carry, d, end
@@ -1524,14 +1525,15 @@ class Vacation_Report (_Report) :
                     else :
                         container ['yearly entitlement'] = v [0]
                     container ['carry forward'] = carry
-                    cons = vacation.consolidated_vacation (db, u, vcod, d)
-                    if not common.user_has_role \
-                        (self.db, self.uid, 'HR-vacation') :
+                    cons = vacation.consolidated_vacation \
+                        (db, u, vcod, d, to_eoy = not hv)
+                    if not hv :
                         cons = ceil (2 * cons) / 2.
                     container ['entitlement total'] = cons - ltot + carry
                     container ['yearly prorated'] = cons - ltot
                     container ['remaining vacation'] = carry = \
-                        vacation.remaining_vacation (db, u, vcod, d, cons)
+                        vacation.remaining_vacation \
+                            (db, u, vcod, d, cons, to_eoy = not hv)
                     container ['approved days'] = \
                         vacation.vacation_submission_days \
                             (db, u, vcod, ld, d, st_accp, st_cnrq)
@@ -1549,7 +1551,6 @@ class Vacation_Report (_Report) :
                     nd = vacation.next_yearly_vacation_date \
                         (db, u, vcod, d + day)
                     ld = d
-                    hv = common.user_has_role (self.db, self.uid, 'HR-vacation')
                     # Allow intermediate dates only for hr-vacation role
                     if nd > end and d < end and hv :
                         d = end
@@ -1560,7 +1561,7 @@ class Vacation_Report (_Report) :
     def permission_ok (self, user, dynuser) :
         if user == self.uid :
             return True
-        if common.user_has_role (self.db, self.uid, 'HR-vacation') :
+        if self.hv :
             return True
         supi = user
         while supi :
