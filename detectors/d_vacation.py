@@ -424,9 +424,17 @@ def handle_submit (db, vs, hr_only) :
 def check_correction (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'user', 'date', 'day')
+    if nodeid :
+        common.require_attributes \
+            (_, cl, nodeid, new_values, 'absolute')
+    else :
+        if 'absolute' not in new_values :
+            new_values ['absolute'] = False
     user = new_values.get ('user')
     if user is None :
         user = cl.get (nodeid, 'user')
+    if 'date' in new_values :
+        new_values ['date'] = common.fix_date (new_values ['date'])
     date = new_values.get ('date')
     if date is None :
         date = cl.get (nodeid, 'date')

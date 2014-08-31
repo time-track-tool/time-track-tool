@@ -130,6 +130,10 @@
       </td>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'vcode')"/>
+      <td tal:content="structure python:context.vcode.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'daily_worktime')"/>
       <td tal:content="structure python:context.daily_worktime.field ()"/>

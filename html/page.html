@@ -279,6 +279,13 @@
                         : '@filter=user&'
                           '@pagesize=200&@startwith=0&'
                           'user=%s' % uid
+   , ('vacation_correction', '')
+                        : '@columns=user,vcode,date,absolute,days'
+                          'contact_type&'
+                          '@sort=user,date&'
+                          '@filter=user&'
+                          '@pagesize=200&@startwith=0&'
+                          'user=%s' % uid
    }
  ; menu_tracker  python:
    ( ( ('review',         'Edit',   '?@template=item', 1)
@@ -432,6 +439,11 @@
        , '?@template=item'
        , utils.user_has_role (db._db, db._db.getuid (), 'HR-vacation')
        )
+     , ( 'vacation_correction'
+       , 'Edit'
+       , '?@template=item'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR-vacation')
+       )
      )
    , ( ('cost_center',         'View', 1,               ('',''))
      , ( 'daily_record'
@@ -517,6 +529,11 @@
      , ('qso',                 'View', 1,               ('',''))
      , ('leave_submission',    'View', 1,               ('',''))
      , ('vacation_report',     'View', 1,               ('',''))
+     , ( 'vacation_correction'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR-vacation')
+       , ('','')
+       )
      )
    )
  ; menu_type     python:
