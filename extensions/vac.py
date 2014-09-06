@@ -28,7 +28,9 @@ from   roundup.date import Date
 def user_leave_submissions (db, context) :
     dt  = '%s;' % Date ('. - 14m').pretty (common.ymd)
     uid = db._db.getuid ()
-    ls = db.leave_submission.filter (None, dict (user = uid, first_day = dt))
+    d   = dict (user = uid, first_day = dt)
+    s   = [('+', 'first_day')]
+    ls = db.leave_submission.filter (None, d, s)
     return ls
 # end def user_leave_submissions
 

@@ -152,7 +152,7 @@ def check_submission (db, cl, nodeid, new_values) :
     old_status = db.leave_status.get (old.status, 'name')
     new_status = db.leave_status.get \
         (new_values.get ('status', old.status), 'name')
-    if old_status != new_status or old_status != 'open' :
+    if old_status != 'open' :
         common.reject_attributes \
             (_, new_values, 'first_day', 'last_day', 'time_wp')
     fix_dates (new_values)
@@ -186,6 +186,8 @@ def check_submission (db, cl, nodeid, new_values) :
                 if old_status == 'accepted' :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
+                    ok = True
+                if old_status == 'open' and new_status == 'cancelled' :
                     ok = True
             clearer = common.clearance_by (db, user)
             dyn     = user_dynamic.get_user_dynamic (db, user, first_day)

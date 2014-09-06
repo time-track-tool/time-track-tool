@@ -41,7 +41,7 @@ vstatus = \
     , 'cancelled'        : 6
     }
 transitions = \
-    { 'open'             : ['submitted']
+    { 'open'             : ['submitted', 'cancelled']
     , 'submitted'        : ['open', 'accepted', 'declined']
     , 'accepted'         : ['cancel requested']
     , 'cancel requested' : ['accepted', 'cancelled']
