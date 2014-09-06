@@ -102,6 +102,12 @@ if len (sys.argv) == 2 :
     dt = common.pretty_range (s2014, s2014)
     for line in cr :
         if line [0] == 'Username' :
+            if line [5] == 'Stand 31.12.2013' :
+                idx_e = 9
+                idx_r = 5
+            elif line [2] == 'STAND 31.12.13' :
+                idx_e = 3
+                idx_r = 2
             continue
         username = line [0].strip ().lower ()
         try :
@@ -113,8 +119,8 @@ if len (sys.argv) == 2 :
             else :
                 username = 'g' + username
             user = db.user.lookup (username)
-        rounded = line [5]
-        exact   = float (line [9])
+        rounded = line [idx_r]
+        exact   = float (line [idx_e])
         if rounded not in broken_int :
             assert int (rounded) == float (rounded)
             assert ceil (exact) == int (rounded)
