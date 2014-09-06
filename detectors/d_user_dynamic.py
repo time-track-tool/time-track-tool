@@ -311,7 +311,7 @@ def user_dyn_react (db, cl, nodeid, old_values) :
                 (user = dyn.user, date = date, absolute = True, days = 0)
         else :
             vc = db.vacation_correction.filter (None, dict (user = dyn.user))
-            if len (vc) == 1 :
+            if len (vc) == 1 and not freeze.frozen (db, dyn.user, date) :
                 db.vacation_correction.set \
                     (vc [0], date = date, absolute = True, days = 0)
 # end def user_dyn_react
