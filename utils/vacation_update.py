@@ -123,5 +123,21 @@ if len (sys.argv) == 2 :
         if not vc :
             db.vacation_correction.create \
                 (absolute = True, date = s2014, user = user, days = exact)
+        dyn = user_dynamic.get_user_dynamic (db, user, s2014)
+        if not dyn :
+            dyn = user_dynamic.find_user_dynamic (db, user, s2014)
+        while dyn :
+            d = {}
+            if dyn.vacation_yearly is None :
+                d ['vacation_yearly'] = 25
+            if dyn.vacation_day is None or dyn.vacation_month is None :
+                d ['vacation_day']   = 1
+                d ['vacation_month'] = 1
+            if d :
+                assert 'vacation_yearly' in d
+                print "WARN: dyn %s/%s had no vacation_yearly" \
+                    % (username, dyn.valid_from.pretty (common.ymd))
+                db.user_dynamic.set (dyn.id, ** d)
+            dyn = user_dynamic.next_user_dynamic (db, dyn)
 
 db.commit()

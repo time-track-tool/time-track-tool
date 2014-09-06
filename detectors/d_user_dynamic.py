@@ -198,8 +198,13 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     # the user_dynamic record. So when checking for frozen status we
     # can allow exactly the valid_to date.
     otw = common.overtime_period_week (db)
-    vac_fix = list (sorted (new_values.keys ())) \
-           == ['vacation_day', 'vacation_month'] and db.getuid () == '1'
+    nvk = list (sorted (new_values.keys ()))
+    vac_fix = \
+        (   (  nvk == ['vacation_day', 'vacation_month']
+            or nvk == ['vacation_day', 'vacation_month', 'vacation_yearly']
+            )
+        and db.getuid () == '1'
+        )
     if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
