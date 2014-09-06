@@ -10,11 +10,13 @@
         ( utils, pdict ['first_day']
         , fieldwidth  = 12
         , popcal      = False
+        , format      = utils.ymd
         )
     , utils.ExtProperty
         ( utils, pdict ['last_day']
         , fieldwidth  = 12
         , popcal      = False
+        , format      = utils.ymd
         )
     , utils.ExtProperty
         ( utils, pdict ['time_wp']
@@ -100,10 +102,12 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'first_day')" class="required"/>
-     <td tal:content="structure python:context.first_day.field (12)"/>
+     <td tal:content="structure python:context.first_day.field
+         (12, popcal = True, format = utils.ymd)"/>
      <th tal:content="structure python:utils.fieldname
          (classname, 'last_day')" class="required"/>
-     <td tal:content="structure python:context.last_day.field (12)"/>
+     <td tal:content="structure python:context.last_day.field
+         (12, popcal = True, format = utils.ymd)"/>
     </tr>
     <tr tal:condition="context/id">
      <th i18n:translate="">Days</th>

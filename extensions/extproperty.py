@@ -550,6 +550,8 @@ class ExtProperty :
                 fprops = dict (size = self.fieldwidth)
             if isinstance (self.prop, DateHTMLProperty) :
                 fprops ['popcal'] = self.popcal
+                if self.format :
+                    fprops ['format'] = self.format
             try :
                 return prop.field (** fprops)
             except TypeError :
