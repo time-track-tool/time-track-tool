@@ -190,7 +190,7 @@ def vacation_submission_days (db, user, vcode, start, end, * stati) :
 def next_yearly_vacation_date (db, user, vcode, date) :
     d = date + common.day
     dyn = vac_get_user_dynamic (db, user, vcode, d)
-    if not dyn :
+    if not dyn or dyn.vacation_month is None or dyn.vacation_day is None :
         return None
     y = int (d.get_tuple () [0])
     next_date = roundup.date.Date \
@@ -216,6 +216,8 @@ def next_yearly_vacation_date (db, user, vcode, date) :
         dyn  = ndyn
         yday = dyn.vacation_day
         ymon = dyn.vacation_month
+        if yday is None or ymon is None :
+            return next_date
         next_date = roundup.date.Date ('%04d-%02d-%02d' % (y, ymon, yday))
         if next_date < d :
             next_date = roundup.date.Date \
@@ -225,7 +227,11 @@ def next_yearly_vacation_date (db, user, vcode, date) :
 def prev_yearly_vacation_date (db, user, vcode, date) :
     d = date - common.day
     dyn = vac_get_user_dynamic (db, user, vcode, d)
-    if not dyn or dyn.valid_from > d :
+    if  (  not dyn
+        or dyn.valid_from > d
+        or dyn.vacation_month is None
+        or dyn.vacation_day is None
+        ) :
         return None
     y = int (d.get_tuple () [0])
     prev_date = roundup.date.Date \
@@ -240,6 +246,8 @@ def prev_yearly_vacation_date (db, user, vcode, date) :
             return None
         yday = dyn.vacation_day
         ymon = dyn.vacation_month
+        if yday is None or ymon is None :
+            return prev_date
         prev_date = roundup.date.Date ('%04d-%02d-%02d' % (y, ymon, yday))
         if prev_date >= date :
             prev_date = roundup.date.Date \
@@ -327,6 +335,8 @@ def remaining_vacation \
         date  = roundup.date.Date ('.')
     if vcode is None :
         dyn   = user_dynamic.get_user_dynamic (db, user, date)
+        if not dyn :
+            return
         vcode = dyn.vcode
     vc = get_vacation_correction (db, user, vcode, date)
     if not vc :
@@ -366,7 +376,9 @@ def consolidated_vacation (db, user, vcode, date, vc = None, to_eoy = True) :
         ed = min (ed, date + common.day)
     d   = vc.date
     dyn = vac_get_user_dynamic (db, user, vcode, d)
-    if dyn.valid_to and dyn.valid_to < d :
+    while dyn and dyn.valid_to and dyn.valid_to < d :
+        dyn = vac_next_user_dynamic (db, dyn)
+    if dyn is None :
         return None
     vac = float (vc.days)
     while dyn and d < ed :

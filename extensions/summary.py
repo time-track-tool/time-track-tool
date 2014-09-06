@@ -1397,7 +1397,7 @@ class Vacation_Report (_Report) :
         , ""'carry forward'
         , ""'entitlement total'
         , ""'approved days'
-        , ""'vacation time'
+        , ""'consumation'
         , ""'remaining vacation'
         , ""'additional submitted'
         )
@@ -1540,7 +1540,7 @@ class Vacation_Report (_Report) :
                     container ['additional submitted'] = \
                         vacation.vacation_submission_days \
                             (db, u, vcod, ld, d, st_subm)
-                    container ['vacation time'] = vacation.vacation_time_sum \
+                    container ['consumation'] = vacation.vacation_time_sum \
                         (db, u, vcod, ld, d)
                     ltot = cons
 
