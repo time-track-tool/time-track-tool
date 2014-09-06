@@ -319,9 +319,15 @@ def vacation_time_sum (db, user, vcode, start, end) :
     return vac
 # end def vacation_time_sum
 
-def remaining_vacation (db, user, vcode, date, cons = None, to_eoy = True) :
+def remaining_vacation \
+    (db, user, vcode = None, date = None, cons = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
+    if date is None :
+        date  = roundup.date.Date ('.')
+    if vcode is None :
+        dyn   = user_dynamic.get_user_dynamic (db, user, date)
+        vcode = dyn.vcode
     vc = get_vacation_correction (db, user, vcode, date)
     if not vc :
         return

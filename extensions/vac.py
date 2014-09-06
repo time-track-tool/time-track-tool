@@ -21,7 +21,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+from   math import ceil
 import common
+import user_dynamic
 import vacation
 from   roundup.date import Date
 
@@ -114,6 +116,19 @@ class Leave_Buttons (object) :
     # end def generate
 # end class Leave_Buttons
 
+def remaining_until (db) :
+    db  = db._db
+    now = Date ('.')
+    uid = db.getuid ()
+    dyn = user_dynamic.get_user_dynamic (db, uid, now)
+    day = common.day
+    return vacation.next_yearly_vacation_date (db, uid, dyn.vcode, now) - day
+# end def remaining_until
+
+def remaining_vacation (db, user, date) :
+    return ceil (vacation.remaining_vacation (db, user, date = date) * 2) / 2.
+# end def remaining_vacation
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',                 vacation.valid_wps)
@@ -123,3 +138,5 @@ def init (instance) :
     reg ('user_leave_submissions',    user_leave_submissions)
     reg ('approve_leave_submissions', approve_leave_submissions)
     reg ('Leave_Buttons',             Leave_Buttons)
+    reg ('remaining_until',           remaining_until)
+    reg ('remaining_vacation',        remaining_vacation)
