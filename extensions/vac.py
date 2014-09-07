@@ -99,14 +99,18 @@ class Leave_Buttons (object) :
         self.user      = ep_status.item.user.id
         self.sunick    = str (ep_status.item.user.supervisor.nickname).upper ()
         stname         = str (ep_status.prop.name)
+        need_hr        = ep_status.item.time_wp.project.approval_hr
         if (self.uid == self.user and stname in self.user_buttons) :
             for b in self.user_buttons [stname] :
                 ret.append (self.button (*b))
-        elif (  self.uid in common.clearance_by (self.db, self.user)
-             or common.user_has_role (self.db, self.uid, 'HR-leave-approval')
-             ) and stname in self.approve_buttons :
-            for b in self.approve_buttons [stname] :
-                ret.append (self.button (*b))
+        elif stname in self.approve_buttons :
+            if  (  (    self.uid in common.clearance_by (self.db, self.user)
+                   and not need_hr
+                   )
+                or common.user_has_role (self.db, self.uid, 'HR-leave-approval')
+                ) :
+                for b in self.approve_buttons [stname] :
+                    ret.append (self.button (*b))
         if ret :
             ret.append \
                 ( '<input type="hidden" name="%s@status" value=%s>'
