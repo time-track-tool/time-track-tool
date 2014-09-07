@@ -145,7 +145,7 @@ def get_users (db, filterspec, start, end) :
         else :
             spec = filterspec.get (cl, [])
         if spec :
-            found_users = True
+            found = True
             for i in db.user_dynamic.filter \
                 ( None
                 , {cl : spec, 'valid_from' : end.pretty (';%Y-%m-%d')}
