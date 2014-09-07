@@ -467,4 +467,20 @@ def vac_prev_user_dynamic (db, dyn) :
     while dyn and dyn.vcode != vcode :
         dyn = user_dynamic.prev_user_dynamic (db, dyn)
     return dyn
+# end def vac_prev_user_dynamic
+
+def need_hr_approval (db, tp, user, vcod, first_day, last_day, booked = False) :
+    day = common.day
+    ed  = next_yearly_vacation_date (db, user, vcod, last_day) - day
+    vac = remaining_vacation (db, user, vcod, ed)
+    if vac is None :
+        raise Reject (_ ("No initial vacation correction for this user"))
+    dur = leave_days (db, user, first_day, last_day)
+    # don't count duration if this is already booked, so we would count
+    # this vacation twice.
+    if booked :
+        dur = 0
+    return tp.approval_hr or tp.is_vacation and (ceil (vac * 2) / 2. - dur < 0)
+# end def need_hr_approval
+
 ### __END__

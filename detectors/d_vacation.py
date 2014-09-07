@@ -192,7 +192,8 @@ def check_submission (db, cl, nodeid, new_values) :
             clearer = common.clearance_by (db, user)
             dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
             vcod    = dyn.vcode
-            hr_only = need_hr_approval (db, tp, user, vcod, first_day, last_day)
+            hr_only = vacation.need_hr_approval \
+                (db, tp, user, vcod, first_day, last_day)
             if  (  not ok
                 and (   (uid in clearer and not hr_only)
                     or  common.user_has_role (db, uid, 'HR-leave-approval')
@@ -234,20 +235,6 @@ def check_dr_status (db, user, first_day, last_day, st_name) :
             raise Reject (_ ('Daily records must exist'))
 # end def check_dr_status
 
-def need_hr_approval (db, tp, user, vcod, first_day, last_day, booked = False) :
-    day = common.day
-    ed  = vacation.next_yearly_vacation_date (db, user, vcod, last_day) - day
-    vac = vacation.remaining_vacation (db, user, vcod, ed)
-    if vac is None :
-        raise Reject (_ ("No initial vacation correction for this user"))
-    dur = vacation.leave_days (db, user, first_day, last_day)
-    # don't count duration if this is already booked, so we would count
-    # this vacation twice.
-    if booked :
-        dur = 0
-    return tp.approval_hr or tp.is_vacation and (ceil (vac) - dur < 0)
-# end def need_hr_approval
-
 def state_change_reactor (db, cl, nodeid, old_values) :
     vs         = cl.getnode (nodeid)
     old_status = old_values.get ('status')
@@ -269,7 +256,7 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     elif new_status == submitted :
         dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
         vcod    = dyn.vcode
-        hr_only = need_hr_approval \
+        hr_only = vacation.need_hr_approval \
             (db, tp, vs.user, vcod, vs.first_day, vs.last_day, booked = True)
         handle_submit  (db, vs, hr_only)
     elif new_status == cancelled :

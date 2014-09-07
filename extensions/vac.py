@@ -99,7 +99,15 @@ class Leave_Buttons (object) :
         self.user      = ep_status.item.user.id
         self.sunick    = str (ep_status.item.user.supervisor.nickname).upper ()
         stname         = str (ep_status.prop.name)
-        need_hr        = ep_status.item.time_wp.project.approval_hr
+        db             = ep_status.item._db
+        tp             = ep_status.item.time_wp.project.id
+        tp             = db.time_project.getnode (tp)
+        first_day      = ep_status.item.first_day._value
+        last_day       = ep_status.item.last_day._value
+        dyn            = user_dynamic.get_user_dynamic (db, self.user, last_day)
+        vcode          = dyn.vcode
+        need_hr        = vacation.need_hr_approval \
+            (db, tp, self.user, vcode, first_day, last_day)
         if (self.uid == self.user and stname in self.user_buttons) :
             for b in self.user_buttons [stname] :
                 ret.append (self.button (*b))
