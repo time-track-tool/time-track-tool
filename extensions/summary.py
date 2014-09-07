@@ -1486,6 +1486,8 @@ class Vacation_Report (_Report) :
                     (db, u, vcod, min_user_date [(u, vcod)]) - day
                 ld    = None
                 d     = yday
+                if hv :
+                    d = min (d, self.end)
                 carry = None
                 if d :
                     pd = vacation.prev_yearly_vacation_date (db, u, vcod, d)
