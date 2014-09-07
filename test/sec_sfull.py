@@ -25,6 +25,7 @@ Role "controlling":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed Edit on (Edit for "time_wp": ('project',) only)
  User is allowed View on (View for "user": ('roles',) only)
+ User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access daily_record_freeze (View for "daily_record_freeze" only)
  User is allowed to access leave_submission (View for "leave_submission" only)
  User is allowed to access overtime_correction (View for "overtime_correction" only)
@@ -78,6 +79,7 @@ Role "hr":
  User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_public_holiday', 'is_vacation', 'no_overtime', 'overtime_reduction') only)
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'title', 'roles', 'tt_lines') only)
+ User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access daily_record_freeze (View for "daily_record_freeze" only)
  User is allowed to access leave_submission (View for "leave_submission" only)
  User is allowed to access overtime_correction (View for "overtime_correction" only)
@@ -115,6 +117,7 @@ Role "hr":
  User may manipulate user Roles through the web (Web Roles)
 Role "hr-leave-approval":
  User is allowed Edit on (Edit for "leave_submission": ('status',) only)
+ User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access leave_submission (View for "leave_submission" only)
  User is allowed to access vacation_correction (View for "vacation_correction" only)
 Role "hr-org-location":
@@ -127,10 +130,13 @@ Role "hr-org-location":
  User is allowed to view overtime information if he/she is in group HR-Org-Location and in the same Org-Location as the given user (View for "overtime_correction" only)
  User is allowed to view time record data if he/she is in group HR-Org-Location and in the same Org-Location as the given user (View for "time_record" only)
 Role "hr-vacation":
+ User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access leave_submission (View for "leave_submission" only)
  User is allowed to access vacation_correction (View for "vacation_correction" only)
+ User is allowed to create contract_type (Create for "contract_type" only)
  User is allowed to create leave_submission (Create for "leave_submission" only)
  User is allowed to create vacation_correction (Create for "vacation_correction" only)
+ User is allowed to edit contract_type (Edit for "contract_type" only)
  User is allowed to edit leave_submission (Edit for "leave_submission" only)
  User is allowed to edit vacation_correction (Edit for "vacation_correction" only)
 Role "issue_admin":

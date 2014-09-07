@@ -381,6 +381,14 @@ _helptext          = \
     , ""'contact_person'              :
       [""'''Personal information about a %(Property)s''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
+    , ""'contract_type'               :
+      [""'''%(Property)s specifies the kind of contract that
+            the staff member has, like (normal) employment contract,
+            separate marginal employment (in addition to the main
+            employment contract), contract of work and services
+            (Werkvertrag), or (AUT only) freier Dienstvertrag (social
+            insurance liable free-lance contract).
+      ''']
     , ""'cost_center'                 :
       [""'''%(Property)s for this %(Classname)s (required)''']
     , ""'cost_center.id'              : [help_id]

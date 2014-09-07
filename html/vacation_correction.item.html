@@ -31,8 +31,9 @@
       <td tal:content="structure python:context.date.field ()" />
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'vcode')"/>
-      <td tal:content="structure python:context.vcode.field ()" />
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'contract_type')"/>
+      <td tal:content="structure python:context.contract_type.menu ()" />
       <th tal:content="structure python:utils.fieldname
           (classname, 'absolute')"/>
       <td tal:content="structure python:context.absolute.field ()" />

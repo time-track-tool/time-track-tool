@@ -1400,7 +1400,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         # to accept this.
         v2 = self.db.leave_submission.create \
             ( first_day = date.Date ('2008-12-22')
-            , last_day  = date.Date ('2008-12-31')
+            , last_day  = date.Date ('2008-12-30')
             , time_wp   = self.vacation_wp
             )
         self.db.leave_submission.set (v2, status = st_subm)
@@ -1408,7 +1408,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( vacation.leave_days
                 (self.db, self.user2, vac2.first_day, vac2.last_day)
-            , 5
+            , 4.5
             )
         os.unlink (maildebug)
 

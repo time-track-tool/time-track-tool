@@ -1436,12 +1436,12 @@ class Vacation_Report (_Report) :
                     end   = Date ('%s-12-31' % year)
         else :
             start = end = Date ('%s-12-31' % year)
-        self.start    = start
-        self.end      = end
-        users         = sum_common.get_users (db, filterspec, start, end)
-        min_user_date = {}
-        user_vc       = {}
-        self.user_vcodes = {}
+        self.start       = start
+        self.end         = end
+        users            = sum_common.get_users (db, filterspec, start, end)
+        min_user_date    = {}
+        user_vc          = {}
+        self.user_ctypes = {}
         for u in users.keys () :
             srt = [('+', 'date')]
             vcs = db.vacation_correction.filter \
@@ -1449,28 +1449,28 @@ class Vacation_Report (_Report) :
             if not vcs :
                 del users [u]
                 continue
-            vcodes = {}
+            ctypes = {}
             for id in vcs :
                 vc = db.vacation_correction.getnode (id)
-                if vc.vcode not in vcodes :
-                    vcodes [vc.vcode] = vc
-            for vcod in vcodes :
-                vc = vcodes [vcod]
+                if vc.contract_type not in ctypes :
+                    ctypes [vc.contract_type] = vc
+            for ctype in ctypes :
+                vc = ctypes [ctype]
                 if start :
-                    md = min_user_date [(u, vcod)] = max (vc.date, start)
+                    md = min_user_date [(u, ctype)] = max (vc.date, start)
                 else :
-                    md = min_user_date [(u, vcod)] = vc.date
-                if end and min_user_date [(u, vcod)] > end :
+                    md = min_user_date [(u, ctype)] = vc.date
+                if end and min_user_date [(u, ctype)] > end :
                     continue
-                dyn = vacation.vac_get_user_dynamic (db, u, vcod, md)
+                dyn = vacation.vac_get_user_dynamic (db, u, ctype, md)
                 if  (  not dyn or (dyn.valid_from and dyn.valid_from > end)
                     or not self.permission_ok (u, dyn)
                     ) :
                     continue
-                user_vc [(u, vcod)] = vc
-                if u not in self.user_vcodes :
-                    self.user_vcodes [u] = []
-                self.user_vcodes [u].append (vcod)
+                user_vc [(u, ctype)] = vc
+                if u not in self.user_ctypes :
+                    self.user_ctypes [u] = []
+                self.user_ctypes [u].append (ctype)
         self.users = sorted \
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
@@ -1479,25 +1479,25 @@ class Vacation_Report (_Report) :
         self.values = values = {}
         year = Interval ('1y')
         for u in self.users :
-            if u not in self.user_vcodes :
+            if u not in self.user_ctypes :
                 continue
-            for vcod in self.user_vcodes [u] :
+            for ctype in self.user_ctypes [u] :
                 yday  = vacation.next_yearly_vacation_date \
-                    (db, u, vcod, min_user_date [(u, vcod)]) - day
+                    (db, u, ctype, min_user_date [(u, ctype)]) - day
                 ld    = None
                 d     = yday
                 if hv :
                     d = min (d, self.end)
                 carry = None
                 if d :
-                    pd = vacation.prev_yearly_vacation_date (db, u, vcod, d)
-                    #print user_vc [(u, vcod)].days,
-                    #print user_vc [(u, vcod)].date, pd
-                    if user_vc [(u, vcod)].date == pd :
-                        carry = user_vc [(u, vcod)].days
+                    pd = vacation.prev_yearly_vacation_date (db, u, ctype, d)
+                    #print user_vc [(u, ctype)].days,
+                    #print user_vc [(u, ctype)].date, pd
+                    if user_vc [(u, ctype)].date == pd :
+                        carry = user_vc [(u, ctype)].days
                     else :
                         carry = vacation.remaining_vacation \
-                            (db, u, vcod, pd - day)
+                            (db, u, ctype, pd - day)
                 if ld is None :
                     ld = pd
                 carry = carry or 0.0
@@ -1508,12 +1508,12 @@ class Vacation_Report (_Report) :
                 #print yday, carry, d, end
                 while d and d <= end :
                     container = Day_Container (d)
-                    if not vcod :
+                    if not ctype :
                         container ['user'] = db.user.get (u, 'username')
                     else :
                         container ['user'] = '/'.join \
-                            ((db.user.get (u, 'username'), vcod))
-                    dyn = vacation.vac_get_user_dynamic (db, u, vcod, d)
+                            ((db.user.get (u, 'username'), ctype))
+                    dyn = vacation.vac_get_user_dynamic (db, u, ctype, d)
                     ent = {}
                     while (dyn and dyn.valid_from < d) :
                         ent [dyn.vacation_yearly] = 1
@@ -1528,30 +1528,30 @@ class Vacation_Report (_Report) :
                         container ['yearly entitlement'] = v [0]
                     container ['carry forward'] = carry
                     cons = vacation.consolidated_vacation \
-                        (db, u, vcod, d, to_eoy = not hv)
+                        (db, u, ctype, d, to_eoy = not hv)
                     if not hv :
                         cons = ceil (2 * cons) / 2.
                     container ['entitlement total'] = cons - ltot + carry
                     container ['yearly prorated'] = cons - ltot
                     container ['remaining vacation'] = carry = \
                         vacation.remaining_vacation \
-                            (db, u, vcod, d, cons, to_eoy = not hv)
+                            (db, u, ctype, d, cons, to_eoy = not hv)
                     container ['approved days'] = \
                         vacation.vacation_submission_days \
-                            (db, u, vcod, ld, d, st_accp, st_cnrq)
+                            (db, u, ctype, ld, d, st_accp, st_cnrq)
                     container ['additional submitted'] = \
                         vacation.vacation_submission_days \
-                            (db, u, vcod, ld, d, st_subm)
+                            (db, u, ctype, ld, d, st_subm)
                     container ['consumation'] = vacation.vacation_time_sum \
-                        (db, u, vcod, ld, d)
+                        (db, u, ctype, ld, d)
                     ltot = cons
 
-                    if (u, vcod) not in self.values :
-                        self.values [(u, vcod)] = []
-                    self.values [(u, vcod)].append (container)
+                    if (u, ctype) not in self.values :
+                        self.values [(u, ctype)] = []
+                    self.values [(u, ctype)].append (container)
 
                     nd = vacation.next_yearly_vacation_date \
-                        (db, u, vcod, d + day)
+                        (db, u, ctype, d + day)
                     ld = d
                     # Allow intermediate dates only for hr-vacation role
                     if nd > end and d < end and hv :
@@ -1588,13 +1588,13 @@ class Vacation_Report (_Report) :
 
     def _output (self, line_formatter, item_formatter) :
         for u in self.users :
-            if u not in self.user_vcodes :
+            if u not in self.user_ctypes :
                 continue
             user = self.db.user.get (u, 'username')
-            for vcod in self.user_vcodes [u] :
-                if (u, vcod) not in self.values :
+            for ctype in self.user_ctypes [u] :
+                if (u, ctype) not in self.values :
                     continue
-                for container in self.values [(u, vcod)] :
+                for container in self.values [(u, ctype)] :
                     line  = []
                     line.append (item_formatter (user))
                     line.append (item_formatter (container))

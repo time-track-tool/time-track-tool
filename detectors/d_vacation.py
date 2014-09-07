@@ -123,16 +123,16 @@ def new_submission (db, cl, nodeid, new_values) :
 
 def check_dyn_user_params (db, user, first_day, last_day) :
     d = first_day
-    code = -1 # Code is either None or a string, can't be numeric
+    ctype = -1 # contract_type is either None or a string, can't be numeric
     while d <= last_day :
         dyn = user_dynamic.get_user_dynamic (db, user, d)
         if not dyn.vacation_yearly :
             raise Reject (_ ("No yearly vacation for this user"))
         if dyn.vacation_day is None or dyn.vacation_month is None :
             raise Reject (_ ("Vacation date setting is missing"))
-        if code != dyn.vcode and code != -1 :
-            raise Reject (_ ("Differing vacation codes in range"))
-        code = dyn.vcode
+        if ctype != dyn.contract_type and ctype != -1 :
+            raise Reject (_ ("Differing contract types in range"))
+        ctype = dyn.contract_type
         d += common.day
 # end def check_dyn_user_params
 
@@ -191,9 +191,9 @@ def check_submission (db, cl, nodeid, new_values) :
                     ok = True
             clearer = common.clearance_by (db, user)
             dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
-            vcod    = dyn.vcode
+            ctype   = dyn.contract_type
             hr_only = vacation.need_hr_approval \
-                (db, tp, user, vcod, first_day, last_day)
+                (db, tp, user, ctype, first_day, last_day)
             if  (  not ok
                 and (   (uid in clearer and not hr_only)
                     or  common.user_has_role (db, uid, 'HR-leave-approval')
@@ -255,9 +255,9 @@ def state_change_reactor (db, cl, nodeid, old_values) :
         handle_decline (db, vs)
     elif new_status == submitted :
         dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
-        vcod    = dyn.vcode
+        ctype   = dyn.contract_type
         hr_only = vacation.need_hr_approval \
-            (db, tp, vs.user, vcod, vs.first_day, vs.last_day, booked = True)
+            (db, tp, vs.user, ctype, vs.first_day, vs.last_day, booked = True)
         handle_submit  (db, vs, hr_only)
     elif new_status == cancelled :
         handle_cancel  (db, vs, trs)

@@ -317,7 +317,7 @@ def init \
         , vacation_yearly       = Number    ()
         , vacation_month        = Number    ()
         , vacation_day          = Number    ()
-        , vcode                 = String    ()
+        , contract_type         = Link      ('contract_type')
         , daily_worktime        = Number    ()
         , weekly_hours          = Number    ()
         , supp_weekly_hours     = Number    ()
@@ -345,6 +345,14 @@ def init \
         )
     leave_status.setkey ("name")
 
+    contract_type = Class \
+        ( db
+        , ''"contract_type"
+        , name                  = String ()
+        , order                 = Number ()
+        , description           = String ()
+        )
+
     leave_submission = Class \
         ( db
         , ''"leave_submission"
@@ -371,7 +379,7 @@ def init \
         , date                  = Date      (offset = 0)
         , absolute              = Boolean   ()
         , days                  = Number    ()
-        , vcode                 = String    ()
+        , contract_type         = Link      ('contract_type')
         )
 
     # Only for reporting mask, no records will ever be created
@@ -543,6 +551,10 @@ def security (db, ** kw) :
         , ( "leave_status"
           , ["User"]
           , []
+          )
+        , ( "contract_type"
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
+          , ["HR-vacation"]
           )
         , ( "vacation_correction"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]

@@ -153,9 +153,9 @@ def leave_duration (db, user, date) :
     return wh - bk
 # end def leave_duration
 
-def vacation_submission_days (db, user, vcode, start, end, * stati) :
+def vacation_submission_days (db, user, ctype, start, end, * stati) :
     """ Sum vacation submissions with the given status in the given time
-        range for the given user and vcode.
+        range for the given user and ctype (contract_type).
     """
     dt   = common.pretty_range (start, end)
     dts  = ';%s' % start.pretty (common.ymd)
@@ -175,7 +175,7 @@ def vacation_submission_days (db, user, vcode, start, end, * stati) :
         first_day = vs.first_day
         last_day  = vs.last_day
         dyn = user_dynamic.get_user_dynamic (db, user, first_day)
-        if dyn.vcode != vcode :
+        if dyn.contract_type != ctype :
             continue
         if first_day < start :
             assert vs.last_day > start
@@ -187,9 +187,9 @@ def vacation_submission_days (db, user, vcode, start, end, * stati) :
     return days
 # end def vacation_submission_days
 
-def next_yearly_vacation_date (db, user, vcode, date) :
+def next_yearly_vacation_date (db, user, ctype, date) :
     d = date + common.day
-    dyn = vac_get_user_dynamic (db, user, vcode, d)
+    dyn = vac_get_user_dynamic (db, user, ctype, d)
     if not dyn or dyn.vacation_month is None or dyn.vacation_day is None :
         return None
     y = int (d.get_tuple () [0])
@@ -209,7 +209,7 @@ def next_yearly_vacation_date (db, user, vcode, date) :
         ndyn = vac_next_user_dynamic (db, dyn)
         if  (  not ndyn
             or ndyn.valid_from > next_date
-            or ndyn.vcode != vcode
+            or ndyn.contract_type != ctype
             ) :
             # use last dyn record, no next or too far in the future
             return next_date
@@ -224,9 +224,9 @@ def next_yearly_vacation_date (db, user, vcode, date) :
                 ('%04d-%02d-%02d' % (y + 1, ymon, yday))
 # end def next_yearly_vacation_date
 
-def prev_yearly_vacation_date (db, user, vcode, date) :
+def prev_yearly_vacation_date (db, user, ctype, date) :
     d = date - common.day
-    dyn = vac_get_user_dynamic (db, user, vcode, d)
+    dyn = vac_get_user_dynamic (db, user, ctype, d)
     if  (  not dyn
         or dyn.valid_from > d
         or dyn.vacation_month is None
@@ -279,7 +279,7 @@ def interval_days (iv) :
     return t [3] * t [0]
 # end def interval_days
 
-def get_vacation_correction (db, user, vcode, date) :
+def get_vacation_correction (db, user, ctype, date) :
     """ Get latest absolute vacation_correction.
     """
     dt = ";%s" % date.pretty (common.ymd)
@@ -288,14 +288,14 @@ def get_vacation_correction (db, user, vcode, date) :
         , absolute      = True
         , date          = dt
         )
-    if vcode is not None :
-        d ['vcode'] = vcode
+    if ctype is not None :
+        d ['contract_type'] = ctype
     vcs = db.vacation_correction.filter (None, d, sort = [('-', 'date')])
     if not vcs :
         return
     for id in vcs :
         vc = db.vacation_correction.getnode (id)
-        if vc.vcode == vcode :
+        if vc.contract_type == ctype :
             return vc
 # end def get_vacation_correction
 
@@ -307,7 +307,7 @@ def vacation_wps (db) :
     return vwp
 # end def vacation_wps
 
-def vacation_time_sum (db, user, vcode, start, end) :
+def vacation_time_sum (db, user, ctype, start, end) :
     dt  = common.pretty_range (start, end)
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
     dtt = [('+', 'daily_record.date')]
@@ -319,7 +319,7 @@ def vacation_time_sum (db, user, vcode, start, end) :
         tr  = db.time_record.getnode  (tid)
         dr  = db.daily_record.getnode (tr.daily_record)
         dyn = user_dynamic.get_user_dynamic (db, user, dr.date)
-        if dyn.vcode != vcode :
+        if dyn.contract_type != ctype :
             continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
@@ -328,54 +328,54 @@ def vacation_time_sum (db, user, vcode, start, end) :
 # end def vacation_time_sum
 
 def remaining_vacation \
-    (db, user, vcode = None, date = None, cons = None, to_eoy = True) :
+    (db, user, ctype = None, date = None, cons = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     if date is None :
         date  = roundup.date.Date ('.')
-    if vcode is None :
+    if ctype is None :
         dyn   = user_dynamic.get_user_dynamic (db, user, date)
         if not dyn :
             return
-        vcode = dyn.vcode
-    vc = get_vacation_correction (db, user, vcode, date)
+        ctype = dyn.contract_type
+    vc = get_vacation_correction (db, user, ctype, date)
     if not vc :
         return
-    ed  = next_yearly_vacation_date (db, user, vcode, date)
+    ed  = next_yearly_vacation_date (db, user, ctype, date)
     if not to_eoy :
         ed = min (ed, date)
     if cons is None :
-        cons = consolidated_vacation (db, user, vcode, date, vc, to_eoy)
+        cons = consolidated_vacation (db, user, ctype, date, vc, to_eoy)
     vac = cons
-    vac -= vacation_time_sum (db, user, vcode, vc.date, ed)
+    vac -= vacation_time_sum (db, user, ctype, vc.date, ed)
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     dt  = common.pretty_range (vc.date + common.day, ed)
     d   = dict (user = user, date = dt)
-    if vcode is not None :
-        d ['vcode'] = vcode
+    if ctype is not None :
+        d ['contract_type'] = ctype
     ds  = [('+', 'date')]
     vcs = db.vacation_correction.filter (None, d, sort = ds)
     for vcid in vcs :
         vc = db.vacation_correction.getnode (vcid)
-        if vc.vcode != vcode :
+        if vc.contract_type != ctype :
             continue
         assert not vc.absolute
         vac += vc.days
     return vac
 # end def remaining_vacation
 
-def consolidated_vacation (db, user, vcode, date, vc = None, to_eoy = True) :
+def consolidated_vacation (db, user, ctype, date, vc = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
-    vc  = vc or get_vacation_correction (db, user, vcode, date)
+    vc  = vc or get_vacation_correction (db, user, ctype, date)
     if not vc :
         return None
-    ed  = next_yearly_vacation_date (db, user, vcode, date)
+    ed  = next_yearly_vacation_date (db, user, ctype, date)
     if not to_eoy :
         ed = min (ed, date + common.day)
     d   = vc.date
-    dyn = vac_get_user_dynamic (db, user, vcode, d)
+    dyn = vac_get_user_dynamic (db, user, ctype, d)
     while dyn and dyn.valid_to and dyn.valid_to < d :
         dyn = vac_next_user_dynamic (db, dyn)
     if dyn is None :
@@ -431,7 +431,7 @@ def valid_leave_projects (db) :
     return db.time_project.filter (None, dict (approval_required = True))
 # end def valid_leave_projects
 
-def vac_get_user_dynamic (db, user, vcode, date) :
+def vac_get_user_dynamic (db, user, ctype, date) :
     """ Get user_dynamic record for a vacation computation on the given
         date. Note that there are cases where no dyn user record exists
         exactly for the date but before -- or after. If the record
@@ -444,35 +444,36 @@ def vac_get_user_dynamic (db, user, vcode, date) :
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     if not dyn :
         dyn = user_dynamic.find_user_dynamic (db, user, date, '-')
-    if dyn and dyn.vcode != vcode :
+    if dyn and dyn.contract_type != ctype :
         dyn = vac_prev_user_dynamic (db, dyn)
     if not dyn :
         dyn = user_dynamic.find_user_dynamic (db, user, date, '+')
-    if dyn.vcode != vcode :
+    if dyn.contract_type != ctype :
         dyn = vac_next_user_dynamic (db, dyn)
     return dyn
 # end def vac_get_user_dynamic
 
 def vac_next_user_dynamic (db, dyn) :
-    vcode = dyn.vcode
+    ctype = dyn.contract_type
     dyn   = user_dynamic.next_user_dynamic (db, dyn)
-    while dyn and dyn.vcode != vcode :
+    while dyn and dyn.contract_type != ctype :
         dyn = user_dynamic.next_user_dynamic (db, dyn)
     return dyn
 # end def vac_next_user_dynamic
 
 def vac_prev_user_dynamic (db, dyn) :
-    vcode = dyn.vcode
+    ctype = dyn.contract_type
     dyn   = user_dynamic.prev_user_dynamic (db, dyn)
-    while dyn and dyn.vcode != vcode :
+    while dyn and dyn.contract_type != ctype :
         dyn = user_dynamic.prev_user_dynamic (db, dyn)
     return dyn
 # end def vac_prev_user_dynamic
 
-def need_hr_approval (db, tp, user, vcod, first_day, last_day, booked = False) :
+def need_hr_approval \
+    (db, tp, user, ctype, first_day, last_day, booked = False) :
     day = common.day
-    ed  = next_yearly_vacation_date (db, user, vcod, last_day) - day
-    vac = remaining_vacation (db, user, vcod, ed)
+    ed  = next_yearly_vacation_date (db, user, ctype, last_day) - day
+    vac = remaining_vacation (db, user, ctype, ed)
     if vac is None :
         raise Reject (_ ("No initial vacation correction for this user"))
     dur = leave_days (db, user, first_day, last_day)

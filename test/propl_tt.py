@@ -5,6 +5,12 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'contract_type'
+      , [ 'description'
+        , 'name'
+        , 'order'
+        ]
+      )
     , ( 'cost_center'
       , [ 'cost_center_group'
         , 'description'
@@ -375,6 +381,7 @@ properties = \
       , [ 'additional_hours'
         , 'all_in'
         , 'booking_allowed'
+        , 'contract_type'
         , 'daily_worktime'
         , 'department'
         , 'durations_allowed'
@@ -396,7 +403,6 @@ properties = \
         , 'vacation_yearly'
         , 'valid_from'
         , 'valid_to'
-        , 'vcode'
         , 'weekend_allowed'
         , 'weekly_hours'
         ]
@@ -411,10 +417,10 @@ properties = \
       )
     , ( 'vacation_correction'
       , [ 'absolute'
+        , 'contract_type'
         , 'date'
         , 'days'
         , 'user'
-        , 'vcode'
         ]
       )
     , ( 'vacation_report'

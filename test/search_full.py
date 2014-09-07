@@ -86,6 +86,18 @@ properties = \
           )
         ]
       )
+    , ( 'contract_type'
+      , [ ( 'description'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'name'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        , ( 'order'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
+        ]
+      )
     , ( 'cost_center'
       , [ ( 'cost_center_group'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -1573,6 +1585,9 @@ properties = \
         , ( 'booking_allowed'
           , ["admin", "hr", "hr-org-location"]
           )
+        , ( 'contract_type'
+          , ["admin", "hr"]
+          )
         , ( 'daily_worktime'
           , ["admin", "hr", "hr-org-location"]
           )
@@ -1636,9 +1651,6 @@ properties = \
         , ( 'valid_to'
           , ["admin", "hr", "hr-org-location"]
           )
-        , ( 'vcode'
-          , ["admin", "hr", "hr-org-location"]
-          )
         , ( 'weekend_allowed'
           , ["admin", "hr", "hr-org-location"]
           )
@@ -1669,6 +1681,9 @@ properties = \
       , [ ( 'absolute'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
+        , ( 'contract_type'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
         , ( 'date'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
@@ -1676,9 +1691,6 @@ properties = \
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         , ( 'user'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
-          )
-        , ( 'vcode'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         ]

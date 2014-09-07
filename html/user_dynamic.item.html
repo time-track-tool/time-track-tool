@@ -130,8 +130,9 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'vcode')"/>
-      <td tal:content="structure python:context.vcode.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'contract_type')"/>
+      <td tal:content="structure python:context.contract_type.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-08-23 12:09+0200\n"
+"POT-Creation-Date: 2014-09-07 13:49+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -184,6 +184,9 @@ msgstr ""
 msgid "Wrong day of month: %(vm)s-%(vd)s"
 msgstr ""
 
+msgid "First day may not be after last day"
+msgstr ""
+
 msgid "Max. 30 days for single leave submission"
 msgstr ""
 
@@ -191,6 +194,12 @@ msgid "You already have vacation requests in this time range"
 msgstr ""
 
 msgid "No approval required for work package"
+msgstr ""
+
+msgid "User may not book on work package"
+msgstr ""
+
+msgid "Work package not valid during vacation time"
 msgstr ""
 
 msgid "Frozen"
@@ -203,6 +212,15 @@ msgid "Only special role may create submission for other user"
 msgstr ""
 
 msgid "Vacation request for 0 days"
+msgstr ""
+
+msgid "No yearly vacation for this user"
+msgstr ""
+
+msgid "Vacation date setting is missing"
+msgstr ""
+
+msgid "Differing contract types in range"
 msgstr ""
 
 msgid "Permission denied"
@@ -1086,6 +1104,7 @@ msgid ""
 msgstr ""
 "Nur für Abwesenheits-%(Classname)s: Mitarbeiter muss\n"
 " Abwesenheit von Vorgesetztem genehmigen lassen bevor gebucht wird.\n"
+"         "
 
 msgid "approval_hr"
 msgstr "Genehmigung durch HR"
@@ -4392,8 +4411,60 @@ msgstr "Akkumulierte Zeit Ende"
 msgid "achieved_supplementary"
 msgstr "Erreichte Zusatzstunden"
 
+#.  for translation in web-interface
+msgid "Vacation Report"
+msgstr "Urlaubs-Report"
+
+msgid "yearly entitlement"
+msgstr ""
+
+msgid "yearly prorated"
+msgstr ""
+
+msgid "carry forward"
+msgstr ""
+
+msgid "entitlement total"
+msgstr ""
+
+msgid "approved days"
+msgstr "genehmigte Tage"
+
+msgid "consumation"
+msgstr "verbrachter Urlaub"
+
+msgid "remaining vacation"
+msgstr "verbleibender Urlaub"
+
+msgid "additional submitted"
+msgstr "zusätzlich beantragt"
+
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
 msgstr ""
+
+msgid "Submit to %(sunick)s"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Edit again"
+msgstr ""
+
+msgid "Request Cancel"
+msgstr "Annullierung beantragen"
+
+msgid "Accept"
+msgstr "Akzeptieren"
+
+msgid "Decline"
+msgstr "Ablehnen"
+
+msgid "Allow cancel"
+msgstr "Annullierung erlauben"
+
+msgid "Decline cancel"
+msgstr "Annullierung ablehnen"
 
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
 msgstr ""
@@ -4592,6 +4663,18 @@ msgstr ""
 msgid "new it_issue"
 msgstr "Neues IT Issue"
 
+msgid "New"
+msgstr ""
+
+msgid "Days"
+msgstr ""
+
+msgid "Action"
+msgstr "Aktion"
+
+msgid "Remaining Vacation <span></span> &nbsp;"
+msgstr ""
+
 msgid "Logout"
 msgstr ""
 
@@ -4700,8 +4783,14 @@ msgstr ""
 msgid "Time"
 msgstr "Zeit"
 
+msgid "Leave"
+msgstr ""
+
 msgid "Approval"
 msgstr "Genehmigung"
+
+msgid "Approve Leaves"
+msgstr "Abwesenheit genehmigen"
 
 msgid "User&nbsp;List"
 msgstr "Benutzerliste"
@@ -4914,9 +5003,6 @@ msgstr ""
 msgid "New User"
 msgstr "Neuer User"
 
-msgid "New"
-msgstr ""
-
 msgid "<span>x</span> User"
 msgstr ""
 
@@ -4977,9 +5063,6 @@ msgstr ""
 
 msgid "vacation_date"
 msgstr "Urlaubsstichtag"
-
-msgid "Days"
-msgstr ""
 
 msgid "Invoice Address"
 msgstr "Rechnungsadresse"
@@ -5328,6 +5411,9 @@ msgstr "Dynamische Benutzerdaten"
 msgid "leave_status"
 msgstr "Abwesenheitsstatus"
 
+msgid "contract_type"
+msgstr "Dienstverhältnis-Code"
+
 msgid "leave_submission"
 msgstr "Abwesenheitsmeldung"
 
@@ -5345,6 +5431,9 @@ msgstr "User-Kontakt"
 
 msgid "uc_type"
 msgstr "User-Kontakttyp"
+
+msgid "No initial vacation correction for this user"
+msgstr ""
 
 msgid "status_transition"
 msgstr "Statusübergang"
@@ -5408,6 +5497,9 @@ msgstr ""
 
 msgid "durations_allowed"
 msgstr "Dauer erlaubt"
+
+msgid "is_public"
+msgstr "öffentlich"
 
 msgid "travel_full"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-08-23 12:09+0200\n"
+"POT-Creation-Date: 2014-09-07 13:49+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -179,6 +179,9 @@ msgstr ""
 msgid "Wrong day of month: %(vm)s-%(vd)s"
 msgstr ""
 
+msgid "First day may not be after last day"
+msgstr ""
+
 msgid "Max. 30 days for single leave submission"
 msgstr ""
 
@@ -186,6 +189,12 @@ msgid "You already have vacation requests in this time range"
 msgstr ""
 
 msgid "No approval required for work package"
+msgstr ""
+
+msgid "User may not book on work package"
+msgstr ""
+
+msgid "Work package not valid during vacation time"
 msgstr ""
 
 msgid "Frozen"
@@ -198,6 +207,15 @@ msgid "Only special role may create submission for other user"
 msgstr ""
 
 msgid "Vacation request for 0 days"
+msgstr ""
+
+msgid "No yearly vacation for this user"
+msgstr ""
+
+msgid "Vacation date setting is missing"
+msgstr ""
+
+msgid "Differing contract types in range"
 msgstr ""
 
 msgid "Permission denied"
@@ -4289,7 +4307,59 @@ msgstr "Balance End"
 msgid "achieved_supplementary"
 msgstr "Achieved supplementary hours"
 
+#.  for translation in web-interface
+msgid "Vacation Report"
+msgstr "Vacation Report"
+
+msgid "yearly entitlement"
+msgstr ""
+
+msgid "yearly prorated"
+msgstr ""
+
+msgid "carry forward"
+msgstr ""
+
+msgid "entitlement total"
+msgstr ""
+
+msgid "approved days"
+msgstr "approved days"
+
+msgid "consumation"
+msgstr "consumation"
+
+msgid "remaining vacation"
+msgstr "remaining vacation"
+
+msgid "additional submitted"
+msgstr "additional submitted"
+
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
+msgstr ""
+
+msgid "Submit to %(sunick)s"
+msgstr ""
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Edit again"
+msgstr "Edit again"
+
+msgid "Request Cancel"
+msgstr ""
+
+msgid "Accept"
+msgstr ""
+
+msgid "Decline"
+msgstr "Decline"
+
+msgid "Allow cancel"
+msgstr ""
+
+msgid "Decline cancel"
 msgstr ""
 
 msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
@@ -4487,6 +4557,18 @@ msgstr ""
 msgid "new it_issue"
 msgstr "new IT-Issue"
 
+msgid "New"
+msgstr ""
+
+msgid "Days"
+msgstr ""
+
+msgid "Action"
+msgstr "Action"
+
+msgid "Remaining Vacation <span></span> &nbsp;"
+msgstr ""
+
 msgid "Logout"
 msgstr ""
 
@@ -4595,8 +4677,14 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
+msgid "Leave"
+msgstr ""
+
 msgid "Approval"
 msgstr "Approval"
+
+msgid "Approve Leaves"
+msgstr "Approve Leaves"
 
 msgid "User&nbsp;List"
 msgstr ""
@@ -4807,9 +4895,6 @@ msgstr ""
 msgid "New User"
 msgstr ""
 
-msgid "New"
-msgstr ""
-
 msgid "<span>x</span> User"
 msgstr ""
 
@@ -4870,9 +4955,6 @@ msgstr "Split frozen dynamic user data"
 
 msgid "vacation_date"
 msgstr "Vacation date"
-
-msgid "Days"
-msgstr ""
 
 msgid "Invoice Address"
 msgstr "Invoice address"
@@ -5221,6 +5303,9 @@ msgstr "Dynamic User Data"
 msgid "leave_status"
 msgstr "Leave status"
 
+msgid "contract_type"
+msgstr "Contract type"
+
 msgid "leave_submission"
 msgstr "Leave submission"
 
@@ -5238,6 +5323,9 @@ msgstr "User contact"
 
 msgid "uc_type"
 msgstr "User-contact type"
+
+msgid "No initial vacation correction for this user"
+msgstr ""
 
 msgid "status_transition"
 msgstr "Status Transition"
@@ -5301,6 +5389,9 @@ msgstr ""
 
 msgid "durations_allowed"
 msgstr "Durations allowed"
+
+msgid "is_public"
+msgstr "is public"
 
 msgid "travel_full"
 msgstr "Travel full"

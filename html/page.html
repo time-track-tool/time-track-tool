@@ -280,7 +280,7 @@
                           '@pagesize=200&@startwith=0&'
                           'user=%s' % uid
    , ('vacation_correction', '')
-                        : '@columns=user,vcode,date,absolute,days'
+                        : '@columns=user,contract_type,date,absolute,days'
                           'contact_type&'
                           '@sort=user,date&'
                           '@filter=user&'
@@ -313,6 +313,7 @@
    ( ( ('cost_center',         'Edit',   '?@template=item', 1)
      , ('cost_center_group',   'Edit',   '?@template=item', 1)
      , ('cost_center_status',  'Edit',   '?@template=item', 1)
+     , ('contract_type',       'Edit',   '?@template=item', 1)
      , ('customer_type',       'Edit',   '?@template=item', 1)
      , ('daily_record',         None,    '',                1)
      , ('daily_record_status', 'Edit',   '?@template=item', 1)

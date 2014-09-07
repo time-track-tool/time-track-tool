@@ -105,9 +105,9 @@ class Leave_Buttons (object) :
         first_day      = ep_status.item.first_day._value
         last_day       = ep_status.item.last_day._value
         dyn            = user_dynamic.get_user_dynamic (db, self.user, last_day)
-        vcode          = dyn.vcode
+        ctype          = dyn.contract_type
         need_hr        = vacation.need_hr_approval \
-            (db, tp, self.user, vcode, first_day, last_day)
+            (db, tp, self.user, ctype, first_day, last_day)
         if (self.uid == self.user and stname in self.user_buttons) :
             for b in self.user_buttons [stname] :
                 ret.append (self.button (*b))
@@ -134,7 +134,8 @@ def remaining_until (db) :
     uid = db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
     day = common.day
-    return vacation.next_yearly_vacation_date (db, uid, dyn.vcode, now) - day
+    return vacation.next_yearly_vacation_date \
+        (db, uid, dyn.contract_type, now) - day
 # end def remaining_until
 
 def remaining_vacation (db, user, date) :
