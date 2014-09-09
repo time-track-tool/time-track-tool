@@ -174,7 +174,12 @@ def check_submission (db, cl, nodeid, new_values) :
         check_dr_status (db, user, first_day, last_day, 'leave')
     if old_status != new_status :
         # Allow special HR role to do any (possible) state changes
-        if common.user_has_role (db, uid, 'HR-vacation') :
+        # Except for approval of own records
+        if  (  common.user_has_role (db, uid, 'HR-vacation')
+            and (  uid != user
+                or new_status not in ('accepted', 'declined', 'cancelled')
+                )
+            ) :
             ok = True
         else :
             ok = False
@@ -194,7 +199,8 @@ def check_submission (db, cl, nodeid, new_values) :
             ctype   = dyn.contract_type
             hr_only = vacation.need_hr_approval \
                 (db, tp, user, ctype, first_day, last_day)
-            if  (  not ok
+            if  (   not ok
+                and uid != user
                 and (   (uid in clearer and not hr_only)
                     or  common.user_has_role (db, uid, 'HR-leave-approval')
                     )

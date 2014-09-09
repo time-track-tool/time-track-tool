@@ -44,6 +44,7 @@ def approve_leave_submissions (db, context) :
     if not common.user_has_role (db._db, uid, 'HR-leave-approval') :
         d ['user'] = db._db.user.find (supervisor = uid)
     ls  = db.leave_submission.filter (None, d)
+    ls = [l for l in ls if l.user.id != uid]
     return ls
 # end def approve_leave_submissions
 
@@ -111,7 +112,7 @@ class Leave_Buttons (object) :
         if (self.uid == self.user and stname in self.user_buttons) :
             for b in self.user_buttons [stname] :
                 ret.append (self.button (*b))
-        elif stname in self.approve_buttons :
+        elif stname in self.approve_buttons and self.uid != self.user :
             if  (  (    self.uid in common.clearance_by (self.db, self.user)
                    and not need_hr
                    )
