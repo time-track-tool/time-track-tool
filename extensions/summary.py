@@ -1175,6 +1175,10 @@ class Staff_Report (_Report) :
                         for i in db.daily_record_status.getnodeids ()
                        )
         self.stati   = dict ((i.id, i.name) for i in stati)
+        # leave is also uneditable.
+        for id, n in self.stati.items () :
+            if n == 'leave' :
+                self.stati [id] = 'accepted'
         self.request = request
         self.utils   = utils
         filterspec   = request.filterspec
