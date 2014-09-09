@@ -153,15 +153,19 @@ def leave_duration (db, user, date) :
     return wh - bk
 # end def leave_duration
 
-def vacation_submission_days (db, user, ctype, start, end, * stati) :
-    """ Sum vacation submissions with the given status in the given time
-        range for the given user and ctype (contract_type).
+def leave_submission_days (db, user, ctype, start, end, is_vac, * stati) :
+    """ Sum vacation submissions if is_vac or flexitime else
+        with the given status in the given time range for the given user
+        and ctype (contract_type).
     """
     dt   = common.pretty_range (start, end)
     dts  = ';%s' % start.pretty (common.ymd)
     dte  = '%s;' % end.pretty   (common.ymd)
-    vwp  = vacation_wps (db)
-    d    = dict (user = user, status = list (stati), time_wp = vwp)
+    if is_vac :
+        lwp  = vacation_wps (db)
+    else :
+        lwp  = flexi_wps (db)
+    d    = dict (user = user, status = list (stati), time_wp = lwp)
     d1   = dict (d, first_day = dt)
     vs1  = db.leave_submission.filter (None, d1)
     d2   = dict (d, last_day = dt)
@@ -183,9 +187,26 @@ def vacation_submission_days (db, user, ctype, start, end, * stati) :
         if last_day > end :
             assert vs.first_day < end
             last_day  = end
-        days += leave_days (db, user, first_day, last_day)
+        if is_vac :
+            days += leave_days (db, user, first_day, last_day)
+        else :
+            days += interval_days (last_day - first_day) + 1
     return days
+# end def leave_submission_days
+
+def vacation_submission_days (db, user, ctype, start, end, * stati) :
+    """ Sum vacation submissions with the given status in the given time
+        range for the given user and ctype (contract_type).
+    """
+    return leave_submission_days (db, user, ctype, start, end, 1, * stati)
 # end def vacation_submission_days
+
+def flexitime_submission_days (db, user, ctype, start, end, * stati) :
+    """ Sum flexitime submissions with the given status in the given time
+        range for the given user and ctype (contract_type).
+    """
+    return leave_submission_days (db, user, ctype, start, end, 0, * stati)
+# end def flexitime_submission_days
 
 def next_yearly_vacation_date (db, user, ctype, date) :
     d = date + common.day
@@ -307,6 +328,15 @@ def vacation_wps (db) :
     return vwp
 # end def vacation_wps
 
+def flexi_wps (db) :
+    # All time recs with flexitime wp in range
+    vtp = db.time_project.filter \
+        (None, dict (max_hours = 0, approval_required = True))
+    assert vtp
+    vwp = db.time_wp.filter (None, dict (project = vtp))
+    return vwp
+# end def flexi_wps
+
 def vacation_time_sum (db, user, ctype, start, end) :
     dt  = common.pretty_range (start, end)
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
@@ -327,17 +357,34 @@ def vacation_time_sum (db, user, ctype, start, end) :
     return vac
 # end def vacation_time_sum
 
+def _get_ctype (db, user, date) :
+    # None is a valide contract_type, return -1 in case of error
+    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    if not dyn :
+        return -1
+    return dyn.contract_type
+# end def _get_ctype
+
 def remaining_vacation \
     (db, user, ctype = None, date = None, cons = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     if date is None :
-        date  = roundup.date.Date ('.')
-    if ctype is None :
-        dyn   = user_dynamic.get_user_dynamic (db, user, date)
-        if not dyn :
-            return
-        ctype = dyn.contract_type
+        date = roundup.date.Date ('.')
+    pdate = date.pretty (common.ymd)
+    vac   = None
+    try :
+        vac = db.rem_vac_cache.get ((user, ctype, pdate, to_eoy))
+    except AttributeError :
+        def vac_clear_cache (db) :
+            db.rem_vac_cache = {}
+        db.registerClearCacheCallback (vac_clear_cache, db)
+        db.rem_vac_cache = {}
+    if vac is not None :
+        return vac
+    ctype = ctype or _get_ctype (db, user, date)
+    if ctype == -1 :
+        return
     vc = get_vacation_correction (db, user, ctype, date)
     if not vc :
         return
@@ -362,12 +409,19 @@ def remaining_vacation \
             continue
         assert not vc.absolute
         vac += vc.days
+    db.rem_vac_cache [(user, ctype, pdate, to_eoy)] = vac
     return vac
 # end def remaining_vacation
 
-def consolidated_vacation (db, user, ctype, date, vc = None, to_eoy = True) :
+def consolidated_vacation \
+    (db, user, ctype = None, date = None, vc = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
+    if date is None :
+        date = roundup.date.Date ('.')
+    ctype = ctype or _get_ctype (db, user, date)
+    if ctype == -1 :
+        return
     vc  = vc or get_vacation_correction (db, user, ctype, date)
     if not vc :
         return None
@@ -474,8 +528,7 @@ def need_hr_approval \
     day = common.day
     ed  = next_yearly_vacation_date (db, user, ctype, last_day) - day
     vac = remaining_vacation (db, user, ctype, ed)
-    if vac is None :
-        raise Reject (_ ("No initial vacation correction for this user"))
+    assert vac is not None
     dur = leave_days (db, user, first_day, last_day)
     # don't count duration if this is already booked, so we would count
     # this vacation twice.

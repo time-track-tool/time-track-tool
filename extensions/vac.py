@@ -25,7 +25,7 @@ from   math import ceil
 import common
 import user_dynamic
 import vacation
-from   roundup.date import Date
+from   roundup.date import Date, Interval
 
 def user_leave_submissions (db, context) :
     dt  = '%s;' % Date ('. - 14m').pretty (common.ymd)
@@ -134,14 +134,48 @@ def remaining_until (db) :
     now = Date ('.')
     uid = db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
-    day = common.day
     return vacation.next_yearly_vacation_date \
-        (db, uid, dyn.contract_type, now) - day
+        (db, uid, dyn.contract_type, now) - common.day
 # end def remaining_until
 
 def remaining_vacation (db, user, date) :
     return ceil (vacation.remaining_vacation (db, user, date = date) * 2) / 2.
 # end def remaining_vacation
+
+def consolidated_vacation (db, user, date) :
+    return ceil \
+        (vacation.consolidated_vacation (db, user, date = date) * 2) / 2.
+# end def remaining_vacation
+
+def _get_ctype (db, user, start, end) :
+    now = Date ('.')
+    if start <= now <= end :
+        dyn = user_dynamic.get_user_dynamic (db, user, now)
+    else :
+        dyn = user_dynamic.get_user_dynamic (db, user, start)
+    return dyn.contract_type
+# end def _get_ctype
+
+def _get_stati (db, statusname) :
+    st  = [db.leave_status.lookup (statusname)]
+    if statusname == 'accepted' :
+        st.append (db.leave_status.lookup ('cancel requested'))
+    return st
+# end def _get_stati
+
+def vacation_with_status (db, user, start, end, statusname) :
+    stati = _get_stati (db, statusname)
+    ctype = _get_ctype (db, user, start, end)
+    return vacation.vacation_submission_days \
+        (db, user, ctype, start, end, * stati)
+# end def vacation_with_status
+
+def flexitime_with_status (db, user, start, end, statusname) :
+    stati = _get_stati (db, statusname)
+    ctype = _get_ctype (db, user, start, end)
+    return vacation.flexitime_submission_days \
+        (db, user, ctype, start, end, * stati)
+# end def flexitime_with_status
 
 def init (instance) :
     reg = instance.registerUtil
@@ -154,3 +188,8 @@ def init (instance) :
     reg ('Leave_Buttons',             Leave_Buttons)
     reg ('remaining_until',           remaining_until)
     reg ('remaining_vacation',        remaining_vacation)
+    reg ('consolidated_vacation',     consolidated_vacation)
+    reg ('vacation_with_status',      vacation_with_status)
+    reg ('flexitime_with_status',     flexitime_with_status)
+    reg ('year',                      Interval ('1y'))
+    reg ('day',                       common.day)

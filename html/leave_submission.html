@@ -132,16 +132,69 @@
      <td tal:condition="python: not context.id"
          tal:content="structure python:context.status.plain ()"/>
     </tr>
-    <tr><td>&nbsp;</td></tr>
-    <tr tal:define="remdate python:utils.remaining_until (db)">
-     <th i18n:translate="">Remaining Vacation
-      <span tal:content="python:remdate.pretty (utils.ymd)"/>
-      &nbsp;
-     </th>
-     <td tal:content="python:utils.remaining_vacation
-         (db._db, db._db.getuid (), date = remdate)"/>
-    </tr>
    </tal:block>
   </tal:block>
+ </tal:block>
+</tal:block>
+
+<tal:block metal:define-macro="vacation_status">
+ <tal:block tal:define=
+   " remdate python:utils.remaining_until (db)
+   ; jandate python: remdate - utils.year + utils.day
+   ; vapr    python: utils.vacation_with_status
+             (db._db, db._db.getuid (), jandate, remdate, 'accepted')
+   ; vsub    python: utils.vacation_with_status
+             (db._db, db._db.getuid (), jandate, remdate, 'submitted')
+   ; fapr    python: utils.flexitime_with_status
+             (db._db, db._db.getuid (), jandate, remdate, 'accepted')
+   ; fsub    python: utils.flexitime_with_status
+             (db._db, db._db.getuid (), jandate, remdate, 'submitted')
+   ">
+  <h3 i18n:translate="">Overview remaining vacation</h3>
+  <table class="form">
+   <tr>
+    <th i18n:translate="">Vacation
+     <span tal:content="python:jandate.pretty (utils.ymd)"/>
+     &nbsp;
+    </th>
+    <td class="number" tal:content="python:utils.consolidated_vacation
+        (db._db, db._db.getuid (), date = remdate)"/>
+   </tr>
+   <tr>
+    <th i18n:translate="">Approved&nbsp;</th>
+    <td class="number" tal:content="vapr"/>
+   </tr>
+   <tr>
+    <th i18n:translate="">Submitted&nbsp;</th>
+    <td class="number" tal:content="vsub"/>
+   </tr>
+   <tr>
+    <th i18n:translate="">Total&nbsp;</th>
+    <td class="number" tal:content="python:vapr + vsub"/>
+   </tr>
+   <tr>
+    <th i18n:translate="">Remaining Vacation
+     <span tal:content="python:remdate.pretty (utils.ymd)"/>
+     &nbsp;
+    </th>
+    <td class="number" tal:content="python:utils.remaining_vacation
+        (db._db, db._db.getuid (), date = remdate)"/>
+   </tr>
+  </table>
+  <h3 i18n:translate="">Overview comp/flexitime days</h3>
+  <table class="form">
+   <tr>
+    <th i18n:translate="">Approved&nbsp;</th>
+    <td class="number" tal:content="fapr"/>
+   </tr>
+   <tr>
+    <th i18n:translate="">Submitted&nbsp;</th>
+    <td class="number" tal:content="fsub"/>
+   </tr>
+   <tr>
+    <th i18n:translate="">Total&nbsp;</th>
+    <td class="number" tal:content="python:fapr + fsub"/>
+   </tr>
+  </table>
  </tal:block>
 </tal:block>

@@ -246,6 +246,10 @@ table.form td a:link {
   white-space: nowrap;
 }
 
+table.form td.number {
+  text-align: right;
+}
+
 table.form td a[href]:hover { color: #338 }
 table.form td a[href]:link  { color: #338 }
 table.form td a[href]       { color: #338 }
