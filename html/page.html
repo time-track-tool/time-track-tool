@@ -646,8 +646,8 @@
      </span>
 
      <!-- approval if user can approve records -->
-     <span tal:condition="approval_for">
-      <span class="classblock">
+     <span>
+      <span class="classblock" tal:condition="approval_for">
        <a i18n:translate="" tal:attributes="href python:
         [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
           % ','.join (approval_for.keys ())
@@ -658,7 +658,9 @@
         Approval
        </a>
       </span>
-      <span class="classblock">
+      <span class="classblock" tal:condition="python:
+          approval_for or
+          utils.user_has_role (db._db, db._db.getuid (), 'HR-leave-approval')">
        <a i18n:translate="" href="leave_submission?@template=approve">
         Approve Leaves
        </a>
