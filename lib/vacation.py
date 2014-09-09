@@ -366,12 +366,16 @@ def _get_ctype (db, user, date) :
 # end def _get_ctype
 
 def remaining_vacation \
-    (db, user, ctype = None, date = None, cons = None, to_eoy = True) :
+    (db, user, ctype = -1, date = None, cons = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     if date is None :
         date = roundup.date.Date ('.')
     pdate = date.pretty (common.ymd)
+    if ctype == -1 :
+        ctype = _get_ctype (db, user, date)
+    if ctype == -1 :
+        return
     vac   = None
     try :
         vac = db.rem_vac_cache.get ((user, ctype, pdate, to_eoy))
@@ -382,9 +386,6 @@ def remaining_vacation \
         db.rem_vac_cache = {}
     if vac is not None :
         return vac
-    ctype = ctype or _get_ctype (db, user, date)
-    if ctype == -1 :
-        return
     vc = get_vacation_correction (db, user, ctype, date)
     if not vc :
         return
@@ -414,12 +415,13 @@ def remaining_vacation \
 # end def remaining_vacation
 
 def consolidated_vacation \
-    (db, user, ctype = None, date = None, vc = None, to_eoy = True) :
+    (db, user, ctype = -1, date = None, vc = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     if date is None :
         date = roundup.date.Date ('.')
-    ctype = ctype or _get_ctype (db, user, date)
+    if ctype == -1 :
+        ctype = _get_ctype (db, user, date)
     if ctype == -1 :
         return
     vc  = vc or get_vacation_correction (db, user, ctype, date)
