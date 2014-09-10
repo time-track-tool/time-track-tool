@@ -43,7 +43,6 @@ from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from rsclib.autosuper               import autosuper
 from rsclib.PM_Value                import PM_Value
-from collections                    import OrderedDict
 
 import common
 import request_util
@@ -1396,16 +1395,16 @@ class Staff_Report (_Report) :
 
 class Vacation_Report (_Report) :
     ''"Vacation Report" # for translation in web-interface
-    fields = OrderedDict \
-        (( (""'yearly entitlement',   1)
-        ,  (""'yearly prorated',      1)
-        ,  (""'carry forward',        1)
-        ,  (""'entitlement total',    1)
-        ,  (""'approved days',        1)
-        ,  (""'approved_submissions', 1)
-        ,  (""'remaining vacation',   1)
-        ,  (""'additional_submitted', 1)
-        ))
+    fields = \
+        ( (""'yearly entitlement',   1)
+        , (""'yearly prorated',      2)
+        , (""'carry forward',        3)
+        , (""'entitlement total',    4)
+        , (""'approved days',        5)
+        , (""'approved_submissions', 6)
+        , (""'remaining vacation',   7)
+        , (""'additional_submitted', 8)
+        )
 
     def __init__ (self, db, request, utils, is_csv = False) :
         timestamp        = time.time ()
@@ -1428,11 +1427,12 @@ class Vacation_Report (_Report) :
         now          = Date ('.')
         year         = now.get_tuple () [0]
         d = filterspec.get ('date')
-        self.fields  = OrderedDict (self.fields)
+        fields       = dict (self.fields)
         for k in ('approved_submissions', 'additional_submitted') :
             if k not in request.columns :
-                del self.fields [k]
-        self.fields  = self.fields.keys ()
+                del fields [k]
+        self.fields  = sorted \
+            (fields.keys (), key = lambda x : fields [x])
 
         if d :
             if ';' in d :
