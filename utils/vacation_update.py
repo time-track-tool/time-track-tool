@@ -18,10 +18,10 @@ import user_dynamic
 #      Name                      approval_hr is_vacation
 tc_names = \
     { 'Nursing-leave'         : (True,  False)
-    , 'Special-leave'         : (True,  False)
-    , 'Special-leave-Italy'   : (True,  False)
-    , 'Special-leave-Japan'   : (True,  False)
-    , 'Special-leave-Romania' : (True,  False)
+    , 'Special-leave'         : (False, False)
+    , 'Special-leave-Italy'   : (False, False)
+    , 'Special-leave-Japan'   : (False, False)
+    , 'Special-leave-Romania' : (False, False)
     , 'Unpaid-leave'          : (True,  False)
     , 'Vacation'              : (False, True)
     , 'Comp\\Flexi-Time'      : (False, False)
@@ -93,8 +93,8 @@ for wpid in db.time_wp.getnodeids (retired = False) :
     db.time_wp.set (wpid, is_public = False)
 
 broken_int = dict.fromkeys \
-    (('2.56'
-    ,
+    (( '2.56'
+    ,  ''
     ))
 if len (sys.argv) == 2 :
     fd = open (sys.argv [1], 'r')
@@ -116,6 +116,8 @@ if len (sys.argv) == 2 :
             # Special hacks for my data, without disclosing usernames
             if username.startswith ('l') :
                 username = 'L' + username [1:]
+            elif username.startswith ('g') :
+                username = username [:4] + 'r' + username [4:]
             else :
                 username = 'g' + username
             user = db.user.lookup (username)
