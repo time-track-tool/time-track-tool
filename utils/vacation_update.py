@@ -19,9 +19,6 @@ import user_dynamic
 tc_names = \
     { 'Nursing-leave'         : (True,  False, False)
     , 'Special-leave'         : (False, False, True)
-    , 'Special-leave-Italy'   : (False, False, True)
-    , 'Special-leave-Japan'   : (False, False, True)
-    , 'Special-leave-Romania' : (False, False, True)
     , 'Unpaid-leave'          : (True,  False, False)
     , 'Vacation'              : (False, True,  False)
     , 'Comp\\Flexi-Time'      : (False, False, False)
