@@ -7,39 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-10 16:30+0200\n"
+"POT-Creation-Date: 2014-09-10 19:44+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "invoice"
-msgstr "Rechnung"
-
-msgid "Invoice Address"
-msgstr "Rechnungsadresse"
-
-msgid "shipping"
-msgstr "Lieferung"
-
-msgid "Shipping Address"
-msgstr "Lieferadresse"
-
-msgid "supply"
-msgstr "Bezug"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr "Adresse zum Bezug beim Lieferanten"
-
-msgid "contact"
-msgstr "Kontakt"
-
-msgid "Address of a personal contact"
-msgstr "Adresse persönlicher Kontakt"
-
-msgid "Circular logging"
-msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
@@ -1378,6 +1351,9 @@ msgstr ""
 "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
 "müssen übereinstimmen."
 
+msgid "contact"
+msgstr "Kontakt"
+
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -2172,6 +2148,9 @@ msgstr ""
 "Eindeutiger name für diese %(Classname)s, bevorzugt die Inventarnummer für "
 "die Verwaltung von Anlagegütern (asset tracking)"
 
+msgid "invoice"
+msgstr "Rechnung"
+
 msgid "Link to invoice for this %(Classname)s"
 msgstr "Verbindung zur Rechnung für %(Classname)s"
 
@@ -2314,6 +2293,22 @@ msgstr ""
 msgid "Enable this if the %(Classname)s uses Lotus Notes for mail"
 msgstr ""
 
+msgid "is_actuator"
+msgstr "Aktuator"
+
+msgid "This %(Classname)s allows setting a value"
+msgstr "%(Classname)s erlaubt das Setzen von Werten"
+
+msgid "is_public"
+msgstr "öffentlich"
+
+msgid ""
+"Allow all users too book on %(Classname)s. If set, the field\n"
+"             \"Admitted users\" is ignored and all users are allowed to\n"
+"             book on this %(Classname)s.\n"
+"          "
+msgstr ""
+
 msgid "is_public_holiday"
 msgstr "ist Feiertag"
 
@@ -2324,17 +2319,23 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "is_actuator"
-msgstr "Aktuator"
-
-msgid "This %(Classname)s allows setting a value"
-msgstr "%(Classname)s erlaubt das Setzen von Werten"
-
 msgid "is_series"
 msgstr "Serienprodukt"
 
 msgid "This is turned on when the %(Classname)s is a series product"
 msgstr "Eingeschaltet wenn %(Classname)s ein Serienprodukt ist"
+
+msgid "is_special_leave"
+msgstr "ist Spezial-Abwesenheit"
+
+msgid "Set to True if %(Classname)s is for special leave"
+msgstr "Muss gesetzt sein falls %(Classname)s für Spezial-Abwesenheit"
+
+msgid "is_vacation"
+msgstr "ist Urlaub"
+
+msgid "Set to True if %(Classname)s is for vacation"
+msgstr "Muss gesetzt sein falls %(Classname)s für Urlaub"
 
 msgid "issue++deadline"
 msgstr "Zieldatum"
@@ -4467,13 +4468,13 @@ msgstr ""
 msgid "approved days"
 msgstr "genehmigte Tage"
 
-msgid "consumation"
-msgstr "verbrachter Urlaub"
+msgid "approved_submissions"
+msgstr "Genehmigte Urlaubsanträge"
 
 msgid "remaining vacation"
 msgstr "verbleibender Urlaub"
 
-msgid "additional submitted"
+msgid "additional_submitted"
 msgstr "zusätzlich beantragt"
 
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
@@ -5125,6 +5126,27 @@ msgstr ""
 msgid "vacation_date"
 msgstr "Urlaubsstichtag"
 
+msgid "Invoice Address"
+msgstr "Rechnungsadresse"
+
+msgid "shipping"
+msgstr "Lieferung"
+
+msgid "Shipping Address"
+msgstr "Lieferadresse"
+
+msgid "supply"
+msgstr "Bezug"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr "Adresse zum Bezug beim Lieferanten"
+
+msgid "Address of a personal contact"
+msgstr "Adresse persönlicher Kontakt"
+
+msgid "Circular logging"
+msgstr ""
+
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5520,12 +5542,6 @@ msgstr "Orte"
 msgid "is_staff"
 msgstr ""
 
-msgid "is_vacation"
-msgstr "ist Urlaub"
-
-msgid "is_special_leave"
-msgstr "ist Spezial-Abwesenheit"
-
 msgid "end_generated"
 msgstr ""
 
@@ -5534,9 +5550,6 @@ msgstr ""
 
 msgid "durations_allowed"
 msgstr "Dauer erlaubt"
-
-msgid "is_public"
-msgstr "öffentlich"
 
 msgid "travel_full"
 msgstr ""
@@ -5846,6 +5859,9 @@ msgstr "ist Verteiler"
 
 msgid "doc_num"
 msgstr "Dokument Nummer"
+
+#~ msgid "consumation"
+#~ msgstr "verbrachter Urlaub"
 
 #~ msgid "vacation_status"
 #~ msgstr "Urlaubs-Status"

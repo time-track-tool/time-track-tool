@@ -7,39 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-10 16:30+0200\n"
+"POT-Creation-Date: 2014-09-10 19:44+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "invoice"
-msgstr ""
-
-msgid "Invoice Address"
-msgstr "Invoice address"
-
-msgid "shipping"
-msgstr "shipping"
-
-msgid "Shipping Address"
-msgstr "Shipping address"
-
-msgid "supply"
-msgstr "supply"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr ""
-
-msgid "contact"
-msgstr "Contact"
-
-msgid "Address of a personal contact"
-msgstr ""
-
-msgid "Circular logging"
-msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -1331,6 +1304,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "contact"
+msgstr "Contact"
+
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -2114,6 +2090,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "invoice"
+msgstr ""
+
 msgid "Link to invoice for this %(Classname)s"
 msgstr ""
 
@@ -2249,6 +2228,22 @@ msgstr "Is Lotus user"
 msgid "Enable this if the %(Classname)s uses Lotus Notes for mail"
 msgstr ""
 
+msgid "is_actuator"
+msgstr "is actuator"
+
+msgid "This %(Classname)s allows setting a value"
+msgstr ""
+
+msgid "is_public"
+msgstr "is public"
+
+msgid ""
+"Allow all users too book on %(Classname)s. If set, the field\n"
+"             \"Admitted users\" is ignored and all users are allowed to\n"
+"             book on this %(Classname)s.\n"
+"          "
+msgstr ""
+
 msgid "is_public_holiday"
 msgstr "Public Holiday"
 
@@ -2259,16 +2254,22 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "is_actuator"
-msgstr "is actuator"
-
-msgid "This %(Classname)s allows setting a value"
-msgstr ""
-
 msgid "is_series"
 msgstr "Series production"
 
 msgid "This is turned on when the %(Classname)s is a series product"
+msgstr ""
+
+msgid "is_special_leave"
+msgstr "is special leave"
+
+msgid "Set to True if %(Classname)s is for special leave"
+msgstr ""
+
+msgid "is_vacation"
+msgstr "is vacation"
+
+msgid "Set to True if %(Classname)s is for vacation"
 msgstr ""
 
 msgid "issue++deadline"
@@ -4363,13 +4364,13 @@ msgstr ""
 msgid "approved days"
 msgstr "approved days"
 
-msgid "consumation"
-msgstr "consumation"
+msgid "approved_submissions"
+msgstr "approved submissions"
 
 msgid "remaining vacation"
 msgstr "remaining vacation"
 
-msgid "additional submitted"
+msgid "additional_submitted"
 msgstr "additional submitted"
 
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
@@ -5017,6 +5018,27 @@ msgstr "Split frozen dynamic user data"
 msgid "vacation_date"
 msgstr "Vacation date"
 
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+msgid "shipping"
+msgstr "shipping"
+
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+msgid "supply"
+msgstr "supply"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr ""
+
+msgid "Address of a personal contact"
+msgstr ""
+
+msgid "Circular logging"
+msgstr ""
+
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5412,12 +5434,6 @@ msgstr "Locations"
 msgid "is_staff"
 msgstr "Needed by staff report"
 
-msgid "is_vacation"
-msgstr "is vacation"
-
-msgid "is_special_leave"
-msgstr "is special leave"
-
 msgid "end_generated"
 msgstr ""
 
@@ -5426,9 +5442,6 @@ msgstr ""
 
 msgid "durations_allowed"
 msgstr "Durations allowed"
-
-msgid "is_public"
-msgstr "is public"
 
 msgid "travel_full"
 msgstr "Travel full"
@@ -5738,6 +5751,9 @@ msgstr "is nosy"
 
 msgid "doc_num"
 msgstr "Document number"
+
+#~ msgid "consumation"
+#~ msgstr "consumation"
 
 #~ msgid "vacation_status"
 #~ msgstr "Vacation status"

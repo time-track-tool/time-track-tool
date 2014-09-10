@@ -23,13 +23,23 @@
        (utils, pdict ['org_location'],      multiselect = 1)
      , organisation      = utils.ExtProperty
        (utils, pdict ['organisation'],      multiselect = 1)
+     , additional_submitted  = utils.ExtProperty
+           ( utils, pdict ['additional_submitted']
+           , searchable = False
+           , sortable = False
+           )
+     , approved_submissions  = utils.ExtProperty
+           ( utils, pdict ['approved_submissions']
+           , searchable = False
+           , sortable = False
+           )
      );
      vr python: utils.Vacation_Report (db, request, utils)
      "
      tal:condition="context/is_view_ok">
      <tal:block tal:replace="structure python:vr.as_html ()"/>
    <tal:block tal:define=
-       " fpkeys python: []
+       " fpkeys python: ['additional_submitted', 'approved_submissions']
        ; props python: [myprops [p] for p in sorted (fpkeys)]
        ; propkeys       python:
          ( 'date', 'user', 'department', 'supervisor', 'org_location'

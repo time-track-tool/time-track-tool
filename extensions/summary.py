@@ -43,6 +43,7 @@ from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from rsclib.autosuper               import autosuper
 from rsclib.PM_Value                import PM_Value
+from collections                    import OrderedDict
 
 import common
 import request_util
@@ -1395,16 +1396,16 @@ class Staff_Report (_Report) :
 
 class Vacation_Report (_Report) :
     ''"Vacation Report" # for translation in web-interface
-    fields = \
-        ( ""'yearly entitlement'
-        , ""'yearly prorated'
-        , ""'carry forward'
-        , ""'entitlement total'
-        , ""'approved days'
-        , ""'consumation'
-        , ""'remaining vacation'
-        , ""'additional submitted'
-        )
+    fields = OrderedDict \
+        (( (""'yearly entitlement',   1)
+        ,  (""'yearly prorated',      1)
+        ,  (""'carry forward',        1)
+        ,  (""'entitlement total',    1)
+        ,  (""'approved days',        1)
+        ,  (""'approved_submissions', 1)
+        ,  (""'remaining vacation',   1)
+        ,  (""'additional_submitted', 1)
+        ))
 
     def __init__ (self, db, request, utils, is_csv = False) :
         timestamp        = time.time ()
@@ -1427,6 +1428,12 @@ class Vacation_Report (_Report) :
         now          = Date ('.')
         year         = now.get_tuple () [0]
         d = filterspec.get ('date')
+        self.fields  = OrderedDict (self.fields)
+        for k in ('approved_submissions', 'additional_submitted') :
+            if k not in request.columns :
+                del self.fields [k]
+        self.fields  = self.fields.keys ()
+
         if d :
             if ';' in d :
                 start, end = d.split (';')
@@ -1541,14 +1548,17 @@ class Vacation_Report (_Report) :
                         vacation.remaining_vacation \
                             (db, u, ctype, d, cons, to_eoy = not hv)
                     container ['approved days'] = \
-                        vacation.vacation_submission_days \
-                            (db, u, ctype, ld, d, st_accp, st_cnrq)
-                    container ['additional submitted'] = \
-                        vacation.vacation_submission_days \
-                            (db, u, ctype, ld, d, st_subm)
-                    container ['consumation'] = vacation.vacation_time_sum \
-                        (db, u, ctype, ld, d)
+                        vacation.vacation_time_sum (db, u, ctype, ld, d)
+                    if 'additional_submitted' in self.fields :
+                        container ['additional_submitted'] = \
+                            vacation.vacation_submission_days \
+                                (db, u, ctype, ld, d, st_subm)
                     ltot = cons
+
+                    if 'approved_submissions' in self.fields :
+                        container ['approved_submissions'] = \
+                            vacation.vacation_submission_days \
+                                (db, u, ctype, ld, d, st_accp, st_cnrq)
 
                     if (u, ctype) not in self.values :
                         self.values [(u, ctype)] = []

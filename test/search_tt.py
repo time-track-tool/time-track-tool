@@ -1014,7 +1014,13 @@ properties = \
         ]
       )
     , ( 'vacation_report'
-      , [ ( 'date'
+      , [ ( 'additional_submitted'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'approved_submissions'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'date'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'department'

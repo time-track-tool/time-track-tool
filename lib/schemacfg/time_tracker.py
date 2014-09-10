@@ -395,6 +395,8 @@ def init \
         , org_location          = Link      ("org_location")
         , time_project          = Link      ("time_project")
         , date                  = Date      (offset = 0)
+        , additional_submitted  = String    ()
+        , approved_submissions  = String    ()
         )
 
     work_location = Class \

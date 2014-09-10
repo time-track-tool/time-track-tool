@@ -715,7 +715,9 @@ properties = \
         ]
       )
     , ( 'vacation_report'
-      , [ 'date'
+      , [ 'additional_submitted'
+        , 'approved_submissions'
+        , 'date'
         , 'department'
         , 'org_location'
         , 'organisation'
