@@ -132,6 +132,16 @@
      <td tal:condition="python: not context.id"
          tal:content="structure python:context.status.plain ()"/>
     </tr>
+    <tr>
+     <th />
+     <td colspan="2" i18n:translate="">
+       Comment is only required for special leave</td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname (classname, 'comment')"/>
+     <td colspan="3"
+         tal:content="structure python:context.comment.field (size=60)"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>
@@ -141,8 +151,8 @@
  <tal:block tal:define=
    " remdate python:utils.remaining_until (db)
    ; jandate python: remdate - utils.year + utils.day
-   ; vapr    python: utils.vacation_with_status
-             (db._db, db._db.getuid (), jandate, remdate, 'accepted')
+   ; vapr    python: utils.vacation_time_sum
+             (db._db, db._db.getuid (), -1, jandate, remdate)
    ; vsub    python: utils.vacation_with_status
              (db._db, db._db.getuid (), jandate, remdate, 'submitted')
    ; fapr    python: utils.flexitime_with_status
@@ -169,16 +179,13 @@
     <td class="number" tal:content="vsub"/>
    </tr>
    <tr>
-    <th i18n:translate="">Total&nbsp;</th>
-    <td class="number" tal:content="python:vapr + vsub"/>
-   </tr>
-   <tr>
     <th i18n:translate="">Remaining Vacation
      <span tal:content="python:remdate.pretty (utils.ymd)"/>
      &nbsp;
     </th>
     <td class="number" tal:content="python:utils.remaining_vacation
-        (db._db, db._db.getuid (), date = remdate)"/>
+        (db._db, db._db.getuid (), date = remdate) - vsub"/>
+    <th i18n:translate="">(including submissions)</th>
    </tr>
   </table>
   <h3 i18n:translate="">Overview comp/flexitime days</h3>

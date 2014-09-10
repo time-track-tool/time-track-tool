@@ -275,7 +275,8 @@ properties = \
         ]
       )
     , ( 'leave_submission'
-      , [ 'first_day'
+      , [ 'comment'
+        , 'first_day'
         , 'last_day'
         , 'status'
         , 'time_wp'
@@ -555,6 +556,7 @@ properties = \
         , 'deputy'
         , 'description'
         , 'is_public_holiday'
+        , 'is_special_leave'
         , 'is_vacation'
         , 'max_hours'
         , 'name'

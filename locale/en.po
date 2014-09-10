@@ -7,12 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-07 13:49+0200\n"
+"POT-Creation-Date: 2014-09-10 16:30+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "invoice"
+msgstr ""
+
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+msgid "shipping"
+msgstr "shipping"
+
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+msgid "supply"
+msgstr "supply"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr ""
+
+msgid "contact"
+msgstr "Contact"
+
+msgid "Address of a personal contact"
+msgstr ""
+
+msgid "Circular logging"
+msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -195,6 +222,9 @@ msgid "User may not book on work package"
 msgstr ""
 
 msgid "Work package not valid during vacation time"
+msgstr ""
+
+msgid "Comment is required for special leave"
 msgstr ""
 
 msgid "Frozen"
@@ -1301,9 +1331,6 @@ msgid ""
 "          "
 msgstr ""
 
-msgid "contact"
-msgstr "Contact"
-
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -1342,6 +1369,19 @@ msgstr ""
 
 msgid "content"
 msgstr "Content"
+
+msgid "contract_type"
+msgstr "Contract type"
+
+msgid ""
+"%(Property)s specifies the kind of contract that\n"
+"            the staff member has, like (normal) employment contract,\n"
+"            separate marginal employment (in addition to the main\n"
+"            employment contract), contract of work and services\n"
+"            (Werkvertrag), or (AUT only) freier Dienstvertrag (social\n"
+"            insurance liable free-lance contract).\n"
+"      "
+msgstr ""
 
 msgid "cost_center"
 msgstr "Cost Center"
@@ -2072,9 +2112,6 @@ msgid ""
 "Unique number or name for this %(Classname)s, preferrably the\n"
 "             inventory number for asset tracking\n"
 "          "
-msgstr ""
-
-msgid "invoice"
 msgstr ""
 
 msgid "Link to invoice for this %(Classname)s"
@@ -4566,7 +4603,31 @@ msgstr ""
 msgid "Action"
 msgstr "Action"
 
+msgid "Comment is only required for special leave"
+msgstr ""
+
+msgid "Overview remaining vacation"
+msgstr ""
+
+msgid "Vacation <span></span> &nbsp;"
+msgstr ""
+
+msgid "Approved&nbsp;"
+msgstr ""
+
+msgid "Submitted&nbsp;"
+msgstr ""
+
 msgid "Remaining Vacation <span></span> &nbsp;"
+msgstr ""
+
+msgid "(including submissions)"
+msgstr ""
+
+msgid "Overview comp/flexitime days"
+msgstr ""
+
+msgid "Total&nbsp;"
 msgstr ""
 
 msgid "Logout"
@@ -4956,27 +5017,6 @@ msgstr "Split frozen dynamic user data"
 msgid "vacation_date"
 msgstr "Vacation date"
 
-msgid "Invoice Address"
-msgstr "Invoice address"
-
-msgid "shipping"
-msgstr "shipping"
-
-msgid "Shipping Address"
-msgstr "Shipping address"
-
-msgid "supply"
-msgstr "supply"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr ""
-
-msgid "Address of a personal contact"
-msgstr ""
-
-msgid "Circular logging"
-msgstr ""
-
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5303,9 +5343,6 @@ msgstr "Dynamic User Data"
 msgid "leave_status"
 msgstr "Leave status"
 
-msgid "contract_type"
-msgstr "Contract type"
-
 msgid "leave_submission"
 msgstr "Leave submission"
 
@@ -5323,9 +5360,6 @@ msgstr "User contact"
 
 msgid "uc_type"
 msgstr "User-contact type"
-
-msgid "No initial vacation correction for this user"
-msgstr ""
 
 msgid "status_transition"
 msgstr "Status Transition"
@@ -5381,6 +5415,9 @@ msgstr "Needed by staff report"
 msgid "is_vacation"
 msgstr "is vacation"
 
+msgid "is_special_leave"
+msgstr "is special leave"
+
 msgid "end_generated"
 msgstr ""
 
@@ -5396,11 +5433,11 @@ msgstr "is public"
 msgid "travel_full"
 msgstr "Travel full"
 
-msgid "first_day"
-msgstr "First day"
-
 msgid "last_day"
 msgstr "Last day"
+
+msgid "first_day"
+msgstr "First day"
 
 msgid "absolute"
 msgstr ""

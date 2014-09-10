@@ -234,7 +234,10 @@ properties = \
         ]
       )
     , ( 'leave_submission'
-      , [ ( 'first_day'
+      , [ ( 'comment'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'first_day'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'last_day'
@@ -598,6 +601,9 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'is_public_holiday'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'is_special_leave'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'is_vacation'

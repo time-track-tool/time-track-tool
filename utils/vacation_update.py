@@ -15,22 +15,27 @@ sys.path.insert (1, os.path.join (dir, 'lib'))
 import common
 import user_dynamic
 
-#      Name                      approval_hr is_vacation
+#      Name                      approval_hr is_vacation is_special_leave
 tc_names = \
-    { 'Nursing-leave'         : (True,  False)
-    , 'Special-leave'         : (False, False)
-    , 'Special-leave-Italy'   : (False, False)
-    , 'Special-leave-Japan'   : (False, False)
-    , 'Special-leave-Romania' : (False, False)
-    , 'Unpaid-leave'          : (True,  False)
-    , 'Vacation'              : (False, True)
-    , 'Comp\\Flexi-Time'      : (False, False)
+    { 'Nursing-leave'         : (True,  False, False)
+    , 'Special-leave'         : (False, False, True)
+    , 'Special-leave-Italy'   : (False, False, True)
+    , 'Special-leave-Japan'   : (False, False, True)
+    , 'Special-leave-Romania' : (False, False, True)
+    , 'Unpaid-leave'          : (True,  False, False)
+    , 'Vacation'              : (False, True,  False)
+    , 'Comp\\Flexi-Time'      : (False, False, False)
     }
 
-for n, (hr, v) in tc_names.iteritems () :
+for n, (hr, v, sl) in tc_names.iteritems () :
     tp = db.time_project.lookup (n)
     db.time_project.set \
-        (tp, approval_required = True, approval_hr = hr, is_vacation = v)
+        ( tp
+        , approval_required = True
+        , approval_hr       = hr
+        , is_vacation       = v
+        , is_special_leave  = sl
+        )
 
 vstatus = \
     { 'open'             : 1

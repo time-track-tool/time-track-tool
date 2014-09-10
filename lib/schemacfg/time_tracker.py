@@ -230,6 +230,7 @@ def init \
         , no_overtime           = Boolean   ()
         , is_public_holiday     = Boolean   ()
         , is_vacation           = Boolean   ()
+        , is_special_leave      = Boolean   ()
         , cost_center           = Link      ("cost_center")
         , overtime_reduction    = Boolean   ()
         , reporting_group       = Multilink ("reporting_group")
@@ -361,6 +362,7 @@ def init \
         , last_day              = Date      (offset = 0)
         , status                = Link      ("leave_status")
         , time_wp               = Link      ("time_wp")
+        , comment               = String    ()
         )
 
     # Remaining vacation starting with given date if absolute is True,
@@ -589,7 +591,8 @@ def security (db, ** kw) :
             )
           )
         , ( "time_project", "Edit", ["HR"]
-          , ( "is_public_holiday", "is_vacation", "no_overtime"
+          , ( "is_public_holiday", "is_vacation", "is_special_leave"
+            , "no_overtime"
             , "overtime_reduction", "approval_required", "approval_hr"
             )
           )
@@ -1010,8 +1013,8 @@ def security (db, ** kw) :
     tp_properties = \
         ( 'name', 'description', 'responsible', 'deputy', 'organisation'
         , 'status', 'work_location', 'op_project', 'id'
-        , 'is_public_holiday', 'is_vacation', 'creation', 'creator'
-        , 'activity', 'actor'
+        , 'is_public_holiday', 'is_vacation', 'is_special_leave'
+        , 'creation', 'creator', 'activity', 'actor'
         , 'cost_center', 'overtime_reduction'
         , 'product_family', 'project_type', 'reporting_group'
         )

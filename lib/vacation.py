@@ -345,6 +345,8 @@ def vacation_time_sum (db, user, ctype, start, end) :
     trs = db.time_record.filter \
         (None, dict (daily_record = dr, wp = vwp), sort = dtt)
     vac = 0.0
+    if ctype == -1 :
+        ctype = _get_ctype (db, user, roundup.date.Date ('.'))
     for tid in trs :
         tr  = db.time_record.getnode  (tid)
         dr  = db.daily_record.getnode (tr.daily_record)
@@ -471,7 +473,10 @@ def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
         wp1 = db.time_wp.filter (None, d1, srt)
         d2  = dict (d, bookers = user)
         wp2 = db.time_wp.filter (None, d2, srt)
-        wps = [db.time_wp.getnode (w) for w in wp1 + wp2]
+        # Filter again via db to get sorting right
+        wps = [db.time_wp.getnode (w)
+               for w in db.time_wp.filter (wp1 + wp2, {}, sort = srt)
+              ]
     else :
         wps = [db.time_wp.getnode (w) for w in db.time_wp.filter (None, d, srt)]
     wps  = [w for w in wps if not w.time_end or w.time_end > date]

@@ -30,6 +30,11 @@
         ( utils, pdict ['status']
         , multiselect = True
         )
+     , utils.ExtProperty
+        ( utils, pdict ['comment']
+        , searchable  = False
+        , sortable    = False
+        )
      );
     "
    tal:condition="context/is_view_ok">

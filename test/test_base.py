@@ -610,6 +610,21 @@ class _Test_Case_Summary (_Test_Case) :
             , approval_hr        = False
             , is_vacation        = False
             )
+        self.special_tp = self.db.time_project.create \
+            ( name = 'Special Leave'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , department         = self.dep
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = False
+            , is_vacation        = False
+            , is_special_leave   = True
+            )
         self.holiday_wp = self.db.time_wp.create \
             ( name               = 'Holiday'
             , project            = self.holiday_tp
@@ -666,6 +681,16 @@ class _Test_Case_Summary (_Test_Case) :
             , travel             = False
             , responsible        = '1'
             , bookers            = [self.user1, self.user2]
+            , cost_center        = self.cc
+            , durations_allowed  = True
+            )
+        self.special_wp = self.db.time_wp.create \
+            ( name               = 'Special'
+            , project            = self.special_tp
+            , time_start         = date.Date ('2004-01-01')
+            , travel             = False
+            , responsible        = '1'
+            , bookers            = []
             , cost_center        = self.cc
             , durations_allowed  = True
             )
@@ -1807,6 +1832,53 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , v3
                 , status = st
                 )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        # Require comment for special leave
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.create
+            , first_day = date.Date ('2010-12-22')
+            , last_day  = date.Date ('2010-12-30')
+            , time_wp   = self.special_wp
+            )
+        spl = self.db.leave_submission.create \
+            ( first_day = date.Date ('2010-12-22')
+            , last_day  = date.Date ('2010-12-30')
+            , time_wp   = self.special_wp
+            , comment   = "Special leave comment"
+            )
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.set
+            , spl
+            , comment = None
+            )
+        self.db.leave_submission.set (spl, status = st_subm)
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.set
+            , spl
+            , comment = "Changed comment"
+            )
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Leave request "Special Leave/Special" from TUR')
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (e [h], t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a leave request '
+              '"Special Leave/Special".\n'
+              'Comment from user:\n'
+              'Special leave comment\n\n'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+            )
+        os.unlink (maildebug)
+        # FIXME: Further procedure for special leave
+        self.db.commit ()
+        self.db.close ()
     # end def test_vacation
 
 # end class Test_Case_Timetracker

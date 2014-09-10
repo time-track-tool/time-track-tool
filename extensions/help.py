@@ -815,16 +815,20 @@ _helptext          = \
       ]
     , ""'is_lotus_user'               :
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
+    , ""'is_actuator'                 :
+      [""'''This %(Classname)s allows setting a value''']
     , ""'is_public_holiday'           :
       [ ""'''Flag for public holiday %(Classname)s -- set this if you
              want work packages of this %(Classname)s to be used in
              automatic public holiday computation.
           '''
       ]
-    , ""'is_actuator'                 :
-      [""'''This %(Classname)s allows setting a value''']
     , ""'is_series'                   :
       [""'''This is turned on when the %(Classname)s is a series product''']
+    , ""'is_special_leave'            :
+      [""'''Set to True if %(Classname)s is for special leave''']
+    , ""'is_vacation'                 :
+      [""'''Set to True if %(Classname)s is for vacation''']
     , ""'issue++deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are

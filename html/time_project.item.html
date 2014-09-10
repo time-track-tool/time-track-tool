@@ -121,6 +121,14 @@
      <td tal:content="structure python:context.approval_hr.field ()"/>
     <tr>
     </tr>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'is_vacation')"/>
+     <td tal:content="structure python:context.is_vacation.field ()"/>
+     <th tal:content="structure python:utils.fieldname
+      (classname, 'is_special_leave')"/>
+     <td tal:content="structure python:context.is_special_leave.field ()"/>
+    <tr>
+    </tr>
    </tal:block>
   </tal:block>
   <tal:block tal:condition="context/is_view_ok"

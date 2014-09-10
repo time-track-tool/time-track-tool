@@ -60,7 +60,7 @@ def check_range (db, nodeid, uid, first_day, last_day) :
                 (_ ("You already have vacation requests in this time range"))
 # end def check_range
 
-def check_wp (db, wp_id, user, first_day, last_day) :
+def check_wp (db, wp_id, user, first_day, last_day, comment) :
     wp = db.time_wp.getnode (wp_id)
     tp = db.time_project.getnode (wp.project)
     if not tp.approval_required :
@@ -69,6 +69,8 @@ def check_wp (db, wp_id, user, first_day, last_day) :
         raise Reject (_ ("User may not book on work package"))
     if first_day < wp.time_start or wp.time_end and last_day > wp.time_end :
         raise Reject (_ ("Work package not valid during vacation time"))
+    if tp.is_special_leave and not comment :
+        raise Reject (_ ("Comment is required for special leave"))
 # end def check_wp
 
 def fix_dates (new_values) :
@@ -105,8 +107,9 @@ def new_submission (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'time_wp')
     if freeze.frozen (db, user, first_day) :
         raise Reject (_ ("Frozen"))
+    comment = new_values.get ('comment')
     check_range (db, None, user, first_day, last_day)
-    check_wp    (db, new_values ['time_wp'], user, first_day, last_day)
+    check_wp    (db, new_values ['time_wp'], user, first_day, last_day, comment)
     if 'status' in new_values and new_values ['status'] != st_open :
         raise Reject (_ ('Initial status must be "open"'))
     if 'status' not in new_values :
@@ -154,15 +157,16 @@ def check_submission (db, cl, nodeid, new_values) :
         (new_values.get ('status', old.status), 'name')
     if old_status != 'open' :
         common.reject_attributes \
-            (_, new_values, 'first_day', 'last_day', 'time_wp')
+            (_, new_values, 'first_day', 'last_day', 'time_wp', 'comment')
     fix_dates (new_values)
     first_day = new_values.get ('first_day', cl.get (nodeid, 'first_day'))
     last_day  = new_values.get ('last_day',  cl.get (nodeid, 'last_day'))
     if freeze.frozen (db, user, first_day) :
         raise Reject (_ ("Frozen"))
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
+    comment   = new_values.get ('comment',   cl.get (nodeid, 'comment'))
     check_range (db, nodeid, user, first_day, last_day)
-    check_wp    (db, time_wp, user, first_day, last_day)
+    check_wp    (db, time_wp, user, first_day, last_day, comment)
     if 'first_day' in new_values or 'last_day' in new_values :
         vacation.create_daily_recs (db, user, first_day, last_day)
         if vacation.leave_days (db, user, first_day, last_day) == 0 :
@@ -407,6 +411,8 @@ def handle_submit (db, vs, hr_only) :
     subject = 'Leave request "%(tpn)s/%(wpn)s" from %(nick)s' % locals ()
     content = '%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".' \
             % locals ()
+    if vs.comment :
+        content += "\nComment from user:\n%s\n" % vs.comment
     if hr_only :
         content += "\nNeeds approval by HR."
     content += '\n' + url

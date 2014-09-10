@@ -7,12 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-07 13:49+0200\n"
+"POT-Creation-Date: 2014-09-10 16:30+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "invoice"
+msgstr "Rechnung"
+
+msgid "Invoice Address"
+msgstr "Rechnungsadresse"
+
+msgid "shipping"
+msgstr "Lieferung"
+
+msgid "Shipping Address"
+msgstr "Lieferadresse"
+
+msgid "supply"
+msgstr "Bezug"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr "Adresse zum Bezug beim Lieferanten"
+
+msgid "contact"
+msgstr "Kontakt"
+
+msgid "Address of a personal contact"
+msgstr "Adresse persönlicher Kontakt"
+
+msgid "Circular logging"
+msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
@@ -201,6 +228,9 @@ msgstr ""
 
 msgid "Work package not valid during vacation time"
 msgstr ""
+
+msgid "Comment is required for special leave"
+msgstr "Kommentar ist für special leave nötig"
 
 msgid "Frozen"
 msgstr "eingefroren"
@@ -1348,9 +1378,6 @@ msgstr ""
 "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
 "müssen übereinstimmen."
 
-msgid "contact"
-msgstr "Kontakt"
-
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -1390,6 +1417,19 @@ msgstr "Inhalt dieser %(Classname)s"
 
 msgid "content"
 msgstr "Inhalt"
+
+msgid "contract_type"
+msgstr "Dienstverhältnis-Code"
+
+msgid ""
+"%(Property)s specifies the kind of contract that\n"
+"            the staff member has, like (normal) employment contract,\n"
+"            separate marginal employment (in addition to the main\n"
+"            employment contract), contract of work and services\n"
+"            (Werkvertrag), or (AUT only) freier Dienstvertrag (social\n"
+"            insurance liable free-lance contract).\n"
+"      "
+msgstr ""
 
 msgid "cost_center"
 msgstr "Kostenstelle"
@@ -2131,9 +2171,6 @@ msgid ""
 msgstr ""
 "Eindeutiger name für diese %(Classname)s, bevorzugt die Inventarnummer für "
 "die Verwaltung von Anlagegütern (asset tracking)"
-
-msgid "invoice"
-msgstr "Rechnung"
 
 msgid "Link to invoice for this %(Classname)s"
 msgstr "Verbindung zur Rechnung für %(Classname)s"
@@ -4672,8 +4709,32 @@ msgstr ""
 msgid "Action"
 msgstr "Aktion"
 
+msgid "Comment is only required for special leave"
+msgstr "Kommentar ist nur für Spezial-Abwesenheit nötig"
+
+msgid "Overview remaining vacation"
+msgstr "Überblick verbleibender Urlaub"
+
+msgid "Vacation <span></span> &nbsp;"
+msgstr ""
+
+msgid "Approved&nbsp;"
+msgstr "Freigegeben:&nbsp;"
+
+msgid "Submitted&nbsp;"
+msgstr "Beantragt:&nbsp;"
+
 msgid "Remaining Vacation <span></span> &nbsp;"
 msgstr ""
+
+msgid "(including submissions)"
+msgstr ""
+
+msgid "Overview comp/flexitime days"
+msgstr ""
+
+msgid "Total&nbsp;"
+msgstr "Total:&nbsp;"
 
 msgid "Logout"
 msgstr ""
@@ -5064,27 +5125,6 @@ msgstr ""
 msgid "vacation_date"
 msgstr "Urlaubsstichtag"
 
-msgid "Invoice Address"
-msgstr "Rechnungsadresse"
-
-msgid "shipping"
-msgstr "Lieferung"
-
-msgid "Shipping Address"
-msgstr "Lieferadresse"
-
-msgid "supply"
-msgstr "Bezug"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr "Adresse zum Bezug beim Lieferanten"
-
-msgid "Address of a personal contact"
-msgstr "Adresse persönlicher Kontakt"
-
-msgid "Circular logging"
-msgstr ""
-
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5411,9 +5451,6 @@ msgstr "Dynamische Benutzerdaten"
 msgid "leave_status"
 msgstr "Abwesenheitsstatus"
 
-msgid "contract_type"
-msgstr "Dienstverhältnis-Code"
-
 msgid "leave_submission"
 msgstr "Abwesenheitsmeldung"
 
@@ -5431,9 +5468,6 @@ msgstr "User-Kontakt"
 
 msgid "uc_type"
 msgstr "User-Kontakttyp"
-
-msgid "No initial vacation correction for this user"
-msgstr ""
 
 msgid "status_transition"
 msgstr "Statusübergang"
@@ -5487,7 +5521,10 @@ msgid "is_staff"
 msgstr ""
 
 msgid "is_vacation"
-msgstr "Urlaub"
+msgstr "ist Urlaub"
+
+msgid "is_special_leave"
+msgstr "ist Spezial-Abwesenheit"
 
 msgid "end_generated"
 msgstr ""
@@ -5504,11 +5541,11 @@ msgstr "öffentlich"
 msgid "travel_full"
 msgstr ""
 
-msgid "first_day"
-msgstr "erster Tag"
-
 msgid "last_day"
 msgstr "letzter Tag"
+
+msgid "first_day"
+msgstr "erster Tag"
 
 msgid "absolute"
 msgstr ""
