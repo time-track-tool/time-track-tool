@@ -36,17 +36,29 @@ def user_leave_submissions (db, context) :
     return ls
 # end def user_leave_submissions
 
-def approve_leave_submissions (db, context) :
-    uid = db._db.getuid ()
+def approval_stati (db) :
     st  = ('submitted', 'cancel requested')
     st  = [db._db.leave_status.lookup (x) for x in st]
-    d   = dict (status = st)
-    if not common.user_has_role (db._db, uid, 'HR-leave-approval') :
-        d ['user'] = db._db.user.find (supervisor = uid)
+    return dict (status = st)
+# end def approval_stati
+
+def approve_leave_submissions (db, context) :
+    uid = db._db.getuid ()
+    d   = approval_stati (db)
+    d ['user'] = db._db.user.find (supervisor = uid)
     ls  = db.leave_submission.filter (None, d)
-    ls = [l for l in ls if l.user.id != uid]
     return ls
 # end def approve_leave_submissions
+
+def approve_leave_submissions_hr (db, context) :
+    uid = db._db.getuid ()
+    if not common.user_has_role (db._db, uid, 'HR-leave-approval') :
+        return []
+    d   = approval_stati (db)
+    ls  = db.leave_submission.filter (None, d)
+    ls  = [l for l in ls if l.user.id != uid]
+    return ls
+# end def approve_leave_submissions_hr
 
 class Leave_Buttons (object) :
     user_buttons = dict \
@@ -179,18 +191,19 @@ def flexitime_with_status (db, user, start, end, statusname) :
 
 def init (instance) :
     reg = instance.registerUtil
-    reg ('valid_wps',                 vacation.valid_wps)
-    reg ('valid_leave_wps',           vacation.valid_leave_wps)
-    reg ('valid_leave_projects',      vacation.valid_leave_projects)
-    reg ('leave_days',                vacation.leave_days)
-    reg ('user_leave_submissions',    user_leave_submissions)
-    reg ('approve_leave_submissions', approve_leave_submissions)
-    reg ('Leave_Buttons',             Leave_Buttons)
-    reg ('remaining_until',           remaining_until)
-    reg ('remaining_vacation',        remaining_vacation)
-    reg ('consolidated_vacation',     consolidated_vacation)
-    reg ('vacation_with_status',      vacation_with_status)
-    reg ('flexitime_with_status',     flexitime_with_status)
-    reg ('vacation_time_sum',         vacation.vacation_time_sum)
-    reg ('year',                      Interval ('1y'))
-    reg ('day',                       common.day)
+    reg ('valid_wps',                    vacation.valid_wps)
+    reg ('valid_leave_wps',              vacation.valid_leave_wps)
+    reg ('valid_leave_projects',         vacation.valid_leave_projects)
+    reg ('leave_days',                   vacation.leave_days)
+    reg ('user_leave_submissions',       user_leave_submissions)
+    reg ('approve_leave_submissions',    approve_leave_submissions)
+    reg ('approve_leave_submissions_hr', approve_leave_submissions_hr)
+    reg ('Leave_Buttons',                Leave_Buttons)
+    reg ('remaining_until',              remaining_until)
+    reg ('remaining_vacation',           remaining_vacation)
+    reg ('consolidated_vacation',        consolidated_vacation)
+    reg ('vacation_with_status',         vacation_with_status)
+    reg ('flexitime_with_status',        flexitime_with_status)
+    reg ('vacation_time_sum',            vacation.vacation_time_sum)
+    reg ('year',                         Interval ('1y'))
+    reg ('day',                          common.day)

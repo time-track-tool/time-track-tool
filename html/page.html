@@ -529,6 +529,11 @@
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('leave_submission',    'View', 1,               ('',''))
+     , ( 'leave_submission'
+       , 'Edit'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR-leave-approval')
+       , ('Leave Approval','approve_hr')
+       )
      , ('vacation_report',     'View', 1,               ('',''))
      , ( 'vacation_correction'
        , 'View'
@@ -646,8 +651,8 @@
      </span>
 
      <!-- approval if user can approve records -->
-     <span>
-      <span class="classblock" tal:condition="approval_for">
+     <span tal:condition="approval_for">
+      <span class="classblock">
        <a i18n:translate="" tal:attributes="href python:
         [ 'daily_record?:template=approve&:sort=user&:filter=user&user=%s'
           % ','.join (approval_for.keys ())
@@ -658,9 +663,7 @@
         Approval
        </a>
       </span>
-      <span class="classblock" tal:condition="python:
-          approval_for or
-          utils.user_has_role (db._db, db._db.getuid (), 'HR-leave-approval')">
+      <span class="classblock">
        <a i18n:translate="" href="leave_submission?@template=approve">
         Approve Leaves
        </a>
