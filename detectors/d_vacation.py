@@ -65,7 +65,7 @@ def check_wp (db, wp_id, user, first_day, last_day, comment) :
     tp = db.time_project.getnode (wp.project)
     if not tp.approval_required :
         raise Reject (_ ("No approval required for work package"))
-    if user not in wp.bookers and wp.bookers :
+    if not wp.is_public and user not in wp.bookers :
         raise Reject (_ ("User may not book on work package"))
     if first_day < wp.time_start or wp.time_end and last_day > wp.time_end :
         raise Reject (_ ("Work package not valid during vacation time"))

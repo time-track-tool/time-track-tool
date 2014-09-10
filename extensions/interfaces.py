@@ -238,7 +238,7 @@ def work_packages (db, daily_record, editable = True) :
     """
     if not editable :
         return []
-    date = daily_record.date
+    date = daily_record.date._value # is a html prop
     user = daily_record.user.id
     filt = {'project.approval_required' : False}
     srt  = [('+', 'project.name'), ('+', 'name')]

@@ -778,8 +778,8 @@ def security (db, ** kw) :
         """User is allowed to view selected fields in work package if
            booking is allowed for this user
         """
-        bookers = db.time_wp.get (itemid, 'bookers')
-        if not bookers or userid in bookers :
+        wp = db.time_wp.getnode (itemid)
+        if wp.is_public or userid in wp.bookers :
             return True
         return False
     # end def wp_admitted

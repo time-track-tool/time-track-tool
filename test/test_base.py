@@ -691,6 +691,7 @@ class _Test_Case_Summary (_Test_Case) :
             , travel             = False
             , responsible        = '1'
             , bookers            = []
+            , is_public          = True
             , cost_center        = self.cc
             , durations_allowed  = True
             )

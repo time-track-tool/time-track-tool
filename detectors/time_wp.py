@@ -44,8 +44,16 @@ def check_duplicate_field_value (cl, project, field, value) :
 # end def check_duplicate_field_value
 
 def check_time_wp (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        ( _
+        , cl
+        , nodeid
+        , new_values
+        , 'name'
+        , 'project'
+        , 'is_public'
+        )
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
-    check_public (cl, nodeid, new_values)
     prj = new_values.get ('project', cl.get (nodeid, 'project'))
     for i in 'name', 'wp_no' :
         if i in new_values :
@@ -54,18 +62,9 @@ def check_time_wp (db, cl, nodeid, new_values) :
         new_values ['cost_center'] = db.time_project.get (prj, 'cost_center')
 # end def check_time_wp
 
-def check_public (cl, nodeid, new_values) :
-    if 'is_public' in new_values or 'bookers' in new_values or not nodeid :
-        if 'bookers' in new_values :
-            bookers = new_values ['bookers']
-        else :
-            bookers = None
-            if nodeid :
-                bookers = cl.get (nodeid, 'bookers')
-        new_values ['is_public'] = not bookers
-# end def check_public
-
 def new_time_wp (db, cl, nodeid, new_values) :
+    if 'is_public' not in new_values :
+        new_values ['is_public'] = False
     common.require_attributes \
         ( _
         , cl
@@ -74,8 +73,8 @@ def new_time_wp (db, cl, nodeid, new_values) :
         , 'name'
         , 'responsible'
         , 'project'
+        , 'is_public'
         )
-    check_public (cl, nodeid, new_values)
     prid = new_values ['project']
     uid  = db.getuid ()
     prj  = db.time_project.getnode (prid)

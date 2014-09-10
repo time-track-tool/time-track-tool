@@ -21,3 +21,5 @@ log.test
 schema.py
 server.ini
 ssl.pem
+_test*
+maildebug

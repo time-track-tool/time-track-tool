@@ -24,6 +24,7 @@
         , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
         )
     , utils.ExtProperty (utils, pdict ['cost_center'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['is_public'])
     , utils.ExtProperty (utils, pdict ['durations_allowed'])
     , utils.ExtProperty (utils, pdict ['travel'])
     );

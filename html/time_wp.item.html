@@ -91,6 +91,9 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'is_public')"/>
+     <td tal:content="structure python:context.is_public.field ()"/>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'bookers')"/>
      <td>
       <span tal:replace="structure context/bookers/field"/>
@@ -103,6 +106,8 @@
             , pagesize=500
             )"/>
      </td>
+    </tr>
+    <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>

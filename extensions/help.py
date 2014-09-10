@@ -817,6 +817,12 @@ _helptext          = \
       [""'''Enable this if the %(Classname)s uses Lotus Notes for mail''']
     , ""'is_actuator'                 :
       [""'''This %(Classname)s allows setting a value''']
+    , ""'is_public'                   :
+      [ ""'''Allow all users too book on %(Classname)s. If set, the field
+             \"Admitted users\" is ignored and all users are allowed to
+             book on this %(Classname)s.
+          '''
+      ]
     , ""'is_public_holiday'           :
       [ ""'''Flag for public holiday %(Classname)s -- set this if you
              want work packages of this %(Classname)s to be used in

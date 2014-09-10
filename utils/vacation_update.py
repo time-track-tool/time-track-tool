@@ -94,8 +94,22 @@ for u in db.user.getnodeids (retired = False) :
         dyn = user_dynamic.prev_user_dynamic (db, dyn)
 
 for wpid in db.time_wp.getnodeids (retired = False) :
-    # Reactor will update is_public to the correct value
-    db.time_wp.set (wpid, is_public = False)
+    wp = db.time_wp.getnode (wpid)
+    p  = (   not wp.bookers
+         and not wp.time_end
+         and (bool (wp.time_start) or wpid in ('2255', '4648'))
+         )
+    db.time_wp.set (wpid, is_public = p)
+
+# Fix Public_WPs query
+pwp = db.query.filter (None, dict (name = 'Public WPs', private_for = '-1'))
+assert len (pwp) == 1
+db.query.set \
+    ( pwp [0]
+    , url = ':columns=name,wp_no,responsible,project,time_start,'
+            'time_end,cost_center&:sort=name&:filter=is_public&'
+            ':pagesize=20&:startwith=0&is_public=yes'
+    )
 
 broken_int = dict.fromkeys \
     (( '2.56'
