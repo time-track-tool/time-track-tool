@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-10 19:44+0200\n"
+"POT-Creation-Date: 2014-09-11 17:40+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -238,6 +238,44 @@ msgstr ""
 
 msgid "Daily records must exist"
 msgstr "Daily records müssen existieren"
+
+#, python-format
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s not cancelled"
+msgstr ""
+
+#, python-format
+msgid "Your cancel request \"%(tpn)s/%(wpn)s\" was not granted.\n"
+msgstr ""
+
+msgid "Please contact your supervisor.\n"
+msgstr ""
+
+#, python-format
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s accepted"
+msgstr ""
+
+#, python-format
+msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been accepted.\n"
+msgstr ""
+
+msgid "The following existing time records have been deleted:"
+msgstr ""
+
+#, python-format
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s declined"
+msgstr ""
+
+msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been declined.\n"
+msgstr ""
+
+msgid "Leave request \"%(tpn)s/%(wpn)s\" from %(nick)s"
+msgstr ""
+
+msgid "%(realnm)s has submitted a leave request \"%(tpn)s/%(wpn)s\"."
+msgstr ""
+
+msgid "Your Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s"
+msgstr ""
 
 #, python-format
 msgid "Already frozen: %(date)s"
@@ -4476,6 +4514,12 @@ msgstr "verbleibender Urlaub"
 
 msgid "additional_submitted"
 msgstr "zusätzlich beantragt"
+
+msgid "flexi_time"
+msgstr "Zeitausgleich (genehmigt)"
+
+msgid "flexi_sub"
+msgstr "Zeitausgleich (beantragt)"
 
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
 msgstr ""

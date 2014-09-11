@@ -430,6 +430,8 @@ properties = \
         , 'approved_submissions'
         , 'date'
         , 'department'
+        , 'flexi_sub'
+        , 'flexi_time'
         , 'org_location'
         , 'organisation'
         , 'supervisor'

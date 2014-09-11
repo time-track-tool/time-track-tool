@@ -1404,6 +1404,8 @@ class Vacation_Report (_Report) :
         , (""'approved_submissions', 6)
         , (""'remaining vacation',   7)
         , (""'additional_submitted', 8)
+        , (""'flexi_time',           9)
+        , (""'flexi_sub',           10)
         )
 
     def __init__ (self, db, request, utils, is_csv = False) :
@@ -1428,7 +1430,13 @@ class Vacation_Report (_Report) :
         year         = now.get_tuple () [0]
         d = filterspec.get ('date')
         fields       = dict (self.fields)
-        for k in ('approved_submissions', 'additional_submitted') :
+        opt = \
+            ( 'approved_submissions'
+            , 'additional_submitted'
+            , 'flexi_time'
+            , 'flexi_sub'
+            )
+        for k in opt :
             if k not in request.columns :
                 del fields [k]
         self.fields  = sorted \
@@ -1552,6 +1560,14 @@ class Vacation_Report (_Report) :
                     if 'additional_submitted' in self.fields :
                         container ['additional_submitted'] = \
                             vacation.vacation_submission_days \
+                                (db, u, ctype, ld, d, st_subm)
+                    if 'flexi_time' in self.fields :
+                        container ['flexi_time'] = \
+                            vacation.flexitime_submission_days \
+                                (db, u, ctype, ld, d, st_accp, st_cnrq)
+                    if 'flexi_sub' in self.fields :
+                        container ['flexi_sub'] = \
+                            vacation.flexitime_submission_days \
                                 (db, u, ctype, ld, d, st_subm)
                     ltot = cons
 

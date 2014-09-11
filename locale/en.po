@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-10 19:44+0200\n"
+"POT-Creation-Date: 2014-09-11 17:40+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -232,6 +232,44 @@ msgid "Daily record not in status \"%(st_name)s\""
 msgstr ""
 
 msgid "Daily records must exist"
+msgstr ""
+
+#, python-format
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s not cancelled"
+msgstr ""
+
+#, python-format
+msgid "Your cancel request \"%(tpn)s/%(wpn)s\" was not granted.\n"
+msgstr ""
+
+msgid "Please contact your supervisor.\n"
+msgstr ""
+
+#, python-format
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s accepted"
+msgstr ""
+
+#, python-format
+msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been accepted.\n"
+msgstr ""
+
+msgid "The following existing time records have been deleted:"
+msgstr ""
+
+#, python-format
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s declined"
+msgstr ""
+
+msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been declined.\n"
+msgstr ""
+
+msgid "Leave request \"%(tpn)s/%(wpn)s\" from %(nick)s"
+msgstr ""
+
+msgid "%(realnm)s has submitted a leave request \"%(tpn)s/%(wpn)s\"."
+msgstr ""
+
+msgid "Your Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s"
 msgstr ""
 
 #, python-format
@@ -4372,6 +4410,12 @@ msgstr "remaining vacation"
 
 msgid "additional_submitted"
 msgstr "additional submitted"
+
+msgid "flexi_time"
+msgstr "Flexi-Time (approved)"
+
+msgid "flexi_sub"
+msgstr "Flexi-Time (submitted)"
 
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
 msgstr ""

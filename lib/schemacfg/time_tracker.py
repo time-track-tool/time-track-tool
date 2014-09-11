@@ -397,6 +397,8 @@ def init \
         , date                  = Date      (offset = 0)
         , additional_submitted  = String    ()
         , approved_submissions  = String    ()
+        , flexi_time            = String    ()
+        , flexi_sub             = String    ()
         )
 
     work_location = Class \
