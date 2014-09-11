@@ -6,9 +6,11 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
-   "batch python:utils.approve_leave_submissions_hr (db, context);
+   "batch python:utils.approve_leave_submissions_hr (db, context, request);
     do_user python: True;
     tplname python: 'approve';
+    search_form python: True;
+    queryform_class python: 'unmapped'
    ">
    <tal:block metal:use-macro=
     "templates/leave_submission/macros/edit_leave_submission" />

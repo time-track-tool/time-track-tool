@@ -1328,6 +1328,7 @@
             (classname, {'@action':'export_csv_names'})
      ; do_fulltext    python: not terse
      ; do_pagesize    python: True
+     ; do_query       python: True
      ; props          python: [p for p in props if p.displayable]
      ">
   <tal:block metal:use-macro="templates/page/macros/search_form"/>
@@ -1362,7 +1363,7 @@
      <span i18n:translate="">items per page</span>
     </td>
     <td/>
-    <td style="text-align:right;" colspan="2">
+    <td style="text-align:right;" colspan="2" tal:condition="csv_link">
      <a tal:attributes="href csv_link" i18n:translate="">Download as CSV</a>
     </td>
    </tr>
@@ -1581,7 +1582,7 @@
         queryid   request/form/queryid/value | nothing;
         new_query request/form/new_query/value | nothing;
         u_q       python:sorted ([q.id for q in request.user.queries]);
-        " tal:condition="not:terse">
+        " tal:condition="python: not terse and do_query">
        <th style="text-align:right;" i18n:translate="">This query's name:</th>
        <td tal:define="queryid python:
            new_query and (u_q and u_q.pop()) or queryid">

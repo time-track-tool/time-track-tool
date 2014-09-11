@@ -50,11 +50,22 @@ def approve_leave_submissions (db, context) :
     return ls
 # end def approve_leave_submissions
 
-def approve_leave_submissions_hr (db, context) :
+def approve_leave_submissions_hr (db, context, request) :
     uid = db._db.getuid ()
     if not common.user_has_role (db._db, uid, 'HR-leave-approval') :
         return []
     d   = approval_stati (db)
+    fs  = request.filterspec
+    if 'status' in fs :
+        new_stati = {}
+        stati = dict.fromkeys (fs ['status'])
+        for s in d ['status'] :
+            if s in stati :
+                new_stati [s] = 1
+        d ['status'] = new_stati.keys ()
+    for n in ('user', 'time_wp.project') :
+        if n in fs :
+            d [n] = fs [n]
     ls  = db.leave_submission.filter (None, d)
     ls  = [l for l in ls if l.user.id != uid]
     return ls

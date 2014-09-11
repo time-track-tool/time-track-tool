@@ -1,7 +1,7 @@
 <tal:block metal:define-macro="edit_leave_submission">
  <tal:block tal:define="
    pdict python:dict ((x._name, x) for x in db.leave_submission.properties ());
-   props python:
+   mprops python:
     ( utils.ExtProperty
         ( utils, pdict ['user']
         , fieldwidth  = 12
@@ -28,6 +28,12 @@
         ( utils, pdict ['status']
         , multiselect = True
         )
+    , utils.ExtProperty
+        ( utils, pdict ['time_wp']
+        , searchname  = 'time_wp.project'
+        , filter      = dict (approval_required = True)
+        , displayable = False
+        )
     );
     buttons python: utils.Leave_Buttons (db)
    "
@@ -40,7 +46,7 @@
     <input type="hidden" name="@template" tal:attributes="value tplname">
     <table class="list" border="1">
      <tr>
-      <tal:block tal:repeat="prop python:props [not do_user:]">
+      <tal:block tal:repeat="prop python:mprops [not do_user:-1]">
        <th tal:content="python: prop.i18nlabel" />
       </tal:block>
       <th i18n:translate="">Days</th>
@@ -48,9 +54,9 @@
      </tr>
      <tal:block tal:repeat="i batch">
       <tal:block
-       tal:define="sideffect python:props [0].menu_or_field (item = i)" />
+       tal:define="sideffect python:mprops [0].menu_or_field (item = i)" />
       <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
-       <tal:block tal:repeat="prop python:props [not do_user:]">
+       <tal:block tal:repeat="prop python:mprops [not do_user:-1]">
         <tal:block tal:define="edit python:
              i.status.plain () == 'open' and prop.name != 'status'">
          <td tal:content="structure python:prop.menu_or_field
@@ -59,15 +65,31 @@
        </tal:block>
        <td tal:content="python:utils.leave_days
            ( db._db
-           , props [0].prop.id
-           , props [1].prop._value
-           , props [2].prop._value
+           , mprops [0].prop.id
+           , mprops [1].prop._value
+           , mprops [2].prop._value
            )"/>
-       <td tal:content="structure python: buttons.generate (props [4])"/>
+       <td tal:content="structure python: buttons.generate (mprops [4])"/>
       </tr>
      </tal:block>
     </table>
    </form>
+  </tal:block>
+  <tal:block tal:condition="search_form" tal:define=
+       "sprops        python: []
+       ;multi_props   python: [mprops [4], mprops [5]]
+       ;nomulti_props python: [mprops [0]]
+       ;sort_props    python: []
+       ;props         python: []
+       ;csv_link      python: None
+       ;do_fulltext   python: False
+       ;do_pagesize   python: False
+       ;do_query      python: False
+       ;terse         python: False
+       ">
+   <tal:block>
+   <tal:block metal:use-macro="templates/page/macros/search_form"/>
+   </tal:block>
   </tal:block>
  </tal:block>
 </tal:block>
