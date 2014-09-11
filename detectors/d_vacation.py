@@ -380,19 +380,20 @@ def handle_accept (db, vs, trs, old_status) :
                 mailer.standard_message ((notify_mail,), subject, msg)
             except roundupdb.MessageSendError, message :
                 raise roundupdb.DetectorError, message
-        notify_text = None
+        notify_text = notify_mail = None
         if tp.is_special_leave :
             try :
-                notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_USER_TEXT
+                notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_TEXT
+                notify_mail = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL
             except KeyError :
                 pass
-        if notify_text :
+        if notify_text and notify_mail :
             msg = notify_text.replace ('$', '%') % locals ()
             subject = _ \
-                (""'Your Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s') \
+                (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted') \
                 % locals ()
             try :
-                mailer.standard_message ((email,), subject, msg)
+                mailer.standard_message ((notify_mail,), subject, msg)
             except roundupdb.MessageSendError, message :
                 raise roundupdb.DetectorError, message
 # end def handle_accept
@@ -449,7 +450,8 @@ def handle_submit (db, vs, hr_only) :
              for u in common.get_uids_with_role (db, 'HR-leave-approval')
             )
     wpn     = wp.name
-    tpn     = db.time_project.get (wp.project, 'name')
+    tp      = db.time_project.getnode (wp.project)
+    tpn     = tp.name
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
     realnm  = user.realname
@@ -469,7 +471,29 @@ def handle_submit (db, vs, hr_only) :
         mailer.standard_message (emails, subject, content)
     except roundupdb.MessageSendError, message :
         raise roundupdb.DetectorError, message
-# end def handle_decline
+    notify_text = None
+    if tp.is_special_leave :
+        username    = user.username
+        lastname    = user.lastname
+        firstname   = user.firstname
+        wp_name     = wpn
+        tp_name     = tpn
+        first_day   = fday
+        last_day    = lday
+        nl          = '\n'
+        try :
+            notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_USER_TEXT
+        except KeyError :
+            pass
+    if notify_text :
+        msg = notify_text.replace ('$', '%') % locals ()
+        subject = \
+            (""'Your Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s') % locals ()
+        try :
+            mailer.standard_message ((user.address,), subject, msg)
+        except roundupdb.MessageSendError, message :
+            raise roundupdb.DetectorError, message
+# end def handle_submit
 
 def check_correction (db, cl, nodeid, new_values) :
     common.require_attributes \

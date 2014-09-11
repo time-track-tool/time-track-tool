@@ -1229,7 +1229,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_EMAIL'))
-        ext.MAIL_LEAVE_NOTIFY_EMAIL = 'office@example.com'
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_EMAIL'))
         ext.MAIL_SPECIAL_LEAVE_USER_TEXT = \
             ("Dear $(firstname)s $(lastname)s,\n"
              "please don't forget to submit written documentation "
@@ -1241,7 +1242,17 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
              "birth certificate for new child, death notice letter (Parte).\n"
              "$(nl)sMany thanks!"
             )
+        ext.MAIL_LEAVE_NOTIFY_EMAIL = 'office@example.com'
         ext.MAIL_LEAVE_NOTIFY_TEXT = \
+            ('Dear member of the Office Team,\n'
+             'the user $(firstname)s $(lastname)s has approved '
+             '$(tp_name)s/$(wp_name)s\n'
+             'from $(first_day)s to $(last_day)s.\n'
+             'Please add this information to the time table,\n\n'
+             'many thanks!'
+            )
+        ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL = 'hr-admin@example.com'
+        ext.MAIL_SPECIAL_LEAVE_NOTIFY_TEXT = \
             ('Dear member of HR Admin,\n'
              'the user $(firstname)s $(lastname)s has approved '
              '$(tp_name)s/$(wp_name)s\n'
@@ -1621,11 +1632,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         body = \
             [ 'Your absence request "Flexi/Flexi" has been accepted.'
-            , 'Dear member of HR Admin,\n'
+            , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Flexi/Flexi\n'
               'from 2009-12-04 to 2009-12-04.\n'
-              'Please put it into the paid absence data sheet'
-              ' (Dienstverhinderungsliste),\nmany thanks!'
+              'Please add this information to the time table,\n\n'
+              'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -1689,11 +1700,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               '2009-12-22: A Project / Work Package 0 08:00-10:00 duration: 2.0'
               '\n'
               '2009-12-22:           /                10:00-11:00 duration: 1.0'
-            , 'Dear member of HR Admin,\n'
+            , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Vacation/Vacation\n'
               'from 2009-12-20 to 2010-01-06.\n'
-              'Please put it into the paid absence data sheet'
-              ' (Dienstverhinderungsliste),\nmany thanks!'
+              'Please add this information to the time table,\n\n'
+              'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -1758,11 +1769,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         body = \
             [ 'Your absence request "Leave/Unpaid" has been accepted.'
-            , 'Dear member of HR Admin,\n'
+            , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Leave/Unpaid\n'
               'from 2009-12-03 to 2009-12-03.\n'
-              'Please put it into the paid absence data sheet'
-              ' (Dienstverhinderungsliste),\nmany thanks!'
+              'Please add this information to the time table,\n\n'
+              'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -1936,22 +1947,42 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , spl
             , comment = "Changed comment"
             )
-        e = Parser ().parse (open (maildebug, 'r'))
-        for h, t in \
-            ( ('subject',    'Leave request "Special Leave/Special" from TUR')
-            , ('precedence', 'bulk')
-            , ('to',         'user1@test.test')
-            , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
-            self.assertEqual (e [h], t)
-        self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request '
+        box = mbox (maildebug, create = False)
+        headers = \
+            [ ( ('subject',    'Leave request "Special Leave/Special" from TUR')
+              , ('precedence', 'bulk')
+              , ('to',         'user1@test.test')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Your Leave "Special Leave/Special" '
+                               '2010-12-22-2010-12-30')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            ]
+        body = \
+            [ 'Test User2 has submitted a leave request '
               '"Special Leave/Special".\n'
               'Comment from user:\n'
               'Special leave comment\n\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-            )
+            , "Dear Test User2,\n"
+              "please don't forget to submit written documentation "
+              "for your special leave\n"
+              "Special Leave/Special from 2010-12-22 to 2010-12-30 to HR,\n"
+              "according to our processes.\n"
+              "Eg. marriage certificate, new residence registration "
+              "(Meldezettel),\n"
+              "birth certificate for new child, death notice letter "
+              "(Parte).\n\nMany thanks!"
+            ]
+        for n, e in enumerate (box) :
+            for h, t in headers [n] :
+                self.assertEqual (e [h], t)
+            self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
@@ -1973,30 +2004,27 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
-            , ( ('subject',    'Your Leave "Special Leave/Special" '
-                               '2010-12-22-2010-12-30')
+            , ( ('subject',    'Leave "Special Leave/Special" '
+                               '2010-12-22-2010-12-30 accepted')
               , ('precedence', 'bulk')
-              , ('to',         'test.user@example.com')
+              , ('to',         'hr-admin@example.com')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             ]
         body = \
             [ 'Your absence request "Special Leave/Special" has been accepted.'
+            , 'Dear member of the Office Team,\n'
+              'the user Test User2 has approved Special Leave/Special\n'
+              'from 2010-12-22 to 2010-12-30.\n'
+              'Please add this information to the time table,\n\n'
+              'many thanks!'
             , 'Dear member of HR Admin,\n'
               'the user Test User2 has approved Special Leave/Special\n'
               'from 2010-12-22 to 2010-12-30.\n'
-              'Please put it into the paid absence data sheet'
-              ' (Dienstverhinderungsliste),\nmany thanks!'
-            , "Dear Test User2,\n"
-              "please don't forget to submit written documentation "
-              "for your special leave\n"
-              "Special Leave/Special from 2010-12-22 to 2010-12-30 to HR,\n"
-              "according to our processes.\n"
-              "Eg. marriage certificate, new residence registration "
-              "(Meldezettel),\n"
-              "birth certificate for new child, death notice letter "
-              "(Parte).\n\nMany thanks!"
+              'Please put it into the paid absence data sheet '
+              '(Dienstverhinderungsliste),\n'
+              'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
