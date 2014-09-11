@@ -32,8 +32,10 @@ import user7_time, user8_time, user10_time, user11_time, user12_time
 from operator     import mul
 from StringIO     import StringIO
 from email.parser import Parser
+from mailbox      import mbox
 
-from roundup.exceptions import Reject
+from roundup.exceptions    import Reject
+from roundup.configuration import Option
 
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
@@ -1223,6 +1225,32 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.log.debug ('test_vacation')
         maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
+        ext = self.db.config.ext
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_EMAIL'))
+        ext.MAIL_LEAVE_NOTIFY_EMAIL = 'office@example.com'
+        ext.MAIL_SPECIAL_LEAVE_USER_TEXT = \
+            ("Dear $(firstname)s $(lastname)s,\n"
+             "please don't forget to submit written documentation "
+             "for your special leave\n$(tp_name)s/$(wp_name)s "
+             "from $(first_day)s to $(last_day)s to HR,\n"
+             "according to our processes.\n"
+             "Eg. marriage certificate, new residence registration"
+             " (Meldezettel),\n"
+             "birth certificate for new child, death notice letter (Parte).\n"
+             "$(nl)sMany thanks!"
+            )
+        ext.MAIL_LEAVE_NOTIFY_TEXT = \
+            ('Dear member of HR Admin,\n'
+             'the user $(firstname)s $(lastname)s has approved '
+             '$(tp_name)s/$(wp_name)s\n'
+             'from $(first_day)s to $(last_day)s.\n'
+             'Please put it into the paid absence data sheet '
+             '(Dienstverhinderungsliste),\n'
+             'many thanks!'
+            )
+
         for d in '2008-11-03', '2008-11-30', '2008-12-31' :
             dt = date.Date (d)
             self.assertEqual \
@@ -1574,19 +1602,35 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                     , status = st
                     )
         self.db.leave_submission.set (za, status = st_accp)
-        e = Parser ().parse (open (maildebug, 'r'))
-        for h, t in \
-            ( ('subject',    'Leave "Flexi/Flexi" '
-                             '2009-12-04-2009-12-04 accepted')
-            , ('precedence', 'bulk')
-            , ('to',         'test.user@example.com')
-            , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
-            self.assertEqual (e [h], t)
-        self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Your absence request "Flexi/Flexi" has been accepted.'
-            )
+        box = mbox (maildebug, create = False)
+        headers = \
+            [ ( ('subject',    'Leave "Flexi/Flexi" '
+                               '2009-12-04-2009-12-04 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Leave "Flexi/Flexi" '
+                               '2009-12-04-2009-12-04 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'office@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            ]
+        body = \
+            [ 'Your absence request "Flexi/Flexi" has been accepted.'
+            , 'Dear member of HR Admin,\n'
+              'the user Test User2 has approved Flexi/Flexi\n'
+              'from 2009-12-04 to 2009-12-04.\n'
+              'Please put it into the paid absence data sheet'
+              ' (Dienstverhinderungsliste),\nmany thanks!'
+            ]
+        for n, e in enumerate (box) :
+            for h, t in headers [n] :
+                self.assertEqual (e [h], t)
+            self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         dt = self.db.leave_submission.get (za, 'first_day')
         dt = common.pretty_range (dt, dt)
@@ -1622,23 +1666,39 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         # Stephanitag is on Saturday, vacation records for weekdays and
         # half public holidays
         self.assertEqual (len (trs), 5 + 10)
-        e = Parser ().parse (open (maildebug, 'r'))
-        for h, t in \
-            ( ('subject',    'Leave "Vacation/Vacation" '
-                             '2009-12-20-2010-01-06 accepted')
-            , ('precedence', 'bulk')
-            , ('to',         'test.user@example.com')
-            , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
-            self.assertEqual (e [h], t)
-        self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Your absence request "Vacation/Vacation" has been accepted.\n\n'
+        box = mbox (maildebug, create = False)
+        headers = \
+            [ ( ('subject',    'Leave "Vacation/Vacation" '
+                               '2009-12-20-2010-01-06 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Leave "Vacation/Vacation" '
+                               '2009-12-20-2010-01-06 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'office@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            ]
+        body = \
+            [ 'Your absence request "Vacation/Vacation" has been accepted.\n\n'
               'The following existing time records have been deleted:\n'
               '2009-12-22: A Project / Work Package 0 08:00-10:00 duration: 2.0'
               '\n'
               '2009-12-22:           /                10:00-11:00 duration: 1.0'
-            )
+            , 'Dear member of HR Admin,\n'
+              'the user Test User2 has approved Vacation/Vacation\n'
+              'from 2009-12-20 to 2010-01-06.\n'
+              'Please put it into the paid absence data sheet'
+              ' (Dienstverhinderungsliste),\nmany thanks!'
+            ]
+        for n, e in enumerate (box) :
+            for h, t in headers [n] :
+                self.assertEqual (e [h], t)
+            self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         for st in (st_accp, st_decl) :
             self.assertRaises \
@@ -1679,19 +1739,35 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_accp)
-        e = Parser ().parse (open (maildebug, 'r'))
-        for h, t in \
-            ( ('subject',    'Leave "Leave/Unpaid" '
-                             '2009-12-03-2009-12-03 accepted')
-            , ('precedence', 'bulk')
-            , ('to',         'test.user@example.com')
-            , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
-            self.assertEqual (e [h], t)
-        self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Your absence request "Leave/Unpaid" has been accepted.'
-            )
+        box = mbox (maildebug, create = False)
+        headers = \
+            [ ( ('subject',    'Leave "Leave/Unpaid" '
+                               '2009-12-03-2009-12-03 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Leave "Leave/Unpaid" '
+                               '2009-12-03-2009-12-03 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'office@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            ]
+        body = \
+            [ 'Your absence request "Leave/Unpaid" has been accepted.'
+            , 'Dear member of HR Admin,\n'
+              'the user Test User2 has approved Leave/Unpaid\n'
+              'from 2009-12-03 to 2009-12-03.\n'
+              'Please put it into the paid absence data sheet'
+              ' (Dienstverhinderungsliste),\nmany thanks!'
+            ]
+        for n, e in enumerate (box) :
+            for h, t in headers [n] :
+                self.assertEqual (e [h], t)
+            self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
             self.assertRaises \
@@ -1877,7 +1953,56 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
             )
         os.unlink (maildebug)
-        # FIXME: Further procedure for special leave
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.db.leave_submission.set (spl, status = st_accp)
+        box = mbox (maildebug, create = False)
+        headers = \
+            [ ( ('subject',    'Leave "Special Leave/Special" '
+                               '2010-12-22-2010-12-30 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Leave "Special Leave/Special" '
+                               '2010-12-22-2010-12-30 accepted')
+              , ('precedence', 'bulk')
+              , ('to',         'office@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Your Leave "Special Leave/Special" '
+                               '2010-12-22-2010-12-30')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            ]
+        body = \
+            [ 'Your absence request "Special Leave/Special" has been accepted.'
+            , 'Dear member of HR Admin,\n'
+              'the user Test User2 has approved Special Leave/Special\n'
+              'from 2010-12-22 to 2010-12-30.\n'
+              'Please put it into the paid absence data sheet'
+              ' (Dienstverhinderungsliste),\nmany thanks!'
+            , "Dear Test User2,\n"
+              "please don't forget to submit written documentation "
+              "for your special leave\n"
+              "Special Leave/Special from 2010-12-22 to 2010-12-30 to HR,\n"
+              "according to our processes.\n"
+              "Eg. marriage certificate, new residence registration "
+              "(Meldezettel),\n"
+              "birth certificate for new child, death notice letter "
+              "(Parte).\n\nMany thanks!"
+            ]
+        for n, e in enumerate (box) :
+            for h, t in headers [n] :
+                self.assertEqual (e [h], t)
+            self.assertEqual (e.get_payload ().strip (), body [n])
+        os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
     # end def test_vacation

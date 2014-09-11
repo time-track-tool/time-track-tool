@@ -317,27 +317,31 @@ def handle_accept (db, vs, trs, old_status) :
     mailer  = roundupdb.Mailer (db.config)
     now     = Date ('.')
     wp      = db.time_wp.getnode (vs.time_wp)
-    email   = db.user.get (vs.user, 'address')
+    user    = db.user.getnode (vs.user)
+    email   = user.address
     wpn     = wp.name
     tpn     = db.time_project.get (wp.project, 'name')
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
     if old_status == cancr :
-        subject = 'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s ' \
-                  'not cancelled' % locals ()
-        content = 'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n' \
-                % locals ()
-        content += "Please contact your supervisor.\n"
+        subject = _ \
+            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s not cancelled') \
+            % locals ()
+        content = _ \
+            (""'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n') \
+            % locals ()
+        content += _ (''"Please contact your supervisor.\n")
     else :
-        subject = 'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted' \
-                % locals ()
-        content = ('Your absence request "%(tpn)s/%(wpn)s" has been accepted.\n'
-                  % locals ()
-                  )
+        subject = _ \
+            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted') \
+            % locals ()
+        content = _ \
+            (""'Your absence request "%(tpn)s/%(wpn)s" has been accepted.\n') \
+            % locals ()
     if warn :
         content = [content]
         content.append \
-            ("The following existing time records have been deleted:")
+            (_ (""'The following existing time records have been deleted:'))
         tdl = wdl = 0
         for w in warn :
             tdl = max (tdl, len (w [1]))
@@ -350,6 +354,47 @@ def handle_accept (db, vs, trs, old_status) :
         mailer.standard_message ((email,), subject, content)
     except roundupdb.MessageSendError, message :
         raise roundupdb.DetectorError, message
+
+    if old_status != cancr :
+        username    = user.username
+        lastname    = user.lastname
+        firstname   = user.firstname
+        wp_name     = wpn
+        tp_name     = tpn
+        first_day   = fday
+        last_day    = lday
+        notify_text = None
+        notify_mail = None
+        nl          = '\n'
+        try :
+            notify_text = db.config.ext.MAIL_LEAVE_NOTIFY_TEXT
+            notify_mail = db.config.ext.MAIL_LEAVE_NOTIFY_EMAIL
+        except KeyError :
+            pass
+        if notify_text and notify_mail :
+            subject = _ \
+                (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted') \
+                % locals ()
+            msg = notify_text.replace ('$', '%') % locals ()
+            try :
+                mailer.standard_message ((notify_mail,), subject, msg)
+            except roundupdb.MessageSendError, message :
+                raise roundupdb.DetectorError, message
+        notify_text = None
+        if tp.is_special_leave :
+            try :
+                notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_USER_TEXT
+            except KeyError :
+                pass
+        if notify_text :
+            msg = notify_text.replace ('$', '%') % locals ()
+            subject = _ \
+                (""'Your Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s') \
+                % locals ()
+            try :
+                mailer.standard_message ((email,), subject, msg)
+            except roundupdb.MessageSendError, message :
+                raise roundupdb.DetectorError, message
 # end def handle_accept
 
 def handle_cancel (db, vs, trs) :
@@ -377,10 +422,12 @@ def handle_decline (db, vs) :
     tpn     = db.time_project.get (wp.project, 'name')
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
-    subject = 'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s declined' % locals ()
-    content = 'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n' \
-            % locals ()
-    content += "Please contact your supervisor.\n"
+    subject = _ \
+        (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s declined') % locals ()
+    content = \
+        (""'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n') \
+        % locals ()
+    content += _ (''"Please contact your supervisor.\n")
     try :
         mailer.standard_message ((email,), subject, content)
     except roundupdb.MessageSendError, message :
@@ -408,9 +455,11 @@ def handle_submit (db, vs, hr_only) :
     realnm  = user.realname
     nick    = user.nickname.upper ()
     url     = '%sleave_submission?@template=approve' % db.config.TRACKER_WEB
-    subject = 'Leave request "%(tpn)s/%(wpn)s" from %(nick)s' % locals ()
-    content = '%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".' \
-            % locals ()
+    subject = \
+        (""'Leave request "%(tpn)s/%(wpn)s" from %(nick)s') % locals ()
+    content = \
+        (""'%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".') \
+        % locals ()
     if vs.comment :
         content += "\nComment from user:\n%s\n" % vs.comment
     if hr_only :
