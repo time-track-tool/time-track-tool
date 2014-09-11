@@ -264,7 +264,7 @@ def prev_yearly_vacation_date (db, user, ctype, date) :
     while dyn.valid_from > prev_date :
         dyn = vac_prev_user_dynamic (db, dyn)
         if not dyn :
-            return None
+            return prev_date
         yday = dyn.vacation_day
         ymon = dyn.vacation_month
         if yday is None or ymon is None :
