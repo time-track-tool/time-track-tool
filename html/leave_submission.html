@@ -50,6 +50,8 @@
        <th tal:content="python: prop.i18nlabel" />
       </tal:block>
       <th i18n:translate="">Days</th>
+      <th i18n:translate="" tal:condition="do_remaining">
+         Remaining vacation after approval</th>
       <th i18n:translate="">Action</th>
      </tr>
      <tal:block tal:repeat="i batch">
@@ -63,13 +65,19 @@
                  (item = i, editable = edit)"/>
         </tal:block>
        </tal:block>
-       <td tal:content="python:utils.leave_days
+       <tal:block tal:define="leavedays python: utils.leave_days
            ( db._db
            , mprops [0].prop.id
            , mprops [1].prop._value
            , mprops [2].prop._value
-           )"/>
-       <td tal:content="structure python: buttons.generate (mprops [4])"/>
+           )">
+        <td tal:content="leavedays"/>
+        <td tal:condition="do_remaining" tal:content="python:
+            utils.remaining_vacation 
+             (db._db, mprops [0].prop.id, mprops [1].prop._value)
+             - leavedays"/>
+        <td tal:content="structure python: buttons.generate (mprops [4])"/>
+       </tal:block>
       </tr>
      </tal:block>
     </table>
