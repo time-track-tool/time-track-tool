@@ -192,29 +192,35 @@ def check_submission (db, cl, nodeid, new_values) :
             if not ok and uid == user :
                 if old_status == 'open' and new_status == 'submitted' :
                     ok = True
-                if old_status == 'accepted' :
+                if  (   old_status == 'accepted'
+                    and new_status == 'cancel requested'
+                    ) :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
                     ok = True
                 if old_status == 'open' and new_status == 'cancelled' :
                     ok = True
-            clearer = common.clearance_by (db, user)
-            dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
-            ctype   = dyn.contract_type
-            hr_only = vacation.need_hr_approval \
-                (db, tp, user, ctype, first_day, last_day)
-            if  (   not ok
-                and uid != user
-                and (   (uid in clearer and not hr_only)
-                    or  common.user_has_role (db, uid, 'HR-leave-approval')
-                    )
-                ) :
-                if  (   old_status == 'submitted'
-                    and new_status in ('accepted', 'declined')
+            elif not ok :
+                clearer = common.clearance_by (db, user)
+                dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
+                ctype   = dyn.contract_type
+                hr_only = vacation.need_hr_approval \
+                    (db, tp, user, ctype, first_day, last_day)
+                if  (   uid != user
+                    and (   (uid in clearer and not hr_only)
+                        or  common.user_has_role (db, uid, 'HR-leave-approval')
+                        )
                     ) :
-                    ok = True
-                if old_status == 'cancel requested' :
-                    ok = True
+                    if  (   old_status == 'submitted'
+                        and new_status in ('accepted', 'declined')
+                        ) :
+                        ok = True
+                    if  (   old_status == 'cancel requested'
+                        and (  new_status == 'cancelled'
+                            or new_status == 'accepted'
+                            )
+                        ) :
+                        ok = True
             if not ok :
                 raise Reject (_ ("Permission denied"))
 # end def check_submission
@@ -253,6 +259,7 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     declined   = db.leave_status.lookup ('declined')
     submitted  = db.leave_status.lookup ('submitted')
     cancelled  = db.leave_status.lookup ('cancelled')
+    crq        = db.leave_status.lookup ('cancel requested')
     if old_status == new_status :
         return
     dt  = common.pretty_range (vs.first_day, vs.last_day)
@@ -270,7 +277,7 @@ def state_change_reactor (db, cl, nodeid, old_values) :
             (db, tp, vs.user, ctype, vs.first_day, vs.last_day, booked = True)
         handle_submit  (db, vs, hr_only)
     elif new_status == cancelled :
-        handle_cancel  (db, vs, trs)
+        handle_cancel  (db, vs, trs, old_status == crq)
 # end def state_change_reactor
 
 def handle_accept (db, vs, trs, old_status) :
@@ -398,20 +405,21 @@ def handle_accept (db, vs, trs, old_status) :
                 raise roundupdb.DetectorError, message
 # end def handle_accept
 
-def handle_cancel (db, vs, trs) :
+def handle_cancel (db, vs, trs, is_crq) :
     drs = {}
-    for trid in trs :
-        tr  = db.time_record.getnode (trid)
-        wp  = db.time_wp.getnode (tr.wp)
-        tp  = db.time_project.getnode (wp.project)
-        trd = db.daily_record.get (tr.daily_record, 'date')
-        if not tp.is_public_holiday :
-            assert tp.approval_required
-            db.time_record.retire (trid)
-        drs [tr.daily_record] = 1
-    for dr in drs :
-        st_open = db.daily_record_status.lookup ('open')
-        db.daily_record.set (dr, status = st_open)
+    if is_crq :
+        for trid in trs :
+            tr  = db.time_record.getnode (trid)
+            wp  = db.time_wp.getnode (tr.wp)
+            tp  = db.time_project.getnode (wp.project)
+            trd = db.daily_record.get (tr.daily_record, 'date')
+            if not tp.is_public_holiday :
+                assert tp.approval_required
+                db.time_record.retire (trid)
+            drs [tr.daily_record] = 1
+        for dr in drs :
+            st_open = db.daily_record_status.lookup ('open')
+            db.daily_record.set (dr, status = st_open)
 # end def handle_cancel
 
 def handle_decline (db, vs) :

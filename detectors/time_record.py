@@ -238,15 +238,22 @@ def check_daily_record (db, cl, nodeid, new_values) :
     vs_exists = False
     st_accp = db.leave_status.lookup ('accepted')
     vs = vacation.leave_submissions_on_date (db, user, date)
-    # All leave submissions in state cancelled?
+    # All leave submissions in state cancelled (or declined)?
+    # Check if at least one is cancelled
     cn = db.leave_status.lookup ('cancelled')
+    dc = db.leave_status.lookup ('declined')
     vs_cancelled = True
     if not vs :
         vs_cancelled = False
-    for v in vs :
-        if v.status != cn :
-            vs_cancelled = False
-            break
+    if vs_cancelled :
+        for v in vs :
+            if v.status == dc :
+                continue
+            if v.status == cn :
+                vs_cancelled = True
+            else :
+                vs_cancelled = False
+                break
     vs = [v for v in vs if v.status == st_accp]
     if vs :
         assert len (vs) == 1
@@ -442,7 +449,14 @@ def leave_wp (db, dr, wp, start, end, duration) :
     tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
     if not tp.approval_required :
         return False
-    vs = vacation.leave_submissions_on_date (db, dr.user, dr.date)
+    # Only search for non-cancelled non-retired
+    st  = [] 
+    for stid in db.leave_status.getnodeids (retired = False) : 
+        if db.leave_status.get (stid, 'name') in ('cancelled', 'retired') :
+            continue
+        st.append (stid)
+    vs = vacation.leave_submissions_on_date \
+        (db, dr.user, dr.date, filter = dict (status = st))
     if not vs :
         return False
     assert len (vs) == 1
@@ -723,21 +737,29 @@ def check_retire (db, cl, nodeid, new_values) :
             # Must have a leave submission in status accepted, then we
             # can retire existing records
             ac = db.leave_status.lookup ('accepted')
-            vs = vacation.leave_submissions_on_date (db, dr.user, dr.date)
-            vs = [v for v in vs if v.status == ac]
+            vs = vacation.leave_submissions_on_date \
+                (db, dr.user, dr.date, filter = dict (status = ac))
             if not vs :
                 allowed = False
     else :
         if dr.status == st_leave :
-            # All leave submissions must be in state cancelled
+            # All leave submissions must be in state cancelled or declined
+            # At least one must be cancelled
             cn = db.leave_status.lookup ('cancelled')
+            dc = db.leave_status.lookup ('declined')
             vs = vacation.leave_submissions_on_date (db, dr.user, dr.date)
             if not vs :
                 allowed = False
-            for v in vs :
-                if v.status != cn :
-                    allowed = False
-                    break
+            if allowed :
+                allowed = False
+                for v in vs :
+                    if v.status == dc :
+                        continue
+                    if v.status == cn :
+                        allowed = True
+                    if v.status != cn :
+                        allowed = False
+                        break
         else :
             allowed = False
     if not allowed :

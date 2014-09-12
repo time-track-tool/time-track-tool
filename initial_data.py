@@ -1018,7 +1018,7 @@ if 'leave_status' in db.classes :
     v4 = db.leave_status.create (name = 'declined',         order = 4)
     v5 = db.leave_status.create (name = 'cancel requested', order = 5)
     v6 = db.leave_status.create (name = 'cancelled',        order = 6)
-    db.leave_status.set (v1, transitions = [v2])
+    db.leave_status.set (v1, transitions = [v2, v6, v3])
     db.leave_status.set (v2, transitions = [v1, v3, v4])
     db.leave_status.set (v3, transitions = [v5])
     db.leave_status.set (v5, transitions = [v3, v6])

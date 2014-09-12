@@ -1440,6 +1440,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
             )
+        # Cancel should work for user
+        self.db.leave_submission.set (vs, status = st_canc);
+        vs = self.db.leave_submission.create \
+            ( first_day = date.Date ('2009-12-22')
+            , last_day  = date.Date ('2009-12-22')
+            )
         un = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-02')
             , last_day  = date.Date ('2009-12-02')
@@ -1514,7 +1520,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , last_day  = date.Date ('2009-12-22')
             , time_wp   = self.vacation_wp
             )
-        for st in (st_accp, st_decl, st_carq, st_canc) :
+        for st in (st_accp, st_decl, st_carq) :
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs

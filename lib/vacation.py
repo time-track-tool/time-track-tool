@@ -105,13 +105,16 @@ def create_daily_recs (db, user, first_day, last_day) :
         d += common.day
 # end def create_daily_recs
 
-def leave_submissions_on_date (db, user, date) :
-    """ Return all leave records that overlap with the given date
+def leave_submissions_on_date (db, user, date, filter = None) :
+    """ Return all leave records that overlap with the given date.
+        Optionally restrict search if filter is specified.
     """
     dts = ';%s' % date.pretty (common.ymd)
     dte = '%s;' % date.pretty (common.ymd)
-    vs = db.leave_submission.filter \
-        (None, dict (user = user, first_day = dts, last_day = dte))
+    d   = dict (user = user, first_day = dts, last_day = dte)
+    if filter :
+        d.update (filter)
+    vs = db.leave_submission.filter (None, d)
     return [db.leave_submission.getnode (v) for v in vs]
 # end def leave_submissions_on_date
 
