@@ -480,7 +480,8 @@ class WP_Container (Comparable_Container, dict) :
 # end class WP_Container
 
 class _Report (autosuper) :
-    def html_item (self, item) :
+
+    def html_item (self, item, ** kw) :
         if not item and not isinstance (item, dict) and not item == 0 :
             return "   <td/>"
         if isinstance (item, PM_Value) :
@@ -497,8 +498,12 @@ class _Report (autosuper) :
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
 
-    def html_header_item (self, item) :
-        return ('  <th>%s</th>' % str (item))
+    def html_header_item (self, item, ** kw) :
+        cls = kw.get ('cls', '')
+        if cls :
+            cls = ' class="%s"' % cls
+        cls = cls or ''
+        return ('  <th%s>%s</th>' % (cls, str (item)))
     # end def html_header_item
 
     def html_line (self, items) :
@@ -507,7 +512,7 @@ class _Report (autosuper) :
         self.html_output.extend (items)
     # end def html_line
 
-    def csv_item (self, item) :
+    def csv_item (self, item, ** kw) :
         if not item and not isinstance (item, dict) and not item == 0 :
             return ''
         if isinstance (item, PM_Value) :
@@ -1407,6 +1412,9 @@ class Vacation_Report (_Report) :
         , (""'flexi_time',           9)
         , (""'flexi_sub',           10)
         )
+    header_classes = \
+        { 'remaining vacation' : 'emphasized'
+        }
 
     def __init__ (self, db, request, utils, is_csv = False) :
         timestamp        = time.time ()
@@ -1608,7 +1616,8 @@ class Vacation_Report (_Report) :
         line.append (formatter (_ ('user')))
         line.append (formatter (_ ('time')))
         for f in self.fields :
-            line.append (formatter (_ (f)))
+            cls = self.header_classes.get (f, '')
+            line.append (formatter (_ (f), cls = cls))
         if self.need_period :
             for f, perm in self.period_fields :
                 if perm or self.is_allowed () :
@@ -1637,7 +1646,7 @@ class Vacation_Report (_Report) :
                     line_formatter (line)
     # end def _output
 
-# end class Staff_Report
+# end class Vacation_Report
 
 class CSV_Report (Action, autosuper) :
     def handle (self, outfile = None) :

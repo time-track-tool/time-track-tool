@@ -353,6 +353,9 @@ table.list th.group {
 table.list th.nb {
   border-right: 0
 }
+table.list th.emphasized {
+  color: green; font-style:italic;
+}
 
 table.list td {
   padding: 0 4px 0 4px;
