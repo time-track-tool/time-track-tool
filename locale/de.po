@@ -4498,7 +4498,7 @@ msgid "yearly prorated"
 msgstr ""
 
 msgid "carry forward"
-msgstr ""
+msgstr "Übertrag aus Vorjahr"
 
 msgid "entitlement total"
 msgstr ""
