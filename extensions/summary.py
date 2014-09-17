@@ -1126,7 +1126,7 @@ class Summary_Report (_Report) :
     # end def _output
 # end class Summary_Report
 
-class Overtime_Corrections :
+class HTML_List :
     def __init__ (self) :
         self.items = []
     # end def __init__
@@ -1142,7 +1142,7 @@ class Overtime_Corrections :
     def __repr__ (self) :
         return ' + '.join (str (i) for i in self.items)
     # end def __repr__
-# end class Overtime_Corrections
+# end class HTML_List
 
 class Staff_Report (_Report) :
     ''"Staff Report" # for translation in web-interface
@@ -1254,7 +1254,7 @@ class Staff_Report (_Report) :
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = common.pretty_range (start, end)))
         try :
-            ovs = Overtime_Corrections ()
+            ovs = HTML_List ()
             for x in ov :
                 item  = self.htmldb.overtime_correction.getItem (x)
                 value = item.value
@@ -1407,10 +1407,11 @@ class Vacation_Report (_Report) :
         , (""'entitlement total',    4)
         , (""'approved days',        5)
         , (""'approved_submissions', 6)
-        , (""'remaining vacation',   7)
-        , (""'additional_submitted', 8)
-        , (""'flexi_time',           9)
-        , (""'flexi_sub',           10)
+        , (""'vacation corrections', 7)
+        , (""'remaining vacation',   8)
+        , (""'additional_submitted', 9)
+        , (""'flexi_time',          10)
+        , (""'flexi_sub',           11)
         )
     header_classes = \
         { 'remaining vacation' : 'emphasized'
@@ -1584,6 +1585,30 @@ class Vacation_Report (_Report) :
                             vacation.vacation_submission_days \
                                 (db, u, ctype, ld, d, st_accp, st_cnrq)
 
+                    vd = common.pretty_range (ld, d)
+                    vc = db.vacation_correction.filter \
+                        ( None
+                        , dict (user = u, date = vd, contract_type = ctype)
+                        )
+                    try :
+                        vcs = HTML_List ()
+                        for x in vc :
+                            item  = self.htmldb.vacation_correction.getItem (x)
+                            days  = item.days
+                            ep    = self.utils.ExtProperty
+                            vcs.append \
+                                ( ep
+                                    ( self.utils, days 
+                                    , item         = item
+                                    , is_labelprop = True
+                                    )
+                                )
+                        container ['vacation corrections'] = vcs
+                    except AttributeError :
+                        container ['vacation corrections'] = ' + '.join \
+                            (str (db.vacation_correction.get (i, 'days'))
+                             for i in vc
+                            )
                     if (u, ctype) not in self.values :
                         self.values [(u, ctype)] = []
                     self.values [(u, ctype)].append (container)
