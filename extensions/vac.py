@@ -22,10 +22,14 @@
 # ****************************************************************************
 
 from   math import ceil
+import re
 import common
 import user_dynamic
 import vacation
-from   roundup.date import Date, Interval
+from   roundup.date           import Date, Interval
+from   roundup.cgi.actions    import NewItemAction
+from   roundup.cgi.exceptions import Redirect
+
 
 def user_leave_submissions (db, context) :
     dt  = '%s;' % Date ('. - 14m').pretty (common.ymd)
@@ -200,6 +204,23 @@ def flexitime_with_status (db, user, start, end, statusname) :
         (db, user, ctype, start, end, * stati)
 # end def flexitime_with_status
 
+class New_Leave_Action (NewItemAction) :
+
+    fixurl = re.compile (r'[0-9]*$')
+    def handle (self) :
+        url = ''
+        try :
+            NewItemAction.handle (self)
+        except Redirect, exc :
+            url = exc.message
+        up     = url.split  ('?', 1)
+        up [0] = self.fixurl.sub ('', up [0])
+        url    = '?'.join (up)
+        raise Redirect (url)
+    # end def handle
+
+# end class New_Leave_Action
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',                    vacation.valid_wps)
@@ -218,3 +239,6 @@ def init (instance) :
     reg ('vacation_time_sum',            vacation.vacation_time_sum)
     reg ('year',                         Interval ('1y'))
     reg ('day',                          common.day)
+    action = instance.registerAction
+    action ('new_leave',                 New_Leave_Action)
+# end def init

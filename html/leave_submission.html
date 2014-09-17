@@ -109,6 +109,10 @@
      'first_day,last_day' + [',user',''][bool (context.id or not show_user)]
    ">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="button_slot">
+    <tal:block tal:replace="structure python:
+         context.submit (action = 'new_leave')"/>
+   </tal:block>
    <tal:block metal:fill-slot="formatted_class_content">
     <tr tal:condition="show_user">
      <th tal:content="structure python:utils.fieldname (classname, 'user')"
