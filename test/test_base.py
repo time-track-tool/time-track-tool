@@ -25,6 +25,7 @@ import sys
 import unittest
 import logging
 import csv
+import re
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
 import user7_time, user8_time, user10_time, user11_time, user12_time
@@ -95,6 +96,11 @@ import common
 import summary
 import user_dynamic
 import vacation
+
+header_regex = re.compile (r'\s*\n')
+def header_decode (h) :
+    return header_regex.sub ('', h)
+# end def header_decode
 
 class _Test_Case (unittest.TestCase) :
     count = 0
@@ -1236,7 +1242,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_EMAIL'))
         ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT = \
             ('Your Leave "%(tp_name)s/%(wp_name)s"\n'
-             '%(first_day)s-%(last_day)s'
+             '%(first_day)s to %(last_day)s'
             )
         ext.MAIL_SPECIAL_LEAVE_USER_TEXT = \
             ("Dear $(firstname)s $(lastname)s,\n"
@@ -1252,7 +1258,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         ext.MAIL_LEAVE_NOTIFY_EMAIL = 'office@example.com'
         ext.MAIL_LEAVE_NOTIFY_SUBJECT = \
             ('Leave "%(tp_name)s/%(wp_name)s" '
-             '%(first_day)s-%(last_day)s accepted'
+             '%(first_day)s to %(last_day)s accepted'
             )
         ext.MAIL_LEAVE_NOTIFY_TEXT = \
             ('Dear member of the Office Team,\n'
@@ -1265,13 +1271,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL = 'hr-admin@example.com'
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT = \
             ('Leave "%(tp_name)s/%(wp_name)s" '
-             '%(first_day)s-%(last_day)s accepted'
+             '%(first_day)s to %(last_day)s accepted'
             )
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_TEXT = \
             ('Dear member of HR Admin,\n'
              'the user $(firstname)s $(lastname)s has approved '
              '$(tp_name)s/$(wp_name)s\n'
              'from $(first_day)s to $(last_day)s.\n'
+             'Comment: $(comment)s\n'
              'Please put it into the paid absence data sheet '
              '(Dienstverhinderungsliste),\n'
              'many thanks!'
@@ -1560,16 +1567,19 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (vs, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Vacation/Vacation" from TUR')
+            ( ('subject',    'Leave request "Vacation/Vacation" '
+                             '2009-12-20 to 2010-01-06 from Test User2')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
+              'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
             )
         os.unlink (maildebug)
         for st in (st_accp, st_decl, st_carq, st_canc) :
@@ -1584,48 +1594,55 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (un, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Leave/Unpaid" from TUR')
+            ( ('subject',    'Leave request "Leave/Unpaid" '
+                             '2009-12-02 to 2009-12-02 from Test User2')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Leave/Unpaid" from TUR')
+            ( ('subject',    'Leave request "Leave/Unpaid" '
+                             '2009-12-03 to 2009-12-03 from Test User2')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (za, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Flexi/Flexi" from TUR')
+            ( ('subject',    'Leave request "Flexi/Flexi" '
+                             '2009-12-04 to 2009-12-04 from Test User2')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Flexi/Flexi".\n'
+              'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -1642,14 +1659,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         box = mbox (maildebug, create = False)
         headers = \
             [ ( ('subject',    'Leave "Flexi/Flexi" '
-                               '2009-12-04-2009-12-04 accepted')
+                               '2009-12-04 to 2009-12-04 accepted')
               , ('precedence', 'bulk')
               , ('to',         'test.user@example.com')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             , ( ('subject',    'Leave "Flexi/Flexi" '
-                               '2009-12-04-2009-12-04 accepted')
+                               '2009-12-04 to 2009-12-04 accepted')
               , ('precedence', 'bulk')
               , ('to',         'office@example.com')
               , ('from',       'roundup-admin@'
@@ -1666,7 +1683,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
-                self.assertEqual (e [h], t)
+                self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         dt = self.db.leave_submission.get (za, 'first_day')
@@ -1707,14 +1724,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         box = mbox (maildebug, create = False)
         headers = \
             [ ( ('subject',    'Leave "Vacation/Vacation" '
-                               '2009-12-20-2010-01-06 accepted')
+                               '2009-12-20 to 2010-01-06 accepted')
               , ('precedence', 'bulk')
               , ('to',         'test.user@example.com')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             , ( ('subject',    'Leave "Vacation/Vacation" '
-                               '2009-12-20-2010-01-06 accepted')
+                               '2009-12-20 to 2010-01-06 accepted')
               , ('precedence', 'bulk')
               , ('to',         'office@example.com')
               , ('from',       'roundup-admin@'
@@ -1735,7 +1752,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
-                self.assertEqual (e [h], t)
+                self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         for st in (st_accp, st_decl) :
@@ -1764,12 +1781,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave "Leave/Unpaid" '
-                             '2009-12-02-2009-12-02 declined')
+                             '2009-12-02 to 2009-12-02 declined')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Your absence request "Leave/Unpaid" has been declined.\n'
@@ -1780,14 +1797,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         box = mbox (maildebug, create = False)
         headers = \
             [ ( ('subject',    'Leave "Leave/Unpaid" '
-                               '2009-12-03-2009-12-03 accepted')
+                               '2009-12-03 to 2009-12-03 accepted')
               , ('precedence', 'bulk')
               , ('to',         'test.user@example.com')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             , ( ('subject',    'Leave "Leave/Unpaid" '
-                               '2009-12-03-2009-12-03 accepted')
+                               '2009-12-03 to 2009-12-03 accepted')
               , ('precedence', 'bulk')
               , ('to',         'office@example.com')
               , ('from',       'roundup-admin@'
@@ -1804,7 +1821,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
-                self.assertEqual (e [h], t)
+                self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
@@ -1855,13 +1872,13 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.leave_submission.set (vs, status = st_accp)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave "Vacation/Vacation" 2009-12-20-2010-01-06 '
-                             'not cancelled')
+            ( ('subject',    'Leave "Vacation/Vacation" '
+                             '2009-12-20 to 2010-01-06 not cancelled')
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Your cancel request "Vacation/Vacation" was not granted.\n'
@@ -1922,16 +1939,19 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
-            ( ('subject',    'Leave request "Vacation/Vacation" from TUR')
+            ( ('subject',    'Leave request "Vacation/Vacation" '
+                             '2008-12-02 to 2008-12-02 from Test User2')
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
-            self.assertEqual (e [h], t)
+            self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
+              'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -1975,14 +1995,15 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         box = mbox (maildebug, create = False)
         headers = \
-            [ ( ('subject',    'Leave request "Special Leave/Special" from TUR')
+            [ ( ('subject',    'Leave request "Special Leave/Special" '
+                               '2010-12-22 to 2010-12-30 from Test User2')
               , ('precedence', 'bulk')
               , ('to',         'user1@test.test')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             , ( ('subject',    'Your Leave "Special Leave/Special" '
-                               '2010-12-22-2010-12-30')
+                               '2010-12-22 to 2010-12-30')
               , ('precedence', 'bulk')
               , ('to',         'test.user@example.com')
               , ('from',       'roundup-admin@'
@@ -1993,8 +2014,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             [ 'Test User2 has submitted a leave request '
               '"Special Leave/Special".\n'
               'Comment from user:\n'
-              'Special leave comment\n\n'
+              'Special leave comment\n'
+              'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
             , "Dear Test User2,\n"
               "please don't forget to submit written documentation "
               "for your special leave\n"
@@ -2007,7 +2030,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
-                self.assertEqual (e [h], t)
+                self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         self.db.commit ()
@@ -2017,21 +2040,21 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         box = mbox (maildebug, create = False)
         headers = \
             [ ( ('subject',    'Leave "Special Leave/Special" '
-                               '2010-12-22-2010-12-30 accepted')
+                               '2010-12-22 to 2010-12-30 accepted')
               , ('precedence', 'bulk')
               , ('to',         'test.user@example.com')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             , ( ('subject',    'Leave "Special Leave/Special" '
-                               '2010-12-22-2010-12-30 accepted')
+                               '2010-12-22 to 2010-12-30 accepted')
               , ('precedence', 'bulk')
               , ('to',         'office@example.com')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
             , ( ('subject',    'Leave "Special Leave/Special" '
-                               '2010-12-22-2010-12-30 accepted')
+                               '2010-12-22 to 2010-12-30 accepted')
               , ('precedence', 'bulk')
               , ('to',         'hr-admin@example.com')
               , ('from',       'roundup-admin@'
@@ -2048,13 +2071,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Dear member of HR Admin,\n'
               'the user Test User2 has approved Special Leave/Special\n'
               'from 2010-12-22 to 2010-12-30.\n'
+              'Comment: Special leave comment\n'
               'Please put it into the paid absence data sheet '
               '(Dienstverhinderungsliste),\n'
               'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
-                self.assertEqual (e [h], t)
+                self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (e.get_payload ().strip (), body [n])
         os.unlink (maildebug)
         self.db.commit ()

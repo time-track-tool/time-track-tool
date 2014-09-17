@@ -333,7 +333,7 @@ def handle_accept (db, vs, trs, old_status) :
     lday    = vs.last_day.pretty  (common.ymd)
     if old_status == cancr :
         subject = _ \
-            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s not cancelled') \
+            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s not cancelled') \
             % locals ()
         content = _ \
             (""'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n') \
@@ -341,7 +341,7 @@ def handle_accept (db, vs, trs, old_status) :
         content += _ (''"Please contact your supervisor.\n")
     else :
         subject = _ \
-            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted') \
+            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s accepted') \
             % locals ()
         content = _ \
             (""'Your absence request "%(tpn)s/%(wpn)s" has been accepted.\n') \
@@ -367,6 +367,7 @@ def handle_accept (db, vs, trs, old_status) :
         username    = user.username
         lastname    = user.lastname
         firstname   = user.firstname
+        comment     = vs.comment
         wp_name     = wpn
         tp_name     = tpn
         first_day   = fday
@@ -434,7 +435,7 @@ def handle_decline (db, vs) :
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
     subject = _ \
-        (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s declined') % locals ()
+        (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s declined') % locals ()
     content = \
         (""'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n') \
         % locals ()
@@ -471,18 +472,21 @@ def handle_submit (db, vs) :
     fday    = vs.first_day.pretty (common.ymd)
     lday    = vs.last_day.pretty  (common.ymd)
     realnm  = user.realname
-    nick    = user.nickname.upper ()
     url     = '%sleave_submission?@template=approve' % db.config.TRACKER_WEB
-    subject = \
-        (""'Leave request "%(tpn)s/%(wpn)s" from %(nick)s') % locals ()
-    content = \
-        (""'%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".') \
-        % locals ()
+    subject = _ \
+        (""'Leave request "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s '
+         'from %(realnm)s'
+        ) % locals ()
+    content = _ \
+        (""'%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".\n'
+        ) % locals ()
     if vs.comment :
-        content += "\nComment from user:\n%s\n" % vs.comment
+        content += _ (''"Comment from user:\n%s\n") % vs.comment
     if hr_only :
-        content += "\nNeeds approval by HR."
-    content += '\n' + url
+        content += _ (''"Needs approval by HR.\n")
+    else :
+        content += _ (''"Please approve or decline at\n")
+    content += url + _ (""'\nMany thanks!')
     try :
         mailer.standard_message (emails, subject, content)
     except roundupdb.MessageSendError, message :
@@ -492,6 +496,7 @@ def handle_submit (db, vs) :
         username    = user.username
         lastname    = user.lastname
         firstname   = user.firstname
+        comment     = vs.comment
         wp_name     = wpn
         tp_name     = tpn
         first_day   = fday
