@@ -188,6 +188,16 @@ _helptext          = \
              the address type category is "ABO".
           '''
       ]
+    , ""'absolute'                    :
+      [ ""'''For normal correction of present remaining vacation put
+             in Absolute: "no". Absolute "yes" restarts vacation day
+             calculation with the specified date. Is automatically set
+             with 0 if new user is entered into system, is useful if
+             user restarts with TTTech and rounding difference is still
+             in the system. Note: Vacation correction is also possible
+             if no valid dyn. user data for this date.
+          '''
+      ]
     , ""'achieved_hours'              :
       [""'''Achieved overtime hours included in monthly/yearly supplementary
             hours per overtime period
