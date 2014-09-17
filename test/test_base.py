@@ -1226,11 +1226,18 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
         ext = self.db.config.ext
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_EMAIL'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_EMAIL'))
+        ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT = \
+            ('Your Leave "%(tp_name)s/%(wp_name)s"\n'
+             '%(first_day)s-%(last_day)s'
+            )
         ext.MAIL_SPECIAL_LEAVE_USER_TEXT = \
             ("Dear $(firstname)s $(lastname)s,\n"
              "please don't forget to submit written documentation "
@@ -1243,6 +1250,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
              "$(nl)sMany thanks!"
             )
         ext.MAIL_LEAVE_NOTIFY_EMAIL = 'office@example.com'
+        ext.MAIL_LEAVE_NOTIFY_SUBJECT = \
+            ('Leave "%(tp_name)s/%(wp_name)s" '
+             '%(first_day)s-%(last_day)s accepted'
+            )
         ext.MAIL_LEAVE_NOTIFY_TEXT = \
             ('Dear member of the Office Team,\n'
              'the user $(firstname)s $(lastname)s has approved '
@@ -1252,6 +1263,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
              'many thanks!'
             )
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL = 'hr-admin@example.com'
+        ext.MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT = \
+            ('Leave "%(tp_name)s/%(wp_name)s" '
+             '%(first_day)s-%(last_day)s accepted'
+            )
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_TEXT = \
             ('Dear member of HR Admin,\n'
              'the user $(firstname)s $(lastname)s has approved '
@@ -1440,27 +1455,33 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
             )
+        # Created with *submitted*, set to open
+        self.db.leave_submission.set (vs, status = st_open);
         # Cancel should work for user
         self.db.leave_submission.set (vs, status = st_canc);
         vs = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
             )
+        self.db.leave_submission.set (vs, status = st_open);
         un = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-02')
             , last_day  = date.Date ('2009-12-02')
             , time_wp   = self.unpaid_wp
             )
+        self.db.leave_submission.set (un, status = st_open);
         u2 = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-03')
             , last_day  = date.Date ('2009-12-03')
             , time_wp   = self.unpaid_wp
             )
+        self.db.leave_submission.set (u2, status = st_open);
         za = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-04')
             , last_day  = date.Date ('2009-12-04')
             , time_wp   = self.flexi_wp
             )
+        self.db.leave_submission.set (za, status = st_open);
         self.assertRaises \
             ( Reject, self.db.leave_submission.set
             , za
@@ -1474,7 +1495,6 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , last_day  = date.Date ('2008-12-30')
             , time_wp   = self.vacation_wp
             )
-        self.db.leave_submission.set (v2, status = st_subm)
         vac2 = self.db.leave_submission.getnode (v2)
         self.assertEqual \
             ( vacation.leave_days
@@ -1667,7 +1687,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 , vs
                 , status = st
                 )
-        # Should be possible that user1 sets this:
+        # Should be possible that user1 sets this,
+        # request 4.5 with 4.03 remaining days:
         self.db.leave_submission.set (v2, status = st_accp)
         os.unlink (maildebug)
         self.db.leave_submission.set (vs, status = st_accp)
@@ -1887,21 +1908,18 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( first_day = date.Date ('2009-12-22')
             , last_day  = date.Date ('2009-12-22')
             )
-        self.db.leave_submission.set (vs, status = st_subm)
         # should go through, although existing declined record
         za = self.db.leave_submission.create \
             ( first_day = date.Date ('2009-12-02')
             , last_day  = date.Date ('2009-12-02')
             , time_wp   = self.flexi_wp
             )
-        self.db.leave_submission.set (za, status = st_subm)
         os.unlink (maildebug)
         # Another vacation in 2008 which is already fully booked
         v3 = self.db.leave_submission.create \
             ( first_day = date.Date ('2008-12-02')
             , last_day  = date.Date ('2008-12-02')
             )
-        self.db.leave_submission.set (v3, status = st_subm)
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave request "Vacation/Vacation" from TUR')
@@ -1942,6 +1960,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , time_wp   = self.special_wp
             , comment   = "Special leave comment"
             )
+        self.db.leave_submission.set (spl, status = st_open)
+        os.unlink (maildebug)
         self.assertRaises \
             ( Reject, self.db.leave_submission.set
             , spl

@@ -24,6 +24,8 @@ freeze_days = 0
 
 # On approval of all leave types
 leave_notify_email = office@example.com
+leave_notify_subject = Leave "%(tp_name)s/%(wp_name)s"
+ %(first_day)s-%(last_day)s accepted
 leave_notify_text  = Dear member of the Office Team,
  the user $(firstname)s $(lastname)s has approved $(tp_name)s/$(wp_name)s
  from $(first_day)s to $(last_day)s.
@@ -33,6 +35,8 @@ leave_notify_text  = Dear member of the Office Team,
 
 # On approval of special leave
 special_leave_notify_email = hr-admin@example.com
+special_leave_notify_subject = Leave "%(tp_name)s/%(wp_name)s"
+ %(first_day)s-%(last_day)s accepted
 special_leave_notify_text  = Dear member of HR Admin,
  the user $(firstname)s $(lastname)s has approved $(tp_name)s/$(wp_name)s
  from $(first_day)s to $(last_day)s.
@@ -41,6 +45,8 @@ special_leave_notify_text  = Dear member of HR Admin,
  many thanks!
 
 # On submission (!)
+special_leave_user_subject = Your Leave "%(tp_name)s/%(wp_name)s"
+ %(first_day)s-%(last_day)s
 special_leave_user_text = Dear $(firstname)s $(lastname)s,
  $(nl)s
  please don't forget to submit written documentation for your special

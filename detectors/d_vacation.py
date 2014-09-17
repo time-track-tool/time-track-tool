@@ -251,6 +251,12 @@ def check_dr_status (db, user, first_day, last_day, st_name) :
             raise Reject (_ ('Daily records must exist'))
 # end def check_dr_status
 
+def creation_reactor (db, cl, nodeid, old_values) :
+    vs = cl.getnode (nodeid)
+    # New submission start in state 'submitted'
+    handle_submit  (db, vs)
+# end def creation_reactor
+
 def state_change_reactor (db, cl, nodeid, old_values) :
     vs         = cl.getnode (nodeid)
     old_status = old_values.get ('status')
@@ -265,17 +271,12 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     dt  = common.pretty_range (vs.first_day, vs.last_day)
     drs = db.daily_record.filter (None, dict (user = vs.user, date = dt))
     trs = db.time_record.filter (None, dict (daily_record = drs))
-    tp  = db.time_project.getnode (db.time_wp.get (vs.time_wp, 'project'))
     if new_status == accepted :
         handle_accept  (db, vs, trs, old_status)
     elif new_status == declined :
         handle_decline (db, vs)
     elif new_status == submitted :
-        dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
-        ctype   = dyn.contract_type
-        hr_only = vacation.need_hr_approval \
-            (db, tp, vs.user, ctype, vs.first_day, vs.last_day, booked = True)
-        handle_submit  (db, vs, hr_only)
+        handle_submit  (db, vs)
     elif new_status == cancelled :
         handle_cancel  (db, vs, trs, old_status == crq)
 # end def state_change_reactor
@@ -372,33 +373,34 @@ def handle_accept (db, vs, trs, old_status) :
         last_day    = lday
         notify_text = None
         notify_mail = None
+        notify_subj = None
         nl          = '\n'
         try :
             notify_text = db.config.ext.MAIL_LEAVE_NOTIFY_TEXT
+            notify_subj = db.config.ext.MAIL_LEAVE_NOTIFY_SUBJECT
             notify_mail = db.config.ext.MAIL_LEAVE_NOTIFY_EMAIL
         except KeyError :
             pass
-        if notify_text and notify_mail :
-            subject = _ \
-                (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted') \
-                % locals ()
+        if notify_text and notify_mail and notify_subj :
+            subject = \
+                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
             msg = notify_text.replace ('$', '%') % locals ()
             try :
                 mailer.standard_message ((notify_mail,), subject, msg)
             except roundupdb.MessageSendError, message :
                 raise roundupdb.DetectorError, message
-        notify_text = notify_mail = None
+        notify_text = notify_mail = notify_subj = None
         if tp.is_special_leave :
             try :
                 notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_TEXT
+                notify_subj = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT
                 notify_mail = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL
             except KeyError :
                 pass
         if notify_text and notify_mail :
             msg = notify_text.replace ('$', '%') % locals ()
-            subject = _ \
-                (""'Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s accepted') \
-                % locals ()
+            subject = \
+                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
             try :
                 mailer.standard_message ((notify_mail,), subject, msg)
             except roundupdb.MessageSendError, message :
@@ -443,10 +445,16 @@ def handle_decline (db, vs) :
         raise roundupdb.DetectorError, message
 # end def handle_decline
 
-def handle_submit (db, vs, hr_only) :
+# Always called in a reactor
+def handle_submit (db, vs) :
+    wp      = db.time_wp.getnode (vs.time_wp)
+    tp      = db.time_project.getnode (wp.project)
+    dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
+    ctype   = dyn.contract_type
+    hr_only = vacation.need_hr_approval \
+        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, booked = True)
     mailer  = roundupdb.Mailer (db.config)
     now     = Date ('.')
-    wp      = db.time_wp.getnode (vs.time_wp)
     user    = db.user.getnode (vs.user)
     # always send to supervisor (and/or substitute), too.
     emails  = [db.user.get (x, 'address')
@@ -479,7 +487,7 @@ def handle_submit (db, vs, hr_only) :
         mailer.standard_message (emails, subject, content)
     except roundupdb.MessageSendError, message :
         raise roundupdb.DetectorError, message
-    notify_text = None
+    notify_text = notify_subj = None
     if tp.is_special_leave :
         username    = user.username
         lastname    = user.lastname
@@ -491,12 +499,13 @@ def handle_submit (db, vs, hr_only) :
         nl          = '\n'
         try :
             notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_USER_TEXT
+            notify_subj = db.config.ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT
         except KeyError :
             pass
-    if notify_text :
+    if notify_text and notify_subj :
         msg = notify_text.replace ('$', '%') % locals ()
         subject = \
-            (""'Your Leave "%(tpn)s/%(wpn)s" %(fday)s-%(lday)s') % locals ()
+            notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
         try :
             mailer.standard_message ((user.address,), subject, msg)
         except roundupdb.MessageSendError, message :
@@ -542,6 +551,7 @@ def init (db) :
     db.leave_submission.react    ("create", daily_recs, priority = 80)
     db.leave_submission.react    ("set",    daily_recs, priority = 80)
     db.leave_submission.react    ("set",    state_change_reactor)
+    db.leave_submission.react    ("create", creation_reactor)
     db.vacation_report.audit     ("create", vac_report)
     db.vacation_correction.audit ("create", check_correction)
     db.vacation_correction.audit ("set",    check_correction)
