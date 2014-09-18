@@ -547,6 +547,24 @@ class _Report (autosuper) :
         self._output  (self.csv_line, self.csv_item)
         return io.getvalue ()
     # end def as_csv
+
+    def linked_type (self, id, classname, propname) :
+        try :
+            item = self.htmldb [classname].getItem (id)
+            prop = getattr (item, propname)
+            return self.utils.ExtProperty (self.utils, prop, item = item)
+        except AttributeError :
+            return self.db.getclass (classname).get (id, propname)
+    # end def linked_type
+
+    def linked_user (self, uid) :
+        return self.linked_type (uid, 'user', 'username')
+    # end def linked_user
+
+    def linked_ctype (self, ctype) :
+        return self.linked_type (ctype, 'contract_type', 'name')
+    # end def linked_ctype
+
 # end class _Report
 
 class Summary_Report (_Report) :
@@ -1127,8 +1145,9 @@ class Summary_Report (_Report) :
 # end class Summary_Report
 
 class HTML_List :
-    def __init__ (self) :
-        self.items = []
+    def __init__ (self, delimiter = ' + ') :
+        self.items     = []
+        self.delimiter = delimiter
     # end def __init__
 
     def append (self, item) :
@@ -1136,11 +1155,11 @@ class HTML_List :
     # end def append
 
     def as_html (self) :
-        return ' + '.join (i.as_html () for i in self.items)
+        return self.delimiter.join (i.as_html () for i in self.items)
     # end def as_html
 
     def __repr__ (self) :
-        return ' + '.join (str (i) for i in self.items)
+        return self.delimiter.join (str (i) for i in self.items)
     # end def __repr__
 # end class HTML_List
 
@@ -1377,12 +1396,7 @@ class Staff_Report (_Report) :
 
     def _output (self, line_formatter, item_formatter) :
         for u in self.users :
-            try :
-                item  = self.htmldb.user.getItem (u)
-                uname = item.username
-                user  = self.utils.ExtProperty (self.utils, uname, item = item)
-            except AttributeError :
-                user  = self.db.user.get (u, 'username')
+            user = self.linked_user (u)
             for container in self.values [u] :
                 line  = []
                 line.append (item_formatter (user))
@@ -1452,16 +1466,21 @@ class Vacation_Report (_Report) :
             (fields.keys (), key = lambda x : fields [x])
 
         if d :
-            if ';' in d :
-                start, end = d.split (';')
-                if not start :
-                    start = None
+            try :
+                if ';' in d :
+                    start, end = d.split (';')
+                    if not start :
+                        start = None
+                    else :
+                        start = Date (start)
+                    if end :
+                        end   = Date (end)
+                    else :
+                        end   = Date ('%s-12-31' % year)
                 else :
-                    start = Date (start)
-                if end :
-                    end   = Date (end)
-                else :
-                    end   = Date ('%s-12-31' % year)
+                    start = end = Date (d)
+            except ValueError :
+                start = end = Date ('%s-12-31' % year)
         else :
             start = end = Date ('%s-12-31' % year)
         self.start       = start
@@ -1503,7 +1522,7 @@ class Vacation_Report (_Report) :
             ( users.keys ()
             , key = lambda x : db.user.get (x, 'username')
             )
-        db.log_info  ("vacation_report: users: %s" % (time.time () - timestamp))
+        db.log_info ("vacation_report: users: %s" % (time.time () - timestamp))
         self.values = values = {}
         year = Interval ('1y')
         for u in self.users :
@@ -1519,10 +1538,10 @@ class Vacation_Report (_Report) :
                 carry = None
                 if d :
                     pd = vacation.prev_yearly_vacation_date (db, u, ctype, d)
-                    #print user_vc [(u, ctype)].days,
-                    #print user_vc [(u, ctype)].date, pd
-                    if user_vc [(u, ctype)].date == pd :
+                    if not pd or user_vc [(u, ctype)].date == pd :
                         carry = user_vc [(u, ctype)].days
+                        if not pd :
+                            pd = user_vc [(u, ctype)].date
                     else :
                         carry = vacation.remaining_vacation \
                             (db, u, ctype, pd - day)
@@ -1533,14 +1552,17 @@ class Vacation_Report (_Report) :
                 if not hv :
                     carry = ceil (carry)
                 ltot  = carry
-                #print yday, carry, d, end
                 while d and d <= end :
                     container = Day_Container (d)
+                    uname = self.linked_user (u)
                     if not ctype :
-                        container ['user'] = db.user.get (u, 'username')
+                        container ['user'] = uname
                     else :
-                        container ['user'] = '/'.join \
-                            ((db.user.get (u, 'username'), ctype))
+                        lct = self.linked_ctype (ctype)
+                        lst = HTML_List (' / ')
+                        lst.append (uname)
+                        lst.append (lct)
+                        container ['user'] = lst
                     dyn = vacation.vac_get_user_dynamic (db, u, ctype, d)
                     ent = {}
                     while (dyn and dyn.valid_from < d) :
@@ -1654,13 +1676,12 @@ class Vacation_Report (_Report) :
         for u in self.users :
             if u not in self.user_ctypes :
                 continue
-            user = self.db.user.get (u, 'username')
             for ctype in self.user_ctypes [u] :
                 if (u, ctype) not in self.values :
                     continue
                 for container in self.values [(u, ctype)] :
                     line  = []
-                    line.append (item_formatter (user))
+                    line.append (item_formatter (container ['user']))
                     line.append (item_formatter (container))
                     for f in self.fields :
                         line.append (item_formatter (container [f]))

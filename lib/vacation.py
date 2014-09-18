@@ -514,7 +514,7 @@ def vac_get_user_dynamic (db, user, ctype, date) :
             or not dyn.vacation_day
             )
         ) :
-        dyn = vac_prev_user_dynamic (db, dyn)
+        dyn = vac_prev_user_dynamic (db, dyn, ctype)
     if not dyn :
         dyn = user_dynamic.find_user_dynamic (db, user, date, '+')
     if  (   dyn
@@ -523,12 +523,13 @@ def vac_get_user_dynamic (db, user, ctype, date) :
             or not dyn.vacation_day
             )
         ) :
-        dyn = vac_next_user_dynamic (db, dyn)
+        dyn = vac_next_user_dynamic (db, dyn, ctype)
     return dyn
 # end def vac_get_user_dynamic
 
-def vac_next_user_dynamic (db, dyn) :
-    ctype = dyn.contract_type
+def vac_next_user_dynamic (db, dyn, ctype = -1) :
+    if ctype == -1 :
+        ctype = dyn.contract_type
     dyn   = user_dynamic.next_user_dynamic (db, dyn)
     while (   dyn
           and (  dyn.contract_type != ctype
@@ -540,8 +541,9 @@ def vac_next_user_dynamic (db, dyn) :
     return dyn
 # end def vac_next_user_dynamic
 
-def vac_prev_user_dynamic (db, dyn) :
-    ctype = dyn.contract_type
+def vac_prev_user_dynamic (db, dyn, ctype = -1) :
+    if ctype == -1 :
+        ctype = dyn.contract_type
     dyn   = user_dynamic.prev_user_dynamic (db, dyn)
     while (   dyn
           and (  dyn.contract_type != ctype
