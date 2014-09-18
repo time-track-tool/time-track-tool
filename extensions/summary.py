@@ -1531,7 +1531,7 @@ class Vacation_Report (_Report) :
                 carry = carry or 0.0
                 # Round up to next multiple of 0.5 days
                 if not hv :
-                    carry = ceil (2 * carry) / 2.
+                    carry = ceil (carry)
                 ltot  = carry
                 #print yday, carry, d, end
                 while d and d <= end :
@@ -1558,7 +1558,7 @@ class Vacation_Report (_Report) :
                     cons = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
                     if not hv :
-                        cons = ceil (2 * cons) / 2.
+                        cons = ceil (cons)
                     container ['entitlement total'] = cons - ltot + carry
                     container ['yearly prorated'] = cons - ltot
                     container ['remaining vacation'] = carry = \

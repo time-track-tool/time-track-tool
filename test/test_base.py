@@ -1506,7 +1506,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( vacation.leave_days
                 (self.db, self.user2, vac2.first_day, vac2.last_day)
-            , 4.5
+            , 5
             )
         os.unlink (maildebug)
 

@@ -166,12 +166,11 @@ def remaining_until (db) :
 # end def remaining_until
 
 def remaining_vacation (db, user, date) :
-    return ceil (vacation.remaining_vacation (db, user, date = date) * 2) / 2.
+    return ceil (vacation.remaining_vacation (db, user, date = date))
 # end def remaining_vacation
 
 def consolidated_vacation (db, user, date) :
-    return ceil \
-        (vacation.consolidated_vacation (db, user, date = date) * 2) / 2.
+    return ceil (vacation.consolidated_vacation (db, user, date = date))
 # end def remaining_vacation
 
 def _get_ctype (db, user, start, end) :

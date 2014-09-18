@@ -128,7 +128,7 @@ def leave_days (db, user, first_day, last_day) :
         wh = user_dynamic.day_work_hours (dyn, d)
         ld = leave_duration (db, user, d)
         if ld != 0 :
-            s += ceil (ld / wh * 2) / 2.
+            s += ceil (ld / wh)
         d += common.day
     return s
 # end def leave_days
@@ -358,7 +358,7 @@ def vacation_time_sum (db, user, ctype, start, end) :
             continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
-        vac += ceil (tr.duration / wh * 2) / 2.
+        vac += ceil (tr.duration / wh)
     return vac
 # end def vacation_time_sum
 
@@ -564,7 +564,7 @@ def need_hr_approval \
     # this vacation twice.
     if booked :
         dur = 0
-    return tp.approval_hr or tp.is_vacation and (ceil (vac * 2) / 2. - dur < 0)
+    return tp.approval_hr or tp.is_vacation and ceil (vac) - dur < 0
 # end def need_hr_approval
 
 ### __END__
