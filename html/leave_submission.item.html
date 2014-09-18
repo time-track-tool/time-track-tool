@@ -16,7 +16,11 @@
  </tal:block> 
 
  <tal:block metal:fill-slot="content">
-  <tal:block tal:define="user python:context.user.id; show_user python:1">
+  <tal:block tal:define=
+      " user      python:context.user.id
+      ; show_user python:1
+      ; action    python: 'new'
+      ">
    <tal:block metal:use-macro="templates/leave_submission/macros/editform" />
   </tal:block>
  </tal:block>

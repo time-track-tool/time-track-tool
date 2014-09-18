@@ -6,12 +6,13 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
-   "batch python:utils.user_leave_submissions (db, context);
-    use_labelprop python: False;
-    do_user python: False;
-    tplname python: 'edit';
-    search_form python: False;
-    do_remaining python: False;
+   " batch         python:utils.user_leave_submissions (db, context)
+   ; use_labelprop python: False
+   ; do_user       python: False
+   ; tplname       python: 'edit'
+   ; search_form   python: False
+   ; do_remaining  python: False
+   ; action        python: 'new_leave'
    ">
    <tal:block metal:use-macro=
     "templates/leave_submission/macros/edit_leave_submission" />

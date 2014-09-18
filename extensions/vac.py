@@ -221,15 +221,16 @@ class New_Leave_Action (NewItemAction) :
 
     fixurl = re.compile (r'[0-9]*$')
     def handle (self) :
-        url = ''
+        url = None
         try :
             NewItemAction.handle (self)
         except Redirect, exc :
             url = exc.message
-        up     = url.split  ('?', 1)
-        up [0] = self.fixurl.sub ('', up [0])
-        url    = '?'.join (up)
-        raise Redirect (url)
+        if url :
+            up     = url.split  ('?', 1)
+            up [0] = self.fixurl.sub ('', up [0])
+            url    = '?'.join (up)
+            raise Redirect (url)
     # end def handle
 
 # end class New_Leave_Action
