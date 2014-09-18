@@ -82,6 +82,7 @@ def new_submission (db, cl, nodeid, new_values) :
     """ Check that new leave submission is allowed and has sensible
         parameters
     """
+    common.reject_attributes (_, new_values, 'approval_hr')
     uid = db.getuid ()
     st_subm = db.leave_status.lookup ('submitted')
     if 'user' not in new_values :
@@ -147,7 +148,7 @@ def check_submission (db, cl, nodeid, new_values) :
         change is at least possible (although we still have to check the
         role).
     """
-    common.reject_attributes (_, new_values, 'user')
+    common.reject_attributes (_, new_values, 'user', 'approval_hr')
     old  = cl.getnode (nodeid)
     uid  = db.getuid ()
     user = old.user
@@ -204,7 +205,7 @@ def check_submission (db, cl, nodeid, new_values) :
                 dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
                 ctype   = dyn.contract_type
                 hr_only = vacation.need_hr_approval \
-                    (db, tp, user, ctype, first_day, last_day)
+                    (db, tp, user, ctype, first_day, last_day, old_status)
                 if  (   uid != user
                     and (   (uid in clearer and not hr_only)
                         or  common.user_has_role (db, uid, 'HR-leave-approval')
@@ -452,7 +453,7 @@ def handle_submit (db, vs) :
     dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
     ctype   = dyn.contract_type
     hr_only = vacation.need_hr_approval \
-        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, booked = True)
+        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted', True)
     mailer  = roundupdb.Mailer (db.config)
     now     = Date ('.')
     user    = db.user.getnode (vs.user)

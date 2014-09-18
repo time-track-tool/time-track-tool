@@ -34,6 +34,7 @@
         , filter      = dict (approval_required = True)
         , displayable = False
         )
+    , utils.ExtProperty (utils, pdict ['approval_hr'])
     );
     buttons python: utils.Leave_Buttons (db)
    "
@@ -46,7 +47,7 @@
     <input type="hidden" name="@template" tal:attributes="value tplname">
     <table class="list" border="1">
      <tr>
-      <tal:block tal:repeat="prop python:mprops [not do_user:-1]">
+      <tal:block tal:repeat="prop python:mprops [not do_user:-2]">
        <th tal:content="python: prop.i18nlabel" />
       </tal:block>
       <th i18n:translate="">Days</th>
@@ -58,7 +59,7 @@
       <tal:block
        tal:define="sideffect python:mprops [0].menu_or_field (item = i)" />
       <tr tal:attributes="class python:['normal', 'alt'][repeat['i'].index%2]">
-       <tal:block tal:repeat="prop python:mprops [not do_user:-1]">
+       <tal:block tal:repeat="prop python:mprops [not do_user:-2]">
         <tal:block tal:define="edit python:
              i.status.plain () == 'open' and prop.name != 'status'">
          <td tal:content="structure python:prop.menu_or_field
@@ -75,7 +76,10 @@
         <td tal:condition="do_remaining" tal:content="python:
             utils.remaining_vacation 
              (db._db, mprops [0].prop.id, mprops [1].prop._value)
-             - leavedays"/>
+             + ( leavedays
+               * [1, -1][str (mprops [4].prop) == 'submitted']
+               * mprops [3].prop.project.is_vacation._value
+               )"/>
         <td tal:content="structure python: buttons.generate (mprops [4])"/>
        </tal:block>
       </tr>
@@ -86,7 +90,7 @@
   <tal:block tal:condition="search_form" tal:define=
        "sprops        python: []
        ;multi_props   python: [mprops [4], mprops [5]]
-       ;nomulti_props python: [mprops [0]]
+       ;nomulti_props python: [mprops [0], mprops [1], mprops [2], mprops [6]]
        ;sort_props    python: []
        ;props         python: []
        ;csv_link      python: None
@@ -96,7 +100,7 @@
        ;terse         python: False
        ">
    <tal:block>
-   <tal:block metal:use-macro="templates/page/macros/search_form"/>
+    <tal:block metal:use-macro="templates/page/macros/search_form"/>
    </tal:block>
   </tal:block>
  </tal:block>

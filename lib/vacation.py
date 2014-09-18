@@ -556,7 +556,13 @@ def vac_prev_user_dynamic (db, dyn, ctype = -1) :
 # end def vac_prev_user_dynamic
 
 def need_hr_approval \
-    (db, tp, user, ctype, first_day, last_day, booked = False) :
+    (db, tp, user, ctype, first_day, last_day, stname, booked = False) :
+    if tp.approval_hr :
+        return True
+    if not tp.is_vacation :
+        return False
+    if stname != 'submitted' :
+        return False
     day = common.day
     ed  = next_yearly_vacation_date (db, user, ctype, last_day) - day
     vac = remaining_vacation (db, user, ctype, ed)
@@ -566,7 +572,7 @@ def need_hr_approval \
     # this vacation twice.
     if booked :
         dur = 0
-    return tp.approval_hr or tp.is_vacation and ceil (vac) - dur < 0
+    return ceil (vac) - dur < 0
 # end def need_hr_approval
 
 ### __END__

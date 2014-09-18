@@ -363,6 +363,8 @@ def init \
         , status                = Link      ("leave_status")
         , time_wp               = Link      ("time_wp")
         , comment               = String    ()
+        , comment_cancel        = String    ()
+        , approval_hr           = Boolean   () # only for queries
         )
 
     # Remaining vacation starting with given date if absolute is True,

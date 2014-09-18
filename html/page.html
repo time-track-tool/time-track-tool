@@ -138,6 +138,11 @@
                           'time_wp.project,time_wp&@filter=user&'
                           '@sort=-first_day&@pagesize=20&@startwith=0&'
                           'user=%s' % uid
+   , ('leave_submission', 'approve_hr')
+                        : '@columns=first_day,last_day,status,'
+                          'time_wp.project,time_wp&@filter=approval_hr&'
+                          '@sort=user,-first_day&@pagesize=20&@startwith=0&'
+                          'approval_hr=yes'
    , ('letter', '')     : '@columns=id,subject,date,address.lastname,'
                           'address.firstname&'
                           '@sort=-date&@pagesize=20&@startwith=0&'
@@ -531,8 +536,9 @@
      , ('leave_submission',    'View', 1,               ('',''))
      , ( 'leave_submission'
        , 'Edit'
-       , utils.user_has_role (db._db, db._db.getuid (), 'HR-leave-approval')
-       , ('Leave Approval','approve_hr')
+       , utils.user_has_role
+         (db._db, db._db.getuid (), 'HR-leave-approval', 'HR-vacation')
+       , ('Leave approval','approve_hr')
        )
      , ('vacation_report',     'View', 1,               ('',''))
      , ( 'vacation_correction'

@@ -56,22 +56,34 @@ def approve_leave_submissions (db, context) :
 
 def approve_leave_submissions_hr (db, context, request) :
     uid = db._db.getuid ()
-    if not common.user_has_role (db._db, uid, 'HR-leave-approval') :
+    if not common.user_has_role \
+        (db._db, uid, 'HR-leave-approval', 'HR-vacation') :
         return []
-    d   = approval_stati (db)
     fs  = request.filterspec
     if 'status' in fs :
-        new_stati = {}
-        stati = dict.fromkeys (fs ['status'])
-        for s in d ['status'] :
-            if s in stati :
-                new_stati [s] = 1
-        d ['status'] = new_stati.keys ()
-    for n in ('user', 'time_wp.project') :
+        d = dict (status = fs ['status'])
+    else :
+        d = approval_stati (db)
+        fs ['status'] = d ['status']
+    for n in ('user', 'time_wp.project', 'first_day', 'last_day') :
         if n in fs :
             d [n] = fs [n]
     ls  = db.leave_submission.filter (None, d)
-    ls  = [l for l in ls if l.user.id != uid]
+    if 'approval_hr' in fs :
+        new_ls = []
+        for l in ls :
+            tp  = l.time_wp.project
+            fd  = l.first_day._value
+            ld  = l.last_day._value
+            u   = l.user.id
+            dyn = user_dynamic.get_user_dynamic (db._db, u, fd)
+            ctp = dyn.contract_type
+            hr  = vacation.need_hr_approval \
+                (db._db, tp, u, ctp, fd, ld, str (l.status.name), False)
+            ah  = fs ['approval_hr'].lower () == 'yes'
+            if hr == ah :
+                new_ls.append (l)
+        ls = new_ls
     return ls
 # end def approve_leave_submissions_hr
 
@@ -132,24 +144,27 @@ class Leave_Buttons (object) :
             for b in self.user_buttons [stname] :
                 ret.append (self.button (*b))
         elif stname in self.approve_buttons and self.uid != self.user :
-            tp        = ep_status.item.time_wp.project.id
-            tp        = db.time_project.getnode (tp)
-            first_day = ep_status.item.first_day._value
-            last_day  = ep_status.item.last_day._value
-            dyn       = user_dynamic.get_user_dynamic (db, self.user, last_day)
-            ctype     = dyn.contract_type
-            need_hr   = vacation.need_hr_approval \
-                (db, tp, self.user, ctype, first_day, last_day)
-            if  (  (    self.uid in common.clearance_by (self.db, self.user)
-                   and not need_hr
-                   )
-                or common.user_has_role (self.db, self.uid, 'HR-leave-approval')
-                ) :
+            if common.user_has_role (self.db, self.uid, 'HR-leave-approval') :
                 for b in self.approve_buttons [stname] :
                     ret.append (self.button (*b))
+            else :
+                tp        = ep_status.item.time_wp.project.id
+                tp        = db.time_project.getnode (tp)
+                first_day = ep_status.item.first_day._value
+                last_day  = ep_status.item.last_day._value
+                dyn       = user_dynamic.get_user_dynamic \
+                    (db, self.user, last_day)
+                ctype     = dyn.contract_type
+                need_hr   = vacation.need_hr_approval \
+                    (db, tp, self.user, ctype, first_day, last_day, stname)
+                if  (   self.uid in common.clearance_by (self.db, self.user)
+                    and not need_hr
+                    ) :
+                    for b in self.approve_buttons [stname] :
+                        ret.append (self.button (*b))
         if ret :
             ret.append \
-                ( '<input type="hidden" name="%s@status" value=%s>'
+                ( '<input type="hidden" name="%s@status" value="%s">'
                 % (ep_status.item.designator (), stname)
                 )
         return ''.join (ret)
@@ -166,7 +181,10 @@ def remaining_until (db) :
 # end def remaining_until
 
 def remaining_vacation (db, user, date) :
-    return ceil (vacation.remaining_vacation (db, user, date = date))
+    c = ceil (vacation.remaining_vacation (db, user, date = date))
+    if c == 0 :
+        return 0.0
+    return c
 # end def remaining_vacation
 
 def consolidated_vacation (db, user, date) :
