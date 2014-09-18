@@ -37,6 +37,7 @@ except ImportError :
     from StringIO  import StringIO
 
 from math                           import ceil
+from urllib                         import urlencode
 from roundup.date                   import Date, Interval
 from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
@@ -1145,6 +1146,7 @@ class Summary_Report (_Report) :
 # end class Summary_Report
 
 class HTML_List :
+
     def __init__ (self, delimiter = ' + ') :
         self.items     = []
         self.delimiter = delimiter
@@ -1161,7 +1163,26 @@ class HTML_List :
     def __repr__ (self) :
         return self.delimiter.join (str (i) for i in self.items)
     # end def __repr__
+
 # end class HTML_List
+
+class HTML_Link :
+
+    def __init__ (self, value, href) :
+        self.value = value
+        self.href  = href
+    # end def __init__
+
+    def as_html (self) :
+        return '<a href="%(href)s">%(value)s</a>' % self.__dict__
+    # end def as_html
+
+    def __repr__ (self) :
+        return str (self.value)
+    # end def __repr__
+    __str__ = __repr__
+
+# end class HTML_Link
 
 class Staff_Report (_Report) :
     ''"Staff Report" # for translation in web-interface
@@ -1586,8 +1607,19 @@ class Vacation_Report (_Report) :
                     container ['remaining vacation'] = carry = \
                         vacation.remaining_vacation \
                             (db, u, ctype, d, cons, to_eoy = not hv)
-                    container ['approved days'] = \
-                        vacation.vacation_time_sum (db, u, ctype, ld, d)
+                    val = vacation.vacation_time_sum (db, u, ctype, ld, d)
+                    r   = ('HR-vacation', 'HR-leave-approval')
+                    if common.user_has_role (self.db, self.uid, *r) :
+                        dt   = common.pretty_range (ld, d)
+                        url  = ( '%sleave_submission?@template=approve_hr&'
+                                 '@filter=user,first_day&@startwith=0&'
+                                 '@pagesize=20&'
+                               )
+                        url %= db.config.TRACKER_WEB
+                        url += urlencode (dict (user = u, first_day = dt))
+                        container ['approved days'] = HTML_Link (val, url)
+                    else :
+                        container ['approved days'] = val
                     if 'additional_submitted' in self.fields :
                         container ['additional_submitted'] = \
                             vacation.vacation_submission_days \
