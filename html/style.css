@@ -354,7 +354,7 @@ table.list th.nb {
   border-right: 0
 }
 table.list th.emphasized {
-  color: green; font-style:italic;
+  color: green;
 }
 
 table.list td {
