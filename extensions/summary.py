@@ -1610,7 +1610,12 @@ class Vacation_Report (_Report) :
                     vd = common.pretty_range (ld, d)
                     vc = db.vacation_correction.filter \
                         ( None
-                        , dict (user = u, date = vd, contract_type = ctype)
+                        , dict 
+                            ( user          = u
+                            , date          = vd
+                            , contract_type = ctype
+                            , absolute      = False
+                            )
                         )
                     try :
                         vcs = HTML_List ()
