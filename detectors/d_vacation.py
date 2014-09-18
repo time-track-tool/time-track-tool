@@ -82,7 +82,7 @@ def new_submission (db, cl, nodeid, new_values) :
     """ Check that new leave submission is allowed and has sensible
         parameters
     """
-    common.reject_attributes (_, new_values, 'approval_hr')
+    common.reject_attributes (_, new_values, 'approval_hr', 'comment_cancel')
     uid = db.getuid ()
     st_subm = db.leave_status.lookup ('submitted')
     if 'user' not in new_values :
@@ -109,7 +109,7 @@ def new_submission (db, cl, nodeid, new_values) :
         raise Reject (_ ("Frozen"))
     comment = new_values.get ('comment')
     check_range (db, None, user, first_day, last_day)
-    check_wp    (db, new_values ['time_wp'], user, first_day, last_day, comment)
+    check_wp (db, new_values ['time_wp'], user, first_day, last_day, comment)
     if 'status' in new_values and new_values ['status'] != st_subm :
         raise Reject (_ ('Initial status must be "submitted"'))
     if 'status' not in new_values :
@@ -153,6 +153,8 @@ def check_submission (db, cl, nodeid, new_values) :
     uid  = db.getuid ()
     user = old.user
     old_status = db.leave_status.get (old.status, 'name')
+    if old_status != 'accepted' :
+        common.reject_attributes (_, new_values, 'comment_cancel')
     new_status = db.leave_status.get \
         (new_values.get ('status', old.status), 'name')
     if old_status != 'open' :
@@ -177,6 +179,9 @@ def check_submission (db, cl, nodeid, new_values) :
     if old_status in ('accepted', 'cancel requested') :
         check_dr_status (db, user, first_day, last_day, 'leave')
     if old_status != new_status :
+        if  (old_status == 'accepted' and new_status == 'cancel requested') :
+            common.require_attributes \
+                (_, cl, nodeid, new_values, 'comment_cancel')
         # Allow special HR role to do any (possible) state changes
         # Except for approval of own records
         if  (  common.user_has_role (db, uid, 'HR-vacation')

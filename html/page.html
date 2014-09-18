@@ -140,9 +140,13 @@
                           'user=%s' % uid
    , ('leave_submission', 'approve_hr')
                         : '@columns=first_day,last_day,status,'
-                          'time_wp.project,time_wp&@filter=approval_hr&'
+                          'time_wp.project,time_wp&'
+                          '@filter=approval_hr,status&'
                           '@sort=user,-first_day&@pagesize=20&@startwith=0&'
-                          'approval_hr=yes'
+                          'approval_hr=yes&status=%s' % ','.join
+                            (db._db.leave_status.lookup (i)
+                             for i in ('submitted', 'cancel requested')
+                            )
    , ('letter', '')     : '@columns=id,subject,date,address.lastname,'
                           'address.firstname&'
                           '@sort=-date&@pagesize=20&@startwith=0&'

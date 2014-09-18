@@ -7,12 +7,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-11 17:40+0200\n"
+"POT-Creation-Date: 2014-09-18 16:23+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "invoice"
+msgstr "Rechnung"
+
+msgid "Invoice Address"
+msgstr "Rechnungsadresse"
+
+msgid "shipping"
+msgstr "Lieferung"
+
+msgid "Shipping Address"
+msgstr "Lieferadresse"
+
+msgid "supply"
+msgstr "Bezug"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr "Adresse zum Bezug beim Lieferanten"
+
+msgid "contact"
+msgstr "Kontakt"
+
+msgid "Address of a personal contact"
+msgstr "Adresse persönlicher Kontakt"
+
+msgid "Circular logging"
+msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
@@ -208,7 +235,7 @@ msgstr "Kommentar ist für special leave nötig"
 msgid "Frozen"
 msgstr "eingefroren"
 
-msgid "Initial status must be \"open\""
+msgid "Initial status must be \"submitted\""
 msgstr ""
 
 msgid "Only special role may create submission for other user"
@@ -240,7 +267,7 @@ msgid "Daily records must exist"
 msgstr "Daily records müssen existieren"
 
 #, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s not cancelled"
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s not cancelled"
 msgstr ""
 
 #, python-format
@@ -251,7 +278,7 @@ msgid "Please contact your supervisor.\n"
 msgstr ""
 
 #, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s accepted"
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s accepted"
 msgstr ""
 
 #, python-format
@@ -262,19 +289,35 @@ msgid "The following existing time records have been deleted:"
 msgstr ""
 
 #, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s declined"
+msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s declined"
 msgstr ""
 
 msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been declined.\n"
 msgstr ""
 
-msgid "Leave request \"%(tpn)s/%(wpn)s\" from %(nick)s"
+#, python-format
+msgid "Leave request \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s from %(realnm)s"
 msgstr ""
 
-msgid "%(realnm)s has submitted a leave request \"%(tpn)s/%(wpn)s\"."
+#, python-format
+msgid "%(realnm)s has submitted a leave request \"%(tpn)s/%(wpn)s\".\n"
 msgstr ""
 
-msgid "Your Leave \"%(tpn)s/%(wpn)s\" %(fday)s-%(lday)s"
+#, python-format
+msgid ""
+"Comment from user:\n"
+"%s\n"
+msgstr ""
+
+msgid "Needs approval by HR.\n"
+msgstr ""
+
+msgid "Please approve or decline at\n"
+msgstr ""
+
+msgid ""
+"\n"
+"Many thanks!"
 msgstr ""
 
 #, python-format
@@ -994,6 +1037,20 @@ msgstr ""
 "Bitte beachten: Nur Adress-Typen die zur Typ-Kategorie \"ABO\" gehören, "
 "dürfen hier ausgewählt werden."
 
+msgid "absolute"
+msgstr ""
+
+msgid ""
+"For normal correction of present remaining vacation put\n"
+"             in Absolute: \"no\". Absolute \"yes\" restarts vacation day\n"
+"             calculation with the specified date. Is automatically set\n"
+"             with 0 if new user is entered into system, is useful if\n"
+"             user restarts with TTTech and rounding difference is still\n"
+"             in the system. Note: Vacation correction is also possible\n"
+"             if no valid dyn. user data for this date.\n"
+"          "
+msgstr ""
+
 msgid "achieved_hours"
 msgstr ""
 
@@ -1347,6 +1404,18 @@ msgstr "Code"
 msgid "Code of this %(Classname)s"
 msgstr "Code für diese %(Classname)s."
 
+msgid "comment"
+msgstr "Kommentar"
+
+msgid "Comment for %(Classname)s"
+msgstr "Kommentar zu %(Classname)s"
+
+msgid "comment_cancel"
+msgstr "Kommentar zur Stornierung"
+
+msgid "Comment for %(Classname)s when cancel is requested"
+msgstr ""
+
 msgid "company"
 msgstr ""
 
@@ -1388,9 +1457,6 @@ msgid ""
 msgstr ""
 "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
 "müssen übereinstimmen."
-
-msgid "contact"
-msgstr "Kontakt"
 
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
@@ -1900,6 +1966,12 @@ msgstr "SMTP Passwort"
 msgid "SMTP password for sending alerts"
 msgstr ""
 
+msgid "emails"
+msgstr "Emails"
+
+msgid "Customer email addresses for this %(Classname)s"
+msgstr ""
+
 msgid "end"
 msgstr "Ende"
 
@@ -1916,11 +1988,33 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "external_company"
+msgstr ""
+
+msgid ""
+"Company for external users used for access control: all\n"
+"            external users for a company have access if the\n"
+"            %(Classname)s is on the access list for an issue\n"
+"         "
+msgstr ""
+
 msgid "external_ref"
 msgstr ""
 
 msgid "%(Property)s at supplier/customer for this %(Classname)s"
 msgstr "%(Property)s beim Kunden/Lieferanten für %(Classname)s"
+
+msgid "external_users"
+msgstr ""
+
+msgid ""
+"Used for access control: all\n"
+"            configured external users have access to this issue -- and\n"
+"            if the issue is a container to all sub-issues.\n"
+"            Containers inherit the permissions of the next higher\n"
+"            container only if the 'Inherit permissions' flag is set.\n"
+"         "
+msgstr ""
 
 msgid "fax"
 msgstr "Fax"
@@ -1969,42 +2063,20 @@ msgstr ""
 msgid "Date of final meeting for this %(Classname)s."
 msgstr "Datum der Abschlussbesprechung für %(Classname)s"
 
-msgid "emails"
-msgstr "Emails"
-
-msgid "Customer email addresses for this %(Classname)s"
-msgstr ""
-
-msgid "external_company"
-msgstr ""
-
-msgid ""
-"Company for external users used for access control: all\n"
-"            external users for a company have access if the\n"
-"            %(Classname)s is on the access list for an issue\n"
-"         "
-msgstr ""
-
-msgid "external_users"
-msgstr ""
-
-msgid ""
-"Used for access control: all\n"
-"            configured external users have access to this issue -- and\n"
-"            if the issue is a container to all sub-issues.\n"
-"            Containers inherit the permissions of the next higher\n"
-"            container only if the 'Inherit permissions' flag is set.\n"
-"         "
-msgstr ""
-
-msgid "firstname"
-msgstr "Vorname"
-
 msgid "Date of first contact"
 msgstr "Datum des ersten Kontakts"
 
 msgid "first_date"
 msgstr "Erstkontakt"
+
+msgid "First day of %(Classname)s."
+msgstr "Erster Tag der %(Classname)s"
+
+msgid "first_day"
+msgstr "erster Tag"
+
+msgid "firstname"
+msgstr "Vorname"
 
 msgid "fixed_in"
 msgstr ""
@@ -2185,9 +2257,6 @@ msgid ""
 msgstr ""
 "Eindeutiger name für diese %(Classname)s, bevorzugt die Inventarnummer für "
 "die Verwaltung von Anlagegütern (asset tracking)"
-
-msgid "invoice"
-msgstr "Rechnung"
 
 msgid "Link to invoice for this %(Classname)s"
 msgstr "Verbindung zur Rechnung für %(Classname)s"
@@ -2439,6 +2508,9 @@ msgstr "Datum des letzten Kontakts (Ausscheidedatum)"
 
 msgid "last_date"
 msgstr "Letztkontakt"
+
+msgid "Last day of %(Classname)s."
+msgstr "Letzter Tag der %(Classname)s"
 
 msgid "last_gid"
 msgstr ""
@@ -4509,6 +4581,9 @@ msgstr "genehmigte Tage"
 msgid "approved_submissions"
 msgstr "Genehmigte Urlaubsanträge"
 
+msgid "vacation corrections"
+msgstr "Urlaubskorrekturen"
+
 msgid "remaining vacation"
 msgstr "verbleibender Urlaub"
 
@@ -4751,14 +4826,17 @@ msgstr ""
 msgid "Days"
 msgstr ""
 
+msgid "Remaining vacation after approval"
+msgstr "verbleibender Urlaub nach Freigabe"
+
 msgid "Action"
 msgstr "Aktion"
 
 msgid "Comment is only required for special leave"
 msgstr "Kommentar ist nur für Spezial-Abwesenheit nötig"
 
-msgid "Overview remaining vacation"
-msgstr "Überblick verbleibender Urlaub"
+msgid "Overview remaining vacation days"
+msgstr "Überblick verbleibende Urlaubstage"
 
 msgid "Vacation <span></span> &nbsp;"
 msgstr ""
@@ -5170,27 +5248,6 @@ msgstr ""
 msgid "vacation_date"
 msgstr "Urlaubsstichtag"
 
-msgid "Invoice Address"
-msgstr "Rechnungsadresse"
-
-msgid "shipping"
-msgstr "Lieferung"
-
-msgid "Shipping Address"
-msgstr "Lieferadresse"
-
-msgid "supply"
-msgstr "Bezug"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr "Adresse zum Bezug beim Lieferanten"
-
-msgid "Address of a personal contact"
-msgstr "Adresse persönlicher Kontakt"
-
-msgid "Circular logging"
-msgstr ""
-
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5299,9 +5356,6 @@ msgstr ""
 
 msgid "announcement"
 msgstr ""
-
-msgid "comment"
-msgstr "Kommentar"
 
 msgid "file"
 msgstr "Datei"
@@ -5600,12 +5654,6 @@ msgstr ""
 
 msgid "last_day"
 msgstr "letzter Tag"
-
-msgid "first_day"
-msgstr "erster Tag"
-
-msgid "absolute"
-msgstr ""
 
 msgid "days"
 msgstr "Tage"

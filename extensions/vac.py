@@ -60,12 +60,8 @@ def approve_leave_submissions_hr (db, context, request) :
         (db._db, uid, 'HR-leave-approval', 'HR-vacation') :
         return []
     fs  = request.filterspec
-    if 'status' in fs :
-        d = dict (status = fs ['status'])
-    else :
-        d = approval_stati (db)
-        fs ['status'] = d ['status']
-    for n in ('user', 'time_wp.project', 'first_day', 'last_day') :
+    d   = {}
+    for n in ('status', 'user', 'time_wp.project', 'first_day', 'last_day') :
         if n in fs :
             d [n] = fs [n]
     ls  = db.leave_submission.filter (None, d)

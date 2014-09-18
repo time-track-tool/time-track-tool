@@ -351,6 +351,10 @@ _helptext          = \
       [ ""'''%(Classname)s class''' ]
     , ""'code'                        :
       [""'''Code of this %(Classname)s''']
+    , ""'comment'                     :
+      [""'''Comment for %(Classname)s''']
+    , ""'comment_cancel'              :
+      [""'''Comment for %(Classname)s when cancel is requested''']
     , ""'company'                     :
       [""'''Company for %(Classname)s''']
     , ""'composed_of'                 :
@@ -630,6 +634,8 @@ _helptext          = \
       [""'''Email address for this %(Classname)s''']
     , ""'email++password'             :
       [""'''SMTP password for sending alerts''']
+    , ""'emails'                      :
+      [""'''Customer email addresses for this %(Classname)s''']
     , ""'end'                         :
       [ ""'''Format xx:xx  (e.g. 17:00), is created automatically by the
              system when you specify "Start" and "Duration". Attention: If
@@ -641,8 +647,22 @@ _helptext          = \
           '''
       , green
       ]
+    , ""'external_company'            :
+      [""'''Company for external users used for access control: all
+            external users for a company have access if the
+            %(Classname)s is on the access list for an issue
+         '''
+      ]
     , ""'external_ref'                :
       [""'''%(Property)s at supplier/customer for this %(Classname)s''']
+    , ""'external_users'              :
+      [""'''Used for access control: all
+            configured external users have access to this issue -- and
+            if the issue is a container to all sub-issues.
+            Containers inherit the permissions of the next higher
+            container only if the \'Inherit permissions\' flag is set.
+         '''
+      ]
     , ""'fax'                         :
       [""'''FAX number for this %(Classname)s''']
     , ""'filename_format'             :
@@ -671,24 +691,9 @@ _helptext          = \
       [ ""'''Date of final meeting for this %(Classname)s.'''
       , date_text
       ]
-    , ""'emails'                      :
-      [""'''Customer email addresses for this %(Classname)s''']
-    , ""'external_company'            :
-      [""'''Company for external users used for access control: all
-            external users for a company have access if the
-            %(Classname)s is on the access list for an issue
-         '''
-      ]
-    , ""'external_users'              :
-      [""'''Used for access control: all
-            configured external users have access to this issue -- and
-            if the issue is a container to all sub-issues.
-            Containers inherit the permissions of the next higher
-            container only if the \'Inherit permissions\' flag is set.
-         '''
-      ]
-    , ""'firstname'                   : [firstname]
     , ""'first_date'                  : [ ""'''Date of first contact''']
+    , ""'first_day'                   : [ ""'''First day of %(Classname)s.''']
+    , ""'firstname'                   : [firstname]
     , ""'fixed_in'                    :
       [ ""'''Provide the version number where you fixed it. Is needed
              when you change the status to testing.
@@ -887,6 +892,7 @@ _helptext          = \
     , ""'klass'                       :
       [""'''Class for this query''']
     , ""'last_date'                   : [ ""'''Date of last contact''']
+    , ""'first_day'                   : [ ""'''Last day of %(Classname)s.''']
     , ""'last_gid'                    :
       [""'''Last used gid in this %(Classname)s''']
     , ""'last_machine_uid'            :
