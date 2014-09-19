@@ -156,7 +156,7 @@ def leave_duration (db, user, date) :
     return wh - bk
 # end def leave_duration
 
-def leave_submission_days (db, user, ctype, start, end, is_vac, * stati) :
+def leave_submission_days (db, user, ctype, start, end, type, * stati) :
     """ Sum vacation submissions if is_vac or flexitime else
         with the given status in the given time range for the given user
         and ctype (contract_type).
@@ -164,10 +164,12 @@ def leave_submission_days (db, user, ctype, start, end, is_vac, * stati) :
     dt   = common.pretty_range (start, end)
     dts  = ';%s' % start.pretty (common.ymd)
     dte  = '%s;' % end.pretty   (common.ymd)
-    if is_vac :
+    if type == 'vacation' :
         lwp  = vacation_wps (db)
-    else :
+    elif type == 'flexi' :
         lwp  = flexi_wps (db)
+    else :
+        lwp  = special_wps (db)
     d    = dict (user = user, status = list (stati), time_wp = lwp)
     d1   = dict (d, first_day = dt)
     vs1  = db.leave_submission.filter (None, d1)
@@ -190,10 +192,10 @@ def leave_submission_days (db, user, ctype, start, end, is_vac, * stati) :
         if last_day > end :
             assert vs.first_day < end
             last_day  = end
-        if is_vac :
-            days += leave_days (db, user, first_day, last_day)
-        else :
+        if type == 'flexi' :
             days += interval_days (last_day - first_day) + 1
+        else :
+            days += leave_days (db, user, first_day, last_day)
     return days
 # end def leave_submission_days
 
@@ -201,15 +203,25 @@ def vacation_submission_days (db, user, ctype, start, end, * stati) :
     """ Sum vacation submissions with the given status in the given time
         range for the given user and ctype (contract_type).
     """
-    return leave_submission_days (db, user, ctype, start, end, 1, * stati)
+    return leave_submission_days \
+        (db, user, ctype, start, end, 'vacation', * stati)
 # end def vacation_submission_days
 
 def flexitime_submission_days (db, user, ctype, start, end, * stati) :
     """ Sum flexitime submissions with the given status in the given time
         range for the given user and ctype (contract_type).
     """
-    return leave_submission_days (db, user, ctype, start, end, 0, * stati)
+    return leave_submission_days \
+        (db, user, ctype, start, end, 'flexi', * stati)
 # end def flexitime_submission_days
+
+def special_submission_days (db, user, ctype, start, end, * stati) :
+    """ Sum special_leave submissions with the given status in the given
+        time range for the given user and ctype (contract_type).
+    """
+    return leave_submission_days \
+        (db, user, ctype, start, end, 'special', * stati)
+# end def special_submission_days
 
 def next_yearly_vacation_date (db, user, ctype, date) :
     d = date + common.day
@@ -334,6 +346,14 @@ def get_vacation_correction (db, user, ctype = -1, date = None) :
 def vacation_wps (db) :
     # All time recs with vacation wp in range
     vtp = db.time_project.filter (None, dict (is_vacation = True))
+    assert vtp
+    vwp = db.time_wp.filter (None, dict (project = vtp))
+    return vwp
+# end def vacation_wps
+
+def special_wps (db) :
+    # All time recs with special-leave wp in range
+    vtp = db.time_project.filter (None, dict (is_special_leave = True))
     assert vtp
     vwp = db.time_wp.filter (None, dict (project = vtp))
     return vwp

@@ -401,6 +401,8 @@ def init \
         , approved_submissions  = String    ()
         , flexi_time            = String    ()
         , flexi_sub             = String    ()
+        , special_leave         = String    ()
+        , special_sub           = String    ()
         )
 
     work_location = Class \

@@ -1447,6 +1447,8 @@ class Vacation_Report (_Report) :
         , (""'additional_submitted', 9)
         , (""'flexi_time',          10)
         , (""'flexi_sub',           11)
+        , (""'special_leave',       12)
+        , (""'special_sub',         13)
         )
     header_classes = \
         { 'remaining vacation' : 'emphasized'
@@ -1479,6 +1481,8 @@ class Vacation_Report (_Report) :
             , 'additional_submitted'
             , 'flexi_time'
             , 'flexi_sub'
+            , 'special_leave'
+            , 'special_sub'
             )
         for k in opt :
             if k not in request.columns :
@@ -1631,6 +1635,14 @@ class Vacation_Report (_Report) :
                     if 'flexi_sub' in self.fields :
                         container ['flexi_sub'] = \
                             vacation.flexitime_submission_days \
+                                (db, u, ctype, ld, d, st_subm)
+                    if 'special_leave' in self.fields :
+                        container ['special_leave'] = \
+                            vacation.special_submission_days \
+                                (db, u, ctype, ld, d, st_accp, st_cnrq)
+                    if 'special_sub' in self.fields :
+                        container ['special_sub'] = \
+                            vacation.special_submission_days \
                                 (db, u, ctype, ld, d, st_subm)
                     ltot = cons
 

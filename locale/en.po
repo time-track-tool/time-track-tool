@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-18 16:23+0200\n"
+"POT-Creation-Date: 2014-09-19 10:39+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -313,6 +313,13 @@ msgstr ""
 msgid ""
 "\n"
 "Many thanks!"
+msgstr ""
+
+#, python-format
+msgid "No current dyn. user record for \"%(username)s\""
+msgstr ""
+
+msgid "Missing vacation parameters in dyn. user record(s)"
 msgstr ""
 
 #, python-format
@@ -4714,6 +4721,9 @@ msgstr ""
 msgid "new it_issue"
 msgstr "new IT-Issue"
 
+msgid "Leave approval"
+msgstr ""
+
 msgid "New"
 msgstr ""
 
@@ -5549,6 +5559,12 @@ msgstr "Last day"
 
 msgid "days"
 msgstr ""
+
+msgid "special_sub"
+msgstr "Special leave (submitted)"
+
+msgid "special_leave"
+msgstr "Special leave (approved)"
 
 msgid "phone"
 msgstr "Phone Number"

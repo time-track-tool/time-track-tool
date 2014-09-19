@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-18 16:23+0200\n"
+"POT-Creation-Date: 2014-09-19 10:39+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -318,6 +318,13 @@ msgstr ""
 msgid ""
 "\n"
 "Many thanks!"
+msgstr ""
+
+#, python-format
+msgid "No current dyn. user record for \"%(username)s\""
+msgstr ""
+
+msgid "Missing vacation parameters in dyn. user record(s)"
 msgstr ""
 
 #, python-format
@@ -2433,10 +2440,10 @@ msgid "This is turned on when the %(Classname)s is a series product"
 msgstr "Eingeschaltet wenn %(Classname)s ein Serienprodukt ist"
 
 msgid "is_special_leave"
-msgstr "ist Spezial-Abwesenheit"
+msgstr "ist Sonderurlaub"
 
 msgid "Set to True if %(Classname)s is for special leave"
-msgstr "Muss gesetzt sein falls %(Classname)s für Spezial-Abwesenheit"
+msgstr "Muss gesetzt sein falls %(Classname)s für Sonderurlaub"
 
 msgid "is_vacation"
 msgstr "ist Urlaub"
@@ -4820,6 +4827,9 @@ msgstr ""
 msgid "new it_issue"
 msgstr "Neues IT Issue"
 
+msgid "Leave approval"
+msgstr "Genehmigung Abwesenheit"
+
 msgid "New"
 msgstr ""
 
@@ -4833,7 +4843,7 @@ msgid "Action"
 msgstr "Aktion"
 
 msgid "Comment is only required for special leave"
-msgstr "Kommentar ist nur für Spezial-Abwesenheit nötig"
+msgstr "Kommentar ist nur für Sonderurlaub nötig"
 
 msgid "Overview remaining vacation days"
 msgstr "Überblick verbleibende Urlaubstage"
@@ -5657,6 +5667,12 @@ msgstr "letzter Tag"
 
 msgid "days"
 msgstr "Tage"
+
+msgid "special_sub"
+msgstr "Sonderurlaub (beantragt)"
+
+msgid "special_leave"
+msgstr "Sonderurlaub (genehmigt)"
 
 msgid "phone"
 msgstr "Telefon"

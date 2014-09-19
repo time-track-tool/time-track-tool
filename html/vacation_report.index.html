@@ -23,23 +23,33 @@
        (utils, pdict ['org_location'],      multiselect = 1)
      , organisation      = utils.ExtProperty
        (utils, pdict ['organisation'],      multiselect = 1)
-     , additional_submitted  = utils.ExtProperty
+     , additional_submitted = utils.ExtProperty
            ( utils, pdict ['additional_submitted']
            , searchable = False
            , sortable = False
            )
-     , approved_submissions  = utils.ExtProperty
+     , approved_submissions = utils.ExtProperty
            ( utils, pdict ['approved_submissions']
            , searchable = False
            , sortable = False
            )
-     , flexi_time  = utils.ExtProperty
+     , flexi_time = utils.ExtProperty
            ( utils, pdict ['flexi_time']
            , searchable = False
            , sortable = False
            )
-     , flexi_sub  = utils.ExtProperty
+     , flexi_sub = utils.ExtProperty
            ( utils, pdict ['flexi_sub']
+           , searchable = False
+           , sortable = False
+           )
+     , special_leave = utils.ExtProperty
+           ( utils, pdict ['special_leave']
+           , searchable = False
+           , sortable = False
+           )
+     , special_sub = utils.ExtProperty
+           ( utils, pdict ['special_sub']
            , searchable = False
            , sortable = False
            )
@@ -54,6 +64,8 @@
          , 'approved_submissions'
          , 'flexi_time'
          , 'flexi_sub'
+         , 'special_leave'
+         , 'special_sub'
          ]
        ; props python: [myprops [p] for p in sorted (fpkeys)]
        ; propkeys       python:
