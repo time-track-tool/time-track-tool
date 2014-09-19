@@ -303,23 +303,31 @@ def interval_days (iv) :
     return t [3] * t [0]
 # end def interval_days
 
-def get_vacation_correction (db, user, ctype, date) :
+def get_vacation_correction (db, user, ctype = -1, date = None) :
     """ Get latest absolute vacation_correction.
+        Special handling of ctype: None means ctype 'None' while -1
+        means "don't care, search for *any* ctype". Note that roundups
+        interface for searching specifies -1 when searching for an
+        empty link....
     """
+    if date is None :
+        date = roundup.date.Date ('.')
     dt = ";%s" % date.pretty (common.ymd)
     d = dict \
         ( user          = user
         , absolute      = True
         , date          = dt
         )
-    if ctype is not None :
+    if ctype != -1 :
         d ['contract_type'] = ctype
+        if ctype is None :
+            d ['contract_type'] = '-1'
     vcs = db.vacation_correction.filter (None, d, sort = [('-', 'date')])
     if not vcs :
         return
     for id in vcs :
         vc = db.vacation_correction.getnode (id)
-        if vc.contract_type == ctype :
+        if ctype == -1 or vc.contract_type == ctype :
             return vc
 # end def get_vacation_correction
 

@@ -129,7 +129,7 @@ def check_dyn_user_params (db, user, first_day, last_day) :
     ctype = -1 # contract_type is either None or a string, can't be numeric
     while d <= last_day :
         dyn = user_dynamic.get_user_dynamic (db, user, d)
-        if not dyn.vacation_yearly :
+        if dyn.vacation_yearly is None :
             raise Reject (_ ("No yearly vacation for this user"))
         if dyn.vacation_day is None or dyn.vacation_month is None :
             raise Reject (_ ("Vacation date setting is missing"))
@@ -546,6 +546,20 @@ def check_correction (db, cl, nodeid, new_values) :
             or not new_values.get ('absolute')
             ) :
             raise Reject (_ ("Frozen"))
+    # Check that vacation parameters exist in dyn. user records
+    dyn = user_dynamic.act_or_latest_user_dynamic (db, user)
+    if not dyn or dyn.valid_to and dyn.valid_to > date :
+        username = db.user.get (user, 'username')
+        raise Reject \
+            (_ ('No current dyn. user record for "%(username)s"') % locals ())
+    while dyn and (not dyn.valid_to or dyn.valid_to > date) :
+        if  (  dyn.vacation_yearly is None
+            or not dyn.vacation_month
+            or not dyn.vacation_day
+            ) :
+            raise Reject \
+                (_ ('Missing vacation parameters in dyn. user record(s)'))
+        dyn = user_dynamic.prev_user_dynamic (db, dyn)
 # end def check_correction
 
 def init (db) :

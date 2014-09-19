@@ -251,6 +251,7 @@ def init (instance) :
     reg ('vacation_with_status',         vacation_with_status)
     reg ('flexitime_with_status',        flexitime_with_status)
     reg ('vacation_time_sum',            vacation.vacation_time_sum)
+    reg ('get_vacation_correction',      vacation.get_vacation_correction)
     reg ('year',                         Interval ('1y'))
     reg ('day',                          common.day)
     action = instance.registerAction

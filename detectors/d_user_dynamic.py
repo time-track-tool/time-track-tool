@@ -384,9 +384,9 @@ def overtime_check (db, cl, nodeid, new_values) :
 
 def vacation_check (db, cl, nodeid, new_values) :
     mlist = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    if  (   'vacation_yearly'  not in new_values
-        and 'vacation_month'   not in new_values
-        and 'vacation_day'     not in new_values
+    if  (   new_values.get ('vacation_day') is None
+        and new_values.get ('vacation_month') is None
+        and new_values.get ('vacation_yearly') is None
         ) :
         return
     # if one attribute is defined, all need to be

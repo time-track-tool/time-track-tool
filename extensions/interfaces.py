@@ -40,6 +40,7 @@ from copy                           import copy
 from xml.sax.saxutils               import escape
 
 import common
+import freeze
 import user_dynamic
 import vacation
 
@@ -291,9 +292,11 @@ def weekend_allowed (db, daily_record) :
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
 
-def approval_for (db) :
+def approval_for (db, valid_only = False) :
     """ Return a hash of all user-ids for which the current db.getuid()
-        user may approve time records
+        user may approve time records. If valid_only is specified we
+        return only users with status 'valid' or a user_dyn record with
+        a frozen date below the validity span.
     """
     try :
         db  = db._db
@@ -306,12 +309,34 @@ def approval_for (db) :
     clearer_for.extend (subst)
     if not db.user.get (uid, 'clearance_by') :
         clearer_for.append (uid)
-    approve_for = []
-    for u in clearer_for :
-        approve_for.extend (db.user.find (supervisor = u))
-    aprv = dict ([(a, 1) for a in approve_for])
-    if uid in aprv : del aprv [uid]
-    return aprv
+    d = dict (supervisor = clearer_for)
+    if valid_only :
+        d_a = dict (d)
+        d_a ['status'] = db.user_status.lookup ('valid')
+    approve_for = dict.fromkeys (db.user.filter (None, d_a), 1)
+    if valid_only :
+        d ['status'] = list \
+            (x for x in db.user_status.getnodeids (retired = False)
+             if x != d_a ['status']
+            )
+        invalid = dict.fromkeys (db.user.filter (None, d), 1)
+        for u in invalid.keys () :
+            if u in approve_for :
+                del invalid [u]
+                continue
+            dyn = user_dynamic.act_or_latest_user_dynamic (db, u)
+            if not dyn :
+                del invalid [u]
+                continue
+            # User invalid but dyn user valid?!
+            if dyn.valid_to is None :
+                continue
+            if freeze.frozen (db, u, dyn.valid_to - common.day) :
+                del invalid [u]
+        approve_for.update (invalid)
+    if uid in approve_for :
+        del approve_for [uid]
+    return approve_for
 # end def approval_for
 
 def welcome (db) :
