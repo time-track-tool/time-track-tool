@@ -33,6 +33,17 @@ leave_notify_text  = Dear member of the Office Team,
  $(nl)s
  many thanks!
 
+# On cancel of all leave types
+leave_cancel_email = office@example.com
+leave_cancel_subject = Leave "$(tp_name)s/$(wp_name)s"
+ $(first_day)s-$(last_day)s cancelled
+leave_cancel_text  = Dear member of the Office Team,
+ the user $(firstname)s $(lastname)s has cancelled $(tp_name)s/$(wp_name)s
+ from $(first_day)s to $(last_day)s.
+ Please remove this information from the time table,
+ $(nl)s
+ many thanks!
+
 # On approval of special leave
 special_leave_notify_email = hr-admin@example.com
 special_leave_notify_subject = Leave "$(tp_name)s/$(wp_name)s"
@@ -41,6 +52,17 @@ special_leave_notify_text  = Dear member of HR Admin,
  the user $(firstname)s $(lastname)s has approved $(tp_name)s/$(wp_name)s
  from $(first_day)s to $(last_day)s.
  Please put it into the paid absence data sheet,
+ $(nl)s
+ many thanks!
+
+# On cancel of special leave
+special_leave_cancel_email = hr-admin@example.com
+special_leave_cancel_subject = Leave "$(tp_name)s/$(wp_name)s"
+ $(first_day)s-$(last_day)s cancelled
+special_leave_cancel_text  = Dear member of HR Admin,
+ the user $(firstname)s $(lastname)s has cancelled $(tp_name)s/$(wp_name)s
+ from $(first_day)s to $(last_day)s.
+ Please remove it from the paid absence data sheet,
  $(nl)s
  many thanks!
 

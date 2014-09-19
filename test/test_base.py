@@ -1237,9 +1237,15 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_EMAIL'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_CANCEL_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_CANCEL_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_CANCEL_EMAIL'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_NOTIFY_EMAIL'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_CANCEL_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_CANCEL_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_CANCEL_EMAIL'))
         ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT = \
             ('Your Leave "%(tp_name)s/%(wp_name)s"\n'
              '%(first_day)s to %(last_day)s'
@@ -1268,6 +1274,20 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
              'Please add this information to the time table,\n\n'
              'many thanks!'
             )
+        ext.MAIL_LEAVE_CANCEL_EMAIL = 'office@example.com'
+        ext.MAIL_LEAVE_CANCEL_SUBJECT = \
+            ('Leave "%(tp_name)s/%(wp_name)s" '
+             '%(first_day)s to %(last_day)s cancelled'
+            )
+        ext.MAIL_LEAVE_CANCEL_TEXT = \
+            ('Dear member of the Office Team,\n'
+             'the user $(firstname)s $(lastname)s has cancelled '
+             '$(tp_name)s/$(wp_name)s\n'
+             'from $(first_day)s to $(last_day)s\n'
+             'due to $(comment_cancel)s.\n'
+             'Please remove this information from the time table,\n\n'
+             'many thanks!'
+            )
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL = 'hr-admin@example.com'
         ext.MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT = \
             ('Leave "%(tp_name)s/%(wp_name)s" '
@@ -1279,8 +1299,21 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
              '$(tp_name)s/$(wp_name)s\n'
              'from $(first_day)s to $(last_day)s.\n'
              'Comment: $(comment)s\n'
-             'Please put it into the paid absence data sheet '
-             '(Dienstverhinderungsliste),\n'
+             'Please put it into the paid absence data sheet\n'
+             'many thanks!'
+            )
+        ext.MAIL_SPECIAL_LEAVE_CANCEL_EMAIL = 'hr-admin@example.com'
+        ext.MAIL_SPECIAL_LEAVE_CANCEL_SUBJECT = \
+            ('Leave "%(tp_name)s/%(wp_name)s" '
+             '%(first_day)s to %(last_day)s cancelled'
+            )
+        ext.MAIL_SPECIAL_LEAVE_CANCEL_TEXT = \
+            ('Dear member of HR Admin,\n'
+             'the user $(firstname)s $(lastname)s has cancelled '
+             '$(tp_name)s/$(wp_name)s\n'
+             'from $(first_day)s to $(last_day)s.\n'
+             'Comment: $(comment_cancel)s\n'
+             'Please remove this from the paid absence data sheet.\n'
              'many thanks!'
             )
 
@@ -1894,6 +1927,29 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.close ()
         self.db = self.tracker.open (self.username1)
         self.db.leave_submission.set (vs, status = st_canc)
+        box = mbox (maildebug, create = False)
+        headers = \
+            [ ( ('subject',    'Leave "Vacation/Vacation" '
+                               '2009-12-20 to 2010-01-06 cancelled')
+              , ('precedence', 'bulk')
+              , ('to',         'office@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            ]
+        body = \
+            [ 'Dear member of the Office Team,\n'
+              'the user Test User2 has cancelled Vacation/Vacation\n'
+              'from 2009-12-20 to 2010-01-06\n'
+              'due to Cancel Comment.\n'
+              'Please remove this information from the time table,\n\n'
+              'many thanks!'
+            ]
+        for n, e in enumerate (box) :
+            for h, t in headers [n] :
+                self.assertEqual (header_decode (e [h]), t)
+            self.assertEqual (e.get_payload ().strip (), body [n])
+        os.unlink (maildebug)
         vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)
         drs  = self.db.daily_record.filter \
@@ -2073,8 +2129,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'the user Test User2 has approved Special Leave/Special\n'
               'from 2010-12-22 to 2010-12-30.\n'
               'Comment: Special leave comment\n'
-              'Please put it into the paid absence data sheet '
-              '(Dienstverhinderungsliste),\n'
+              'Please put it into the paid absence data sheet\n'
               'many thanks!'
             ]
         for n, e in enumerate (box) :

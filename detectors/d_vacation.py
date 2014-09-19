@@ -403,7 +403,7 @@ def handle_accept (db, vs, trs, old_status) :
                 notify_mail = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL
             except KeyError :
                 pass
-        if notify_text and notify_mail :
+        if notify_text and notify_mail and notify_subj :
             msg = notify_text.replace ('$', '%') % locals ()
             subject = \
                 notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
@@ -428,6 +428,54 @@ def handle_cancel (db, vs, trs, is_crq) :
         for dr in drs :
             st_open = db.daily_record_status.lookup ('open')
             db.daily_record.set (dr, status = st_open)
+
+        wp             = db.time_wp.getnode (vs.time_wp)
+        user           = db.user.getnode (vs.user)
+        email          = user.address
+        wp_name        = wp.name
+        tp_name        = db.time_project.get (wp.project, 'name')
+        first_day      = vs.first_day.pretty (common.ymd)
+        last_day       = vs.last_day.pretty  (common.ymd)
+        username       = user.username
+        lastname       = user.lastname
+        firstname      = user.firstname
+        comment        = vs.comment
+        comment_cancel = vs.comment_cancel
+        mailer         = roundupdb.Mailer (db.config)
+        notify_text    = None
+        notify_mail    = None
+        notify_subj    = None
+        nl             = '\n'
+        try :
+            notify_text = db.config.ext.MAIL_LEAVE_CANCEL_TEXT
+            notify_subj = db.config.ext.MAIL_LEAVE_CANCEL_SUBJECT
+            notify_mail = db.config.ext.MAIL_LEAVE_CANCEL_EMAIL
+        except KeyError :
+            pass
+        if notify_text and notify_mail and notify_subj :
+            subject = \
+                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+            msg = notify_text.replace ('$', '%') % locals ()
+            try :
+                mailer.standard_message ((notify_mail,), subject, msg)
+            except roundupdb.MessageSendError, message :
+                raise roundupdb.DetectorError, message
+        notify_text = notify_mail = notify_subj = None
+        if tp.is_special_leave :
+            try :
+                notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_CANCEL_TEXT
+                notify_subj = db.config.ext.MAIL_SPECIAL_LEAVE_CANCEL_SUBJECT
+                notify_mail = db.config.ext.MAIL_SPECIAL_LEAVE_CANCEL_EMAIL
+            except KeyError :
+                pass
+        if notify_text and notify_mail and notify_subj :
+            msg = notify_text.replace ('$', '%') % locals ()
+            subject = \
+                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+            try :
+                mailer.standard_message ((notify_mail,), subject, msg)
+            except roundupdb.MessageSendError, message :
+                raise roundupdb.DetectorError, message
 # end def handle_cancel
 
 def handle_decline (db, vs) :
