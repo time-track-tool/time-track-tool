@@ -548,7 +548,7 @@ def check_correction (db, cl, nodeid, new_values) :
             raise Reject (_ ("Frozen"))
     # Check that vacation parameters exist in dyn. user records
     dyn = user_dynamic.act_or_latest_user_dynamic (db, user)
-    if not dyn or dyn.valid_to and dyn.valid_to > date :
+    if not dyn or dyn.valid_to and dyn.valid_to < date :
         username = db.user.get (user, 'username')
         raise Reject \
             (_ ('No current dyn. user record for "%(username)s"') % locals ())

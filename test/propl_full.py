@@ -275,7 +275,9 @@ properties = \
         ]
       )
     , ( 'leave_submission'
-      , [ 'comment'
+      , [ 'approval_hr'
+        , 'comment'
+        , 'comment_cancel'
         , 'first_day'
         , 'last_day'
         , 'status'
@@ -723,6 +725,8 @@ properties = \
         , 'flexi_time'
         , 'org_location'
         , 'organisation'
+        , 'special_leave'
+        , 'special_sub'
         , 'supervisor'
         , 'time_project'
         , 'user'

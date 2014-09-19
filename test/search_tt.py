@@ -234,7 +234,13 @@ properties = \
         ]
       )
     , ( 'leave_submission'
-      , [ ( 'comment'
+      , [ ( 'approval_hr'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'comment'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'comment_cancel'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'first_day'
@@ -1036,6 +1042,12 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'organisation'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'special_leave'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'special_sub'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'supervisor'

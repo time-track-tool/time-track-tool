@@ -1851,7 +1851,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , vs
             , status = st_decl
             )
-        self.db.leave_submission.set (vs, status = st_carq)
+        self.db.leave_submission.set \
+            (vs, status = st_carq, comment_cancel = 'Cancel Comment')
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
