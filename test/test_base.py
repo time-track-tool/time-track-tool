@@ -1612,6 +1612,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.\n'
               '\nMany thanks!'
             )
         os.unlink (maildebug)
@@ -1639,6 +1641,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.\n'
               '\nMany thanks!'
             )
         os.unlink (maildebug)
@@ -1657,6 +1661,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.\n'
               '\nMany thanks!'
             )
         os.unlink (maildebug)
@@ -1675,6 +1681,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Flexi/Flexi".\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.\n'
               '\nMany thanks!'
             )
         os.unlink (maildebug)
@@ -1707,7 +1715,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               )
             ]
         body = \
-            [ 'Your absence request "Flexi/Flexi" has been accepted.'
+            [ 'Your absence request "Flexi/Flexi" has been accepted.\n\n'
+              'This is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Flexi/Flexi\n'
               'from 2009-12-04 to 2009-12-04.\n'
@@ -1777,6 +1787,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               '2009-12-22: A Project / Work Package 0 08:00-10:00 duration: 2.0'
               '\n'
               '2009-12-22:           /                10:00-11:00 duration: 1.0'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Vacation/Vacation\n'
               'from 2009-12-20 to 2010-01-06.\n'
@@ -1824,7 +1836,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( e.get_payload ().strip ()
             , 'Your absence request "Leave/Unpaid" has been declined.\n'
               'Please contact your supervisor.'
-            )
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
+        )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_accp)
         box = mbox (maildebug, create = False)
@@ -1846,6 +1860,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         body = \
             [ 'Your absence request "Leave/Unpaid" has been accepted.'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Leave/Unpaid\n'
               'from 2009-12-03 to 2009-12-03.\n'
@@ -1916,7 +1932,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Your cancel request "Vacation/Vacation" was not granted.\n'
-              'Please contact your supervisor.'
+              'Please contact your supervisor.\n'
+              'This is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -1930,6 +1948,13 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         box = mbox (maildebug, create = False)
         headers = \
             [ ( ('subject',    'Leave "Vacation/Vacation" '
+                             '2009-12-20 to 2010-01-06 cancelled')
+              , ('precedence', 'bulk')
+              , ('to',         'test.user@example.com')
+              , ('from',       'roundup-admin@'
+                               'your.tracker.email.domain.example')
+              )
+            , ( ('subject',    'Leave "Vacation/Vacation" '
                                '2009-12-20 to 2010-01-06 cancelled')
               , ('precedence', 'bulk')
               , ('to',         'office@example.com')
@@ -1938,7 +1963,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               )
             ]
         body = \
-            [ 'Dear member of the Office Team,\n'
+            [ 'Your cancel request "Vacation/Vacation"\n'
+              'from 2009-12-20 to 2010-01-06 was granted.'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
+            , 'Dear member of the Office Team,\n'
               'the user Test User2 has cancelled Vacation/Vacation\n'
               'from 2009-12-20 to 2010-01-06\n'
               'due to Cancel Comment.\n'
@@ -2008,6 +2037,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.\n'
               '\nMany thanks!'
             )
         os.unlink (maildebug)
@@ -2074,6 +2105,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'Special leave comment\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.\n'
               '\nMany thanks!'
             , "Dear Test User2,\n"
               "please don't forget to submit written documentation "
@@ -2120,6 +2153,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         body = \
             [ 'Your absence request "Special Leave/Special" has been accepted.'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Special Leave/Special\n'
               'from 2010-12-22 to 2010-12-30.\n'

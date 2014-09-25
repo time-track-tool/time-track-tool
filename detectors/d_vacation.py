@@ -341,9 +341,9 @@ def handle_accept (db, vs, trs, old_status) :
             (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s not cancelled') \
             % locals ()
         content = _ \
-            (""'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n') \
-            % locals ()
-        content += _ (''"Please contact your supervisor.\n")
+            (""'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n'
+               'Please contact your supervisor.'
+            ) % locals ()
     else :
         subject = _ \
             (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s accepted') \
@@ -362,7 +362,11 @@ def handle_accept (db, vs, trs, old_status) :
         fmt = "%%s: %%%ds / %%%ds %%5s-%%5s duration: %%s" % (tdl, wdl)
         for w in warn :
             content.append (fmt % w)
-        content = '\n'.join (content)
+        content = '\n'.join (content) + '\n'
+    content += _ \
+        (""'\nThis is an automatically generated message.\n'
+           'Responses to this address are not possible.\n'
+        )
     try :
         mailer.standard_message ((email,), subject, content)
     except roundupdb.MessageSendError, message :
@@ -381,6 +385,7 @@ def handle_accept (db, vs, trs, old_status) :
         notify_mail = None
         notify_subj = None
         nl          = '\n'
+
         try :
             notify_text = db.config.ext.MAIL_LEAVE_NOTIFY_TEXT
             notify_subj = db.config.ext.MAIL_LEAVE_NOTIFY_SUBJECT
@@ -446,6 +451,20 @@ def handle_cancel (db, vs, trs, is_crq) :
         notify_mail    = None
         notify_subj    = None
         nl             = '\n'
+        subject = _ \
+            (""'Leave "%(tp_name)s/%(wp_name)s" '
+               '%(first_day)s to %(last_day)s cancelled'
+            ) % locals ()
+        content = _ \
+            (""'Your cancel request "%(tp_name)s/%(wp_name)s"\n'
+               'from %(first_day)s to %(last_day)s was granted.'
+               '\n\nThis is an automatically generated message.\n'
+               'Responses to this address are not possible.\n'
+            ) % locals ()
+        try :
+            mailer.standard_message ((email,), subject, content)
+        except roundupdb.MessageSendError, message :
+            raise roundupdb.DetectorError, message
         try :
             notify_text = db.config.ext.MAIL_LEAVE_CANCEL_TEXT
             notify_subj = db.config.ext.MAIL_LEAVE_CANCEL_SUBJECT
@@ -490,9 +509,11 @@ def handle_decline (db, vs) :
     subject = _ \
         (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s declined') % locals ()
     content = \
-        (""'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n') \
-        % locals ()
-    content += _ (''"Please contact your supervisor.\n")
+        (""'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n'
+           'Please contact your supervisor.'
+           '\n\nThis is an automatically generated message.\n'
+           'Responses to this address are not possible.\n'
+        ) % locals ()
     try :
         mailer.standard_message ((email,), subject, content)
     except roundupdb.MessageSendError, message :
@@ -539,7 +560,12 @@ def handle_submit (db, vs) :
         content += _ (''"Needs approval by HR.\n")
     else :
         content += _ (''"Please approve or decline at\n")
-    content += url + _ (""'\nMany thanks!')
+    content += url
+    content += _ \
+        (""'\n\nThis is an automatically generated message.\n'
+           'Responses to this address are not possible.\n'
+        )
+    content += _ (""'\nMany thanks!')
     try :
         mailer.standard_message (emails, subject, content)
     except roundupdb.MessageSendError, message :
