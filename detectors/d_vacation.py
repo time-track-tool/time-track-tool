@@ -389,7 +389,7 @@ def handle_accept (db, vs, trs, old_status) :
             pass
         if notify_text and notify_mail and notify_subj :
             subject = \
-                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
             msg = notify_text.replace ('$', '%') % locals ()
             try :
                 mailer.standard_message ((notify_mail,), subject, msg)
@@ -406,7 +406,7 @@ def handle_accept (db, vs, trs, old_status) :
         if notify_text and notify_mail and notify_subj :
             msg = notify_text.replace ('$', '%') % locals ()
             subject = \
-                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
             try :
                 mailer.standard_message ((notify_mail,), subject, msg)
             except roundupdb.MessageSendError, message :
@@ -454,7 +454,7 @@ def handle_cancel (db, vs, trs, is_crq) :
             pass
         if notify_text and notify_mail and notify_subj :
             subject = \
-                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
             msg = notify_text.replace ('$', '%') % locals ()
             try :
                 mailer.standard_message ((notify_mail,), subject, msg)
@@ -471,7 +471,7 @@ def handle_cancel (db, vs, trs, is_crq) :
         if notify_text and notify_mail and notify_subj :
             msg = notify_text.replace ('$', '%') % locals ()
             subject = \
-                notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
             try :
                 mailer.standard_message ((notify_mail,), subject, msg)
             except roundupdb.MessageSendError, message :
@@ -563,7 +563,7 @@ def handle_submit (db, vs) :
     if notify_text and notify_subj :
         msg = notify_text.replace ('$', '%') % locals ()
         subject = \
-            notify_subj.replace ('$', '$').replace ('\n', ' ') % locals ()
+            notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
         try :
             mailer.standard_message ((user.address,), subject, msg)
         except roundupdb.MessageSendError, message :
