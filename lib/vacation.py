@@ -128,7 +128,7 @@ def leave_days (db, user, first_day, last_day) :
         wh = user_dynamic.day_work_hours (dyn, d)
         ld = leave_duration (db, user, d)
         if ld != 0 :
-            s += ceil (ld / wh)
+            s += ceil (ld / wh * 2) / 2.
         d += common.day
     return s
 # end def leave_days
@@ -386,7 +386,7 @@ def vacation_time_sum (db, user, ctype, start, end) :
             continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
-        vac += ceil (tr.duration / wh)
+        vac += ceil (tr.duration / wh * 2) / 2.
     return vac
 # end def vacation_time_sum
 
