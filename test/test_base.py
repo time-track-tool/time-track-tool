@@ -1612,9 +1612,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.\n'
               '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         for st in (st_accp, st_decl, st_carq, st_canc) :
@@ -1641,9 +1641,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.\n'
               '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_subm)
@@ -1661,9 +1661,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.\n'
               '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (za, status = st_subm)
@@ -1681,9 +1681,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Flexi/Flexi".\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.\n'
               '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -2037,9 +2037,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.\n'
               '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -2105,9 +2105,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               'Special leave comment\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.\n'
               '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
             , "Dear Test User2,\n"
               "please don't forget to submit written documentation "
               "for your special leave\n"

@@ -561,11 +561,11 @@ def handle_submit (db, vs) :
     else :
         content += _ (''"Please approve or decline at\n")
     content += url
+    content += _ (""'\nMany thanks!')
     content += _ \
         (""'\n\nThis is an automatically generated message.\n'
            'Responses to this address are not possible.\n'
         )
-    content += _ (""'\nMany thanks!')
     try :
         mailer.standard_message (emails, subject, content)
     except roundupdb.MessageSendError, message :
