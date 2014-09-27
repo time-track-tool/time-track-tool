@@ -199,6 +199,12 @@
      <td colspan="3"
          tal:content="structure python:context.comment.field (size=60)"/>
     </tr>
+    <tr tal:condition="python: context.id">
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'comment_cancel')"/>
+     <td colspan="3"
+         tal:content="structure python:context.comment_cancel.field (size=60)"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>
