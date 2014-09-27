@@ -1578,6 +1578,9 @@ class Vacation_Report (_Report) :
                     carry = ceil (carry)
                 ltot  = carry
                 while d and d <= end :
+                    fd = ld
+                    if fd.year != d.year :
+                        fd = fd + day
                     container = Day_Container (d)
                     uname = self.linked_user (u)
                     if not ctype :
@@ -1611,7 +1614,7 @@ class Vacation_Report (_Report) :
                     container ['remaining vacation'] = carry = \
                         vacation.remaining_vacation \
                             (db, u, ctype, d, cons, to_eoy = not hv)
-                    val = vacation.vacation_time_sum (db, u, ctype, ld, d)
+                    val = vacation.vacation_time_sum (db, u, ctype, fd, d)
                     r   = ('HR-vacation', 'HR-leave-approval')
                     if common.user_has_role (self.db, self.uid, *r) :
                         dt   = common.pretty_range (ld, d)
@@ -1627,31 +1630,31 @@ class Vacation_Report (_Report) :
                     if 'additional_submitted' in self.fields :
                         container ['additional_submitted'] = \
                             vacation.vacation_submission_days \
-                                (db, u, ctype, ld, d, st_subm)
+                                (db, u, ctype, fd, d, st_subm)
                     if 'flexi_time' in self.fields :
                         container ['flexi_time'] = \
                             vacation.flexitime_submission_days \
-                                (db, u, ctype, ld, d, st_accp, st_cnrq)
+                                (db, u, ctype, fd, d, st_accp, st_cnrq)
                     if 'flexi_sub' in self.fields :
                         container ['flexi_sub'] = \
                             vacation.flexitime_submission_days \
-                                (db, u, ctype, ld, d, st_subm)
+                                (db, u, ctype, fd, d, st_subm)
                     if 'special_leave' in self.fields :
                         container ['special_leave'] = \
                             vacation.special_submission_days \
-                                (db, u, ctype, ld, d, st_accp, st_cnrq)
+                                (db, u, ctype, fd, d, st_accp, st_cnrq)
                     if 'special_sub' in self.fields :
                         container ['special_sub'] = \
                             vacation.special_submission_days \
-                                (db, u, ctype, ld, d, st_subm)
+                                (db, u, ctype, fd, d, st_subm)
                     ltot = cons
 
                     if 'approved_submissions' in self.fields :
                         container ['approved_submissions'] = \
                             vacation.vacation_submission_days \
-                                (db, u, ctype, ld, d, st_accp, st_cnrq)
+                                (db, u, ctype, fd, d, st_accp, st_cnrq)
 
-                    vd = common.pretty_range (ld, d)
+                    vd = common.pretty_range (fd, d)
                     vc = db.vacation_correction.filter \
                         ( None
                         , dict 
