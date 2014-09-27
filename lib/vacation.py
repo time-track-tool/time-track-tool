@@ -39,21 +39,29 @@ def try_create_public_holiday (db, daily_record, date, user) :
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = user_dynamic.day_work_hours   (dyn, date)
     if wh :
-        # Check if there already is a public-holiday time_record
-        trs = db.time_record.filter (None, dict (daily_record = daily_record))
-        for tr in trs :
-            wp = db.time_record.get (tr, 'wp')
-            if wp is None :
-                continue
-            tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
-            if tp.is_public_holiday :
-                return
         loc = db.org_location.get (dyn.org_location, 'location')
         hol = db.public_holiday.filter \
             ( None
             , {'date' : common.pretty_range (date, date), 'locations' : loc}
             )
         if hol and wh :
+            holiday = db.public_holiday.getnode (hol [0])
+            if holiday.is_half :
+                wh = wh / 2.
+            wh = user_dynamic.round_daily_work_hours (wh)
+            # Check if there already is a public-holiday time_record
+            # Update duration if it is wrong
+            trs = db.time_record.filter \
+                (None, dict (daily_record = daily_record))
+            for trid in trs :
+                tr = db.time_record.getnode (trid)
+                if tr.wp is None :
+                    continue
+                tp = db.time_project.getnode (db.time_wp.get (tr.wp, 'project'))
+                if tp.is_public_holiday :
+                    if tr.duration != wh :
+                        db.time_record.set (trid, duration = wh)
+                    return
             wp  = None
             try :
                 ok  = db.time_project_status.lookup ('Open')
@@ -70,13 +78,9 @@ def try_create_public_holiday (db, daily_record, date, user) :
                         break
             except (IndexError, KeyError) :
                 pass
-            holiday = db.public_holiday.getnode (hol [0])
             comment = holiday.name
             if holiday.description :
                 comment = '\n'.join ((holiday.name, holiday.description))
-            if holiday.is_half :
-                wh = wh / 2.
-            wh = user_dynamic.round_daily_work_hours (wh)
             db.time_record.create \
                 ( daily_record  = daily_record
                 , duration      = wh

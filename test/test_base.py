@@ -1505,10 +1505,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , locations   = [self.loc]
             , name        = 'Stephanitag'
             )
-        self.db.public_holiday.create \
+        self.silvester = self.db.public_holiday.create \
             ( date        = date.Date ('2009-12-31')
             , description = 'Silvester'
-            , is_half     = True
+            , is_half     = False # For testing!
             , locations   = [self.loc]
             , name        = 'Silvester'
             )
@@ -1878,6 +1878,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         # request 4.5 with 4.03 remaining days:
         self.db.leave_submission.set (v2, status = st_accp)
         os.unlink (maildebug)
+        self.db.public_holiday.set (self.silvester, is_half = True)
         self.db.leave_submission.set (vs, status = st_accp)
         vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)

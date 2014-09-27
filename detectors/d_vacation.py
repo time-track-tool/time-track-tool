@@ -170,8 +170,9 @@ def check_submission (db, cl, nodeid, new_values) :
     comment   = new_values.get ('comment',   cl.get (nodeid, 'comment'))
     check_range (db, nodeid, user, first_day, last_day)
     check_wp    (db, time_wp, user, first_day, last_day, comment)
-    if 'first_day' in new_values or 'last_day' in new_values :
+    if old_status in ('open', 'submitted') :
         vacation.create_daily_recs (db, user, first_day, last_day)
+    if 'first_day' in new_values or 'last_day' in new_values :
         if vacation.leave_days (db, user, first_day, last_day) == 0 :
             raise Reject (_ ("Vacation request for 0 days"))
         check_dyn_user_params (db, user, first_day, last_day)
