@@ -1232,8 +1232,6 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
         ext = self.db.config.ext
-        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_SUBJECT'))
-        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_NOTIFY_EMAIL'))
@@ -1246,21 +1244,30 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_CANCEL_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_CANCEL_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_CANCEL_EMAIL'))
-        ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT = \
-            ('Your Leave "%(tp_name)s/%(wp_name)s"\n'
-             '%(first_day)s to %(last_day)s'
-            )
-        ext.MAIL_SPECIAL_LEAVE_USER_TEXT = \
-            ("Dear $(firstname)s $(lastname)s,\n"
-             "please don't forget to submit written documentation "
-             "for your special leave\n$(tp_name)s/$(wp_name)s "
-             "from $(first_day)s to $(last_day)s to HR,\n"
-             "according to our processes.\n"
-             "Eg. marriage certificate, new residence registration"
-             " (Meldezettel),\n"
-             "birth certificate for new child, death notice letter (Parte).\n"
-             "$(nl)sMany thanks!"
-            )
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_SUBMIT_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_SUBMIT_TEXT'))
+        ext.add_option \
+            (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_SUBMIT_APPROVE_HR'))
+        ext.add_option \
+            (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_SUBMIT_APPROVE_SV'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_CRQ_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_CRQ_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_CRQ_APPROVE_HR'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_SUPERVISOR_CRQ_APPROVE_SV'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'SPECIAL_LEAVE_USER_TEXT'))
+
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_RECS_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_DECLINE_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_DECLINE_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_CANCELLED_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_CANCELLED_TEXT'))
+        ext.add_option \
+            (Option (ext, 'MAIL', 'LEAVE_USER_NOT_CANCELLED_SUBJECT'))
+        ext.add_option \
+            (Option (ext, 'MAIL', 'LEAVE_USER_NOT_CANCELLED_TEXT'))
         ext.MAIL_LEAVE_NOTIFY_EMAIL = 'office@example.com'
         ext.MAIL_LEAVE_NOTIFY_SUBJECT = \
             ('Leave "%(tp_name)s/%(wp_name)s" '
@@ -1315,6 +1322,103 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
              'Comment: $(comment_cancel)s\n'
              'Please remove this from the paid absence data sheet.\n'
              'many thanks!'
+            )
+        ext.MAIL_LEAVE_SUPERVISOR_SUBMIT_SUBJECT = \
+            ('Leave request "$(tp_name)s/$(wp_name)s" '
+             '$(first_day)s to $(last_day)s\n'
+             'from $(firstname)s $(lastname)s'
+            )
+        ext.MAIL_LEAVE_SUPERVISOR_SUBMIT_TEXT = \
+            ('$(firstname)s $(lastname)s has submitted a leave request\n'
+             '"$(tp_name)s/$(wp_name)s".\n'
+             'Comment from user: $(comment)s\n'
+             '$(approval_type)s\n'
+             '$(url)s\n'
+             'Many thanks!\n\n'
+             'This is an automatically generated message.\n'
+             'Responses to this address are not possible.'
+            )
+        ext.MAIL_LEAVE_SUPERVISOR_SUBMIT_APPROVE_HR = \
+            'Needs approval by HR.'
+        ext.MAIL_LEAVE_SUPERVISOR_SUBMIT_APPROVE_SV = \
+            'Please approve or decline at'
+        ext.MAIL_LEAVE_SUPERVISOR_CRQ_SUBJECT = \
+            ('Cancel request "$(tp_name)s/$(wp_name)s" '
+             '$(first_day)s to $(last_day)s\n'
+             'from $(firstname)s $(lastname)s'
+            )
+        ext.MAIL_LEAVE_SUPERVISOR_CRQ_TEXT = \
+            ('$(firstname)s $(lastname)s has submitted a cancel request\n'
+             '"$(tp_name)s/$(wp_name)s" from $(first_day)s to $(last_day)s.\n'
+             'Comment from user: $(comment_cancel)s\n'
+             '$(approval_type)s\n'
+             '$(url)s\n'
+             'Many thanks!\n\n'
+             'This is an automatically generated message.\n'
+             'Responses to this address are not possible.'
+            )
+        ext.MAIL_LEAVE_SUPERVISOR_CRQ_APPROVE_HR = \
+            'Needs approval by HR.'
+        ext.MAIL_LEAVE_SUPERVISOR_CRQ_APPROVE_SV = \
+            'Please approve or decline at'
+        ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT = \
+            ('Your Leave "%(tp_name)s/%(wp_name)s"\n'
+             '%(first_day)s to %(last_day)s'
+            )
+        ext.MAIL_SPECIAL_LEAVE_USER_TEXT = \
+            ("Dear $(firstname)s $(lastname)s,\n"
+             "please don't forget to submit written documentation "
+             "for your special leave\n$(tp_name)s/$(wp_name)s "
+             "from $(first_day)s to $(last_day)s to HR,\n"
+             "according to our processes.\n"
+             "Eg. marriage certificate, new residence registration"
+             " (Meldezettel),\n"
+             "birth certificate for new child, death notice letter (Parte).\n"
+             "$(nl)sMany thanks!"
+            )
+        ext.MAIL_LEAVE_USER_ACCEPT_SUBJECT = \
+            ('Leave "$(tp_name)s/$(wp_name)s"\n'
+             '$(first_day)s to $(last_day)s accepted'
+            )
+        ext.MAIL_LEAVE_USER_ACCEPT_TEXT = \
+            ('Your absence request "$(tp_name)s/$(wp_name)s" '
+             'has been accepted.\n'
+             '$(deleted_records)s\n\n'
+             'This is an automatically generated message.\n'
+             'Responses to this address are not possible.\n'
+            )
+        ext.MAIL_LEAVE_USER_ACCEPT_RECS_TEXT = \
+            'The following existing time records have been deleted:\n'
+        ext.MAIL_LEAVE_USER_DECLINE_SUBJECT = \
+            ('Leave "$(tp_name)s/$(wp_name)s"\n'
+             '$(first_day)s to $(last_day)s declined'
+            )
+        ext.MAIL_LEAVE_USER_DECLINE_TEXT = \
+            ('Your absence request "$(tp_name)s/$(wp_name)s" has been '
+             'declined.\n'
+             'Please contact your supervisor.\n\n'
+             'This is an automatically generated message.\n'
+             'Responses to this address are not possible.\n'
+            )
+        ext.MAIL_LEAVE_USER_CANCELLED_SUBJECT = \
+            ('Leave "$(tp_name)s/$(wp_name)s"\n'
+             '$(first_day)s to $(last_day)s cancelled'
+            )
+        ext.MAIL_LEAVE_USER_CANCELLED_TEXT = \
+            ('Your cancel request "$(tp_name)s/$(wp_name)s"\n'
+             'from $(first_day)s to $(last_day)s was granted.\n\n'
+             'This is an automatically generated message.\n'
+             'Responses to this address are not possible.\n'
+            )
+        ext.MAIL_LEAVE_USER_NOT_CANCELLED_SUBJECT = \
+            ('Leave "$(tp_name)s/$(wp_name)s" '
+             '$(first_day)s to $(last_day)s not cancelled'
+            )
+        ext.MAIL_LEAVE_USER_NOT_CANCELLED_TEXT = \
+            ('Your cancel request "$(tp_name)s/$(wp_name)s" was not granted.\n'
+             'Please contact your supervisor.\n\n'
+             'This is an automatically generated message.\n'
+             'Responses to this address are not possible.\n'
             )
 
         for d in '2008-11-03', '2008-11-30', '2008-12-31' :
@@ -1609,7 +1713,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
+            , 'Test User2 has submitted a leave request\n"Vacation/Vacation".\n'
+              'Comment from user: None\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
               '\nMany thanks!'
@@ -1638,7 +1743,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
+            , 'Test User2 has submitted a leave request\n"Leave/Unpaid".\n'
+              'Comment from user: None\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
               '\nMany thanks!'
@@ -1658,7 +1764,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Leave/Unpaid".\n'
+            , 'Test User2 has submitted a leave request\n"Leave/Unpaid".\n'
+              'Comment from user: None\n'
               'Needs approval by HR.\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
               '\nMany thanks!'
@@ -1678,7 +1785,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Flexi/Flexi".\n'
+            , 'Test User2 has submitted a leave request\n"Flexi/Flexi".\n'
+              'Comment from user: None\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
               '\nMany thanks!'
@@ -1715,7 +1823,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               )
             ]
         body = \
-            [ 'Your absence request "Flexi/Flexi" has been accepted.\n\n'
+            [ 'Your absence request "Flexi/Flexi" has been accepted.\n\n\n'
               'This is an automatically generated message.\n'
               'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
@@ -1782,12 +1890,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               )
             ]
         body = \
-            [ 'Your absence request "Vacation/Vacation" has been accepted.\n\n'
-              'The following existing time records have been deleted:\n'
+            [ 'Your absence request "Vacation/Vacation" has been accepted.\n'
+              'The following existing time records have been deleted:\n\n'
               '2009-12-22: A Project / Work Package 0 08:00-10:00 duration: 2.0'
               '\n'
               '2009-12-22:           /                10:00-11:00 duration: 1.0'
-              '\n\nThis is an automatically generated message.\n'
+              '\n\n\nThis is an automatically generated message.\n'
               'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Vacation/Vacation\n'
@@ -1860,7 +1968,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         body = \
             [ 'Your absence request "Leave/Unpaid" has been accepted.'
-              '\n\nThis is an automatically generated message.\n'
+              '\n\n\nThis is an automatically generated message.\n'
               'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Leave/Unpaid\n'
@@ -1902,6 +2010,28 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         self.db.leave_submission.set \
             (vs, status = st_carq, comment_cancel = 'Cancel Comment')
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in \
+            ( ('subject',    'Cancel request "Vacation/Vacation" '
+                             '2009-12-20 to 2010-01-06 from Test User2'
+              )
+            , ('precedence', 'bulk')
+            , ('to',         'user1@test.test')
+            , ('from',       'roundup-admin@your.tracker.email.domain.example')
+            ) :
+            self.assertEqual (header_decode (e [h]), t)
+        self.assertEqual \
+            ( e.get_payload ().strip ()
+            , 'Test User2 has submitted a cancel request\n'
+              '"Vacation/Vacation" from 2009-12-20 to 2010-01-06.\n'
+              'Comment from user: Cancel Comment\n'
+              'Please approve or decline at\n'
+              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              '\nMany thanks!'
+              '\n\nThis is an automatically generated message.\n'
+              'Responses to this address are not possible.'
+            )
+        os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
@@ -1932,7 +2062,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual \
             ( e.get_payload ().strip ()
             , 'Your cancel request "Vacation/Vacation" was not granted.\n'
-              'Please contact your supervisor.\n'
+              'Please contact your supervisor.\n\n'
               'This is an automatically generated message.\n'
               'Responses to this address are not possible.'
             )
@@ -1941,6 +2071,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.close ()
         self.db = self.tracker.open (self.username2)
         self.db.leave_submission.set (vs, status = st_carq)
+        os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)
@@ -2034,7 +2165,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request "Vacation/Vacation".\n'
+            , 'Test User2 has submitted a leave request\n"Vacation/Vacation".\n'
+              'Comment from user: None\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
               '\nMany thanks!'
@@ -2099,10 +2231,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               )
             ]
         body = \
-            [ 'Test User2 has submitted a leave request '
+            [ 'Test User2 has submitted a leave request\n'
               '"Special Leave/Special".\n'
-              'Comment from user:\n'
-              'Special leave comment\n'
+              'Comment from user: Special leave comment\n'
               'Please approve or decline at\n'
               'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
               '\nMany thanks!'
@@ -2153,7 +2284,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ]
         body = \
             [ 'Your absence request "Special Leave/Special" has been accepted.'
-              '\n\nThis is an automatically generated message.\n'
+              '\n\n\nThis is an automatically generated message.\n'
               'Responses to this address are not possible.'
             , 'Dear member of the Office Team,\n'
               'the user Test User2 has approved Special Leave/Special\n'

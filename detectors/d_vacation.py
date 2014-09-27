@@ -23,6 +23,7 @@
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
 from roundup.cgi.TranslationService import get_translation
+from roundup.configuration          import InvalidOptionError
 from roundup                        import roundupdb
 
 import common
@@ -277,14 +278,56 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     drs = db.daily_record.filter (None, dict (user = vs.user, date = dt))
     trs = db.time_record.filter (None, dict (daily_record = drs))
     if new_status == accepted :
-        handle_accept  (db, vs, trs, old_status)
+        handle_accept    (db, vs, trs, old_status)
     elif new_status == declined :
-        handle_decline (db, vs)
+        handle_decline   (db, vs)
     elif new_status == submitted :
-        handle_submit  (db, vs)
+        handle_submit    (db, vs)
     elif new_status == cancelled :
-        handle_cancel  (db, vs, trs, old_status == crq)
+        handle_cancel    (db, vs, trs, old_status == crq)
+    elif new_status == crq :
+        handle_cancel_rq (db, vs)
 # end def state_change_reactor
+
+def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw) :
+    mailer         = roundupdb.Mailer (db.config)
+    now            = Date ('.')
+    wp             = db.time_wp.getnode (vs.time_wp)
+    user           = db.user.getnode (vs.user)
+    email          = (user.address, )
+    username       = user.username
+    lastname       = user.lastname
+    firstname      = user.firstname
+    comment        = vs.comment
+    comment_cancel = vs.comment_cancel
+    wp_name        = wp.name
+    tp_name        = db.time_project.get (wp.project, 'name')
+    first_day      = vs.first_day.pretty (common.ymd)
+    last_day       = vs.last_day.pretty  (common.ymd)
+    nl             = '\n'
+    d              = dict (locals ())
+    d.update (kw)
+    notify_text    = None
+    notify_mail    = None
+    notify_subj    = None
+    try :
+        notify_text = getattr (db.config.ext, var_text)
+        notify_subj = getattr (db.config.ext, var_subject)
+        if var_mail is not None :
+            notify_mail = (getattr (db.config.ext, var_mail),)
+        else :
+            notify_mail = d ['email']
+    except InvalidOptionError :
+        pass
+    if notify_text and notify_subj and notify_mail :
+        subject = \
+            notify_subj.replace ('$', '%').replace ('\n', ' ') % d
+        msg = notify_text.replace ('$', '%') % d
+        try :
+            mailer.standard_message (notify_mail, subject, msg)
+        except roundupdb.MessageSendError, message :
+            raise roundupdb.DetectorError, message
+# end def try_send_mail
 
 def handle_accept (db, vs, trs, old_status) :
     cancr = db.leave_status.lookup ('cancel requested')
@@ -327,95 +370,50 @@ def handle_accept (db, vs, trs, old_status) :
             leave = db.daily_record_status.lookup ('leave')
             db.daily_record.set (dr [0], status = leave)
             d += common.day
-    mailer  = roundupdb.Mailer (db.config)
-    now     = Date ('.')
-    wp      = db.time_wp.getnode (vs.time_wp)
-    user    = db.user.getnode (vs.user)
-    email   = user.address
-    wpn     = wp.name
-    tpn     = db.time_project.get (wp.project, 'name')
-    fday    = vs.first_day.pretty (common.ymd)
-    lday    = vs.last_day.pretty  (common.ymd)
-    if old_status == cancr :
-        subject = _ \
-            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s not cancelled') \
-            % locals ()
-        content = _ \
-            (""'Your cancel request "%(tpn)s/%(wpn)s" was not granted.\n'
-               'Please contact your supervisor.'
-            ) % locals ()
-    else :
-        subject = _ \
-            (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s accepted') \
-            % locals ()
-        content = _ \
-            (""'Your absence request "%(tpn)s/%(wpn)s" has been accepted.\n') \
-            % locals ()
+    deleted_records = ''
     if warn :
-        content = [content]
-        content.append \
-            (_ (""'The following existing time records have been deleted:'))
+        d = []
+        try :
+            d = [db.config.ext.MAIL_LEAVE_USER_ACCEPT_RECS_TEXT]
+        except KeyError :
+            pass
         tdl = wdl = 0
         for w in warn :
             tdl = max (tdl, len (w [1]))
             wdl = max (wdl, len (w [2]))
         fmt = "%%s: %%%ds / %%%ds %%5s-%%5s duration: %%s" % (tdl, wdl)
         for w in warn :
-            content.append (fmt % w)
-        content = '\n'.join (content) + '\n'
-    content += _ \
-        (""'\nThis is an automatically generated message.\n'
-           'Responses to this address are not possible.\n'
-        )
-    try :
-        mailer.standard_message ((email,), subject, content)
-    except roundupdb.MessageSendError, message :
-        raise roundupdb.DetectorError, message
+            d.append (fmt % w)
+        deleted_records = '\n'.join (d) + '\n'
 
+    now = Date ('.')
+    if old_status == cancr :
+        try_send_mail \
+            ( db, vs, now
+            , 'MAIL_LEAVE_USER_NOT_CANCELLED_TEXT'
+            , 'MAIL_LEAVE_USER_NOT_CANCELLED_SUBJECT'
+            )
+    else :
+        try_send_mail \
+            ( db, vs, now
+            , 'MAIL_LEAVE_USER_ACCEPT_TEXT'
+            , 'MAIL_LEAVE_USER_ACCEPT_SUBJECT'
+            , deleted_records = deleted_records
+            )
     if old_status != cancr :
-        username    = user.username
-        lastname    = user.lastname
-        firstname   = user.firstname
-        comment     = vs.comment
-        wp_name     = wpn
-        tp_name     = tpn
-        first_day   = fday
-        last_day    = lday
-        notify_text = None
-        notify_mail = None
-        notify_subj = None
-        nl          = '\n'
-
-        try :
-            notify_text = db.config.ext.MAIL_LEAVE_NOTIFY_TEXT
-            notify_subj = db.config.ext.MAIL_LEAVE_NOTIFY_SUBJECT
-            notify_mail = db.config.ext.MAIL_LEAVE_NOTIFY_EMAIL
-        except KeyError :
-            pass
-        if notify_text and notify_mail and notify_subj :
-            subject = \
-                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
-            msg = notify_text.replace ('$', '%') % locals ()
-            try :
-                mailer.standard_message ((notify_mail,), subject, msg)
-            except roundupdb.MessageSendError, message :
-                raise roundupdb.DetectorError, message
-        notify_text = notify_mail = notify_subj = None
+        try_send_mail \
+            ( db, vs, now
+            , 'MAIL_LEAVE_NOTIFY_TEXT'
+            , 'MAIL_LEAVE_NOTIFY_SUBJECT'
+            , 'MAIL_LEAVE_NOTIFY_EMAIL'
+            )
         if tp.is_special_leave :
-            try :
-                notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_TEXT
-                notify_subj = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT
-                notify_mail = db.config.ext.MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL
-            except KeyError :
-                pass
-        if notify_text and notify_mail and notify_subj :
-            msg = notify_text.replace ('$', '%') % locals ()
-            subject = \
-                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
-            try :
-                mailer.standard_message ((notify_mail,), subject, msg)
-            except roundupdb.MessageSendError, message :
-                raise roundupdb.DetectorError, message
+            try_send_mail \
+                ( db, vs, now
+                , 'MAIL_SPECIAL_LEAVE_NOTIFY_TEXT'
+                , 'MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT'
+                , 'MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL'
+                )
 # end def handle_accept
 
 def handle_cancel (db, vs, trs, is_crq) :
@@ -434,102 +432,28 @@ def handle_cancel (db, vs, trs, is_crq) :
             st_open = db.daily_record_status.lookup ('open')
             db.daily_record.set (dr, status = st_open)
 
-        wp             = db.time_wp.getnode (vs.time_wp)
-        user           = db.user.getnode (vs.user)
-        email          = user.address
-        wp_name        = wp.name
-        tp_name        = db.time_project.get (wp.project, 'name')
-        first_day      = vs.first_day.pretty (common.ymd)
-        last_day       = vs.last_day.pretty  (common.ymd)
-        username       = user.username
-        lastname       = user.lastname
-        firstname      = user.firstname
-        comment        = vs.comment
-        comment_cancel = vs.comment_cancel
-        mailer         = roundupdb.Mailer (db.config)
-        notify_text    = None
-        notify_mail    = None
-        notify_subj    = None
-        nl             = '\n'
-        subject = _ \
-            (""'Leave "%(tp_name)s/%(wp_name)s" '
-               '%(first_day)s to %(last_day)s cancelled'
-            ) % locals ()
-        content = _ \
-            (""'Your cancel request "%(tp_name)s/%(wp_name)s"\n'
-               'from %(first_day)s to %(last_day)s was granted.'
-               '\n\nThis is an automatically generated message.\n'
-               'Responses to this address are not possible.\n'
-            ) % locals ()
-        try :
-            mailer.standard_message ((email,), subject, content)
-        except roundupdb.MessageSendError, message :
-            raise roundupdb.DetectorError, message
-        try :
-            notify_text = db.config.ext.MAIL_LEAVE_CANCEL_TEXT
-            notify_subj = db.config.ext.MAIL_LEAVE_CANCEL_SUBJECT
-            notify_mail = db.config.ext.MAIL_LEAVE_CANCEL_EMAIL
-        except KeyError :
-            pass
-        if notify_text and notify_mail and notify_subj :
-            subject = \
-                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
-            msg = notify_text.replace ('$', '%') % locals ()
-            try :
-                mailer.standard_message ((notify_mail,), subject, msg)
-            except roundupdb.MessageSendError, message :
-                raise roundupdb.DetectorError, message
-        notify_text = notify_mail = notify_subj = None
+        now = Date ('.')
+        try_send_mail \
+            ( db, vs, now
+            , 'MAIL_LEAVE_USER_CANCELLED_TEXT'
+            , 'MAIL_LEAVE_USER_CANCELLED_SUBJECT'
+            )
+        try_send_mail \
+            ( db, vs, now
+            , 'MAIL_LEAVE_CANCEL_TEXT'
+            , 'MAIL_LEAVE_CANCEL_SUBJECT'
+            , 'MAIL_LEAVE_CANCEL_EMAIL'
+            )
         if tp.is_special_leave :
-            try :
-                notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_CANCEL_TEXT
-                notify_subj = db.config.ext.MAIL_SPECIAL_LEAVE_CANCEL_SUBJECT
-                notify_mail = db.config.ext.MAIL_SPECIAL_LEAVE_CANCEL_EMAIL
-            except KeyError :
-                pass
-        if notify_text and notify_mail and notify_subj :
-            msg = notify_text.replace ('$', '%') % locals ()
-            subject = \
-                notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
-            try :
-                mailer.standard_message ((notify_mail,), subject, msg)
-            except roundupdb.MessageSendError, message :
-                raise roundupdb.DetectorError, message
+            try_send_mail \
+                ( db, vs, now
+                , 'MAIL_SPECIAL_LEAVE_CANCEL_TEXT'
+                , 'MAIL_SPECIAL_LEAVE_CANCEL_SUBJECT'
+                , 'MAIL_SPECIAL_LEAVE_CANCEL_EMAIL'
+                )
 # end def handle_cancel
 
-def handle_decline (db, vs) :
-    mailer  = roundupdb.Mailer (db.config)
-    now     = Date ('.')
-    wp      = db.time_wp.getnode (vs.time_wp)
-    email   = db.user.get (vs.user, 'address')
-    wpn     = wp.name
-    tpn     = db.time_project.get (wp.project, 'name')
-    fday    = vs.first_day.pretty (common.ymd)
-    lday    = vs.last_day.pretty  (common.ymd)
-    subject = _ \
-        (""'Leave "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s declined') % locals ()
-    content = \
-        (""'Your absence request "%(tpn)s/%(wpn)s" has been declined.\n'
-           'Please contact your supervisor.'
-           '\n\nThis is an automatically generated message.\n'
-           'Responses to this address are not possible.\n'
-        ) % locals ()
-    try :
-        mailer.standard_message ((email,), subject, content)
-    except roundupdb.MessageSendError, message :
-        raise roundupdb.DetectorError, message
-# end def handle_decline
-
-# Always called in a reactor
-def handle_submit (db, vs) :
-    wp      = db.time_wp.getnode (vs.time_wp)
-    tp      = db.time_project.getnode (wp.project)
-    dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
-    ctype   = dyn.contract_type
-    hr_only = vacation.need_hr_approval \
-        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted', True)
-    mailer  = roundupdb.Mailer (db.config)
-    now     = Date ('.')
+def handle_crq_or_submit (db, vs, now, conf_string, hr_only) :
     user    = db.user.getnode (vs.user)
     # always send to supervisor (and/or substitute), too.
     emails  = [db.user.get (x, 'address')
@@ -540,60 +464,56 @@ def handle_submit (db, vs) :
             (db.user.get (u, 'address')
              for u in common.get_uids_with_role (db, 'HR-leave-approval')
             )
-    wpn     = wp.name
-    tp      = db.time_project.getnode (wp.project)
-    tpn     = tp.name
-    fday    = vs.first_day.pretty (common.ymd)
-    lday    = vs.last_day.pretty  (common.ymd)
-    realnm  = user.realname
     url     = '%sleave_submission?@template=approve' % db.config.TRACKER_WEB
-    subject = _ \
-        (""'Leave request "%(tpn)s/%(wpn)s" %(fday)s to %(lday)s '
-         'from %(realnm)s'
-        ) % locals ()
-    content = _ \
-        (""'%(realnm)s has submitted a leave request "%(tpn)s/%(wpn)s".\n'
-        ) % locals ()
-    if vs.comment :
-        content += _ (''"Comment from user:\n%s\n") % vs.comment
-    if hr_only :
-        content += _ (''"Needs approval by HR.\n")
-    else :
-        content += _ (''"Please approve or decline at\n")
-    content += url
-    content += _ (""'\nMany thanks!')
-    content += _ \
-        (""'\n\nThis is an automatically generated message.\n'
-           'Responses to this address are not possible.\n'
-        )
+    approval_type = ''
     try :
-        mailer.standard_message (emails, subject, content)
-    except roundupdb.MessageSendError, message :
-        raise roundupdb.DetectorError, message
-    notify_text = notify_subj = None
+        if hr_only :
+            s = 'MAIL_LEAVE_SUPERVISOR_%s_APPROVE_HR' % conf_string
+        else :
+            s = 'MAIL_LEAVE_SUPERVISOR_%s_APPROVE_SV' % conf_string
+        approval_type = getattr (db.config.ext, s)
+    except InvalidOptionError :
+        pass
+    try_send_mail \
+        ( db, vs, now
+        , 'MAIL_LEAVE_SUPERVISOR_%s_TEXT'    % conf_string
+        , 'MAIL_LEAVE_SUPERVISOR_%s_SUBJECT' % conf_string
+        , url           = url
+        , approval_type = approval_type
+        , email         = emails
+        )
+# end def handle_crq_or_submit
+
+def handle_cancel_rq (db, vs) :
+    now = Date ('.')
+    handle_crq_or_submit (db, vs, now, 'CRQ', False)
+# end def handle_cancel_rq
+
+def handle_decline (db, vs) :
+    now = Date ('.')
+    try_send_mail \
+        ( db, vs, now
+        , 'MAIL_LEAVE_USER_DECLINE_TEXT'
+        , 'MAIL_LEAVE_USER_DECLINE_SUBJECT'
+        )
+# end def handle_decline
+
+# Always called in a reactor
+def handle_submit (db, vs) :
+    now     = Date ('.')
+    wp      = db.time_wp.getnode (vs.time_wp)
+    tp      = db.time_project.getnode (wp.project)
+    dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
+    ctype   = dyn.contract_type
+    hr_only = vacation.need_hr_approval \
+        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted', True)
+    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only)
     if tp.is_special_leave :
-        username    = user.username
-        lastname    = user.lastname
-        firstname   = user.firstname
-        comment     = vs.comment
-        wp_name     = wpn
-        tp_name     = tpn
-        first_day   = fday
-        last_day    = lday
-        nl          = '\n'
-        try :
-            notify_text = db.config.ext.MAIL_SPECIAL_LEAVE_USER_TEXT
-            notify_subj = db.config.ext.MAIL_SPECIAL_LEAVE_USER_SUBJECT
-        except KeyError :
-            pass
-    if notify_text and notify_subj :
-        msg = notify_text.replace ('$', '%') % locals ()
-        subject = \
-            notify_subj.replace ('$', '%').replace ('\n', ' ') % locals ()
-        try :
-            mailer.standard_message ((user.address,), subject, msg)
-        except roundupdb.MessageSendError, message :
-            raise roundupdb.DetectorError, message
+        try_send_mail \
+            ( db, vs, now
+            , 'MAIL_SPECIAL_LEAVE_USER_TEXT'
+            , 'MAIL_SPECIAL_LEAVE_USER_SUBJECT'
+            )
 # end def handle_submit
 
 def check_correction (db, cl, nodeid, new_values) :

@@ -65,8 +65,45 @@ special_leave_cancel_text  = Dear member of HR Admin,
  Please remove it from the paid absence data sheet,
  $(nl)s
  many thanks!
+ This is an automatically generated message.
+ Responses to this address are not possible.
 
-# On submission (!)
+# To supervisor (or delegate) on submission
+leave_supervisor_submit_subject =
+ Leave request "$(tp_name)s/$(wp_name)s" $(first_day)s to $(last_day)s
+ from $(firstname)s $(lastname)s
+leave_supervisor_submit_text =
+ $(firstname)s $(lastname)s has submitted a leave request
+ "$(tp_name)s/$(wp_name)s".
+ Comment from user: $(comment)s
+ $(approval_type)s
+ $(url)s
+ Many thanks!
+ $(nl)s
+ This is an automatically generated message.
+ Responses to this address are not possible.
+leave_supervisor_submit_approve_hr = Needs approval by HR.
+leave_supervisor_submit_approve_sv = Please approve or decline at
+
+# To supervisor (or delegate) on cancel request
+leave_supervisor_crq_subject =
+ Cancel request "$(tp_name)s/$(wp_name)s" $(first_day)s to $(last_day)s
+ from $(firstname)s $(lastname)s
+leave_supervisor_crq_text =
+ $(firstname)s $(lastname)s has submitted a cancel request
+ "$(tp_name)s/$(wp_name)s" from $(first_day)s to $(last_day)s.
+ Comment from user: $(comment_cancel)s
+ $(approval_type)s
+ $(url)s
+ Many thanks!
+ $(nl)s
+ This is an automatically generated message.
+ Responses to this address are not possible.
+leave_supervisor_crq_approve_hr = Needs approval by HR.
+leave_supervisor_crq_approve_sv = Please approve or decline at
+
+
+# To user on submission (!) of special leave
 special_leave_user_subject = Your Leave "$(tp_name)s/$(wp_name)s"
  $(first_day)s-$(last_day)s
 special_leave_user_text = Dear $(firstname)s $(lastname)s,
@@ -78,3 +115,46 @@ special_leave_user_text = Dear $(firstname)s $(lastname)s,
  birth certificate for new child, death notice letter (Parte).
  $(nl)s
  Many thanks!
+
+# To user on acceptance of leave request
+leave_user_accept_subject = Leave "$(tp_name)s/$(wp_name)s"
+ $(first_day)s to $(last_day)s accepted
+leave_user_accept_text =
+ Your absence request "$(tp_name)s/$(wp_name)s" has been accepted.
+ $(deleted_records)s
+ $(nl)s
+ This is an automatically generated message.
+ Responses to this address are not possible.
+leave_user_accept_recs_text =
+ The following existing time records have been deleted:
+
+# To user on decline of leave request
+leave_user_decline_subject = Leave "$(tp_name)s/$(wp_name)s"
+ $(first_day)s to $(last_day)s declined
+leave_user_decline_text =
+ Your absence request "$(tp_name)s/$(wp_name)s" has been declined.
+ Please contact your supervisor.
+ $(nl)s
+ This is an automatically generated message.
+ Responses to this address are not possible.
+
+# To user if cancel request was granted
+leave_user_cancelled_subject = Leave "$(tp_name)s/$(wp_name)s"
+ $(first_day)s to $(last_day)s cancelled
+leave_user_cancelled_text =
+ Your cancel request "$(tp_name)s/$(wp_name)s"
+ from $(first_day)s to $(last_day)s was granted.
+ $(nl)s
+ This is an automatically generated message.
+ Responses to this address are not possible.
+
+# To user if cancel request was *not* granted
+leave_user_not_cancelled_subject = Leave "$(tp_name)s/$(wp_name)s"
+ $(first_day)s to $(last_day)s not cancelled
+leave_user_not_cancelled_text =
+ Your cancel request "$(tp_name)s/$(wp_name)s" was not granted.
+ Please contact your supervisor.
+ $(nl)s
+ This is an automatically generated message.
+ Responses to this address are not possible.
+
