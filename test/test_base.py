@@ -1673,11 +1673,17 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , end          = '10:00'
             , wp           = self.wps [0]
             )
-        self.db.time_record.create \
-            ( daily_record = dr [0]
-            , start        = '10:00'
-            , end          = '11:00'
+        dr_sub = self.db.daily_record_status.lookup ('submitted')
+        dr_opn = self.db.daily_record_status.lookup ('open')
+        self.db.daily_record.set (dr [0], status = dr_sub)
+        # may not submit with existing non-open daily recs
+        self.assertRaises \
+            ( Reject, self.db.leave_submission.set
+            , vs
+            , status = st_subm
             )
+        # Make dr open again
+        self.db.daily_record.set (dr [0], status = dr_opn)
         self.assertRaises \
             ( Reject, self.db.leave_submission.create
             , first_day = date.Date ('2009-12-22')
@@ -1698,10 +1704,23 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , [('+', 'date')]
             )
         self.assertEqual (len (drs), 18)
+        self.db.leave_submission.set (vs, status = st_subm)
+        # May *not* submit the daily record
+        self.assertRaises \
+            ( Reject, self.db.daily_record.set
+            , dr [0]
+            , status = dr_sub
+            )
+        # But may still create time_recs in range
+        self.db.time_record.create \
+            ( daily_record = dr [0]
+            , start        = '10:00'
+            , end          = '11:00'
+            )
         trs = self.db.time_record.filter (None, dict (daily_record = drs))
         # Stephanitag is on Saturday, two extra records for deletion
         self.assertEqual (len (trs), 5 + 2)
-        self.db.leave_submission.set (vs, status = st_subm)
+
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
             ( ('subject',    'Leave request "Vacation/Vacation" '

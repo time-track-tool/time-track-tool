@@ -201,6 +201,8 @@ def check_daily_record (db, cl, nodeid, new_values) :
     """ Check that status changes are OK. Allowed changes:
 
          - From open to submitted by user or by HR
+           But only if no leave submission in state 'submitted',
+           'approved', 'cancel requested' exists
          - From submitted to accepted by supervisor or by HR
            but don't allow accepting own records
          - From submitted to open     by supervisor or by HR or by user
@@ -242,6 +244,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
     # Check if at least one is cancelled
     cn = db.leave_status.lookup ('cancelled')
     dc = db.leave_status.lookup ('declined')
+    op = db.leave_status.lookup ('open')
     vs_cancelled = True
     if not vs :
         vs_cancelled = False
@@ -254,6 +257,12 @@ def check_daily_record (db, cl, nodeid, new_values) :
             else :
                 vs_cancelled = False
                 break
+    vs_has_valid  = False
+    for v in vs :
+        if v.status == op or v.status == cn or v.status == dc :
+            continue
+        vs_has_valid = True
+        break
     vs = [v for v in vs if v.status == st_accp]
     if vs :
         assert len (vs) == 1
@@ -265,6 +274,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
         if not (  (   status == 'submitted' and old_status == 'open'
                   and (is_hr or user == uid)
                   and time_records_consistent (db, cl, nodeid)
+                  and not vs_has_valid
                   )
                or (   status == 'accepted'  and old_status == 'submitted'
                   and (is_hr or may_give_clearance)
