@@ -1512,6 +1512,7 @@ class Vacation_Report (_Report) :
         self.end         = end
         users            = sum_common.get_users (db, filterspec, start, end)
         min_user_date    = {}
+        max_user_date    = {}
         user_vc          = {}
         self.user_ctypes = {}
         for u in users.keys () :
@@ -1539,6 +1540,15 @@ class Vacation_Report (_Report) :
                     or not self.permission_ok (u, dyn)
                     ) :
                     continue
+                last_dyn = ldyn = dyn
+                while ldyn and ldyn.valid_to and ldyn.valid_to < end :
+                    ldyn = vacation.vac_next_user_dynamic (db, ldyn)
+                    if ldyn :
+                        last_dyn = ldyn
+                if last_dyn.valid_to :
+                    max_user_date [(u, ctype)] = last_dyn.valid_to
+                    if start and last_dyn.valid_to < start :
+                        continue
                 user_vc [(u, ctype)] = vc
                 if u not in self.user_ctypes :
                     self.user_ctypes [u] = []
@@ -1578,6 +1588,9 @@ class Vacation_Report (_Report) :
                     carry = ceil (carry)
                 ltot  = carry
                 while d and d <= end :
+                    if (u, ctype) in max_user_date :
+                        if max_user_date [(u, ctype)] <= ld :
+                            break
                     fd = ld
                     if fd.year != d.year :
                         fd = fd + day
