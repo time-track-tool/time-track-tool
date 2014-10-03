@@ -45,8 +45,9 @@
    tal:condition="context/is_view_ok">
   <tal:block tal:condition="context/is_view_ok">
    <form method="POST" onsubmit="return submit_once()"
-         enctype="multipart/form-data" action="leave_submission"
-         name="edit_leave_submission">
+         enctype="multipart/form-data" name="edit_leave_submission"
+         tal:attributes="action python:request.indexargs_url ('', {})"
+         >
     <input type="hidden" name="@action"   value="edit">
     <input type="hidden" name="@template" tal:attributes="value tplname">
     <table class="list" border="1">
