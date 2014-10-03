@@ -1734,8 +1734,10 @@ class Vacation_Report (_Report) :
         line = []
         line.append (formatter (_ ('user')))
         line.append (formatter (_ ('time')))
+        vr = "javascript:help_window" \
+             "('vacation_report?@template=helptext',500,400)"
         for f in self.fields :
-            fld = HTML_Link (_ (f), 'vacation_report?@template=helptext')
+            fld = HTML_Link (_ (f), vr)
             cls = self.header_classes.get (f, '')
             line.append (formatter (fld, cls = cls))
         if self.need_period :

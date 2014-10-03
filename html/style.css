@@ -357,6 +357,10 @@ table.list th.emphasized {
   color: green;
 }
 
+table.list th.emphasized a[href]:hover {color: green;}
+table.list th.emphasized a[href]:link  {color: green;}
+table.list th.emphasized a[href]       {color: green;}
+
 table.list td {
   padding: 0 4px 0 4px;
   /* border: 1px solid white; */
