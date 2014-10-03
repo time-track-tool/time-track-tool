@@ -504,7 +504,11 @@ class _Report (autosuper) :
         if cls :
             cls = ' class="%s"' % cls
         cls = cls or ''
-        return ('  <th%s>%s</th>' % (cls, str (item)))
+        if hasattr (item, 'as_html') :
+            s = item.as_html ()
+        else :
+            s = str (item)
+        return ('  <th%s>%s</th>' % (cls, s))
     # end def html_header_item
 
     def html_line (self, items) :
@@ -1731,8 +1735,9 @@ class Vacation_Report (_Report) :
         line.append (formatter (_ ('user')))
         line.append (formatter (_ ('time')))
         for f in self.fields :
+            fld = HTML_Link (_ (f), 'vacation_report?@template=helptext')
             cls = self.header_classes.get (f, '')
-            line.append (formatter (_ (f), cls = cls))
+            line.append (formatter (fld, cls = cls))
         if self.need_period :
             for f, perm in self.period_fields :
                 if perm or self.is_allowed () :

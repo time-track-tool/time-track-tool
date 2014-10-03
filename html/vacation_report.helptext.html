@@ -1,0 +1,89 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title" i18n:translate="">
+  Help for Vacation Report
+ </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+  Help for Vacation Report
+ </span>
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+ <tal:block metal:fill-slot="content">
+  <table class="otherinfo">
+   <tr>
+    <th class="header2" i18n:translate="">Time Period</th>
+    <td i18n:translate="">current calendar year per default</td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">yearly entitlement</th>
+    <td i18n:translate="">AUT: 25 days, usually. For employees who are
+      entitled to a 6th week of vacation already (=after 25 years of
+      employment, min.  12 of those with the current company - please
+      ask HR for exact conditions), this shows 30 days.
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">yearly prorated</th>
+    <td i18n:translate="">The normal 25 days are prorated according to the
+      limitation of the contract - relevant e.g. if an employment ends
+      or for new employees with a 6 months limitation. They only see the
+      prorated amount of days up to their limitation or the end of the
+      calendar year, whichever is earlier.
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">carry forward from previous year</th>
+    <td i18n:translate="">if the vacation of the last year(s) has not
+      been consumed, it is carried forward into the next year. Please
+      note: The entitlement to vacation days expires after 2 years after
+      the end of the calendar year the vacation has been accrued in.
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">entitlement total</th>
+    <td i18n:translate="">shows the yearly amount of vacation days the
+      employee is are entitled to (sum of entitlement prorated + carry
+      forward).
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">approved days</th>
+    <td i18n:translate="">Vacation days that the employee already consumed or
+      submitted with successful approval.
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">vacation corrections</th>
+    <td i18n:translate="">manual corrections of vacation days by HR (e.g.
+      if vacation is paid at the end of employment).
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">remaining vacation</th>
+    <td i18n:translate="">remaining vacation days for the current year at
+      the employee´s disposal or in case of limited contracts the
+      vacation days until end of the limitation of the contract of the
+      employee (e.g. 6 months for new employees)
+    </td>
+   </tr>
+
+   <tr>
+    <th class="header2" i18n:translate="">additional submitted</th>
+    <td i18n:translate="">already submitted by the employee but not yet
+      approved by the supervisor. Please note that those days are not
+      yet considered in the "remaining vacation days"! As soon as they
+      are approved, the amount of remaining vacation days will decrease
+      accordingly.
+    </td>
+   </tr>
+  </table>
+ </tal:block>
+</tal:block>
