@@ -1533,6 +1533,9 @@ class Vacation_Report (_Report) :
                     md = min_user_date [(u, ctype)] = max (vc.date, start)
                 else :
                     md = min_user_date [(u, ctype)] = vc.date
+                mind = md
+                if start == end :
+                    mind = Date ('%s-01-01' % start.year)
                 if end and min_user_date [(u, ctype)] > end :
                     continue
                 dyn = vacation.vac_get_user_dynamic (db, u, ctype, md)
@@ -1547,7 +1550,7 @@ class Vacation_Report (_Report) :
                         last_dyn = ldyn
                 if last_dyn.valid_to :
                     max_user_date [(u, ctype)] = last_dyn.valid_to
-                    if start and last_dyn.valid_to < start :
+                    if last_dyn.valid_to < mind :
                         continue
                 user_vc [(u, ctype)] = vc
                 if u not in self.user_ctypes :
