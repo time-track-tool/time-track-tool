@@ -927,7 +927,9 @@ def security (db, ** kw) :
             , check       = own_leave_submission
             , description = fixdoc (own_leave_submission.__doc__)
             , properties  = \
-                ('user', 'first_day', 'last_day', 'status', 'time_wp')
+                ( 'user', 'first_day', 'last_day', 'status', 'time_wp'
+                , 'comment', 'comment_cancel'
+                )
             )
         db.security.addPermissionToRole ('User', p)
 
