@@ -570,6 +570,15 @@ class _Report (autosuper) :
         return self.linked_type (ctype, 'contract_type', 'name')
     # end def linked_ctype
 
+    def supi_clearance (self, user) :
+        supi = user
+        while supi :
+            clr  = common.clearance_by (self.db, supi)
+            if self.uid in clr :
+                return True
+            supi = self.db.user.get (supi, 'supervisor')
+    # end def supi_clearance
+
 # end class _Report
 
 class Summary_Report (_Report) :
@@ -1387,11 +1396,8 @@ class Staff_Report (_Report) :
             return True
         if common.user_has_role (self.db, self.uid, 'HR', 'staff-report') :
             return True
-        supi = user
-        while supi :
-            supi = self.db.user.get (supi, 'supervisor')
-            if supi == self.uid :
-                return True
+        if self.supi_clearance (user) :
+            return True
         if common.user_has_role (self.db, self.uid, 'HR-Org-Location') :
             hrt = user_dynamic.hr_olo_role_for_this_user_dyn
             if hrt (self.db, self.uid, dynuser) :
@@ -1722,11 +1728,8 @@ class Vacation_Report (_Report) :
             return True
         if self.hv :
             return True
-        supi = user
-        while supi :
-            supi = self.db.user.get (supi, 'supervisor')
-            if supi == self.uid :
-                return True
+        if self.supi_clearance (user) :
+            return True
         return False
     # end def permission_ok
 
