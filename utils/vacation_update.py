@@ -142,11 +142,6 @@ if len (sys.argv) == 2 :
         if rounded not in broken_int :
             assert int (rounded) == float (rounded)
             assert ceil (exact) == int (rounded)
-        vc = db.vacation_correction.filter \
-            (None, dict (user = user, date = dt, absolute = True))
-        if not vc :
-            db.vacation_correction.create \
-                (absolute = True, date = s2014, user = user, days = exact)
         dyn = user_dynamic.get_user_dynamic (db, user, s2014)
         if not dyn :
             dyn = user_dynamic.find_user_dynamic (db, user, s2014)
@@ -163,5 +158,10 @@ if len (sys.argv) == 2 :
                     % (username, dyn.valid_from.pretty (common.ymd))
                 db.user_dynamic.set (dyn.id, ** d)
             dyn = user_dynamic.next_user_dynamic (db, dyn)
+        vc = db.vacation_correction.filter \
+            (None, dict (user = user, date = dt, absolute = True))
+        if not vc :
+            db.vacation_correction.create \
+                (absolute = True, date = s2014, user = user, days = exact)
 
 db.commit()
