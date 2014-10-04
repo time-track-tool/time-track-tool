@@ -43,6 +43,10 @@
  ; form_class      python: 'form'
  ; queryform_class python: ''
  ; form_template   python: 'item'
+ ; leave_stats     python: 'leave_status' in db._db.classes and tuple
+                            (db._db.leave_status.lookup (i)
+                             for i in ('submitted', 'cancel requested')
+                            ) or ()
  ; typecat         python: (   'adr_type_cat' in db._db.classes
                            and ','.join (db._db.adr_type_cat.getnodeids ())
                            )
@@ -143,10 +147,7 @@
                           'time_wp.project,time_wp&'
                           '@filter=approval_hr,status&'
                           '@sort=user,first_day&@pagesize=20&@startwith=0&'
-                          'approval_hr=yes&status=%s' % ','.join
-                            (db._db.leave_status.lookup (i)
-                             for i in ('submitted', 'cancel requested')
-                            )
+                          'approval_hr=yes&status=%s' % ','.join (leave_stats)
    , ('letter', '')     : '@columns=id,subject,date,address.lastname,'
                           'address.firstname&'
                           '@sort=-date&@pagesize=20&@startwith=0&'
