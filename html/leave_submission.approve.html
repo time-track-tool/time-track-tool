@@ -14,7 +14,7 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
-   "batch python:utils.approve_leave_submissions (db, context);
+   "batch python:utils.approve_leave_submissions (db, utils, context);
     do_user python: True;
     tplname python: 'approve';
     search_form python: False;

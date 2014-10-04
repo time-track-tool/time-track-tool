@@ -46,10 +46,10 @@ def approval_stati (db) :
     return dict (status = st)
 # end def approval_stati
 
-def approve_leave_submissions (db, context) :
+def approve_leave_submissions (db, utils, context) :
     uid = db._db.getuid ()
     d   = approval_stati (db)
-    d ['user'] = db._db.user.find (supervisor = uid)
+    d ['user'] = utils.approval_for (db, True).keys ()
     ls  = db.leave_submission.filter (None, d)
     return ls
 # end def approve_leave_submissions
