@@ -847,9 +847,16 @@ _helptext          = \
     , ""'is_series'                   :
       [""'''This is turned on when the %(Classname)s is a series product''']
     , ""'is_special_leave'            :
-      [""'''Set to True if %(Classname)s is for special leave''']
+      [""'''Set to True if %(Classname)s is for special leave:
+            necessary to trigger the right email notifications and for
+            special leave sum calculation.
+         '''
+      ]
     , ""'is_vacation'                 :
-      [""'''Set to True if %(Classname)s is for vacation''']
+      [""'''Set to True if %(Classname)s is for vacation:
+            necessary for vacation calculation.
+         '''
+      ]
     , ""'issue++deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are
