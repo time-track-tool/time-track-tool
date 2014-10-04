@@ -384,6 +384,7 @@ def init \
         , absolute              = Boolean   ()
         , days                  = Number    ()
         , contract_type         = Link      ('contract_type')
+        , comment               = String    ()
         )
 
     # Only for reporting mask, no records will ever be created

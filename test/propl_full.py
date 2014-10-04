@@ -710,6 +710,7 @@ properties = \
       )
     , ( 'vacation_correction'
       , [ 'absolute'
+        , 'comment'
         , 'contract_type'
         , 'date'
         , 'days'

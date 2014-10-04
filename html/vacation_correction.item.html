@@ -39,6 +39,11 @@
       <td tal:content="structure python:context.absolute.field ()" />
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'comment')"/>
+      <td tal:content="structure python:context.comment.field ()" />
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'days')"
           class="required"/>
       <td tal:content="structure python:context.days.field ()" />

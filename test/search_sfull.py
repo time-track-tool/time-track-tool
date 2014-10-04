@@ -1718,6 +1718,9 @@ properties = \
       , [ ( 'absolute'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
+        , ( 'comment'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
         , ( 'contract_type'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
