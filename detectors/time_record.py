@@ -454,7 +454,7 @@ def check_generated (new_values) :
 def leave_wp (db, dr, wp, start, end, duration) :
     if not wp :
         return False
-    if start or end or not duration :
+    if start is not None or end is not None or duration is None :
         return False
     tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
     if not tp.approval_required :
