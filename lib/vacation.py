@@ -383,6 +383,7 @@ def vacation_time_sum (db, user, ctype, start, end) :
     vac = 0.0
     if ctype == -1 :
         ctype = _get_ctype (db, user, roundup.date.Date ('.'))
+    by_dr = {}
     for tid in trs :
         tr  = db.time_record.getnode  (tid)
         dr  = db.daily_record.getnode (tr.daily_record)
@@ -391,7 +392,12 @@ def vacation_time_sum (db, user, ctype, start, end) :
             continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
-        vac += ceil (tr.duration / wh * 2) / 2.
+        if dr.id not in by_dr :
+            by_dr [dr.id] = (wh, [])
+        assert by_dr [dr.id][0] == wh
+        by_dr [dr.id][1].append (tr.duration)
+    for wh, durs in by_dr.itervalues () :
+        vac += ceil (sum (durs) / wh * 2) / 2.
     return vac
 # end def vacation_time_sum
 
