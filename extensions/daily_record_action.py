@@ -231,24 +231,12 @@ class Daily_Record_Common (Action, autosuper) :
                   }
                 )
             raise Redirect, url
-        d = start
         if 'user' in filterspec :
             self.user = filterspec ['user'][0]
         else :
             self.user = self.db.getuid ()
-        while d <= end :
-            try :
-                x = self.db.daily_record.create \
-                    ( user              = self.user
-                    , date              = d
-                    , weekend_allowed   = False
-                    , required_overtime = False
-                    )
-                vacation.try_create_public_holiday (self.db, x, d, self.user)
-                self.db.commit ()
-            except Reject :
-                pass
-            d = d + Interval ('1d')
+        vacation.create_daily_recs (self.db, self.user, start, end)
+        self.db.commit ()
     # end def create_daily_records
 
 # end class Daily_Record_Common

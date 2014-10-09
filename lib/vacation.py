@@ -36,6 +36,10 @@ import common
 import user_dynamic
 
 def try_create_public_holiday (db, daily_record, date, user) :
+    st_open = db.daily_record_status.lookup ('open')
+    # Don't change anything if status not open
+    if db.daily_record.get (daily_record, 'status') != st_open :
+        return
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = user_dynamic.day_work_hours   (dyn, date)
     if wh :
@@ -162,7 +166,7 @@ def leave_duration (db, user, date) :
 # end def leave_duration
 
 def leave_submission_days (db, user, ctype, start, end, type, * stati) :
-    """ Sum vacation submissions if is_vac or flexitime else
+    """ Sum leave submissions of the given type
         with the given status in the given time range for the given user
         and ctype (contract_type).
     """
