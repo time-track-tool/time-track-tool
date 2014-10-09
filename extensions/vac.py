@@ -235,12 +235,19 @@ class New_Leave_Action (NewItemAction) :
 
 # end class New_Leave_Action
 
+def leave_days (db, user, first_day, last_day) :
+    try :
+        return vacation.leave_days (db, user, first_day, last_day)
+    except AssertionError :
+        return 'Invalid data'
+# end def leave_days
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',                    vacation.valid_wps)
     reg ('valid_leave_wps',              vacation.valid_leave_wps)
     reg ('valid_leave_projects',         vacation.valid_leave_projects)
-    reg ('leave_days',                   vacation.leave_days)
+    reg ('leave_days',                   leave_days)
     reg ('user_leave_submissions',       user_leave_submissions)
     reg ('approve_leave_submissions',    approve_leave_submissions)
     reg ('approve_leave_submissions_hr', approve_leave_submissions_hr)
