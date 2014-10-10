@@ -409,6 +409,8 @@ def _get_ctype (db, user, date) :
     # None is a valide contract_type, return -1 in case of error
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     if not dyn :
+        dyn = user_dynamic.last_user_dynamic (db, user, date)
+    if not dyn :
         return -1
     return dyn.contract_type
 # end def _get_ctype
