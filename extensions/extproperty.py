@@ -546,8 +546,9 @@ class ExtProperty :
                             )
                         ))
                 return self.menu ()
+            fprops = {}
             if not isinstance (self.prop, BooleanHTMLProperty) :
-                fprops = dict (size = self.fieldwidth)
+                fprops ['size'] = self.fieldwidth
             if isinstance (self.prop, DateHTMLProperty) :
                 fprops ['popcal'] = self.popcal
                 if self.format :
