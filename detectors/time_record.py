@@ -310,7 +310,7 @@ def update_timerecs (db, time_record_id, set_it) :
     trecs   = dict ([(i, 1) for i in trecs_o])
     if set_it :
         trecs [id] = 1
-    else :
+    elif id in trecs :
         del trecs [id]
     trecs   = trecs.keys ()
     trecs.sort ()
