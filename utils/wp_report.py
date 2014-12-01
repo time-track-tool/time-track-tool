@@ -38,6 +38,9 @@ class WP_Report (object) :
         for i in self.wps :
             pdate = i.time_end.pretty ('%Y-%m-%d')
             key   = i.responsible
+            # Don't send mails for WPs that have no responsible
+            if key is None :
+                continue
             prj   = self.db.time_project.get (i.project, 'name')
             url   = self.db.config.TRACKER_WEB + i.cl.classname + i.id
             if key not in self.messages :
