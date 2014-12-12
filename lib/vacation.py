@@ -320,7 +320,6 @@ def interval_days (iv) :
     assert abs (t [0]) == 1
     assert t [1] == 0
     assert t [2] == 0
-    assert t [4] == 0
     return t [3] * t [0]
 # end def interval_days
 
