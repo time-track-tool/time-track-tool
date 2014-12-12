@@ -482,7 +482,7 @@ def consolidated_vacation \
         ed = min (ed, date + common.day)
     d   = vc.date
     dyn = vac_get_user_dynamic (db, user, ctype, d)
-    while dyn and dyn.valid_to and dyn.valid_to < d :
+    while dyn and dyn.valid_to and dyn.valid_to <= d :
         dyn = vac_next_user_dynamic (db, dyn)
     if dyn is None :
         return None
