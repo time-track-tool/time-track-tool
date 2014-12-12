@@ -408,7 +408,7 @@ _helptext          = \
     , ""'cost_center.id'              : [help_id]
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
-      [""'''Specifies the Phase the Cost Center is in''']
+      [""'''Specifies the Phase of this %(Classname)s item''']
     , ""'country'                     : [""'''Country for this address''']
     , ""'creation'                    : [""'''Record creation date''']
     , ""'creator'                     : [""'''Person who created this record''']

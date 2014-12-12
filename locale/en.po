@@ -1471,22 +1471,19 @@ msgid ""
 msgstr ""
 
 msgid "cost_center"
-msgstr "Cost Center"
+msgstr "Productivity"
 
 msgid "%(Property)s for this %(Classname)s (required)"
 msgstr ""
 
 msgid "cost_center.id"
-msgstr "Cost Center Id"
+msgstr "Productivity Id"
 
 msgid "cost_center_group.id"
-msgstr "Cost Center Group Id"
+msgstr "Productivity Group Id"
 
 msgid "cost_center_status"
-msgstr "Cost Center Status"
-
-msgid "Specifies the Phase the Cost Center is in"
-msgstr ""
+msgstr "Productivity Status"
 
 msgid "Country for this address"
 msgstr ""
@@ -3101,7 +3098,7 @@ msgid "product"
 msgstr "Product"
 
 msgid "product_family"
-msgstr "Product family"
+msgstr "Business Case"
 
 msgid "The %(Property)s of the %(Classname)s (level 3 classification)."
 msgstr ""
@@ -3119,7 +3116,7 @@ msgid "The %(Property)s of the %(Classname)s (level 1 classification)."
 msgstr ""
 
 msgid "product_family.id"
-msgstr "Product family Id"
+msgstr "Business Case Id"
 
 msgid "The Id of %(Property)s."
 msgstr ""
@@ -3710,10 +3707,10 @@ msgid ""
 msgstr ""
 
 msgid "summary_report++cost_center"
-msgstr "Cost Center"
+msgstr "Productivity"
 
 msgid "summary_report++cost_center_group"
-msgstr "Cost Center Group"
+msgstr "Productivity Group"
 
 msgid "summary_report++date"
 msgstr "Date"
@@ -5435,7 +5432,7 @@ msgid "support"
 msgstr "Support issue"
 
 msgid "cost_center_group"
-msgstr "Cost Center Group"
+msgstr "Productivity Group"
 
 msgid "daily_record"
 msgstr "Daily Record"
