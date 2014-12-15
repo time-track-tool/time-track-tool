@@ -407,11 +407,13 @@ class WP_Container (Comparable_Container, dict) :
             p  = tp.name
             self.name  = '/'.join ((p, self.name))
             self.time_wp_id = ('time_wp', id)
-            self.time_wp_no = ('time_wp', wp.wp_no)
+            self.time_wp_no = ('time_wp', id)
         elif klass.classname == 'time_project' :
             tp = klass.getnode (id)
         elif klass.classname == 'time_wp_group' :
-            self.time_wp_group_id = ('time_wp_group_id', wpg.id)
+            wpg = klass.getnode (id)
+            self.time_wp_group    = ('time_wp_group', wpg.name)
+            self.time_wp_group_id = ('time_wp_group', id)
         elif klass.classname == 'cost_center' :
             cc  = klass.getnode (id)
         elif klass.classname == 'cost_center_group' :
@@ -1107,7 +1109,7 @@ class Summary_Report (_Report) :
                         , item = itm
                         )
                 except AttributeError :
-                    col = col [1]
+                    col = ''
             line.append (formatter (col))
         line.append (formatter (tc))
         if 'user' in self.columns :
