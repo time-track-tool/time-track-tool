@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -349,6 +349,22 @@ def check_ext_user_part_of (db, cl, nodeid, new_values) :
                 ("Part of can be set to visible container only")
 # end def check_ext_user_part_of
 
+def check_ext_user_responsible (db, cl, nodeid, new_values) :
+    if 'responsible' in new_values :
+        u = db.user.getnode (new_values ['responsible'])
+        x = db.user_status.lookup ('external')
+        if u.status == x :
+            if 'external_users' in new_values :
+                xu = new_values.get ('external_users')
+            elif 'nodeid' :
+                xu = cl.get (nodeid, 'external_users')
+            else :
+                xu = []
+            xu = dict.fromkeys (xu)
+            xu [u.id] = True
+            new_values ['external_users'] = xu.keys ()
+# end def check_ext_user_responsible
+
 
 def init (db) :
     if 'issue' not in db.classes :
@@ -395,4 +411,6 @@ def init (db) :
         db.issue.audit ("set",    check_ext_user_container)
         db.issue.audit ("create", check_ext_user_part_of)
         db.issue.audit ("set",    check_ext_user_part_of)
+        db.issue.audit ("create", check_ext_user_responsible)
+        db.issue.audit ("set",    check_ext_user_responsible)
 # end def init
