@@ -81,7 +81,11 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     severity    = newvalues.get    ("severity")
     effort      = newvalues.get    ("numeric_effort")
     part_of     = newvalues.get    ("part_of")
-    bug         = db.kind.lookup   ('Bug')
+    try :
+        bug     = db.kind.lookup   ('Bug')
+    except KeyError :
+        bug     = db.kind.lookup   ('Defect')
+    bugname     = db.kind.get      (bug, 'name')
     analyzing   = db.status.lookup ("analyzing")
 
     if  (  "status" not in newvalues
@@ -108,7 +112,8 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         raise Reject, _ ("A detailed description must be given in %(field)s") \
                         % locals ()
     if kind == bug and 'release' not in newvalues :
-        raise Reject, _ ("For bugs you have to specify the release")
+        raise Reject, _ ("For a %(bugname)s you have to specify the release") \
+                        % locals ()
     if status != analyzing and not effort :
         raise Reject, \
             _ ("An effort estimation is required for issues to skip analyzing")
