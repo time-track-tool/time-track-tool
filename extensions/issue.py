@@ -27,6 +27,9 @@
 #
 #--
 
+from roundup.cgi.templating import MultilinkHTMLProperty
+import common
+
 def filter_status_transitions (context) :
     may_close = True
     # there was a check for closing -- we leave the logic in
@@ -46,6 +49,8 @@ def filter_status_transitions (context) :
 def init (instance) :
     reg = instance.registerUtil
     reg ('filter_status_transitions', filter_status_transitions)
+    reg ('copy_url',                  common.copy_url)
+    reg ('copy_js',                   common.copy_js)
 # end def init
 
 ### __END__ issue

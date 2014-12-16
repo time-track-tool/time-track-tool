@@ -1009,6 +1009,7 @@
       tal:condition="context/is_edit_ok">
          <tal:block tal:replace="structure context/submit"/>
      </tal:block>
+     <tal:block metal:define-slot="additional_button"/>
      <input tal:condition="context/id"
             type="button" value="Show History"
             i18n:attributes="value"
@@ -1096,6 +1097,14 @@
    </td>
   </tr>
  </table>
+</tal:block>
+
+<tal:block metal:define-macro="copy_button">
+     <input type="button" tal:condition="context/id"
+            value="Create similar" i18n:attributes="value"
+            tal:attributes="onClick python:utils.copy_js ()"/>
+     <a style="display:none" id="copyme" target="_blank"
+        tal:attributes="href python:utils.copy_url (context)">X</a>
 </tal:block>
 
 <tal:block metal:define-macro="message_box">

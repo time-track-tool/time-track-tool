@@ -31,12 +31,14 @@
 #
 import locale
 import datetime
-from   roundup import roundupdb, hyperdb
-from   roundup.exceptions import Reject
-from   roundup.date       import Date, Interval, Range
-from   time               import gmtime
-from   roundup.hyperdb    import String, Link, Multilink
-from   rup_utils          import translate
+from   urllib                 import quote as urlquote
+from   time                   import gmtime
+from   roundup                import roundupdb, hyperdb
+from   roundup.exceptions     import Reject
+from   roundup.date           import Date, Interval, Range
+from   roundup.hyperdb        import String, Link, Multilink
+from   roundup.cgi.templating import MultilinkHTMLProperty, LinkHTMLProperty
+from   rup_utils              import translate
 
 TFL = None
 try :
@@ -1149,5 +1151,46 @@ def ydays (ydate) :
         ydate = datetime.date (ydate.year, 12, 31)
     return ydate.timetuple().tm_yday
 # end def ydays
+
+default_attributes = dict \
+    ( issue   = ('area category confidential deadline doc_issue_status'
+                 ' earliest_start effective_prio external_users inherit_ext'
+                 ' keywords kind nosy numeric_effort part_of priority release'
+                 ' responsible severity title'
+                ).split ()
+    , support = ('bcc category cc classification confidential customer'
+                 ' emails external_ref lot nosy number_effected numeric_effort'
+                 ' prio prodcat product related_issues related_support'
+                 ' release responsible serial_number title type warranty'
+                ).split ()
+    )
+
+def copy_url (context, attributes = None) :
+    """ Create URL for copying (most attributes of) an item """
+    cls = context._classname
+    url = ['%(cls)s?:template=item' % locals ()]
+    atr = attributes or default_attributes [cls]
+    for a in atr :
+        val = ''
+        if isinstance (context [a], MultilinkHTMLProperty) :
+            if context [a] :
+                val = ','.join (p.id for p in context [a])
+        elif isinstance (context [a], LinkHTMLProperty) :
+            if context [a] :
+                val = context [a].id
+        else :
+            val = str (context [a])
+        url.append ('%s=%s' % (a, urlquote (val)))
+    return '&'.join (url)
+# end def copy_url
+
+def copy_js (linkid = 'copyme') :
+    """ Create Javascript for use e.g. in onClick to copy
+        (most attributes of) an item
+    """
+    code = "document.getElementById ('%(linkid)s').click ();" % locals ()
+    return code
+# end def copy_js
+
 
 ### __END__
