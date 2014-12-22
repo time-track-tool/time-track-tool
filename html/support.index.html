@@ -31,6 +31,8 @@
     , utils.ExtProperty (utils, pdict ['release'])
     , utils.ExtProperty (utils, pdict ['number_effected'])
     , utils.ExtProperty (utils, pdict ['serial_number'])
+    , utils.ExtProperty (utils, pdict ['analysis_result'])
+    , utils.ExtProperty (utils, pdict ['return_type'])
     , utils.ExtProperty (utils, pdict ['external_ref'])
     , utils.ExtProperty (utils, pdict ['customer'])
     , utils.ExtProperty (utils, pdict ['product'])
@@ -62,6 +64,7 @@
         ( utils, pdict ['related_support']
         , searchname   = 'related_support.id'
         )
+    , utils.ExtProperty (utils, pdict ['sap_ref'])
     , utils.ExtProperty (utils, pdict ['superseder'])
     , utils.ExtProperty
         ( utils, pdict ['nosy']

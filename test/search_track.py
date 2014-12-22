@@ -1,5 +1,14 @@
 properties = \
-    [ ( 'area'
+    [ ( 'analysis_result'
+      , [ ( 'description'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'area'
       , [ ( 'description'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
@@ -539,6 +548,15 @@ properties = \
           )
         ]
       )
+    , ( 'return_type'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
     , ( 'severity'
       , [ ( 'abbreviation'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -641,6 +659,9 @@ properties = \
       , [ ( 'analysis_end'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'analysis_result'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'analysis_start'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
@@ -720,6 +741,12 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'responsible'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'return_type'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'sap_ref'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'satisfied'

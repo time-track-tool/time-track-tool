@@ -142,6 +142,14 @@
            (classname, 'release')"/>
        <td tal:content="structure python:context.release.field ()"/>
       </tr>
+      <tr>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'return_type')"/>
+       <td tal:content="structure python:context.return_type.menu ()"/>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'analysis_result')"/>
+       <td tal:content="structure python:context.analysis_result.menu ()"/>
+      </tr>
       <tal:block tal:define="ser python:utils.serials (db, context)">
        <tal:block tal:condition="python: context.id and ser"
         tal:repeat="s python:enumerate (ser)">
@@ -190,6 +198,9 @@
        <th tal:content="structure python:utils.fieldname
            (classname, 'superseder')"/>
        <td tal:content="structure python:context.superseder.field ()"/>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'sap_ref')"/>
+       <td tal:content="structure python:context.sap_ref.field ()"/>
       </tr>
       <tr tal:repeat="sup context/superseder">
        <tal:block tal:condition="python:db._db.support.hasnode (sup.id)">

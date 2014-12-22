@@ -1,5 +1,10 @@
 properties = \
-    [ ( 'area'
+    [ ( 'analysis_result'
+      , [ 'description'
+        , 'name'
+        ]
+      )
+    , ( 'area'
       , [ 'description'
         , 'name'
         ]
@@ -415,6 +420,11 @@ properties = \
         , 'responsible'
         ]
       )
+    , ( 'return_type'
+      , [ 'name'
+        , 'order'
+        ]
+      )
     , ( 'room'
       , [ 'contacts'
         , 'location'
@@ -507,6 +517,7 @@ properties = \
       )
     , ( 'support'
       , [ 'analysis_end'
+        , 'analysis_result'
         , 'analysis_start'
         , 'bcc'
         , 'category'
@@ -534,6 +545,8 @@ properties = \
         , 'related_support'
         , 'release'
         , 'responsible'
+        , 'return_type'
+        , 'sap_ref'
         , 'satisfied'
         , 'send_to_customer'
         , 'serial_number'

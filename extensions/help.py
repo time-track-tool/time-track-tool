@@ -248,6 +248,8 @@ _helptext          = \
       [""'''Alternate email addresses for this user, one per line''']
     , ""'amount'                      :
       [""'''Amount payed''']
+    , ""'analysis_result'             :
+      [""'''Result of error analysis''']
     , ""'announcements'               :
       [""'''Announcements for this %(Classname)s''']
     , ""'approval_required'           :
@@ -1297,6 +1299,8 @@ _helptext          = \
       [""'''Overtime preapproved by supervisor and required by project.''']
     , ""'responsible'                 :
       [""'''Person who is responsible for the %(Classname)s''']
+    , ""'return_type'                 :
+      [""'''%(Property)s for failures in the field''']
     , ""'review++responsible'         :
       [ ""'''Moderator for %(Classname)s -- Note: If you do not specify
              the moderator, you will get an indication that the field
@@ -1358,6 +1362,7 @@ _helptext          = \
              set by the system to end of the epoch if nothing else is enabled.
           '''
       ]
+    , ""'sap_ref'                     : [""'''For tracking in SAP''']
     , ""'secondary_groups'            :
       [""'''secondary UNIX Groups for this %(Classname)s''']
     , ""'send_it'                     :

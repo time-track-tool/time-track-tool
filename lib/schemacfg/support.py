@@ -151,6 +151,22 @@ def init \
         )
     sup_type.setkey ("name")
 
+    analysis_result = Class \
+        ( db
+        , ''"analysis_result"
+        , name             = String    ()
+        , description      = String    ()
+        )
+    analysis_result.setkey ("name")
+
+    return_type = Class \
+        ( db
+        , ''"return_type"
+        , name             = String    ()
+        , order            = Number    ()
+        )
+    return_type.setkey ("name")
+
     Superseder_Issue_Class \
         ( db
         , ''"support"
@@ -184,6 +200,9 @@ def init \
         , product          = Link      ("product", try_id_parsing='no')
         , prodcat          = Link      ("prodcat")
         , external_ref     = String    ()
+        , sap_ref          = String    ()
+        , analysis_result  = Link      ("analysis_result", do_journal='no')
+        , return_type      = Link      ("return_type", do_journal='no')
         )
 
 # end def init
@@ -214,6 +233,10 @@ def security (db, ** kw) :
         , ("sup_classification",
                              ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("customer_agreement",
+                             ["User", "SupportAdmin"], ["SupportAdmin"])
+        , ("analysis_result",
+                             ["User", "SupportAdmin"], ["SupportAdmin"])
+        , ("return_type",
                              ["User", "SupportAdmin"], ["SupportAdmin"])
         ]
     if 'adr_type' in db.classes :

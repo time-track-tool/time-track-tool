@@ -5713,6 +5713,15 @@ msgstr "Classification"
 msgid "analysis_end"
 msgstr "Analysis end"
 
+msgid "analysis_result"
+msgstr "Analysis result"
+
+msgid "return_type"
+msgstr "Customer return type"
+
+msgid "sap_ref"
+msgstr "SAP Reference"
+
 msgid "goods_sent"
 msgstr "Goods sent"
 
