@@ -285,7 +285,7 @@ def state_change_reactor (db, cl, nodeid, old_values) :
     elif new_status == submitted :
         handle_submit    (db, vs)
     elif new_status == cancelled :
-        handle_cancel    (db, vs, trs, old_status == crq)
+        handle_cancel    (db, vs, drs, trs, old_status == crq)
     elif new_status == crq :
         handle_cancel_rq (db, vs)
 # end def state_change_reactor
@@ -417,8 +417,7 @@ def handle_accept (db, vs, trs, old_status) :
                 )
 # end def handle_accept
 
-def handle_cancel (db, vs, trs, is_crq) :
-    drs = {}
+def handle_cancel (db, vs, drs, trs, is_crq) :
     if is_crq :
         for trid in trs :
             tr  = db.time_record.getnode (trid)
@@ -428,7 +427,6 @@ def handle_cancel (db, vs, trs, is_crq) :
             if not tp.is_public_holiday :
                 assert tp.approval_required
                 db.time_record.retire (trid)
-            drs [tr.daily_record] = 1
         for dr in drs :
             st_open = db.daily_record_status.lookup ('open')
             db.daily_record.set (dr, status = st_open)

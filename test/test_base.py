@@ -2394,6 +2394,23 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        self.db.leave_submission.set \
+            (v2, status = st_carq, comment_cancel = 'Cancel Comment')
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.db.leave_submission.set (v2, status = st_canc)
+        vs2 = self.db.leave_submission.getnode (v2)
+        dt  = common.pretty_range (vs2.first_day, vs2.last_day)
+        drs = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = dt))
+        for did in drs :
+            dr = self.db.daily_record.getnode (did)
+            self.assertEqual (dr.status, dr_opn)
+        os.unlink (maildebug)
+        self.db.commit ()
+        self.db.close ()
     # end def test_vacation
 
 # end class Test_Case_Timetracker
