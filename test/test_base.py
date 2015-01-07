@@ -1244,7 +1244,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
     # end def setup_user13
 
-    def test_user13 (self) :
+    def test_user13_vacation (self) :
         self.log.debug ('test_user13')
         self.setup_db ()
         self.setup_user13 ()
@@ -1266,12 +1266,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.close  ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
-        fs = { 'user' : [self.user13] }
+        fs = { 'user' : [self.user13], 'date' : '2014-01-01;2015-12-31' }
         class r : filterspec = fs ; columns = {'additional_submitted'}
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
-        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines), 3)
         self.assertEqual (len (lines [0]), 10)
         self.assertEqual (lines  [0] [0], 'User')
         self.assertEqual (lines  [0] [1], 'Time Period')
@@ -1293,8 +1293,18 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines  [1] [7], '')
         self.assertEqual (lines  [1] [8], '9.27')
         self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [2] [0], 'testuser13')
+        self.assertEqual (lines  [2] [1], '2015-12-31')
+        self.assertEqual (lines  [2] [2], '25.00')
+        self.assertEqual (lines  [2] [3], '25.00')
+        self.assertEqual (lines  [2] [4], '9.27')
+        self.assertEqual (lines  [2] [5], '34.27')
+        self.assertEqual (lines  [2] [6], '0.0')
+        self.assertEqual (lines  [2] [7], '')
+        self.assertEqual (lines  [2] [8], '34.27')
+        self.assertEqual (lines  [2] [9], '0.00')
         self.db.close ()
-    # end def test_user13
+    # end def test_user13_vacation
 
     def test_vacation (self) :
         self.log.debug ('test_vacation')
