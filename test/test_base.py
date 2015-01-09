@@ -97,6 +97,7 @@ import common
 import summary
 import user_dynamic
 import vacation
+from vac import eoy_vacation
 
 header_regex = re.compile (r'\s*\n')
 def header_decode (h) :
@@ -1303,6 +1304,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines  [2] [7], '')
         self.assertEqual (lines  [2] [8], '34.27')
         self.assertEqual (lines  [2] [9], '0.00')
+
+        self.assertEqual \
+            (33, eoy_vacation (self.db, self.user13, date.Date ('2014-12-31')))
+        self.assertEqual \
+            (35, eoy_vacation (self.db, self.user13, date.Date ('2015-12-31')))
         self.db.close ()
     # end def test_user13_vacation
 

@@ -231,8 +231,8 @@
      <span tal:content="python:jandate.pretty (utils.ymd)"/>
      &nbsp;
     </th>
-    <td class="number" tal:content="python:utils.consolidated_vacation
-        (db._db, db._db.getuid (), date = remdate)"/>
+    <td class="number" tal:content="python:
+        utils.eoy_vacation (db._db, db._db.getuid (), remdate)"/>
    </tr>
    <tr>
     <th i18n:translate="">Approved&nbsp;</th>

@@ -1579,30 +1579,15 @@ class Vacation_Report (_Report) :
             if u not in self.user_ctypes :
                 continue
             for ctype in self.user_ctypes [u] :
-                yday  = vacation.next_yearly_vacation_date \
-                    (db, u, ctype, min_user_date [(u, ctype)]) - day
+                vc = user_vc [(u, ctype)]
+                yday, pd, carry, ltot = vacation.vacation_params \
+                    (db, u, min_user_date [(u, ctype)], vc, hv)
                 ld    = None
                 d     = yday
                 if hv :
                     d = min (d, self.end)
-                carry = None
-                ltot  = None
-                if d :
-                    pd = vacation.prev_yearly_vacation_date (db, u, ctype, d)
-                    if not pd or user_vc [(u, ctype)].date == pd :
-                        carry = user_vc [(u, ctype)].days
-                        if not pd :
-                            pd = user_vc [(u, ctype)].date
-                        ltot  = carry
-                    else :
-                        carry = vacation.remaining_vacation \
-                            (db, u, ctype, pd - day)
-                        ltot  = vacation.consolidated_vacation \
-                            (db, u, ctype, pd - day)
                 if ld is None :
                     ld = pd
-                carry = carry or 0.0
-                ltot  = ltot  or 0.0
                 # Round up to next multiple of 0.5 days
                 if not hv :
                     carry = ceil (carry)

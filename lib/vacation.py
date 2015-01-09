@@ -619,4 +619,30 @@ def need_hr_approval \
     return ceil (vac) - dur < 0
 # end def need_hr_approval
 
+def vacation_params (db, user, date, vc, hv = False) :
+    """ Compute parameters needed for initializing vacation report,
+        returns the last total vacation (initial carry-over for start of
+        vacation or consolidated vacation from last year) and the
+        current carry (initial carry-over for start of vacation or last
+        remaining vacation). This is used for summary data in the
+        summary report and for vacation display in the leave mask.
+    """
+    day   = common.day
+    carry = None
+    ltot  = None
+    ctype = vc.contract_type
+    yday  = next_yearly_vacation_date (db, user, ctype, date) - day
+    if yday :
+        pd = prev_yearly_vacation_date (db, user, ctype, yday)
+        if not pd or vc.date == pd :
+            pd    = vc.date
+            carry = ltot = vc.days
+        else :
+            carry = remaining_vacation    (db, user, ctype, pd - day)
+            ltot  = consolidated_vacation (db, user, ctype, pd - day)
+    carry = carry or 0.0
+    ltot  = ltot  or 0.0
+    return yday, pd, carry, ltot
+# end def vacation_params
+
 ### __END__

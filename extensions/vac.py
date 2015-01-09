@@ -242,6 +242,22 @@ def leave_days (db, user, first_day, last_day) :
         return 'Invalid data'
 # end def leave_days
 
+def eoy_vacation (db, user, date) :
+    eoy = Date (date.pretty ('%Y-12-31'))
+    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    ctype = dyn.contract_type
+    vc    = db.vacation_correction.filter \
+        ( None
+        , dict (user = user, absolute = True, contract_type = ctype)
+        , sort = [('+', 'date')]
+        )
+    assert vc
+    vc    = db.vacation_correction.getnode (vc [0])
+    yday, pd, carry, ltot = vacation.vacation_params (db, user, eoy, vc)
+    cons  = vacation.consolidated_vacation (db, user, vc.contract_type, eoy)
+    return ceil (cons - ltot + carry)
+# end def eoy_vacation
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',                    vacation.valid_wps)
@@ -261,6 +277,7 @@ def init (instance) :
     reg ('get_vacation_correction',      vacation.get_vacation_correction)
     reg ('year',                         Interval ('1y'))
     reg ('day',                          common.day)
+    reg ('eoy_vacation',                 eoy_vacation)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)
 # end def init
