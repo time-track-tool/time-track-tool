@@ -244,15 +244,8 @@ def leave_days (db, user, first_day, last_day) :
 
 def eoy_vacation (db, user, date) :
     eoy = Date (date.pretty ('%Y-12-31'))
-    dyn = user_dynamic.get_user_dynamic (db, user, date)
-    ctype = dyn.contract_type
-    vc    = db.vacation_correction.filter \
-        ( None
-        , dict (user = user, absolute = True, contract_type = ctype)
-        , sort = [('+', 'date')]
-        )
+    vc  = vacation.get_vacation_correction (db, user)
     assert vc
-    vc    = db.vacation_correction.getnode (vc [0])
     yday, pd, carry, ltot = vacation.vacation_params (db, user, eoy, vc)
     cons  = vacation.consolidated_vacation (db, user, vc.contract_type, eoy)
     return ceil (cons - ltot + carry)

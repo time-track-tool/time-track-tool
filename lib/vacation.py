@@ -338,10 +338,17 @@ def get_vacation_correction (db, user, ctype = -1, date = None) :
         , absolute      = True
         , date          = dt
         )
+    # If no ctype given, try to get dyn. user record on date and use
+    # ctype from there. If not found we simply search for the latest
+    # vacation correction before date.
+    if ctype == -1 :
+        dyn = user_dynamic.get_user_dynamic (db, user, date)
+        if dyn :
+            ctype = dyn.contract_type
     if ctype != -1 :
         d ['contract_type'] = ctype
         if ctype is None :
-            d ['contract_type'] = '-1'
+            d ['contract_type'] = '-1' # roundup: -1 means search empty
     vcs = db.vacation_correction.filter (None, d, sort = [('-', 'date')])
     if not vcs :
         return
@@ -501,6 +508,8 @@ def consolidated_vacation \
             iv = eoy + common.day - d
             vac += interval_days (iv) * dyn.vacation_yearly / yd
             d  = eoy + common.day
+            if dyn.valid_to == d :
+                dyn = vac_next_user_dynamic (db, dyn)
         else :
             yd = float (common.ydays (ed - common.day))
             vac += interval_days (ed - d) * dyn.vacation_yearly / yd
