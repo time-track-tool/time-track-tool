@@ -19,18 +19,18 @@
         (utils, pdict ['user'])
       , department        = utils.ExtProperty
         ( utils, pdict ['department']
-        , multiselect = 1
+        , multiselect = 1, multi_selonly = 1
         , filter      = dict (valid_from = utils.until_now ())
         )
       , org_location      = utils.ExtProperty
-        (utils, pdict ['org_location'],      multiselect = 1)
+        (utils, pdict ['org_location'],      multiselect = 1, multi_selonly = 1)
       , supervisor        = utils.ExtProperty
         (utils, pdict ['supervisor'])
       , status            = utils.ExtProperty
-        (utils, pdict ['status'],            multiselect = 1)
+        (utils, pdict ['status'],            multiselect = 1, multi_selonly = 1)
       , summary_type      = utils.ExtProperty
         ( utils, pdict ['summary_type']
-        , multiselect = 1
+        , multiselect = 1, multi_selonly = 1
         , filter      = dict (is_staff = True)
         )
       , all_in            = utils.ExtProperty (utils, pdict ['all_in'])

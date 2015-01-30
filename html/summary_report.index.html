@@ -15,15 +15,15 @@
       (utils, pdict ['user'])
     , department        = utils.ExtProperty
       ( utils, pdict ['department']
-      , multiselect = 1
+      , multiselect = 1, multi_selonly = 1
       , filter      = dict (valid_from = utils.until_now ())
       )
     , supervisor        = utils.ExtProperty
       (utils, pdict ['supervisor'])
     , org_location      = utils.ExtProperty
-      (utils, pdict ['org_location'],      multiselect = 1)
+      (utils, pdict ['org_location'],      multiselect = 1, multi_selonly = 1)
     , organisation      = utils.ExtProperty
-      (utils, pdict ['organisation'],      multiselect = 1)
+      (utils, pdict ['organisation'],      multiselect = 1, multi_selonly = 1)
     , organisation_id  = utils.ExtProperty
       ( utils, pdict ['organisation']
       , searchable = False
@@ -45,35 +45,35 @@
       , searchname = 'time_wp.wp_no'
       )
     , time_project      = utils.ExtProperty
-      (utils, pdict ['time_project'],      multiselect = 1)
+      (utils, pdict ['time_project'],      multiselect = 1, multi_selonly = 1)
     , time_project_id   = utils.ExtProperty
       ( utils, pdict ['time_project']
       , searchable = False
       , searchname = 'time_project.id'
       )
     , time_wp_group     = utils.ExtProperty
-      (utils, pdict ['time_wp_group'],     multiselect = 1)
+      (utils, pdict ['time_wp_group'],     multiselect = 1, multi_selonly = 1)
     , time_wp_group_id  = utils.ExtProperty
       ( utils, pdict ['time_wp_group']
       , searchable = False
       , searchname = 'time_wp_group.id'
       )
     , cost_center       = utils.ExtProperty
-      (utils, pdict ['cost_center'],       multiselect = 1)
+      (utils, pdict ['cost_center'],       multiselect = 1, multi_selonly = 1)
     , cost_center_id    = utils.ExtProperty
       ( utils, pdict ['cost_center']
       , searchable = False
       , searchname = 'cost_center.id'
       )
     , cost_center_group = utils.ExtProperty 
-      (utils, pdict ['cost_center_group'], multiselect = 1)
+      (utils, pdict ['cost_center_group'], multiselect = 1, multi_selonly = 1)
     , cost_center_group_id = utils.ExtProperty
       ( utils, pdict ['cost_center_group']
       , searchable = False
       , searchname = 'cost_center_group.id'
       )
     , summary_type      = utils.ExtProperty
-      (utils, pdict ['summary_type'],      multiselect = 1)
+      (utils, pdict ['summary_type'],      multiselect = 1, multi_selonly = 1)
     , summary           = utils.ExtProperty
       (utils, pdict ['summary'])
     , show_all_users    = utils.ExtProperty
@@ -83,27 +83,27 @@
     , show_missing      = utils.ExtProperty
       (utils, pdict ['show_missing'],   bool_tristate = False)
     , status            = utils.ExtProperty
-      (utils, pdict ['status'],            multiselect = 1)
+      (utils, pdict ['status'],            multiselect = 1, multi_selonly = 1)
     , planned_effort    = utils.ExtProperty
       (utils, pdict ['planned_effort'])
     , op_project        = utils.ExtProperty
       (utils, pdict ['op_project'])
     , reporting_group   = utils.ExtProperty
-      (utils, pdict ['reporting_group'], multiselect = 1)
+      (utils, pdict ['reporting_group'], multiselect = 1, multi_selonly = 1)
     , reporting_group_id = utils.ExtProperty
         ( utils, pdict ['reporting_group']
         , searchname  = 'reporting_group.id'
         , searchable  = False
         )
     , product_family = utils.ExtProperty
-      (utils, pdict ['product_family'], multiselect = 1)
+      (utils, pdict ['product_family'], multiselect = 1, multi_selonly = 1)
     , product_family_id = utils.ExtProperty
         ( utils, pdict ['product_family']
         , searchname  = 'product_family.id'
         , searchable  = False
         )
     , project_type = utils.ExtProperty
-      (utils, pdict ['project_type'], multiselect = 1)
+      (utils, pdict ['project_type'], multiselect = 1, multi_selonly = 1)
     , project_type_id = utils.ExtProperty
         ( utils, pdict ['project_type']
         , searchname  = 'project_type.id'

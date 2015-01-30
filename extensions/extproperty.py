@@ -159,6 +159,8 @@ class ExtProperty :
         pretty: optional pretty-printing function (defaults to _)
         multiselect: Show property as a multiselect in search-box
             used by html rendering in template
+        multi_selonly: When showing multi search-box, don't show
+            'not selected' option
         is_labelprop: Render this property as a link to item -- usually
             done for labelprop of item and for id
         editable: Render property as an editable property (e.g. field)
@@ -233,6 +235,7 @@ class ExtProperty :
         , additional    = []
         , menuheight    = 5
         , popcal        = True
+        , multi_selonly = False
         ) :
         if not hasattr (prop._db, '_') :
             prop._db._ = _
@@ -273,6 +276,7 @@ class ExtProperty :
         self.fieldwidth    = fieldwidth or self.default_fieldwidth ()
         self.menuheight    = menuheight
         self.popcal        = popcal
+        self.multi_selonly = multi_selonly
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
