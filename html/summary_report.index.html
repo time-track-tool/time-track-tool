@@ -109,6 +109,8 @@
         , searchname  = 'project_type.id'
         , searchable  = False
         )
+    , sap_cc   = utils.ExtProperty
+      (utils, pdict ['sap_cc'],        multiselect = 1, multi_selonly = 1)
     );
     sr   python: utils.Summary_Report (db, request, utils)
    "
@@ -129,6 +131,7 @@
         ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
         , 'time_project', 'time_wp_group', 'cost_center', 'cost_center_group'
         , 'op_project', 'reporting_group', 'product_family', 'project_type'
+        , 'sap_cc'
         , 'summary_type', 'status', 'show_all_users', 'show_empty'
         , 'show_missing'
         )

@@ -5866,6 +5866,9 @@ msgstr "is nosy"
 msgid "doc_num"
 msgstr "Document number"
 
+msgid "sap_cc"
+msgstr "SAP Cost center"
+
 #~ msgid "consumation"
 #~ msgstr "consumation"
 

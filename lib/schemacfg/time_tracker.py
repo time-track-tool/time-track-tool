@@ -166,6 +166,7 @@ def init \
         , reporting_group       = Link      ("reporting_group")
         , product_family        = Link      ("product_family")
         , project_type          = Link      ("project_type")
+        , sap_cc                = Link      ("sap_cc")
         )
 
     reporting_group = Class \
@@ -305,6 +306,14 @@ def init \
         )
     overtime_period.setkey ("name")
 
+    sap_cc = Class \
+        ( db
+        , ''"sap_cc"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    sap_cc.setkey ("name")
+
     ud = Class \
         ( db
         , ''"user_dynamic"
@@ -335,6 +344,7 @@ def init \
         , all_in                = Boolean   ()
         , additional_hours      = Number    ()
         , overtime_period       = Link      ("overtime_period")
+        , sap_cc                = Link      ("sap_cc")
         )
 
     leave_status = Class \
@@ -505,6 +515,10 @@ def security (db, ** kw) :
           )
         , ( "reporting_group"
           , ["User"]
+          , ["HR", "Controlling"]
+          )
+        , ( "sap_cc"
+          , ["HR", "Controlling"]
           , ["HR", "Controlling"]
           )
         , ( "summary_report"

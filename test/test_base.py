@@ -789,6 +789,166 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
     # end def setup_user11
 
+    def test_user11_sap_cc (self) :
+        self.log.debug ('test_user11_sap_cc')
+        self.setup_db ()
+        self.setup_user11 ()
+        sap_cc = self.db.sap_cc.create (name = "SAP-1")
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
+        self.assertEqual (len (ud), 1)
+        ud = self.db.user_dynamic.getnode (ud [0])
+        week = self.db.overtime_period.lookup ('week')
+        self.db.user_dynamic.set \
+            ( ud.id
+            , sap_cc = sap_cc
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username11)
+        user11_time.import_data_11 (self.db, self.user11)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        fs = { 'sap_cc'       : [sap_cc]
+             , 'date'         : '2013-06-01;2013-06-30'
+             , 'summary_type' : [2, 4]
+             }
+        cols = \
+            [ 'time_wp'
+            , 'user'
+            , 'summary'
+            ]
+
+        class r :
+            filterspec = fs
+            columns = cols
+            sort = None
+            group = None
+            classname = 'summary_report'
+
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines),     10)
+        self.assertEqual (len (lines [0]),  4)
+        self.assertEqual (lines [0][0], 'Level')
+        self.assertEqual (lines [0][1], 'Time Period')
+        self.assertEqual (lines [0][2], 'testuser11')
+        self.assertEqual (lines [0][3], 'Sum')
+        self.assertEqual (lines [1][0], 'Work package A Project/Work Package 0')
+        self.assertEqual (lines [1][1], 'WW 23/2013')
+        self.assertEqual (lines [1][2], '5.00')
+        self.assertEqual (lines [1][3], '5.00')
+        self.assertEqual (lines [2][0], 'Work package A Project/Work Package 0')
+        self.assertEqual (lines [2][1], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [2][2], '5.00')
+        self.assertEqual (lines [2][3], '5.00')
+        self.assertEqual (lines [3][0], 'Work package Public Holiday/Holiday')
+        self.assertEqual (lines [3][1], 'WW 24/2013')
+        self.assertEqual (lines [3][2], '1.00')
+        self.assertEqual (lines [3][3], '1.00')
+        self.assertEqual (lines [4][0], 'Work package Public Holiday/Holiday')
+        self.assertEqual (lines [4][1], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [4][2], '1.00')
+        self.assertEqual (lines [4][3], '1.00')
+        self.assertEqual (lines [5][0], 'Work package Travel/Travel')
+        self.assertEqual (lines [5][1], 'WW 24/2013')
+        self.assertEqual (lines [5][2], '2.00')
+        self.assertEqual (lines [5][3], '2.00')
+        self.assertEqual (lines [6][0], 'Work package Travel/Travel')
+        self.assertEqual (lines [6][1], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [6][2], '2.00')
+        self.assertEqual (lines [6][3], '2.00')
+        self.assertEqual (lines [7][0], 'Sum')
+        self.assertEqual (lines [7][1], 'WW 23/2013')
+        self.assertEqual (lines [7][2], '5.00')
+        self.assertEqual (lines [7][3], '5.00')
+        self.assertEqual (lines [8][0], 'Sum')
+        self.assertEqual (lines [8][1], 'WW 24/2013')
+        self.assertEqual (lines [8][2], '3.00')
+        self.assertEqual (lines [8][3], '3.00')
+        self.assertEqual (lines [9][0], 'Sum')
+        self.assertEqual (lines [9][1], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [9][2], '8.00')
+        self.assertEqual (lines [9][3], '8.00')
+
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
+        ud = self.db.user_dynamic.getnode (ud [0])
+        self.db.user_dynamic.set \
+            ( ud.id
+            , sap_cc = None
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user11
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2013-06-05')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 45.0
+            , additional_hours  = 40.0
+            , overtime_period   = week
+            , sap_cc            = sap_cc
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user11
+            , org_location      = ud.org_location
+            , department        = ud.department
+            , valid_from        = date.Date ('2013-06-11')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 45.0
+            , additional_hours  = 40.0
+            , overtime_period   = week
+            , sap_cc            = None
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        sr = summary.Summary_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines),     5)
+        self.assertEqual (len (lines [0]), 4)
+        self.assertEqual (lines [0][0], 'Level')
+        self.assertEqual (lines [0][1], 'Time Period')
+        self.assertEqual (lines [0][2], 'testuser11')
+        self.assertEqual (lines [0][3], 'Sum')
+        self.assertEqual (lines [1][0], 'Work package Public Holiday/Holiday')
+        self.assertEqual (lines [1][1], 'WW 24/2013')
+        self.assertEqual (lines [1][2], '1.00')
+        self.assertEqual (lines [1][3], '1.00')
+        self.assertEqual (lines [2][0], 'Work package Public Holiday/Holiday')
+        self.assertEqual (lines [2][1], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [2][2], '1.00')
+        self.assertEqual (lines [2][3], '1.00')
+        self.assertEqual (lines [3][0], 'Sum')
+        self.assertEqual (lines [3][1], 'WW 24/2013')
+        self.assertEqual (lines [3][2], '1.00')
+        self.assertEqual (lines [3][3], '1.00')
+        self.assertEqual (lines [4][0], 'Sum')
+        self.assertEqual (lines [4][1], '2013-06-01;2013-06-30')
+        self.assertEqual (lines [4][2], '1.00')
+        self.assertEqual (lines [4][3], '1.00')
+    # end def test_user11_sap_cc
+
     def test_user11 (self) :
         self.log.debug ('test_user11')
         self.setup_db ()

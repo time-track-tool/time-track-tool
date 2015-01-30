@@ -638,7 +638,7 @@ class Summary_Report (_Report) :
         olo_or_dept = False
         drecs       = {}
         org_dep_usr = {}
-        for cl in 'department', 'org_location' :
+        for cl in 'department', 'org_location', 'sap_cc' :
             spec = dict ((s, 1) for s in filterspec.get (cl, []))
             if spec :
                 olo_or_dept = True

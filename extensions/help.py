@@ -1362,6 +1362,8 @@ _helptext          = \
              set by the system to end of the epoch if nothing else is enabled.
           '''
       ]
+    , ""'sap_cc'                      :
+      [""'''For selecting %(Classname)s information via the %(Property)s''']
     , ""'sap_ref'                     : [""'''For tracking in SAP''']
     , ""'secondary_groups'            :
       [""'''secondary UNIX Groups for this %(Classname)s''']
