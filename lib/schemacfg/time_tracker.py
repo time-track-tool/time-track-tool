@@ -518,7 +518,7 @@ def security (db, ** kw) :
           , ["HR", "Controlling"]
           )
         , ( "sap_cc"
-          , ["HR", "Controlling"]
+          , ["User"]
           , ["HR", "Controlling"]
           )
         , ( "summary_report"

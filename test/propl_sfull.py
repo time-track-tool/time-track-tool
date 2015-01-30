@@ -405,6 +405,7 @@ properties = \
         , 'product_family'
         , 'product_line'
         , 'product_use_case'
+        , 'sap_material'
         , 'valid'
         ]
       )
@@ -461,6 +462,11 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'sap_cc'
+      , [ 'description'
+        , 'name'
+        ]
+      )
     , ( 'severity'
       , [ 'abbreviation'
         , 'name'
@@ -498,6 +504,7 @@ properties = \
         , 'product_family'
         , 'project_type'
         , 'reporting_group'
+        , 'sap_cc'
         , 'show_all_users'
         , 'show_empty'
         , 'show_missing'
@@ -710,6 +717,7 @@ properties = \
         , 'hours_wed'
         , 'org_location'
         , 'overtime_period'
+        , 'sap_cc'
         , 'supp_per_period'
         , 'supp_weekly_hours'
         , 'travel_full'

@@ -5968,6 +5968,12 @@ msgstr "ist Verteiler"
 msgid "doc_num"
 msgstr "Dokument Nummer"
 
+msgid "sap_cc"
+msgstr "SAP Kostenstelle"
+
+msgid "sap_material"
+msgstr "SAP Material-Nummer"
+
 #~ msgid "consumation"
 #~ msgstr "verbrachter Urlaub"
 

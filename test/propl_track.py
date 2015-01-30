@@ -221,6 +221,7 @@ properties = \
         , 'product_family'
         , 'product_line'
         , 'product_use_case'
+        , 'sap_material'
         , 'valid'
         ]
       )

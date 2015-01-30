@@ -22,6 +22,11 @@
    ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
+     <tr tal:condition="python: 'sap_material' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'sap_material')"/>
+      <td tal:content="structure python:context.sap_material.plain ()"/>
+     </tr>
      <tr tal:condition="python: 'business_unit' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'business_unit')"/>

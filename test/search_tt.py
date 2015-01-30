@@ -485,6 +485,15 @@ properties = \
           )
         ]
       )
+    , ( 'sap_cc'
+      , [ ( 'description'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        ]
+      )
     , ( 'sex'
       , [ ( 'name'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
@@ -526,6 +535,9 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'reporting_group'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
+          )
+        , ( 'sap_cc'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'project', 'project_view', 'user']
           )
         , ( 'show_all_users'
@@ -946,6 +958,9 @@ properties = \
           , ["admin", "hr"]
           )
         , ( 'overtime_period'
+          , ["admin", "hr"]
+          )
+        , ( 'sap_cc'
           , ["admin", "hr"]
           )
         , ( 'supp_per_period'

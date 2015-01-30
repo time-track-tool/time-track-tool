@@ -5869,6 +5869,9 @@ msgstr "Document number"
 msgid "sap_cc"
 msgstr "SAP Cost center"
 
+msgid "sap_material"
+msgstr "SAP Material number"
+
 #~ msgid "consumation"
 #~ msgstr "consumation"
 

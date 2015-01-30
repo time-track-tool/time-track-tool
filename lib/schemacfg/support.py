@@ -103,6 +103,7 @@ def init \
         , product_use_case = Link      ("prodcat")
         , product_line     = Link      ("prodcat")
         , business_unit    = Link      ("business_unit")
+        , sap_material     = String    ()
         , is_series        = Boolean   ()
         , valid            = Boolean   ()
         )

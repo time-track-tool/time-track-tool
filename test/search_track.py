@@ -525,6 +525,9 @@ properties = \
         , ( 'product_use_case'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'sap_material'
+          , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'valid'
           , ['admin', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )

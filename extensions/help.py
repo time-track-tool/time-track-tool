@@ -1364,6 +1364,7 @@ _helptext          = \
       ]
     , ""'sap_cc'                      :
       [""'''For selecting %(Classname)s information via the %(Property)s''']
+    , ""'sap_material'                : [""'''Material number in SAP''']
     , ""'sap_ref'                     : [""'''For tracking in SAP''']
     , ""'secondary_groups'            :
       [""'''secondary UNIX Groups for this %(Classname)s''']
