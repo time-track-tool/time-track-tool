@@ -459,10 +459,11 @@ def leave_wp (db, dr, wp, start, end, duration) :
     tp = db.time_project.getnode (db.time_wp.get (wp, 'project'))
     if not tp.approval_required :
         return False
-    # Only search for non-cancelled non-retired
+    # Only search for non-cancelled non-retired non-declined
     st  = [] 
+    unwanted = ('cancelled', 'retired', 'declined')
     for stid in db.leave_status.getnodeids (retired = False) : 
-        if db.leave_status.get (stid, 'name') in ('cancelled', 'retired') :
+        if db.leave_status.get (stid, 'name') in unwanted :
             continue
         st.append (stid)
     vs = vacation.leave_submissions_on_date \
