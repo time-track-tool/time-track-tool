@@ -454,7 +454,8 @@ def remaining_vacation \
     vac -= vacation_time_sum (db, user, ctype, vc.date, ed)
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
-    dt  = common.pretty_range (vc.date + common.day, ed)
+    # Also one day *earlier* than ed for the same reason.
+    dt  = common.pretty_range (vc.date + common.day, ed - common.day)
     d   = dict (user = user, date = dt)
     if ctype is not None :
         d ['contract_type'] = ctype
