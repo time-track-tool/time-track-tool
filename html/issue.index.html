@@ -55,6 +55,8 @@
     , ('keywords',           dict (multiselect = 1))
     , ('maturity_index',     {})
     , ('doc_issue_status',   dict (multiselect = 1))
+    , ('ext_tracker',        dict (multiselect = 1))
+    , ('ext_id',             {})
     );
    props python:
        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

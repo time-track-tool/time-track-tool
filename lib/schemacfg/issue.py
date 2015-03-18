@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-15 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -113,6 +113,14 @@ def init \
         )
     msg_keyword.setkey("name")
 
+    ext_tracker = Class \
+        ( db, "ext_tracker"
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
+        , url_template        = String    (indexme = 'no')
+        )
+    ext_tracker.setkey("name")
+
     Optional_Doc_Issue_Class \
         ( db, "issue"
         , keywords            = Multilink ("keyword",     do_journal = 'no')
@@ -141,6 +149,10 @@ def init \
         , severity            = Link      ("severity",    do_journal = 'no')
         , maturity_index      = Number    ()
         , confidential        = Boolean   ()
+        , ext_id              = String    ()
+        , ext_status          = String    ()
+        , ext_attributes      = Link      ("msg")
+        , ext_tracker         = Link      ("ext_tracker")
         )
 
     Cls = kw ['Msg_Class']
@@ -169,6 +181,7 @@ def security (db, ** kw) :
         [ ("issue",             ["Issue_Admin"], ["Issue_Admin"])
         , ("area",              ["User"],        ["Issue_Admin"])
         , ("category",          ["User"],        ["Issue_Admin"])
+        , ("ext_tracker",       ["User"],        ["Issue_Admin"])
         , ("kind",              ["User"],        ["Issue_Admin"])
         , ("msg_keyword",       ["User"],        ["Issue_Admin"])
         , ("prodcat",           ["User"],        [])

@@ -78,6 +78,10 @@ explicit           = \
     ""'''Only an explicitly chosen %(Property)s (or several) appear in
          the report when you also choose %(Property)s in View.
       '''
+ext_only           = \
+    ""'''This is only set if the %(Classname)s is being synchronised
+         with an external issue tracker.
+      '''
 firstname          = \
     ""'''First name for this %(Classname)s, e.g., Ralf.'''
 function           = \
@@ -648,6 +652,30 @@ _helptext          = \
              half an hour lunch break was subtracted).
           '''
       , green
+      ]
+    , ""'ext_attributes'              :
+      [""'''Attribute values from latest synchronisation with external
+            tracker. Values are stored as JSON internally and displayed
+            in human readable form if you click on the 'View' link. This
+            is useful if some other tools need the values.
+         '''
+      , ext_only
+      ]
+    , ""'ext_id'                      :
+      [""'''ID of this issue in external issue tracker.
+         '''
+      , ext_only
+      ]
+    , ""'ext_status'                  :
+      [""'''Status of this issue in external issue tracker.
+         '''
+      , ext_only
+      ]
+    , ""'ext_tracker'                 :
+      [""'''Data about external issue tracker including name and
+            description of the external tracker.
+         '''
+      , ext_only
       ]
     , ""'external_company'            :
       [""'''Company for external users used for access control: all

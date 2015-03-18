@@ -1,0 +1,28 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title" i18n:translate="">
+   External Attributes for
+  <span tal:replace="Classname" i18n:name="Classname" />
+ </title>
+ <span metal:fill-slot="body_title" tal:omit-tag="python:1" i18n:translate="">
+   External Attributes for
+  <span tal:replace="Classname" i18n:name="Classname" />
+ </span>
+ <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
+ <td class="content" metal:fill-slot="content">
+ <b tal:condition="python:0" tal:content="context/designator"></b>
+
+     <table class="otherinfo"
+       tal:define="items python:utils.ext_attributes (context)">
+      <tr tal:repeat="item python:sorted (items.iteritems ())">
+       <th class="header2" nowrap
+           tal:content="python:i18n.gettext (item [0])" />
+       <td class="item">
+        <a tal:content="structure python: item [1]" />
+       </td>
+      </tr>
+     </table>
+ </td>
+</tal:block>

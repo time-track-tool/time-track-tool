@@ -5872,6 +5872,18 @@ msgstr "SAP Cost center"
 msgid "sap_material"
 msgstr "SAP Material number"
 
+msgid "ext_id"
+msgstr "Ext. ID"
+
+msgid "ext_tracker"
+msgstr "Ext. Tracker"
+
+msgid "ext_status"
+msgstr "Ext. Status"
+
+msgid "ext_attributes"
+msgstr "Ext. Attributes"
+
 #~ msgid "consumation"
 #~ msgstr "consumation"
 

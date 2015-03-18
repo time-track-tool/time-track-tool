@@ -27,7 +27,8 @@
 #
 #--
 
-from roundup.cgi.templating import MultilinkHTMLProperty
+import json
+from   roundup.cgi.templating import MultilinkHTMLProperty
 import common
 
 def filter_status_transitions (context) :
@@ -46,11 +47,20 @@ def filter_status_transitions (context) :
     return {}
 # end def filter_status_transitions
 
+
+def ext_attributes (context) :
+    json_attr = str (context.ext_attributes.content)
+    d = json.loads (json_attr)
+    return dict \
+        ((k.encode ('utf-8'), v.encode ('utf-8')) for k, v in d.iteritems ())
+# end def ext_attributes
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('filter_status_transitions', filter_status_transitions)
     reg ('copy_url',                  common.copy_url)
     reg ('copy_js',                   common.copy_js)
+    reg ('ext_attributes',            ext_attributes)
 # end def init
 
 ### __END__ issue

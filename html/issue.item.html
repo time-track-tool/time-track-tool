@@ -38,6 +38,44 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr tal:condition="python:
+        (    context.id
+        and 'ext_id' in bclass.properties
+        and context.ext_tracker
+        )">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'ext_tracker')"/>
+      <td> <span tal:content="python:context.ext_tracker"/>
+           <span tal:content="python:context.ext_tracker.description"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'ext_id')"/>
+      <td tal:condition="python:not context.ext_tracker.url_template"
+          tal:content="structure python:context.ext_id"/>
+      <td tal:condition="python:context.ext_tracker.url_template">
+       <a tal:content="structure python:context.ext_id"
+          tal:attributes="href python:
+              str (context.ext_tracker.url_template) % context.ext_id" />
+      </td>
+     </tr>
+     <tr tal:condition="python:
+        (    context.id
+        and 'ext_id' in bclass.properties
+        and context.ext_tracker
+        )">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'ext_status')"/>
+      <td tal:content="python:context.ext_status"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'ext_attributes')"/>
+      <td>
+       <a href="#" tal:attributes="onclick python: ''.join
+          (('javascript:help_window (\''
+          ,  context.designator ()
+          ,  '?@template=ext_attr\',\'900\',\'300\')'
+          ))">View</a>
+      </td>
+     </tr>
+     <tr tal:condition="python:
         'category' in bclass.properties or 'release' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
