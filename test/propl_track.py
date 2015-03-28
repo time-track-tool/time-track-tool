@@ -73,6 +73,12 @@ properties = \
         , 'transitions'
         ]
       )
+    , ( 'ext_tracker'
+      , [ 'description'
+        , 'name'
+        , 'url_template'
+        ]
+      )
     , ( 'file'
       , [ 'content'
         , 'name'
@@ -92,6 +98,10 @@ properties = \
         , 'doc_issue_status'
         , 'earliest_start'
         , 'effective_prio'
+        , 'ext_attributes'
+        , 'ext_id'
+        , 'ext_status'
+        , 'ext_tracker'
         , 'external_users'
         , 'files'
         , 'files_affected'

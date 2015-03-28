@@ -167,6 +167,18 @@ properties = \
           )
         ]
       )
+    , ( 'ext_tracker'
+      , [ ( 'description'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'url_template'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
     , ( 'file'
       , [ ( 'content'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
@@ -214,6 +226,18 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'effective_prio'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_attributes'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_id'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_status'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_tracker'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'pgp', 'supportadmin', 'user']
           )
         , ( 'external_users'

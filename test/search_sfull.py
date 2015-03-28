@@ -465,6 +465,18 @@ properties = \
           )
         ]
       )
+    , ( 'ext_tracker'
+      , [ ( 'description'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'url_template'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
     , ( 'file'
       , [ ( 'content'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
@@ -512,6 +524,18 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'effective_prio'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_attributes'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_id'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_status'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_tracker'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'files'

@@ -377,6 +377,18 @@ properties = \
           )
         ]
       )
+    , ( 'ext_tracker'
+      , [ ( 'description'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'url_template'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        ]
+      )
     , ( 'file'
       , [ ( 'content'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
@@ -424,6 +436,18 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'effective_prio'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'ext_attributes'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'ext_id'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'ext_status'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'ext_tracker'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'external', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'external_users'

@@ -186,6 +186,9 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('External', p)
 
+    p = db.security.getPermission   ('View', 'ext_tracker')
+    db.security.addPermissionToRole ('External', p)
+
     p = db.security.getPermission   ('Create', 'msg')
     db.security.addPermissionToRole ('External', p)
     p = db.security.getPermission   ('Search', 'msg')

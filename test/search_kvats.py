@@ -35,6 +35,18 @@ properties = \
           )
         ]
       )
+    , ( 'ext_tracker'
+      , [ ( 'description'
+          , ['admin', 'issue_admin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'user']
+          )
+        , ( 'url_template'
+          , ['admin', 'issue_admin', 'user']
+          )
+        ]
+      )
     , ( 'file'
       , [ ( 'content'
           , ['admin', 'issue_admin', 'user']
@@ -79,6 +91,18 @@ properties = \
           , ["admin", "issue_admin", "user"]
           )
         , ( 'effective_prio'
+          , ["admin", "issue_admin", "user"]
+          )
+        , ( 'ext_attributes'
+          , ["admin", "issue_admin", "user"]
+          )
+        , ( 'ext_id'
+          , ["admin", "issue_admin", "user"]
+          )
+        , ( 'ext_status'
+          , ["admin", "issue_admin", "user"]
+          )
+        , ( 'ext_tracker'
           , ["admin", "issue_admin", "user"]
           )
         , ( 'files'
