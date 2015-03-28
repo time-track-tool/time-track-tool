@@ -68,7 +68,8 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'ext_attributes')"/>
       <td>
-       <a href="#" tal:attributes="onclick python: ''.join
+       <a tal:condition="context/ext_attributes"
+          href="#" tal:attributes="onclick python: ''.join
           (('javascript:help_window (\''
           ,  context.designator ()
           ,  '?@template=ext_attr\',\'900\',\'300\')'
