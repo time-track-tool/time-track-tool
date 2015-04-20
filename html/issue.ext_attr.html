@@ -18,7 +18,7 @@
        tal:define="items python:utils.ext_attributes (context)">
       <tr tal:repeat="item python:sorted (items.iteritems ())">
        <th class="header2" nowrap
-           tal:content="python:i18n.gettext (item [0])" />
+           tal:content="python: item [0]" />
        <td class="item">
         <a tal:content="structure python: item [1]" />
        </td>

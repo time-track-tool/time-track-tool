@@ -30,6 +30,7 @@
 import json
 from   roundup.cgi.templating import MultilinkHTMLProperty
 import common
+from   rsclib.pycompat import string_types
 
 def filter_status_transitions (context) :
     may_close = True
@@ -47,12 +48,35 @@ def filter_status_transitions (context) :
     return {}
 # end def filter_status_transitions
 
+def ext_attr (value) :
+    if isinstance (value, string_types) :
+        return value.encode ('utf-8')
+    elif isinstance (value, dict) :
+        if 'displayName' in value :
+            if 'name' in value :
+                v = '%s (%s)' % (value ['displayName'], value ['name'])
+                return v.encode ('utf-8')
+            return value ['displayName'].encode ('utf-8')
+        elif 'name' in value :
+            return value ['name'].encode ('utf-8')
+        elif 'key' in value :
+            return value ['key'].encode ('utf-8')
+        else :
+            return ','.join \
+                ('%s: %s' % (k, ext_attr (v))
+                 for k, v in sorted (value.iteritems ())
+                )
+    elif isinstance (value, list) :
+        return ','.join (ext_attr (x) for x in value)
+    else :
+        return repr (value)
+# end def ext_attr
 
 def ext_attributes (context) :
     json_attr = str (context.ext_attributes.content)
     d = json.loads (json_attr)
     return dict \
-        ((k.encode ('utf-8'), v.encode ('utf-8')) for k, v in d.iteritems ())
+        ((k.encode ('utf-8'), ext_attr (v)) for k, v in d.iteritems ())
 # end def ext_attributes
 
 def init (instance) :
