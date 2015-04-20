@@ -108,7 +108,10 @@ class Product_Sync (object) :
                 pcats.append (r)
 
             v   = rec ['BU Owner'].decode (self.opt.encoding)
-            sbu = rec ['Selling BU'].decode (self.opt.encoding)
+            try :
+                sbu = rec ['Selling BU'].decode (self.opt.encoding)
+            except KeyError :
+                sbu = rec ['BU Owner'].decode (self.opt.encoding)
             if sbu == u'0' or sbu == u'ALL-BUSINESS-UNITS' :
                 sbu = []
             else :
@@ -121,8 +124,14 @@ class Product_Sync (object) :
                 bu  = self.update_table \
                     (self.db.business_unit, self.bu_s, self.bu_used, key, par)
 
-            v   = rec ['Artikelnummer'].decode (self.opt.encoding)
-            d   = rec ['Artikelbeschreibung'].decode (self.opt.encoding)
+            try :
+                v   = rec ['Artikelnummer'].decode (self.opt.encoding)
+            except KeyError :
+                v   = rec ['Article Code'].decode (self.opt.encoding)
+            try :
+                d   = rec ['Artikelbeschreibung'].decode (self.opt.encoding)
+            except KeyError :
+                d   = rec ['Description'].decode (self.opt.encoding)
             if bu and sbu and key not in sbu :
                 if self.opt.verbose :
                     print "Skipping %s Not owning BU: %s (%s)" % (v, sbu, key)
@@ -182,9 +191,10 @@ class Product_Sync (object) :
     def validity (self, cls, nodedict, usedict) :
         for k, v in usedict.iteritems () :
             id = nodedict [k]
-            if not v and self.opt.verbose :
-                print "Invalidating %s: %s" % (cls.classname, k)
-            cls.set (id, valid = v)
+            if v or not self.opt.noinvalidate :
+                if not v and self.opt.verbose :
+                    print "Invalidating %s: %s" % (cls.classname, k)
+                cls.set (id, valid = v)
     # end def validity
 
 # end class Product_Sync
@@ -210,6 +220,12 @@ def main () :
         , dest    = 'encoding'
         , help    = 'CSV character encoding'
         , default = 'utf-8'
+        )
+    cmd.add_option \
+        ( '-i', '--do-not-invalidate'
+        , dest   = 'noinvalidate'
+        , help   = 'Do not invalidate if not in import file'
+        , action = 'store_true'
         )
     cmd.add_option \
         ( '-u', '--update'
