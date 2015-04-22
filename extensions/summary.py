@@ -1589,10 +1589,10 @@ class Vacation_Report (_Report) :
                 if ld is None :
                     ld = pd
                 # Round up to next multiple of 0.5 days
-                rcarry = carry
-                if not hv :
-                    rcarry = ceil (carry)
                 while d and d <= end :
+                    rcarry = carry
+                    if not hv :
+                        rcarry = ceil (carry)
                     if (u, ctype) in max_user_date :
                         if max_user_date [(u, ctype)] <= ld :
                             break
