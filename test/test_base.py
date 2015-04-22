@@ -29,7 +29,7 @@ import re
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
 import user7_time, user8_time, user10_time, user11_time, user12_time
-import user13_time
+import user13_time, user14_time
 
 from operator     import mul
 from StringIO     import StringIO
@@ -1471,6 +1471,102 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             (35, eoy_vacation (self.db, self.user13, date.Date ('2015-12-31')))
         self.db.close ()
     # end def test_user13_vacation
+
+    def setup_user14 (self) :
+        self.username14 = 'testuser14'
+        self.user14 = self.db.user.create \
+            ( username     = self.username14
+            , firstname    = 'Nummer14'
+            , lastname     = 'User14'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user14))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.retire (ud [0])
+        self.db.commit ()
+    # end def setup_user14
+
+    def test_user14_vacation (self) :
+        self.log.debug ('test_user14')
+        self.setup_db ()
+        self.setup_user14 ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username14)
+        user14_time.import_data_14 (self.db, self.user14, self.dep, self.olo)
+        vc = self.db.vacation_correction.filter \
+            (None, dict (user = self.user14))
+        self.assertEqual (len (vc), 1)
+        vc = self.db.vacation_correction.getnode (vc [0])
+        self.assertEqual (vc.absolute, True)
+        self.db.vacation_correction.set \
+            (vc.id, days = 6.027, date = date.Date ('2015-01-01'))
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        fs = { 'user' : [self.user14], 'date' : '2015-01-01;2015-12-31' }
+        class r : filterspec = fs ; columns = {'additional_submitted'}
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 10)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [0] [9], 'additional submitted')
+        self.assertEqual (lines  [1] [0], 'testuser14')
+        self.assertEqual (lines  [1] [1], '2015-12-31')
+        self.assertEqual (lines  [1] [2], '25.00')
+        self.assertEqual (lines  [1] [3], '10.34')
+        self.assertEqual (lines  [1] [4], '6.03')
+        self.assertEqual (lines  [1] [5], '16.37')
+        self.assertEqual (lines  [1] [6], '10.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '6.37')
+        self.assertEqual (lines  [1] [9], '0.00')
+        self.db.close  ()
+
+        self.db = self.tracker.open (self.username14)
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 10)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [0] [9], 'additional submitted')
+        self.assertEqual (lines  [1] [0], 'testuser14')
+        self.assertEqual (lines  [1] [1], '2015-12-31')
+        self.assertEqual (lines  [1] [2], '25.00')
+        self.assertEqual (lines  [1] [3], '11.00')
+        self.assertEqual (lines  [1] [4], '7.00')
+        self.assertEqual (lines  [1] [5], '17.00')
+        self.assertEqual (lines  [1] [6], '10.00')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '7.00')
+        self.assertEqual (lines  [1] [9], '0.00')
+
+        self.db.close ()
+    # end def test_user14_vacation
 
     def test_vacation (self) :
         self.log.debug ('test_vacation')
