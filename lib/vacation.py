@@ -399,7 +399,8 @@ def vacation_time_sum (db, user, ctype, start, end) :
         tr  = db.time_record.getnode  (tid)
         dr  = db.daily_record.getnode (tr.daily_record)
         dyn = user_dynamic.get_user_dynamic (db, user, dr.date)
-        if dyn.contract_type != ctype :
+        # dyn is None if time_records booked but dyn record revoked for this period:
+        if not dyn or dyn.contract_type != ctype :
             continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
         assert wh
