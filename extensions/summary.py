@@ -1589,8 +1589,9 @@ class Vacation_Report (_Report) :
                 if ld is None :
                     ld = pd
                 # Round up to next multiple of 0.5 days
+                rcarry = carry
                 if not hv :
-                    carry = ceil (carry)
+                    rcarry = ceil (carry)
                 while d and d <= end :
                     if (u, ctype) in max_user_date :
                         if max_user_date [(u, ctype)] <= ld :
@@ -1621,16 +1622,20 @@ class Vacation_Report (_Report) :
                             '%s .. %s' % (v [0], v [-1])
                     else :
                         container ['yearly entitlement'] = v [0]
-                    container ['carry forward'] = carry
+                    container ['carry forward'] = rcarry
                     cons = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
+                    et = cons - ltot + carry
+                    yp = cons - ltot
                     if not hv :
-                        cons = ceil (cons)
-                    container ['entitlement total'] = cons - ltot + carry
-                    container ['yearly prorated'] = cons - ltot
+                        et = ceil (et)
+                        yp = ceil (yp)
+                        rc = ceil (cons)
+                    container ['entitlement total']  = et
+                    container ['yearly prorated']    = yp
                     container ['remaining vacation'] = carry = \
                         vacation.remaining_vacation \
-                            (db, u, ctype, d, cons, to_eoy = not hv)
+                            (db, u, ctype, d, rc, to_eoy = not hv)
                     val = vacation.vacation_time_sum (db, u, ctype, fd, d)
                     r   = ('HR-vacation', 'HR-leave-approval')
                     if common.user_has_role (self.db, self.uid, *r) :
