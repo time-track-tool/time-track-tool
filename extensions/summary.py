@@ -1627,15 +1627,17 @@ class Vacation_Report (_Report) :
                         (db, u, ctype, d, to_eoy = not hv)
                     et = cons - ltot + carry
                     yp = cons - ltot
+                    # new carry and remaining vacation
+                    carry = rv = vacation.remaining_vacation \
+                        (db, u, ctype, d, cons, to_eoy = not hv)
                     if not hv :
                         et = ceil (et)
                         yp = ceil (yp)
                         rc = ceil (cons)
+                        rv = ceil (carry)
                     container ['entitlement total']  = et
                     container ['yearly prorated']    = yp
-                    container ['remaining vacation'] = carry = \
-                        vacation.remaining_vacation \
-                            (db, u, ctype, d, rc, to_eoy = not hv)
+                    container ['remaining vacation'] = rv
                     val = vacation.vacation_time_sum (db, u, ctype, fd, d)
                     r   = ('HR-vacation', 'HR-leave-approval')
                     if common.user_has_role (self.db, self.uid, *r) :
