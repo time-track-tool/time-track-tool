@@ -56,7 +56,7 @@ def check_time_wp (db, cl, nodeid, new_values) :
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     prj = new_values.get ('project', cl.get (nodeid, 'project'))
     for i in 'name', 'wp_no' :
-        if i in new_values :
+        if i in new_values and new_values [i] is not None :
             check_duplicate_field_value (cl, prj, i, new_values [i])
     if 'project' in new_values :
         new_values ['cost_center'] = db.time_project.get (prj, 'cost_center')
