@@ -124,6 +124,8 @@ def main () :
                     new_wpid = 3
                 elif tp.is_public_holiday :
                     new_wpid = 1
+                elif tp.is_vacation :
+                    new_wpid = 44
                 elif tp.no_overtime :
                     new_wpid = 2
                 else :
