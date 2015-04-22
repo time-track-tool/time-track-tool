@@ -60,11 +60,12 @@
 </tal:block>
 
 <tal:block metal:define-macro="expandable_entity">
- <a tal:content="python:text [path (attr)]"
+ <a tal:content="python:text [bool(path (attr))]"
   tal:attributes="href python:'issue%s?%s' %
    ( context.id
    , '&'.join
-     (['%s=%s' % (x, (lambda a, b : [a, int (not a)][b])(path (x), x == attr))
+     ([ '%s=%s'
+      % (x, (lambda a, b : [int(bool(a)), int (not a)][b])(path (x), x == attr))
        for x in
         ( 'expand_composed_of'
         , 'expand_part_of'
