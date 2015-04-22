@@ -132,6 +132,7 @@ def leave_days (db, user, first_day, last_day) :
     while d <= last_day :
         dyn = user_dynamic.get_user_dynamic (db, user, d)
         if not dyn :
+            d += common.day
             continue
         wh = user_dynamic.day_work_hours (dyn, d)
         ld = leave_duration (db, user, d)
