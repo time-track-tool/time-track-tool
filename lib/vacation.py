@@ -502,10 +502,8 @@ def consolidated_vacation \
             continue
         assert not dyn.valid_to or dyn.valid_to > d
         eoy = roundup.date.Date ('%s-12-31' % d.year)
-        assert \
-            ( dyn.vacation_yearly is not None
-            , "vacation_yearly None for user_dynamic%s" % dyn.id
-            )
+        msg = "vacation_yearly None for user_dynamic%s" % dyn.id
+        assert dyn.vacation_yearly is not None, msg
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to < eoy :
             yd = float (common.ydays (dyn.valid_to))
             vac += interval_days (dyn.valid_to - d) * dyn.vacation_yearly / yd
