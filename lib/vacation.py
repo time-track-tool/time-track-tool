@@ -103,6 +103,10 @@ def create_daily_recs (db, user, first_day, last_day) :
             assert len (x) == 1
             x = x [0]
         else :
+            dyn = user_dynamic.get_user_dynamic (db, user, d)
+            if not dyn :
+                d += common.day
+                continue
             x = db.daily_record.create \
                 ( user              = user
                 , date              = d
