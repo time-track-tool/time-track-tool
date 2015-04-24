@@ -366,7 +366,8 @@ def get_vacation_correction (db, user, ctype = -1, date = None) :
 def vacation_wps (db) :
     # All time recs with vacation wp in range
     vtp = db.time_project.filter (None, dict (is_vacation = True))
-    assert vtp
+    if not vtp :
+        return []
     vwp = db.time_wp.filter (None, dict (project = vtp))
     return vwp
 # end def vacation_wps
@@ -374,7 +375,8 @@ def vacation_wps (db) :
 def special_wps (db) :
     # All time recs with special-leave wp in range
     vtp = db.time_project.filter (None, dict (is_special_leave = True))
-    assert vtp
+    if not vtp :
+        return []
     vwp = db.time_wp.filter (None, dict (project = vtp))
     return vwp
 # end def vacation_wps
@@ -383,7 +385,8 @@ def flexi_wps (db) :
     # All time recs with flexitime wp in range
     vtp = db.time_project.filter \
         (None, dict (max_hours = 0, approval_required = True))
-    assert vtp
+    if not vtp :
+        return []
     vwp = db.time_wp.filter (None, dict (project = vtp))
     return vwp
 # end def flexi_wps
