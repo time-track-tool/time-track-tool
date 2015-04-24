@@ -225,6 +225,15 @@ def html_calendar (request) :
     return "\n".join (res)
 # end def html_calendar
 
+def daily_record_check_batch (db, request) :
+    if 'user' not in request.filterspec or 'date' not in request.filterspec :
+        return []
+    batch = request.batch ()
+    if batch.sequence_length > 31 :
+        return []
+    return batch
+# end def daily_record_check_batch
+
 def batch_has_status (batch, status) :
     b = copy (batch)
     for i in batch :
@@ -370,7 +379,7 @@ def now () :
 # end def now
 
 def until_now () :
-    return now ().pretty (';%Y-%-m-%d')
+    return now ().pretty (';%Y-%m-%d')
 # end def until_now
 
 def get_from_form (request, name) :
@@ -443,6 +452,7 @@ def init (instance) :
     reg ("date_help",                    date_help)
     reg ("html_calendar",                html_calendar)
     reg ("batch_has_status",             batch_has_status)
+    reg ("daily_record_check_batch",     daily_record_check_batch)
     reg ("work_packages",                work_packages)
     reg ("work_packages_selector",       work_packages_selector)
     reg ("work_packages_javascript",     work_packages_javascript)

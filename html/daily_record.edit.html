@@ -48,7 +48,7 @@
     <form method="POST" tal:attributes="action request/classname"
      name="edit_daily_record" enctype="multipart/form-data">
      <tal:block tal:define=
-      "batch        request/batch;
+      "batch        python:utils.daily_record_check_batch (db, request);
        is_open      python:utils.batch_has_status (batch, 'open');
        is_submitted python:utils.batch_has_status (batch, 'submitted');
        is_accepted  python:utils.batch_has_status (batch, 'accepted');
