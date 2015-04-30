@@ -133,6 +133,8 @@ class _Test_Case (unittest.TestCase) :
         , 'itview'
         , 'letter'
         , 'logger'
+        , 'msgedit'
+        , 'msgsync'
         , 'nosy'
         , 'office'
         , 'pbx'
@@ -718,7 +720,8 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
         , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
-        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview'
+        , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'project', 'project_view', 'staff-report'
         , 'supportadmin', 'type', 'user'
         ]
@@ -2692,7 +2695,7 @@ class Test_Case_Tracker (_Test_Case) :
     schemafile = 'trackers'
     roles = \
         [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
-        , 'itview', 'nosy', 'pgp', 'supportadmin', 'user'
+        , 'itview', 'msgedit', 'msgsync', 'nosy', 'pgp', 'supportadmin', 'user'
         ]
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
@@ -2702,7 +2705,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
         , 'external', 'hr', 'hr-leave-approval', 'hr-org-location'
-        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'nosy'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview'
+        , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'project', 'project_view', 'staff-report'
         , 'supportadmin', 'user'
         ]
@@ -4333,7 +4337,10 @@ class Test_Case_ITAdr (_Test_Case) :
 
 class Test_Case_Kvats (_Test_Case) :
     schemaname = 'kvats'
-    roles = ['admin', 'anonymous', 'issue_admin', 'nosy', 'user']
+    roles = \
+        [ 'admin', 'anonymous', 'issue_admin'
+        , 'msgedit', 'msgsync', 'nosy', 'user'
+        ]
     transprop_perms = transprop_kvats
 # end class Test_Case_Kvats
 

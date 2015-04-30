@@ -121,6 +121,15 @@ def init \
         )
     ext_tracker.setkey("name")
 
+    ext_msg = Class \
+        ( db, "ext_msg"
+        , ext_tracker         = Link      ("ext_tracker")
+        , msg                 = Link      ("msg")
+        , ext_id              = String    (indexme = 'no')
+        , key                 = String    (indexme = 'no')
+        )
+    ext_msg.setkey ("key")
+
     Optional_Doc_Issue_Class \
         ( db, "issue"
         , keywords            = Multilink ("keyword",     do_journal = 'no')
@@ -175,19 +184,30 @@ def security (db, ** kw) :
     roles = \
         [ ("Issue_Admin", "Admin for issue tracker")
         , ("Nosy",        "Allowed on nosy list")
+        , ("MsgEdit",     "Allowed to edit message properties")
+        , ("MsgSync",     "Allowed to sync message with ext. tracker")
         ]
     #     classname             allowed to view   /  edit
     classes = \
-        [ ("issue",             ["Issue_Admin"], ["Issue_Admin"])
-        , ("area",              ["User"],        ["Issue_Admin"])
-        , ("category",          ["User"],        ["Issue_Admin"])
-        , ("ext_tracker",       ["User"],        ["Issue_Admin"])
-        , ("kind",              ["User"],        ["Issue_Admin"])
-        , ("msg_keyword",       ["User"],        ["Issue_Admin"])
-        , ("prodcat",           ["User"],        [])
-        , ("status",            ["User"],        ["Issue_Admin"])
-        , ("status_transition", ["User"],        ["Issue_Admin"])
-        , ("severity",          ["User"],        ["Issue_Admin"])
+        [ ("issue",             ["Issue_Admin"],        ["Issue_Admin"])
+        , ("area",              ["User"],               ["Issue_Admin"])
+        , ("category",          ["User"],               ["Issue_Admin"])
+        , ("ext_tracker",       ["User"],               ["Issue_Admin"])
+        , ("kind",              ["User"],               ["Issue_Admin"])
+        , ("msg_keyword",       ["User"],               ["Issue_Admin"])
+        , ("prodcat",           ["User"],               [])
+        , ("status",            ["User"],               ["Issue_Admin"])
+        , ("status_transition", ["User"],               ["Issue_Admin"])
+        , ("severity",          ["User"],               ["Issue_Admin"])
+        , ("ext_msg",           ["MsgEdit", "MsgSync"], ["MsgSync"])
+        ]
+    prop_perms = \
+        [ ( "msg", "Edit", ["MsgEdit", "MsgSync"]
+          , ("date", "author", "keywords", "subject", "summary", "id")
+          )
+        , ( "msg", "Edit", ["User"]
+          , ("keywords",)
+          )
         ]
     fixdoc = schemadef.security_doc_from_docstring
 
@@ -210,9 +230,16 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     schemadef.register_roles                 (db, roles)
-    schemadef.register_class_permissions     (db, classes, ())
+    schemadef.register_class_permissions     (db, classes, prop_perms)
     schemadef.register_nosy_classes          (db, ['issue'])
     db.security.addPermissionToRole          ('User', 'Create', 'issue')
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'msg'
+        , properties  = ("date", "id")
+        )
+    db.security.addPermissionToRole ('MsgEdit', p)
+    db.security.addPermissionToRole ('MsgSync', p)
     schemadef.register_confidentiality_check \
         (db, 'User', 'issue', ('View', 'Edit'))
     schemadef.add_search_permission (db, 'issue', 'User')

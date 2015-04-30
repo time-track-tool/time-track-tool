@@ -190,6 +190,16 @@ Role "it":
 Role "itview":
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
+Role "msgedit":
+  (Search for "msg": ('date', 'id') only)
+ User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
+ User is allowed to access ext_msg (View for "ext_msg" only)
+Role "msgsync":
+  (Search for "msg": ('date', 'id') only)
+ User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
+ User is allowed to access ext_msg (View for "ext_msg" only)
+ User is allowed to create ext_msg (Create for "ext_msg" only)
+ User is allowed to edit ext_msg (Edit for "ext_msg" only)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
  User may get nosy messages for issue (Nosy for "issue" only)
@@ -254,6 +264,7 @@ Role "type":
 Role "user":
   (Search for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
+ User is allowed Edit on (Edit for "msg": ('keywords',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)

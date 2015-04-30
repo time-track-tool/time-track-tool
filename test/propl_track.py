@@ -73,6 +73,13 @@ properties = \
         , 'transitions'
         ]
       )
+    , ( 'ext_msg'
+      , [ 'ext_id'
+        , 'ext_tracker'
+        , 'key'
+        , 'msg'
+        ]
+      )
     , ( 'ext_tracker'
       , [ 'description'
         , 'name'

@@ -365,6 +365,16 @@ def check_ext_user_responsible (db, cl, nodeid, new_values) :
             new_values ['external_users'] = xu.keys ()
 # end def check_ext_user_responsible
 
+def check_ext_msg (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'ext_tracker', 'ext_id', 'msg')
+    new_values ['key'] = ':'.join \
+        ((new_values ['ext_tracker'], new_values ['ext_id']))
+# end def check_ext_msg
+
+def set_ext_msg (db, cl, nodeid, new_values) :
+    common.reject_attributes (_, new_values, 'ext_tracker', 'key', 'ext_id')
+# end def set_ext_msg
 
 def init (db) :
     if 'issue' not in db.classes :
@@ -413,4 +423,7 @@ def init (db) :
         db.issue.audit ("set",    check_ext_user_part_of)
         db.issue.audit ("create", check_ext_user_responsible)
         db.issue.audit ("set",    check_ext_user_responsible)
+    if 'ext_msg' in db.classes :
+        db.ext_msg.audit ("create", check_ext_msg)
+        db.ext_msg.audit ("set",    set_ext_msg)
 # end def init

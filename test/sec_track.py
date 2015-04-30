@@ -97,6 +97,16 @@ Role "it":
 Role "itview":
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
+Role "msgedit":
+  (Search for "msg": ('date', 'id') only)
+ User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
+ User is allowed to access ext_msg (View for "ext_msg" only)
+Role "msgsync":
+  (Search for "msg": ('date', 'id') only)
+ User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
+ User is allowed to access ext_msg (View for "ext_msg" only)
+ User is allowed to create ext_msg (Create for "ext_msg" only)
+ User is allowed to edit ext_msg (Edit for "ext_msg" only)
 Role "nosy":
  User may get nosy messages for issue (Nosy for "issue" only)
  User may get nosy messages for it_issue (Nosy for "it_issue" only)
@@ -132,6 +142,7 @@ Role "supportadmin":
  User is allowed to edit support (Edit for "support" only)
 Role "user":
   (Search for "user": ('realname',) only)
+ User is allowed Edit on (Edit for "msg": ('keywords',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)

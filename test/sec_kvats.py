@@ -34,9 +34,20 @@ Role "issue_admin":
  User is allowed to edit severity (Edit for "severity" only)
  User is allowed to edit status (Edit for "status" only)
  User is allowed to edit status_transition (Edit for "status_transition" only)
+Role "msgedit":
+  (Search for "msg": ('date', 'id') only)
+ User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
+ User is allowed to access ext_msg (View for "ext_msg" only)
+Role "msgsync":
+  (Search for "msg": ('date', 'id') only)
+ User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
+ User is allowed to access ext_msg (View for "ext_msg" only)
+ User is allowed to create ext_msg (Create for "ext_msg" only)
+ User is allowed to edit ext_msg (Edit for "ext_msg" only)
 Role "nosy":
  User may get nosy messages for issue (Nosy for "issue" only)
 Role "user":
+ User is allowed Edit on (Edit for "msg": ('keywords',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)
  User is allowed View on (View for "user": ('username', 'realname', 'id', 'creation', 'creator', 'activity', 'actor') only)
