@@ -21,22 +21,18 @@ def main () :
             ( name        = 'KPM'
             , description = 'VW/Audi Konzern Problem Management'
             )
-    db.issue.set ('74017', ext_tracker = et, ext_id = '6435580')
-    db.issue.set ('74025', ext_tracker = et, ext_id = '6435335')
+        db.issue.set ('74017', ext_tracker = et, ext_id = '6435580')
+        db.issue.set ('74025', ext_tracker = et, ext_id = '6435335')
 
-    eu = None
+    kw = None
     try :
-        eu = db.user.lookup ('ext_sync')
+        kw = db.msg_keyword.lookup ('External Sync')
     except KeyError :
         pass
-    if not eu :
-        db.user.create \
-            ( username = 'ext_sync'
-            , nickname = 'ext sync'
-            , realname = 'User for Sync of external trackers'
-            , password = Password ('ChangeMe')
-            , roles    = 'User'
-            , address  = 'roundup-admin@tttech.com'
+    if kw is None :
+        db.msg_keyword.create \
+            ( name        = 'External Sync'
+            , description = 'Synchronize this message to external tracker'
             )
 
     db.commit ()
