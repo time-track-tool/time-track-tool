@@ -526,9 +526,14 @@ class ExtProperty :
 
     def menu_or_field (self, item = None, editable = True) :
         self._set_item (item)
+        prop = self.prop
         if editable is not None :
             self.editable = editable
-        prop = self.prop
+        # msg and file are never editable (as a menu)
+        if self.is_link_or_multilink :
+            classname = prop._prop.classname
+            if classname == 'msg' or classname == 'file' :
+                self.editable = False
         if self.editable :
             if self.is_link_or_multilink :
                 if prop._prop.classname == 'user' :
