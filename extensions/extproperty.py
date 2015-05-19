@@ -485,7 +485,7 @@ class ExtProperty :
         hidden = ""
         if self.add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
-                % (self.searchname, str (self.prop))
+                % (self.searchname, str (self.prop.plain (escape = 1)))
         if not as_link :
             return hidden + self.formatted ()
         if not self.classname :

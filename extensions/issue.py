@@ -73,7 +73,7 @@ def ext_attr (value) :
 # end def ext_attr
 
 def ext_attributes (context) :
-    json_attr = str (context.ext_attributes.content)
+    json_attr = str (context.ext_attributes.content.plain (escape=1))
     d = json.loads (json_attr)
     return dict \
         ((k.encode ('utf-8'), ext_attr (v)) for k, v in d.iteritems ())

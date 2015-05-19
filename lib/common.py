@@ -31,6 +31,7 @@
 #
 import locale
 import datetime
+import cgi
 from   urllib                 import quote as urlquote
 from   time                   import gmtime
 from   roundup                import roundupdb, hyperdb
@@ -129,7 +130,7 @@ def check_unique (_, cl, id, ** kw) :
             r = []
             for k, v in kw.iteritems () :
                 attr = _ (str (k))
-                val  =    str (v)
+                val  =    cgi.escape (str (v))
                 r.append ("%(attr)s=%(val)s" % locals ())
             raise Reject, _ ("Duplicate: %s") % ', '.join (r)
 # end def check_unique
