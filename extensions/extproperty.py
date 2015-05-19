@@ -379,7 +379,9 @@ class ExtProperty :
             return self.prop.pretty (format)
         if self.format :
             return self.format % self.item [self.name]
-        return str (self.prop)
+        if isinstance (self.prop, type ('')) :
+            return self.prop
+        return str (self.prop.plain (escape=1))
     # end def formatted
 
     def need_lookup (self) :
