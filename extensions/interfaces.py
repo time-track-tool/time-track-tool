@@ -423,8 +423,8 @@ def user_classhelp (db, property='responsible', inputtype = 'radio') :
 
 def nickname (db, user) :
     if 'nickname' in db._db.user.properties and user.nickname.is_view_ok () :
-        return user.nickname.plain ()
-    return user.username.plain ()
+        return user.nickname.plain (escape = 1)
+    return user.username.plain (escape = 1)
 # end def nickname
 
 def indexargs_dict (nav, form) :
