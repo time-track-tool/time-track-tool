@@ -43,7 +43,6 @@ def init (db, Ext_Class, String, ** kw) :
                 ( nickname               = String    ()
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
-            self.setkey ('username')
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))

@@ -53,34 +53,6 @@ def init \
     , ** kw
     ) :
     export = {}
-    cost_center = Class \
-        ( db
-        , ''"cost_center"
-        , name                  = String    ()
-        , description           = String    ()
-        , status                = Link      ("cost_center_status")
-        , cost_center_group     = Link      ("cost_center_group")
-        )
-    cost_center.setkey ("name")
-
-    cost_center_group = Class \
-        ( db
-        , ''"cost_center_group"
-        , name                  = String    ()
-        , description           = String    ()
-        , responsible           = Link      ("user")
-        , active                = Boolean   ()
-        )
-    cost_center_group.setkey ("name")
-
-    cost_center_status = Class \
-        ( db
-        , ''"cost_center_status"
-        , name                  = String    ()
-        , description           = String    ()
-        , active                = Boolean   ()
-        )
-    cost_center_status.setkey ("name")
 
     daily_record = Class \
         ( db
@@ -213,43 +185,30 @@ def init \
         )
     time_activity.setkey ("name")
 
-    time_project = Class \
-        ( db
-        , ''"time_project"
-        , name                  = String    ()
-        , description           = String    ()
-        , responsible           = Link      ("user")
-        , deputy                = Link      ("user")
-        , organisation          = Link      ("organisation")
-        , department            = Link      ("department")
-        , planned_effort        = Number    ()
-        , status                = Link      ("time_project_status")
-        , work_location         = Link      ("work_location")
-        , max_hours             = Number    ()
-        , nosy                  = Multilink ("user")
-        , op_project            = Boolean   ()
-        , no_overtime           = Boolean   ()
-        , is_public_holiday     = Boolean   ()
-        , is_vacation           = Boolean   ()
-        , is_special_leave      = Boolean   ()
-        , cost_center           = Link      ("cost_center")
-        , overtime_reduction    = Boolean   ()
-        , reporting_group       = Multilink ("reporting_group")
-        , product_family        = Multilink ("product_family")
-        , project_type          = Link      ("project_type")
-        , approval_required     = Boolean   ()
-        , approval_hr           = Boolean   ()
-        )
-    time_project.setkey ("name")
+    class Time_Project_Class (kw ['Time_Project_Class']) :
+        """Add attributes to existing Time_Project_Class class."""
 
-    time_project_status = Class \
-        ( db
-        , ''"time_project_status"
-        , name                  = String    ()
-        , description           = String    ()
-        , active                = Boolean   ()
-        )
-    time_project_status.setkey ("name")
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( planned_effort        = Number    ()
+                , work_location         = Link      ("work_location")
+                , max_hours             = Number    ()
+                , op_project            = Boolean   ()
+                , no_overtime           = Boolean   ()
+                , is_public_holiday     = Boolean   ()
+                , is_vacation           = Boolean   ()
+                , is_special_leave      = Boolean   ()
+                , overtime_reduction    = Boolean   ()
+                , reporting_group       = Multilink ("reporting_group")
+                , product_family        = Multilink ("product_family")
+                , project_type          = Link      ("project_type")
+                , approval_required     = Boolean   ()
+                , approval_hr           = Boolean   ()
+                )
+            self.__super.__init__ (db, classname, ** properties)
+        # end def __init__
+    # end class Time_Project_Class
+    Time_Project_Class (db, ''"time_project")
 
     time_record = Class \
         ( db
@@ -475,25 +434,14 @@ def security (db, ** kw) :
         , ("HR-vacation",       "May approve vacation and special leave")
         , ("HR-leave-approval", "Approve paid vacation beyond normal vacation")
         , ("staff-report",      "May view staff report")
+        , ("Controlling",       "Controlling")
         ]
 
     #     classname
     # allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ( "cost_center"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "cost_center_group"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "cost_center_status"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "daily_record"
+        [ ( "daily_record"
           , ["User"]
           , []
           )
@@ -532,14 +480,6 @@ def security (db, ** kw) :
         , ( "time_activity"
           , ["User"]
           , ["Controlling"]
-          )
-        , ( "time_project_status"
-          , ["User"]
-          , ["Project"]
-          )
-        , ( "time_project"
-          , ["Project_View", "Project", "Controlling"]
-          , []
           )
         , ( "time_record"
           , ["HR", "Controlling"]
@@ -606,10 +546,7 @@ def security (db, ** kw) :
           , ("required_overtime", "weekend_allowed")
           )
         , ( "time_project", "Edit", ["Project"]
-          , ( "cost_center"
-            , "department", "deputy", "description", "max_hours", "name"
-            , "nosy", "op_project", "organisation", "planned_effort"
-            , "responsible", "status"
+          , ( "max_hours", "op_project", "planned_effort"
             , "product_family", "project_type", "reporting_group"
             )
           )
@@ -1058,8 +995,6 @@ def security (db, ** kw) :
         , properties  = tp_properties
         )
     db.security.addPermissionToRole ('User', p)
-
-    db.security.addPermissionToRole ('Project', 'Create', 'time_project')
 
     for klass in 'time_project', 'time_wp' :
         p = db.security.addPermission \

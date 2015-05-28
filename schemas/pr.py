@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2013 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -23,12 +23,10 @@
 #
 #++
 # Name
-#    schema-full
+#    schema-pr
 #
 # Purpose
-#    Specify the DB-Schema for a tracker including most parts,
-#    time-tracking, it-issue tracking, ...
-#    Link this file to schema.py
+#    Specify the DB-Schema for a Purchase-Request tool
 #--
 #
 
@@ -43,17 +41,10 @@ from schemacfg import schemadef
 # -- except for modules that extend the standard permission scheme in
 # core (e.g. extuser)
 schemas = \
-    ( 'nickname'
-    , 'company'
-    , 'org_loc'
+    ( 'company'
     , 'user'
-    , 'doc'
-    , 'min_adr'
-    , 'contact'
-    , 'user_contact'
-    , 'time_project'
-    , 'time_tracker'
     , 'ldap'
+    , 'pr'
     , 'core'
     )
 
@@ -78,56 +69,12 @@ classes = \
     ]
 
 
-prop_perms = \
-    [ ( "user", "Edit", ["HR"]
-      , ( "address"
-        , "alternate_addresses"
-        , "nickname"
-        , "password"
-        , "timezone"
-        , "username"
-        )
-      )
-    , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "firstname"
-        , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "pictures", "position", "realname"
-        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
-        )
-      )
-    , ( "user", "View", ["Controlling"], ("roles",))
-    , ( "user", "View", ["User"]
-      , ( "activity", "actor", "address", "alternate_addresses"
-        , "clearance_by", "creation", "creator", "department"
-        , "firstname", "job_description", "lastname"
-        , "id", "lunch_duration", "lunch_start", "nickname"
-        , "pictures", "position", "queries", "realname", "room", "sex"
-        , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path", "tt_lines"
-        )
-      )
-    ]
+prop_perms = []
 
 # For PGP-Processing we need a role
 schemadef.register_roles             (db, [('PGP', 'Roles that require PGP')])
 schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details         (db, 'User', 'Edit')
-# the following is further checked in an auditor:
-db.security.addPermissionToRole ('User', 'Create', 'time_wp')
-
-# editing of roles:
-for r in "HR", :
-    db.security.addPermissionToRole (r, 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

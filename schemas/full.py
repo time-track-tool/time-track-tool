@@ -45,6 +45,7 @@ from schemacfg import schemadef
 schemas = \
     ( 'nickname'
     , 'company'
+    , 'org_loc'
     , 'user'
     , 'external_users'
     , 'docissue'
@@ -57,6 +58,7 @@ schemas = \
     , 'user_contact'
     , 'person_cust'
     , 'support'
+    , 'time_project'
     , 'time_tracker'
     , 'ldap'
     , 'contact_sec'
