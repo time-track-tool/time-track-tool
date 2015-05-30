@@ -1,0 +1,175 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:1
+    ; has_resp            python:0
+    ; required_attributes string:title
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'requester')"/>
+      <td tal:content="structure python:context.requester.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'organisation')"/>
+      <td tal:content="structure python:context.organisation.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'purchase_type')"/>
+      <td tal:content="structure python:context.purchase_type.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'department')"/>
+      <td tal:content="structure python:context.department.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'time_project')"/>
+      <td>
+       <tal:block tal:content="structure python:context.time_project.field ()"/>
+       <tal:block tal:replace="structure python:db.time_project.classhelp
+                  ( 'id,name,department,organisation'
+                  , property='time_project'
+                  , inputtype='radio'
+                  , width='800'
+                  , pagesize=1000 
+                  )"/>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'cost_center')"/>
+      <td tal:content="structure python:context.cost_center.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'part_of_budget')"/>
+      <td tal:define="value context/part_of_budget"><!--
+       --><tal:block tal:repeat="choice db/part_of_budget/list"><!--
+           --><input type="radio" name="part_of_budget" tal:attributes="
+               checked python:choice.id == value;
+               value   choice/name/plain"><!--
+           --><label tal:content="structure choice/name/plain"/><!--
+       --></tal:block>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'safety_critical')"/>
+      <td tal:content="structure python:context.safety_critical.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'approved_supplier')"/>
+      <td tal:content="structure python:context.approved_supplier.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'add_to_las')"/>
+      <td tal:content="structure python:context.add_to_las.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'terms_conditions')"/>
+      <td tal:define="value context/terms_conditions"><!--
+       --><tal:block tal:repeat="choice db/terms_conditions/list"><!--
+        --><input type="radio" name="terms_conditions" tal:attributes="
+            checked python:choice.id == value;
+            value   choice/name/plain"><!--
+        --><span tal:content="structure choice/name/plain" /><!--
+       --></tal:block>
+      </td>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'terms_identical')"/>
+      <td tal:content="structure python:context.terms_identical.field ()"/>
+     </tr>
+     <tr>
+      <th rowspan = "2"
+          tal:content="structure python:utils.fieldname
+          (classname, 'continuous_obligation')"/>
+      <td rowspan = "2"
+          tal:content="structure
+          python:context.continuous_obligation.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'contract_term')"/>
+      <td tal:content="structure python:context.contract_term.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'termination_date')"/>
+      <td tal:content="structure python:context.termination_date.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'renegotiations')"/>
+      <td tal:content="structure python:context.renegotiations.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'delivery_deadline')"/>
+      <td tal:content="structure python:context.delivery_deadline.field ()"/>
+     </tr>
+
+    </tal:block>
+    <tal:block metal:fill-slot="before_messages">
+     <tal:block tal:condition="context/id"
+      tal:define="offers python:db.pr_offer.filter
+       (None, {'purchase_request' : context.id}, sort=[('+', 'index')])">
+      <table class="files">
+       <tr tal:define="cond python: bool
+           (   context.id
+           and context.is_edit_ok ()
+           and db.pr_offer.is_edit_ok ()
+           )">
+        <th class="header" i18n:translate=""
+         tal:attributes="colspan python: 4 - cond">
+         Offers
+        </th>
+        <td class="header" tal:condition="cond">
+         <a i18n:translate="" tal:attributes="href python:
+          'pr_offer?:template=item&' + '&'.join
+           ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+             [ ('purchase_request',   context.id)
+             ]
+            ]
+           )">
+          new offer
+         </a>
+        </td>
+       </tr>
+       <tr tal:define="ofr python:'offer'">
+        <th tal:content="structure python:utils.fieldname
+            (ofr, 'index')"/>
+        <th tal:content="structure python:utils.fieldname
+            (ofr, 'supplier')"/>
+        <th tal:content="structure python:utils.fieldname
+            (ofr, 'offer_number')"/>
+        <th tal:content="structure python:utils.fieldname
+            (ofr, 'description')"/>
+       </tr>
+
+       <tr tal:repeat="ofr offers">
+        <td tal:content="structure python:utils.ExtProperty
+         ( utils, utils.properties_dict (db, ofr) ['index'], item=ofr
+         ).formatlink ()"/>
+        <td tal:content="ofr/offer_number/plain"/>
+        <td tal:content="ofr/supplier/plain"/>
+        <td tal:content="ofr/description/plain"/>
+       </tr>
+      </table>
+     </tal:block>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

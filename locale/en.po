@@ -7,39 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-19 10:39+0200\n"
+"POT-Creation-Date: 2015-05-30 10:13+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "invoice"
-msgstr ""
-
-msgid "Invoice Address"
-msgstr "Invoice address"
-
-msgid "shipping"
-msgstr "shipping"
-
-msgid "Shipping Address"
-msgstr "Shipping address"
-
-msgid "supply"
-msgstr "supply"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr ""
-
-msgid "contact"
-msgstr "Contact"
-
-msgid "Address of a personal contact"
-msgstr ""
-
-msgid "Circular logging"
-msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr ""
@@ -101,7 +74,8 @@ msgstr "Message"
 msgid "A detailed description must be given in %(field)s"
 msgstr ""
 
-msgid "For bugs you have to specify the release"
+#, python-format
+msgid "For a %(bugname)s you have to specify the release"
 msgstr ""
 
 msgid "An effort estimation is required for issues to skip analyzing"
@@ -259,60 +233,6 @@ msgid "Daily record not in status \"%(st_name)s\""
 msgstr ""
 
 msgid "Daily records must exist"
-msgstr ""
-
-#, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s not cancelled"
-msgstr ""
-
-#, python-format
-msgid "Your cancel request \"%(tpn)s/%(wpn)s\" was not granted.\n"
-msgstr ""
-
-msgid "Please contact your supervisor.\n"
-msgstr ""
-
-#, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s accepted"
-msgstr ""
-
-#, python-format
-msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been accepted.\n"
-msgstr ""
-
-msgid "The following existing time records have been deleted:"
-msgstr ""
-
-#, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s declined"
-msgstr ""
-
-msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been declined.\n"
-msgstr ""
-
-#, python-format
-msgid "Leave request \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s from %(realnm)s"
-msgstr ""
-
-#, python-format
-msgid "%(realnm)s has submitted a leave request \"%(tpn)s/%(wpn)s\".\n"
-msgstr ""
-
-#, python-format
-msgid ""
-"Comment from user:\n"
-"%s\n"
-msgstr ""
-
-msgid "Needs approval by HR.\n"
-msgstr ""
-
-msgid "Please approve or decline at\n"
-msgstr ""
-
-msgid ""
-"\n"
-"Many thanks!"
 msgstr ""
 
 #, python-format
@@ -844,6 +764,12 @@ msgid ""
 "      "
 msgstr ""
 
+msgid ""
+"This is only set if the %(Classname)s is being synchronised\n"
+"         with an external issue tracker.\n"
+"      "
+msgstr ""
+
 msgid "First name for this %(Classname)s, e.g., Ralf."
 msgstr ""
 
@@ -1160,6 +1086,12 @@ msgstr ""
 msgid "Amount payed"
 msgstr ""
 
+msgid "analysis_result"
+msgstr "Analysis result"
+
+msgid "Result of error analysis"
+msgstr ""
+
 msgid "announcements"
 msgstr "Announcements"
 
@@ -1418,6 +1350,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "contact"
+msgstr "Contact"
+
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -1473,9 +1408,6 @@ msgstr ""
 msgid "cost_center"
 msgstr "Productivity"
 
-msgid "%(Property)s for this %(Classname)s (required)"
-msgstr ""
-
 msgid "cost_center.id"
 msgstr "Productivity Id"
 
@@ -1484,6 +1416,9 @@ msgstr "Productivity Group Id"
 
 msgid "cost_center_status"
 msgstr "Productivity Status"
+
+msgid "Specifies the Phase of this %(Classname)s item"
+msgstr ""
 
 msgid "Country for this address"
 msgstr ""
@@ -1939,6 +1874,40 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "ext_attributes"
+msgstr "Ext. Attributes"
+
+msgid ""
+"Attribute values from latest synchronisation with external\n"
+"            tracker. Values are stored as JSON internally and displayed\n"
+"            in human readable form if you click on the "
+msgstr ""
+
+msgid "ext_id"
+msgstr "Ext. ID"
+
+msgid ""
+"ID of this issue in external issue tracker.\n"
+"         "
+msgstr ""
+
+msgid "ext_status"
+msgstr "Ext. Status"
+
+msgid ""
+"Status of this issue in external issue tracker.\n"
+"         "
+msgstr ""
+
+msgid "ext_tracker"
+msgstr "Ext. Tracker"
+
+msgid ""
+"Data about external issue tracker including name and\n"
+"            description of the external tracker.\n"
+"         "
+msgstr ""
+
 msgid "external_company"
 msgstr "Ext. Company"
 
@@ -2204,6 +2173,9 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "invoice"
+msgstr ""
+
 msgid "Link to invoice for this %(Classname)s"
 msgstr ""
 
@@ -2374,13 +2346,20 @@ msgstr ""
 msgid "is_special_leave"
 msgstr "is special leave"
 
-msgid "Set to True if %(Classname)s is for special leave"
+msgid ""
+"Set to True if %(Classname)s is for special leave:\n"
+"            necessary to trigger the right email notifications and for\n"
+"            special leave sum calculation.\n"
+"         "
 msgstr ""
 
 msgid "is_vacation"
 msgstr "is vacation"
 
-msgid "Set to True if %(Classname)s is for vacation"
+msgid ""
+"Set to True if %(Classname)s is for vacation:\n"
+"            necessary for vacation calculation.\n"
+"         "
 msgstr ""
 
 msgid "issue++deadline"
@@ -3281,6 +3260,12 @@ msgstr "Responsible"
 msgid "Person who is responsible for the %(Classname)s"
 msgstr ""
 
+msgid "return_type"
+msgstr "Customer return type"
+
+msgid "%(Property)s for failures in the field"
+msgstr ""
+
 msgid "review++responsible"
 msgstr "Moderator"
 
@@ -3407,6 +3392,24 @@ msgid ""
 "enabled.\n"
 "          "
 msgstr ""
+
+msgid "sap_cc"
+msgstr "SAP Cost center"
+
+msgid "For selecting %(Classname)s information via the %(Property)s"
+msgstr ""
+
+msgid "Material number in SAP"
+msgstr ""
+
+msgid "sap_material"
+msgstr "SAP Material number"
+
+msgid "For tracking in SAP"
+msgstr ""
+
+msgid "sap_ref"
+msgstr "SAP Reference"
 
 msgid "secondary_groups"
 msgstr "Secondary groups"
@@ -3967,6 +3970,9 @@ msgstr ""
 msgid "title"
 msgstr "Title"
 
+msgid "purchase_request++title"
+msgstr "Subject"
+
 msgid ""
 "Should be an intuitive one-line description of the %(Classname)s.\n"
 "          "
@@ -4496,6 +4502,12 @@ msgstr "Flexi-Time (approved)"
 msgid "flexi_sub"
 msgstr "Flexi-Time (submitted)"
 
+msgid "special_leave"
+msgstr "Special leave (approved)"
+
+msgid "special_sub"
+msgstr "Special leave (submitted)"
+
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
 msgstr ""
 
@@ -4712,6 +4724,9 @@ msgstr ""
 msgid "mark as sent"
 msgstr ""
 
+msgid "External Attributes for ${Classname}"
+msgstr ""
+
 msgid "IT Issues"
 msgstr ""
 
@@ -4897,6 +4912,9 @@ msgstr ""
 
 msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
+msgstr ""
+
+msgid "Create similar"
 msgstr ""
 
 msgid "Note:&nbsp;"
@@ -5147,6 +5165,90 @@ msgstr "Split frozen dynamic user data"
 msgid "vacation_date"
 msgstr "Vacation date"
 
+msgid "Help for Vacation Report"
+msgstr ""
+
+msgid "Time Period"
+msgstr ""
+
+msgid "current calendar year per default"
+msgstr ""
+
+msgid ""
+"AUT: 25 days, usually. For employees who are entitled to a 6th week of "
+"vacation already (=after 25 years of employment, min. 12 of those with the "
+"current company - please ask HR for exact conditions), this shows 30 days."
+msgstr ""
+
+msgid ""
+"The normal 25 days are prorated according to the limitation of the contract "
+"- relevant e.g. if an employment ends or for new employees with a 6 months "
+"limitation. They only see the prorated amount of days up to their limitation "
+"or the end of the calendar year, whichever is earlier."
+msgstr ""
+
+msgid "carry forward from previous year"
+msgstr ""
+
+msgid ""
+"if the vacation of the last year(s) has not been consumed, it is carried "
+"forward into the next year. Please note: The entitlement to vacation days "
+"expires after 2 years after the end of the calendar year the vacation has "
+"been accrued in."
+msgstr ""
+
+msgid ""
+"shows the yearly amount of vacation days the employee is are entitled to "
+"(sum of entitlement prorated + carry forward)."
+msgstr ""
+
+msgid ""
+"Vacation days that the employee already consumed or submitted with "
+"successful approval."
+msgstr ""
+
+msgid ""
+"manual corrections of vacation days by HR (e.g. if vacation is paid at the "
+"end of employment)."
+msgstr ""
+
+msgid ""
+"remaining vacation days for the current year at the employee's disposal or "
+"in case of limited contracts the vacation days until end of the limitation "
+"of the contract of the employee (e.g. 6 months for new employees)"
+msgstr ""
+
+msgid "additional submitted"
+msgstr ""
+
+msgid ""
+"already submitted by the employee but not yet approved by the supervisor. "
+"Please note that those days are not yet considered in the \"remaining "
+"vacation days\"! As soon as they are approved, the amount of remaining "
+"vacation days will decrease accordingly."
+msgstr ""
+
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+msgid "shipping"
+msgstr "shipping"
+
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+msgid "supply"
+msgstr "supply"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr ""
+
+msgid "Address of a personal contact"
+msgstr ""
+
+msgid "Circular logging"
+msgstr ""
+
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5194,9 +5296,6 @@ msgstr ""
 
 msgid "number"
 msgstr "Number"
-
-msgid "sex"
-msgstr ""
 
 msgid "milestone"
 msgstr "Milestone"
@@ -5391,6 +5490,33 @@ msgstr ""
 msgid "smb_machine"
 msgstr "Samba machine"
 
+msgid "sex"
+msgstr ""
+
+msgid "part_of_budget"
+msgstr "Part of budget"
+
+msgid "terms_conditions"
+msgstr "Terms & conditions"
+
+msgid "purchase_type"
+msgstr "Purchase type"
+
+msgid "vat_country"
+msgstr "Country (for VAT)"
+
+msgid "pr_offer"
+msgstr "Offer"
+
+msgid "pr_offer_item"
+msgstr "Offer item"
+
+msgid "purchase_request"
+msgstr "Purchase request"
+
+msgid "time_project"
+msgstr "Time Category"
+
 msgid "User is allowed %(perm)s on"
 msgstr ""
 
@@ -5434,6 +5560,9 @@ msgstr "Support issue"
 msgid "cost_center_group"
 msgstr "Productivity Group"
 
+msgid "time_project_status"
+msgstr "Time Category Status"
+
 msgid "daily_record"
 msgstr "Daily Record"
 
@@ -5448,12 +5577,6 @@ msgstr "Public Holiday"
 
 msgid "summary_type"
 msgstr "Summary type"
-
-msgid "time_project"
-msgstr "Time Category"
-
-msgid "time_project_status"
-msgstr "Time Category Status"
 
 msgid "time_record"
 msgstr "Time Record"
@@ -5494,6 +5617,12 @@ msgstr "Status Transition"
 msgid "msg_keyword"
 msgstr "Message Keyword"
 
+msgid "ext_msg"
+msgstr "External message"
+
+msgid "key"
+msgstr "Key"
+
 msgid "issue"
 msgstr "Issue"
 
@@ -5515,62 +5644,20 @@ msgstr "Estimated Start"
 msgid "effective_prio"
 msgstr "Eff. Priority"
 
+msgid "doc_status"
+msgstr "Artefact Status"
+
+msgid "doc"
+msgstr "Artefact record"
+
+msgid "link"
+msgstr "Link/CVS location"
+
+msgid "state_changed_by"
+msgstr ""
+
 msgid "pdc"
 msgstr "Primary domain controller"
-
-msgid "tr_duration_ok"
-msgstr "Duration (incl. Travel)"
-
-msgid "month_balance"
-msgstr "Month Balance"
-
-msgid "month_validity_date"
-msgstr "Month validity date"
-
-msgid "week_balance"
-msgstr "Week Balance"
-
-msgid "is_half"
-msgstr "Half day"
-
-msgid "locations"
-msgstr "Locations"
-
-msgid "is_staff"
-msgstr "Needed by staff report"
-
-msgid "end_generated"
-msgstr ""
-
-msgid "start_generated"
-msgstr ""
-
-msgid "durations_allowed"
-msgstr "Durations allowed"
-
-msgid "travel_full"
-msgstr "Travel full"
-
-msgid "last_day"
-msgstr "Last day"
-
-msgid "days"
-msgstr ""
-
-msgid "special_sub"
-msgstr "Special leave (submitted)"
-
-msgid "special_leave"
-msgstr "Special leave (approved)"
-
-msgid "phone"
-msgstr "Phone Number"
-
-msgid "vacation_legal_year"
-msgstr "Vacation legal year"
-
-msgid "mail_domain"
-msgstr "Mail domain"
 
 msgid "planned"
 msgstr "Planned"
@@ -5629,14 +5716,14 @@ msgstr "Effort"
 msgid "closer"
 msgstr "Closer"
 
-msgid "belongs_to_task"
-msgstr "Belongs to Workpackage"
-
 msgid "found_in_release"
 msgstr "Found in Project"
 
 msgid "solved_in_release"
 msgstr "Solved in Project"
+
+msgid "belongs_to_task"
+msgstr "Belongs to Workpackage"
 
 msgid "belongs_to_feature"
 msgstr "Belongs to Feature"
@@ -5674,29 +5761,56 @@ msgstr "from hour"
 msgid "to_hour"
 msgstr "to hour"
 
-msgid "is_supplier"
-msgstr "Is supplier"
+msgid "use_callerid"
+msgstr ""
 
-msgid "lookalike_lastname"
-msgstr "Last name"
+msgid "http_username"
+msgstr "HTTP user name"
 
-msgid "customer_code"
-msgstr "Customer/Supplier Code"
+msgid "pbx_hostname"
+msgstr "PBX hostname"
 
-msgid "lookalike_firstname"
-msgstr "First name"
+msgid "pbx_password"
+msgstr "PBX password"
 
-msgid "is_customer"
-msgstr "Is customer"
+msgid "pbx_username"
+msgstr "PBX user name"
+
+msgid "mac_address"
+msgstr "MAC address"
+
+msgid "http_password"
+msgstr "HTTP password"
+
+msgid "lookalike_province"
+msgstr "Province"
 
 msgid "lookalike_function"
 msgstr "Address details"
 
+msgid "lookalike_firstname"
+msgstr "First name"
+
+msgid "lookalike_lastname"
+msgstr "Last name"
+
+msgid "amount_payed"
+msgstr ""
+
+msgid "customer_code"
+msgstr "Customer/Supplier Code"
+
+msgid "is_customer"
+msgstr "Is customer"
+
+msgid "is_supplier"
+msgstr "Is supplier"
+
 msgid "warranty"
 msgstr "Warranty in effect"
 
-msgid "first_reply"
-msgstr "First reply"
+msgid "classification"
+msgstr "Classification"
 
 msgid "satisfied"
 msgstr "Satisfied"
@@ -5707,20 +5821,8 @@ msgstr "Goods received"
 msgid "number_effected"
 msgstr "Number affected"
 
-msgid "classification"
-msgstr "Classification"
-
 msgid "analysis_end"
 msgstr "Analysis end"
-
-msgid "analysis_result"
-msgstr "Analysis result"
-
-msgid "return_type"
-msgstr "Customer return type"
-
-msgid "sap_ref"
-msgstr "SAP Reference"
 
 msgid "goods_sent"
 msgstr "Goods sent"
@@ -5737,8 +5839,8 @@ msgstr "Analysis start"
 msgid "execution"
 msgstr "Execution"
 
-msgid "amount_payed"
-msgstr ""
+msgid "first_reply"
+msgstr "First reply"
 
 msgid "act_number"
 msgstr "Account number"
@@ -5755,6 +5857,12 @@ msgstr "IBAN"
 msgid "bank"
 msgstr "Bank"
 
+msgid "credit_limit"
+msgstr ""
+
+msgid "lookalike_name"
+msgstr "Lookalike name"
+
 msgid "invoice_text"
 msgstr "Invoice text"
 
@@ -5766,12 +5874,6 @@ msgstr ""
 
 msgid "tax_id"
 msgstr "Tax ID"
-
-msgid "credit_limit"
-msgstr ""
-
-msgid "lookalike_name"
-msgstr "Lookalike name"
 
 msgid "discount"
 msgstr "Discount"
@@ -5812,17 +5914,110 @@ msgstr "Street"
 msgid "lookalike_city"
 msgstr "City"
 
-msgid "doc_status"
-msgstr "Artefact Status"
+msgid "tr_duration_ok"
+msgstr "Duration (incl. Travel)"
 
-msgid "doc"
-msgstr "Artefact record"
+msgid "month_balance"
+msgstr "Month Balance"
 
-msgid "link"
-msgstr "Link/CVS location"
+msgid "month_validity_date"
+msgstr "Month validity date"
 
-msgid "state_changed_by"
+msgid "week_balance"
+msgstr "Week Balance"
+
+msgid "is_half"
+msgstr "Half day"
+
+msgid "locations"
+msgstr "Locations"
+
+msgid "is_staff"
+msgstr "Needed by staff report"
+
+msgid "end_generated"
 msgstr ""
+
+msgid "start_generated"
+msgstr ""
+
+msgid "durations_allowed"
+msgstr "Durations allowed"
+
+msgid "travel_full"
+msgstr "Travel full"
+
+msgid "last_day"
+msgstr "Last day"
+
+msgid "days"
+msgstr ""
+
+msgid "vacation_legal_year"
+msgstr "Vacation legal year"
+
+msgid "phone"
+msgstr "Phone Number"
+
+msgid "doc_num"
+msgstr "Document number"
+
+msgid "mail_domain"
+msgstr "Mail domain"
+
+msgid "vat"
+msgstr "VAT"
+
+msgid "index"
+msgstr "Index"
+
+msgid "items"
+msgstr "Items"
+
+msgid "offer_number"
+msgstr "Offer number"
+
+msgid "supplier"
+msgstr "Supplier"
+
+msgid "units"
+msgstr "Units"
+
+msgid "price_per_unit"
+msgstr "Price per unit"
+
+msgid "continuous_obligation"
+msgstr "Continuous obligation"
+
+msgid "frame_purchase"
+msgstr "Frame purchase"
+
+msgid "terms_identical"
+msgstr "Terms identical?"
+
+msgid "safety_critical"
+msgstr "Safety critical"
+
+msgid "delivery_deadline"
+msgstr "Delivery deadline"
+
+msgid "contract_term"
+msgstr "Contract terms"
+
+msgid "approved_supplier"
+msgstr "Approved supplier"
+
+msgid "requester"
+msgstr "Requester"
+
+msgid "add_to_las"
+msgstr "Add to LAS?"
+
+msgid "renegotiations"
+msgstr "Price renegotiations?"
+
+msgid "termination_date"
+msgstr "Termination date"
 
 msgid "mint_pending"
 msgstr ""
@@ -5848,56 +6043,86 @@ msgstr "SMTP User Name"
 msgid "sender"
 msgstr "Email Sender"
 
+msgid "call"
+msgstr "Call"
+
+msgid "qth"
+msgstr ""
+
+msgid "gridsquare"
+msgstr ""
+
+msgid "date_sent"
+msgstr "Date sent"
+
+msgid "date_recv"
+msgstr "Date received"
+
+msgid "qso_end"
+msgstr "QSO end"
+
+msgid "tx_pwr"
+msgstr "TX Power"
+
+msgid "qso2"
+msgstr "Second QSO"
+
+msgid "no_qsl_status"
+msgstr "No QSL status"
+
+msgid "qsl_s_status"
+msgstr "QSL send-status"
+
+msgid "swl"
+msgstr "SWL"
+
+msgid "state"
+msgstr "State"
+
+msgid "wont_qsl_via"
+msgstr "Won't QSL via"
+
+msgid "reject"
+msgstr "Reject"
+
+msgid "rst_rcvd"
+msgstr "RST received"
+
+msgid "rst_sent"
+msgstr "RST sent"
+
+msgid "band"
+msgstr "Band"
+
+msgid "qsl_via"
+msgstr ""
+
+msgid "freq"
+msgstr ""
+
+msgid "qso_start"
+msgstr "QSO status"
+
+msgid "mode"
+msgstr "Mode"
+
+msgid "qsl_r_status"
+msgstr "QSL receive status"
+
 msgid "header"
 msgstr "Mail-Header"
-
-msgid "job_description"
-msgstr "Job Description"
-
-msgid "pictures"
-msgstr "Picture"
 
 msgid "timing_info"
 msgstr ""
 
+msgid "pictures"
+msgstr "Picture"
+
+msgid "job_description"
+msgstr "Job Description"
+
+msgid "ldap_group"
+msgstr "LDAP group"
+
 msgid "is_nosy"
 msgstr "is nosy"
-
-msgid "doc_num"
-msgstr "Document number"
-
-msgid "sap_cc"
-msgstr "SAP Cost center"
-
-msgid "sap_material"
-msgstr "SAP Material number"
-
-msgid "ext_id"
-msgstr "Ext. ID"
-
-msgid "ext_tracker"
-msgstr "Ext. Tracker"
-
-msgid "ext_status"
-msgstr "Ext. Status"
-
-msgid "ext_attributes"
-msgstr "Ext. Attributes"
-
-#~ msgid "consumation"
-#~ msgstr "consumation"
-
-#~ msgid "vacation_status"
-#~ msgstr "Vacation status"
-
-#~ msgid "correction"
-#~ msgstr "Correction"
-
-#~ msgid "leave_type"
-#~ msgstr "Leave-type"
-
-#~ msgid "product.prodcat.name"
-#~ msgstr "Product number"
-
-#~ msgid "fullname"
-#~ msgstr "Full name"

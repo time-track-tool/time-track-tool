@@ -18,7 +18,7 @@ HTML=$(filter-out ../html/calendar.html,$(shell echo ../html/*.html))
 
 RUN_PYTHON=$(PYTHON) -O
 TAL_GETTEXT=${RUN_PYTHON} \
-    /usr/local/lib/python2.4/site-packages/roundup/cgi/TAL/talgettext.py
+    /usr/local/lib/python2.7/dist-packages/roundup/cgi/TAL/talgettext.py
 
 all: dist
 

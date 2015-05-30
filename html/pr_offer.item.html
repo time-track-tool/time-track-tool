@@ -1,0 +1,114 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:0
+    ; has_resp            python:0
+    ; required_attributes string:index,offer_number,supplier
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'index')"/>
+      <td tal:content="structure python:context.index.field (size=3)"/>
+     </tr>
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'supplier')"/>
+      <td tal:content="structure python:context.supplier.field ()"/>
+     </tr>
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'offer_number')"/>
+      <td tal:content="structure python:context.offer_number.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'description')"/>
+      <td tal:content="structure python:context.description.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'vat_country')"/>
+      <td tal:content="structure python:context.vat_country.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'items')"/>
+      <td colspan="3">
+       <table class="form" border="0"
+              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+        <tr>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'index')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'description')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'units')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'price_per_unit')"/>
+         <th style="text-align:left"
+             tal:condition="context/items/is_edit_ok" i18n:translate="">
+             remove
+         </th>
+        </tr>
+        <tr tal:repeat="i python:sorted
+            (context.items, key = lambda x : x.index)">
+         <td tal:content="structure python:i.index.field (size=3)"/>
+         <td tal:content="structure python:i.description.field ()"/>
+         <td tal:content="structure python:i.units.field (size=5)"/>
+         <td tal:content="structure python:i.price_per_unit.field (size=7)"/>
+         <td tal:condition="context/items/is_edit_ok">
+          <input tabindex="-1" type="checkbox" name="@remove@items"
+                 tal:attributes="value i/id">
+         </td>
+        </tr>
+        <tal:block tal:repeat="idx python:range(1,4)">
+         <tr>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'description').field ()"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'units').field (size=5)"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'price_per_unit').field
+              (size=7)"/>
+          <input type="hidden" name="@link@items"
+                 tal:attributes="value python:'pr_offer_item-%s' % idx" />
+         </tr>
+        </tal:block>
+       </table>
+      </td>
+     </tr>
+     <tr><td>
+      <input type="hidden" name="purchase_request"
+       tal:attributes="value context/purchase_request/id">
+     </td></tr>
+
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

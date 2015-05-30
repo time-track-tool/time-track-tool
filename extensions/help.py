@@ -217,6 +217,11 @@ _helptext          = \
       [""'''Mail out an announcement for another review step''']
     , ""'add_file'                    :
       [""'''Add a new file for %(Classname)s''']
+    , ""'add_to_las'                  :
+      [""'''Request to add this supplier to the list of approved
+            suppliers (LAS).
+         '''
+      ]
     , ""'additional_hours'            :
       [""'''Austrian-Law: time above 38.5 hours per week''']
     , ""'address'                     :
@@ -267,6 +272,11 @@ _helptext          = \
             special HR role. This field implies
          '''
       ,  ""'''\"approval_required\".'''
+      ]
+    , ""'approved_supplier'           :
+      [""'''Indicate if the supplier is on the list of approved
+            suppliers (LAS).
+         '''
       ]
     , ""'area'                        :
       [ ""'''Where this issue belongs to.'''
@@ -401,6 +411,11 @@ _helptext          = \
     , ""'contact_person'              :
       [""'''Personal information about a %(Property)s''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
+    , ""'continuous_obligation'       :
+      [""'''%(Property)s refers to contracts/purchases that last for a
+            certain time. (E.g. car leasing, appartment rent etc.)
+         '''
+      ]
     , ""'contract_type'               :
       [""'''%(Property)s specifies the kind of contract that
             the staff member has, like (normal) employment contract,
@@ -410,7 +425,7 @@ _helptext          = \
             insurance liable free-lance contract).
       ''']
     , ""'cost_center'                 :
-      [""'''%(Property)s for this %(Classname)s (required)''']
+      [""'''%(Property)s for this %(Classname)s''']
     , ""'cost_center.id'              : [help_id]
     , ""'cost_center_group.id'        : [help_id]
     , ""'cost_center_status'          :
@@ -482,6 +497,8 @@ _helptext          = \
             server is specified.
           '''
       ]
+    , ""'delivery_deadline'           :
+      [""'''Deadline by which goods have to be delivered''']
     , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
     , ""'department.id'               : [help_id]
@@ -734,6 +751,20 @@ _helptext          = \
                TTP-OS 4.5.23
           '''
       ]
+    , ""'frame_purchase'              :
+      [ ""'''In order avoid a lot of small purchase request for a
+             certain item, that gets ordered again and again, it is
+             possible to create a frame purchase request for a certain
+             period of time (e.g.  one quarter). This is only possible
+             if the ordered good is always the same  (e.g. the printing
+             of product flyers) or if the purchased items form a group
+             (e.g. all expenses related to a certain fair).
+             If this is a frame purchase request, please add
+             details about the intended purchases, time frame,
+             estimated total amount, reference to budget in the message
+             field.
+          '''
+      ]
     , ""'fromaddress'                 :
       [ ""'''Address in outgoing emails to which the %(Classname)s can reply.
              The email address provided must be one of the email
@@ -910,8 +941,17 @@ _helptext          = \
       [ priority
       , leave_empty
       ]
+    , ""'index'                       :
+      [""'''%(Property)s of %(Classname)s, Offers are sorted by
+            %(Property)s in Purchase Request
+         '''
+      ]
     , ""'it_project'                  :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
+    , ""'items'                       :
+      [""'''%(Property)s on this %(Classname)s, one per line
+         '''
+      ]
     , ""'keyword'                     :
       [keywords]
     , ""'keywords'                    :
@@ -1025,16 +1065,7 @@ _helptext          = \
     , ""'messageid'                   :
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                    :
-      [ ""'''List of messages for %(Classname)s.'''
-      , ""''' Note that during
-             conversion from the old roundup tracker all existing
-             messages numbered 1-73815 were renumbered with an offset of
-             3287 resulting in the message range 3288-77102 in the
-             current tracker. All messages or other documentation
-             referring to message numbers in the range 1-73815 will need
-             to consider this offset.
-          '''
-      ]
+      [ ""'''List of messages for %(Classname)s.''' ]
     , ""'mint'                        :
       [""'''Measurement interval for %(Classname)s''']
     , ""'msg'                         :
@@ -1056,6 +1087,13 @@ _helptext          = \
           '''
       ]
     , ""'needs.id'                    : [help_id]
+    , ""'renegotiations'              :
+      [ ""'''Did price renegotiations take place?
+             If yes, please name the person who did the renegotiations
+             in the message field. If no, please indicate in the message
+             field when they will take place.
+          '''
+      ]
     , ""'netbios_dd'                  :
       [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
              config. Specifies list of servers in order of preference.
@@ -1118,6 +1156,10 @@ _helptext          = \
              estimates.
           '''
       ]
+    , ""'offer_number'                :
+      [ ""'''%(Property)s as given on the %(Classname)s by the supplier.
+          '''
+      ]
     , ""'op_project'                  :
       [ ""'''Flag if this %(Classname)s is a real project or just used for
              time tracking.
@@ -1171,6 +1213,10 @@ _helptext          = \
              Software, Put all parts together, and Test. In the
              search-mask you can enter
              "-1" here to find only Top-Level container work packages.
+          '''
+      ]
+    , ""'part_of_budget'               :
+      [ ""'''Indicate if purchase is budgeted for.
           '''
       ]
     , ""'part_of.id'                  : [help_id]
@@ -1270,6 +1316,11 @@ _helptext          = \
       [""'''The dynamic DNS protocol to use with this %(Classname)s.''']
     , ""'province'                    :
       [""'''Province where this person lives.''']
+    , ""'purchase_request++title'     :
+      [ ""'''What should be purchased, fill in appropriate subject.
+          '''
+      ]
+    , ""'purchase_type'               : [""'''%(Property)s of %(Classname)s''']
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
     , ""'query++tmplate'              :
@@ -1319,6 +1370,8 @@ _helptext          = \
       [""'''The %(Property)s of the %(Classname)s.''']
     , ""'reporting_group.id'          :
       [""'''The Id of %(Property)s.''']
+    , ""'requester'                   :
+      [""'''Name of %(Property)s''']
     , ""'require_msg'                 :
       [""'''Require a message for this %(Classname)s''']
     , ""'require_resp_change'         :
@@ -1353,6 +1406,12 @@ _helptext          = \
       [""'''Room number''']
     , ""'routers'                     :
       [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
+    , ""'safety_critical'             :
+      [""'''If safety critical use is 'yes' and supplier is not in the
+            list of approved suppliers (LAS), the 
+            purchase request has to be approved by Quality, too.
+         '''
+      ]
     , ""'salutation'                  :
       [""'''Salutation used for printing an address''']
     , ""'samba_home_drive'            :
@@ -1544,6 +1603,8 @@ _helptext          = \
              "Substitute" for delegating time record approval.
           '''
       ]
+    , ""'supplier'                    :
+      [""'''%(Property)s of this %(Classname)s''']
     , ""'summary'                     :
       [""'''Short summary of this message (usually first line)''']
     , ""'summary_report++VIEW'        :
@@ -1666,12 +1727,33 @@ _helptext          = \
              to book their effort on this project
           '''
       ]
+    , ""'terms_conditions'            :
+      [ ""'''Please indicate here which conditions apply, conditions of
+             supplier or customer (us).
+          '''
+      ]
+    , ""'terms_identical'            :
+      [ ""'''If terms and conditions of supplier apply, please indicate
+             if the terms and conditions of the supplier correspond to
+             ours.
+          '''
+      ]
+    , ""'termination_date'            :
+      [ ""'''%(Property)s is only to be filled in for continuous
+             obligations. It refers to the date when a termination
+             notice for a contract has to be effective (either the date
+             it is posted, or the date it arrives at the supplier -
+             depending on the contract)
+          '''
+      ]
     , ""'time_activity'               :
       [""'''Specifies the kind of work you did (e.g. meeting, ...)''']
     , ""'time_start'                  :
       [""'''Date when %(Classname)s officially starts''']
     , ""'time_end'                    :
       [""'''Date when %(Classname)s is officially closed''']
+    , ""'time_project'                :
+      [""'''%(Property)s for this %(Classname)s''']
     , ""'time_project++status'        :
       [ ""'''Status of this %(Classname)s. Note that this status is only
              used for determining if new work packages may be created for
@@ -1854,6 +1936,8 @@ _helptext          = \
       ]
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']
+    , ""'vat_country'                 :
+      [""'''Select country for VAT computation.''']
     , ""'visible'                     :
       [ ""''' If you set this option to "YES", all time tracker users
               can see your private %(Classname)s. If set to "No", it

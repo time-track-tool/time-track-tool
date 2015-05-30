@@ -42,6 +42,7 @@ from schemacfg import schemadef
 # core (e.g. extuser)
 schemas = \
     ( 'company'
+    , 'time_project'
     , 'user'
     , 'ldap'
     , 'pr'

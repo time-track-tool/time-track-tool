@@ -7,39 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: abo\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2014-09-19 10:39+0200\n"
+"POT-Creation-Date: 2015-05-30 10:13+0200\n"
 "PO-Revision-Date: 2005-06-13 11:50+CEST\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "invoice"
-msgstr "Rechnung"
-
-msgid "Invoice Address"
-msgstr "Rechnungsadresse"
-
-msgid "shipping"
-msgstr "Lieferung"
-
-msgid "Shipping Address"
-msgstr "Lieferadresse"
-
-msgid "supply"
-msgstr "Bezug"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr "Adresse zum Bezug beim Lieferanten"
-
-msgid "contact"
-msgstr "Kontakt"
-
-msgid "Address of a personal contact"
-msgstr "Adresse persönlicher Kontakt"
-
-msgid "Circular logging"
-msgstr ""
 
 msgid "Restart of subscription only within two months"
 msgstr "Wiederaufnahme Abo nur innerhalb Zweimonatsfrist"
@@ -105,8 +78,9 @@ msgstr "Notiz"
 msgid "A detailed description must be given in %(field)s"
 msgstr "Eine detaillierte Beschreibung muss in %(field)s gegeben werden"
 
-msgid "For bugs you have to specify the release"
-msgstr "Bei Bugs muss das Release angegeben werden"
+#, python-format
+msgid "For a %(bugname)s you have to specify the release"
+msgstr "Bei %(bugname)s muss das Release angegeben werden"
 
 msgid "An effort estimation is required for issues to skip analyzing"
 msgstr ""
@@ -265,60 +239,6 @@ msgstr ""
 
 msgid "Daily records must exist"
 msgstr "Daily records müssen existieren"
-
-#, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s not cancelled"
-msgstr ""
-
-#, python-format
-msgid "Your cancel request \"%(tpn)s/%(wpn)s\" was not granted.\n"
-msgstr ""
-
-msgid "Please contact your supervisor.\n"
-msgstr ""
-
-#, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s accepted"
-msgstr ""
-
-#, python-format
-msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been accepted.\n"
-msgstr ""
-
-msgid "The following existing time records have been deleted:"
-msgstr ""
-
-#, python-format
-msgid "Leave \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s declined"
-msgstr ""
-
-msgid "Your absence request \"%(tpn)s/%(wpn)s\" has been declined.\n"
-msgstr ""
-
-#, python-format
-msgid "Leave request \"%(tpn)s/%(wpn)s\" %(fday)s to %(lday)s from %(realnm)s"
-msgstr ""
-
-#, python-format
-msgid "%(realnm)s has submitted a leave request \"%(tpn)s/%(wpn)s\".\n"
-msgstr ""
-
-#, python-format
-msgid ""
-"Comment from user:\n"
-"%s\n"
-msgstr ""
-
-msgid "Needs approval by HR.\n"
-msgstr ""
-
-msgid "Please approve or decline at\n"
-msgstr ""
-
-msgid ""
-"\n"
-"Many thanks!"
-msgstr ""
 
 #, python-format
 msgid "No current dyn. user record for \"%(username)s\""
@@ -857,6 +777,12 @@ msgid ""
 "      "
 msgstr ""
 
+msgid ""
+"This is only set if the %(Classname)s is being synchronised\n"
+"         with an external issue tracker.\n"
+"      "
+msgstr ""
+
 msgid "First name for this %(Classname)s, e.g., Ralf."
 msgstr "Vorname für diese(n) %(Classname)s, z. B. Ralf."
 
@@ -1193,6 +1119,12 @@ msgstr "Betrag"
 msgid "Amount payed"
 msgstr "Zahlungsbetrag"
 
+msgid "analysis_result"
+msgstr "Analyse result"
+
+msgid "Result of error analysis"
+msgstr ""
+
 msgid "announcements"
 msgstr ""
 
@@ -1465,6 +1397,9 @@ msgstr ""
 "Bestätigung des Passworts: Der erste Passwort-Eintrag und dieser Eintrag "
 "müssen übereinstimmen."
 
+msgid "contact"
+msgstr "Kontakt"
+
 msgid ""
 "Contact information, e.g., Email address, Phone number, Fax\n"
 "             number, Homepage\n"
@@ -1533,7 +1468,7 @@ msgstr "Kostenstellengruppen-ID"
 msgid "cost_center_status"
 msgstr "Kostenstellenstatus"
 
-msgid "Specifies the Phase the Cost Center is in"
+msgid "Specifies the Phase of this %(Classname)s item"
 msgstr ""
 
 msgid "Country for this address"
@@ -1995,6 +1930,40 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "ext_attributes"
+msgstr ""
+
+msgid ""
+"Attribute values from latest synchronisation with external\n"
+"            tracker. Values are stored as JSON internally and displayed\n"
+"            in human readable form if you click on the "
+msgstr ""
+
+msgid "ext_id"
+msgstr ""
+
+msgid ""
+"ID of this issue in external issue tracker.\n"
+"         "
+msgstr ""
+
+msgid "ext_status"
+msgstr "Ext. Status"
+
+msgid ""
+"Status of this issue in external issue tracker.\n"
+"         "
+msgstr ""
+
+msgid "ext_tracker"
+msgstr ""
+
+msgid ""
+"Data about external issue tracker including name and\n"
+"            description of the external tracker.\n"
+"         "
+msgstr ""
+
 msgid "external_company"
 msgstr ""
 
@@ -2265,6 +2234,9 @@ msgstr ""
 "Eindeutiger name für diese %(Classname)s, bevorzugt die Inventarnummer für "
 "die Verwaltung von Anlagegütern (asset tracking)"
 
+msgid "invoice"
+msgstr "Rechnung"
+
 msgid "Link to invoice for this %(Classname)s"
 msgstr "Verbindung zur Rechnung für %(Classname)s"
 
@@ -2442,14 +2414,21 @@ msgstr "Eingeschaltet wenn %(Classname)s ein Serienprodukt ist"
 msgid "is_special_leave"
 msgstr "ist Sonderurlaub"
 
-msgid "Set to True if %(Classname)s is for special leave"
-msgstr "Muss gesetzt sein falls %(Classname)s für Sonderurlaub"
+msgid ""
+"Set to True if %(Classname)s is for special leave:\n"
+"            necessary to trigger the right email notifications and for\n"
+"            special leave sum calculation.\n"
+"         "
+msgstr ""
 
 msgid "is_vacation"
 msgstr "ist Urlaub"
 
-msgid "Set to True if %(Classname)s is for vacation"
-msgstr "Muss gesetzt sein falls %(Classname)s für Urlaub"
+msgid ""
+"Set to True if %(Classname)s is for vacation:\n"
+"            necessary for vacation calculation.\n"
+"         "
+msgstr ""
 
 msgid "issue++deadline"
 msgstr "Zieldatum"
@@ -3355,6 +3334,12 @@ msgstr "verantwortlich"
 msgid "Person who is responsible for the %(Classname)s"
 msgstr "Verantwortliche Person für dieses %(Classname)s"
 
+msgid "return_type"
+msgstr ""
+
+msgid "%(Property)s for failures in the field"
+msgstr ""
+
 msgid "review++responsible"
 msgstr "verantwortlich"
 
@@ -3489,6 +3474,24 @@ msgid ""
 "enabled.\n"
 "          "
 msgstr ""
+
+msgid "sap_cc"
+msgstr "SAP Kostenstelle"
+
+msgid "For selecting %(Classname)s information via the %(Property)s"
+msgstr ""
+
+msgid "Material number in SAP"
+msgstr "Material-Nummer in SAP"
+
+msgid "sap_material"
+msgstr "SAP Material-Nummer"
+
+msgid "For tracking in SAP"
+msgstr ""
+
+msgid "sap_ref"
+msgstr "SAP Referenz"
 
 msgid "secondary_groups"
 msgstr ""
@@ -4603,6 +4606,12 @@ msgstr "Zeitausgleich (genehmigt)"
 msgid "flexi_sub"
 msgstr "Zeitausgleich (beantragt)"
 
+msgid "special_leave"
+msgstr "Sonderurlaub (genehmigt)"
+
+msgid "special_sub"
+msgstr "Sonderurlaub (beantragt)"
+
 msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
 msgstr ""
 
@@ -4821,6 +4830,9 @@ msgstr "Rechnungen erzeugen"
 msgid "mark as sent"
 msgstr "als gesendet markieren"
 
+msgid "External Attributes for ${Classname}"
+msgstr "Externe Attribute von ${Classname}"
+
 msgid "IT Issues"
 msgstr ""
 
@@ -5009,6 +5021,9 @@ msgid ""
 msgstr ""
 "Angelegt ${creation} von ${creator}, zuletzt geändert ${activity} von "
 "${actor}."
+
+msgid "Create similar"
+msgstr "Ähnliches Anlegen"
 
 msgid "Note:&nbsp;"
 msgstr "Hinweis:&nbsp;"
@@ -5258,6 +5273,90 @@ msgstr ""
 msgid "vacation_date"
 msgstr "Urlaubsstichtag"
 
+msgid "Help for Vacation Report"
+msgstr "Hilfe zu Urlaubs-Report"
+
+msgid "Time Period"
+msgstr ""
+
+msgid "current calendar year per default"
+msgstr ""
+
+msgid ""
+"AUT: 25 days, usually. For employees who are entitled to a 6th week of "
+"vacation already (=after 25 years of employment, min. 12 of those with the "
+"current company - please ask HR for exact conditions), this shows 30 days."
+msgstr ""
+
+msgid ""
+"The normal 25 days are prorated according to the limitation of the contract "
+"- relevant e.g. if an employment ends or for new employees with a 6 months "
+"limitation. They only see the prorated amount of days up to their limitation "
+"or the end of the calendar year, whichever is earlier."
+msgstr ""
+
+msgid "carry forward from previous year"
+msgstr ""
+
+msgid ""
+"if the vacation of the last year(s) has not been consumed, it is carried "
+"forward into the next year. Please note: The entitlement to vacation days "
+"expires after 2 years after the end of the calendar year the vacation has "
+"been accrued in."
+msgstr ""
+
+msgid ""
+"shows the yearly amount of vacation days the employee is are entitled to "
+"(sum of entitlement prorated + carry forward)."
+msgstr ""
+
+msgid ""
+"Vacation days that the employee already consumed or submitted with "
+"successful approval."
+msgstr ""
+
+msgid ""
+"manual corrections of vacation days by HR (e.g. if vacation is paid at the "
+"end of employment)."
+msgstr ""
+
+msgid ""
+"remaining vacation days for the current year at the employee's disposal or "
+"in case of limited contracts the vacation days until end of the limitation "
+"of the contract of the employee (e.g. 6 months for new employees)"
+msgstr ""
+
+msgid "additional submitted"
+msgstr "zusätzlich beantragt"
+
+msgid ""
+"already submitted by the employee but not yet approved by the supervisor. "
+"Please note that those days are not yet considered in the \"remaining "
+"vacation days\"! As soon as they are approved, the amount of remaining "
+"vacation days will decrease accordingly."
+msgstr ""
+
+msgid "Invoice Address"
+msgstr "Rechnungsadresse"
+
+msgid "shipping"
+msgstr "Lieferung"
+
+msgid "Shipping Address"
+msgstr "Lieferadresse"
+
+msgid "supply"
+msgstr "Bezug"
+
+msgid "Address used for fetching supplies from supplier"
+msgstr "Adresse zum Bezug beim Lieferanten"
+
+msgid "Address of a personal contact"
+msgstr "Adresse persönlicher Kontakt"
+
+msgid "Circular logging"
+msgstr ""
+
 #, python-format
 msgid "Name \"%(name)s\" too long (> 25 characters)"
 msgstr ""
@@ -5305,9 +5404,6 @@ msgstr ""
 
 msgid "number"
 msgstr "Nummer"
-
-msgid "sex"
-msgstr ""
 
 msgid "milestone"
 msgstr ""
@@ -5502,6 +5598,33 @@ msgstr ""
 msgid "smb_machine"
 msgstr ""
 
+msgid "sex"
+msgstr ""
+
+msgid "part_of_budget"
+msgstr ""
+
+msgid "terms_conditions"
+msgstr "Konditionen"
+
+msgid "purchase_type"
+msgstr "Typ der Bestellung"
+
+msgid "vat_country"
+msgstr "Mehrwertsteuer pro Land"
+
+msgid "pr_offer"
+msgstr "Angebot"
+
+msgid "pr_offer_item"
+msgstr "Angebotszeile"
+
+msgid "purchase_request"
+msgstr "Bestellung"
+
+msgid "time_project"
+msgstr "Projekt"
+
 msgid "User is allowed %(perm)s on"
 msgstr "Benutzer darf %(perm)s auf"
 
@@ -5545,6 +5668,9 @@ msgstr "Support Issue"
 msgid "cost_center_group"
 msgstr "Kostenstellengruppe"
 
+msgid "time_project_status"
+msgstr "Projektstatus"
+
 msgid "daily_record"
 msgstr "Tageseintrag"
 
@@ -5559,12 +5685,6 @@ msgstr "Feiertag"
 
 msgid "summary_type"
 msgstr "Typ der Zusammenfassung"
-
-msgid "time_project"
-msgstr "Projekt"
-
-msgid "time_project_status"
-msgstr "Projektstatus"
 
 msgid "time_record"
 msgstr "Stundeneintrag"
@@ -5605,6 +5725,12 @@ msgstr "Statusübergang"
 msgid "msg_keyword"
 msgstr "Nachrichten Schlüsselwort"
 
+msgid "ext_msg"
+msgstr "externe Nachricht"
+
+msgid "key"
+msgstr "Schlüsselwort"
+
 msgid "issue"
 msgstr "Issue"
 
@@ -5626,62 +5752,20 @@ msgstr ""
 msgid "effective_prio"
 msgstr ""
 
+msgid "doc_status"
+msgstr "Dokumentenstatus"
+
+msgid "doc"
+msgstr "Dokument"
+
+msgid "link"
+msgstr ""
+
+msgid "state_changed_by"
+msgstr ""
+
 msgid "pdc"
 msgstr "PDC"
-
-msgid "tr_duration_ok"
-msgstr "Dauer incl. Reisezeit"
-
-msgid "month_balance"
-msgstr ""
-
-msgid "month_validity_date"
-msgstr ""
-
-msgid "week_balance"
-msgstr "Akkumulierte Zeit Ende"
-
-msgid "is_half"
-msgstr "halber Feiertag"
-
-msgid "locations"
-msgstr "Orte"
-
-msgid "is_staff"
-msgstr ""
-
-msgid "end_generated"
-msgstr ""
-
-msgid "start_generated"
-msgstr ""
-
-msgid "durations_allowed"
-msgstr "Dauer erlaubt"
-
-msgid "travel_full"
-msgstr ""
-
-msgid "last_day"
-msgstr "letzter Tag"
-
-msgid "days"
-msgstr "Tage"
-
-msgid "special_sub"
-msgstr "Sonderurlaub (beantragt)"
-
-msgid "special_leave"
-msgstr "Sonderurlaub (genehmigt)"
-
-msgid "phone"
-msgstr "Telefon"
-
-msgid "vacation_legal_year"
-msgstr "Urlaubsstichtag Kalenderjahr"
-
-msgid "mail_domain"
-msgstr ""
 
 msgid "planned"
 msgstr ""
@@ -5740,13 +5824,13 @@ msgstr ""
 msgid "closer"
 msgstr "Schliessender Benutzer"
 
-msgid "belongs_to_task"
-msgstr ""
-
 msgid "found_in_release"
 msgstr "Gefunden in Release"
 
 msgid "solved_in_release"
+msgstr ""
+
+msgid "belongs_to_task"
 msgstr ""
 
 msgid "belongs_to_feature"
@@ -5785,29 +5869,56 @@ msgstr "Stunde von"
 msgid "to_hour"
 msgstr "Stunde bis"
 
-msgid "is_supplier"
-msgstr "ist Lieferant"
+msgid "use_callerid"
+msgstr ""
 
-msgid "lookalike_lastname"
-msgstr "Nachname"
+msgid "http_username"
+msgstr "HTTP Benutzername"
 
-msgid "customer_code"
-msgstr "Kunden/Lieferanten-Code"
+msgid "pbx_hostname"
+msgstr "Hostname der Nebenstellenanlage"
 
-msgid "lookalike_firstname"
-msgstr "Vorname"
+msgid "pbx_password"
+msgstr "Passwort für Nebenstellenanlage"
 
-msgid "is_customer"
-msgstr "ist Kunde"
+msgid "pbx_username"
+msgstr "Benutzername für Nebenstellenanlage"
+
+msgid "mac_address"
+msgstr "MAC-Adresse"
+
+msgid "http_password"
+msgstr "HTTP-Passwort"
+
+msgid "lookalike_province"
+msgstr "Bundesland"
 
 msgid "lookalike_function"
 msgstr "Adresszusatz"
 
+msgid "lookalike_firstname"
+msgstr "Vorname"
+
+msgid "lookalike_lastname"
+msgstr "Nachname"
+
+msgid "amount_payed"
+msgstr "Zahlungsbetrag"
+
+msgid "customer_code"
+msgstr "Kunden/Lieferanten-Code"
+
+msgid "is_customer"
+msgstr "ist Kunde"
+
+msgid "is_supplier"
+msgstr "ist Lieferant"
+
 msgid "warranty"
 msgstr "Garantie gültig"
 
-msgid "first_reply"
-msgstr "erste Antwort"
+msgid "classification"
+msgstr "Klassifikation"
 
 msgid "satisfied"
 msgstr "zufrieden"
@@ -5817,9 +5928,6 @@ msgstr "Wareneingang"
 
 msgid "number_effected"
 msgstr "Anzahl betroffen"
-
-msgid "classification"
-msgstr "Klassifikation"
 
 msgid "analysis_end"
 msgstr "Analyse beendet"
@@ -5839,8 +5947,8 @@ msgstr "Analyse start"
 msgid "execution"
 msgstr "Ausführung"
 
-msgid "amount_payed"
-msgstr "Zahlungsbetrag"
+msgid "first_reply"
+msgstr "erste Antwort"
 
 msgid "act_number"
 msgstr "Kontonummer"
@@ -5857,6 +5965,12 @@ msgstr "IBAN"
 msgid "bank"
 msgstr "Bank"
 
+msgid "credit_limit"
+msgstr "Kreditlimit"
+
+msgid "lookalike_name"
+msgstr "Nachname"
+
 msgid "invoice_text"
 msgstr "Rechnungstext"
 
@@ -5868,12 +5982,6 @@ msgstr "Kundenbetreuer"
 
 msgid "tax_id"
 msgstr "Umsatzsteuer ID"
-
-msgid "credit_limit"
-msgstr "Kreditlimit"
-
-msgid "lookalike_name"
-msgstr "Nachname"
 
 msgid "discount"
 msgstr "Rabatt"
@@ -5914,17 +6022,107 @@ msgstr "Straße"
 msgid "lookalike_city"
 msgstr "Ort"
 
-msgid "doc_status"
-msgstr "Dokumentenstatus"
+msgid "tr_duration_ok"
+msgstr "Dauer incl. Reisezeit"
 
-msgid "doc"
-msgstr "Dokument"
-
-msgid "link"
+msgid "month_balance"
 msgstr ""
 
-msgid "state_changed_by"
+msgid "month_validity_date"
 msgstr ""
+
+msgid "week_balance"
+msgstr "Akkumulierte Zeit Ende"
+
+msgid "is_half"
+msgstr "halber Feiertag"
+
+msgid "locations"
+msgstr "Orte"
+
+msgid "is_staff"
+msgstr ""
+
+msgid "end_generated"
+msgstr ""
+
+msgid "start_generated"
+msgstr ""
+
+msgid "durations_allowed"
+msgstr "Dauer erlaubt"
+
+msgid "travel_full"
+msgstr ""
+
+msgid "last_day"
+msgstr "letzter Tag"
+
+msgid "days"
+msgstr "Tage"
+
+msgid "vacation_legal_year"
+msgstr "Urlaubsstichtag Kalenderjahr"
+
+msgid "phone"
+msgstr "Telefon"
+
+msgid "doc_num"
+msgstr "Dokument Nummer"
+
+msgid "mail_domain"
+msgstr ""
+
+msgid "vat"
+msgstr "Mehrwertsteuer"
+
+msgid "index"
+msgstr ""
+
+msgid "offer_number"
+msgstr "Angebotsnummer"
+
+msgid "supplier"
+msgstr "Lieferant"
+
+msgid "units"
+msgstr "Einheiten"
+
+msgid "price_per_unit"
+msgstr ""
+
+msgid "continuous_obligation"
+msgstr ""
+
+msgid "frame_purchase"
+msgstr ""
+
+msgid "terms_identical"
+msgstr ""
+
+msgid "safety_critical"
+msgstr ""
+
+msgid "delivery_deadline"
+msgstr "spätestes Lieferdatum"
+
+msgid "contract_term"
+msgstr "Vertragsbedingungen"
+
+msgid "approved_supplier"
+msgstr "freigegebener Lieferant"
+
+msgid "requester"
+msgstr "Antragsteller"
+
+msgid "add_to_las"
+msgstr "Zur LAS hinzufügen?"
+
+msgid "renegotiations"
+msgstr "Preis-Nachverhandlungen?"
+
+msgid "termination_date"
+msgstr "Vertragsende"
 
 msgid "mint_pending"
 msgstr "Messintervall ausständig"
@@ -5950,117 +6148,86 @@ msgstr "SMTP User Name"
 msgid "sender"
 msgstr "Absender-Email"
 
-msgid "header"
+msgid "call"
 msgstr ""
 
-msgid "job_description"
-msgstr "Stellenbeschreibung"
+msgid "qth"
+msgstr ""
 
-msgid "pictures"
+msgid "gridsquare"
+msgstr ""
+
+msgid "date_sent"
+msgstr "Sendedatum"
+
+msgid "date_recv"
+msgstr "Empfangsdatum"
+
+msgid "qso_end"
+msgstr "QSO Ende"
+
+msgid "tx_pwr"
+msgstr "Sendeleistung"
+
+msgid "qso2"
+msgstr "2. QSO"
+
+msgid "no_qsl_status"
+msgstr "kein QSL Status"
+
+msgid "qsl_s_status"
+msgstr "QSL Sende-Status"
+
+msgid "swl"
+msgstr "SWL"
+
+msgid "state"
+msgstr ""
+
+msgid "wont_qsl_via"
+msgstr ""
+
+msgid "reject"
+msgstr ""
+
+msgid "rst_rcvd"
+msgstr ""
+
+msgid "rst_sent"
+msgstr "Gesendetes RST"
+
+msgid "band"
+msgstr "Band"
+
+msgid "qsl_via"
+msgstr "QSL via"
+
+msgid "freq"
+msgstr "Frequenz"
+
+msgid "qso_start"
+msgstr "QSL Start"
+
+msgid "mode"
+msgstr "Mode"
+
+msgid "qsl_r_status"
+msgstr "QSL Empfangs-Status"
+
+msgid "header"
 msgstr ""
 
 msgid "timing_info"
 msgstr ""
 
+msgid "pictures"
+msgstr ""
+
+msgid "job_description"
+msgstr "Stellenbeschreibung"
+
+msgid "ldap_group"
+msgstr "LDAP-Gruppe"
+
 msgid "is_nosy"
-msgstr "ist Verteiler"
-
-msgid "doc_num"
-msgstr "Dokument Nummer"
-
-msgid "sap_cc"
-msgstr "SAP Kostenstelle"
-
-msgid "sap_material"
-msgstr "SAP Material-Nummer"
-
-#~ msgid "consumation"
-#~ msgstr "verbrachter Urlaub"
-
-#~ msgid "vacation_status"
-#~ msgstr "Urlaubs-Status"
-
-#~ msgid "correction"
-#~ msgstr "Korrektur"
-
-#~ msgid "leave_type"
-#~ msgstr "Abwesenheitstyp"
-
-#~ msgid "fullname"
-#~ msgstr "voller Name"
-
-#~ msgid "When a new issue is created with %(Classname)s set, but "
-#~ msgstr "Wenn ein neues Issue mit gesetztem %(Classname)s erzeugt wird, aber"
-
-#~ msgid "[hidden]"
-#~ msgstr "[unsichtbar]"
-
-#~ msgid "Database:"
-#~ msgstr "Datenbank:"
-
-#~ msgid "marked devices:"
-#~ msgstr "markierte Geräte:"
-
-#~ msgid "Select date"
-#~ msgstr "Datum wählen"
-
-#~ msgid "display latest measurements for this sensor"
-#~ msgstr "Anzeige der letzten Messwerte für den Sensor"
-
-#~ msgid ""
-#~ "%(Classname)s documentation status -- %(Classname)s can't be\n"
-#~ "             closed if documentation is needed.\n"
-#~ "          "
-#~ msgstr ""
-#~ "%(Classname)s Dokumentationsstatus -- %(Classname)s kann nicht\n"
-#~ "             geschlossen werden solange Dokumentation benötigt wird.\n"
-#~ "          "
-
-#~ msgid "Country must be set"
-#~ msgstr "Land muss gesetzt sein"
-
-#~ msgid "Password for this %(Classname)s"
-#~ msgstr "Passwort für %(Classname)s"
-
-#~ msgid "Type of Address"
-#~ msgstr "Typ dieser Adresse"
-
-#~ msgid ""
-#~ "%(Property)s for searching: Search for similar names: only\n"
-#~ "         non-accented lowercase characters are possible when searching\n"
-#~ "      "
-#~ msgstr ""
-#~ "%(Property)s: Sucht nach ähnlichen Namen, nur nicht-akzentuierte "
-#~ "Kleinbuchstaben sind bei der Suche möglich."
-
-#~ msgid "You may not change container status"
-#~ msgstr "Container Status darf nicht geändert werden"
-
-#~ msgid "Template for file names used for this %(Classname)s"
-#~ msgstr "Vorlage für Dateinamen für diese %(Classname)s"
-
-#~ msgid "\"%(attr)s\" must not be filled in"
-#~ msgstr "\"%(attr)s\" darf nicht ausgefüllt werden"
-
-#~ msgid "\"%(attr)s\" must not be changed"
-#~ msgstr "\"%(attr)s\" darf nicht geändert werden"
-
-#~ msgid "inconsistency of payment:%s and balance_open:%s"
-#~ msgstr "Inkonsistenz von Zahlung:%s und Offen:%s"
-
-#~ msgid ""
-#~ "Search for similar names: only non-accented characters are\n"
-#~ "         possible when searching\n"
-#~ "      "
-#~ msgstr ""
-#~ "Suche nach ähnlicher Schreibweise: Nur nicht-akzentuierte Zeichen "
-#~ "verwenden (keine Umlaute)"
-
-#~ msgid "invoice.subscriber.function"
-#~ msgstr "Abonnent Adresszusatz"
-
-#~ msgid "credit_limit_cur"
-#~ msgstr "Kreditlimit-Währung"
-
-#~ msgid "account_number"
-#~ msgstr "Kontonummer"
+msgstr ""

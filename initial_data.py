@@ -1022,3 +1022,21 @@ if 'leave_status' in db.classes :
     db.leave_status.set (v2, transitions = [v1, v3, v4])
     db.leave_status.set (v3, transitions = [v5])
     db.leave_status.set (v5, transitions = [v3, v6])
+if 'vat_country' in db.classes :
+    db.vat_country.create (country = '0 (no VAT)',      vat =  0.00)
+    db.vat_country.create (country = 'Austria',         vat = 20.00)
+    db.vat_country.create (country = 'Belgium',         vat = 21.00)
+    db.vat_country.create (country = 'Denmark',         vat = 25.00)
+    db.vat_country.create (country = 'France',          vat = 19.60)
+    db.vat_country.create (country = 'Germany',         vat = 19.00)
+    db.vat_country.create (country = 'Great Britain',   vat = 20.00)
+    db.vat_country.create (country = 'Italy',           vat = 21.00)
+    db.vat_country.create (country = 'Sweden',          vat = 25.00)
+if 'purchase_type' in db.classes :
+    db.purchase_type.create (name = 'Service',  order = 10)
+    db.purchase_type.create (name = 'Hardware', order = 20)
+    db.purchase_type.create (name = 'Software', order = 30)
+    db.purchase_type.create (name = 'Assett',   order = 40)
+    db.purchase_type.create (name = 'Stock',    order = 50)
+    db.purchase_type.create (name = 'Other',    order = 60)
+

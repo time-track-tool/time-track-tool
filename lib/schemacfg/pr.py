@@ -29,13 +29,124 @@
 #--
 #
 
-from roundup.hyperdb import Class
 from schemacfg       import schemadef
 
+def init \
+    ( db
+    , Boolean
+    , Date
+    , Link
+    , Multilink
+    , Number
+    , String
+    , Class
+    , Department_Class
+    , Ext_Class
+    , Full_Issue_Class
+    , Organisation_Class
+    , Time_Project_Class
+    , ** kw
+    ) :
+    export = {}
+    p_o_b = Class \
+        ( db, ''"part_of_budget"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , description           = String    ()
+        )
+    p_o_b.setkey ('name')
 
-def init (db, Organisation_Class, ** kw) :
-    Organisation_Class (db, ''"organisation")
-    Department_Class (db, ''"department")
+    t_c = Class \
+        ( db, ''"terms_conditions"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , description           = String    ()
+        )
+    t_c.setkey ('name')
+
+    purchase_type = Class \
+        ( db, ''"purchase_type"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    purchase_type.setkey ('name')
+
+    vat_country = Class \
+        ( db, ''"vat_country"
+        , country               = String    ()
+        , vat                   = Number    ()
+        )
+    vat_country.setkey ('country')
+
+    pr_offer = Class \
+        ( db, ''"pr_offer"
+        , index                 = Number    ()
+        , description           = String    ()
+        , supplier              = String    ()
+        , offer_number          = String    ()
+        , purchase_request      = Link      ("purchase_request")
+        , vat_country           = Link      ("vat_country")
+        , items                 = Multilink ("pr_offer_item")
+        )
+
+    pr_offer_item = Class \
+        ( db, ''"pr_offer_item"
+        , index                 = Number    ()
+        , description           = String    ()
+        , pr_offer              = Link      ("pr_offer")
+        , units                 = Number    ()
+        , price_per_unit        = Number    ()
+        )
+
+    class PR (Full_Issue_Class) :
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( organisation          = Link      ("organisation")
+                , department            = Link      ("department")
+                , requester             = Link      ("user")
+                , purchase_type         = Link      ("purchase_type")
+                , safety_critical       = Boolean   ()
+                , time_project          = Link      ("time_project")
+                , cost_center           = Link      ("cost_center")
+                , approved_supplier     = Boolean   ()
+                , add_to_las            = Boolean   ()
+                #?, subcontracting        = Boolean   ()
+                , part_of_budget        = Link      ("part_of_budget")
+                , frame_purchase        = Boolean   ()
+                , continuous_obligation = Boolean   ()
+                , contract_term         = String    ()
+                , termination_date      = Date      ()
+                , terms_conditions      = Link      ("terms_conditions")
+                , terms_identical       = Boolean   ()
+                , delivery_deadline     = Date      ()
+                , renegotiations        = Boolean   ()
+                )
+            self.__super.__init__ (db, classname, ** properties)
+        # end def __init__
+    # end class PR
+    pr = PR (db, ''"purchase_request")
+
+    User_Ancestor = kw.get ('User_Class', Ext_Class)
+    class User_Class (User_Ancestor) :
+        """ Add organisation to user class
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( organisation           = Link      ("organisation")
+                )
+            User_Ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class User_Class
+    export.update (dict (User_Class = User_Class))
+
+    # Protect against dupe instantiation during i18n template generation
+    if 'organisation' not in db.classes :
+        Organisation_Class (db, ''"organisation")
+    if 'department' not in db.classes :
+        Department_Class   (db, ''"department")
+    if 'time_project' not in db.classes :
+        Time_Project_Class (db, ''"time_project")
+    return export
 # end def init
 
 def security (db, ** kw) :
