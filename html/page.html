@@ -191,6 +191,16 @@
    , ('product', '')    : '@columns=name,product_group,measuring_unit,'
                           'packaging_unit,minimum_inventory,business_unit&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
+   , ('pr_offer', '')   : '@columns=id,index,supplier,offer_number,'
+                          'purchase_request&@sort=supplier,offer_number&'
+                          '@filter=creator&@pagesize=20&@startwith=0&'
+                          'creator=%s' % uid
+   , ('purchase_request', '')
+                        : '@columns=id,title,purchase_type,time_project,'
+                          'cost_center,delivery_deadline&'
+                          '@sort=-delivery_deadline&@filter=requester&'
+                          '@pagesize=20&@startwith=0&'
+                          'requester=%s' % uid
    , ('public_holiday', '')
                         : '@columns=id,name,description,date,locations,is_half&'
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
@@ -415,6 +425,7 @@
      , ('product_status',      'Edit',   '?@template=item', 1)
      , ('project_type',        'Edit',   '?@template=item', 1)
      , ('public_holiday',      'Edit',   '?@template=item', 1)
+     , ('purchase_request',    'Create', '?@template=item', 1)
      , ('qsl_status',          'Edit',   '?@template=item', 1)
      , ('qsl_type',            'Edit',   '?@template=item', 1)
      , ('qso',                 'Edit',   '?@template=item', 1)
@@ -450,6 +461,7 @@
      , ('user',                'Create', '?@template=item', 1)
      , ('user_dynamic',        'Edit',   '?@template=item', 1)
      , ('valid',               'Edit',   '?@template=item', 1)
+     , ('vat_country',         'Edit',   '?@template=item', 1)
      , ('work_location',       'Edit',   '?@template=item', 1)
      , ( 'vacation_correction'
        , 'Edit'
@@ -516,7 +528,9 @@
      , ('person',              'View', 1,               ('',''))
      , ('prodcat',             'View', 1,               ('',''))
      , ('product',             'View', 1,               ('',''))
+     , ('pr_offer',            'View', 1,               ('',''))
      , ('public_holiday',      'View', 1,               ('',''))
+     , ('purchase_request',    'View', 1,               ('',''))
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
