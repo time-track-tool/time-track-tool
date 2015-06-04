@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-15 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -49,21 +49,23 @@ def check_time_project (db, cl, nodeid, new_values) :
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
+    defaults = \
+        ( ('approval_required', False)
+        , ('approval_hr',       False)
+        , ('op_project',        True)
+        )
     common.require_attributes (_, cl, nodeid, new_values, 'name', 'responsible')
     if 'work_location' not in new_values :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
-    if 'approval_required' not in new_values :
-        new_values ['approval_required'] = False
-    if 'approval_hr' not in new_values :
-        new_values ['approval_hr'] = False
+    for k, v in defaults :
+        if k in cl.properties and k not in new_values :
+            new_values [k] = v
     common.check_name_len (_, new_values ['name'])
     if 'status' not in new_values :
         try :
             new_values ['status'] = db.time_project_status.lookup ('New')
         except KeyError :
             new_values ['status'] = '1'
-    if 'op_project' not in new_values :
-        new_values ['op_project'] = True
     common.require_attributes (_, cl, nodeid, new_values, 'cost_center')
 # end def new_time_project
 
@@ -90,8 +92,9 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_project.audit  ("create", new_time_project)
     db.time_project.audit  ("set",    check_time_project)
-    db.time_project.react  ("create", fix_wp)
-    db.time_project.react  ("set",    fix_wp)
+    if 'time_wp' in db.classes :
+        db.time_project.react  ("create", fix_wp)
+        db.time_project.react  ("set",    fix_wp)
 # end def init
 
 ### __END__ time_project
