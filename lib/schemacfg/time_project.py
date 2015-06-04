@@ -90,7 +90,6 @@ def init \
                 , organisation          = Link      ("organisation")
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
-                , nosy                  = Multilink ("user")
                 , cost_center           = Link      ("cost_center")
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
