@@ -55,8 +55,6 @@ def init \
             self.update_properties \
                 ( name                  = String    ()
                 , description           = String    ()
-                , valid_from            = Date      ()
-                , valid_to              = Date      ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ('name')
@@ -71,16 +69,42 @@ def init \
             self.update_properties \
                 ( name                  = String    ()
                 , description           = String    ()
-                , manager               = Link      ("user")
                 , part_of               = Link      ("department")
-                , valid_from            = Date      ()
-                , valid_to              = Date      ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ('name')
         # end def __init__
     # end class Department_Class
     export.update (dict (Department_Class = Department_Class))
+
+    class Location_Class (Ext_Class) :
+        """ create a department class with some default attributes
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( name                  = String    ()
+                , country               = String    ()
+                )
+            Ext_Class.__init__ (self, db, classname, ** properties)
+            self.setkey ('name')
+        # end def __init__
+    # end class Location_Class
+    export.update (dict (Location_Class = Location_Class))
+
+    class Org_Location_Class (Ext_Class) :
+        """ create a org_location class with some default attributes
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( name                  = String    ()
+                , organisation          = Link      ("organisation")
+                , location              = Link      ("location")
+                )
+            Ext_Class.__init__ (self, db, classname, ** properties)
+            self.setkey ('name')
+        # end def __init__
+    # end class Org_Location_Class
+    export.update (dict (Org_Location_Class = Org_Location_Class))
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)
     class User_Class (User_Ancestor) :
@@ -89,6 +113,7 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( department             = Link      ("department")
+                , org_location           = Link      ("org_location")
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

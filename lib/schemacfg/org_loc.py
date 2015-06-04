@@ -57,6 +57,8 @@ def init \
             self.update_properties \
                 ( mail_domain           = String    ()
                 , messages              = Multilink ("msg")
+                , valid_from            = Date      ()
+                , valid_to              = Date      ()
                 )
             Org_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -68,41 +70,39 @@ def init \
         """ Add some attributes to department """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( messages              = Multilink ("msg")
+                ( manager               = Link      ("user")
+                , messages              = Multilink ("msg")
+                , valid_from            = Date      ()
+                , valid_to              = Date      ()
                 )
             Dep_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class Department_Class
     export.update (dict (Department_Class = Department_Class))
 
-    class Location_Class (Ext_Class) :
-        """ create a department class with some default attributes
+    Loc_Ancestor = kw ['Location_Class']
+    class Location_Class (Loc_Ancestor) :
+        """ Add some attributes to Location
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( name                  = String    ()
-                , address               = String    ()
-                , country               = String    ()
+                ( address               = String    ()
                 , domain_part           = String    ()
                 )
-            Ext_Class.__init__ (self, db, classname, ** properties)
-            self.setkey ('name')
+            Loc_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class Location_Class
     export.update (dict (Location_Class = Location_Class))
 
-    class Org_Location_Class (Ext_Class) :
-        """ create a org_location class with some default attributes
+    Olo_Ancestor = kw ['Org_Location_Class']
+    class Org_Location_Class (Olo_Ancestor) :
+        """ Add some attributes to Org_Location_Class
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( name                  = String    ()
-                , phone                 = String    ()
-                , organisation          = Link      ("organisation")
-                , location              = Link      ("location")
+                ( phone                 = String    ()
                 )
-            Ext_Class.__init__ (self, db, classname, ** properties)
-            self.setkey ('name')
+            Olo_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class Org_Location_Class
     export.update (dict (Org_Location_Class = Org_Location_Class))
@@ -128,7 +128,6 @@ def init \
                 , lunch_duration         = Number    ()
                 , tt_lines               = Number    ()
                 , sex                    = Link      ("sex")
-                , org_location           = Link      ("org_location")
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
