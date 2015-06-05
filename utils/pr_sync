@@ -4,8 +4,10 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import os
+import sys
 import xmlrpclib
 from   datetime          import datetime
+from   argparse          import ArgumentParser
 from   rsclib.autosuper  import autosuper
 from   rsclib.pycompat   import text_type
 from   roundup           import instance
@@ -42,11 +44,12 @@ class PR_Sync (autosuper) :
          , ('user.status',                   'user_status')
         ))
 
-    def __init__ (self, url, dir = None, user = 'admin') :
-        self.srv       = xmlrpclib.ServerProxy (url, allow_none = True)
-        dir            = dir or os.getcwd ()
-        tracker        = instance.open (dir)
-        self.db        = tracker.open (user)
+    def __init__ (self, args) :
+        self.srv       = xmlrpclib.ServerProxy (args.url, allow_none = True)
+        tracker        = instance.open (args.database_directory)
+        self.db        = tracker.open (args.user)
+        self.args      = args
+        self.update    = args.update
         self.classname = None
         self.idmap     = {}
         self.pendmap   = {}
@@ -55,48 +58,6 @@ class PR_Sync (autosuper) :
         self.obsolete  = None
         self.tc_open   = None
     # end def __init__
-
-    def sync (self) :
-        self.sync_class ('organisation', ('name', 'description'))
-        self.sync_class ('location',     ('name', 'country'))
-        self.sync_class ('org_location', ('name', 'location', 'organisation'))
-        self.sync_pending ()
-        self.sync_class \
-            ('cost_center_status', ('name', 'description', 'active'))
-        self.sync_class \
-            ( 'cost_center_group'
-            , ('name', 'description', 'active', 'responsible')
-            )
-        self.sync_class \
-            ( 'cost_center'
-            , ('name', 'description', 'status', 'cost_center_group')
-            )
-        self.sync_class ('department', ('name', 'description', 'part_of'))
-        self.sync_class \
-            ('time_project_status', ('name', 'description', 'active'))
-        # only once at beginning?
-        self.sync_class \
-            ( 'user_status'
-            , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
-            )
-        self.sync_class \
-            ( 'user'
-            , ( 'username', 'address', 'alternate_addresses', 'department'
-              , 'org_location', 'realname', 'status'
-              )
-            , key = 'username'
-            )
-        self.sync_class \
-            ( 'time_project'
-            , ( 'name', 'cost_center', 'department', 'deputy', 'description'
-              , 'organisation', 'responsible', 'status'
-              )
-            , required = ('cost_center', 'responsible')
-            )
-
-        self.sync_pending ()
-        self.db.commit ()
-    # end def sync
 
     # Check methods that check if a class item is valid
     def check_organisation (self, item) :
@@ -140,8 +101,51 @@ class PR_Sync (autosuper) :
         return self.idmap [self.getpropclass (prop)][value]
     # end def map_id
 
+    def sync (self) :
+        self.sync_class ('organisation', ('name', 'description'))
+        self.sync_class ('location',     ('name', 'country'))
+        self.sync_class ('org_location', ('name', 'location', 'organisation'))
+        self.sync_pending ()
+        self.sync_class \
+            ('cost_center_status', ('name', 'description', 'active'))
+        self.sync_class \
+            ( 'cost_center_group'
+            , ('name', 'description', 'active', 'responsible')
+            )
+        self.sync_class \
+            ( 'cost_center'
+            , ('name', 'description', 'status', 'cost_center_group')
+            )
+        self.sync_class ('department', ('name', 'description', 'part_of'))
+        self.sync_class \
+            ('time_project_status', ('name', 'description', 'active'))
+        # only once at beginning?
+        self.sync_class \
+            ( 'user_status'
+            , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
+            )
+        self.sync_class \
+            ( 'user'
+            , ( 'username', 'address', 'alternate_addresses', 'department'
+              , 'org_location', 'realname', 'status'
+              )
+            , key = 'username'
+            )
+        self.sync_class \
+            ( 'time_project'
+            , ( 'name', 'cost_center', 'department', 'deputy', 'description'
+              , 'organisation', 'responsible', 'status'
+              )
+            , required = ('cost_center', 'responsible')
+            )
+
+        self.sync_pending ()
+        if self.update :
+            self.db.commit ()
+    # end def sync
+
     def sync_class (self, classname, propnames, key = 'name', required = ()) :
-        print ('Syncing: %s' % classname)
+        self.verbose ('Syncing: %s' % classname, level = 2)
         assert key in propnames
         for r in required :
             assert r in propnames
@@ -174,7 +178,8 @@ class PR_Sync (autosuper) :
             except KeyError :
                 pass
             if valid :
-                print ("Syncing: %s%s %s" % (classname, id, item))
+                self.verbose \
+                    ("Syncing: %s%s %s" % (classname, id, item), level = 3)
                 if not lid :
                     params = dict \
                         ( (k, self.fix_prop (item [k]))
@@ -194,11 +199,15 @@ class PR_Sync (autosuper) :
                         params [k] = v
                     for r in required :
                         if r not in params :
-                            print ("WARN: Not in params: %s" % r)
+                            print \
+                                ( "WARN: Not in params: %s not converting %s%s"
+                                % (r, classname, id)
+                                )
                             break
                     else :
-                        print ("Create: %s %s" % (classname, params))
-                        lid = cls.create (** params)
+                        self.verbose ("Create: %s %s" % (classname, params))
+                        if self.update :
+                            lid = cls.create (** params)
                 else :
                     litem = cls.getnode (lid)
                     d = {}
@@ -211,21 +220,24 @@ class PR_Sync (autosuper) :
                         if v != litem [p] :
                             d [p] = v
                     if (d) :
-                        print ("Set: %s%s %s" % (classname, lid, d))
-                        cls.set (lid, ** d)
+                        self.verbose ("Set: %s%s %s" % (classname, lid, d))
+                        if self.update :
+                            cls.set (lid, ** d)
                 self.idmap [classname][id] = lid
                 if pending :
                     self.pendmap [classname][lid] = dict \
                         ((k, item [k]) for k in pending if item [k] is not None)
             elif lid :
                 if classname != 'user' :
-                    print ("Retire: %s%s" % (classname, lid))
-                    cls.retire (lid)
+                    self.verbose ("Retire: %s%s" % (classname, lid))
+                    if self.update :
+                        cls.retire (lid)
                 else :
-                    print ("Marking obsolete: %s%s" % (classname, lid))
+                    self.verbose ("Marking obsolete: %s%s" % (classname, lid))
                     if not self.obsolete :
                         self.obsolete = self.db.user_status.lookup ('obsolete')
-                    cls.set (lid, status = self.obsolete)
+                    if self.update :
+                        cls.set (lid, status = self.obsolete)
     # end def sync_class
 
     def sync_pending (self) :
@@ -236,14 +248,53 @@ class PR_Sync (autosuper) :
                 d = dict \
                     ((k, self.map_id (k, v)) for k, v in props.iteritems ())
                 if d :
-                    print ("Set: %s%s %s" % (cn, lid, d))
-                    cls.set (lid, ** d)
+                    self.verbose ("Set: %s%s %s" % (cn, lid, d))
+                    if self.update :
+                        cls.set (lid, ** d)
         self.pendmap = {}
     # end def sync_pending
 
+    def verbose (self, msg, level = 1, * args) :
+        if self.args.verbose >= level :
+            print (msg, *args)
+    # end def verbose
+
 # end class PR_Sync
 
-if __name__ == '__main__' :
-    import sys
-    sync = PR_Sync (sys.argv [1])
+def main () :
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'url'
+        , help   = 'XMLRPC URL of remote tracker'
+        )
+    cmd.add_argument \
+        ( "-d", "--database-directory"
+        , dest    = "database_directory"
+        , help    = "Directory of the roundup installation"
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( "-u", "--update"
+        , help    = "Update roundup with info remote installation"
+        , default = False
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( "-U", "--user"
+        , help    = "Database user"
+        , default = 'admin'
+        )
+    cmd.add_argument \
+        ( '-v', '--verbose'
+        , dest   = 'verbose'
+        , help   = 'Verbose output'
+        , action = 'count'
+        )
+    args = cmd.parse_args ()
+
+    sync = PR_Sync (args)
     sync.sync ()
+# end def main
+
+if __name__ == '__main__' :
+    main ()
