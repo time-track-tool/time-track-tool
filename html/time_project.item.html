@@ -59,12 +59,12 @@
           , item=context.cost_center
           ).formatlink()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python: 'project_type' in db._db.classes">
      <th tal:content="structure python:utils.fieldname
          (classname, 'project_type')"/>
      <td tal:content="structure python:context.project_type.menu ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python: 'reporting_group' in db._db.classes">
      <th tal:content="structure python:utils.fieldname
          (classname, 'reporting_group')"/>
      <td tal:content="structure python:context.reporting_group.menu
@@ -83,101 +83,127 @@
      <td tal:content="structure python:context.department.menu ()"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'planned_effort')"/>
-     <td tal:content="structure python:context.planned_effort.field ()"/>
+     <tal:block tal:condition="python: 'planned_effort' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'planned_effort')"/>
+      <td tal:content="structure python:context.planned_effort.field ()"/>
+     </tal:block>
      <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
      <td tal:content="structure python:context.status.menu ()"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'work_location')"/>
-     <td tal:content="structure python:context.work_location.menu ()"/>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'max_hours')"/>
-     <td tal:content="structure python:context.max_hours.field ()"/>
+     <tal:block tal:condition="python: 'work_location' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'work_location')"/>
+      <td tal:content="structure python:context.work_location.menu ()"/>
+     </tal:block>
+     <tal:block tal:condition="python: 'max_hours' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'max_hours')"/>
+      <td tal:content="structure python:context.max_hours.field ()"/>
+     </tal:block>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'op_project')"/>
-     <td tal:content="structure python:context.op_project.field ()"/>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'no_overtime')"/>
-     <td tal:content="structure python:context.no_overtime.field ()"/>
+     <tal:block tal:condition="python: 'op_project' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'op_project')"/>
+      <td tal:content="structure python:context.op_project.field ()"/>
+     </tal:block>
+     <tal:block tal:condition="python: 'no_overtime' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'no_overtime')"/>
+      <td tal:content="structure python:context.no_overtime.field ()"/>
+     </tal:block>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'is_public_holiday')"/>
-     <td tal:content="structure python:context.is_public_holiday.field ()"/>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'overtime_reduction')"/>
-     <td tal:content="structure python:context.overtime_reduction.field ()"/>
+     <tal:block tal:condition="python: 'is_public_holiday' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'is_public_holiday')"/>
+      <td tal:content="structure python:context.is_public_holiday.field ()"/>
+     </tal:block>
+     <tal:block tal:condition="python: 'overtime_reduction' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'overtime_reduction')"/>
+      <td tal:content="structure python:context.overtime_reduction.field ()"/>
+     </tal:block>
     </tr>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'approval_required')"/>
-     <td tal:content="structure python:context.approval_required.field ()"/>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'approval_hr')"/>
-     <td tal:content="structure python:context.approval_hr.field ()"/>
+     <tal:block tal:condition="python: 'approval_required' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'approval_required')"/>
+      <td tal:content="structure python:context.approval_required.field ()"/>
+     </tal:block>
+     <tal:block tal:condition="python: 'approval_hr' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'approval_hr')"/>
+      <td tal:content="structure python:context.approval_hr.field ()"/>
+     </tal:block>
     <tr>
     </tr>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'is_vacation')"/>
-     <td tal:content="structure python:context.is_vacation.field ()"/>
-     <th tal:content="structure python:utils.fieldname
-      (classname, 'is_special_leave')"/>
-     <td tal:content="structure python:context.is_special_leave.field ()"/>
+     <tal:block tal:condition="python: 'is_vacation' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'is_vacation')"/>
+      <td tal:content="structure python:context.is_vacation.field ()"/>
+     </tal:block>
+     <tal:block tal:condition="python: 'is_special_leave' in db._db.classes">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'is_special_leave')"/>
+      <td tal:content="structure python:context.is_special_leave.field ()"/>
+     </tal:block>
     <tr>
     </tr>
    </tal:block>
   </tal:block>
-  <tal:block tal:condition="context/is_view_ok"
-   tal:define="wps python:db.time_wp.filter
-   (None, {'project' : context.id})">
-   <table class="files">
-    <tr tal:define=
-     "uid  python:db._db.getuid ()
-     ;user python:db._db.user.get (uid, 'username')
-     ;cond python: not not
-           (   context.id
-           and (  user == str (context.responsible)
-               or user == str (context.deputy)
-               or utils.user_has_role (db._db, uid, 'Project')
-               )
-           and context.status.active
-           )
-     ">
-     <th tal:attributes="colspan python:3-cond" class="header"
-      i18n:translate="">
-      Current Work Package(s)
-     </th>
-     <td class="header" tal:condition="cond">
-      <a i18n:translate="" tal:attributes="href python:
-      'time_wp?:template=item&' + '&'.join
-      ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
-        [ ('project',     context.name)
-        , ('responsible', user)
-        , ('bookers',     user)
+  <tal:block
+   tal:condition="python:
+       context.is_view_ok () and 'time_wp' in db._db.classes">
+   <tal:block
+    tal:define="wps python:db.time_wp.filter
+    (None, {'project' : context.id})">
+    <table class="files">
+     <tr tal:define=
+      "uid  python:db._db.getuid ()
+      ;user python:db._db.user.get (uid, 'username')
+      ;cond python: not not
+            (   context.id
+            and (  user == str (context.responsible)
+                or user == str (context.deputy)
+                or utils.user_has_role (db._db, uid, 'Project')
+                )
+            and context.status.active
+            )
+      ">
+      <th tal:attributes="colspan python:3-cond" class="header"
+       i18n:translate="">
+       Current Work Package(s)
+      </th>
+      <td class="header" tal:condition="cond">
+       <a i18n:translate="" tal:attributes="href python:
+       'time_wp?:template=item&' + '&'.join
+       ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+         [ ('project',     context.name)
+         , ('responsible', user)
+         , ('bookers',     user)
+         ]
         ]
-       ]
-      )">
-         new time_wp
-      </a>
-     </td>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname ('time_wp', 'name')"/>
-     <th tal:content="structure python:utils.fieldname ('time_wp', 'wp_no')"/>
-     <th tal:content="structure python:utils.fieldname
-      ('time_wp', 'description')"/>
-    </tr>
-    <tr tal:repeat="wp wps">
-     <td tal:content="structure python:utils.ExtProperty
-      (utils, wp.name, item = wp).formatlink ()"/>
-     <td tal:content="wp/wp_no"/>
-     <td tal:content="wp/description"/>
-    </tr>
-   </table>
+       )">
+          new time_wp
+       </a>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname ('time_wp', 'name')"/>
+      <th tal:content="structure python:utils.fieldname ('time_wp', 'wp_no')"/>
+      <th tal:content="structure python:utils.fieldname
+       ('time_wp', 'description')"/>
+     </tr>
+     <tr tal:repeat="wp wps">
+      <td tal:content="structure python:utils.ExtProperty
+       (utils, wp.name, item = wp).formatlink ()"/>
+      <td tal:content="wp/wp_no"/>
+      <td tal:content="wp/description"/>
+     </tr>
+    </table>
+   </tal:block>
   </tal:block>
  </tal:block>
 

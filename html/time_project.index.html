@@ -8,62 +8,54 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['responsible'],   multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['deputy'],        multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['organisation'],  multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['organisation']
-        , searchname  = 'organisation.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['department'],    multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['department']
-        , searchname  = 'department.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['status'],        multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['cost_center'],   multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['cost_center']
-        , searchname  = 'cost_center.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['reporting_group'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['reporting_group']
-        , searchname  = 'reporting_group.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['product_family'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['product_family']
-        , searchname  = 'product_family.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['project_type'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['project_type']
-        , searchname  = 'project_type.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['planned_effort'])
-    , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['max_hours'])
-    , utils.ExtProperty (utils, pdict ['nosy'],          multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['op_project'])
-    , utils.ExtProperty (utils, pdict ['no_overtime'])
-    , utils.ExtProperty (utils, pdict ['is_public_holiday'])
-    , utils.ExtProperty (utils, pdict ['is_special_leave'])
-    , utils.ExtProperty (utils, pdict ['is_vacation'])
-    , utils.ExtProperty (utils, pdict ['overtime_reduction'])
-    , utils.ExtProperty (utils, pdict ['approval_required'])
-    , utils.ExtProperty (utils, pdict ['approval_hr'])
+   prp python:
+    ( ('id',                 {})
+    , ('name',               {})
+    , ('description',        {})
+    , ('responsible',        dict (multiselect = 1))
+    , ('deputy',             dict (multiselect = 1))
+    , ('organisation',       dict (multiselect = 1))
+    , ('organisation'
+      , dict (searchname = 'organisation.id', searchable  = False)
+      )
+    , ('department',         dict (multiselect = 1))
+    , ('department'
+      , dict (searchname = 'department.id', searchable  = False)
+      )
+    , ('status',             dict (multiselect = 1))
+    , ('cost_center',        dict (multiselect = 1))
+    , ('cost_center'
+      , dict (searchname = 'cost_center.id', searchable  = False)
+      )
+    , ('reporting_group',    dict (multiselect = 1))
+    , ('reporting_group'
+      , dict (searchname = 'reporting_group.id', searchable  = False)
+      )
+    , ('product_family',     dict (multiselect = 1))
+    , ('product_family'
+      , dict (searchname = 'product_family.id', searchable  = False)
+      )
+    , ('project_type',       dict (multiselect = 1))
+    , ( 'project_type'
+      , dict (searchname = 'project_type.id', searchable = False)
+      )
+    , ('planned_effort',     {})
+    , ('work_location',      dict (multiselect = 1))
+    , ('max_hours',          {})
+    , ('nosy',               dict (multiselect = 1))
+    , ('op_project',         {})
+    , ('no_overtime',        {})
+    , ('is_public_holiday',  {})
+    , ('is_special_leave',   {})
+    , ('is_vacation',        {})
+    , ('overtime_reduction', {})
+    , ('approval_required',  {})
+    , ('approval_hr',        {})
     );
+   props python:
+    [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+      for p in prp if p [0] in pdict
+    ]
    "
   tal:condition="context/is_view_ok">
 
