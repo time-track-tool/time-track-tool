@@ -5613,8 +5613,8 @@ msgstr "Typ der Bestellung"
 msgid "vat_country"
 msgstr "Mehrwertsteuer pro Land"
 
-msgid "pr_offer"
-msgstr "Angebot"
+msgid "pr_supplier"
+msgstr "Lieferant"
 
 msgid "pr_offer_item"
 msgstr "Angebotszeile"

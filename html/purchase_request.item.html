@@ -73,14 +73,6 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'approved_supplier')"/>
-      <td tal:content="structure python:context.approved_supplier.field ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'add_to_las')"/>
-      <td tal:content="structure python:context.add_to_las.field ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
           (classname, 'terms_conditions')"/>
       <td tal:define="value context/terms_conditions"><!--
        --><tal:block tal:repeat="choice db/terms_conditions/list"><!--
@@ -118,55 +110,98 @@
           (classname, 'delivery_deadline')"/>
       <td tal:content="structure python:context.delivery_deadline.field ()"/>
      </tr>
-
-    </tal:block>
-    <tal:block metal:fill-slot="before_messages">
-     <tal:block tal:condition="context/id"
-      tal:define="offers python:db.pr_offer.filter
-       (None, {'purchase_request' : context.id}, sort=[('+', 'index')])">
-      <table class="files">
-       <tr tal:define="cond python: bool
-           (   context.id
-           and context.is_edit_ok ()
-           and db.pr_offer.is_edit_ok ()
-           )">
-        <th class="header" i18n:translate=""
-         tal:attributes="colspan python: 4 - cond">
-         Offers
-        </th>
-        <td class="header" tal:condition="cond">
-         <a i18n:translate="" tal:attributes="href python:
-          'pr_offer?:template=item&' + '&'.join
-           ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
-             [ ('purchase_request',   context.id)
-             ]
-            ]
-           )">
-          new offer
-         </a>
-        </td>
-       </tr>
-       <tr tal:define="ofr python:'offer'">
-        <th tal:content="structure python:utils.fieldname
-            (ofr, 'index')"/>
-        <th tal:content="structure python:utils.fieldname
-            (ofr, 'supplier')"/>
-        <th tal:content="structure python:utils.fieldname
-            (ofr, 'offer_number')"/>
-        <th tal:content="structure python:utils.fieldname
-            (ofr, 'description')"/>
-       </tr>
-
-       <tr tal:repeat="ofr offers">
-        <td tal:content="structure python:utils.ExtProperty
-         ( utils, utils.properties_dict (db, ofr) ['index'], item=ofr
-         ).formatlink ()"/>
-        <td tal:content="ofr/offer_number/plain"/>
-        <td tal:content="ofr/supplier/plain"/>
-        <td tal:content="ofr/description/plain"/>
-       </tr>
-      </table>
-     </tal:block>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'items')"/>
+      <td colspan="3">
+       <table class="form" border="0"
+              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+        <tr>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'index')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'pr_supplier')"/>
+         <th/>
+         <th style="text-align:left" colspan="3"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'description')"/>
+         <th style="text-align:left"
+             tal:condition="context/items/is_edit_ok" i18n:translate="">
+             remove
+         </th>
+        </tr>
+        <tr>
+         <th/>
+         <th/>
+         <th style="text-align:right"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'add_to_las')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'offer_number')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'units')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'price_per_unit')"/>
+        </tr>
+        <tal:block tal:repeat="i python:sorted
+            (context.items, key = lambda x : x.index)">
+         <tr>
+          <td tal:content="structure python:i.index.field (size=3)"/>
+          <td colspan="2"
+              tal:content="structure python:i.pr_supplier.menu ()"/>
+          <td colspan="3"
+              tal:content="structure python:i.description.field ()"/>
+          <td tal:condition="context/items/is_edit_ok">
+           <input tabindex="-1" type="checkbox" name="@remove@items"
+                  tal:attributes="value i/id">
+          </td>
+         </tr>
+         <tr>
+          <td/>
+          <td tal:content="structure python:i.supplier.field ()"/>
+          <td tal:content="structure python:i.add_to_las.field ()"/>
+          <td tal:content="structure python:i.offer_number.field (size=5)"/>
+          <td tal:content="structure python:i.units.field (size=5)"/>
+          <td tal:content="structure python:i.price_per_unit.field (size=7)"/>
+         </tr>
+        </tal:block>
+        <tal:block tal:repeat="idx python:range(1,4)">
+         <tr>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
+          <td colspan="2"
+              tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'pr_supplier').menu ()"/>
+          <td colspan="3"
+              tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'description').field ()"/>
+          <input type="hidden" name="@link@items"
+                 tal:attributes="value python:'pr_offer_item-%s' % idx" />
+         </tr>
+         <tr>
+          <td/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'supplier').field ()"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'add_to_las').field ()"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'offer_number').field
+              (size=5)"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'units').field (size=5)"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'price_per_unit').field
+              (size=7)"/>
+         </tr>
+        </tal:block>
+       </table>
+      </td>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

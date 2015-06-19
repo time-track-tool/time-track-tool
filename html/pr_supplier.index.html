@@ -10,12 +10,9 @@
    pdict python: utils.properties_dict (db, context);
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['index'])
-    , utils.ExtProperty (utils, pdict ['supplier'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['offer_number'])
-    , utils.ExtProperty (utils, pdict ['purchase_request'])
-    , utils.ExtProperty (utils, pdict ['vat_country'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['name'])
+    , utils.ExtProperty (utils, pdict ['org_location'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['vat_country'],  multiselect = 1)
     , utils.ExtProperty (utils, pdict ['creation'])
     , utils.ExtProperty (utils, pdict ['creator'])
     , utils.ExtProperty (utils, pdict ['activity'])

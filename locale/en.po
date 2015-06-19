@@ -5505,8 +5505,8 @@ msgstr "Purchase type"
 msgid "vat_country"
 msgstr "Country (for VAT)"
 
-msgid "pr_offer"
-msgstr "Offer"
+msgid "pr_supplier"
+msgstr "Supplier"
 
 msgid "pr_offer_item"
 msgstr "Offer item"

@@ -43,7 +43,9 @@ def init \
     , Department_Class
     , Ext_Class
     , Full_Issue_Class
+    , Location_Class
     , Organisation_Class
+    , Org_Location_Class
     , Time_Project_Class
     , ** kw
     ) :
@@ -78,24 +80,24 @@ def init \
         )
     vat_country.setkey ('country')
 
-    pr_offer = Class \
-        ( db, ''"pr_offer"
-        , index                 = Number    ()
-        , description           = String    ()
-        , supplier              = String    ()
-        , offer_number          = String    ()
-        , purchase_request      = Link      ("purchase_request")
+    pr_supplier = Class \
+        ( db, ''"pr_supplier"
+        , name                  = String    ()
         , vat_country           = Link      ("vat_country")
-        , items                 = Multilink ("pr_offer_item")
+        , org_location          = Multilink ("org_location")
         )
+    pr_supplier.setkey ('name')
 
     pr_offer_item = Class \
         ( db, ''"pr_offer_item"
         , index                 = Number    ()
         , description           = String    ()
-        , pr_offer              = Link      ("pr_offer")
         , units                 = Number    ()
         , price_per_unit        = Number    ()
+        , supplier              = String    ()
+        , add_to_las            = Boolean   ()
+        , pr_supplier           = Link      ("pr_supplier")
+        , offer_number          = String    ()
         )
 
     class PR (Full_Issue_Class) :
@@ -108,8 +110,6 @@ def init \
                 , safety_critical       = Boolean   ()
                 , time_project          = Link      ("time_project")
                 , cost_center           = Link      ("cost_center")
-                , approved_supplier     = Boolean   ()
-                , add_to_las            = Boolean   ()
                 #?, subcontracting        = Boolean   ()
                 , part_of_budget        = Link      ("part_of_budget")
                 , frame_purchase        = Boolean   ()
@@ -120,28 +120,21 @@ def init \
                 , terms_identical       = Boolean   ()
                 , delivery_deadline     = Date      ()
                 , renegotiations        = Boolean   ()
+                , vat_country           = Link      ("vat_country")
+                , items                 = Multilink ("pr_offer_item")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
     # end class PR
     pr = PR (db, ''"purchase_request")
 
-    User_Ancestor = kw.get ('User_Class', Ext_Class)
-    class User_Class (User_Ancestor) :
-        """ Add organisation to user class
-        """
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties \
-                ( organisation           = Link      ("organisation")
-                )
-            User_Ancestor.__init__ (self, db, classname, ** properties)
-        # end def __init__
-    # end class User_Class
-    export.update (dict (User_Class = User_Class))
-
     # Protect against dupe instantiation during i18n template generation
     if 'organisation' not in db.classes :
         Organisation_Class (db, ''"organisation")
+    if 'location' not in db.classes :
+        Location_Class (db, ''"location")
+    if 'org_location' not in db.classes :
+        Org_Location_Class (db, ''"org_location")
     if 'department' not in db.classes :
         Department_Class   (db, ''"department")
     if 'time_project' not in db.classes :

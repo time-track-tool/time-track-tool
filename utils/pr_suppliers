@@ -1,0 +1,110 @@
+#!/usr/bin/python
+
+import os
+import sys
+from   csv      import DictReader
+from   argparse import ArgumentParser
+from   roundup  import instance
+
+org = \
+    { 'TTTech AG'              : 'TTTech Wien'
+    , 'TTTech Automotive GmbH' : 'TTAutomotive Wien'
+    }
+country = dict \
+    ( A   = 'Austria'
+    , CH  = '0 (no VAT)'
+    , D   = 'Germany'
+    , I   = 'Italy'
+    , USA = '0 (no VAT)'
+    )
+
+def main () :
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'filename'
+        , help = 'CSV file'
+        )
+    cmd.add_argument \
+        ( '-d', '--database-directory'
+        , dest    = 'dir'
+        , help    = 'Directory of roundup installation'
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( '-D', '--delimiter'
+        , dest    = 'delimiter'
+        , help    = 'CSV delimiter'
+        , default = ';'
+        )
+    cmd.add_argument \
+        ( '-E', '--encoding'
+        , dest    = 'encoding'
+        , help    = 'CSV encoding'
+        , default = 'utf-8'
+        )
+    cmd.add_argument \
+        ( '-u', '--update'
+        , help    = 'Update roundup with contents of supplier list'
+        , default = False
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( "-U", "--user"
+        , help    = "Database user"
+        , default = 'admin'
+        )
+    cmd.add_argument \
+        ( '-v', '--verbose'
+        , dest   = 'verbose'
+        , help   = 'Verbose output'
+        , action = 'count'
+        )
+    args = cmd.parse_args ()
+
+    tracker = instance.open (args.dir)
+    db      = tracker.open (args.user)
+
+    f = open (args.filename, 'r')
+    for line in f :
+        if line.startswith (';;;;;;;;;;;;Finance') :
+            break
+    dr = DictReader (f, delimiter = args.delimiter)
+    for rec in dr :
+        enc = args.encoding
+        ent = rec ['Entity'].decode (enc).strip ()
+        if not ent :
+            break
+        olo = db.org_location.lookup (org.get (ent, ent).encode ('utf-8'))
+        sup = rec ['Name of Supplier'].decode (enc)
+        cc  = rec ['Country Code'].decode (enc).strip ()
+        if args.verbose :
+            print (sup, ent, cc)
+        vcr = None
+        try :
+            vcr = db.vat_country.lookup (country.get (cc, cc).encode ('utf-8'))
+        except KeyError :
+            if cc :
+                print ("Unknown country code: %s" % cc)
+        try :
+            s_id = db.pr_supplier.lookup (sup.encode ('utf-8'))
+        except KeyError :
+            if args.update :
+                s_id = db.pr_supplier.create \
+                    ( name            = sup.encode ('utf-8')
+                    , org_location    = [olo]
+                    , vat_country     = vcr
+                    )
+            continue
+        supplier = db.pr_supplier.getnode (s_id)
+        olos     = supplier.org_location
+        if olo not in olos :
+            olos.append (olo)
+            db.pr_supplier.set (s_id, org_location = olos)
+        if supplier.vat_country != vcr :
+            db.pr_supplier.set (s_id, vat_country = vcr)
+    if args.update :
+        db.commit ()
+# end def main
+
+if __name__ == '__main__' :
+    main ()
