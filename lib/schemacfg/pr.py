@@ -29,7 +29,9 @@
 #--
 #
 
-from schemacfg       import schemadef
+import common
+from   schemacfg import schemadef
+from   roundup   import date
 
 def init \
     ( db
@@ -58,35 +60,33 @@ def init \
         )
     p_o_b.setkey ('name')
 
-    t_c = Class \
-        ( db, ''"terms_conditions"
+    pr_approval_status = Class \
+        ( db, ''"pr_approval_status"
         , name                  = String    ()
+        , order                 = Number    ()
+        , transitions           = Multilink ("pr_approval_status")
+        )
+    pr_approval_status.setkey ('name')
+
+    pr_approval = Class \
+        ( db, ''"pr_approval"
+        , role                  = String    ()
+        , user                  = Link      ("user")
+        , by                    = Link      ("user")
+        , status                = Link      ("pr_approval_status")
+        , date                  = Date      ()
+        , purchase_request      = Link      ("purchase_request")
         , order                 = Number    ()
         , description           = String    ()
+        , msg                   = Link      ("msg")
         )
-    t_c.setkey ('name')
 
-    purchase_type = Class \
-        ( db, ''"purchase_type"
-        , name                  = String    ()
+    pr_approval_order = Class \
+        ( db, ''"pr_approval_order"
+        , role                  = String    ()
         , order                 = Number    ()
         )
-    purchase_type.setkey ('name')
-
-    vat_country = Class \
-        ( db, ''"vat_country"
-        , country               = String    ()
-        , vat                   = Number    ()
-        )
-    vat_country.setkey ('country')
-
-    pr_supplier = Class \
-        ( db, ''"pr_supplier"
-        , name                  = String    ()
-        , vat_country           = Link      ("vat_country")
-        , org_location          = Multilink ("org_location")
-        )
-    pr_supplier.setkey ('name')
+    pr_approval_order.setkey ('role')
 
     pr_offer_item = Class \
         ( db, ''"pr_offer_item"
@@ -100,6 +100,47 @@ def init \
         , offer_number          = String    ()
         )
 
+    pr_status = Class \
+        ( db, ''"pr_status"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , transitions           = Multilink ("pr_status")
+        , relaxed               = Boolean   ()
+        )
+    pr_status.setkey ('name')
+
+    pr_supplier = Class \
+        ( db, ''"pr_supplier"
+        , name                  = String    ()
+        , vat_country           = Link      ("vat_country")
+        , org_location          = Multilink ("org_location")
+        , sap_ref               = String    ()
+        )
+    pr_supplier.setkey ('name')
+
+    purchase_type = Class \
+        ( db, ''"purchase_type"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , roles                 = String    ()
+        )
+    purchase_type.setkey ('name')
+
+    t_c = Class \
+        ( db, ''"terms_conditions"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , description           = String    ()
+        )
+    t_c.setkey ('name')
+
+    vat_country = Class \
+        ( db, ''"vat_country"
+        , country               = String    ()
+        , vat                   = Number    ()
+        )
+    vat_country.setkey ('country')
+
     class PR (Full_Issue_Class) :
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
@@ -110,7 +151,6 @@ def init \
                 , safety_critical       = Boolean   ()
                 , time_project          = Link      ("time_project")
                 , cost_center           = Link      ("cost_center")
-                #?, subcontracting        = Boolean   ()
                 , part_of_budget        = Link      ("part_of_budget")
                 , frame_purchase        = Boolean   ()
                 , continuous_obligation = Boolean   ()
@@ -121,7 +161,8 @@ def init \
                 , delivery_deadline     = Date      ()
                 , renegotiations        = Boolean   ()
                 , vat_country           = Link      ("vat_country")
-                , items                 = Multilink ("pr_offer_item")
+                , offer_items           = Multilink ("pr_offer_item")
+                , status                = Link      ("pr_status")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -149,16 +190,37 @@ def security (db, ** kw) :
     """
 
     roles = \
-        [ ("Controlling",     "Controlling")
+        [ ("Board",           "Approvals over certain limits")
+        , ("Finance",         "Finance-related approvals")
+        , ("HR",              "Approvals for staff/subcontracting")
+        , ("IT-Approval",     "Approve IT-Related PRs")
+        , ("Procurement",     "Procurement department")
+        , ("Subcontract",     "Approvals for staff/subcontracting")
         ]
 
     #     classname        allowed to view   /  edit
 
     classes = \
-        [ ("organisation", ["User"],  ["Controlling"])
+        [ ("department",         ["User"],        [])
+        , ("organisation",       ["User"],        [])
+        , ("org_location",       ["User"],        [])
+        , ("part_of_budget",     ["User"],        [])
+        , ("pr_approval",        ["Procurement"], [])
+        , ("pr_approval_status", ["User"],        [])
+        , ("pr_offer_item",      ["Procurement"], [])
+        , ("pr_status",          ["User"],        [])
+        , ("pr_supplier",        ["User"],        [])
+        , ("purchase_request",   ["Procurement"], [])
+        , ("purchase_type",      ["User"],        ["Procurement"])
+        , ("terms_conditions",   ["User"],        [])
+        , ("time_project",       ["User"],        [])
+        , ("vat_country",        ["User"],        ["Procurement"])
         ]
 
-    prop_perms = []
+    prop_perms = \
+        [ ("user", "Edit", ["Procurement"], ("roles",))
+        , ("user", "View", ["User"],        ("username",))
+        ]
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
@@ -173,6 +235,256 @@ def security (db, ** kw) :
         ( name        = 'Search'
         , klass       = 'time_project'
         , properties  = tp_properties
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'purchase_request'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'pr_approval'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'pr_offer_item'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    db.security.addPermissionToRole ('User', 'Create', 'pr_offer_item')
+    db.security.addPermissionToRole ('User', 'Create', 'purchase_request')
+
+    fixdoc = schemadef.security_doc_from_docstring
+
+    def own_pr (db, userid, itemid) :
+        """ User is allowed to view their own PRs if either creator or
+            requester.
+        """
+        if not itemid or itemid < 1 :
+            return False
+        pr = db.purchase_request.getnode (itemid)
+        if pr.creator == userid or pr.requester == userid :
+            return True
+        return False
+    # end def own_pr
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'purchase_request'
+        , check = own_pr
+        , description = fixdoc (own_pr.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def open_or_approving (db, userid, itemid) :
+        st_open      = db.pr_status.lookup ('open')
+        st_approving = db.pr_status.lookup ('approving')
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status in (st_open, st_approving) :
+            return True
+        return False
+    # end def open_or_approving
+
+    def cancel_own_pr (db, userid, itemid) :
+        """ User is allowed to cancel their own PR.
+        """
+        if not own_pr (db, userid, itemid) :
+            return False
+        return open_or_approving (db, userid, itemid)
+    # end def cancel_own_pr
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = cancel_own_pr
+        , description = fixdoc (cancel_own_pr.__doc__)
+        , properties = ('status', 'messages')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def own_pr_and_open (db, userid, itemid) :
+        """ User is allowed to edit their own PRs (creator or requester)
+            while PR is open.
+        """
+        if not own_pr (db, userid, itemid) :
+            return False
+        open = db.pr_status.lookup ('open')
+        pr = db.purchase_request.getnode (itemid)
+        if pr.status == open :
+            return True
+        return False
+    # end def own_pr_and_open
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = own_pr_and_open
+        , description = fixdoc (own_pr_and_open.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def linked_pr (db, userid, itemid) :
+        """ Users are allowed to view PR if an approval from them is
+            linked to the PR.
+        """
+        if not itemid or itemid < 1 :
+            return False
+        pr = db.purchase_request.getnode (itemid)
+        ap = db.pr_approval.filter (None, dict (purchase_request = itemid))
+        for id in ap :
+            a = db.pr_approval.getnode (id)
+            if a.user == userid :
+                return True
+            if a.role and common.user_has_role (db, userid, a.role) :
+                return True
+        return False
+    # end def linked_pr
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'purchase_request'
+        , check = linked_pr
+        , description = fixdoc (linked_pr.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def pending_approval (db, userid, itemid) :
+        """ Users are allowed to edit message if a pending
+            approval from them is linked to the PR.
+        """
+        if not linked_pr (db, userid, itemid) :
+            return False
+        if open_or_approving (db, userid, itemid) :
+            return True
+        # Also allow for reject because message is tried to attach twice
+        # We allow this only for some time (5 min after last change)
+        st_reject = db.pr_status.lookup ('rejected')
+        pr        = db.purchase_request.getnode (itemid)
+        if pr.status != st_reject :
+            return False
+        now = date.Date ('.')
+        if pr.activity + date.Interval ('00:05:00') > now :
+            return True
+        return False
+    # end def linked_pr
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = pending_approval
+        , description = fixdoc (pending_approval.__doc__)
+        , properties  = ('messages',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def linked_to_pr (db, userid, itemid) :
+        """ Users are allowed to view if approval is linked to viewable PR.
+        """
+        if not itemid or itemid < 1 :
+            return False
+        ap = db.pr_approval.getnode (itemid)
+        pr = ap.purchase_request
+        if own_pr (db, userid, pr) :
+            return True
+        if linked_pr (db, userid, pr) :
+            return True
+        return False
+    # end def linked_to_pr
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'pr_approval'
+        , check = linked_to_pr
+        , description = fixdoc (linked_to_pr.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def approval_undecided (db, userid, itemid) :
+        """ User is allowed to change status of undecided approval if
+            they are the owner or have appropriate role.
+        """
+        if not itemid or itemid < 1 :
+            return False
+        ap           = db.pr_approval.getnode (itemid)
+        pr           = db.purchase_request.getnode (ap.purchase_request)
+        und          = db.pr_approval_status.lookup ('undecided')
+        st_open      = db.pr_status.lookup ('open')
+        st_approving = db.pr_status.lookup ('approving')
+        if  (   ap.status == und
+            and (  ap.user == userid
+                or (ap.role and common.user_has_role (db, userid, ap.role))
+                )
+            and pr.status in (st_open, st_approving)
+            ) :
+            return True
+        return False
+    # end def approval_undecided
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'pr_approval'
+        , check = approval_undecided
+        , description = fixdoc (approval_undecided.__doc__)
+        , properties = ('status', 'msg')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def get_pr (db, itemid) :
+        prs = db.purchase_request.filter (None, dict (offer_items = itemid))
+        if len (prs) == 0 :
+            return None
+        assert len (prs) == 1
+        return db.purchase_request.getnode (prs [0])
+    # end def get_pr
+
+    def linked_from_pr (db, userid, itemid) :
+        """ Users are allowed to view if offer is linked from PR.
+        """
+        if not itemid or itemid < 1 :
+            return True
+        off = db.pr_offer_item.getnode (itemid)
+        pr  = get_pr (db, itemid)
+        if pr is None :
+            return False
+        if own_pr (db, userid, pr.id) :
+            return True
+        if linked_pr (db, userid, pr.id) :
+            return True
+        return False
+    # end def linked_from_pr
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'pr_offer_item'
+        , check = linked_from_pr
+        , description = fixdoc (linked_from_pr.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def linked_and_editable (db, userid, itemid) :
+        """ Users are allowed to edit if offer is linked from PR and PR
+            is editable.
+        """
+        if not itemid or itemid < 1 :
+            return True
+        if not linked_from_pr (db, userid, itemid) :
+            return False
+        pr  = get_pr (db, itemid)
+        if pr is None :
+            return False
+        return own_pr_and_open (db, userid, pr.id)
+    # end def linked_and_editable
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'pr_offer_item'
+        , check = linked_and_editable
+        , description = fixdoc (linked_and_editable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 

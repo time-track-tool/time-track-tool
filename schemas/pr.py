@@ -75,6 +75,10 @@ prop_perms = []
 # For PGP-Processing we need a role
 schemadef.register_roles             (db, [('PGP', 'Roles that require PGP')])
 schemadef.register_class_permissions (db, classes, prop_perms)
+schemadef.allow_user_details         \
+    ( db, 'User', 'View', 'address'
+    , 'alternate_addresses', 'creation', 'activity'
+    )
 schemadef.allow_user_details         (db, 'User', 'Edit')
 
 # oh, g'wan, let anonymous access the web interface too

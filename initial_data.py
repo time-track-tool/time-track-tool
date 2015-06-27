@@ -1033,10 +1033,44 @@ if 'vat_country' in db.classes :
     db.vat_country.create (country = 'Italy',           vat = 21.00)
     db.vat_country.create (country = 'Sweden',          vat = 25.00)
 if 'purchase_type' in db.classes :
-    db.purchase_type.create (name = 'Service',  order = 10)
-    db.purchase_type.create (name = 'Hardware', order = 20)
-    db.purchase_type.create (name = 'Software', order = 30)
-    db.purchase_type.create (name = 'Assett',   order = 40)
-    db.purchase_type.create (name = 'Stock',    order = 50)
-    db.purchase_type.create (name = 'Other',    order = 60)
-
+    db.purchase_type.create \
+        (name = 'Service',        order = 10)
+    db.purchase_type.create \
+        (name = 'IT-Assett',      order = 20, roles = "IT-Approval")
+    db.purchase_type.create \
+        (name = 'Assett',         order = 25, roles = "Procurement")
+    db.purchase_type.create \
+        (name = 'IT-Hardware',    order = 30, roles = "IT-Approval")
+    db.purchase_type.create \
+        (name = 'Hardware',       order = 35, roles = "Procurement")
+    db.purchase_type.create \
+        (name = 'IT-Software',    order = 40, roles = "IT-Approval")
+    db.purchase_type.create \
+        (name = 'Software',       order = 45, roles = "Procurement")
+    db.purchase_type.create \
+        (name = 'Stock',          order = 50)
+    db.purchase_type.create \
+        (name = 'Subcontracting', order = 60, roles = "Subcontract,HR")
+    db.purchase_type.create \
+        (name = 'Other',          order = 70, roles = "Procurement")
+if 'pr_status' in db.classes :
+    s1 = db.pr_status.create (name = 'open',      order = 1)
+    s2 = db.pr_status.create (name = 'approving', order = 2, relaxed = True)
+    s3 = db.pr_status.create (name = 'approved',  order = 3, relaxed = True)
+    s4 = db.pr_status.create (name = 'rejected',  order = 4)
+    s5 = db.pr_status.create (name = 'cancelled', order = 5)
+    db.pr_status.set (s1, transitions = [s2, s5])
+    db.pr_status.set (s2, transitions = [s3, s4, s5])
+if 'pr_approval_status' in db.classes :
+    s1 = db.pr_approval_status.create (name = 'undecided', order = 1)
+    s2 = db.pr_approval_status.create (name = 'approved',  order = 2)
+    s3 = db.pr_approval_status.create (name = 'rejected',  order = 3)
+    db.pr_approval_status.set (s1, transitions = [s2, s3])
+if 'pr_approval_order' in db.classes :
+    db.pr_approval_order.create (role = '',            order = 10)
+    db.pr_approval_order.create (role = 'procurement', order = 20)
+    db.pr_approval_order.create (role = 'it-approval', order = 30)
+    db.pr_approval_order.create (role = 'subcontract', order = 40)
+    db.pr_approval_order.create (role = 'hr',          order = 50)
+    db.pr_approval_order.create (role = 'finance',     order = 60)
+    db.pr_approval_order.create (role = 'board',       order = 70)

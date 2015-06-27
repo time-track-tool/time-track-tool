@@ -39,14 +39,19 @@ def time_project_viewable (db, userid, itemid) :
        department manager of time category
     """
     project = db.time_project.getnode (itemid)
-    p_nosy  = dict.fromkeys (project.nosy)
+    p_nosy  = {}
+    if 'nosy' in db.time_project.properties :
+        p_nosy = dict.fromkeys (project.nosy)
     dep     = None
     if project.department :
         dep = db.department.getnode (project.department)
+    mgr = None
+    if 'manager' in db.department.properties :
+        mgr = dep.manager
     return \
         (  userid == project.responsible
         or userid == project.deputy
-        or dep and userid == dep.manager
+        or dep and userid == mgr
         or userid in p_nosy
         )
 # end def time_project_viewable

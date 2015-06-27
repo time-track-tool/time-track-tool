@@ -24,6 +24,9 @@ from linking                        import linkclass_iter
 from roundup.cgi.TranslationService import get_translation
 
 classprops = {}
+# Exceptions from unlink check for multilinks (only if linked item is
+# created by same db-user who now tries to unlink)
+exceptions = { 'purchase_request' : ['messages'] }
 
 def old_props (cl, prop, nodeid) :
     if not nodeid :
@@ -78,6 +81,12 @@ def check_unlinking (db, cl, nodeid, new_values) :
                     continue
                 # Allow Link properties if old linked prop is owned by user
                 if  (   isinstance (kls, Link)
+                    and klass.get (id, 'creator') == db.getuid ()
+                    ) :
+                    continue
+                # Allow Multilink properties in exceptions if linked
+                # prop is owned by user
+                if  (   prop in exceptions.get (cl.classname, [])
                     and klass.get (id, 'creator') == db.getuid ()
                     ) :
                     continue

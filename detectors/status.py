@@ -90,6 +90,7 @@ def init (db) :
     status_classes = \
         ['it_issue', 'it_project', 'issue'
         , 'doc', 'support', 'leave_submission'
+        , 'pr_approval', 'purchase_request'
         ]
     for cl in status_classes :
         if cl not in db.classes :

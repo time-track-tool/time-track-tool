@@ -948,10 +948,6 @@ _helptext          = \
       ]
     , ""'it_project'                  :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
-    , ""'items'                       :
-      [""'''%(Property)s on this %(Classname)s, one per line
-         '''
-      ]
     , ""'keyword'                     :
       [keywords]
     , ""'keywords'                    :
@@ -1155,6 +1151,10 @@ _helptext          = \
              next integer, only full days make sense for the work-time
              estimates.
           '''
+      ]
+    , ""'offer_items'                 :
+      [""'''%(Property)s on this %(Classname)s, one per line
+         '''
       ]
     , ""'offer_number'                :
       [ ""'''%(Property)s as given on the %(Classname)s by the supplier.

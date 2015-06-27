@@ -277,7 +277,7 @@ def user_has_role (db, uid, * role) :
     roles = db.user.get (uid, 'roles')
     if not roles :
         return False
-    roles = dict ([(r.lower ().strip (), 1) for r in roles.split (',')])
+    roles = dict.fromkeys (role_list (roles))
     role  = [r.lower ().strip () for r in role]
     for r in role :
         if r in roles : return True
@@ -1192,6 +1192,34 @@ def copy_js (linkid = 'copyme') :
     code = "document.getElementById ('%(linkid)s').click ();" % locals ()
     return code
 # end def copy_js
+
+def role_list (roles) :
+    if not roles :
+        return []
+    return [x.lower ().strip () for x in roles.split (',')]
+# end def role_list
+
+def check_roles (db, cl, nodeid, new_values) :
+    if 'roles' in new_values :
+        roles = new_values ['roles']
+        if roles :
+            roles = roles.strip ()
+        if roles :
+            roles = role_list (roles)
+            for r in roles :
+                if not db.security.role.has_key (r) :
+                    raise Reject ('Role "%s" does not exist' % r)
+# end def check_roles
+
+def pr_offer_item_sum (db, pr) :
+    pr    = db.purchase_request.getnode (pr)
+    total = 0.0
+    for id in pr.offer_items :
+        item  = db.pr_offer_item.getnode (id)
+        if item.price_per_unit is not None and item.units is not None :
+            total += item.price_per_unit * item.units
+    return total
+# end def pr_offer_item_sum
 
 
 ### __END__

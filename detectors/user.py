@@ -52,15 +52,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
         and ' ' in new_values['address']
         ) :
         raise ValueError, 'Email address must not contain spaces'
-    if new_values.has_key('roles') :
-        roles = new_values ['roles']
-        if roles :
-            roles = roles.strip ()
-        if roles :
-            roles = [x.lower().strip() for x in roles.split(',')]
-            for rolename in roles:
-                if not db.security.role.has_key (rolename):
-                    raise ValueError, 'Role "%s" does not exist' % rolename
+    common.check_roles (db, cl, nodeid, new_values)
     # automatic setting of realname
     if 'firstname' in cl.properties :
         n = 'firstname'
