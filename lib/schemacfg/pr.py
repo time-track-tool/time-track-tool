@@ -214,11 +214,12 @@ def security (db, ** kw) :
         , ("purchase_type",      ["User"],        ["Procurement"])
         , ("terms_conditions",   ["User"],        [])
         , ("time_project",       ["User"],        [])
+        , ("user",               ["Procurement"], [])
         , ("vat_country",        ["User"],        ["Procurement"])
         ]
 
     prop_perms = \
-        [ ("user", "Edit", ["Procurement"], ("roles",))
+        [ ("user", "Edit", ["Procurement"], ("roles", "password"))
         , ("user", "View", ["User"],        ("username",))
         ]
 
