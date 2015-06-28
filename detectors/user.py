@@ -179,7 +179,8 @@ def new_user (db, cl, nodeid, new_values) :
     if 'org_location' in db.classes and 'org_location' in new_values :
         olo   = new_values ['org_location']
         org        = db.org_location.get   (olo, 'organisation')
-        maildomain = db.organisation.get   (org, 'mail_domain')
+        if 'mail_domain' in db.organisation.properties :
+            maildomain = db.organisation.get   (org, 'mail_domain')
         if 'smb_domain' in db.classes :
             id = db.org_location.get (olo, 'smb_domain')
             if id :
