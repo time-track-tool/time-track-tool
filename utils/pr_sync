@@ -130,6 +130,7 @@ class PR_Sync (autosuper) :
               , 'org_location', 'realname', 'status'
               )
             , key = 'username'
+            , roles = 'User'
             )
         self.sync_class \
             ( 'time_project'
@@ -144,7 +145,8 @@ class PR_Sync (autosuper) :
             self.db.commit ()
     # end def sync
 
-    def sync_class (self, classname, propnames, key = 'name', required = ()) :
+    def sync_class \
+        (self, classname, propnames, key = 'name', required = (), **default) :
         self.verbose ('Syncing: %s' % classname, level = 2)
         assert key in propnames
         for r in required :
@@ -181,7 +183,8 @@ class PR_Sync (autosuper) :
                 self.verbose \
                     ("Syncing: %s%s %s" % (classname, id, item), level = 3)
                 if not lid :
-                    params = dict \
+                    params = dict (default)
+                    params.update \
                         ( (k, self.fix_prop (item [k]))
                           for k in nonmapped if item [k] is not None
                         )
@@ -200,7 +203,8 @@ class PR_Sync (autosuper) :
                     for r in required :
                         if r not in params :
                             print \
-                                ( "WARN: Not in params: %s not converting %s%s"
+                                ( 'WARN: Not in params: "%s" -- '
+                                  'not converting %s%s'
                                 % (r, classname, id)
                                 )
                             break
@@ -211,12 +215,25 @@ class PR_Sync (autosuper) :
                 else :
                     litem = cls.getnode (lid)
                     d = {}
+                    for p in default :
+                        ritem = self.fix_prop (default [p])
+                        if litem [p] is None :
+                            d [p] = ritem
                     for p in nonmapped :
                         ritem = self.fix_prop (item [p])
                         if ritem != litem [p] :
                             d [p] = ritem
                     for p in mapped :
-                        v = self.map_id (p, item [p])
+                        try :
+                            v = self.map_id (p, item [p])
+                        except KeyError :
+                            print \
+                                ( "WARN: Not in map: %s %s:%s"
+                                % (classname, k, item [k])
+                                )
+                            v = None
+                        if v is None :
+                            continue
                         if v != litem [p] :
                             d [p] = v
                     if (d) :
