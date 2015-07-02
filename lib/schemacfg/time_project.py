@@ -48,34 +48,6 @@ def init \
     , ** kw
     ) :
     export = {}
-    cost_center = Class \
-        ( db
-        , ''"cost_center"
-        , name                  = String    ()
-        , description           = String    ()
-        , status                = Link      ("cost_center_status")
-        , cost_center_group     = Link      ("cost_center_group")
-        )
-    cost_center.setkey ("name")
-
-    cost_center_group = Class \
-        ( db
-        , ''"cost_center_group"
-        , name                  = String    ()
-        , description           = String    ()
-        , responsible           = Link      ("user")
-        , active                = Boolean   ()
-        )
-    cost_center_group.setkey ("name")
-
-    cost_center_status = Class \
-        ( db
-        , ''"cost_center_status"
-        , name                  = String    ()
-        , description           = String    ()
-        , active                = Boolean   ()
-        )
-    cost_center_status.setkey ("name")
 
     class Time_Project_Class (Ext_Class) :
         """ Create a time_project class with some default properties
@@ -90,7 +62,7 @@ def init \
                 , organisation          = Link      ("organisation")
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
-                , cost_center           = Link      ("cost_center")
+                , op_project            = Boolean   ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ("name")
@@ -129,19 +101,7 @@ def security (db, ** kw) :
     # allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ( "cost_center"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "cost_center_group"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "cost_center_status"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "time_project_status"
+        [ ( "time_project_status"
           , ["User"]
           , ["Project"]
           )

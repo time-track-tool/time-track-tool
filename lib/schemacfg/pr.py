@@ -98,6 +98,7 @@ def init \
         , add_to_las            = Boolean   ()
         , pr_supplier           = Link      ("pr_supplier")
         , offer_number          = String    ()
+        , vat_country           = Link      ("vat_country")
         )
 
     pr_status = Class \
@@ -150,7 +151,6 @@ def init \
                 , purchase_type         = Link      ("purchase_type")
                 , safety_critical       = Boolean   ()
                 , time_project          = Link      ("time_project")
-                , cost_center           = Link      ("cost_center")
                 , part_of_budget        = Link      ("part_of_budget")
                 , frame_purchase        = Boolean   ()
                 , continuous_obligation = Boolean   ()
@@ -160,9 +160,9 @@ def init \
                 , terms_identical       = Boolean   ()
                 , delivery_deadline     = Date      ()
                 , renegotiations        = Boolean   ()
-                , vat_country           = Link      ("vat_country")
                 , offer_items           = Multilink ("pr_offer_item")
                 , status                = Link      ("pr_status")
+                , total_cost            = Number    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -228,7 +228,7 @@ def security (db, ** kw) :
 
     tp_properties = \
         ( 'name', 'description', 'responsible', 'deputy', 'organisation'
-        , 'status', 'id', 'cost_center'
+        , 'status', 'id'
         , 'creation', 'creator', 'activity', 'actor'
         )
     # Search permission

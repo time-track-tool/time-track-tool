@@ -42,7 +42,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
         olo = new_values.get ('org_location')
         if not olo and nodeid :
             olo = cl.get (nodeid, 'org_location')
-        if not olo and nodeid :
+        if not olo and nodeid and 'user_dynamic' in cl.properties :
             dyn = get_user_dynamic (db, nodeid, Date ('.'))
             if dyn :
                 olo = new_values ['org_location'] = dyn.org_location

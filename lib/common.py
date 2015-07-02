@@ -1218,6 +1218,8 @@ def pr_offer_item_sum (db, pr) :
         item  = db.pr_offer_item.getnode (id)
         if item.price_per_unit is not None and item.units is not None :
             total += item.price_per_unit * item.units
+    if pr.total_cost is not None :
+        assert pr.total_cost == total
     return total
 # end def pr_offer_item_sum
 

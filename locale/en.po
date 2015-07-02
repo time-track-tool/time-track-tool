@@ -5975,7 +5975,7 @@ msgid "offer_items"
 msgstr "Offer items"
 
 msgid "offer_number"
-msgstr "Offer number"
+msgstr "Offer #"
 
 msgid "supplier"
 msgstr "Supplier"
@@ -6135,3 +6135,6 @@ msgstr "Purchase approval status"
 
 msgid "pr_status"
 msgstr "Purchase request status"
+
+msgid "total_cost"
+msgstr "Total cost"

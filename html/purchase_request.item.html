@@ -46,16 +46,13 @@
        <tal:block tal:content="structure python:context.time_project.field ()"/>
        <tal:block tal:condition="context/time_project/is_edit_ok"
                   tal:replace="structure python:db.time_project.classhelp
-                  ( 'name,department,organisation'
+                  ( 'name,description,op_project,department,organisation'
                   , property='time_project'
                   , inputtype='radio'
                   , width='800'
                   , pagesize=1000 
                   )"/>
       </td>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'cost_center')"/>
-      <td tal:content="structure python:context.cost_center.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -123,10 +120,20 @@
           (name='cancelled')"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'offer_items')"/>
-      <td colspan="3">
-       <table class="form" border="0"
+      <th colspan="4">
+       <table class="form">
+        <tr>
+         <th colspan="5" i18n:translate=""
+             tal:content="structure python:utils.fieldname
+                 (classname, 'offer_items')"/>
+        </tr>
+       </table>
+      </th>
+     </tr>
+     <tr>
+      <td colspan="4" tal:define="cond python:
+          bool(context.id and context.offer_items.is_edit_ok ())">
+       <table class="form rule" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
         <tr>
          <th style="text-align:left"
@@ -135,23 +142,9 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'pr_supplier')"/>
-         <th style="text-align:left" i18n:translate="">
-          Add to LAS
-         </th>
-         <th style="text-align:left" colspan="3"
+         <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'description')"/>
-         <th style="text-align:left"
-             tal:condition="context/offer_items/is_edit_ok" i18n:translate="">
-             remove
-         </th>
-        </tr>
-        <tr>
-         <th/>
-         <th/>
-         <th style="text-align:left" i18n:translate="">
-          Approved
-         </th>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'offer_number')"/>
@@ -161,46 +154,67 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'price_per_unit')"/>
+         <th style="text-align:left"
+             tal:condition="cond" i18n:translate="">
+             remove
+         </th>
+        </tr>
+        <tr>
+         <th/>
+         <th style="text-align:left" i18n:translate="">
+          Add to LAS / Approved
+         </th>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'vat_country')"/>
         </tr>
         <tal:block tal:repeat="i python:sorted
             (context.offer_items, key = lambda x : x.index)">
-         <tr>
-          <td tal:content="structure python:i.index.field (size=3)"/>
-          <td>
-           <span tal:content="structure python:i.supplier.field ()"/>
-           <span tal:condition="i/supplier/is_edit_ok"
-                 tal:content="structure python:db.pr_supplier.classhelp
-            ( 'name,sap_ref'
-            , property  = 'pr_offer_item%s@supplier' % i.id
-            , inputtype = 'radio'
-            , width     = '600'
-            , pagesize  = '5000'
-            )"/>
-          </td>
-          <td tal:condition="python: not i.pr_supplier"
-              tal:content="structure python:i.add_to_las.field ()"/>
-          <td tal:condition="python: i.pr_supplier"
-              tal:content="string:approved"/>
-          <td colspan="3"
-              tal:content="structure python:i.description.field ()"/>
-          <td tal:condition="context/offer_items/is_edit_ok">
-           <input tabindex="-1" type="checkbox" name="@remove@offer_items"
-                  tal:attributes="value i/id">
-          </td>
-         </tr>
-         <tr>
-          <td colspan="3"/>
-          <td tal:content="structure python:i.offer_number.field (size=5)"/>
-          <td tal:content="structure python:i.units.field (size=5)"/>
-          <td style="text-align:right"
-              tal:content="structure python:i.price_per_unit.field (size=7)"/>
-         </tr>
+         <tbody>
+          <tr>
+           <td tal:content="structure python:i.index.field (size=3)"/>
+           <td>
+            <span tal:content="structure python:i.supplier.field ()"/>
+            <span tal:condition="i/supplier/is_edit_ok"
+                  tal:content="structure python:db.pr_supplier.classhelp
+             ( 'name,sap_ref'
+             , property  = 'pr_offer_item%s@supplier' % i.id
+             , inputtype = 'radio'
+             , width     = '600'
+             , pagesize  = '5000'
+             )"/>
+           </td>
+           <td tal:content="structure python:i.description.field ()"/>
+           <td tal:content="structure python:i.offer_number.field (size=5)"/>
+           <td tal:content="structure python:i.units.field (size=5)"/>
+           <td style="text-align:right"
+               tal:content="structure python:i.price_per_unit.field (size=7)"/>
+           <td tal:condition="cond">
+            <input tabindex="-1" type="checkbox" name="@remove@offer_items"
+                   tal:attributes="value i/id">
+           </td>
+          </tr>
+          <tr>
+           <td/>
+           <td tal:condition="python: not i.pr_supplier"
+               tal:content="structure python:i.add_to_las.field ()"/>
+           <td tal:condition="python: i.pr_supplier"
+               tal:content="string:approved"/>
+           <td>
+            <span tal:content="structure i/vat_country/menu"/>
+            <span tal:condition="i/vat_country"
+                  tal:content="python:i.vat_country.vat.plain () + ' %'"/>
+           </td>
+           <td tal:attributes="colspan python:3+cond"/>
+          </tr>
+         </tbody>
         </tal:block>
         <tal:block
          tal:condition="python:
            not context.id
            or (context.status.plain () == 'open' and context.is_edit_ok ())"
          tal:repeat="idx python:range(1,4)">
+         <tbody>
          <tr>
           <td tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
@@ -215,16 +229,12 @@
             , pagesize  = '5000'
             )"/>
           </td>
-          <td/>
-          <td colspan="3">
+          <td>
            <span tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'description').field ()"/>
            <input type="hidden" name="@link@offer_items"
                  tal:attributes="value python:'pr_offer_item-%s' % idx" />
           </td>
-         </tr>
-         <tr>
-          <td colspan="3"/>
           <td tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'offer_number').field
               (size=5)"/>
@@ -235,12 +245,20 @@
               (context, db, 'pr_offer_item', -idx, 'price_per_unit').field
               (size=7)"/>
          </tr>
+         <tr>
+          <td colspan="2"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'vat_country').menu ()"/>
+          <td tal:attributes="colspan python:4+cond"/>
+         </tr>
+         </tbody>
         </tal:block>
         <tr tal:condition="context/id">
          <td colspan="4"/>
          <td i18n:translate="">Sum</td>
          <td style="text-align:right"
              tal:content="python:utils.pr_offer_item_sum (db._db, context.id)"/>
+         <td tal:condition="cond"/>
         </tr>
        </table>
       </td>

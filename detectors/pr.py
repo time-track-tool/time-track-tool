@@ -89,19 +89,11 @@ def change_pr (db, cl, nodeid, new_values) :
     requester = new_values.get ('requester', cl.get (nodeid, 'requester'))
     if 'status' in new_values :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
-            tc = new_values.get \
-                ('time_project', cl.get (nodeid, 'time_project'))
-            cc = new_values.get \
-                ('cost_center',  cl.get (nodeid, 'cost_center'))
-            if not tc and not cc :
-                raise Reject \
-                    (_ ("Need to specify %(tp)s or %(cc)s")
-                    % dict (tp = _ ('time_project'), cc = _ ('cost_center'))
-                    )
             common.require_attributes \
                 ( _, cl, nodeid, new_values
-                , 'department',  'organisation'
+                , 'time_project', 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
+                , 'part_of_budget', 'terms_conditions'
                 )
             co = new_values.get \
                 ( 'continuous_obligation'
@@ -128,6 +120,7 @@ def change_pr (db, cl, nodeid, new_values) :
                     break
             else :
                 raise Reject ( _ ("No approval by requester found"))
+            new_values ['total_cost'] = common.pr_offer_item_sum (db, nodeid)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
             for ap in approvals :
@@ -296,18 +289,25 @@ def fix_pr_offer_item (db, cl, nodeid, new_values) :
 
 def check_supplier (db, cl, nodeid, new_values) :
     if 'supplier' in new_values :
+        prsup = None
         try :
             prsup = db.pr_supplier.lookup (new_values ['supplier'])
             new_values ['pr_supplier'] = prsup
         except KeyError :
             new_values ['pr_supplier'] = None
             pass
+        if prsup :
+            vc = db.pr_supplier.get (prsup, 'vat_country')
+            if vc :
+                new_values ['vat_country'] = vc
 # end def check_supplier
 
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    if 'purchase_request' not in db.classes :
+        return
     db.purchase_type.audit    ("create", common.check_roles)
     db.purchase_type.audit    ("set",    common.check_roles)
     db.purchase_request.audit ("create", new_pr,          priority = 50)

@@ -39,9 +39,11 @@ def check_time_project (db, cl, nodeid, new_values) :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
-    wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
-    if not wl :
-        common.require_attributes (_, cl, nodeid, new_values, 'organisation')
+    if 'work_location' in cl.properties :
+        wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
+        if not wl :
+            common.require_attributes \
+                (_, cl, nodeid, new_values, 'organisation')
     common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'cost_center', 'approval_hr', 'approval_required'
@@ -55,7 +57,7 @@ def new_time_project (db, cl, nodeid, new_values) :
         , ('op_project',        True)
         )
     common.require_attributes (_, cl, nodeid, new_values, 'name', 'responsible')
-    if 'work_location' not in new_values :
+    if 'work_location' in cl.properties and 'work_location' not in new_values :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
     for k, v in defaults :
         if k in cl.properties and k not in new_values :

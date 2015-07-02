@@ -53,6 +53,34 @@ def init \
     , ** kw
     ) :
     export = {}
+    cost_center = Class \
+        ( db
+        , ''"cost_center"
+        , name                  = String    ()
+        , description           = String    ()
+        , status                = Link      ("cost_center_status")
+        , cost_center_group     = Link      ("cost_center_group")
+        )
+    cost_center.setkey ("name")
+
+    cost_center_group = Class \
+        ( db
+        , ''"cost_center_group"
+        , name                  = String    ()
+        , description           = String    ()
+        , responsible           = Link      ("user")
+        , active                = Boolean   ()
+        )
+    cost_center_group.setkey ("name")
+
+    cost_center_status = Class \
+        ( db
+        , ''"cost_center_status"
+        , name                  = String    ()
+        , description           = String    ()
+        , active                = Boolean   ()
+        )
+    cost_center_status.setkey ("name")
 
     daily_record = Class \
         ( db
@@ -198,13 +226,13 @@ def init \
                 , max_hours             = Number    ()
                 , nosy                  = Multilink ("user")
                 , no_overtime           = Boolean   ()
-                , op_project            = Boolean   ()
                 , overtime_reduction    = Boolean   ()
                 , planned_effort        = Number    ()
                 , product_family        = Multilink ("product_family")
                 , project_type          = Link      ("project_type")
                 , reporting_group       = Multilink ("reporting_group")
                 , work_location         = Link      ("work_location")
+                , cost_center           = Link      ("cost_center")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -442,7 +470,19 @@ def security (db, ** kw) :
     # allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ( "daily_record"
+        [ ( "cost_center"
+          , ["User"]
+          , ["Controlling"]
+          )
+        , ( "cost_center_group"
+          , ["User"]
+          , ["Controlling"]
+          )
+        , ( "cost_center_status"
+          , ["User"]
+          , ["Controlling"]
+          )
+        , ( "daily_record"
           , ["User"]
           , []
           )
