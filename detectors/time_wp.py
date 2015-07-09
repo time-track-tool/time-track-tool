@@ -30,6 +30,7 @@
 #
 
 from roundup.exceptions             import Reject
+from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
 
 import common
@@ -54,12 +55,26 @@ def check_time_wp (db, cl, nodeid, new_values) :
         , 'is_public'
         )
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
-    prj = new_values.get ('project', cl.get (nodeid, 'project'))
+    prid = new_values.get ('project', cl.get (nodeid, 'project'))
+    prj  = db.time_project.getnode (prid)
+    act  = db.time_project_status.get (prj.status, 'active')
+    if not act and 'time_end' in new_values :
+        end = new_values ['time_end']
+        now = Date ('.')
+        od  = cl.get (nodeid, 'time_end')
+        if (od and od < now) or end > now :
+            raise Reject \
+                (_ ("No change of %(te)s for %(wp)s of inactive %(tp)s")
+                % dict ( te = _ ('time_end')
+                       , wp = _ ('time_wp')
+                       , tp = _ ('time_project')
+                       )
+                )
     for i in 'name', 'wp_no' :
         if i in new_values and new_values [i] is not None :
-            check_duplicate_field_value (cl, prj, i, new_values [i])
+            check_duplicate_field_value (cl, prid, i, new_values [i])
     if 'project' in new_values :
-        new_values ['cost_center'] = db.time_project.get (prj, 'cost_center')
+        new_values ['cost_center'] = prj.cost_center
 # end def check_time_wp
 
 def new_time_wp (db, cl, nodeid, new_values) :

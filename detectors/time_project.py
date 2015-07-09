@@ -31,6 +31,7 @@
 
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
+from roundup.date                   import Date
 
 import common
 
@@ -73,17 +74,25 @@ def new_time_project (db, cl, nodeid, new_values) :
 
 def fix_wp (db, cl, nodeid, old_values) :
     """ Copy cost_center of time_project to time_wp if changed in
-        time_project.
+        time_project. Close WPs if not an active status.
     """
+
     ccn = 'cost_center'
-    cc  = cl.getnode (nodeid)
-    if  (  not old_values
-        or ccn not in old_values
-        or old_values [ccn] == cc.cost_center
-        ) :
+    tp  = cl.getnode (nodeid)
+    act = db.time_project_status.get (tp.status, 'active')
+    if not old_values :
         return
+    now = Date ('.')
     for wp in db.time_wp.filter (None, dict (project = nodeid)) :
-        db.time_wp.set (wp, cost_center = cc.cost_center)
+        d = {}
+        if ccn in old_values and old_values [ccn] == tp.cost_center :
+            d [ccn] = tp.cost_center
+        if not act :
+            te = db.time_wp.get (wp, 'time_end')
+            if not te or te > now :
+                d ['time_end'] = now
+        if d :
+            db.time_wp.set (wp, ** d)
 # end def fix_wp
 
 def init (db) :
@@ -95,8 +104,7 @@ def init (db) :
     db.time_project.audit  ("create", new_time_project)
     db.time_project.audit  ("set",    check_time_project)
     if 'time_wp' in db.classes :
-        db.time_project.react  ("create", fix_wp)
-        db.time_project.react  ("set",    fix_wp)
+        db.time_project.react  ("set", fix_wp)
 # end def init
 
 ### __END__ time_project

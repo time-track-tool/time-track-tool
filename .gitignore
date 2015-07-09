@@ -23,3 +23,4 @@ server.ini
 ssl.pem
 _test*
 maildebug
+db

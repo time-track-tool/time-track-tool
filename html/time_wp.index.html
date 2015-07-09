@@ -15,6 +15,13 @@
     , utils.ExtProperty (utils, pdict ['description'])
     , utils.ExtProperty (utils, pdict ['responsible'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['project'],     multiselect = 1)
+    , utils.ExtProperty
+        (utils, pdict ['project']
+        , searchname  = 'project.status'
+        , multiselect = True
+        , searchable  = True
+        , sortable    = True
+        )
     , utils.ExtProperty (utils, pdict ['time_start'])
     , utils.ExtProperty (utils, pdict ['time_end'])
     , utils.ExtProperty (utils, pdict ['planned_effort'])
