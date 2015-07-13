@@ -115,6 +115,20 @@ def new_time_wp (db, cl, nodeid, new_values) :
     new_values ['cost_center'] = prj.cost_center
 # end def new_time_wp
 
+def check_expiration (db, cl, nodeid, new_values) :
+    if 'has_expiration_date' in new_values or 'time_end' in new_values :
+        if 'time_end' in new_values :
+            time_end = new_values ['time_end']
+        elif nodeid :
+            time_end = cl.get (nodeid, 'time_end')
+        else :
+            time_end = None
+        if time_end :
+            new_values ['has_expiration_date'] = True
+        else :
+            new_values ['has_expiration_date'] = False
+# end def check_expiration
+
 def init (db) :
     if 'time_wp' not in db.classes :
         return
@@ -123,6 +137,8 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_wp.audit  ("create", new_time_wp)
     db.time_wp.audit  ("set",    check_time_wp)
+    db.time_wp.audit  ("create", check_expiration, priority = 200)
+    db.time_wp.audit  ("set",    check_expiration, priority = 200)
 # end def init
 
 ### __END__ time_wp

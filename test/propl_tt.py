@@ -319,6 +319,7 @@ properties = \
         , 'cost_center'
         , 'description'
         , 'durations_allowed'
+        , 'has_expiration_date'
         , 'is_public'
         , 'name'
         , 'planned_effort'

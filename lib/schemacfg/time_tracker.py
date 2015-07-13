@@ -272,6 +272,7 @@ def init \
         , cost_center           = Link      ("cost_center")
         , travel                = Boolean   ()
         , is_public             = Boolean   ()
+        , has_expiration_date   = Boolean   ()
         )
 
     time_wp_group = Class \
@@ -990,6 +991,7 @@ def security (db, ** kw) :
         ( 'name', 'wp_no', 'description', 'responsible', 'project'
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
+        , 'has_expiration_date'
         )
     p = db.security.addPermission \
         ( name        = 'View'

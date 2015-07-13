@@ -172,7 +172,7 @@ Role "project_view":
 Role "staff-report":
 Role "user":
   (Search for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
-  (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
+  (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'has_expiration_date', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'home_directory', 'login_shell', 'samba_home_drive', 'samba_home_path', 'tt_lines') only)
@@ -237,7 +237,7 @@ Role "user":
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (Edit for "leave_submission": ('status',) only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (View for "leave_submission" only)
  User is allowed to view selected fields if booking is allowed for at least one work package for this user (View for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
- User is allowed to view selected fields in work package if booking is allowed for this user (View for "time_wp": ('name', 'wp_no', 'description', 'responsible', 'project', 'time_start', 'time_end', 'durations_allowed', 'travel', 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id') only)
+ User is allowed to view selected fields in work package if booking is allowed for this user (View for "time_wp": ('name', 'wp_no', 'description', 'responsible', 'project', 'time_start', 'time_end', 'durations_allowed', 'travel', 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id', 'has_expiration_date') only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
  User is allowed to view time record if he is the supervisor or the person to whom approvals are delegated (View for "time_record" only)
@@ -255,5 +255,5 @@ Role "user":
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
  search leave_submission (Search for "leave_submission" only)
  search time_record (Search for "time_record" only)
- search time_wp (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
+ search time_wp (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'has_expiration_date', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
 """.strip ()
