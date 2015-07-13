@@ -36,7 +36,7 @@
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'cost_center' in bclass.properties">
      <th class="required" tal:content="structure python:utils.fieldname
          (classname, 'cost_center')"/>
      <td tal:define="ccs python: db.cost_center_status.filter
