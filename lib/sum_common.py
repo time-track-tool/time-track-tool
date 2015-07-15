@@ -46,7 +46,7 @@ def time_project_viewable (db, userid, itemid) :
     if project.department :
         dep = db.department.getnode (project.department)
     mgr = None
-    if 'manager' in db.department.properties :
+    if 'manager' in db.department.properties and dep :
         mgr = dep.manager
     return \
         (  userid == project.responsible
