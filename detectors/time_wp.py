@@ -55,9 +55,17 @@ def check_time_wp (db, cl, nodeid, new_values) :
         , 'is_public'
         )
     common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
-    prid = new_values.get ('project', cl.get (nodeid, 'project'))
+    opr  = cl.get (nodeid, 'project')
+    oprj = db.time_project.getnode (opr)
+    prid = new_values.get ('project', opr)
     prj  = db.time_project.getnode (prid)
-    act  = db.time_project_status.get (prj.status, 'active')
+    act  = db.time_project_status.get (prj.status,  'active')
+    acto = db.time_project_status.get (oprj.status, 'active')
+    if not act or not acto and opr != prid :
+        raise Reject \
+            (_ ("No change of %(tp)s from/to closed %(tp)s")
+            % dict (tp = _ ('time_project'))
+            )
     if not act and 'time_end' in new_values :
         end = new_values ['time_end']
         now = Date ('.')
