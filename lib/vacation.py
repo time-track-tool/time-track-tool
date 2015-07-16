@@ -533,22 +533,27 @@ def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     srt  = srt or [('+', 'id')]
     wps  = {}
     date = date or roundup.date.Date ('.')
+    dt   = (date + common.day).pretty (common.ymd)
     d    = dict (time_start = ';%s' % date.pretty (common.ymd))
     d.update (filter)
 
+    wp  = []
     if user :
-        d1  = dict (d, is_public = True)
-        wp1 = db.time_wp.filter (None, d1, srt)
-        d2  = dict (d, bookers = user)
-        wp2 = db.time_wp.filter (None, d2, srt)
-        # Filter again via db to get sorting right
-        wps = [db.time_wp.getnode (w)
-               for w in db.time_wp.filter (wp1 + wp2, {}, sort = srt)
-              ]
+        d1  = dict (d, is_public = True, has_expiration_date = False)
+        wp.extend (db.time_wp.filter (None, d1, srt))
+        d1  = dict (d, is_public = True, time_end = '%s;' % dt)
+        wp.extend (db.time_wp.filter (None, d1, srt))
+        d1  = dict (d, bookers = user, has_expiration_date = False)
+        wp.extend (db.time_wp.filter (None, d1, srt))
+        d1  = dict (d, bookers = user, time_end = '%s;' % dt)
+        wp.extend (db.time_wp.filter (None, d1, srt))
     else :
-        wps = [db.time_wp.getnode (w) for w in db.time_wp.filter (None, d, srt)]
-    wps  = [w for w in wps if not w.time_end or w.time_end > date]
-    return [w.id for w in wps]
+        d1 = dict (d, has_expiration_date = False)
+        wp.extend (db.time_wp.filter (None, d1, srt))
+        d1 = dict (d, time_end = '%s;' % dt)
+        wp.extend (db.time_wp.filter (None, d1, srt))
+    # Filter again via db to get sorting right
+    return db.time_wp.filter (wp, {}, sort = srt)
 # end def valid_wps
 
 def valid_leave_wps (db, user = None, date = None, srt = None) :
