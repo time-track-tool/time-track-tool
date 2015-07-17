@@ -298,6 +298,7 @@ def init(db):
                    , "release"
                    , "task"
                    , "support"
+                   , "purchase_request"
                    ]
     for klass in nosy_classes :
         if klass not in db.classes :

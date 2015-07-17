@@ -124,7 +124,7 @@ class PR_Sync (autosuper) :
               , 'org_location', 'realname', 'status'
               )
             , key = 'username'
-            , roles = 'User'
+            , roles = 'User,Nosy'
             )
         self.sync_class \
             ( 'time_project'

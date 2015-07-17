@@ -203,6 +203,26 @@ def add_approval_with_role (db, prid, role) :
         )
 # end def add_approval_with_role
 
+def nosy_for_approval (db, app) :
+    nosy = {}
+    if app.user :
+        nosy [app.user] = 1
+    if app.role :
+        nosy.update (dict.fromkeys (common.get_uids_with_role (db, app.role)))
+    return nosy
+# end def nosy_for_approval
+
+def fix_nosy (db, cl, nodeid, new_values) :
+    if 'nosy' in new_values :
+        nosy = dict.fromkeys (new_values ['nosy'])
+        rq   = new_values.get ('requester', cl.get (nodeid, 'requester'))
+        nosy [rq] = 1
+        nosy [cl.get (nodeid, 'creator')] = 1
+        nosy.update \
+            (dict.fromkeys (common.get_uids_with_role (db, 'Procurement')))
+        new_values ['nosy'] = nosy.keys ()
+# end def fix_nosy
+
 def approved_pr_approval (db, cl, nodeid, old_values) :
     app = cl.getnode (nodeid)
     os  = old_values.get ('status', None)
@@ -217,15 +237,52 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
         if ns == apr :
             if pr.status == pr_open :
                 db.purchase_request.set (pr.id, status = pr_approving)
-            apps = cl.filter (None, dict (purchase_request = pr.id))
+            srt  = [('+', 'order')]
+            apps = cl.filter (None, dict (purchase_request = pr.id), sort = srt)
+            nosy = dict.fromkeys (pr.nosy)
+            for n in nosy_for_approval (db, app) :
+                if n in nosy :
+                    del nosy [n]
             for a in apps :
                 ap = cl.getnode (a)
                 if ap.status != apr :
                     assert ap.status == und
+                    nosy.update (nosy_for_approval (db, ap))
+                    uor = ''
+                    if ap.user :
+                        uor = db.user.get (ap.user, 'realname')
+                    if ap.role :
+                        if uor :
+                            uor += ' and role %s' % ap.role
+                        else :
+                            uor = 'role %s' % ap.role
+                    txt = \
+                        ( db.config.ext.MAIL_PR_APPROVAL_TEXT.replace ('$', '%')
+                        % dict (title = pr.title, user_or_role = uor)
+                        )
+                    # Note: We can't use the current db user as the
+                    # author of the message, otherwise the nosy auditor
+                    # will prevent the user from being removed from the
+                    # nosy list (!)
+                    msg = db.msg.create \
+                        ( content = txt
+                        , author  = '1' # admin
+                        , date    = Date ('.')
+                        )
+                    msgs = dict.fromkeys (pr.messages)
+                    msgs [msg] = 1
+                    db.purchase_request.set \
+                        ( pr.id
+                        , nosy     = nosy.keys ()
+                        , messages = msgs.keys ()
+                        )
                     break
             else :
                 db.purchase_request.set \
-                    (pr.id, status = db.pr_status.lookup ('approved'))
+                    ( pr.id
+                    , status = db.pr_status.lookup ('approved')
+                    , nosy   = nosy.keys ()
+                    )
         elif ns == rej :
             d = dict (status = db.pr_status.lookup ('rejected'))
             msg = app.msg
@@ -315,6 +372,7 @@ def init (db) :
     db.purchase_request.audit ("create", check_tp_rq,     priority = 80)
     db.purchase_request.audit ("set",    check_tp_rq,     priority = 80)
     db.purchase_request.audit ("set",    change_pr)
+    db.purchase_request.audit ("set",    fix_nosy)
     db.purchase_request.react ("set",    changed_pr)
     db.purchase_request.react ("create", create_pr_approval)
     db.pr_approval.audit      ("create", new_pr_approval)

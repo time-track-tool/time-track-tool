@@ -1600,6 +1600,9 @@ msgstr ""
 msgid "description"
 msgstr "Description"
 
+msgid "time_project.description"
+msgstr "TC Description"
+
 msgid "Verbose description of %(Classname)s"
 msgstr ""
 

@@ -191,6 +191,7 @@ def security (db, ** kw) :
 
     roles = \
         [ ("Board",           "Approvals over certain limits")
+        , ("Nosy",            "Nosy list")
         , ("Finance",         "Finance-related approvals")
         , ("HR",              "Approvals for staff/subcontracting")
         , ("IT-Approval",     "Approve IT-Related PRs")
@@ -220,7 +221,7 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ("user", "Edit", ["Procurement"], ("roles", "password"))
-        , ("user", "View", ["User"],        ("username",))
+        , ("user", "View", ["User"],        ("username", "id"))
         ]
 
     schemadef.register_roles             (db, roles)
@@ -304,7 +305,7 @@ def security (db, ** kw) :
         , klass = 'purchase_request'
         , check = cancel_own_pr
         , description = fixdoc (cancel_own_pr.__doc__)
-        , properties = ('status', 'messages')
+        , properties = ('status', 'messages', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -379,7 +380,7 @@ def security (db, ** kw) :
         , klass = 'purchase_request'
         , check = pending_approval
         , description = fixdoc (pending_approval.__doc__)
-        , properties  = ('messages',)
+        , properties  = ('messages', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -488,5 +489,7 @@ def security (db, ** kw) :
         , description = fixdoc (linked_and_editable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+    schemadef.register_nosy_classes (db, ['purchase_request'])
+
 
 # end def security
