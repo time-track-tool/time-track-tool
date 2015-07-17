@@ -297,7 +297,7 @@ def check_retire (db, cl, nodeid, old_values) :
 
 def obsolete_action (db, cl, nodeid, new_values) :
     obsolete = db.user_status.lookup ('obsolete')
-    status   = new_values.get ('status', None)
+    status   = new_values.get ('status', cl.get (nodeid, 'status'))
     if status == obsolete :
         new_values ['roles'] = ''
 # end def obsolete_action
