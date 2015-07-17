@@ -17,6 +17,13 @@
     , utils.ExtProperty (utils, pdict ['organisation'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['department'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['time_project'],     multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['time_project']
+        , searchable = False
+        , sortable   = False
+        , searchname = 'time_project.description'
+        , helpname   = 'time_project.description'
+        )
     , utils.ExtProperty (utils, pdict ['purchase_type'],    multiselect = 1)
     , utils.ExtProperty (utils, pdict ['safety_critical'])
     , utils.ExtProperty (utils, pdict ['part_of_budget'],   multiselect = 1)
