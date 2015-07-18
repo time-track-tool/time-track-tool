@@ -207,6 +207,7 @@ def security (db, ** kw) :
         , ("org_location",       ["User"],        [])
         , ("part_of_budget",     ["User"],        [])
         , ("pr_approval",        ["Procurement"], [])
+        , ("pr_approval_order",  ["Procurement"], [])
         , ("pr_approval_status", ["User"],        [])
         , ("pr_offer_item",      ["Procurement"], [])
         , ("pr_status",          ["User"],        [])
