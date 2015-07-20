@@ -61,7 +61,7 @@ def check_time_wp (db, cl, nodeid, new_values) :
     prj  = db.time_project.getnode (prid)
     act  = db.time_project_status.get (prj.status,  'active')
     acto = db.time_project_status.get (oprj.status, 'active')
-    if not act or not acto and opr != prid :
+    if (not act or not acto) and opr != prid :
         raise Reject \
             (_ ("No change of %(tp)s from/to closed %(tp)s")
             % dict (tp = _ ('time_project'))
