@@ -124,7 +124,10 @@ def new_time_wp (db, cl, nodeid, new_values) :
 # end def new_time_wp
 
 def check_expiration (db, cl, nodeid, new_values) :
-    if 'has_expiration_date' in new_values or 'time_end' in new_values :
+    if  (  'has_expiration_date' in new_values
+        or 'time_end' in new_values
+        or not nodeid
+        ) :
         if 'time_end' in new_values :
             time_end = new_values ['time_end']
         elif nodeid :
