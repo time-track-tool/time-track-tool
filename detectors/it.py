@@ -35,6 +35,7 @@ from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from common                         import user_has_role
+from roundup.date                   import Date
 
 def new_it (db, cl, nodeid, new_values) :
     if 'messages'    not in new_values :
@@ -83,12 +84,60 @@ def audit_superseder (db, cl, nodeid, new_values) :
     new_sup = new_values.get ("superseder", None)
     if new_sup :
         if not nodeid :
-            raise Reject, _ ("May not set %s on new issue") % _ ('superseder')
+            raise Reject (_ ("May not set %s on new issue") % _ ('superseder'))
         for sup in new_sup :
             if sup == nodeid :
-                raise Reject, _ ("Can't set %s to yourself") % _ ('superseder')
-        new_values ["status"] = db.it_issue_status.lookup ('closed')
+                raise Reject \
+                    (_ ("Can't set %s to same issue") % _ ('superseder'))
+        closed = db.it_issue_status.getnode \
+            (db. it_issue_status.lookup ('closed'))
+        if not closed.relaxed :
+            if 'messages' not in new_values :
+                msg = db.msg.create \
+                    ( content = "Closing a duplicate"
+                    , author  = db.getuid ()
+                    , date    = Date ('.')
+                    )
+                msgs = cl.get (nodeid, 'messages')
+                msgs.append (msg)
+                new_values ['messages'] = msgs
+            rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
+            if db.user.get (rsp, 'username') == 'helpdesk' :
+                new_values ['responsible'] = db.getuid ()
+	    prio = new_values.get ('it_prio',    cl.get (nodeid, 'it_prio'))
+	    if prio == db.it_prio.lookup ('unknown') :
+                new_values ['it_prio'] = db.it_prio.lookup ('assistance')
+        new_values ["status"] = closed.id
 # end def audit_superseder
+
+def reopen_on_message (db, cl, nodeid, new_values) :
+    """ Re-Open an issue when a message is received
+        Note this will reject the message if the user
+        is not in role IT due to "stay_closed" below.
+    """
+    if 'messages' in new_values and 'status' not in new_values :
+        ost = cl.get (nodeid, 'status')
+        if ost == db.it_issue_status.lookup ('closed') :
+            op = db.it_issue_status.lookup ('open')
+            new_values ['status'] = op
+# end def reopen_on_message
+
+def stay_closed (db, cl, nodeid, new_values) :
+    if 'status' in new_values :
+        nst = new_values ['status']
+        ost = cl.get (nodeid, 'status')
+        if nst != ost and ost == db.it_issue_status.lookup ('closed') :
+            if not user_has_role (db, db.getuid (), 'IT') :
+                raise Reject \
+                    ( _ ("This %(it_issue)s is already closed.\n"
+                         "Please create a new issue or have it "
+                         "reopened via a phone call to IT.\n"
+                         "This can also mean you have chosen a subject "
+                         "line of your email that matches an old closed "
+                         "issue. Please chose another subject in that case."
+                        ) % dict (it_issue = _ ('it_issue'))
+                    )
+# end def stay_closed
 
 def init (db) :
     if 'it_issue' not in db.classes :
@@ -101,4 +150,6 @@ def init (db) :
         cls.audit     ("set",    check_it)
     db.it_issue.audit ("create", audit_superseder)
     db.it_issue.audit ("set",    audit_superseder)
+    db.it_issue.audit ("set",    reopen_on_message)
+    db.it_issue.audit ("set",    stay_closed, priority = 150)
 # end def init
