@@ -170,6 +170,15 @@ properties = \
           )
         ]
       )
+    , ( 'it_int_prio'
+      , [ ( 'name'
+          , ['admin', 'it', 'itview']
+          )
+        , ( 'order'
+          , ['admin', 'it', 'itview']
+          )
+        ]
+      )
     , ( 'it_issue'
       , [ ( 'category'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
@@ -183,10 +192,16 @@ properties = \
         , ( 'files'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
+        , ( 'it_int_prio'
+          , ['admin', 'it', 'itview']
+          )
         , ( 'it_prio'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
         , ( 'it_project'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
+          )
+        , ( 'it_request_type'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
         , ( 'messages'
@@ -286,6 +301,15 @@ properties = \
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
         , ( 'transitions'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'it_request_type'
+      , [ ( 'name'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
+          )
+        , ( 'order'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
         ]

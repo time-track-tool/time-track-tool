@@ -624,6 +624,15 @@ properties = \
           )
         ]
       )
+    , ( 'it_int_prio'
+      , [ ( 'name'
+          , ['admin', 'it', 'itview']
+          )
+        , ( 'order'
+          , ['admin', 'it', 'itview']
+          )
+        ]
+      )
     , ( 'it_issue'
       , [ ( 'category'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
@@ -637,10 +646,16 @@ properties = \
         , ( 'files'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'it_int_prio'
+          , ['admin', 'it', 'itview']
+          )
         , ( 'it_prio'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'it_project'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'it_request_type'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'messages'
@@ -740,6 +755,15 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'transitions'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'it_request_type'
+      , [ ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'order'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         ]

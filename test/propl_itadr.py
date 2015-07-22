@@ -72,13 +72,20 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'it_int_prio'
+      , [ 'name'
+        , 'order'
+        ]
+      )
     , ( 'it_issue'
       , [ 'category'
         , 'confidential'
         , 'deadline'
         , 'files'
+        , 'it_int_prio'
         , 'it_prio'
         , 'it_project'
+        , 'it_request_type'
         , 'messages'
         , 'nosy'
         , 'responsible'
@@ -120,6 +127,11 @@ properties = \
         , 'name'
         , 'order'
         , 'transitions'
+        ]
+      )
+    , ( 'it_request_type'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'msg'

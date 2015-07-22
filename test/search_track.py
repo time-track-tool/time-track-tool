@@ -332,6 +332,15 @@ properties = \
           )
         ]
       )
+    , ( 'it_int_prio'
+      , [ ( 'name'
+          , ['admin', 'it', 'itview']
+          )
+        , ( 'order'
+          , ['admin', 'it', 'itview']
+          )
+        ]
+      )
     , ( 'it_issue'
       , [ ( 'category'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
@@ -345,10 +354,16 @@ properties = \
         , ( 'files'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'it_int_prio'
+          , ['admin', 'it', 'itview']
+          )
         , ( 'it_prio'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'it_project'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'it_request_type'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'messages'
@@ -448,6 +463,15 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'transitions'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'it_request_type'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         ]

@@ -143,7 +143,7 @@ def security (db, ** kw) :
     #     classname        allowed to view   /  edit
     classes = \
         [ ("it_category",       ["User"],         ["IT"])
-        , ("it_int_prio",       ["User"],         ["IT"])
+        , ("it_int_prio",       ["IT", "ITView"], ["IT"])
         , ("it_issue_status",   ["User"],         [])
         , ("it_issue",          ["IT", "ITView"], ["IT"])
         , ("it_prio",           ["User"],         [])

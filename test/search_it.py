@@ -20,6 +20,15 @@ properties = \
           )
         ]
       )
+    , ( 'it_int_prio'
+      , [ ( 'name'
+          , ['admin', 'it', 'itview']
+          )
+        , ( 'order'
+          , ['admin', 'it', 'itview']
+          )
+        ]
+      )
     , ( 'it_issue'
       , [ ( 'category'
           , ["admin", "it", "itview", "user"]
@@ -33,10 +42,16 @@ properties = \
         , ( 'files'
           , ["admin", "it", "ituser", "itview", "user"]
           )
+        , ( 'it_int_prio'
+          , ["admin", "it", "itview"]
+          )
         , ( 'it_prio'
           , ["admin", "it", "itview", "user"]
           )
         , ( 'it_project'
+          , ["admin", "it", "itview", "user"]
+          )
+        , ( 'it_request_type'
           , ["admin", "it", "itview", "user"]
           )
         , ( 'messages'
@@ -137,6 +152,15 @@ properties = \
           , ['admin', 'it', 'itview', 'user']
           )
         , ( 'transitions'
+          , ['admin', 'it', 'itview', 'user']
+          )
+        ]
+      )
+    , ( 'it_request_type'
+      , [ ( 'name'
+          , ['admin', 'it', 'itview', 'user']
+          )
+        , ( 'order'
           , ['admin', 'it', 'itview', 'user']
           )
         ]
