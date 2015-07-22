@@ -23,6 +23,12 @@
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
+     <tr tal:condition="python:
+        context.id or utils.user_has_role (db._db, request.user.id, 'IT')">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'it_request_type')"/>
+      <td tal:content="structure python:context.it_request_type.menu ()"/>
+     </tr>
      <tr>
       <tal:block tal:condition="python: context.category.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
@@ -47,6 +53,12 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
+      <tal:block tal:condition="
+        python: context.id and context.it_int_prio.is_edit_ok ()">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'it_int_prio')"/>
+       <td tal:content="structure python:context.it_int_prio.menu ()"/>
+      </tal:block>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>

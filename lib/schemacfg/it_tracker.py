@@ -53,6 +53,13 @@ def init \
         )
     it_category.setkey ("name")
 
+    # Sort of ITIL main process
+    it_request_type = Class \
+        ( db, ''"it_request_type"
+        , name                  = String    ()
+        , order                 = String    ()
+        )
+
     Superseder_Issue_Class \
         ( db
         , ''"it_issue"
@@ -64,6 +71,8 @@ def init \
         , deadline              = Date      ()
         , it_project            = Link      ("it_project")
         , confidential          = Boolean   ()
+        , it_request_type       = Link      ("it_request_type")
+        , it_int_prio           = Link      ("it_int_prio")
         )
 
     it_issue_status = Class \
@@ -84,6 +93,14 @@ def init \
         , order                 = Number    ()
         )
     it_prio.setkey ("name")
+
+    it_int_prio = Class \
+        ( db
+        , ''"it_int_prio"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    it_int_prio.setkey ("name")
 
     Full_Issue_Class \
         ( db
@@ -126,11 +143,13 @@ def security (db, ** kw) :
     #     classname        allowed to view   /  edit
     classes = \
         [ ("it_category",       ["User"],         ["IT"])
+        , ("it_int_prio",       ["User"],         ["IT"])
         , ("it_issue_status",   ["User"],         [])
         , ("it_issue",          ["IT", "ITView"], ["IT"])
         , ("it_prio",           ["User"],         [])
         , ("it_project",        ["IT", "ITView"], ["IT"])
         , ("it_project_status", ["User"],         [])
+        , ("it_request_type",   ["User"],         ["IT"])
         ]
 
     prop_perms = \

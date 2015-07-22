@@ -814,6 +814,11 @@ _helptext          = \
     , ""'hours_sat'                   : [daily_hours]
     , ""'hours_sun'                   : [daily_hours]
     , ""'id'                          : [help_id]
+    , ""'index'                       :
+      [""'''%(Property)s of %(Classname)s, Offers are sorted by
+            %(Property)s in Purchase Request
+         '''
+      ]
     , ""'inherit_ext'                 :
       [""'''If this flag is set, and an issue is a container, it inerits
             external user permissions from the next higher-level
@@ -935,17 +940,20 @@ _helptext          = \
              letters in lowercase, except names and references.
           '''
       ]
-    , ""'it_issue++superseder'        :
-      [superseder, multiple_allowed]
+    , ""'it_int_prio'                     :
+      [ ""'''Internal priority set by the IT-Department
+          '''
+      ]
     , ""'it_prio'                     :
       [ priority
       , leave_empty
       ]
-    , ""'index'                       :
-      [""'''%(Property)s of %(Classname)s, Offers are sorted by
-            %(Property)s in Purchase Request
-         '''
+    , ""'it_request_type'             :
+      [ ""'''Type of request, ITIL main process.
+          '''
       ]
+    , ""'it_issue++superseder'        :
+      [superseder, multiple_allowed]
     , ""'it_project'                  :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
     , ""'keyword'                     :

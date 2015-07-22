@@ -388,7 +388,7 @@ msgid "Must change %s, \"unknown\" is not allowed"
 msgstr ""
 
 msgid "it_prio"
-msgstr "Priority"
+msgstr "Impact"
 
 #, python-format
 msgid "May not set %s on new issue"
@@ -6141,3 +6141,9 @@ msgstr "Purchase request status"
 
 msgid "total_cost"
 msgstr "Total cost"
+
+msgid "it_int_prio"
+msgstr "Priority"
+
+msgid "it_request_type"
+msgstr "Request type"

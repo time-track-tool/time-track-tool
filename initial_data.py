@@ -1074,3 +1074,6 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = 'hr',          order = 50)
     db.pr_approval_order.create (role = 'finance',     order = 60)
     db.pr_approval_order.create (role = 'board',       order = 70)
+if 'it_request_type' in db.classes :
+    db.it_request_type.create (name = 'Incident',       order = 1)
+    db.it_request_type.create (name = 'Change Request', order = 2)
