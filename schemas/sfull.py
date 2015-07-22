@@ -46,6 +46,7 @@ schemas = \
     , 'org_loc'
     , 'docissue'
     , 'keyword'
+    , 'ext_tracker'
     , 'issue'
     , 'doc'
     , 'it_tracker'
