@@ -57,7 +57,7 @@ def init \
     it_request_type = Class \
         ( db, ''"it_request_type"
         , name                  = String    ()
-        , order                 = String    ()
+        , order                 = Number    ()
         )
 
     Superseder_Issue_Class \
