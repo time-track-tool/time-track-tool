@@ -54,6 +54,8 @@ def new_it (db, cl, nodeid, new_values) :
         new_values ['it_prio'] = db.it_prio.lookup ('unknown')
     if 'confidential' not in new_values :
         new_values ['confidential'] = 1
+    # Always make new issues confidential.
+    new_values ['confidential'] = True
 # end def new_it
 
 def check_it (db, cl, nodeid, new_values) :
