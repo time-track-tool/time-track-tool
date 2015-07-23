@@ -302,6 +302,7 @@ class Importer (object) :
         # end class Superseder_Issue_Class
 
         Optional_Doc_Issue_Class = Superseder_Issue_Class
+        IT_Issue_Baseclass       = Superseder_Issue_Class
 
         class Msg_Class (FileClass, Ext_Mixin) :
             def __init__ (self, db, classname, ** properties) :
@@ -346,6 +347,7 @@ class Importer (object) :
         globals ['Full_Issue_Class']         = Full_Issue_Class
         globals ['Superseder_Issue_Class']   = Superseder_Issue_Class
         globals ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
+        globals ['IT_Issue_Baseclass']       = IT_Issue_Baseclass
         globals ['User_Status_Class']        = User_Status_Class
 
         for s in schemas :

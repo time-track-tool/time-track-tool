@@ -49,6 +49,7 @@ schemas = \
     , 'keyword'
     , 'ext_tracker'
     , 'issue'
+    , 'it_part_of'
     , 'it_tracker'
     , 'min_adr'
     , 'contact'

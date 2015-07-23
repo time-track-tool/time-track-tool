@@ -21,7 +21,7 @@ properties = \
         , 'confidential'
         , 'deadline'
         , 'files'
-        , 'it_int_prio'
+        , 'int_prio'
         , 'it_prio'
         , 'it_project'
         , 'it_request_type'

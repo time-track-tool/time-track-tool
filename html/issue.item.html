@@ -33,6 +33,14 @@
     ; expand_superseder   request/form/expand_superseder/value | string:0
     ; expand_superseder   python:int (expand_superseder)
     ; expand_text         python:['(expand)', '(collapse)']
+    ; exp                 python:
+      ( 'expand_composed_of'
+      , 'expand_part_of'
+      , 'expand_depends'
+      , 'expand_needs'
+      , 'expand_superseder'
+      , 'show_closed'
+      )
     ; hide_text           python:['(show closed)', '(hide closed)']
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">

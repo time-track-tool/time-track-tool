@@ -649,7 +649,7 @@ properties = \
         , ( 'files'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
-        , ( 'it_int_prio'
+        , ( 'int_prio'
           , ['admin', 'it', 'itview']
           )
         , ( 'it_prio'

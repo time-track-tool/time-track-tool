@@ -36,13 +36,14 @@ def init \
     ( db
     , Class
     , Full_Issue_Class
+    , IT_Issue_Baseclass
     , Superseder_Issue_Class
     , Boolean
-    , String
     , Date
     , Link
     , Multilink
     , Number
+    , String
     , ** kw
     ) :
     it_category = Class \
@@ -62,7 +63,7 @@ def init \
         )
     it_request_type.setkey ('name')
 
-    Superseder_Issue_Class \
+    IT_Issue_Baseclass \
         ( db
         , ''"it_issue"
         , status                = Link      ("it_issue_status",

@@ -40,11 +40,11 @@ def update_composed_of (db, cl, nodeid, oldvalues) :
     """
     container = cl.get (nodeid, "part_of")
     if container :
-        old_parts = sorted (db.issue.get (container, "composed_of"))
+        old_parts = sorted (cl.get (container, "composed_of"))
         new_parts = union (old_parts, [str(nodeid)])
         # only set if parts really have changed
         if old_parts != new_parts :
-            db.issue.set (container, composed_of = new_parts)
+            cl.set (container, composed_of = new_parts)
 # end def update_composed_of
 
 def join_nosy_lists (db, cl, nodeid, oldvalues) :
@@ -62,12 +62,14 @@ def join_nosy_lists (db, cl, nodeid, oldvalues) :
 # end def join_nosy_lists
 
 def init (db) :
-    if 'issue' not in db.classes :
-        return
-    if 'composed_of' in db.issue.properties :
-        db.issue.react    ("create", update_composed_of, priority = 50)
-        db.issue.react    ("set",    update_composed_of, priority = 50)
-    db.issue.react    ("set",    join_nosy_lists,    priority = 50)
+    if 'issue' in db.classes :
+        if 'composed_of' in db.issue.properties :
+            db.issue.react    ("create", update_composed_of, priority = 50)
+            db.issue.react    ("set",    update_composed_of, priority = 50)
+        db.issue.react    ("set",    join_nosy_lists,    priority = 50)
     if 'it_issue' in db.classes :
         db.it_issue.react ("set", join_nosy_lists,   priority = 50)
+        if 'composed_of' in db.it_issue.properties :
+            db.it_issue.react ("create", update_composed_of, priority = 50)
+            db.it_issue.react ("set",    update_composed_of, priority = 50)
 # end def init

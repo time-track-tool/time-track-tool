@@ -8,34 +8,45 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['title'])
-    , utils.ExtProperty (utils, pdict ['responsible'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['stakeholder'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['nosy']
-        , help_props  = ['firstname', 'lastname']
+   prp python:
+    ( ('id',              {})
+    , ('title',           {})
+    , ('responsible',     dict (multiselect = 1))
+    , ('stakeholder',     dict (multiselect = 1))
+    , ( 'nosy'
+      , dict
+        (help_props = ['firstname', 'lastname']
         , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
         )
-    , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['it_prio'],     multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['int_prio'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['it_request_type'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['category'],    multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['it_project']
-        , help_props = ['id', 'status', 'it_prio', 'title']
+      )
+    , ('status',          dict (multiselect = 1))
+    , ('it_prio',         dict (multiselect = 1))
+    , ('int_prio',        dict (multiselect = 1))
+    , ('it_request_type', dict (multiselect = 1))
+    , ('category',        dict (multiselect = 1))
+    , ( 'it_project'
+      , dict
+        ( help_props = ['id', 'status', 'it_prio', 'title']
         , searchable = True
         )
-    , utils.ExtProperty (utils, pdict ['superseder'])
-    , utils.ExtProperty (utils, pdict ['deadline'])
-    , utils.ExtProperty (utils, pdict ['creator'])
-    , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['actor'])
-    , utils.ExtProperty (utils, pdict ['activity'])
-    , utils.ExtProperty (utils, pdict ['confidential'])
+      )
+    , ('superseder',      {})
+    , ('deadline',        {})
+    , ('creator',         {})
+    , ('creation',        {})
+    , ('actor',           {})
+    , ('activity',        {})
+    , ('confidential',    {})
+    , ('part_of',         dict (searchable = True, do_classhelp = False))
+    , ( 'composed_of'
+      , dict (searchable = True, sortable = False, do_classhelp = False)
+      )
     );
+   props python:
+       [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+         for p in prp if p [0] in pdict
+       ]
+
    "
   tal:condition="context/is_view_ok">
 

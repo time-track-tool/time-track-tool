@@ -26,7 +26,7 @@
  <tal:block tal:repeat="item items">
   <nobr>
    <span tal:replace="structure python:'&nbsp; ' * (indent * 2)"/>
-   <a tal:attributes="href string:issue${item/id};
+   <a tal:attributes="href python:'%s%s' % (classname, item.id);
                       class item/status;
                       title python:item.title.plain ();"
       tal:define="hsv python: hasattr (item, 'severity') or ''
@@ -61,19 +61,13 @@
 
 <tal:block metal:define-macro="expandable_entity">
  <a tal:content="python:text [bool(path (attr))]"
-  tal:attributes="href python:'issue%s?%s' %
-   ( context.id
+  tal:attributes="href python:'%s%s?%s' %
+   ( classname
+   , context.id
    , '&'.join
      ([ '%s=%s'
       % (x, (lambda a, b : [int(bool(a)), int (not a)][b])(path (x), x == attr))
-       for x in
-        ( 'expand_composed_of'
-        , 'expand_part_of'
-        , 'expand_depends'
-        , 'expand_needs'
-        , 'expand_superseder'
-        , 'show_closed'
-        )
+       for x in exp
      ])
    )"/>
 </tal:block>

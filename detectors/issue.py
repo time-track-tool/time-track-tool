@@ -40,7 +40,7 @@ from maturity_index                 import maturity_table
 
 def loopchecks (db, cl, nodeid, new_values) :
     for propname in 'superseder', 'part_of', 'needs', 'depends' :
-        if propname in new_values :
+        if propname in cl.properties and propname in new_values :
             value = new_values [propname]
             common.check_loop (_, cl, nodeid, propname, value, 'id')
 # end def loopchecks
@@ -147,15 +147,16 @@ def check_container_status (db, cl, nodeid, new_values) :
         container-children will not be in status closed if they have
         open children.
     """
-    closed = db.status.lookup ('closed')
-    open   = db.status.lookup ('open')
+    status_cls = db.getclass (cl.properties ['status'].classname)
+    closed = status_cls.lookup ('closed')
+    open   = status_cls.lookup ('open')
     composed_of = new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
     if 'status' not in new_values or not composed_of :
         return
     status = new_values ['status']
     if status not in (open, closed) :
-        open_n   = db.status.get (open,   'name')
-        closed_n = db.status.get (closed, 'name')
+        open_n   = status_cls.get (open,   'name')
+        closed_n = status_cls.get (closed, 'name')
         raise Reject, _ \
             ("Container status must be %(open_n)s or %(closed_n)s") % locals ()
     if status != closed :
@@ -171,12 +172,15 @@ def check_part_of (db, cl, nodeid, new_values) :
         p_id = cl.get (nodeid, 'part_of')
     if not p_id :
         return
-    obsolete = db.kind.lookup   ('Obsolete')
-    mistaken = db.kind.lookup   ('Mistaken')
     part_of = cl.getnode (p_id)
-    if part_of.kind in (mistaken, obsolete) :
-        raise Reject, _ ("May not be part of Obsolete or Mistaken container")
-    open   = db.status.lookup ('open')
+    if 'kind' in cl.properties :
+        obsolete = db.kind.lookup   ('Obsolete')
+        mistaken = db.kind.lookup   ('Mistaken')
+        if part_of.kind in (mistaken, obsolete) :
+            raise Reject \
+                (_ ("May not be part of Obsolete or Mistaken container"))
+    status_cls = db.getclass (cl.properties ['status'].classname)
+    open   = status_cls.lookup ('open')
     if part_of.status != open :
         raise Reject, _ ("Parent container must be in state open")
 # end def check_part_of
@@ -377,53 +381,59 @@ def set_ext_msg (db, cl, nodeid, new_values) :
 # end def set_ext_msg
 
 def init (db) :
-    if 'issue' not in db.classes :
-        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.issue.audit ("create", forbidden_props)
-    if 'effective_prio' in db.issue.properties :
-        db.issue.audit ("set",    update_eff_prio)
-        db.issue.audit ("create", update_eff_prio)
-    if 'composed_of' in db.issue.properties :
-        db.issue.audit ("set",    loopchecks)
-        db.issue.audit ("create", loopchecks)
-        db.issue.audit ("create", check_part_of)
-        db.issue.audit ("set",    check_part_of)
-        db.issue.audit ("set",    check_container_status)
-        # No longer automagically open/close containers, instead
-        # - Don't allow adding issue to closed container
-        # - Don't allow re-open of closed issue in closed container
-        # - forbit all other operations on issues in closed container
-        # - Don't allow closing of container with non-closed issues
-        # -> see check_part_of
-        if False :
-            db.issue.react ("set",    status_updated,           priority =  49)
-            db.issue.audit ("set",    composed_of_updated,      priority = 200)
-            db.issue.audit ("set",    composed_of_updated,      priority = 200)
-        db.issue.react ("set",    update_children,          priority =  50)
-    if 'maturity_index' in db.issue.properties :
-        db.issue.audit ("set",    set_maturity_index,       priority = 300)
-        db.issue.audit ("create", set_maturity_index,       priority = 300)
-        db.issue.react ("set",    update_maturity_index)
-        db.issue.react ("create", creat_update_maturity_index)
-    if 'numeric_effort' in db.issue.properties :
-        db.issue.audit ("set",    fix_effort)
-        db.issue.audit ("create", fix_effort)
-    if 'doc_issue_status' in db.issue.properties :
-        db.issue.audit ("set",    doc_issue_status)
-        db.issue.audit ("create", new_doc_issue_status)
-    if 'external_company' in db.issue.properties :
-        db.issue.audit ("create", add_ext_company)
-    if 'external_users' in db.issue.properties :
-        db.issue.audit ("create", add_ext_user)
-        db.issue.audit ("set",    check_ext_user_container)
-        db.issue.audit ("create", check_ext_user_part_of)
-        db.issue.audit ("set",    check_ext_user_part_of)
-        db.issue.audit ("create", check_ext_user_responsible)
-        db.issue.audit ("set",    check_ext_user_responsible)
-    if 'ext_msg' in db.classes :
-        db.ext_msg.audit ("create", check_ext_msg)
-        db.ext_msg.audit ("set",    set_ext_msg)
+    if 'issue' in db.classes :
+        db.issue.audit ("create", forbidden_props)
+        if 'effective_prio' in db.issue.properties :
+            db.issue.audit ("set",    update_eff_prio)
+            db.issue.audit ("create", update_eff_prio)
+        if 'composed_of' in db.issue.properties :
+            db.issue.audit ("set",    loopchecks)
+            db.issue.audit ("create", loopchecks)
+            db.issue.audit ("create", check_part_of)
+            db.issue.audit ("set",    check_part_of)
+            db.issue.audit ("set",    check_container_status)
+            # No longer automagically open/close containers, instead
+            # - Don't allow adding issue to closed container
+            # - Don't allow re-open of closed issue in closed container
+            # - forbit all other operations on issues in closed container
+            # - Don't allow closing of container with non-closed issues
+            # -> see check_part_of
+            if False :
+                db.issue.react ("set", status_updated,           priority =  49)
+                db.issue.audit ("set", composed_of_updated,      priority = 200)
+                db.issue.audit ("set", composed_of_updated,      priority = 200)
+            db.issue.react ("set",    update_children,          priority =  50)
+        if 'maturity_index' in db.issue.properties :
+            db.issue.audit ("set",    set_maturity_index,       priority = 300)
+            db.issue.audit ("create", set_maturity_index,       priority = 300)
+            db.issue.react ("set",    update_maturity_index)
+            db.issue.react ("create", creat_update_maturity_index)
+        if 'numeric_effort' in db.issue.properties :
+            db.issue.audit ("set",    fix_effort)
+            db.issue.audit ("create", fix_effort)
+        if 'doc_issue_status' in db.issue.properties :
+            db.issue.audit ("set",    doc_issue_status)
+            db.issue.audit ("create", new_doc_issue_status)
+        if 'external_company' in db.issue.properties :
+            db.issue.audit ("create", add_ext_company)
+        if 'external_users' in db.issue.properties :
+            db.issue.audit ("create", add_ext_user)
+            db.issue.audit ("set",    check_ext_user_container)
+            db.issue.audit ("create", check_ext_user_part_of)
+            db.issue.audit ("set",    check_ext_user_part_of)
+            db.issue.audit ("create", check_ext_user_responsible)
+            db.issue.audit ("set",    check_ext_user_responsible)
+        if 'ext_msg' in db.classes :
+            db.ext_msg.audit ("create", check_ext_msg)
+            db.ext_msg.audit ("set",    set_ext_msg)
+    if 'it_issue' in db.classes :
+        if 'composed_of' in db.it_issue.properties :
+            db.it_issue.audit ("set",    loopchecks)
+            db.it_issue.audit ("create", loopchecks)
+            db.it_issue.audit ("create", check_part_of)
+            db.it_issue.audit ("set",    check_part_of)
+            db.it_issue.audit ("set",    check_container_status)
 # end def init

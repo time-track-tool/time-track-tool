@@ -20,6 +20,16 @@
     " use_labelprop       python:1
     ; has_resp            python:0
     ; required_attributes string:title
+    ; show_closed         request/form/show_closed/value | string:1
+    ; show_closed         python:int (show_closed)
+    ; expand_composed_of  request/form/expand_composed_of/value | string:0
+    ; expand_composed_of  python:int (expand_composed_of)
+    ; expand_part_of      request/form/expand_part_of/value | string:0
+    ; expand_part_of      python:int (expand_part_of)
+    ; expand_text         python:['(expand)', '(collapse)']
+    ; hide_text           python:['(show closed)', '(hide closed)']
+    ; exp                 python:
+      ('expand_composed_of', 'expand_part_of', 'show_closed')
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
@@ -124,6 +134,61 @@
        </a>
       </td>
      </tr>
+     <tal:block tal:condition="python: 'part_of' in bclass.properties">
+      <tr>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'part_of')"/>
+       <td>
+        <tal:block tal:condition="python:
+         not context.id or context.part_of.is_view_ok ()">
+         <span tal:content="structure python:context.part_of.field ()"/>
+         <tal:block tal:condition="context/part_of/plain"
+          tal:define="attr string:expand_part_of; text expand_text">
+          <tal:block metal:use-macro="templates/issue/macros/expandable_entity"/>
+         </tal:block>
+        </tal:block>
+       </td>
+      </tr>
+      <tr>
+       <th/>
+       <td tal:condition="context/part_of/plain">
+        <font size="-1" tal:define=
+         " issues python:[context.part_of]
+         ; attr   python:'part_of'
+         ; expand expand_part_of
+         ; hide   python:False
+         ">
+         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+        </font>
+       </td>
+      </tr>
+      <tr tal:condition="context/id">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'composed_of')"/>
+       <td>
+        <tal:block tal:condition="context/composed_of/plain">
+         <tal:block tal:define=" text expand_text
+                               ; attr string:expand_composed_of">
+          <tal:block
+           metal:use-macro="templates/issue/macros/expandable_entity"/>
+         </tal:block>
+         <tal:block tal:define="attr string:show_closed; text hide_text">
+          <tal:block
+           metal:use-macro="templates/issue/macros/expandable_entity"/>
+         </tal:block>
+         <br>
+         <font size="-1" tal:define=
+          " issues context/composed_of/reverse
+          ; attr   python:'composed_of'
+          ; expand expand_composed_of
+          ; hide   not:show_closed
+          ">
+          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
+         </font>
+        </tal:block>
+       </td>
+      </tr>
+     </tal:block>
     </tal:block>
    </tal:block>
   </tal:block>

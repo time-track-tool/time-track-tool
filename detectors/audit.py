@@ -351,21 +351,21 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         newvalues ['maturity_index'] = None # Force recomputation
 # end def limit_transitions
 
-def validate_composed_of (db, nodeid) :
+def validate_composed_of (db, cl, nodeid) :
     """Check consistency of  `composed_of`.
        If `part_of` points not to me, remove this issue from my `composed_of`.
     """
-    old_parts  = db.issue.get (nodeid, "composed_of")
+    old_parts  = cl.get (nodeid, "composed_of")
     new_parts  = old_parts [:] # copy
-    my_part_of = db.issue.get (nodeid, "part_of")
+    my_part_of = cl.get (nodeid, "part_of")
     for part_id in old_parts :
-        if db.issue.get (part_id, "part_of") != nodeid \
+        if cl.get (part_id, "part_of") != nodeid \
         or part_id == nodeid \
         or part_id == my_part_of :
             new_parts.remove (part_id)
     # only set if parts really have changed
     if old_parts != new_parts :
-        db.issue.set (nodeid, composed_of = new_parts)
+        cl.set (nodeid, composed_of = new_parts)
 # end def validate_composed_of
 
 def part_of_changed (db, cl, nodeid, newvalues) :
@@ -377,25 +377,26 @@ def part_of_changed (db, cl, nodeid, newvalues) :
         new_part_of_id = newvalues.get ("part_of")
         if old_part_of_id != new_part_of_id :
             # schedule maturity_index for update
-            newvalues ['maturity_index'] = None
+            if 'maturity_index' in cl.properties :
+                newvalues ['maturity_index'] = None
             if new_part_of_id == nodeid :
                 raise Reject, ( "[%s] `Part of` cannot point to itself."
                               % nodeid
                               )
-            if new_part_of_id in db.issue.get (nodeid, "composed_of") :
+            if new_part_of_id in cl.get (nodeid, "composed_of") :
                 raise Reject, ( "[%s] `Part of` cannot be set to an item "
                                 "already in this issue's `Composed of`."
                               % nodeid
                               )
             if old_part_of_id :
                 # remove this issue from old_part_of's composed_of
-                parts = db.issue.get (old_part_of_id, "composed_of")
+                parts = cl.get (old_part_of_id, "composed_of")
                 # remove multiples
                 parts = filter (lambda x: x != nodeid, parts)
-                db.issue.set (old_part_of_id, composed_of = parts)
-                validate_composed_of (db, old_part_of_id)
+                cl.set (old_part_of_id, composed_of = parts)
+                validate_composed_of (db, cl, old_part_of_id)
             if new_part_of_id :
-                validate_composed_of (db, new_part_of_id)
+                validate_composed_of (db, cl, new_part_of_id)
 # end def part_of_changed
 
 def set_default_responsible (db, cl, nodeid, newvalues) :
@@ -432,15 +433,17 @@ def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    if 'issue' not in db.classes :
-        return
-    if 'kind' in db.classes :
-        db.issue.audit ("create", limit_new_entry)
-        db.issue.audit ("set",    limit_transitions)
-    elif 'prio' in db.classes :
-        db.issue.audit ("create", set_default_responsible, priority = 200)
-        db.issue.audit ("create", set_default_status,      priority = 200)
-        db.issue.audit ("create", set_default_prio,        priority = 200)
-    if 'part_of' in db.issue.properties :
-        db.issue.audit ("set",    part_of_changed)
+    if 'issue' in db.classes :
+        if 'kind' in db.classes :
+            db.issue.audit ("create", limit_new_entry)
+            db.issue.audit ("set",    limit_transitions)
+        elif 'prio' in db.classes :
+            db.issue.audit ("create", set_default_responsible, priority = 200)
+            db.issue.audit ("create", set_default_status,      priority = 200)
+            db.issue.audit ("create", set_default_prio,        priority = 200)
+        if 'part_of' in db.issue.properties :
+            db.issue.audit ("set",    part_of_changed)
+    if 'it_issue' in db.classes :
+        if 'part_of' in db.it_issue.properties :
+            db.it_issue.audit ("set",    part_of_changed)
 # end def init

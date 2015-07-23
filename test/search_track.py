@@ -348,6 +348,9 @@ properties = \
       , [ ( 'category'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'composed_of'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'confidential'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
@@ -357,7 +360,7 @@ properties = \
         , ( 'files'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'it_int_prio'
+        , ( 'int_prio'
           , ['admin', 'it', 'itview']
           )
         , ( 'it_prio'
@@ -373,6 +376,9 @@ properties = \
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'nosy'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'part_of'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'responsible'

@@ -195,7 +195,7 @@ properties = \
         , ( 'files'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
-        , ( 'it_int_prio'
+        , ( 'int_prio'
           , ['admin', 'it', 'itview']
           )
         , ( 'it_prio'
