@@ -74,7 +74,7 @@ def init \
         , it_project            = Link      ("it_project")
         , confidential          = Boolean   ()
         , it_request_type       = Link      ("it_request_type")
-        , it_int_prio           = Link      ("it_int_prio")
+        , int_prio              = Link      ("it_int_prio")
         )
 
     it_issue_status = Class \

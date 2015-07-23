@@ -54,10 +54,10 @@
           (classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
       <tal:block tal:condition="
-        python: context.id and context.it_int_prio.is_edit_ok ()">
+        python: context.id and context.int_prio.is_edit_ok ()">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'it_int_prio')"/>
-       <td tal:content="structure python:context.it_int_prio.menu ()"/>
+           (classname, 'int_prio')"/>
+       <td tal:content="structure python:context.int_prio.menu ()"/>
       </tal:block>
      </tr>
      <tr><td>&nbsp;</td></tr>

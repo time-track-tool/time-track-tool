@@ -382,6 +382,7 @@
      , ('ip_subnet',           'View',   '?@template=item', 1)
      , ('issue',               'Edit',   new_issue,         1)
      , ('it_category',         'Edit',   '?@template=item', 1)
+     , ('it_int_prio',         'Edit',   '?@template=item', 1)
      , ('it_issue',            'Edit',   '?@template=item', 1)
      , ('it_issue_status',     'Edit',   '?@template=item', 1)
      , ('it_prio',             'Edit',   '?@template=item', 1)
@@ -391,6 +392,7 @@
        , utils.user_has_role (db._db, db._db.getuid (), 'IT')
        )
      , ('it_project_status',   'Edit',   '?@template=item', 1)
+     , ('it_request_type',     'Edit',   '?@template=item', 1)
      , ('keyword',             'Edit',   '?@template=item', 1)
      , ('kind',                'Edit',   '?@template=item', 1)
      , ( 'leave_submission'

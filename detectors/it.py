@@ -56,6 +56,14 @@ def new_it (db, cl, nodeid, new_values) :
         new_values ['confidential'] = 1
     # Always make new issues confidential.
     new_values ['confidential'] = True
+    # Defaults for some attributes only in it_issue
+    # We chose the item with lowest order as default
+    for attr in 'int_prio', 'it_request_type' :
+        if attr in cl.properties and attr not in new_values :
+            cls = db.getclass (cl.properties [attr].classname)
+            values = cls.filter (None, {}, [('+', 'order')])
+            if values :
+                new_values [attr] = values [0]
 # end def new_it
 
 def check_it (db, cl, nodeid, new_values) :
