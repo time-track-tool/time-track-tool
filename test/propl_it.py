@@ -8,6 +8,7 @@ properties = \
     , ( 'it_category'
       , [ 'description'
         , 'name'
+        , 'valid'
         ]
       )
     , ( 'it_int_prio'

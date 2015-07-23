@@ -133,6 +133,9 @@
                           '@filter=status,responsible&@pagesize=50&'
                           '@startwith=0&status=%s&responsible=%s'
                           % (s_stati, uid)
+   , ('it_category', ''): '@columns=id,name,description,valid&'
+                          '@sort=name&@filter=valid&'
+                          '@pagesize=50&@startwith=0&valid=1'
    , ('it_issue', '')   : '@columns=id,title,responsible,stakeholder,it_prio&'
                           '@sort=-id&@group=status&@filter=stakeholder,status&'
                           '@pagesize=50&@startwith=0&'

@@ -168,6 +168,9 @@ properties = \
         , ( 'name'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
           )
+        , ( 'valid'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user']
+          )
         ]
       )
     , ( 'it_int_prio'

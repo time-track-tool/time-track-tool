@@ -33,7 +33,7 @@
       <tal:block tal:condition="python: context.category.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
-      <td tal:content="structure python:context.category.menu ()"/>
+      <td tal:content="structure python:context.category.menu (valid = True)"/>
       </tal:block>
       <th tal:content="structure python:utils.fieldname
           (classname, 'deadline')"/>

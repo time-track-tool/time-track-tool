@@ -455,7 +455,8 @@ if 'it_project_status' in db.classes :
     gen_status (db.getclass ("it_project_status"), its)
 
 if 'it_category' in db.classes :
-    db.it_category.create (name = 'helpdesk', description = 'Helpdesk Issues')
+    db.it_category.create \
+        (name = 'helpdesk', description = 'Helpdesk Issues', valid = True)
 
 if 'it_prio' in db.classes :
     db.it_prio.create (name = "nice to have",                        order = 1)

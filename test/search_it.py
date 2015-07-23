@@ -18,6 +18,9 @@ properties = \
         , ( 'name'
           , ['admin', 'it', 'itview', 'user']
           )
+        , ( 'valid'
+          , ['admin', 'it', 'itview', 'user']
+          )
         ]
       )
     , ( 'it_int_prio'

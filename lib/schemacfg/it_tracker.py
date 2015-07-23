@@ -50,6 +50,7 @@ def init \
         , ''"it_category"
         , name                  = String    ()
         , description           = String    ()
+        , valid                 = Boolean   ()
         )
     it_category.setkey ("name")
 
@@ -59,6 +60,7 @@ def init \
         , name                  = String    ()
         , order                 = Number    ()
         )
+    it_request_type.setkey ('name')
 
     Superseder_Issue_Class \
         ( db

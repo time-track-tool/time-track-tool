@@ -330,6 +330,9 @@ properties = \
         , ( 'name'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'valid'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
         ]
       )
     , ( 'it_int_prio'
