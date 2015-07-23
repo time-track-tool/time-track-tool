@@ -35,33 +35,6 @@ properties = \
           )
         ]
       )
-    , ( 'ext_msg'
-      , [ ( 'ext_id'
-          , ['admin', 'msgedit', 'msgsync']
-          )
-        , ( 'ext_tracker'
-          , ['admin', 'msgedit', 'msgsync']
-          )
-        , ( 'key'
-          , ['admin', 'msgedit', 'msgsync']
-          )
-        , ( 'msg'
-          , ['admin', 'msgedit', 'msgsync']
-          )
-        ]
-      )
-    , ( 'ext_tracker'
-      , [ ( 'description'
-          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
-          )
-        , ( 'name'
-          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
-          )
-        , ( 'url_template'
-          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
-          )
-        ]
-      )
     , ( 'file'
       , [ ( 'content'
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
@@ -106,18 +79,6 @@ properties = \
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
         , ( 'effective_prio'
-          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
-          )
-        , ( 'ext_attributes'
-          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
-          )
-        , ( 'ext_id'
-          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
-          )
-        , ( 'ext_status'
-          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
-          )
-        , ( 'ext_tracker'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
         , ( 'files'

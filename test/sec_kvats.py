@@ -16,7 +16,6 @@ Role "issue_admin":
  User is allowed to access issue (View for "issue" only)
  User is allowed to create area (Create for "area" only)
  User is allowed to create category (Create for "category" only)
- User is allowed to create ext_tracker (Create for "ext_tracker" only)
  User is allowed to create issue (Create for "issue" only)
  User is allowed to create keyword (Create for "keyword" only)
  User is allowed to create kind (Create for "kind" only)
@@ -26,7 +25,6 @@ Role "issue_admin":
  User is allowed to create status_transition (Create for "status_transition" only)
  User is allowed to edit area (Edit for "area" only)
  User is allowed to edit category (Edit for "category" only)
- User is allowed to edit ext_tracker (Edit for "ext_tracker" only)
  User is allowed to edit issue (Edit for "issue" only)
  User is allowed to edit keyword (Edit for "keyword" only)
  User is allowed to edit kind (Edit for "kind" only)
@@ -37,13 +35,9 @@ Role "issue_admin":
 Role "msgedit":
   (Search for "msg": ('date', 'id') only)
  User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
- User is allowed to access ext_msg (View for "ext_msg" only)
 Role "msgsync":
   (Search for "msg": ('date', 'id') only)
  User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
- User is allowed to access ext_msg (View for "ext_msg" only)
- User is allowed to create ext_msg (Create for "ext_msg" only)
- User is allowed to edit ext_msg (Edit for "ext_msg" only)
 Role "nosy":
  User may get nosy messages for issue (Nosy for "issue" only)
 Role "user":
@@ -56,7 +50,6 @@ Role "user":
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed to access area (View for "area" only)
  User is allowed to access category (View for "category" only)
- User is allowed to access ext_tracker (View for "ext_tracker" only)
  User is allowed to access keyword (View for "keyword" only)
  User is allowed to access kind (View for "kind" only)
  User is allowed to access msg_keyword (View for "msg_keyword" only)
