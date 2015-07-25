@@ -18,7 +18,7 @@ properties = \
       , [ 'cert_sw'
         , 'default_part_of'
         , 'description'
-        , 'ext_tracker'
+        , 'ext_trackers'
         , 'name'
         , 'nosy'
         , 'prodcat'
@@ -83,9 +83,22 @@ properties = \
       )
     , ( 'ext_tracker'
       , [ 'description'
-        , 'is_kpm'
         , 'name'
+        , 'type'
         , 'url_template'
+        ]
+      )
+    , ( 'ext_tracker_state'
+      , [ 'ext_attributes'
+        , 'ext_id'
+        , 'ext_status'
+        , 'ext_tracker'
+        , 'issue'
+        ]
+      )
+    , ( 'ext_tracker_type'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'fault_frequency'

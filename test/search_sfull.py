@@ -72,7 +72,7 @@ properties = \
         , ( 'description'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
-        , ( 'ext_tracker'
+        , ( 'ext_trackers'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         , ( 'name'
@@ -490,7 +490,37 @@ properties = \
         , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'type'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
         , ( 'url_template'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'ext_tracker_state'
+      , [ ( 'ext_attributes'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_id'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_status'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'ext_tracker'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'issue'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'ext_tracker_type'
+      , [ ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'order'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'supportadmin', 'type', 'user']
           )
         ]

@@ -45,116 +45,42 @@
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
-     <tr tal:condition="python:
-        (   context.id
-        and 'ext_tracker' in bclass.properties
-        and not context.ext_tracker
-        and context.category.ext_tracker
-        )">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'ext_tracker')"/>
-      <td tal:content="structure python:
-        context.ext_tracker.menu
-           (id = [x.id for x in context.category.ext_tracker])"/>
-     </tr>
-     <tal:block tal:condition="python:
-        (    context.id
-        and 'ext_id' in bclass.properties
-        and context.ext_tracker
-        )">
-      <tr>
+     <tal:block tal:condition="python:'ext_tracker_state' in db._db.classes"
+      tal:define=" exts python:
+          db.ext_tracker_state.filter (None, dict (issue=context.id))">
+      <tr tal:condition="python:
+         (   context.id
+         and context.category.ext_trackers
+         and not exts
+         and (  'ext_tracker' not in bclass.properties
+             or not context.ext_tracker
+             )
+         )">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'ext_tracker')"/>
-       <td> <span tal:content="python:context.ext_tracker"/>
-            <span tal:content="python:context.ext_tracker.description"/>
-       </td>
-       <th tal:content="structure python:utils.fieldname
-           (classname, 'ext_id')"/>
-       <td tal:condition="python:not context.ext_tracker.url_template"
-           tal:content="structure python:context.ext_id"/>
-       <td tal:condition="python:context.ext_tracker.url_template">
-        <a tal:content="structure python:context.ext_id"
-           tal:attributes="href python:
-               str (context.ext_tracker.url_template) % context.ext_id" />
-       </td>
-      </tr>
-      <tr>
-       <th tal:content="structure python:utils.fieldname
-           (classname, 'ext_status')"/>
-       <td tal:content="python:context.ext_status"/>
-       <th tal:content="structure python:utils.fieldname
-           (classname, 'ext_attributes')"/>
+           ('ext_tracker_state', 'ext_tracker')"/>
        <td>
-        <a tal:condition="context/ext_attributes"
-           href="#" tal:attributes="onclick python: ''.join
-           (('javascript:help_window (\''
-           ,  context.designator ()
-           ,  '?@template=ext_attr\',\'900\',\'300\')'
-           ))">View</a>
+        <span tal:content="structure python: utils.new_property
+         (context, db, 'ext_tracker_state', -1, 'ext_tracker').menu
+            (id = [x.id for x in context.category.ext_trackers])"/>
+        <input type="hidden" name="ext_tracker_state-1@link@issue"
+         tal:attributes="value python: 'issue%s' % context.id"/>
        </td>
       </tr>
-      <tal:block tal:condition="python:'kpm' in db._db.classes">
-       <tal:block tal:define="kpm python:utils.get_kpm (db, context)">
-        <tal:block tal:condition="kpm">
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'kpm_function')"/>
-          <td>
-           <span tal:content="structure python: kpm.kpm_function.field ()"/>
-           <span tal:content="structure python:db.kpm_function.classhelp
-             ( 'kpm_key,name,kpm_group'
-             , property  = 'kpm%s@kpm_function' % kpm.id
-             , width     = '600'
-             , pagesize  = 500
-             , inputtype = 'radio'
-             )" />
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'hardware_version')"/>
-          <td tal:content="structure python:
-            kpm.hardware_version.field ()"/>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'reproduceable')"/>
-          <td tal:content="structure python:
-            kpm.reproduceable.field ()"/>
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'fault_frequency')"/>
-          <td tal:content="structure python:
-            kpm.fault_frequency.menu ()"/>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'analysis')"/>
-          <td colspan="3">
-           <textarea tal:content="python:kpm.analysis.content.plain() or ''"
-            wrap="hard" cols="80" rows="3" name="msg-2@content"/>
-           <input type="hidden" value="msg-2" tal:attributes="
-             name python:'kpm%s@link@analysis' % kpm.id"/>
-          </td>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'description')"/>
-          <td colspan="3">
-           <textarea tal:content="python:kpm.description.content.plain() or ''"
-            wrap="hard" cols="80" rows="3" name="msg-3@content"/>
-           <input type="hidden" value="msg-3" tal:attributes="
-             name python:'kpm%s@link@description' % kpm.id"/>
-          </td>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-            ('kpm', 'supplier_answer')"/>
-          <td colspan="3">
-           <textarea tal:content="python:
-            kpm.supplier_answer.content.plain() or ''"
-            wrap="hard" cols="80" rows="3" name="msg-4@content"/>
-           <input type="hidden" value="msg-4" tal:attributes="
-             name python:'kpm%s@link@supplier_answer' % kpm.id"/>
-          </td>
-         </tr>
-        </tal:block>
+      <tal:block tal:define="ecls python:'issue';eitem context"
+       tal:condition="python:
+         (    context.id
+         and (  exts
+             or ('ext_id' in bclass.properties and context.ext_tracker)
+             )
+         )">
+       <tal:block tal:condition="not:exts">
+        <tal:block metal:use-macro=
+         "templates/ext_tracker_state/macros/ext_tracker_display"/>
+       </tal:block>
+       <tal:block tal:define="ecls python:'ext_tracker_state'"
+        tal:condition="exts" tal:repeat="eitem exts">
+        <tal:block metal:use-macro=
+         "templates/ext_tracker_state/macros/ext_tracker_display"/>
        </tal:block>
       </tal:block>
      </tal:block>
@@ -421,46 +347,57 @@
       </tal:block>
      </tr>
     </tal:block>
-    <tal:block metal:fill-slot="right_of_nosy">
-     <tal:block tal:condition="python:
-                'external_company' in bclass.properties
-                and context.external_company.is_edit_ok ()
-                and db._db.security.hasPermission
-                    ( 'View'
-                    , context.external_company._client.userid
-                    , context.external_company._classname
-                    , context.external_company._name
-                    ) ">
-      <th tal:content="structure python:utils.fieldname
-           (classname, 'external_company')"/>
-      <td>
-       <span tal:content="structure context/external_company/field" />
-       <span tal:content="structure python:db.external_company.classhelp
-             ( 'name,id'
-             , property = 'external_company'
-             , width    = '600'
-             , pagesize = 500
-             )" />
-      </td>
-     </tal:block>
-     <tal:block tal:condition="python:
-                    'external_users' in bclass.properties
-                and (  context.id and context.external_users.is_view_ok ()
-                    or not context.id
-                       and utils.user_has_role (db._db, request.user.id, 'User')
-                    )">
-      <th tal:content="structure python:utils.fieldname
-           (classname, 'external_users')"/>
-      <td>
-       <span tal:content="structure context/external_users/field" />
-       <span tal:content="structure python:db.user.classhelp
-             ( utils.user_props (db)
-             , property = 'external_users'
-             , width    = '600'
-             , pagesize = 500
-             , filter   = 'status=external'
-             )" />
-      </td>
+    <tal:block metal:fill-slot="below-nosy">
+     <tr>
+      <tal:block tal:condition="python:
+                 'external_company' in bclass.properties
+                 and context.external_company.is_edit_ok ()
+                 and db._db.security.hasPermission
+                     ( 'View'
+                     , context.external_company._client.userid
+                     , context.external_company._classname
+                     , context.external_company._name
+                     ) ">
+       <th tal:content="structure python:utils.fieldname
+            (classname, 'external_company')"/>
+       <td>
+        <span tal:content="structure context/external_company/field" />
+        <span tal:content="structure python:db.external_company.classhelp
+              ( 'name,id'
+              , property = 'external_company'
+              , width    = '600'
+              , pagesize = 500
+              )" />
+       </td>
+      </tal:block>
+      <tal:block tal:condition="python:
+                     'external_users' in bclass.properties
+                 and (  context.id and context.external_users.is_view_ok ()
+                     or not context.id
+                        and utils.user_has_role
+                              (db._db, request.user.id, 'User')
+                     )">
+       <th tal:content="structure python:utils.fieldname
+            (classname, 'external_users')"/>
+       <td>
+        <span tal:content="structure context/external_users/field" />
+        <span tal:content="structure python:db.user.classhelp
+              ( utils.user_props (db)
+              , property = 'external_users'
+              , width    = '600'
+              , pagesize = 500
+              , filter   = 'status=external'
+              )" />
+       </td>
+      </tal:block>
+     </tr>
+     <tal:block tal:condition="python:'kpm' in db._db.classes">
+      <tal:block tal:define="kpm python:utils.get_kpm (db, context)">
+       <tal:block tal:condition="kpm">
+        <tr><th>KPM</th></tr>
+        <tal:block metal:use-macro="templates/kpm/macros/kpm_display"/>
+       </tal:block>
+      </tal:block>
      </tal:block>
     </tal:block>
     <tal:block metal:fill-slot="additional_button">

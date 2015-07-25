@@ -36,7 +36,7 @@ properties = \
         , ( 'description'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'ext_tracker'
+        , ( 'ext_trackers'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'name'
@@ -189,13 +189,40 @@ properties = \
       , [ ( 'description'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
-        , ( 'is_kpm'
-          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
-          )
         , ( 'name'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'type'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'url_template'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'ext_tracker_state'
+      , [ ( 'ext_attributes'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_id'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_status'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ext_tracker'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'issue'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'ext_tracker_type'
+      , [ ( 'name'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         ]

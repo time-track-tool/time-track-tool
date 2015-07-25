@@ -44,17 +44,18 @@ def get_kpm (db, issue) :
         return kpm_attr [0]
     else :
         # Check if the issue is a kpm issue
-        if not issue.ext_tracker.is_kpm :
-            return None
-        # If it was already synced before we have an ext_id this needs
-        # to be modified by a script -- or potentially the syncer should
-        # handle this. We return None so the form will not display
-        # additional kpm info.
-        if issue.ext_id :
-            return None
-        else :
-            kpm = db._db.kpm.create (issue = issue.id)
-            db._db.commit ()
+        typ = db._db.ext_tracker_type.lookup ('KPM')
+        est = db.ext_tracker_state.filter \
+            (None, {'issue': issue.id, 'ext_tracker.type': typ})
+        if not est :
+            if 'ext_tracker' in db._db.issue.properties :
+                if not issue.ext_tracker.is_kpm :
+                    return None
+                # if already synced this should be created by the sync.
+                if issue.ext_id :
+                    return None
+        kpm = db._db.kpm.create (issue = issue.id)
+        db._db.commit ()
     return db.kpm.filter (None, dict (issue = issue.id)) [0]
 # end def get_kpm
 

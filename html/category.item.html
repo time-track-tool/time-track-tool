@@ -47,10 +47,10 @@
           (classname, 'default_part_of')"/>
       <td tal:content="structure python:context.default_part_of.field ()"/>
      </tr>
-     <tr tal:condition="python:'ext_tracker' in bclass.properties">
+     <tr tal:condition="python:'ext_trackers' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'ext_tracker')"/>
-      <td tal:content="structure python:context.ext_tracker.menu ()"/>
+          (classname, 'ext_trackers')"/>
+      <td tal:content="structure python:context.ext_trackers.menu (height=5)"/>
      </tr>
     </tal:block>
    </tal:block>

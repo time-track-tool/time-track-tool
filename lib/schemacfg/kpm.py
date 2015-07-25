@@ -46,17 +46,6 @@ def init \
 
     export = {}
 
-    Ext_TC = kw ['Ext_Tracker_Class']
-    class Ext_Tracker_Class (Ext_TC) :
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties \
-                ( is_kpm              = Boolean   ()
-                )
-            Ext_TC.__init__ (self, db, classname, ** properties)
-        # end def __init__
-    # end class Ext_Tracker_Class
-    export ['Ext_Tracker_Class'] = Ext_Tracker_Class
-
     kpm = Class \
         ( db, "kpm"
         , issue               = Link      ("issue")

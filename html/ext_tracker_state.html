@@ -1,0 +1,33 @@
+<tal:block metal:define-macro="ext_tracker_display">
+       <tr>
+        <th tal:content="structure python:utils.fieldname
+            (ecls, 'ext_tracker')"/>
+        <td> <span tal:content="python:eitem.ext_tracker"/>
+             <span tal:content="python:eitem.ext_tracker.description"/>
+        </td>
+        <th tal:content="structure python:utils.fieldname
+            (ecls, 'ext_id')"/>
+        <td tal:condition="python:not eitem.ext_tracker.url_template"
+            tal:content="structure python:eitem.ext_id"/>
+        <td tal:condition="python:eitem.ext_tracker.url_template">
+         <a tal:content="structure python:eitem.ext_id"
+            tal:attributes="href python:
+                str (eitem.ext_tracker.url_template) % eitem.ext_id" />
+        </td>
+       </tr>
+       <tr>
+        <th tal:content="structure python:utils.fieldname
+            (ecls, 'ext_status')"/>
+        <td tal:content="python:eitem.ext_status"/>
+        <th tal:content="structure python:utils.fieldname
+            (ecls, 'ext_attributes')"/>
+        <td>
+         <a tal:condition="eitem/ext_attributes"
+            href="#" tal:attributes="onclick python: ''.join
+            (('javascript:help_window (\''
+            ,  eitem.designator ()
+            ,  '?@template=ext_attr\',\'900\',\'300\')'
+            ))">View</a>
+        </td>
+       </tr>
+</tal:block>

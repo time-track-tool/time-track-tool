@@ -1,0 +1,71 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:0
+    ; has_resp            python:0
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'ext_id')"/>
+      <td tal:content="structure python: context.ext_id.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+        (classname, 'ext_tracker')"/>
+      <td tal:content="structure python: context.ext_tracker.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+        (classname, 'key')"/>
+      <td tal:content="structure python: context.key.plain ()"/>
+     </tr>
+    </tal:block>
+    <tal:block metal:fill-slot="before_messages">
+     <table class="messages">
+      <tr>
+       <th colspan="4" class="header" tal:content="structure python:
+           utils.fieldname (classname, 'msg')"/>
+      </tr>
+      <tr>
+       <th>
+        <a class="messages" tal:attributes="href string:msg${context/msg/id}"
+           tal:content="string:msg${context/msg/id}"/>
+       </th>
+       <th>
+        <span i18n:translate="">Author:</span>
+        <a tal:attributes="href string:user${context/msg/author/id}"
+           tal:content="context/msg/author"/>
+       </th>
+       <th/>
+      </tr>
+      <tr>
+       <td colspan="3" class="content">
+        <pre tal:content="structure python:utils.hyperlinked_soft_wrap
+             (context.msg.content, 120)"/>
+       </td>
+      </tr>
+     </table>
+    </tal:block>
+    <tal:block metal:fill-slot="button_slot"/>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

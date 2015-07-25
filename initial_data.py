@@ -1078,3 +1078,6 @@ if 'pr_approval_order' in db.classes :
 if 'it_request_type' in db.classes :
     db.it_request_type.create (name = 'Incident',       order = 1)
     db.it_request_type.create (name = 'Change Request', order = 2)
+if 'ext_tracker_type' in db.classes :
+    db.ext_tracker_type.create (name = 'Jira', order = 10)
+    db.ext_tracker_type.create (name = 'KPM',  order = 20)

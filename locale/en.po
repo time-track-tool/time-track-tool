@@ -6368,5 +6368,11 @@ msgstr "LDAP group"
 msgid "is_nosy"
 msgstr "is nosy"
 
+msgid "ext_tracker_state"
+msgstr "Ext. Tracker state"
+
+msgid "ext_tracker_type"
+msgstr "Ext. Tracker type"
+
 #~ msgid "ext_trackers"
 #~ msgstr "Ext. Trackers"

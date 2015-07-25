@@ -19,16 +19,17 @@
   <tal:block tal:define=
     " use_labelprop       python:0
     ; has_resp            python:0
+    ; ecls                python:'ext_tracker_state'
+    ; eitem               context
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tal:block tal:define="kpm context">
-      <tal:block metal:use-macro="templates/kpm/macros/kpm_display"/>
+      <tal:block metal:use-macro=
+          "templates/ext_tracker_state/macros/ext_tracker_display"/>
      </tal:block>
-    </tal:block>
-    <tal:block metal:fill-slot="button_slot">
-     <tal:block tal:replace="structure python:
-          context.submit (action='kpm_filter_action')"/>
+     <tr>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

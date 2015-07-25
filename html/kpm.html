@@ -1,0 +1,65 @@
+<tal:block metal:define-macro="kpm_display">
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'kpm_function')"/>
+          <td>
+           <span tal:content="structure python: kpm.kpm_function.field ()"/>
+           <span tal:content="structure python:db.kpm_function.classhelp
+             ( 'kpm_key,name,kpm_group'
+             , property  = 'kpm%s@kpm_function' % kpm.id
+             , width     = '600'
+             , pagesize  = 500
+             , inputtype = 'radio'
+             )" />
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'hardware_version')"/>
+          <td tal:content="structure python:
+            kpm.hardware_version.field ()"/>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'reproduceable')"/>
+          <td tal:content="structure python:
+            kpm.reproduceable.field ()"/>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'fault_frequency')"/>
+          <td tal:content="structure python:
+            kpm.fault_frequency.menu ()"/>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'analysis')"/>
+          <td colspan="3">
+           <textarea tal:content="python:kpm.analysis.content.plain() or ''"
+            wrap="hard" cols="80" rows="3" name="msg-2@content"/>
+           <input type="hidden" value="msg-2" tal:attributes="
+             name python:'kpm%s@link@analysis' % kpm.id"/>
+          </td>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'description')"/>
+          <td colspan="3">
+           <textarea tal:content="python:kpm.description.content.plain() or ''"
+            wrap="hard" cols="80" rows="3" name="msg-3@content"/>
+           <input type="hidden" value="msg-3" tal:attributes="
+             name python:'kpm%s@link@description' % kpm.id"/>
+          </td>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'supplier_answer')"/>
+          <td colspan="3">
+           <textarea tal:content="python:
+            kpm.supplier_answer.content.plain() or ''"
+            wrap="hard" cols="80" rows="3" name="msg-4@content"/>
+           <input type="hidden" value="msg-4" tal:attributes="
+             name python:'kpm%s@link@supplier_answer' % kpm.id"/>
+          </td>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+            ('kpm', 'ready_for_sync')"/>
+          <td tal:content="structure python: kpm.ready_for_sync.field ()"/>
+         </tr>
+</tal:block>

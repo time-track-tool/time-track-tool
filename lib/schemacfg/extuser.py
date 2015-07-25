@@ -57,6 +57,9 @@ def security (db, ** kw) :
     if 'kpm_function' in db.classes :
         classes.append \
          (("kpm_function",      ["External"],    []))
+    if 'ext_tracker_type' in db.classes :
+        classes.append \
+         (("ext_tracker_type",  ["External"],    []))
     prop_perms = \
         [ ( "user",        "View", ["External"]
           , ("username", "nickname", "status")
