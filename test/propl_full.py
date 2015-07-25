@@ -24,6 +24,7 @@ properties = \
       , [ 'cert_sw'
         , 'default_part_of'
         , 'description'
+        , 'ext_tracker'
         , 'name'
         , 'nosy'
         , 'prodcat'

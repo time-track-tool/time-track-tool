@@ -36,6 +36,9 @@ properties = \
         , ( 'description'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'ext_tracker'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'name'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
@@ -186,10 +189,22 @@ properties = \
       , [ ( 'description'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
+        , ( 'is_kpm'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
         , ( 'name'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'url_template'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'fault_frequency'
+      , [ ( 'name'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         ]
@@ -499,6 +514,51 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         , ( 'name'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'kpm'
+      , [ ( 'analysis'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'description'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'fault_frequency'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'hardware_version'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'issue'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'kpm_function'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'ready_for_sync'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'reproduceable'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'supplier_answer'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        ]
+      )
+    , ( 'kpm_function'
+      , [ ( 'kpm_group'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'kpm_key'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
+          )
+        , ( 'order'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user']
           )
         ]

@@ -233,7 +233,8 @@ class Importer (object) :
             """
 
             def __init__ (self, db, properties) :
-                for k, v in self.default_properties.iteritems () :
+                props = getattr (self, 'default_properties', {})
+                for k, v in props.iteritems () :
                     properties.setdefault (k, v)
             # end def __init__
 
@@ -257,6 +258,12 @@ class Importer (object) :
                 Class.__init__     (self, db, classname, ** properties)
             # end def __init__
         # end class Ext_Class
+
+        Category_Class = Ext_Class
+        globals ['Category_Class'] = Category_Class
+
+        Ext_Tracker_Class = Ext_Class
+        globals ['Ext_Tracker_Class'] = Ext_Tracker_Class
 
         class Min_Issue_Class (Ext_Class, IssueClass) :
             """ Minimal issue class with messages and files.

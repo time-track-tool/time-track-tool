@@ -694,6 +694,12 @@ _helptext          = \
          '''
       , ext_only
       ]
+    , ""'ext_tracker'                 :
+      [""'''Data about external issue trackers including name and
+            description of the external tracker.
+         '''
+      , ext_only
+      ]
     , ""'external_company'            :
       [""'''Company for external users used for access control: all
             external users for a company have access if the
@@ -887,6 +893,11 @@ _helptext          = \
       [""'''Internet protocol subnet''']
     , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
+    , ""'is_kpm'                      :
+      [""'''This %(Classname)s is KPM from VW/Audi. This information is
+            necessary for displaying additional attributes
+         '''
+      ]
     , ""'is_valid'                    :
       [""'''%(Classname)s is valid''']
     , ""'is_app_sensor'               :
@@ -1762,6 +1773,8 @@ _helptext          = \
       [""'''Date when %(Classname)s is officially closed''']
     , ""'time_project'                :
       [""'''%(Property)s for this %(Classname)s''']
+    , ""'time_project.description'    :
+      [""'''Verbose description of %(Classname)s''']
     , ""'time_project++status'        :
       [ ""'''Status of this %(Classname)s. Note that this status is only
              used for determining if new work packages may be created for

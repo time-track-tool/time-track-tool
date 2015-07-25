@@ -380,6 +380,15 @@ def set_ext_msg (db, cl, nodeid, new_values) :
     common.reject_attributes (_, new_values, 'ext_tracker', 'key', 'ext_id')
 # end def set_ext_msg
 
+def check_kpm (db, cl, nodeid, new_values) :
+    if new_values.get ('ready_for_sync', None) :
+        common.require_attributes \
+            ( _, cl, nodeid, new_values
+            , 'analysis', 'description', 'fault_frequency', 'issue'
+            , 'reproduceable'
+            )
+# end def check_kpm
+
 def init (db) :
     global _
     _   = get_translation \
@@ -429,6 +438,9 @@ def init (db) :
         if 'ext_msg' in db.classes :
             db.ext_msg.audit ("create", check_ext_msg)
             db.ext_msg.audit ("set",    set_ext_msg)
+        if 'kpm' in db.classes :
+            db.kpm.audit     ("create", check_kpm)
+            db.kpm.audit     ("set",    check_kpm)
     if 'it_issue' in db.classes :
         if 'composed_of' in db.it_issue.properties :
             db.it_issue.audit ("set",    loopchecks)

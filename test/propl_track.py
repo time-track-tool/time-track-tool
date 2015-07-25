@@ -18,6 +18,7 @@ properties = \
       , [ 'cert_sw'
         , 'default_part_of'
         , 'description'
+        , 'ext_tracker'
         , 'name'
         , 'nosy'
         , 'prodcat'
@@ -82,8 +83,14 @@ properties = \
       )
     , ( 'ext_tracker'
       , [ 'description'
+        , 'is_kpm'
         , 'name'
         , 'url_template'
+        ]
+      )
+    , ( 'fault_frequency'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'file'
@@ -211,6 +218,25 @@ properties = \
     , ( 'kind'
       , [ 'description'
         , 'name'
+        ]
+      )
+    , ( 'kpm'
+      , [ 'analysis'
+        , 'description'
+        , 'fault_frequency'
+        , 'hardware_version'
+        , 'issue'
+        , 'kpm_function'
+        , 'ready_for_sync'
+        , 'reproduceable'
+        , 'supplier_answer'
+        ]
+      )
+    , ( 'kpm_function'
+      , [ 'kpm_group'
+        , 'kpm_key'
+        , 'name'
+        , 'order'
         ]
       )
     , ( 'mailgroup'

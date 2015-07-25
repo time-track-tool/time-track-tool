@@ -34,6 +34,7 @@ from schemacfg       import schemadef
 
 def init \
     ( db
+    , Category_Class
     , Class
     , Ext_Mixin
     , Optional_Doc_Issue_Class
@@ -60,7 +61,7 @@ def init \
         )
     prodcat.setlabelprop ("name")
 
-    category = Class \
+    category = Category_Class \
         ( db, "category"
         , name                = String    (indexme = 'no')
         , description         = String    (indexme = 'no')

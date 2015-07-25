@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2015-05-30 10:13+0200\n"
+"POT-Creation-Date: 2015-07-25 12:33+0200\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
@@ -398,8 +398,19 @@ msgid "superseder"
 msgstr "Duplicate of"
 
 #, python-format
-msgid "Can't set %s to yourself"
+msgid "Can't set %s to same issue"
 msgstr ""
+
+#, python-format
+msgid ""
+"This %(it_issue)s is already closed.\n"
+"Please create a new issue or have it reopened via a phone call to IT.\n"
+"This can also mean you have chosen a subject line of your email that matches "
+"an old closed issue. Please chose another subject in that case."
+msgstr ""
+
+msgid "it_issue"
+msgstr "IT-Issue"
 
 msgid ""
 "Channel %(cname)s addr %(cadr)s of device %(dname)s addr %(dadr)s\n"
@@ -509,6 +520,34 @@ msgstr ""
 msgid "May not retire if dependencies exist"
 msgstr ""
 
+msgid "Need at least one offer item"
+msgstr ""
+
+msgid "No approval by requester found"
+msgstr ""
+
+msgid "Not all approvals in status approved"
+msgstr ""
+
+msgid "No rejected approval-record found"
+msgstr ""
+
+#, fuzzy, python-format
+msgid "%(tp)s responsible"
+msgstr "Responsible"
+
+msgid "time_project"
+msgstr "Time Category"
+
+msgid "user or role required"
+msgstr ""
+
+msgid "No change of approvals for this PR"
+msgstr ""
+
+msgid "May not change approval status parameters"
+msgstr ""
+
 #, python-format
 msgid "Invalid Class: %(klass)s"
 msgstr ""
@@ -533,6 +572,10 @@ msgstr ""
 
 msgid "summary_report"
 msgstr "Summary Report"
+
+#, python-format
+msgid "Can't set %s to yourself"
+msgstr ""
 
 msgid ""
 "Trying to send to customer with empty CC and without configured contact-"
@@ -634,6 +677,20 @@ msgstr ""
 #, python-format
 msgid "Duplicate %(field)s \"%(value)s\""
 msgstr ""
+
+#, python-format
+msgid "No change of %(tp)s from/to closed %(tp)s"
+msgstr ""
+
+#, python-format
+msgid "No change of %(te)s for %(wp)s of inactive %(tp)s"
+msgstr ""
+
+msgid "time_end"
+msgstr "Timetracking End"
+
+msgid "time_wp"
+msgstr "Work package"
 
 msgid "Lunchbreak of more than 8 hours? Sure?"
 msgstr ""
@@ -990,6 +1047,15 @@ msgstr "Add File"
 msgid "Add a new file for %(Classname)s"
 msgstr ""
 
+msgid "add_to_las"
+msgstr "Add to LAS?"
+
+msgid ""
+"Request to add this supplier to the list of approved\n"
+"            suppliers (LAS).\n"
+"         "
+msgstr ""
+
 msgid "Austrian-Law: time above 38.5 hours per week"
 msgstr ""
 
@@ -1119,6 +1185,15 @@ msgstr ""
 
 msgid "\"approval_required\"."
 msgstr "\"Approval required\"."
+
+msgid "approved_supplier"
+msgstr "Approved supplier"
+
+msgid ""
+"Indicate if the supplier is on the list of approved\n"
+"            suppliers (LAS).\n"
+"         "
+msgstr ""
 
 msgid "area"
 msgstr "Area"
@@ -1392,6 +1467,15 @@ msgstr ""
 msgid "content"
 msgstr "Content"
 
+msgid "continuous_obligation"
+msgstr "Continuous obligation"
+
+msgid ""
+"%(Property)s refers to contracts/purchases that last for a\n"
+"            certain time. (E.g. car leasing, appartment rent etc.)\n"
+"         "
+msgstr ""
+
 msgid "contract_type"
 msgstr "Contract type"
 
@@ -1565,6 +1649,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "delivery_deadline"
+msgstr "Delivery deadline"
+
+msgid "Deadline by which goods have to be delivered"
+msgstr ""
+
 msgid "department"
 msgstr "Department"
 
@@ -1599,9 +1689,6 @@ msgstr ""
 
 msgid "description"
 msgstr "Description"
-
-msgid "time_project.description"
-msgstr "TC Description"
 
 msgid "Verbose description of %(Classname)s"
 msgstr ""
@@ -1911,6 +1998,12 @@ msgid ""
 "         "
 msgstr ""
 
+msgid ""
+"Data about external issue trackers including name and\n"
+"            description of the external tracker.\n"
+"         "
+msgstr ""
+
 msgid "external_company"
 msgstr "Ext. Company"
 
@@ -2012,6 +2105,24 @@ msgid ""
 "             entry for %(Property)s shall look like::\n"
 "\n"
 "               TTP-OS 4.5.23\n"
+"          "
+msgstr ""
+
+msgid "frame_purchase"
+msgstr "Frame purchase"
+
+msgid ""
+"In order avoid a lot of small purchase request for a\n"
+"             certain item, that gets ordered again and again, it is\n"
+"             possible to create a frame purchase request for a certain\n"
+"             period of time (e.g.  one quarter). This is only possible\n"
+"             if the ordered good is always the same  (e.g. the printing\n"
+"             of product flyers) or if the purchased items form a group\n"
+"             (e.g. all expenses related to a certain fair).\n"
+"             If this is a frame purchase request, please add\n"
+"             details about the intended purchases, time frame,\n"
+"             estimated total amount, reference to budget in the message\n"
+"             field.\n"
 "          "
 msgstr ""
 
@@ -2121,6 +2232,15 @@ msgstr "Sun"
 
 msgid "id"
 msgstr "Id"
+
+msgid "index"
+msgstr "Index"
+
+msgid ""
+"%(Property)s of %(Classname)s, Offers are sorted by\n"
+"            %(Property)s in Purchase Request\n"
+"         "
+msgstr ""
 
 msgid "inherit_ext"
 msgstr "Inherit permissions"
@@ -2293,6 +2413,15 @@ msgstr "Is Alias"
 msgid "No real user but only an email alias"
 msgstr ""
 
+msgid "is_kpm"
+msgstr "is KPM"
+
+msgid ""
+"This %(Classname)s is KPM from VW/Audi. This information is\n"
+"            necessary for displaying additional attributes\n"
+"         "
+msgstr ""
+
 msgid "is_valid"
 msgstr "is valid"
 
@@ -2386,6 +2515,22 @@ msgid ""
 "             Since titles of Roundup issues are also extracted into SCI\n"
 "             documents, start with a capital letter, and type all other\n"
 "             letters in lowercase, except names and references.\n"
+"          "
+msgstr ""
+
+msgid "it_int_prio"
+msgstr "IT-Priority"
+
+msgid ""
+"Internal priority set by the IT-Department\n"
+"          "
+msgstr ""
+
+msgid "it_request_type"
+msgstr "Request type"
+
+msgid ""
+"Type of request, ITIL main process.\n"
 "          "
 msgstr ""
 
@@ -2638,17 +2783,6 @@ msgstr "Messages"
 msgid "List of messages for %(Classname)s."
 msgstr ""
 
-msgid ""
-" Note that during\n"
-"             conversion from the old roundup tracker all existing\n"
-"             messages numbered 1-73815 were renumbered with an offset of\n"
-"             3287 resulting in the message range 3288-77102 in the\n"
-"             current tracker. All messages or other documentation\n"
-"             referring to message numbers in the range 1-73815 will need\n"
-"             to consider this offset.\n"
-"          "
-msgstr ""
-
 msgid "mint"
 msgstr "Interval"
 
@@ -2693,6 +2827,17 @@ msgstr ""
 
 msgid "needs.id"
 msgstr "Needs (id)"
+
+msgid "renegotiations"
+msgstr "Price renegotiations?"
+
+msgid ""
+"Did price renegotiations take place?\n"
+"             If yes, please name the person who did the renegotiations\n"
+"             in the message field. If no, please indicate in the message\n"
+"             field when they will take place.\n"
+"          "
+msgstr ""
 
 msgid "netbios_dd"
 msgstr "NetBIOS datagram servers"
@@ -2794,6 +2939,22 @@ msgid ""
 "             Note that the contents of this field will be rounded to the\n"
 "             next integer, only full days make sense for the work-time\n"
 "             estimates.\n"
+"          "
+msgstr ""
+
+msgid "offer_items"
+msgstr "Offer items"
+
+msgid ""
+"%(Property)s on this %(Classname)s, one per line\n"
+"         "
+msgstr ""
+
+msgid "offer_number"
+msgstr "Offer #"
+
+msgid ""
+"%(Property)s as given on the %(Classname)s by the supplier.\n"
 "          "
 msgstr ""
 
@@ -2899,6 +3060,14 @@ msgid ""
 "             Software, Put all parts together, and Test. In the\n"
 "             search-mask you can enter\n"
 "             \"-1\" here to find only Top-Level container work packages.\n"
+"          "
+msgstr ""
+
+msgid "part_of_budget"
+msgstr "Part of budget"
+
+msgid ""
+"Indicate if purchase is budgeted for.\n"
 "          "
 msgstr ""
 
@@ -3140,6 +3309,17 @@ msgstr "Province"
 msgid "Province where this person lives."
 msgstr ""
 
+msgid "purchase_request++title"
+msgstr "Title"
+
+msgid ""
+"What should be purchased, fill in appropriate subject.\n"
+"          "
+msgstr ""
+
+msgid "purchase_type"
+msgstr "Purchase type"
+
 msgid "qa_representative"
 msgstr "QA-Representative"
 
@@ -3242,6 +3422,12 @@ msgstr "Reporting group"
 msgid "reporting_group.id"
 msgstr "Reporting group Id"
 
+msgid "requester"
+msgstr "Requester"
+
+msgid "Name of %(Property)s"
+msgstr ""
+
 msgid "require_msg"
 msgstr "require message"
 
@@ -3313,6 +3499,13 @@ msgstr "Routers"
 
 msgid "Routers for this %(Classname)s, used in DHCP configuration."
 msgstr ""
+
+msgid "safety_critical"
+msgstr "Safety critical"
+
+#, fuzzy
+msgid "If safety critical use is "
+msgstr "Safety critical"
 
 msgid "salutation"
 msgstr "Salutation"
@@ -3695,6 +3888,12 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "supplier"
+msgstr "Supplier"
+
+msgid "%(Property)s of this %(Classname)s"
+msgstr ""
+
 msgid "summary"
 msgstr "Summary"
 
@@ -3893,6 +4092,37 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "terms_conditions"
+msgstr "Terms & conditions"
+
+msgid ""
+"Please indicate here which conditions apply, conditions of\n"
+"             supplier or customer (us).\n"
+"          "
+msgstr ""
+
+msgid "terms_identical"
+msgstr "Terms identical?"
+
+msgid ""
+"If terms and conditions of supplier apply, please indicate\n"
+"             if the terms and conditions of the supplier correspond to\n"
+"             ours.\n"
+"          "
+msgstr ""
+
+msgid "termination_date"
+msgstr "Termination date"
+
+msgid ""
+"%(Property)s is only to be filled in for continuous\n"
+"             obligations. It refers to the date when a termination\n"
+"             notice for a contract has to be effective (either the date\n"
+"             it is posted, or the date it arrives at the supplier -\n"
+"             depending on the contract)\n"
+"          "
+msgstr ""
+
 msgid "time_activity"
 msgstr "Activity"
 
@@ -3905,11 +4135,11 @@ msgstr "Timetracking Start"
 msgid "Date when %(Classname)s officially starts"
 msgstr ""
 
-msgid "time_end"
-msgstr "Timetracking End"
-
 msgid "Date when %(Classname)s is officially closed"
 msgstr ""
+
+msgid "time_project.description"
+msgstr "TC Description"
 
 msgid "time_project++status"
 msgstr "Time Category Status"
@@ -3971,9 +4201,6 @@ msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
 msgstr ""
 
 msgid "title"
-msgstr "Title"
-
-msgid "purchase_request++title"
 msgstr "Title"
 
 msgid ""
@@ -4252,6 +4479,12 @@ msgid "value"
 msgstr "Value"
 
 msgid "Value of this %(Classname)s"
+msgstr ""
+
+msgid "vat_country"
+msgstr "Country (for VAT)"
+
+msgid "Select country for VAT computation."
 msgstr ""
 
 msgid "visible"
@@ -5010,6 +5243,12 @@ msgstr ""
 msgid "<span nowrap></span>"
 msgstr ""
 
+msgid "Add to LAS / Approved"
+msgstr ""
+
+msgid "Sign&Send"
+msgstr ""
+
 msgid "add swl report"
 msgstr ""
 
@@ -5466,9 +5705,6 @@ msgstr ""
 msgid "it_category"
 msgstr "IT-Category"
 
-msgid "it_issue"
-msgstr "IT-Issue"
-
 msgid "it_issue_status"
 msgstr "IT-Issue status"
 
@@ -5496,29 +5732,27 @@ msgstr "Samba machine"
 msgid "sex"
 msgstr ""
 
-msgid "part_of_budget"
-msgstr "Part of budget"
+msgid "pr_approval_status"
+msgstr "Purchase approval status"
 
-msgid "terms_conditions"
-msgstr "Terms & conditions"
+msgid "pr_approval"
+msgstr "Purchase approval"
 
-msgid "purchase_type"
-msgstr "Purchase type"
-
-msgid "vat_country"
-msgstr "Country (for VAT)"
-
-msgid "pr_supplier"
-msgstr "Supplier"
+#, fuzzy
+msgid "pr_approval_order"
+msgstr "Purchase approval"
 
 msgid "pr_offer_item"
 msgstr "Offer item"
 
+msgid "pr_status"
+msgstr "Purchase request status"
+
+msgid "pr_supplier"
+msgstr "Supplier"
+
 msgid "purchase_request"
 msgstr "Purchase request"
-
-msgid "time_project"
-msgstr "Time Category"
 
 msgid "User is allowed %(perm)s on"
 msgstr ""
@@ -5560,11 +5794,11 @@ msgstr "Type"
 msgid "support"
 msgstr "Support issue"
 
-msgid "cost_center_group"
-msgstr "Productivity Group"
-
 msgid "time_project_status"
 msgstr "Time Category Status"
+
+msgid "cost_center_group"
+msgstr "Productivity Group"
 
 msgid "daily_record"
 msgstr "Daily Record"
@@ -5583,9 +5817,6 @@ msgstr "Summary type"
 
 msgid "time_record"
 msgstr "Time Record"
-
-msgid "time_wp"
-msgstr "Work package"
 
 msgid "time_wp_group"
 msgstr "Work package group"
@@ -5614,11 +5845,40 @@ msgstr "User contact"
 msgid "uc_type"
 msgstr "User-contact type"
 
-msgid "status_transition"
-msgstr "Status Transition"
+#, fuzzy
+msgid "kpm"
+msgstr "is KPM"
 
-msgid "msg_keyword"
-msgstr "Message Keyword"
+#, fuzzy
+msgid "reproduceable"
+msgstr "Product line"
+
+msgid "supplier_answer"
+msgstr "Supplier answer"
+
+msgid "hardware_version"
+msgstr "Hardware version"
+
+msgid "analysis"
+msgstr "Analysis"
+
+msgid "ready_for_sync"
+msgstr ""
+
+msgid "fault_frequency"
+msgstr "Fault frequency"
+
+msgid "kpm_function"
+msgstr "Function"
+
+msgid "issue"
+msgstr "Issue"
+
+msgid "kpm_group"
+msgstr "Group"
+
+msgid "kpm_key"
+msgstr "Key"
 
 msgid "ext_msg"
 msgstr "External message"
@@ -5626,8 +5886,11 @@ msgstr "External message"
 msgid "key"
 msgstr "Key"
 
-msgid "issue"
-msgstr "Issue"
+msgid "status_transition"
+msgstr "Status Transition"
+
+msgid "msg_keyword"
+msgstr "Message Keyword"
 
 msgid "planned_begin"
 msgstr "Planned Start"
@@ -5658,6 +5921,9 @@ msgstr "Link/CVS location"
 
 msgid "state_changed_by"
 msgstr ""
+
+msgid "int_prio"
+msgstr "Priority"
 
 msgid "pdc"
 msgstr "Primary domain controller"
@@ -5944,6 +6210,10 @@ msgstr ""
 msgid "start_generated"
 msgstr ""
 
+#, fuzzy
+msgid "has_expiration_date"
+msgstr "Vacation date"
+
 msgid "durations_allowed"
 msgstr "Durations allowed"
 
@@ -5968,59 +6238,27 @@ msgstr "Document number"
 msgid "mail_domain"
 msgstr "Mail domain"
 
-msgid "vat"
-msgstr "VAT"
+#, fuzzy
+msgid "role"
+msgstr "Roles"
 
-msgid "index"
-msgstr "Index"
-
-msgid "offer_items"
-msgstr "Offer items"
-
-msgid "offer_number"
-msgstr "Offer #"
-
-msgid "supplier"
-msgstr "Supplier"
-
-msgid "units"
-msgstr "Units"
+msgid "by"
+msgstr ""
 
 msgid "price_per_unit"
 msgstr "Price per unit"
 
-msgid "continuous_obligation"
-msgstr "Continuous obligation"
+msgid "units"
+msgstr "Units"
 
-msgid "frame_purchase"
-msgstr "Frame purchase"
+msgid "vat"
+msgstr "VAT"
 
-msgid "terms_identical"
-msgstr "Terms identical?"
-
-msgid "safety_critical"
-msgstr "Safety critical"
-
-msgid "delivery_deadline"
-msgstr "Delivery deadline"
+msgid "total_cost"
+msgstr "Total cost"
 
 msgid "contract_term"
 msgstr "Contract terms"
-
-msgid "approved_supplier"
-msgstr "Approved supplier"
-
-msgid "requester"
-msgstr "Requester"
-
-msgid "add_to_las"
-msgstr "Add to LAS?"
-
-msgid "renegotiations"
-msgstr "Price renegotiations?"
-
-msgid "termination_date"
-msgstr "Termination date"
 
 msgid "mint_pending"
 msgstr ""
@@ -6130,23 +6368,5 @@ msgstr "LDAP group"
 msgid "is_nosy"
 msgstr "is nosy"
 
-msgid "pr_approval"
-msgstr "Purchase approval"
-
-msgid "pr_approval_status"
-msgstr "Purchase approval status"
-
-msgid "pr_status"
-msgstr "Purchase request status"
-
-msgid "total_cost"
-msgstr "Total cost"
-
-msgid "it_int_prio"
-msgstr "IT-Priority"
-
-msgid "int_prio"
-msgstr "Priority"
-
-msgid "it_request_type"
-msgstr "Request type"
+#~ msgid "ext_trackers"
+#~ msgstr "Ext. Trackers"

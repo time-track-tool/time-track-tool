@@ -17,40 +17,37 @@
 
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
-    " use_labelprop       python:1
-    ; has_resp            python:1
+    " use_labelprop       python:0
+    ; has_resp            python:0
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
-      <td tal:content="structure python:context.description.field (size=60)"/>
+        (classname, 'kpm_function')"/>
+      <td>
+       <span tal:content="structure python: context.kpm_function.field ()"/>
+       <span tal:content="structure python:db.kpm_function.classhelp
+         ( 'kpm_key,name,kpm_group'
+         , property  = 'kpm_function'
+         , width     = '600'
+         , pagesize  = 500
+         , inputtype = 'radio'
+         )" />
+      <th tal:content="structure python:utils.fieldname
+        (classname, 'hardware_version')"/>
+      <td tal:content="structure python:
+        context.hardware_version.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'prodcat')"/>
-      <td tal:content="structure python:context.prodcat.menu (level = 3)"/>
-     </tr>
-     <tr>
+        (classname, 'reproduceable')"/>
+      <td tal:content="structure python:
+        context.reproduceable.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'valid')"/>
-      <td tal:content="structure python:context.valid.field ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'cert_sw')"/>
-      <td tal:content="structure python:context.cert_sw.field ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'default_part_of')"/>
-      <td tal:content="structure python:context.default_part_of.field ()"/>
-     </tr>
-     <tr tal:condition="python:'ext_tracker' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'ext_tracker')"/>
-      <td tal:content="structure python:context.ext_tracker.menu ()"/>
+        (classname, 'fault_frequency')"/>
+      <td tal:content="structure python:
+        context.fault_frequency.menu ()"/>
      </tr>
     </tal:block>
    </tal:block>

@@ -48,6 +48,15 @@ def security (db, ** kw) :
         , ("status",            ["External"],    [])
         , ("status_transition", ["External"],    [])
         ]
+    if 'fault_frequency' in db.classes :
+        classes.append \
+         (("fault_frequency",   ["External"],    []))
+    if 'kpm' in db.classes :
+        classes.append \
+         (("kpm",               ["External"],    ["External"]))
+    if 'kpm_function' in db.classes :
+        classes.append \
+         (("kpm_function",      ["External"],    []))
     prop_perms = \
         [ ( "user",        "View", ["External"]
           , ("username", "nickname", "status")

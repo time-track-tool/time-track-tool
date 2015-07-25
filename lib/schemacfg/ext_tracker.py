@@ -29,24 +29,20 @@
 #--
 #
 
-from roundup.hyperdb import Class
 from schemacfg       import schemadef
 
 def init \
     ( db
     , Class
-    , Ext_Mixin
+    , Ext_Tracker_Class
     , String
-    , Date
     , Link
     , Multilink
-    , Number
-    , Boolean
     , ** kw
     ) :
     export = {}
 
-    ext_tracker = Class \
+    ext_tracker = Ext_Tracker_Class \
         ( db, "ext_tracker"
         , name                = String    (indexme = 'no')
         , description         = String    (indexme = 'no')
@@ -76,6 +72,17 @@ def init \
         # end def __init__
     # end class Optional_Doc_Issue_Class
     export ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
+
+    Cat_Cl = kw ['Category_Class']
+    class Category_Class (Cat_Cl) :
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( ext_tracker         = Link      ("ext_tracker")
+                )
+            Cat_Cl.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Category_Class
+    export ['Category_Class'] = Category_Class
 
     return export
 # end def init

@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting
+# Copyright (C) 2010-15 Dr. Ralf Schlatterbeck Open Source Consulting
 # Web: http://www.runtux.com Email: office@runtux.com
 # ****************************************************************************
 # This library is free software; you can redistribute it and/or
@@ -29,8 +29,10 @@
 
 import json
 from   roundup.cgi.templating import MultilinkHTMLProperty
+from   roundup.cgi.actions    import EditItemAction
 import common
 from   rsclib.pycompat import string_types
+
 
 def filter_status_transitions (context) :
     may_close = True
@@ -79,12 +81,54 @@ def ext_attributes (context) :
         ((k.encode ('utf-8'), ext_attr (v)) for k, v in d.iteritems ())
 # end def ext_attributes
 
+class KPM_Filter_Action (EditItemAction) :
+    """ Remove new message msg-2, msg-3, or msg-4 from props if the
+        content did not change from the current message of the kpm
+        issue. These encode the values of 'analysis', 'description' and
+        'supplier_answer' of a kpm, respectively.
+        Note: Technically this is only needed if we support external
+        tracker sync with KPM which introduces additional attributes to
+        be synced to this tracker.
+        Note: The message indeces -2, -3, -4 and the association with
+        message Links in kpm depend on the issue.item form. So if the
+        form changes, msgidx needs to be changed, too.
+    """
+
+    msgidx = \
+        { '-2': 'analysis'
+        , '-3': 'description'
+        , '-4': 'supplier_answer'
+        }
+
+    def _editnodes (self, props, links) :
+        kpmid = None
+        for p in props :
+            if p [0] == 'kpm' :
+                kpmid = p [1]
+                break
+        if kpmid :
+            for id in ('-2', '-3', '-4') :
+                key = ('msg', id)
+                if key in props :
+                    assert props [key].keys () == ['content']
+                    content = props [key]['content']
+                    msgid   = self.db.kpm.get (kpmid, self.msgidx [id])
+                    if msgid :
+                        oldcon  = self.db.msg.get (msgid, 'content')
+                        if (oldcon == content) :
+                            del props [key]
+        return EditItemAction._editnodes (self, props, links)
+    # end def _editnodes
+# end class KPM_Filter_Action
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('filter_status_transitions', filter_status_transitions)
     reg ('copy_url',                  common.copy_url)
     reg ('copy_js',                   common.copy_js)
     reg ('ext_attributes',            ext_attributes)
+    act = instance.registerAction
+    act ('kpm_filter_action',         KPM_Filter_Action)
 # end def init
 
 ### __END__ issue

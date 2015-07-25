@@ -44,6 +44,8 @@ schemas = \
     , 'external_users'
     , 'docissue'
     , 'keyword'
+    , 'kpm'
+    , 'ext_tracker'
     , 'issue'
     , 'doc'
     , 'it_tracker'
