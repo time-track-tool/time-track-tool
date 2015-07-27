@@ -32,7 +32,7 @@ from roundup.cgi.TranslationService import get_translation
 
 def get_kpm (db, issue) :
     """ If the issue is a kpm-synchronized issue (this means it has
-        ext_tracker set to an external tracker with the is_kpm flag set)
+        ext_tracker set to an external tracker with type KPM)
         this function returns an attached (Link1) kpm class.
         This has a pointer to an instance. At most one such object
         should be found (it's an error if there is more than one).
@@ -49,7 +49,7 @@ def get_kpm (db, issue) :
             (None, {'issue': issue.id, 'ext_tracker.type': typ})
         if not est :
             if 'ext_tracker' in db._db.issue.properties :
-                if not issue.ext_tracker.is_kpm :
+                if issue.ext_tracker.type != typ :
                     return None
                 # if already synced this should be created by the sync.
                 if issue.ext_id :

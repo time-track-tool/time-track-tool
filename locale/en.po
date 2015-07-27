@@ -2413,9 +2413,6 @@ msgstr "Is Alias"
 msgid "No real user but only an email alias"
 msgstr ""
 
-msgid "is_kpm"
-msgstr "is KPM"
-
 msgid ""
 "This %(Classname)s is KPM from VW/Audi. This information is\n"
 "            necessary for displaying additional attributes\n"

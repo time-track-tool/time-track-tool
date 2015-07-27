@@ -893,11 +893,6 @@ _helptext          = \
       [""'''Internet protocol subnet''']
     , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
-    , ""'is_kpm'                      :
-      [""'''This %(Classname)s is KPM from VW/Audi. This information is
-            necessary for displaying additional attributes
-         '''
-      ]
     , ""'is_valid'                    :
       [""'''%(Classname)s is valid''']
     , ""'is_app_sensor'               :
