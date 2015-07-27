@@ -28,7 +28,7 @@
     </tal:block>
     <tal:block metal:fill-slot="button_slot">
      <tal:block tal:replace="structure python:
-          context.submit (action='kpm_filter_action')"/>
+          context.submit (action=utils.kpm_edit_button (context, utils))"/>
     </tal:block>
    </tal:block>
   </tal:block>
