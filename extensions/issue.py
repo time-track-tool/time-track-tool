@@ -29,7 +29,8 @@
 
 import json
 from   roundup.cgi.templating import MultilinkHTMLProperty
-from   roundup.cgi.actions    import EditItemAction
+from   roundup.cgi.templating import HTMLClass, _HTMLItem
+from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
 import common
 from   rsclib.pycompat import string_types
 
@@ -81,7 +82,7 @@ def ext_attributes (context) :
         ((k.encode ('utf-8'), ext_attr (v)) for k, v in d.iteritems ())
 # end def ext_attributes
 
-class KPM_Filter_Action (EditItemAction) :
+class KPM_Filter_Action (EditCommon) :
     """ Remove new message msg-2, msg-3, or msg-4 from props if the
         content did not change from the current message of the kpm
         issue. These encode the values of 'analysis', 'description' and
@@ -117,9 +118,29 @@ class KPM_Filter_Action (EditItemAction) :
                         oldcon  = self.db.msg.get (msgid, 'content')
                         if (oldcon == content) :
                             del props [key]
-        return EditItemAction._editnodes (self, props, links)
+        return EditCommon._editnodes (self, props, links)
     # end def _editnodes
 # end class KPM_Filter_Action
+
+class KPM_Edit_Action (EditItemAction, KPM_Filter_Action) :
+    def _editnodes (self, props, links) :
+        return KPM_Filter_Action._editnodes (self, props, links)
+    # end def _editnodes
+# end class KPM_Edit_Action
+
+class KPM_New_Action (NewItemAction, KPM_Filter_Action) :
+    def _editnodes (self, props, links) :
+        return KPM_Filter_Action._editnodes (self, props, links)
+    # end def _editnodes
+# end class KPM_New_Action
+
+def edit_button (context, utils) :
+    if isinstance (context, _HTMLItem) :
+        return 'kpm_edit_action'
+    elif isinstance (context, HTMLClass) :
+        return 'kpm_new_action'
+    assert None
+# end def edit_button
 
 def init (instance) :
     reg = instance.registerUtil
@@ -127,8 +148,10 @@ def init (instance) :
     reg ('copy_url',                  common.copy_url)
     reg ('copy_js',                   common.copy_js)
     reg ('ext_attributes',            ext_attributes)
+    reg ('kpm_edit_button',           edit_button)
     act = instance.registerAction
-    act ('kpm_filter_action',         KPM_Filter_Action)
+    act ('kpm_edit_action',           KPM_Edit_Action)
+    act ('kpm_new_action',            KPM_New_Action)
 # end def init
 
 ### __END__ issue
