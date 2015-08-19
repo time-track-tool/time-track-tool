@@ -79,6 +79,16 @@ def init \
         )
     time_project_status.setkey ("name")
 
+    sap_cc = Class \
+        ( db
+        , ''"sap_cc"
+        , name                  = String    ()
+        , description           = String    ()
+        , responsible           = Link      ("user")
+        , deputy                = Link      ("user")
+        )
+    sap_cc.setkey ("name")
+
     return export
 # end def init
 
@@ -108,6 +118,10 @@ def security (db, ** kw) :
         , ( "time_project"
           , ["Project_View", "Project", "Controlling"]
           , []
+          )
+        , ( "sap_cc"
+          , ["User"]
+          , ["HR", "Controlling"]
           )
         ]
 

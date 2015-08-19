@@ -233,6 +233,7 @@ def init \
                 , reporting_group       = Multilink ("reporting_group")
                 , work_location         = Link      ("work_location")
                 , cost_center           = Link      ("cost_center")
+                , only_hours            = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -294,14 +295,6 @@ def init \
         , required_overtime     = Boolean   ()
         )
     overtime_period.setkey ("name")
-
-    sap_cc = Class \
-        ( db
-        , ''"sap_cc"
-        , name                  = String    ()
-        , description           = String    ()
-        )
-    sap_cc.setkey ("name")
 
     ud = Class \
         ( db
@@ -471,7 +464,11 @@ def security (db, ** kw) :
     # allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ( "cost_center"
+        [ ( "contract_type"
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
+          , ["HR-vacation"]
+          )
+        , ( "cost_center"
           , ["User"]
           , ["Controlling"]
           )
@@ -487,7 +484,27 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
+        , ( "daily_record_freeze"
+          , ["HR", "Controlling"]
+          , []
+          )
         , ( "daily_record_status"
+          , ["User"]
+          , []
+          )
+        , ( "leave_status"
+          , ["User"]
+          , []
+          )
+        , ( "leave_submission"
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
+          , ["HR-vacation"]
+          )
+        , ( "overtime_correction"
+          , ["HR", "Controlling"]
+          , []
+          )
+        , ( "overtime_period"
           , ["User"]
           , []
           )
@@ -539,30 +556,6 @@ def security (db, ** kw) :
           , ["HR"]
           , []
           )
-        , ( "work_location"
-          , ["User"]
-          , ["Controlling"]
-          )
-        , ( "overtime_correction"
-          , ["HR", "Controlling"]
-          , []
-          )
-        , ( "daily_record_freeze"
-          , ["HR", "Controlling"]
-          , []
-          )
-        , ( "overtime_period"
-          , ["User"]
-          , []
-          )
-        , ( "leave_status"
-          , ["User"]
-          , []
-          )
-        , ( "contract_type"
-          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
-          , ["HR-vacation"]
-          )
         , ( "vacation_correction"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
@@ -571,21 +564,21 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
-        , ( "leave_submission"
-          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
-          , ["HR-vacation"]
+        , ( "work_location"
+          , ["User"]
+          , ["Controlling"]
           )
         ]
 
     prop_perms = \
-        [ ( "time_wp",      "Edit", ["Controlling"]
-          , ( "project",)
-          )
-        , ( "daily_record", "Edit", ["HR", "Controlling"]
+        [ ( "daily_record", "Edit", ["HR", "Controlling"]
           , ("status", "time_record")
           )
         , ( "daily_record", "Edit", ["HR"]
           , ("required_overtime", "weekend_allowed")
+          )
+        , ( "leave_submission", "Edit", ["HR-leave-approval"]
+          , ("status",)
           )
         , ( "time_project", "Edit", ["Project"]
           , ( "max_hours", "op_project", "planned_effort"
@@ -598,8 +591,8 @@ def security (db, ** kw) :
             , "overtime_reduction", "approval_required", "approval_hr"
             )
           )
-        , ( "leave_submission", "Edit", ["HR-leave-approval"]
-          , ("status",)
+        , ( "time_wp",      "Edit", ["Controlling"]
+          , ( "project",)
           )
         ]
 

@@ -478,8 +478,10 @@ properties = \
         ]
       )
     , ( 'sap_cc'
-      , [ 'description'
+      , [ 'deputy'
+        , 'description'
         , 'name'
+        , 'responsible'
         ]
       )
     , ( 'severity'
@@ -629,6 +631,7 @@ properties = \
         , 'name'
         , 'no_overtime'
         , 'nosy'
+        , 'only_hours'
         , 'op_project'
         , 'organisation'
         , 'overtime_reduction'

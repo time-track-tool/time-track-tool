@@ -83,7 +83,7 @@
      <td tal:content="structure python:context.department.menu ()"/>
     </tr>
     <tr>
-     <tal:block tal:condition="python: 'planned_effort' in db._db.classes">
+     <tal:block tal:condition="python: 'planned_effort' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (classname, 'planned_effort')"/>
       <td tal:content="structure python:context.planned_effort.field ()"/>
@@ -92,64 +92,72 @@
      <td tal:content="structure python:context.status.menu ()"/>
     </tr>
     <tr>
-     <tal:block tal:condition="python: 'work_location' in db._db.classes">
+     <tal:block tal:condition="python: 'work_location' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'work_location')"/>
       <td tal:content="structure python:context.work_location.menu ()"/>
      </tal:block>
-     <tal:block tal:condition="python: 'max_hours' in db._db.classes">
+     <tal:block tal:condition="python: 'max_hours' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'max_hours')"/>
       <td tal:content="structure python:context.max_hours.field ()"/>
      </tal:block>
     </tr>
     <tr>
-     <tal:block tal:condition="python: 'op_project' in db._db.classes">
+     <tal:block tal:condition="python: 'op_project' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'op_project')"/>
       <td tal:content="structure python:context.op_project.field ()"/>
      </tal:block>
-     <tal:block tal:condition="python: 'no_overtime' in db._db.classes">
+     <tal:block tal:condition="python: 'no_overtime' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'no_overtime')"/>
       <td tal:content="structure python:context.no_overtime.field ()"/>
      </tal:block>
     </tr>
     <tr>
-     <tal:block tal:condition="python: 'is_public_holiday' in db._db.classes">
+     <tal:block tal:condition="python:'is_public_holiday' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'is_public_holiday')"/>
       <td tal:content="structure python:context.is_public_holiday.field ()"/>
      </tal:block>
-     <tal:block tal:condition="python: 'overtime_reduction' in db._db.classes">
+     <tal:block
+      tal:condition="python: 'overtime_reduction' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'overtime_reduction')"/>
       <td tal:content="structure python:context.overtime_reduction.field ()"/>
      </tal:block>
     </tr>
-     <tal:block tal:condition="python: 'approval_required' in db._db.classes">
+    <tr>
+     <tal:block tal:condition="python:'approval_required' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'approval_required')"/>
       <td tal:content="structure python:context.approval_required.field ()"/>
      </tal:block>
-     <tal:block tal:condition="python: 'approval_hr' in db._db.classes">
+     <tal:block tal:condition="python: 'approval_hr' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'approval_hr')"/>
       <td tal:content="structure python:context.approval_hr.field ()"/>
      </tal:block>
-    <tr>
     </tr>
-     <tal:block tal:condition="python: 'is_vacation' in db._db.classes">
+    <tr>
+     <tal:block tal:condition="python: 'is_vacation' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'is_vacation')"/>
       <td tal:content="structure python:context.is_vacation.field ()"/>
      </tal:block>
-     <tal:block tal:condition="python: 'is_special_leave' in db._db.classes">
+     <tal:block tal:condition="python: 'is_special_leave' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'is_special_leave')"/>
       <td tal:content="structure python:context.is_special_leave.field ()"/>
      </tal:block>
+    </tr>
     <tr>
+     <tal:block tal:condition="python: 'only_hours' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'only_hours')"/>
+      <td tal:content="structure python:context.only_hours.field ()"/>
+     </tal:block>
     </tr>
    </tal:block>
   </tal:block>

@@ -2485,6 +2485,9 @@ msgstr ""
 msgid "is_vacation"
 msgstr "is vacation"
 
+msgid "only_hours"
+msgstr "only hours"
+
 msgid ""
 "Set to True if %(Classname)s is for vacation:\n"
 "            necessary for vacation calculation.\n"

@@ -1086,10 +1086,16 @@ properties = \
         ]
       )
     , ( 'sap_cc'
-      , [ ( 'description'
+      , [ ( 'deputy'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'description'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         , ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
+          )
+        , ( 'responsible'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'supportadmin', 'user']
           )
         ]
@@ -1454,6 +1460,9 @@ properties = \
           , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'nosy'
+          , ['admin', 'controlling', 'project', 'project_view']
+          )
+        , ( 'only_hours'
           , ['admin', 'controlling', 'project', 'project_view']
           )
         , ( 'op_project'

@@ -1174,6 +1174,11 @@ _helptext          = \
       [ ""'''%(Property)s as given on the %(Classname)s by the supplier.
           '''
       ]
+    , ""'only_hours'                  :
+      [""'''Set to True if %(Classname)s is used only for booking hours
+            not other costs (e.g. purchases).
+         '''
+      ]
     , ""'op_project'                  :
       [ ""'''Flag if this %(Classname)s is a real project or just used for
              time tracking.
