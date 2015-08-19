@@ -929,6 +929,8 @@ _helptext          = \
             necessary for vacation calculation.
          '''
       ]
+    , ""'issue.composed_of.id'        : [help_id]
+    , ""'issue.part_of.id'            : [help_id]
     , ""'issue++deadline'             :
       [ deadline
       , ""'''Should only be entered on Top-Level workpackages which are

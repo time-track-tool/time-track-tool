@@ -14,6 +14,99 @@
     , ('ext_id',           {})
     , ('ext_status',       {})
     , ('ext_tracker',      dict (multiselect = 1))
+    , ('issue', dict
+        ( searchname   = 'issue.category'
+        , searchable   = True
+        , sortable     = True
+        , multiselect  = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.title'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.area'
+        , searchable   = True
+        , sortable     = True
+        , multiselect  = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.kind'
+        , searchable   = True
+        , sortable     = True
+        , multiselect  = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.status'
+        , searchable   = True
+        , sortable     = True
+        , multiselect  = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.severity'
+        , searchable   = True
+        , sortable     = True
+        , multiselect  = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.responsible'
+        , searchable   = True
+        , sortable     = True
+        , help_props   = ['firstname', 'lastname']
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.priority'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.effective_prio'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.release'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.composed_of'
+        , searchable   = True
+        , do_classhelp = False
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.composed_of.id'
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.part_of'
+        , searchable   = True
+        , do_classhelp = False
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.part_of.id'
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.creator'
+        , searchable   = True
+        , sortable     = True
+        , help_props   = ['firstname', 'lastname']
+        )
+      )
     );
    props python:
     [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

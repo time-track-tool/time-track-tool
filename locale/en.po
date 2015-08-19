@@ -1406,6 +1406,9 @@ msgstr ""
 msgid "composed_of.id"
 msgstr "Composed of (id)"
 
+msgid "issue.composed_of.id"
+msgstr "Composed of (id)"
+
 msgid "confidential"
 msgstr ""
 
@@ -3072,6 +3075,9 @@ msgid ""
 msgstr ""
 
 msgid "part_of.id"
+msgstr "Part of (id)"
+
+msgid "issue.part_of.id"
 msgstr "Part of (id)"
 
 msgid "password"

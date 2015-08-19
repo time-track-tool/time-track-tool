@@ -119,6 +119,14 @@
    , ('doc', '')        : '@columns=title,document_nr,artefact,department&'
                           '@sort=title&@filter=status&status=-1,1,2,3'
    , ('dyndns', '')     : '@action=singleton'
+   , ('ext_tracker_state', '')
+                        : '@columns=id,issue.category,issue.title,issue.area,'
+                          'issue.kind,issue.status,'
+                          'issue.composed_of.id,issue.part_of.id&'
+                          '@sort=issue.category&@group=-issue.effective_prio&'
+                          '@filter=issue.status,issue.responsible&@pagesize=50&'
+                          '@startwith=0&issue.status=%s&issue.responsible=%s'
+                          % (s_stati, uid)
    , ('group', '')      : '@columns=name,gid,description,org_location&'
                           '@sort=-id&@pagesize=500&@startwith=0'
    , ('invoice', '')    : '@quiet=1&@terse=1&@columns=invoice_no,'
@@ -506,6 +514,7 @@
      , ('doc',                 'View', 1,               ('',''))
      , ('dyndns_protocol',     'View', 1,               ('',''))
      , ('dyndns',              'View', 1,               ('',''))
+     , ('ext_tracker_state',   'View', 1,               ('',''))
      , ('group',               'View', 1,               ('',''))
      , ('invoice_group',       'View', 1,               ('',''))
      , ('invoice_template',    'View', 1,               ('',''))
