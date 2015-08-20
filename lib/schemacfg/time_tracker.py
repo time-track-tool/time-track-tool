@@ -458,6 +458,7 @@ def security (db, ** kw) :
         , ("HR-leave-approval", "Approve paid vacation beyond normal vacation")
         , ("staff-report",      "May view staff report")
         , ("Controlling",       "Controlling")
+        , ("Summary_View",      "View full summary report and all WPs")
         ]
 
     #     classname
@@ -671,7 +672,7 @@ def security (db, ** kw) :
 
     def may_see_time_record (db, userid, itemid) :
         """User is allowed to see time record if he is allowed to see
-           all details on work package or 
+           all details on work package or daily_record
         """
         dr = db.time_record.get (itemid, 'daily_record')
         wp = db.time_record.get (itemid, 'wp')

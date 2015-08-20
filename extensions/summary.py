@@ -76,7 +76,7 @@ class Extended_Daily_Record (Extended_Node) :
     """ Keeps information about the username *and* about the status of
         the daily_records: own records (is_own = True) are records wich
         may be unconditionally viewed by the user. For details about
-        permissions, see lib/summary.py daily_record_viewable.
+        permissions, see lib/sum_common.py daily_record_viewable.
     """
 
     def __init__ (self, db, drid) :
@@ -97,7 +97,7 @@ class Extended_WP (Extended_Node) :
     """ Keeps information about the username *and* about the status of
         the work package.
         
-        For permissions, see time_wp_viewable in lib/summary.py
+        For permissions, see time_wp_viewable in lib/sum_common.py
     """
     def __init__ (self, db, wpid) :
         self.node          = db.time_wp.getnode  (wpid)
@@ -584,11 +584,13 @@ class _Report (autosuper) :
 # end class _Report
 
 class Summary_Report (_Report) :
-    """ TODO:
-        - special colors for 
-          - daily record not yet accepted
-          - no daily record found -- involves checking dynamic user data
-        FIXME: Check where we need naive dates...
+    """ Perform computations for a summary report.
+        A note on permissions: Permission to vie a time_record for the
+        summary report is granted if the user has access to either the
+        time_wp or the daily_record. Special check functions in
+        sum_common are used for this. For details see the "is_own"
+        property of Extended_WP, Extended_Daily_Record and
+        Extended_Time_Record.
     """
     def __init__ (self, db, request, utils, is_csv = False) :
         self.htmldb     = db

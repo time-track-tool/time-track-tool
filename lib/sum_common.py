@@ -65,6 +65,7 @@ def time_wp_viewable (db, userid, itemid) :
     return \
         (  userid == wp.responsible
         or time_project_viewable (db, userid, wp.project)
+        or common.user_has_role (db, userid, 'Summary_View')
         )
 # end def time_wp_viewable
 
