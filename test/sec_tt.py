@@ -170,6 +170,7 @@ Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
 Role "staff-report":
+Role "summary_view":
 Role "user":
   (Search for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'has_expiration_date', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)

@@ -143,6 +143,7 @@ class _Test_Case (unittest.TestCase) :
         , 'project'
         , 'project_view'
         , 'staff-report'
+        , 'summary_view'
         , 'supportadmin'
         , 'type'
         , 'user'
@@ -162,7 +163,11 @@ class _Test_Case (unittest.TestCase) :
         config.RDBMS_NAME     = "rounduptestttt"
         config.RDBMS_HOST     = "localhost"
         config.RDBMS_USER     = "rounduptest"
+        if 'RDBMS_USER' in os.environ :
+            config.RDBMS_USER = os.environ ['RDBMS_USER']
         config.RDBMS_PASSWORD = "rounduptest"
+        if 'RDBMS_PASSWORD' in os.environ :
+            config.RDBMS_PASSWORD = os.environ ['RDBMS_PASSWORD']
         config.MAIL_DOMAIN    = "your.tracker.email.domain.example"
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
         config.RDBMS_TEMPLATE = "template0"
@@ -723,7 +728,7 @@ class Test_Case_Support_Timetracker (_Test_Case) :
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'project', 'project_view', 'staff-report'
-        , 'supportadmin', 'type', 'user'
+        , 'summary_view', 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -734,7 +739,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     roles = \
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'nosy'
-        , 'office', 'pgp', 'project', 'project_view', 'staff-report', 'user'
+        , 'office', 'pgp', 'project', 'project_view', 'staff-report'
+        , 'summary_view', 'user'
         ]
     transprop_perms = transprop_time
 
@@ -2708,7 +2714,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'project', 'project_view', 'staff-report'
-        , 'supportadmin', 'user'
+        , 'summary_view', 'supportadmin', 'user'
         ]
     transprop_perms = transprop_full
 

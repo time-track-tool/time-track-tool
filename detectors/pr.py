@@ -89,9 +89,23 @@ def change_pr (db, cl, nodeid, new_values) :
     requester = new_values.get ('requester', cl.get (nodeid, 'requester'))
     if 'status' in new_values :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
+            tc = new_values.get \
+                ('time_project', cl.get (nodeid, 'time_project'))
+            cc = new_values.get \
+                ('sap_cc',  cl.get (nodeid, 'sap_cc'))
+            if not tc and not cc :
+                raise Reject \
+                    (_ ("Need to specify %(tp)s or %(cc)s")
+                    % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
+                    )
+            if tc and cc :
+                raise Reject \
+                    (_ ("Either specify %(tp)s or %(cc)s, not both")
+                    % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
+                    )
             common.require_attributes \
                 ( _, cl, nodeid, new_values
-                , 'time_project', 'department',  'organisation'
+                , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions'
                 )

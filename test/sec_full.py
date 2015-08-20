@@ -285,6 +285,7 @@ Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
 Role "staff-report":
+Role "summary_view":
 Role "supportadmin":
  User is allowed to access analysis_result (View for "analysis_result" only)
  User is allowed to access contact (View for "contact" only)

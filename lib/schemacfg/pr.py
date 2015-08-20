@@ -163,6 +163,7 @@ def init \
                 , offer_items           = Multilink ("pr_offer_item")
                 , status                = Link      ("pr_status")
                 , total_cost            = Number    ()
+                , sap_cc                = Link      ("sap_cc")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__

@@ -53,6 +53,8 @@
                   , pagesize=1000 
                   )"/>
       </td>
+      <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
+      <td tal:content="structure python:context.sap_cc.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

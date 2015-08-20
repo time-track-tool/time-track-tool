@@ -234,6 +234,7 @@ def init \
                 , work_location         = Link      ("work_location")
                 , cost_center           = Link      ("cost_center")
                 , only_hours            = Boolean   ()
+                , op_project            = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -671,8 +672,10 @@ def security (db, ** kw) :
 
 
     def may_see_time_record (db, userid, itemid) :
+        # docstring is used to create composite doc for given check
+        # function it is intended that it ends with "or"
         """User is allowed to see time record if he is allowed to see
-           all details on work package or daily_record
+           all details on work package or
         """
         dr = db.time_record.get (itemid, 'daily_record')
         wp = db.time_record.get (itemid, 'wp')

@@ -12,6 +12,7 @@ from   rsclib.autosuper  import autosuper
 from   rsclib.pycompat   import text_type
 from   roundup           import instance
 from   roundup.date      import Date
+from   ssl               import SSLContext, PROTOCOL_SSLv23
 
 def date_from_xml (s) :
     assert s.startswith ('<Date ')
@@ -29,6 +30,8 @@ class PR_Sync (autosuper) :
         (( ('department.part_of',            'department')
          , ('org_location.organisation',     'organisation')
          , ('org_location.location',         'location')
+         , ('sap_cc.deputy',                 'user')
+         , ('sap_cc.responsible',            'user')
          , ('time_project.department',       'department')
          , ('time_project.deputy',           'user')
          , ('time_project.nosy',             'user')
@@ -41,7 +44,10 @@ class PR_Sync (autosuper) :
         ))
 
     def __init__ (self, args) :
-        self.srv       = xmlrpclib.ServerProxy (args.url, allow_none = True)
+        proxy_args     = dict (allow_none = True)
+        if args.disable_cert_check :
+            proxy_args ['context'] = SSLContext (PROTOCOL_SSLv23)
+        self.srv       = xmlrpclib.ServerProxy (args.url, ** proxy_args)
         tracker        = instance.open (args.database_directory)
         self.db        = tracker.open (args.user)
         self.args      = args
@@ -76,7 +82,8 @@ class PR_Sync (autosuper) :
             and not item ['is_special_leave']
             and not item ['is_vacation']
             and not item ['no_overtime']
-            and (item ['description'] or '').strip () != 'Only hours'
+            and ('only_hours' not in item or not item ['only_hours'])
+            and item ['op_project']
             )
     # end def check_time_project
 
@@ -127,9 +134,14 @@ class PR_Sync (autosuper) :
             , roles = 'User,Nosy'
             )
         self.sync_class \
+            ( 'sap_cc'
+            , ('name', 'description', 'responsible', 'deputy')
+            , required = ('responsible',)
+            )
+        self.sync_class \
             ( 'time_project'
             , ( 'name', 'department', 'deputy', 'description'
-              , 'organisation', 'responsible', 'status', 'op_project'
+              , 'organisation', 'responsible', 'status'
               )
             , required = ('responsible',)
             )
@@ -186,10 +198,16 @@ class PR_Sync (autosuper) :
                         try :
                             v = self.map_id (k, item [k])
                         except KeyError :
-                            print \
-                                ( "WARN: Not in map: %s %s:%s"
-                                % (classname, k, item [k])
-                                )
+                            if k in item :
+                                print \
+                                    ( "WARN: Not in map: %s %s:%s"
+                                    % (classname, k, item [k])
+                                    )
+                            else :
+                                print \
+                                    ( "WARN: Not in class: %s %s"
+                                    % (classname, k)
+                                    )
                             v = None
                         if v is None :
                             continue
@@ -284,6 +302,12 @@ def main () :
     cmd.add_argument \
         ( 'url'
         , help   = 'XMLRPC URL of remote tracker'
+        )
+    cmd.add_argument \
+        ( "-C", "--disable-cert-check"
+        , help    = "Disable certificate check for https connection"
+        , default = False
+        , action  = 'store_true'
         )
     cmd.add_argument \
         ( "-d", "--database-directory"
