@@ -52,7 +52,7 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
         if opt.search :
             roles = []
             for role in sorted (db.security.role.iterkeys ()) :
-                if db.security.roleHasSearchPermission (role, cl, p) :
+                if db.security.roleHasSearchPermission (cl, p, role) :
                     roles.append (role)
             if opt.as_list :
                 r = ', '.join ('"%s"' % r for r in roles)
