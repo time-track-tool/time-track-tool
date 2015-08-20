@@ -313,6 +313,7 @@ class _Test_Case (unittest.TestCase) :
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         classnames = sorted (self.db.getclasses ())
+        self.assertEqual (len (classnames), len (self.search_desc))
         for (cl, props), cls in zip (self.search_desc, classnames) :
             self.assertEqual (cl, cls)
             clprops = []
