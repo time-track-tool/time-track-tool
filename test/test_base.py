@@ -43,37 +43,40 @@ from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
 from propl_erp     import properties as properties_erp
 from propl_full    import properties as properties_full
-from propl_it      import properties as properties_it
 from propl_itadr   import properties as properties_itadr
+from propl_it      import properties as properties_it
 from propl_kvats   import properties as properties_kvats
 from propl_lielas  import properties as properties_lielas
+from propl_pr      import properties as properties_pr
 from propl_sfull   import properties as properties_sfull
-from propl_tt      import properties as properties_time
 from propl_track   import properties as properties_track
+from propl_tt      import properties as properties_time
 
 from sec_abo       import security as security_abo
 from sec_adr       import security as security_adr
 from sec_erp       import security as security_erp
 from sec_full      import security as security_full
-from sec_it        import security as security_it
 from sec_itadr     import security as security_itadr
+from sec_it        import security as security_it
 from sec_kvats     import security as security_kvats
 from sec_lielas    import security as security_lielas
+from sec_pr        import security as security_pr
 from sec_sfull     import security as security_sfull
-from sec_tt        import security as security_time
 from sec_track     import security as security_track
+from sec_tt        import security as security_time
 
 from search_abo    import properties as sec_search_abo
 from search_adr    import properties as sec_search_adr
 from search_erp    import properties as sec_search_erp
 from search_full   import properties as sec_search_full
-from search_it     import properties as sec_search_it
 from search_itadr  import properties as sec_search_itadr
+from search_it     import properties as sec_search_it
 from search_kvats  import properties as sec_search_kvats
 from search_lielas import properties as sec_search_lielas
+from search_pr     import properties as sec_search_pr
 from search_sfull  import properties as sec_search_sfull
-from search_tt     import properties as sec_search_time
 from search_track  import properties as sec_search_track
+from search_tt     import properties as sec_search_time
 
 from trans_abo     import transprop_perms as transprop_abo
 from trans_adr     import transprop_perms as transprop_adr
@@ -82,9 +85,10 @@ from trans_full    import transprop_perms as transprop_full
 from trans_itadr   import transprop_perms as transprop_itadr
 from trans_kvats   import transprop_perms as transprop_kvats
 from trans_lielas  import transprop_perms as transprop_lielas
+from trans_pr      import transprop_perms as transprop_pr
 from trans_sfull   import transprop_perms as transprop_sfull
-from trans_tt      import transprop_perms as transprop_time
 from trans_track   import transprop_perms as transprop_track
+from trans_tt      import transprop_perms as transprop_time
 
 from trans_search  import classdict  as trans_classprops
 
@@ -116,11 +120,13 @@ class _Test_Case (unittest.TestCase) :
         , 'admin'
         , 'adr_readonly'
         , 'anonymous'
+        , 'board'
         , 'contact'
         , 'controlling'
         , 'discount'
         , 'doc_admin'
         , 'external'
+        , 'finance'
         , 'guest'
         , 'hr'
         , 'hr-leave-approval'
@@ -129,6 +135,7 @@ class _Test_Case (unittest.TestCase) :
         , 'invoice'
         , 'issue_admin'
         , 'it'
+        , 'it-approval'
         , 'ituser'
         , 'itview'
         , 'letter'
@@ -139,10 +146,12 @@ class _Test_Case (unittest.TestCase) :
         , 'office'
         , 'pbx'
         , 'pgp'
+        , 'procurement'
         , 'product'
         , 'project'
         , 'project_view'
         , 'staff-report'
+        , 'subcontract'
         , 'summary_view'
         , 'supportadmin'
         , 'type'
@@ -4356,6 +4365,16 @@ class Test_Case_Lielas (_Test_Case) :
     transprop_perms = transprop_lielas
 # end class Test_Case_Lielas
 
+class Test_Case_PR (_Test_Case) :
+    schemaname = 'pr'
+    roles = \
+        [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
+        , 'it-approval', 'nosy', 'pgp', 'procurement', 'project'
+        , 'project_view', 'subcontract', 'user'
+        ]
+    transprop_perms = transprop_pr
+# end class Test_Case_PR
+
 def test_suite () :
     suite = unittest.TestSuite ()
     suite.addTest (unittest.makeSuite (Test_Case_Abo))
@@ -4365,6 +4384,7 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
     suite.addTest (unittest.makeSuite (Test_Case_Lielas))
+    suite.addTest (unittest.makeSuite (Test_Case_PR))
     suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     suite.addTest (unittest.makeSuite (Test_Case_Tracker))
     suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
