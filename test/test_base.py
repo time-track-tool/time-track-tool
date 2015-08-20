@@ -415,6 +415,7 @@ class _Test_Case_Summary (_Test_Case) :
             , organisation        = self.org
             , vacation_legal_year = False
             , vacation_yearly     = 25
+            , do_leave_process    = True
             )
         self.dep = self.db.department.create \
             ( name       = 'Software Development'

@@ -369,7 +369,8 @@ properties = \
         ]
       )
     , ( 'org_location'
-      , [ 'location'
+      , [ 'do_leave_process'
+        , 'location'
         , 'name'
         , 'organisation'
         , 'phone'

@@ -1782,6 +1782,9 @@ msgstr ""
 msgid "do_logging"
 msgstr "do logging"
 
+msgid "do_leave_process"
+msgstr "do leave process"
+
 msgid "Log values received for this %(Classname)s"
 msgstr ""
 
