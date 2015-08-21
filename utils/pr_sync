@@ -12,7 +12,10 @@ from   rsclib.autosuper  import autosuper
 from   rsclib.pycompat   import text_type
 from   roundup           import instance
 from   roundup.date      import Date
-from   ssl               import SSLContext, PROTOCOL_SSLv23
+try :
+    from ssl import SSLContext, PROTOCOL_SSLv23
+except ImportError :
+    SSLContext = None
 
 def date_from_xml (s) :
     assert s.startswith ('<Date ')
@@ -45,7 +48,7 @@ class PR_Sync (autosuper) :
 
     def __init__ (self, args) :
         proxy_args     = dict (allow_none = True)
-        if args.disable_cert_check :
+        if SSLContext and args.disable_cert_check :
             proxy_args ['context'] = SSLContext (PROTOCOL_SSLv23)
         self.srv       = xmlrpclib.ServerProxy (args.url, ** proxy_args)
         tracker        = instance.open (args.database_directory)
@@ -303,12 +306,13 @@ def main () :
         ( 'url'
         , help   = 'XMLRPC URL of remote tracker'
         )
-    cmd.add_argument \
-        ( "-C", "--disable-cert-check"
-        , help    = "Disable certificate check for https connection"
-        , default = False
-        , action  = 'store_true'
-        )
+    if SSLContext :
+        cmd.add_argument \
+            ( "-C", "--disable-cert-check"
+            , help    = "Disable certificate check for https connection"
+            , default = False
+            , action  = 'store_true'
+            )
     cmd.add_argument \
         ( "-d", "--database-directory"
         , dest    = "database_directory"
