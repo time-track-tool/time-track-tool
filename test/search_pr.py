@@ -183,6 +183,12 @@ properties = \
             , 'user'
             ]
           )
+        , ( 'deputy'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'subcontract'
+            , 'user'
+            ]
+          )
         , ( 'description'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'subcontract'
