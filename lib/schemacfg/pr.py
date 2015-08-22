@@ -72,6 +72,7 @@ def init \
         ( db, ''"pr_approval"
         , role                  = String    ()
         , user                  = Link      ("user")
+        , deputy                = Link      ("user")
         , by                    = Link      ("user")
         , status                = Link      ("pr_approval_status")
         , date                  = Date      ()
@@ -204,11 +205,12 @@ def security (db, ** kw) :
 
     classes = \
         [ ("department",         ["User"],        [])
+        , ("location",           ["User"],        [])
         , ("organisation",       ["User"],        [])
         , ("org_location",       ["User"],        [])
         , ("part_of_budget",     ["User"],        [])
-        , ("pr_approval",        ["Procurement"], [])
         , ("pr_approval_order",  ["Procurement"], [])
+        , ("pr_approval",        ["Procurement"], [])
         , ("pr_approval_status", ["User"],        [])
         , ("pr_offer_item",      ["Procurement"], [])
         , ("pr_status",          ["User"],        [])
@@ -342,7 +344,7 @@ def security (db, ** kw) :
         ap = db.pr_approval.filter (None, dict (purchase_request = itemid))
         for id in ap :
             a = db.pr_approval.getnode (id)
-            if a.user == userid :
+            if a.user == userid or a.deputy == userid :
                 return True
             if a.role and common.user_has_role (db, userid, a.role) :
                 return True
@@ -410,7 +412,7 @@ def security (db, ** kw) :
 
     def approval_undecided (db, userid, itemid) :
         """ User is allowed to change status of undecided approval if
-            they are the owner or have appropriate role.
+            they are the owner/deputy or have appropriate role.
         """
         if not itemid or itemid < 1 :
             return False
@@ -420,7 +422,8 @@ def security (db, ** kw) :
         st_open      = db.pr_status.lookup ('open')
         st_approving = db.pr_status.lookup ('approving')
         if  (   ap.status == und
-            and (  ap.user == userid
+            and (  ap.user   == userid
+                or ap.deputy == userid
                 or (ap.role and common.user_has_role (db, userid, ap.role))
                 )
             and pr.status in (st_open, st_approving)

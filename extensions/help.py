@@ -566,6 +566,11 @@ _helptext          = \
              the DHCP configuration.
           '''
       ]
+    , ""'do_leave_process'            :
+      [""'''Leave (e.g. vacation) needs to be approved by the supervisor
+            for new dynamic user records created for this %(Classname)s
+         '''
+      ]
     , ""'do_logging'                  :
       [""'''Log values received for this %(Classname)s''']
     , ""'do_reverse_mapping'          :

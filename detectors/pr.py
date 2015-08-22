@@ -155,12 +155,18 @@ def changed_pr (db, cl, nodeid, old_values) :
     st_op = db.pr_status.lookup ('open')
     st_ag = db.pr_status.lookup ('approving')
     if ost == st_op and nst == st_ag :
-        tp = db.time_project.getnode (pr.time_project)
-        d  = _ ('%(tp)s responsible') % dict (tp = _ ('time_project'))
+        if pr.time_project :
+            pcc = db.time_project.getnode (pr.time_project)
+            d   = _ ('%(tp)s responsible/deputy') \
+                % dict (tp = _ ('time_project'))
+        else :
+            pcc = db.sap_cc.getnode (pr.sap_cc)
+            d   = _ ('%(cc)s responsible/deputy') % dict (cc = _ ('sap_cc'))
         db.pr_approval.create \
             ( order            = 10
             , purchase_request = pr.id
-            , user             = tp.responsible
+            , user             = pcc.responsible
+            , deputy           = pcc.deputy
             , description      = d
             )
         add_approval_with_role (db, pr.id, 'Finance')
@@ -221,6 +227,8 @@ def nosy_for_approval (db, app) :
     nosy = {}
     if app.user :
         nosy [app.user] = 1
+    if app.deputy :
+        nosy [app.deputy] = 1
     if app.role :
         nosy.update (dict.fromkeys (common.get_uids_with_role (db, app.role)))
     return nosy
@@ -265,6 +273,8 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                     uor = ''
                     if ap.user :
                         uor = db.user.get (ap.user, 'realname')
+                    if ap.deputy :
+                        uor += '/' + db.user.get (ap.deputy, 'realname')
                     if ap.role :
                         if uor :
                             uor += ' and role %s' % ap.role

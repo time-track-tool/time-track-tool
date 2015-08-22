@@ -427,6 +427,7 @@ def init \
             self.update_properties \
                 ( vacation_legal_year        = Boolean   ()
                 , vacation_yearly            = Number    ()
+                , do_leave_process           = Boolean   ()
                 )
             ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

@@ -313,6 +313,7 @@ class _Test_Case (unittest.TestCase) :
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         classnames = sorted (self.db.getclasses ())
+        self.assertEqual (len (classnames), len (self.search_desc))
         for (cl, props), cls in zip (self.search_desc, classnames) :
             self.assertEqual (cl, cls)
             clprops = []
@@ -415,6 +416,7 @@ class _Test_Case_Summary (_Test_Case) :
             , organisation        = self.org
             , vacation_legal_year = False
             , vacation_yearly     = 25
+            , do_leave_process    = True
             )
         self.dep = self.db.department.create \
             ( name       = 'Software Development'

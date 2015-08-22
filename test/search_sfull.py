@@ -937,7 +937,10 @@ properties = \
         ]
       )
     , ( 'org_location'
-      , [ ( 'location'
+      , [ ( 'do_leave_process'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'location'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
         , ( 'name'

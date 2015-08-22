@@ -48,6 +48,7 @@ properties = \
     , ( 'pr_approval'
       , [ 'by'
         , 'date'
+        , 'deputy'
         , 'description'
         , 'msg'
         , 'order'

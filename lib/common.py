@@ -1154,16 +1154,25 @@ def ydays (ydate) :
 # end def ydays
 
 default_attributes = dict \
-    ( issue   = ('area category confidential deadline doc_issue_status'
-                 ' earliest_start effective_prio external_users inherit_ext'
-                 ' keywords kind nosy numeric_effort part_of priority release'
-                 ' responsible severity title'
-                ).split ()
-    , support = ('bcc category cc classification confidential customer'
-                 ' emails external_ref lot nosy number_effected numeric_effort'
-                 ' prio prodcat product related_issues related_support'
-                 ' release responsible serial_number title type warranty'
-                ).split ()
+    ( issue   =
+        ('area category confidential deadline doc_issue_status'
+         ' earliest_start effective_prio external_users inherit_ext'
+         ' keywords kind nosy numeric_effort part_of priority release'
+         ' responsible severity title'
+        ).split ()
+    , support =
+        ('bcc category cc classification confidential customer'
+         ' emails external_ref lot nosy number_effected numeric_effort'
+         ' prio prodcat product related_issues related_support'
+         ' release responsible serial_number title type warranty'
+        ).split ()
+    , purchase_request =
+        ('continuous_obligation contract_term delivery_deadline'
+         ' department frame_purchase organisation part_of_budget'
+         ' purchase_type renegotiations requester safety_critical'
+         ' sap_cc termination_date terms_conditions terms_identical'
+         ' time_project title'
+        ).split ()
     )
 
 def copy_url (context, attributes = None) :
@@ -1182,6 +1191,20 @@ def copy_url (context, attributes = None) :
         else :
             val = str (context [a])
         url.append ('%s=%s' % (a, urlquote (val)))
+    if cls == 'purchase_request' and atr == default_attributes [cls] :
+        atrs = \
+            ( 'index', 'supplier', 'description', 'offer_number'
+            , 'units', 'price_per_unit'
+            )
+        n = -1
+        for n, ofr in enumerate (context ['offer_items']) :
+            for a in atrs :
+                url.append \
+                    ( 'pr_offer_item-%s@%s=%s'
+                    % (n+1, a, urlquote (str (ofr [a])))
+                    )
+        if n >= 0 :
+            url.append ('offer_list_length=%s' % (n + 1))
     return '&'.join (url)
 # end def copy_url
 
