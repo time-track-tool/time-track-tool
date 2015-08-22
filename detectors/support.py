@@ -31,6 +31,7 @@
 #--
 #
 
+import re
 email_ok = False
 try :
     from email.parser                   import Parser
@@ -138,7 +139,8 @@ def header_utf8 (header) :
     return (''.join (result)).encode ('utf-8')
 # end def header_utf8
 
-def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
+def find_or_create_contact \
+    (db, mail, rn, customer = None, frm = None, subject = None) :
     """ Search for contact with given mail.
         Realname (rn) is used when creating a new customer.
         frm will be fromaddress from newly created customer.
@@ -147,6 +149,8 @@ def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
         None is returned in case a customer was given and no email was
         found. Otherwise the contact (which might have been created)
         will be returned.
+        Note that if a customer with name 'SPAM' exists and the message
+        subject matches a spam pattern we will return the SPAM customer.
     """
     mail   = mail.lower ()
     cemail = db.contact_type.lookup ('Email')
@@ -162,6 +166,23 @@ def find_or_create_contact (db, mail, rn, customer = None, frm = None) :
             return c
     if customer :
         return None
+    # Spam Handling: Try to match subject against spam pattern from spamfilter
+    # If found return first contact of spam customer (we don't want to
+    # keep all the mails from incoming spam)
+    if subject :
+        spam_customer = None
+        try :
+            spam_customer = db.customer.lookup ('SPAM')
+        except KeyError :
+            pass
+        if spam_customer :
+            spam_re = getattr \
+                (db.config.ext, 'MAILGW_SPAM_PATTERN', r'^[[].?S[pP][aA][mM]')
+            spam_re = re.compile (spam_re.strip ())
+            if spam_re.search (subject) :
+                spc = db.customer.getnode (spam_customer)
+                return spc.contacts [0]
+        
     md    = mail.split ('@') [-1]
     # this also tries subdomains, e.g., country.example.com for the
     # incoming mail will be matched by example.com as the customer mail.
@@ -225,7 +246,8 @@ def header_check (db, cl, nodeid, new_values) :
         else :
             h = Message ()
         if db.user.get (msg.author, 'status') == system :
-            frm = h.get_all ('From')
+            frm  = h.get_all ('From')
+            subj = header_utf8 (h.get_all ('Subject') [0])
             if  (   not nodeid
                 and frm
                 and 'customer' not in new_values
@@ -236,7 +258,8 @@ def header_check (db, cl, nodeid, new_values) :
                 # the from address in this mail is the support user we
                 # want as a from-address for future mails *to* this user
                 autad = db.user.get (msg.author, 'address')
-                c     = find_or_create_contact (db, mail, rn, frm = autad)
+                c = find_or_create_contact \
+                    (db, mail, rn, frm = autad, subject = subj)
                 cust  = new_values ['customer'] = db.contact.get (c, 'customer')
                 new_values ['emails'] = [c]
                 # Parse To and CC headers to find more customer email

@@ -238,6 +238,7 @@ Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
 Role "staff-report":
+Role "summary_view":
 Role "supportadmin":
  User is allowed to access adr_type (View for "adr_type" only)
  User is allowed to access adr_type_cat (View for "adr_type_cat" only)

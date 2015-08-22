@@ -20,6 +20,8 @@
     " use_labelprop       python:1
     ; has_resp            python:0
     ; required_attributes string:title
+    ; offer_list_length   request/form/offer_list_length/value | string:3
+    ; offer_list_length   python: int(offer_list_length)
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
@@ -46,13 +48,15 @@
        <tal:block tal:content="structure python:context.time_project.field ()"/>
        <tal:block tal:condition="context/time_project/is_edit_ok"
                   tal:replace="structure python:db.time_project.classhelp
-                  ( 'name,description,op_project,department,organisation'
+                  ( 'name,description,department,organisation'
                   , property='time_project'
                   , inputtype='radio'
                   , width='800'
                   , pagesize=1000 
                   )"/>
       </td>
+      <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
+      <td tal:content="structure python:context.sap_cc.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -213,7 +217,7 @@
          tal:condition="python:
            not context.id
            or (context.status.plain () == 'open' and context.is_edit_ok ())"
-         tal:repeat="idx python:range(1,4)">
+         tal:repeat="idx python:range(1,offer_list_length + 1)">
          <tbody>
          <tr>
           <td tal:content="structure python:utils.new_property
@@ -296,8 +300,11 @@
           <td tal:content="structure python:i.role.plain ()"/>
           <td tal:condition="python:i.status.plain () == 'approved'"
               tal:content="structure python:i.by.plain ()"/>
-          <td tal:condition="python:i.status.plain () != 'approved'"
-              tal:content="structure python:i.user.plain ()"/>
+          <td tal:condition="python:i.status.plain () != 'approved'">
+              <span tal:content="python:i.user.plain ()"/>
+              <span tal:condition="i/deputy"
+                    tal:content="python:'/ '+i.deputy.plain ()"/>
+          </td>
           <td tal:content="structure python:i.description.plain ()"/>
           <input type="hidden" value="msg-1"
              tal:condition="i/status/is_edit_ok"
@@ -317,6 +324,9 @@
             onClick="javascript:
              document.forms.itemSynopsis ['@action'].value = 'pr_sign';
              document.itemSynopsis.submit ();">
+     <tal:block tal:condition="python:context.status.name == 'approved'">
+      <tal:block metal:use-macro="templates/page/macros/copy_button"/>
+     </tal:block>
     </tal:block>
    </tal:block>
   </tal:block>

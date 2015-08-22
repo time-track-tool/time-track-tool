@@ -300,10 +300,13 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
 
 def user_dyn_react (db, cl, nodeid, old_values) :
     """ If this is the first user_dynamic record for this user: create
-        or update initial vacation_correction record.
+        or update initial vacation_correction record if
+        'do_leave_process' is set on the org_location.
     """
     dyn  = cl.getnode (nodeid)
     if not dyn.vacation_yearly :
+        return
+    if not db.org_location.get (dyn.org_location, 'do_leave_process') :
         return
     ud   = db.user_dynamic.filter (None, dict (user = dyn.user))
     if len (ud) == 1 :

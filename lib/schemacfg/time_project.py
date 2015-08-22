@@ -62,7 +62,6 @@ def init \
                 , organisation          = Link      ("organisation")
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
-                , op_project            = Boolean   ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ("name")
@@ -121,7 +120,7 @@ def security (db, ** kw) :
           )
         , ( "sap_cc"
           , ["User"]
-          , ["HR", "Controlling"]
+          , []
           )
         ]
 
