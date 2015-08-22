@@ -172,17 +172,28 @@ class Container (autosuper) :
         self.__super.__init__ (* args, ** kw)
     # end def __init__
 
-    def add_sum (self, other_container, tr) :
-        self.add_user_sum \
-            (other_container, tr.username, tr.tr_duration or tr.duration)
-    # end def add_sum
-
-    def add_user_sum (self, other_container, username, sum) :
-        for key in other_container, (other_container, username) :
+    def add_user_sum (self, other_container, username, sum, do_sum = True) :
+        keys = [(other_container, username)]
+        if do_sum :
+            keys.insert (0, other_container)
+        for key in keys :
             if key not in self.sums :
                 self.sums [key] = PM_Value (0)
             self.sums [key] += sum
     # end def add_user_sum
+
+    def add_sum_column (self, other_container, column_name, tr, do_sum = True) :
+        self.add_user_sum \
+            ( other_container
+            , column_name
+            , tr.tr_duration or tr.duration
+            , do_sum
+            )
+    # end def add_sum_column
+
+    def add_sum (self, other_container, tr) :
+        self.add_sum_column (other_container, tr.username, tr)
+    # end def add_sum
 
     def add_plan (self, other_container, duration) :
         if other_container not in self.plans :
@@ -482,6 +493,24 @@ class WP_Container (Comparable_Container, dict) :
 
 # end class WP_Container
 
+class DR_Container (Comparable_Container) :
+
+    def __init__ \
+        (self, klass, id, visible = True, * args, ** kw) :
+        self.__super.__init__ (* args, ** kw)
+        self.klass     = klass
+        self.classname = klass.classname
+        self.id        = id
+        self.visible   = visible
+        self.name      = klass.get (id, 'name')
+    # end def __init__
+
+    def __hash__ (self) :
+        return hash ((self.__class__, self.classname, self.id))
+    # end def __hash__
+
+# end class DR_Container
+
 class _Report (autosuper) :
 
     def html_item (self, item, ** kw) :
@@ -635,16 +664,23 @@ class Summary_Report (_Report) :
         sv          = dict ((i, 1) for i in filterspec.get ('supervisor', []))
         svu         = []
         if sv :
-            svu     = db.user.find (supervisor = sv)
-        users       = dict ((u, 1) for u in users + svu).keys ()
-        olo_or_dept = False
-        drecs       = {}
-        org_dep_usr = {}
+            svu = db.user.find (supervisor = sv)
+        users         = dict ((u, 1) for u in users + svu).keys ()
+        olo_or_dept   = False
+        drecs         = {}
+        org_dep_usr   = {}
+        dr_containers = []
         for cl in 'department', 'org_location', 'sap_cc' :
             spec = dict ((s, 1) for s in filterspec.get (cl, []))
             if spec :
                 olo_or_dept = True
                 udrs        = []
+                by_id       = {}
+                for id in spec :
+                    c = DR_Container (db.classes [cl], id, cl in self.columns)
+                    dr_containers.append (c)
+                    by_id [id] = c
+                    
                 for i in db.user_dynamic.find (** {cl : spec}) :
                     ud = db.user_dynamic.getnode (i)
                     if  (   ud.valid_from <= end
@@ -668,6 +704,7 @@ class Summary_Report (_Report) :
                         )
                     edr = Extended_Daily_Record
                     drs = [edr (db, d) for d in drs]
+                    by_id [getattr (ud, cl)].update (dict.fromkeys (drs))
                     drecs.update (dict ((d.id, d) for d in drs))
 
         db.log_info ("summary_report: after deps: %s" 
@@ -950,7 +987,9 @@ class Summary_Report (_Report) :
             % (time.time () - timestamp))
         wp_containers = [w for w in wp_containers if w.visible]
         wp_containers.sort ()
-        db.log_info ("summary_report: sorted wp containers (%s)"
+        dr_containers = [c for c in dr_containers if c.visible]
+        dr_containers.sort ()
+        db.log_info ("summary_report: sorted containers (%s)"
             % (time.time () - timestamp))
         # invert wp_containers
         containers_by_wp = {}
@@ -960,7 +999,15 @@ class Summary_Report (_Report) :
                     containers_by_wp [w].append (wc)
                 else :
                     containers_by_wp [w]      = [wc]
-        db.log_info ("summary_report: inverted wp containers (%s)"
+        # invert dr_containers :
+        containers_by_dr = {}
+        for c in dr_containers :
+            for dr in c :
+                if dr.id in containers_by_dr :
+                    containers_by_dr [dr.id].append (c)
+                else :
+                    containers_by_dr [dr.id]      = [c]
+        db.log_info ("summary_report: inverted containers (%s)"
             % (time.time () - timestamp))
         tc_pointers = dict ((i, 0) for i in time_containers.iterkeys ())
         db.log_info ("summary_report: after tc_pointers (%s)"
@@ -1008,6 +1055,9 @@ class Summary_Report (_Report) :
                     for wpc in containers_by_wp.get (t.wp.id, []) :
                         tc. add_sum (wpc, t)
                         wpc.add_sum (tc,  t)
+                        for drc in containers_by_dr.get (t.dr.id, []) :
+                            tc. add_sum_column (wpc, drc.name, t, False)
+                            wpc.add_sum_column (tc,  drc.name, t, False)
                 tidx += 1
             d = d + Interval ('1d')
             db.log_info ("summary_report: 1d (%s)" % (time.time () - timestamp))
@@ -1019,6 +1069,7 @@ class Summary_Report (_Report) :
         self.end             = end
         self.time_containers = time_containers
         self.wp_containers   = wp_containers
+        self.dr_containers   = dr_containers
     # end def __init__
 
     id_attrs = \
@@ -1057,6 +1108,8 @@ class Summary_Report (_Report) :
         if 'user' in self.columns :
             for u in self.usernames :
                 line.append (formatter (u))
+        for dr in self.dr_containers :
+            line.append (formatter (_ (dr.name)))
         line.append (formatter (_ ('Sum')))
         if self.show_plan :
             for i in 'planned_effort', '%', 'remaining' :
@@ -1117,6 +1170,8 @@ class Summary_Report (_Report) :
         if 'user' in self.columns :
             for u in self.usernames :
                 line.append (formatter (tc.get_sum (wpc, u, '')))
+        for dr in self.dr_containers :
+            line.append (formatter (tc.get_sum (wpc, dr.name, '')))
         sum = tc.get_sum (wpc, default = PM_Value (0.0))
         line.append (formatter (sum))
         if self.show_plan :

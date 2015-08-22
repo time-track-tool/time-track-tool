@@ -110,7 +110,7 @@
         , searchable  = False
         )
     , sap_cc   = utils.ExtProperty
-      (utils, pdict ['sap_cc'],        multiselect = 1, multi_selonly = 1)
+      (utils, pdict ['sap_cc'],       multiselect = 1, multi_selonly = 1)
     );
     sr   python: utils.Summary_Report (db, request, utils)
    "
@@ -124,7 +124,7 @@
         , 'cost_center_group', 'cost_center_group_id', 'summary'
         , 'planned_effort', 'reporting_group', 'reporting_group_id'
         , 'product_family', 'product_family_id', 'project_type'
-        , 'project_type_id', 'organisation', 'organisation_id'
+        , 'project_type_id', 'organisation', 'organisation_id', 'sap_cc'
         ]
       ; props python: [myprops [p] for p in sorted (fpkeys)]
       ; propkeys       python:
