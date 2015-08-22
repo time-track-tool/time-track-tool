@@ -307,7 +307,8 @@ class LDAP_Roundup_Sync (object) :
             aa = dict.fromkeys \
                 (x.strip () for x in user.alternate_addresses.split ('\n'))
         oldaa = copy (aa)
-        aa [user.address] = None
+        if user.address :
+            aa [user.address] = None
         if mail in aa :
             del aa [mail]
         if aa != oldaa :
