@@ -116,11 +116,12 @@ class PR_Sync (autosuper) :
     # end def map_id
 
     def sync (self) :
-        self.sync_class ('organisation', ('name', 'description'))
+        self.sync_class ('organisation', ('name', 'description'), ('valid_to',))
         self.sync_class ('location',     ('name', 'country'))
         self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
-        self.sync_class ('department', ('name', 'description', 'part_of'))
+        self.sync_class \
+	    ('department', ('name', 'description', 'part_of'), ('valid_to',))
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))
         # only once at beginning?
@@ -133,7 +134,7 @@ class PR_Sync (autosuper) :
             , ( 'username', 'address', 'alternate_addresses', 'department'
               , 'org_location', 'realname', 'status'
               )
-            , key = 'username'
+            , key   = 'username'
             , roles = 'User,Nosy'
             )
         self.sync_class \
@@ -146,6 +147,10 @@ class PR_Sync (autosuper) :
             , ( 'name', 'department', 'deputy', 'description'
               , 'organisation', 'responsible', 'status'
               )
+            , ( 'approval_hr', 'approval_required', 'is_public_holiday'
+              , 'is_special_leave', 'is_vacation', 'no_overtime'
+              , 'only_hours' 'op_project'
+              )
             , required = ('responsible',)
             )
 
@@ -155,7 +160,14 @@ class PR_Sync (autosuper) :
     # end def sync
 
     def sync_class \
-        (self, classname, propnames, key = 'name', required = (), **default) :
+        ( self
+        , classname
+        , propnames
+        , additional = ()
+        , key        = 'name'
+        , required   = ()
+        , **default
+        ) :
         self.verbose ('Syncing: %s' % classname, level = 2)
         assert key in propnames
         for r in required :
@@ -178,7 +190,7 @@ class PR_Sync (autosuper) :
         if pending :
             self.pendmap [classname] = {}
         for id in self.srv.filter (classname, None, {}) :
-            item = self.srv.display (classname + id)
+            item = self.srv.display (classname + id, * (propnames + additional))
             valid = True
             check = getattr (self, 'check_' + classname, None)
             if check :
