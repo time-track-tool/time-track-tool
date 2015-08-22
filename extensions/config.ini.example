@@ -162,3 +162,6 @@ leave_user_not_cancelled_text =
 pr_approval_text  = The purchase request "$(title)s"
  needs to be approved by $(user_or_role)s.
  many thanks!
+
+[mailgw]
+spam_pattern = ^[[].?S[pP][aA][mM]
