@@ -149,7 +149,7 @@ class PR_Sync (autosuper) :
               )
             , ( 'approval_hr', 'approval_required', 'is_public_holiday'
               , 'is_special_leave', 'is_vacation', 'no_overtime'
-              , 'only_hours' 'op_project'
+              , 'only_hours', 'op_project'
               )
             , required = ('responsible',)
             )
