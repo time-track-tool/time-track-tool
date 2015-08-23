@@ -52,22 +52,22 @@ transprop_perms = \
       )
     , ( 'contact.address.firstname'
       , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice'
-, 'letter', 'product', 'type', 'user']
+, 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'contact.address.function'
-      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'contact.address.lastname'
-      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'contact.address.lookalike_firstname'
-      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'contact.address.lookalike_function'
-      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'contact.address.lookalike_lastname'
-      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'invoice.abo.aboprice'
       , ['abo+invoice', 'admin', 'invoice']
@@ -121,25 +121,25 @@ transprop_perms = \
       , ['abo+invoice', 'admin', 'invoice']
       )
     , ( 'letter.address.firstname'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'letter.address.function'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'letter.address.lastname'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'letter.address.lookalike_firstname'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'letter.address.lookalike_function'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'letter.address.lookalike_lastname'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'letter.address.valid'
-      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user']
+      , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
       )
     , ( 'payment.invoice.abo'
       , ['abo+invoice', 'admin', 'invoice']

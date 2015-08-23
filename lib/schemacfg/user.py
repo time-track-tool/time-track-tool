@@ -29,6 +29,8 @@
 #--
 #
 
+from schemacfg       import schemadef
+
 def init (db, String, Ext_Class, ** kw) :
     export = {}
 
@@ -46,3 +48,12 @@ def init (db, String, Ext_Class, ** kw) :
     export.update (dict (User_Class = User_Class))
     return export
 # end def init
+
+def security (db, **kw) :
+    roles = [ ("User_View", "Allowed to view all user details") ]
+    classes = [ ("user", ["User_View"], []) ]
+    prop_perms = []
+    schemadef.register_roles                 (db, roles)
+    schemadef.register_class_permissions     (db, classes, prop_perms)
+# end def security
+

@@ -156,6 +156,7 @@ class _Test_Case (unittest.TestCase) :
         , 'supportadmin'
         , 'type'
         , 'user'
+        , 'user_view'
         ))
 
 
@@ -424,6 +425,7 @@ class _Test_Case_Summary (_Test_Case) :
             )
         roles = 'User,Nosy,HR,controlling,project,ITView,IT'.split (',')
         roles.append ('HR-leave-approval')
+        roles.append ('User_View')
         sec   = self.db.security
         roles = ','.join (x for x in roles if x.lower () in sec.role)
         self.username0 = 'testuser0'
@@ -751,7 +753,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'nosy'
         , 'office', 'pgp', 'project', 'project_view', 'staff-report'
-        , 'summary_view', 'user'
+        , 'summary_view', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
@@ -852,57 +854,57 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     10)
-        self.assertEqual (len (lines [0]),  4)
+        self.assertEqual (len (lines [0]),  5)
         self.assertEqual (lines [0][0], 'Level')
         self.assertEqual (lines [0][1], 'Time Period')
         self.assertEqual (lines [0][2], 'testuser11')
         self.assertEqual (lines [0][3], 'SAP-1')
-        self.assertEqual (lines [0][3], 'Sum')
+        self.assertEqual (lines [0][4], 'Sum')
         self.assertEqual (lines [1][0], 'Work package A Project/Work Package 0')
         self.assertEqual (lines [1][1], 'WW 23/2013')
         self.assertEqual (lines [1][2], '5.00')
         self.assertEqual (lines [1][3], '5.00')
-        self.assertEqual (lines [1][3], '5.00')
+        self.assertEqual (lines [1][4], '5.00')
         self.assertEqual (lines [2][0], 'Work package A Project/Work Package 0')
         self.assertEqual (lines [2][1], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][2], '5.00')
         self.assertEqual (lines [2][3], '5.00')
-        self.assertEqual (lines [2][3], '5.00')
+        self.assertEqual (lines [2][4], '5.00')
         self.assertEqual (lines [3][0], 'Work package Public Holiday/Holiday')
         self.assertEqual (lines [3][1], 'WW 24/2013')
         self.assertEqual (lines [3][2], '1.00')
         self.assertEqual (lines [3][3], '1.00')
-        self.assertEqual (lines [3][3], '1.00')
+        self.assertEqual (lines [3][4], '1.00')
         self.assertEqual (lines [4][0], 'Work package Public Holiday/Holiday')
         self.assertEqual (lines [4][1], '2013-06-01;2013-06-30')
         self.assertEqual (lines [4][2], '1.00')
         self.assertEqual (lines [4][3], '1.00')
-        self.assertEqual (lines [4][3], '1.00')
+        self.assertEqual (lines [4][4], '1.00')
         self.assertEqual (lines [5][0], 'Work package Travel/Travel')
         self.assertEqual (lines [5][1], 'WW 24/2013')
         self.assertEqual (lines [5][2], '2.00')
         self.assertEqual (lines [5][3], '2.00')
-        self.assertEqual (lines [5][3], '2.00')
+        self.assertEqual (lines [5][4], '2.00')
         self.assertEqual (lines [6][0], 'Work package Travel/Travel')
         self.assertEqual (lines [6][1], '2013-06-01;2013-06-30')
         self.assertEqual (lines [6][2], '2.00')
         self.assertEqual (lines [6][3], '2.00')
-        self.assertEqual (lines [6][3], '2.00')
+        self.assertEqual (lines [6][4], '2.00')
         self.assertEqual (lines [7][0], 'Sum')
         self.assertEqual (lines [7][1], 'WW 23/2013')
         self.assertEqual (lines [7][2], '5.00')
         self.assertEqual (lines [7][3], '5.00')
-        self.assertEqual (lines [7][3], '5.00')
+        self.assertEqual (lines [7][4], '5.00')
         self.assertEqual (lines [8][0], 'Sum')
         self.assertEqual (lines [8][1], 'WW 24/2013')
         self.assertEqual (lines [8][2], '3.00')
         self.assertEqual (lines [8][3], '3.00')
-        self.assertEqual (lines [8][3], '3.00')
+        self.assertEqual (lines [8][4], '3.00')
         self.assertEqual (lines [9][0], 'Sum')
         self.assertEqual (lines [9][1], '2013-06-01;2013-06-30')
         self.assertEqual (lines [9][2], '8.00')
         self.assertEqual (lines [9][3], '8.00')
-        self.assertEqual (lines [9][3], '8.00')
+        self.assertEqual (lines [9][4], '8.00')
 
         self.db.commit ()
         self.db.close ()
@@ -2723,7 +2725,8 @@ class Test_Case_Tracker (_Test_Case) :
     schemafile = 'trackers'
     roles = \
         [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
-        , 'itview', 'msgedit', 'msgsync', 'nosy', 'pgp', 'supportadmin', 'user'
+        , 'itview', 'msgedit', 'msgsync', 'nosy', 'pgp', 'supportadmin'
+        , 'user', 'user_view'
         ]
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
@@ -2736,7 +2739,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'project', 'project_view', 'staff-report'
-        , 'summary_view', 'supportadmin', 'user'
+        , 'summary_view', 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
 
@@ -4326,7 +4329,7 @@ class Test_Case_Abo (_Test_Case) :
     schemaname = 'abo'
     roles = \
         [ 'abo', 'admin', 'adr_readonly', 'anonymous', 'contact'
-        , 'invoice', 'letter', 'product', 'type', 'user'
+        , 'invoice', 'letter', 'product', 'type', 'user', 'user_view'
         ]
     transprop_perms = transprop_abo
 # end class Test_Case_Abo
@@ -4335,7 +4338,7 @@ class Test_Case_Adr (_Test_Case) :
     schemaname = 'adr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'letter'
-        , 'type', 'user'
+        , 'type', 'user', 'user_view'
         ]
     transprop_perms = transprop_adr
 # end class Test_Case_Adr
@@ -4351,14 +4354,17 @@ class Test_Case_ERP (_Test_Case) :
 
 class Test_Case_IT (_Test_Case) :
     schemaname = 'it'
-    roles = ['admin', 'anonymous', 'it', 'ituser', 'itview', 'nosy', 'user']
+    roles = \
+        [ 'admin', 'anonymous', 'it', 'ituser', 'itview', 'nosy'
+        , 'user', 'user_view'
+        ]
 # end class Test_Case_IT
 
 class Test_Case_ITAdr (_Test_Case) :
     schemaname = 'itadr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
-        , 'itview', 'nosy', 'pbx', 'type', 'user'
+        , 'itview', 'nosy', 'pbx', 'type', 'user', 'user_view'
         ]
     transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr
@@ -4374,7 +4380,7 @@ class Test_Case_Kvats (_Test_Case) :
 
 class Test_Case_Lielas (_Test_Case) :
     schemaname = 'lielas'
-    roles = ['admin', 'anonymous', 'guest', 'logger', 'user']
+    roles = ['admin', 'anonymous', 'guest', 'logger', 'user', 'user_view']
     transprop_perms = transprop_lielas
 # end class Test_Case_Lielas
 
@@ -4383,7 +4389,7 @@ class Test_Case_PR (_Test_Case) :
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
         , 'it-approval', 'nosy', 'pgp', 'procurement', 'project'
-        , 'project_view', 'subcontract', 'user'
+        , 'project_view', 'subcontract', 'user', 'user_view'
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR

@@ -237,4 +237,6 @@ Role "user":
  search it_issue (Search for "it_issue" only)
  search it_project (Search for "it_project" only)
  search support (Search for "support" only)
+Role "user_view":
+ User is allowed to access user (View for "user" only)
 """.strip ()

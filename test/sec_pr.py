@@ -96,4 +96,6 @@ Role "user":
  Users are allowed to view if approval is linked to viewable PR (View for "pr_approval" only)
  Users are allowed to view if offer is linked from PR (View for "pr_offer_item" only)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
+Role "user_view":
+ User is allowed to access user (View for "user" only)
 """.strip ()

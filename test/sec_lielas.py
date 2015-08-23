@@ -72,4 +72,6 @@ Role "user":
  User may access the web interface (Web Access)
  User may use the email interface (Email Access)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
+Role "user_view":
+ User is allowed to access user (View for "user" only)
 """.strip ()

@@ -126,4 +126,6 @@ Role "user":
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
  search it_issue (Search for "it_issue" only)
  search it_project (Search for "it_project" only)
+Role "user_view":
+ User is allowed to access user (View for "user" only)
 """.strip ()

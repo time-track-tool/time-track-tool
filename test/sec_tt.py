@@ -257,4 +257,6 @@ Role "user":
  search leave_submission (Search for "leave_submission" only)
  search time_record (Search for "time_record" only)
  search time_wp (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'has_expiration_date', 'id', 'name', 'project', 'responsible', 'time_end', 'time_start', 'travel', 'wp_no') only)
+Role "user_view":
+ User is allowed to access user (View for "user" only)
 """.strip ()
