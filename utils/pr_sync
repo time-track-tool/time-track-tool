@@ -53,6 +53,9 @@ class PR_Sync (autosuper) :
         self.srv       = xmlrpclib.ServerProxy (args.url, ** proxy_args)
         tracker        = instance.open (args.database_directory)
         self.db        = tracker.open (args.user)
+        sys.path.insert (1, os.path.join (args.database_directory, 'lib'))
+        global common
+        common         = __import__ ('common')
         self.args      = args
         self.update    = args.update
         self.classname = None
@@ -121,7 +124,7 @@ class PR_Sync (autosuper) :
         self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
         self.sync_class \
-	    ('department', ('name', 'description', 'part_of'), ('valid_to',))
+            ('department', ('name', 'description', 'part_of'), ('valid_to',))
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))
         # only once at beginning?
@@ -246,6 +249,12 @@ class PR_Sync (autosuper) :
                         ritem = self.fix_prop (default [p])
                         if litem [p] is None :
                             d [p] = ritem
+                    if 'roles' in default and 'roles' not in d :
+                        roles = dict.fromkeys (common.role_list (litem.roles))
+                        for r in common.role_list (default ['roles']) :
+                            if r not in roles :
+                                roles [r] = 1
+                        d ['roles'] = ','.join (roles.keys ())
                     for p in nonmapped :
                         ritem = self.fix_prop (item [p])
                         if ritem != litem [p] :
