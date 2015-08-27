@@ -465,7 +465,8 @@ if 'it_prio' in db.classes :
     db.it_prio.create (name = "many persons, important for project", order = 4)
     db.it_prio.create (name = "showstopper for one person",          order = 5)
     db.it_prio.create (name = "showstopper for many persons",        order = 6)
-    db.it_prio.create (name = "unknown",                             order = 7)
+    db.it_prio.create \
+        (name = "unknown", must_change = True, default = True, order = 7)
 
 if 'area' in db.classes :
     db.area.create (name = "SW",  description = "Software")

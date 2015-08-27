@@ -1246,5 +1246,17 @@ def pr_offer_item_sum (db, pr) :
     return total
 # end def pr_offer_item_sum
 
+def get_default_it_prio (db) :
+    if 'default' in db.it_prio.properties :
+        default = db.it_prio.filter (None, dict (default = True))
+        if default :
+            return default [0]
+    try :
+        return db.it_prio.lookup ('assistance')
+    except KeyError :
+        pass
+    return None
+# end def get_default_it_prio
+
 
 ### __END__

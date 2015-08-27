@@ -94,6 +94,8 @@ def init \
         , ''"it_prio"
         , name                  = String    ()
         , order                 = Number    ()
+        , must_change           = Boolean   ()
+        , default               = Boolean   ()
         )
     it_prio.setkey ("name")
 

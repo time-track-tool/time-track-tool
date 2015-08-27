@@ -34,14 +34,14 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
-from common                         import user_has_role
 from roundup.date                   import Date
+import common
 
 def new_it (db, cl, nodeid, new_values) :
     if 'messages'    not in new_values :
         raise Reject, _ ("New %s requires a message") % _ (cl.classname)
     if  (  'status' not in new_values
-        or not user_has_role (db, db.getuid (), 'IT')
+        or not common.user_has_role (db, db.getuid (), 'IT')
         ) :
         new_values ['status'] = '1'
     if 'category'     not in new_values :
@@ -51,7 +51,7 @@ def new_it (db, cl, nodeid, new_values) :
     if 'stakeholder'  not in new_values :
         new_values ['stakeholder'] = db.getuid ()
     if 'it_prio'      not in new_values :
-        new_values ['it_prio'] = db.it_prio.lookup ('unknown')
+        new_values ['it_prio'] = common.get_default_it_prio (db)
     if 'confidential' not in new_values :
         new_values ['confidential'] = 1
     # Always make new issues confidential.
@@ -80,9 +80,10 @@ def check_it (db, cl, nodeid, new_values) :
 	    if rsp  == db.user.lookup ('helpdesk') :
 		raise Reject, _ ('Must change user, "helpdesk" is not allowed')
 	    prio = new_values.get ('it_prio',     cl.get (nodeid, 'it_prio'))
-	    if prio == db.it_prio.lookup ('unknown') :
-		raise Reject, _ ('Must change %s, "unknown" is not allowed') \
-		    % _ ('it_prio')
+            prio = db.it_prio.getnode (prio)
+	    if prio.must_change :
+		raise Reject, _ ('Must change %s, "%s" is not allowed') \
+		    % (_ ('it_prio'), prio.name)
 # end def check_it
 
 def audit_superseder (db, cl, nodeid, new_values) :
@@ -115,8 +116,15 @@ def audit_superseder (db, cl, nodeid, new_values) :
             if db.user.get (rsp, 'username') == 'helpdesk' :
                 new_values ['responsible'] = db.getuid ()
 	    prio = new_values.get ('it_prio',    cl.get (nodeid, 'it_prio'))
-	    if prio == db.it_prio.lookup ('unknown') :
-                new_values ['it_prio'] = db.it_prio.lookup ('assistance')
+            prio = db.it_prio.getnode (prio)
+	    if prio.must_change :
+                prios = db.it_prio.filter (None, {}, sort = ('+', 'order'))
+                p = None
+                if len (prios) > 1 :
+                    p = prios [1]
+                elif prios :
+                    p = prios [0]
+                new_values ['it_prio'] = p
         new_values ["status"] = closed.id
 # end def audit_superseder
 
@@ -137,7 +145,7 @@ def stay_closed (db, cl, nodeid, new_values) :
         nst = new_values ['status']
         ost = cl.get (nodeid, 'status')
         if nst != ost and ost == db.it_issue_status.lookup ('closed') :
-            if not user_has_role (db, db.getuid (), 'IT') :
+            if not common.user_has_role (db, db.getuid (), 'IT') :
                 raise Reject \
                     ( _ ("This %(it_issue)s is already closed.\n"
                          "Please create a new issue or have it "
