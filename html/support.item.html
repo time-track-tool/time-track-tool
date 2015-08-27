@@ -174,10 +174,11 @@
        <th/>
        <td tal:condition="context/related_issues/plain">
         <font size="-1" tal:define=
-         " issues python: context.related_issues
-         ; attr   python: 'related_issues'
-         ; expand python: False
-         ; hide   python: False
+         " issues    python: context.related_issues
+         ; attr      python: 'related_issues'
+         ; expand    python: False
+         ; hide      python: False
+         ; listclass python: 'issue'
          ">
          <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
         </font>
@@ -190,7 +191,7 @@
          ; expand python: False
          ; hide   python: False
          ">
-         <tal:block metal:use-macro="templates/support/macros/support_list"/>
+         <tal:block metal:use-macro="templates/issue/macros/issue_list"/>
         </font>
        </td>
       </tr>
