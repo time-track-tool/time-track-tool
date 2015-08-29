@@ -18,7 +18,10 @@
        <tr>
         <th tal:content="structure python:utils.fieldname
             (ecls, 'ext_status')"/>
-        <td tal:content="python:eitem.ext_status"/>
+        <td>
+         <a tal:attributes="href python:'ext_tracker_state%s' % eitem.id"
+            tal:content="python:eitem.ext_status"/>
+        </td>
         <th tal:content="structure python:utils.fieldname
             (ecls, 'ext_attributes')"/>
         <td>

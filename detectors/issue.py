@@ -387,6 +387,10 @@ def check_kpm (db, cl, nodeid, new_values) :
             ( _, cl, nodeid, new_values
             , 'analysis', 'description', 'fault_frequency', 'reproduceable'
             )
+        iid = new_values.get ('issue')
+        if not iid :
+            iid = cl.get (nodeid, 'issue')
+        common.require_attributes (_, db.issue, iid, {}, 'release', 'severity')
 # end def check_kpm
 
 def check_ext_tracker_state (db, cl, nodeid, new_values) :

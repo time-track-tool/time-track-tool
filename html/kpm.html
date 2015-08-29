@@ -31,7 +31,7 @@
             ('kpm', 'analysis')"/>
           <td colspan="3">
            <textarea tal:content="python:kpm.analysis.content.plain() or ''"
-            wrap="hard" cols="80" rows="3" name="msg-2@content"/>
+            wrap="soft" cols="80" rows="3" name="msg-2@content"/>
            <input type="hidden" value="msg-2" tal:attributes="
              name python:'kpm%s@link@analysis' % kpm.id"/>
           </td>
@@ -41,7 +41,7 @@
             ('kpm', 'description')"/>
           <td colspan="3">
            <textarea tal:content="python:kpm.description.content.plain() or ''"
-            wrap="hard" cols="80" rows="3" name="msg-3@content"/>
+            wrap="soft" cols="80" rows="3" name="msg-3@content"/>
            <input type="hidden" value="msg-3" tal:attributes="
              name python:'kpm%s@link@description' % kpm.id"/>
           </td>
@@ -52,7 +52,7 @@
           <td colspan="3">
            <textarea tal:content="python:
             kpm.supplier_answer.content.plain() or ''"
-            wrap="hard" cols="80" rows="3" name="msg-4@content"/>
+            wrap="soft" cols="80" rows="3" name="msg-4@content"/>
            <input type="hidden" value="msg-4" tal:attributes="
              name python:'kpm%s@link@supplier_answer' % kpm.id"/>
           </td>

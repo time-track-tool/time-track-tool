@@ -1353,6 +1353,14 @@ _helptext          = \
       [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :
       [""'''Queries for this %(Classname)s''']
+    , ""'ready_for_sync'              :
+      [""'''Set this flag when you have entered all relevant attributes
+            for remote tracker synchronisation. Setting this flag is
+            only allowed if additional checks on required attributes
+            pass. Only when this flag is set is an issue created in the
+            remote tracker.
+         '''
+      ]
     , ""'realname'                    :
       [""'''Real name for this %(Classname)s''', realname_automatic]
     , ""'receipt_no'                  :

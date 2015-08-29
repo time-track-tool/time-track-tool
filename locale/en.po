@@ -5872,7 +5872,7 @@ msgid "analysis"
 msgstr "Analysis"
 
 msgid "ready_for_sync"
-msgstr ""
+msgstr "ready for sync"
 
 msgid "fault_frequency"
 msgstr "Fault frequency"
