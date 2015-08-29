@@ -249,7 +249,13 @@ properties = \
         ]
       )
     , ( 'it_prio'
-      , [ ( 'name'
+      , [ ( 'default'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user', 'user_view']
+          )
+        , ( 'must_change'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user', 'user_view']
+          )
+        , ( 'name'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'type', 'user', 'user_view']
           )
         , ( 'order'

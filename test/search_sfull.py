@@ -736,7 +736,13 @@ properties = \
         ]
       )
     , ( 'it_prio'
-      , [ ( 'name'
+      , [ ( 'default'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'must_change'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
         , ( 'order'

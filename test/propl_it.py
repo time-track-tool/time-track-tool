@@ -43,7 +43,9 @@ properties = \
         ]
       )
     , ( 'it_prio'
-      , [ 'name'
+      , [ 'default'
+        , 'must_change'
+        , 'name'
         , 'order'
         ]
       )

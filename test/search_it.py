@@ -100,7 +100,13 @@ properties = \
 
       )
     , ( 'it_prio'
-      , [ ( 'name'
+      , [ ( 'default'
+          , ['admin', 'it', 'itview', 'user', 'user_view']
+          )
+        , ( 'must_change'
+          , ['admin', 'it', 'itview', 'user', 'user_view']
+          )
+        , ( 'name'
           , ['admin', 'it', 'itview', 'user', 'user_view']
           )
         , ( 'order'

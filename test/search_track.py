@@ -459,7 +459,13 @@ properties = \
         ]
       )
     , ( 'it_prio'
-      , [ ( 'name'
+      , [ ( 'default'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'must_change'
+          , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'name'
           , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'order'

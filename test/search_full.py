@@ -654,7 +654,13 @@ properties = \
         ]
       )
     , ( 'it_prio'
-      , [ ( 'name'
+      , [ ( 'default'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'must_change'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
         , ( 'order'
