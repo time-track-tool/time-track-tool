@@ -10,7 +10,9 @@
    pdict python: utils.properties_dict (db, context);
    prp python:
     ( ('id',               {})
-    , ('issue',            {})
+    , ('issue'
+      , dict (searchable = 1, sortable = 0, do_classhelp = 0)
+      )
     , ('kpm_function',     dict (multiselect = 1))
     , ('reproduceable',    {})
     , ('fault_frequency',  dict (multiselect = 1))

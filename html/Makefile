@@ -1,7 +1,8 @@
 all: _generic.item.html userlist.html person.item.html person.index.html \
      customer.index.html customer.item.html device.item.html \
      sensor.item.html sensor.index.html measurement.index.html \
-     device_group.item.html _generic.404.html
+     device_group.item.html _generic.404.html \
+     ext_tracker_state.ext_attr.html
 
 _generic.item.html: _generic.index.html
 	ln -s _generic.index.html _generic.item.html
@@ -38,3 +39,6 @@ measurement.index.html: device.index.html
 
 device_group.item.html: device_group.index.html
 	ln -s device_group.index.html device_group.item.html
+
+ext_tracker_state.ext_attr.html: issue.ext_attr.html
+	ln -s issue.ext_attr.html ext_tracker_state.ext_attr.html

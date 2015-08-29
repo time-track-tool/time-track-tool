@@ -394,7 +394,11 @@
      <tal:block tal:condition="python:'kpm' in db._db.classes">
       <tal:block tal:define="kpm python:utils.get_kpm (db, context)">
        <tal:block tal:condition="kpm">
-        <tr><th>KPM</th></tr>
+        <tr>
+         <th>
+          <a tal:attributes="href python:'kpm%s' % kpm.id">KPM</a>
+         </th>
+        </tr>
         <tal:block metal:use-macro="templates/kpm/macros/kpm_display"/>
        </tal:block>
       </tal:block>
