@@ -1,6 +1,14 @@
 <tal:block metal:define-macro="ext_tracker_display">
        <tr>
         <th tal:content="structure python:utils.fieldname
+          ('issue', 'title')"/>
+        <td>
+         <a tal:attributes="href python:'issue%s' % eitem.issue.id"
+            tal:content="python: eitem.issue.title"/>
+        </td>
+       </tr>
+       <tr>
+        <th tal:content="structure python:utils.fieldname
             (ecls, 'ext_tracker')"/>
         <td> <span tal:content="python:eitem.ext_tracker"/>
              <span tal:content="python:eitem.ext_tracker.description"/>
