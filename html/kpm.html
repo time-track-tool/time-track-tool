@@ -1,6 +1,14 @@
 <tal:block metal:define-macro="kpm_display">
          <tr>
           <th tal:content="structure python:utils.fieldname
+            ('issue', 'title')"/>
+          <td>
+           <a tal:attributes="href python:'issue%s' % kpm.issue.id"
+              tal:content="python: kpm.issue.title"/>
+          </td>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
             ('kpm', 'kpm_function')"/>
           <td>
            <span tal:content="structure python: kpm.kpm_function.field ()"/>
