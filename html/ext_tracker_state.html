@@ -1,5 +1,5 @@
 <tal:block metal:define-macro="ext_tracker_display">
-       <tr>
+       <tr tal:condition="python: classname != 'issue'">
         <th tal:content="structure python:utils.fieldname
           ('issue', 'title')"/>
         <td>
