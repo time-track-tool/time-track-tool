@@ -385,7 +385,7 @@ def check_kpm (db, cl, nodeid, new_values) :
     if new_values.get ('ready_for_sync', None) :
         common.require_attributes \
             ( _, cl, nodeid, new_values
-            , 'analysis', 'description', 'fault_frequency', 'reproduceable'
+            , 'description', 'fault_frequency', 'reproduceable'
             )
         iid = new_values.get ('issue')
         if not iid :
