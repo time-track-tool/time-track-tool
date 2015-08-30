@@ -22,6 +22,7 @@ from roundup.exceptions             import Reject
 from roundup.hyperdb                import Multilink, Link
 from linking                        import linkclass_iter
 from roundup.cgi.TranslationService import get_translation
+import common
 
 classprops = {}
 # Exceptions from unlink check for multilinks (only if linked item is
@@ -89,6 +90,9 @@ def check_unlinking (db, cl, nodeid, new_values) :
                 if  (   prop in exceptions.get (cl.classname, [])
                     and klass.get (id, 'creator') == db.getuid ()
                     ) :
+                    continue
+                # Allow IT and admin roles
+                if common.user_has_role (db, db.getuid (), 'it', 'admin') :
                     continue
                 raise Reject, \
                     _ ("You may not unlink %(cls)s from %(name)s") % locals ()
