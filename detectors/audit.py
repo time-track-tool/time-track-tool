@@ -223,9 +223,12 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         new_status_name = "closed"
         newvalues ["status"] = new_status = db.status.lookup (new_status_name)
 
-    # Set `closed_date` when a bug report is being closed.
+    # Set `closed_date` when a bug report is being closed
+    # and reset it if re-opened
     if new_status_name == "closed" and cur_status_name != "closed" :
         newvalues ["closed"] = Date (".")
+    if new_status_name != "closed" and cur_status_name == "closed" :
+        newvalues ["closed"] = None
 
     # Automatically set status "feedback" to "open" when responsible changes.
     if  (old_responsible != new_responsible) \
