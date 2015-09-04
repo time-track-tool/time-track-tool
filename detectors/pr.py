@@ -245,6 +245,35 @@ def fix_nosy (db, cl, nodeid, new_values) :
         new_values ['nosy'] = nosy.keys ()
 # end def fix_nosy
 
+def update_pr (db, pr, ap, nosy, txt, ** kw) :
+    uor = ''
+    if ap :
+        if ap.user :
+            uor = db.user.get (ap.user, 'realname')
+        if ap.deputy :
+            uor += '/' + db.user.get (ap.deputy, 'realname')
+        if ap.role :
+            if uor :
+                uor += ' and role %s' % ap.role
+            else :
+                uor = 'role %s' % ap.role
+    txt = (txt.replace ('$', '%') % dict (title = pr.title, user_or_role = uor))
+    # Note: We can't use the current db user as the
+    # author of the message, otherwise the nosy auditor
+    # will prevent the user from being removed from the
+    # nosy list (!)
+    msg = db.msg.create \
+        ( content = txt
+        , author  = '1' # admin
+        , date    = Date ('.')
+        )
+    msgs = dict.fromkeys (pr.messages)
+    msgs [msg] = 1
+    d = kw
+    d.update (nosy = nosy.keys (), messages = msgs.keys ())
+    db.purchase_request.set (pr.id, ** d)
+# end def update_pr
+
 def approved_pr_approval (db, cl, nodeid, old_values) :
     app = cl.getnode (nodeid)
     os  = old_values.get ('status', None)
@@ -271,41 +300,17 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                     assert ap.status == und
                     nosy.update (nosy_for_approval (db, ap))
                     uor = ''
-                    if ap.user :
-                        uor = db.user.get (ap.user, 'realname')
-                    if ap.deputy :
-                        uor += '/' + db.user.get (ap.deputy, 'realname')
-                    if ap.role :
-                        if uor :
-                            uor += ' and role %s' % ap.role
-                        else :
-                            uor = 'role %s' % ap.role
-                    txt = \
-                        ( db.config.ext.MAIL_PR_APPROVAL_TEXT.replace ('$', '%')
-                        % dict (title = pr.title, user_or_role = uor)
-                        )
-                    # Note: We can't use the current db user as the
-                    # author of the message, otherwise the nosy auditor
-                    # will prevent the user from being removed from the
-                    # nosy list (!)
-                    msg = db.msg.create \
-                        ( content = txt
-                        , author  = '1' # admin
-                        , date    = Date ('.')
-                        )
-                    msgs = dict.fromkeys (pr.messages)
-                    msgs [msg] = 1
-                    db.purchase_request.set \
-                        ( pr.id
-                        , nosy     = nosy.keys ()
-                        , messages = msgs.keys ()
-                        )
+                    update_pr \
+                        (db, pr, ap, nosy, db.config.ext.MAIL_PR_APPROVAL_TEXT)
                     break
             else :
-                db.purchase_request.set \
-                    ( pr.id
+                update_pr \
+                    ( db
+                    , pr
+                    , None
+                    , nosy
+                    , db.config.ext.MAIL_PR_APPROVED_TEXT
                     , status = db.pr_status.lookup ('approved')
-                    , nosy   = nosy.keys ()
                     )
         elif ns == rej :
             d = dict (status = db.pr_status.lookup ('rejected'))

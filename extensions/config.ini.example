@@ -163,5 +163,8 @@ pr_approval_text  = The purchase request "$(title)s"
  needs to be approved by $(user_or_role)s.
  many thanks!
 
+pr_approved_text  = The purchase request "$(title)s" has been approved.
+ many thanks!
+
 [mailgw]
 spam_pattern = ^[[].?S[pP][aA][mM]
