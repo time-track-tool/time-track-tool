@@ -5758,7 +5758,7 @@ msgid "pr_status"
 msgstr "Purchase request status"
 
 msgid "pr_supplier"
-msgstr "Supplier"
+msgstr "Approved supplier"
 
 msgid "purchase_request"
 msgstr "Purchase request"

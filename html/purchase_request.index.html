@@ -41,6 +41,19 @@
     , utils.ExtProperty (utils, pdict ['creator'])
     , utils.ExtProperty (utils, pdict ['activity'])
     , utils.ExtProperty (utils, pdict ['actor'])
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.supplier'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.pr_supplier'
+        , multiselect = True
+        )
     );
    "
   tal:condition="context/is_view_ok">

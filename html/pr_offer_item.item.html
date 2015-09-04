@@ -35,6 +35,21 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'supplier')"/>
+      <td tal:content="structure python:context.supplier.field ()"/>
+     </tr>
+     <tr tal:condition="context/pr_supplier">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'pr_supplier')"/>
+      <td tal:content="structure python:context.pr_supplier.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'offer_number')"/>
+      <td tal:content="structure python:context.offer_number.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'units')"/>
       <td tal:content="structure python:context.units.field ()"/>
      </tr>
