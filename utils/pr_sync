@@ -137,8 +137,9 @@ class PR_Sync (autosuper) :
             , ( 'username', 'address', 'alternate_addresses', 'department'
               , 'org_location', 'realname', 'status'
               )
-            , key   = 'username'
-            , roles = 'User,Nosy'
+            , key       = 'username'
+            , roles     = 'User,Nosy'
+            , dont_sync = dict.fromkeys (('1', '2'))
             )
         self.sync_class \
             ( 'sap_cc'
@@ -169,6 +170,7 @@ class PR_Sync (autosuper) :
         , additional = ()
         , key        = 'name'
         , required   = ()
+        , dont_sync  = {}
         , **default
         ) :
         self.verbose ('Syncing: %s' % classname, level = 2)
@@ -193,6 +195,8 @@ class PR_Sync (autosuper) :
         if pending :
             self.pendmap [classname] = {}
         for id in self.srv.filter (classname, None, {}) :
+            if id in dont_sync :
+                continue
             item = self.srv.display (classname + id, * (propnames + additional))
             valid = True
             check = getattr (self, 'check_' + classname, None)
@@ -251,10 +255,12 @@ class PR_Sync (autosuper) :
                             d [p] = ritem
                     if 'roles' in default and 'roles' not in d :
                         roles = dict.fromkeys (common.role_list (litem.roles))
+                        roles_old = dict (roles)
                         for r in common.role_list (default ['roles']) :
                             if r not in roles :
                                 roles [r] = 1
-                        d ['roles'] = ','.join (roles.keys ())
+                        if roles != roles_old :
+                            d ['roles'] = ','.join (roles.keys ())
                     for p in nonmapped :
                         ritem = self.fix_prop (item [p])
                         if ritem != litem [p] :
