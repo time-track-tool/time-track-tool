@@ -1,4 +1,8 @@
 <tal:block metal:define-macro="kpm_display">
+ <tal:block tal:define="
+      es python: db.ext_tracker_state.filter
+         (filterspec = dict (issue = kpm.issue.id)) [0];
+      ro python: bool (es.ext_id)">
          <tr tal:condition="python: classname != 'issue'">
           <th tal:content="structure python:utils.fieldname
             ('issue', 'title')"/>
@@ -10,7 +14,7 @@
          <tr>
           <th tal:content="structure python:utils.fieldname
             ('kpm', 'kpm_function')"/>
-          <td>
+          <td tal:condition="not:ro">
            <span tal:content="structure python: kpm.kpm_function.field ()"/>
            <span tal:content="structure python:db.kpm_function.classhelp
              ( 'kpm_key,name,kpm_group'
@@ -19,27 +23,37 @@
              , pagesize  = 500
              , inputtype = 'radio'
              )" />
+          </td>
+          <td tal:condition="ro" tal:content="python:
+              kpm.kpm_function.plain ()" />
           <th tal:content="structure python:utils.fieldname
             ('kpm', 'hardware_version')"/>
-          <td tal:content="structure python:
+          <td tal:condition="not:ro" tal:content="structure python:
             kpm.hardware_version.field ()"/>
+          <td tal:condition="ro"     tal:content="python:
+            kpm.hardware_version.plain ()"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
             ('kpm', 'reproduceable')"/>
-          <td tal:content="structure python:
+          <td tal:condition="not:ro" tal:content="structure python:
             kpm.reproduceable.field ()"/>
+          <td tal:condition="ro"     tal:content="python:
+            kpm.reproduceable.plain ()"/>
           <th tal:content="structure python:utils.fieldname
             ('kpm', 'fault_frequency')"/>
-          <td tal:content="structure python:
+          <td tal:condition="not:ro" tal:content="structure python:
             kpm.fault_frequency.menu ()"/>
+          <td tal:condition="ro"     tal:content="python:
+            kpm.fault_frequency.plain ()"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
             ('kpm', 'analysis')"/>
           <td colspan="3">
            <textarea tal:content="python:kpm.analysis.content.plain() or ''"
-            wrap="soft" cols="80" rows="3" name="msg-2@content"/>
+            wrap="soft" cols="80" rows="3" name="msg-2@content"
+            tal:attributes="readonly python:ro"/>
            <input type="hidden" value="msg-2" tal:attributes="
              name python:'kpm%s@link@analysis' % kpm.id"/>
           </td>
@@ -49,7 +63,8 @@
             ('kpm', 'description')"/>
           <td colspan="3">
            <textarea tal:content="python:kpm.description.content.plain() or ''"
-            wrap="soft" cols="80" rows="3" name="msg-3@content"/>
+            wrap="soft" cols="80" rows="3" name="msg-3@content"
+            tal:attributes="readonly python:ro"/>
            <input type="hidden" value="msg-3" tal:attributes="
              name python:'kpm%s@link@description' % kpm.id"/>
           </td>
@@ -70,4 +85,5 @@
             ('kpm', 'ready_for_sync')"/>
           <td tal:content="structure python: kpm.ready_for_sync.field ()"/>
          </tr>
+ </tal:block>
 </tal:block>
