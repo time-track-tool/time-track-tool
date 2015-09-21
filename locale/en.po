@@ -6383,5 +6383,5 @@ msgstr "Ext. Tracker state"
 msgid "ext_tracker_type"
 msgstr "Ext. Tracker type"
 
-#~ msgid "ext_trackers"
-#~ msgstr "Ext. Trackers"
+msgid "ext_trackers"
+msgstr "Ext. Trackers"
