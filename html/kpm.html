@@ -1,8 +1,9 @@
 <tal:block metal:define-macro="kpm_display">
  <tal:block tal:define="
-      es python: db.ext_tracker_state.filter
-         (filterspec = dict (issue = kpm.issue.id)) [0];
-      ro python: bool (es.ext_id)">
+      ess python: db.ext_tracker_state.filter
+         (filterspec = dict (issue = kpm.issue.id))"
+      tal:condition="ess">
+  <tal:block tal:define="es python: ess [0]; ro python: bool (es.ext_id)">
          <tr tal:condition="python: classname != 'issue'">
           <th tal:content="structure python:utils.fieldname
             ('issue', 'title')"/>
@@ -85,5 +86,6 @@
             ('kpm', 'ready_for_sync')"/>
           <td tal:content="structure python: kpm.ready_for_sync.field ()"/>
          </tr>
+  </tal:block>
  </tal:block>
 </tal:block>
