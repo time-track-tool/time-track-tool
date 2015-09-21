@@ -12,8 +12,10 @@
      <tal:block tal:define="items python:reversed
       ( sorted
        ( [i for i in items
-          if i.title.is_view_ok ()
+          if (   str (i.id).isdigit ()
+             and i.title.is_view_ok ()
              and (i.status.plain () != 'closed' or not hide)
+             )
          ]
        , key = lambda x : (str (x.status), -int (x.id))
        )
