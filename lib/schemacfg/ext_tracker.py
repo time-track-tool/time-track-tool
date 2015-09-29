@@ -82,23 +82,6 @@ def init \
         )
     ext_tracker_state.setlabelprop ('ext_id')
 
-    # Legacy support for external trackers. The new-style implementation
-    # uses an ext_tracker_state that links to issue. That way we can
-    # have multiple external trackers for the same issue (!)
-    Opt_Doc = kw ['Optional_Doc_Issue_Class']
-    class Optional_Doc_Issue_Class (Opt_Doc) :
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties \
-                ( ext_id              = String    ()
-                , ext_status          = String    ()
-                , ext_attributes      = Link      ("msg")
-                , ext_tracker         = Link      ("ext_tracker")
-                )
-            Opt_Doc.__init__ (self, db, classname, ** properties)
-        # end def __init__
-    # end class Optional_Doc_Issue_Class
-    export ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
-
     Cat_Cl = kw ['Category_Class']
     class Category_Class (Cat_Cl) :
         def __init__ (self, db, classname, ** properties) :

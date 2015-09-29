@@ -574,18 +574,6 @@ properties = \
         , ( 'effective_prio'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
-        , ( 'ext_attributes'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
-          )
-        , ( 'ext_id'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
-          )
-        , ( 'ext_status'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
-          )
-        , ( 'ext_tracker'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
-          )
         , ( 'files'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )

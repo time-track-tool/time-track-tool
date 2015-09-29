@@ -285,18 +285,6 @@ properties = \
         , ( 'effective_prio'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
-        , ( 'ext_attributes'
-          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
-          )
-        , ( 'ext_id'
-          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
-          )
-        , ( 'ext_status'
-          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
-          )
-        , ( 'ext_tracker'
-          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
-          )
         , ( 'external_users'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
