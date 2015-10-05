@@ -483,8 +483,10 @@ def leave_wp (db, dr, wp, start, end, duration) :
         return False
     if ld != duration :
         return False
-    if  (  uid in clearer and not tp.approval_hr
-        or user_has_role (db, uid, 'HR-leave-approval') and tp.approval_hr
+    if  (  (uid in clearer and not tp.approval_hr)
+        or (   common.user_has_role (db, uid, 'HR-leave-approval')
+           and tp.approval_hr
+           )
         ) :
         return True
     return False
