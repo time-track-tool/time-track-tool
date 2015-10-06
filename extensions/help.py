@@ -934,6 +934,7 @@ _helptext          = \
             necessary for vacation calculation.
          '''
       ]
+    , ""'issue.id'                    : [help_id]
     , ""'issue.composed_of.id'        : [help_id]
     , ""'issue.part_of.id'            : [help_id]
     , ""'issue++deadline'             :

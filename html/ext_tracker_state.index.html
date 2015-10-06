@@ -10,10 +10,16 @@
    pdict python: utils.properties_dict (db, context);
    prp python:
     ( ('id',               {})
-    , ('issue',            {})
     , ('ext_id',           {})
     , ('ext_status',       {})
     , ('ext_tracker',      dict (multiselect = 1))
+    , ('issue', dict
+        ( searchname   = 'issue.id'
+        , searchable   = True
+        , sortable     = True
+        , do_classhelp = False
+        )
+      )
     , ('issue', dict
         ( searchname   = 'issue.category'
         , searchable   = True
@@ -64,6 +70,24 @@
         )
       )
     , ('issue', dict
+        ( searchname   = 'issue.deadline'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.earliest_start'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.numeric_effort'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
         ( searchname   = 'issue.priority'
         , searchable   = True
         , sortable     = True
@@ -89,6 +113,20 @@
       )
     , ('issue', dict
         ( searchname   = 'issue.part_of.id'
+        , do_classhelp = False
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.fixed_in'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.nosy'
+        , searchable   = False
+        , sortable     = False
+        , do_classhelp = False
         )
       )
     , ('issue', dict
@@ -96,6 +134,75 @@
         , searchable   = True
         , sortable     = True
         , help_props   = ['firstname', 'lastname']
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.actor'
+        , searchable   = True
+        , sortable     = True
+        , help_props   = ['firstname', 'lastname']
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.planned_begin'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.planned_end'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.cur_est_begin'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.cur_est_end'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.creation'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.activity'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.closed'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.keywords'
+        , searchable   = False
+        , sortable     = False
+        , do_classhelp = False
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.maturity_index'
+        , searchable   = True
+        , sortable     = True
+        )
+      )
+    , ('issue', dict
+        ( searchname   = 'issue.doc_issue_status'
+        , searchable   = True
+        , sortable     = True
+        , multiselect  = True
         )
       )
     );

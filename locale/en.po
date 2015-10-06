@@ -6380,6 +6380,9 @@ msgstr "is nosy"
 msgid "ext_tracker_state"
 msgstr "Ext. Tracker state"
 
+msgid "issue.id"
+msgstr "Issue (Id)"
+
 msgid "ext_tracker_type"
 msgstr "Ext. Tracker type"
 
