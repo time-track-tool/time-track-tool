@@ -125,8 +125,7 @@ def change_pr (db, cl, nodeid, new_values) :
             for oi in oitems :
                 common.require_attributes \
                     (_, db.pr_offer_item, oi, {}
-                    , 'index', 'offer_number', 'price_per_unit'
-                    , 'units', 'description'
+                    , 'index', 'price_per_unit', 'units', 'description'
                     )
             # Check that approval of requester exists
             for ap in approvals :
