@@ -225,7 +225,7 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ("user", "Edit", ["Procurement"], ("roles", "password"))
-        , ("user", "View", ["User"],        ("username", "id"))
+        , ("user", "View", ["User"],        ("username", "id", "realname"))
         ]
 
     schemadef.register_roles             (db, roles)

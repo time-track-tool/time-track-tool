@@ -28,7 +28,16 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'requester')"/>
-      <td tal:content="structure python:context.requester.field ()"/>
+      <td>
+       <span tal:content="structure python:context.requester.field ()"/>
+       <span tal:content="structure python:db.user.classhelp
+                  ( 'username,realname'
+                  , property='requester'
+                  , inputtype='radio'
+                  , width='800'
+                  , pagesize=1000 
+                  )"/>
+      </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu ()"/>
