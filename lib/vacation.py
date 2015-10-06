@@ -35,10 +35,39 @@ import roundup.date
 import common
 import user_dynamic
 
+def public_holiday_wp (db, user, date) :
+    """ Get first public holiday wp for this user on date.
+        Should typically be only one, we use the first in the list
+        without further checks.
+    """
+    opn = db.time_project_status.lookup ('Open')
+    prj = db.time_project.filter \
+        (None, dict (is_public_holiday = True, status = opn))
+    if not prj :
+        return None
+    wps = \
+        ( db.time_wp.filter \
+            (None, dict (project = prj, is_public = True))
+        + db.time_wp.filter \
+            (None, dict (project = prj, bookers = user))
+        )
+    for wpid in wps :
+        w = db.time_wp.getnode (wpid)
+        if  (   w.time_start <= date
+            and (not w.time_end or date < w.time_end)
+            ) :
+            return wpid
+# end def public_holiday_wp
+
 def try_create_public_holiday (db, daily_record, date, user) :
     st_open = db.daily_record_status.lookup ('open')
+    wp      = public_holiday_wp (db, user, date)
     # Don't change anything if status not open
     if db.daily_record.get (daily_record, 'status') != st_open :
+        return
+    # Only perform public holiday processing if user has a public
+    # holiday wp to book on.
+    if not wp :
         return
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = user_dynamic.day_work_hours   (dyn, date)
@@ -54,7 +83,7 @@ def try_create_public_holiday (db, daily_record, date, user) :
                 wh = wh / 2.
             wh = user_dynamic.round_daily_work_hours (wh)
             # Check if there already is a public-holiday time_record
-            # Update duration if it is wrong
+            # Update duration (and wp) if wrong
             trs = db.time_record.filter \
                 (None, dict (daily_record = daily_record))
             for trid in trs :
@@ -63,25 +92,14 @@ def try_create_public_holiday (db, daily_record, date, user) :
                     continue
                 tp = db.time_project.getnode (db.time_wp.get (tr.wp, 'project'))
                 if tp.is_public_holiday :
+                    d = {}
                     if tr.duration != wh :
-                        db.time_record.set (trid, duration = wh)
+                        d ['duration'] = wh
+                    if tr.wp != wp :
+                        d ['wp'] = wp
+                    if d :
+                        db.time_record.set (trid, ** d)
                     return
-            wp  = None
-            try :
-                ok  = db.time_project_status.lookup ('Open')
-                prj = db.time_project.filter \
-                    (None, dict (is_public_holiday = True, status = ok))
-                wps = db.time_wp.filter \
-                    (None, dict (project = prj, bookers = user))
-                for wpid in wps :
-                    w = db.time_wp.getnode (wpid)
-                    if  (   w.time_start <= date
-                        and (not w.time_end or date < w.time_end)
-                        ) :
-                        wp = wpid
-                        break
-            except (IndexError, KeyError) :
-                pass
             comment = holiday.name
             if holiday.description :
                 comment = '\n'.join ((holiday.name, holiday.description))
