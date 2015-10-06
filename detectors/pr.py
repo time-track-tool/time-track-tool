@@ -239,8 +239,6 @@ def fix_nosy (db, cl, nodeid, new_values) :
         rq   = new_values.get ('requester', cl.get (nodeid, 'requester'))
         nosy [rq] = 1
         nosy [cl.get (nodeid, 'creator')] = 1
-        nosy.update \
-            (dict.fromkeys (common.get_uids_with_role (db, 'Procurement')))
         new_values ['nosy'] = nosy.keys ()
 # end def fix_nosy
 
@@ -285,14 +283,23 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
     if os != ns :
         pr = db.purchase_request.getnode (app.purchase_request)
         if ns == apr :
+            is_new = False
             if pr.status == pr_open :
                 db.purchase_request.set (pr.id, status = pr_approving)
+                is_new = True
             srt  = [('+', 'order')]
             apps = cl.filter (None, dict (purchase_request = pr.id), sort = srt)
             nosy = dict.fromkeys (pr.nosy)
             for n in nosy_for_approval (db, app) :
                 if n in nosy :
                     del nosy [n]
+            procure_uids = common.get_uids_with_role (db, 'Procurement')
+            if is_new :
+                nosy.update (dict.fromkeys (procure_uids))
+            else :
+                for n in procure_uids :
+                    if n in nosy :
+                        del nosy [n]
             for a in apps :
                 ap = cl.getnode (a)
                 if ap.status != apr :
@@ -303,6 +310,7 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                         (db, pr, ap, nosy, db.config.ext.MAIL_PR_APPROVAL_TEXT)
                     break
             else :
+                nosy.update (dict.fromkeys (procure_uids))
                 update_pr \
                     ( db
                     , pr
