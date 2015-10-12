@@ -1072,6 +1072,7 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = '',            order = 10)
     db.pr_approval_order.create (role = 'procurement', order = 20)
     db.pr_approval_order.create (role = 'it-approval', order = 30)
+    db.pr_approval_order.create (role = 'quality',     order = 35)
     db.pr_approval_order.create (role = 'subcontract', order = 40)
     db.pr_approval_order.create (role = 'hr',          order = 50)
     db.pr_approval_order.create (role = 'finance',     order = 60)

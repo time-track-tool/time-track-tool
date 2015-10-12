@@ -44,6 +44,7 @@ Role "project":
  User is allowed to edit time_project_status (Edit for "time_project_status" only)
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
+Role "quality":
 Role "subcontract":
 Role "user":
   (Search for "pr_approval" only)
@@ -51,7 +52,7 @@ Role "user":
   (Search for "purchase_request" only)
   (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'id', 'creation', 'creator', 'activity', 'actor') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
- User is allowed View on (View for "user": ('username', 'id') only)
+ User is allowed View on (View for "user": ('realname', 'username', 'id') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed to access department (View for "department" only)

@@ -170,6 +170,15 @@ def changed_pr (db, cl, nodeid, old_values) :
             )
         add_approval_with_role (db, pr.id, 'Finance')
         pob = db.part_of_budget.getnode (pr.part_of_budget)
+        # Loop over order items and check if any is not on the approved
+        # suppliers list
+        supplier_approved = True
+        for id in pr.offer_items :
+            oi = db.pr_offer_item.getnode (id)
+            if not oi.pr_supplier :
+                supplier_approved = False
+        if pr.safety_critical and not supplier_approved :
+            add_approval_with_role (db, pr.id, 'Quality')
         if  (  pob.name.lower () == 'no'
             or common.pr_offer_item_sum (db, pr.id) >= 10000
             ) :

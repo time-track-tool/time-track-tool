@@ -150,6 +150,7 @@ class _Test_Case (unittest.TestCase) :
         , 'product'
         , 'project'
         , 'project_view'
+        , 'quality'
         , 'staff-report'
         , 'subcontract'
         , 'summary_view'
@@ -4394,7 +4395,7 @@ class Test_Case_PR (_Test_Case) :
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
         , 'it-approval', 'nosy', 'pgp', 'procurement', 'project'
-        , 'project_view', 'subcontract', 'user', 'user_view'
+        , 'project_view', 'quality', 'subcontract', 'user', 'user_view'
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR
