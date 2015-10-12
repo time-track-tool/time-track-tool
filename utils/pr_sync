@@ -93,6 +93,11 @@ class PR_Sync (autosuper) :
             )
     # end def check_time_project
 
+    def fix_time_project (self, item, id) :
+        """ Add org_id-id as description """
+        item ['description'] = '-'.join ((item ['organisation'] or '', id))
+    # end def fix_time_project
+
     def check_user (self, user) :
         if user ['username'] in ('admin', 'anonymous') :
             return True
@@ -202,6 +207,9 @@ class PR_Sync (autosuper) :
             check = getattr (self, 'check_' + classname, None)
             if check :
                 valid = check (item)
+            fixer = getattr (self, 'fix_' + classname, None)
+            if fixer :
+                fixer (item, id)
             lid = None
             try :
                 lid = cls.lookup (self.fix_prop (item [key]))
