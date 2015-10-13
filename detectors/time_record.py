@@ -775,7 +775,8 @@ def check_retire (db, cl, nodeid, new_values) :
                         break
         else :
             allowed = False
-    if not allowed :
+    # Allow admin to retire any time_record (!)
+    if not allowed and db.getuid () != '1' :
         raise Reject (_ ("Permission denied"))
 # end def check_retire
 
