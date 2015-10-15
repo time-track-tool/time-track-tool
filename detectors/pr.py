@@ -122,6 +122,13 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
                 )
+            fp = new_values.get \
+                ( 'frame_purchase'
+                , cl.get (nodeid, 'frame_purchase')
+                )
+            if fp :
+                common.require_attributes \
+                    (_, cl, nodeid, new_values, 'frame_purchase_end')
             co = new_values.get \
                 ( 'continuous_obligation'
                 , cl.get (nodeid, 'continuous_obligation')

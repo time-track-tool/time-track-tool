@@ -2117,6 +2117,9 @@ msgstr ""
 msgid "frame_purchase"
 msgstr "Frame purchase"
 
+msgid "frame_purchase_end"
+msgstr "End-date of frame purchase"
+
 msgid ""
 "In order avoid a lot of small purchase request for a\n"
 "             certain item, that gets ordered again and again, it is\n"

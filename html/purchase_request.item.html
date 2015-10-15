@@ -127,6 +127,14 @@
           (classname, 'delivery_deadline')"/>
       <td tal:content="structure python:context.delivery_deadline.field ()"/>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'frame_purchase')"/>
+      <td tal:content="structure python:context.frame_purchase.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'frame_purchase_end')"/>
+      <td tal:content="structure python:context.frame_purchase_end.field ()"/>
+     </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu

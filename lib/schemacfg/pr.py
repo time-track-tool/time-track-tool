@@ -163,6 +163,7 @@ def init \
                 , time_project          = Link      ("time_project")
                 , part_of_budget        = Link      ("part_of_budget")
                 , frame_purchase        = Boolean   ()
+                , frame_purchase_end    = Date      ()
                 , continuous_obligation = Boolean   ()
                 , contract_term         = String    ()
                 , termination_date      = Date      ()

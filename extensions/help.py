@@ -776,6 +776,10 @@ _helptext          = \
              field.
           '''
       ]
+    , ""'frame_purchase_end'           :
+      [ ""'''This defines the end date of a frame purchase request.
+          '''
+      ]
     , ""'fromaddress'                 :
       [ ""'''Address in outgoing emails to which the %(Classname)s can reply.
              The email address provided must be one of the email
