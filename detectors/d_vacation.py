@@ -421,11 +421,14 @@ def handle_cancel (db, vs, drs, trs, is_crq) :
     if is_crq :
         for trid in trs :
             tr  = db.time_record.getnode (trid)
-            wp  = db.time_wp.getnode (tr.wp)
-            tp  = db.time_project.getnode (wp.project)
-            trd = db.daily_record.get (tr.daily_record, 'date')
-            if not tp.is_public_holiday :
-                assert tp.approval_required
+            if tr.wp :
+                wp  = db.time_wp.getnode (tr.wp)
+                tp  = db.time_project.getnode (wp.project)
+                if not tp.is_public_holiday :
+                    assert tp.approval_required
+                    db.time_record.retire (trid)
+            else :
+                # inconsistency with missing wp
                 db.time_record.retire (trid)
         for dr in drs :
             st_open = db.daily_record_status.lookup ('open')
