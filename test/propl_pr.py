@@ -69,11 +69,18 @@ properties = \
         , 'transitions'
         ]
       )
+    , ( 'pr_currency'
+      , [ 'max_sum'
+        , 'name'
+        , 'order'
+        ]
+      )
     , ( 'pr_offer_item'
       , [ 'add_to_las'
         , 'description'
         , 'index'
         , 'offer_number'
+        , 'pr_currency'
         , 'pr_supplier'
         , 'price_per_unit'
         , 'supplier'
@@ -102,11 +109,13 @@ properties = \
         , 'department'
         , 'files'
         , 'frame_purchase'
+        , 'frame_purchase_end'
         , 'messages'
         , 'nosy'
         , 'offer_items'
         , 'organisation'
         , 'part_of_budget'
+        , 'pr_currency'
         , 'purchase_type'
         , 'renegotiations'
         , 'requester'

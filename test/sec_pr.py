@@ -32,8 +32,10 @@ Role "procurement":
  User is allowed to access pr_offer_item (View for "pr_offer_item" only)
  User is allowed to access purchase_request (View for "purchase_request" only)
  User is allowed to access user (View for "user" only)
+ User is allowed to create pr_currency (Create for "pr_currency" only)
  User is allowed to create purchase_type (Create for "purchase_type" only)
  User is allowed to create vat_country (Create for "vat_country" only)
+ User is allowed to edit pr_currency (Edit for "pr_currency" only)
  User is allowed to edit purchase_type (Edit for "purchase_type" only)
  User is allowed to edit vat_country (Edit for "vat_country" only)
 Role "project":
@@ -61,6 +63,7 @@ Role "user":
  User is allowed to access organisation (View for "organisation" only)
  User is allowed to access part_of_budget (View for "part_of_budget" only)
  User is allowed to access pr_approval_status (View for "pr_approval_status" only)
+ User is allowed to access pr_currency (View for "pr_currency" only)
  User is allowed to access pr_status (View for "pr_status" only)
  User is allowed to access pr_supplier (View for "pr_supplier" only)
  User is allowed to access purchase_type (View for "purchase_type" only)
