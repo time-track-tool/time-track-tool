@@ -168,6 +168,9 @@
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'price_per_unit')"/>
          <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'pr_currency')"/>
+         <th style="text-align:left"
              tal:condition="cond" i18n:translate="">
              remove
          </th>
@@ -202,6 +205,7 @@
            <td tal:content="structure python:i.units.field (size=5)"/>
            <td style="text-align:right"
                tal:content="structure python:i.price_per_unit.field (size=7)"/>
+           <td tal:content="structure python:i.pr_currency.menu ()"/>
            <td tal:condition="cond">
             <input tabindex="-1" type="checkbox" name="@remove@offer_items"
                    tal:attributes="value i/id">
@@ -257,6 +261,8 @@
               tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'price_per_unit').field
               (size=7)"/>
+          <td tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'pr_currency').menu () "/>
          </tr>
          <tr>
           <td colspan="2"/>

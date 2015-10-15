@@ -2748,6 +2748,9 @@ msgstr ""
 msgid "max_hours"
 msgstr "Max hours"
 
+msgid "max_sum"
+msgstr "Max. cost for simple approval"
+
 msgid ""
 "If given for a %(Classname)s restricts the number of hours\n"
 "             you can book on this %(Classname)s for a single day.\n"
@@ -5743,6 +5746,9 @@ msgstr ""
 
 msgid "pr_approval_status"
 msgstr "Purchase approval status"
+
+msgid "pr_currency"
+msgstr "Currency"
 
 msgid "pr_approval"
 msgstr "Purchase approval"

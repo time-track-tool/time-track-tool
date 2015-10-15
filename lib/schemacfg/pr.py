@@ -60,6 +60,14 @@ def init \
         )
     p_o_b.setkey ('name')
 
+    pr_currency = Class \
+        ( db, ''"pr_currency"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , max_sum               = Number    ()
+        )
+    pr_currency.setkey ('name')
+
     pr_approval_status = Class \
         ( db, ''"pr_approval_status"
         , name                  = String    ()
@@ -95,6 +103,7 @@ def init \
         , description           = String    ()
         , units                 = Number    ()
         , price_per_unit        = Number    ()
+        , pr_currency           = Link      ("pr_currency")
         , supplier              = String    ()
         , add_to_las            = Boolean   ()
         , pr_supplier           = Link      ("pr_supplier")
@@ -164,6 +173,7 @@ def init \
                 , offer_items           = Multilink ("pr_offer_item")
                 , status                = Link      ("pr_status")
                 , total_cost            = Number    ()
+                , pr_currency           = Link      ("pr_currency")
                 , sap_cc                = Link      ("sap_cc")
                 )
             self.__super.__init__ (db, classname, ** properties)
@@ -213,6 +223,7 @@ def security (db, ** kw) :
         , ("pr_approval_order",  ["Procurement"], [])
         , ("pr_approval",        ["Procurement"], [])
         , ("pr_approval_status", ["User"],        [])
+        , ("pr_currency",        ["User"],        ["Procurement"])
         , ("pr_offer_item",      ["Procurement"], [])
         , ("pr_status",          ["User"],        [])
         , ("pr_supplier",        ["User"],        [])
@@ -244,6 +255,12 @@ def security (db, ** kw) :
         , properties  = tp_properties
         )
     db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user'
+        )
+    db.security.addPermissionToRole ('Procurement', p)
 
     p = db.security.addPermission \
         ( name        = 'Search'

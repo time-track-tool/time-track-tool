@@ -1071,6 +1071,11 @@ _helptext          = \
       ]
     , ""'max_lease_time'              :
       [""'''Maximum DHCP lease time for %(Classname)s''']
+    , ""'max_sum'                     :
+      [""'''Total cost for this %(Classname)s after which board approval
+            becomes necessary
+         '''
+      ]
     , ""'may_change_state_to'         :
       [ ""'''Allowed state changes for a given %(Classname)s: Usually
              you want to allow all states here but for some
@@ -1287,6 +1292,8 @@ _helptext          = \
       [""'''%(Property)s in the company''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
+    , ""'pr_currency'                 :
+      [""'''%(Property)s for this %(Classname)s''']
     , ""'prio'                        :
       [ priority
       , leave_empty

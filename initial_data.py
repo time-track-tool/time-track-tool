@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2004-12 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
@@ -30,7 +30,6 @@
 
 # init values
 from roundup.cgi.TranslationService import get_translation
-from rup_utils                      import uni
 
 _ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
@@ -637,8 +636,8 @@ if 'currency' in db.classes :
 if 'valid' in db.classes :
     valid = db.getclass ('valid')
     valid.create \
-        ( name = uni ('gültig')
-        , description = uni ('Gültige Adresse')
+        ( name = 'gÃ¼ltig'
+        , description = 'GÃ¼ltige Adresse'
         )
 
 if 'adr_type_cat' in db.classes :
@@ -674,13 +673,13 @@ if 'contact_type' in db.classes :
         )
 if 'customer_status' in db.classes :
     db.customer_status.create \
-        ( name         = uni ('gültig')
-        , description  = uni ('Gültiger Kunde')
+        ( name         = 'gÃ¼ltig'
+        , description  = 'GÃ¼ltiger Kunde'
         , order        = 1
         , valid        = True
         )
     db.customer_status.create \
-        ( name         = uni ('ungültig')
+        ( name         = 'ungÃ¼ltig'
         , description  = 'Kein Kunde'
         , order        = 2
         , valid        = False
@@ -688,13 +687,13 @@ if 'customer_status' in db.classes :
 
 if 'supplier_status' in db.classes :
     db.supplier_status.create \
-        ( name         = uni ('gültig')
-        , description  = uni ('Gültiger Lieferant')
+        ( name         = 'gÃ¼ltig'
+        , description  = 'GÃ¼ltiger Lieferant'
         , order        = 1
         , valid        = True
         )
     db.supplier_status.create \
-        ( name         = uni ('ungültig')
+        ( name         = 'ungÃ¼ltig'
         , description  = 'Kein Lieferant'
         , order        = 2
         , valid        = False
@@ -702,14 +701,14 @@ if 'supplier_status' in db.classes :
 
 if 'product_status' in db.classes :
     db.product_status.create \
-        ( name         = uni ('gültig')
-        , description  = uni ('Gültiger Artikel')
+        ( name         = 'gÃ¼ltig'
+        , description  = 'GÃ¼ltiger Artikel'
         , order        = 1
         , valid        = True
         )
     db.product_status.create \
-        ( name         = uni ('ungültig')
-        , description  = uni ('Kein gültiger Artikel')
+        ( name         = 'ungÃ¼ltig'
+        , description  = 'Kein gÃ¼ltiger Artikel'
         , order        = 2
         , valid        = False
         )
@@ -738,23 +737,23 @@ if 'doc_status' in db.classes :
 
 if 'tmplate_status' in db.classes :
     db.tmplate_status.create \
-        ( name            = uni ('Brief')
+        ( name            = 'Brief'
         , order           = 1
-        , description     = uni ('Vorlage für Briefe')
+        , description     = 'Vorlage fÃ¼r Briefe'
         , use_for_invoice = False
         , use_for_letter  = True
         )
     db.tmplate_status.create \
-        ( name            = uni ('Rechnung')
+        ( name            = 'Rechnung'
         , order           = 2
-        , description     = uni ('Vorlage für Rechnungen')
+        , description     = 'Vorlage fÃ¼r Rechnungen'
         , use_for_invoice = True
         , use_for_letter  = False
         )
     db.tmplate_status.create \
-        ( name            = uni ('Ungültig')
+        ( name            = 'UngÃ¼ltig'
         , order           = 1
-        , description     = uni ('Vorlage derzeit nicht in Verwendung')
+        , description     = 'Vorlage derzeit nicht in Verwendung'
         , use_for_invoice = False
         , use_for_letter  = False
         )
@@ -1077,6 +1076,9 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = 'hr',          order = 50)
     db.pr_approval_order.create (role = 'finance',     order = 60)
     db.pr_approval_order.create (role = 'board',       order = 70)
+if 'pr_currency' in db.classes :
+    db.pr_currency.create (name = 'â‚¬', order = 10)
+    db.pr_currency.create (name = '$', order = 20)
 if 'it_request_type' in db.classes :
     db.it_request_type.create (name = 'Incident',       order = 1)
     db.it_request_type.create (name = 'Change Request', order = 2)

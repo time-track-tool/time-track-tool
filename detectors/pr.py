@@ -80,6 +80,19 @@ def check_requester (db, cl, nodeid, new_values) :
         (_, cl, nodeid, new_values, 'requester')
 # end def check_requester
 
+def currency (db, pr) :
+    pr    = db.purchase_request.getnode (pr)
+    cur   = None
+    for id in pr.offer_items :
+        item  = db.pr_offer_item.getnode (id)
+        assert item.pr_currency
+        if cur and cur != item.pr_currency :
+            raise Reject (_ ("All offer items must have same currency"))
+        cur = item.pr_currency
+    assert cur
+    return cur
+# end def currency
+
 def change_pr (db, cl, nodeid, new_values) :
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
     approvals = db.pr_approval.filter (None, dict (purchase_request = nodeid))
@@ -107,7 +120,7 @@ def change_pr (db, cl, nodeid, new_values) :
                 ( _, cl, nodeid, new_values
                 , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
-                , 'part_of_budget', 'terms_conditions'
+                , 'part_of_budget', 'terms_conditions', 'frame_purchase'
                 )
             co = new_values.get \
                 ( 'continuous_obligation'
@@ -125,7 +138,11 @@ def change_pr (db, cl, nodeid, new_values) :
             for oi in oitems :
                 common.require_attributes \
                     (_, db.pr_offer_item, oi, {}
-                    , 'index', 'price_per_unit', 'units', 'description'
+                    , 'index'
+                    , 'price_per_unit'
+                    , 'units'
+                    , 'description'
+                    , 'pr_currency'
                     )
             # Check that approval of requester exists
             for ap in approvals :
@@ -133,7 +150,8 @@ def change_pr (db, cl, nodeid, new_values) :
                     break
             else :
                 raise Reject ( _ ("No approval by requester found"))
-            new_values ['total_cost'] = common.pr_offer_item_sum (db, nodeid)
+            new_values ['total_cost']  = common.pr_offer_item_sum (db, nodeid)
+            new_values ['pr_currency'] = currency (db, nodeid)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
             for ap in approvals :
@@ -179,8 +197,9 @@ def changed_pr (db, cl, nodeid, old_values) :
                 supplier_approved = False
         if pr.safety_critical and not supplier_approved :
             add_approval_with_role (db, pr.id, 'Quality')
+        cur = db.pr_currency.getnode (currency (db, pr.id))
         if  (  pob.name.lower () == 'no'
-            or common.pr_offer_item_sum (db, pr.id) >= 10000
+            or common.pr_offer_item_sum (db, pr.id) >= cur.max_sum
             ) :
             add_approval_with_role (db, pr.id, 'Board')
         pt    = db.purchase_type.getnode (pr.purchase_type)
@@ -348,7 +367,12 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
 def new_pr_offer_item (db, cl, nodeid, new_values) :
     if 'units' not in new_values :
         new_values ['units'] = 1
-# end def check_pr_offer_item
+    if 'pr_currency' not in new_values :
+        # get first currency by 'order' attribute:
+        c = db.pr_currency.filter (None, {}, sort = [('+', 'order')])
+        if c :
+            new_values ['pr_currency'] = c [0]
+# end def new_pr_offer_item
 
 def fix_pr_offer_item (db, cl, nodeid, new_values) :
     """ Fix missing info of offer_item from previous lines
@@ -404,6 +428,11 @@ def check_supplier (db, cl, nodeid, new_values) :
                 new_values ['vat_country'] = vc
 # end def check_supplier
 
+def check_currency (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'max_sum', 'order')
+# end def check_currency
+
 def init (db) :
     global _
     _   = get_translation \
@@ -426,4 +455,6 @@ def init (db) :
     db.pr_offer_item.audit    ("create", new_pr_offer_item)
     db.pr_offer_item.audit    ("create", check_supplier)
     db.pr_offer_item.audit    ("set",    check_supplier)
+    db.pr_currency.audit      ("create", check_currency)
+    db.pr_currency.audit      ("set",    check_currency)
 # end def init
