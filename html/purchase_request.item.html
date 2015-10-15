@@ -347,7 +347,8 @@
             onClick="javascript:
              document.forms.itemSynopsis ['@action'].value = 'pr_sign';
              document.itemSynopsis.submit ();">
-     <tal:block tal:condition="python:context.status.name == 'approved'">
+     <tal:block tal:condition="python:context.status.name in
+     ('approved', 'rejected', 'cancelled')">
       <tal:block metal:use-macro="templates/page/macros/copy_button"/>
      </tal:block>
     </tal:block>
