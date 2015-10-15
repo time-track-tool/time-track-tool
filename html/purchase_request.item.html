@@ -198,7 +198,7 @@
              )"/>
            </td>
            <td tal:content="structure python:i.description.field ()"/>
-           <td tal:content="structure python:i.offer_number.field (size=5)"/>
+           <td tal:content="structure python:i.offer_number.field (size=10)"/>
            <td tal:content="structure python:i.units.field (size=5)"/>
            <td style="text-align:right"
                tal:content="structure python:i.price_per_unit.field (size=7)"/>
@@ -250,7 +250,7 @@
           </td>
           <td tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'offer_number').field
-              (size=5)"/>
+              (size=10)"/>
           <td tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'units').field (size=5)"/>
           <td style="text-align:right"
