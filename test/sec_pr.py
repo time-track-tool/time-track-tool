@@ -26,7 +26,9 @@ Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
 Role "pgp":
 Role "procurement":
+  (Search for "user" only)
  User is allowed Edit on (Edit for "user": ('roles', 'password') only)
+ User is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('messages', 'status') only)
  User is allowed to access pr_approval (View for "pr_approval" only)
  User is allowed to access pr_approval_order (View for "pr_approval_order" only)
  User is allowed to access pr_offer_item (View for "pr_offer_item" only)
@@ -57,6 +59,7 @@ Role "user":
  User is allowed View on (View for "user": ('realname', 'username', 'id') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
+ User is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('messages',) only)
  User is allowed to access department (View for "department" only)
  User is allowed to access location (View for "location" only)
  User is allowed to access org_location (View for "org_location" only)

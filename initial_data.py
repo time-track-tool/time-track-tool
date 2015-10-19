@@ -1081,8 +1081,8 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = 'finance',     order = 60)
     db.pr_approval_order.create (role = 'board',       order = 70)
 if 'pr_currency' in db.classes :
-    db.pr_currency.create (name = '€', order = 10)
-    db.pr_currency.create (name = '$', order = 20)
+    db.pr_currency.create (name = '€', order = 10, max_sum = 10000)
+    db.pr_currency.create (name = '$', order = 20, max_sum = 10000)
 if 'it_request_type' in db.classes :
     db.it_request_type.create (name = 'Incident',       order = 1)
     db.it_request_type.create (name = 'Change Request', order = 2)
