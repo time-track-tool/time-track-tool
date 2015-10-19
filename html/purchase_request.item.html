@@ -138,7 +138,8 @@
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu
-          (name='cancelled')"/>
+          (** utils.filter_status_transitions
+              (context, 'approving', 'approved', 'rejected'))"/>
      </tr>
      <tr>
       <th colspan="4">

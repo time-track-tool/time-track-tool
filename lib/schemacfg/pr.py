@@ -513,7 +513,37 @@ def security (db, ** kw) :
         , description = fixdoc (linked_and_editable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
-    schemadef.register_nosy_classes (db, ['purchase_request'])
 
+    def approved_or_ordered (db, userid, itemid) :
+        """ User is allowed editing if status
+            is 'approved' or 'ordered'
+        """
+        pr = db.purchase_request.getnode (itemid)
+        st_approved = db.pr_status.lookup ('approved')
+        st_ordered  = db.pr_status.lookup ('ordered')
+        if pr.status in (st_approved, st_ordered) :
+            return True
+        return False
+    # end def approved_or_ordered
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'purchase_request'
+        , check       = approved_or_ordered
+        , description = fixdoc (approved_or_ordered.__doc__)
+        , properties  = ('status', 'messages')
+        )
+    db.security.addPermissionToRole ('Procurement', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'purchase_request'
+        , check       = approved_or_ordered
+        , description = fixdoc (approved_or_ordered.__doc__)
+        , properties  = ('messages',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    schemadef.register_nosy_classes (db, ['purchase_request'])
 
 # end def security

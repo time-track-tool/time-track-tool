@@ -1060,8 +1060,12 @@ if 'pr_status' in db.classes :
     s3 = db.pr_status.create (name = 'approved',  order = 3, relaxed = True)
     s4 = db.pr_status.create (name = 'rejected',  order = 4)
     s5 = db.pr_status.create (name = 'cancelled', order = 5)
+    s6 = db.pr_status.create (name = 'ordered',   order = 6)
+    s7 = db.pr_status.create (name = 'delivered', order = 7)
     db.pr_status.set (s1, transitions = [s2, s5])
     db.pr_status.set (s2, transitions = [s3, s4, s5])
+    db.pr_status.set (s3, transitions = [s6])
+    db.pr_status.set (s6, transitions = [s7])
 if 'pr_approval_status' in db.classes :
     s1 = db.pr_approval_status.create (name = 'undecided', order = 1)
     s2 = db.pr_approval_status.create (name = 'approved',  order = 2)
