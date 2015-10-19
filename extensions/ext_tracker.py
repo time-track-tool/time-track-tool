@@ -38,6 +38,8 @@ def get_kpm (db, issue) :
         should be found (it's an error if there is more than one).
         If none is found we create a new one and return it.
     """
+    if issue is None :
+        return None
     kpm_attr = db.kpm.filter (None, dict (issue = issue.id))
     assert len (kpm_attr) <= 1
     if kpm_attr :
@@ -54,6 +56,8 @@ def get_kpm (db, issue) :
                 # if already synced this should be created by the sync.
                 if issue.ext_id :
                     return None
+            else :
+                return None
         kpm = db._db.kpm.create (issue = issue.id)
         db._db.commit ()
     return db.kpm.filter (None, dict (issue = issue.id)) [0]
