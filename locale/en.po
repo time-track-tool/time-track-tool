@@ -3264,7 +3264,7 @@ msgid "product"
 msgstr "Product"
 
 msgid "product_family"
-msgstr "Business Case"
+msgstr "Product family"
 
 msgid "The %(Property)s of the %(Classname)s (level 3 classification)."
 msgstr ""
@@ -3282,7 +3282,7 @@ msgid "The %(Property)s of the %(Classname)s (level 1 classification)."
 msgstr ""
 
 msgid "product_family.id"
-msgstr "Business Case Id"
+msgstr "Product family Id"
 
 msgid "The Id of %(Property)s."
 msgstr ""
@@ -3614,7 +3614,7 @@ msgid "Material number in SAP"
 msgstr ""
 
 msgid "sap_material"
-msgstr "SAP Material number"
+msgstr "Material number"
 
 msgid "For tracking in SAP"
 msgstr ""
