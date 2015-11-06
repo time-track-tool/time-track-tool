@@ -331,15 +331,15 @@ class Product_Sync (object) :
                 # now we had the SAP-Name (which is fine) and found some
                 # long-obsolete old-name in Radix.
                 if 'parent' in params and node.parent != params ['parent'] :
-                    d ['parent'] = params ['parent']
+                    d [str ('parent')] = params ['parent']
                 if 'prodcat' in params and node.prodcat != params ['prodcat'] :
-                    d ['prodcat'] = params ['prodcat']
+                    d [str ('prodcat')] = params ['prodcat']
                 for a in 'product_family', 'product_line', 'product_use_case' :
                     if a in params and getattr (node, a) != params [a] :
-                        d [a] = params [a]
+                        d [str (a)] = params [a]
                 sm = params.get ('sap_material')
                 if sm and node.sap_material != sm :
-                    d ['sap_material'] = sm
+                    d [str ('sap_material')] = sm
                 if d :
                     self.verbose ("Update %s: %s: %s" % (cls.classname, k, d))
                     if self.opt.update :
@@ -348,7 +348,7 @@ class Product_Sync (object) :
             if self.opt.update :
                 id = cls.create (** params)
             else :
-                id = '999999' # fake id
+                id = str ('999999') # fake id
             self.verbose \
                 ("Create %s%s: %s: %s" % (cls.classname, id, k, params))
             nodedict [k] = id
@@ -382,55 +382,55 @@ def main () :
 
     cmd = OptionParser ("Usage: %prog [options] sap-inputfile radix-inputfile")
     cmd.add_option \
-        ( '-d', '--directory'
+        ( str ('-d'), str ('--directory')
         , dest    = 'dir'
         , help    = 'Tracker instance directory'
         , default = dir
         )
     cmd.add_option \
-        ( '--debug'
+        ( str ('--debug')
         , dest    = 'debug'
         , help    = 'Debug output'
         , action  = 'store_true'
         )
     cmd.add_option \
-        ( '-D', '--sap-delimiter'
+        ( str ('-D'), str ('--sap-delimiter')
         , dest    = 'delimiter'
         , help    = 'CSV delimiter for SAP input-file'
         , default = '\t'
         )
     cmd.add_option \
-        ( '-R', '--radix-delimiter'
+        ( str ('-R'), str ('--radix-delimiter')
         , dest    = 'radix_delimiter'
         , help    = 'CSV delimiter for Radix input-file'
         , default = '\t'
         )
     cmd.add_option \
-        ( '-E', '--encoding'
+        ( str ('-E'), str ('--encoding')
         , dest    = 'encoding'
         , help    = 'CSV character encoding for SAP input-file'
         , default = 'latin1'
         )
     cmd.add_option \
-        ( '-e', '--radix-encoding'
+        ( str ('-e'), str ('--radix-encoding')
         , dest    = 'radix_encoding'
         , help    = 'CSV character encoding for Radix input-file'
         , default = 'utf-16'
         )
     cmd.add_option \
-        ( '-i', '--invalidate'
+        ( str ('-i'), str ('--invalidate')
         , dest   = 'invalidate'
         , help   = 'Invalidate if not in import file'
         , action = 'store_true'
         )
     cmd.add_option \
-        ( '-u', '--update'
+        ( str ('-u'), str ('--update')
         , dest   = 'update'
         , help   = 'Really do synchronisation'
         , action = 'store_true'
         )
     cmd.add_option \
-        ( '-v', '--verbose'
+        ( str ('-v'), str ('--verbose')
         , dest   = 'verbose'
         , help   = 'Verbose output'
         , action = 'store_true'
