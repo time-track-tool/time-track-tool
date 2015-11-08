@@ -62,6 +62,7 @@ def init \
                 , organisation          = Link      ("organisation")
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
+                , purchasing_agent      = Link      ("user")
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ("name")
@@ -85,6 +86,7 @@ def init \
         , description           = String    ()
         , responsible           = Link      ("user")
         , deputy                = Link      ("user")
+        , purchasing_agent      = Link      ("user")
         )
     sap_cc.setkey ("name")
 
@@ -104,6 +106,7 @@ def security (db, ** kw) :
         [ ("Project",           "Project Office")
         , ("Project_View",      "May view project data")
         , ("Controlling",       "Controlling")
+        , ("Procurement",       "Purchasing/Procurement")
         ]
 
     #     classname
@@ -130,6 +133,16 @@ def security (db, ** kw) :
             , "nosy", "organisation", "responsible", "status"
             )
           )
+        , ( "time_project", "Edit", ["Procurement"]
+          , ( "purchasing_agent"
+            ,
+            )
+          )
+        , ( "sap_cc", "Edit", ["Procurement"]
+          , ( "purchasing_agent"
+            ,
+            )
+          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -144,6 +157,18 @@ def security (db, ** kw) :
         , description = fixdoc (sum_common.time_project_viewable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        )
+    db.security.addPermissionToRole ('Procurement', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'sap_cc'
+        )
+    db.security.addPermissionToRole ('Procurement', p)
 
     db.security.addPermissionToRole ('Project', 'Create', 'time_project')
 
