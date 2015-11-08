@@ -1687,6 +1687,9 @@ msgstr "Depends (id)"
 msgid "deputy"
 msgstr "Deputy"
 
+msgid "purchasing_agent"
+msgstr "Purchasing agent"
+
 msgid "Substitute for the responsible Person of %(Classname)s"
 msgstr ""
 
