@@ -1359,6 +1359,8 @@ _helptext          = \
           '''
       ]
     , ""'purchase_type'               : [""'''%(Property)s of %(Classname)s''']
+    , ""'purchasing_agent'            :
+      [""'''Person responsible for purchasing for this %(Classname)s''']
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
     , ""'query++tmplate'              :
