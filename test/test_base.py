@@ -741,7 +741,7 @@ class Test_Case_Support_Timetracker (_Test_Case) :
         , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
-        , 'office', 'project', 'project_view', 'staff-report'
+        , 'office', 'procurement', 'project', 'project_view', 'staff-report'
         , 'summary_view', 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
@@ -753,8 +753,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     roles = \
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'nosy'
-        , 'office', 'pgp', 'project', 'project_view', 'staff-report'
-        , 'summary_view', 'user', 'user_view'
+        , 'office', 'pgp', 'procurement', 'project', 'project_view'
+        , 'staff-report', 'summary_view', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
@@ -1028,10 +1028,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]), 10)
         self.assertEqual (lines [0][0], 'Level')
-        self.assertEqual (lines [0][1], 'Business Case')
+        self.assertEqual (lines [0][1], 'Product family')
         self.assertEqual (lines [0][2], 'Project type')
         self.assertEqual (lines [0][3], 'Reporting group')
-        self.assertEqual (lines [0][4], 'Business Case Id')
+        self.assertEqual (lines [0][4], 'Product family Id')
         self.assertEqual (lines [0][5], 'Project type Id')
         self.assertEqual (lines [0][6], 'Reporting group Id')
         self.assertEqual (lines [0][7], 'Time Period')
@@ -1137,7 +1137,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]),  7)
         self.assertEqual (lines [0][0], 'Level')
-        self.assertEqual (lines [0][1], 'Business Case Id')
+        self.assertEqual (lines [0][1], 'Product family Id')
         self.assertEqual (lines [0][2], 'Project type Id')
         self.assertEqual (lines [0][3], 'Reporting group Id')
         self.assertEqual (lines [0][4], 'Time Period')
@@ -1226,7 +1226,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (len (lines),     1)
         self.assertEqual (len (lines [0]), 4)
         self.assertEqual (lines [0][0], 'Level')
-        self.assertEqual (lines [0][1], 'Business Case')
+        self.assertEqual (lines [0][1], 'Product family')
         self.assertEqual (lines [0][2], 'Time Period')
         self.assertEqual (lines [0][3], 'Sum')
 
@@ -1258,14 +1258,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
         self.assertEqual (lines [0][0], 'Level')
-        self.assertEqual (lines [0][1], 'Business Case')
+        self.assertEqual (lines [0][1], 'Product family')
         self.assertEqual (lines [0][2], 'Time Period')
         self.assertEqual (lines [0][3], 'Sum')
-        self.assertEqual (lines [1][0], 'Business Case Family test')
+        self.assertEqual (lines [1][0], 'Product family Family test')
         self.assertEqual (lines [1][1], 'Family test')
         self.assertEqual (lines [1][2], 'WW 23/2013')
         self.assertEqual (lines [1][3], '5.00')
-        self.assertEqual (lines [2][0], 'Business Case Family test')
+        self.assertEqual (lines [2][0], 'Product family Family test')
         self.assertEqual (lines [2][1], 'Family test')
         self.assertEqual (lines [2][2], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][3], '5.00')
@@ -2744,8 +2744,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         , 'external', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
-        , 'office', 'pgp', 'project', 'project_view', 'staff-report'
-        , 'summary_view', 'supportadmin', 'user', 'user_view'
+        , 'office', 'pgp', 'procurement', 'project', 'project_view'
+        , 'staff-report', 'summary_view', 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
 

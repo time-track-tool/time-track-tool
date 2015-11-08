@@ -510,6 +510,7 @@ properties = \
       , [ 'deputy'
         , 'description'
         , 'name'
+        , 'purchasing_agent'
         , 'responsible'
         ]
       )
@@ -667,6 +668,7 @@ properties = \
         , 'planned_effort'
         , 'product_family'
         , 'project_type'
+        , 'purchasing_agent'
         , 'reporting_group'
         , 'responsible'
         , 'status'

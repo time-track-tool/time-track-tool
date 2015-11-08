@@ -633,6 +633,12 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
+        , ( 'purchasing_agent'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
         , ( 'responsible'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
@@ -688,6 +694,12 @@ properties = \
             ]
           )
         , ( 'organisation'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'purchasing_agent'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'

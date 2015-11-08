@@ -27,6 +27,10 @@ Role "nosy":
 Role "pgp":
 Role "procurement":
   (Search for "user" only)
+  (View for "sap_cc" only)
+  (View for "time_project" only)
+ User is allowed Edit on (Edit for "sap_cc": ('purchasing_agent',) only)
+ User is allowed Edit on (Edit for "time_project": ('purchasing_agent',) only)
  User is allowed Edit on (Edit for "user": ('roles', 'password') only)
  User is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('messages', 'status') only)
  User is allowed to access pr_approval (View for "pr_approval" only)

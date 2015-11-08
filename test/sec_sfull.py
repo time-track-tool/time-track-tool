@@ -222,6 +222,11 @@ Role "office":
  User is allowed Edit on (Edit for "user": ('title', 'room', 'position') only)
  User is allowed to create room (Create for "room" only)
  User is allowed to edit room (Edit for "room" only)
+Role "procurement":
+  (View for "sap_cc" only)
+  (View for "time_project" only)
+ User is allowed Edit on (Edit for "sap_cc": ('purchasing_agent',) only)
+ User is allowed Edit on (Edit for "time_project": ('purchasing_agent',) only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed Edit on (Edit for "time_project": ('max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group') only)
