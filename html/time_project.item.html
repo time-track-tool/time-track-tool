@@ -29,6 +29,16 @@
        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
       </tal:block>
      </td>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'purchasing_agent')"/>
+     <td>
+      <tal:block tal:define="name      string:purchasing_agent;
+                             form      string:itemSynopsis;
+                             dont_care string:don't care;
+                             selected python:context.purchasing_agent and context.purchasing_agent.id or 0">
+       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+      </tal:block>
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
