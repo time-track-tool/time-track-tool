@@ -619,7 +619,11 @@ class ExtProperty :
     def pretty_ids (self, idstring) :
         if isinstance (idstring, list) :
             return ' '.join (idstring)
-        if  not idstring or idstring == '-1' or not self.key :
+        if  (  not idstring
+            or idstring == '-1'
+            or not self.key
+            or '.' in self.searchname
+            ) :
             return idstring
         ids = idstring.split (',')
         try :
