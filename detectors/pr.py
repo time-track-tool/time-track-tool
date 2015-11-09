@@ -328,13 +328,15 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
             for n in nosy_for_approval (db, app) :
                 if n in nosy :
                     del nosy [n]
-            procure_uids = common.get_uids_with_role (db, 'Procurement')
             if is_new :
-                nosy.update (dict.fromkeys (procure_uids))
-            else :
-                for n in procure_uids :
-                    if n in nosy :
-                        del nosy [n]
+                if pr.time_project :
+                    id = pr.time_project
+                    agent = db.time_project.get (id, 'purchasing_agent')
+                else :
+                    assert pr.sap_cc
+                    agent = db.sap_cc.get (pr.sap_cc, 'purchasing_agent')
+                if agent :
+                    nosy [agent] = 1
             for a in apps :
                 ap = cl.getnode (a)
                 if ap.status != apr :
@@ -345,7 +347,6 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                         (db, pr, ap, nosy, db.config.ext.MAIL_PR_APPROVAL_TEXT)
                     break
             else :
-                nosy.update (dict.fromkeys (procure_uids))
                 update_pr \
                     ( db
                     , pr

@@ -30,7 +30,8 @@
           (classname, 'requester')"/>
       <td>
        <span tal:content="structure python:context.requester.field ()"/>
-       <span tal:content="structure python:db.user.classhelp
+       <span tal:condition="context/requester/is_edit_ok"
+             tal:content="structure python:db.user.classhelp
                   ( 'username,realname'
                   , property='requester'
                   , inputtype='radio'
