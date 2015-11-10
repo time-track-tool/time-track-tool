@@ -940,6 +940,9 @@ properties = \
         , ( 'csv_delimiter'
           , ['admin', 'user_view']
           )
+        , ( 'guid'
+          , ['admin', 'user_view']
+          )
         , ( 'nickname'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )

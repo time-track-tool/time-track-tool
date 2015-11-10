@@ -753,6 +753,9 @@ properties = \
         , ( 'department'
           , ['admin', 'procurement', 'user_view']
           )
+        , ( 'guid'
+          , ['admin', 'procurement', 'user_view']
+          )
         , ( 'org_location'
           , ['admin', 'procurement', 'user_view']
           )

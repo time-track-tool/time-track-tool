@@ -401,6 +401,7 @@ properties = \
       , [ 'address'
         , 'alternate_addresses'
         , 'csv_delimiter'
+        , 'guid'
         , 'nickname'
         , 'password'
         , 'queries'

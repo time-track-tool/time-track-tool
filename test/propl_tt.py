@@ -359,6 +359,7 @@ properties = \
         , 'csv_delimiter'
         , 'department'
         , 'firstname'
+        , 'guid'
         , 'job_description'
         , 'lastname'
         , 'lunch_duration'

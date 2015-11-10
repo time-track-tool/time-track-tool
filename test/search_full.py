@@ -1648,6 +1648,9 @@ properties = \
         , ( 'firstname'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
+        , ( 'guid'
+          , ['admin', 'user_view']
+          )
         , ( 'job_description'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )

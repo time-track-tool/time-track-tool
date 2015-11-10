@@ -181,6 +181,7 @@ properties = \
         , 'alternate_addresses'
         , 'csv_delimiter'
         , 'department'
+        , 'guid'
         , 'org_location'
         , 'password'
         , 'queries'
