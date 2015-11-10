@@ -12,63 +12,39 @@ tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
 def fix_products () :
-    names = {}
+    """ Search for products without a sap_material number
+        check if the product has ever been used.
+        Output list of products that are never used and a separate list
+        of products that *are* used.
+    """
+    used   = []
+    unused = []
+    for id in db.product.getnodeids (retired = True) :
+        prd = db.product.getnode (id)
+        assert prd.sap_material is None
+        issues = db.support.filter (None, dict (product = id))
+        assert not issues
+        print "Destroying: product%s: %s" % (id, prd.name)
+        db.product.destroy (id)
     for id in db.product.getnodeids (retired = False) :
         prd = db.product.getnode (id)
-        if prd.prodcat is None :
+        if prd.sap_material is not None :
             continue
-        pc  = db.prodcat.getnode (prd.prodcat)
-        assert (pc.level == 4)
-        if pc.name in names :
-            print "duplicate product: %s/%s %s -- %s" \
-                % (names [pc.name], id, pc.name, prd.name)
-            for sid in db.support.filter (None, dict (product = id)) :
-                print "Changing product for support%s %s->%s" \
-                    % (sid, id, names [pc.name])
-                db.support.set (sid, product = names [pc.name])
-            db.product.retire (id)
+        issues = db.support.filter (None, dict (product = id))
+        if issues :
+            used.append (prd)
         else :
-            product_family   = pc.parent
-            product_use_case = db.prodcat.get (pc.parent, 'parent')
-            product_line     = db.prodcat.get (product_use_case, 'parent')
-            assert (db.prodcat.get (product_family,   'level') == 3)
-            assert (db.prodcat.get (product_use_case, 'level') == 2)
-            assert (db.prodcat.get (product_line,     'level') == 1)
-            db.product.set \
-                ( id
-                , description      = prd.name
-                , name             = pc.name
-                , product_family   = product_family
-                , product_use_case = product_use_case
-                , product_line     = product_line
-                , prodcat          = None
-                )
-            names [pc.name] = id
-
-lvl_names = ['product_line', 'product_use_case', 'product_family']
-
-def fix_prodcats () :
-    lvl = [{}, {}, {}]
-    for id in db.prodcat.getnodeids (retired = False) :
-        pc = db.prodcat.getnode (id)
-        if pc.level > 3 :
-            #print "retire level 4: prodcat%s" % id
-            db.prodcat.retire (id)
-            continue
-        assert pc.level
-        name = normalize_name (pc.name)
-        lv   = int (pc.level - 1)
-        if name in lvl [lv] :
-            prods = db.product.filter (None, {lvl_names [lv] : id})
-            for p in prods :
-                print "Fixing %s (%s) of product%s %s->%s" \
-                    % (lvl_names [lv], lv, p, id, lvl [lv][name])
-                db.product.set (p, ** {lvl_names [lv] : lvl [lv][name]})
-            print "retire level %s: prodcat%s" % (lv + 1, id)
-            db.prodcat.retire (id)
-        else :
-            lvl [lv][name] = id
+            unused.append (prd)
+    for prd in sorted (used, key = lambda x : x.name) :
+        print "Used: product%s valid:%s: %s" % (prd.id, prd.valid, prd.name)
+        try :
+            num = str (int (prd.name))
+            db.product.set (prd.id, sap_material = num)
+        except ValueError :
+            db.product.set (prd.id, sap_material = 'legacy-%s' % prd.id)
+    for prd in sorted (unused, key = lambda x : x.name) :
+        print "Unused: product%s valid:%s: %s" % (prd.id, prd.valid, prd.name)
+        db.product.destroy (prd.id)
 
 fix_products ()
-fix_prodcats ()
 db.commit()
