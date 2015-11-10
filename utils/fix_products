@@ -5,8 +5,6 @@ import os
 from roundup           import date
 from roundup           import instance
 
-from sync_products     import normalize_name
-
 dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
