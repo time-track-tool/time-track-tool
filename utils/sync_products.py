@@ -47,12 +47,25 @@ def normalize_name (name) :
     GENERAL-PURPOSE-ECUS-HMIS
     >>> print (normalize_name ('GENERAL-PURPOSE-ECUS/HMIS'))
     GENERAL-PURPOSE-ECUS-HMIS
+    >>> print (normalize_name ('HY-eVision\xb2 7.0'))
+    VISION2
+    >>> print (normalize_name ('HY-TTC 200'))
+    TTC-200
+    >>> print (normalize_name ('HY-TTC 50'))
+    TTC-50
     """
     x = '-'.join (l for l in splitre.split (name.upper ()) if l)
     if x == 'OTHERS' :
         x = 'OTHER'
     if x == 'PROJECTS-OTHERS' :
         x = 'PROJECTS-OTHER'
+    if x.startswith ('HY-') :
+        if x == 'HY-TTC-50' :
+            x = 'TTC-50'
+        if x == 'HY-TTC-200' :
+            x = 'TTC-200'
+        if x == 'HY-EVISION\xb2-7.0' :
+            x = 'VISION2'
     try :
         x = str (int (x))
     except ValueError :
@@ -111,6 +124,15 @@ class Product_Sync (object) :
         self.db       = db = tracker.open ('admin')
         self.prodcats = {}
         self.prodused = {}
+        # Retire some unused product categories:
+        for n in 'HY-eVision\xb2 7.0', 'HY-TTC 200', 'HY-TTC 50' :
+            ps = db.prodcat.filter (None, dict (level = 3, name = n))
+            if not ps :
+                continue
+            assert len (ps) == 1
+            c = ps [0]
+            print ("Retire prodcat%s: %r" % (c, n))
+            db.prodcat.retire (c)
         for id in db.prodcat.getnodeids (retired = False) :
             pd  = db.prodcat.getnode (id)
             nn  = normalize_name (pd.name.decode ('utf-8'))
