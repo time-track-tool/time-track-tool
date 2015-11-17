@@ -43,6 +43,10 @@ def normalize_name (name) :
     12345
     >>> print (normalize_name ('012345 '))
     12345
+    >>> print (normalize_name ('General Purpose ECUs / HMIs'))
+    GENERAL-PURPOSE-ECUS-HMIS
+    >>> print (normalize_name ('GENERAL-PURPOSE-ECUS/HMIS'))
+    GENERAL-PURPOSE-ECUS-HMIS
     """
     x = '-'.join (l for l in splitre.split (name.upper ()) if l)
     if x == 'OTHERS' :
@@ -138,6 +142,7 @@ class Product_Sync (object) :
                 continue
             self.sap_ids [id] = len (self.sap_recs)
             self.sap_recs.append (x)
+            assert x is self.sap_recs [self.sap_ids [id]]
         self.debug ("RADIX")
         self.rad_recs = []
         self.rad_ids  = {}
@@ -149,6 +154,7 @@ class Product_Sync (object) :
                 continue
             self.rad_ids [id] = len (self.rad_recs)
             self.rad_recs.append (x)
+            assert x is self.rad_recs [self.rad_ids [id]]
         for id in self.rad_ids :
             try :
                 id = int (id)
@@ -158,8 +164,10 @@ class Product_Sync (object) :
                 self.warn ("Ignoring Radix ID: %s" % id)
             # Radix wins for IDs < 11500
             if str (id) in self.sap_ids :
+                mat = self.get_material \
+                    (self.sap_recs [self.sap_ids [str (id)]])
+                assert (str (id) == mat)
                 self.warn ("Ignoring SAP ID: %s (also in Radix)" % id)
-                del self.sap_recs [self.sap_ids [str (id)]]
                 del self.sap_ids  [str (id)]
         for id in self.sap_ids :
             assert id not in self.rad_ids
@@ -238,9 +246,18 @@ class Product_Sync (object) :
                 yield (line)
     # end def fixer_rad
 
+    def rec_iter (self) :
+        for id in sorted (self.rad_ids) :
+            idx = self.rad_ids [id]
+            yield self.rad_recs [idx]
+        for id in sorted (self.sap_ids) :
+            idx = self.sap_ids [id]
+            yield self.sap_recs [idx]
+    # end def rec_iter
+
     def sync (self) :
         skey = lambda x : x [1]
-        for rec in self.rad_recs + self.sap_recs :
+        for rec in self.rec_iter () :
             if not rec ['Product Family'] :
                 self.warn ('Ignoring: %r' % rec)
                 continue
@@ -272,7 +289,7 @@ class Product_Sync (object) :
             key  = normalize_name (n)
             key2 = normalize_name (v)
             if key and key2 and key != key2 :
-                k1 = k1 = None
+                k1 = k2 = None
                 try :
                     k1 = int (key)
                     k2 = int (key2)
@@ -283,8 +300,11 @@ class Product_Sync (object) :
                         ( "Differing numeric Old/New material number: %s %s"
                         % (k1, k2)
                         )
+                    #print (key, key2, a, n, v)
                     key2 = a = None
                     n = v
+                    key = normalize_name (n)
+                    #print (key, key2, a, n, v)
                
             if v and v != '0' and len (pcats) == 3 :
                 par = dict \
@@ -306,7 +326,7 @@ class Product_Sync (object) :
                     , key2
                     )
         self.validity (self.db.prodcat,       self.prodcats, self.prodused)
-        self.validity (self.db.product,       self.products, self.pr_used)
+        #self.validity (self.db.product,       self.products, self.pr_used)
         if self.opt.update :
             self.db.commit()
     # end def sync
@@ -330,21 +350,21 @@ class Product_Sync (object) :
                 # We don't update name: This could only mean that up to
                 # now we had the SAP-Name (which is fine) and found some
                 # long-obsolete old-name in Radix.
-                if 'parent' in params and node.parent != params ['parent'] :
-                    d [str ('parent')] = params ['parent']
-                if 'prodcat' in params and node.prodcat != params ['prodcat'] :
-                    d [str ('prodcat')] = params ['prodcat']
-                for a in 'product_family', 'product_line', 'product_use_case' :
+                l = ( 'parent', 'prodcat', 'description', 'sap_material'
+                    , 'product_family', 'product_line', 'product_use_case'
+                    )
+                for a in l :
                     if a in params and getattr (node, a) != params [a] :
                         d [str (a)] = params [a]
-                sm = params.get ('sap_material')
-                if sm and node.sap_material != sm :
-                    d [str ('sap_material')] = sm
                 if d :
                     self.verbose ("Update %s: %s: %s" % (cls.classname, k, d))
                     if self.opt.update :
                         cls.set (nodedict [k], ** d)
         else :
+            if 'sap_material' in params :
+                params ['name'] = params ['sap_material']
+            if key2 :
+                k = key2
             if self.opt.update :
                 id = cls.create (** params)
             else :
@@ -361,7 +381,8 @@ class Product_Sync (object) :
             id = nodedict [k]
             if v or self.opt.invalidate :
                 if not v :
-                    self.verbose ("Invalidating %s: %s" % (cls.classname, k))
+                    self.verbose \
+                        ("Invalidating %s%s: %s" % (cls.classname, id, k))
                 if self.opt.update :
                     cls.set (id, valid = v)
     # end def validity
