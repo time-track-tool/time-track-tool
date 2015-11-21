@@ -1330,6 +1330,7 @@ _helptext          = \
     , ""'prodcat.parent.parent.parent':
       [""'''Product category level 1''']
     , ""'product'                     : [""'''%(Property)s of %(Classname)s''']
+    , ""'product++name'               : [""'''%(Property)s of %(Classname)s''']
     , ""'product_family'              :
       [""'''The %(Property)s of the %(Classname)s (level 3 classification).''']
     , ""'product_use_case'            :

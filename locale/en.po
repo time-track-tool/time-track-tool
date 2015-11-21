@@ -959,6 +959,9 @@ msgstr ""
 msgid "abo++end"
 msgstr ""
 
+msgid "product++name"
+msgstr "Old material number"
+
 msgid "Date when this subscription ends"
 msgstr ""
 
