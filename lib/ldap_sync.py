@@ -842,10 +842,20 @@ class LDAP_Roundup_Sync (object) :
         if update is not None :
             self.update_roundup = update
         usrcls = self.db.user
-        usernames = dict.fromkeys \
-            (usrcls.get (i, 'username') for i in usrcls.getnodeids ())
-        usernames.update (dict.fromkeys (self.get_all_ldap_usernames ()))
-        for username in usernames.iterkeys () :
+        # A note on this code: Users might be renamed in ldap.
+        # Therefore we *first* sync with ldap to get renames (users are
+        # matched via guid). Then we sync again with all usernames in
+        # roundup that are *not* in ldap.
+        usernames = dict.fromkeys (self.get_all_ldap_usernames ())
+        for username in usernames :
+            try :
+                self.sync_user_from_ldap (username)
+            except Exception :
+                print >> sys.stderr, "Error synchronizing user %s" % username
+                print_exc ()
+        u_rup = [usrcls.get (i, 'username') for i in usrcls.getnodeids ()]
+        u_rup = dict ((u, 1) for u in u_rup if u not in usernames)
+        for username in u_rup :
             try :
                 self.sync_user_from_ldap (username)
             except Exception :
