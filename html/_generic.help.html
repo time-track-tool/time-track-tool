@@ -71,7 +71,9 @@
      <table class="classhelp">
        <tr>
            <th>&nbsp;<b>x</b></th>
-           <th tal:repeat="prop props" tal:content="prop" i18n:translate=""></th>
+           <th tal:repeat="prop props"
+               tal:content="structure python: utils.fieldname
+                  (request.classname, prop)" i18n:translate=""></th>
        </tr>
        <tr tal:repeat="item batch">
          <tal:block tal:define="attr python:item[props[0]]" >
