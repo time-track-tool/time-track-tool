@@ -7,6 +7,7 @@ from copy                import copy
 from traceback           import print_exc
 from ldap.cidict         import cidict
 from ldap.controls       import SimplePagedResultsControl
+from ldap.filter         import escape_filter_chars
 from rsclib.autosuper    import autosuper
 from roundup.date        import Date
 from roundup.cgi.actions import LoginAction
@@ -66,6 +67,34 @@ def get_position (user, attr) :
     assert (attr == 'position')
     return user.cl.db.position.get (user.position, 'position')
 # end def get_position
+
+def tohex (s) :
+    return ''.join ('%02X' % ord (k) for k in s)
+# end def tohex
+
+def fromhex (s) :
+    """ Invert tohex above
+        >>> fromhex ('1001020304050607ff4142')
+        '\\x10\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\xffAB'
+        >>> fromhex ('47110815')
+        'G\\x11\\x08\\x15'
+    """
+    return ''.join (chr (int (a+b, 16)) for (a, b) in zip (s [0::2], s [1::2]))
+# end def fromhex
+
+def get_guid (luser, attr) :
+    r = luser.get (attr, [None]) [0]
+    if r is not None :
+        return tohex (r)
+    return r
+# end def get_guid
+
+def set_guid (node, attribute) :
+    s = node [attribute]
+    if not s :
+        return s
+    return fromhex (s)
+# end def set_guid
 
 class LDAP_Roundup_Sync (object) :
     """ Sync users from LDAP to Roundup """
@@ -183,6 +212,13 @@ class LDAP_Roundup_Sync (object) :
                 , lambda x, y : x [y].upper ()
                 , lambda x, y : x.get (y, [''])[0].lower ()
                 )
+        # FIXME: Test this for user lookup via guid
+        if 'username' in props :
+            attr_u ['username'] = \
+                ( 'uid'
+                , 0
+                , lambda x, y : x.get (y, [None])[0]
+                )
         if 'org_location' in props :
             attr_u ['org_location'] = \
                 ( 'company'
@@ -237,6 +273,12 @@ class LDAP_Roundup_Sync (object) :
                 ( 'carLicense'
                 , 1
                 , lambda x, y : x.get (y, [None])[0]
+                )
+        if 'guid' in props :
+            attr_u ['guid'] = \
+                ( 'objectGUID'
+                , set_guid
+                , get_guid
                 )
         if self.contact_types :
             attr_map ['user_contact'] = \
@@ -386,6 +428,17 @@ class LDAP_Roundup_Sync (object) :
             )
         return self._get_ldap_user (result)
     # end def get_ldap_user_by_username
+
+    def get_ldap_user_by_guid (self, guid) :
+        g = escape_filter_chars (guid, escape_mode = 1)
+        result = self.ldcon.search_s \
+            ( self.cfg.LDAP_BASE_DN
+            , ldap.SCOPE_SUBTREE
+            , '(&(objectGUID=%s)(objectclass=%s))' % (g, self.objectclass)
+            , None
+            )
+        return self._get_ldap_user (result)
+    # end def get_ldap_user_by_guid
 
     def get_roundup_uid_from_dn_attr (self, luser, attr) :
         try :
@@ -579,21 +632,33 @@ class LDAP_Roundup_Sync (object) :
     # end def sync_contacts_from_ldap
 
     def sync_user_from_ldap (self, username, update = None) :
+        luser = self.get_ldap_user_by_username (username)
+        if luser :
+            guid = luser.objectGUID [0]
         if update is not None :
             self.update_roundup = update
         uid = None
-        try :
-            uid   = self.db.user.lookup  (username)
-        except KeyError :
-            pass
+        # First try to find user via guid:
+        uids = None
+        if luser :
+            uids = self.db.user.filter (None, dict (guid = tohex (guid)))
+        if uids :
+            assert len (uids) == 1
+            uid = uids [0]
+        else :
+            try :
+                uid   = self.db.user.lookup  (username)
+            except KeyError :
+                pass
         user  = uid and self.db.user.getnode (uid)
+        if user and not luser and user.guid :
+            luser = self.get_ldap_user_by_guid (fromhex (user.guid))
         # don't modify system users:
         reserved = ('admin', 'anonymous')
         if  (  username in reserved
             or user and user.status not in self.status_sync
             ) :
             return
-        luser = self.get_ldap_user_by_username (username)
         if not user and (not luser or self.is_obsolete (luser)) :
             # nothing to do
             return
@@ -640,10 +705,11 @@ class LDAP_Roundup_Sync (object) :
                 assert (d)
                 d ['roles']  = roles
                 d ['status'] = new_status_id
+                if 'username' not in d :
+                    d ['username'] = username
                 print "Create roundup: %s" % username, d
                 if self.update_roundup :
-                    uid = self.db.user.create \
-                        (username = username, ** d)
+                    uid = self.db.user.create (** d)
                     changed = True
         if changed and self.update_roundup :
             self.db.commit ()
@@ -734,6 +800,8 @@ class LDAP_Roundup_Sync (object) :
                     print "%s: Picture too large: %s" \
                         % (user.username, len (rupattr))
                     continue
+            if rk == 'guid' :
+                prupattr = repr (rupattr)
             if lk not in luser :
                 if user [rk] :
                     print "%s: Inserting: %s (%s)" \
@@ -746,6 +814,8 @@ class LDAP_Roundup_Sync (object) :
                 ldattr = pldattr = luser [lk][0]
                 if rk == 'pictures' :
                     pldattr = '<suppressed>'
+                if rk == 'guid' :
+                    pldattr = repr (ldattr)
                 if ldattr != rupattr :
                     if not change :
                         print "%s:  attribute differs: %s/%s >%s/%s<" % \
