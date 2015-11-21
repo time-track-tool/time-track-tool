@@ -107,7 +107,7 @@ def init \
         , is_series        = Boolean   ()
         , valid            = Boolean   ()
         )
-    product.setkey ("name")
+    product.setkey ("sap_material")
 
     sup_classification = Class \
         ( db
