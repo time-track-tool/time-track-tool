@@ -27,6 +27,7 @@
  ; want_files      python: True
  ; has_resp        python: 'responsible' in props
  ; has_nosy        python: 'nosy'        in props
+ ; nosy_stati      python: None
  ; use_labelprop   python: 1
  ; approval_for    python: (   'time_record' in db._db.classes
                            and utils.approval_for (db, True)
@@ -1012,14 +1013,8 @@
     <td colspan="3">
      <span tal:replace="structure python:context.nosy.field(70)"/>
      <span tal:condition="context/is_edit_ok"
-           tal:replace="structure python:db.user.classhelp
-             ( utils.user_props (db)
-             , property='nosy'
-             , width='600'
-             , pagesize=500
-             , filter='status=%s;roles=Nosy' % ','.join
-               (db._db.user_status.lookup (i) for i in ('valid', 'system'))
-             )"/><br>
+           tal:replace="structure python:utils.user_classhelp
+             (db, user_status = nosy_stati)"/><br>
     </td>
    </tr>
    <tal:block metal:define-slot="below-nosy" />

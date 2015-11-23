@@ -406,9 +406,13 @@ def user_props (db) :
         (x [0] for x in sorted (props.iteritems (), key = lambda x : x [1]))
 # end def user_props
 
-def user_classhelp (db, property='responsible', inputtype = 'radio') :
-    status = ','.join \
-        (db._db.user_status.filter (None, dict (is_nosy = True)))
+def user_classhelp \
+    (db, property='responsible', inputtype = 'radio', user_status = None) :
+    if user_status :
+        status = user_status
+    else :
+        status = ','.join \
+            (db._db.user_status.filter (None, dict (is_nosy = True)))
     if status :
         status = ';status=' + status
     return db.user.classhelp \
@@ -417,7 +421,7 @@ def user_classhelp (db, property='responsible', inputtype = 'radio') :
         , filter    = 'roles=Nosy' + status
         , inputtype = inputtype
         , width     = '600'
-        , pagesize  = 500
+        , pagesize  = 1000
         )
 # end def user_classhelp
 

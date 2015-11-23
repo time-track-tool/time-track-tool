@@ -19,6 +19,7 @@
   <tal:block tal:define=
     " use_labelprop       python:1
     ; has_resp            python:0
+    ; nosy_stati          python: 'valid,system'
     ; required_attributes string:title
     ; show_closed         request/form/show_closed/value | string:1
     ; show_closed         python:int (show_closed)
@@ -76,7 +77,8 @@
           (classname, 'responsible')"/>
       <td>
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
-       <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
+       <tal:block tal:replace="structure python:utils.user_classhelp
+          (db, user_status=nosy_stati)"/>
       </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'stakeholder')"/>
