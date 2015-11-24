@@ -333,7 +333,9 @@ properties = \
         ]
       )
     , ( 'it_request_type'
-      , [ 'name'
+      , [ 'close_immediately'
+        , 'log_template'
+        , 'name'
         , 'order'
         ]
       )

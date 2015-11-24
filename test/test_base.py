@@ -123,6 +123,7 @@ class _Test_Case (unittest.TestCase) :
         , 'board'
         , 'contact'
         , 'controlling'
+        , 'cso'
         , 'discount'
         , 'doc_admin'
         , 'external'
@@ -738,7 +739,7 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'procurement', 'project', 'project_view', 'staff-report'
@@ -2730,7 +2731,7 @@ class Test_Case_Tracker (_Test_Case) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
-        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
+        [ 'admin', 'anonymous', 'cso', 'external', 'issue_admin', 'it'
         , 'itview', 'msgedit', 'msgsync', 'nosy', 'pgp', 'supportadmin'
         , 'user', 'user_view'
         ]
@@ -2740,7 +2741,7 @@ class Test_Case_Tracker (_Test_Case) :
 class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
-        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
+        [ 'admin', 'anonymous', 'contact', 'controlling', 'cso', 'doc_admin'
         , 'external', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
@@ -4361,7 +4362,7 @@ class Test_Case_ERP (_Test_Case) :
 class Test_Case_IT (_Test_Case) :
     schemaname = 'it'
     roles = \
-        [ 'admin', 'anonymous', 'it', 'ituser', 'itview', 'nosy'
+        [ 'admin', 'anonymous', 'cso', 'it', 'ituser', 'itview', 'nosy'
         , 'user', 'user_view'
         ]
 # end class Test_Case_IT
@@ -4369,7 +4370,7 @@ class Test_Case_IT (_Test_Case) :
 class Test_Case_ITAdr (_Test_Case) :
     schemaname = 'itadr'
     roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'cso', 'it'
         , 'itview', 'nosy', 'pbx', 'type', 'user', 'user_view'
         ]
     transprop_perms = transprop_itadr

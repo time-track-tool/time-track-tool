@@ -358,6 +358,14 @@ _helptext          = \
              all people whose supervisor this is.
           '''
       ]
+    , ""'close_immediately'           :
+      [""'''If a template for logging is specified *and* %(Property)s
+            is set, the issue is closed immediately after creation. Note
+            that this is only done if a log template is also set,
+            this is used for issues that create a log entry and
+            otherwise serve only for documentation.
+         '''
+      ]
     , ""'closed'                      :
       [ ""'''When this %(Classname)s was closed. Automatically set by
              Roundup.
@@ -1023,6 +1031,14 @@ _helptext          = \
       ]
     , ""'location'                    :
       [""'''Location of %(Classname)s, e.g., Vienna HQ.''']
+    , ""'log_template'                :
+      [""'''If %(Property)s is non-empty we log to syslog with the given
+            template. The template is a python format-string with all
+            the issue-properties (including id) and the classname
+            (usually it_issue). Example: "%%(it_request_type.name)s:
+            %%(classname)s%%(id)s: %%(title)s"
+         '''
+      ]
     , ""'login'                       : [generic]
     , ""'login_shell'                 :
       [""'''UNIX login shell for %(Classname)s''']

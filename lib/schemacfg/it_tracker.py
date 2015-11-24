@@ -56,10 +56,14 @@ def init \
     it_category.setkey ("name")
 
     # Sort of ITIL main process
+    # If log_template is non-empty we log with the given template to
+    # syslog.
     it_request_type = Class \
         ( db, ''"it_request_type"
         , name                  = String    ()
         , order                 = Number    ()
+        , log_template          = String    ()
+        , close_immediately     = Boolean   ()
         )
     it_request_type.setkey ('name')
 
@@ -143,18 +147,19 @@ def security (db, ** kw) :
         [ ("IT",     "IT-Department")
         , ("ITView", "View but not change IT data")
         , ("Nosy",   "Allowed on nosy list")
+        , ("CSO",    "Chief Security Officer")
         ]
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("it_category",       ["User"],         ["IT"])
-        , ("it_int_prio",       ["IT", "ITView"], ["IT"])
-        , ("it_issue_status",   ["User"],         [])
-        , ("it_issue",          ["IT", "ITView"], ["IT"])
-        , ("it_prio",           ["User"],         [])
-        , ("it_project",        ["IT", "ITView"], ["IT"])
-        , ("it_project_status", ["User"],         [])
-        , ("it_request_type",   ["User"],         ["IT"])
+        [ ("it_category",       ["User"],                ["IT"])
+        , ("it_int_prio",       ["IT", "ITView", "CSO"], ["IT"])
+        , ("it_issue_status",   ["User"],                [])
+        , ("it_issue",          ["IT", "ITView", "CSO"], ["IT"])
+        , ("it_prio",           ["User"],                [])
+        , ("it_project",        ["IT", "ITView", "CSO"], ["IT"])
+        , ("it_project_status", ["User"],                [])
+        , ("it_request_type",   ["User"],                ["IT"])
         ]
 
     prop_perms = \

@@ -11,6 +11,10 @@ Role "admin":
  User may view everthing (View)
 Role "anonymous":
  User may access the web interface (Web Access)
+Role "cso":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
 Role "it":
   (Search for "user" only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)

@@ -36,6 +36,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 import common
+import syslog
 
 def new_it (db, cl, nodeid, new_values) :
     if 'messages'    not in new_values :
@@ -140,6 +141,64 @@ def reopen_on_message (db, cl, nodeid, new_values) :
             new_values ['status'] = op
 # end def reopen_on_message
 
+class Magic_Dict (object) :
+
+    def __init__ (self, item) :
+        self.item = item
+        self.cls  = item.cl
+        self.db   = self.cls.db
+    # end def __init__
+
+    def __getitem__ (self, name) :
+        if name == 'classname' :
+            return self.cls.classname
+        names = name.split ('.')
+        n     = names [0]
+        item  = self.item [n]
+        prop  = self.cls.getprops () [n]
+        pcls  = None
+        if hasattr (prop, 'classname') :
+            pcls = self.db.getclass (prop.classname)
+        for n in names [1:] :
+            item = pcls.get (item, n)
+            prop = pcls.getprops () [n]
+            pcls = None
+            if hasattr (prop, 'classname') :
+                pcls = self.db.getclass (prop.classname)
+        return item
+    # end def __getitem__
+
+# end class Magic_Dict
+
+def check_log_incident (db, cl, nodeid, old_values) :
+    """ We check if the request_type has a log_template set.
+        If so, we log to syslog *and* put the CSO onto the nosy list.
+        If 'close_immediately' is set, we then close the issue.
+    """
+    item = cl.getnode (nodeid)
+    rt = db.it_request_type.getnode (item.it_request_type)
+    if not rt.log_template :
+        return
+    syslog.openlog ('roundup', 0, syslog.LOG_DAEMON)
+    syslog.syslog  (rt.log_template % Magic_Dict (item))
+    status_class = db.getclass (cl.getprops ()['status'].classname)
+    if rt.close_immediately :
+        cl.set (nodeid, status = status_class.lookup ('closed'))
+# end def check_log_incident
+
+def add_cso (db, cl, nodeid, new_values) :
+    """ We check if the request_type has a log_template set.
+        If so, we add all users with cso role to nosy.
+    """
+    if 'it_request_type' in new_values :
+        rt = db.it_request_type.getnode (new_values ['it_request_type'])
+        if not rt.log_template :
+            return
+        nosy = new_values.get ('nosy', [])
+        nosy.extend (common.get_uids_with_role (db, 'cso'))
+        new_values ['nosy'] = nosy
+# end def add_cso
+
 def stay_closed (db, cl, nodeid, new_values) :
     if 'status' in new_values :
         nst = new_values ['status']
@@ -168,6 +227,8 @@ def init (db) :
         cls.audit     ("set",    check_it)
     db.it_issue.audit ("create", audit_superseder)
     db.it_issue.audit ("set",    audit_superseder)
+    db.it_issue.audit ("create", add_cso)
+    db.it_issue.react ("create", check_log_incident)
     db.it_issue.audit ("set",    reopen_on_message)
     db.it_issue.audit ("set",    stay_closed, priority = 150)
 # end def init

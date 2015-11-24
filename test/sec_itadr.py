@@ -34,6 +34,10 @@ Role "contact":
  User is allowed to create opening_hours (Create for "opening_hours" only)
  User is allowed to edit contact (Edit for "contact" only)
  User is allowed to edit opening_hours (Edit for "opening_hours" only)
+Role "cso":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
 Role "it":
   (Search for "user" only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)

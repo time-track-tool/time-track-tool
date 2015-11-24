@@ -6403,3 +6403,9 @@ msgstr "Ext. Tracker type"
 
 msgid "ext_trackers"
 msgstr "Ext. Trackers"
+
+msgid "close_immediately"
+msgstr "close immediately"
+
+msgid "log_template"
+msgstr "Log template"
