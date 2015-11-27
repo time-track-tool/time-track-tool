@@ -728,3 +728,62 @@ table.otherinfo th.header2 {
   vertical-align: top;
   padding-right: 1em
 }
+
+table.timesheet {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+table.timesheet tr {
+        height:14.5pt;
+}
+table.timesheet th {
+        background: #FFFF99;
+        border: 1.0pt solid windowtext;
+        color: black;
+        font-family: Arial, sans-serif;
+        font-size: 11.0pt;
+        font-style: normal;
+        font-weight: 700;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        white-space: nowrap;
+}
+table.timesheet th.name {
+        text-align: left;
+        font-weight: 700;
+}
+table.timesheet td {
+        background: white;
+        border: 1.0pt solid windowtext;
+        border-top:none;
+        border-left:none;
+        color: black;
+        font-family: Arial, sans-serif;
+        font-size: 10.0pt;
+        font-style: normal;
+        font-weight: 400;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: bottom;
+        white-space: nowrap;
+        width:19pt;
+}
+table.timesheet td.holiday {
+        background:#BFBFBF;
+}
+table.timesheet td.absence {
+        background:#95B3D7;
+}
+table.timesheet td.name {
+        text-align: left;
+        font-weight: 700;
+        border-left:1.0pt solid windowtext;
+        padding-left: 5pt;
+        padding-right: 5pt;
+        width:none;
+}
+table.timesheet td a {
+        display: block;
+        width: 100%;
+}
