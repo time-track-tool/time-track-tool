@@ -670,6 +670,7 @@
   </table>
 
 <!-- menubar -->
+<tal:block metal:define-slot="menubar_slot">
 <form name="menubar">
   <table bgcolor="#eeeeee" tal:condition="is_user">
    <tr>
@@ -832,6 +833,7 @@
    <tal:block metal:define-slot="menu_slot"/>
   </table>
 </form>
+</tal:block>
 
 <!-- body_title -->
   <tal:block tal:condition="is_user">

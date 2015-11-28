@@ -6409,3 +6409,9 @@ msgstr "close immediately"
 
 msgid "log_template"
 msgstr "Log template"
+
+msgid "absence_type"
+msgstr "Absence type"
+
+msgid "absence"
+msgstr "Absence"

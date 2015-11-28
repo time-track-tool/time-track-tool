@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2014 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-15 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -21,8 +21,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from   math import ceil
-from   time import gmtime
+from   math   import ceil
+from   time   import gmtime
+from   urllib import urlencode
 import re
 import common
 import user_dynamic
@@ -326,62 +327,7 @@ class Leave_Display (object) :
 
         self.abs_v = db.absence_type.getnode (db.absence_type.lookup ('V'))
         self.abs_a = db.absence_type.getnode (db.absence_type.lookup ('A'))
-        self.fmt   = '   <td class="absence"><a title="%s">%s</a></td>'
     # end def __init__
-
-    def get_absence_entry (self, user, d, aidx) :
-        if aidx < len (self.abs) :
-            ab  = self.db.absence.getnode (self.abs [aidx])
-            abu = self.db.user.getnode (ab.user)
-        while \
-            (   aidx + 1 < len (self.abs)
-            and abu.lastname  == user.lastname
-            and abu.firstname == user.firstname
-            ) : 
-            if ab.first_day <= d <= ab.last_day :
-                return self.fmt % (ab.description, ab.code)
-            aidx += 1
-            ab  = self.db.absence.getnode (self.abs [aidx])
-            abu = self.db.user.getnode (ab.user)
-        return None
-    # end def get_absence_entry
-
-    def get_holiday_entry (self, d, holidays, loc) :
-        ret = []
-        pd = d.pretty (common.ymd)
-        if pd in holidays :
-            h = holidays [pd]
-            t = "%s: %s" % (loc.name, str (h.name))
-            if h.description :
-                t = '%s (%s)' % (t, h.description)
-            ret.append ('  <td class="holiday">')
-            ret.append ('   <a title="%s">&nbsp;</a>' % t)
-            ret.append ('  </td>')
-            return '\n'.join (ret)
-    # end def get_holiday_entry
-
-    def get_leave_entry (self, user, d, lidx) :
-        if lidx < len (self.lvs) :
-            lv  = self.db.leave_submission.getnode (self.lvs [lidx])
-            lvu = self.db.user.getnode (lv.user)
-        while \
-            (   lidx + 1 < len (self.lvs)
-            and lvu.lastname  == user.lastname
-            and lvu.firstname == user.firstname
-            ) : 
-            if lv.first_day <= d <= lv.last_day :
-                wp = self.db.time_wp.getnode (lv.time_wp)
-                tp = self.db.time_project.getnode (wp.project)
-                if tp.is_vacation :
-                    return self.fmt % (self.abs_v.description, self.abs_v.code)
-                else :
-                    assert tp.is_special_leave or tp.max_hours == 0
-                    return self.fmt % (self.abs_a.description, self.abs_a.code)
-                break
-            lidx += 1
-            lv  = self.db.leave_submission.getnode (self.lvs [lidx])
-            lvu = self.db.user.getnode (lv.user)
-    # end def get_leave_entry
 
     def format_leaves (self) :
         """ HTML-Format of leave requests and holidays
@@ -462,12 +408,104 @@ class Leave_Display (object) :
                     if r :
                         ret.append (r)
                     else :
-                        ret.append ('   <td/>')
+                        ret.append (self.formatlink (date = d, user = u))
                 d += common.day
             ret.append (' </tr>')
         ret.append ('</table>')
         return '\n'.join (ret)
     # end def format_leaves
+
+    def _helpwin (self, url) :
+        return "javascript:help_window('%s', '600', '300')" % url
+    # end def _helpwin
+
+    def formatlink (self, type = None, date = None, user = None, abs = None) :
+        code = cls = title = a = ''
+        href = 'href="%s"' % self._helpwin ('absence?%s')
+        urlp = {'@template' : 'item'}
+        if type :
+            urlp ['absence_type'] = type.id
+        if user :
+            urlp ['user'] = user
+        if date :
+            urlp ['first_day'] = date
+            urlp ['last_day']  = date
+        if urlp :
+            href = href % urlencode (urlp)
+        if abs :
+            if abs.absence_type :
+                type = self.db.absence_type.getnode (abs.absence_type)
+            href  = 'href="%s"' % self._helpwin ('absence%s' % abs.id)
+            urlp  = ''
+        if type :
+            cls   = 'class="%s"' % type.cssclass
+            code  = type.code
+            title = 'title="%s"' % type.description
+            a     = '<a %s %s>%s</a>' % (title, href, code)
+        if not a and href :
+            a = '<a %s>&nbsp;</a>' % href
+        return '  <td %s>%s</td>' % (cls, a)
+    # end def formatlink
+
+    def get_absence_entry (self, user, d, aidx) :
+        if aidx < len (self.abs) :
+            ab  = self.db.absence.getnode (self.abs [aidx])
+            abu = self.db.user.getnode (ab.user)
+        while \
+            (   aidx < len (self.abs)
+            and abu.lastname  == user.lastname
+            and abu.firstname == user.firstname
+            ) : 
+            if ab.first_day <= d <= ab.last_day :
+                return self.formatlink (abs = ab)
+            aidx += 1
+            if aidx < len (self.abs) :
+                ab  = self.db.absence.getnode (self.abs [aidx])
+                abu = self.db.user.getnode (ab.user)
+        return None
+    # end def get_absence_entry
+
+    def get_holiday_entry (self, d, holidays, loc) :
+        ret = []
+        pd = d.pretty (common.ymd)
+        if pd in holidays :
+            h = holidays [pd]
+            t = "%s: %s" % (loc.name, str (h.name))
+            if h.description :
+                t = '%s (%s)' % (t, h.description)
+            ret.append ('  <td class="holiday">')
+            ret.append ('   <a title="%s">&nbsp;</a>' % t)
+            ret.append ('  </td>')
+            return '\n'.join (ret)
+    # end def get_holiday_entry
+
+    def get_leave_entry (self, user, d, lidx) :
+        if lidx < len (self.lvs) :
+            lv  = self.db.leave_submission.getnode (self.lvs [lidx])
+            lvu = self.db.user.getnode (lv.user)
+        while \
+            (   lidx < len (self.lvs)
+            and lvu.lastname  == user.lastname
+            and lvu.firstname == user.firstname
+            ) : 
+            if lv.first_day <= d <= lv.last_day :
+                wp  = self.db.time_wp.getnode (lv.time_wp)
+                tp  = self.db.time_project.getnode (wp.project)
+                uid = user.id
+                if tp.is_vacation :
+                    return self.formatlink (self.abs_v, date = d, user = uid)
+                else :
+                    assert tp.is_special_leave or tp.max_hours == 0
+                    return self.formatlink (self.abs_a, date = d, user = uid)
+                break
+            lidx += 1
+            if lidx < len (self.lvs) :
+                lv  = self.db.leave_submission.getnode (self.lvs [lidx])
+                lvu = self.db.user.getnode (lv.user)
+    # end def get_leave_entry
+
+# end class Leave_Display
+
 
 def init (instance) :
     reg = instance.registerUtil

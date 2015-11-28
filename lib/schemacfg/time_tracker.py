@@ -412,8 +412,8 @@ def init \
         ( db
         , ''"absence"
         , absence_type          = Link      ("absence_type")
-        , first_day             = Date      ()
-        , last_day              = Date      ()
+        , first_day             = Date      (offset = 0)
+        , last_day              = Date      (offset = 0)
         , user                  = Link      ("user")
         )
 

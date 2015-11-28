@@ -792,4 +792,8 @@ table.timesheet td.name {
 table.timesheet td a {
         display: block;
         width: 100%;
+        color: black;
 }
+table.timesheet td a[href]:hover        { color: black; }
+table.timesheet td a[href]:link         { color: black; }
+table.timesheet td a[href]              { color: black; }

@@ -192,6 +192,14 @@ _helptext          = \
              the address type category is "ABO".
           '''
       ]
+    , ""'absence'                      :
+      [ ""'''%(Property)s for %(Classname)s
+          '''
+      ]
+    , ""'absence_type'                 :
+      [ ""'''Type of absence for the timesheet-display
+          '''
+      ]
     , ""'absolute'                    :
       [ ""'''For normal correction of present remaining vacation put
              in Absolute: "no". Absolute "yes" restarts vacation day
@@ -999,7 +1007,7 @@ _helptext          = \
     , ""'klass'                       :
       [""'''Class for this query''']
     , ""'last_date'                   : [ ""'''Date of last contact''']
-    , ""'first_day'                   : [ ""'''Last day of %(Classname)s.''']
+    , ""'last_day'                    : [ ""'''Last day of %(Classname)s.''']
     , ""'last_gid'                    :
       [""'''Last used gid in this %(Classname)s''']
     , ""'last_machine_uid'            :
