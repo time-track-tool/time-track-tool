@@ -1,0 +1,51 @@
+#!/usr/bin/python
+
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+from roundup.password  import Password, encodePassword
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+abstypes = \
+    [ dict \
+        ( code = 'A'
+        , cssclass = 'absence'
+        , description = 'Absence like Sick-leave, Comp Time, Special Leave ...'
+        )
+    , dict \
+        ( code = 'H'
+        , cssclass = 'homeoffice'
+        , description = 'Home Office'
+        )
+    , dict \
+        ( code = 'T'
+        , cssclass = 'absence'
+        , description = 'Travel'
+        )
+    , dict \
+        ( code = 'TW'
+        , cssclass = 'absence'
+        , description = 'Training, Workshop, Conference'
+        )
+    , dict \
+        ( code = 'V'
+        , cssclass = 'absence'
+        , description = 'Vacation'
+        )
+    , dict \
+        ( code = 'Vie'
+        , cssclass = 'inoffice'
+        , description = 'in Vienna'
+        )
+    ]
+
+if 'absence_type' in db.classes :
+    for abs in abstypes :
+        try :
+            db.absence_type.lookup (abs ['code'])
+        except KeyError :
+            db.absence_type.create (** abs)
+    db.commit ()

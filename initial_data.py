@@ -1,5 +1,6 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
+# äöüÄÖÜß
 # Copyright (C) 2004-12 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
@@ -1089,3 +1090,29 @@ if 'it_request_type' in db.classes :
 if 'ext_tracker_type' in db.classes :
     db.ext_tracker_type.create (name = 'Jira', order = 10)
     db.ext_tracker_type.create (name = 'KPM',  order = 20)
+if 'absence_type' in db.classes :
+    db.absence_type.create \
+        ( code = 'A'
+        , cssclass = 'absence'
+        , description = 'Absence like Sick-leave, Comp Time, Special Leave ...'
+        )
+    db.absence_type.create \
+        ( code = 'H'
+        , cssclass = 'absence'
+        , description = 'Home Office'
+        )
+    db.absence_type.create \
+        ( code = 'T'
+        , cssclass = 'absence'
+        , description = 'Travel'
+        )
+    db.absence_type.create \
+        ( code = 'TW'
+        , cssclass = 'absence'
+        , description = 'Training, Workshop, Conference'
+        )
+    db.absence_type.create \
+        ( code = 'V'
+        , cssclass = 'absence'
+        , description = 'Vacation'
+        )

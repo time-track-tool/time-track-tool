@@ -769,10 +769,16 @@ table.timesheet td {
         white-space: nowrap;
         width:19pt;
 }
+table.timesheet td.absence {
+        background:#95B3D7;
+}
 table.timesheet td.holiday {
         background:#BFBFBF;
 }
-table.timesheet td.absence {
+table.timesheet td.inoffice {
+        background:#FFFFFF;
+}
+table.timesheet td.homeoffice {
         background:#95B3D7;
 }
 table.timesheet td.name {

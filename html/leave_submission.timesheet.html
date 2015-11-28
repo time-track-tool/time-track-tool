@@ -1,18 +1,17 @@
-<tal:block tal:define="ld python:utils.leave_display (request)">
+<tal:block tal:define="ld python:utils.Leave_Display (db, request)">
  <tal:block metal:use-macro="templates/page/macros/icing">
   <tal:block metal:fill-slot="create_or_query">
    <tal:block
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
   </tal:block>
   <title metal:fill-slot="head_title">
-   <tal:block tal:replace="python:utils.month_name (ld [0])"/>
+   <tal:block tal:replace="python:ld.month"/>
   </title>
   <tal:block metal:fill-slot="body_title">
-   <tal:block tal:replace="python:utils.month_name (ld [0])"/>
+   <tal:block tal:replace="python:ld.month"/>
   </tal:block>
   <tal:block metal:fill-slot="content">
-   <tal:block tal:replace="structure python:utils.format_leaves
-       (db._db, ld [1], ld [0])"/>
+   <tal:block tal:replace="structure python:ld.format_leaves ()"/>
   </tal:block>
  </tal:block>
 </tal:block>

@@ -252,129 +252,222 @@ def eoy_vacation (db, user, date) :
     return ceil (cons - ltot + carry)
 # end def eoy_vacation
 
-def leave_display (request) :
-    now  = Date ('.')
-    user = None
-    dt   = None
-    if request.filterspec :
-        if 'first_day' in request.filterspec :
-            dt = request.filterspec ['first_day']
-        if 'user' in request.filterspec :
-            user = request.filterspec ['user']
-    if not dt :
-        som = common.start_of_month (now)
-        eom = common.end_of_month (now)
-        dt  = common.pretty_range (som, eom)
-    try :
-        fd, ld = dt.split (';')
-    except ValueError :
-        fd = ld = dt
-    fdd = Date (fd)
-    if common.start_of_month (fdd) != common.start_of_month (Date (ld)) :
-        ld = common.end_of_month (fdd)
-    return dt, user
-# end def leave_display
-
 def month_name (date) :
-    try :
-        fd, ld = date.split (';')
-    except ValueError :
-        fd = ld = date
-    d = Date (fd)
+    d = Date (date)
     return d.pretty ('%B')
 # end def month_name
 
-def format_leaves (db, user, date) :
-    """ HTML-Format of leave requests and holidays
-        We first get leaves by user and date-range. We search for all
-        starting in the range *and* ending in the range. In addition we
-        search for all that start *before* the range and end *after* the
-        range. In the next step we get all the public holidays in the
-        range and index them by location.
-    """
-    ret = []
-    srt = [('+', a) for a in ('lastname', 'firstname')]
-    if user :
-        users = user
-    else :
-        valid = db.user_status.lookup ('valid')
-        users = db.user.filter (None, dict (status = valid), sort = srt)
+class Leave_Display (object) :
 
-    lvfirst = db.leave_submission.filter \
-        (None, dict (first_day = date, user = users))
-    lvlast  = db.leave_submission.filter \
-        (None, dict (last_day = date, user = users))
-    fd = ld = None
-    lvperiod = []
-    try :
-        fd, ld = date.split (';')
-    except ValueError :
-        pass
-    if fd :
-        d = dict (first_day = ';%s' % fd, last_day = '%s;' % ld, user = users)
-        lvperiod = db.leave_submission.filter (None, d)
-    else :
-        fd = ld = Date (date)
-    # Make database sort the above by user and start date
-    ids = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
-    srt = [('+', a) for a in ('user.lastname', 'user.firstname', 'first_day')]
-    lvs = db.leave_submission.filter (ids, {}, sort = srt)
+    def __init__ (self, db, request) :
+        self.db = db = db._db
+        now  = Date ('.')
+        user = None
+        dt   = None
+        if request.filterspec :
+            if 'first_day' in request.filterspec :
+                dt = request.filterspec ['first_day']
+            if 'user' in request.filterspec :
+                user = request.filterspec ['user']
+        if not dt :
+            som = common.start_of_month (now)
+            eom = common.end_of_month (now)
+            dt  = common.pretty_range (som, eom)
+        try :
+            fd, ld = dt.split (';')
+        except ValueError :
+            fd = ld = dt
+        self.fdd   = fdd = Date (fd)
+        self.ldd   = ldd = Date (ld)
+        self.month = month_name (self.fdd)
+        if common.start_of_month (fdd) != common.start_of_month (ldd) :
+            self.ldd = ldd = common.end_of_month (fdd)
+            dt = commont.pretty_range (fdd, ldd)
+        srt        = [('+', a) for a in ('lastname', 'firstname')]
+        if user :
+            self.users = users = db.user.filter (user, {}, sort = srt)
+        else :
+            valid = db.user_status.lookup ('valid')
+            users = db.user.filter (None, dict (status = valid), sort = srt)
+            self.users = users
+        flt = dict (first_day = ';%s' % fd, last_day = '%s;' % ld, user = users)
+        sp  = ('user.lastname', 'user.firstname', 'first_day')
+        srt = [('+', a) for a in sp]
+        lvfirst  = db.leave_submission.filter \
+            (None, dict (first_day = dt, user = users))
+        lvlast   = db.leave_submission.filter \
+            (None, dict (last_day = dt, user = users))
+        lvperiod = db.leave_submission.filter (None, flt)
+        # Make database sort the above by user and start date
+        ids = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
+        self.lvs = db.leave_submission.filter (ids, {}, sort = srt)
 
-    # Get public holidays
-    srt = [('+', 'date')]
-    ph  = db.public_holiday.filter (None, dict (date = date), sort = srt)
-    # Index by location and sort by date
-    by_location = {}
-    for id in ph :
-        holiday = db.public_holiday.getnode (id)
-        for loc in holiday.locations :
-            if loc not in by_location :
-                by_location [loc] = []
-            by_location [loc].append (holiday)
-    ret.append ('<table class="timesheet">')
-    fdd = Date (fd)
-    ldd = Date (ld)
-    for n, u in enumerate (users) :
-        user = db.user.getnode (u)
-        if n % 20 == 0 :
+        # Get all absence records in the given time range, same algo as for
+        abfirst  = db.absence.filter \
+            (None, dict (first_day = dt, user = users))
+        ablast   = db.absence.filter \
+            (None, dict (last_day  = dt, user = users))
+        abperiod = db.absence.filter (None, flt)
+        # Make database sort the above by user and start date
+        ids = dict.fromkeys (abfirst + ablast + abperiod).keys ()
+        self.abs = db.absence.filter (ids, {}, sort = srt)
+
+        # Get public holidays
+        srt = [('+', 'date')]
+        ph  = db.public_holiday.filter (None, dict (date = dt), sort = srt)
+        # Index by location and sort by date
+        self.by_location = {}
+        for id in ph :
+            holiday = db.public_holiday.getnode (id)
+            for loc in holiday.locations :
+                if loc not in self.by_location :
+                    self.by_location [loc] = []
+                self.by_location [loc].append (holiday)
+
+        self.abs_v = db.absence_type.getnode (db.absence_type.lookup ('V'))
+        self.abs_a = db.absence_type.getnode (db.absence_type.lookup ('A'))
+        self.fmt   = '   <td class="absence"><a title="%s">%s</a></td>'
+    # end def __init__
+
+    def get_absence_entry (self, user, d, aidx) :
+        if aidx < len (self.abs) :
+            ab  = self.db.absence.getnode (self.abs [aidx])
+            abu = self.db.user.getnode (ab.user)
+        while \
+            (   aidx + 1 < len (self.abs)
+            and abu.lastname  == user.lastname
+            and abu.firstname == user.firstname
+            ) : 
+            if ab.first_day <= d <= ab.last_day :
+                return self.fmt % (ab.description, ab.code)
+            aidx += 1
+            ab  = self.db.absence.getnode (self.abs [aidx])
+            abu = self.db.user.getnode (ab.user)
+        return None
+    # end def get_absence_entry
+
+    def get_holiday_entry (self, d, holidays, loc) :
+        ret = []
+        pd = d.pretty (common.ymd)
+        if pd in holidays :
+            h = holidays [pd]
+            t = "%s: %s" % (loc.name, str (h.name))
+            if h.description :
+                t = '%s (%s)' % (t, h.description)
+            ret.append ('  <td class="holiday">')
+            ret.append ('   <a title="%s">&nbsp;</a>' % t)
+            ret.append ('  </td>')
+            return '\n'.join (ret)
+    # end def get_holiday_entry
+
+    def get_leave_entry (self, user, d, lidx) :
+        if lidx < len (self.lvs) :
+            lv  = self.db.leave_submission.getnode (self.lvs [lidx])
+            lvu = self.db.user.getnode (lv.user)
+        while \
+            (   lidx + 1 < len (self.lvs)
+            and lvu.lastname  == user.lastname
+            and lvu.firstname == user.firstname
+            ) : 
+            if lv.first_day <= d <= lv.last_day :
+                wp = self.db.time_wp.getnode (lv.time_wp)
+                tp = self.db.time_project.getnode (wp.project)
+                if tp.is_vacation :
+                    return self.fmt % (self.abs_v.description, self.abs_v.code)
+                else :
+                    assert tp.is_special_leave or tp.max_hours == 0
+                    return self.fmt % (self.abs_a.description, self.abs_a.code)
+                break
+            lidx += 1
+            lv  = self.db.leave_submission.getnode (self.lvs [lidx])
+            lvu = self.db.user.getnode (lv.user)
+    # end def get_leave_entry
+
+    def format_leaves (self) :
+        """ HTML-Format of leave requests and holidays
+            We first get leaves and absence records by user and date-range.
+            We search for all starting in the range *and* ending in the
+            range. In addition we search for all that start *before* the
+            range and end *after* the range. In the next step we get all the
+            public holidays in the range and index them by location.
+        """
+        db    = self.db
+
+        ret = []
+        ret.append ('<table class="timesheet">')
+        lvidx = 0
+        if len (self.lvs) :
+            lv  = db.leave_submission.getnode (self.lvs [lvidx])
+            lvu = db.user.getnode (lv.user)
+        abidx = 0
+        if len (self.abs) :
+            ab  = db.absence.getnode (self.abs [abidx])
+            abu = db.user.getnode (ab.user)
+        for n, u in enumerate (self.users) :
+            user = db.user.getnode (u)
+            while \
+                (   lvidx + 1 < len (self.lvs)
+                and (  lvu.lastname < user.lastname
+                    or (   lvu.lastname == user.lastname
+                       and lvu.firstname < user.firstname
+                       )
+                    )
+                ) : 
+                lvidx += 1
+                lv  = db.leave_submission.getnode (self.lvs [lvidx])
+                lvu = db.user.getnode (lv.user)
+            while \
+                (   abidx + 1 < len (self.abs)
+                and (  abu.lastname < user.lastname
+                    or (   abu.lastname == user.lastname
+                       and abu.firstname < user.firstname
+                       )
+                    )
+                ) : 
+                abidx += 1
+                ab  = db.absence.getnode (self.abs [abidx])
+                abu = db.user.getnode (ab.user)
+            if n % 20 == 0 :
+                ret.append (' <tr>')
+                ret.append ('  <th/><th/><th/>')
+                d = self.fdd
+                while d <= self.ldd :
+                    ret.append ('  <th>%s</th>' % d.day)
+                    d += common.day
+                ret.append (' </tr>')
             ret.append (' <tr>')
-            ret.append ('  <th/><th/><th/>')
-            d = fdd
-            while d <= ldd :
-                ret.append ('  <th>%s</th>' % d.day)
+            ret.append ('  <td class="name">%s</td>' % user.lastname)
+            ret.append ('  <td class="name">%s</td>' % user.firstname)
+            ret.append ('  <td class="name">%s</td>'
+                       % (user.nickname and user.nickname.upper () or ''))
+            loc = None
+            if user.org_location :
+                loc = db.org_location.get (user.org_location, 'location')
+                holidays = dict \
+                    ((h.date.pretty (common.ymd), h)
+                     for h in self.by_location.get (loc, [])
+                    )
+                loc = db.location.getnode (loc)
+            else :
+                holidays = {}
+            d = self.fdd
+            while d <= self.ldd :
+                if gmtime (d.timestamp ()) [6] in [5, 6] :
+                    ret.append ('  <td class="holiday"/>')
+                else :
+                    r = (  self.get_holiday_entry (d, holidays, loc)
+                        or self.get_absence_entry (user, d, abidx)
+                        or self.get_leave_entry   (user, d, lvidx)
+                        )
+                    if r :
+                        ret.append (r)
+                    else :
+                        ret.append ('   <td/>')
                 d += common.day
             ret.append (' </tr>')
-        ret.append (' <tr>')
-        ret.append ('  <td class="name">%s</td>' % user.lastname)
-        ret.append ('  <td class="name">%s</td>' % user.firstname)
-        ret.append ('  <td class="name">%s</td>'
-                   % (user.nickname and user.nickname.upper ()))
-        if user.org_location :
-            loc = db.org_location.get (user.org_location, 'location')
-            holidays = by_location.get (loc, [])
-        else :
-            holidays = []
-        d = fdd
-        while d <= ldd :
-            if gmtime (d.timestamp ()) [6] in [5, 6] :
-                ret.append ('  <td class="holiday"/>')
-            else :
-                for h in holidays :
-                    if h.date == d :
-                        t = str (h.name)
-                        if h.description :
-                            t = '%s (%s)' % (t, h.description)
-                        ret.append ('  <td class="holiday">')
-                        ret.append ('   <a title="%s">&nbsp;</a>' % t)
-                        ret.append ('  </td>')
-                        break
-                else :
-                    ret.append ('   <td/>')
-            d += common.day
-        ret.append (' </tr>')
-    ret.append ('</table>')
-    return '\n'.join (ret)
-# end def format_leaves
+        ret.append ('</table>')
+        return '\n'.join (ret)
+    # end def format_leaves
 
 def init (instance) :
     reg = instance.registerUtil
@@ -396,9 +489,8 @@ def init (instance) :
     reg ('year',                         Interval ('1y'))
     reg ('day',                          common.day)
     reg ('eoy_vacation',                 eoy_vacation)
-    reg ('leave_display',                leave_display)
+    reg ('Leave_Display',                Leave_Display)
     reg ('month_name',                   month_name)
-    reg ('format_leaves',                format_leaves)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)
 # end def init

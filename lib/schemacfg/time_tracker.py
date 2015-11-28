@@ -399,6 +399,24 @@ def init \
         , special_sub           = String    ()
         )
 
+    absence_type = Class \
+        ( db
+        , ''"absence_type"
+        , code                  = String    ()
+        , description           = String    ()
+        , cssclass              = String    ()
+        )
+    absence_type.setkey ("code")
+
+    absence = Class \
+        ( db
+        , ''"absence"
+        , absence_type          = Link      ("absence_type")
+        , first_day             = Date      ()
+        , last_day              = Date      ()
+        , user                  = Link      ("user")
+        )
+
     work_location = Class \
         ( db
         , ''"work_location"
@@ -461,13 +479,22 @@ def security (db, ** kw) :
         , ("staff-report",      "May view staff report")
         , ("Controlling",       "Controlling")
         , ("Summary_View",      "View full summary report and all WPs")
+        , ("Office",            "Office")
         ]
 
     #     classname
     # allowed to view   /  edit
     # For daily_record, time_record, additional restrictions apply
     classes = \
-        [ ( "contract_type"
+        [ ( "absence"
+          , ["User"]
+          , ["Office"]
+          )
+        , ( "absence_type"
+          , ["User"]
+          , ["Office"]
+          )
+        , ( "contract_type"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
           )
