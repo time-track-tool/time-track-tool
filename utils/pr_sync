@@ -96,9 +96,20 @@ class PR_Sync (autosuper) :
     # end def check_time_project
 
     def fix_time_project (self, item, id) :
-        """ Add org_id-id as description """
+        """ Add org_id-id as description
+            Add default purchasing_agent if missing.
+        """
         item ['description'] = '-'.join ((item ['organisation'] or '', id))
+        if self.args.purchasing_agent and item ['purchasing_agent'] is None :
+            item ['purchasing_agent'] = self.args.purchasing_agent
     # end def fix_time_project
+
+    def fix_sap_cc (self, item, id) :
+        """ Add default purchasing_agent if missing.
+        """
+        if self.args.purchasing_agent and item ['purchasing_agent'] is None :
+            item ['purchasing_agent'] = self.args.purchasing_agent
+    # end def fix_sap_cc
 
     def check_user (self, user) :
         if user ['username'] in ('admin', 'anonymous') :
@@ -358,6 +369,12 @@ def main () :
         , dest    = "database_directory"
         , help    = "Directory of the roundup installation"
         , default = '.'
+        )
+    cmd.add_argument \
+        ( "-p", "--default-purchasing-agent"
+        , dest    = "purchasing_agent"
+        , help    = "Default for purchasing_agent if none specified"
+        , default = '921'
         )
     cmd.add_argument \
         ( "-u", "--update"
