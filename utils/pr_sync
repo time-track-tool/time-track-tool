@@ -46,6 +46,7 @@ class PR_Sync (autosuper) :
          , ('user.department',               'department')
          , ('user.org_location',             'org_location')
          , ('user.status',                   'user_status')
+         , ('user.supervisor',               'user')
         ))
 
     def __init__ (self, args) :
@@ -150,15 +151,16 @@ class PR_Sync (autosuper) :
             ( 'user_status'
             , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
             )
-        self.sync_class \
-            ( 'user'
-            , ( 'username', 'address', 'alternate_addresses', 'department'
-              , 'org_location', 'realname', 'status'
-              )
-            , key       = 'username'
-            , roles     = 'User,Nosy'
-            , dont_sync = dict.fromkeys (('1', '2'))
-            )
+        if self.args.sync_user :
+            self.sync_class \
+                ( 'user'
+                , ( 'username', 'address', 'alternate_addresses', 'department'
+                  , 'org_location', 'realname', 'status', 'supervisor'
+                  )
+                , key       = 'username'
+                , roles     = 'User,Nosy'
+                , dont_sync = dict.fromkeys (('1', '2'))
+                )
         self.sync_class \
             ( 'sap_cc'
             , ( 'name', 'description', 'responsible', 'deputy'
@@ -375,6 +377,12 @@ def main () :
         , dest    = "purchasing_agent"
         , help    = "Default for purchasing_agent if none specified"
         , default = '921'
+        )
+    cmd.add_argument \
+        ( "-s", "--sync-user"
+        , dest    = "sync_user"
+        , help    = "Only if this option is given we sync users"
+        , action  = 'store_true'
         )
     cmd.add_argument \
         ( "-u", "--update"

@@ -179,40 +179,51 @@ def changed_pr (db, cl, nodeid, old_values) :
     st_op = db.pr_status.lookup ('open')
     st_ag = db.pr_status.lookup ('approving')
     if ost == st_op and nst == st_ag :
-        if pr.time_project :
-            pcc = db.time_project.getnode (pr.time_project)
-            d   = _ ('%(tp)s responsible/deputy') \
-                % dict (tp = _ ('time_project'))
-        else :
-            pcc = db.sap_cc.getnode (pr.sap_cc)
-            d   = _ ('%(cc)s responsible/deputy') % dict (cc = _ ('sap_cc'))
-        db.pr_approval.create \
-            ( order            = 10
-            , purchase_request = pr.id
-            , user             = pcc.responsible
-            , deputy           = pcc.deputy
-            , description      = d
-            )
-        add_approval_with_role (db, pr.id, 'Finance')
-        pob = db.part_of_budget.getnode (pr.part_of_budget)
-        # Loop over order items and check if any is not on the approved
-        # suppliers list
-        supplier_approved = True
-        for id in pr.offer_items :
-            oi = db.pr_offer_item.getnode (id)
-            if not oi.pr_supplier :
-                supplier_approved = False
-        if pr.safety_critical and not supplier_approved :
-            add_approval_with_role (db, pr.id, 'Quality')
         cur = db.pr_currency.getnode (currency (db, pr.id))
-        if  (  pob.name.lower () == 'no'
-            or common.pr_offer_item_sum (db, pr.id) >= cur.max_sum
-            ) :
-            add_approval_with_role (db, pr.id, 'Board')
-        pt    = db.purchase_type.getnode (pr.purchase_type)
-        roles = common.role_list (pt.roles)
-        for role in roles :
-            add_approval_with_role (db, pr.id, role)
+        if common.pr_offer_item_sum (db, pr.id) > cur.min_sum :
+            if pr.time_project :
+                pcc = db.time_project.getnode (pr.time_project)
+                d   = _ ('%(tp)s responsible/deputy') \
+                    % dict (tp = _ ('time_project'))
+            else :
+                pcc = db.sap_cc.getnode (pr.sap_cc)
+                d   = _ ('%(cc)s responsible/deputy') % dict (cc = _ ('sap_cc'))
+            db.pr_approval.create \
+                ( order            = 10
+                , purchase_request = pr.id
+                , user             = pcc.responsible
+                , deputy           = pcc.deputy
+                , description      = d
+                )
+            add_approval_with_role (db, pr.id, 'Finance')
+            pob = db.part_of_budget.getnode (pr.part_of_budget)
+            # Loop over order items and check if any is not on the approved
+            # suppliers list
+            supplier_approved = True
+            for id in pr.offer_items :
+                oi = db.pr_offer_item.getnode (id)
+                if not oi.pr_supplier :
+                    supplier_approved = False
+            if pr.safety_critical and not supplier_approved :
+                add_approval_with_role (db, pr.id, 'Quality')
+            if  (  pob.name.lower () == 'no'
+                or common.pr_offer_item_sum (db, pr.id) >= cur.max_sum
+                ) :
+                add_approval_with_role (db, pr.id, 'Board')
+            pt    = db.purchase_type.getnode (pr.purchase_type)
+            roles = common.role_list (pt.roles)
+            for role in roles :
+                add_approval_with_role (db, pr.id, role)
+        else :
+            req = db.user.getnode (pr.requester)
+            sup = db.user.getnode (req.supervisor)
+            db.pr_approval.create \
+                ( order            = 10
+                , purchase_request = pr.id
+                , user             = sup.id
+                , deputy           = sup.supervisor
+                , description      = 'Supervisor'
+                )
 # end def changed_pr
 
 def new_pr_approval (db, cl, nodeid, new_values) :
@@ -261,8 +272,7 @@ def nosy_for_approval (db, app) :
     nosy = {}
     if app.user :
         nosy [app.user] = 1
-    if app.deputy :
-        nosy [app.deputy] = 1
+    # Don't add deputy to nosy
     if app.role :
         nosy.update (dict.fromkeys (common.get_uids_with_role (db, app.role)))
     return nosy

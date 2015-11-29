@@ -45,6 +45,7 @@ schemas = \
     ( 'ext_issue'
     , 'nickname'
     , 'company'
+    , 'org_min'
     , 'org_loc'
     , 'it_tracker'
     , 'nwm'

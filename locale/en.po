@@ -2757,8 +2757,11 @@ msgstr ""
 msgid "max_hours"
 msgstr "Max hours"
 
+msgid "min_sum"
+msgstr "Max cost for simple approval"
+
 msgid "max_sum"
-msgstr "Max. cost for simple approval"
+msgstr "Cost before board approval"
 
 msgid ""
 "If given for a %(Classname)s restricts the number of hours\n"

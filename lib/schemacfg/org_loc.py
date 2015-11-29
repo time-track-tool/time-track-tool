@@ -115,7 +115,6 @@ def init \
             self.update_properties \
                 ( firstname              = String    ()
                 , lastname               = String    ()
-                , supervisor             = Link      ("user")
                 , substitute             = Link      ("user")
                 , subst_active           = Boolean   ()
                 , clearance_by           = Link      ("user")

@@ -43,6 +43,7 @@ from schemacfg import schemadef
 schemas = \
     ( 'company'
     , 'time_project'
+    , 'org_min'
     , 'user'
     , 'ldap'
     , 'pr'

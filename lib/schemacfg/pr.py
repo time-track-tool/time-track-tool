@@ -65,6 +65,7 @@ def init \
         , name                  = String    ()
         , order                 = Number    ()
         , max_sum               = Number    ()
+        , min_sum               = Number    ()
         )
     pr_currency.setkey ('name')
 
