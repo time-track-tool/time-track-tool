@@ -1,5 +1,32 @@
 properties = \
-    [ ( 'analysis_result'
+    [ ( 'absence'
+      , [ ( 'absence_type'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'first_day'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'last_day'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'user'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        ]
+      )
+    , ( 'absence_type'
+      , [ ( 'code'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'cssclass'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'description'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        ]
+      )
+    , ( 'analysis_result'
       , [ ( 'description'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )

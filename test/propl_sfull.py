@@ -1,5 +1,18 @@
 properties = \
-    [ ( 'adr_type'
+    [ ( 'absence'
+      , [ 'absence_type'
+        , 'first_day'
+        , 'last_day'
+        , 'user'
+        ]
+      )
+    , ( 'absence_type'
+      , [ 'code'
+        , 'cssclass'
+        , 'description'
+        ]
+      )
+    , ( 'adr_type'
       , [ 'code'
         , 'description'
         , 'typecat'

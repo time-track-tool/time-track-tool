@@ -224,7 +224,11 @@ Role "nosy":
  User may get nosy messages for support (Nosy for "support" only)
 Role "office":
  User is allowed Edit on (Edit for "user": ('title', 'room', 'position') only)
+ User is allowed to create absence (Create for "absence" only)
+ User is allowed to create absence_type (Create for "absence_type" only)
  User is allowed to create room (Create for "room" only)
+ User is allowed to edit absence (Edit for "absence" only)
+ User is allowed to edit absence_type (Edit for "absence_type" only)
  User is allowed to edit room (Edit for "room" only)
 Role "procurement":
   (View for "sap_cc" only)
@@ -301,6 +305,8 @@ Role "user":
  User is allowed View on it_project if it_project is non-confidential or user is on nosy list (View for "it_project" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed View on support if support is non-confidential or user is on nosy list (View for "support" only)
+ User is allowed to access absence (View for "absence" only)
+ User is allowed to access absence_type (View for "absence_type" only)
  User is allowed to access adr_type (View for "adr_type" only)
  User is allowed to access adr_type_cat (View for "adr_type_cat" only)
  User is allowed to access analysis_result (View for "analysis_result" only)

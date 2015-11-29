@@ -1,5 +1,18 @@
 properties = \
-    [ ( 'artefact'
+    [ ( 'absence'
+      , [ 'absence_type'
+        , 'first_day'
+        , 'last_day'
+        , 'user'
+        ]
+      )
+    , ( 'absence_type'
+      , [ 'code'
+        , 'cssclass'
+        , 'description'
+        ]
+      )
+    , ( 'artefact'
       , [ 'description'
         , 'filename_format'
         , 'name'

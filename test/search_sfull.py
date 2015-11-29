@@ -1,5 +1,32 @@
 properties = \
-    [ ( 'adr_type'
+    [ ( 'absence'
+      , [ ( 'absence_type'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'first_day'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'last_day'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'user'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'absence_type'
+      , [ ( 'code'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'cssclass'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        , ( 'description'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'adr_type'
       , [ ( 'code'
           , ['admin', 'adr_readonly', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
