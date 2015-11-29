@@ -161,6 +161,8 @@
                           '@filter=approval_hr,status&'
                           '@sort=user,first_day&@pagesize=20&@startwith=0&'
                           'approval_hr=yes&status=%s' % ','.join (leave_stats)
+   , ('leave_submission', 'timesheet')
+                        : ''
    , ('letter', '')     : '@columns=id,subject,date,address.lastname,'
                           'address.firstname&'
                           '@sort=-date&@pagesize=20&@startwith=0&'
@@ -533,6 +535,12 @@
        , utils.user_has_role
          (db._db, db._db.getuid (), 'HR-leave-approval', 'HR-vacation')
        , ('Leave approval','approve_hr')
+       )
+     , ( 'leave_submission'
+       , 'View'
+       , utils.user_has_role
+         (db._db, db._db.getuid (), 'User')
+       , ('Timesheet','timesheet')
        )
      , ('legalclient',         'View', 1,               ('',''))
      , ('letter',              'View', 1,               ('',''))

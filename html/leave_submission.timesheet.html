@@ -8,7 +8,7 @@
    <tal:block tal:replace="python:ld.month"/>
   </title>
   <tal:block metal:fill-slot="body_title">
-   <tal:block tal:replace="python:ld.month"/>
+   <tal:block tal:replace="structure python:ld.month_links ()"/>
   </tal:block>
   <tal:block metal:fill-slot="content">
    <tal:block tal:replace="structure python:ld.format_leaves ()"/>

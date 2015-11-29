@@ -504,6 +504,31 @@ class Leave_Display (object) :
                 lvu = self.db.user.getnode (lv.user)
     # end def get_leave_entry
 
+    def month_link (self, s, e, symbol) :
+        d   = \
+            { '@filter'   : 'first_day'
+            , 'first_day' : common.pretty_range (s, e)
+            , '@template' : 'timesheet'
+            }
+        url = 'leave_submission?' + urlencode (d)
+        return '<a href="%s">%s</a>' % (url, symbol)
+    # end def month_link
+
+    def month_links (self) :
+        """ Return month name with links to prev/next month
+        """
+        pms = self.fdd - Interval ('1m')
+        nms = self.fdd + Interval ('1m')
+        pme = common.end_of_month (pms)
+        nme = common.end_of_month (nms)
+        return '&nbsp'.join \
+            (( self.month_link (pms, pme, '&lt;&lt;')
+             , self.month
+             , str (self.fdd.year)
+             , self.month_link (nms, nme, '&gt;&gt;')
+            ))
+    # end def month_links
+
 # end class Leave_Display
 
 
