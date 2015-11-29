@@ -142,7 +142,9 @@ def sort_uniq (list) :
     return k
 # end def sort_uniq
 
-def check_loop (_, cl, id, prop, attr, labelprop = None, ids = []) :
+def check_loop (_, cl, id, prop, attr, labelprop = None, ids = None) :
+    if ids is None :
+        ids = []
     is_multi = isinstance (cl.properties [prop], Multilink)
     assert (is_multi or isinstance (cl.properties [prop], Link))
     if not labelprop :
@@ -154,6 +156,7 @@ def check_loop (_, cl, id, prop, attr, labelprop = None, ids = []) :
             attr = [attr]
         for a in attr :
             if a in ids :
+                import pdb; pdb.set_trace ()
                 raise Reject, _ ('"%(prop)s" loop: %(labels)s') % dict \
                     ( prop   = _ (prop)
                     , labels = ','.join ([cl.get (i, labelprop) for i in ids])
