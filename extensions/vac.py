@@ -416,12 +416,20 @@ class Leave_Display (object) :
     # end def format_leaves
 
     def _helpwin (self, url) :
-        return "javascript:help_window('%s', '600', '300')" % url
+        return "javascript:abswin('%s', '600', '300')" % url
     # end def _helpwin
 
+    def has_permission (self, perm='Create') :
+        """ Permission to create/edit absence
+        """
+        return self.db.security.hasPermission \
+            (perm, self.db.getuid (), 'absence')
+    # end def has_permission
+
     def formatlink (self, type = None, date = None, user = None, abs = None) :
-        code = cls = title = a = ''
-        href = 'href="%s"' % self._helpwin ('absence?%s')
+        code = cls = title = a = href = ''
+        if self.has_permission () :
+            href = 'href="%s"' % self._helpwin ('absence?%s')
         urlp = {'@template' : 'item'}
         if type :
             urlp ['absence_type'] = type.id
@@ -430,12 +438,13 @@ class Leave_Display (object) :
         if date :
             urlp ['first_day'] = date
             urlp ['last_day']  = date
-        if urlp :
+        if urlp and self.has_permission () :
             href = href % urlencode (urlp)
         if abs :
             if abs.absence_type :
                 type = self.db.absence_type.getnode (abs.absence_type)
-            href  = 'href="%s"' % self._helpwin ('absence%s' % abs.id)
+            if self.has_permission ('Edit') :
+                href  = 'href="%s"' % self._helpwin ('absence%s' % abs.id)
             urlp  = ''
         if type :
             cls   = 'class="%s"' % type.cssclass
