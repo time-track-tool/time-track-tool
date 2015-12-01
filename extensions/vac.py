@@ -301,7 +301,14 @@ class Leave_Display (object) :
         lvperiod = db.leave_submission.filter (None, flt)
         # Make database sort the above by user and start date
         ids = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
-        self.lvs = db.leave_submission.filter (ids, {}, sort = srt)
+        lvs = db.leave_submission.filter (ids, {}, sort = srt)
+        # Put them in a dict by user-id
+        self.lvdict = {}
+        for id in lvs :
+            lv = db.leave_submission.getnode (id)
+            if lv.user not in self.lvdict :
+                self.lvdict [lv.user] = []
+            self.lvdict [lv.user].append (lv)
 
         # Get all absence records in the given time range, same algo as for
         abfirst  = db.absence.filter \
@@ -311,7 +318,14 @@ class Leave_Display (object) :
         abperiod = db.absence.filter (None, flt)
         # Make database sort the above by user and start date
         ids = dict.fromkeys (abfirst + ablast + abperiod).keys ()
-        self.abs = db.absence.filter (ids, {}, sort = srt)
+        abs = db.absence.filter (ids, {}, sort = srt)
+        # Put them in a dict by user-id
+        self.abdict = {}
+        for id in abs :
+            ab = db.absence.getnode (id)
+            if ab.user not in self.abdict :
+                self.abdict [ab.user] = []
+            self.abdict [ab.user].append (ab)
 
         # Get public holidays
         srt = [('+', 'date')]
@@ -341,38 +355,8 @@ class Leave_Display (object) :
 
         ret = []
         ret.append ('<table class="timesheet">')
-        lvidx = 0
-        if len (self.lvs) :
-            lv  = db.leave_submission.getnode (self.lvs [lvidx])
-            lvu = db.user.getnode (lv.user)
-        abidx = 0
-        if len (self.abs) :
-            ab  = db.absence.getnode (self.abs [abidx])
-            abu = db.user.getnode (ab.user)
         for n, u in enumerate (self.users) :
             user = db.user.getnode (u)
-            while \
-                (   lvidx + 1 < len (self.lvs)
-                and (  lvu.lastname < user.lastname
-                    or (   lvu.lastname == user.lastname
-                       and lvu.firstname < user.firstname
-                       )
-                    )
-                ) : 
-                lvidx += 1
-                lv  = db.leave_submission.getnode (self.lvs [lvidx])
-                lvu = db.user.getnode (lv.user)
-            while \
-                (   abidx + 1 < len (self.abs)
-                and (  abu.lastname < user.lastname
-                    or (   abu.lastname == user.lastname
-                       and abu.firstname < user.firstname
-                       )
-                    )
-                ) : 
-                abidx += 1
-                ab  = db.absence.getnode (self.abs [abidx])
-                abu = db.user.getnode (ab.user)
             if n % 20 == 0 :
                 ret.extend (self.header_line ())
             ret.append (' <tr>')
@@ -396,8 +380,8 @@ class Leave_Display (object) :
                     ret.append ('  <td class="holiday"/>')
                 else :
                     r = (  self.get_holiday_entry (d, holidays, loc)
-                        or self.get_absence_entry (user, d, abidx)
-                        or self.get_leave_entry   (user, d, lvidx)
+                        or self.get_absence_entry (user, d)
+                        or self.get_leave_entry   (user, d)
                         )
                     if r :
                         ret.append (r)
@@ -464,21 +448,12 @@ class Leave_Display (object) :
         return '  <td %s>%s</td>' % (cls, a)
     # end def formatlink
 
-    def get_absence_entry (self, user, d, aidx) :
-        if aidx < len (self.abs) :
-            ab  = self.db.absence.getnode (self.abs [aidx])
-            abu = self.db.user.getnode (ab.user)
-        while \
-            (   aidx < len (self.abs)
-            and abu.lastname  == user.lastname
-            and abu.firstname == user.firstname
-            ) : 
+    def get_absence_entry (self, user, d) :
+        if user.id not in self.abdict :
+            return None
+        for ab in self.abdict [user.id] :
             if ab.first_day <= d <= ab.last_day :
                 return self.formatlink (abs = ab)
-            aidx += 1
-            if aidx < len (self.abs) :
-                ab  = self.db.absence.getnode (self.abs [aidx])
-                abu = self.db.user.getnode (ab.user)
         return None
     # end def get_absence_entry
 
@@ -496,15 +471,10 @@ class Leave_Display (object) :
             return '\n'.join (ret)
     # end def get_holiday_entry
 
-    def get_leave_entry (self, user, d, lidx) :
-        if lidx < len (self.lvs) :
-            lv  = self.db.leave_submission.getnode (self.lvs [lidx])
-            lvu = self.db.user.getnode (lv.user)
-        while \
-            (   lidx < len (self.lvs)
-            and lvu.lastname  == user.lastname
-            and lvu.firstname == user.firstname
-            ) : 
+    def get_leave_entry (self, user, d) :
+        if user.id not in self.lvdict :
+            return None
+        for lv in self.lvdict [user.id] :
             if lv.first_day <= d <= lv.last_day :
                 wp  = self.db.time_wp.getnode (lv.time_wp)
                 tp  = self.db.time_project.getnode (wp.project)
@@ -514,11 +484,6 @@ class Leave_Display (object) :
                 else :
                     assert tp.is_special_leave or tp.max_hours == 0
                     return self.formatlink (self.abs_a, date = d, user = uid)
-                break
-            lidx += 1
-            if lidx < len (self.lvs) :
-                lv  = self.db.leave_submission.getnode (self.lvs [lidx])
-                lvu = self.db.user.getnode (lv.user)
     # end def get_leave_entry
 
     def month_link (self, s, e, symbol) :
