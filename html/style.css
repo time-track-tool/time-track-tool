@@ -748,6 +748,7 @@ table.timesheet th {
         text-decoration: none;
         vertical-align: middle;
         white-space: nowrap;
+        min-width:19px;
 }
 table.timesheet th.name {
         text-align: left;
@@ -767,7 +768,6 @@ table.timesheet td {
         text-decoration: none;
         vertical-align: bottom;
         white-space: nowrap;
-        width:19pt;
 }
 table.timesheet td.absence {
         background:#95B3D7;
