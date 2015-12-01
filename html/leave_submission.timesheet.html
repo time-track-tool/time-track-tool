@@ -11,6 +11,25 @@
             );
         w.focus ()
     }
+    var back_to_top_button =
+        ['<a href="#top" class="back-to-top">up</a>'].join("");
+        jQuery("body").append(back_to_top_button)
+        jQuery(".back-to-top").hide();
+        jQuery(function ($) {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 100) { // 100 Pixels scrolled
+                    $('.back-to-top').fadeIn();
+                } else {
+                    $('.back-to-top').fadeOut();
+                }
+            });
+            $('.back-to-top').click(function () { // Klick auf den Button
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 800);
+                return false;
+            });
+        });
    </script>
    <tal:block
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>

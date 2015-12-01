@@ -374,13 +374,7 @@ class Leave_Display (object) :
                 ab  = db.absence.getnode (self.abs [abidx])
                 abu = db.user.getnode (ab.user)
             if n % 20 == 0 :
-                ret.append (' <tr>')
-                ret.append ('  <th/><th/><th/>')
-                d = self.fdd
-                while d <= self.ldd :
-                    ret.append ('  <th>%s</th>' % d.day)
-                    d += common.day
-                ret.append (' </tr>')
+                ret.extend (self.header_line ())
             ret.append (' <tr>')
             ret.append ('  <td class="name">%s</td>' % user.lastname)
             ret.append ('  <td class="name">%s</td>' % user.firstname)
@@ -411,6 +405,8 @@ class Leave_Display (object) :
                         ret.append (self.formatlink (date = d, user = u))
                 d += common.day
             ret.append (' </tr>')
+        ret.extend (self.header_line ())
+        ret.append ('<tr/><tr/><tr/><tr/>')
         ret.append ('</table>')
         return '\n'.join (ret)
     # end def format_leaves
@@ -425,6 +421,18 @@ class Leave_Display (object) :
         return self.db.security.hasPermission \
             (perm, self.db.getuid (), 'absence')
     # end def has_permission
+
+    def header_line (self) :
+        ret = []
+        ret.append (' <tr>')
+        ret.append ('  <th/><th/><th/>')
+        d = self.fdd
+        while d <= self.ldd :
+            ret.append ('  <th>%s</th>' % d.day)
+            d += common.day
+        ret.append (' </tr>')
+        return ret
+    # end def header_line
 
     def formatlink (self, type = None, date = None, user = None, abs = None) :
         code = cls = title = a = href = ''

@@ -797,3 +797,21 @@ table.timesheet td a {
 table.timesheet td a[href]:hover        { color: black; }
 table.timesheet td a[href]:link         { color: black; }
 table.timesheet td a[href]              { color: black; }
+
+.back-to-top {
+    background:rgba(0,0,0,0.8);
+    position: fixed;
+    bottom:20px;
+    right:20px;
+    padding:1em;
+    border-radius:15px;
+    height:15px;
+    color:#FFF;
+    font-family:Arial;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+a[href]:link.back-to-top {
+    color: #FFFF99;
+}
