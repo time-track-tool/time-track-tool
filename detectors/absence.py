@@ -42,6 +42,35 @@ def no_user_change (db, cl, nodeid, new_values) :
         raise Reject (_ ("%(user)s may not be changed") % locals ())
 # end def no_user_change
 
+def no_overlap (db, cl, nodeid, new_values) :
+    ymd = common.ymd
+    if 'first_day' in new_values or 'last_day' in new_values :
+        fd = new_values.get ('first_day')
+        ld = new_values.get ('last_day')
+        u  = new_values.get ('user')
+        assert fd and ld and u or nodeid
+        if not fd :
+            fd = cl.get (nodeid, 'first_day')
+        if not ld :
+            ld = cl.get (nodeid, 'last_day')
+        if not u :
+            u = cl.get (nodeid, 'user')
+        dt = common.pretty_range (fd, ld)
+        d  = dict (user = u)
+        fl = dict \
+            ( first_day = fd.pretty (';%Y-%m-%d')
+            , last_day = ld.pretty ('%Y-%m-%d;')
+            )
+        for d in (dict (first_day = dt), dict (last_day = dt), fl) :
+            r = cl.filter (None, dict (d, user = u))
+            if r :
+                item = cl.getnode (r [0])
+                raise Reject \
+                    (_ ("Overlap with existing absence: %s-%s")
+                    % (item.first_day.pretty (ymd), item.last_day.pretty (ymd))
+                    )
+# end def no_overlap
+
 def init (db) :
     global _
     _   = get_translation \
@@ -49,6 +78,8 @@ def init (db) :
     if 'absence' in db.classes :
         db.absence.audit         ("create", check_params)
         db.absence.audit         ("set",    check_params)
+        db.absence.audit         ("create", no_overlap, priority = 120)
+        db.absence.audit         ("set",    no_overlap, priority = 120)
         db.absence.audit         ("set",    no_user_change)
         db.absence.react         ("set",    retire_check)
 # end def init
