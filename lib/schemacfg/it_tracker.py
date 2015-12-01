@@ -64,6 +64,7 @@ def init \
         , order                 = Number    ()
         , log_template          = String    ()
         , close_immediately     = Boolean   ()
+        , title_regex           = String    ()
         )
     it_request_type.setkey ('name')
 

@@ -1863,6 +1863,12 @@ _helptext          = \
       [ ""'''Should be an intuitive one-line description of the %(Classname)s.
           '''
       ]
+    , ""'title_regex'                 :
+      [ ""'''Regular expression that, if it matches the title of a new
+             IT-issue, automagically sets the %(Classname)s for a this
+             IT-issue.
+          '''
+      ]
     , ""'tmplate'                     :
       [ ""'''Used for writing letters (and invoices if selected as an
             invoice template)

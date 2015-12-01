@@ -350,6 +350,7 @@ properties = \
         , 'log_template'
         , 'name'
         , 'order'
+        , 'title_regex'
         ]
       )
     , ( 'keyword'

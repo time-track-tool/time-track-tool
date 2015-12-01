@@ -178,6 +178,9 @@ properties = \
         , ( 'order'
           , ['admin', 'cso', 'it', 'itview', 'user', 'user_view']
           )
+        , ( 'title_regex'
+          , ['admin', 'cso', 'it', 'itview', 'user', 'user_view']
+          )
         ]
       )
     , ( 'msg'

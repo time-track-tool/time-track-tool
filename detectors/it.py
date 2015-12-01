@@ -37,6 +37,7 @@ from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 import common
 import syslog
+import re
 
 def new_it (db, cl, nodeid, new_values) :
     if 'messages'    not in new_values :
@@ -171,7 +172,7 @@ class Magic_Dict (object) :
 # end class Magic_Dict
 
 def check_log_incident (db, cl, nodeid, old_values) :
-    """ We check if the request_type has a log_template set.
+    """ We check if the it_request_type has a log_template set.
         If so, we log to syslog *and* put the CSO onto the nosy list.
         If 'close_immediately' is set, we then close the issue.
     """
@@ -186,17 +187,39 @@ def check_log_incident (db, cl, nodeid, old_values) :
         cl.set (nodeid, status = status_class.lookup ('closed'))
 # end def check_log_incident
 
+def check_title_regex (db, cl, nodeid, new_values) :
+    """ Loop over it_request_types and check title for match of
+        title_regex. If it matches we set the it_request_type.
+    """
+    if 'title' not in new_values :
+        return
+    if 'title_regex' not in db.it_request_type.getprops () :
+        return
+    for rtid in db.it_request_type.getnodeids (retired = False) :
+        rt = db.it_request_type.getnode (rtid)
+        if not rt.title_regex :
+            continue
+        r  = re.compile (rt.title_regex)
+        if r.search (new_values ['title']) :
+            new_values ['it_request_type'] = rt.id
+            break
+# end def check_title_regex
+
 def add_cso (db, cl, nodeid, new_values) :
-    """ We check if the request_type has a log_template set.
+    """ We check if the it_request_type has a log_template set.
         If so, we add all users with cso role to nosy.
+        We set the *first one* of them as responsible.
     """
     if 'it_request_type' in new_values :
         rt = db.it_request_type.getnode (new_values ['it_request_type'])
         if not rt.log_template :
             return
         nosy = new_values.get ('nosy', [])
-        nosy.extend (common.get_uids_with_role (db, 'cso'))
+        csou = common.get_uids_with_role (db, 'cso')
+        nosy.extend (csou)
         new_values ['nosy'] = nosy
+        if csou :
+            new_values ['responsible'] = csou [0]
 # end def add_cso
 
 def stay_closed (db, cl, nodeid, new_values) :
@@ -228,7 +251,10 @@ def init (db) :
     db.it_issue.audit ("create", audit_superseder)
     db.it_issue.audit ("set",    audit_superseder)
     db.it_issue.audit ("create", add_cso)
+    db.it_issue.audit ("set",    add_cso)
     db.it_issue.react ("create", check_log_incident)
+    db.it_issue.react ("set",    check_log_incident)
+    db.it_issue.audit ("create", check_title_regex, priority = 80)
     db.it_issue.audit ("set",    reopen_on_message)
     db.it_issue.audit ("set",    stay_closed, priority = 150)
 # end def init

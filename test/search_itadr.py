@@ -327,6 +327,9 @@ properties = \
         , ( 'order'
           , ['admin', 'contact', 'cso', 'it', 'itview', 'pbx', 'type', 'user', 'user_view']
           )
+        , ( 'title_regex'
+          , ['admin', 'contact', 'cso', 'it', 'itview', 'pbx', 'type', 'user', 'user_view']
+          )
         ]
       )
     , ( 'msg'

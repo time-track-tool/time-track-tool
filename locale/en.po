@@ -6418,3 +6418,6 @@ msgstr "Absence type"
 
 msgid "absence"
 msgstr "Absence"
+
+msgid "title_regex"
+msgstr "Title regex"

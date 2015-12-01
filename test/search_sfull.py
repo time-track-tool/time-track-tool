@@ -829,6 +829,9 @@ properties = \
         , ( 'order'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'title_regex'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
         ]
       )
     , ( 'keyword'

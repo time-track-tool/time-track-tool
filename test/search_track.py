@@ -525,6 +525,9 @@ properties = \
         , ( 'order'
           , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
+        , ( 'title_regex'
+          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          )
         ]
       )
     , ( 'keyword'

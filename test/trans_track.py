@@ -18,18 +18,18 @@ transprop_perms = \
       , []
       )
     , ( 'issue.composed_of.id'
-      , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+      , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
       )
     , ( 'issue.depends.id'
-      , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+      , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
       )
     , ( 'issue.needs.id'
-      , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+      , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
       )
     , ( 'issue.part_of.id'
-      , ['admin', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+      , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
       )
     , ( 'support.related_issues.id'
-      , ['admin', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+      , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
       )
     ]
