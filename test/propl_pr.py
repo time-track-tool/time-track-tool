@@ -71,6 +71,7 @@ properties = \
       )
     , ( 'pr_currency'
       , [ 'max_sum'
+        , 'min_sum'
         , 'name'
         , 'order'
         ]
@@ -188,6 +189,7 @@ properties = \
         , 'realname'
         , 'roles'
         , 'status'
+        , 'supervisor'
         , 'timezone'
         , 'username'
         ]

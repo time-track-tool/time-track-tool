@@ -270,6 +270,12 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
+        , ( 'min_sum'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
         , ( 'name'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
@@ -775,6 +781,9 @@ properties = \
           , ['admin', 'procurement', 'user_view']
           )
         , ( 'status'
+          , ['admin', 'procurement', 'user_view']
+          )
+        , ( 'supervisor'
           , ['admin', 'procurement', 'user_view']
           )
         , ( 'timezone'
