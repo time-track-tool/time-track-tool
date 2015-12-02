@@ -291,17 +291,21 @@ class Leave_Display (object) :
             valid = db.user_status.lookup ('valid')
             users = db.user.filter (None, dict (status = valid), sort = srt)
             self.users = users
-        flt = dict (first_day = ';%s' % fd, last_day = '%s;' % ld, user = users)
+        acc = db.leave_status.lookup ('accepted')
+        flt = dict \
+            ( first_day = ';%s' % fd
+            , last_day  = '%s;' % ld
+            , user      = users
+            , status    = acc
+            )
         sp  = ('user.lastname', 'user.firstname', 'first_day')
         srt = [('+', a) for a in sp]
         lvfirst  = db.leave_submission.filter \
-            (None, dict (first_day = dt, user = users))
+            (None, dict (first_day = dt, user = users, status = acc))
         lvlast   = db.leave_submission.filter \
-            (None, dict (last_day = dt, user = users))
+            (None, dict (last_day = dt, user = users, status = acc))
         lvperiod = db.leave_submission.filter (None, flt)
-        # Make database sort the above by user and start date
-        ids = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
-        lvs = db.leave_submission.filter (ids, {}, sort = srt)
+        lvs = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
         # Put them in a dict by user-id
         self.lvdict = {}
         for id in lvs :
@@ -311,14 +315,14 @@ class Leave_Display (object) :
             self.lvdict [lv.user].append (lv)
 
         # Get all absence records in the given time range, same algo as for
+        if 'status' in flt :
+            del flt ['status']
         abfirst  = db.absence.filter \
             (None, dict (first_day = dt, user = users))
         ablast   = db.absence.filter \
             (None, dict (last_day  = dt, user = users))
         abperiod = db.absence.filter (None, flt)
-        # Make database sort the above by user and start date
-        ids = dict.fromkeys (abfirst + ablast + abperiod).keys ()
-        abs = db.absence.filter (ids, {}, sort = srt)
+        abs = dict.fromkeys (abfirst + ablast + abperiod).keys ()
         # Put them in a dict by user-id
         self.abdict = {}
         for id in abs :
