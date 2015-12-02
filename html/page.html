@@ -1024,7 +1024,11 @@
      <span tal:replace="structure python:context.nosy.field(70)"/>
      <span tal:condition="context/is_edit_ok"
            tal:replace="structure python:utils.user_classhelp
-             (db, user_status = nosy_stati)"/><br>
+             ( db
+             , property='nosy'
+             , inputtype='checkbox'
+             , user_status = nosy_stati
+             )"/><br>
     </td>
    </tr>
    <tal:block metal:define-slot="below-nosy" />
