@@ -62,9 +62,11 @@ def no_overlap (db, cl, nodeid, new_values) :
             , last_day = ld.pretty ('%Y-%m-%d;')
             )
         for d in (dict (first_day = dt), dict (last_day = dt), fl) :
-            r = cl.filter (None, dict (d, user = u))
-            if r :
-                item = cl.getnode (r [0])
+            results = cl.filter (None, dict (d, user = u))
+            for r in results :
+                if r == nodeid :
+                    continue
+                item = cl.getnode (r)
                 raise Reject \
                     (_ ("Overlap with existing absence: %s-%s")
                     % (item.first_day.pretty (ymd), item.last_day.pretty (ymd))
