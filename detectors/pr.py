@@ -53,16 +53,8 @@ def check_tp_rq (db, cl, nodeid, new_values) :
         if nodeid :
             apps = db.pr_approval.filter \
                 (None, dict (purchase_request = nodeid))
-            assert len (apps) <= 1
-            if len (apps) == 0 :
-                db.pr_approval.create \
-                    ( order            = 1
-                    , purchase_request = nodeid
-                    , user             = rq.id
-                    , description      = "Requester"
-                    )
-            else :
-                db.pr_approval.set (apps [0], user = rq.id)
+            assert len (apps) == 1
+            db.pr_approval.set (apps [0], user = rq.id)
 # end def check_tp_rq
 
 def create_pr_approval (db, cl, nodeid, old_values) :
@@ -451,6 +443,14 @@ def check_currency (db, cl, nodeid, new_values) :
         (_, cl, nodeid, new_values, 'max_sum', 'order')
 # end def check_currency
 
+def requester_chg (db, cl, nodeid, new_values) :
+    if 'requester' in new_values :
+        st_open = db.pr_status.lookup ('open')
+        ost = cl.get (nodeid, 'status')
+        if ost != open :
+            raise Reject (_ ("Requester may not be changed"))
+# end def requester_chg
+
 def init (db) :
     global _
     _   = get_translation \
@@ -463,6 +463,7 @@ def init (db) :
     db.purchase_request.audit ("set",    check_requester, priority = 50)
     db.purchase_request.audit ("create", check_tp_rq,     priority = 80)
     db.purchase_request.audit ("set",    check_tp_rq,     priority = 80)
+    db.purchase_request.audit ("set",    requester_chg,   priority = 70)
     db.purchase_request.audit ("set",    change_pr)
     db.purchase_request.audit ("set",    fix_nosy)
     db.purchase_request.react ("set",    changed_pr)
