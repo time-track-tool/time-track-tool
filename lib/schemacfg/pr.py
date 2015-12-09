@@ -520,9 +520,14 @@ def security (db, ** kw) :
             is 'approved' or 'ordered'
         """
         pr = db.purchase_request.getnode (itemid)
-        st_approved = db.pr_status.lookup ('approved')
-        st_ordered  = db.pr_status.lookup ('ordered')
-        if pr.status in (st_approved, st_ordered) :
+        stati = []
+        for n in ('approved', 'ordered') :
+            try :
+                st = db.pr_status.lookup (n)
+                stati.append (st)
+            except KeyError :
+                pass
+        if pr.status in stati :
             return True
         return False
     # end def approved_or_ordered

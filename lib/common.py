@@ -156,7 +156,6 @@ def check_loop (_, cl, id, prop, attr, labelprop = None, ids = None) :
             attr = [attr]
         for a in attr :
             if a in ids :
-                import pdb; pdb.set_trace ()
                 raise Reject, _ ('"%(prop)s" loop: %(labels)s') % dict \
                     ( prop   = _ (prop)
                     , labels = ','.join ([cl.get (i, labelprop) for i in ids])
@@ -1245,7 +1244,7 @@ def pr_offer_item_sum (db, pr) :
         if item.price_per_unit is not None and item.units is not None :
             total += item.price_per_unit * item.units
     if pr.total_cost is not None :
-        assert pr.total_cost == total
+        assert abs (pr.total_cost - total) < 0.0001
     return total
 # end def pr_offer_item_sum
 

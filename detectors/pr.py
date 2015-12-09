@@ -418,11 +418,11 @@ def fix_pr_offer_item (db, cl, nodeid, new_values) :
             if it.index is None or it.index > idx or it.index < midx :
                 continue
             if it.pr_supplier :
-                p_s = it.pr_supplier
-                max = it.index
+                p_s  = it.pr_supplier
+                midx = it.index
             if it.supplier :
-                s = it.supplier
-                max = it.index
+                s    = it.supplier
+                midx = it.index
         if p_s :
             d ['pr_supplier'] = p_s
         if s :
