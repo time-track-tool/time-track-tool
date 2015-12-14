@@ -343,14 +343,15 @@
     <tal:block metal:fill-slot="additional_button">
      <input type="submit" tal:condition="python:
                     context.id
-                and db._db.getuid () == context.requester
+                and (  db._db.getuid () == context.requester
+                    or db._db.getuid () == context.creator
+                    )
                 and context.status.plain () == 'open'"
             i18n:attributes="value" value='Sign&Send'
             onClick="javascript:
              document.forms.itemSynopsis ['@action'].value = 'pr_sign';
              document.itemSynopsis.submit ();">
-     <tal:block tal:condition="python:context.status.name in
-     ('approved', 'rejected', 'cancelled')">
+     <tal:block tal:condition="python:context.status.name != 'open'">
       <tal:block metal:use-macro="templates/page/macros/copy_button"/>
      </tal:block>
     </tal:block>

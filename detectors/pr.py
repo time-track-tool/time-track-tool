@@ -63,7 +63,8 @@ def create_pr_approval (db, cl, nodeid, old_values) :
         ( order            = 1
         , purchase_request = nodeid
         , user             = user
-        , description      = "Requester"
+        , deputy           = cl.get (nodeid, 'creator')
+        , description      = "Requester or Creator"
         )
 # end def create_pr_approval
 
@@ -92,6 +93,7 @@ def change_pr (db, cl, nodeid, new_values) :
     ap_appr   = db.pr_approval_status.lookup ('approved')
     ap_rej    = db.pr_approval_status.lookup ('rejected')
     requester = new_values.get ('requester', cl.get (nodeid, 'requester'))
+    creator   = cl.get (nodeid, 'creator')
     if 'status' in new_values :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
             tc = new_values.get \
@@ -145,7 +147,9 @@ def change_pr (db, cl, nodeid, new_values) :
                     )
             # Check that approval of requester exists
             for ap in approvals :
-                if ap.status == ap_appr and ap.by == requester :
+                if  (   ap.status == ap_appr
+                    and (ap.by == requester or ap.by == creator)
+                    ) :
                     break
             else :
                 raise Reject ( _ ("No approval by requester found"))
