@@ -26,7 +26,7 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'requester')"/>
       <td>
        <span tal:content="structure python:context.requester.field ()"/>
@@ -39,15 +39,15 @@
                   , pagesize=1000 
                   )"/>
       </td>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'purchase_type')"/>
       <td tal:content="structure python:context.purchase_type.menu ()"/>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'department')"/>
       <td tal:content="structure python:context.department.menu ()"/>
      </tr>
@@ -69,7 +69,7 @@
       <td tal:content="structure python:context.sap_cc.menu ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'part_of_budget')"/>
       <td tal:condition="context/part_of_budget/is_edit_ok"
           tal:define="value context/part_of_budget"><!--
@@ -87,7 +87,7 @@
       <td tal:content="structure python:context.safety_critical.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'terms_conditions')"/>
       <td tal:condition="context/terms_conditions/is_edit_ok"
           tal:define="value context/terms_conditions"><!--
@@ -124,7 +124,7 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'renegotiations')"/>
       <td tal:content="structure python:context.renegotiations.field ()"/>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'delivery_deadline')"/>
       <td tal:content="structure python:context.delivery_deadline.field ()"/>
      </tr>
@@ -162,7 +162,7 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'index')"/>
-         <th style="text-align:left"
+         <th class="required" style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'description')"/>
          <th style="text-align:left"
@@ -174,7 +174,7 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'units')"/>
-         <th style="text-align:left"
+         <th class="required" style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'price_per_unit')"/>
          <th style="text-align:left"
@@ -187,7 +187,7 @@
         </tr>
         <tr>
          <th/>
-         <th style="text-align:left"
+         <th class="required" style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'vat_country')"/>
          <th style="text-align:left" i18n:translate="">

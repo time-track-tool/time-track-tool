@@ -144,6 +144,7 @@ def change_pr (db, cl, nodeid, new_values) :
                     , 'units'
                     , 'description'
                     , 'pr_currency'
+                    , 'vat_country'
                     )
             # Check that approval of requester exists
             for ap in approvals :
