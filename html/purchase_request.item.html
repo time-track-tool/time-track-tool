@@ -164,10 +164,10 @@
              ('pr_offer_item', 'index')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'pr_supplier')"/>
+             ('pr_offer_item', 'description')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'description')"/>
+             ('pr_offer_item', 'pr_supplier')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'offer_number')"/>
@@ -187,18 +187,19 @@
         </tr>
         <tr>
          <th/>
-         <th style="text-align:left" i18n:translate="">
-          Add to LAS / Approved
-         </th>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'vat_country')"/>
+         <th style="text-align:left" i18n:translate="">
+          Add to LAS / Approved
+         </th>
         </tr>
         <tal:block tal:repeat="i python:sorted
             (context.offer_items, key = lambda x : x.index)">
          <tbody>
           <tr>
            <td tal:content="structure python:i.index.field (size=3)"/>
+           <td tal:content="structure python:i.description.field ()"/>
            <td>
             <span tal:content="structure python:i.supplier.field ()"/>
             <span tal:condition="i/supplier/is_edit_ok"
@@ -210,7 +211,6 @@
              , pagesize  = '5000'
              )"/>
            </td>
-           <td tal:content="structure python:i.description.field ()"/>
            <td tal:content="structure python:i.offer_number.field (size=10)"/>
            <td tal:content="structure python:i.units.field (size=5)"/>
            <td style="text-align:right"
@@ -223,15 +223,15 @@
           </tr>
           <tr>
            <td/>
-           <td tal:condition="python: not i.pr_supplier"
-               tal:content="structure python:i.add_to_las.field ()"/>
-           <td tal:condition="python: i.pr_supplier"
-               tal:content="string:approved"/>
            <td>
             <span tal:content="structure i/vat_country/menu"/>
             <span tal:condition="i/vat_country"
                   tal:content="python:i.vat_country.vat.plain () + ' %'"/>
            </td>
+           <td tal:condition="python: not i.pr_supplier"
+               tal:content="structure python:i.add_to_las.field ()"/>
+           <td tal:condition="python: i.pr_supplier"
+               tal:content="string:approved"/>
            <td tal:attributes="colspan python:3+cond"/>
           </tr>
          </tbody>
@@ -247,6 +247,12 @@
               (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
           <td>
            <span tal:content="structure python:utils.new_property
+              (context, db, 'pr_offer_item', -idx, 'description').field ()"/>
+           <input type="hidden" name="@link@offer_items"
+                 tal:attributes="value python:'pr_offer_item-%s' % idx" />
+          </td>
+          <td>
+           <span tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'supplier').field ()"/>
            <span tal:content="structure python:db.pr_supplier.classhelp
             ( 'name,sap_ref'
@@ -255,12 +261,6 @@
             , width     = '600'
             , pagesize  = '5000'
             )"/>
-          </td>
-          <td>
-           <span tal:content="structure python:utils.new_property
-              (context, db, 'pr_offer_item', -idx, 'description').field ()"/>
-           <input type="hidden" name="@link@offer_items"
-                 tal:attributes="value python:'pr_offer_item-%s' % idx" />
           </td>
           <td tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'offer_number').field
@@ -275,10 +275,10 @@
               (context, db, 'pr_offer_item', -idx, 'pr_currency').menu () "/>
          </tr>
          <tr>
-          <td colspan="2"/>
+          <td/>
           <td tal:content="structure python:utils.new_property
               (context, db, 'pr_offer_item', -idx, 'vat_country').menu ()"/>
-          <td tal:attributes="colspan python:4+cond"/>
+          <td tal:attributes="colspan python:5+cond"/>
          </tr>
          </tbody>
         </tal:block>
