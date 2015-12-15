@@ -72,7 +72,8 @@ properties = \
         ]
       )
     , ( 'department'
-      , [ 'description'
+      , [ 'deputy'
+        , 'description'
         , 'doc_num'
         , 'manager'
         , 'messages'

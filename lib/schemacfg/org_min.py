@@ -47,5 +47,18 @@ def init (db, Ext_Class, Link, ** kw) :
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    Dep_Ancestor = kw ['Department_Class']
+    class Department_Class (Dep_Ancestor) :
+        """ Add some attributes to department """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( manager               = Link      ("user")
+                , deputy                = Link      ("user")
+                )
+            Dep_Ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Department_Class
+    export.update (dict (Department_Class = Department_Class))
+
     return export
 # end def init

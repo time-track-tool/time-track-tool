@@ -70,8 +70,7 @@ def init \
         """ Add some attributes to department """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( manager               = Link      ("user")
-                , messages              = Multilink ("msg")
+                ( messages              = Multilink ("msg")
                 , valid_from            = Date      ()
                 , valid_to              = Date      ()
                 )

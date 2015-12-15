@@ -1,6 +1,8 @@
 properties = \
     [ ( 'department'
-      , [ 'description'
+      , [ 'deputy'
+        , 'description'
+        , 'manager'
         , 'name'
         , 'part_of'
         ]

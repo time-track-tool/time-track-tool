@@ -156,7 +156,10 @@ properties = \
         ]
       )
     , ( 'department'
-      , [ ( 'description'
+      , [ ( 'deputy'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
+          )
+        , ( 'description'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'doc_num'

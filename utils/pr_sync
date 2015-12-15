@@ -31,6 +31,8 @@ class PR_Sync (autosuper) :
 
     property_classes = dict \
         (( ('department.part_of',            'department')
+         , ('department.manager',            'user')
+         , ('department.deputy',             'user')
          , ('org_location.organisation',     'organisation')
          , ('org_location.location',         'location')
          , ('sap_cc.deputy',                 'user')
@@ -142,8 +144,12 @@ class PR_Sync (autosuper) :
         self.sync_class ('location',     ('name', 'country'))
         self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
+        # FIXME: Add deputy to department when rolled out for time-tracker
         self.sync_class \
-            ('department', ('name', 'description', 'part_of'), ('valid_to',))
+            ( 'department'
+            , ('name', 'description', 'part_of', 'manager')
+            , ('valid_to',)
+            )
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))
         # only once at beginning?
@@ -151,16 +157,17 @@ class PR_Sync (autosuper) :
             ( 'user_status'
             , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
             )
-        if self.args.sync_user :
-            self.sync_class \
-                ( 'user'
-                , ( 'username', 'address', 'alternate_addresses', 'department'
-                  , 'org_location', 'realname', 'status', 'supervisor'
-                  )
-                , key       = 'username'
-                , roles     = 'User,Nosy'
-                , dont_sync = dict.fromkeys (('1', '2'))
-                )
+        self.sync_class \
+            ( 'user'
+            , ( 'username', 'address', 'alternate_addresses', 'department'
+              , 'org_location', 'realname', 'status', 'supervisor'
+              )
+            , key       = 'username'
+            , roles     = 'User,Nosy'
+            , dont_sync = dict.fromkeys (('1', '2'))
+            , update    = self.args.sync_user
+            )
+        self.sync_pending ()
         self.sync_class \
             ( 'sap_cc'
             , ( 'name', 'description', 'responsible', 'deputy'
@@ -194,6 +201,7 @@ class PR_Sync (autosuper) :
         , key        = 'name'
         , required   = ()
         , dont_sync  = {}
+        , update     = True
         , **default
         ) :
         self.verbose ('Syncing: %s' % classname, level = 2)
@@ -270,7 +278,7 @@ class PR_Sync (autosuper) :
                             break
                     else :
                         self.verbose ("Create: %s %s" % (classname, params))
-                        if self.update :
+                        if self.update and update :
                             lid = cls.create (** params)
                 else :
                     litem = cls.getnode (lid)
@@ -306,7 +314,7 @@ class PR_Sync (autosuper) :
                             d [p] = v
                     if (d) :
                         self.verbose ("Set: %s%s %s" % (classname, lid, d))
-                        if self.update :
+                        if self.update and update :
                             cls.set (lid, ** d)
                 self.idmap [classname][id] = lid
                 if pending :
@@ -315,16 +323,16 @@ class PR_Sync (autosuper) :
             elif lid :
                 if classname != 'user' :
                     self.verbose ("Retire: %s%s" % (classname, lid))
-                    if self.update :
+                    if self.update and update :
                         cls.retire (lid)
                 else :
                     if not self.obsolete :
                         self.obsolete = self.db.user_status.lookup ('obsolete')
                     if item ['status'] != self.obsolete :
                         self.verbose ("Marking obsolete: user%s" % lid)
-                        if self.update :
+                        if self.update and update :
                             cls.set (lid, status = self.obsolete)
-        if self.update :
+        if self.update and update :
             self.db.commit ()
     # end def sync_class
 
