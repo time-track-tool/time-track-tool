@@ -94,7 +94,8 @@ def change_pr (db, cl, nodeid, new_values) :
     ap_rej    = db.pr_approval_status.lookup ('rejected')
     requester = new_values.get ('requester', cl.get (nodeid, 'requester'))
     creator   = cl.get (nodeid, 'creator')
-    if 'status' in new_values :
+    ost       = cl.get (nodeid, 'status')
+    if 'status' in new_values and new_values ['status'] != ost :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
             tc = new_values.get \
                 ('time_project', cl.get (nodeid, 'time_project'))
@@ -167,6 +168,13 @@ def change_pr (db, cl, nodeid, new_values) :
                     break
             else :
                 raise Reject (_ ("No rejected approval-record found"))
+        elif new_values ['status'] == db.pr_status.lookup ('open') :
+            # If setting status to open again we need to retire *all*
+            # approvals and re-create the (pending) approval of the
+            # requester
+            for ap in approvals :
+                db.pr_approval.retire (ap.id)
+            create_pr_approval (db, cl, nodeid, {})
 # end def change_pr
 
 def changed_pr (db, cl, nodeid, old_values) :
@@ -276,11 +284,21 @@ def nosy_for_approval (db, app) :
 # end def nosy_for_approval
 
 def fix_nosy (db, cl, nodeid, new_values) :
-    if 'nosy' in new_values :
-        nosy = dict.fromkeys (new_values ['nosy'])
-        rq   = new_values.get ('requester', cl.get (nodeid, 'requester'))
+    import pdb;pdb.set_trace ()
+    nosy = dict.fromkeys (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
+    rq   = new_values.get ('requester', cl.get (nodeid, 'requester'))
+    chg  = False
+    if rq not in nosy :
         nosy [rq] = 1
-        nosy [cl.get (nodeid, 'creator')] = 1
+        chg = True
+    # Allow creator to remove her/himself after initial sign&send
+    pr_approving = db.pr_status.lookup ('approving')
+    if 'status' in new_values and new_values ['status'] == pr_approving :
+        cr = cl.get (nodeid, 'creator')
+        if cr not in nosy :
+            nosy [cr] = 1
+            chg = True
+    if chg :
         new_values ['nosy'] = nosy.keys ()
 # end def fix_nosy
 

@@ -288,7 +288,7 @@ def security (db, ** kw) :
     fixdoc = schemadef.security_doc_from_docstring
 
     def own_pr (db, userid, itemid) :
-        """ User is allowed to view their own PRs if either creator or
+        """ User is allowed permission on their own PRs if either creator or
             requester.
         """
         if not itemid or itemid < 1 :
@@ -304,6 +304,15 @@ def security (db, ** kw) :
         , klass = 'purchase_request'
         , check = own_pr
         , description = fixdoc (own_pr.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = own_pr
+        , description = fixdoc (own_pr.__doc__)
+        , properties = ('messages', 'nosy', 'files')
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -333,6 +342,27 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    def reopen_rejected_pr (db, userid, itemid) :
+        """ User is allowed to reopen their own rejected PR.
+        """
+        if not own_pr (db, userid, itemid) :
+            return False
+        st_rejected  = db.pr_status.lookup ('rejected')
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status == st_rejected :
+            return True
+        return False
+    # end def reopen_rejected_pr
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = reopen_rejected_pr
+        , description = fixdoc (reopen_rejected_pr.__doc__)
+        , properties = ('status', 'messages', 'nosy')
+        )
+    db.security.addPermissionToRole ('User', p)
+
     def own_pr_and_open (db, userid, itemid) :
         """ User is allowed to edit their own PRs (creator or requester)
             while PR is open.
@@ -355,7 +385,7 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     def linked_pr (db, userid, itemid) :
-        """ Users are allowed to view PR if an approval from them is
+        """ Users are allowed if an approval from them is
             linked to the PR.
         """
         if not itemid or itemid < 1 :
@@ -379,6 +409,15 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = linked_pr
+        , description = fixdoc (linked_pr.__doc__)
+        , properties  = ('messages', 'nosy', 'files')
+        )
+    db.security.addPermissionToRole ('User', p)
+
     def pending_approval (db, userid, itemid) :
         """ Users are allowed to edit message if a pending
             approval from them is linked to the PR.
@@ -397,14 +436,14 @@ def security (db, ** kw) :
         if pr.activity + date.Interval ('00:05:00') > now :
             return True
         return False
-    # end def linked_pr
+    # end def pending_approval
 
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'purchase_request'
         , check = pending_approval
         , description = fixdoc (pending_approval.__doc__)
-        , properties  = ('messages', 'nosy')
+        , properties  = ('messages', 'nosy', 'files')
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -537,19 +576,35 @@ def security (db, ** kw) :
         , klass       = 'purchase_request'
         , check       = approved_or_ordered
         , description = fixdoc (approved_or_ordered.__doc__)
-        , properties  = ('status', 'messages')
+        , properties  = ('status', 'messages' 'files', 'nosy')
         )
     db.security.addPermissionToRole ('Procurement', p)
+
+    schemadef.register_nosy_classes (db, ['purchase_request'])
+
+    def user_on_nosy (db, userid, itemid) :
+        """ User is allowed if on the nosy list
+        """
+        pr = db.purchase_request.getnode (itemid)
+        if userid in pr.nosy :
+            return True
+    # end def user_on_nosy
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'purchase_request'
+        , check       = user_on_nosy
+        , description = fixdoc (user_on_nosy.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = approved_or_ordered
-        , description = fixdoc (approved_or_ordered.__doc__)
-        , properties  = ('messages',)
+        , check       = user_on_nosy
+        , description = fixdoc (user_on_nosy.__doc__)
+        , properties  = ('messages', 'files', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
-
-    schemadef.register_nosy_classes (db, ['purchase_request'])
 
 # end def security
