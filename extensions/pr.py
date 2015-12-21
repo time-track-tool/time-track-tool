@@ -46,10 +46,10 @@ class Sign_Purchase_Request (EditItemAction, autosuper) :
         st_ud = self.db.pr_approval_status.lookup ('undecided')
         st_ap = self.db.pr_approval_status.lookup ('approved')
         d     = dict (purchase_request = pr.id, status = st_ud, user = uid)
-        ap    = self.db.pr_approval.filter (None, d)
+        ap    = dict.fromkeys (self.db.pr_approval.filter (None, d))
         del d ['user']
         d ['deputy'] = uid
-        ap.extend (self.db.pr_approval.filter (None, d))
+        ap.update (dict.fromkeys (self.db.pr_approval.filter (None, d)))
         assert len (ap) == 1
         for a in ap :
             pr_ap = self.db.pr_approval.getnode (a)
