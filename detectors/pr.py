@@ -39,14 +39,16 @@ def check_tp_rq (db, cl, nodeid, new_values) :
             org = cl.get (nodeid, 'organisation')
     if new_values.get ('time_project', None) :
         tp  = db.time_project.getnode (new_values ['time_project'])
-        if not dep and tp.department :
-            new_values ['department'] = dep = tp.department
+        # FIXME: At some point we want to re-enable department
+        #if not dep and tp.department :
+        #    new_values ['department'] = dep = tp.department
         if not org and tp.organisation :
             new_values ['organisation'] = org = tp.organisation
     if new_values.get ('requester', None) :
         rq = db.user.getnode (new_values ['requester'])
-        if not dep and rq.department :
-            new_values ['department'] = dep = rq.department
+        # FIXME: At some point we want to re-enable department
+        #if not dep and rq.department :
+        #    new_values ['department'] = dep = rq.department
         if not org and rq.org_location :
             org = db.org_location.get (rq.org_location, 'organisation')
             new_values ['organisation'] = org
@@ -200,6 +202,14 @@ def changed_pr (db, cl, nodeid, old_values) :
                 , deputy           = pcc.deputy
                 , description      = d
                 )
+            dep = db.department.getnode (pr.department)
+            db.pr_approval.create \
+                ( order            = 55
+                , purchase_request = pr.id
+                , user             = dep.manager
+                , deputy           = dep.deputy
+                , description      = "Department Head"
+                )
             add_approval_with_role (db, pr.id, 'Finance')
             pob = db.part_of_budget.getnode (pr.part_of_budget)
             # Loop over order items and check if any is not on the approved
@@ -284,7 +294,6 @@ def nosy_for_approval (db, app) :
 # end def nosy_for_approval
 
 def fix_nosy (db, cl, nodeid, new_values) :
-    import pdb;pdb.set_trace ()
     nosy = dict.fromkeys (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
     rq   = new_values.get ('requester', cl.get (nodeid, 'requester'))
     chg  = False
