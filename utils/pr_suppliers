@@ -112,8 +112,8 @@ def main () :
         if s_id is None :
             if args.verbose :
                 print \
-                    ("Create: name: %(sup)s org: %(ent)s sap: %(sap)s"
-                     " r: %(rat)s"
+                    ("Create: name: %(sup)r org: %(ent)r sap: %(sap)r"
+                     " r: %(rat)r"
                     % locals ()
                     )
             sap = sap.encode ('utf-8')
