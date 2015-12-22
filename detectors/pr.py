@@ -190,6 +190,11 @@ def supplier_is_approved (db, pr, sup_id) :
         return False
     supplier = db.pr_supplier.getnode (sup_id)
     if pr.organisation in supplier.organisation :
+        if not supplier.rating :
+            return False
+        rating = db.pr_supplier_rating.getnode (supplier.rating)
+        if rating.order > 2 :
+            return False
         return True
     return False
 # end def supplier_is_approved

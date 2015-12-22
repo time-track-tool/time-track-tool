@@ -6,9 +6,25 @@ from   csv      import DictReader
 from   argparse import ArgumentParser
 from   roundup  import instance
 
-olo_tr = \
-    { 'TTTech AG'              : 'TTTech Wien'
-    , 'TTTech Automotive GmbH' : 'TTAutomotive Wien'
+org_tr = \
+    { 'TTTech AG'                 : 'TTTech'
+    , 'TTTech Automotive GmbH'    : 'TTTech Automotive'
+    , 'TTTech Computertechnik AG' : 'TTTech'
+    , 'TTControl srl Brixen'      : 'TTControl Srl Brixen'
+    , 'FTS Computertechnik GmbH'  : 'FTS'
+    }
+
+supplier_rating = \
+    ( ('good impression',            1)
+    , ('please contact responsible', 2)
+    , ("don't order",                3)
+    , ('evaluation required',        4)
+    , ('evaluation on hold',         5)
+    , ('inactive',                   6)
+    )
+supplier_rating_corr = \
+    { "don \'t order" : "don't order"
+    , 'Inactive'      : 'inactive'
     }
 
 def main () :
@@ -57,36 +73,79 @@ def main () :
     tracker = instance.open (args.dir)
     db      = tracker.open (args.user)
 
+    if args.update :
+        for name, order in supplier_rating :
+            try :
+                db.pr_supplier_rating.lookup (name)
+            except KeyError :
+                db.pr_supplier_rating.create (name = name, order = order)
+        db.commit ()
+
     f = open (args.filename, 'r')
-    for line in f :
-        if line.startswith (';;;;;;;;;;;;Finance') :
-            break
     dr = DictReader (f, delimiter = args.delimiter)
     for rec in dr :
         enc = args.encoding
         ent = rec ['Entity'].decode (enc).strip ()
         if not ent :
             break
-        olo = db.org_location.lookup (olo_tr.get (ent, ent).encode ('utf-8'))
-        org = db.org_location.get (olo, 'organisation')
+        org = db.organisation.lookup (org_tr.get (ent, ent).encode ('utf-8'))
         sup = rec ['Name of Supplier'].decode (enc)
-        if args.verbose :
-            print (sup, ent)
+        sap = rec ['Creditor'].decode (enc) or ''
+        rating = 'General Impression about Supplier->output LAS Meetings'
+        rat = rec [rating].decode (enc)
+        rat = supplier_rating_corr.get (rat, rat)
+        rat = rat.encode ('utf-8')
+        #if args.verbose :
+        #    print (sup, ent, sap, rat)
         vcr = None
-        try :
-            s_id = db.pr_supplier.lookup (sup.encode ('utf-8'))
-        except KeyError :
+
+        s_id = None
+        trials = \
+            (sup, sup.replace ('\n', ' '), sup.replace ('\n', ' ').strip ())
+        for k in trials :
+            try :
+                s_id = db.pr_supplier.lookup (k.encode ('utf-8'))
+            except KeyError :
+                pass
+
+        sup = sup.replace ('\n', ' ').strip ()
+        if s_id is None :
+            if args.verbose :
+                print \
+                    ("Create: name: %(sup)s org: %(ent)s sap: %(sap)s"
+                     " r: %(rat)s"
+                    % locals ()
+                    )
+            sap = sap.encode ('utf-8')
+            rat = db.pr_supplier_rating.lookup (rat)
             if args.update :
                 s_id = db.pr_supplier.create \
                     ( name            = sup.encode ('utf-8')
                     , organisation    = [org]
+                    , sap_ref         = sap
+                    , rating          = rat
                     )
             continue
         supplier = db.pr_supplier.getnode (s_id)
         orgs     = supplier.organisation
+        d        = {}
         if org not in orgs :
             orgs.append (org)
-            db.pr_supplier.set (s_id, organisation = orgs)
+            d ['organisation'] = orgs
+        sap = sap.encode ('utf-8')
+        if supplier.sap_ref != sap and sap :
+            d ['sap_ref'] = sap
+        rat = db.pr_supplier_rating.lookup (rat)
+        if supplier.rating != rat :
+            d ['rating'] = rat
+        sup = sup.encode ('utf-8')
+        if supplier.name != sup :
+            print "%r->%r" % (supplier.name, sup)
+            d ['name'] = sup
+        if d :
+            db.pr_supplier.set (s_id, ** d)
+            if args.verbose :
+                print ("Update: %s >%s< %r" % (s_id, supplier.name, d))
     if args.update :
         db.commit ()
 # end def main

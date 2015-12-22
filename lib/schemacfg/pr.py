@@ -124,11 +124,19 @@ def init \
         )
     pr_status.setkey ('name')
 
+    pr_supplier_rating = Class \
+        ( db, ''"pr_supplier_rating"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    pr_supplier_rating.setkey ('name')
+
     pr_supplier = Class \
         ( db, ''"pr_supplier"
         , name                  = String    ()
         , organisation          = Multilink ("organisation")
         , sap_ref               = String    ()
+        , rating                = Link      ("pr_supplier_rating")
         )
     pr_supplier.setkey ('name')
 
@@ -224,6 +232,7 @@ def security (db, ** kw) :
         , ("pr_offer_item",      ["Procurement"], [])
         , ("pr_status",          ["User"],        [])
         , ("pr_supplier",        ["User"],        [])
+        , ("pr_supplier_rating", ["User"],        [])
         , ("purchase_request",   ["Procurement"], [])
         , ("purchase_type",      ["User"],        ["Procurement"])
         , ("terms_conditions",   ["User"],        [])

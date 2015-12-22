@@ -6418,3 +6418,11 @@ msgstr "Absence"
 
 msgid "title_regex"
 msgstr "Title regex"
+
+msgid "rating"
+msgstr "Rating"
+
+msgid "pr_supplier_rating"
+msgstr "Supplier rating"
+
+

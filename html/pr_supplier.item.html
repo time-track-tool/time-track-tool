@@ -33,6 +33,11 @@
           (classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.plain ()"/>
      </tr>
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'rating')"/>
+      <td tal:content="structure python:context.rating.plain ()"/>
+     </tr>
     </tal:block>
     <tal:block metal:fill-slot="button_slot"/>
    </tal:block>
