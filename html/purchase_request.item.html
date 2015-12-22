@@ -100,9 +100,6 @@
       </td>
       <td tal:condition="not:context/terms_conditions/is_edit_ok"
           tal:content="context/terms_conditions/plain" />
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'terms_identical')"/>
-      <td tal:content="structure python:context.terms_identical.field ()"/>
      </tr>
      <tr>
       <th rowspan = "2"

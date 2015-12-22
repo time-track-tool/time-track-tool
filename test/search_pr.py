@@ -552,12 +552,6 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'terms_identical'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
         , ( 'time_project'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'

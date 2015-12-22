@@ -128,7 +128,6 @@ properties = \
         , 'status'
         , 'termination_date'
         , 'terms_conditions'
-        , 'terms_identical'
         , 'time_project'
         , 'title'
         , 'total_cost'

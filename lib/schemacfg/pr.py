@@ -169,7 +169,6 @@ def init \
                 , contract_term         = String    ()
                 , termination_date      = Date      ()
                 , terms_conditions      = Link      ("terms_conditions")
-                , terms_identical       = Boolean   ()
                 , delivery_deadline     = Date      ()
                 , renegotiations        = Boolean   ()
                 , offer_items           = Multilink ("pr_offer_item")
@@ -576,7 +575,7 @@ def security (db, ** kw) :
         , klass       = 'purchase_request'
         , check       = approved_or_ordered
         , description = fixdoc (approved_or_ordered.__doc__)
-        , properties  = ('status', 'messages' 'files', 'nosy')
+        , properties  = ('status', 'messages', 'files', 'nosy')
         )
     db.security.addPermissionToRole ('Procurement', p)
 
