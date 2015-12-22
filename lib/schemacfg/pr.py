@@ -110,6 +110,9 @@ def init \
         , pr_supplier           = Link      ("pr_supplier")
         , offer_number          = String    ()
         , vat                   = Number    ()
+        , sap_cc                = Link      ("sap_cc")
+        , time_project          = Link      ("time_project")
+        , purchase_type         = Link      ("purchase_type")
         )
 
     pr_status = Class \
@@ -124,7 +127,7 @@ def init \
     pr_supplier = Class \
         ( db, ''"pr_supplier"
         , name                  = String    ()
-        , org_location          = Multilink ("org_location")
+        , organisation          = Multilink ("organisation")
         , sap_ref               = String    ()
         )
     pr_supplier.setkey ('name')

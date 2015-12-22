@@ -63,9 +63,24 @@ class Sign_Purchase_Request (EditItemAction, autosuper) :
     # end def handle
 # end class Sign_Purchase_Request
 
+def supplier_approved (db, context, supplier) :
+    """ Return 'approved' if supplier is approved for given organisation.
+        If we cannot determine the current status we return an empty
+        string. Otherwise 'not approved for organisation' is returned.
+    """
+    if not context.organisation :
+        return ''
+    orgname = context.organisation.name
+    for org in supplier.organisation :
+        if org.id == context.organisation.id :
+            return 'approved'
+    return 'not approved for %(orgname)s' % locals ()
+# end def supplier_approved
+
 def init (instance) :
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
     reg = instance.registerUtil
     reg ('pr_offer_item_sum', common.pr_offer_item_sum)
+    reg ('supplier_approved', supplier_approved)
 # end def init

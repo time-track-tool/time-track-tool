@@ -3616,6 +3616,9 @@ msgstr ""
 msgid "sap_cc"
 msgstr "SAP Cost center"
 
+msgid "sap_reference"
+msgstr "SAP Reference"
+
 msgid "For selecting %(Classname)s information via the %(Property)s"
 msgstr ""
 
@@ -4124,9 +4127,6 @@ msgid ""
 "             supplier or customer (us).\n"
 "          "
 msgstr ""
-
-msgid "terms_identical"
-msgstr "Terms identical?"
 
 msgid ""
 "If terms and conditions of supplier apply, please indicate\n"

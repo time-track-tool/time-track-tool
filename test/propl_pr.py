@@ -86,7 +86,10 @@ properties = \
         , 'pr_currency'
         , 'pr_supplier'
         , 'price_per_unit'
+        , 'purchase_type'
+        , 'sap_cc'
         , 'supplier'
+        , 'time_project'
         , 'units'
         , 'vat'
         ]
@@ -100,7 +103,7 @@ properties = \
       )
     , ( 'pr_supplier'
       , [ 'name'
-        , 'org_location'
+        , 'organisation'
         , 'sap_ref'
         ]
       )

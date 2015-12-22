@@ -6,7 +6,7 @@ from   csv      import DictReader
 from   argparse import ArgumentParser
 from   roundup  import instance
 
-org = \
+olo_tr = \
     { 'TTTech AG'              : 'TTTech Wien'
     , 'TTTech Automotive GmbH' : 'TTAutomotive Wien'
     }
@@ -67,11 +67,11 @@ def main () :
         ent = rec ['Entity'].decode (enc).strip ()
         if not ent :
             break
-        olo = db.org_location.lookup (org.get (ent, ent).encode ('utf-8'))
+        olo = db.org_location.lookup (olo_tr.get (ent, ent).encode ('utf-8'))
+        org = db.org_location.get (olo, 'organisation')
         sup = rec ['Name of Supplier'].decode (enc)
-        cc  = rec ['Country Code'].decode (enc).strip ()
         if args.verbose :
-            print (sup, ent, cc)
+            print (sup, ent)
         vcr = None
         try :
             s_id = db.pr_supplier.lookup (sup.encode ('utf-8'))
@@ -79,14 +79,14 @@ def main () :
             if args.update :
                 s_id = db.pr_supplier.create \
                     ( name            = sup.encode ('utf-8')
-                    , org_location    = [olo]
+                    , organisation    = [org]
                     )
             continue
         supplier = db.pr_supplier.getnode (s_id)
-        olos     = supplier.org_location
-        if olo not in olos :
-            olos.append (olo)
-            db.pr_supplier.set (s_id, org_location = olos)
+        orgs     = supplier.organisation
+        if org not in orgs :
+            orgs.append (org)
+            db.pr_supplier.set (s_id, organisation = orgs)
     if args.update :
         db.commit ()
 # end def main

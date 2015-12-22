@@ -345,7 +345,25 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
+        , ( 'purchase_type'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'sap_cc'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
         , ( 'supplier'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'time_project'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
@@ -399,7 +417,7 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'org_location'
+        , ( 'organisation'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'

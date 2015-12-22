@@ -1172,7 +1172,7 @@ default_attributes = dict \
         ('continuous_obligation contract_term delivery_deadline'
          ' department frame_purchase organisation part_of_budget'
          ' purchase_type renegotiations requester safety_critical'
-         ' sap_cc termination_date terms_conditions terms_identical'
+         ' sap_cc termination_date terms_conditions'
          ' time_project title'
         ).split ()
     )
@@ -1196,7 +1196,8 @@ def copy_url (context, attributes = None) :
     if cls == 'purchase_request' and atr == default_attributes [cls] :
         atrs = \
             ( 'index', 'supplier', 'description', 'offer_number'
-            , 'units', 'price_per_unit'
+            , 'units', 'price_per_unit', 'vat', 'sap_cc', 'time_project'
+            , 'purchase_type'
             )
         n = -1
         for n, ofr in enumerate (context ['offer_items']) :

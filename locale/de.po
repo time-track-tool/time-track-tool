@@ -6094,9 +6094,6 @@ msgstr ""
 msgid "frame_purchase"
 msgstr ""
 
-msgid "terms_identical"
-msgstr ""
-
 msgid "safety_critical"
 msgstr ""
 

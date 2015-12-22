@@ -1524,6 +1524,8 @@ _helptext          = \
       ]
     , ""'sap_cc'                      :
       [""'''For selecting %(Classname)s information via the %(Property)s''']
+    , ""'sap_reference'               :
+      [""'''Reference of this %(Classname)s in SAP''']
     , ""'sap_material'                : [""'''Material number in SAP''']
     , ""'sap_ref'                     : [""'''For tracking in SAP''']
     , ""'secondary_groups'            :
@@ -1803,12 +1805,6 @@ _helptext          = \
     , ""'terms_conditions'            :
       [ ""'''Please indicate here which conditions apply, conditions of
              supplier or customer (us).
-          '''
-      ]
-    , ""'terms_identical'            :
-      [ ""'''If terms and conditions of supplier apply, please indicate
-             if the terms and conditions of the supplier correspond to
-             ours.
           '''
       ]
     , ""'termination_date'            :
