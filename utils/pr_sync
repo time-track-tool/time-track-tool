@@ -38,14 +38,14 @@ class PR_Sync (autosuper) :
          , ('sap_cc.deputy',                 'user')
          , ('sap_cc.responsible',            'user')
          , ('sap_cc.purchasing_agent',       'user')
-         , ('time_project.department',       'department')
+         #, ('time_project.department',       'department')
          , ('time_project.deputy',           'user')
          , ('time_project.nosy',             'user')
          , ('time_project.organisation',     'organisation')
          , ('time_project.responsible',      'user')
          , ('time_project.purchasing_agent', 'user')
          , ('time_project.status',           'time_project_status')
-         , ('user.department',               'department')
+         #, ('user.department',               'department')
          , ('user.org_location',             'org_location')
          , ('user.status',                   'user_status')
          , ('user.supervisor',               'user')
@@ -145,11 +145,12 @@ class PR_Sync (autosuper) :
         self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
         # FIXME: Add deputy to department when rolled out for time-tracker
-        self.sync_class \
-            ( 'department'
-            , ('name', 'description', 'part_of', 'manager')
-            , ('valid_to',)
-            )
+        # FIXME: At some point we want to re-enable department
+        #self.sync_class \
+        #    ( 'department'
+        #    , ('name', 'description', 'part_of', 'manager')
+        #    , ('valid_to',)
+        #    )
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))
         # only once at beginning?
