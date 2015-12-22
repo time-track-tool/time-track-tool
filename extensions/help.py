@@ -2017,8 +2017,8 @@ _helptext          = \
       ]
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']
-    , ""'vat_country'                 :
-      [""'''Select country for VAT computation.''']
+    , ""'vat'                 :
+      [""'''VAT (in percent)''']
     , ""'visible'                     :
       [ ""''' If you set this option to "YES", all time tracker users
               can see your private %(Classname)s. If set to "No", it

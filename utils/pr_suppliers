@@ -10,13 +10,6 @@ org = \
     { 'TTTech AG'              : 'TTTech Wien'
     , 'TTTech Automotive GmbH' : 'TTAutomotive Wien'
     }
-country = dict \
-    ( A   = 'Austria'
-    , CH  = '0 (no VAT)'
-    , D   = 'Germany'
-    , I   = 'Italy'
-    , USA = '0 (no VAT)'
-    )
 
 def main () :
     cmd = ArgumentParser ()
@@ -81,18 +74,12 @@ def main () :
             print (sup, ent, cc)
         vcr = None
         try :
-            vcr = db.vat_country.lookup (country.get (cc, cc).encode ('utf-8'))
-        except KeyError :
-            if cc :
-                print ("Unknown country code: %s" % cc)
-        try :
             s_id = db.pr_supplier.lookup (sup.encode ('utf-8'))
         except KeyError :
             if args.update :
                 s_id = db.pr_supplier.create \
                     ( name            = sup.encode ('utf-8')
                     , org_location    = [olo]
-                    , vat_country     = vcr
                     )
             continue
         supplier = db.pr_supplier.getnode (s_id)
@@ -100,8 +87,6 @@ def main () :
         if olo not in olos :
             olos.append (olo)
             db.pr_supplier.set (s_id, org_location = olos)
-        if supplier.vat_country != vcr :
-            db.pr_supplier.set (s_id, vat_country = vcr)
     if args.update :
         db.commit ()
 # end def main

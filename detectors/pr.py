@@ -147,7 +147,7 @@ def change_pr (db, cl, nodeid, new_values) :
                     , 'units'
                     , 'description'
                     , 'pr_currency'
-                    , 'vat_country'
+                    , 'vat'
                     )
             # Check that approval of requester exists
             for ap in approvals :
@@ -464,10 +464,6 @@ def check_supplier (db, cl, nodeid, new_values) :
         except KeyError :
             new_values ['pr_supplier'] = None
             pass
-        if prsup :
-            vc = db.pr_supplier.get (prsup, 'vat_country')
-            if vc :
-                new_values ['vat_country'] = vc
 # end def check_supplier
 
 def check_currency (db, cl, nodeid, new_values) :

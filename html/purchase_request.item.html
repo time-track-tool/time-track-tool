@@ -186,7 +186,7 @@
          <th/>
          <th class="required" style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'vat_country')"/>
+             ('pr_offer_item', 'vat')"/>
          <th style="text-align:left" i18n:translate="">
           Add to LAS / Approved
          </th>
@@ -220,11 +220,7 @@
           </tr>
           <tr>
            <td/>
-           <td>
-            <span tal:content="structure i/vat_country/menu"/>
-            <span tal:condition="i/vat_country"
-                  tal:content="python:i.vat_country.vat.plain () + ' %'"/>
-           </td>
+           <td tal:content="structure i/vat/field"/>
            <td tal:condition="python: not i.pr_supplier"
                tal:content="structure python:i.add_to_las.field ()"/>
            <td tal:condition="python: i.pr_supplier"
@@ -274,7 +270,7 @@
          <tr>
           <td/>
           <td tal:content="structure python:utils.new_property
-              (context, db, 'pr_offer_item', -idx, 'vat_country').menu ()"/>
+              (context, db, 'pr_offer_item', -idx, 'vat').field ()"/>
           <td tal:attributes="colspan python:5+cond"/>
          </tr>
          </tbody>

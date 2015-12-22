@@ -5610,9 +5610,6 @@ msgstr "Konditionen"
 msgid "purchase_type"
 msgstr "Typ der Bestellung"
 
-msgid "vat_country"
-msgstr "Mehrwertsteuer pro Land"
-
 msgid "pr_supplier"
 msgstr "Lieferant"
 

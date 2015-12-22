@@ -357,7 +357,7 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'vat_country'
+        , ( 'vat'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
@@ -406,12 +406,6 @@ properties = \
             ]
           )
         , ( 'sap_ref'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        , ( 'vat_country'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
@@ -529,6 +523,12 @@ properties = \
             ]
           )
         , ( 'sap_cc'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'sap_reference'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
@@ -829,21 +829,6 @@ properties = \
             ]
           )
         , ( 'roles'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        ]
-      )
-    , ( 'vat_country'
-      , [ ( 'country'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'procurement', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        , ( 'vat'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procurement', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'

@@ -109,7 +109,7 @@ def init \
         , add_to_las            = Boolean   ()
         , pr_supplier           = Link      ("pr_supplier")
         , offer_number          = String    ()
-        , vat_country           = Link      ("vat_country")
+        , vat                   = Number    ()
         )
 
     pr_status = Class \
@@ -124,7 +124,6 @@ def init \
     pr_supplier = Class \
         ( db, ''"pr_supplier"
         , name                  = String    ()
-        , vat_country           = Link      ("vat_country")
         , org_location          = Multilink ("org_location")
         , sap_ref               = String    ()
         )
@@ -145,13 +144,6 @@ def init \
         , description           = String    ()
         )
     t_c.setkey ('name')
-
-    vat_country = Class \
-        ( db, ''"vat_country"
-        , country               = String    ()
-        , vat                   = Number    ()
-        )
-    vat_country.setkey ('country')
 
     class PR (Full_Issue_Class) :
         def __init__ (self, db, classname, ** properties) :
@@ -176,6 +168,7 @@ def init \
                 , total_cost            = Number    ()
                 , pr_currency           = Link      ("pr_currency")
                 , sap_cc                = Link      ("sap_cc")
+                , sap_reference         = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -233,7 +226,6 @@ def security (db, ** kw) :
         , ("terms_conditions",   ["User"],        [])
         , ("time_project",       ["User"],        [])
         , ("user",               ["Procurement"], [])
-        , ("vat_country",        ["User"],        ["Procurement"])
         ]
 
     prop_perms = \

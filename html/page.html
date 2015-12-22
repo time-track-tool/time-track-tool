@@ -208,7 +208,7 @@
                           'packaging_unit,minimum_inventory&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
    , ('pr_supplier', '')
-                        : '@columns=id,name,vat_country'
+                        : '@columns=id,name'
                           '&@sort=name&@pagesize=20&@startwith=0'
    , ('purchase_request', '')
                         : '@columns=id,title,purchase_type,time_project,'
@@ -481,7 +481,6 @@
      , ('user',                'Create', '?@template=item', 1)
      , ('user_dynamic',        'Edit',   '?@template=item', 1)
      , ('valid',               'Edit',   '?@template=item', 1)
-     , ('vat_country',         'Edit',   '?@template=item', 1)
      , ('work_location',       'Edit',   '?@template=item', 1)
      , ( 'vacation_correction'
        , 'Edit'

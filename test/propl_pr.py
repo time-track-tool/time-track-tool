@@ -88,7 +88,7 @@ properties = \
         , 'price_per_unit'
         , 'supplier'
         , 'units'
-        , 'vat_country'
+        , 'vat'
         ]
       )
     , ( 'pr_status'
@@ -102,7 +102,6 @@ properties = \
       , [ 'name'
         , 'org_location'
         , 'sap_ref'
-        , 'vat_country'
         ]
       )
     , ( 'purchase_request'
@@ -125,6 +124,7 @@ properties = \
         , 'responsible'
         , 'safety_critical'
         , 'sap_cc'
+        , 'sap_reference'
         , 'status'
         , 'termination_date'
         , 'terms_conditions'
@@ -201,11 +201,6 @@ properties = \
         , 'ldap_group'
         , 'name'
         , 'roles'
-        ]
-      )
-    , ( 'vat_country'
-      , [ 'country'
-        , 'vat'
         ]
       )
     ]

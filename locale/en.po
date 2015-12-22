@@ -4505,8 +4505,8 @@ msgstr "Value"
 msgid "Value of this %(Classname)s"
 msgstr ""
 
-msgid "vat_country"
-msgstr "Country (for VAT)"
+msgid "vat"
+msgstr "VAT"
 
 msgid "Select country for VAT computation."
 msgstr ""
@@ -6277,9 +6277,6 @@ msgstr "Price per unit"
 
 msgid "units"
 msgstr "Units"
-
-msgid "vat"
-msgstr "VAT"
 
 msgid "total_cost"
 msgstr "Total cost"

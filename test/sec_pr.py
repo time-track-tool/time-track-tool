@@ -40,10 +40,8 @@ Role "procurement":
  User is allowed to access user (View for "user" only)
  User is allowed to create pr_currency (Create for "pr_currency" only)
  User is allowed to create purchase_type (Create for "purchase_type" only)
- User is allowed to create vat_country (Create for "vat_country" only)
  User is allowed to edit pr_currency (Edit for "pr_currency" only)
  User is allowed to edit purchase_type (Edit for "purchase_type" only)
- User is allowed to edit vat_country (Edit for "vat_country" only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'deputy', 'description', 'department', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed to access time_project (View for "time_project" only)
@@ -82,7 +80,6 @@ Role "user":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_project_status (View for "time_project_status" only)
  User is allowed to access user_status (View for "user_status" only)
- User is allowed to access vat_country (View for "vat_country" only)
  User is allowed to cancel their own PR (Edit for "purchase_request": ('status', 'messages', 'nosy') only)
  User is allowed to change status of undecided approval if they are the owner/deputy or have appropriate role (Edit for "pr_approval": ('status', 'msg') only)
  User is allowed to create file (Create for "file" only)
