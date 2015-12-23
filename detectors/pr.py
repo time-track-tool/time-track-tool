@@ -129,6 +129,9 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
                 )
+            dep = new_values.get ('department', cl.get (nodeid, 'department'))
+            if db.department.is_retired (dep) :
+                raise Reject (_ ("Department no longer valid"))
             fp = new_values.get \
                 ( 'frame_purchase'
                 , cl.get (nodeid, 'frame_purchase')
