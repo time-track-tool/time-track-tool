@@ -6425,4 +6425,7 @@ msgstr "Rating"
 msgid "pr_supplier_rating"
 msgstr "Supplier rating"
 
+msgid "may_purchase"
+msgstr "may purchase"
+
 

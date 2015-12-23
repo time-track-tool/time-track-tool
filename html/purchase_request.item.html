@@ -41,7 +41,8 @@
       </td>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'organisation')"/>
-      <td tal:content="structure python:context.organisation.menu ()"/>
+      <td tal:content="structure python:context.organisation.menu
+          (may_purchase = True)"/>
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname

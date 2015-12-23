@@ -42,7 +42,10 @@ def check_tp_rq (db, cl, nodeid, new_values) :
         # FIXME: At some point we want to re-enable department
         #if not dep and tp.department :
         #    new_values ['department'] = dep = tp.department
-        if not org and tp.organisation :
+        if  (   not org
+            and tp.organisation
+            and db.organisation.get (tp.organisation, 'may_purchase')
+            ) :
             new_values ['organisation'] = org = tp.organisation
     if new_values.get ('requester', None) :
         rq = db.user.getnode (new_values ['requester'])
@@ -51,12 +54,19 @@ def check_tp_rq (db, cl, nodeid, new_values) :
         #    new_values ['department'] = dep = rq.department
         if not org and rq.org_location :
             org = db.org_location.get (rq.org_location, 'organisation')
-            new_values ['organisation'] = org
+            if db.organisation.get (org, 'may_purchase') :
+                new_values ['organisation'] = org
         if nodeid :
             apps = db.pr_approval.filter \
                 (None, dict (purchase_request = nodeid))
             assert len (apps) == 1
             db.pr_approval.set (apps [0], user = rq.id)
+    if 'organisation' in new_values :
+        org = db.organisation.getnode (new_values ['organisation'])
+        if not org.may_purchase :
+            o = _ ('organisation')
+            oname = org.name
+            raise Reject (_ ("%(o)s %(oname)s may not purchase") % locals ())
 # end def check_tp_rq
 
 def create_pr_approval (db, cl, nodeid, old_values) :

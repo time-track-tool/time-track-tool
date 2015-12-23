@@ -56,6 +56,7 @@
     , ('shadow_warning',                       {})
     , ('activity',                             {})
     , ('guid',                                 {})
+    , ('org_location', dict (multiselect = 1))
     );
    props python:
     [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l

@@ -31,7 +31,7 @@
 
 from schemacfg       import schemadef
 
-def init (db, Ext_Class, Link, ** kw) :
+def init (db, Ext_Class, Link, Boolean, ** kw) :
     export = {}
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)
@@ -59,6 +59,18 @@ def init (db, Ext_Class, Link, ** kw) :
         # end def __init__
     # end class Department_Class
     export.update (dict (Department_Class = Department_Class))
+
+    Org_Ancestor = kw ['Organisation_Class']
+    class Organisation_Class (Org_Ancestor) :
+        """ Add some attributes to organisation """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( may_purchase          = Boolean   ()
+                )
+            Org_Ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Organisation_Class
+    export.update (dict (Organisation_Class = Organisation_Class))
 
     return export
 # end def init

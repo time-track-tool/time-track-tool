@@ -1111,6 +1111,8 @@ _helptext          = \
              don\'t allow change to \"testing\".
           '''
       ]
+    , ""'may_purchase'                :
+      [""'''%(Classname)s may purchase items''']
     , ""'measurement'                 :
       [""'''Measurement for a given sensor''']
     , ""'messageid'                   :
