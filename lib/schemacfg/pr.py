@@ -658,6 +658,30 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    def add_to_las_false (db, userid, itemid) :
+        """ Allow setting add_to_las from 'None' for orphanes offer items.
+        """
+        import pdb; pdb.set_trace ()
+        if itemid is None :
+            return False
+        oi = db.pr_offer_item.getnode (itemid)
+        pr = get_pr (db, itemid)
+        if pr is not None :
+            return False
+        if oi.add_to_las is None :
+            return True
+        return False
+    # end def add_to_las_false
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'pr_offer_item'
+        , check = add_to_las_false
+        , description = fixdoc (add_to_las_false.__doc__)
+        , properties = ('add_to_las',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
     def linked_and_editable (db, userid, itemid) :
         """ Users are allowed to edit if offer is linked from PR and PR
             is editable.
