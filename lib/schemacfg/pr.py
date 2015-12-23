@@ -393,8 +393,8 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     def approver_non_finance_offer (db, userid, itemid) :
-        """ Users are allowed to view if they have one of the view roles
-            of the purchase type
+        """ Approvers are allowed if not finance and PR not yet approved
+            by finance.
         """
         pr  = get_pr (db, itemid)
         return approver_non_finance (db, userid, pr.id)
