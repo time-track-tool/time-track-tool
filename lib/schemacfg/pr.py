@@ -335,6 +335,8 @@ def security (db, ** kw) :
             of the purchase type
         """
         pr  = get_pr (db, itemid)
+        if pr is None :
+            return False
         return view_role_pr (db, userid, pr.id)
     # end def view_role_pr_offer
 
@@ -397,6 +399,8 @@ def security (db, ** kw) :
             by finance.
         """
         pr  = get_pr (db, itemid)
+        if pr is None :
+            return False
         return approver_non_finance (db, userid, pr.id)
     # end def approver_non_finance_offer
 
