@@ -1386,6 +1386,11 @@ _helptext          = \
           '''
       ]
     , ""'purchase_type'               : [""'''%(Property)s of %(Classname)s''']
+    , ""'purchase_type++roles'        :
+      [ ""'''Roles which must approve purchase requests with this
+             %(Classname)s; enter a comma,separated,list
+          '''
+      ]
     , ""'purchasing_agent'            :
       [""'''Person responsible for purchasing for this %(Classname)s''']
     , ""'qa_representative'           :
@@ -2017,6 +2022,11 @@ _helptext          = \
       [""'''Value of this %(Classname)s''']
     , ""'vat'                 :
       [""'''VAT (in percent)''']
+    , ""'view_roles'                  :
+      [ ""'''Roles that may view purchase requests of this %(Classname)s
+             enter a comma,separated,list
+          '''
+      ]
     , ""'visible'                     :
       [ ""''' If you set this option to "YES", all time tracker users
               can see your private %(Classname)s. If set to "No", it

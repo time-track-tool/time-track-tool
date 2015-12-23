@@ -545,14 +545,19 @@ def requester_chg (db, cl, nodeid, new_values) :
             raise Reject (_ ("Requester may not be changed"))
 # end def requester_chg
 
+def pt_check_roles (db, cl, nodeid, new_values) :
+    common.check_roles (db, cl, nodeid, new_values)
+    common.check_roles (db, cl, nodeid, new_values, 'view_roles')
+# end def pt_check_roles
+
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'purchase_request' not in db.classes :
         return
-    db.purchase_type.audit    ("create", common.check_roles)
-    db.purchase_type.audit    ("set",    common.check_roles)
+    db.purchase_type.audit    ("create", pt_check_roles)
+    db.purchase_type.audit    ("set",    pt_check_roles)
     db.purchase_request.audit ("create", new_pr,          priority = 50)
     db.purchase_request.audit ("set",    check_requester, priority = 50)
     db.purchase_request.audit ("create", check_tp_rq,     priority = 80)

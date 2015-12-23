@@ -1,0 +1,16 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+from roundup.password  import Password, encodePassword
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+for id in db.purchase_type.getnodeids (retired = False) :
+    pt = db.purchase_type.getnode (id)
+    if not pt.view_roles :
+        db.purchase_type.set (id, view_roles = 'Procurement')
+db.commit()

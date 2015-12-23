@@ -145,6 +145,7 @@ def init \
         , name                  = String    ()
         , order                 = Number    ()
         , roles                 = String    ()
+        , view_roles            = String    ()
         )
     purchase_type.setkey ('name')
 
@@ -229,11 +230,9 @@ def security (db, ** kw) :
         , ("pr_approval",        ["Procurement"], [])
         , ("pr_approval_status", ["User"],        [])
         , ("pr_currency",        ["User"],        ["Procurement"])
-        , ("pr_offer_item",      ["Procurement"], [])
         , ("pr_status",          ["User"],        [])
         , ("pr_supplier",        ["User"],        [])
         , ("pr_supplier_rating", ["User"],        [])
-        , ("purchase_request",   ["Procurement"], [])
         , ("purchase_type",      ["User"],        ["Procurement"])
         , ("terms_conditions",   ["User"],        [])
         , ("time_project",       ["User"],        [])
@@ -289,6 +288,55 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', 'Create', 'purchase_request')
 
     fixdoc = schemadef.security_doc_from_docstring
+
+    def view_role_pr (db, userid, itemid) :
+        """ Users are allowed if they have one of the view roles
+            of the purchase type
+        """
+        if not itemid or itemid < 1 :
+            return False
+        pr = db.purchase_request.getnode (itemid)
+        if not pr.purchase_type :
+            return False
+        roles = db.purchase_type.get (pr.purchase_type, 'view_roles')
+        roles = common.role_list (roles)
+        if roles and common.user_has_role (db, userid, * roles) :
+            return True
+        return False
+    # end def view_role_pr
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'purchase_request'
+        , check = view_role_pr
+        , description = fixdoc (view_role_pr.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = view_role_pr
+        , description = fixdoc (view_role_pr.__doc__)
+        , properties = ('sap_reference',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def view_role_pr_offer (db, userid, itemid) :
+        """ Users are allowed to view if they have one of the view roles
+            of the purchase type
+        """
+        pr  = get_pr (db, itemid)
+        return view_role_pr (db, userid, pr.id)
+    # end def view_role_pr_offer
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'pr_offer_item'
+        , check = view_role_pr_offer
+        , description = fixdoc (view_role_pr_offer.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
 
     def own_pr (db, userid, itemid) :
         """ User is allowed permission on their own PRs if either creator or

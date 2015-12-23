@@ -3503,8 +3503,14 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "purchase_type++roles"
+msgstr "Approval-Roles"
+
 msgid "roles"
 msgstr "Roles"
+
+msgid "view_roles"
+msgstr "View-Roles"
 
 msgid ""
 "Roles for this %(Classname)s -- to give the user more than\n"

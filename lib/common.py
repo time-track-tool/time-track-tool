@@ -1225,9 +1225,9 @@ def role_list (roles) :
     return [x.lower ().strip () for x in roles.split (',')]
 # end def role_list
 
-def check_roles (db, cl, nodeid, new_values) :
-    if 'roles' in new_values :
-        roles = new_values ['roles']
+def check_roles (db, cl, nodeid, new_values, rname = 'roles') :
+    if rname in new_values :
+        roles = new_values [rname]
         if roles :
             roles = roles.strip ()
         if roles :

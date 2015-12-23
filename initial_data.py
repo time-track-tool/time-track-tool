@@ -1026,25 +1026,63 @@ if 'leave_status' in db.classes :
     db.leave_status.set (v5, transitions = [v3, v6])
 if 'purchase_type' in db.classes :
     db.purchase_type.create \
-        (name = 'Service',        order = 10)
+        ( name       = 'Service'
+        , order      = 10
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'IT-Assett',      order = 20, roles = "IT-Approval")
+        ( name       = 'IT-Assett'
+        , order      = 20
+        , roles      = "IT-Approval"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'Assett',         order = 25, roles = "Procurement")
+        ( name       = 'Assett'
+        , order      = 25
+        , roles      = "Procurement"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'IT-Hardware',    order = 30, roles = "IT-Approval")
+        ( name       = 'IT-Hardware'
+        , order      = 30
+        , roles      = "IT-Approval"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'Hardware',       order = 35, roles = "Procurement")
+        ( name       = 'Hardware'
+        , order      = 35
+        , roles      = "Procurement"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'IT-Software',    order = 40, roles = "IT-Approval")
+        ( name       = 'IT-Software'
+        , order      = 40
+        , roles      = "IT-Approval"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'Software',       order = 45, roles = "Procurement")
+        ( name       = 'Software'
+        , order      = 45
+        , roles      = "Procurement"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'Stock',          order = 50)
+        ( name       = 'Stock'
+        , order      = 50
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'Subcontracting', order = 60, roles = "Subcontract,HR")
+        ( name       = 'Subcontracting'
+        , order      = 60
+        , roles      = "Subcontract,HR"
+        , view_roles = "Procurement"
+        )
     db.purchase_type.create \
-        (name = 'Other',          order = 70, roles = "Procurement")
+        ( name       = 'Other'
+        , order      = 70
+        , roles      = "Procurement"
+        , view_roles = "Procurement"
+        )
 if 'pr_status' in db.classes :
     s1 = db.pr_status.create (name = 'open',      order = 1)
     s2 = db.pr_status.create (name = 'approving', order = 2, relaxed = True)
