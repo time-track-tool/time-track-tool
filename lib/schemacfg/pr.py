@@ -323,7 +323,10 @@ def security (db, ** kw) :
         , klass = 'purchase_request'
         , check = view_role_pr
         , description = fixdoc (view_role_pr.__doc__)
-        , properties = ('sap_reference',)
+        , properties =
+            ( 'sap_reference', 'terms_conditions', 'frame_purchase'
+            , 'frame_purchase_end'
+            )
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -340,6 +343,69 @@ def security (db, ** kw) :
         , klass = 'pr_offer_item'
         , check = view_role_pr_offer
         , description = fixdoc (view_role_pr_offer.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'pr_offer_item'
+        , check = view_role_pr_offer
+        , description = fixdoc (view_role_pr_offer.__doc__)
+        , properties =
+            ( 'add_to_las', 'supplier', 'pr_supplier')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def approver_non_finance (db, userid, itemid) :
+        """ Approvers are allowed if not finance and PR not yet approved
+            by finance.
+        """
+        if not itemid or itemid < 1 :
+            return False
+        # User may not change
+        if own_pr (db, userid, itemid) :
+            return False
+        # Finance may not change
+        if common.user_has_role (db, userid, 'finance') :
+            return False
+        pr = db.purchase_request.getnode (itemid)
+        st_approving = db.pr_status.lookup ('approving')
+        if pr.status != st_approving :
+            return False
+        un = db.pr_approval_status.lookup ('undecided')
+        ap = db.pr_approval.filter (None, dict (purchase_request = itemid))
+        for id in ap :
+            a = db.pr_approval.getnode (id)
+            # already signed by finance?
+            if a.status != un and a.role and a.role.lower () == 'finance' :
+                return False
+        return linked_pr (db, userid, itemid)
+    # end def approver_non_finance
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = approver_non_finance
+        , description = fixdoc (approver_non_finance.__doc__)
+        , properties =
+            ( 'continuous_obligation', 'termination_date', 'contract_term')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def approver_non_finance_offer (db, userid, itemid) :
+        """ Users are allowed to view if they have one of the view roles
+            of the purchase type
+        """
+        pr  = get_pr (db, itemid)
+        return approver_non_finance (db, userid, pr.id)
+    # end def approver_non_finance_offer
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'pr_offer_item'
+        , check = approver_non_finance_offer
+        , description = fixdoc (approver_non_finance_offer.__doc__)
+        , properties = ( 'vat',)
         )
     db.security.addPermissionToRole ('User', p)
 

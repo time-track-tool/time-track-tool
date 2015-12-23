@@ -195,6 +195,23 @@ def change_pr (db, cl, nodeid, new_values) :
             create_pr_approval (db, cl, nodeid, {})
 # end def change_pr
 
+def check_late_changes (db, cl, nodeid, new_values) :
+    """ Check that attributes changed late in the process are consistent
+    """
+    if 'continuous_obligation' in new_values :
+        co = new_values ['continuous_obligation']
+        if co :
+            common.require_attributes \
+                ( _, cl, nodeid, new_values
+                , 'contract_term', 'termination_date'
+                )
+    if 'frame_purchase' in new_values :
+        fp = new_values ['frame_purchase']
+        if fp :
+            common.require_attributes \
+                (_, cl, nodeid, new_values, 'frame_purchase_end')
+# end def check_late_changes
+
 def supplier_is_approved (db, pr, sup_id) :
     if not sup_id :
         return False
@@ -565,6 +582,7 @@ def init (db) :
     db.purchase_request.audit ("set",    requester_chg,   priority = 70)
     db.purchase_request.audit ("set",    change_pr)
     db.purchase_request.audit ("set",    fix_nosy)
+    db.purchase_request.audit ("set",    check_late_changes)
     db.purchase_request.react ("set",    changed_pr)
     db.purchase_request.react ("create", create_pr_approval)
     db.pr_approval.audit      ("create", new_pr_approval)

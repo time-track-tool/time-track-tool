@@ -432,6 +432,8 @@ _helptext          = \
             certain time. (E.g. car leasing, appartment rent etc.)
          '''
       ]
+    , ""'contract_term'               :
+      [""'''%(Property)s for a continuous obligation''']
     , ""'contract_type'               :
       [""'''%(Property)s specifies the kind of contract that
             the staff member has, like (normal) employment contract,
