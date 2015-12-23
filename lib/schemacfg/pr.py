@@ -208,40 +208,45 @@ def security (db, ** kw) :
     """
 
     roles = \
-        [ ("Board",           "Approvals over certain limits")
-        , ("Nosy",            "Nosy list")
-        , ("Finance",         "Finance-related approvals")
-        , ("HR",              "Approvals for staff/subcontracting")
-        , ("IT-Approval",     "Approve IT-Related PRs")
-        , ("Procurement",     "Procurement department")
-        , ("Quality",         "Approvals for Safety issues")
-        , ("Subcontract",     "Approvals for staff/subcontracting")
+        [ ("Board",             "Approvals over certain limits")
+        , ("Nosy",              "Nosy list")
+        , ("Finance",           "Finance-related approvals")
+        , ("HR",                "Approvals for staff/subcontracting")
+        , ("IT-Approval",       "Approve IT-Related PRs")
+        , ("Procurement",       "Procurement department")
+        , ("Procurement-Admin", "Procurement administration")
+        , ("Quality",           "Approvals for Safety issues")
+        , ("Subcontract",       "Approvals for staff/subcontracting")
         ]
 
     #     classname        allowed to view   /  edit
 
     classes = \
-        [ ("department",         ["User"],        [])
-        , ("location",           ["User"],        [])
-        , ("organisation",       ["User"],        [])
-        , ("org_location",       ["User"],        [])
-        , ("part_of_budget",     ["User"],        [])
-        , ("pr_approval_order",  ["Procurement"], [])
-        , ("pr_approval",        ["Procurement"], [])
-        , ("pr_approval_status", ["User"],        [])
-        , ("pr_currency",        ["User"],        ["Procurement"])
-        , ("pr_status",          ["User"],        [])
-        , ("pr_supplier",        ["User"],        [])
-        , ("pr_supplier_rating", ["User"],        [])
-        , ("purchase_type",      ["User"],        ["Procurement"])
-        , ("terms_conditions",   ["User"],        [])
-        , ("time_project",       ["User"],        [])
-        , ("user",               ["Procurement"], [])
+        [ ("department",         ["User"],              [])
+        , ("location",           ["User"],              [])
+        , ("organisation",       ["User"],              [])
+        , ("org_location",       ["User"],              [])
+        , ("part_of_budget",     ["User"],              [])
+        , ("pr_approval_order",  ["Procurement"],       [])
+        , ("pr_approval",        ["Procurement"],       [])
+        , ("pr_approval_status", ["User"],              [])
+        , ("pr_currency",        ["User"],              ["Procurement-Admin"])
+        , ("pr_status",          ["User"],              [])
+        , ("pr_supplier",        ["User"],              [])
+        , ("pr_supplier_rating", ["User"],              [])
+        , ("purchase_type",      ["User"],              ["Procurement-Admin"])
+        , ("terms_conditions",   ["User"],              [])
+        , ("time_project",       ["User"],              [])
+        , ("user",               ["Procurement-Admin"], [])
         ]
 
     prop_perms = \
-        [ ("user", "Edit", ["Procurement"], ("roles", "password"))
-        , ("user", "View", ["User"],        ("username", "id", "realname"))
+        [ ( "user", "Edit", ["Procurement-Admin"]
+          , ("roles", "password")
+          )
+        , ( "user", "View", ["User"]
+          , ("username", "id", "realname")
+          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -264,7 +269,7 @@ def security (db, ** kw) :
         ( name        = 'Search'
         , klass       = 'user'
         )
-    db.security.addPermissionToRole ('Procurement', p)
+    db.security.addPermissionToRole ('Procurement-Admin', p)
 
     p = db.security.addPermission \
         ( name        = 'Search'
@@ -606,9 +611,11 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     def approved_or_ordered (db, userid, itemid) :
-        """ User is allowed editing if status
+        """ User with view role is allowed editing if status
             is 'approved' or 'ordered'
         """
+        if not view_role_pr (db, userid, itemid) :
+            return False
         pr = db.purchase_request.getnode (itemid)
         stati = []
         for n in ('approved', 'ordered') :
@@ -629,7 +636,7 @@ def security (db, ** kw) :
         , description = fixdoc (approved_or_ordered.__doc__)
         , properties  = ('status', 'messages', 'files', 'nosy')
         )
-    db.security.addPermissionToRole ('Procurement', p)
+    db.security.addPermissionToRole ('User', p)
 
     schemadef.register_nosy_classes (db, ['purchase_request'])
 

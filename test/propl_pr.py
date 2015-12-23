@@ -38,6 +38,7 @@ properties = \
       )
     , ( 'organisation'
       , [ 'description'
+        , 'may_purchase'
         , 'name'
         ]
       )
@@ -104,7 +105,13 @@ properties = \
     , ( 'pr_supplier'
       , [ 'name'
         , 'organisation'
+        , 'rating'
         , 'sap_ref'
+        ]
+      )
+    , ( 'pr_supplier_rating'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'purchase_request'
@@ -140,6 +147,7 @@ properties = \
       , [ 'name'
         , 'order'
         , 'roles'
+        , 'view_roles'
         ]
       )
     , ( 'query'

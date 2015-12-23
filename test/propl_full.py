@@ -396,6 +396,7 @@ properties = \
     , ( 'organisation'
       , [ 'description'
         , 'mail_domain'
+        , 'may_purchase'
         , 'messages'
         , 'name'
         , 'valid_from'

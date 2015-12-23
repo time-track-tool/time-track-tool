@@ -1000,6 +1000,9 @@ properties = \
         , ( 'mail_domain'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'may_purchase'
+          , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
+          )
         , ( 'messages'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'type', 'user']
           )
