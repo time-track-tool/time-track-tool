@@ -65,9 +65,10 @@ importer.update_security ()
 
 #     classname        allowed to view   /  edit
 classes = \
-    [ ("file"                , [],               [])
-    , ("msg"                 , [],               [])
-    , ("query"               , ["Controlling"],  ["Controlling"])
+    [ ("file",                 [],               [])
+    , ("msg",                  [],               [])
+    , ("query",                ["Controlling"],  ["Controlling"])
+    , ("department",           [],               ["Procurement-Admin"])
     ]
 
 

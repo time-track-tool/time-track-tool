@@ -36,8 +36,10 @@ Role "procurement-admin":
   (Search for "user" only)
  User is allowed Edit on (Edit for "user": ('roles', 'password') only)
  User is allowed to access user (View for "user" only)
+ User is allowed to create department (Create for "department" only)
  User is allowed to create pr_currency (Create for "pr_currency" only)
  User is allowed to create purchase_type (Create for "purchase_type" only)
+ User is allowed to edit department (Edit for "department" only)
  User is allowed to edit pr_currency (Edit for "pr_currency" only)
  User is allowed to edit purchase_type (Edit for "purchase_type" only)
 Role "project":
@@ -55,6 +57,7 @@ Role "user":
   (Search for "pr_offer_item" only)
   (Search for "purchase_request" only)
   (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'id', 'creation', 'creator', 'activity', 'actor') only)
+ Allow setting add_to_las from 'None' for orphanes offer items (Edit for "pr_offer_item": ('add_to_las',) only)
  Approvers are allowed if not finance and PR not yet approved by finance (Edit for "pr_offer_item": ('vat',) only)
  Approvers are allowed if not finance and PR not yet approved by finance (Edit for "purchase_request": ('continuous_obligation', 'contract_term', 'termination_date') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
