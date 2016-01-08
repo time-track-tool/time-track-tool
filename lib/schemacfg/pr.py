@@ -661,7 +661,6 @@ def security (db, ** kw) :
     def add_to_las_false (db, userid, itemid) :
         """ Allow setting add_to_las from 'None' for orphanes offer items.
         """
-        import pdb; pdb.set_trace ()
         if itemid is None :
             return False
         oi = db.pr_offer_item.getnode (itemid)
