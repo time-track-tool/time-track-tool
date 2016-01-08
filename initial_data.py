@@ -1083,6 +1083,13 @@ if 'purchase_type' in db.classes :
         , roles      = "Procurement"
         , view_roles = "Procurement"
         )
+    if hasattr (db, 'sql') :
+        db.sql ('alter table _purchase_request alter column '
+                '_total_cost type double precision;'
+               )
+        db.sql ('alter table _pr_offer_item alter column '
+                '_price_per_unit type double precision;'
+               )
 if 'pr_status' in db.classes :
     s1 = db.pr_status.create (name = 'open',      order = 1)
     s2 = db.pr_status.create (name = 'approving', order = 2, relaxed = True)
