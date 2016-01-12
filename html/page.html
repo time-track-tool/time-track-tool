@@ -1606,12 +1606,13 @@
        <tr tal:condition="python:not terse or prop.terse">
         <th style="text-align:right;"
             tal:content="structure python:prop.colonlabel()"/>
-        <td>
+        <td tal:define="prps python:
+            [('description', 'status', 'responsible'), ()]
+            [prop.lnkcls and prop.lnkcls.classname == 'user' or 0]">
          <tal:block tal:replace="structure python:prop.search_input (request)"/>
          <span tal:condition="python:prop.do_classhelp"
            tal:replace="structure python:db[prop.lnkcls.classname].classhelp
-            ( properties=prop.classhelp_properties
-              ('description', 'status', 'responsible')
+            ( properties=prop.classhelp_properties (*prps)
             , property=prop.searchname
             , form='query'
             , pagesize=500

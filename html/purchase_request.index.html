@@ -8,6 +8,7 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
+   vst python: db._db.user_status.lookup ('valid');
    props python:
     ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty (utils, pdict ['title'])
@@ -40,9 +41,22 @@
     , utils.ExtProperty (utils, pdict ['total_cost'])
     , utils.ExtProperty (utils, pdict ['pr_currency'])
     , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty
+        ( utils, pdict ['creator']
+        , help_props  = ['realname']
+        , filter = dict (status = vst)
+        )
     , utils.ExtProperty (utils, pdict ['activity'])
-    , utils.ExtProperty (utils, pdict ['actor'])
+    , utils.ExtProperty
+        ( utils, pdict ['actor']
+        , help_props  = ['realname']
+        , filter = dict (status = vst)
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['nosy']
+        , help_props  = ['realname']
+        , filter = dict (status = vst)
+        )
     , utils.ExtProperty
         ( utils, pdict ['offer_items']
         , searchable  = True
