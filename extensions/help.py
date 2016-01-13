@@ -25,6 +25,7 @@ from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Range
 from maturity_index                 import maturity_table
 import os
+import textwrap
 try :
     from docutils.core import publish_parts
 except ImportError :
@@ -122,10 +123,48 @@ miss_text          = \
       '''
 multiple_allowed   = \
     ""'''Multiple %(Classname)s entries are allowed.'''
+optional_offer_prop = \
+    ""'''Optional field in the per-items area, may be used
+         to state, if the specific item deviates from the respective
+         field settings in the head area.
+         <p>
+         Example: You want to purchase a production of B-samples to be
+         used for internal use, but also shipment to customers. The
+         B-sample is already existing as a product in SAP. The overall
+         purchase type is "Material/Stock", cost for the material
+         purchase will be allocated to the profit center stipulated in
+         the materials master data in SAP. However, the production also
+         requires the order of one-time charges (e.g. setup cost from
+         manufacturer). For such items, purchase type can be changed to
+         "Other" or "Project-Service" and such cost can be directly
+         allocated to the Time Category of your project.
+         </p><p>
+         In case of field settings deviating from head area, additional
+         Approvers will be automatically considered in the approval
+         stage.
+         </p>
+      '''
 order              = \
     ""'''Items are ordered by this property in drop-down boxes etc.'''
 priority           = \
     ""'''Priority for this %(Classname)s.'''
+prtp = Structured_Text ( textwrap.dedent (
+    ""'''
+         Choose either SAP Cost Center or Time Category (Project) as
+         booking reference for the overall %(Classname)s [#]_. Please
+         note: only either Time Category *or* SAP Cost Center can be
+         defined.
+
+         These fields are used in the approval process to identify
+         persons responsible for cost unit.
+         For purchase type "Material/Stock" please select one of the
+         BU-specific SCM-Cost Centers.
+
+         .. [#] Please note:
+              Time Category / SAP Cost Center and Purchase Type may be
+              optionally overruled for each item (see manual).
+
+      '''))
 range_description  = \
     ""'''as a comma-separated list of ranges (a special case of a range
          is just one number), e.g., 1-100,300-500
@@ -149,6 +188,25 @@ superseder         = \
     ""'''This %(Classname)s has been closed as a duplicate against
          another %(Classname)s.
       '''
+supplier           = \
+       ""'''
+            Select suppliers from list. If supplier is not included (not
+            approved), type supplier name in field.
+            <p>
+            Please note: Try to avoid typing suppliers without selection
+            from list. The PR Tracker cannot identify approved suppliers
+            unless the name is fully corresponding to the name in the
+            list.
+            </p><p>
+            Please note: PRs from unapproved suppliers may be subject to
+            special approval rules and take longer time for approval.
+            </p><p>
+            If you enter a new supplier and save your PR, you will have
+            the opportunity to file a request for adding the supplier to
+            the list of approved suppliers (LAS). A Yes/No field will
+            appear below the supplier field.
+            </p>
+         '''
 travel             = \
     ""'''Flag to indicate travel. In the Time mask no lunchbreak will
          be computed. Even if enabled, no maximum work hours will be
@@ -206,7 +264,7 @@ _helptext          = \
              in Absolute: "no". Absolute "yes" restarts vacation day
              calculation with the specified date. Is automatically set
              with 0 if new user is entered into system, is useful if
-             user restarts with TTTech and rounding difference is still
+             user restarts a job and rounding difference is still
              in the system. Note: Vacation correction is also possible
              if no valid dyn. user data for this date.
           '''
@@ -429,12 +487,18 @@ _helptext          = \
       [""'''Personal information about a %(Property)s''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
     , ""'continuous_obligation'       :
-      [""'''%(Property)s refers to contracts/purchases that last for a
-            certain time. (E.g. car leasing, appartment rent etc.)
+      [""'''Please state YES in case of recurring purchases, purchases
+            based on agreements with unlimited or long-term binding or
+            requiring active notice of termination (e.g. rental
+            agreements, subscriptions, etc.)
          '''
       ]
     , ""'contract_term'               :
-      [""'''%(Property)s for a continuous obligation''']
+      [""'''Optional. Please mention details of contract terms, if
+            applicable (e.g. specific project agreement, SOW, etc.)
+         '''
+      ]
+
     , ""'contract_type'               :
       [""'''%(Property)s specifies the kind of contract that
             the staff member has, like (normal) employment contract,
@@ -517,7 +581,11 @@ _helptext          = \
           '''
       ]
     , ""'delivery_deadline'           :
-      [""'''Deadline by which goods have to be delivered''']
+      [""'''Please state requested date for delivery. In case of several
+            items with different dates, please state the earliest date
+            and provide further information in the message field.
+         '''
+      ]
     , ""'department'                  :
       [""'''Department in which the %(Classname)s is based, e.g., SW, Sales.''']
     , ""'department.id'               : [help_id]
@@ -782,21 +850,15 @@ _helptext          = \
           '''
       ]
     , ""'frame_purchase'              :
-      [ ""'''In order avoid a lot of small purchase request for a
-             certain item, that gets ordered again and again, it is
-             possible to create a frame purchase request for a certain
-             period of time (e.g.  one quarter). This is only possible
-             if the ordered good is always the same  (e.g. the printing
-             of product flyers) or if the purchased items form a group
-             (e.g. all expenses related to a certain fair).
-             If this is a frame purchase request, please add
-             details about the intended purchases, time frame,
-             estimated total amount, reference to budget in the message
-             field.
+      [ ""'''Please state YES, if PR is done for frame contracts with
+             suppliers or if the PR covers several purchases of same
+             material or services over a certain period of time (e.g.
+             coffee demand for 2016).
           '''
       ]
     , ""'frame_purchase_end'           :
-      [ ""'''This defines the end date of a frame purchase request.
+      [ ""'''Relevant in case of frame purchases. Please state date
+             until the frame purchase will be used.
           '''
       ]
     , ""'fromaddress'                 :
@@ -849,8 +911,9 @@ _helptext          = \
     , ""'hours_sun'                   : [daily_hours]
     , ""'id'                          : [help_id]
     , ""'index'                       :
-      [""'''%(Property)s of %(Classname)s, Offers are sorted by
-            %(Property)s in Purchase Request
+      [""'''Optional. Please state numbers in the format #.# (e.g. 1.0)
+            if you prefer certain sort order. If fields are kept blank,
+            index numbers will be automatically set when saving the PR.
          '''
       ]
     , ""'inherit_ext'                 :
@@ -1144,10 +1207,11 @@ _helptext          = \
       ]
     , ""'needs.id'                    : [help_id]
     , ""'renegotiations'              :
-      [ ""'''Did price renegotiations take place?
-             If yes, please name the person who did the renegotiations
-             in the message field. If no, please indicate in the message
-             field when they will take place.
+      [ ""'''Please state YES, if prices mentioned in the PR are already
+             negotiated with the supplier. If you state NO please
+             comment in message field. Your comments will be used by
+             Approvers as well as Purchasing Agents for decisions or
+             further activities.
           '''
       ]
     , ""'netbios_dd'                  :
@@ -1217,7 +1281,7 @@ _helptext          = \
          '''
       ]
     , ""'offer_number'                :
-      [ ""'''%(Property)s as given on the %(Classname)s by the supplier.
+      [ ""'''Optional field for supplier offer number
           '''
       ]
     , ""'only_hours'                  :
@@ -1281,7 +1345,8 @@ _helptext          = \
           '''
       ]
     , ""'part_of_budget'               :
-      [ ""'''Indicate if purchase is budgeted for.
+      [ ""'''This field is used in the approval process to identify
+             necessity of board approval.
           '''
       ]
     , ""'part_of.id'                  : [help_id]
@@ -1326,7 +1391,27 @@ _helptext          = \
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
     , ""'pr_currency'                 :
-      [""'''%(Property)s for this %(Classname)s''']
+      [""'''Select currency from drop down menu. In case currencies are
+            missing please contact purchasing department.
+            <br>
+            Please note: Within one PR issue only the same currency may
+            be used for different items!
+         '''
+      ]
+    , ""'pr_offer_item++description'  :
+      [""'''Describe item as detailed as possible. Please state product
+            numbers (SAP material numbers or 3rd party product codes),
+            version numbers etc.
+         '''
+      ]
+    , ""'pr_offer_item++time_project'  : [ optional_offer_prop ]
+    , ""'pr_offer_item++sap_cc'        : [ optional_offer_prop ]
+    , ""'pr_offer_item++purchase_type' : [ optional_offer_prop ]
+    , ""'price_per_unit'              :
+      [ ""'''Price per unit (net) in the format ###.##. Please use "." as
+             decimal point (e.g.  100.00).
+          '''
+      ]
     , ""'prio'                        :
       [ priority
       , leave_empty
@@ -1384,18 +1469,96 @@ _helptext          = \
       [""'''The dynamic DNS protocol to use with this %(Classname)s.''']
     , ""'province'                    :
       [""'''Province where this person lives.''']
-    , ""'purchase_request++title'     :
-      [ ""'''What should be purchased, fill in appropriate subject.
+    , ""'purchase_request++creator'   :
+      [""'''%(Property)s is the person creating the PR, i.e. completing
+            the form and saving it or submitting it for approval.
+            %(Property)s may create a PR on behalf of a Requester.
+            The Creator will be on the nosy list and receive all
+            messages related to the PR issue. The Creator can be removed
+            (or remove himself) from nosy list after issue submission.
+         '''
+      ]
+    , ""'purchase_request++department'       :
+      [ ""'''%(Property)s where purchase is used. This field is used in
+             the approval process to identify responsible BU or
+             Department Heads.
           '''
       ]
-    , ""'purchase_type'               : [""'''%(Property)s of %(Classname)s''']
+    , ""'purchase_request++files'            :
+      [ ""'''Please attach useful information such as offers from
+             suppliers, contracts or documents, which should be attached
+             to the purchase order.
+             <p>
+             For purchase types training and subcontracting annexes are
+             mandatory.
+             </p><p>
+             Complete the respective annex and upload it to the PR issue.
+             </p>
+          '''
+      ]
+    , ""'purchase_request++msg'              :
+      [ ""'''During creation the message field may be used for
+             additional information and remarks useful or required by
+             Approvers or Purchasing Agent.
+             <p>
+             Please state details of frame purchase requests, milestone
+             payment or price negotiation status.
+             </p><p>
+             It can also be used to state certain incompleteness or
+             deviations, which cannot be covered by the PR Tracker (e.g.
+             missing cost units, unclear purchase types etc.).
+             </p>
+          '''
+      ]
+    , ""'purchase_request++nosy'             :
+      [ ""'''The nosy list will be automatically filled with Creator,
+             Requester and relevant Approvers when saved or submitted
+             for approval. Other members can be automatically added, if
+             required. Each member on the Nosy list will receive issue
+             tracker messages per email.
+          '''
+      ]
+    , ""'purchase_request++organisation'     :
+      [ ""'''Entity purchasing the goods and receiving the invoice.''']
+    , ""'purchase_request++sap_cc'       : [ prtp ]
+    , ""'purchase_request++status'     :
+      [ ""'''This field is set automatically in most cases. E.g. status
+             "open" is set as long as PR is created but not submitted
+             for approval. Status approved is reached, after all
+             Approvers have approved the PR. The status "ordered" is
+             manually set after purchasing order has been issued to the
+             supplier.
+
+             Finals status of a PR should be: rejected, cancelled or ordered.
+             Note: You can set a rejected PR back to "open" if you are
+             the original creator or the requester. This will delete all
+             existing approvals but keep the PR number.
+          '''
+       ]
+    , ""'purchase_request++time_project' : [ prtp ]
+    , ""'purchase_request++title'     :
+      [ ""'''Brief description of %(Classname)s content, i.e. what goods
+             or services are purchased.
+          '''
+      ]
+    , ""'purchase_type'               :
+      [""'''Mandatory in order to trigger correct approval hierarchy.
+            For description of different %(Property)ss please refer to
+            the manual.
+         '''
+      ]
     , ""'purchase_type++roles'        :
       [ ""'''Roles which must approve purchase requests with this
              %(Classname)s; enter a comma,separated,list
           '''
       ]
     , ""'purchasing_agent'            :
-      [""'''Person responsible for purchasing for this %(Classname)s''']
+      [""'''A %(Property)s is assigned to each cost unit (Time
+            Categories and SAP cost centers). The %(Property)s is
+            automatically added to each new purchase request linked to a
+            cost unit.
+         '''
+      ]
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
     , ""'query++tmplate'              :
@@ -1454,7 +1617,13 @@ _helptext          = \
     , ""'reporting_group.id'          :
       [""'''The Id of %(Property)s.''']
     , ""'requester'                   :
-      [""'''Name of %(Property)s''']
+      [""'''You may enter your own name or enter the name of another
+            employee if you create a %(Classname)s on behalf of another
+            person. If field is kept blank your name (Creator) will be
+            automatically filled in this field when saving the
+            %(Classname)s.
+         '''
+      ]
     , ""'require_msg'                 :
       [""'''Require a message for this %(Classname)s''']
     , ""'require_resp_change'         :
@@ -1490,9 +1659,10 @@ _helptext          = \
     , ""'routers'                     :
       [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
     , ""'safety_critical'             :
-      [""'''If safety critical use is 'yes' and supplier is not in the
-            list of approved suppliers (LAS), the 
-            purchase request has to be approved by Quality, too.
+      [""'''This field is used in the approval process to identify
+            necessity of approval by Quality in case a safety critical
+            item is to be purchased at suppliers not in list of approved
+            suppliers (LAS).
          '''
       ]
     , ""'salutation'                  :
@@ -1535,7 +1705,11 @@ _helptext          = \
     , ""'sap_cc'                      :
       [""'''For selecting %(Classname)s information via the %(Property)s''']
     , ""'sap_reference'               :
-      [""'''Reference of this %(Classname)s in SAP''']
+      [""'''Reference number to purchase order (e.g. SAP order number).
+            The field may also be used to insert other references (e.g.
+            Radix order number, references to online orders etc.)
+         '''
+      ]
     , ""'sap_material'                : [""'''Material number in SAP''']
     , ""'sap_ref'                     : [""'''For tracking in SAP''']
     , ""'secondary_groups'            :
@@ -1688,8 +1862,7 @@ _helptext          = \
              "Substitute" for delegating time record approval.
           '''
       ]
-    , ""'supplier'                    :
-      [""'''%(Property)s of this %(Classname)s''']
+    , ""'supplier'                    : [supplier]
     , ""'summary'                     :
       [""'''Short summary of this message (usually first line)''']
     , ""'summary_report++VIEW'        :
@@ -1813,16 +1986,23 @@ _helptext          = \
           '''
       ]
     , ""'terms_conditions'            :
-      [ ""'''Please indicate here which conditions apply, conditions of
-             supplier or customer (us).
-          '''
+      [""'''Please select our company, if a contract between supplier
+            and us for the respective purchase exists (project
+            agreement, frame contract, agreement on Terms of
+            Procurement, etc.).
+
+            If terms of the supplier apply (e.g. in most cases of 3rd
+            party tool software, online purchases, etc.) or you are not
+            sure, please select Supplier. Approvers or Purchasing Agent
+            will check correct situation and decide if the terms are
+            acceptable.
+         '''
       ]
     , ""'termination_date'            :
-      [ ""'''%(Property)s is only to be filled in for continuous
-             obligations. It refers to the date when a termination
-             notice for a contract has to be effective (either the date
-             it is posted, or the date it arrives at the supplier -
-             depending on the contract)
+      [ ""'''Relevant in case of continuous obligation. In case of
+             unlimited contract please state "2099-12-31". Please state
+             details of contract, cancellation terms etc. in message
+             field.
           '''
       ]
     , ""'time_activity'               :
@@ -1925,6 +2105,8 @@ _helptext          = \
       ]
     , ""'unit'                        :
       [""'''Unit of measurement''']
+    , ""'units'                       :
+      [""'''Number of units to be purchased''']
     , ""'url'                         :
       [""'''Web-Link for this %(Classname)s''']
     , ""'url_template'                :
@@ -2113,7 +2295,11 @@ def help_properties (klass) :
     p = []
     properties = klass._klass.getprops ()
     if 'messages' in properties :
-        p.append ('msg')
+        mc = '++'.join ((klass.classname, 'msg'))
+        if mc in _helptext :
+            p.append (mc)
+        else :
+            p.append ('msg')
     if klass.classname == 'user' :
         p.append ('confirm')
     if klass.classname == 'daily_record' :

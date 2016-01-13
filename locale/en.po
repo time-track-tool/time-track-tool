@@ -3333,9 +3333,6 @@ msgstr "Province"
 msgid "Province where this person lives."
 msgstr ""
 
-msgid "purchase_request++title"
-msgstr "Title"
-
 msgid ""
 "What should be purchased, fill in appropriate subject.\n"
 "          "
@@ -3503,8 +3500,47 @@ msgid ""
 "          "
 msgstr ""
 
+msgid "purchase_request++creator"
+msgstr "Creator"
+
+msgid "purchase_request++department"
+msgstr "Department"
+
+msgid "purchase_request++files"
+msgstr "Files"
+
+msgid "purchase_request++organisation"
+msgstr "Organisation"
+
+msgid "purchase_request++nosy"
+msgstr "Nosy List"
+
+msgid "purchase_request++msg"
+msgstr "Message"
+
+msgid "purchase_request++sap_cc"
+msgstr "SAP Cost center"
+
+msgid "purchase_request++time_project"
+msgstr "Time Category"
+
+msgid "purchase_request++title"
+msgstr "Title"
+
 msgid "purchase_type++roles"
 msgstr "Approval-Roles"
+
+msgid "pr_offer_item++description"
+msgstr "Description"
+
+msgid "pr_offer_item++time_project"
+msgstr "Time Category"
+
+msgid "pr_offer_item++sap_cc"
+msgstr "SAP Cost center"
+
+msgid "pr_offer_item++purchase_type"
+msgstr "Purchase type"
 
 msgid "roles"
 msgstr "Roles"
