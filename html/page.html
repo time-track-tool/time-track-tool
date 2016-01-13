@@ -821,6 +821,13 @@
       </a>
      </span>
 
+     <!-- User manual if existing -->
+     <span class="classblock" tal:condition="python:utils.user_manual_ok (db)">
+      <a i18n:translate="" href="@@file/User-Manual.pdf">
+      User Manual
+      </a>
+     </span>
+
      <!-- username -> link to own profile -->
      <span class="classblock" tal:condition="request/user/username/is_view_ok">
       <a tal:attributes="href string:user${request/user/id}"

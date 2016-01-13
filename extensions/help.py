@@ -24,6 +24,7 @@
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Range
 from maturity_index                 import maturity_table
+import os
 try :
     from docutils.core import publish_parts
 except ImportError :
@@ -2200,15 +2201,30 @@ def set_language (client, db) :
     return language
 # end def set_language
 
+def user_manual_ok (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    fn = os.path.join (db.config.TRACKER_HOME, "html", "User-Manual.pdf")
+    try :
+        stbuf = os.stat (fn)
+    except OSError :
+        return False
+    return True
+# end def user_manual_ok
+
 def init (instance) :
     global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
-    instance.registerUtil ('helptext',        helptext)
-    instance.registerUtil ('help_properties', help_properties)
-    instance.registerUtil ('fieldname',       fieldname)
-    instance.registerUtil ('fieldlabel',      fieldlabel)
-    instance.registerUtil ('combined_name',   combined_name)
-    instance.registerUtil ('permdict',        permdict)
-    instance.registerUtil ('set_language',    set_language)
+    reg = instance.registerUtil
+    reg ('helptext',        helptext)
+    reg ('help_properties', help_properties)
+    reg ('fieldname',       fieldname)
+    reg ('fieldlabel',      fieldlabel)
+    reg ('combined_name',   combined_name)
+    reg ('permdict',        permdict)
+    reg ('set_language',    set_language)
+    reg ('user_manual_ok',  user_manual_ok)
 # end def init
