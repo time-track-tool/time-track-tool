@@ -495,6 +495,8 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
 def new_pr_offer_item (db, cl, nodeid, new_values) :
     if 'units' not in new_values :
         new_values ['units'] = 1
+    if 'vat' not in new_values :
+        new_values ['vat'] = 0
     if 'pr_currency' not in new_values :
         # get first currency by 'order' attribute:
         c = db.pr_currency.filter (None, {}, sort = [('+', 'order')])
