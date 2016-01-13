@@ -570,30 +570,38 @@ def pt_check_roles (db, cl, nodeid, new_values) :
     common.check_roles (db, cl, nodeid, new_values, 'view_roles')
 # end def pt_check_roles
 
+def pao_check_roles (db, cl, nodeid, new_values) :
+    common.check_roles (db, cl, nodeid, new_values, 'role')
+    if 'role' in new_values and ',' in new_values ['role'] :
+        raise Reject (_ ("Only a single role is allowed"))
+# end def pao_check_roles
+
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'purchase_request' not in db.classes :
         return
-    db.purchase_type.audit    ("create", pt_check_roles)
-    db.purchase_type.audit    ("set",    pt_check_roles)
-    db.purchase_request.audit ("create", new_pr,          priority = 50)
-    db.purchase_request.audit ("set",    check_requester, priority = 50)
-    db.purchase_request.audit ("create", check_tp_rq,     priority = 80)
-    db.purchase_request.audit ("set",    check_tp_rq,     priority = 80)
-    db.purchase_request.audit ("set",    requester_chg,   priority = 70)
-    db.purchase_request.audit ("set",    change_pr)
-    db.purchase_request.audit ("set",    fix_nosy)
-    db.purchase_request.audit ("set",    check_late_changes)
-    db.purchase_request.react ("set",    changed_pr)
-    db.purchase_request.react ("create", create_pr_approval)
-    db.pr_approval.audit      ("create", new_pr_approval)
-    db.pr_approval.audit      ("set",    change_pr_approval)
-    db.pr_approval.react      ("set",    approved_pr_approval)
-    db.pr_offer_item.audit    ("create", new_pr_offer_item)
-    db.pr_offer_item.audit    ("create", check_supplier)
-    db.pr_offer_item.audit    ("set",    check_supplier)
-    db.pr_currency.audit      ("create", check_currency)
-    db.pr_currency.audit      ("set",    check_currency)
+    db.purchase_type.audit     ("create", pt_check_roles)
+    db.purchase_type.audit     ("set",    pt_check_roles)
+    db.purchase_request.audit  ("create", new_pr,          priority = 50)
+    db.purchase_request.audit  ("set",    check_requester, priority = 50)
+    db.purchase_request.audit  ("create", check_tp_rq,     priority = 80)
+    db.purchase_request.audit  ("set",    check_tp_rq,     priority = 80)
+    db.purchase_request.audit  ("set",    requester_chg,   priority = 70)
+    db.purchase_request.audit  ("set",    change_pr)
+    db.purchase_request.audit  ("set",    fix_nosy)
+    db.purchase_request.audit  ("set",    check_late_changes)
+    db.purchase_request.react  ("set",    changed_pr)
+    db.purchase_request.react  ("create", create_pr_approval)
+    db.pr_approval.audit       ("create", new_pr_approval)
+    db.pr_approval.audit       ("set",    change_pr_approval)
+    db.pr_approval.react       ("set",    approved_pr_approval)
+    db.pr_offer_item.audit     ("create", new_pr_offer_item)
+    db.pr_offer_item.audit     ("create", check_supplier)
+    db.pr_offer_item.audit     ("set",    check_supplier)
+    db.pr_currency.audit       ("create", check_currency)
+    db.pr_currency.audit       ("set",    check_currency)
+    db.pr_approval_order.audit ("create", pao_check_roles)
+    db.pr_approval_order.audit ("set",    pao_check_roles)
 # end def init
