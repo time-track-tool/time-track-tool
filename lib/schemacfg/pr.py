@@ -215,6 +215,7 @@ def security (db, ** kw) :
         , ("IT-Approval",       "Approve IT-Related PRs")
         , ("Procurement",       "Procurement department")
         , ("Procurement-Admin", "Procurement administration")
+        , ("Procure-Approval",  "Procurement approvals")
         , ("Quality",           "Approvals for Safety issues")
         , ("Subcontract",       "Approvals for staff/subcontracting")
         ]

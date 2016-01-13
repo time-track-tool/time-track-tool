@@ -147,6 +147,7 @@ class _Test_Case (unittest.TestCase) :
         , 'office'
         , 'pbx'
         , 'pgp'
+        , 'procure-approval'
         , 'procurement'
         , 'procurement-admin'
         , 'product'
@@ -4396,7 +4397,7 @@ class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
-        , 'it-approval', 'nosy', 'pgp', 'procurement'
+        , 'it-approval', 'nosy', 'pgp', 'procure-approval', 'procurement'
         , 'procurement-admin', 'project'
         , 'project_view', 'quality', 'subcontract', 'user', 'user_view'
         ]
