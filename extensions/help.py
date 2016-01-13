@@ -148,7 +148,7 @@ order              = \
     ""'''Items are ordered by this property in drop-down boxes etc.'''
 priority           = \
     ""'''Priority for this %(Classname)s.'''
-prtp = Structured_Text ( textwrap.dedent (
+pr_sap_cc = Structured_Text ( textwrap.dedent (
     ""'''
          Choose either SAP Cost Center or Time Category (Project) as
          booking reference for the overall %(Classname)s [#]_. Please
@@ -165,6 +165,8 @@ prtp = Structured_Text ( textwrap.dedent (
               optionally overruled for each item (see manual).
 
       '''))
+purchase_types = \
+    ""'''Mandatory in order to trigger correct approval hierarchy.'''
 range_description  = \
     ""'''as a comma-separated list of ranges (a special case of a range
          is just one number), e.g., 1-100,300-500
@@ -1520,7 +1522,7 @@ _helptext          = \
       ]
     , ""'purchase_request++organisation'     :
       [ ""'''Entity purchasing the goods and receiving the invoice.''']
-    , ""'purchase_request++sap_cc'       : [ prtp ]
+    , ""'purchase_request++sap_cc'       : [ pr_sap_cc ]
     , ""'purchase_request++status'     :
       [ ""'''This field is set automatically in most cases. E.g. status
              "open" is set as long as PR is created but not submitted
@@ -1535,18 +1537,13 @@ _helptext          = \
              existing approvals but keep the PR number.
           '''
        ]
-    , ""'purchase_request++time_project' : [ prtp ]
+    , ""'purchase_request++time_project' : [ pr_sap_cc ]
     , ""'purchase_request++title'     :
       [ ""'''Brief description of %(Classname)s content, i.e. what goods
              or services are purchased.
           '''
       ]
-    , ""'purchase_type'               :
-      [""'''Mandatory in order to trigger correct approval hierarchy.
-            For description of different %(Property)ss please refer to
-            the manual.
-         '''
-      ]
+    , ""'purchase_type'               : [purchase_types]
     , ""'purchase_type++roles'        :
       [ ""'''Roles which must approve purchase requests with this
              %(Classname)s; enter a comma,separated,list
@@ -2384,6 +2381,7 @@ def set_language (client, db) :
         language = db.config.TRACKER_LANGUAGE
     db.translator = db._db.translator = client.translator
     _ = db._db._ = db._ = db.translator.gettext
+    init_purchase_type (db._db)
     return language
 # end def set_language
 
@@ -2399,6 +2397,19 @@ def user_manual_ok (db) :
         return False
     return True
 # end def user_manual_ok
+
+def init_purchase_type (db) :
+    # FIXME: one day this should go into a helptext method that has a db
+    # as parameter.
+    global purchase_types
+    pt = []
+    for id in db.purchase_type.getnodeids (retired = False) :
+        pr = db.purchase_type.getnode (id)
+        pt.append ('\n    '.join ((pr.name, pr.description or '')))
+    p = Structured_Text (purchase_types + '\n\n' + '\n\n'.join (sorted (pt)))
+    _helptext ['purchase_type'] = [p]
+    print p
+# end def init_purchase_type
 
 def init (instance) :
     global _

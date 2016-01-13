@@ -3521,6 +3521,9 @@ msgstr "Message"
 msgid "purchase_request++sap_cc"
 msgstr "SAP Cost center"
 
+msgid "purchase_request++status"
+msgstr "Status"
+
 msgid "purchase_request++time_project"
 msgstr "Time Category"
 

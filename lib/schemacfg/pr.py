@@ -146,6 +146,7 @@ def init \
         , order                 = Number    ()
         , roles                 = String    ()
         , view_roles            = String    ()
+        , description           = String    ()
         )
     purchase_type.setkey ('name')
 
