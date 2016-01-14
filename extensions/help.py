@@ -2406,6 +2406,8 @@ def user_manual_ok (db) :
 def init_purchase_type (db) :
     # FIXME: one day this should go into a helptext method that has a db
     # as parameter.
+    if 'purchase_type' not in db.classes :
+        return
     global purchase_types
     pt = []
     for id in db.purchase_type.getnodeids (retired = False) :
