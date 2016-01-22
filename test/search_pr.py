@@ -702,7 +702,7 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'purchasing_agent'
+        , ( 'purchasing_agents'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
@@ -768,7 +768,7 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'purchasing_agent'
+        , ( 'purchasing_agents'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'

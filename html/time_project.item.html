@@ -30,14 +30,15 @@
       </tal:block>
      </td>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'purchasing_agent')"/>
+         (classname, 'purchasing_agents')"/>
      <td>
-      <tal:block tal:define="name      string:purchasing_agent;
-                             form      string:itemSynopsis;
-                             dont_care string:don't care;
-                             selected python:context.purchasing_agent and context.purchasing_agent.id or 0">
-       <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-      </tal:block>
+      <span tal:content="structure python:context.purchasing_agents.field ()"/>
+      <span tal:content="structure python:utils.user_classhelp
+        ( db
+        , property='purchasing_agents'
+        , user_status = nosy_stati
+        , inputtype='checkbox'
+        )"/>
      </td>
     </tr>
     <tr>

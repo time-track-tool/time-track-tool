@@ -163,7 +163,7 @@ properties = \
       , [ 'deputy'
         , 'description'
         , 'name'
-        , 'purchasing_agent'
+        , 'purchasing_agents'
         , 'responsible'
         ]
       )
@@ -179,7 +179,7 @@ properties = \
         , 'description'
         , 'name'
         , 'organisation'
-        , 'purchasing_agent'
+        , 'purchasing_agents'
         , 'responsible'
         , 'status'
         ]

@@ -1134,7 +1134,7 @@ properties = \
         , ( 'name'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
-        , ( 'purchasing_agent'
+        , ( 'purchasing_agents'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
         , ( 'responsible'
@@ -1525,7 +1525,7 @@ properties = \
         , ( 'project_type'
           , ['admin', 'contact', 'controlling', 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
-        , ( 'purchasing_agent'
+        , ( 'purchasing_agents'
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
         , ( 'reporting_group'

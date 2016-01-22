@@ -1549,11 +1549,11 @@ _helptext          = \
              %(Classname)s; enter a comma,separated,list
           '''
       ]
-    , ""'purchasing_agent'            :
-      [""'''A %(Property)s is assigned to each cost unit (Time
-            Categories and SAP cost centers). The %(Property)s is
-            automatically added to each new purchase request linked to a
-            cost unit.
+    , ""'purchasing_agents'            :
+      [""'''%(Property)s are assigned to each cost unit (Time
+            Categories and SAP cost centers). %(Property)s are
+            automatically added to the nosy list of each new purchase
+            request linked to a cost unit.
          '''
       ]
     , ""'qa_representative'           :

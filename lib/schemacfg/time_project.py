@@ -63,6 +63,7 @@ def init \
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
                 , purchasing_agent      = Link      ("user")
+                , purchasing_agents     = Multilink ("user")
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ("name")
@@ -87,6 +88,7 @@ def init \
         , responsible           = Link      ("user")
         , deputy                = Link      ("user")
         , purchasing_agent      = Link      ("user")
+        , purchasing_agents     = Multilink ("user")
         )
     sap_cc.setkey ("name")
 

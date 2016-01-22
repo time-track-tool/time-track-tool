@@ -541,10 +541,14 @@ class ExtProperty :
                 if prop._prop.classname == 'user' :
                     client = self.item._client
                     classhelp = HTMLClass (client, 'user').classhelp
+                    prps = 'username,lastname,firstname,nickname'.split (',')
+                    prps = [x for x in prps if x in self.db.user.properties]
+                    if 'lastname' not in prps :
+                        prps.append ('realname')
                     return ' '.join \
                         (( prop.field (size = self.fieldwidth)
                         ,  classhelp \
-                            ( 'username,lastname,firstname,nickname'
+                            ( ','.join (prps)
                             , property=self.searchname
                             , inputtype='%s' % ('radio', 'checkbox')
                               [isinstance (self.prop, MultilinkHTMLProperty)]

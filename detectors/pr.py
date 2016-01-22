@@ -451,12 +451,12 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
             if is_new :
                 if pr.time_project :
                     id = pr.time_project
-                    agent = db.time_project.get (id, 'purchasing_agent')
+                    agents = db.time_project.get (id, 'purchasing_agents')
                 else :
                     assert pr.sap_cc
-                    agent = db.sap_cc.get (pr.sap_cc, 'purchasing_agent')
-                if agent :
-                    nosy [agent] = 1
+                    agents = db.sap_cc.get (pr.sap_cc, 'purchasing_agents')
+                if agents :
+                    nosy.update (dict.fromkeys (agents))
             for a in apps :
                 ap = cl.getnode (a)
                 if ap.status != apr :

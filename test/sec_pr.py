@@ -29,8 +29,8 @@ Role "procure-approval":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
- User is allowed Edit on (Edit for "sap_cc": ('purchasing_agent',) only)
- User is allowed Edit on (Edit for "time_project": ('purchasing_agent',) only)
+ User is allowed Edit on (Edit for "sap_cc": ('purchasing_agents',) only)
+ User is allowed Edit on (Edit for "time_project": ('purchasing_agents',) only)
  User is allowed to access pr_approval (View for "pr_approval" only)
  User is allowed to access pr_approval_order (View for "pr_approval_order" only)
 Role "procurement-admin":
