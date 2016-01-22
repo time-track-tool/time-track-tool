@@ -69,7 +69,9 @@ class PR_Sync (autosuper) :
         self.now       = Date ('.')
         self.uvalid    = None
         self.obsolete  = None
-        self.tc_open   = None
+        self.tc_active = self.srv.filter \
+            ('time_project_status', None, dict (active = True))
+        self.tc_active = dict.fromkeys (self.tc_active)
     # end def __init__
 
     # Check methods that check if a class item is valid
@@ -82,9 +84,7 @@ class PR_Sync (autosuper) :
     check_department = check_organisation
 
     def check_time_project (self, item) :
-        if not self.tc_open :
-            self.tc_open = self.db.time_project_status.lookup ('Open')
-        if item ['status'] != self.tc_open :
+        if item ['status'] not in self.tc_active :
             return False
         return bool \
             (   not item ['approval_hr']
