@@ -986,6 +986,11 @@ _helptext          = \
       [""'''Internet protocol subnet''']
     , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
+    , ""'is_asset'                    :
+      [""'''Describes if the %(Classname)s is an asset, if unsure
+            leave this field to be filled in by purchasing department
+         '''
+      ]
     , ""'is_valid'                    :
       [""'''%(Classname)s is valid''']
     , ""'is_app_sensor'               :

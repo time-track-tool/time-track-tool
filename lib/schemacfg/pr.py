@@ -113,6 +113,7 @@ def init \
         , sap_cc                = Link      ("sap_cc")
         , time_project          = Link      ("time_project")
         , purchase_type         = Link      ("purchase_type")
+        , is_asset              = Boolean   ()
         )
 
     pr_status = Class \
@@ -147,6 +148,7 @@ def init \
         , roles                 = String    ()
         , view_roles            = String    ()
         , description           = String    ()
+        , valid                 = Boolean   ()
         )
     purchase_type.setkey ('name')
 
@@ -327,7 +329,7 @@ def security (db, ** kw) :
         , description = fixdoc (view_role_pr.__doc__)
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
-            , 'frame_purchase_end'
+            , 'frame_purchase_end', 'nosy', 'is_asset'
             )
         )
     db.security.addPermissionToRole ('User', p)

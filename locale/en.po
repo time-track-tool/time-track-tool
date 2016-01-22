@@ -1158,6 +1158,9 @@ msgstr ""
 msgid "analysis_result"
 msgstr "Analysis result"
 
+msgid "is_asset"
+msgstr "is asset"
+
 msgid "Result of error analysis"
 msgstr ""
 

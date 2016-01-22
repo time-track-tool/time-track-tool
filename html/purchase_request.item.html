@@ -47,7 +47,8 @@
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'purchase_type')"/>
-      <td tal:content="structure python:context.purchase_type.menu ()"/>
+      <td tal:content="structure python:context.purchase_type.menu
+          (valid = True)"/>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'department')"/>
       <td tal:content="structure python:context.department.menu ()"/>
@@ -203,7 +204,10 @@
          <th style="text-align:left" i18n:translate="">
           Add to LAS / Approved
          </th>
-         <th colspan="2"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'is_asset')"/>
+         <th/>
          <th class="required" style="text-align:right"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'vat')"/>
@@ -254,7 +258,8 @@
            <td tal:condition="python: i.pr_supplier"
                tal:content="python: utils.supplier_approved
                    (db, context, i.pr_supplier) "/>
-           <td colspan="2"/>
+           <td tal:content="structure python:i.is_asset.field ()"/>
+           <td/>
            <td style="text-align:right"
                tal:content="structure python:i.vat.field (size=7)"/>
            <td tal:attributes="colspan python:3+cond"/>
@@ -316,7 +321,10 @@
                (context, db, 'pr_offer_item', -idx, 'pr_currency').menu () "/>
           </tr>
           <tr>
-           <td colspan="5"/>
+           <td colspan="3"/>
+           <td tal:content="structure python:utils.new_property
+               (context, db, 'pr_offer_item', -idx, 'is_asset').field ()"/>
+           <td/>
            <td style="text-align:right"
                tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'vat').field (size=7)"/>
