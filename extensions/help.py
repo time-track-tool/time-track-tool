@@ -2408,7 +2408,6 @@ def init_purchase_type (db) :
         pt.append ('\n    '.join ((pr.name, pr.description or '')))
     p = Structured_Text (purchase_types + '\n\n' + '\n\n'.join (sorted (pt)))
     _helptext ['purchase_type'] = [p]
-    print p
 # end def init_purchase_type
 
 def init (instance) :
