@@ -136,12 +136,12 @@ def security (db, ** kw) :
             )
           )
         , ( "time_project", "Edit", ["Procurement"]
-          , ( "purchasing_agent"
+          , ( "purchasing_agents"
             ,
             )
           )
         , ( "sap_cc", "Edit", ["Procurement"]
-          , ( "purchasing_agent"
+          , ( "purchasing_agents"
             ,
             )
           )
