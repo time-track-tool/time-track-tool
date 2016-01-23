@@ -165,6 +165,7 @@ properties = \
         , 'name'
         , 'purchasing_agents'
         , 'responsible'
+        , 'valid'
         ]
       )
     , ( 'terms_conditions'

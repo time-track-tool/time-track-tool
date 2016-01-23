@@ -110,7 +110,11 @@
         , searchable  = False
         )
     , sap_cc   = utils.ExtProperty
-      (utils, pdict ['sap_cc'],       multiselect = 1, multi_selonly = 1)
+      ( utils, pdict ['sap_cc']
+      , multiselect   = 1
+      , multi_selonly = 1
+      , multi_add     = ('valid',)
+      )
     );
     sr   python: utils.Summary_Report (db, request, utils)
    "

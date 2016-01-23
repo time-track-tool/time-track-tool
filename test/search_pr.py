@@ -714,6 +714,12 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
+        , ( 'valid'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
         ]
       )
     , ( 'terms_conditions'

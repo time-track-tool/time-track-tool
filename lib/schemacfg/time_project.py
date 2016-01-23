@@ -89,6 +89,7 @@ def init \
         , deputy                = Link      ("user")
         , purchasing_agent      = Link      ("user")
         , purchasing_agents     = Multilink ("user")
+        , valid                 = Boolean   ()
         )
     sap_cc.setkey ("name")
 

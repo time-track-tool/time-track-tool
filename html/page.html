@@ -1588,7 +1588,11 @@
             tal:attributes=
                 "value    s/id;
                  selected python:s.id in form_vals"
-            tal:content="python:s[prop.propname]">
+            tal:content="python:
+                '%s' % s[prop.propname]
+              + ['',' '][bool (prop.multi_add)]
+              + ' '.join ('%s=%s' % (p, s[p]) for p in prop.multi_add)
+              ">
            </option>
           </select>
          </tal:block>

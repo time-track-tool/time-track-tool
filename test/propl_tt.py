@@ -241,6 +241,7 @@ properties = \
         , 'name'
         , 'purchasing_agents'
         , 'responsible'
+        , 'valid'
         ]
       )
     , ( 'sex'

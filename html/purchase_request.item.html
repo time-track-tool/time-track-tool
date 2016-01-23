@@ -69,7 +69,7 @@
                   )"/>
       </td>
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
-      <td tal:content="structure python:context.sap_cc.menu ()"/>
+      <td tal:content="structure python:context.sap_cc.menu (valid = True)"/>
      </tr>
      <tr tal:define="prop python: context.sap_cc or context.time_project">
       <th tal:content="structure python:utils.fieldname
