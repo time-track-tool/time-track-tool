@@ -140,7 +140,11 @@ class PR_Sync (autosuper) :
     # end def map_id
 
     def sync (self) :
-        self.sync_class ('organisation', ('name', 'description'), ('valid_to',))
+        self.sync_class \
+            ( 'organisation'
+            , ('name', 'description', 'may_purchase')
+            , ('valid_to',)
+            )
         self.sync_class ('location',     ('name', 'country'))
         self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
@@ -173,7 +177,7 @@ class PR_Sync (autosuper) :
         self.sync_class \
             ( 'sap_cc'
             , ( 'name', 'description', 'responsible', 'deputy'
-              , 'purchasing_agents'
+              , 'purchasing_agents', 'valid'
               )
             , required = ('responsible',)
             )
