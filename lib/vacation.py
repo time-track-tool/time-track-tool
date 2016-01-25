@@ -224,10 +224,7 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati) :
         if last_day > end :
             assert vs.first_day < end
             last_day  = end
-        if type == 'flexi' :
-            days += interval_days (last_day - first_day) + 1
-        else :
-            days += leave_days (db, user, first_day, last_day)
+        days += leave_days (db, user, first_day, last_day)
     return days
 # end def leave_submission_days
 
