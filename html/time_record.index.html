@@ -13,13 +13,19 @@
     ( utils.ExtProperty (utils, pdict ['id'])
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.user.id'
+        , searchable  = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
         , searchname  = 'daily_record.user'
         , searchable  = True
         )
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']
-        , searchname  = 'daily_record.user.id'
-        , searchable  = False
+        , searchname  = 'daily_record.user.org_location'
+        , searchable  = True
+        , multiselect = True
         )
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']
@@ -31,6 +37,11 @@
         , searchname  = 'daily_record.status'
         , searchable  = True
         , multiselect = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.weekend_allowed'
+        , searchable  = True
         )
     , utils.ExtProperty 
         ( utils, pdict ['wp']
