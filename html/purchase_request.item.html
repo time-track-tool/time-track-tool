@@ -58,6 +58,8 @@
           (classname, 'time_project')"/>
       <td>
        <tal:block tal:content="structure python:context.time_project.field ()"/>
+       <tal:block tal:condition="context/time_project"
+                  tal:replace="context/time_project/description"/>
        <tal:block tal:condition="context/time_project/is_edit_ok"
                   tal:replace="structure python:db.time_project.classhelp
                   ( 'name,description,organisation'
@@ -268,6 +270,8 @@
            <td/>
            <td>
             <tal:block tal:content="structure python:i.time_project.field ()"/>
+            <tal:block tal:condition="python: i.time_project"
+                       tal:replace="i/time_project/description"/>
             <tal:block tal:condition="context/time_project/is_edit_ok"
                   tal:replace="structure python:db.time_project.classhelp
                   ( 'name,description,organisation'
@@ -321,10 +325,7 @@
                (context, db, 'pr_offer_item', -idx, 'pr_currency').menu () "/>
           </tr>
           <tr>
-           <td colspan="3"/>
-           <td tal:content="structure python:utils.new_property
-               (context, db, 'pr_offer_item', -idx, 'is_asset').field ()"/>
-           <td/>
+           <td colspan="5"/>
            <td style="text-align:right"
                tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'vat').field (size=7)"/>
