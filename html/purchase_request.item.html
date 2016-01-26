@@ -57,18 +57,12 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'time_project')"/>
       <td>
-       <tal:block tal:content="structure python:context.time_project.field ()"/>
-       <tal:block tal:condition="context/time_project"
+       <tal:block tal:content="structure python:context.time_project.menu
+            (sort_on = ('+', 'description'), additional=('description',))"/>
+       <tal:block tal:condition="python:
+         context.time_project and not context.time_project.is_edit_ok ()"
                   tal:replace="context/time_project/description"/>
-       <tal:block tal:condition="context/time_project/is_edit_ok"
-                  tal:replace="structure python:db.time_project.classhelp
-                  ( 'name,description,organisation'
-                  , property='time_project'
-                  , inputtype='radio'
-                  , width='800'
-                  , pagesize=1000
-                  , sort='description'
-                  )"/>
+
       </td>
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
       <td tal:content="structure python:context.sap_cc.menu (valid = True)"/>
@@ -269,17 +263,12 @@
           <tr>
            <td/>
            <td>
-            <tal:block tal:content="structure python:i.time_project.field ()"/>
-            <tal:block tal:condition="python: i.time_project"
+            <tal:block tal:content="structure python:i.time_project.menu
+                (sort_on = ('+', 'description'), additional=('description',))"/>
+            <tal:block tal:condition="python:
+                       i.time_project and not i.time_project.is_edit_ok ()"
                        tal:replace="i/time_project/description"/>
-            <tal:block tal:condition="context/time_project/is_edit_ok"
-                  tal:replace="structure python:db.time_project.classhelp
-                  ( 'name,description,organisation'
-                  , property='pr_offer_item%s@time_project' % i.id
-                  , inputtype='radio'
-                  , width='800'
-                  , pagesize=1000
-                  )"/>
+
            </td>
            <td tal:content="structure python:i.sap_cc.menu ()"/>
            <td tal:content="structure python:i.purchase_type.menu
@@ -336,14 +325,8 @@
            <td/>
            <td>
             <tal:block tal:content="structure python:utils.new_property
-             (context, db, 'pr_offer_item', -idx, 'time_project').field ()"/>
-            <tal:block tal:replace="structure python:db.time_project.classhelp
-                  ( 'name,description,organisation'
-                  , property='pr_offer_item-%s@time_project' % idx
-                  , inputtype='radio'
-                  , width='800'
-                  , pagesize=1000
-                  )"/>
+             (context, db, 'pr_offer_item', -idx, 'time_project').menu
+               (sort_on = ('+', 'description'), additional=('description',))"/>
            </td>
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'sap_cc').menu ()"/>
