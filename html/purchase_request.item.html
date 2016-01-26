@@ -282,7 +282,8 @@
                   )"/>
            </td>
            <td tal:content="structure python:i.sap_cc.menu ()"/>
-           <td tal:content="structure python:i.purchase_type.menu ()"/>
+           <td tal:content="structure python:i.purchase_type.menu
+               (valid = True)"/>
           </tr>
          </tbody>
         </tal:block>
@@ -347,7 +348,8 @@
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'sap_cc').menu ()"/>
            <td tal:content="structure python:utils.new_property
-               (context, db, 'pr_offer_item', -idx, 'purchase_type').menu ()"/>
+               (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
+                  (valid = True)"/>
           </tr>
          </tbody>
         </tal:block>
