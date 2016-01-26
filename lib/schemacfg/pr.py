@@ -762,4 +762,37 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    def user_on_nosy_approval (db, userid, itemid) :
+        """ User is allowed if on the nosy list of the PR
+        """
+        ap = db.pr_approval.getnode (itemid)
+        return user_on_nosy (db, userid, ap.purchase_request)
+    # end def user_on_nosy
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'pr_approval'
+        , check       = user_on_nosy_approval
+        , description = fixdoc (user_on_nosy_approval.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def user_on_nosy_offer (db, userid, itemid) :
+        """ User is allowed if on the nosy list of the PR
+        """
+        if not itemid or itemid < 1 :
+            return True
+        off = db.pr_offer_item.getnode (itemid)
+        pr  = get_pr (db, itemid)
+        return user_on_nosy (db, userid, pr.id)
+    # end def user_on_nosy
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'pr_offer_item'
+        , check       = user_on_nosy_offer
+        , description = fixdoc (user_on_nosy_offer.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
 # end def security
