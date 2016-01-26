@@ -29,6 +29,11 @@
         )
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.user.org_location.id'
+        , searchable  = False
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
         , searchname  = 'daily_record.date'
         , searchable  = True
         )
@@ -37,6 +42,11 @@
         , searchname  = 'daily_record.status'
         , searchable  = True
         , multiselect = True
+        )
+    , utils.ExtProperty 
+        ( utils, pdict ['daily_record']
+        , searchname  = 'daily_record.status.id'
+        , searchable  = False
         )
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']
@@ -49,6 +59,11 @@
         , searchable  = True
         , multiselect = True
         )
+    , utils.ExtProperty 
+        ( utils, pdict ['wp']
+        , searchname  = 'wp.project.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['wp'], searchable = 1)
     , utils.ExtProperty 
         ( utils, pdict ['wp']
@@ -56,7 +71,17 @@
         , searchable  = False
         )
     , utils.ExtProperty (utils, pdict ['time_activity'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['time_activity']
+        , searchname  = 'time_activity.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['work_location']
+        , searchname  = 'work_location.id'
+        , searchable  = False
+        )
     , utils.ExtProperty (utils, pdict ['start'])
     , utils.ExtProperty (utils, pdict ['end'])
     , utils.ExtProperty

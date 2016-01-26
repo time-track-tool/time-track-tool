@@ -456,6 +456,9 @@ msgstr ""
 msgid "org_location"
 msgstr "Organisation/Location"
 
+msgid "daily_record.user.org_location.id"
+msgstr "Organisation/Location Id"
+
 #, python-format
 msgid "Duplicate %(olon)s %(polo)s in %(ip)s"
 msgstr ""
@@ -4198,6 +4201,9 @@ msgstr ""
 msgid "time_activity"
 msgstr "Activity"
 
+msgid "time_activity.id"
+msgstr "Activity Id"
+
 msgid "Specifies the kind of work you did (e.g. meeting, ...)"
 msgstr ""
 
@@ -4246,6 +4252,9 @@ msgid ""
 msgstr ""
 
 msgid "time_project.id"
+msgstr "Time Category Id"
+
+msgid "wp.project.id"
 msgstr "Time Category Id"
 
 msgid "time_wp++travel"
@@ -4650,6 +4659,9 @@ msgstr "Work package Ids"
 
 msgid "work_location"
 msgstr "Work location"
+
+msgid "work_location.id"
+msgstr "Work location Id"
 
 #, python-format
 msgid ""
@@ -5883,6 +5895,9 @@ msgstr "Daily Record freeze"
 
 msgid "daily_record_status"
 msgstr "Daily Record Status"
+
+msgid "daily_record.status.id"
+msgstr "Status Id"
 
 msgid "public_holiday"
 msgstr "Public Holiday"

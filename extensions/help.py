@@ -552,6 +552,9 @@ _helptext          = \
           '''
       ]
     , ""'daily_record.user.id'        : [help_id]
+    , ""'daily_record.user.org_location.id'
+                                      : [help_id]
+    , ""'daily_record.status.id'      : [help_id]
     , ""'daily_worktime'              :
       [""'''Maximum time a person may book for a single day.''']
     , ""'defect++superseder'          :
@@ -2007,6 +2010,7 @@ _helptext          = \
              field.
           '''
       ]
+    , ""'time_activity.id'            : [help_id]
     , ""'time_activity'               :
       [""'''Specifies the kind of work you did (e.g. meeting, ...)''']
     , ""'time_start'                  :
@@ -2251,6 +2255,7 @@ _helptext          = \
           '''
       ]
     , ""'wp.id'                       : [help_id]
+    , ""'wp.project.id'               : [help_id]
     , ""'wp_no'                       : [wp_no]
     , ""'wp++durations_allowed'       :
       [ durations
@@ -2266,6 +2271,7 @@ _helptext          = \
       ]
     , ""'wps.id'                      : [help_id]
     , ""'work_location'               : [work_loc]
+    , ""'work_location.id'            : [help_id]
     }
 
 def combined_name (cls, attr, searchname = None) :
