@@ -356,6 +356,9 @@ def change_pr_approval (db, cl, nodeid, new_values) :
             assert nodeid in approvals
     elif app.status != db.pr_approval_status.lookup ('undecided') :
         raise Reject (_ ("May not change approval status parameters"))
+    elif 'msg' in new_values :
+        # Don't link random message to approval if status isn't changing
+        del new_values ['msg']
 # end def change_pr_approval
 
 def add_approval_with_role (db, prid, role) :
