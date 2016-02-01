@@ -202,12 +202,11 @@ class _Test_Case (unittest.TestCase) :
                 ( os.path.abspath (os.path.join (srcdir, f))
                 , os.path.join (self.dirname, ft)
                 )
-        init.write_select_db (self.dirname, self.backend)
+        config.RDBMS_BACKEND = self.backend
         self.config.save (os.path.join (self.dirname, 'config.ini'))
         tracker = instance.open (self.dirname)
         if tracker.exists () :
             tracker.nuke ()
-            init.write_select_db (self.dirname, self.backend)
         tracker.init (password.Password (self.config.RDBMS_PASSWORD))
         self.tracker = tracker
     # end def setup_tracker
