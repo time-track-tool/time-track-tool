@@ -83,6 +83,7 @@ properties = \
       , [ 'add_to_las'
         , 'description'
         , 'index'
+        , 'is_asset'
         , 'offer_number'
         , 'pr_currency'
         , 'pr_supplier'
@@ -148,6 +149,7 @@ properties = \
         , 'name'
         , 'order'
         , 'roles'
+        , 'valid'
         , 'view_roles'
         ]
       )
