@@ -782,9 +782,11 @@ def security (db, ** kw) :
         """
         if not itemid or itemid < 1 :
             return True
-        off = db.pr_offer_item.getnode (itemid)
-        pr  = get_pr (db, itemid)
-        return user_on_nosy (db, userid, pr.id)
+        prs = db.purchase_request.filter (None, dict (offer_items = itemid))
+        assert len (prs) <= 1
+        if prs :
+            return user_on_nosy (db, userid, prs [0])
+        return False
     # end def user_on_nosy
 
     p = db.security.addPermission \
