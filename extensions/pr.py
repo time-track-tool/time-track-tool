@@ -23,9 +23,38 @@
 import common
 from   rsclib.autosuper       import autosuper
 from   roundup.cgi.exceptions import Redirect
-from   roundup.cgi.actions    import EditItemAction
+from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
+from   roundup.cgi.templating import HTMLClass, _HTMLItem
 
-class Sign_Purchase_Request (EditItemAction, autosuper) :
+class PR_Submit (EditCommon, autosuper) :
+    """ Remove items that should not create a new offer item from the
+        list of offer items. In particular this is done for boolean
+        attributes with a yes/no choice.
+    """
+
+    def _editnodes (self, props, links) :
+        for (cl, id), val in props.items () :
+            if cl == 'pr_offer_item' :
+                if int (id) < 0 and val.keys () == ['is_asset'] :
+                    del props [(cl, id)]
+        return EditCommon._editnodes (self, props, links)
+    # end def _editnodes
+
+# end class PR_Submit
+
+class Edit_Purchase_Request (EditItemAction, PR_Submit) :
+    def _editnodes (self, props, links) :
+        return PR_Submit._editnodes (self, props, links)
+    # end def _editnodes
+# end class Edit_Purchase_Request
+
+class New_Purchase_Request (NewItemAction, PR_Submit) :
+    def _editnodes (self, props, links) :
+        return PR_Submit._editnodes (self, props, links)
+    # end def _editnodes
+# end class New_Purchase_Request
+
+class Sign_Purchase_Request (Edit_Purchase_Request, autosuper) :
     """ Sign own purchase request
         Note: This handles all newly-submitted attributes first, then
         the current PR is signed.
@@ -61,7 +90,9 @@ class Sign_Purchase_Request (EditItemAction, autosuper) :
         if red is not None :
             raise red
     # end def handle
+
 # end class Sign_Purchase_Request
+
 
 def supplier_approved (db, context, supplier) :
     """ Return 'approved' if supplier is approved for given organisation.
@@ -79,10 +110,21 @@ def supplier_approved (db, context, supplier) :
     return 'not approved for %(orgname)s' % locals ()
 # end def supplier_approved
 
+def pr_edit_button (context) :
+    if isinstance (context, _HTMLItem) :
+        return 'pr_edit'
+    elif isinstance (context, HTMLClass) :
+        return 'pr_new'
+    assert None
+# end def pr_edit_button
+
 def init (instance) :
     act = instance.registerAction
-    act ('pr_sign', Sign_Purchase_Request)
+    act ('pr_sign',           Sign_Purchase_Request)
+    act ('pr_edit',           Edit_Purchase_Request)
+    act ('pr_new',            New_Purchase_Request)
     reg = instance.registerUtil
     reg ('pr_offer_item_sum', common.pr_offer_item_sum)
     reg ('supplier_approved', supplier_approved)
+    reg ('pr_edit_button',    pr_edit_button)
 # end def init
