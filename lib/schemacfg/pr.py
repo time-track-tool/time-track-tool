@@ -221,6 +221,7 @@ def security (db, ** kw) :
         , ("Procure-Approval",  "Procurement approvals")
         , ("Quality",           "Approvals for Safety issues")
         , ("Subcontract",       "Approvals for staff/subcontracting")
+        , ("PR-View",           "See all Purchase Requests")
         ]
 
     #     classname        allowed to view   /  edit
@@ -232,7 +233,7 @@ def security (db, ** kw) :
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
         , ("pr_approval_order",  ["Procurement"],       ["Procurement-Admin"])
-        , ("pr_approval",        ["Procurement"],       [])
+        , ("pr_approval",        ["Procurement","PR-View"], [])
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
@@ -242,6 +243,8 @@ def security (db, ** kw) :
         , ("terms_conditions",   ["User"],              [])
         , ("time_project",       ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
+        , ("purchase_request",   ["PR-View"],           [])
+        , ("pr_offer_item",      ["PR-View"],           [])
         ]
 
     prop_perms = \

@@ -25,6 +25,10 @@ Role "it-approval":
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
 Role "pgp":
+Role "pr-view":
+ User is allowed to access pr_approval (View for "pr_approval" only)
+ User is allowed to access pr_offer_item (View for "pr_offer_item" only)
+ User is allowed to access purchase_request (View for "purchase_request" only)
 Role "procure-approval":
 Role "procurement":
   (View for "sap_cc" only)

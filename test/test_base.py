@@ -147,6 +147,7 @@ class _Test_Case (unittest.TestCase) :
         , 'office'
         , 'pbx'
         , 'pgp'
+        , 'pr-view'
         , 'procure-approval'
         , 'procurement'
         , 'procurement-admin'
@@ -4396,8 +4397,8 @@ class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
-        , 'it-approval', 'nosy', 'pgp', 'procure-approval', 'procurement'
-        , 'procurement-admin', 'project'
+        , 'it-approval', 'nosy', 'pgp', 'pr-view', 'procure-approval'
+        , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'subcontract', 'user', 'user_view'
         ]
     transprop_perms = transprop_pr
