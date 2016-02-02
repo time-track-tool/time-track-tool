@@ -219,13 +219,13 @@ def supplier_is_approved (db, pr, sup_id) :
     if not sup_id :
         return False
     supplier = db.pr_supplier.getnode (sup_id)
-    if pr.organisation in supplier.organisation :
-        if not supplier.rating :
-            return False
-        rating = db.pr_supplier_rating.getnode (supplier.rating)
-        if rating.order > 2 :
-            return False
-        return True
+    for id in supplier.ratings :
+        sr = db.pr_supplier_rating_by_org.getnode (id)
+        if pr.organisation == sr.organisation :
+            rating = db.pr_supplier_rating.getnode (sr.rating)
+            if rating.order > 2 :
+                return False
+            return True
     return False
 # end def supplier_is_approved
 
@@ -581,6 +581,35 @@ def pao_check_roles (db, cl, nodeid, new_values) :
         raise Reject (_ ("Only a single role is allowed"))
 # end def pao_check_roles
 
+def check_ratings (db, cl, nodeid, new_values) :
+    """ Check ratings of supplier: each organisation may occur only once
+    """
+    if 'ratings' in new_values :
+        seen = {}
+        for r in new_values ['ratings'] :
+            sr = db.pr_supplier_rating_by_org.getnode (r)
+            if sr.organisation in seen :
+                raise Reject (_ ("Only one rating per organisation"))
+            else :
+                seen [sr.organisation] = True
+# end def check_ratings
+
+def check_uniq_rating (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'rating', 'organisation')
+    common.check_unique \
+        ( _, cl, nodeid
+        , rating       = new_values ['rating']
+        , organisation = new_values ['organisation']
+        )
+# end def check_uniq_rating
+
+def check_no_change (db, cl, nodeid, new_values) :
+    if new_values and new_values.keys () != ['name'] :
+        classname = cl.classname
+        raise Reject (_ ("%(classname)s may not be changed" % locals ()))
+# end def check_no_change
+
 def init (db) :
     global _
     _   = get_translation \
@@ -609,4 +638,7 @@ def init (db) :
     db.pr_currency.audit       ("set",    check_currency)
     db.pr_approval_order.audit ("create", pao_check_roles)
     db.pr_approval_order.audit ("set",    pao_check_roles)
+    db.pr_supplier.audit       ("set",    check_ratings)
+    db.pr_supplier_rating_by_org.audit ("create", check_uniq_rating)
+    db.pr_supplier_rating_by_org.audit ("set",    check_no_change)
 # end def init

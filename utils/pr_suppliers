@@ -27,6 +27,23 @@ supplier_rating_corr = \
     , 'Inactive'      : 'inactive'
     }
 
+def get_supplier_rating_by_org (db, ratid, orgid, update = False) :
+    org = db.organisation.get (orgid, 'name')
+    rat = db.pr_supplier_rating.get (ratid, 'name')
+    srn = ': '.join ((org, rat))
+    bo  = db.pr_supplier_rating_by_org.filter \
+        (None, dict (rating = ratid, organisation = orgid))
+    assert len (bo) <= 1
+    if bo :
+        if update and not db.pr_supplier_rating_by_org.get (bo [0], 'name') :
+            db.pr_supplier_rating_by_org.set (bo [0], name = srn)
+        return bo [0]
+    if not update :
+        return '-1'
+    return db.pr_supplier_rating_by_org.create \
+        (rating = ratid, organisation = orgid, name = srn)
+# end def get_supplier_rating_by_org
+
 def main () :
     cmd = ArgumentParser ()
     cmd.add_argument \
@@ -105,10 +122,13 @@ def main () :
         for k in trials :
             try :
                 s_id = db.pr_supplier.lookup (k.encode ('utf-8'))
+                break
             except KeyError :
                 pass
 
         sup = sup.replace ('\n', ' ').strip ()
+        rid = db.pr_supplier_rating.lookup (rat)
+        rbo = get_supplier_rating_by_org (db, rid, org, args.update)
         if s_id is None :
             if args.verbose :
                 print \
@@ -117,33 +137,30 @@ def main () :
                     % locals ()
                     )
             sap = sap.encode ('utf-8')
-            rat = db.pr_supplier_rating.lookup (rat)
             if args.update :
                 s_id = db.pr_supplier.create \
                     ( name            = sup.encode ('utf-8')
-                    , organisation    = [org]
                     , sap_ref         = sap
-                    , rating          = rat
+                    , ratings         = [rbo]
                     )
             continue
         supplier = db.pr_supplier.getnode (s_id)
-        orgs     = supplier.organisation
+
         d        = {}
-        if org not in orgs :
-            orgs.append (org)
-            d ['organisation'] = orgs
+        rats     = supplier.ratings
+        if rbo not in rats :
+            rats.append (rbo)
+            d ['ratings'] = rats
         sap = sap.encode ('utf-8')
         if supplier.sap_ref != sap and sap :
             d ['sap_ref'] = sap
-        rat = db.pr_supplier_rating.lookup (rat)
-        if supplier.rating != rat :
-            d ['rating'] = rat
         sup = sup.encode ('utf-8')
         if supplier.name != sup :
             print "%r->%r" % (supplier.name, sup)
             d ['name'] = sup
         if d :
-            db.pr_supplier.set (s_id, ** d)
+            if args.update :
+                db.pr_supplier.set (s_id, ** d)
             if args.verbose :
                 print ("Update: %s >%s< %r" % (s_id, supplier.name, d))
     if args.update :

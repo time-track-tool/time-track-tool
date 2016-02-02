@@ -102,11 +102,9 @@ def supplier_approved (db, context, supplier) :
     if not context.organisation :
         return ''
     orgname = context.organisation.name
-    for org in supplier.organisation :
-        if org.id == context.organisation.id :
-            if supplier.rating :
-                return 'Rating: %s' % str (supplier.rating)
-            return 'unknown status'
+    for rating in supplier.ratings :
+        if rating.organisation.id == context.organisation.id :
+            return 'Rating: %s' % str (rating.rating)
     return 'not approved for %(orgname)s' % locals ()
 # end def supplier_approved
 

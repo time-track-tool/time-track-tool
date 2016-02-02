@@ -115,10 +115,6 @@ def is_matching_result (cl, kw, search_result) :
         if isinstance (cl.properties [k], String) :
             if cl.get (search_result, k) != v :
                 return False
-        else :
-            l     = len (search_result)
-            found = l > 1 or (l == 1 and search_result [0] != id)
-            if not found : return False
     return True
 # end def is_matching_result
 
@@ -126,7 +122,7 @@ def check_unique (_, cl, id, ** kw) :
     search = cl.filter (None, kw)
     # strings do a substring search.
     for s in search :
-        if is_matching_result (cl, kw, s) :
+        if s != id and is_matching_result (cl, kw, s) :
             r = []
             for k, v in kw.iteritems () :
                 attr = _ (str (k))

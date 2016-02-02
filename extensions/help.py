@@ -1570,6 +1570,11 @@ _helptext          = \
       [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :
       [""'''Queries for this %(Classname)s''']
+    , ""'ratings'                     :
+      [""'''Rating of this %(Classname)s by organisation. Select max. one
+            rating code per organisation.
+         '''
+      ]
     , ""'ready_for_sync'              :
       [""'''Set this flag when you have entered all relevant attributes
             for remote tracker synchronisation. Setting this flag is

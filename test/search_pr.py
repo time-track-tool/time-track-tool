@@ -429,13 +429,7 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'organisation'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        , ( 'rating'
+        , ( 'ratings'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
@@ -457,6 +451,27 @@ properties = \
             ]
           )
         , ( 'order'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        ]
+      )
+    , ( 'pr_supplier_rating_by_org'
+      , [ ( 'name'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'organisation'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'rating'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'

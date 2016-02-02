@@ -105,14 +105,19 @@ properties = \
       )
     , ( 'pr_supplier'
       , [ 'name'
-        , 'organisation'
-        , 'rating'
+        , 'ratings'
         , 'sap_ref'
         ]
       )
     , ( 'pr_supplier_rating'
       , [ 'name'
         , 'order'
+        ]
+      )
+    , ( 'pr_supplier_rating_by_org'
+      , [ 'name'
+        , 'organisation'
+        , 'rating'
         ]
       )
     , ( 'purchase_request'

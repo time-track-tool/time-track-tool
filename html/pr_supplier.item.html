@@ -19,27 +19,26 @@
   <tal:block tal:define=
     " use_labelprop       python:0
     ; has_resp            python:0
-    ; required_attributes string:index,offer_number,supplier
+    ; required_attributes string:name
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'name')"/>
-      <td tal:content="structure python:context.name.plain ()"/>
+      <td tal:content="structure python:context.name.field ()"/>
      </tr>
      <tr>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'organisation')"/>
-      <td tal:content="structure python:context.organisation.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'sap_ref')"/>
+      <td tal:content="structure python:context.sap_ref.field ()"/>
      </tr>
      <tr>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'rating')"/>
-      <td tal:content="structure python:context.rating.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'ratings')"/>
+      <td tal:content="structure python:context.ratings.menu () "/>
      </tr>
     </tal:block>
-    <tal:block metal:fill-slot="button_slot"/>
    </tal:block>
   </tal:block>
  </tal:block>
