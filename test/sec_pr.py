@@ -44,11 +44,13 @@ Role "procurement-admin":
  User is allowed to create department (Create for "department" only)
  User is allowed to create pr_approval_order (Create for "pr_approval_order" only)
  User is allowed to create pr_currency (Create for "pr_currency" only)
+ User is allowed to create pr_supplier (Create for "pr_supplier" only)
  User is allowed to create pr_supplier_rating_by_org (Create for "pr_supplier_rating_by_org" only)
  User is allowed to create purchase_type (Create for "purchase_type" only)
  User is allowed to edit department (Edit for "department" only)
  User is allowed to edit pr_approval_order (Edit for "pr_approval_order" only)
  User is allowed to edit pr_currency (Edit for "pr_currency" only)
+ User is allowed to edit pr_supplier (Edit for "pr_supplier" only)
  User is allowed to edit pr_supplier_rating_by_org (Edit for "pr_supplier_rating_by_org" only)
  User is allowed to edit purchase_type (Edit for "purchase_type" only)
 Role "project":

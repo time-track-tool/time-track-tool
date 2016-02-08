@@ -244,7 +244,7 @@ def security (db, ** kw) :
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
-        , ("pr_supplier",        ["User"],              [])
+        , ("pr_supplier",        ["User"],              ["Procurement-Admin"])
         , ("pr_supplier_rating", ["User"],              [])
         , ("pr_supplier_rating_by_org", ["User"],       ["Procurement-Admin"])
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])

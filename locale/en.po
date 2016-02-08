@@ -6492,7 +6492,7 @@ msgid "pr_supplier_rating"
 msgstr "Supplier rating"
 
 msgid "pr_supplier_rating_by_org"
-msgstr "Supplier rating by Organisation"
+msgstr "Supplier rating by Org."
 
 msgid "may_purchase"
 msgstr "may purchase"
