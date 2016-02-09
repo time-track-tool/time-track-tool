@@ -196,6 +196,8 @@ def change_pr (db, cl, nodeid, new_values) :
             for ap in approvals :
                 db.pr_approval.retire (ap.id)
             create_pr_approval (db, cl, nodeid, {})
+            # We also need to set the total cost to None
+            new_values ['total_cost'] = None
 # end def change_pr
 
 def check_late_changes (db, cl, nodeid, new_values) :
