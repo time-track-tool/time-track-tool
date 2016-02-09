@@ -12,7 +12,7 @@ op = db.pr_status.lookup ('open')
 for id in db.purchase_request.filter (None, dict (status = op)) :
     pr = db.purchase_request.getnode (id)
     if pr.total_cost is not None :
-        print pr.title
+        print "purchase_request%s: %s" % (id, pr.title)
         db.purchase_request.set (id, total_cost = None)
 
-#db.commit()
+db.commit()
