@@ -29,6 +29,11 @@ classprops = {}
 # created by same db-user who now tries to unlink)
 exceptions = { 'purchase_request' : ['messages'] }
 
+# Exceptions for Links
+# We allow unlinking of messages for kpm: we have message fields that
+# re-link on change. For the user class we allow file for user picture.
+l_exceptions = dict (kpm = 'msg', user = 'file')
+
 def old_props (cl, prop, nodeid) :
     if not nodeid :
         return []
@@ -77,9 +82,10 @@ def check_unlinking (db, cl, nodeid, new_values) :
                 kls   = cl.properties [prop]
                 klass = db.getclass (kls.classname)
                 cls   = _ (kls.classname)
-                # Allow updating user pictures
-                if cls == 'File' and name == 'User' :
-                    continue
+                # Check Link property exceptions:
+                if cl.classname in l_exceptions :
+                    if l_exceptions [cl.classname] == kls.classname :
+                        continue
                 # Allow Link properties if old linked prop is owned by user
                 if  (   isinstance (kls, Link)
                     and klass.get (id, 'creator') == db.getuid ()

@@ -236,14 +236,24 @@ properties = \
       )
     , ( 'kpm'
       , [ 'analysis'
+        , 'customer_effect'
         , 'description'
         , 'fault_frequency'
         , 'hardware_version'
         , 'issue'
         , 'kpm_function'
+        , 'kpm_hw_variant'
+        , 'kpm_occurrence'
+        , 'kpm_tag'
+        , 'planned_correction'
+        , 'problem_description'
+        , 'problem_solution'
         , 'ready_for_sync'
         , 'reproduceable'
+        , 'safety_relevant'
         , 'supplier_answer'
+        , 'tested_with'
+        , 'workaround'
         ]
       )
     , ( 'kpm_function'
@@ -251,6 +261,28 @@ properties = \
         , 'kpm_key'
         , 'name'
         , 'order'
+        ]
+      )
+    , ( 'kpm_hw_variant'
+      , [ 'name'
+        , 'order'
+        ]
+      )
+    , ( 'kpm_occurrence'
+      , [ 'name'
+        , 'order'
+        ]
+      )
+    , ( 'kpm_release'
+      , [ 'name'
+        , 'order'
+        , 'valid'
+        ]
+      )
+    , ( 'kpm_tag'
+      , [ 'name'
+        , 'order'
+        , 'valid'
         ]
       )
     , ( 'mailgroup'

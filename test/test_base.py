@@ -139,6 +139,7 @@ class _Test_Case (unittest.TestCase) :
         , 'it-approval'
         , 'ituser'
         , 'itview'
+        , 'kpm-admin'
         , 'letter'
         , 'logger'
         , 'msgedit'
@@ -2734,8 +2735,8 @@ class Test_Case_Tracker (_Test_Case) :
     schemafile = 'trackers'
     roles = \
         [ 'admin', 'anonymous', 'cso', 'external', 'issue_admin', 'it'
-        , 'itview', 'msgedit', 'msgsync', 'nosy', 'pgp', 'supportadmin'
-        , 'user', 'user_view'
+        , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
+        , 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_track
 # end class Test_Case_Tracker

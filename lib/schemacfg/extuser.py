@@ -57,6 +57,18 @@ def security (db, ** kw) :
     if 'kpm_function' in db.classes :
         classes.append \
          (("kpm_function",      ["External"],    []))
+    if 'kpm_hw_variant' in db.classes :
+        classes.append \
+         (("kpm_hw_variant",    ["External"],    []))
+    if 'kpm_occurrence' in db.classes :
+        classes.append \
+         (("kpm_occurrence",    ["External"],    []))
+    if 'kpm_release' in db.classes :
+        classes.append \
+         (("kpm_release",       ["External"],    []))
+    if 'kpm_tag' in db.classes :
+        classes.append \
+         (("kpm_tag",           ["External"],    []))
     if 'ext_tracker_type' in db.classes :
         classes.append \
          (("ext_tracker_type",  ["External"],    []))

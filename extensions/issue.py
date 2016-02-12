@@ -103,6 +103,10 @@ class KPM_Filter_Action (EditCommon) :
         { '-2': 'analysis'
         , '-3': 'description'
         , '-4': 'supplier_answer'
+        , '-5': 'customer_effect'
+        , '-6': 'workaround'
+        , '-7': 'problem_solution'
+        , '-8': 'problem_description'
         }
 
     def _editnodes (self, props, links) :
@@ -112,7 +116,7 @@ class KPM_Filter_Action (EditCommon) :
                 kpmid = p [1]
                 break
         if kpmid :
-            for id in ('-2', '-3', '-4') :
+            for id in self.msgidx :
                 key = ('msg', id)
                 if key in props :
                     assert props [key].keys () == ['content']

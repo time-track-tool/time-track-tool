@@ -57,6 +57,16 @@ def init \
         , fault_frequency     = Link      ("fault_frequency")
         , hardware_version    = String    ()
         , ready_for_sync      = Boolean   ()
+        , kpm_hw_variant      = Multilink ("kpm_hw_variant")
+        , problem_description = Link      ("msg")
+        , kpm_occurrence      = Link      ("kpm_occurrence")
+        , customer_effect     = Link      ("msg")
+        , workaround          = Link      ("msg")
+        , problem_solution    = Link      ("msg")
+        , safety_relevant     = Boolean   ()
+        , kpm_tag             = Multilink ("kpm_tag")
+        , planned_correction  = Multilink ("kpm_release")
+        , tested_with         = Multilink ("kpm_release")
         )
     kpm.setlabelprop ('kpm_function')
 
@@ -76,18 +86,56 @@ def init \
         )
     fault_frequency.setkey ('name')
 
+    kpm_hw_variant = Class \
+        ( db, "kpm_hw_variant"
+        , name                = String    ()
+        , order               = Number    ()
+        )
+    kpm_hw_variant.setkey ('name')
+
+    kpm_occurrence = Class \
+        ( db, "kpm_occurrence"
+        , name                = String    ()
+        , order               = Number    ()
+        )
+    kpm_occurrence.setkey ('name')
+
+    kpm_tag = Class \
+        ( db, "kpm_tag"
+        , name                = String    ()
+        , order               = Number    ()
+        , valid               = Boolean   ()
+        )
+    kpm_tag.setkey ('name')
+
+    kpm_release = Class \
+        ( db, "kpm_release"
+        , name                = String    ()
+        , order               = Number    ()
+        , valid               = Boolean   ()
+        )
+    kpm_release.setkey ('name')
+
     return export
 
 # end def init
 
 def security (db, ** kw) :
+    roles = \
+        [ ("KPM-Admin", "Admin for KPM multiselect fields")
+        ]
     #     classname             allowed to view   /  edit
     classes = \
         [ ("fault_frequency",    ["User"], [])
-        , ("kpm_function",       ["User"], [])
+        , ("kpm_function",       ["User"], ["KPM-Admin"])
+        , ("kpm_hw_variant",     ["User"], ["KPM-Admin"])
+        , ("kpm_occurrence",     ["User"], ["KPM-Admin"])
+        , ("kpm_release",        ["User"], ["KPM-Admin"])
+        , ("kpm_tag",            ["User"], ["KPM-Admin"])
         , ("kpm",                ["User"], ["User"])
         ]
     prop_perms = []
 
+    schemadef.register_roles                 (db, roles)
     schemadef.register_class_permissions     (db, classes, prop_perms)
 # end def security

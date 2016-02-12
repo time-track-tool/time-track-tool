@@ -394,6 +394,7 @@
      <tal:block tal:condition="python:'kpm' in db._db.classes">
       <tal:block tal:define="kpm python:utils.get_kpm (db, context)">
        <tal:block tal:condition="kpm">
+        <tr class="rule"><td colspan="4"></tr>
         <tr>
          <th>
           <a tal:attributes="href python:'kpm%s' % kpm.id">KPM</a>

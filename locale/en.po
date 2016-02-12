@@ -6497,4 +6497,36 @@ msgstr "Supplier rating by Org."
 msgid "may_purchase"
 msgstr "may purchase"
 
+msgid "kpm_release"
+msgstr "KPM Release"
+
+msgid "planned_correction"
+msgstr "Planned correction"
+
+msgid "tested_with"
+msgstr "Tested with"
+
+msgid "safety_relevant"
+msgstr "Safety relevant"
+
+msgid "kpm_tag"
+msgstr "Tag"
+
+msgid "problem_solution"
+msgstr "Problem solution"
+
+msgid "workaround"
+msgstr "Workaround"
+
+msgid "customer_effect"
+msgstr "Customer effect"
+
+msgid "kpm_occurrence"
+msgstr "Occurrence"
+
+msgid "problem_description"
+msgstr "Problem description"
+
+msgid "kpm_hw_variant"
+msgstr "Hardware variant"
 
