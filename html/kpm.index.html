@@ -13,11 +13,22 @@
     , ('issue'
       , dict (searchable = 1, sortable = 0, do_classhelp = 0)
       )
+    , ('issue'
+      , dict
+        ( searchable   = 0
+        , sortable     = 0
+        , do_classhelp = 0
+        , searchname   = 'issue.id'
+        )
+      )
     , ('kpm_function',        dict (multiselect = 1))
     , ('reproduceable',       {})
     , ('fault_frequency',     dict (multiselect = 1))
     , ('hardware_version',    {})
     , ('kpm_hw_variant',      dict (multiselect = 1))
+    , ('analysis',            {})
+    , ('description',         {})
+    , ('supplier_answer',     {})
     , ('problem_description', {})
     , ('customer_effect',     {})
     , ('workaround',          {})
@@ -27,6 +38,7 @@
     , ('kpm_tag',             dict (multiselect = 1))
     , ('planned_correction',  dict (multiselect = 1))
     , ('tested_with',         dict (multiselect = 1))
+    , ('ready_for_sync',      {})
     );
    props python:
     [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
