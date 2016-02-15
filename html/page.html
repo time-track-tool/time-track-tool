@@ -150,6 +150,10 @@
                           '@sort=-id&@group=status&@filter=stakeholder,status&'
                           '@pagesize=50&@startwith=0&'
                           'status=1,2,3&stakeholder=%s' % uid
+   , ('kpm', '')        : '@columns=first_day,last_day,status,'
+                          '@columns=issue,issue.id,reproduceable,'
+                          'kpm_hw_variant,safety_relevant,kpm_occurrence,'
+                          'kpm_tag&@sort=-id&@pagesize=20&@startwith=0'
    , ('leave_submission', '')
                         : '@columns=first_day,last_day,status,'
                           'time_wp.project,time_wp&@filter=user&'
