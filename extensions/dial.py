@@ -49,7 +49,7 @@ class Dial (Action) :
         callerid   = self.db.callerid.getnode (cids [0])
         user       = self.db.user.getnode (self.db.getuid ())
         sipdev     = self.db.sip_device.getnode (user.sip_device)
-        url = 'http://%s:%s@%s/command.htm?number=%s&outgoing_uri=%s@%s' % \
+        url = 'http://%s:%s@%s:80/command.htm?number=%s&outgoing_uri=%s@%s' % \
             ( sipdev.http_username
             , sipdev.http_password
             , sipdev.name
@@ -59,9 +59,12 @@ class Dial (Action) :
             )
         #print url
         #print callerid.number
-        f = urlopen (url)
-        f.read  ()
-        f.close ()
+        try :
+            f = urlopen (url)
+            f.read  ()
+            f.close ()
+        except EOFError :
+            pass
         raise Redirect, "address%s" % contact.address
     # end def handle
 
