@@ -511,7 +511,7 @@ def security (db, ** kw) :
           , ["Controlling"]
           )
         , ( "daily_record"
-          , ["User"]
+          , ["HR", "Controlling"]
           , []
           )
         , ( "daily_record_freeze"
@@ -634,6 +634,8 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
     db.security.addPermissionToRole ('User', 'Create', 'leave_submission')
     schemadef.add_search_permission (db, 'leave_submission', 'User')
+    schemadef.add_search_permission (db, 'daily_record', 'User')
+    schemadef.add_search_permission (db, 'time_record', 'User')
 
     fixdoc = schemadef.security_doc_from_docstring
 
