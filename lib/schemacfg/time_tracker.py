@@ -656,7 +656,7 @@ def security (db, ** kw) :
     # end def approver_daily_record
 
     def ok_daily_record (db, userid, itemid) :
-        """User is allowed to edit daily record if he is owner or
+        """User is allowed to access daily record if he is owner or
            supervisor.
 
            Determine if the user owns the daily record, a negative itemid
@@ -915,15 +915,24 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'daily_record'
+        , check       = ok_daily_record
+        , description = fixdoc (ok_daily_record.__doc__)
+        , properties  = ('status', 'time_record')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = ok_daily_record
+        , description = fixdoc (ok_daily_record.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
     for perm in 'View', 'Edit' :
-        p = db.security.addPermission \
-            ( name        = perm
-            , klass       = 'daily_record'
-            , check       = ok_daily_record
-            , description = fixdoc (ok_daily_record.__doc__)
-            , properties  = ('status', 'time_record')
-            )
-        db.security.addPermissionToRole ('User', p)
 
         p = db.security.addPermission \
             ( name        = perm
