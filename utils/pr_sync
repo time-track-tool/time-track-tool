@@ -56,6 +56,9 @@ class PR_Sync (autosuper) :
         if SSLContext and args.disable_cert_check :
             proxy_args ['context'] = SSLContext (PROTOCOL_SSLv23)
         self.srv       = xmlrpclib.ServerProxy (args.url, ** proxy_args)
+        self.schema    = schema = self.srv.schema ()
+        for cl in schema.keys () :
+            schema [cl] = dict (schema [cl])
         tracker        = instance.open (args.database_directory)
         self.db        = tracker.open (args.user)
         sys.path.insert (1, os.path.join (args.database_directory, 'lib'))
@@ -133,10 +136,19 @@ class PR_Sync (autosuper) :
         return self.property_classes.get ('%s.%s' % (cn, prop), None)
     # end def getpropclass
 
+    def is_multilink (self, classname, propname) :
+        mstr = '<roundup.hyperdb.Multilink'
+        return self.schema [classname][propname].startswith (mstr)
+    # end def is_multilink
+
     def map_id (self, prop, value) :
         if value is None :
             return None
-        return self.idmap [self.getpropclass (prop)][value]
+        idm = self.idmap [self.getpropclass (prop)]
+        if self.is_multilink (self.classname, prop) :
+            v = [idm [x] for x in value]
+            return v
+        return idm [value]
     # end def map_id
 
     def sync (self) :
@@ -211,7 +223,7 @@ class PR_Sync (autosuper) :
         , update     = True
         , **default
         ) :
-        self.verbose ('Syncing: %s' % classname, level = 2)
+        self.verbose ('Syncing: %s (upd=%s)' % (classname, update), level = 2)
         assert key in propnames
         for r in required :
             assert r in propnames
@@ -230,7 +242,7 @@ class PR_Sync (autosuper) :
                     pending [p] = 1
             else :
                 nonmapped [p] = 1
-        if pending :
+        if pending and update :
             self.pendmap [classname] = {}
         for id in self.srv.filter (classname, None, {}) :
             if id in dont_sync :
@@ -324,7 +336,7 @@ class PR_Sync (autosuper) :
                         if self.update and update :
                             cls.set (lid, ** d)
                 self.idmap [classname][id] = lid
-                if pending :
+                if pending and update :
                     self.pendmap [classname][lid] = dict \
                         ((k, item [k]) for k in pending if item [k] is not None)
             elif lid :
