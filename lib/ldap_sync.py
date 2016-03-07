@@ -166,6 +166,16 @@ class LDAP_Roundup_Sync (object) :
         return None
     # end def bind_as_user
 
+    def get_realname (self, x, y) :
+        fn = x.get ('givenname', [''])[0]
+        ln = x.get ('sn', ['']) [0]
+        if fn and ln :
+            return ' '.join ((fn, ln))
+        elif fn :
+            return fn
+        return ln
+    # end def get_realname
+
     def compute_attr_map (self) :
         """ Map roundup attributes to ldap attributes
             for 'user' we have a dict indexed by user attribute and
@@ -238,7 +248,7 @@ class LDAP_Roundup_Sync (object) :
                 , self.cls_lookup (self.db.position, 'position')
                 )
         if 'realname' in props :
-            g = lambda x, y : x.get (y, [None])[0]
+            g = self.get_realname
             if 'firstname' in props :
                 g = None
             attr_u ['realname'] = \
