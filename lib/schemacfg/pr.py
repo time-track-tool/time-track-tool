@@ -260,7 +260,7 @@ def security (db, ** kw) :
           , ("roles", "password")
           )
         , ( "user", "View", ["User"]
-          , ("username", "id", "realname")
+          , ("username", "id", "realname", "status")
           )
         ]
 

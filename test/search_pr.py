@@ -869,7 +869,8 @@ properties = \
           )
         , ( 'realname'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement'
+            , 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
             ]
           )
@@ -877,7 +878,11 @@ properties = \
           , ['admin', 'procurement-admin', 'user_view']
           )
         , ( 'status'
-          , ['admin', 'procurement-admin', 'user_view']
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement'
+            , 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
           )
         , ( 'supervisor'
           , ['admin', 'procurement-admin', 'user_view']

@@ -72,7 +72,7 @@ Role "user":
  Approvers are allowed if not finance and PR not yet approved by finance (Edit for "pr_offer_item": ('vat',) only)
  Approvers are allowed if not finance and PR not yet approved by finance (Edit for "purchase_request": ('continuous_obligation', 'contract_term', 'termination_date') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
- User is allowed View on (View for "user": ('realname', 'username', 'id') only)
+ User is allowed View on (View for "user": ('id', 'realname', 'status', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed if on the nosy list (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
