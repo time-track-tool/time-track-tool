@@ -716,6 +716,19 @@ def security (db, ** kw) :
         return sum_common.time_wp_viewable (db, userid, wp)
     # end def may_see_time_record
 
+    def may_see_daily_record (db, userid, itemid) :
+        """ Users may see daily record if they may see one of the
+            time_records for that day.
+        """
+        if int (itemid) < 0 :
+            return False
+        trs = db.time_record.filter (None, dict (daily_record = itemid))
+        for tr in trs :
+            if may_see_time_record (db, userid, tr) :
+                return True
+        return False
+    # end def may_see_daily_record
+
     def is_project_owner_of_wp (db, userid, itemid) :
         """User is allowed to edit workpackage if he is time category
            owner.
@@ -989,6 +1002,13 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = sum_common.daily_record_viewable
+        , description = fixdoc (sum_common.daily_record_viewable.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
         , klass       = 'time_record'
         , check       = may_see_time_record
         , description = ' '.join
@@ -1140,4 +1160,11 @@ def security (db, ** kw) :
         , klass       = 'daily_record_freeze'
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = may_see_daily_record
+        , description = fixdoc (may_see_daily_record.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
 # end def security
