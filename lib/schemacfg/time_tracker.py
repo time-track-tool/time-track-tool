@@ -642,7 +642,7 @@ def security (db, ** kw) :
     def approver_daily_record (db, userid, itemid) :
         """User is allowed to edit daily record if he is supervisor.
 
-           A negative itemid indicates that the record doesn't exits
+           A negative itemid indicates that the record doesn't exist
            yet -- we allow creation in this case. Modification is only
            allowed by the supervisor.
         """
@@ -660,7 +660,7 @@ def security (db, ** kw) :
            supervisor.
 
            Determine if the user owns the daily record, a negative itemid
-           indicates that the record doesn't exits yet -- we allow creation
+           indicates that the record doesn't exist yet -- we allow creation
            in this case. Modification is also allowed by the supervisor or
            the person to whom approvals are delegated.
         """
@@ -672,7 +672,7 @@ def security (db, ** kw) :
         """User may edit own time_records.
 
            Determine if the user owns the daily record, a negative itemid
-           indicates that the record doesn't exits yet -- we allow creation
+           indicates that the record doesn't exist yet -- we allow creation
            in this case.
         """
         if int (itemid) < 0 : # allow creation
