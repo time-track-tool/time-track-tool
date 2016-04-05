@@ -1169,7 +1169,7 @@ default_attributes = dict \
          ' department frame_purchase organisation part_of_budget'
          ' purchase_type renegotiations requester safety_critical'
          ' sap_cc termination_date terms_conditions'
-         ' time_project title'
+         ' time_project title pr_currency'
         ).split ()
     )
 
@@ -1184,7 +1184,7 @@ def copy_url (context, attributes = None) :
             if context [a] :
                 val = ','.join (p.id for p in context [a])
         elif isinstance (context [a], LinkHTMLProperty) :
-            if context [a] :
+            if context [a] and not context [a].is_retired () :
                 val = context [a].id
         else :
             val = str (context [a])
@@ -1198,10 +1198,20 @@ def copy_url (context, attributes = None) :
         n = -1
         for n, ofr in enumerate (context ['offer_items']) :
             for a in atrs :
-                url.append \
-                    ( 'pr_offer_item-%s@%s=%s'
-                    % (n+1, a, urlquote (str (ofr [a])))
-                    )
+                val = None
+                if isinstance (ofr [a], MultilinkHTMLProperty) :
+                    if ofr [a] :
+                        val = ','.join (p.id for p in ofr [a])
+                elif isinstance (ofr [a], LinkHTMLProperty) :
+                    if ofr [a] and not ofr [a].is_retired () :
+                        val = ofr [a].id
+                else :
+                    val = str (ofr [a])
+                if val is not None :
+                    url.append \
+                        ( 'pr_offer_item-%s@%s=%s'
+                        % (n+1, a, urlquote (val))
+                        )
         if n >= 0 :
             url.append ('offer_list_length=%s' % (n + 1))
     return '&'.join (url)
