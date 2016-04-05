@@ -67,6 +67,7 @@ def init \
         , kpm_tag             = Multilink ("kpm_tag")
         , planned_correction  = Multilink ("kpm_release")
         , tested_with         = Multilink ("kpm_release")
+        , is_known_limitation = Boolean   ()
         )
     kpm.setlabelprop ('kpm_function')
 

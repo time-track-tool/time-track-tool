@@ -535,9 +535,8 @@ msgstr ""
 msgid "No rejected approval-record found"
 msgstr ""
 
-#, fuzzy, python-format
 msgid "%(tp)s responsible"
-msgstr "Responsible"
+msgstr "%(tp)s responsible"
 
 msgid "time_project"
 msgstr "Time Category"
@@ -3578,9 +3577,8 @@ msgstr ""
 msgid "safety_critical"
 msgstr "Safety critical"
 
-#, fuzzy
 msgid "If safety critical use is "
-msgstr "Safety critical"
+msgstr "If safety critical use is "
 
 msgid "salutation"
 msgstr "Salutation"
@@ -5825,9 +5823,8 @@ msgstr "Currency"
 msgid "pr_approval"
 msgstr "Purchase approval"
 
-#, fuzzy
 msgid "pr_approval_order"
-msgstr "Purchase approval"
+msgstr "approval order"
 
 msgid "pr_offer_item"
 msgstr "Offer item"
@@ -5935,13 +5932,11 @@ msgstr "User contact"
 msgid "uc_type"
 msgstr "User-contact type"
 
-#, fuzzy
 msgid "kpm"
-msgstr "is KPM"
+msgstr "KPM"
 
-#, fuzzy
 msgid "reproduceable"
-msgstr "Product line"
+msgstr "reproduceable"
 
 msgid "supplier_answer"
 msgstr "Supplier answer"
@@ -6300,9 +6295,8 @@ msgstr ""
 msgid "start_generated"
 msgstr ""
 
-#, fuzzy
 msgid "has_expiration_date"
-msgstr "Vacation date"
+msgstr "Has expiration date"
 
 msgid "durations_allowed"
 msgstr "Durations allowed"
@@ -6328,9 +6322,8 @@ msgstr "Document number"
 msgid "mail_domain"
 msgstr "Mail domain"
 
-#, fuzzy
 msgid "role"
-msgstr "Roles"
+msgstr "Role"
 
 msgid "by"
 msgstr ""
@@ -6529,4 +6522,7 @@ msgstr "Problem description"
 
 msgid "kpm_hw_variant"
 msgstr "Hardware variant"
+
+msgid "is_known_limitation"
+msgstr "Known limitation"
 

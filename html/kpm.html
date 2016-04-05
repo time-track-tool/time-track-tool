@@ -50,6 +50,11 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
+            ('kpm', 'is_known_limitation')"/>
+          <td tal:content="structure python: kpm.is_known_limitation.field ()"/>
+         </tr>
+         <tr>
+          <th tal:content="structure python:utils.fieldname
             ('kpm', 'problem_description')"/>
           <td>
            <textarea
