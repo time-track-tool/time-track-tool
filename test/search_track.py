@@ -202,19 +202,19 @@ properties = \
       )
     , ( 'ext_tracker_state'
       , [ ( 'ext_attributes'
-          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'ext_id'
-          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'ext_status'
-          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'ext_tracker'
-          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'issue'
-          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         ]
       )
@@ -562,6 +562,9 @@ properties = \
           , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'hardware_version'
+          , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'is_known_limitation'
           , ['admin', 'cso', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
         , ( 'issue'

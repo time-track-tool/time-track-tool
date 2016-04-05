@@ -240,6 +240,7 @@ properties = \
         , 'description'
         , 'fault_frequency'
         , 'hardware_version'
+        , 'is_known_limitation'
         , 'issue'
         , 'kpm_function'
         , 'kpm_hw_variant'

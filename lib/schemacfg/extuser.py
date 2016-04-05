@@ -47,6 +47,7 @@ def security (db, ** kw) :
         , ("severity",          ["External"],    [])
         , ("status",            ["External"],    [])
         , ("status_transition", ["External"],    [])
+        , ("ext_tracker_state", ["External"],    [])
         ]
     if 'fault_frequency' in db.classes :
         classes.append \
@@ -207,6 +208,13 @@ def security (db, ** kw) :
         ( name        = 'Search'
         , klass       = 'user'
         , properties  = ("username", "nickname", "id")
+        )
+    db.security.addPermissionToRole ('External', p)
+    # Need search-permission on ext_tracker_state
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'ext_tracker_state'
+        , properties  = ("issue", "id")
         )
     db.security.addPermissionToRole ('External', p)
 

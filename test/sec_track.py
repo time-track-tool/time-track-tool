@@ -16,6 +16,7 @@ Role "cso":
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
 Role "external":
+  (Search for "ext_tracker_state": ('id', 'issue') only)
   (Search for "user": ('id', 'nickname', 'username') only)
  External users are allowed to access issue if they are on the list of allowed external users or there is a transitive permission via containers (Edit for "issue": ['activity', 'actor', 'area', 'category', 'closed', 'composed_of', 'creation', 'creator', 'cur_est_begin', 'cur_est_end', 'deadline', 'depends', 'doc_issue_status', 'earliest_start', 'effective_prio', 'files', 'files_affected', 'fixed_in', 'id', 'keywords', 'kind', 'maturity_index', 'messages', 'needs', 'nosy', 'numeric_effort', 'part_of', 'planned_begin', 'planned_end', 'priority', 'release', 'responsible', 'severity', 'status', 'superseder', 'title'] only)
  External users are allowed to access issue if they are on the list of allowed external users or there is a transitive permission via containers (View for "issue": ['activity', 'actor', 'area', 'category', 'closed', 'composed_of', 'creation', 'creator', 'cur_est_begin', 'cur_est_end', 'deadline', 'depends', 'doc_issue_status', 'earliest_start', 'effective_prio', 'files', 'files_affected', 'fixed_in', 'id', 'keywords', 'kind', 'maturity_index', 'messages', 'needs', 'nosy', 'numeric_effort', 'part_of', 'planned_begin', 'planned_end', 'priority', 'release', 'responsible', 'severity', 'status', 'superseder', 'title'] only)
@@ -28,6 +29,7 @@ Role "external":
  User is allowed to access area (View for "area" only)
  User is allowed to access doc_issue_status (View for "doc_issue_status" only)
  User is allowed to access ext_tracker (View for "ext_tracker" only)
+ User is allowed to access ext_tracker_state (View for "ext_tracker_state" only)
  User is allowed to access ext_tracker_type (View for "ext_tracker_type" only)
  User is allowed to access fault_frequency (View for "fault_frequency" only)
  User is allowed to access keyword (View for "keyword" only)
