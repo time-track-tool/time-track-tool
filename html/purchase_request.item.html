@@ -145,11 +145,21 @@
           (classname, 'frame_purchase_end')"/>
       <td tal:content="structure python:context.frame_purchase_end.field ()"/>
      </tr>
-     <tr tal:condition="context/id">
-      <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
-      <td tal:content="structure python:context.status.menu
+     <tr>
+      <tal:block tal:condition="context/id">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'status')"/>
+       <td tal:content="structure python:context.status.menu
           (** utils.filter_status_transitions
               (context, 'approving', 'approved', 'rejected'))"/>
+      </tal:block>
+      <tal:block tal:condition="not:context/id">
+       <th/>
+       <td/>
+      </tal:block>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'pr_currency')"/>
+      <td tal:content="structure python:context.pr_currency.menu ()"/>
      </tr>
      <tr>
       <th colspan="4">
@@ -186,9 +196,9 @@
          <th class="required" style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'price_per_unit')"/>
-         <th class="required" style="text-align:left"
+         <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'pr_currency')"/>
+             (context, 'pr_currency')"/>
          <th style="text-align:left"
              tal:condition="cond" i18n:translate="">
              remove
@@ -240,7 +250,7 @@
            <td tal:content="structure python:i.units.field (size=5)"/>
            <td style="text-align:right"
                tal:content="structure python:i.price_per_unit.field (size=7)"/>
-           <td tal:content="structure python:i.pr_currency.menu ()"/>
+           <td tal:content="python:context.pr_currency.plain ()"/>
            <td tal:condition="cond">
             <input tabindex="-1" type="checkbox" name="@remove@offer_items"
                    tal:attributes="value i/id">
@@ -310,8 +320,7 @@
                tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'price_per_unit').field
                (size=7)"/>
-           <td tal:content="structure python:utils.new_property
-               (context, db, 'pr_offer_item', -idx, 'pr_currency').menu () "/>
+           <td tal:content="python:context.pr_currency.plain ()"/>
           </tr>
           <tr>
            <td colspan="3"/>

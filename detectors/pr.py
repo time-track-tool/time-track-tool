@@ -85,19 +85,6 @@ def check_requester (db, cl, nodeid, new_values) :
         (_, cl, nodeid, new_values, 'requester')
 # end def check_requester
 
-def currency (db, pr) :
-    pr    = db.purchase_request.getnode (pr)
-    cur   = None
-    for id in pr.offer_items :
-        item  = db.pr_offer_item.getnode (id)
-        assert item.pr_currency
-        if cur and cur != item.pr_currency :
-            raise Reject (_ ("All offer items must have same currency"))
-        cur = item.pr_currency
-    assert cur
-    return cur
-# end def currency
-
 def change_pr (db, cl, nodeid, new_values) :
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
     approvals = db.pr_approval.filter (None, dict (purchase_request = nodeid))
@@ -128,6 +115,7 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
+                , 'pr_currency'
                 )
             dep = new_values.get ('department', cl.get (nodeid, 'department'))
             if db.department.is_retired (dep) :
@@ -159,7 +147,6 @@ def change_pr (db, cl, nodeid, new_values) :
                     , 'price_per_unit'
                     , 'units'
                     , 'description'
-                    , 'pr_currency'
                     , 'vat'
                     )
                 oitem = db.pr_offer_item.getnode (oi)
@@ -177,7 +164,6 @@ def change_pr (db, cl, nodeid, new_values) :
             else :
                 raise Reject ( _ ("No approval by requester found"))
             new_values ['total_cost']  = common.pr_offer_item_sum (db, nodeid)
-            new_values ['pr_currency'] = currency (db, nodeid)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
             for ap in approvals :
@@ -238,7 +224,7 @@ def changed_pr (db, cl, nodeid, old_values) :
     st_op = db.pr_status.lookup ('open')
     st_ag = db.pr_status.lookup ('approving')
     if ost == st_op and nst == st_ag :
-        cur = db.pr_currency.getnode (currency (db, pr.id))
+        cur = db.pr_currency.getnode (pr.pr_currency)
         apr_by_r_d  = {}
         apr_by_role = {}
         if common.pr_offer_item_sum (db, pr.id) > cur.min_sum :
@@ -502,11 +488,6 @@ def new_pr_offer_item (db, cl, nodeid, new_values) :
         new_values ['units'] = 1
     if 'vat' not in new_values :
         new_values ['vat'] = 0
-    if 'pr_currency' not in new_values :
-        # get first currency by 'order' attribute:
-        c = db.pr_currency.filter (None, {}, sort = [('+', 'order')])
-        if c :
-            new_values ['pr_currency'] = c [0]
 # end def new_pr_offer_item
 
 def fix_pr_offer_item (db, cl, nodeid, new_values) :

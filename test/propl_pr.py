@@ -128,6 +128,7 @@ properties = \
         , 'files'
         , 'frame_purchase'
         , 'frame_purchase_end'
+        , 'intended_duration'
         , 'messages'
         , 'nosy'
         , 'offer_items'
