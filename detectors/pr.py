@@ -134,7 +134,7 @@ def change_pr (db, cl, nodeid, new_values) :
             if co :
                 common.require_attributes \
                     ( _, cl, nodeid, new_values
-                    , 'contract_term', 'termination_date'
+                    , 'contract_term', 'intended_duration'
                     )
             if not oitems :
                 raise Reject (_ ("Need at least one offer item"))
@@ -194,7 +194,7 @@ def check_late_changes (db, cl, nodeid, new_values) :
         if co :
             common.require_attributes \
                 ( _, cl, nodeid, new_values
-                , 'contract_term', 'termination_date'
+                , 'contract_term', 'intended_duration'
                 )
     if 'frame_purchase' in new_values :
         fp = new_values ['frame_purchase']

@@ -406,7 +406,7 @@ def security (db, ** kw) :
         , check = approver_non_finance
         , description = fixdoc (approver_non_finance.__doc__)
         , properties =
-            ( 'continuous_obligation', 'termination_date', 'contract_term')
+            ( 'continuous_obligation', 'intended_duration', 'contract_term')
         )
     db.security.addPermissionToRole ('User', p)
 
