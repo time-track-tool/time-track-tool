@@ -6338,7 +6338,7 @@ msgid "total_cost"
 msgstr "Total cost"
 
 msgid "contract_term"
-msgstr "Contract terms"
+msgstr "Termination condition"
 
 msgid "mint_pending"
 msgstr ""
@@ -6525,4 +6525,7 @@ msgstr "Hardware variant"
 
 msgid "is_known_limitation"
 msgstr "Known limitation"
+
+msgid "intended_duration"
+msgstr "Intended duration"
 

@@ -496,8 +496,9 @@ _helptext          = \
          '''
       ]
     , ""'contract_term'               :
-      [""'''Optional. Please mention details of contract terms, if
-            applicable (e.g. specific project agreement, SOW, etc.)
+      [""'''In case of Continuous Obligation please specifiy the
+            conditions for termination according to the contract with
+            supplier, e.g. "end of each month, earliest 31.03.2017".
          '''
       ]
 
@@ -932,6 +933,12 @@ _helptext          = \
       [""'''Initials of this %(Classname)s''']
     , ""'inreplyto'                   :
       [""'''In Reply To field if this %(Classname)s was received by email''']
+    , ""'intended_duration'           :
+      [""'''In case of Continuous Obligation please enter intended
+            duration of contract, e.g. "2 years" or "31.12.2018" or "end
+            of 2020" or "unlimited".
+         '''
+      ]
     , ""'interface'                   :
       [""'''%(Property)s to determine IP address from''']
     , ""'interface_skip'              :

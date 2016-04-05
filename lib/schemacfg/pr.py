@@ -182,6 +182,7 @@ def init \
                 , continuous_obligation = Boolean   ()
                 , contract_term         = String    ()
                 , termination_date      = Date      ()
+                , intended_duration     = String    ()
                 , terms_conditions      = Link      ("terms_conditions")
                 , delivery_deadline     = Date      ()
                 , renegotiations        = Boolean   ()
