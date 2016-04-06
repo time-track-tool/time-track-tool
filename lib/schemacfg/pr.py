@@ -125,28 +125,27 @@ def init \
         )
     pr_status.setkey ('name')
 
-    pr_supplier_rating = Class \
-        ( db, ''"pr_supplier_rating"
+    pr_rating_category = Class \
+        ( db, ''"pr_rating_category"
         , name                  = String    ()
         , order                 = Number    ()
         )
-    pr_supplier_rating.setkey ('name')
+    pr_rating_category.setkey ('name')
 
     pr_supplier = Class \
         ( db, ''"pr_supplier"
         , name                  = String    ()
         , sap_ref               = String    ()
-        , ratings               = Multilink ("pr_supplier_rating_by_org")
         )
     pr_supplier.setkey ('name')
 
-    pr_supplier_rating_by_org = Class \
-        ( db, ''"pr_supplier_rating_by_org"
-        , name                  = String    ()
-        , rating                = Link      ("pr_supplier_rating")
+    pr_supplier_rating = Class \
+        ( db, ''"pr_supplier_rating"
+        , rating                = Link      ("pr_rating_category")
         , organisation          = Link      ("organisation")
+        , supplier              = Link      ("pr_supplier")
+        , scope                 = String    ()
         )
-    pr_supplier_rating_by_org.setkey ('name')
 
     purchase_type = Class \
         ( db, ''"purchase_type"
@@ -246,8 +245,8 @@ def security (db, ** kw) :
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
         , ("pr_supplier",        ["User"],              ["Procurement-Admin"])
-        , ("pr_supplier_rating", ["User"],              [])
-        , ("pr_supplier_rating_by_org", ["User"],       ["Procurement-Admin"])
+        , ("pr_rating_category", ["User"],              [])
+        , ("pr_supplier_rating", ["User"],              ["Procurement-Admin"])
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
         , ("time_project",       ["User"],              [])

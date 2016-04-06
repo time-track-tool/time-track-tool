@@ -395,6 +395,21 @@ properties = \
           )
         ]
       )
+    , ( 'pr_rating_category'
+      , [ ( 'name'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'order'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        ]
+      )
     , ( 'pr_status'
       , [ ( 'name'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
@@ -429,12 +444,6 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
-        , ( 'ratings'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
         , ( 'sap_ref'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -444,34 +453,25 @@ properties = \
         ]
       )
     , ( 'pr_supplier_rating'
-      , [ ( 'name'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        , ( 'order'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        ]
-      )
-    , ( 'pr_supplier_rating_by_org'
-      , [ ( 'name'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
-            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
-            , 'subcontract', 'user', 'user_view'
-            ]
-          )
-        , ( 'organisation'
+      , [ ( 'organisation'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'
             ]
           )
         , ( 'rating'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'scope'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
+            , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
+        , ( 'supplier'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'it-approval'
             , 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'user', 'user_view'

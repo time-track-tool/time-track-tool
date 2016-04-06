@@ -206,14 +206,15 @@ def check_late_changes (db, cl, nodeid, new_values) :
 def supplier_is_approved (db, pr, sup_id) :
     if not sup_id :
         return False
-    supplier = db.pr_supplier.getnode (sup_id)
-    for id in supplier.ratings :
-        sr = db.pr_supplier_rating_by_org.getnode (id)
-        if pr.organisation == sr.organisation :
-            rating = db.pr_supplier_rating.getnode (sr.rating)
-            if rating.order > 2 :
-                return False
-            return True
+    ratings = db.pr_supplier_rating.filter \
+        (None, dict (supplier = sup_id, organisation = pr.organisation))
+    assert len (ratings) <= 1
+    if len (ratings) :
+        sr = db.pr_supplier_rating.getnode (ratings [0])
+        rating = db.pr_rating_category.getnode (sr.rating)
+        if rating.order > 2 :
+            return False
+        return True
     return False
 # end def supplier_is_approved
 
@@ -564,28 +565,25 @@ def pao_check_roles (db, cl, nodeid, new_values) :
         raise Reject (_ ("Only a single role is allowed"))
 # end def pao_check_roles
 
-def check_ratings (db, cl, nodeid, new_values) :
+def check_supplier_rating (db, cl, nodeid, new_values) :
     """ Check ratings of supplier: each organisation may occur only once
     """
-    if 'ratings' in new_values :
-        seen = {}
-        for r in new_values ['ratings'] :
-            sr = db.pr_supplier_rating_by_org.getnode (r)
-            if sr.organisation in seen :
-                raise Reject (_ ("Only one rating per organisation"))
-            else :
-                seen [sr.organisation] = True
-# end def check_ratings
-
-def check_uniq_rating (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'rating', 'organisation')
+        ( _, cl, nodeid, new_values
+        , 'rating', 'organisation', 'supplier', 'scope'
+        )
+    org = new_values.get ('organisation')
+    sup = new_values.get ('supplier')
+    if not org :
+        org = cl.get (nodeid, 'organisation')
+    if not sup :
+        sup = cl.get (nodeid, 'supplier')
     common.check_unique \
         ( _, cl, nodeid
-        , rating       = new_values ['rating']
-        , organisation = new_values ['organisation']
+        , supplier     = sup
+        , organisation = org
         )
-# end def check_uniq_rating
+# end def check_supplier_rating
 
 def check_no_change (db, cl, nodeid, new_values) :
     if new_values and new_values.keys () != ['name'] :
@@ -599,29 +597,27 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'purchase_request' not in db.classes :
         return
-    db.purchase_type.audit     ("create", pt_check_roles)
-    db.purchase_type.audit     ("set",    pt_check_roles)
-    db.purchase_request.audit  ("create", new_pr,          priority = 50)
-    db.purchase_request.audit  ("set",    check_requester, priority = 50)
-    db.purchase_request.audit  ("create", check_tp_rq,     priority = 80)
-    db.purchase_request.audit  ("set",    check_tp_rq,     priority = 80)
-    db.purchase_request.audit  ("set",    requester_chg,   priority = 70)
-    db.purchase_request.audit  ("set",    change_pr)
-    db.purchase_request.audit  ("set",    fix_nosy)
-    db.purchase_request.audit  ("set",    check_late_changes)
-    db.purchase_request.react  ("set",    changed_pr)
-    db.purchase_request.react  ("create", create_pr_approval)
-    db.pr_approval.audit       ("create", new_pr_approval)
-    db.pr_approval.audit       ("set",    change_pr_approval)
-    db.pr_approval.react       ("set",    approved_pr_approval)
-    db.pr_offer_item.audit     ("create", new_pr_offer_item)
-    db.pr_offer_item.audit     ("create", check_supplier)
-    db.pr_offer_item.audit     ("set",    check_supplier)
-    db.pr_currency.audit       ("create", check_currency)
-    db.pr_currency.audit       ("set",    check_currency)
-    db.pr_approval_order.audit ("create", pao_check_roles)
-    db.pr_approval_order.audit ("set",    pao_check_roles)
-    db.pr_supplier.audit       ("set",    check_ratings)
-    db.pr_supplier_rating_by_org.audit ("create", check_uniq_rating)
-    db.pr_supplier_rating_by_org.audit ("set",    check_no_change)
+    db.purchase_type.audit      ("create", pt_check_roles)
+    db.purchase_type.audit      ("set",    pt_check_roles)
+    db.purchase_request.audit   ("create", new_pr,          priority = 50)
+    db.purchase_request.audit   ("set",    check_requester, priority = 50)
+    db.purchase_request.audit   ("create", check_tp_rq,     priority = 80)
+    db.purchase_request.audit   ("set",    check_tp_rq,     priority = 80)
+    db.purchase_request.audit   ("set",    requester_chg,   priority = 70)
+    db.purchase_request.audit   ("set",    change_pr)
+    db.purchase_request.audit   ("set",    fix_nosy)
+    db.purchase_request.audit   ("set",    check_late_changes)
+    db.purchase_request.react   ("set",    changed_pr)
+    db.purchase_request.react   ("create", create_pr_approval)
+    db.pr_approval.audit        ("create", new_pr_approval)
+    db.pr_approval.audit        ("set",    change_pr_approval)
+    db.pr_approval.react        ("set",    approved_pr_approval)
+    db.pr_offer_item.audit      ("create", new_pr_offer_item)
+    db.pr_offer_item.audit      ("create", check_supplier)
+    db.pr_offer_item.audit      ("set",    check_supplier)
+    db.pr_currency.audit        ("create", check_currency)
+    db.pr_currency.audit        ("set",    check_currency)
+    db.pr_approval_order.audit  ("create", pao_check_roles)
+    db.pr_approval_order.audit  ("set",    pao_check_roles)
+    db.pr_supplier_rating.audit ("set",    check_supplier_rating)
 # end def init

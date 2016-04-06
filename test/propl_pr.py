@@ -96,6 +96,11 @@ properties = \
         , 'vat'
         ]
       )
+    , ( 'pr_rating_category'
+      , [ 'name'
+        , 'order'
+        ]
+      )
     , ( 'pr_status'
       , [ 'name'
         , 'order'
@@ -105,19 +110,14 @@ properties = \
       )
     , ( 'pr_supplier'
       , [ 'name'
-        , 'ratings'
         , 'sap_ref'
         ]
       )
     , ( 'pr_supplier_rating'
-      , [ 'name'
-        , 'order'
-        ]
-      )
-    , ( 'pr_supplier_rating_by_org'
-      , [ 'name'
-        , 'organisation'
+      , [ 'organisation'
         , 'rating'
+        , 'scope'
+        , 'supplier'
         ]
       )
     , ( 'purchase_request'

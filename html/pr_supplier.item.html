@@ -33,11 +33,51 @@
           (classname, 'sap_ref')"/>
       <td tal:content="structure python:context.sap_ref.field ()"/>
      </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'ratings')"/>
-      <td tal:content="structure python:context.ratings.menu () "/>
-     </tr>
+    </tal:block>
+   </tal:block>
+   <tal:block tal:condition="python:
+        context.is_view_ok () and 'pr_supplier_rating' in db._db.classes">
+    <tal:block tal:define="srs python:db.pr_supplier_rating.filter
+         (None, dict (supplier = context.id))">
+     <table class="files">
+      <tr tal:define=
+       "uid  python:db._db.getuid ()
+       ;user python:db._db.user.get (uid, 'username')
+       ;cond python: utils.user_has_role (db._db, uid, 'Procurement-Admin')
+       ">
+       <th tal:attributes="colspan python:3-cond" class="header"
+           i18n:translate="">
+           Supplier Ratings
+       </th>
+       <td class="header" tal:condition="cond">
+        <a i18n:translate="" tal:attributes="href python:
+         'pr_supplier_rating?:template=item&' + '&'.join
+          ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+            [ ('supplier', context.name)
+            ]
+           ]
+          )">
+         new Supplier Rating
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <th tal:content="structure python:
+           utils.fieldname ('pr_supplier_rating', 'organisation')"/>
+       <th tal:content="structure python:
+           utils.fieldname ('pr_supplier_rating', 'rating')"/>
+       <th tal:content="structure python:
+           utils.fieldname ('pr_supplier_rating', 'scope')"/>
+      </tr>
+      <tr tal:repeat="sr srs">
+       <td tal:content="structure python:utils.ExtProperty
+           (utils, sr.organisation, item = sr).formatlink ()"/>
+       <td tal:content="structure python:utils.ExtProperty
+           (utils, sr.rating,       item = sr).formatlink ()"/>
+       <td tal:content="structure python:utils.ExtProperty
+           (utils, sr.scope,        item = sr).formatlink ()"/>
+      </tr>
+     </table>
     </tal:block>
    </tal:block>
   </tal:block>

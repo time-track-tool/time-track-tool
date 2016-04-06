@@ -11,10 +11,13 @@ org_tr = \
     , 'TTTech Automotive GmbH'    : 'TTTech Automotive'
     , 'TTTech Computertechnik AG' : 'TTTech'
     , 'TTControl srl Brixen'      : 'TTControl Srl Brixen'
+    , 'TTControl srl / Brixen'    : 'TTControl Srl Brixen'
     , 'FTS Computertechnik GmbH'  : 'FTS'
+    , 'TTControl GmbH / Wien'     : 'TTControl Srl Brixen'
+    , 'TTTech GROUP'              : 'TTTech Group'
     }
 
-supplier_rating = \
+rating_categories = \
     ( ('good impression',            1)
     , ('please contact responsible', 2)
     , ("don't order",                3)
@@ -22,27 +25,30 @@ supplier_rating = \
     , ('evaluation on hold',         5)
     , ('inactive',                   6)
     )
-supplier_rating_corr = \
+rating_category_corr = \
     { "don \'t order" : "don't order"
     , 'Inactive'      : 'inactive'
     }
 
-def get_supplier_rating_by_org (db, ratid, orgid, update = False) :
-    org = db.organisation.get (orgid, 'name')
-    rat = db.pr_supplier_rating.get (ratid, 'name')
-    srn = ': '.join ((org, rat))
-    bo  = db.pr_supplier_rating_by_org.filter \
-        (None, dict (rating = ratid, organisation = orgid))
-    assert len (bo) <= 1
-    if bo :
-        if update and not db.pr_supplier_rating_by_org.get (bo [0], 'name') :
-            db.pr_supplier_rating_by_org.set (bo [0], name = srn)
-        return bo [0]
+def set_supplier_rating (db, orgid, supid, ratid, scope, update = False) :
+    srs = db.pr_supplier_rating.filter \
+        (None, dict (supplier = supid, organisation = orgid))
+    assert len (srs) <= 1
+    if srs :
+        sr = db.pr_supplier_rating.getnode (srs [0])
+        d = {}
+        if sr.rating != ratid :
+            d ['rating'] = ratid
+        if sr.scope != scope :
+            d ['scope'] = scope
+        if update and d :
+            db.pr_supplier_rating.set (srs [0], **d)
+        return srs [0]
     if not update :
         return '-1'
-    return db.pr_supplier_rating_by_org.create \
-        (rating = ratid, organisation = orgid, name = srn)
-# end def get_supplier_rating_by_org
+    return db.pr_supplier_rating.create \
+        (supplier = supid, organisation = orgid, rating = ratid, scope = scope)
+# end def set_supplier_rating
 
 def main () :
     cmd = ArgumentParser ()
@@ -91,11 +97,11 @@ def main () :
     db      = tracker.open (args.user)
 
     if args.update :
-        for name, order in supplier_rating :
+        for name, order in rating_categories :
             try :
-                db.pr_supplier_rating.lookup (name)
+                db.pr_rating_category.lookup (name)
             except KeyError :
-                db.pr_supplier_rating.create (name = name, order = order)
+                db.pr_rating_category.create (name = name, order = order)
         db.commit ()
 
     f = open (args.filename, 'r')
@@ -105,30 +111,51 @@ def main () :
         ent = rec ['Entity'].decode (enc).strip ()
         if not ent :
             break
-        org = db.organisation.lookup (org_tr.get (ent, ent).encode ('utf-8'))
+        ent = org_tr.get (ent, ent)
+        if ent == 'TTTech Group' :
+            orgs = db.organisation.filter (None, {})
+        else :
+            orgs = [db.organisation.lookup (ent.encode ('utf-8'))]
         sup = rec ['Name of Supplier'].decode (enc)
-        sap = rec ['Creditor'].decode (enc) or ''
-        rating = 'General Impression about Supplier->output LAS Meetings'
-        rat = rec [rating].decode (enc)
-        rat = supplier_rating_corr.get (rat, rat)
-        rat = rat.encode ('utf-8')
-        #if args.verbose :
-        #    print (sup, ent, sap, rat)
-        vcr = None
+        if 'Creditor' in rec :
+            sap = rec ['Creditor'].decode (enc) or ''
+        else :
+            sap = ''
+        sap_e  = sap.encode ('utf-8')
+        rats = \
+            ( 'General Impression about Supplier->output LAS Meetings'
+            , 'General Impression about Supplier'
+            )
+        for rating in rats :
+            if rating not in rec :
+                continue
+            rat = rec [rating].decode (enc)
+            rat = rating_category_corr.get (rat, rat)
+            rat = rat.encode ('utf-8')
+            break
 
+        vcr = None
         s_id = None
-        trials = \
-            (sup, sup.replace ('\n', ' '), sup.replace ('\n', ' ').strip ())
-        for k in trials :
-            try :
-                s_id = db.pr_supplier.lookup (k.encode ('utf-8'))
-                break
-            except KeyError :
-                pass
+        # Find by sap reference
+        if 'ID' in rec and rec ['ID'] :
+            s_id = rec ['ID'].strip ()
+        elif sap_e :
+            s = db.pr_supplier.filter (None, dict (sap_ref = sap_e))
+            assert len (s) <= 1
+            if s :
+                s_id = s [0]
+        else :
+            trials = \
+                (sup, sup.replace ('\n', ' '), sup.replace ('\n', ' ').strip ())
+            for k in trials :
+                try :
+                    s_id = db.pr_supplier.lookup (k.encode ('utf-8'))
+                    break
+                except KeyError :
+                    pass
 
         sup = sup.replace ('\n', ' ').strip ()
-        rid = db.pr_supplier_rating.lookup (rat)
-        rbo = get_supplier_rating_by_org (db, rid, org, args.update)
+        rid = db.pr_rating_category.lookup (rat)
         if s_id is None :
             if args.verbose :
                 print \
@@ -136,24 +163,21 @@ def main () :
                      " r: %(rat)r"
                     % locals ()
                     )
-            sap = sap.encode ('utf-8')
             if args.update :
                 s_id = db.pr_supplier.create \
                     ( name            = sup.encode ('utf-8')
-                    , sap_ref         = sap
-                    , ratings         = [rbo]
+                    , sap_ref         = sap_e
                     )
             continue
         supplier = db.pr_supplier.getnode (s_id)
 
+        scope = rec ['Scope'].decode (enc).encode ('utf-8')
+        for org in orgs :
+            srid = set_supplier_rating (db, org, s_id, rid, scope, args.update)
+
         d        = {}
-        rats     = supplier.ratings
-        if rbo not in rats :
-            rats.append (rbo)
-            d ['ratings'] = rats
-        sap = sap.encode ('utf-8')
-        if supplier.sap_ref != sap and sap :
-            d ['sap_ref'] = sap
+        if supplier.sap_ref != sap_e and sap_e :
+            d ['sap_ref'] = sap_e
         sup = sup.encode ('utf-8')
         if supplier.name != sup :
             print "%r->%r" % (supplier.name, sup)

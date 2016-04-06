@@ -21,6 +21,7 @@
 # ****************************************************************************
 
 import common
+import cgi
 from   rsclib.autosuper       import autosuper
 from   roundup.cgi.exceptions import Redirect
 from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
@@ -95,17 +96,27 @@ class Sign_Purchase_Request (Edit_Purchase_Request, autosuper) :
 
 
 def supplier_approved (db, context, supplier) :
-    """ Return 'approved' if supplier is approved for given organisation.
-        If we cannot determine the current status we return an empty
-        string. Otherwise 'not approved for organisation' is returned.
+    """ Return rating string with link to rating if supplier is approved
+        for given organisation. Otherwise 'not approved for
+        organisation' is returned.
     """
     if not context.organisation :
         return ''
+    orgid   = context.organisation.id
     orgname = context.organisation.name
-    for rating in supplier.ratings :
-        if rating.organisation.id == context.organisation.id :
-            return 'Rating: %s' % str (rating.rating)
-    return 'not approved for %(orgname)s' % locals ()
+    r = db.pr_supplier_rating.filter \
+        (None, dict (supplier = supplier.id, organisation = orgid))
+    assert len (r) <= 1
+    if len (r) == 1 :
+        s = ( 'Rating: <a title="%s" href="pr_supplier_rating%s">%s</a>'
+            % ( cgi.escape (str (r [0].scope))
+              , r [0].id
+              , cgi.escape (str (r [0].rating))
+              )
+            )
+        return s
+    else :
+        return 'not approved for %(orgname)s' % locals ()
 # end def supplier_approved
 
 def pr_edit_button (context) :

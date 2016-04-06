@@ -261,7 +261,7 @@
            <td tal:condition="python: not i.pr_supplier"
                tal:content="structure python:i.add_to_las.field ()"/>
            <td tal:condition="python: i.pr_supplier"
-               tal:content="python: utils.supplier_approved
+               tal:content="structure python: utils.supplier_approved
                    (db, context, i.pr_supplier) "/>
            <td tal:content="structure python:i.is_asset.field ()"/>
            <td/>

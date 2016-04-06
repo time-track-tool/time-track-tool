@@ -1424,6 +1424,14 @@ _helptext          = \
     , ""'pr_offer_item++time_project'  : [ optional_offer_prop ]
     , ""'pr_offer_item++sap_cc'        : [ optional_offer_prop ]
     , ""'pr_offer_item++purchase_type' : [ optional_offer_prop ]
+    , ""'pr_supplier_rating++organisation' :
+      [""'''%(Property)s for which supplier is rated''']
+    , ""'pr_supplier_rating++supplier' :
+      [""'''Rated %(Property)s''']
+    , ""'pr_supplier_rating++scope' :
+      [""'''%(Property)s of products to which this rating applies''']
+    , ""'pr_supplier_rating++rating' :
+      [""'''%(Property)s for this supplier''']
     , ""'price_per_unit'              :
       [ ""'''Price per unit (net) in the format ###.##. Please use "." as
              decimal point (e.g.  100.00).
@@ -1577,11 +1585,6 @@ _helptext          = \
       [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :
       [""'''Queries for this %(Classname)s''']
-    , ""'ratings'                     :
-      [""'''Rating of this %(Classname)s by organisation. Select max. one
-            rating code per organisation.
-         '''
-      ]
     , ""'ready_for_sync'              :
       [""'''Set this flag when you have entered all relevant attributes
             for remote tracker synchronisation. Setting this flag is
