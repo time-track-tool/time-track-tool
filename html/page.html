@@ -1185,7 +1185,6 @@
     <textarea tal:content="request/form/@note/value | default"
               tal:attributes="rows msg_box_height"
               name="@note"
-              wrap="hard"
               cols="80"/>
    </td>
   </tr>
@@ -1206,8 +1205,9 @@
  <table class="messages" tal:condition="python:
   has_msgs and context.messages and context.is_view_ok ()">
   <tr>
-   <th colspan="4" class="header" tal:content="structure python:
-     utils.fieldname (classname, 'messages')"/>
+   <th class="header" tal:attributes="colspan python:3+may_remove_msgs"
+       tal:content="structure python:
+           utils.fieldname (classname, 'messages')"/>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
   <tr>
@@ -1216,7 +1216,8 @@
            class python: ['messages','external']
                          [bool(utils.has_x_roundup_cc_header (db, msg))]
           "
-          tal:content="string:msg${msg/id}"></a></th>
+          tal:content="string:msg${msg/id}"></a>
+   </th>
    <th>
     <tal:block i18n:translate="">Author:</tal:block>
     <a tal:attributes="href string:user${msg/author/id}"
@@ -1226,14 +1227,7 @@
     <tal:block i18n:translate="">Date:</tal:block>
     <tal:block tal:content="msg/date"/>
    </th>
-   <th>
-    <a i18n:translate="" tal:condition="may_remove_msgs" tal:attributes="href
-       string:${classname}${context/id}?remove:messages=${msg/id}&:action=edit">
-     remove
-    </a>
-   </th>
-<!--
-   <th>
+   <th tal:condition="may_remove_msgs">
     <form style="padding:0" method="POST" tal:condition="context/is_edit_ok"
           tal:attributes="action string:issue${context/id}">
      <input type="hidden" name="@remove@messages" tal:attributes="value msg/id">
@@ -1241,12 +1235,11 @@
      <input type="submit" value="remove">
     </form>
    </th>
--->
   </tr>
   <tr>
-   <td colspan="4" class="content">
-    <pre tal:content="structure python:utils.hyperlinked_soft_wrap
-        (msg.content, 120)" />
+   <td tal:attributes="colspan python:3+may_remove_msgs" class="content">
+    <div class="prewrap"
+         tal:content="structure python:msg.content.hyperlinked ()"/>
    </td>
   </tr>
   </tal:block>
