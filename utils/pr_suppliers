@@ -119,8 +119,12 @@ def main () :
         sup = rec ['Name of Supplier'].decode (enc)
         if 'Creditor' in rec :
             sap = rec ['Creditor'].decode (enc) or ''
+        elif 'SAP-ID' in rec :
+            sap = rec ['SAP-ID'].decode (enc) or ''
         else :
             sap = ''
+        if sap.startswith ('Radix') :
+            sap = sap.split (None, 1) [-1]
         sap_e  = sap.encode ('utf-8')
         rats = \
             ( 'General Impression about Supplier->output LAS Meetings'
@@ -136,15 +140,17 @@ def main () :
 
         vcr = None
         s_id = None
-        # Find by sap reference
+        # Find by ID
         if 'ID' in rec and rec ['ID'] :
             s_id = rec ['ID'].strip ()
+        # Find by sap reference
         elif sap_e :
             s = db.pr_supplier.filter (None, dict (sap_ref = sap_e))
             assert len (s) <= 1
             if s :
                 s_id = s [0]
-        else :
+        # match name if nothing above was successful
+        if s_id is None :
             trials = \
                 (sup, sup.replace ('\n', ' '), sup.replace ('\n', ' ').strip ())
             for k in trials :
@@ -175,7 +181,7 @@ def main () :
         for org in orgs :
             srid = set_supplier_rating (db, org, s_id, rid, scope, args.update)
 
-        d        = {}
+        d = {}
         if supplier.sap_ref != sap_e and sap_e :
             d ['sap_ref'] = sap_e
         sup = sup.encode ('utf-8')
