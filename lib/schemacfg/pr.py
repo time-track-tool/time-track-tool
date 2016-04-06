@@ -340,7 +340,7 @@ def security (db, ** kw) :
         , description = fixdoc (view_role_pr.__doc__)
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
-            , 'frame_purchase_end', 'nosy'
+            , 'frame_purchase_end', 'nosy', 'messages'
             )
         )
     db.security.addPermissionToRole ('User', p)
