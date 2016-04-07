@@ -96,7 +96,7 @@ def main () :
     tracker = instance.open (args.dir)
     db      = tracker.open (args.user)
 
-    if args.update :
+    if args.update or True :
         for name, order in rating_categories :
             try :
                 db.pr_rating_category.lookup (name)
@@ -117,15 +117,17 @@ def main () :
         else :
             orgs = [db.organisation.lookup (ent.encode ('utf-8'))]
         sup = rec ['Name of Supplier'].decode (enc)
+        sap_e = None
         if 'Creditor' in rec :
-            sap = rec ['Creditor'].decode (enc) or ''
+            sap = rec ['Creditor'].decode (enc) or None
         elif 'SAP-ID' in rec :
-            sap = rec ['SAP-ID'].decode (enc) or ''
+            sap = rec ['SAP-ID'].decode (enc) or None
         else :
-            sap = ''
-        if sap.startswith ('Radix') :
-            sap = sap.split (None, 1) [-1]
-        sap_e  = sap.encode ('utf-8')
+            sap = sap_e = ''
+        if sap is not None :
+            if sap.startswith ('Radix') :
+                sap = sap.split (None, 1) [-1]
+            sap_e = sap.encode ('utf-8')
         rats = \
             ( 'General Impression about Supplier->output LAS Meetings'
             , 'General Impression about Supplier'
@@ -172,7 +174,7 @@ def main () :
             if args.update :
                 s_id = db.pr_supplier.create \
                     ( name            = sup.encode ('utf-8')
-                    , sap_ref         = sap_e
+                    , sap_ref         = sap_e or None
                     )
             continue
         supplier = db.pr_supplier.getnode (s_id)
@@ -182,8 +184,9 @@ def main () :
             srid = set_supplier_rating (db, org, s_id, rid, scope, args.update)
 
         d = {}
-        if supplier.sap_ref != sap_e and sap_e :
+        if supplier.sap_ref != sap_e and sap_e != '' :
             d ['sap_ref'] = sap_e
+            print "sap-ref: %r->%r" % (supplier.sap_ref, sap_e)
         sup = sup.encode ('utf-8')
         if supplier.name != sup :
             print "%r->%r" % (supplier.name, sup)
