@@ -1,0 +1,182 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import instance
+from roundup.date      import Date
+from argparse          import ArgumentParser
+from email.Utils       import formatdate, formataddr
+from email.mime.text   import MIMEText
+from email.Charset     import Charset, QP
+from smtplib           import SMTP, SMTPRecipientsRefused
+
+class PR_Reminder (object) :
+
+    def __init__ (self, args) :
+        self.args    = args
+        self.tracker = instance.open (args.dir)
+        self.db      = self.tracker.open (args.user)
+        self.now     = Date ('.')
+        self.reminder_by_user = {}
+        sys.path.insert (1, os.path.join (args.dir, 'lib'))
+        global common
+        import common
+    # end def __init__
+
+    def print_reminder (self) :
+        for uid in self.reminder_by_user :
+            user = self.db.user.getnode (uid)
+            print "User: %s" % formataddr ((user.realname, user.address))
+            for pr, pend in self.reminder_by_user [uid] :
+                print "    purchase_request%s: Pending %s days" % (pr.id, pend)
+    # end def print_reminder
+
+    def remind (self) :
+        db = self.db
+        status_apv = db.pr_status.lookup ('approving')
+        apr_st_app = db.pr_approval_status.lookup ('approved')
+        apr_st_und = db.pr_approval_status.lookup ('undecided')
+        # get all approving PRs
+        prs = db.purchase_request.filter (None, dict (status = status_apv))
+        for prid in prs :
+            pr = db.purchase_request.getnode (prid)
+            # get approvals in order
+            aps = db.pr_approval.filter \
+                (None, dict (purchase_request = prid), sort = ('+', 'order'))
+            date = pr.creation
+            if self.args.verbose > 3 :
+                print 'purchase_request%s' % pr.id
+            for apid in aps :
+                ap = db.pr_approval.getnode (apid)
+                assert ap.status in (apr_st_app, apr_st_und)
+                if ap.status == apr_st_app :
+                    if date < ap.date :
+                        date = ap.date
+                    if self.args.verbose > 3 :
+                        print "pr_approval%s: date=%s" % (ap.id, ap.date)
+                else :
+                    break
+            else :
+                assert 0
+            if ap.user :
+                users = [db.user.getnode (ap.user)]
+                if ap.deputy :
+                    users.append (db.user.getnode (ap.deputy))
+            else :
+                uids  = common.get_uids_with_role (db, ap.role)
+                users = [db.user.getnode (u) for u in uids]
+            pend = (self.now - date).day
+            if self.args.verbose :
+                print "purchase_request%s Responsible:" % pr.id,
+                for u in users :
+                    print u.username,
+                if self.args.verbose > 1 :
+                    print "date: %s" % date.pretty (common.ymd),
+                print "pending: %s" % (pend)
+            if pend >= self.args.first_reminder :
+                if  (  pend == self.args.first_reminder
+                    or ( (pend - self.args.first_reminder) \
+                       % self.args.next_reminder
+                       ) == 0
+                    ) :
+                    for u in users :
+                        if u.id not in self.reminder_by_user :
+                            self.reminder_by_user [u.id] = []
+                        self.reminder_by_user [u.id].append ([pr, pend])
+        if self.args.mail :
+            self.send_mail ()
+        else :
+            self.print_reminder ()
+    # end def remind
+
+    def send_mail (self) :
+        utf8 = Charset ('utf-8')
+        utf8.header_encoding = QP
+        utf8.body_encoding   = QP
+        message = MIMEText ('', 'plain', 'utf-8')
+        message.set_charset (utf8)
+        url  = self.tracker.config.TRACKER_WEB
+        smtp = SMTP (self.args.mailhost)
+        message ['Subject'] = 'Purchase Requests need your attention'
+        message ['Date'] = formatdate ()
+        frm = self.args.frm
+        if '@' not in self.args.frm :
+            frm = '@'.join ((frm, self.tracker.config.MAIL_DOMAIN))
+        message ['From'] = formataddr (('Do not reply', frm))
+        for uid in self.reminder_by_user :
+            del message ['Content-Transfer-Encoding']
+            del message ['To']
+            user = self.db.user.getnode (uid)
+            message ['To'] = to = formataddr ((user.realname, user.address))
+            body = []
+            for pr, pend in self.reminder_by_user [uid] :
+                body.append \
+                    ("purchase_request%s: Pending %s days" % (pr.id, pend))
+                body.append (pr.title)
+                body.append \
+                    ("%spurchase_request%s" % (url, pr.id))
+            body.append ('')
+            body.append ('Best regards from your friendly reminder service')
+            body.append ('')
+            message.set_payload ('\n'.join (body), utf8)
+            smtp.sendmail (frm, to, message.as_string ())
+    # end def send_mail
+
+# end class PR_Reminder
+
+def main () :
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( '-1', '--first-reminder-days'
+        , dest    = 'first_reminder'
+        , help    = 'Number of days of non-approval before first reminder'
+        , type    = int
+        , default = '7'
+        )
+    cmd.add_argument \
+        ( '-2', '--next-reminder-days'
+        , dest    = 'next_reminder'
+        , help    = 'Remind number of days of non-approval after first reminder'
+        , type    = int
+        , default = '3'
+        )
+    cmd.add_argument \
+        ( '-d', '--database-directory'
+        , dest    = 'dir'
+        , help    = 'Directory of roundup installation'
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( '-f', '--from'
+        , dest    = 'frm'
+        , help    = 'From address for emails, if no domain given use maildomain'
+        , default = 'do-not-reply'
+        )
+    cmd.add_argument \
+        ( '-H', '--mailhost'
+        , help    = 'Use given mail-host for smtp'
+        , default = 'localhost'
+        )
+    cmd.add_argument \
+        ( '-m', '--mail'
+        , help    = 'Really send out email, otherwise only print reminders'
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( '-u', '--user'
+        , help    = 'Database user'
+        , default = 'admin'
+        )
+    cmd.add_argument \
+        ( '-v', '--verbose'
+        , dest   = 'verbose'
+        , help   = 'Verbose output'
+        , action = 'count'
+        )
+    args = cmd.parse_args ()
+    prr  = PR_Reminder (args)
+    prr.remind ()
+# end def main
+
+if __name__ == '__main__' :
+    main ()
