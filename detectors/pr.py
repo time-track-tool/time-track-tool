@@ -430,6 +430,7 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
     if os != ns :
         pr = db.purchase_request.getnode (app.purchase_request)
         if ns == apr :
+            pt = db.purchase_type.getnode (pr.purchase_type)
             is_new = False
             if pr.status == pr_open :
                 db.purchase_request.set (pr.id, status = pr_approving)
@@ -447,7 +448,7 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                 else :
                     assert pr.sap_cc
                     agents = db.sap_cc.get (pr.sap_cc, 'purchasing_agents')
-                if agents :
+                if agents and not pt.confidential :
                     nosy.update (dict.fromkeys (agents))
             for a in apps :
                 ap = cl.getnode (a)

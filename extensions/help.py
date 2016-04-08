@@ -1572,6 +1572,11 @@ _helptext          = \
              %(Classname)s; enter a comma,separated,list
           '''
       ]
+    , ""'purchase_type++confidential' :
+      [ ""'''If set, purchasing requests with this type will not get the
+             purchasing agents auto-added to the nosy list.
+          '''
+      ]
     , ""'purchasing_agents'            :
       [""'''%(Property)s are assigned to each cost unit (Time
             Categories and SAP cost centers). %(Property)s are

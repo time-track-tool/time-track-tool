@@ -151,7 +151,8 @@ properties = \
         ]
       )
     , ( 'purchase_type'
-      , [ 'description'
+      , [ 'confidential'
+        , 'description'
         , 'name'
         , 'order'
         , 'roles'

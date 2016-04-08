@@ -155,6 +155,7 @@ def init \
         , view_roles            = String    ()
         , description           = String    ()
         , valid                 = Boolean   ()
+        , confidential          = Boolean   ()
         )
     purchase_type.setkey ('name')
 

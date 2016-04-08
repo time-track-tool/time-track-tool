@@ -6544,3 +6544,6 @@ msgstr "Rating"
 msgid "pr_supplier_rating++supplier"
 msgstr "Supplier"
 
+msgid "purchase_type++confidential"
+msgstr "Confidential"
+
