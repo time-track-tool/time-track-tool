@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-16 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -1242,18 +1242,6 @@ def check_roles (db, cl, nodeid, new_values, rname = 'roles') :
                 if not db.security.role.has_key (r) :
                     raise Reject ('Role "%s" does not exist' % r)
 # end def check_roles
-
-def pr_offer_item_sum (db, pr) :
-    pr    = db.purchase_request.getnode (pr)
-    total = 0.0
-    for id in pr.offer_items :
-        item  = db.pr_offer_item.getnode (id)
-        if item.price_per_unit is not None and item.units is not None :
-            total += item.price_per_unit * item.units
-    if pr.total_cost is not None :
-        assert abs (pr.total_cost - total) < 0.0001
-    return total
-# end def pr_offer_item_sum
 
 def get_default_it_prio (db) :
     if 'default' in db.it_prio.properties :

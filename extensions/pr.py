@@ -20,6 +20,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+import prlib
 import common
 import cgi
 from   rsclib.autosuper       import autosuper
@@ -147,7 +148,8 @@ def init (instance) :
     act ('pr_edit', Edit_Purchase_Request)
     act ('pr_new',  New_Purchase_Request)
     reg = instance.registerUtil
-    reg ('pr_offer_item_sum',            common.pr_offer_item_sum)
+    reg ('pr_offer_item_sum',            prlib.pr_offer_item_sum)
+    reg ('compute_approvals',            prlib.compute_approvals)
     reg ('supplier_approved',            supplier_approved)
     reg ('pr_edit_button',               pr_edit_button)
     reg ('pr_filter_status_transitions', pr_filter_status_transitions)

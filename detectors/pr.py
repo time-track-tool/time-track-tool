@@ -19,6 +19,7 @@
 # ****************************************************************************
 
 import common
+import prlib
 from   roundup.date                   import Date, Interval
 from   roundup.exceptions             import Reject
 from   roundup.cgi.TranslationService import get_translation
@@ -163,7 +164,7 @@ def change_pr (db, cl, nodeid, new_values) :
                     break
             else :
                 raise Reject ( _ ("No approval by requester found"))
-            new_values ['total_cost']  = common.pr_offer_item_sum (db, nodeid)
+            new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
             for ap in approvals :
@@ -205,21 +206,6 @@ def check_late_changes (db, cl, nodeid, new_values) :
                 (_, cl, nodeid, new_values, 'frame_purchase_end')
 # end def check_late_changes
 
-def supplier_is_approved (db, pr, sup_id) :
-    if not sup_id :
-        return False
-    ratings = db.pr_supplier_rating.filter \
-        (None, dict (supplier = sup_id, organisation = pr.organisation))
-    assert len (ratings) <= 1
-    if len (ratings) :
-        sr = db.pr_supplier_rating.getnode (ratings [0])
-        rating = db.pr_rating_category.getnode (sr.rating)
-        if rating.order > 2 :
-            return False
-        return True
-    return False
-# end def supplier_is_approved
-
 def changed_pr (db, cl, nodeid, old_values) :
     pr  = cl.getnode (nodeid)
     ost = old_values.get ('status', None)
@@ -227,95 +213,7 @@ def changed_pr (db, cl, nodeid, old_values) :
     st_op = db.pr_status.lookup ('open')
     st_ag = db.pr_status.lookup ('approving')
     if ost == st_op and nst == st_ag :
-        cur = db.pr_currency.getnode (pr.pr_currency)
-        apr_by_r_d  = {}
-        apr_by_role = {}
-        if common.pr_offer_item_sum (db, pr.id) > cur.min_sum :
-            if pr.time_project :
-                pcc = db.time_project.getnode (pr.time_project)
-                d   = _ ('%(tp)s responsible/deputy') \
-                    % dict (tp = _ ('time_project'))
-            else :
-                pcc = db.sap_cc.getnode (pr.sap_cc)
-                d   = _ ('%(cc)s responsible/deputy') % dict (cc = _ ('sap_cc'))
-            apr = db.pr_approval.create \
-                ( order            = 10
-                , purchase_request = pr.id
-                , user             = pcc.responsible
-                , deputy           = pcc.deputy
-                , description      = d
-                )
-            apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
-            dep = db.department.getnode (pr.department)
-            apr = db.pr_approval.create \
-                ( order            = 55
-                , purchase_request = pr.id
-                , user             = dep.manager
-                , deputy           = dep.deputy
-                , description      = "Department Head"
-                )
-            apr_by_r_d [(dep.manager, dep.deputy)] = apr
-            add_approval_with_role (db, pr.id, 'Finance')
-            pob = db.part_of_budget.getnode (pr.part_of_budget)
-            # Loop over order items and check if any is not on the approved
-            # suppliers list
-            supplier_approved = True
-            for id in pr.offer_items :
-                oi = db.pr_offer_item.getnode (id)
-                if not supplier_is_approved (db, pr, oi.pr_supplier) :
-                    supplier_approved = False
-            if pr.safety_critical and not supplier_approved :
-                add_approval_with_role (db, pr.id, 'Quality')
-                apr_by_role ['quality'] = True
-            if  (  pob.name.lower () == 'no'
-                or common.pr_offer_item_sum (db, pr.id) >= cur.max_sum
-                ) :
-                add_approval_with_role (db, pr.id, 'Board')
-                apr_by_role ['board'] = True
-            pt    = db.purchase_type.getnode (pr.purchase_type)
-            roles = common.role_list (pt.roles)
-            for role in roles :
-                add_approval_with_role (db, pr.id, role)
-                apr_by_role [role.lower ()] = True
-            # Loop over offer items and add additional approvals if
-            # needed by specified sap_cc, time_project, or purchase_type
-            for id in pr.offer_items :
-                oi = db.pr_offer_item.getnode (id)
-                pcc = None
-                if oi.time_project :
-                    pcc = db.time_project.getnode (oi.time_project)
-                    d   = _ ('%(tp)s responsible/deputy') \
-                        % dict (tp = _ ('time_project'))
-                elif oi.sap_cc :
-                    pcc = db.sap_cc.getnode (oi.sap_cc)
-                    d   = _ ('%(cc)s responsible/deputy') \
-                            % dict (cc = _ ('sap_cc'))
-                if pcc and (pcc.responsible, pcc.deputy) not in apr_by_r_d :
-                    apr = db.pr_approval.create \
-                        ( order            = 10 + oi.index * 0.001
-                        , purchase_request = pr.id
-                        , user             = pcc.responsible
-                        , deputy           = pcc.deputy
-                        , description      = d
-                        )
-                    apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
-                if oi.purchase_type :
-                    pt    = db.purchase_type.getnode (oi.purchase_type)
-                    roles = common.role_list (pt.roles)
-                    for role in roles :
-                        if role.lower () not in apr_by_role :
-                            add_approval_with_role (db, pr.id, role)
-                            apr_by_role [role.lower ()] = True
-        else :
-            req = db.user.getnode (pr.requester)
-            sup = db.user.getnode (req.supervisor)
-            db.pr_approval.create \
-                ( order            = 10
-                , purchase_request = pr.id
-                , user             = sup.id
-                , deputy           = sup.supervisor
-                , description      = 'Supervisor'
-                )
+        prlib.compute_approvals (db, pr, True)
 # end def changed_pr
 
 def new_pr_approval (db, cl, nodeid, new_values) :
@@ -351,17 +249,6 @@ def change_pr_approval (db, cl, nodeid, new_values) :
         # Don't link random message to approval if status isn't changing
         del new_values ['msg']
 # end def change_pr_approval
-
-def add_approval_with_role (db, prid, role) :
-    oid = db.pr_approval_order.lookup (role.lower ())
-    ord = db.pr_approval_order.getnode (oid)
-    db.pr_approval.create \
-        ( order            = ord.order
-        , purchase_request = prid
-        , role             = role.lower ()
-        , description      = role
-        )
-# end def add_approval_with_role
 
 def nosy_for_approval (db, app) :
     nosy = {}
