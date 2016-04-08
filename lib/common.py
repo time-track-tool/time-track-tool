@@ -1267,5 +1267,24 @@ def get_default_it_prio (db) :
     return None
 # end def get_default_it_prio
 
+def filter_status_transitions (context, *invalid_states) :
+    # there was a check for closing -- we leave the logic in
+    may_close = True
+    classname = context.status._prop.classname
+    cls       = context.status._db.getclass (classname)
+    invalid   = [cls.lookup (x) for x in invalid_states]
+    if context.status :
+        if 'status_transition' in context._db.classes :
+            values = [t.target.id for t in context.status.transitions
+                      if t.target.name != 'closed' or may_close
+                     ]
+        else :
+            values = [t.id for t in context.status.transitions
+                      if t.name != 'closed' or may_close
+                     ]
+        values = [v for v in values if v not in invalid]
+        return {'id' : values}
+    return {}
+# end def filter_status_transitions
 
 ### __END__

@@ -127,13 +127,28 @@ def pr_edit_button (context) :
     assert None
 # end def pr_edit_button
 
+def pr_filter_status_transitions (db, context) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    uid   = db.getuid ()
+    stati = ['approving', 'approved']
+    if  (  not common.user_has_role (db, uid, 'Procurement-Admin')
+        or context.status.name not in ('approving', 'approved')
+        ) :
+        stati.append ('rejected')
+    return common.filter_status_transitions (context, * stati)
+# end def pr_filter_status_transitions
+
 def init (instance) :
     act = instance.registerAction
-    act ('pr_sign',           Sign_Purchase_Request)
-    act ('pr_edit',           Edit_Purchase_Request)
-    act ('pr_new',            New_Purchase_Request)
+    act ('pr_sign', Sign_Purchase_Request)
+    act ('pr_edit', Edit_Purchase_Request)
+    act ('pr_new',  New_Purchase_Request)
     reg = instance.registerUtil
-    reg ('pr_offer_item_sum', common.pr_offer_item_sum)
-    reg ('supplier_approved', supplier_approved)
-    reg ('pr_edit_button',    pr_edit_button)
+    reg ('pr_offer_item_sum',            common.pr_offer_item_sum)
+    reg ('supplier_approved',            supplier_approved)
+    reg ('pr_edit_button',               pr_edit_button)
+    reg ('pr_filter_status_transitions', pr_filter_status_transitions)
 # end def init

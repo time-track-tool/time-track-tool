@@ -21,4 +21,19 @@ for prid in prs :
         print prid, pdate
         db.purchase_request.set (prid, intended_duration = pdate)
 
+# Fix pr_status, allow approved->rejected
+apr = db.pr_status.getnode (db.pr_status.lookup ('approved'))
+rej = db.pr_status.lookup ('rejected')
+if rej not in apr.transitions :
+    t = []
+    t.extend (apr.transitions)
+    t.append (rej)
+    db.pr_status.set (apr.id, transitions = t)
+
+# Fix approval type HR Confidential: set confidential flag
+hrc = db.purchase_type.lookup ('HR Confidential')
+hrc = db.purchase_type.getnode (hrc)
+if not hrc.confidential :
+    db.purchase_type.set (hrc.id, confidential = True)
+
 db.commit()

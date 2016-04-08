@@ -174,7 +174,9 @@ def change_pr (db, cl, nodeid, new_values) :
                 if ap.status == ap_rej :
                     break
             else :
-                raise Reject (_ ("No rejected approval-record found"))
+                uid = db.getuid ()
+                if not common.user_has_role (db, uid, 'Procurement-Admin') :
+                    raise Reject (_ ("No rejected approval-record found"))
         elif new_values ['status'] == db.pr_status.lookup ('open') :
             # If setting status to open again we need to retire *all*
             # approvals and re-create the (pending) approval of the

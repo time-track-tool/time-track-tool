@@ -34,27 +34,6 @@ from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
 import common
 from   rsclib.pycompat import string_types
 
-
-def filter_status_transitions (context, *invalid_states) :
-    # there was a check for closing -- we leave the logic in
-    may_close = True
-    classname = context.status._prop.classname
-    cls       = context.status._db.getclass (classname)
-    invalid   = [cls.lookup (x) for x in invalid_states]
-    if context.status :
-        if 'status_transition' in context._db.classes :
-            values = [t.target.id for t in context.status.transitions
-                      if t.target.name != 'closed' or may_close
-                     ]
-        else :
-            values = [t.id for t in context.status.transitions
-                      if t.name != 'closed' or may_close
-                     ]
-        values = [v for v in values if v not in invalid]
-        return {'id' : values}
-    return {}
-# end def filter_status_transitions
-
 def ext_attr (value) :
     if isinstance (value, string_types) :
         return value.encode ('utf-8')
@@ -152,7 +131,7 @@ def edit_button (context, utils) :
 
 def init (instance) :
     reg = instance.registerUtil
-    reg ('filter_status_transitions', filter_status_transitions)
+    reg ('filter_status_transitions', common.filter_status_transitions)
     reg ('copy_url',                  common.copy_url)
     reg ('copy_js',                   common.copy_js)
     reg ('ext_attributes',            ext_attributes)
