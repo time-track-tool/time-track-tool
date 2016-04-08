@@ -239,7 +239,7 @@
             <span tal:content="structure python:i.supplier.field ()"/>
             <span tal:condition="i/supplier/is_edit_ok"
                   tal:content="structure python:db.pr_supplier.classhelp
-             ( 'name,sap_ref,ratings'
+             ( 'name,sap_ref'
              , property  = 'pr_offer_item%s@supplier' % i.id
              , inputtype = 'radio'
              , width     = '600'
@@ -304,7 +304,7 @@
             <span tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'supplier').field ()"/>
             <span tal:content="structure python:db.pr_supplier.classhelp
-             ( 'name,sap_ref,ratings'
+             ( 'name,sap_ref'
              , property  = 'pr_offer_item-%s@supplier' % idx
              , inputtype = 'radio'
              , width     = '600'
