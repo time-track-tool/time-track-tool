@@ -406,44 +406,44 @@
       </td>
      </tr>
      <tal:block tal:condition="python:
-          context.id and context.status.plain () == 'open'"
-          tal:define="app python:
-          utils.compute_approvals
-           (db._db, context._klass.getnode (context._nodeid), False)">
-      <tr tal:condition="python:app">
-       <th>
-        <span tal:content="structure python:utils.fieldname
-           (classname, 'pr_approval')"/>
-        <span i18n:translate="">
-        (Preliminary)
-        </span>
-       </th>
-       <td colspan="3">
-        <table class="form" border="0"
-               style="border-spacing:0px;padding-top:0px;padding-left:0px">
-         <tr>
-          <th style="text-align:left"
-              tal:content="structure python:utils.fieldname
-              ('pr_approval', 'role')"/>
-          <th style="text-align:left"
-              tal:content="structure python:utils.fieldname
-              ('pr_approval', 'by')"/>
-          <th style="text-align:left" colspan="3"
-              tal:content="structure python:utils.fieldname
-              ('pr_approval', 'description')"/>
-         </tr>
-         <tr tal:repeat="i python:app">
-          <td tal:content="python:i.get ('role', '')"/>
-          <td>
-              <span tal:content="python:i.get ('user', '')"/>
-              <span tal:condition="python:i.get ('deputy')"
-                    tal:content="python:'/ '+i ['deputy']"/>
-          </td>
-          <td tal:content="python:i ['description']"/>
-         </tr>
-        </table>
-       </td>
-      </tr>
+          context.id and context.status.plain () == 'open'">
+      <tal:block tal:define="app python: utils.compute_approvals
+            (db._db, context._klass.getnode (context._nodeid), False)">
+       <tr tal:condition="python:app">
+        <th>
+         <span tal:content="structure python:utils.fieldname
+            (classname, 'pr_approval')"/>
+         <span i18n:translate="">
+         (Preliminary)
+         </span>
+        </th>
+        <td colspan="3">
+         <table class="form" border="0"
+                style="border-spacing:0px;padding-top:0px;padding-left:0px">
+          <tr>
+           <th style="text-align:left"
+               tal:content="structure python:utils.fieldname
+               ('pr_approval', 'role')"/>
+           <th style="text-align:left"
+               tal:content="structure python:utils.fieldname
+               ('pr_approval', 'by')"/>
+           <th style="text-align:left" colspan="3"
+               tal:content="structure python:utils.fieldname
+               ('pr_approval', 'description')"/>
+          </tr>
+          <tr tal:repeat="i python:app">
+           <td tal:content="python:i.get ('role', '')"/>
+           <td>
+               <span tal:content="python:i.get ('user', '')"/>
+               <span tal:condition="python:i.get ('deputy')"
+                     tal:content="python:'/ '+i ['deputy']"/>
+           </td>
+           <td tal:content="python:i ['description']"/>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </tal:block>
      </tal:block>
     </tal:block>
        <input type="hidden" name="@action" value="pr_submit">
