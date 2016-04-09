@@ -52,9 +52,9 @@ def gen_pr_approval (db, do_create, ** values) :
     if do_create :
         return db.pr_approval.create (** values)
     else :
-        if 'deputy' in values :
+        if values.get ('deputy') :
             values ['deputy'] = db.user.get (values ['deputy'], 'username')
-        if 'user' in values :
+        if values.get ('user') :
             values ['user']   = db.user.get (values ['user'], 'username')
         return values
 # end def gen_pr_approval

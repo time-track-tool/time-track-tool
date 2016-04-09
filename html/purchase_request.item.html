@@ -405,15 +405,12 @@
        </table>
       </td>
      </tr>
-     <tal:block tal:define="app python:
+     <tal:block tal:condition="python:
+          context.id and context.status.plain () == 'open'"
+          tal:define="app python:
           utils.compute_approvals
            (db._db, context._klass.getnode (context._nodeid), False)">
-      <tr tal:condition="python:
-          (   context.id
-          and app
-          and context.status.plain () == 'open'
-          and (context.sap_cc or context.time_project)
-          ) ">
+      <tr tal:condition="python:app">
        <th>
         <span tal:content="structure python:utils.fieldname
            (classname, 'pr_approval')"/>
