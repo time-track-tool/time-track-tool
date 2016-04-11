@@ -136,7 +136,7 @@ def pr_filter_status_transitions (db, context) :
     uid   = db.getuid ()
     stati = ['approving', 'approved']
     if  (  not common.user_has_role (db, uid, 'Procurement-Admin')
-        or context.status.name not in ('approving', 'approved')
+        or context.status.name.plain () not in ('approving', 'approved')
         ) :
         stati.append ('rejected')
     return common.filter_status_transitions (context, * stati)

@@ -484,6 +484,26 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    def approving_or_approved (db, userid, itemid) :
+        """ User is allowed to reject PR in state approving or approved
+        """
+        st_approving = db.pr_status.lookup ('approving')
+        st_approved  = db.pr_status.lookup ('approved')
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status in (st_approving, st_approved) :
+            return True
+        return False
+    # end def open_or_approving
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = approving_or_approved
+        , description = fixdoc (approving_or_approved.__doc__)
+        , properties = ('status', 'messages')
+        )
+    db.security.addPermissionToRole ('Procurement-Admin', p)
+
     def reopen_rejected_pr (db, userid, itemid) :
         """ User is allowed to reopen their own rejected PR.
         """
