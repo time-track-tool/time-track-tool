@@ -176,15 +176,20 @@ def check_log_incident (db, cl, nodeid, old_values) :
         If so, we log to syslog *and* put the CSO onto the nosy list.
         If 'close_immediately' is set, we then close the issue.
     """
-    item = cl.getnode (nodeid)
-    rt = db.it_request_type.getnode (item.it_request_type)
-    if not rt.log_template :
-        return
-    syslog.openlog ('roundup', 0, syslog.LOG_DAEMON)
-    syslog.syslog  (rt.log_template % Magic_Dict (item))
-    status_class = db.getclass (cl.getprops ()['status'].classname)
-    if rt.close_immediately :
-        cl.set (nodeid, status = status_class.lookup ('closed'))
+    item   = cl.getnode (nodeid)
+    old_rt = None
+    if old_values :
+        old_rt = old_values.get ('it_request_type')
+    # Only log if it_request_type has changed or issue is new
+    if old_rt != item.it_request_type :
+        rt = db.it_request_type.getnode (item.it_request_type)
+        if not rt.log_template :
+            return
+        syslog.openlog ('roundup', 0, syslog.LOG_DAEMON)
+        syslog.syslog  (rt.log_template % Magic_Dict (item))
+        status_class = db.getclass (cl.getprops ()['status'].classname)
+        if rt.close_immediately :
+            cl.set (nodeid, status = status_class.lookup ('closed'))
 # end def check_log_incident
 
 def check_title_regex (db, cl, nodeid, new_values) :
