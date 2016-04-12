@@ -192,6 +192,26 @@ def check_log_incident (db, cl, nodeid, old_values) :
             cl.set (nodeid, status = status_class.lookup ('closed'))
 # end def check_log_incident
 
+def it_issue_log (db, cl, nodeid, old_values) :
+    logvar = 'LOGGING_IT_ISSUE_TEMPLATE'
+    log_template = getattr (db.config.ext, logvar, None)
+    if not log_template :
+        return
+    tpl    = log_template.replace ('$', '%')
+    closed = db.it_issue_status.lookup ('closed')
+    item   = cl.getnode (nodeid)
+    if old_values is None :
+        template = 'it_issue_new ' + tpl
+    elif item.status == closed and item.status != old_values.get ('status') :
+        template = 'it_issue_closed ' + tpl
+    elif old_values.get ('messages') != item.messages :
+        template = 'it_issue_message ' + tpl
+    else :
+        return
+    syslog.openlog ('roundup', 0, syslog.LOG_DAEMON)
+    syslog.syslog (template % Magic_Dict (item))
+# end def it_issue_log
+
 def check_title_regex (db, cl, nodeid, new_values) :
     """ Loop over it_request_types and check title for match of
         title_regex. If it matches we set the it_request_type.
@@ -259,6 +279,8 @@ def init (db) :
     db.it_issue.audit ("set",    add_cso)
     db.it_issue.react ("create", check_log_incident)
     db.it_issue.react ("set",    check_log_incident)
+    db.it_issue.react ("create", it_issue_log, priority = 500)
+    db.it_issue.react ("set",    it_issue_log, priority = 500)
     db.it_issue.audit ("create", check_title_regex, priority = 80)
     db.it_issue.audit ("set",    reopen_on_message)
     db.it_issue.audit ("set",    stay_closed, priority = 150)

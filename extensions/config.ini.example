@@ -168,3 +168,6 @@ pr_approved_text  = The purchase request "$(title)s" has been approved.
 
 [mailgw]
 spam_pattern = ^[[].?S[pP][aA][mM]
+
+[logging]
+it_issue_template = $(classname)s$(id)s: Request-Type: $(it_request_type.name)s Category: $(category.name)s Title: $(title)s
