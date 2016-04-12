@@ -85,11 +85,11 @@ def init \
 
     doc = Full_Issue_Class \
         ( db, "doc"
-        , product_type        = Link      ("product_type")
-        , reference           = Link      ("reference")
-        , artefact            = Link      ("artefact")
-        , department          = Link      ("department")
-        , status              = Link      ("doc_status")
+        , product_type        = Link      ("product_type", do_journal = 'no')
+        , reference           = Link      ("reference",    do_journal = 'no')
+        , artefact            = Link      ("artefact",     do_journal = 'no')
+        , department          = Link      ("department",   do_journal = 'no')
+        , status              = Link      ("doc_status",   do_journal = 'no')
         , link                = String    ()
         , document_nr         = String    ()
         , state_changed_by    = Link      ("user")
