@@ -18,6 +18,9 @@ file_size    = 100k
 freeze_days = 0
 
 [mail]
+# name and address of sender of outgoing emails
+sender_name = Do not reply
+sender_addr = no-reply@example.com
 # Multi-line text: Continuation lines must be indented. If percent
 # interpolation is desired the percent sign must be substituted by a
 # dollar sign.

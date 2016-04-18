@@ -323,9 +323,17 @@ def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw) :
     if notify_text and notify_subj and notify_mail :
         subject = \
             notify_subj.replace ('$', '%').replace ('\n', ' ') % d
-        msg = notify_text.replace ('$', '%') % d
+        msg     = notify_text.replace ('$', '%') % d
+        sender  = None
         try :
-            mailer.standard_message (notify_mail, subject, msg)
+            sname = getattr (db.config.ext, 'MAIL_SENDER_NAME', None)
+            smail = getattr (db.config.ext, 'MAIL_SENDER_ADDR', None)
+            if sname and smail :
+                sender = (sname, smail)
+        except InvalidOptionError :
+            pass
+        try :
+            mailer.standard_message (notify_mail, subject, msg, sender)
         except roundupdb.MessageSendError, message :
             raise roundupdb.DetectorError, message
 # end def try_send_mail
