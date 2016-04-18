@@ -108,6 +108,21 @@ def initial_values (db, cl, nodeid, new_values) :
         new_values ['type'] = db.sup_type.lookup ('Support Issue')
 # end def initial_values
 
+def set_first_reply (db, cl, nodeid, new_values) :
+    """ Set first_reply field in case the support issue hasn't set this
+        yet *and* status goes to closed or satisfied.
+    """
+    if 'status' in new_values and 'first_reply' not in new_values :
+        issue = cl.getnode (nodeid)
+        if issue.first_reply :
+            return
+        closed = db.sup_status.lookup ('closed')
+        satis  = db.sup_status.lookup ('satisfied')
+        cust   = db.sup_status.lookup ('customer')
+        if new_values ['status'] in (closed, satis, cust) :
+            new_values ['first_reply'] = Date ('.')
+# end def set_first_reply
+
 def check_dates (db, cl, nodeid, new_values) :
     oldst  = cl.get (nodeid, "status")
     status = new_values.get ("status", None)
@@ -566,6 +581,7 @@ def init (db) :
     db.support.audit   ("create", serial_num)
     db.support.audit   ("set",    serial_num)
     db.support.audit   ("create", initial_values)
+    db.support.audit   ("set",    set_first_reply)
     db.support.audit   ("set",    check_dates,              priority = 200)
     db.support.audit   ("set",    check_require_message,    priority = 200)
     db.support.audit   ("create", header_check,             priority = 200)
