@@ -55,6 +55,7 @@ Role "procurement-admin":
  User is allowed to edit pr_supplier (Edit for "pr_supplier" only)
  User is allowed to edit pr_supplier_rating (Edit for "pr_supplier_rating" only)
  User is allowed to edit purchase_type (Edit for "purchase_type" only)
+ User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'deputy', 'description', 'department', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed to access time_project (View for "time_project" only)
