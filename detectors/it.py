@@ -240,6 +240,8 @@ def add_cso (db, cl, nodeid, new_values) :
         if not rt.log_template :
             return
         nosy = new_values.get ('nosy', [])
+        if not nosy and nodeid :
+            nosy = cl.get (nodeid, 'nosy')
         csou = common.get_uids_with_role (db, 'cso')
         nosy.extend (csou)
         new_values ['nosy'] = nosy
