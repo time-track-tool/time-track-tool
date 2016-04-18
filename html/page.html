@@ -1178,6 +1178,16 @@
         tal:attributes="href python:utils.copy_url (context)">X</a>
 </tal:block>
 
+<tal:block metal:define-macro="spam_button">
+     <input type="button" tal:condition="context/id"
+            value="Mark as Spam" i18n:attributes="value"
+            onClick="mark_spam_js();"/>
+     <script tal:content="structure python:utils.mark_spam_js(db)">
+     </script>
+     <a style="display:none" id="copyme" target="_blank"
+        tal:attributes="href python:utils.copy_url (context)">X</a>
+</tal:block>
+
 <tal:block metal:define-macro="message_box">
   <tr tal:condition="python:context.is_edit_ok () and has_msgs">
    <th tal:content="structure python:utils.fieldname(classname,'msg')" />

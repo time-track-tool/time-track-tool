@@ -98,9 +98,37 @@ def serials (db, node) :
     return r
 # end def serials
 
+mark_spam = """
+function mark_spam_js() {
+    frm = document.forms.itemSynopsis;
+    frm.status.value = "%(status)s";
+    frm.customer.value = "%(customername)s";
+    frm.responsible.value = "%(username)s";
+    frm.nosy.value = "";
+    frm ['@note'].value = "spam --> closed";
+}
+"""
+
+def mark_spam_js (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    status = db.sup_status.lookup ('closed')
+    try :
+        cust   = db.customer.lookup ('SPAM')
+        cust   = db.customer.getnode (cust)
+    except KeyError :
+        return ''
+    customername = cust.name
+    username = db.user.get (db.getuid (), 'username')
+    return mark_spam % locals ()
+#end def mark_spam_js
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('has_x_roundup_cc_header', has_x_roundup_cc_header)
     reg ('prodcat_parents',         prodcat_parents)
     reg ('serials',                 serials)
+    reg ('mark_spam_js',            mark_spam_js)
 # end def init
