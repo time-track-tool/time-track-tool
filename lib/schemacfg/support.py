@@ -175,6 +175,7 @@ def init \
         , closed           = Date      ()
         , satisfied        = Date      ()
         , first_reply      = Date      ()
+        , set_first_reply  = Boolean   () # only used for setting above
         , analysis_start   = Date      ()
         , analysis_end     = Date      ()
         , goods_received   = Date      ()

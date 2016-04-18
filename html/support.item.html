@@ -232,7 +232,13 @@
        </tal:block>
        <th tal:content="structure python:utils.fieldname
            (classname, 'first_reply')"/>
-       <td tal:content="context/first_reply/plain"/>
+       <td tal:condition="context/first_reply"
+           tal:content="context/first_reply/plain"/>
+       <th tal:condition="python: context.id and not context.first_reply">
+        <span i18n:translate="">Set:</span>
+        <span
+           tal:content="structure context/set_first_reply/field"/>
+       </th>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname

@@ -997,6 +997,9 @@ properties = \
         , ( 'serial_number'
           , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )
+        , ( 'set_first_reply'
+          , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
+          )
         , ( 'status'
           , ['admin', 'cso', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'supportadmin', 'user', 'user_view']
           )

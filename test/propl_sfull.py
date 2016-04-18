@@ -653,6 +653,7 @@ properties = \
         , 'satisfied'
         , 'send_to_customer'
         , 'serial_number'
+        , 'set_first_reply'
         , 'status'
         , 'superseder'
         , 'title'

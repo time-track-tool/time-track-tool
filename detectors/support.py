@@ -112,15 +112,17 @@ def set_first_reply (db, cl, nodeid, new_values) :
     """ Set first_reply field in case the support issue hasn't set this
         yet *and* status goes to closed or satisfied.
     """
+    issue = cl.getnode (nodeid)
+    if issue.first_reply :
+        return
     if 'status' in new_values and 'first_reply' not in new_values :
-        issue = cl.getnode (nodeid)
-        if issue.first_reply :
-            return
         closed = db.sup_status.lookup ('closed')
         satis  = db.sup_status.lookup ('satisfied')
         cust   = db.sup_status.lookup ('customer')
         if new_values ['status'] in (closed, satis, cust) :
             new_values ['first_reply'] = Date ('.')
+    elif new_values.get ('set_first_reply', None) :
+        new_values ['first_reply'] = Date ('.')
 # end def set_first_reply
 
 def check_dates (db, cl, nodeid, new_values) :
