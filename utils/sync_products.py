@@ -125,14 +125,14 @@ class Product_Sync (object) :
         self.prodcats = {}
         self.prodused = {}
         # Retire some unused product categories:
-        for n in 'HY-eVision\xb2 7.0', 'HY-TTC 200', 'HY-TTC 50' :
-            ps = db.prodcat.filter (None, dict (level = 3, name = n))
-            if not ps :
-                continue
-            assert len (ps) == 1
-            c = ps [0]
-            print ("Retire prodcat%s: %r" % (c, n))
-            db.prodcat.retire (c)
+        #for n in 'HY-eVision\xb2 7.0', 'HY-TTC 200', 'HY-TTC 50' :
+        #    ps = db.prodcat.filter (None, dict (level = 3, name = n))
+        #    if not ps :
+        #        continue
+        #    assert len (ps) == 1
+        #    c = ps [0]
+        #    print ("Retire prodcat%s: %r" % (c, n))
+        #    db.prodcat.retire (c)
         for id in db.prodcat.getnodeids (retired = False) :
             pd  = db.prodcat.getnode (id)
             nn  = normalize_name (pd.name.decode ('utf-8'))
@@ -263,6 +263,8 @@ class Product_Sync (object) :
     # end def fixer_sap
 
     def fixer_rad (self) :
+        if len (self.args) < 2 :
+            raise StopIteration ()
         with codecs.open (self.args [1], 'r', self.opt.radix_encoding) as f :
             for line in f :
                 yield (line)
@@ -479,8 +481,8 @@ def main () :
         , action = 'store_true'
         )
     opt, args = cmd.parse_args ()
-    if len (args) != 2 :
-        cmd.error ('Need two input files')
+    if not (1 <= len (args) <= 2) :
+        cmd.error ('Need one or two input files')
         sys.exit  (23)
 
     ps = Product_Sync (opt, args)
