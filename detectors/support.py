@@ -272,9 +272,12 @@ def header_check (db, cl, nodeid, new_values) :
                 ) :
                 # use only first 'From' address (there shouldn't be more)
                 rn, mail = getaddresses (frm) [0]
-                # the from address in this mail is the support user we
+                # the *to* address in this mail is the support user we
                 # want as a from-address for future mails *to* this user
-                autad = db.user.get (msg.author, 'address')
+                hto = h.get_all ('To')
+                torn, autad = getaddresses (hto) [0]
+                if not autad.startswith ('support') :
+                    autad = None
                 c = find_or_create_contact \
                     (db, mail, rn, frm = autad, subject = subj)
                 cust  = new_values ['customer'] = db.contact.get (c, 'customer')
@@ -406,8 +409,12 @@ def new_customer (db, cl, nodeid, new_values) :
             new_values ['nosygroups'] = ngs
         if 'nosygroups' not in new_values :
             new_values ['nosy'] = [support]
-    if 'fromaddress' not in new_values :
-        new_values ['fromaddress'] = db.user.get (support, 'address')
+    if not new_values.get ('fromaddress', None) :
+        msf = getattr (db.config.ext, 'MAILGW_SUPPORT_FROM', None)
+        if msf :
+            new_values ['fromaddress'] = msf
+        else :
+            new_values ['fromaddress'] = db.user.get (support, 'address')
     if 'confidential' not in new_values :
         new_values ['confidential'] = False
     new_values ['is_valid'] = True
