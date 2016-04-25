@@ -48,7 +48,7 @@ class User_Attributes (object) :
 
 fn = ['username', 'realname', 'nickname', 'status', 'oldnicks']
 dw = DictWriter (sys.stdout, fn, delimiter = ';')
-dw.writeheader ()
+#dw.writeheader ()
 for uid in db.user.getnodeids (retired = False) :
     user = db.user.getnode (uid)
     stat = user.status and ustatus [user.status]
