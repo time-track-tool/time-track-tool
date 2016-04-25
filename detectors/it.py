@@ -173,7 +173,7 @@ class Magic_Dict (object) :
 
 def check_log_incident (db, cl, nodeid, old_values) :
     """ We check if the it_request_type has a log_template set.
-        If so, we log to syslog *and* put the CSO onto the nosy list.
+        If so, we log to syslog.
         If 'close_immediately' is set, we then close the issue.
     """
     item   = cl.getnode (nodeid)
@@ -230,10 +230,12 @@ def check_title_regex (db, cl, nodeid, new_values) :
             break
 # end def check_title_regex
 
-def add_cso (db, cl, nodeid, new_values) :
+def add_sec_incident_responsible (db, cl, nodeid, new_values) :
     """ We check if the it_request_type has a log_template set.
-        If so, we add all users with cso role to nosy.
-        We set the *first one* of them as responsible.
+        If so, we add all users with sec-incident-responsible and
+        sec-incident-nosy role to nosy.
+        We set the *first one* of sec-incident-responsible as
+        responsible (it is expected this role is given to a single user).
     """
     if 'it_request_type' in new_values :
         rt = db.it_request_type.getnode (new_values ['it_request_type'])
@@ -242,12 +244,14 @@ def add_cso (db, cl, nodeid, new_values) :
         nosy = new_values.get ('nosy', [])
         if not nosy and nodeid :
             nosy = cl.get (nodeid, 'nosy')
-        csou = common.get_uids_with_role (db, 'cso')
-        nosy.extend (csou)
+        sir = common.get_uids_with_role (db, 'sec-incident-responsible')
+        sin = common.get_uids_with_role (db, 'sec-incident-nosy')
+        nosy.extend (sir)
+        nosy.extend (sin)
         new_values ['nosy'] = nosy
-        if csou :
-            new_values ['responsible'] = csou [0]
-# end def add_cso
+        if sir :
+            new_values ['responsible'] = sir [0]
+# end def add_sec_incident_responsible
 
 def stay_closed (db, cl, nodeid, new_values) :
     if 'status' in new_values :
@@ -277,8 +281,8 @@ def init (db) :
         cls.audit     ("set",    check_it)
     db.it_issue.audit ("create", audit_superseder)
     db.it_issue.audit ("set",    audit_superseder)
-    db.it_issue.audit ("create", add_cso)
-    db.it_issue.audit ("set",    add_cso)
+    db.it_issue.audit ("create", add_sec_incident_responsible)
+    db.it_issue.audit ("set",    add_sec_incident_responsible)
     db.it_issue.react ("create", check_log_incident)
     db.it_issue.react ("set",    check_log_incident)
     db.it_issue.react ("create", it_issue_log, priority = 500)

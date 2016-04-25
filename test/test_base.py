@@ -123,7 +123,6 @@ class _Test_Case (unittest.TestCase) :
         , 'board'
         , 'contact'
         , 'controlling'
-        , 'cso'
         , 'discount'
         , 'doc_admin'
         , 'external'
@@ -156,6 +155,8 @@ class _Test_Case (unittest.TestCase) :
         , 'project'
         , 'project_view'
         , 'quality'
+        , 'sec-incident-nosy'
+        , 'sec-incident-responsible'
         , 'staff-report'
         , 'subcontract'
         , 'summary_view'
@@ -742,11 +743,11 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'cso', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
-        , 'hr-vacation', 'issue_admin', 'it', 'itview'
-        , 'msgedit', 'msgsync', 'nosy'
-        , 'office', 'procurement', 'project', 'project_view', 'staff-report'
-        , 'summary_view', 'supportadmin', 'type', 'user'
+        , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit'
+        , 'msgsync', 'nosy', 'office', 'procurement', 'project'
+        , 'project_view', 'sec-incident-nosy', 'sec-incident-responsible'
+        , 'staff-report', 'summary_view', 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -2734,8 +2735,9 @@ class Test_Case_Tracker (_Test_Case) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
-        [ 'admin', 'anonymous', 'cso', 'external', 'issue_admin', 'it'
+        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
+        , 'sec-incident-nosy', 'sec-incident-responsible'
         , 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_track
@@ -2744,11 +2746,12 @@ class Test_Case_Tracker (_Test_Case) :
 class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
-        [ 'admin', 'anonymous', 'contact', 'controlling', 'cso', 'doc_admin'
+        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
         , 'external', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
+        , 'sec-incident-nosy', 'sec-incident-responsible'
         , 'staff-report', 'summary_view', 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
@@ -4365,7 +4368,9 @@ class Test_Case_ERP (_Test_Case) :
 class Test_Case_IT (_Test_Case) :
     schemaname = 'it'
     roles = \
-        [ 'admin', 'anonymous', 'cso', 'it', 'ituser', 'itview', 'nosy'
+        [ 'admin', 'anonymous'
+        , 'it', 'ituser', 'itview', 'nosy'
+        , 'sec-incident-nosy', 'sec-incident-responsible'
         , 'user', 'user_view'
         ]
 # end class Test_Case_IT
@@ -4373,8 +4378,10 @@ class Test_Case_IT (_Test_Case) :
 class Test_Case_ITAdr (_Test_Case) :
     schemaname = 'itadr'
     roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'cso', 'it'
-        , 'itview', 'nosy', 'pbx', 'type', 'user', 'user_view'
+        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
+        , 'itview', 'nosy', 'pbx'
+        , 'sec-incident-nosy', 'sec-incident-responsible'
+        , 'type', 'user', 'user_view'
         ]
     transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr

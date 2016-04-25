@@ -11,10 +11,6 @@ Role "admin":
  User may view everthing (View)
 Role "anonymous":
  User may access the web interface (Web Access)
-Role "cso":
- User is allowed to access it_int_prio (View for "it_int_prio" only)
- User is allowed to access it_issue (View for "it_issue" only)
- User is allowed to access it_project (View for "it_project" only)
 Role "external":
   (Search for "ext_tracker_state": ('id', 'issue') only)
   (Search for "user": ('id', 'nickname', 'username') only)
@@ -152,6 +148,14 @@ Role "nosy":
  User may get nosy messages for it_project (Nosy for "it_project" only)
  User may get nosy messages for support (Nosy for "support" only)
 Role "pgp":
+Role "sec-incident-nosy":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
+Role "sec-incident-responsible":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
 Role "supportadmin":
  User is allowed to access analysis_result (View for "analysis_result" only)
  User is allowed to access contact (View for "contact" only)

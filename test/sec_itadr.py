@@ -34,10 +34,6 @@ Role "contact":
  User is allowed to create opening_hours (Create for "opening_hours" only)
  User is allowed to edit contact (Edit for "contact" only)
  User is allowed to edit opening_hours (Edit for "opening_hours" only)
-Role "cso":
- User is allowed to access it_int_prio (View for "it_int_prio" only)
- User is allowed to access it_issue (View for "it_issue" only)
- User is allowed to access it_project (View for "it_project" only)
 Role "it":
   (Search for "user" only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)
@@ -73,6 +69,14 @@ Role "pbx":
  User is allowed to access sip_device (View for "sip_device" only)
  User is allowed to create sip_device (Create for "sip_device" only)
  User is allowed to edit sip_device (Edit for "sip_device" only)
+Role "sec-incident-nosy":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
+Role "sec-incident-responsible":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
 Role "type":
  User is allowed to create adr_type (Create for "adr_type" only)
  User is allowed to create adr_type_cat (Create for "adr_type_cat" only)

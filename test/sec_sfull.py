@@ -63,10 +63,6 @@ Role "controlling":
  User is allowed to edit time_activity (Edit for "time_activity" only)
  User is allowed to edit time_record (Edit for "time_record" only)
  User is allowed to edit work_location (Edit for "work_location" only)
-Role "cso":
- User is allowed to access it_int_prio (View for "it_int_prio" only)
- User is allowed to access it_issue (View for "it_issue" only)
- User is allowed to access it_project (View for "it_project" only)
 Role "doc_admin":
  User is allowed Edit on (Edit for "department": ('doc_num',) only)
  User is allowed to create artefact (Create for "artefact" only)
@@ -252,6 +248,14 @@ Role "project":
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
+Role "sec-incident-nosy":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
+Role "sec-incident-responsible":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
 Role "staff-report":
 Role "summary_view":
 Role "supportadmin":

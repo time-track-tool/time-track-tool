@@ -145,22 +145,29 @@ def init \
 
 def security (db, ** kw) :
     roles = \
-        [ ("IT",     "IT-Department")
-        , ("ITView", "View but not change IT data")
-        , ("Nosy",   "Allowed on nosy list")
-        , ("CSO",    "Chief Security Officer")
+        [ ("IT",                         "IT-Department")
+        , ("ITView",                     "View but not change IT data")
+        , ("Nosy",                       "Allowed on nosy list")
+        , ("Sec-Incident-Responsible",   "Responsible for Security-Incident")
+        , ("Sec-Incident-Nosy",          "Nosy-List for Security-Incident")
         ]
 
     #     classname        allowed to view   /  edit
     classes = \
-        [ ("it_category",       ["User"],                ["IT"])
-        , ("it_int_prio",       ["IT", "ITView", "CSO"], ["IT"])
-        , ("it_issue_status",   ["User"],                [])
-        , ("it_issue",          ["IT", "ITView", "CSO"], ["IT"])
-        , ("it_prio",           ["User"],                [])
-        , ("it_project",        ["IT", "ITView", "CSO"], ["IT"])
-        , ("it_project_status", ["User"],                [])
-        , ("it_request_type",   ["User"],                ["IT"])
+        [ ("it_category",       ["User"],                      ["IT"])
+        , ("it_int_prio",       [ "IT", "ITView"
+                                , "Sec-Incident-Nosy"
+                                , "Sec-Incident-Responsible"], ["IT"])
+        , ("it_issue_status",   ["User"],                      [])
+        , ("it_issue",          [ "IT", "ITView"
+                                , "Sec-Incident-Nosy"
+                                , "Sec-Incident-Responsible"], ["IT"])
+        , ("it_prio",           ["User"],                      [])
+        , ("it_project",        [ "IT", "ITView"
+                                , "Sec-Incident-Nosy"
+                                , "Sec-Incident-Responsible"], ["IT"])
+        , ("it_project_status", ["User"],                      [])
+        , ("it_request_type",   ["User"],                      ["IT"])
         ]
 
     prop_perms = \

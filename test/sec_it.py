@@ -11,10 +11,6 @@ Role "admin":
  User may view everthing (View)
 Role "anonymous":
  User may access the web interface (Web Access)
-Role "cso":
- User is allowed to access it_int_prio (View for "it_int_prio" only)
- User is allowed to access it_issue (View for "it_issue" only)
- User is allowed to access it_project (View for "it_project" only)
 Role "it":
   (Search for "user" only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)
@@ -67,6 +63,14 @@ Role "itview":
 Role "nosy":
  User may get nosy messages for it_issue (Nosy for "it_issue" only)
  User may get nosy messages for it_project (Nosy for "it_project" only)
+Role "sec-incident-nosy":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
+Role "sec-incident-responsible":
+ User is allowed to access it_int_prio (View for "it_int_prio" only)
+ User is allowed to access it_issue (View for "it_issue" only)
+ User is allowed to access it_project (View for "it_project" only)
 Role "user":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
