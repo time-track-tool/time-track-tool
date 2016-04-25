@@ -1,0 +1,64 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+from csv import DictWriter
+import sys
+import os
+from roundup           import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+usids   = db.user_status.getnodeids (retired = False)
+usids   = [db.user_status.getnode (i) for i in usids]
+ustatus = dict ((x.id, x.name) for x in usids)
+
+fn = ['username', 'realname', 'nickname', 'status', 'old_nick']
+
+class User_Attributes (object) :
+
+    def __init__ (self, user, oldnicks) :
+        self.user     = user
+        self.oldnicks = oldnicks
+    # end def __init__
+
+    def __getitem__ (self, name) :
+        if name == 'oldnicks' :
+            return ','.join (self.oldnicks)
+        elif name == 'status' :
+            return ustatus [self.user.status]
+        try :
+            return getattr (user, name)
+        except AttributeError as ae :
+            raise KeyError (ae)
+    # end def __getitem__
+
+    def get (self, name, default = None) :
+        try :
+            return self [name]
+        except KeyError :
+            return default
+    # end def get
+
+    def __iter__ (self) :
+        for k in fn :
+            yield k
+    # end def __iter__
+
+# end class User_Attributes
+
+fn = ['username', 'realname', 'nickname', 'status', 'oldnicks']
+dw = DictWriter (sys.stdout, fn, delimiter = ';')
+dw.writeheader ()
+for uid in db.user.getnodeids (retired = False) :
+    user = db.user.getnode (uid)
+    stat = user.status and ustatus [user.status]
+    if stat is None :
+        assert user.username in ('admin', 'anonymous')
+        continue
+    oldnicks = []
+    for nodeid, date, actor, tag, params in user.history () :
+        assert nodeid == uid
+        if tag == 'set' and 'nickname' in params :
+            oldnicks.append (params ['nickname'])
+    dw.writerow (User_Attributes (user, oldnicks))
+
