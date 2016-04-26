@@ -625,6 +625,7 @@ properties = \
         , 'bcc'
         , 'category'
         , 'cc'
+        , 'cc_emails'
         , 'classification'
         , 'closed'
         , 'confidential'

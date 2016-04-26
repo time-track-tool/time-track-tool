@@ -913,6 +913,9 @@ properties = \
         , ( 'cc'
           , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )
+        , ( 'cc_emails'
+          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
         , ( 'classification'
           , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )

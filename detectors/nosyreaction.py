@@ -48,7 +48,7 @@ fromprops_by_type = \
     , 'Supplier Claim IGC' : 'suppclaimfrom'
     }
 
-def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
+def send_non_roundup_mail (db, cls, issueid, msgid, sendto, cc = [], bcc = []) :
     """ Send mail to customer, don't use roundup change-email
         (nosymessage) mechanism -- so we can set different values and
         don't confuse the customer with roundup information.
@@ -82,6 +82,8 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
     message = mailer.get_standard_message (multipart = bool (msg.files))
     mailer.set_message_attributes (message, sendto, subject, author)
     message ['Message-Id']  = msg.messageid
+    if cc :
+        message ['Cc'] = ', '.join (cc)
     if msg.inreplyto :
         message ['In-Reply-To'] = msg.inreplyto
     if msg.files :
@@ -121,7 +123,7 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, bcc = []) :
     else :
         message.set_payload (body)
         encode_quopri (message)
-    mailer.smtp_send (sendto + bcc, message.as_string ())
+    mailer.smtp_send (sendto + cc + bcc, message.as_string ())
 # end def send_non_roundup_mail
 
 def nosyreaction(db, cl, nodeid, oldvalues) :
@@ -142,13 +144,18 @@ def nosyreaction(db, cl, nodeid, oldvalues) :
     # send a copy of all new messages to the nosy list
     for msgid in determineNewMessages(cl, nodeid, oldvalues):
         try:
+            to_emails = []
             cc_emails = []
             bcc_mails = []
             if 'header' in db.msg.properties and db.msg.get (msgid, 'header') :
                 h = Parser ().parsestr \
                     (db.msg.get (msgid, 'header'), headersonly = True)
+                mto = h.get_all ('X-ROUNDUP-TO')
                 rcc = h.get_all ('X-ROUNDUP-CC')
                 bcc = h.get_all ('X-ROUNDUP-BCC')
+                if mto :
+                    for rn, mail in getaddresses (mto) :
+                        to_emails.append (mail)
                 if rcc :
                     for rn, mail in getaddresses (rcc) :
                         cc_emails.append (mail)
@@ -156,9 +163,9 @@ def nosyreaction(db, cl, nodeid, oldvalues) :
                     for rn, mail in getaddresses (bcc) :
                         bcc_mails.append (mail)
             cl.nosymessage(nodeid, msgid, oldvalues)
-            if cc_emails :
+            if to_emails or cc_emails :
                 send_non_roundup_mail \
-                    (db, cl, nodeid, msgid, cc_emails, bcc_mails)
+                    (db, cl, nodeid, msgid, to_emails, cc_emails, bcc_mails)
         except roundupdb.MessageSendError, message :
             raise roundupdb.DetectorError, message
 

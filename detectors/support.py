@@ -238,7 +238,7 @@ def header_check (db, cl, nodeid, new_values) :
         from that header -- only if sender is the support special
         account (any account with system status).  If send_to_customer
         flag is set *and* account is not a system account, munge
-        the headers and add X-ROUNDUP-CC header.
+        the headers and add X-ROUNDUP-TO and X-ROUNDUP-CC headers.
     """
     send_to_customer = False
     # Be sure to alway set send_to_customer to False!
@@ -301,30 +301,39 @@ def header_check (db, cl, nodeid, new_values) :
         else :
             if send_to_customer :
                 mails = []
+                cc = []
                 if 'emails' in new_values :
                     mails = new_values ['emails']
                 elif nodeid :
                     mails = cl.get (nodeid, 'emails')
+                if 'cc_emails' in new_values :
+                    mcc = new_values ['cc_emails']
+                elif nodeid :
+                    mcc = cl.get (nodeid, 'cc_emails')
                 mails = mails or []
+                mcc   = mcc or []
                 mails = (db.contact.get (x, 'contact') for x in mails)
+                mcc   = (db.contact.get (x, 'contact') for x in mcc)
                 if 'cc' in new_values :
                     cc = new_values ['cc']
                 elif nodeid :
                     cc = cl.get (nodeid, 'cc')
-                m = ''
-                if mails :
-                    m = ','.join (mails)
-                if m :
+                m  = ','.join (mails)
+                mc = ','.join (mcc)
+                if mc :
                     if cc :
-                        m = ','.join ((m, cc))
+                        mc = ','.join ((mc, cc))
                 else :
-                    m = cc
-                if not m :
+                    mc = cc
+                if not m and not mc :
                     raise Reject, \
                         _ ("Trying to send to customer with empty CC and "
                            "without configured contact-email for customer"
                           )
-                h.add_header ('X-ROUNDUP-CC', m)
+                if m :
+                    h.add_header ('X-ROUNDUP-TO', m)
+                if mc :
+                    h.add_header ('X-ROUNDUP-CC', mc)
                 if 'bcc' in new_values :
                     bcc = new_values ['bcc']
                 elif nodeid :

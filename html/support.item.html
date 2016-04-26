@@ -309,6 +309,14 @@
             , item = context.customer
             ).formatlink ()"/>
       </tr>
+      <tr>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'send_to_customer')"/>
+       <td tal:content="structure python:context.send_to_customer.field ()"/>
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'external_ref')"/>
+       <td tal:content="structure python:context.external_ref.field ()"/>
+      </tr>
       <tr tal:condition="python: context.id and context.customer"
           tal:repeat="ct python:sorted
           ( [c for c in context.customer.contacts
@@ -330,18 +338,14 @@
       </tr>
       <tr tal:condition="python: context.id and context.customer"
           tal:define="email python:db._db.contact_type.lookup ('Email')">
-       <th rowspan="2" tal:content="structure python:utils.fieldname
+       <th tal:content="structure python:utils.fieldname
            (classname, 'emails')"/>
-       <td rowspan="2" tal:content="structure python:context.emails.menu
+       <td tal:content="structure python:context.emails.menu
            (height=4, contact_type=email, customer=context.customer.id)"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'send_to_customer')"/>
-       <td tal:content="structure python:context.send_to_customer.field ()"/>
-      </tr>
-      <tr>
-       <th tal:content="structure python:utils.fieldname
-           (classname, 'external_ref')"/>
-       <td tal:content="structure python:context.external_ref.field ()"/>
+           (classname, 'cc_emails')"/>
+       <td tal:content="structure python:context.cc_emails.menu
+           (height=4, contact_type=email, customer=context.customer.id)"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname (classname, 'cc')"/>

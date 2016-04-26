@@ -190,6 +190,7 @@ def init \
         , related_support  = Multilink ("support")
         , customer         = Link      ("customer",   do_journal='no')
         , emails           = Multilink ("contact",    do_journal='no')
+        , cc_emails        = Multilink ("contact",    do_journal='no')
         , send_to_customer = Boolean   ()
         , classification   = Link      ("sup_classification", do_journal='no')
         , cc               = String    ()
