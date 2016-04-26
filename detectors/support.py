@@ -172,6 +172,7 @@ def find_or_create_contact \
     mail   = mail.lower ()
     cemail = db.contact_type.lookup ('Email')
     sdict  = dict (contact_type = cemail, contact = mail)
+    md     = mail.split ('@') [-1]
     sdict ['customer.is_valid'] = True
     if customer :
         sdict ['customer'] = customer
@@ -181,12 +182,10 @@ def find_or_create_contact \
         # filter uses substring match for strings
         if cont.contact == mail and cust.is_valid :
             return c
-    if customer :
-        return None
     # Spam Handling: Try to match subject against spam pattern from spamfilter
     # If found return first contact of spam customer (we don't want to
     # keep all the mails from incoming spam)
-    if subject :
+    if subject and not customer :
         spam_customer = None
         try :
             spam_customer = db.customer.lookup ('SPAM')
@@ -200,19 +199,24 @@ def find_or_create_contact \
                 spc = db.customer.getnode (spam_customer)
                 return spc.contacts [0]
         
-    md    = mail.split ('@') [-1]
     # this also tries subdomains, e.g., country.example.com for the
     # incoming mail will be matched by example.com as the customer mail.
     # Note that we don't allow toplevel domains for the customer (e.g.
     # .com).
-    while '.' in md and not customer :
+    customer_found = False
+    while '.' in md and not customer_found :
         sdict = dict (is_valid = True, maildomain = md)
         for cu in db.customer.filter (None, sdict) :
             cust = db.customer.getnode (cu)
             if cust.maildomain == md :
+                if customer and customer != cu :
+                    continue
                 customer = cu
+                customer_found = True
                 break
         md = md.split ('.', 1) [1]
+    if customer and not customer_found :
+        return None
     rn = header_utf8 (rn)
     if not customer :
         customer = db.customer.create \
@@ -288,14 +292,23 @@ def header_check (db, cl, nodeid, new_values) :
                 ccs = h.get_all ('CC') or []
                 tos = h.get_all ('To') or []
                 cc  = []
-                for rn, mail in getaddresses (ccs + tos) :
-                    c = find_or_create_contact (db, mail, rn, customer = cust)
-                    if c :
-                        new_values ['emails'].append (c)
-                    elif uidFromAddress (db, (rn, mail), create = 0) :
-                        pass
-                    else :
-                        cc.append (mail)
+                cfrm = db.customer.get (cust, 'fromaddress')
+                for addrs, field in ((tos, 'emails'), (ccs, 'cc_emails')) :
+                    for rn, mail in getaddresses (addrs) :
+                        if mail == cfrm :
+                            continue
+                        dom = mail.split ('@') [1].lower ()
+                        c = find_or_create_contact \
+                            (db, mail, rn, customer = cust)
+                        if c :
+                            if field not in new_values :
+                                new_values [field] = []
+                            new_values [field].append (c)
+                        elif uidFromAddress (db, (rn, mail), create = 0) :
+                            # ignore internal addresses
+                            pass
+                        else :
+                            cc.append (mail)
                 if cc :
                     new_values ['cc'] = ', '.join (cc)
         else :

@@ -1962,6 +1962,9 @@ msgstr ""
 msgid "emails"
 msgstr "Emails"
 
+msgid "cc_emails"
+msgstr "CC-Emails"
+
 msgid "Customer email addresses for this %(Classname)s"
 msgstr ""
 
