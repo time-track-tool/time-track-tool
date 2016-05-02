@@ -255,9 +255,19 @@ class Product_Sync (object) :
             l = f.next ()
             assert l.strip () == ''
             l = f.next ()
-            assert l.startswith ('%sMaterial' % self.opt.delimiter)
-            yield (('Ignore-me%s' % l))
-
+            delim = self.opt.delimiter
+            dd = delim * 2
+            assert ('%sMaterial' % delim) in l
+            n = 0
+            while dd in l :
+                l = l.replace (dd, '%sIgnore-me%s%s' % (delim, n, delim), 1)
+                n += 1
+            if l.startswith (delim) :
+                l = 'Ignore-me%s' % n + l
+                n += 1
+            if l.endswith (delim) :
+                l = l + 'Ignore-me%s' % n
+            yield l
             for line in f :
                 yield (line)
     # end def fixer_sap
@@ -359,10 +369,12 @@ class Product_Sync (object) :
         assert key or key2
         if key2 and key != key2 and key in nodedict and key2 in nodedict :
             self.warn \
-                ("Product %s with material-num %s found twice: %s/%s"
-                % (key, key2, nodedict [key], nodedict [key2])
+                ("Product %s with material-num %s found twice: %s/%s "
+                 "using material number: %s"
+                % (key, key2, nodedict [key], nodedict [key2], key2)
                 )
-            return None
+            key = key2
+            self.warn ("KEY: %s" % key2)
         k = key
         if key2 in nodedict :
             k = key2
@@ -438,29 +450,37 @@ def main () :
         , help    = 'Debug output'
         , action  = 'store_true'
         )
+    default = '\t'
     cmd.add_option \
         ( str ('-D'), str ('--sap-delimiter')
         , dest    = 'delimiter'
-        , help    = 'CSV delimiter for SAP input-file'
-        , default = '\t'
+        , help    = 'CSV delimiter for SAP input-file,'
+                    ' default = %s' % repr (default).lstrip ('u')
+        , default = default
         )
+    default = '\t'
     cmd.add_option \
         ( str ('-R'), str ('--radix-delimiter')
         , dest    = 'radix_delimiter'
-        , help    = 'CSV delimiter for Radix input-file'
-        , default = '\t'
+        , help    = 'CSV delimiter for Radix input-file,'
+                    ' default = %s' % repr (default).lstrip ('u')
+        , default = default
         )
+    default = 'latin1'
     cmd.add_option \
         ( str ('-E'), str ('--encoding')
         , dest    = 'encoding'
-        , help    = 'CSV character encoding for SAP input-file'
-        , default = 'latin1'
+        , help    = 'CSV character encoding for SAP input-file,'
+                    ' default = %s' % default
+        , default = default
         )
+    default = 'utf-16'
     cmd.add_option \
         ( str ('-e'), str ('--radix-encoding')
         , dest    = 'radix_encoding'
-        , help    = 'CSV character encoding for Radix input-file'
-        , default = 'utf-16'
+        , help    = 'CSV character encoding for Radix input-file,'
+                    ' default = %s' % default
+        , default = default
         )
     cmd.add_option \
         ( str ('-i'), str ('--invalidate')
