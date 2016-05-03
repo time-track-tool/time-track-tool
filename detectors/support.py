@@ -269,48 +269,63 @@ def header_check (db, cl, nodeid, new_values) :
         if db.user.get (msg.author, 'status') == system :
             frm  = h.get_all ('From')
             subj = header_utf8 (h.get_all ('Subject') [0])
-            if  (   not nodeid
-                and frm
+            if  (   frm
                 and 'customer' not in new_values
                 and 'emails' not in new_values
                 ) :
-                # use only first 'From' address (there shouldn't be more)
-                rn, mail = getaddresses (frm) [0]
-                # the *to* address in this mail is the support user we
-                # want as a from-address for future mails *to* this user
-                hto = h.get_all ('To')
-                torn, autad = getaddresses (hto) [0]
-                if not autad.startswith ('support') :
-                    autad = None
-                c = find_or_create_contact \
-                    (db, mail, rn, frm = autad, subject = subj)
-                cust  = new_values ['customer'] = db.contact.get (c, 'customer')
-                new_values ['emails'] = [c]
+                cc  = {}
+                if not nodeid :
+                    # use only first 'From' address (there shouldn't be more)
+                    rn, mail = getaddresses (frm) [0]
+                    # the *to* address in this mail is the support user we
+                    # want as a from-address for future mails *to* this user
+                    hto = h.get_all ('To')
+                    torn, autad = getaddresses (hto) [0]
+                    if not autad.startswith ('support') :
+                        autad = None
+                    c = find_or_create_contact \
+                        (db, mail, rn, frm = autad, subject = subj)
+                    cust  = new_values ['customer'] = \
+                        db.contact.get (c, 'customer')
+                    new_values ['emails'] = [c]
+                else :
+                    supi = cl.getnode (nodeid)
+                    cust = supi.customer
+                    new_values ['emails']    = supi.emails
+                    new_values ['cc_emails'] = supi.cc_emails
+                    if supi.cc :
+                        cc = dict.fromkeys \
+                            (x.strip ().lower () for x in supi.cc.split (','))
                 # Parse To and CC headers to find more customer email
                 # addresses. Check if these contain the same domain
                 # part as the From.
                 ccs = h.get_all ('CC') or []
                 tos = h.get_all ('To') or []
-                cc  = []
+                if nodeid :
+                    tos.extend (frm)
                 cfrm = db.customer.get (cust, 'fromaddress')
+                alltocc = dict.fromkeys (new_values ['emails'])
+                if 'cc_emails' in new_values :
+                    alltocc.update (dict.fromkeys (new_values ['cc_emails']))
                 for addrs, field in ((tos, 'emails'), (ccs, 'cc_emails')) :
                     for rn, mail in getaddresses (addrs) :
                         if mail == cfrm :
                             continue
-                        dom = mail.split ('@') [1].lower ()
                         c = find_or_create_contact \
                             (db, mail, rn, customer = cust)
                         if c :
                             if field not in new_values :
                                 new_values [field] = []
-                            new_values [field].append (c)
+                            if c not in alltocc :
+                                new_values [field].append (c)
+                                alltocc [c] = 1
                         elif uidFromAddress (db, (rn, mail), create = 0) :
                             # ignore internal addresses
                             pass
                         else :
-                            cc.append (mail)
+                            cc [mail.lower ()] = 1
                 if cc :
-                    new_values ['cc'] = ', '.join (cc)
+                    new_values ['cc'] = ', '.join (cc.keys ())
         else :
             if send_to_customer :
                 mails = []
