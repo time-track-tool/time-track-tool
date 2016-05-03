@@ -122,6 +122,7 @@ def security (db, ** kw) :
             db.security.addPermissionToRole ('External', p)
 
     if 'external_users' in db.issue.properties :
+        issue_props.append ('external_users')
         def ext_user_access (db, userid, itemid) :
             """ External users are allowed to access issue
                 if they are on the list of allowed external users or
