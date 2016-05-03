@@ -2931,6 +2931,9 @@ msgstr ""
 msgid "no_overtime"
 msgstr "Overtime forbidden"
 
+msgid "no_overtime_day"
+msgstr "No Overtime this day"
+
 msgid ""
 "This flag makes sure that not more than the employee's\n"
 "             normal working time can be registered under this\n"

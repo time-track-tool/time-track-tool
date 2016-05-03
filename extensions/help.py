@@ -1269,7 +1269,14 @@ _helptext          = \
     , ""'no_overtime'                 :
       [ ""'''This flag makes sure that not more than the employee\'s
              normal working time can be registered under this
-             %(Classname)s
+             %(Classname)s -- user can still book additional hours on
+             other work-packages
+          '''
+      ]
+    , ""'no_overtime_day'             :
+      [ ""'''This flag makes sure that not more than the employee\'s
+             normal working time can be registered for this day if user
+             has booked hours on this %(Classname)s
           '''
       ]
     , ""'nosy'                        :

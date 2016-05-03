@@ -1528,6 +1528,9 @@ properties = \
         , ( 'no_overtime'
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
+        , ( 'no_overtime_day'
+          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
+          )
         , ( 'nosy'
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )

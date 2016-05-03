@@ -113,6 +113,7 @@ def time_records_consistent (db, cl, nodeid) :
     trec_notravel   = []
     need_break_recs = []
     noover_sum      = 0
+    noover_sum_day  = 0
     no_over_wp      = None
     daily_hours     = user_dynamic.day_work_hours (dynamic, date)
     for tr in trec :
@@ -135,7 +136,8 @@ def time_records_consistent (db, cl, nodeid) :
                 )
             pr        = db.time_wp.get      (tr.wp, 'project')
             max_hours = db.time_project.get (pr,    'max_hours')
-            if db.time_project.get (pr,    'no_overtime') :
+            no_over   = db.time_project.get (pr,    'no_overtime')
+            if db.time_project.get (pr, 'no_overtime_day') :
                 no_over_wp = "%s.%s" % \
                     ( db.time_project.get (pr, 'name')
                     , db.time_wp.get (wp, 'name')
@@ -146,7 +148,14 @@ def time_records_consistent (db, cl, nodeid) :
                         ( "%(tr_pr)s: Duration must not exceed %(max_hours)s"
                         % locals ()
                         )
-            noover_sum += tr.duration
+            if no_over :
+                noover_sum += tr.duration
+                if tr.duration > daily_hours :
+                    msgs.append \
+                        ( "%(tr_pr)s: Duration must not exceed %(daily_hours)s"
+                        % locals ()
+                        )
+            noover_sum_day += tr.duration
         if not durations_allowed and not tr.start :
             msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
         if tr.start and not travel :
@@ -159,7 +168,13 @@ def time_records_consistent (db, cl, nodeid) :
         if not (start [0] >= end [1] or start [1] >= end [0]) :
             msgs.append ("%(tr_pr)s overlap" % locals ())
     tr_pr = "%s, %s:" % (uname, sdate)
-    if no_over_wp and noover_sum > daily_hours :
+    if noover_sum > daily_hours :
+        msgs.append \
+            ( "%(tr_pr)s: Sum of no-overtime WPs "
+              "must not exceed %(daily_hours)s"
+            % locals ()
+            )
+    if no_over_wp and noover_sum_day > daily_hours :
         msgs.append \
             ( "%(tr_pr)s No-overtime WP %(no_over_wp)s: "
               "time must not exceed %(daily_hours)s"

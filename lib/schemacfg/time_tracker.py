@@ -226,6 +226,7 @@ def init \
                 , max_hours             = Number    ()
                 , nosy                  = Multilink ("user")
                 , no_overtime           = Boolean   ()
+                , no_overtime_day       = Boolean   ()
                 , overtime_reduction    = Boolean   ()
                 , planned_effort        = Number    ()
                 , product_family        = Multilink ("product_family")
@@ -617,7 +618,7 @@ def security (db, ** kw) :
           )
         , ( "time_project", "Edit", ["HR"]
           , ( "is_public_holiday", "is_vacation", "is_special_leave"
-            , "no_overtime"
+            , "no_overtime", "no_overtime_day"
             , "overtime_reduction", "approval_required", "approval_hr"
             )
           )

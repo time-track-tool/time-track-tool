@@ -573,6 +573,7 @@ class _Test_Case_Summary (_Test_Case) :
             , work_location      = wl_off
             , op_project         = False
             , no_overtime        = True
+            , no_overtime_day    = False
             , overtime_reduction = True
             , is_public_holiday  = True
             , responsible        = '1'
@@ -588,6 +589,7 @@ class _Test_Case_Summary (_Test_Case) :
             , work_location      = wl_off
             , op_project         = False
             , no_overtime        = True
+            , no_overtime_day    = True
             , overtime_reduction = True
             , responsible        = '1'
             , department         = self.dep
@@ -628,6 +630,7 @@ class _Test_Case_Summary (_Test_Case) :
             , organisation       = self.org
             , cost_center        = self.cc
             , no_overtime        = True
+            , no_overtime_day    = False
             , overtime_reduction = True
             , approval_required  = True
             , approval_hr        = False
@@ -642,6 +645,7 @@ class _Test_Case_Summary (_Test_Case) :
             , cost_center        = self.cc
             , max_hours          = 0
             , no_overtime        = True
+            , no_overtime_day    = True
             , approval_required  = True
             , approval_hr        = False
             , is_vacation        = False
@@ -651,6 +655,7 @@ class _Test_Case_Summary (_Test_Case) :
             , work_location      = wl_off
             , op_project         = False
             , no_overtime        = True
+            , no_overtime_day    = True
             , overtime_reduction = True
             , responsible        = '1'
             , department         = self.dep

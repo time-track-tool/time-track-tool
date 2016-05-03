@@ -120,10 +120,17 @@
        (classname, 'op_project')"/>
       <td tal:content="structure python:context.op_project.field ()"/>
      </tal:block>
+    </tr>
+    <tr>
      <tal:block tal:condition="python: 'no_overtime' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'no_overtime')"/>
       <td tal:content="structure python:context.no_overtime.field ()"/>
+     </tal:block>
+     <tal:block tal:condition="python: 'no_overtime_day' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'no_overtime_day')"/>
+      <td tal:content="structure python:context.no_overtime_day.field ()"/>
      </tal:block>
     </tr>
     <tr>

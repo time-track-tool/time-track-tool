@@ -111,7 +111,7 @@ Role "hr":
  Create (Create for "user_contact" only)
  User is allowed Edit on (Edit for "daily_record": ('required_overtime', 'weekend_allowed') only)
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
- User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'no_overtime', 'overtime_reduction') only)
+ User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'no_overtime', 'no_overtime_day', 'overtime_reduction') only)
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'title', 'roles', 'tt_lines') only)
  User is allowed Edit on (Edit for "user": ('contacts',) only)

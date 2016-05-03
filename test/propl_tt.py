@@ -300,6 +300,7 @@ properties = \
         , 'max_hours'
         , 'name'
         , 'no_overtime'
+        , 'no_overtime_day'
         , 'nosy'
         , 'only_hours'
         , 'op_project'
