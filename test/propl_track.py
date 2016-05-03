@@ -364,7 +364,10 @@ properties = \
         ]
       )
     , ( 'sup_classification'
-      , [ 'name'
+      , [ 'description'
+        , 'examples'
+        , 'name'
+        , 'sup_warranty'
         , 'valid'
         ]
       )
@@ -387,6 +390,11 @@ properties = \
         ]
       )
     , ( 'sup_type'
+      , [ 'name'
+        , 'order'
+        ]
+      )
+    , ( 'sup_warranty'
       , [ 'name'
         , 'order'
         ]

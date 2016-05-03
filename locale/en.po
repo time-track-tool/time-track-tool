@@ -6166,6 +6166,9 @@ msgstr "Is supplier"
 msgid "warranty"
 msgstr "Warranty in effect"
 
+msgid "sup_warranty"
+msgstr "Warranty status"
+
 msgid "classification"
 msgstr "Classification"
 
@@ -6549,4 +6552,7 @@ msgstr "Supplier"
 
 msgid "purchase_type++confidential"
 msgstr "Confidential"
+
+msgid "examples"
+msgstr "Examples"
 

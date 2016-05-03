@@ -238,6 +238,7 @@ Role "user":
  User is allowed to access sup_prio (View for "sup_prio" only)
  User is allowed to access sup_status (View for "sup_status" only)
  User is allowed to access sup_type (View for "sup_type" only)
+ User is allowed to access sup_warranty (View for "sup_warranty" only)
  User is allowed to access user_status (View for "user_status" only)
  User is allowed to create ext_tracker_state (Create for "ext_tracker_state" only)
  User is allowed to create file (Create for "file" only)

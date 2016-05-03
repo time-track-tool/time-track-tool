@@ -1281,7 +1281,16 @@ properties = \
         ]
       )
     , ( 'sup_classification'
-      , [ ( 'name'
+      , [ ( 'description'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'examples'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'sup_warranty'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
         , ( 'valid'
@@ -1327,6 +1336,15 @@ properties = \
         ]
       )
     , ( 'sup_type'
+      , [ ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'order'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
+        ]
+      )
+    , ( 'sup_warranty'
       , [ ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
           )

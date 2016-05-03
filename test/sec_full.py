@@ -412,6 +412,7 @@ Role "user":
  User is allowed to access sup_prio (View for "sup_prio" only)
  User is allowed to access sup_status (View for "sup_status" only)
  User is allowed to access sup_type (View for "sup_type" only)
+ User is allowed to access sup_warranty (View for "sup_warranty" only)
  User is allowed to access time_activity (View for "time_activity" only)
  User is allowed to access time_project_status (View for "time_project_status" only)
  User is allowed to access time_wp_group (View for "time_wp_group" only)

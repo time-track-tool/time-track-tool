@@ -674,18 +674,16 @@ table.classhelp th {
   border-bottom: 1px solid #afafaf;
   border-top: 1px solid #afafaf;
   text-transform: uppercase;
-  vertical-align: middle;
+  vertical-align: top;
   line-height:1.5em;
 }
 
 table.classhelp td {
-  vertical-align: middle;
+  vertical-align: top;
   padding-right: .2em;
   border-bottom: 1px solid #efefef;
   text-align: left;
   empty-cells: show;
-  white-space: nowrap;
-  vertical-align: middle;
 }
 
 table.classhelp tr:hover {
@@ -725,6 +723,7 @@ table.otherinfo {
   border-spacing: 0;
   border-collapse: separate;
   width: 100%;
+  vertical-align: top;
 }
 
 table.otherinfo th.header{
@@ -739,6 +738,7 @@ table.otherinfo th {
   border-bottom: 1px solid #afafaf;
   font-weight: bold;
   text-align: left;
+  vertical-align: top;
 }
 
 table.otherinfo th a[href]:hover        { color: #333; }
@@ -749,6 +749,11 @@ table.otherinfo th.header2 {
   vertical-align: top;
   padding-right: 1em
 }
+
+table.otherinfo td {
+  vertical-align: top;
+}
+
 
 table.timesheet {
   border-collapse: collapse;

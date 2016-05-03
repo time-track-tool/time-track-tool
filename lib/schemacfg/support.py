@@ -109,11 +109,21 @@ def init \
         )
     product.setkey ("sap_material")
 
+    sup_warranty = Class \
+        ( db
+        , ''"sup_warranty"
+        , name             = String    ()
+        , order            = Number    ()
+        )
+
     sup_classification = Class \
         ( db
         , ''"sup_classification"
         , name             = String    ()
         , valid            = Boolean   ()
+        , description      = String    ()
+        , sup_warranty     = Link      ('sup_warranty')
+        , examples         = String    ()
         )
     sup_classification.setkey ("name")
 
@@ -226,6 +236,7 @@ def security (db, ** kw) :
         [ ("sup_status",     ["User"],                 [])
         , ("sup_prio",       ["User"],                 [])
         , ("sup_type",       ["User"],                 [])
+        , ("sup_warranty",   ["User"],                 [])
         , ("sup_execution",  ["User"],                 [])
         , ("business_unit",  ["User"],                 [])
         , ("product",        ["User"],                 [])

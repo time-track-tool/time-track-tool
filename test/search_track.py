@@ -840,7 +840,16 @@ properties = \
         ]
       )
     , ( 'sup_classification'
-      , [ ( 'name'
+      , [ ( 'description'
+          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'examples'
+          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'sup_warranty'
           , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )
         , ( 'valid'
@@ -886,6 +895,15 @@ properties = \
         ]
       )
     , ( 'sup_type'
+      , [ ( 'name'
+          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
+        , ( 'order'
+          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
+        ]
+      )
+    , ( 'sup_warranty'
       , [ ( 'name'
           , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )

@@ -95,8 +95,17 @@
       <tr>
        <th tal:content="structure python:utils.fieldname
            (classname, 'classification')"/>
-       <td tal:content="structure python:context.classification.menu
-           (translate=0, valid=True)"/>
+       <td>
+        <tal:block tal:content="structure context/classification/field"/>
+        <tal:block tal:replace="structure python:db.sup_classification.classhelp
+             ( 'name,description,sup_warranty,examples'
+             , property='classification'
+             , inputtype='radio'
+             , width='1000'
+             , pagesize=5000
+             , filter='valid=True'
+             )"/>
+       </td>
        <th tal:content="structure python:utils.fieldname
            (classname, 'numeric_effort')"/>
        <td tal:content="structure python:context.numeric_effort.field ()"/>
