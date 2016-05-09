@@ -51,14 +51,16 @@ def join_nosy_lists (db, cl, nodeid, oldvalues) :
     """Update the nosy list of the superseders with the nosy list of
        this issue.
     """
-    my_nosy     = cl.get (nodeid, "nosy")
-    superseders = cl.get (nodeid, "superseder") 
-    for ss in superseders :
-        ss_nosy_old = sorted (cl.get (ss, "nosy"))
-        ss_nosy_new = union (ss_nosy_old, my_nosy)
-        # only set if list really has changed
-        if ss_nosy_old != ss_nosy_new :
-            cl.set (ss, nosy = ss_nosy_new)
+    oss = oldvalues.get ('superseder', None)
+    nss = cl.get (nodeid, 'superseder')
+    if oss and oss != nss :
+        my_nosy     = cl.get (nodeid, "nosy")
+        for ss in nss :
+            ss_nosy_old = sorted (cl.get (ss, "nosy"))
+            ss_nosy_new = union (ss_nosy_old, my_nosy)
+            # only set if list really has changed
+            if ss_nosy_old != ss_nosy_new :
+                cl.set (ss, nosy = ss_nosy_new)
 # end def join_nosy_lists
 
 def init (db) :
