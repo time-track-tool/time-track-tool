@@ -1,31 +1,27 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
-# Copy effort to numeric effort, changing everything to person days
-import sys
 import os
-import re
-from roundup           import instance
+import sys
+from roundup import instance
+
 tracker = instance.open (os.getcwd ())
 db      = tracker.open  ('admin')
 
-_effort_pattern = r"(\d+) \s* ([PM][DWM]) (?:\s+ \(([^)]+)\))?"
-_effort_regex   = re.compile (_effort_pattern, re.VERBOSE)
+# Loop over all issues and set effort_hours from numeric_effort * 8
 
-excpt = { '>150MD' : '150MD', '1' : '1PD', '3' : '3PD', '3D' : '3PD' }
-
-factor = { 'D' : 1, 'W' : 5, 'M' : 20 }
-
-for id in db.issue.getnodeids (retired = False) :
-    n = db.issue.getnode (id)
-    if n.effort :
-        effort = excpt.get (n.effort, n.effort)
-        m = _effort_regex.match (effort)
-        if not m :
-            print n.id
-        assert (m)
-        n_effort = int (m.groups ()[0]) * factor [m.groups ()[1][1]]
-        print '%5s: "%s" = %s' % (id, effort, n_effort)
-        db.issue.set (id, numeric_effort = n_effort)
-        db.issue.set (id, effort = None)
+ids = db.issue.getnodeids (retired = False)
+ids.sort (key = int)
+print "Last issue: %s" % ids [-1]
+for id in ids :
+    if (int (id) % 100) == 0 :
+        print "\r%s" % id,
+        sys.stdout.flush ()
+    issue = db.issue.getnode (id)
+    if issue.numeric_effort is None :
+        continue
+    hours = issue.numeric_effort * 8
+    if issue.numeric_effort and not issue.effort_hours :
+        db.issue.set (id, effort_hours = hours, numeric_effort = None)
+print ""
 db.commit ()

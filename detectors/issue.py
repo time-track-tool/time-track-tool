@@ -181,6 +181,14 @@ def check_part_of (db, cl, nodeid, new_values) :
                 (_ ("May not be part of Obsolete or Mistaken container"))
     status_cls = db.getclass (cl.properties ['status'].classname)
     open   = status_cls.lookup ('open')
+    # Allow change of effort_hours and numeric_effort if latter is set
+    # to false
+    if  (   len (new_values) == 2
+        and 'numeric_effort' in new_values
+        and 'effort_hours' in new_values
+        and new_values ['numeric_effort'] is None
+        ) :
+        return
     if part_of.status != open :
         raise Reject, _ ("Parent container must be in state open")
 # end def check_part_of
@@ -283,6 +291,11 @@ def fix_effort (db, cl, nodeid, new_values) :
         if effort and effort % 1 :
             new_values [ne] = int (effort + .5)
 # end def fix_effort
+
+def no_numeric_effort (db, cl, nodeid, new_values) :
+    if new_values.get ('numeric_effort', None) is not None :
+        raise Reject (_ ("Please use new effort_hours field"))
+# end def no_numeric_effort
 
 def doc_issue_status (db, cl, nodeid, new_values) :
     """ Check if doc_issue_status is set, if no we set it to undecided.
@@ -431,6 +444,9 @@ def init (db) :
         if 'numeric_effort' in db.issue.properties :
             db.issue.audit ("set",    fix_effort)
             db.issue.audit ("create", fix_effort)
+            if 'effort_hours' in db.issue.properties :
+                db.issue.audit ("set",    no_numeric_effort, priority = 80)
+                db.issue.audit ("create", no_numeric_effort, priority = 80)
         if 'doc_issue_status' in db.issue.properties :
             db.issue.audit ("set",    doc_issue_status)
             db.issue.audit ("create", new_doc_issue_status)

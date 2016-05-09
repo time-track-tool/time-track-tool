@@ -751,6 +751,12 @@ _helptext          = \
              hardware).
           '''
       ]
+    , ""'effort_hours'              :
+      [ ""'''The estimated effort this work package has in person hours.
+             This should be a fair estimate done by the Responsible of
+             the %(Classname)s.
+          '''
+      ]
     , ""'email'                       :
       [""'''Email address for this %(Classname)s''']
     , ""'email++password'             :

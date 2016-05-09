@@ -2959,6 +2959,9 @@ msgstr ""
 msgid "numeric_effort"
 msgstr "Effort"
 
+msgid "effort_hours"
+msgstr "Effort in hours"
+
 msgid ""
 "The estimated effort this work package has. This should be\n"
 "             a fair estimation done by the Responsible of the\n"

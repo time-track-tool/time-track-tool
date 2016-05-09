@@ -4223,7 +4223,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , messages       = [m1]
             , release        = 'None'
             , status         = opn
-            , numeric_effort = 1
+            , effort_hours   = 8
             , category       = pending
             )
         c1 = self.db.issue.create \
@@ -4231,7 +4231,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , messages       = [m1]
             , release        = 'None'
             , status         = opn
-            , numeric_effort = 1
+            , effort_hours   = 8
             , category       = pending
             , part_of        = mc
             )
@@ -4242,7 +4242,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , messages       = [m1]
             , release        = 'None'
             , status         = opn
-            , numeric_effort = 1
+            , effort_hours   = 8
             , category       = pending
             , part_of        = mc
             )

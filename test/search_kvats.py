@@ -81,6 +81,9 @@ properties = \
         , ( 'effective_prio'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
+        , ( 'effort_hours'
+          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
+          )
         , ( 'files'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )

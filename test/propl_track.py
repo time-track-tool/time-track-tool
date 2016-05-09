@@ -125,6 +125,7 @@ properties = \
         , 'doc_issue_status'
         , 'earliest_start'
         , 'effective_prio'
+        , 'effort_hours'
         , 'external_users'
         , 'files'
         , 'files_affected'

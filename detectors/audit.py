@@ -79,7 +79,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     responsible = newvalues.get    ("responsible")
     msg         = newvalues.get    ("messages")
     severity    = newvalues.get    ("severity")
-    effort      = newvalues.get    ("numeric_effort")
+    effort      = newvalues.get    ("effort_hours")
     part_of     = newvalues.get    ("part_of")
     try :
         bug     = db.kind.lookup   ('Bug')
@@ -165,7 +165,7 @@ def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
         , ('area',           False)
         , ('kind',           False)
         , ('responsible',    False)
-        , ('numeric_effort', True )
+        , ('effort_hours',   True )
         , ('severity',       False)
         ) :
         old = cl.get (nodeid, k)
@@ -197,7 +197,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     affected        = newvalues.get \
         ("files_affected", cl.get (nodeid, "files_affected"))
     effort          = newvalues.get \
-                      ("numeric_effort", cl.get (nodeid, "numeric_effort"))
+                      ("effort_hours", cl.get (nodeid, "effort_hours"))
     msg             = newvalues.get ("messages", None)
     severity        = newvalues.get ("severity", cl.get (nodeid, "severity"))
     dis_name        = 'doc_issue_status'
@@ -290,8 +290,14 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         if new_status_name == "open" and category.cert_sw :
             if kind_name == 'Change-Request' :
                 raise Reject, "No State-change to open for Change-Request"
-            if effort > 1 :
-                raise Reject, "State-change to open only for effort <= 1PD"
+            max_effort = int (getattr (db.config.ext, 'LIMIT_EFFORT', 8))
+            if effort > max_effort :
+                raise Reject \
+                    (_ ("State-change to open only for "
+                        "effort <= %(max_effort)s"
+                       )
+                    % locals ()
+                    )
 
     # A `message` must be given whenever `responsible` changes.
     if old_responsible != new_responsible :

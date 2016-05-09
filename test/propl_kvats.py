@@ -33,6 +33,7 @@ properties = \
         , 'depends'
         , 'earliest_start'
         , 'effective_prio'
+        , 'effort_hours'
         , 'files'
         , 'files_affected'
         , 'fixed_in'

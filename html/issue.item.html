@@ -146,11 +146,11 @@
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
-      <tal:block tal:condition="python: 'numeric_effort' in bclass.properties">
+      <tal:block tal:condition="python: 'effort_hours' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'numeric_effort')"/>
+           (classname, 'effort_hours')"/>
        <td tal:content="structure
-           python:context.numeric_effort.field (size = 15)"/>
+           python:context.effort_hours.field (size = 15)"/>
       </tal:block>
      </tr>
      <tal:block tal:condition="python:'prio' not in db._db.classes">

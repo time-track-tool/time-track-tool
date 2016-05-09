@@ -13,6 +13,7 @@ update_roundup = True
 [limit]
 picture_size = 10k
 file_size    = 100k
+effort       = 8
 
 [ttt]
 freeze_days = 0

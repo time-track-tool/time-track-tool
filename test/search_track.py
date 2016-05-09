@@ -285,6 +285,9 @@ properties = \
         , ( 'effective_prio'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )
+        , ( 'effort_hours'
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          )
         , ( 'external_users'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )
