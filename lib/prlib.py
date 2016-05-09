@@ -99,26 +99,26 @@ def compute_approvals (db, pr, do_create) :
         cur = db.pr_currency.getnode (pr.pr_currency)
     apr_by_r_d  = {}
     apr_by_role = {}
+    assert not do_create or pr.time_project or pr.sap_cc
+    d = None
+    if pr.time_project :
+        pcc = db.time_project.getnode (pr.time_project)
+        d   = _ ('%(tp)s responsible/deputy') \
+            % dict (tp = _ ('time_project'))
+    elif pr.sap_cc :
+        pcc = db.sap_cc.getnode (pr.sap_cc)
+        d   = _ ('%(cc)s responsible/deputy') % dict (cc = _ ('sap_cc'))
+    if d :
+        apr = gen_pr_approval \
+            ( db, do_create
+            , order            = 10
+            , purchase_request = pr.id
+            , user             = pcc.responsible
+            , deputy           = pcc.deputy
+            , description      = d
+            )
+        apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
     if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
-        assert not do_create or pr.time_project or pr.sap_cc
-        d = None
-        if pr.time_project :
-            pcc = db.time_project.getnode (pr.time_project)
-            d   = _ ('%(tp)s responsible/deputy') \
-                % dict (tp = _ ('time_project'))
-        elif pr.sap_cc :
-            pcc = db.sap_cc.getnode (pr.sap_cc)
-            d   = _ ('%(cc)s responsible/deputy') % dict (cc = _ ('sap_cc'))
-        if d :
-            apr = gen_pr_approval \
-                ( db, do_create
-                , order            = 10
-                , purchase_request = pr.id
-                , user             = pcc.responsible
-                , deputy           = pcc.deputy
-                , description      = d
-                )
-            apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
         assert not do_create or pr.department
         if pr.department :
             dep = db.department.getnode (pr.department)
@@ -190,17 +190,6 @@ def compute_approvals (db, pr, do_create) :
                     if role.lower () not in apr_by_role :
                         apr_by_role [role.lower ()] = add_approval_with_role \
                             (db, do_create, pr.id, role)
-    else :
-        req = db.user.getnode (pr.requester)
-        sup = db.user.getnode (req.supervisor)
-        apr_by_r_d [(sup.id, sup.supervisor)] = gen_pr_approval \
-            ( db, do_create
-            , order            = 10
-            , purchase_request = pr.id
-            , user             = sup.id
-            , deputy           = sup.supervisor
-            , description      = 'Supervisor'
-            )
     if not do_create :
         vals = apr_by_r_d.values () + apr_by_role.values ()
         vals.sort (key = lambda x : x ['order'])
