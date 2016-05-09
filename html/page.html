@@ -1225,7 +1225,7 @@
    <th><a tal:attributes=
           "href string:msg${msg/id};
            class python: ['messages','external']
-                         [bool(utils.has_x_roundup_cc_header (db, msg))]
+                         [bool(utils.has_x_roundup_header (db, msg))]
           "
           tal:content="string:msg${msg/id}"></a>
    </th>

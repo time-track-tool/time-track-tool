@@ -36,7 +36,7 @@ try :
 except ImportError :
     pass
 
-def has_x_roundup_cc_header (db, msg) :
+def has_x_roundup_header (db, msg) :
     try :
         db = db._db
     except AttributeError :
@@ -46,8 +46,11 @@ def has_x_roundup_cc_header (db, msg) :
         rcc = h.get_all ('X-ROUNDUP-CC')
         if rcc :
             return True
+        rto = h.get_all ('X-ROUNDUP-TO')
+        if rto :
+            return True
     return False
-# end def has_x_roundup_cc_header
+# end def has_x_roundup_header
 
 def prodcat_parents (db, utils, prodcat) :
     x = []
@@ -127,7 +130,7 @@ def mark_spam_js (db) :
 
 def init (instance) :
     reg = instance.registerUtil
-    reg ('has_x_roundup_cc_header', has_x_roundup_cc_header)
+    reg ('has_x_roundup_header',    has_x_roundup_header)
     reg ('prodcat_parents',         prodcat_parents)
     reg ('serials',                 serials)
     reg ('mark_spam_js',            mark_spam_js)
