@@ -109,10 +109,10 @@ def supplier_approved (db, context, supplier) :
         (None, dict (supplier = supplier.id, organisation = orgid))
     assert len (r) <= 1
     if len (r) == 1 :
-        s = ( 'Rating: <a title="%s" href="pr_supplier_rating%s">%s</a>'
-            % ( cgi.escape (str (r [0].scope))
+        s = ( 'Rating: %s (<a title="%s" href="pr_supplier_rating%s">Scope</a>)'
+            % ( cgi.escape (str (r [0].rating))
+              , cgi.escape (str (r [0].scope))
               , r [0].id
-              , cgi.escape (str (r [0].rating))
               )
             )
         return s
