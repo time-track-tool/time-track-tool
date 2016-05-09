@@ -609,6 +609,26 @@ def cust_agree (db, cl, nodeid, new_values) :
             )
 # end def cust_agree
 
+def close_spammy_customer (db, cl, nodeid, old_values) :
+    ocust = old_values.get ('customer')
+    ostat = old_values.get ('status')
+    if not ocust or not ostat :
+        return
+    issue = cl.getnode (nodeid)
+    ncust = issue.customer
+    nstat = issue.status
+    if ncust == ocust or nstat == ostat :
+        return
+    if db.customer.get (ncust, 'name') != 'SPAM' :
+        return
+    if db.sup_status.get (nstat, 'name') != 'closed' :
+        return
+    # OK, this support issue was closed as spam, old customer is *not*
+    # the spam customer (checked above they're different) so we mark
+    # the customer invalid
+    db.customer.set (ocust, is_valid = False)
+# end def close_spammy_customer
+
 def init (db) :
     if 'prodcat' in db.classes :
         db.prodcat.audit ("set",    check_prodcat)
@@ -638,6 +658,7 @@ def init (db) :
     db.support.audit   ("create", set_prodcat,              priority = 400)
     db.support.audit   ("set",    set_prodcat,              priority = 400)
     db.support.audit   ("set",    check_params,             priority = 450)
+    db.support.react   ("set",    close_spammy_customer)
 
     db.customer.audit  ("create", new_customer,             priority = 90)
     db.customer.audit  ("create", check_maildomain)
