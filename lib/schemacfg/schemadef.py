@@ -294,7 +294,9 @@ class Importer (object) :
             def __init__ (self, db, classname, ** properties) :
                 self.update_properties \
                     ( title       = String    (indexme = "yes")
-                    , responsible = Link      ("user")
+                    , responsible = Link      ("user"
+                                              , msg_header_property = 'username'
+                                              )
                     )
                 self.__super.__init__ (db, classname, ** properties)
             # end def __init__
