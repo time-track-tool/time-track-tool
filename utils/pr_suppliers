@@ -172,11 +172,11 @@ def main () :
                     % locals ()
                     )
             if args.update :
-                s_id = db.pr_supplier.create \
-                    ( name            = sup.encode ('utf-8')
-                    , sap_ref         = sap_e or None
-                    )
-            continue
+                d = dict (name = sup.encode ('utf-8'))
+                if sap_e :
+                    d ['sap_ref'] = sap_e
+                s_id = db.pr_supplier.create (** d)
+
         supplier = db.pr_supplier.getnode (s_id)
 
         scope = rec ['Scope'].decode (enc).encode ('utf-8')
