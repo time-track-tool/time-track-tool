@@ -625,8 +625,9 @@ def close_spammy_customer (db, cl, nodeid, old_values) :
         return
     # OK, this support issue was closed as spam, old customer is *not*
     # the spam customer (checked above they're different) so we mark
-    # the customer invalid
-    db.customer.set (ocust, is_valid = False)
+    # the customer invalid -- if not already invalid
+    if db.customer.get (ocust, 'is_valid') :
+        db.customer.set (ocust, is_valid = False)
 # end def close_spammy_customer
 
 def init (db) :
