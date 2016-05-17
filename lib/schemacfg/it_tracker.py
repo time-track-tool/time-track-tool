@@ -75,7 +75,9 @@ def init \
                                                             do_journal='no')
         , it_prio               = Link      ("it_prio",     do_journal='no')
         , category              = Link      ("it_category", do_journal='no')
-        , stakeholder           = Link      ("user",        do_journal='no')
+        , stakeholder           = Link      ("user",        do_journal='no'
+                                            , msg_header_property = 'username'
+                                            )
         , deadline              = Date      ()
         , it_project            = Link      ("it_project")
         , confidential          = Boolean   ()
@@ -119,7 +121,9 @@ def init \
                                                             do_journal = 'no')
         , it_prio               = Link      ("it_prio",     do_journal = 'no')
         , category              = Link      ("it_category", do_journal = 'no')
-        , stakeholder           = Link      ("user",        do_journal = 'no')
+        , stakeholder           = Link      ("user",        do_journal = 'no'
+                                            , msg_header_property = 'username'
+                                            )
         , deadline              = Date      ()
         , confidential          = Boolean   ()
         )
