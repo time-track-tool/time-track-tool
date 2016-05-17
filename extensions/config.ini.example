@@ -176,3 +176,6 @@ support_from = support@tttech.com
 
 [logging]
 it_issue_template = $(classname)s$(id)s: Request-Type: $(it_request_type.name)s Category: $(category.name)s Title: $(title)s
+
+[match]
+artefact=^http

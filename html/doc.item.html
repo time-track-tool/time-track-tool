@@ -72,6 +72,14 @@
      <th tal:content="structure python:fieldname ('link')" />
      <td tal:content="structure python:context.link.field (size=80)" />
     </tr>
+    <tr tal:condition="python:
+        utils.artefact_link_match (db, context.link.plain ())">
+     <td/>
+     <td>
+      <a tal:content="python:context.link.plain ().rsplit ('/', 1)[-1]"
+         tal:attributes="href python:context.link.plain()"/>
+     </td>
+    </tr>
     <tr tal:condition="context/artefact">
      <th tal:content="structure
           python:fieldname ('filename_format', classname = 'artefact')"/>

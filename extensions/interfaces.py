@@ -33,6 +33,7 @@
 import calendar
 import time
 import os
+import re
 import locale
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Interval
@@ -447,6 +448,20 @@ def may_search (db, uid, classname, property) :
     return True
 # end def may_search
 
+def artefact_link_match (db, field) :
+    """ Match given field content against configurable regex.
+        Return True if matching.
+    """
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    if not field :
+        return None
+    rgx = re.compile (getattr (db.config.ext, 'MATCH_ARTEFACT', 'http'))
+    return rgx.search (field)
+# end def artefact_link_match
+
 def init (instance) :
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
@@ -483,3 +498,4 @@ def init (instance) :
     reg ("may_search",                   may_search)
     reg ("Size_Limit",                   common.Size_Limit)
     reg ("user_props",                   user_props)
+    reg ("artefact_link_match",          artefact_link_match)
