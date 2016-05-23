@@ -6562,3 +6562,6 @@ msgstr "Confidential"
 msgid "examples"
 msgstr "Examples"
 
+msgid "hide_message_files"
+msgstr "Hide message files"
+

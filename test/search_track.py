@@ -1054,6 +1054,9 @@ properties = \
         , ( 'guid'
           , ['admin', 'user_view']
           )
+        , ( 'hide_message_files'
+          , ['admin', 'user_view']
+          )
         , ( 'nickname'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )

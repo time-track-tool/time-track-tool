@@ -235,7 +235,7 @@ Role "user":
  User is allowed to create queries (Create for "query" only)
  User is allowed to create time_record (Create for "time_record" only)
  User is allowed to create time_wp (Create for "time_wp" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'hide_message_files', 'lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
  User is allowed to edit doc (Edit for "doc" only)
  User is allowed to edit if he's the owner of the contact (Edit for "user_contact": ('visible',) only)
  User is allowed to edit their queries (Edit for "query" only)

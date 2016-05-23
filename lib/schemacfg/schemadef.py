@@ -170,6 +170,7 @@ def allow_user_details (db, role, permission, *additional_props) :
     """
     default_props = \
         [ 'csv_delimiter'
+        , 'hide_message_files'
         , 'lunch_duration'
         , 'lunch_start'
         , 'password'

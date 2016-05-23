@@ -177,7 +177,9 @@ def security (db, ** kw) :
         , klass       = 'user'
         , check       = schemadef.own_user_record
         , description = "Users are allowed to edit some of their details"
-        , properties  = ("password", "timezone", "csv_delimiter")
+        , properties  = ( "password", "timezone", "csv_delimiter"
+                        , "hide_message_files"
+                        )
         )
     db.security.addPermissionToRole ('External', p)
     p = db.security.addPermission \

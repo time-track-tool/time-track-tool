@@ -266,6 +266,11 @@
          ('user', 'csv_delimiter')"/>
      <td tal:content="structure context/csv_delimiter/field"/>
     </tr>
+    <tr tal:condition="python:'hide_message_files' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname
+         ('user', 'hide_message_files')"/>
+     <td tal:content="structure context/hide_message_files/field"/>
+    </tr>
     <tr tal:condition="python:'sip_device' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          ('user', 'sip_device')"/>

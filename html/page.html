@@ -1221,38 +1221,44 @@
            utils.fieldname (classname, 'messages')"/>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
-  <tr>
-   <th><a tal:attributes=
-          "href string:msg${msg/id};
-           class python: ['messages','external']
-                         [bool(utils.has_x_roundup_header (db, msg))]
-          "
-          tal:content="string:msg${msg/id}"></a>
-   </th>
-   <th>
-    <tal:block i18n:translate="">Author:</tal:block>
-    <a tal:attributes="href string:user${msg/author/id}"
-       tal:content="msg/author"/>
-   </th>
-   <th>
-    <tal:block i18n:translate="">Date:</tal:block>
-    <tal:block tal:content="msg/date"/>
-   </th>
-   <th tal:condition="may_remove_msgs">
-    <form style="padding:0" method="POST" tal:condition="context/is_edit_ok"
-          tal:attributes="action string:issue${context/id}">
-     <input type="hidden" name="@remove@messages" tal:attributes="value msg/id">
-     <input type="hidden" name="@action" value="edit">
-     <input type="submit" value="remove">
-    </form>
-   </th>
-  </tr>
-  <tr>
-   <td tal:attributes="colspan python:3+may_remove_msgs" class="content">
-    <div class="prewrap"
-         tal:content="structure python:msg.content.hyperlinked ()"/>
-   </td>
-  </tr>
+   <tr>
+    <th><a tal:attributes=
+           "href string:msg${msg/id};
+            class python: ['messages','external']
+                          [bool(utils.has_x_roundup_header (db, msg))]
+           "
+           tal:content="string:msg${msg/id}"></a>
+    </th>
+    <th>
+     <tal:block i18n:translate="">Author:</tal:block>
+     <a tal:attributes="href string:user${msg/author/id}"
+        tal:content="msg/author"/>
+    </th>
+    <th>
+     <tal:block i18n:translate="">Date:</tal:block>
+     <tal:block tal:content="msg/date"/>
+    </th>
+    <th tal:condition="may_remove_msgs">
+     <form style="padding:0" method="POST" tal:condition="context/is_edit_ok"
+           tal:attributes="action string:issue${context/id}">
+      <input type="hidden" name="@remove@messages"
+             tal:attributes="value msg/id">
+      <input type="hidden" name="@action" value="edit">
+      <input type="submit" value="remove">
+     </form>
+    </th>
+   </tr>
+   <tr>
+    <td tal:attributes="colspan python:3+may_remove_msgs" class="content">
+     <div class="prewrap"
+          tal:content="structure python:msg.content.hyperlinked ()"/>
+    </td>
+   </tr>
+   <tal:block tal:define="files python:msg.files"
+              tal:condition="python:
+              files and not request.user.hide_message_files">
+    <tal:block metal:use-macro="templates/page/macros/parametric_file_list"/>
+   </tal:block>
   </tal:block>
  </table>
 </tal:block>
@@ -1282,25 +1288,31 @@
 </tal:block>
 
 <tal:block metal:define-macro="file_list">
- <!-- list of files -->
- <table class="files" tal:condition="context/files">
-  <tr>
-   <th>File name</th>
-   <th>Uploaded</th>
-   <th>Type</th>
-  </tr>
-  <tr tal:repeat="file context/files">
-   <td>
-    <a tal:attributes="href file/download_url"
-       tal:content="file/name">dld link</a>
-   </td>
-   <td>
-    <span tal:content="file/creator">creator's name</span>,
-    <span tal:content="file/creation">creation date</span>
-   </td>
-   <td tal:content="file/type" />
-  </tr>
- </table>
+ <tal:block tal:define="files context/files">
+  <table class="files" tal:condition="files">
+   <tal:block metal:use-macro="templates/page/macros/parametric_file_list"/>
+  </table>
+ </tal:block>
+</tal:block>
+
+<!-- generic list of files with given parameter files -->
+<tal:block metal:define-macro="parametric_file_list">
+ <tr>
+  <th class="file">File name</th>
+  <th class="file">Uploaded</th>
+  <th class="file">Type</th>
+ </tr>
+ <tr tal:repeat="file files">
+  <td class="file">
+   <a tal:attributes="href file/download_url"
+      tal:content="file/name">dld link</a>
+  </td>
+  <td class="file">
+   <span tal:content="file/creator">creator's name</span>,
+   <span tal:content="file/creation">creation date</span>
+  </td>
+  <td tal:content="file/type" class="file"/>
+ </tr>
 </tal:block>
 
 <!-- the following lists a nice list of files plus file upload form -->

@@ -143,6 +143,7 @@ properties = \
       , [ 'address'
         , 'alternate_addresses'
         , 'csv_delimiter'
+        , 'hide_message_files'
         , 'password'
         , 'queries'
         , 'realname'

@@ -453,6 +453,9 @@ properties = \
         , ( 'csv_delimiter'
           , ['admin', 'user_view']
           )
+        , ( 'hide_message_files'
+          , ['admin', 'user_view']
+          )
         , ( 'password'
           , ['admin', 'user_view']
           )

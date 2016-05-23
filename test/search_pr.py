@@ -870,6 +870,9 @@ properties = \
         , ( 'guid'
           , ['admin', 'procurement-admin', 'user_view']
           )
+        , ( 'hide_message_files'
+          , ['admin', 'procurement-admin', 'user_view']
+          )
         , ( 'org_location'
           , ['admin', 'procurement-admin', 'user_view']
           )

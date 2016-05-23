@@ -910,6 +910,8 @@ _helptext          = \
       ]
     , ""'group'                       :
       [""'''UNIX Group for this %(Classname)s''']
+    , ""'hide_message_files'          :
+      [""'''If set, do not show files for each message in overview''']
     , ""'home_directory'              :
       [""'''UNIX home directory for %(Classname)s''']
     , ""'hostname'                    :

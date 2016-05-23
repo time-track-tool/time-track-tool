@@ -82,7 +82,9 @@ def security (db, ** kw) :
         , check       = schemadef.own_user_record
         , description = "Users are allowed to edit some of their properties"
         , properties  =
-            ("password", "realname", "alternate_addresses", "csv_delimiter")
+            ( "password", "realname", "alternate_addresses", "csv_delimiter"
+            , "hide_message_files"
+            )
         )
     db.security.addPermissionToRole ('ITuser', p)
     p = db.security.addPermission \

@@ -879,6 +879,9 @@ properties = \
         , ( 'guid'
           , ['admin', 'user_view']
           )
+        , ( 'hide_message_files'
+          , ['admin', 'user_view']
+          )
         , ( 'job_description'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )

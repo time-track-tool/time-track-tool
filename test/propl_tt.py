@@ -377,6 +377,7 @@ properties = \
         , 'department'
         , 'firstname'
         , 'guid'
+        , 'hide_message_files'
         , 'job_description'
         , 'lastname'
         , 'lunch_duration'

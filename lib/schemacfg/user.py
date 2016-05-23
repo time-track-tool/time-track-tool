@@ -31,7 +31,7 @@
 
 from schemacfg       import schemadef
 
-def init (db, String, Ext_Class, ** kw) :
+def init (db, String, Boolean, Ext_Class, ** kw) :
     export = {}
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)
@@ -41,6 +41,7 @@ def init (db, String, Ext_Class, ** kw) :
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( csv_delimiter          = String    ()
+                , hide_message_files     = Boolean   ()
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

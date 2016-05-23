@@ -544,6 +544,23 @@ table.messages td {
   padding: 2px 5px 2px 5px;
 }
 
+table.messages td.file {
+  border-bottom: 0px;
+  border-right: 0px;
+  border-left: 0px;
+}
+
+table.messages th.file {
+  background-color: #efefef;
+  font-family: monospace;
+}
+
+table.messages td.file:first-child {
+  border-bottom: 0px;
+  border-right: 0px;
+  border-left: 0px;
+}
+
 table.messages td:first-child {
   border-left: 1px solid #afafaf;
   border-right: 1px solid #afafaf;

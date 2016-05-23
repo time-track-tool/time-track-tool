@@ -206,6 +206,7 @@ properties = \
         , 'csv_delimiter'
         , 'department'
         , 'guid'
+        , 'hide_message_files'
         , 'org_location'
         , 'password'
         , 'queries'

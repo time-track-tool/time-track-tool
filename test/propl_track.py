@@ -449,6 +449,7 @@ properties = \
         , 'alternate_addresses'
         , 'csv_delimiter'
         , 'guid'
+        , 'hide_message_files'
         , 'nickname'
         , 'password'
         , 'queries'

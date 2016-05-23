@@ -21,7 +21,7 @@ Role "adr_readonly":
  User is allowed to access opening_hours (View for "opening_hours" only)
  User is allowed to access valid (View for "valid" only)
  User is allowed to access weekday (View for "weekday" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'csv_delimiter', 'password', 'queries', 'realname', 'timezone') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'timezone') only)
  User may access the web interface (Web Access)
 Role "anonymous":
  User may access the web interface (Web Access)
@@ -67,7 +67,7 @@ Role "user":
  User is allowed to create msg (Create for "msg" only)
  User is allowed to create opening_hours (Create for "opening_hours" only)
  User is allowed to create queries (Create for "query" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'csv_delimiter', 'password', 'queries', 'realname', 'timezone') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'timezone') only)
  User is allowed to edit address (Edit for "address" only)
  User is allowed to edit file (Edit for "file" only)
  User is allowed to edit letter (Edit for "letter" only)
