@@ -1005,8 +1005,15 @@ _helptext          = \
     , ""'is_alias'                    :
       [""'''No real user but only an email alias''']
     , ""'is_asset'                    :
-      [""'''Describes if the %(Classname)s is an asset, if unsure
-            leave this field to be filled in by purchasing department
+      [""'''Select YES for inventory or other asset goods to
+            be activated in the company's balance sheet.
+            Typical examples are office furniture, appliances (coffee
+            machines, refrigerators), tools (measuring equipment, test
+            stands, molds), etc.
+            If the situation for your purchase is unclear please contact
+            Finance or SCM.
+            In case this field is kept blank, the field will be
+            automatically set to NO after saving the PR.
          '''
       ]
     , ""'is_valid'                    :
@@ -1378,7 +1385,13 @@ _helptext          = \
       ]
     , ""'part_of_budget'               :
       [ ""'''This field is used in the approval process to identify
-             necessity of board approval.
+             necessity of board approval. If you are unsure, if the
+             purchase is covered within the valid budget, please contact
+             superior or cost unit responsible.
+
+             SCM shall be selected in case the purchase is covered in
+             SCM budget = material purchased on stock for sales to
+             customers according to sales forecast.
           '''
       ]
     , ""'part_of.id'                  : [help_id]
@@ -2247,7 +2260,14 @@ _helptext          = \
     , ""'value'                       :
       [""'''Value of this %(Classname)s''']
     , ""'vat'                 :
-      [""'''VAT (in percent)''']
+      [""'''Value Added Tax in percent.
+            The value added tax is depending on the location of supplier
+            and buying entity (Organisation). In case supplier and
+            entity are located in different countries, the applicable
+            tax is 0%. In case the the supplier and  entity are located
+            in the same country, the local VAT is applicable.
+         '''
+      ]
     , ""'view_roles'                  :
       [ ""'''Roles that may view purchase requests of this %(Classname)s
              enter a comma,separated,list
