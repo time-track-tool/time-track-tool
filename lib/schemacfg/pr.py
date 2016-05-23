@@ -431,12 +431,15 @@ def security (db, ** kw) :
 
     def own_pr (db, userid, itemid) :
         """ User is allowed permission on their own PRs if either creator or
-            requester.
+            requester or supervisor of requester.
         """
         if not itemid or itemid < 1 :
             return False
         pr = db.purchase_request.getnode (itemid)
         if pr.creator == userid or pr.requester == userid :
+            return True
+        sup = db.user.get (pr.requester, 'supervisor')
+        if sup and sup == userid :
             return True
         return False
     # end def own_pr
@@ -526,8 +529,8 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     def own_pr_and_open (db, userid, itemid) :
-        """ User is allowed to edit their own PRs (creator or requester)
-            while PR is open.
+        """ User is allowed to edit their own PRs (creator or requester
+            or supervisor of requester) while PR is open.
         """
         if not own_pr (db, userid, itemid) :
             return False
