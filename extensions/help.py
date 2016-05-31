@@ -2264,7 +2264,7 @@ _helptext          = \
             The value added tax is depending on the location of supplier
             and buying entity (Organisation). In case supplier and
             entity are located in different countries, the applicable
-            tax is 0%. In case the the supplier and  entity are located
+            tax is 0%%. In case the the supplier and  entity are located
             in the same country, the local VAT is applicable.
          '''
       ]
@@ -2471,7 +2471,7 @@ def init_purchase_type (db) :
         return
     global purchase_types
     pt = []
-    for id in db.purchase_type.getnodeids (retired = False) :
+    for id in db.purchase_type.filter (None, dict (valid = True)) :
         pr = db.purchase_type.getnode (id)
         pt.append ('\n    '.join ((pr.name, pr.description or '')))
     p = Structured_Text (purchase_types + '\n\n' + '\n\n'.join (sorted (pt)))
