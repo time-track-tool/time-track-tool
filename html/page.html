@@ -1064,7 +1064,7 @@
        has_files and want_files and context.files.is_edit_ok ()">
     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
     <td colspan="3">
-      <input type="file" name="@file" size="40"/>
+      <input type="file" name="@file" size="40" multiple="multiple"/>
       <tal:block tal:condition="python:
            utils.Size_Limit (db, 'LIMIT_FILE_SIZE')">
         &nbsp;Max:&nbsp;
