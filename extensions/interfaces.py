@@ -317,11 +317,13 @@ def approval_for (db, valid_only = False) :
     subst       = db.user.filter \
         (None, {'substitute' : uid, 'subst_active' : True})
     clearer_for.extend (subst)
+    # clearance_by may be inherited once via subst:
+    clearer_for.extend (db.user.find (clearance_by = subst))
     if not db.user.get (uid, 'clearance_by') :
         clearer_for.append (uid)
-    d = dict (supervisor = clearer_for)
+    d   = dict (supervisor = clearer_for)
+    d_a = dict (d)
     if valid_only :
-        d_a = dict (d)
         d_a ['status'] = db.user_status.lookup ('valid')
     approve_for = dict.fromkeys (db.user.filter (None, d_a), 1)
     if valid_only :
