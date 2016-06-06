@@ -798,9 +798,9 @@ def check_retire (db, cl, nodeid, new_values) :
 def send_mail_on_deny (db, cl, nodeid, old_values) :
     """If daily record is denied, send message to user."""
 
-    my_uid    = db.getuid ()
+    changer   = db.getuid ()
     other_uid = cl.get (nodeid, "user")
-    if my_uid == other_uid :
+    if changer == other_uid :
         return ### user reopened himself
 
     dr_status     = db.getclass ("daily_record_status")
@@ -811,8 +811,10 @@ def send_mail_on_deny (db, cl, nodeid, old_values) :
     if (old_status, new_status) == (s_sub, s_open) :
         mailer  = roundupdb.Mailer (db.config)
         date    = cl.get (nodeid, "date").pretty (common.ymd)
-        superv  = db.user.get (my_uid, "username")
+        sup     = db.user.getnode (changer)
+        superv  = sup.username
         email   = db.user.get (other_uid, "address")
+        sender  = (sup.realname, sup.address)
         subject = "Daily record denied for %(date)s by %(superv)s" % locals ()
         content = \
             ( "Your daily record for %(date)s has been denied.\n"
@@ -820,7 +822,7 @@ def send_mail_on_deny (db, cl, nodeid, old_values) :
             % locals ()
             )
         try :
-            mailer.standard_message ((email,), subject, content)
+            mailer.standard_message ((email,), subject, content, sender)
         except roundupdb.MessageSendError, message :
             raise roundupdb.DetectorError, message
 # end def send_mail_on_deny
