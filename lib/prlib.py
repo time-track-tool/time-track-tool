@@ -174,9 +174,10 @@ def compute_approvals (db, pr, do_create) :
                 d   = _ ('%(cc)s responsible/deputy') \
                         % dict (cc = _ ('sap_cc'))
             if pcc and (pcc.responsible, pcc.deputy) not in apr_by_r_d :
+                idx = oi.index or 0
                 apr = gen_pr_approval \
                     ( db, do_create
-                    , order            = 10 + oi.index * 0.001
+                    , order            = 10 + idx * 0.001
                     , purchase_request = pr.id
                     , user             = pcc.responsible
                     , deputy           = pcc.deputy
