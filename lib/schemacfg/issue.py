@@ -114,6 +114,20 @@ def init \
         )
     msg_keyword.setkey("name")
 
+    safety_level = Class \
+        ( db, "safety_level"
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
+        )
+    safety_level.setkey("name")
+
+    test_level = Class \
+        ( db, "test_level"
+        , name                = String    (indexme = 'no')
+        , description         = String    (indexme = 'no')
+        )
+    test_level.setkey("name")
+
     Optional_Doc_Issue_Class \
         ( db, "issue"
         , keywords            = Multilink ("keyword",     do_journal = 'no')
@@ -142,6 +156,8 @@ def init \
         , severity            = Link      ("severity",    do_journal = 'no')
         , maturity_index      = Number    ()
         , confidential        = Boolean   ()
+        , safety_level        = Link      ("safety_level")
+        , test_level          = Link      ("test_level")
         )
 
     Cls = kw ['Msg_Class']
@@ -178,6 +194,8 @@ def security (db, ** kw) :
         , ("status",            ["User"],               ["Issue_Admin"])
         , ("status_transition", ["User"],               ["Issue_Admin"])
         , ("severity",          ["User"],               ["Issue_Admin"])
+        , ("safety_level",      ["User"],               ["Issue_Admin"])
+        , ("test_level",        ["User"],               ["Issue_Admin"])
         ]
     prop_perms = \
         [ ( "msg", "Edit", ["MsgEdit", "MsgSync"]

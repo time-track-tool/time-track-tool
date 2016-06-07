@@ -50,9 +50,11 @@ properties = \
         , 'priority'
         , 'release'
         , 'responsible'
+        , 'safety_level'
         , 'severity'
         , 'status'
         , 'superseder'
+        , 'test_level'
         , 'title'
         ]
       )
@@ -100,6 +102,11 @@ properties = \
         , 'url'
         ]
       )
+    , ( 'safety_level'
+      , [ 'description'
+        , 'name'
+        ]
+      )
     , ( 'severity'
       , [ 'abbreviation'
         , 'name'
@@ -118,6 +125,11 @@ properties = \
         , 'require_msg'
         , 'require_resp_change'
         , 'target'
+        ]
+      )
+    , ( 'test_level'
+      , [ 'description'
+        , 'name'
         ]
       )
     , ( 'user'

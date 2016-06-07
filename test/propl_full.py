@@ -245,9 +245,11 @@ properties = \
         , 'priority'
         , 'release'
         , 'responsible'
+        , 'safety_level'
         , 'severity'
         , 'status'
         , 'superseder'
+        , 'test_level'
         , 'title'
         ]
       )
@@ -495,6 +497,11 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'safety_level'
+      , [ 'description'
+        , 'name'
+        ]
+      )
     , ( 'sap_cc'
       , [ 'deputy'
         , 'description'
@@ -639,6 +646,11 @@ properties = \
         , 'title'
         , 'type'
         , 'warranty'
+        ]
+      )
+    , ( 'test_level'
+      , [ 'description'
+        , 'name'
         ]
       )
     , ( 'time_activity'

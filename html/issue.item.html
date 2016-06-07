@@ -86,10 +86,10 @@
      </tal:block>
      <tr tal:condition="python:
         'category' in bclass.properties or 'release' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'category')"/>
       <td tal:content="structure python:context.category.menu (valid = True)"/>
-      <th tal:content="structure python:utils.fieldname
+      <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>
      </tr>
@@ -118,9 +118,9 @@
           (classname, 'status')"/>
       <td tal:content="structure python:context.status.menu
           (** utils.filter_status_transitions (context))" />
-      <th rowspan="4" tal:content="structure python:utils.fieldname
+      <th rowspan="3" tal:content="structure python:utils.fieldname
           (classname, 'keywords')"/>
-      <td rowspan="4"
+      <td rowspan="3"
        tal:content="structure python:context.keywords.menu (height = 4)"/>
      </tr>
      <tr tal:condition="python:'prio' in db._db.classes">
@@ -137,6 +137,14 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'doc_issue_status')"/>
       <td tal:content="structure python:context.doc_issue_status.menu ()"/>
+     </tr>
+     <tr tal:condition="python:'safety_level' in bclass.properties">
+      <th class='required' tal:content="structure python:utils.fieldname
+          (classname, 'safety_level')"/>
+      <td tal:content="structure python:context.safety_level.menu ()"/>
+      <th class='required' tal:content="structure python:utils.fieldname
+          (classname, 'test_level')"/>
+      <td tal:content="structure python:context.test_level.menu ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>

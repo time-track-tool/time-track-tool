@@ -48,6 +48,8 @@ def security (db, ** kw) :
         , ("status",            ["External"],    [])
         , ("status_transition", ["External"],    [])
         , ("ext_tracker_state", ["External"],    [])
+        , ("safety_level",      ["External"],    [])
+        , ("test_level",        ["External"],    [])
         ]
     if 'fault_frequency' in db.classes :
         classes.append \

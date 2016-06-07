@@ -58,6 +58,8 @@
     , ('ext_tracker',        dict (multiselect = 1))
     , ('external_users',     {})
     , ('ext_id',             {})
+    , ('safety_level',       dict (multiselect = 1))
+    , ('test_level',         dict (multiselect = 1))
     );
    props python:
        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

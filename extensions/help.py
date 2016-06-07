@@ -1718,6 +1718,10 @@ _helptext          = \
             suppliers (LAS).
          '''
       ]
+    , ""'safety_level'                :
+      [""'''ASIL %(Property)s for tracking safety-relevant topics
+         '''
+      ]
     , ""'salutation'                  :
       [""'''Salutation used for printing an address''']
     , ""'samba_home_drive'            :
@@ -2057,6 +2061,10 @@ _helptext          = \
              details of contract, cancellation terms etc. in message
              field.
           '''
+      ]
+    , ""'test_level'                :
+      [""'''Identifies the %(Property)s where this issue was found.
+         '''
       ]
     , ""'time_activity.id'            : [help_id]
     , ""'time_activity'               :

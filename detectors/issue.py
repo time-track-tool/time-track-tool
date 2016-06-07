@@ -410,6 +410,18 @@ def check_ext_tracker_state (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'issue')
 # end def check_ext_tracker_state
 
+def check_safety_and_test (db, cl, nodeid, new_values) :
+    if 'status' not in new_values :
+        return
+    ost = cl.get (nodeid, 'status')
+    nst = new_values ['status']
+    sto = db.status.lookup ('open')
+    if ost == nst or nst != sto:
+        return
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'safety_level', 'test_level')
+# end def check_safety_and_test
+
 def init (db) :
     global _
     _   = get_translation \
@@ -459,6 +471,8 @@ def init (db) :
             db.issue.audit ("set",    check_ext_user_part_of)
             db.issue.audit ("create", check_ext_user_responsible)
             db.issue.audit ("set",    check_ext_user_responsible)
+        if 'safety_level' in db.classes :
+            db.issue.audit ("set",    check_safety_and_test)
         if 'ext_msg' in db.classes :
             db.ext_msg.audit ("create", check_ext_msg)
             db.ext_msg.audit ("set",    set_ext_msg)

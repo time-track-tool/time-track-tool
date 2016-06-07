@@ -144,9 +144,11 @@ properties = \
         , 'priority'
         , 'release'
         , 'responsible'
+        , 'safety_level'
         , 'severity'
         , 'status'
         , 'superseder'
+        , 'test_level'
         , 'title'
         ]
       )
@@ -344,6 +346,11 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'safety_level'
+      , [ 'description'
+        , 'name'
+        ]
+      )
     , ( 'severity'
       , [ 'abbreviation'
         , 'name'
@@ -442,6 +449,11 @@ properties = \
         , 'title'
         , 'type'
         , 'warranty'
+        ]
+      )
+    , ( 'test_level'
+      , [ 'description'
+        , 'name'
         ]
       )
     , ( 'user'

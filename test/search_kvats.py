@@ -132,6 +132,9 @@ properties = \
         , ( 'responsible'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
+        , ( 'safety_level'
+          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
+          )
         , ( 'severity'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
@@ -139,6 +142,9 @@ properties = \
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
         , ( 'superseder'
+          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
+          )
+        , ( 'test_level'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
         , ( 'title'
@@ -242,6 +248,15 @@ properties = \
           )
         ]
       )
+    , ( 'safety_level'
+      , [ ( 'description'
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
+          )
+        , ( 'name'
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
+          )
+        ]
+      )
     , ( 'severity'
       , [ ( 'abbreviation'
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
@@ -280,6 +295,15 @@ properties = \
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )
         , ( 'target'
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
+          )
+        ]
+      )
+    , ( 'test_level'
+      , [ ( 'description'
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
+          )
+        , ( 'name'
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )
         ]
