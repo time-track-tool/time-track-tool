@@ -219,17 +219,18 @@ def security (db, ** kw) :
     """
 
     roles = \
-        [ ("Board",             "Approvals over certain limits")
-        , ("Nosy",              "Nosy list")
-        , ("Finance",           "Finance-related approvals")
-        , ("HR",                "Approvals for staff/subcontracting")
-        , ("IT-Approval",       "Approve IT-Related PRs")
-        , ("Procurement",       "Procurement department")
-        , ("Procurement-Admin", "Procurement administration")
-        , ("Procure-Approval",  "Procurement approvals")
-        , ("Quality",           "Approvals for Safety issues")
-        , ("Subcontract",       "Approvals for staff/subcontracting")
-        , ("PR-View",           "See all Purchase Requests")
+        [ ("Board",                "Approvals over certain limits")
+        , ("Nosy",                 "Nosy list")
+        , ("Finance",              "Finance-related approvals")
+        , ("HR",                   "Approvals for staff/subcontracting")
+        , ("IT-Approval",          "Approve IT-Related PRs")
+        , ("Procurement",          "Procurement department")
+        , ("Procurement-Admin",    "Procurement administration")
+        , ("Procure-Approval",     "Procurement approvals")
+        , ("Quality",              "Approvals for Safety issues")
+        , ("Subcontract",          "Approvals for staff/subcontracting")
+        , ("PR-View",              "See all Purchase Requests")
+        , ("Measurement-Approval", "Responsible for Measurement-Equipment")
         ]
 
     #     classname        allowed to view   /  edit

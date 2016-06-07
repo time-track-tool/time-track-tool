@@ -22,6 +22,7 @@ Role "controlling":
 Role "finance":
 Role "hr":
 Role "it-approval":
+Role "measurement-approval":
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
 Role "pgp":

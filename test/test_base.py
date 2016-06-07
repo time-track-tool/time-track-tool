@@ -141,6 +141,7 @@ class _Test_Case (unittest.TestCase) :
         , 'kpm-admin'
         , 'letter'
         , 'logger'
+        , 'measurement-approval'
         , 'msgedit'
         , 'msgsync'
         , 'nosy'
@@ -4410,7 +4411,8 @@ class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
-        , 'it-approval', 'nosy', 'pgp', 'pr-view', 'procure-approval'
+        , 'it-approval', 'measurement-approval', 'nosy', 'pgp', 'pr-view'
+        , 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'subcontract', 'user', 'user_view'
         ]
