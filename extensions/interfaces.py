@@ -318,7 +318,8 @@ def approval_for (db, valid_only = False) :
         (None, {'substitute' : uid, 'subst_active' : True})
     clearer_for.extend (subst)
     # clearance_by may be inherited once via subst:
-    clearer_for.extend (db.user.find (clearance_by = subst))
+    if subst :
+        clearer_for.extend (db.user.find (clearance_by = subst))
     if not db.user.get (uid, 'clearance_by') :
         clearer_for.append (uid)
     d   = dict (supervisor = clearer_for)
