@@ -223,6 +223,7 @@ def security (db, ** kw) :
         , ("Nosy",                 "Nosy list")
         , ("Finance",              "Finance-related approvals")
         , ("HR",                   "Approvals for staff/subcontracting")
+        , ("HR-Approval",          "Approvals for HR-related issues")
         , ("IT-Approval",          "Approve IT-Related PRs")
         , ("Procurement",          "Procurement department")
         , ("Procurement-Admin",    "Procurement administration")

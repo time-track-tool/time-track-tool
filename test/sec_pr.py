@@ -21,6 +21,7 @@ Role "controlling":
  User is allowed to edit query (Edit for "query" only)
 Role "finance":
 Role "hr":
+Role "hr-approval":
 Role "it-approval":
 Role "measurement-approval":
 Role "nosy":

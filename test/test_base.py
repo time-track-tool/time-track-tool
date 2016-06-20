@@ -129,6 +129,7 @@ class _Test_Case (unittest.TestCase) :
         , 'finance'
         , 'guest'
         , 'hr'
+        , 'hr-approval'
         , 'hr-leave-approval'
         , 'hr-org-location'
         , 'hr-vacation'
@@ -4411,8 +4412,8 @@ class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
-        , 'it-approval', 'measurement-approval', 'nosy', 'pgp', 'pr-view'
-        , 'procure-approval'
+        , 'hr-approval', 'it-approval', 'measurement-approval', 'nosy'
+        , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'subcontract', 'user', 'user_view'
         ]
