@@ -139,10 +139,10 @@
       <td tal:content="structure python:context.doc_issue_status.menu ()"/>
      </tr>
      <tr tal:condition="python:'safety_level' in bclass.properties">
-      <th class='required' tal:content="structure python:utils.fieldname
+      <th tal:content="structure python:utils.fieldname
           (classname, 'safety_level')"/>
       <td tal:content="structure python:context.safety_level.menu ()"/>
-      <th class='required' tal:content="structure python:utils.fieldname
+      <th tal:content="structure python:utils.fieldname
           (classname, 'test_level')"/>
       <td tal:content="structure python:context.test_level.menu ()"/>
      </tr>
