@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (C) 2003-9 TTTech Computertechnik GmbH. All rights reserved
+# Copyright (C) 2003-16 TTTech Computertechnik GmbH. All rights reserved
 # Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
 # ****************************************************************************
 # 
@@ -18,49 +18,50 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+from __future__ import print_function
 import os
 import sys
 import time
-from email.Utils        import formatdate
+import argparse
+from email.Utils        import formatdate, formataddr
 from smtplib            import SMTP, SMTPRecipientsRefused
-from getopt             import getopt, GetoptError
 from roundup            import instance
 
 #                 Minimum prio to warn
-types        = { 'Day' : 91,      'Week' : 40,       'Month' : 0 }
+type_prio    = { 'Day' : 91,      'Week' : 40,       'Month' : 0 }
 subject_type = { 'Day' : 'Daily', 'Week' : 'Weekly', 'Month' : 'Monthly' }
 
-top_level_containers = \
-    {  '5059' : 'Old (Closed) Releases and Projects'
-    ,  '5060' : 'Running projects and releases'
-    ,  '5160' : 'Future projects'
-    ,  '8769' : 'SW Action Items'
-    ,  '9332' : 'CCB Container'
-    , '11000' : 'DECOS'
-    , '12946' : 'A380 CPCS Certification Documentation TTChip'
-    , '20861' : 'TT-A664 project folder update generic issue'
-    , '23729' : 'C2NF-ALTERA Container'
-    , '23988' : 'Container for Sales Topics'
-    , '24001' : 'Container for (possible) Zeus 2 requirements requested ...'
-    , '25162' : 'TTX-Autolink Prototype'
-    , '25651' : 'Container for Improvments in future software versions'
-    , '26373' : 'Container: TT-GbE PM'
-    , '26961' : 'Container for Support Contracts'
-    , '27183' : 'Container: TT-GbE Design'
-    , '27456' : 'Container FlexRay Multirouter'
-    , '29065' : 'Container Parker Chip IP Prototype'
-    , '29325' : 'Container for Series Production'
-    , '29326' : 'Container for ZEUS CANopen implementation'
-    , '29327' : 'Container for Improvments in future hardware versions'
-    , '29729' : 'Parker Chip IP Container'
-    , '29924' : 'VIRA service tool issues and improvements'
-    , '30093' : 'VIRA service tool: Future features'
-    , '30345' : 'Container for TTE Evalsystem 100 Mbit/s'
-    , '30434' : 'Certification documents container'
-    , '30441' : 'Container for schematics and layout'
-    , '30442' : 'TTC 50/60/90 SW Release V1.0'
-    , '30556' : 'HYDRIVE Container'
-    }
+top_level_containers = dict.fromkeys \
+    (( '5059'
+    ,  '5060'
+    ,  '5160'
+    ,  '8769'
+    ,  '9332'
+    , '11000'
+    , '12946'
+    , '20861'
+    , '23729'
+    , '23988'
+    , '24001'
+    , '25162'
+    , '25651'
+    , '26373'
+    , '26961'
+    , '27183'
+    , '27456'
+    , '29065'
+    , '29325'
+    , '29326'
+    , '29327'
+    , '29729'
+    , '29924'
+    , '30093'
+    , '30345'
+    , '30434'
+    , '30441'
+    , '30442'
+    , '30556'
+    ))
 
 format = \
     ( "%(missing_effort)1s %(id)5s %(category)-15.15s "
@@ -96,88 +97,116 @@ class user_report :
                 s.append ("%s\n" % l)
         return "".join (s)
 
-    def mail (self, smtp, header) :
+    def mail (self, smtp, header, frm) :
         to    = "To: %s" % self.user
-        date  = "Date: %s"   % formatdate (time.time (), True)
+        fm    = "From: %s" % formataddr (frm)
+        date  = "Date: %s" % formatdate (time.time (), True)
         mime  = \
             [ 'Mime-Version: 1.0'
             , 'Content-Type: text/plain; charset=UTF-8'
             , 'Content-Transfer-Encoding: 8bit'
             ]
         smtp.sendmail \
-            ( 'roundup-admin@tttech.com'
+            ( frm [-1]
             , self.user
             , '\n'.join \
                 ( header
-                + [to, date, "X-" + date]
+                + [to, fm, date, "X-" + date]
                 + mime
                 + ["\n", str (self)]
                 )
             )
 # end class user_report
 
-def usage () :
-    usage_msg = \
-        ( 'Usage: %s [-h|--help] [-m|--mail] [-t|--tracker t] '
-          '[-u|--user u] [-r|--report_type r]\n' \
-        % sys.argv [0]
-        )
-    sys.stderr.write (usage_msg)
-    sys.exit ()
-
 def print_results (user_reports) :
     for user, report in user_reports.iteritems () :
-        print "%s:\n" % user, str (report)
+        print ("%s:\n" % user, str (report))
+
+class Fake_Smtp (object) :
+
+    def __init__ (self, hostname) :
+        self.hostname = hostname
+    # end def __init__
+
+    def sendmail (self, frm, to, content) :
+        print ("SENDING VIA: %s" % self.hostname)
+        print ('Envelope-from: %s' % frm)
+        print ('Envelope-to: %s'   % to)
+        print (content)
+        print ("\n")
+
+# end class Fake_Smtp
 
 
 def mail_results (user_reports) :
-    smtp = SMTP ('mail.vie.at.tttech.ttt')
+    global admin_email, admin_name
+    global args
+    frm = (admin_name, admin_email)
+    smtpclass = SMTP
+    if args.debug_smtp :
+        smtpclass = Fake_Smtp
+    smtp = smtpclass (args.hostname)
     header = \
-        [ "Subject: %s Summary of pending bug reports" % subject_type [type]
+        [ "Subject: %s Summary of pending bug reports"
+        % subject_type [args.report_type]
         ]
     for report in user_reports.values () :
         try :
-            report.mail (smtp, header)
+            report.mail (smtp, header, frm)
         except SMTPRecipientsRefused, cause :
             print >> sys.stderr, cause
 # end def mail_results
 
-# defaults
+cmd     = argparse.ArgumentParser ()
+cmd.add_argument \
+    ( '-D', '--debug-smtp'
+    , help    = 'Debug SMTP instead of sending email'
+    , action  = 'store_true'
+    )
+cmd.add_argument \
+    ( '-m', '--mail'
+    , help    = 'Email reminder to responsible person(s)'
+    , action  = 'store_true'
+    )
+cmd.add_argument \
+    ( '-H', '--email-hostname'
+    , help    = 'Hostname used for sendmail'
+    , default = 'localhost'
+    , dest    = 'hostname'
+    )
+cmd.add_argument \
+    ( '-r', '--report_type'
+    , help    = 'Report type, one of %s' % ', '.join (type_prio.keys ())
+    , default = 'Week'
+    )
+cmd.add_argument \
+    ( '-t', '--tracker'
+    , help    = 'Tracker home directory'
+    , default = '/roundup/tracker/ttt'
+    )
+cmd.add_argument \
+    ( '-u', '--user'
+    , help    = 'User for opening the tracker'
+    , default = 'admin'
+    )
+args = cmd.parse_args ()
+
 out_fun = print_results
-tpath   = "/roundup/tracker/ttt"
-user    = "admin"
-type    = "Week"
+if args.mail :
+    out_fun = mail_results
+if args.report_type not in type_prio :
+    print ('Wrong type: "%s"', file = sys.stderr)
+    cmd.usage ()
 
-try :
-    opts, args = getopt \
-        ( sys.argv [1:]
-        , "hmr:t:u:"
-        , ["help", "mail", "tracker=", "user=", "report_type="]
-        )
-except GetoptError : usage ()
+tracker = instance.open (args.tracker)
+minprio = type_prio [args.report_type]
 
-for o, a in opts :
-    if o in ("-h", "--help") :
-        usage ()
-    if o in ("-m", "--mail") :
-        out_fun = mail_results
-    if o in ("-t", "--tracker") :
-        tpath = a
-    if o in ("-u", "--user") :
-        user = a
-    if o in ("-r", "--report_type") :
-        type = a
-        if not types.has_key (type) :
-            sys.stderr.write \
-                ('Wrong type: "%s", allowed are %s\n' % (type, types.keys ()))
-            usage ()
+db = tracker.open (args.user)
+admin_email = db.config.ADMIN_EMAIL
+admin_name  = db.config.EMAIL_FROM_TAG
+admin_email = getattr (db.config.ext, 'MAIL_SENDER_ADDR', admin_email)
+admin_name  = getattr (db.config.ext, 'MAIL_SENDER_NAME', admin_name)
 
-if args: usage ()
-
-tracker = instance.open (tpath)
-minprio = types [type]
-
-db = tracker.open (user)
 sys.path.insert (1, os.path.join (tracker.tracker_home, 'lib'))
 from prettynode import prettynode
 
@@ -200,7 +229,7 @@ for user in  db.user.list () :
         pretty = prettynode (issue)
         if not issue.part_of and not top_level_containers.has_key (issue.id) :
             lonely_lines.append (format % pretty)
-        if issue.composed_of and type == "Day" : continue
+        if issue.composed_of and args.report_type == "Day" : continue
         prio = pretty ["priority"] or 0
         if pretty ["effective_prio"] is not None :
             prio = pretty ["effective_prio"]
