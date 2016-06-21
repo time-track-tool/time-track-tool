@@ -1088,6 +1088,7 @@
             type="button" value="Show History"
             i18n:attributes="value"
             tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
+     <tal:block metal:define-slot="right_of_show_history"/>
     </td>
    </tr>
    <tr metal:define-slot="formatted_class_listentry"/>
@@ -1171,6 +1172,12 @@
    </td>
   </tr>
  </table>
+</tal:block>
+
+<tal:block metal:define-macro="send_to_customer">
+     <input type="button" tal:condition="context/id"
+            value="Send to Customer" i18n:attributes="value"
+            tal:attributes="onClick python:utils.send_to_customer_js ()"/>
 </tal:block>
 
 <tal:block metal:define-macro="copy_button">

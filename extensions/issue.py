@@ -129,6 +129,14 @@ def edit_button (context, utils) :
     assert None
 # end def edit_button
 
+def send_to_customer_js () :
+    return \
+        (
+         "document.forms.itemSynopsis.send_to_customer.value = 'yes';"
+         "document.forms.itemSynopsis.submit ();"
+        )
+# end def send_to_customer_js
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('filter_status_transitions', common.filter_status_transitions)
@@ -136,6 +144,7 @@ def init (instance) :
     reg ('copy_js',                   common.copy_js)
     reg ('ext_attributes',            ext_attributes)
     reg ('kpm_edit_button',           edit_button)
+    reg ('send_to_customer_js',       send_to_customer_js)
     act = instance.registerAction
     act ('kpm_edit_action',           KPM_Edit_Action)
     act ('kpm_new_action',            KPM_New_Action)

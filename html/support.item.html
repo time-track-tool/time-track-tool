@@ -319,9 +319,10 @@
             ).formatlink ()"/>
       </tr>
       <tr>
-       <th tal:content="structure python:utils.fieldname
-           (classname, 'send_to_customer')"/>
-       <td tal:content="structure python:context.send_to_customer.field ()"/>
+       <th/>
+       <td>
+        <input type="hidden" name="send_to_customer" value="no">
+       </td>
        <th tal:content="structure python:utils.fieldname
            (classname, 'external_ref')"/>
        <td tal:content="structure python:context.external_ref.field ()"/>
@@ -434,6 +435,9 @@
     <tal:block metal:fill-slot="additional_button">
      <tal:block metal:use-macro="templates/page/macros/copy_button"/>
      <tal:block metal:use-macro="templates/page/macros/spam_button"/>
+    </tal:block>
+    <tal:block metal:fill-slot="right_of_show_history">
+     <tal:block metal:use-macro="templates/page/macros/send_to_customer"/>
     </tal:block>
    </tal:block>
   </tal:block>
