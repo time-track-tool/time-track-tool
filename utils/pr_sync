@@ -125,6 +125,20 @@ class PR_Sync (autosuper) :
         return user ['status'] == self.uvalid
     # end def check_user
 
+    def search_time_project (self, item, id) :
+        """ Try to find time_project by description which contains the
+            *original*  id.
+        """
+        d = item ['description']
+        if not d :
+            return None
+        items = self.db.time_project.filter (None, dict (description = d))
+        for it in items :
+            if self.db.time_project.get (it, 'description') == d :
+                return it
+        return None
+    # end def search_time_project
+
     def fix_prop (self, value) :
         if isinstance (value, text_type) :
             return value.encode ('utf-8')
@@ -146,8 +160,10 @@ class PR_Sync (autosuper) :
             return None
         idm = self.idmap [self.getpropclass (prop)]
         if self.is_multilink (self.classname, prop) :
-            v = [idm [x] for x in value]
-            return v
+            v = [idm [x] for x in value if x in idm]
+            if v :
+                return v
+            return None
         return idm [value]
     # end def map_id
 
@@ -244,8 +260,13 @@ class PR_Sync (autosuper) :
                 nonmapped [p] = 1
         if pending and update :
             self.pendmap [classname] = {}
+        found = {}
         for id in self.srv.filter (classname, None, {}) :
+            lid = None
+            item = self.srv.display (classname + id, * (propnames + additional))
             if id in dont_sync :
+                lid = cls.lookup (self.fix_prop (item [key]))
+                found [lid] = True
                 continue
             item = self.srv.display (classname + id, * (propnames + additional))
             valid = True
@@ -255,11 +276,12 @@ class PR_Sync (autosuper) :
             fixer = getattr (self, 'fix_' + classname, None)
             if fixer :
                 fixer (item, id)
-            lid = None
+            propsearch = getattr (self, 'search_' + classname, None)
             try :
                 lid = cls.lookup (self.fix_prop (item [key]))
             except KeyError :
-                pass
+                if propsearch :
+                    lid = propsearch (item, id)
             if valid :
                 self.verbose \
                     ("Syncing: %s%s %s" % (classname, id, item), level = 3)
@@ -299,7 +321,9 @@ class PR_Sync (autosuper) :
                         self.verbose ("Create: %s %s" % (classname, params))
                         if self.update and update :
                             lid = cls.create (** params)
+                            found [lid] = True
                 else :
+                    found [lid] = True
                     litem = cls.getnode (lid)
                     d = {}
                     for p in default :
@@ -351,6 +375,20 @@ class PR_Sync (autosuper) :
                         self.verbose ("Marking obsolete: user%s" % lid)
                         if self.update and update :
                             cls.set (lid, status = self.obsolete)
+        for lid in cls.getnodeids (retired = False) :
+            node = cls.getnode (lid)
+            if classname == 'user' and node.status == self.obsolete :
+                continue
+            if lid not in found :
+                if classname == 'user' :
+                    self.verbose ("MARKING obsolete: user%s" % lid)
+                    if self.update and update :
+                        cls.set (lid, status = self.obsolete)
+                else :
+                    self.verbose ("RETIRE: %s%s" % (classname, lid))
+                    if self.update and update :
+                        cls.retire (lid)
+
         if self.update and update :
             self.db.commit ()
     # end def sync_class
