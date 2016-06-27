@@ -167,7 +167,7 @@ Role "procurement":
  User is allowed Edit on (Edit for "time_project": ('purchasing_agents',) only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
- User is allowed Edit on (Edit for "time_project": ('max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group') only)
+ User is allowed Edit on (Edit for "time_project": ('max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'work_location') only)
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
  User is allowed to create time_project (Create for "time_project" only)
