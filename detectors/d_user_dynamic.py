@@ -29,6 +29,7 @@
 #    Detectors for 'user_dynamic'
 #
 
+from itertools                      import izip
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
@@ -87,6 +88,35 @@ def check_vacation (attr, new_values) :
 
 def hours_iter () :
     return ('hours_' + wday for wday in user_dynamic.wdays)
+# end def hours_iter
+
+def distribute_weekly_hours (h) :
+    """ Distribute weekly hours (almost) evenly to workdays
+        >>> distribute_weekly_hours (39)
+        [7.75, 7.75, 7.75, 7.75, 8.0, 0.0, 0.0]
+        >>> distribute_weekly_hours (38.5)
+        [7.75, 7.75, 7.75, 7.75, 7.5, 0.0, 0.0]
+        >>> distribute_weekly_hours (40)
+        [8.0, 8.0, 8.0, 8.0, 8.0, 0.0, 0.0]
+        >>> distribute_weekly_hours (41)
+        [8.25, 8.25, 8.25, 8.25, 8.0, 0.0, 0.0]
+        >>> distribute_weekly_hours (42)
+        [8.5, 8.5, 8.5, 8.5, 8.0, 0.0, 0.0]
+        >>> distribute_weekly_hours (42.25)
+        [8.5, 8.5, 8.5, 8.5, 8.25, 0.0, 0.0]
+        >>> distribute_weekly_hours (42.5)
+        [8.5, 8.5, 8.5, 8.5, 8.5, 0.0, 0.0]
+    """
+    r = []
+    d = user_dynamic.round_daily_work_hours (h / 5.)
+    for n, f in enumerate (hours_iter ()) :
+        dl = min (d, h)
+        if n == 4 :
+            dl = h
+        r.append (dl)
+        h -= dl
+    return r
+# end def distribute_weekly_hours
 
 def check_overtime_parameters (db, cl, nodeid, new_values) :
     class X : pass
@@ -139,20 +169,26 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
                 break
     else :
         if 'weekly_hours' in new_values and X.weekly_hours :
-            maybe_daily = False
+            if X.weekly_hours % .25 :
+                wh = _ ("weekly_hours")
+                raise Reject \
+                    ("%(wh)s must be in whole quarter hours" % locals ())
             h = X.weekly_hours
-            d = user_dynamic.round_daily_work_hours (h / 5.)
-            for f in hours_iter () :
-                daily = min (d, h)
-                new_values [f] = daily
-                setattr (X, f, daily)
-                h -= daily
+            for k, v in izip (hours_iter (), distribute_weekly_hours (h)) :
+                new_values [k] = v
+                setattr (X, k, v)
+            maybe_daily = False
+            daily = False
     if daily or maybe_daily :
         sum = 0
         for f in hours_iter () :
             if getattr (X, f) is None :
                 new_values [f] = 0
                 setattr (X, f, 0)
+            if getattr (X, f) % .25 :
+                dh = _ (f)
+                raise Reject \
+                    ("%(dh)s must be in whole quarter hours" % locals ())
             sum += getattr (X, f)
         new_values ['weekly_hours'] = sum
         setattr (X, 'weekly_hours', sum)
