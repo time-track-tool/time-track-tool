@@ -2,29 +2,35 @@
  * jQuery JavaScript Extention - Issue Tracker
  * http://jquery.com/
  *
- * Author:      NSC, modified RSC for new layout (without <pre> tag)
- *              also move css to stylesheet
- * Date:        2015-09-01
+ * Author:      NSC
+ * Revision:	2
+ * Date:        2016-07-02
  */
 $(document).ready(function() {
+	String.prototype.regexIndexOf = function(regex, startpos = 0) {
+		var indexOf = this.substring(startpos || 0).search(regex);
+		return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+	}	
+	var messageSplit = "(-----Original Message-----)|(---Original Nachricht---)"; //regex
+	
     $("table.messages td.content").each(function() {
-         if($(this).html().indexOf("-----Original Message-----") > -1) {
-            $(this).find("div").wrapInner("<div class='pre'></div>");
-            $(this).find("div.pre").unwrap();
-            var oContent = $(this).find(".pre").html();
-            var pos = oContent.indexOf("-----Original Message-----");
-            var nContent = oContent.substr(0,(pos-1));
-            var nAttachment = oContent.substr(pos,oContent.length);
-            $(this).find(".pre").html(nContent).wrapInner("<div class='prewrap'></div>");
-            var trigger = $("<a href='javascript:void(0)'><span>▶</span> attached mail</a>").appendTo($(this).find(".pre"));
-            $(trigger).addClass('toggle')
-            var mail = $("<div>"+nAttachment+"</div>").appendTo($(this).find("div.pre"));
-            $(mail).addClass('attachment').hide();
+         if($(this).find("div.prewrap").html().regexIndexOf(messageSplit) > -1) {
+			var pos 		= $(this).find("div.prewrap").html().regexIndexOf(messageSplit);
+			var preTXT		= $(this).find("div.prewrap").html().substr(0,(pos-1));
+			var messageTXT	= $(this).find("div.prewrap").html().substr(pos,$(this).find("div.prewrap").html().length);
+			$(this).find("div.prewrap").html(preTXT);
+            var trigger = $("<a href='javascript:void(0)' class='toggle'><span>▶</span> attached mail</a>").appendTo($(this).find("div.prewrap"));
+			var mail = $("<br /><div>"+messageTXT+"</div>").appendTo($(this).find("div.prewrap"));
+			$(mail).addClass('attachment').hide();	
             $(trigger).click(function() {
                 $(this).parent("div").find(".attachment").slideToggle();
                     if($(this).find("span").html() == "▼") {$(this).find("span").html("▶");} else {$(this).find("span").html("▼");}
-            });
-            $(this).find("div.pre").addClass('prewrap').delClass('pre')
+            });			
+			pos = null;
+			preTXT = null;
+			messageTXT = null;
+			trigger = null;
+			mail = null;
          }
     });
 });
