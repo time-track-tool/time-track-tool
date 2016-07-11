@@ -60,11 +60,15 @@ def gen_pr_approval (db, do_create, ** values) :
 # end def gen_pr_approval
 
 def add_approval_with_role (db, do_create, prid, role) :
-    oid = db.pr_approval_order.lookup (role.lower ())
-    ord = db.pr_approval_order.getnode (oid)
+    try :
+        oid = db.pr_approval_order.lookup (role.lower ())
+        ord = db.pr_approval_order.getnode (oid)
+        order = ord.order
+    except KeyError :
+        order = 50
     return gen_pr_approval \
         ( db, do_create
-        , order            = ord.order
+        , order            = order
         , purchase_request = prid
         , role             = role.lower ()
         , description      = role
