@@ -140,6 +140,7 @@ def security (db, ** kw) :
 
     linkperms = \
         [ ("file", ['User'],      ['View', 'Edit'], linkclass_iter (db, "file"))
+        , ("file", ['IT'],        ['View', 'Edit'], linkclass_iter (db, "file"))
         , ("msg",  ['User'],              ['View'], linkclass_iter (db, "msg"))
         , ("msg",  ['Issue_Admin', 'IT'], ['Edit'], linkclass_iter (db, "msg"))
         ]
