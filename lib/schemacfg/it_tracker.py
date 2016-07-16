@@ -52,6 +52,8 @@ def init \
         , name                  = String    ()
         , description           = String    ()
         , valid                 = Boolean   ()
+        , nosy                  = Multilink ("user")
+        , responsible           = Link      ("user")
         )
     it_category.setkey ("name")
 

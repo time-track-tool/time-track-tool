@@ -48,6 +48,15 @@ def new_it (db, cl, nodeid, new_values) :
         new_values ['status'] = '1'
     if 'category'     not in new_values :
         new_values ['category'] = '1'
+    cat = db.it_category.getnode (new_values ['category'])
+    nosy = dict.fromkeys (new_values.get ("nosy", []))
+    if cat.responsible :
+        nosy [cat.responsible] = 1
+        if 'responsible' not in new_values :
+            new_values ['responsible'] = cat.responsible
+    if cat.nosy :
+        nosy.update (dict.fromkeys (cat.nosy))
+    new_values ['nosy'] = nosy.keys ()
     if 'responsible'  not in new_values :
         new_values ['responsible'] = db.user.lookup ('helpdesk')
     if 'stakeholder'  not in new_values :
