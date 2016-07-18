@@ -177,7 +177,10 @@ def security (db, ** kw) :
         ]
 
     prop_perms = \
-        [ ( "location", "Edit", ["IT"]
+        [ ( "file", "Edit", ["IT"]
+          , ("type", "name")
+          )
+        , ( "location", "Edit", ["IT"]
           , ("domain_part",)
           )
         , ( "org_location", "Edit", ["IT"]
