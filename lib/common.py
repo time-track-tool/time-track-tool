@@ -288,7 +288,7 @@ def get_uids_with_role (db, role) :
         if user_has_role (db, uid, role) :
             users.append (uid)
     return users
-# end def get_users_with_role
+# end def get_uids_with_role
 
 def clearance_by (db, userid, only_subs = False) :
     assert (userid)

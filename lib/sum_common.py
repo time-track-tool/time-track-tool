@@ -143,7 +143,7 @@ def get_users (db, filterspec, start, end) :
     olo   = None
     if 'organisation' in filterspec :
         olo = db.org_location.filter \
-            (None, organisation = filterspec ['organisation'])
+            (None, dict (organisation = filterspec ['organisation']))
     for cl in 'department', 'org_location', 'org' :
         if cl == 'org' :
             cl = 'org_location'
