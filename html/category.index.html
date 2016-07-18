@@ -9,15 +9,16 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    prp python:
-    ( ('id',           {})
-    , ('name',         {})
-    , ('prodcat',      dict (multiselect = 1))
-    , ('description',  {})
-    , ('responsible',  {})
-    , ('nosy',         {})
-    , ('valid',        {})
-    , ('cert_sw',      {})
-    , ('ext_trackers', dict (multiselect = 1))
+    ( ('id',              {})
+    , ('name',            {})
+    , ('prodcat',         dict (multiselect = 1))
+    , ('default_part_of', dict (searchable = 1, sortable = 1, do_classhelp = 0))
+    , ('description',     {})
+    , ('responsible',     {})
+    , ('nosy',            {})
+    , ('valid',           {})
+    , ('cert_sw',         {})
+    , ('ext_trackers',    dict (multiselect = 1))
     );
    props python:
     [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
