@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rsync -a --delete /var/lib/tracker/helpdesk/ /var/lib/tracker/backup/helpdesk/current/helpdesk
+su -c 'pg_dump helpdesk' roundup > /var/lib/tracker/backup/helpdesk/current/helpdesk.dump
