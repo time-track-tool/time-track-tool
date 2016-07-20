@@ -49,6 +49,7 @@ schemas = \
     , 'keyword'
     , 'kpm'
     , 'ext_tracker'
+    , 'msg_header'
     , 'issue'
     , 'it_part_of'
     , 'it_tracker'

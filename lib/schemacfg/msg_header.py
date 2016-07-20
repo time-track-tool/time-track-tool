@@ -1,11 +1,9 @@
-#! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2014-15 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-15 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -19,26 +17,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# ****************************************************************************
+#
 #++
 # Name
-#    interfaces
+#    issue
 #
 # Purpose
-#    Override classes in roundup
+#    Schema definitions for issue tracker derived from gnats
+#
 #--
 #
-import roundup.mailgw
-from rsclib.autosuper import autosuper
 
-class parsedMessage (roundup.mailgw.parsedMessage, autosuper) :
-    def create_msg (self) :
-        self.__super.create_msg ()
-        if  ('messages' in self.props and 'header' in self.db.msg.properties) :
-            msgid = self.props ['messages'][-1]
-            self.db.msg.set (msgid, header = ''.join (self.message.headers))
-    # end def create_msg
-# end class parsedMessage
+from schemacfg       import schemadef
 
-class MailGW (roundup.mailgw.MailGW) :
-    parsed_message_class = parsedMessage
-# end class MailGW
+def init (db, String, ** kw) :
+    Cls = kw ['Msg_Class']
+    class Msg_Class (Cls) :
+        """ extends the normal FileClass with some attributes for message
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( header      = String    (indexme = 'no')
+                )
+            self.__super.__init__ (db, classname, ** properties)
+        # end def __init__
+    # end class Msg_Class
+    return dict (Msg_Class = Msg_Class)
+# end def init

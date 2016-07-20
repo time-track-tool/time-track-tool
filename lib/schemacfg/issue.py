@@ -166,8 +166,7 @@ def init \
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( header      = String    (indexme = 'no')
-                , keywords    = Multilink ("msg_keyword", do_journal = 'no')
+                ( keywords    = Multilink ("msg_keyword", do_journal = 'no')
                 , subject     = String    (indexme = 'no')
                 )
             self.__super.__init__ (db, classname, ** properties)

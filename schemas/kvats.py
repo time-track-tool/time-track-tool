@@ -41,6 +41,7 @@ from schemacfg import schemadef
 # Note: order matters, core is always last.
 schemas = \
     ( 'keyword'
+    , 'msg_header'
     , 'issue'
     , 'core'
     )

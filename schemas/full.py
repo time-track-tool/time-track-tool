@@ -52,6 +52,7 @@ schemas = \
     , 'docissue'
     , 'keyword'
     , 'ext_tracker'
+    , 'msg_header'
     , 'issue'
     , 'doc'
     , 'it_tracker'
