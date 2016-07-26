@@ -43,7 +43,7 @@ def union (* lists) :
     return tab.keys ()
 # end def union
 
-def initial_status_ok (db, status_id, cat_id) :
+def initial_status_ok (db, status_id, cat_id, is_simple) :
     """ Allow "escalated" when submitting new issue. This is allowed in
         case the analysis was done in advance. The first (submission)
         message should contain the analysis results.
@@ -52,9 +52,13 @@ def initial_status_ok (db, status_id, cat_id) :
         in case the analysis and decision about implementation was made
         in advance, the first message should contain the analysis
         results and decision.
+
+        Allow open for simple kind (the ones using simple_transitions).
     """
     status = db.status.get (status_id, 'name')
-    if status == 'escalated' :
+    if status == 'escalated' and not is_simple :
+        return True
+    if status == 'open' and is_simple :
         return True
     if  (   status == 'open'
         and cat_id
@@ -75,7 +79,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if catid :
         category = db.category.getnode (catid)
     area        = newvalues.get    ("area")
-    kind        = newvalues.get    ("kind")
+    kindid      = newvalues.get    ("kind")
     responsible = newvalues.get    ("responsible")
     msg         = newvalues.get    ("messages")
     severity    = newvalues.get    ("severity")
@@ -88,11 +92,22 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     bugname     = db.kind.get      (bug, 'name')
     analyzing   = db.status.lookup ("analyzing")
 
+    if not kindid :
+        kindid  = newvalues ['kind'] = bug
+    kind        = db.kind.getnode (kindid)
     if  (  "status" not in newvalues
-        or not initial_status_ok (db, newvalues ["status"], catid)
+        or not initial_status_ok (db, newvalues ["status"], catid, kind.simple)
         ) :
-        newvalues ["status"] = analyzing
+        if kind.simple :
+            newvalues ["status"] = db.status.lookup ('open')
+        else :
+            newvalues ["status"] = analyzing
     status = newvalues ["status"]
+
+    # Default to no action for doc_issue_status for simple issues
+    if kind.simple and 'doc_issue_status' not in newvalues :
+        newvalues ['doc_issue_status'] = \
+            db.doc_issue_status.lookup ('no documentation')
 
     if not category :
         catid = newvalues ['category'] = db.category.lookup ('pending')
@@ -101,8 +116,6 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         try :
             area = newvalues ['area']     = db.area.lookup ('SW')
         except KeyError : pass
-    if not kind :
-        kind     = newvalues ['kind']     = bug
     if not severity :
         severity = newvalues ['severity'] = db.severity.lookup ('Minor')
     if not title :
@@ -111,10 +124,10 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
         field = _ ('msg')
         raise Reject, _ ("A detailed description must be given in %(field)s") \
                         % locals ()
-    if kind == bug and 'release' not in newvalues :
+    if kindid == bug and 'release' not in newvalues :
         raise Reject, _ ("For a %(bugname)s you have to specify the release") \
                         % locals ()
-    if status != analyzing and not effort :
+    if not kind.simple and status != analyzing and not effort :
         raise Reject, \
             _ ("An effort estimation is required for issues to skip analyzing")
 
@@ -148,8 +161,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     newvalues ["nosy"] = filter (None, nosy)
 
     # It is meaningless to create obsolete or mistaken issues.
-    kind_name = db.kind.get (kind, "name")
-    if kind_name in ["Mistaken", "Obsolete"] :
+    if kind.name in ["Mistaken", "Obsolete"] :
         raise Reject, ( '[%s] It is stupid to create a new issue with a '
                         'kind of "Mistaken" or "Obsolete".'
                       % nodeid
@@ -185,8 +197,13 @@ def limit_transitions (db, cl, nodeid, newvalues) :
 
     may_not_vanish (db, cl, nodeid, newvalues, new_status_name)
 
-    kind            = newvalues.get ("kind", cl.get (nodeid, "kind"))
-    kind_name       = kind and db.kind.get (kind, "name") or ""
+    kindid          = newvalues.get ("kind", cl.get (nodeid, "kind"))
+    kind            = kind_name = None
+    is_simple       = False
+    if kindid :
+        kind        = db.kind.getnode (kindid)
+        kind_name   = kind.name
+        is_simple   = kind.simple
     old_responsible = cl.get        (nodeid, "responsible")
     new_responsible = newvalues.get ("responsible", old_responsible)
     superseder      = newvalues.get ("superseder", cl.get(nodeid,"superseder"))
@@ -243,9 +260,9 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     ############ prohibit invalid changes ############
 
     # Direct close only allowed if mistaken, obsolete or duplicate,
-    # or if it is a container.
+    # or if it is a container or simple kind.
     if (   cur_status_name in ["open", "feedback", "suspended", "analyzing"]
-       and new_status_name == "closed"
+       and new_status_name == "closed" and not is_simple
        ) :
         if not (  kind_name in ["Mistaken", "Obsolete"]
                or superseder
@@ -281,6 +298,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     if  (   cur_status_name == "analyzing"
         and new_status_name != "analyzing"
         and not is_container
+        and not is_simple
         ) :
         if new_status_name != 'closed' :
             if not kind :
@@ -316,6 +334,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         and kind_name not in ('Mistaken', 'Obsolete')
         and not superseder
         and not is_container
+        and not kind.simple
         ) :
         # Check if the `fixed_in` field is filled in when moving to
         # `testing` or `closed`.

@@ -4326,6 +4326,9 @@ msgstr ""
 msgid "transitions"
 msgstr "Transitions"
 
+msgid "simple_transitions"
+msgstr "Simple Transitions"
+
 msgid "Allowed transitions to other states"
 msgstr ""
 

@@ -220,12 +220,19 @@ def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
     omi   = mi
     co    = new_values.get ('composed_of')
     minor = db.severity.lookup ('Minor')
+    kid   = new_values.get ('kind')
     if nodeid :
         if 'composed_of' not in new_values :
             co = cl.get (nodeid, 'composed_of')
         omi = cl.get (nodeid, 'maturity_index')
         if 'maturity_index' not in new_values :
             mi = omi
+        if 'kind' not in new_values :
+            kid = cl.get (nodeid, 'kind')
+    is_simple = False
+    if kid :
+        kind = db.kind.getnode (kid)
+        is_simple = kind.simple
     if  (   mi is None or omi is None
         or 'status' in new_values or 'severity' in new_values
         or 'composed_of' in new_values
@@ -235,6 +242,8 @@ def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
             mi = 0
             for k in co :
                 mi += db.issue.get (k, 'maturity_index')
+        elif is_simple :
+            mi = 0
         else :
             status = new_values.get  ('status')   or cl.get (nodeid, 'status')
             sev    = new_values.get  ('severity') or cl.get (nodeid, 'severity')
@@ -448,8 +457,8 @@ def init (db) :
                 db.issue.audit ("set",    no_numeric_effort, priority = 80)
                 db.issue.audit ("create", no_numeric_effort, priority = 80)
         if 'doc_issue_status' in db.issue.properties :
-            db.issue.audit ("set",    doc_issue_status)
-            db.issue.audit ("create", new_doc_issue_status)
+            db.issue.audit ("set",    doc_issue_status,     priority = 110)
+            db.issue.audit ("create", new_doc_issue_status, priority = 110)
         if 'external_company' in db.issue.properties :
             db.issue.audit ("create", add_ext_company)
         if 'external_users' in db.issue.properties :

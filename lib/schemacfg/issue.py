@@ -78,6 +78,7 @@ def init \
         ( db, "kind"
         , name                = String    (indexme = 'no')
         , description         = String    (indexme = 'no')
+        , simple              = Boolean   ()
         )
     kind.setkey ("name")
 
@@ -87,6 +88,7 @@ def init \
         , description         = String    (indexme = 'no')
         , order               = String    (indexme = 'no')
         , transitions         = Multilink ("status_transition")
+        , simple_transitions  = Multilink ("status_transition")
         )
     stat.setkey ("name")
 

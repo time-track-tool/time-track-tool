@@ -2134,6 +2134,8 @@ _helptext          = \
       ]
     , ""'transitions'                 :
       [""'''Allowed transitions to other states''']
+    , ""'transitions'                 :
+      [""'''Allowed transitions to other states for for simple kind''']
     , ""'travel'                      :
       [ travel
       , ""''' In addition in reports the times booked will be halved (if

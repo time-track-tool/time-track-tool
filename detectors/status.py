@@ -56,7 +56,16 @@ def check_status (db, cl, nodeid, new_values) :
         if o_status.id == n_status.id :
             return
         if extended :
-            targets = (trans_cl.getnode (t) for t in o_status.transitions)
+            is_simple = False
+            if 'kind' in cl.properties :
+                kid = new_values.get ('kind', cl.get (nodeid, 'kind'))
+                if kid :
+                    is_simple = db.kind.get (kid, 'simple')
+            if is_simple :
+                trans = o_status.simple_transitions
+            else :
+                trans = o_status.transitions
+            targets = (trans_cl.getnode (t) for t in trans)
             targets = dict ((t.target, t) for t in targets)
         else :
             targets = o_status.transitions
