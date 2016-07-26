@@ -88,6 +88,9 @@ def common_user_checks (db, cl, nodeid, new_values) :
     for a in 'uid', 'nickname' :
         if a in new_values :
             v = new_values [a]
+            # Allow nickname to be empty
+            if a == 'nickname' and not v :
+                continue
             common.check_unique (_, cl, nodeid, ** {a : v})
             if a == 'nickname' :
                 common.check_unique (_, cl, nodeid, username = v)
@@ -168,7 +171,13 @@ def new_user (db, cl, nodeid, new_values) :
         ln    = new_values ['lastname']
         lfn   = common.tolower_ascii (fn)
         lln   = common.tolower_ascii (ln)
-        if  ('nickname' not in new_values and status == valid) :
+        cnick = getattr (db.config.ext, 'MISC_CREATE_NICKNAME', None)
+        cnick = cnick.lower () in ('yes', 'true')
+        if  (   'nickname' in cl.properties
+            and 'nickname' not in new_values
+            and status == valid
+            and cnick
+            ) :
             nick = common.new_nickname (_, cl, nodeid, lfn, lln)
             if nick :
                 new_values ['nickname'] = nick
@@ -273,7 +282,7 @@ def audit_user_fields(db, cl, nodeid, new_values):
                     else :
                         raise Reject, "%(attr)s may not be undefined" \
                             % {'attr' : _ (n)}
-            common_user_checks (db, cl, nodeid, new_values)
+    common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
 def update_userlist_html (db, cl, nodeid, old_values) :

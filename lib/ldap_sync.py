@@ -193,34 +193,46 @@ class LDAP_Roundup_Sync (object) :
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
         props    = self.db.user.properties
+        # 1st arg is the name in ldap
+        # 2nd arg is 0 for no change, 1 for change or a method for
+        #         conversion from roundup to ldap when syncing 
+        # 3rd arg is an conversion function from ldap to roundup or None
+        #         if not syncing to roundup
+        # 4th arg indicates if updates coming from ldap may be
+        # empty, currently used only for nickname (aka initials in ldap)
         attr_u ['id'] = \
             ( 'employeenumber'
             , 1
             , None
+            , False
             )
         if 'department' in props :
             attr_u ['department'] = \
                 ( 'department'
                 , get_name
                 , self.cls_lookup (self.db.department)
+                , False
                 )
         if 'firstname' in props :
             attr_u ['firstname'] = \
                 ( 'givenname'
                 , 0
                 , lambda x, y : x.get (y, [None])[0]
+                , False
                 )
         if 'lastname' in props :
             attr_u ['lastname'] = \
                 ( 'sn'
                 , 0
                 , lambda x, y : x.get (y, [None])[0]
+                , False
                 )
         if 'nickname' in props :
             attr_u ['nickname'] = \
                 ( 'initials'
                 , lambda x, y : x [y].upper ()
                 , lambda x, y : x.get (y, [''])[0].lower ()
+                , True
                 )
         # FIXME: Test this for user lookup via guid
         if 'username' in props :
@@ -228,24 +240,28 @@ class LDAP_Roundup_Sync (object) :
                 ( 'uid'
                 , 0
                 , lambda x, y : x.get (y, [None])[0]
+                , False
                 )
         if 'org_location' in props :
             attr_u ['org_location'] = \
                 ( 'company'
                 , get_name
                 , self.cls_lookup (self.db.org_location)
+                , False
                 )
         if 'pictures' in props :
             attr_u ['pictures'] = \
                 ( 'thumbnailPhoto'
                 , get_picture
                 , self.ldap_picture
+                , False
                 )
         if 'position' in props :
             attr_u ['position'] = \
                 ( 'title'
                 , get_position
                 , self.cls_lookup (self.db.position, 'position')
+                , False
                 )
         if 'realname' in props :
             g = self.get_realname
@@ -255,6 +271,7 @@ class LDAP_Roundup_Sync (object) :
                 ( 'cn'
                 , 0
                 , g
+                , False
                 )
         if 'room' in props :
             attr_u ['room'] = \
@@ -265,30 +282,35 @@ class LDAP_Roundup_Sync (object) :
                     , 'name'
                     , dict (location = self.db.location.lookup ('Wien'))
                     )
+                , False
                 )
         if 'substitute' in props :
             attr_u ['substitute'] = \
                 ( 'secretary'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
+                , False
                 )
         if 'supervisor' in props :
             attr_u ['supervisor'] = \
                 ( 'manager'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
+                , False
                 )
         if 'title' in props :
             attr_u ['title'] = \
                 ( 'carLicense'
                 , 1
                 , lambda x, y : x.get (y, [None])[0]
+                , False
                 )
         if 'guid' in props :
             attr_u ['guid'] = \
                 ( 'objectGUID'
                 , set_guid
                 , get_guid
+                , False
                 )
         if self.contact_types :
             attr_map ['user_contact'] = \
@@ -304,6 +326,7 @@ class LDAP_Roundup_Sync (object) :
                 ( 'mail'
                 , 0
                 , self.set_roundup_email_address
+                , False
                 )
         self.attr_map = attr_map
     # end def compute_attr_map
@@ -681,10 +704,10 @@ class LDAP_Roundup_Sync (object) :
                 changed = True
         else :
             d = {}
-            for k, (lk, x, method) in self.attr_map ['user'].iteritems () :
+            for k, (lk, x, method, em) in self.attr_map ['user'].iteritems () :
                 if method :
                     v = method (luser, lk)
-                    if v :
+                    if v or em :
                         d [k] = v
 
             if self.contact_types :
@@ -799,7 +822,7 @@ class LDAP_Roundup_Sync (object) :
             return
         umap = self.attr_map ['user']
         modlist = []
-        for rk, (lk, change, x) in umap.iteritems () :
+        for rk, (lk, change, x, empty) in umap.iteritems () :
             rupattr = user [rk]
             if rupattr and callable (change) :
                 rupattr = change (user, rk)
