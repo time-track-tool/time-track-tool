@@ -3,12 +3,13 @@ New Web users get the Roles "User,Nosy"
 New Email users get the Roles "User,Nosy"
 Role "admin":
  User may access the web interface (Web Access)
- User may create everthing (Create)
- User may edit everthing (Edit)
+ User may create everything (Create)
+ User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
- User may retire everthing (Retire)
+ User may restore everything (Restore)
+ User may retire everything (Retire)
  User may use the email interface (Email Access)
- User may view everthing (View)
+ User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
 Role "issue_admin":

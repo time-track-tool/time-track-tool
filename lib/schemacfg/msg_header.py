@@ -33,7 +33,7 @@ from schemacfg       import schemadef
 
 def init (db, String, ** kw) :
     Cls = kw ['Msg_Class']
-    class Msg_Class (Cls) :
+    class Msg_Header_Msg_Class (Cls) :
         """ extends the normal FileClass with some attributes for message
         """
         def __init__ (self, db, classname, ** properties) :
@@ -42,6 +42,6 @@ def init (db, String, ** kw) :
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
-    # end class Msg_Class
-    return dict (Msg_Class = Msg_Class)
+    # end class Msg_Header_Msg_Class
+    return dict (Msg_Class = Msg_Header_Msg_Class)
 # end def init

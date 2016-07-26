@@ -18,6 +18,12 @@ properties = \
         , ( 'name'
           , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )
+        , ( 'nosy'
+          , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
+          )
+        , ( 'responsible'
+          , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
+          )
         , ( 'valid'
           , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )
@@ -194,6 +200,9 @@ properties = \
           , ['admin', 'it', 'ituser', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )
         , ( 'files'
+          , ['admin', 'it', 'ituser', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
+          )
+        , ( 'header'
           , ['admin', 'it', 'ituser', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )
         , ( 'inreplyto'

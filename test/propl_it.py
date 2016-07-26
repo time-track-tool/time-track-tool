@@ -8,6 +8,8 @@ properties = \
     , ( 'it_category'
       , [ 'description'
         , 'name'
+        , 'nosy'
+        , 'responsible'
         , 'valid'
         ]
       )
@@ -83,6 +85,7 @@ properties = \
         , 'content'
         , 'date'
         , 'files'
+        , 'header'
         , 'inreplyto'
         , 'messageid'
         , 'recipients'

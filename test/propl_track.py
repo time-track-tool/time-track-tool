@@ -155,6 +155,8 @@ properties = \
     , ( 'it_category'
       , [ 'description'
         , 'name'
+        , 'nosy'
+        , 'responsible'
         , 'valid'
         ]
       )
@@ -235,6 +237,7 @@ properties = \
     , ( 'kind'
       , [ 'description'
         , 'name'
+        , 'simple'
         ]
       )
     , ( 'kpm'
@@ -361,6 +364,7 @@ properties = \
       , [ 'description'
         , 'name'
         , 'order'
+        , 'simple_transitions'
         , 'transitions'
         ]
       )

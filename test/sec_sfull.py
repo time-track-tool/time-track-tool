@@ -3,12 +3,13 @@ New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
  User may access the web interface (Web Access)
- User may create everthing (Create)
- User may edit everthing (Edit)
+ User may create everything (Create)
+ User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
- User may retire everthing (Retire)
+ User may restore everything (Restore)
+ User may retire everything (Retire)
  User may use the email interface (Email Access)
- User may view everthing (View)
+ User may view everything (View)
 Role "adr_readonly":
  User is allowed to access adr_type (View for "adr_type" only)
  User is allowed to access adr_type_cat (View for "adr_type_cat" only)
@@ -175,6 +176,7 @@ Role "issue_admin":
  User is allowed to edit status_transition (Edit for "status_transition" only)
  User is allowed to edit test_level (Edit for "test_level" only)
 Role "it":
+ User is allowed Edit on (Edit for "file": ('name', 'type') only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)
  User is allowed Edit on (Edit for "org_location": ('smb_domain', 'dhcp_server', 'domino_dn') only)
  User is allowed Edit on (Edit for "organisation": ('domain_part',) only)

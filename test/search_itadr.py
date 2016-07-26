@@ -168,6 +168,12 @@ properties = \
         , ( 'name'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
+        , ( 'nosy'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
+        , ( 'responsible'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
         , ( 'valid'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
@@ -343,6 +349,9 @@ properties = \
           , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
         , ( 'files'
+          , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
+        , ( 'header'
           , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
         , ( 'inreplyto'

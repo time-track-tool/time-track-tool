@@ -256,6 +256,8 @@ properties = \
     , ( 'it_category'
       , [ 'description'
         , 'name'
+        , 'nosy'
+        , 'responsible'
         , 'valid'
         ]
       )
@@ -334,6 +336,7 @@ properties = \
     , ( 'kind'
       , [ 'description'
         , 'name'
+        , 'simple'
         ]
       )
     , ( 'leave_status'
@@ -525,6 +528,7 @@ properties = \
       , [ 'description'
         , 'name'
         , 'order'
+        , 'simple_transitions'
         , 'transitions'
         ]
       )

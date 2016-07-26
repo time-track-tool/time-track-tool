@@ -163,7 +163,7 @@ def init \
         )
 
     Cls = kw ['Msg_Class']
-    class Msg_Class (Cls) :
+    class Issue_Msg_Class (Cls) :
         """ extends the normal FileClass with some attributes for message
         """
         def __init__ (self, db, classname, ** properties) :
@@ -173,8 +173,8 @@ def init \
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
-    # end class Msg_Class
-    return dict (Msg_Class = Msg_Class)
+    # end class Issue_Msg_Class
+    return dict (Msg_Class = Issue_Msg_Class)
 # end def init
 
 def security (db, ** kw) :

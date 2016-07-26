@@ -168,6 +168,9 @@ properties = \
         , ( 'name'
           , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
           )
+        , ( 'simple'
+          , ["admin", "issue_admin", "msgedit", "msgsync", "user"]
+          )
         ]
       )
     , ( 'msg'
@@ -277,6 +280,9 @@ properties = \
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )
         , ( 'order'
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
+          )
+        , ( 'simple_transitions'
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )
         , ( 'transitions'

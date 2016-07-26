@@ -66,6 +66,7 @@ properties = \
     , ( 'kind'
       , [ 'description'
         , 'name'
+        , 'simple'
         ]
       )
     , ( 'msg'
@@ -117,6 +118,7 @@ properties = \
       , [ 'description'
         , 'name'
         , 'order'
+        , 'simple_transitions'
         , 'transitions'
         ]
       )

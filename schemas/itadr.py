@@ -43,6 +43,7 @@ from schemacfg import schemadef
 schemas = \
     ( 'user'
     , 'it_tracker'
+    , 'msg_header'
     , 'address'
     , 'contact'
     , 'callerid'

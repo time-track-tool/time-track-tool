@@ -14,12 +14,13 @@ Role "abo":
  User is allowed to edit tmplate (Edit for "tmplate" only)
 Role "admin":
  User may access the web interface (Web Access)
- User may create everthing (Create)
- User may edit everthing (Edit)
+ User may create everything (Create)
+ User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
- User may retire everthing (Retire)
+ User may restore everything (Restore)
+ User may retire everything (Retire)
  User may use the email interface (Email Access)
- User may view everthing (View)
+ User may view everything (View)
 Role "adr_readonly":
  User is allowed View on (View for "user": ('username', 'realname') only)
  User is allowed to access address (View for "address" only)
