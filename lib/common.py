@@ -1263,13 +1263,21 @@ def filter_status_transitions (context, *invalid_states) :
     invalid   = [cls.lookup (x) for x in invalid_states]
     if context.status :
         if 'status_transition' in context._db.classes :
-            values = [t.target.id for t in context.status.transitions
-                      if t.target.name != 'closed' or may_close
-                     ]
+            if context.kind and context.kind.simple :
+                values = \
+                    [t.target.id for t in context.status.simple_transitions
+                     if t.target.name != 'closed' or may_close
+                    ]
+            else :
+                values = \
+                    [t.target.id for t in context.status.transitions
+                     if t.target.name != 'closed' or may_close
+                    ]
         else :
-            values = [t.id for t in context.status.transitions
-                      if t.name != 'closed' or may_close
-                     ]
+            values = \
+                [t.id for t in context.status.transitions
+                 if t.name != 'closed' or may_close
+                ]
         values = [v for v in values if v not in invalid]
         return {'id' : values}
     return {}
