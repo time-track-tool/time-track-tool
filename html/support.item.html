@@ -242,7 +242,7 @@
        <th tal:content="structure python:utils.fieldname
            (classname, 'first_reply')"/>
        <td tal:condition="context/first_reply"
-           tal:content="context/first_reply/plain"/>
+           tal:content="structure context/first_reply/field"/>
        <th tal:condition="python: context.id and not context.first_reply">
         <span i18n:translate="">Set:</span>
         <span
@@ -279,7 +279,7 @@
        </tal:block>
        <th tal:content="structure python:utils.fieldname
            (classname, 'satisfied')"/>
-       <td tal:content="context/satisfied/plain"/>
+       <td tal:content="structure context/satisfied/field"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname

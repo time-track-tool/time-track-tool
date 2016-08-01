@@ -272,8 +272,12 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('SupportAdmin', 'Create', 'support')
     schemadef.register_confidentiality_check \
         (db, 'User', 'support',   ('View',))
+    exc_props = dict.fromkeys (('first_reply', 'satisfied'))
+    props = dict (db.support.properties)
+    for p in exc_props :
+        del props [p]
     schemadef.register_confidentiality_check \
-        (db, 'User', 'support',   ('Edit',))
+        (db, 'User', 'support',   ('Edit',), * props.keys ())
     schemadef.register_nosy_classes (db, ['support'])
     schemadef.add_search_permission (db, 'support', 'User')
 # end def security
