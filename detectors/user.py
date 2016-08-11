@@ -172,6 +172,8 @@ def new_user (db, cl, nodeid, new_values) :
         lfn   = common.tolower_ascii (fn)
         lln   = common.tolower_ascii (ln)
         cnick = getattr (db.config.ext, 'MISC_CREATE_NICKNAME', None)
+        if cnick is None :
+            cnick = 'yes'
         cnick = cnick.lower () in ('yes', 'true')
         if  (   'nickname' in cl.properties
             and 'nickname' not in new_values
