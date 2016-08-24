@@ -40,7 +40,7 @@
             , property='cost_center'
             , inputtype='radio'
             , width='600'
-            , pagesize=500
+            , pagesize=5000
             , filter='status=%s' % ','.join (i.id for i in ccs)
             )"/>
       -->
@@ -63,7 +63,7 @@
             , property='project'
             , inputtype='radio'
             , width='600'
-            , pagesize=500
+            , pagesize=5000
             )"/>
      </td>
      <td tal:condition="context/id" tal:content="structure python:
@@ -103,7 +103,7 @@
             , property='bookers'
             , width='600'
             , filter='status=%s' % db._db.user_status.lookup ('valid')
-            , pagesize=500
+            , pagesize=1000
             )"/>
      </td>
     </tr>
