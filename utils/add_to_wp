@@ -1,0 +1,67 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import instance
+from argparse          import ArgumentParser
+
+def main () :
+    # First parameter is WP number, further (optional) args are users to add
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'wp'
+        , help   = 'Work package number to add users to'
+        )
+    cmd.add_argument \
+        ( 'users'
+        , nargs  = '*'
+        , help   = 'Add/Remove given users, all users if empty list'
+        )
+    cmd.add_argument \
+        ( "-D", "--delete"
+        , help    = "Delete instead of add given users"
+        , default = False
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( "-d", "--dir"
+        , help    = "Directory of roundup tracker"
+        , default = os.getcwd ()
+        )
+    cmd.add_argument \
+        ( "-u", "--user"
+        , help    = "User to open the tracker as"
+        , default = 'admin'
+        )
+    args    = cmd.parse_args ()
+    tracker = instance.open (args.dir)
+    db      = tracker.open (args.user)
+    wp      = db.time_wp.getnode (args.wp)
+    users   = (db.user.getnode (u) for u in wp.bookers)
+    users   = dict ((u.username, u) for u in users)
+
+    if args.users :
+        userlist = (db.user.lookup (u) for u in args.users)
+        userlist = [db.user.getnode (u) for u in userlist]
+    else :
+        valid = db.user_status.lookup ('valid')
+        userlist = db.user.filter (None, dict (status = valid))
+        userlist = (db.user.getnode (u) for u in userlist)
+        userlist = [u for u in userlist if not u.username.startswith ('ext')]
+
+    if not args.delete :
+        for u in userlist :
+            users [u.username] = u
+    else :
+        for u in userlist :
+            if u.username in users :
+                del users [u.username]
+
+    #print users.keys ()
+    #print len (users)
+    db.time_wp.set (wp.id, bookers = [users [u].id for u in users])
+
+    db.commit()
+
+if __name__ == '__main__' :
+    main ()
