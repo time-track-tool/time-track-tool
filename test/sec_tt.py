@@ -143,6 +143,9 @@ Role "hr-vacation":
  User is allowed to edit contract_type (Edit for "contract_type" only)
  User is allowed to edit leave_submission (Edit for "leave_submission" only)
  User is allowed to edit vacation_correction (Edit for "vacation_correction" only)
+Role "it":
+ User is allowed Edit on (Edit for "user": ('password', 'roles') only)
+ User may manipulate user Roles through the web (Web Roles)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
 Role "office":

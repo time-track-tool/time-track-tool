@@ -764,7 +764,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     schemafile = 'time_ldap'
     roles = \
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
-        , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'nosy'
+        , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
         , 'staff-report', 'summary_view', 'user', 'user_view'
         ]
