@@ -638,7 +638,16 @@ class ExtProperty :
             ids = [self.lnkcls.lookup (i) for i in ids]
         except KeyError :
             pass
-        return ",".join ([self.lnkcls.get (i, self.key) for i in ids])
+        numeric = True
+        for i in ids :
+            try :
+                x = int (i)
+            except ValueError :
+                numeric = False
+                break
+        if numeric :
+            return ",".join ([self.lnkcls.get (i, self.key) for i in ids])
+        return ','.join (ids)
     # end def pretty_ids
 
     def _propstring (self) :
