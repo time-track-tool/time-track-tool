@@ -643,6 +643,7 @@ properties = \
         , 'analysis_result'
         , 'analysis_start'
         , 'bcc'
+        , 'business_unit'
         , 'category'
         , 'cc'
         , 'cc_emails'

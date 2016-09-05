@@ -19,7 +19,7 @@
   <tal:block tal:define=
     " use_labelprop       python:0
     ; has_resp            python:0
-    ; required_attributes python:'title,customer'
+    ; required_attributes python:'title,customer,business_unit'
     ; show_creation       python:False
     ; form_class          python:'form rule'
     ">
@@ -158,6 +158,11 @@
        <th tal:content="structure python:utils.fieldname
            (classname, 'analysis_result')"/>
        <td tal:content="structure python:context.analysis_result.menu ()"/>
+      </tr>
+      <tr>
+       <th class="required" tal:content="structure python:utils.fieldname
+           (classname, 'business_unit')"/>
+       <td tal:content="structure python:context.business_unit.menu ()"/>
       </tr>
       <tal:block tal:define="ser python:utils.serials (db, context)">
        <tal:block tal:condition="python: context.id and ser"

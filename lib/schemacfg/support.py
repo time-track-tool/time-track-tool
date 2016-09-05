@@ -216,6 +216,7 @@ def init \
         , sap_ref          = String    ()
         , analysis_result  = Link      ("analysis_result", do_journal='no')
         , return_type      = Link      ("return_type", do_journal='no')
+        , business_unit    = Link      ("business_unit")
         )
 
 # end def init

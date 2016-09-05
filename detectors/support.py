@@ -630,6 +630,25 @@ def close_spammy_customer (db, cl, nodeid, old_values) :
         db.customer.set (ocust, is_valid = False)
 # end def close_spammy_customer
 
+def check_bu (db, cl, nodeid, new_values) :
+    """ Check BU is set
+    """
+    # only check if status changed: we don't want simple email replies
+    # to fail
+    if 'status' in new_values :
+        common.require_attributes (_, cl, nodeid, new_values, 'business_unit')
+# end def check_bu
+
+def set_bu (db, cl, nodeid, new_values) :
+    """ Get BU from customer if not set on new item
+    """
+    if 'business_unit' not in new_values and 'customer' in new_values :
+        cust = db.customer.getnode (new_values ['customer'])
+        bu   = cust.business_unit
+        if bu :
+            new_values ['business_unit'] = bu
+# end def set_bu
+
 def init (db) :
     if 'prodcat' in db.classes :
         db.prodcat.audit ("set",    check_prodcat)
@@ -659,6 +678,8 @@ def init (db) :
     db.support.audit   ("create", set_prodcat,              priority = 400)
     db.support.audit   ("set",    set_prodcat,              priority = 400)
     db.support.audit   ("set",    check_params,             priority = 450)
+    db.support.audit   ("create", set_bu,                   priority = 450)
+    db.support.audit   ("set",    check_bu,                 priority = 450)
     db.support.react   ("set",    close_spammy_customer)
 
     db.customer.audit  ("create", new_customer,             priority = 90)
