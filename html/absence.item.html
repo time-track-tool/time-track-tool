@@ -62,6 +62,12 @@
            ).formatlink ()"/>)
        <input tal:condition="not:context/id" type="hidden" name="user"
            tal:attributes="value python: context.user.id"/>
+       <script>
+           window.onunload = refreshParent;
+           function refreshParent() {
+               window.opener.location.reload();
+           }
+       </script>
       </td>
      </tr>
     </tal:block>

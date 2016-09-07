@@ -100,6 +100,10 @@ prop_perms = \
       , ( "title", "room", "position"
         )
       )
+    , ( "user", "Edit", ["IT"]
+      , ( "roles", "password"
+        )
+      )
     , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
@@ -115,7 +119,12 @@ prop_perms = \
     ]
 
 # For PGP-Processing we need a role
-schemadef.register_roles             (db, [('PGP', 'Roles that require PGP')])
+schemadef.register_roles \
+    ( db
+    , [ ('PGP', 'Roles that require PGP')
+      , ('IT',  'IT: edit some permissions')
+      ]
+    )
 schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details         (db, 'User', 'Edit')
 # the following is further checked in an auditor:
