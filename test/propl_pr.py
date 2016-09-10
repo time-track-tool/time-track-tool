@@ -153,6 +153,7 @@ properties = \
     , ( 'purchase_type'
       , [ 'confidential'
         , 'description'
+        , 'forced_roles'
         , 'name'
         , 'order'
         , 'roles'

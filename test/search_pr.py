@@ -657,6 +657,12 @@ properties = \
             , 'subcontract', 'user', 'user_view'
             ]
           )
+        , ( 'forced_roles'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'user', 'user_view'
+            ]
+          )
         , ( 'name'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'

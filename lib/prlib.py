@@ -158,43 +158,56 @@ def compute_approvals (db, pr, do_create) :
             apr_by_role ['board'] = add_approval_with_role \
                 (db, do_create, pr.id, 'Board')
         assert not do_create or pr.purchase_type
-        if pr.purchase_type :
-            pt    = db.purchase_type.getnode (pr.purchase_type)
-            roles = common.role_list (pt.roles)
+
+    if pr.purchase_type :
+        pt    = db.purchase_type.getnode (pr.purchase_type)
+        roles = []
+        if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
+            roles.extend (common.role_list (pt.roles))
+        roles.extend (common.role_list (pt.forced_roles))
+        # Make them unique
+        roles = dict.fromkeys (roles).keys ()
+        for role in roles :
+            apr_by_role [role] = add_approval_with_role \
+                (db, do_create, pr.id, role)
+    # Loop over offer items and add additional approvals if
+    # needed by specified sap_cc, time_project, or purchase_type
+    for id in pr.offer_items :
+        oi = db.pr_offer_item.getnode (id)
+        pcc = None
+        if oi.time_project :
+            pcc = db.time_project.getnode (oi.time_project)
+            d   = _ ('%(tp)s responsible/deputy') \
+                % dict (tp = _ ('time_project'))
+        elif oi.sap_cc :
+            pcc = db.sap_cc.getnode (oi.sap_cc)
+            d   = _ ('%(cc)s responsible/deputy') \
+                    % dict (cc = _ ('sap_cc'))
+        if (   pcc
+           and (pcc.responsible, pcc.deputy) not in apr_by_r_d
+           and cur
+           and pr_offer_item_sum (db, pr.id) > cur.min_sum
+           ) :
+            idx = oi.index or 0
+            apr = gen_pr_approval \
+                ( db, do_create
+                , order            = 10 + idx * 0.001
+                , purchase_request = pr.id
+                , user             = pcc.responsible
+                , deputy           = pcc.deputy
+                , description      = d
+                )
+            apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
+        if oi.purchase_type :
+            pt    = db.purchase_type.getnode (oi.purchase_type)
+            roles = []
+            if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
+                roles.extend (common.role_list (pt.roles))
+            roles.extend (common.role_list (pt.forced_roles))
             for role in roles :
-                apr_by_role [role.lower ()] = add_approval_with_role \
-                    (db, do_create, pr.id, role)
-        # Loop over offer items and add additional approvals if
-        # needed by specified sap_cc, time_project, or purchase_type
-        for id in pr.offer_items :
-            oi = db.pr_offer_item.getnode (id)
-            pcc = None
-            if oi.time_project :
-                pcc = db.time_project.getnode (oi.time_project)
-                d   = _ ('%(tp)s responsible/deputy') \
-                    % dict (tp = _ ('time_project'))
-            elif oi.sap_cc :
-                pcc = db.sap_cc.getnode (oi.sap_cc)
-                d   = _ ('%(cc)s responsible/deputy') \
-                        % dict (cc = _ ('sap_cc'))
-            if pcc and (pcc.responsible, pcc.deputy) not in apr_by_r_d :
-                idx = oi.index or 0
-                apr = gen_pr_approval \
-                    ( db, do_create
-                    , order            = 10 + idx * 0.001
-                    , purchase_request = pr.id
-                    , user             = pcc.responsible
-                    , deputy           = pcc.deputy
-                    , description      = d
-                    )
-                apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
-            if oi.purchase_type :
-                pt    = db.purchase_type.getnode (oi.purchase_type)
-                roles = common.role_list (pt.roles)
-                for role in roles :
-                    if role.lower () not in apr_by_role :
-                        apr_by_role [role.lower ()] = add_approval_with_role \
-                            (db, do_create, pr.id, role)
+                if role not in apr_by_role :
+                    apr_by_role [role] = add_approval_with_role \
+                        (db, do_create, pr.id, role)
     if not do_create :
         vals = apr_by_r_d.values () + apr_by_role.values ()
         vals.sort (key = lambda x : x ['order'])

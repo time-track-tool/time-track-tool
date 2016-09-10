@@ -3547,6 +3547,9 @@ msgstr "Title"
 msgid "purchase_type++roles"
 msgstr "Approval-Roles"
 
+msgid "forced_roles"
+msgstr "Forced Approval-Roles"
+
 msgid "pr_offer_item++description"
 msgstr "Description"
 

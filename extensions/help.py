@@ -1600,6 +1600,12 @@ _helptext          = \
              %(Classname)s; enter a comma,separated,list
           '''
       ]
+    , ""'forced_roles'                 :
+      [ ""'''Roles which must approve purchase requests with this
+             %(Classname)s even if the sum is below the max cost
+             for simple approval; enter a comma,separated,list
+          '''
+      ]
     , ""'purchase_type++confidential' :
       [ ""'''If set, purchasing requests with this type will not get the
              purchasing agents auto-added to the nosy list.

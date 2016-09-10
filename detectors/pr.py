@@ -447,6 +447,7 @@ def requester_chg (db, cl, nodeid, new_values) :
 def pt_check_roles (db, cl, nodeid, new_values) :
     common.check_roles (db, cl, nodeid, new_values)
     common.check_roles (db, cl, nodeid, new_values, 'view_roles')
+    common.check_roles (db, cl, nodeid, new_values, 'forced_roles')
 # end def pt_check_roles
 
 def pao_check_roles (db, cl, nodeid, new_values) :

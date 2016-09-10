@@ -152,6 +152,7 @@ def init \
         , name                  = String    ()
         , order                 = Number    ()
         , roles                 = String    ()
+        , forced_roles          = String    ()
         , view_roles            = String    ()
         , description           = String    ()
         , valid                 = Boolean   ()
