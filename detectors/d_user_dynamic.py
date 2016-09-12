@@ -278,6 +278,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
                 else :
                     use_to = old_to
             user_dynamic.invalidate_tr_duration (db, user, use_to, None)
+    check_weekly_hours (db, cl, nodeid, new_values)
 # end def check_user_dynamic
 
 def set_otp_if_all_in (db, cl, nodeid, new_values) :
@@ -332,7 +333,27 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         elif orgl.vacation_yearly :
             new_values ['vacation_yearly'] = orgl.vacation_yearly
     check_vacation ('vacation_yearly', new_values)
+    check_weekly_hours (db, cl, nodeid, new_values)
 # end def new_user_dynamic
+
+def check_weekly_hours (db, cl, nodeid, new_values) :
+    spp = new_values.get ('supp_per_period')
+    if spp is None and nodeid :
+        spp = cl.get (nodeid, 'supp_per_period')
+    swh = new_values.get ('supp_weekly_hours')
+    if swh is None and nodeid :
+        swh = cl.get (nodeid, 'supp_weekly_hours')
+    wh  = new_values.get ('weekly_hours')
+    if wh is None and nodeid :
+        wh = cl.get (nodeid, 'weekly_hours')
+    if spp or swh :
+        common.require_attributes (_, cl, nodeid, new_values, 'weekly_hours')
+        # weekly_hours must not be 0 in case we have overtime
+        if not wh :
+            msg = ''"Weekly hours must not be 0 when user has " \
+                  "supplementary hours (weeky or otherwise)"
+            raise Reject (_ (msg))
+# end def check_weekly_hours
 
 def user_dyn_react (db, cl, nodeid, old_values) :
     """ If this is the first user_dynamic record for this user: create

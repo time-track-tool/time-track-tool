@@ -131,7 +131,11 @@ def _next_user_dynamic (db, dynuser, direction = '+') :
         id = id.id
     except AttributeError :
         pass
-    return find_user_dynamic (db, id, dynuser.valid_from, direction = direction)
+    try :
+        vf = Date (dynuser.valid_from._value)
+    except (ValueError, AttributeError) :
+        return None
+    return find_user_dynamic (db, id, vf, direction = direction)
 # end def _find_user_dynamic
 
 def next_user_dynamic (db, dynuser) :
@@ -430,8 +434,8 @@ def required_overtime_params (db, user, date, dyn, period) :
     if dyn and period and period.required_overtime :
         spp = dyn.supp_per_period or 0
         rotp, wd = required_overtime_in_period (db, user, date, period)
-        if not spp :
-            # probably wd is also 0 here, avoid division by zero
+        if not wd :
+            # probably spp is also 0 here, avoid division by zero
             rq = 0.0
         else :
             rq = req_overtime_quotient (db, dyn, user, date) * spp / wd
