@@ -538,18 +538,14 @@ def set_prodcat (db, cl, nodeid, new_values) :
             new_values ['prodcat'] = pcc
 # end def set_prodcat
 
-suppclaim = ('business_unit', 'customer', 'warranty')
+suppclaim = ('customer', 'warranty')
 mandatory_by_type = \
-    { 'RMA Issue'          : ( 'business_unit', 'customer'
-                             , 'prodcat', 'product', 'warranty'
-                             )
+    { 'RMA Issue'          : ('customer', 'prodcat', 'product', 'warranty')
     , 'Supplier Claim'     : suppclaim
     , 'Supplier Claim RMA' : suppclaim
     , 'Supplier Claim IGC' : suppclaim
-    , 'Support Issue'      : ( 'business_unit', 'customer'
-                             )
-    , 'Other'              : ( 'business_unit', 'customer'
-                             )
+    , 'Support Issue'      : ('customer',)
+    , 'Other'              : ('customer',)
     }
 
 def check_params (db, cl, nodeid, new_values) :
@@ -632,10 +628,18 @@ def close_spammy_customer (db, cl, nodeid, old_values) :
 
 def check_bu (db, cl, nodeid, new_values) :
     """ Check BU is set
+        Make an exception for the SPAM customer when closing the support
+        issue.
     """
     # only check if status changed: we don't want simple email replies
     # to fail
     if 'status' in new_values :
+        closed = db.sup_status.lookup ('closed')
+        if new_values ['status'] == closed :
+            cust = new_values.get ('customer', cl.get (nodeid, 'customer'))
+            spam = db.customer.lookup ('SPAM')
+            if cust == spam :
+                return
         common.require_attributes (_, cl, nodeid, new_values, 'business_unit')
 # end def check_bu
 

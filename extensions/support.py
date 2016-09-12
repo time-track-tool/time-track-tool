@@ -101,6 +101,7 @@ def serials (db, node) :
     return r
 # end def serials
 
+# The lower part removes 'business_unit' from the required attributes
 mark_spam = """
 function mark_spam_js() {
     frm = document.forms.itemSynopsis;
@@ -109,6 +110,15 @@ function mark_spam_js() {
     frm.responsible.value = "%(username)s";
     frm.nosy.value = "";
     frm ['@note'].value = "spam --> closed";
+    var req = frm ['@required'].value.split (',');
+    var nrq = [];
+    for (var i=0; i<req.length; i++) {
+        var r = req [i].trim ();
+        if (r != 'business_unit') {
+            nrq.push (r);
+        }
+    }
+    frm ['@required'].value = nrq.join ();
 }
 """
 
