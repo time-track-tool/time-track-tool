@@ -629,17 +629,21 @@ def close_spammy_customer (db, cl, nodeid, old_values) :
 def check_bu (db, cl, nodeid, new_values) :
     """ Check BU is set
         Make an exception for the SPAM customer when closing the support
-        issue.
+        issue. Another exception is when status moves to open, this
+        happens when an incoming mail re-opens an issue.
     """
     # only check if status changed: we don't want simple email replies
     # to fail
     if 'status' in new_values :
         closed = db.sup_status.lookup ('closed')
+        open   = db.sup_status.lookup ('open')
         if new_values ['status'] == closed :
             cust = new_values.get ('customer', cl.get (nodeid, 'customer'))
             spam = db.customer.lookup ('SPAM')
             if cust == spam :
                 return
+        if new_values ['status'] == open :
+            return
         common.require_attributes (_, cl, nodeid, new_values, 'business_unit')
 # end def check_bu
 
