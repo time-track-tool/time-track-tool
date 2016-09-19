@@ -236,6 +236,14 @@ def find_or_create_contact \
     return c
 # end def find_or_create_contact
 
+def fix_emails (email_list) :
+    """ Remove '\r' to work around email parse bug in python2.7
+    """
+    r = []
+    for m in email_list :
+        r.append (m.replace ('\r', ''))
+    return r
+# end def fix_emails
 
 def header_check (db, cl, nodeid, new_values) :
     """ Check header of new messages and determine original customer
@@ -267,7 +275,7 @@ def header_check (db, cl, nodeid, new_values) :
         else :
             h = Message ()
         if db.user.get (msg.author, 'status') == system :
-            frm  = h.get_all ('From')
+            frm  = fix_emails (h.get_all ('From'))
             subj = header_utf8 (h.get_all ('Subject') [0])
             if  (   frm
                 and 'customer' not in new_values
@@ -279,10 +287,12 @@ def header_check (db, cl, nodeid, new_values) :
                     rn, mail = getaddresses (frm) [0]
                     # the *to* address in this mail is the support user we
                     # want as a from-address for future mails *to* this user
-                    hto = h.get_all ('To')
-                    torn, autad = getaddresses (hto) [0]
-                    if not autad.startswith ('support') :
-                        autad = None
+                    autad = None
+                    hto = fix_emails (h.get_all ('To'))
+                    if hto :
+                        torn, autad = getaddresses (hto) [0]
+                        if not autad.startswith ('support') :
+                            autad = None
                     c = find_or_create_contact \
                         (db, mail, rn, frm = autad, subject = subj)
                     cust  = new_values ['customer'] = \
@@ -308,6 +318,7 @@ def header_check (db, cl, nodeid, new_values) :
                 if 'cc_emails' in new_values :
                     alltocc.update (dict.fromkeys (new_values ['cc_emails']))
                 for addrs, field in ((tos, 'emails'), (ccs, 'cc_emails')) :
+                    addrs = fix_emails (addrs)
                     for rn, mail in getaddresses (addrs) :
                         if mail == cfrm :
                             continue
