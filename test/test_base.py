@@ -511,11 +511,11 @@ class _Test_Case_Summary (_Test_Case) :
             , booking_allowed   = True
             , vacation_yearly   = 25
             , all_in            = False
-            , hours_mon         = 0.0
-            , hours_tue         = 0.0
-            , hours_wed         = 0.0
-            , hours_thu         = 0.0
-            , hours_fri         = 0.0
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
             , daily_worktime    = 0.0
             , org_location      = self.olo
             , department        = self.dep

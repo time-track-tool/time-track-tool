@@ -2109,6 +2109,9 @@ _helptext          = \
     , ""'time_wp.id'                  : [help_id]
     , ""'time_wp.wp_no'               : [wp_no]
     , ""'time_wp_group.id'            : [help_id]
+    , ""'time_wp_summary_no'          : 
+      [""'''For summarizing work packages by activity''']
+    , ""'time_wp_summary_no.id'       : [help_id]
     , ""'timeout'                     :
       [""'''Timeout when new email is sent''']
     , ""'timezone'                    :

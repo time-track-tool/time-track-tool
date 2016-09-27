@@ -1151,3 +1151,44 @@ if 'absence_type' in db.classes :
         , cssclass = 'absence'
         , description = 'Vacation'
         )
+if 'time_wp_summary_no' in db.classes :
+    db.time_wp_summary_no.create \
+        ( name  = 'Project management'
+        , order = 100
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Configuration management'
+        , order = 200
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Training'
+        , order = 300
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Quality'
+        , order = 400
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Requirements'
+        , order = 500
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Design'
+        , order = 600
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Implementation'
+        , order = 700
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Module, Unit test'
+        , order = 800
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'Integration'
+        , order = 900
+        )
+    db.time_wp_summary_no.create \
+        ( name  = 'System test, Verification'
+        , order = 1000
+        )

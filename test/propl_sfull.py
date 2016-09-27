@@ -593,6 +593,7 @@ properties = \
         , 'time_project'
         , 'time_wp'
         , 'time_wp_group'
+        , 'time_wp_summary_no'
         , 'user'
         ]
       )
@@ -757,6 +758,7 @@ properties = \
         , 'responsible'
         , 'time_end'
         , 'time_start'
+        , 'time_wp_summary_no'
         , 'travel'
         , 'wp_no'
         ]
@@ -765,6 +767,11 @@ properties = \
       , [ 'description'
         , 'name'
         , 'wps'
+        ]
+      )
+    , ( 'time_wp_summary_no'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'user'

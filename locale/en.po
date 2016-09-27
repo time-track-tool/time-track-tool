@@ -1506,7 +1506,13 @@ msgstr "Productivity"
 msgid "cost_center.id"
 msgstr "Productivity Id"
 
+msgid "cost_center_id"
+msgstr "Productivity Id"
+
 msgid "cost_center_group.id"
+msgstr "Productivity Group Id"
+
+msgid "cost_center_group_id"
 msgstr "Productivity Group Id"
 
 msgid "cost_center_status"
@@ -3046,6 +3052,9 @@ msgstr ""
 msgid "organisation.id"
 msgstr "Organisation Id"
 
+msgid "organisation_id"
+msgstr "Organisation Id"
+
 msgid "owner"
 msgstr "Owner"
 
@@ -3307,6 +3316,9 @@ msgstr ""
 msgid "product_family.id"
 msgstr "Product family Id"
 
+msgid "product_family_id"
+msgstr "Product family Id"
+
 msgid "The Id of %(Property)s."
 msgstr ""
 
@@ -3333,6 +3345,9 @@ msgid "The %(Property)s of the %(Classname)s."
 msgstr ""
 
 msgid "project_type.id"
+msgstr "Project type Id"
+
+msgid "project_type_id"
 msgstr "Project type Id"
 
 msgid "protocol"
@@ -3455,6 +3470,9 @@ msgid "reporting_group"
 msgstr "Reporting group"
 
 msgid "reporting_group.id"
+msgstr "Reporting group Id"
+
+msgid "reporting_group_id"
 msgstr "Reporting group Id"
 
 msgid "requester"
@@ -4264,6 +4282,9 @@ msgstr ""
 msgid "time_project.id"
 msgstr "Time Category Id"
 
+msgid "time_project_id"
+msgstr "Time Category Id"
+
 msgid "wp.project.id"
 msgstr "Time Category Id"
 
@@ -4273,10 +4294,19 @@ msgstr "Travel WP"
 msgid "time_wp.id"
 msgstr "Work package Id"
 
+msgid "time_wp_id"
+msgstr "Work package Id"
+
 msgid "time_wp.wp_no"
 msgstr "Work package number"
 
+msgid "time_wp_no"
+msgstr "Work package number"
+
 msgid "time_wp_group.id"
+msgstr "Work package group Id"
+
+msgid "time_wp_group_id"
 msgstr "Work package group Id"
 
 msgid "timeout"
@@ -6577,3 +6607,11 @@ msgstr "Safety level"
 msgid "test_level"
 msgstr "Test level"
 
+msgid "time_wp_summary_no"
+msgstr "Summary work package"
+
+msgid "time_wp_summary_no.id"
+msgstr "Summary work package ID"
+
+msgid "time_wp_summary_no_id"
+msgstr "Summary work package ID"

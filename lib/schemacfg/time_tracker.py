@@ -167,6 +167,7 @@ def init \
         , product_family        = Link      ("product_family")
         , project_type          = Link      ("project_type")
         , sap_cc                = Link      ("sap_cc")
+        , time_wp_summary_no    = Link      ("time_wp_summary_no")
         )
 
     reporting_group = Class \
@@ -276,7 +277,15 @@ def init \
         , travel                = Boolean   ()
         , is_public             = Boolean   ()
         , has_expiration_date   = Boolean   ()
+        , time_wp_summary_no    = Link      ("time_wp_summary_no")
         )
+
+    time_wp_summary_no = Class \
+        ( db, ''"time_wp_summary_no"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    time_wp_summary_no.setkey ("name")
 
     time_wp_group = Class \
         ( db
@@ -582,6 +591,10 @@ def security (db, ** kw) :
         , ( "time_wp"
           , ["Project_View", "Project", "Controlling"]
           , ["Project"]
+          )
+        , ( "time_wp_summary_no"
+          , ["User"]
+          , []
           )
         , ( "user_dynamic"
           , ["HR"]
@@ -900,6 +913,7 @@ def security (db, ** kw) :
         , properties  = \
             ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
+            , 'time_wp_summary_no'
             )
         )
     db.security.addPermissionToRole ('User', p)
@@ -917,7 +931,10 @@ def security (db, ** kw) :
         , klass       = 'time_wp'
         , check       = is_project_owner_of_wp
         , description = fixdoc (is_project_owner_of_wp.__doc__)
-        , properties  = ('name', 'responsible', 'wp_no', 'cost_center')
+        , properties  = \
+            ( 'name', 'responsible', 'wp_no', 'cost_center'
+            , 'time_wp_summary_no'
+            )
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -1049,7 +1066,7 @@ def security (db, ** kw) :
         ( 'name', 'wp_no', 'description', 'responsible', 'project'
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
-        , 'has_expiration_date'
+        , 'has_expiration_date', 'time_wp_summary_no'
         )
     p = db.security.addPermission \
         ( name        = 'View'

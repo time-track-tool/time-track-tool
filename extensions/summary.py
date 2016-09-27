@@ -387,16 +387,30 @@ class WP_Container (Comparable_Container, dict) :
         self.verbname  = verbname
 
         # defaults for id computation
-        self.time_wp_id           = ''
-        self.time_wp_no           = ''
-        self.time_wp_group_id     = ''
-        self.cost_center_id       = ''
-        self.cost_center_group_id = ''
-        self.time_project_id      = ''
-        self.reporting_group_id   = ''
-        self.product_family_id    = ''
-        self.project_type_id      = ''
-        self.organisation_id      = ''
+        self.time_wp_id            = ''
+        self.time_wp_no            = ''
+        self.time_wp_group_id      = ''
+        self.time_wp_summary_no_id = ''
+        self.cost_center_id        = ''
+        self.cost_center_group_id  = ''
+        self.time_project_id       = ''
+        self.reporting_group_id    = ''
+        self.product_family_id     = ''
+        self.project_type_id       = ''
+        self.organisation_id       = ''
+
+        # create i18n names
+        ""'time_wp_id'
+        ""'time_wp_no'
+        ""'time_wp_group_id'
+        ""'time_wp_summary_no_id'
+        ""'cost_center_id'
+        ""'cost_center_group_id'
+        ""'time_project_id'
+        ""'reporting_group_id'
+        ""'product_family_id'
+        ""'project_type_id'
+        ""'organisation_id'
 
         # defaults for name computation
         self.organisation    = ''
@@ -404,13 +418,14 @@ class WP_Container (Comparable_Container, dict) :
         self.project_type    = ''
         self.reporting_group = ''
 
-        tp  = None
-        cc  = None
-        ccg = None
-        rg  = None
-        pf  = None
-        pt  = None
-        org = None
+        tp   = None
+        cc   = None
+        ccg  = None
+        rg   = None
+        pf   = None
+        pt   = None
+        org  = None
+        wpsn = None
         if klass.classname == 'time_wp' :
             self.sortkey = 30
             wp = klass.getnode (id)
@@ -419,12 +434,17 @@ class WP_Container (Comparable_Container, dict) :
             self.name  = '/'.join ((p, self.name))
             self.time_wp_id = ('time_wp', id)
             self.time_wp_no = ('time_wp', id)
+            if wp.time_wp_summary_no :
+                wpsn = klass.db.time_wp_summary_no.getnode \
+                    (wp.time_wp_summary_no)
         elif klass.classname == 'time_project' :
             tp = klass.getnode (id)
         elif klass.classname == 'time_wp_group' :
             wpg = klass.getnode (id)
             self.time_wp_group    = ('time_wp_group', wpg.name)
             self.time_wp_group_id = ('time_wp_group', id)
+        elif klass.classname == 'time_wp_summary_no' :
+            wpsn = klass.getnode (id)
         elif klass.classname == 'cost_center' :
             cc  = klass.getnode (id)
         elif klass.classname == 'cost_center_group' :
@@ -447,19 +467,22 @@ class WP_Container (Comparable_Container, dict) :
             self.cost_center_id = ('cost_center', cc.id)
             ccg = klass.db.cost_center_group.getnode (cc.cost_center_group)
         if ccg :
-            self.cost_center_group_id = ('cost_center_group', ccg.id)
+            self.cost_center_group_id  = ('cost_center_group', ccg.id)
         if rg :
-            self.reporting_group_id   = ('reporting_group', rg.id)
-            self.reporting_group      = ('reporting_group', rg.name)
+            self.reporting_group_id    = ('reporting_group', rg.id)
+            self.reporting_group       = ('reporting_group', rg.name)
         if pf :
-            self.product_family_id    = ('product_family', pf.id)
-            self.product_family       = ('product_family', pf.name)
+            self.product_family_id     = ('product_family', pf.id)
+            self.product_family        = ('product_family', pf.name)
         if pt :
-            self.project_type_id      = ('project_type', pt.id)
-            self.project_type         = ('project_type', pt.name)
+            self.project_type_id       = ('project_type', pt.id)
+            self.project_type          = ('project_type', pt.name)
         if org :
-            self.organisation_id      = ('organisation', org.id)
-            self.organisation         = ('organisation', org.name)
+            self.organisation_id       = ('organisation', org.id)
+            self.organisation          = ('organisation', org.name)
+        if wpsn :
+            self.time_wp_summary_no    = ('time_wp_summary_no', wpsn.name)
+            self.time_wp_summary_no_id = ('time_wp_summary_no', wpsn.id)
     # end def __init__
     
     def __repr__ (self) :
@@ -808,6 +831,21 @@ class Summary_Report (_Report) :
                         )
                     )
             wp.update ((x, 1) for x in pwps)
+        wpsns       = filterspec.get ('time_wp_summary_no', [])
+        for wpsn in wpsns :
+            wps = db.time_wp.filter (None, dict (time_wp_summary_no = wpsn))
+            if not wps :
+                continue
+            if wpsn != '-1' :
+                wp_containers.append \
+                    ( WP_Container
+                        ( db.time_wp_summary_no, wpsn
+                        , 'time_wp_summary_no' in self.columns
+                        , ''
+                        , [ (x, 1) for x in wps ]
+                        )
+                    )
+            wp.update ((x, 1) for x in wps)
         wpgs        = filterspec.get ('time_wp_group',     [])
         for wpg in wpgs :
             wp_containers.append \
@@ -1083,6 +1121,7 @@ class Summary_Report (_Report) :
             , 'product_family'
             , 'project_type'
             , 'reporting_group'
+            , 'time_wp_summary_no'
             )
         ]
 
