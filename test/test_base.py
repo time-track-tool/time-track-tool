@@ -3273,9 +3273,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (lines [1] [1], 'WW 36/2008')
         self.assertEqual (lines [2] [1], 'WW 37/2008')
         self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
-        self.assertEqual (lines [1][11], '15.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [1][11], '-23.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
         self.assertEqual (lines [3][10], '910.0')
         fs = { 'user'         : [self.user1]
              , 'date'         : '2009-12-21;2010-01-03'
@@ -3288,9 +3288,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '0.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
 
         for d in ('2006-12-31', '2007-12-31') :
             f = self.db.daily_record_freeze.create \
@@ -3299,7 +3299,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
                 , date           = date.Date (d)
                 )
             f = self.db.daily_record_freeze.getnode (f)
-            self.assertEqual (f.balance,        0.0)
+            self.assertEqual (f.balance,        -38.5)
             self.assertEqual (f.achieved_hours, 0.0)
             self.assertEqual (f.validity_date,  date.Date (d))
 
@@ -3309,8 +3309,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , date           = date.Date ('2008-09-10')
             )
         f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,       15.0)
-        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.balance,       -23.5)
+        self.assertEqual (f.achieved_hours,  0.0)
         self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
 
         dyn = user_dynamic.first_user_dynamic (self.db, self.user1)
@@ -3329,23 +3329,23 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
 
         bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
-        self.assertEqual (bal, (0.0, 0))
+        self.assertEqual (bal, (-38.5, 0))
         bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
-        self.assertEqual (bal, (0.0, 0))
+        self.assertEqual (bal, (-38.5, 0))
         bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
-        self.assertEqual (bal, (0.0, 0))
+        self.assertEqual (bal, (-38.5, 0))
 
         bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
-        self.assertEqual (bal, (0.0, 0))
+        self.assertEqual (bal, (-38.5, 0))
         bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
-        self.assertEqual (bal, (0.0, 0))
+        self.assertEqual (bal, (-38.5, 0))
         bal = user_dynamic.compute_balance \
             (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
-        self.assertEqual (bal, (0.0, 0))
+        self.assertEqual (bal, (-38.5, 0))
 
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (None))
@@ -3353,9 +3353,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '0.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
 
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
@@ -3363,8 +3363,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , date           = date.Date ('2009-12-31')
             )
         f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        0.0)
-        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.balance,        -38.5)
+        self.assertEqual (f.achieved_hours,   0.0)
         self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
 
         self.db.daily_record_freeze.set (f.id, frozen = False)
@@ -3372,7 +3372,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.daily_record_freeze.set (f.id, frozen = True)
 
         self.db.clearCache ()
-        self.assertEqual (f.balance,        0.0)
+        self.assertEqual (f.balance,      -38.5)
         self.assertEqual (f.achieved_hours, 0.0)
         self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
 
@@ -3384,9 +3384,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (lines [1] [1], 'WW 52/2009')
         self.assertEqual (lines [2] [1], 'WW 53/2009')
         self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '0.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
     # end def test_user1
 
     def test_user2 (self) :

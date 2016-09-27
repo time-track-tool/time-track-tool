@@ -131,10 +131,12 @@ def _next_user_dynamic (db, dynuser, direction = '+') :
         id = id.id
     except AttributeError :
         pass
-    try :
-        vf = Date (dynuser.valid_from._value)
-    except (ValueError, AttributeError) :
-        return None
+    vf = dynuser.valid_from
+    if not isinstance (vf, Date) :
+        try :
+            vf = Date (dynuser.valid_from._value)
+        except (ValueError, AttributeError) :
+            return None
     return find_user_dynamic (db, id, vf, direction = direction)
 # end def _find_user_dynamic
 
