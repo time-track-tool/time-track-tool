@@ -1,14 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html tal:define="property request/form/property/value">
   <head>
       <link rel="stylesheet" type="text/css" href="@@file/style.css" />
       <meta http-equiv="Content-Type"
        tal:attributes="content string:text/html;; charset=${request/client/charset}" />
       <tal:block tal:condition="python:request.form.has_key('property')">
       <title i18n:translate=""><tal:x i18n:name="property"
-       tal:content="request/form/property/value" i18n:translate="" />
-        help - <span i18n:name="tracker"
-       tal:replace="config/TRACKER_NAME" /></title>
+       tal:content="property" i18n:translate="" />
+        help -
+        <span i18n:name="tracker" tal:replace="config/TRACKER_NAME" />
+      </title>
       <script language="Javascript" type="text/javascript"
           tal:content="structure string:
           // this is the name of the field in the original form that we're working on
@@ -86,7 +87,7 @@
              <td tal:repeat="prop props">
                  <label class="classhelp-label"
                         tal:attributes="for string:id_$attr"
-                        tal:content="structure python:item[prop]"></label>
+                        tal:content="python:item[prop]"></label>
              </td>
            </tal:block>
        </tr>
