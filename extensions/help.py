@@ -2423,21 +2423,31 @@ def fieldlabel \
     return "<label %s>%s%s%s</label>" % (csscls, startswith, _ (prop), endswith)
 # end def fieldlabel
 
-def fieldname (cls, name, searchname = None, endswith = '&nbsp;', csscls = '') :
+def fieldname \
+    ( cls, name
+    , searchname = None
+    , endswith   = '&nbsp;'
+    , csscls     = ''
+    , label      = None
+    ) :
     if not searchname : searchname = name
     prop  = combined_name (cls, name, searchname)
+    label1 = label2 = ''
+    if label is not None :
+        label1 = '<label for="%s">' % label
+        label2 = '</label>'
+    i18nprop = _ (prop)
     if prop not in _helptext :
-        return "%s%s" % (_ (prop), endswith)
-    label = _ (prop)
+        return "%s%s%s%s" % (label1, i18nprop, endswith, label2)
     href  = prop.split ('.')[-1].split ('++')[-1]
     if csscls :
         csscls = 'class="%s"' % csscls
-    return (_ (''"""<a %(csscls)s title=\"Help for %(label)s\" """
+    return (_ (''"""<a %(csscls)s title=\"Help for %(i18nprop)s\" """
                """href=\"javascript:help_window"""
                """('%(cls)s?:template=property_help#%(href)s', """
                """'500', '400')\" """
-               """tabindex="-1">"""
-               """%(label)s%(endswith)s</a>""" \
+               """tabindex="-1">%(label1)s"""
+               """%(i18nprop)s%(label2)s%(endswith)s</a>""" \
               ) % locals ()
            )
 # end def fieldname
