@@ -85,8 +85,13 @@ def find_prev_dr_freeze (db, user, date, frozen = True) :
 
 def _find_next (db, daily_record_freeze, direction = '+', frozen = None) :
     user = daily_record_freeze.user.id
-    return find_next_dr_freeze \
-        (db, user, daily_record_freeze.date, direction, frozen = frozen)
+    date = daily_record_freeze.date
+    if not isinstance (date, Date) :
+        try :
+            date = Date (date._value)
+        except AttributeError :
+            date = Date (date)
+    return find_next_dr_freeze (db, user, date, direction, frozen = frozen)
 # end def _find_next
 
 def next_dr_freeze (db, daily_record_freeze, frozen = None) :
