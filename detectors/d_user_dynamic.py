@@ -39,7 +39,6 @@ import freeze
 import user_dynamic
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
-    import pdb; pdb.set_trace ()
     if valid_to :
         valid_to.hour   = valid_to.minute   = valid_to.second   = 0
     valid_from.hour     = valid_from.minute = valid_from.second = 0
