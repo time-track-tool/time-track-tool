@@ -1725,7 +1725,8 @@ _helptext          = \
          '''
       ]
     , ""'safety_level'                :
-      [""'''ASIL %(Property)s for tracking safety-relevant topics
+      [""'''%(Property)s for tracking safety-relevant topics, for more
+            details see the documentation of the safety process.
          '''
       ]
     , ""'salutation'                  :
