@@ -560,6 +560,7 @@ dynuser_copyfields = \
      , 'all_in'
      , 'additional_hours'
      , 'overtime_period'
+     , 'sap_cc'
      ]
 
 def dynuser_half_frozen (db, dyn) :
