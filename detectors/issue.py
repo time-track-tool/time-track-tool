@@ -419,12 +419,29 @@ def check_ext_tracker_state (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'issue')
 # end def check_ext_tracker_state
 
+def inherit_safety_level (db, cl, nodeid, new_values) :
+    """ Inherit safety level from container, but only if not yet set
+        (i.e. always for new issues)
+    """
+    if 'safety_level' in new_values :
+        return
+    if nodeid and cl.get (nodeid, 'safety_level') :
+        return
+    container = new_values.get ('part_of')
+    # New issue with container or container change
+    if container :
+        new_values ['safety_level'] = cl.get (container, 'safety_level')
+# end def inherit_safety_level
+
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'issue' in db.classes :
         db.issue.audit ("create", forbidden_props)
+        if 'safety_level' in db.issue.properties :
+            db.issue.audit ("set",    inherit_safety_level)
+            db.issue.audit ("create", inherit_safety_level)
         if 'effective_prio' in db.issue.properties :
             db.issue.audit ("set",    update_eff_prio)
             db.issue.audit ("create", update_eff_prio)
