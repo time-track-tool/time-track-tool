@@ -238,6 +238,16 @@ class New_Leave_Action (NewItemAction) :
 # end class New_Leave_Action
 
 def leave_days (db, user, first_day, last_day) :
+    if not isinstance (first_day, Date) :
+        try :
+            first_day = Date (first_day._value)
+        except AttributeError :
+            first_day = Date (first_day)
+    if not isinstance (last_day, Date) :
+        try :
+            last_day = Date (last_day._value)
+        except AttributeError :
+            last_day = Date (last_day)
     try :
         return vacation.leave_days (db, user, first_day, last_day)
     except AssertionError :
