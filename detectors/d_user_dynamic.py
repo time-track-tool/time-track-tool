@@ -39,6 +39,7 @@ import freeze
 import user_dynamic
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
+    import pdb; pdb.set_trace ()
     if valid_to :
         valid_to.hour   = valid_to.minute   = valid_to.second   = 0
     valid_from.hour     = valid_from.minute = valid_from.second = 0
@@ -66,7 +67,11 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
                     % locals ()
                     )
         else :
-            if not (valid_from >= rvalid_to or valid_to <= rvalid_from) :
+            if not (  valid_from >= rvalid_to
+                   or (valid_to and valid_to <= rvalid_from)
+                   ) :
+                # Don't display 'None':
+                valid_to = valid_to or ''
                 raise Reject, \
                     ( _ ("%(valid_from)s;%(valid_to)s overlaps with "
                          "%(rvalid_from)s;%(rvalid_to)s"
