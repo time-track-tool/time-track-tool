@@ -219,6 +219,12 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
 
+    def is_responsible (db, userid, itemid) :
+        """Determine whether the user is responsible for an issue
+        """
+        return db.it_issue.get (itemid, 'responsible') == userid
+    # end def is_responsible
+
     def responsible_or_stakeholder (db, userid, itemid) :
         """Determine whether the user is responsible for or the
            stakeholder of an issue
@@ -236,7 +242,18 @@ def security (db, ** kw) :
         , description = \
             "User is allowed to edit several fields if he is "
             "Stakeholder/Responsible for an it_issue"
-        , properties  = ('deadline', 'responsible', 'status', 'title')
+        , properties  = ('deadline', 'status', 'title')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'it_issue'
+        , check       = is_responsible
+        , description = \
+            "User is allowed to edit several fields if he is "
+            "Responsible for an it_issue"
+        , properties  = ('responsible',)
         )
     db.security.addPermissionToRole ('User', p)
 

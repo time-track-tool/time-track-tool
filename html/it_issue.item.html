@@ -73,13 +73,16 @@
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'responsible')"/>
-      <td>
-       <tal:block tal:replace="structure python:context.responsible.field ()"/>
-       <tal:block tal:replace="structure python:utils.user_classhelp
-          (db, user_status=nosy_stati)"/>
-      </td>
+      <tal:block tal:condition="python:
+        context.id or utils.user_has_role (db._db, request.user.id, 'IT')">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'responsible')"/>
+       <td>
+        <tal:block tal:replace="structure python:context.responsible.field ()"/>
+        <tal:block tal:replace="structure python:utils.user_classhelp
+           (db, user_status=nosy_stati)"/>
+       </td>
+      </tal:block>
       <th tal:content="structure python:utils.fieldname
           (classname, 'stakeholder')"/>
       <td>
