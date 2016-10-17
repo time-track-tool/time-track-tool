@@ -1,71 +1,80 @@
 #!/usr/bin/python
 import sys, os
-from optparse          import OptionParser
+from argparse          import ArgumentParser
 from roundup           import date
 from roundup           import instance
 
 tracker = instance.open (os.getcwd ())
 db      = tracker.open ('admin')
 
-parser = OptionParser ()
-parser.add_option \
+parser = ArgumentParser ()
+parser.add_argument \
     ( "-l", "--as_list"
     , dest    = "as_list"
     , help    = "Output as python list for use in regression test"
     , default = False
     , action  = "store_true"
     )
-parser.add_option \
+parser.add_argument \
     ( "-s", "--search"
     , dest    = "search"
     , help    = "Check search permissions for each role"
     , default = False
     , action  = "store_true"
     )
-opt, args = parser.parse_args ()
+parser.add_argument \
+    ( "-v", "--verbose"
+    , dest    = "verbose"
+    , help    = "Output types in addition to property names"
+    , default = False
+    , action  = "store_true"
+    )
+args = parser.parse_args ()
 
-if len (args) :
-    parser.error ('No arguments needed')
-    exit (23)
-
-if opt.as_list :
+if args.as_list :
     print "properties = \\"
 for clcnt, cl in enumerate (sorted (db.getclasses ())) :
-    if opt.as_list :
+    klass = db.getclass (cl)
+    if args.as_list :
         o = ','
         if clcnt == 0 :
             o = '['
         print "    %s ( '%s'" % (o, cl)
     else :
         print cl
-    for n, p in enumerate (sorted (db.getclass (cl).properties.keys ())) :
+    for n, p in enumerate (sorted (klass.properties.keys ())) :
         rs = ''
-        if opt.search :
+        if args.search :
             rs = '( '
-        if opt.as_list :
+        if args.as_list :
             if n :
                 print "        , %s'%s'" % (rs, p)
             else :
                 print "      , [ %s'%s'" % (rs, p)
         else :
-            print "    ", p
-        if opt.search :
+            if args.verbose :
+                prp = klass.properties [p]
+                typ = prp.__class__.__name__
+                print "    ", p, typ, getattr (prp, 'classname', '')
+            else :
+                print "    ", p
+        if args.search :
             roles = []
             for role in sorted (db.security.role.iterkeys ()) :
                 if db.security.roleHasSearchPermission (cl, p, role) :
                     roles.append (role)
-            if opt.as_list :
+            if args.as_list :
                 r = ', '.join ('"%s"' % r for r in roles)
                 print '          , [%s]' % r
                 print '          )'
             else :
                 print "        ", ', '.join (roles)
-    if opt.as_list :
+    if args.as_list :
         if not len (db.getclass (cl).properties) :
             print "      , ["
         print "        ]"
         print "      )"
-if opt.as_list :
+if args.as_list :
     print "    ]"
     print
     print "if __name__ == '__main__' :"
