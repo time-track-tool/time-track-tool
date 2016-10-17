@@ -42,7 +42,9 @@ def init \
     class IT_Issue_Baseclass (IT_Base) :
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( part_of             = Link      ('it_issue')
+                ( part_of             = Link      ('it_issue'
+                                                  , msg_header_property = 'id'
+                                                  )
                 , composed_of         = Multilink ('it_issue')
                 )
             IT_Base.__init__ (self, db, classname, ** properties)
