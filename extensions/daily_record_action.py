@@ -561,7 +561,19 @@ dynuser_copyfields = \
      , 'additional_hours'
      , 'overtime_period'
      , 'sap_cc'
+     , 'contract_type'
      ]
+
+def dynuser_copyurl (dyn) :
+    try :
+        dyn = dyn._klass.getnode (dyn._nodeid)
+    except AttributeError :
+        pass
+    return 'user_dynamic?:template=item&' + '&'.join \
+        ('%s=%s' % (n, urlquote (str (dyn [n] or '')))
+         for n in dynuser_copyfields
+        )
+# end def dynuser_copyurl
 
 def dynuser_half_frozen (db, dyn) :
     userid   = dyn.user.id
@@ -796,5 +808,5 @@ def init (instance) :
     util ("prev_dr_freeze",           freeze.prev_dr_freeze)
     util ("week_freeze_date",         common.week_freeze_date)
     util ("dynuser_half_frozen",      dynuser_half_frozen)
-    util ("dynuser_copyfields",       dynuser_copyfields)
+    util ("dynuser_copyurl",          dynuser_copyurl)
 # end def init

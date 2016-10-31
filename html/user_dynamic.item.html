@@ -60,11 +60,7 @@
       <td>
        <span nowrap tal:condition="python:context.id and not context.valid_to">
         <a i18n:translate="" tal:attributes="href python:
-        'user_dynamic?:template=item&' + '&'.join
-        (['%s=%s' % (i, utils.urlquote (str (context [i])))
-         for i in utils.dynuser_copyfields
-         ]
-        )">
+        utils.dynuser_copyurl (context)">
            new user_dynamic record
         </a>
        </span>
