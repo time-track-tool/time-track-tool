@@ -405,14 +405,21 @@ def set_ext_msg (db, cl, nodeid, new_values) :
 def check_kpm (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'issue')
     if new_values.get ('ready_for_sync', None) :
-        common.require_attributes \
-            ( _, cl, nodeid, new_values
-            , 'description', 'fault_frequency', 'reproduceable'
-            )
+        # required fields only for *new* kpm issue. Issues that were
+        # synced *from* KPM have these fields marked non-editable.
         iid = new_values.get ('issue')
         if not iid :
             iid = cl.get (nodeid, 'issue')
+        kpmtr = db.ext_tracker.lookup ('KPM')
         common.require_attributes (_, db.issue, iid, {}, 'release', 'severity')
+        ets = db.ext_tracker_state.filter \
+            (None, dict (issue = iid, ext_tracker = kpmtr))
+        assert len (ets) <= 1
+        if not ets :
+            common.require_attributes \
+                ( _, cl, nodeid, new_values
+                , 'description', 'fault_frequency', 'reproduceable'
+                )
 # end def check_kpm
 
 def check_ext_tracker_state (db, cl, nodeid, new_values) :
