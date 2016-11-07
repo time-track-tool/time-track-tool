@@ -116,7 +116,7 @@ def audit_superseder (db, cl, nodeid, new_values) :
         if not closed.relaxed :
             if 'messages' not in new_values :
                 msg = db.msg.create \
-                    ( content = "Closing a duplicate"
+                    ( content = "Closing as duplicate"
                     , author  = db.getuid ()
                     , date    = Date ('.')
                     )

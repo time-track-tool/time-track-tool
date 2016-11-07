@@ -53,7 +53,7 @@ def join_nosy_lists (db, cl, nodeid, oldvalues) :
     """
     oss = oldvalues.get ('superseder', None)
     nss = cl.get (nodeid, 'superseder')
-    if oss and oss != nss :
+    if nss and oss != nss :
         my_nosy     = cl.get (nodeid, "nosy")
         for ss in nss :
             ss_nosy_old = sorted (cl.get (ss, "nosy"))
