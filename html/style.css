@@ -645,12 +645,14 @@ table.history th {
   font-weight: bold;
   text-align: left;
   font-size: 90%;
+  padding:0 .5em 0 .5em;
 }
 
 table.history td {
   font-size: 90%;
   vertical-align: top;
   empty-cells: show;
+  padding:0 .5em 0 .5em;
 }
 
 
