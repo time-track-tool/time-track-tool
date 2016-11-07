@@ -98,11 +98,23 @@ def _check_for_description (db, cl, nodeid, newvalues) :
 check_product_type = _check_for_description
 check_reference    = _check_for_description
 
+def get_wip (db) :
+    wip = None
+    for k in ('work in progress', 'Work in progress') :
+        try :
+            wip = db.doc_status.lookup (k)
+        except KeyError :
+            pass
+    if wip is None :
+        wip = '1'
+    return wip
+# end def get_wip
+
 def defaults (db, cl, nodeid, newvalues) :
     if not newvalues.get ('responsible', None) :
         newvalues ['responsible'] = db.getuid ()
     # new doc item: always set status to work in progress
-    newvalues ['status'] = db.doc_status.lookup ('work in progress')
+    newvalues ['status'] = get_wip (db)
     newvalues ['state_changed_by'] = db.getuid ()
 # end def defaults
 
@@ -146,14 +158,12 @@ def check_reference (db, cl, nodeid, newvalues) :
 def check_statechange (db, cl, nodeid, newvalues) :
     """ Things to do for a state change:
         Add doc admins to nosy for certain state changes
-        State-change to released by different person that last
-        state-change
     """
     if 'status' not in newvalues :
         return
     oldstate = cl.get (nodeid, 'status')
     newstate = newvalues ['status']
-    wip = db.doc_status.lookup ('work in progress')
+    wip = get_wip (db)
     if newstate != oldstate and oldstate != wip :
         nosy = newvalues.get ('nosy', cl.get (nodeid, 'nosy'))
         if not nosy :
@@ -163,12 +173,6 @@ def check_statechange (db, cl, nodeid, newvalues) :
             if common.user_has_role (db, u, 'Doc_Admin') :
                 nosy [u] = True
         newvalues ['nosy'] = nosy.keys ()
-        if newstate == db.doc_status.lookup ('released') :
-            if db.getuid () == cl.get (nodeid, 'state_changed_by') :
-                raise Reject, _ \
-                    ('Change to "released": user must be different from'
-                     ' change to "draft"'
-                    )
     if newstate != oldstate :
         newvalues ['state_changed_by'] = db.getuid ()
 # end def check_statechange
