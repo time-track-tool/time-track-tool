@@ -102,6 +102,7 @@ properties = \
     , ( 'doc_status'
       , [ 'name'
         , 'order'
+        , 'rq_link'
         , 'transitions'
         ]
       )

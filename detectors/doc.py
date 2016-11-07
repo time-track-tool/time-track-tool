@@ -175,6 +175,9 @@ def check_statechange (db, cl, nodeid, newvalues) :
         newvalues ['nosy'] = nosy.keys ()
     if newstate != oldstate :
         newvalues ['state_changed_by'] = db.getuid ()
+        st = db.doc_status.getnode (newstate)
+        if st.rq_link :
+            common.require_attributes (_, cl, nodeid, newvalues, 'link')
 # end def check_statechange
 
 def init (db) :

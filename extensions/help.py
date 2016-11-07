@@ -1717,6 +1717,11 @@ _helptext          = \
       [""'''Room number''']
     , ""'routers'                     :
       [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
+    , ""'rq_link'                     :
+      [""'''Require Link/CVS/SVN location when changing to this
+            %(Classname)s
+         '''
+      ]
     , ""'safety_critical'             :
       [""'''This field is used in the approval process to identify
             necessity of approval by Quality in case a safety critical

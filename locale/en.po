@@ -6615,3 +6615,6 @@ msgstr "Summary work package ID"
 
 msgid "time_wp_summary_no_id"
 msgstr "Summary work package ID"
+
+msgid "rq_link"
+msgstr "Require Link"

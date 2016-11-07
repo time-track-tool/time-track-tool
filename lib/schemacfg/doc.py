@@ -34,6 +34,7 @@ def init \
     ( db
     , Class
     , Department_Class
+    , Boolean
     , Number
     , String
     , Link
@@ -80,6 +81,7 @@ def init \
         , name                = String    (required = True)
         , order               = Number    ()
         , transitions         = Multilink ("doc_status")
+        , rq_link             = Boolean   ()
         )
     doc_status.setkey ("name")
 
