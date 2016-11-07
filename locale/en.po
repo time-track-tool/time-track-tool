@@ -6047,7 +6047,7 @@ msgid "doc"
 msgstr "Artefact record"
 
 msgid "link"
-msgstr "Link/CVS location"
+msgstr ""
 
 msgid "state_changed_by"
 msgstr ""
