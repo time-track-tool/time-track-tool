@@ -48,13 +48,27 @@ import user_dynamic
 import vacation
 
 def check_timestamps (start, end, date) :
-    start.year  = end.year  = date.year
-    start.month = end.month = date.month
-    start.day   = end.day   = date.day
-    if start > end :
+    t = end
+    if end == '24:00' :
+        t = '00:00'
+    dstart = Date (start, offset = 0)
+    dend   = Date (t,     offset = 0)
+    dstart.year  = dend.year  = date.year
+    dstart.month = dend.month = date.month
+    dstart.day   = dend.day   = date.day
+    if end == '24:00' :
+        dend += common.day
+        dend.hours = dend.seconds = dend.minutes = 0
+    if dstart > dend :
         raise Reject, _ ("start and end must be on same day and start <= end.")
-    if start.timestamp () % 900 or end.timestamp () % 900 :
+    if dstart.timestamp () % 900 or dend.timestamp () % 900 :
         raise Reject, _ ("Times must be given in quarters of an hour")
+    dur = (dend - dstart).as_seconds () / 3600.
+    ep  = dend.pretty (hour_format)
+    if end == '24:00' :
+        assert ep == '00:00'
+        ep = end
+    return dstart, dend, dstart.pretty (hour_format), ep, dur
 # end def check_timestamps
 
 def check_duration (d, max = 0) :
@@ -415,27 +429,29 @@ def check_start_end_duration \
             raise Reject, _ (''"%(attr)s must be specified") % locals ()
         if 'duration' in new_values :
             raise Reject, _ (''"Either specify duration or start/end")
-        dstart = Date (start, offset = 0)
-        dend   = Date (end,   offset = 0)
-        check_timestamps (dstart, dend, date)
-        duration                = (dend - dstart).as_seconds () / 3600.
+        dstart, dend, sp, ep, dur = check_timestamps (start, end, date)
+        duration                = dur
         new_values ['duration'] = duration
-        new_values ['start']    = dstart.pretty (hour_format)
-        new_values ['end']      = dend.pretty   (hour_format)
+        new_values ['start']    = sp
+        new_values ['end']      = ep
     else :
         check_duration (duration, 24)
         if 'duration' in new_values :
             new_values ['duration'] = duration
         if start :
-            dstart  = Date (start, offset = 0)
             if 'start' in new_values or 'duration' in new_values :
                 minutes = duration * 60
                 hours   = int (duration % 60)
                 minutes = minutes - hours * 60
-                dend    = dstart + Interval ('%d:%d' % (hours, minutes))
-                check_timestamps (dstart, dend, date)
-                new_values ['start'] = dstart.pretty (hour_format)
-                new_values ['end']   = dend.pretty   (hour_format)
+                ds      = Date (start, offset = 0)
+                t = (ds + Interval ('%d:%d' % (hours, minutes))).pretty \
+                    (hour_format)
+                if duration > 0 and t == '00:00' :
+                    t = '24:00'
+                dstart, dend, sp, ep, dur = check_timestamps (start, t, date)
+                assert dur == duration
+                new_values ['start'] = sp
+                new_values ['end']   = ep
     if dist and dist < duration :
         duration -= dist
         if start :
