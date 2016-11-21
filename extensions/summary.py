@@ -50,6 +50,7 @@ import request_util
 import sum_common
 import user_dynamic
 import vacation
+from update_tr_cache import update_tr_cache
 
 day = common.day
 ymd = common.ymd
@@ -761,8 +762,7 @@ class Summary_Report (_Report) :
             % (time.time () - timestamp))
 
         for d in dr.itervalues () :
-            user_dynamic.update_tr_duration (db, d)
-            db.commit ()
+            update_tr_cache (db, d.node)
         db.log_info ("summary_report: trv time_recs (%s)"
             % (time.time () - timestamp))
 
