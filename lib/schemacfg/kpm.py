@@ -124,7 +124,6 @@ def init \
 def security (db, ** kw) :
     roles = \
         [ ("KPM-Admin", "Admin for KPM multiselect fields")
-        , ("MsgSync",   "Allowed to sync message with ext. tracker")
         ]
     #     classname             allowed to view   /  edit
     classes = \
@@ -134,7 +133,7 @@ def security (db, ** kw) :
         , ("kpm_occurrence",     ["User"], ["KPM-Admin"])
         , ("kpm_release",        ["User"], ["KPM-Admin"])
         , ("kpm_tag",            ["User"], ["KPM-Admin"])
-        , ("kpm",                ["User"], ["User", "MsgSync"])
+        , ("kpm",                ["User"], ["User"])
         ]
     prop_perms = []
 
