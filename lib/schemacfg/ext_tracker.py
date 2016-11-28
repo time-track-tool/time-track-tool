@@ -115,7 +115,7 @@ def security (db, ** kw) :
                                 []
           )
         , ("ext_tracker_state", ["MsgEdit", "MsgSync", "User"],
-                                ["MsgSync", "User"]
+                                ["MsgSync"]
           )
         ]
     prop_perms = []
