@@ -1192,3 +1192,16 @@ if 'time_wp_summary_no' in db.classes :
         ( name  = 'System test, Verification'
         , order = 1000
         )
+
+if 'ext_tracker_state' in db.classes and hasattr (db, 'sql') :
+    db.sql \
+        ( 'alter table _ext_tracker_state add constraint '
+          'issue_ext_tracker_uniq unique '
+          '(_issue, _ext_tracker, __retired__);'
+        )
+
+if 'kpm' in db.classes and hasattr (db, 'sql') :
+    db.sql \
+        ( 'alter table _kpm add constraint issue_uniq unique '
+          '(_issue, __retired__);'
+        )
