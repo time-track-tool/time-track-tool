@@ -32,6 +32,8 @@ class PR_Submit (EditCommon, autosuper) :
     """ Remove items that should not create a new offer item from the
         list of offer items. In particular this is done for boolean
         attributes with a yes/no choice.
+        Also remove all changes to pr_approval that *only* have a
+        message.
     """
 
     def _editnodes (self, props, links) :
@@ -39,6 +41,13 @@ class PR_Submit (EditCommon, autosuper) :
             if cl == 'pr_offer_item' :
                 if int (id) < 0 and val.keys () == ['is_asset'] :
                     del props [(cl, id)]
+            if cl == 'pr_approval' :
+                if val.keys () == ['msg'] or val.keys () == [] :
+                    del props [(cl, id)]
+                    # find it in links
+                    for n, (c, i, p, r) in enumerate (links [:]) :
+                        if c == cl and i == id and p == 'msg' :
+                            del links [n]
         return EditCommon._editnodes (self, props, links)
     # end def _editnodes
 
