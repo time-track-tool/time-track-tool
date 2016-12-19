@@ -162,7 +162,8 @@
       <tr>
        <th class="required" tal:content="structure python:utils.fieldname
            (classname, 'business_unit')"/>
-       <td tal:content="structure python:context.business_unit.menu ()"/>
+       <td tal:content="structure python:context.business_unit.menu
+           (valid = True)"/>
       </tr>
       <tal:block tal:define="ser python:utils.serials (db, context)">
        <tal:block tal:condition="python: context.id and ser"
