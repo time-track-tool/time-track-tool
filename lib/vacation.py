@@ -219,10 +219,10 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati) :
         if dyn.contract_type != ctype :
             continue
         if first_day < start :
-            assert vs.last_day > start
+            assert vs.last_day >= start
             first_day = start
         if last_day > end :
-            assert vs.first_day < end
+            assert vs.first_day <= end
             last_day  = end
         days += leave_days (db, user, first_day, last_day)
     return days
