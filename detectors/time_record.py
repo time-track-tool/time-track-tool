@@ -457,7 +457,9 @@ def check_start_end_duration \
         if start :
             hours   = int (dist)
             minutes = (dist - hours) * 60
-            dstart  = dstart + Interval ('%d:%d' % (hours, minutes))
+            if not dstart :
+                dstart = Date (start, offset = 0)
+            dstart = dstart + Interval ('%d:%d' % (hours, minutes))
             new_values ['start'] = dstart.pretty (hour_format)
         new_values ['duration']  = duration
     return dstart, dend
