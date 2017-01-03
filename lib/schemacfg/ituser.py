@@ -63,7 +63,7 @@ def security (db, ** kw) :
         , 'activity', 'actor', 'messages', 'files'
         )
     it_rw_props = \
-        ('deadline', 'confidential', 'messages', 'files')
+        ('deadline', 'confidential', 'messages', 'files', 'title')
 
     for perm, props in (('View', it_r_props), ('Edit', it_rw_props)) :
         p = db.security.addPermission \
