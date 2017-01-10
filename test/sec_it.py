@@ -41,7 +41,7 @@ Role "ituser":
   (View for "file" only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
- User is allowed to access it_issue if on nosy list (Edit for "it_issue": ('confidential', 'deadline', 'files', 'messages') only)
+ User is allowed to access it_issue if on nosy list (Edit for "it_issue": ('confidential', 'deadline', 'files', 'messages', 'title') only)
  User is allowed to access it_issue if on nosy list (View for "it_issue": ('activity', 'actor', 'creation', 'creator', 'files', 'messages', 'responsible', 'stakeholder', 'status') only)
  User is allowed to access it_issue_status (View for "it_issue_status" only)
  User is allowed to create file (Create for "file" only)

@@ -253,7 +253,7 @@ properties = \
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )
         , ( 'category'
-          , ['admin', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
+          , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']
           )
         , ( 'closed'
           , ['admin', 'external', 'issue_admin', 'it', 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'pgp', 'sec-incident-nosy', 'sec-incident-responsible', 'supportadmin', 'user', 'user_view']

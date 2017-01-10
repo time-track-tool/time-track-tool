@@ -80,7 +80,7 @@ def security (db, ** kw) :
           , ("username", "nickname", "status")
           )
         , ( "category",    "View", ["External"]
-          , ("name", )
+          , ("name", "id")
           )
         , ( "user_status", "View", ["External"]
           , ("name", )
