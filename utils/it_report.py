@@ -4,7 +4,7 @@ from __future__ import print_function
 import sys
 import os
 from time        import time
-from email.Utils import formatdate
+from email.Utils import formatdate, formataddr
 from smtplib     import SMTP, SMTPRecipientsRefused
 from optparse    import OptionParser
 from roundup     import instance
@@ -75,7 +75,9 @@ class IT_Report (object) :
             ))
 
         frm  = opt.mailfrom or self.db.config.ADMIN_EMAIL
-        hfrm = "From: %s" % frm
+        if '@' not in frm :
+            frm = '@'.join ((frm, self.db.config.MAIL_DOMAIN))
+        hfrm = "From: %s" % formataddr (('Do not reply', frm))
 
         for uid, m in sorted (self.messages.iteritems ()) :
             assert (uid)
@@ -85,6 +87,7 @@ class IT_Report (object) :
             try :
                 mail = '\n'.join \
                     ((subj, to, hfrm, date, "X-" + date, mime, '\n', m))
+                import pdb; pdb.set_trace ()
                 smtp.sendmail (frm, addr, mail)
             except SMTPRecipientsRefused, cause :
                 print (cause, file = sys.stderr)
