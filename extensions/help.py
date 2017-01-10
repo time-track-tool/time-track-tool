@@ -2487,17 +2487,24 @@ def set_language (client, db) :
 # end def set_language
 
 def user_manual_ok (db) :
+    return bool (user_manual (db))
+# end def user_manual_ok
+
+def user_manual (db) :
     try :
         db = db._db
     except AttributeError :
         pass
+    fn = getattr (db.config.ext, 'LINK_PR_MANUAL', None)
+    if fn :
+        return fn
     fn = os.path.join (db.config.TRACKER_HOME, "html", "User-Manual.pdf")
     try :
         stbuf = os.stat (fn)
     except OSError :
-        return False
-    return True
-# end def user_manual_ok
+        return None
+    return fn
+# end def user_manual
 
 def init_purchase_type (db) :
     # FIXME: one day this should go into a helptext method that has a db
@@ -2525,5 +2532,6 @@ def init (instance) :
     reg ('combined_name',   combined_name)
     reg ('permdict',        permdict)
     reg ('set_language',    set_language)
+    reg ('user_manual',     user_manual)
     reg ('user_manual_ok',  user_manual_ok)
 # end def init

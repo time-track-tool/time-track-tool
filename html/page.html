@@ -843,7 +843,7 @@
 
      <!-- User manual if existing -->
      <span class="classblock" tal:condition="python:utils.user_manual_ok (db)">
-      <a i18n:translate="" href="@@file/User-Manual.pdf">
+      <a i18n:translate="" tal:attributes="href python:utils.user_manual (db)">
       User Manual
       </a>
      </span>
