@@ -73,7 +73,9 @@ class IT_Report (object) :
              , 'Content-Type: text/plain; charset=UTF-8'
              , 'Content-Transfer-Encoding: 8bit'
             ))
-        frm = "From: %s" % self.db.config.ADMIN_EMAIL
+
+        frm  = opt.mailfrom or self.db.config.ADMIN_EMAIL
+        hfrm = "From: %s" % frm
 
         for uid, m in sorted (self.messages.iteritems ()) :
             assert (uid)
@@ -82,8 +84,8 @@ class IT_Report (object) :
             to   = "To: %s" % addr
             try :
                 mail = '\n'.join \
-                    ((subj, to, frm, date, "X-" + date, mime, '\n', m))
-                smtp.sendmail (self.db.config.ADMIN_EMAIL, addr, mail)
+                    ((subj, to, hfrm, date, "X-" + date, mime, '\n', m))
+                smtp.sendmail (frm, addr, mail)
             except SMTPRecipientsRefused, cause :
                 print (cause, file = sys.stderr)
 
@@ -97,6 +99,12 @@ cmd.add_option \
     , dest    = "dir"
     , help    = "Directory of the tracker to check"
     , default = "."
+    )
+cmd.add_option \
+    ('-f', '--from'
+    , dest    = "mailfrom"
+    , help    = "Send mail with this from address "
+                "(defaults to roundup admin email)"
     )
 cmd.add_option \
     ('-m', '--mail'
