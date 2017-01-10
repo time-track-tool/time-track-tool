@@ -1168,6 +1168,7 @@ default_attributes = dict \
          ' emails external_ref lot nosy number_effected numeric_effort'
          ' prio prodcat product related_issues related_support'
          ' release responsible serial_number title type warranty'
+         ' business_unit'
         ).split ()
     , purchase_request =
         ('continuous_obligation contract_term delivery_deadline'
