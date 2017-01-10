@@ -1205,3 +1205,9 @@ if 'kpm' in db.classes and hasattr (db, 'sql') :
         ( 'alter table _kpm add constraint issue_uniq unique '
           '(_issue, __retired__);'
         )
+
+if 'daily_record' in db.classes and hasattr (db, 'sql') :
+    db.sql \
+        ( 'alter table _daily_record add constraint '
+          'daily_record_user_date unique (_user, _date, __retired__);'
+        )
