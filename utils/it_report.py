@@ -87,7 +87,6 @@ class IT_Report (object) :
             try :
                 mail = '\n'.join \
                     ((subj, to, hfrm, date, "X-" + date, mime, '\n', m))
-                import pdb; pdb.set_trace ()
                 smtp.sendmail (frm, addr, mail)
             except SMTPRecipientsRefused, cause :
                 print (cause, file = sys.stderr)
