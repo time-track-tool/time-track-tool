@@ -189,6 +189,31 @@ def change_pr (db, cl, nodeid, new_values) :
             new_values ['total_cost'] = None
 # end def change_pr
 
+def set_agents (db, cl, nodeid, new_values) :
+    """ Set purchasing agents if agents empty (or would become empty)
+        *and* we can set the agent from the tc or cc.
+    """
+    pr = None
+    if nodeid :
+        pr = cl.getnode (nodeid)
+    pa = new_values.get ('purchasing_agents', None)
+    if pr and not pa :
+        pa = pr.purchasing_agents
+    if not pa :
+        tc = new_values.get ('time_project')
+        cc = new_values.get ('sap_cc')
+        if not tc and not cc and pr :
+            tc = pr.time_project
+            cc = pr.sap_cc
+        if tc :
+            tc = db.time_project.getnode (tc)
+        if cc :
+            cc = db.sap_cc.getnode (cc)
+        item = tc or cc
+        if item :
+            new_values ['purchasing_agents'] = item.purchasing_agents
+# end def set_agents
+
 def check_late_changes (db, cl, nodeid, new_values) :
     """ Check that attributes changed late in the process are consistent
     """
@@ -331,12 +356,7 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                 if n in nosy :
                     del nosy [n]
             if is_new :
-                if pr.time_project :
-                    id = pr.time_project
-                    agents = db.time_project.get (id, 'purchasing_agents')
-                else :
-                    assert pr.sap_cc
-                    agents = db.sap_cc.get (pr.sap_cc, 'purchasing_agents')
+                agents = pr.purchasing_agents
                 if agents and not pt.confidential :
                     nosy.update (dict.fromkeys (agents))
             for a in apps :
@@ -498,6 +518,8 @@ def init (db) :
     db.purchase_request.audit   ("set",    change_pr)
     db.purchase_request.audit   ("set",    fix_nosy)
     db.purchase_request.audit   ("set",    check_late_changes)
+    db.purchase_request.audit   ("create", set_agents,      priority = 150)
+    db.purchase_request.audit   ("set",    set_agents,      priority = 150)
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
     db.pr_approval.audit        ("create", new_pr_approval)

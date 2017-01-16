@@ -193,6 +193,7 @@ def init \
                 , pr_currency           = Link      ("pr_currency")
                 , sap_cc                = Link      ("sap_cc")
                 , sap_reference         = String    ()
+                , purchasing_agents     = Multilink ("user")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -344,7 +345,7 @@ def security (db, ** kw) :
         , description = fixdoc (view_role_pr.__doc__)
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
-            , 'frame_purchase_end', 'nosy', 'messages'
+            , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
             )
         )
     db.security.addPermissionToRole ('User', p)
@@ -499,7 +500,7 @@ def security (db, ** kw) :
         if pr.status in (st_approving, st_approved) :
             return True
         return False
-    # end def open_or_approving
+    # end def approving_or_approved
 
     p = db.security.addPermission \
         ( name = 'Edit'

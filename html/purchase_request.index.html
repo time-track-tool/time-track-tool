@@ -58,6 +58,11 @@
         , filter = dict (status = vst)
         )
     , utils.ExtProperty
+        ( utils, pdict ['purchasing_agents']
+        , help_props  = ['realname']
+        , filter = dict (roles = 'procurement')
+        )
+    , utils.ExtProperty
         ( utils, pdict ['offer_items']
         , searchable  = True
         , sortable    = False

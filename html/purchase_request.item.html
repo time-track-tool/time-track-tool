@@ -70,14 +70,17 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'sap_reference')"/>
       <td tal:content="structure python:context.sap_reference.field ()"/>
-      <tal:block tal:condition="python: context.id and prop">
+      <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
-          (prop._prop.classname, 'purchasing_agents')"/>
-       <td tal:content="structure python: utils.ExtProperty
+          (classname, 'purchasing_agents')"/>
+       <td tal:condition="python: not context.purchasing_agents and prop"
+           tal:content="structure python: utils.ExtProperty
         ( utils, prop
         , item = context
         , searchname = '%s.purchasing_agents' % prop._prop.classname
         ).deref ().formatted ()"/>
+       <td tal:condition="python:context.purchasing_agents"
+           tal:content="structure python:context.purchasing_agents.field ()"/>
       </tal:block>
      </tr>
      <tr>
@@ -252,7 +255,8 @@
                tal:content="structure python:i.price_per_unit.field (size=7)"/>
            <td style="text-align:right">
             <span tal:condition="python:
-                  i.price_per_unit.plain () and i.units.plain ()">
+                  i.price_per_unit.plain () and i.units.plain ()
+                  and i.price_per_unit.is_view_ok () and i.units.is_view_ok ()">
              <tal:block tal:replace=
                  "structure python:
                    float (i.price_per_unit.plain ()) *
