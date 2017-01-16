@@ -195,6 +195,7 @@
          <th class="required" style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'price_per_unit')"/>
+         <th style="text-align:left" i18n:translate="">Net price</th>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              (context, 'pr_currency')"/>
@@ -249,6 +250,15 @@
            <td tal:content="structure python:i.units.field (size=5)"/>
            <td style="text-align:right"
                tal:content="structure python:i.price_per_unit.field (size=7)"/>
+           <td style="text-align:right">
+            <span tal:condition="python:
+                  i.price_per_unit.plain () and i.units.plain ()">
+             <tal:block tal:replace=
+                 "structure python:
+                   float (i.price_per_unit.plain ()) *
+                   float (i.units.plain ())"/>
+            </span>
+           </td>
            <td tal:content="python:context.pr_currency.plain ()"/>
            <td tal:condition="cond">
             <input tabindex="-1" type="checkbox" name="@remove@offer_items"
@@ -350,6 +360,7 @@
         <tr tal:condition="context/id">
          <td colspan="4"/>
          <td i18n:translate="">Sum</td>
+         <td/>
          <td style="text-align:right"
              tal:content="python:utils.pr_offer_item_sum (db._db, context.id)"/>
          <td tal:content="python: context.pr_currency"/>
