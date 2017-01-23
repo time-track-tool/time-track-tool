@@ -491,6 +491,25 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    def cancel_open_pr (db, userid, itemid) :
+        """ User is allowed to cancel a PR if it is open
+        """
+        st_open      = db.pr_status.lookup ('open')
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status == st_open :
+            return True
+        return False
+    # end def cancel_own_pr
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = cancel_open_pr
+        , description = fixdoc (cancel_open_pr.__doc__)
+        , properties = ('status', 'messages')
+        )
+    db.security.addPermissionToRole ('Procurement-Admin', p)
+
     def approving_or_approved (db, userid, itemid) :
         """ User is allowed to reject PR in state approving or approved
         """
