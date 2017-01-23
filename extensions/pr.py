@@ -90,10 +90,20 @@ class Sign_Purchase_Request (Edit_Purchase_Request, autosuper) :
         del d ['user']
         d ['deputy'] = uid
         ap.update (dict.fromkeys (self.db.pr_approval.filter (None, d)))
+        assert len (ap) <= 1
+        if len (ap) < 1 :
+            assert common.user_has_role (self.db, uid, 'Procurement-Admin')
+            del d ['deputy']
+            d ['user'] = pr.requester
+            ap = dict.fromkeys (self.db.pr_approval.filter (None, d))
         assert len (ap) == 1
         for a in ap :
             pr_ap = self.db.pr_approval.getnode (a)
-            assert pr_ap.user == uid or pr_ap.creator == uid
+            assert \
+                (  pr_ap.user == uid
+                or pr_ap.creator == uid
+                or common.user_has_role (self.db, uid, 'Procurement-Admin')
+                )
             assert pr_ap.status == st_ud
             self.db.pr_approval.set (a, status = st_ap)
             self.db.commit ()

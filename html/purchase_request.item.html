@@ -472,6 +472,8 @@
                     context.id
                 and (  db._db.getuid () == context.requester
                     or db._db.getuid () == context.creator
+                    or utils.user_has_role
+                       (db._db, db._db.getuid (), 'procurement-admin')
                     )
                 and context.status.plain () == 'open'"
             i18n:attributes="value" value='Sign&Send'

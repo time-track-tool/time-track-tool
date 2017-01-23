@@ -171,6 +171,12 @@ def change_pr (db, cl, nodeid, new_values) :
                     and (ap.by == requester or ap.by == creator)
                     ) :
                     break
+                # Allow approval by procurement-admin instead of
+                # requester/creator
+                if  (   ap.status == ap_appr
+                    and common.user_has_role (db, ap.by, 'Procurement-Admin')
+                    ) :
+                    break
             else :
                 raise Reject ( _ ("No approval by requester found"))
             new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
