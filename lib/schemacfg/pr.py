@@ -532,24 +532,25 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
-    def own_pr_and_open (db, userid, itemid) :
+    def own_pr_and_open_or_rej (db, userid, itemid) :
         """ User is allowed to edit their own PRs (creator or requester
-            or supervisor of requester) while PR is open.
+            or supervisor of requester) while PR is open or rejected.
         """
         if not own_pr (db, userid, itemid) :
             return False
         open = db.pr_status.lookup ('open')
+        rej  = db.pr_status.lookup ('rejected')
         pr = db.purchase_request.getnode (itemid)
-        if pr.status == open :
+        if pr.status == open or pr.status == rej :
             return True
         return False
-    # end def own_pr_and_open
+    # end def own_pr_and_open_or_rej
 
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'purchase_request'
-        , check = own_pr_and_open
-        , description = fixdoc (own_pr_and_open.__doc__)
+        , check = own_pr_and_open_or_rej
+        , description = fixdoc (own_pr_and_open_or_rej.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -735,7 +736,7 @@ def security (db, ** kw) :
         pr  = get_pr (db, itemid)
         if pr is None :
             return False
-        return own_pr_and_open (db, userid, pr.id)
+        return own_pr_and_open_or_rej (db, userid, pr.id)
     # end def linked_and_editable
 
     p = db.security.addPermission \

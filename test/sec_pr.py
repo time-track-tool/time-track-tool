@@ -112,7 +112,7 @@ Role "user":
  User is allowed to create purchase_request (Create for "purchase_request" only)
  User is allowed to create queries (Create for "query" only)
  User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'timezone') only)
- User is allowed to edit their own PRs (creator or requester or supervisor of requester) while PR is open (Edit for "purchase_request" only)
+ User is allowed to edit their own PRs (creator or requester or supervisor of requester) while PR is open or rejected (Edit for "purchase_request" only)
  User is allowed to edit their queries (Edit for "query" only)
  User is allowed to reopen their own rejected PR (Edit for "purchase_request": ('messages', 'nosy', 'status') only)
  User is allowed to retire their queries (Retire for "query" only)

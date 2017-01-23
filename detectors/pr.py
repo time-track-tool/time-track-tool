@@ -86,6 +86,15 @@ def check_requester (db, cl, nodeid, new_values) :
         (_, cl, nodeid, new_values, 'requester')
 # end def check_requester
 
+def reopen (db, cl, nodeid, new_values) :
+    """ Must happen before change_pr below, to correctly retire old
+        approvals.
+    """
+    ost = cl.get (nodeid, 'status')
+    if ost == db.pr_status.lookup ('rejected') and 'status' not in new_values :
+        new_values ['status'] = db.pr_status.lookup ('open')
+# end def reopen
+
 def change_pr (db, cl, nodeid, new_values) :
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
     approvals = db.pr_approval.filter (None, dict (purchase_request = nodeid))
@@ -469,9 +478,10 @@ def check_currency (db, cl, nodeid, new_values) :
 
 def requester_chg (db, cl, nodeid, new_values) :
     if 'requester' in new_values :
+        st_rej  = db.pr_status.lookup ('rejected')
         st_open = db.pr_status.lookup ('open')
         ost = cl.get (nodeid, 'status')
-        if ost != open :
+        if ost != st_open and ost != st_rej :
             raise Reject (_ ("Requester may not be changed"))
 # end def requester_chg
 
@@ -526,6 +536,7 @@ def init (db) :
     db.purchase_request.audit   ("create", check_tp_rq,     priority = 80)
     db.purchase_request.audit   ("set",    check_tp_rq,     priority = 80)
     db.purchase_request.audit   ("set",    requester_chg,   priority = 70)
+    db.purchase_request.audit   ("set",    reopen,          priority = 90)
     db.purchase_request.audit   ("set",    change_pr)
     db.purchase_request.audit   ("set",    fix_nosy)
     db.purchase_request.audit   ("set",    check_late_changes)
