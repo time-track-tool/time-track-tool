@@ -191,7 +191,9 @@ def change_pr (db, cl, nodeid, new_values) :
 
 def set_agents (db, cl, nodeid, new_values) :
     """ Set purchasing agents if agents empty (or would become empty)
+        or the sap_cc or time_project changed
         *and* we can set the agent from the tc or cc.
+        We also update the nosy list whenever purchasing_agents changes.
     """
     pr = None
     if nodeid :
@@ -199,7 +201,7 @@ def set_agents (db, cl, nodeid, new_values) :
     pa = new_values.get ('purchasing_agents', None)
     if pr and not pa :
         pa = pr.purchasing_agents
-    if not pa :
+    if not pa or 'time_project' in new_values or 'sap_cc' in new_values :
         tc = new_values.get ('time_project')
         cc = new_values.get ('sap_cc')
         if not tc and not cc and pr :
@@ -212,6 +214,15 @@ def set_agents (db, cl, nodeid, new_values) :
         item = tc or cc
         if item :
             new_values ['purchasing_agents'] = item.purchasing_agents
+            # Add agent to nosy list
+    if new_values.get ('purchasing_agents') :
+        nosy = new_values.get ('nosy')
+        if not nosy and pr :
+            nosy = pr.nosy
+        nosy = dict.fromkeys (nosy or [])
+        for i in new_values ['purchasing_agents'] :
+            nosy [i] = 1
+        new_values ['nosy'] = nosy.keys ()
 # end def set_agents
 
 def check_late_changes (db, cl, nodeid, new_values) :

@@ -128,7 +128,7 @@ Role "user":
  User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
  Users are allowed if an approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed if an approval from them is linked to the PR (View for "purchase_request" only)
- Users are allowed if they have one of the view roles of the purchase type (Edit for "purchase_request": ('frame_purchase', 'frame_purchase_end', 'messages', 'nosy', 'sap_reference', 'terms_conditions') only)
+ Users are allowed if they have one of the view roles of the purchase type (Edit for "purchase_request": ('frame_purchase', 'frame_purchase_end', 'messages', 'nosy', 'purchasing_agents', 'sap_reference', 'terms_conditions') only)
  Users are allowed if they have one of the view roles of the purchase type (View for "purchase_request" only)
  Users are allowed to edit if offer is linked from PR and PR is editable (Edit for "pr_offer_item" only)
  Users are allowed to edit message if a pending approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
