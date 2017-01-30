@@ -6618,3 +6618,6 @@ msgstr "Summary work package ID"
 
 msgid "rq_link"
 msgstr "Require Link"
+
+msgid "pr_justification"
+msgstr "PR Justification"

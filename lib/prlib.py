@@ -213,3 +213,18 @@ def compute_approvals (db, pr, do_create) :
         vals.sort (key = lambda x : x ['order'])
         return vals
 # end def compute_approvals
+
+pr_justification = \
+    ( ( 'Related item (in PES)'
+      , 'please indicate how it is covered'
+      )
+    , ( 'Purchase explanation'
+      , 'please explain the reasons why do we need this purchase'
+      )
+    , ( 'Possible alternatives'
+      , 'please specify what other solutions you see'
+      )
+    , ( 'Impact on the project in case of rejection'
+      , 'please state possible consequences of rejecting the purchase'
+      )
+    )

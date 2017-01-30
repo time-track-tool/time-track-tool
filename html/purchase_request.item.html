@@ -164,6 +164,12 @@
       <td tal:content="structure python:context.pr_currency.menu ()"/>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'pr_justification')"/>
+      <td colspan="3" tal:content="structure python:
+          context.pr_justification.multiline (rows=6, cols=80)"/>
+     </tr>
+     <tr>
       <th colspan="4">
        <table class="form">
         <tr>

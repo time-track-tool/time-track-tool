@@ -135,6 +135,7 @@ properties = \
         , 'organisation'
         , 'part_of_budget'
         , 'pr_currency'
+        , 'pr_justification'
         , 'purchase_type'
         , 'purchasing_agents'
         , 'renegotiations'

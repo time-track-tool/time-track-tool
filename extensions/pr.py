@@ -23,6 +23,7 @@
 import prlib
 import common
 import cgi
+from   urllib                 import urlencode
 from   rsclib.autosuper       import autosuper
 from   roundup.cgi.exceptions import Redirect
 from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
@@ -160,6 +161,14 @@ def pr_filter_status_transitions (db, context) :
     return common.filter_status_transitions (context, * stati)
 # end def pr_filter_status_transitions
 
+def pr_justification () :
+    r = []
+    for k, v in prlib.pr_justification :
+        r.append (': '.join ((k, '(' + v + ')')))
+    q = {'@template': 'item', 'pr_justification' : '\r\n'.join (r)}
+    return '?' + urlencode (q)
+# end def pr_justification
+
 def init (instance) :
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -171,4 +180,5 @@ def init (instance) :
     reg ('supplier_approved',            supplier_approved)
     reg ('pr_edit_button',               pr_edit_button)
     reg ('pr_filter_status_transitions', pr_filter_status_transitions)
+    reg ('pr_justification',             pr_justification)
 # end def init

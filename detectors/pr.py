@@ -24,6 +24,17 @@ from   roundup.date                   import Date, Interval
 from   roundup.exceptions             import Reject
 from   roundup.cgi.TranslationService import get_translation
 
+def prjust (db, cl, nodeid, new_values) :
+    """ Field pr_justification must be edited for new PR
+    """
+    if 'pr_justification' in new_values :
+        pj = new_values ['pr_justification']
+        for k, v in prlib.pr_justification :
+            if v in pj :
+                fn = _ ('pr_justification')
+                raise Reject (_ ("You must edit %(fn)s") % locals ())
+# end def prjust
+
 def new_pr (db, cl, nodeid, new_values) :
     if 'requester' not in new_values :
         new_values ['requester'] = db.getuid ()
@@ -537,6 +548,7 @@ def init (db) :
         return
     db.purchase_type.audit      ("create", pt_check_roles)
     db.purchase_type.audit      ("set",    pt_check_roles)
+    db.purchase_request.audit   ("create", prjust,          priority = 40)
     db.purchase_request.audit   ("create", new_pr,          priority = 50)
     db.purchase_request.audit   ("set",    check_requester, priority = 50)
     db.purchase_request.audit   ("create", check_tp_rq,     priority = 80)

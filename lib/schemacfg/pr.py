@@ -194,6 +194,7 @@ def init \
                 , sap_cc                = Link      ("sap_cc")
                 , sap_reference         = String    ()
                 , purchasing_agents     = Multilink ("user")
+                , pr_justification      = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -488,6 +489,30 @@ def security (db, ** kw) :
         , check = cancel_own_pr
         , description = fixdoc (cancel_own_pr.__doc__)
         , properties = ('status', 'messages', 'nosy')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def edit_pr_justification (db, userid, itemid) :
+        """ User is allowed to edit PR Justification
+            if the PR has status open or approving
+            and the user is creator or owner of the PR or has one of the
+            view roles.
+        """
+        if not open_or_approving (db, userid, itemid) :
+            return False
+        if own_pr (db, userid, itemid) :
+            return True
+        if view_role_pr (db, userid, itemid) :
+            return True
+        return False
+    # end def edit_pr_justification
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = edit_pr_justification
+        , description = fixdoc (edit_pr_justification.__doc__)
+        , properties = ('pr_justification',)
         )
     db.security.addPermissionToRole ('User', p)
 
