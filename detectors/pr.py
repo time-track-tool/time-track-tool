@@ -25,14 +25,14 @@ from   roundup.exceptions             import Reject
 from   roundup.cgi.TranslationService import get_translation
 
 def prjust (db, cl, nodeid, new_values) :
-    """ Field pr_justification must be edited for new PR
+    """ Field pr_justification must be edited when signing
     """
-    if 'pr_justification' in new_values :
-        pj = new_values ['pr_justification']
-        for k, v in prlib.pr_justification :
-            if v in pj :
-                fn = _ ('pr_justification')
-                raise Reject (_ ("You must edit %(fn)s") % locals ())
+    pjn = 'pr_justification'
+    pj  = new_values.get (pjn, cl.get (nodeid, pjn))
+    for k, v in prlib.pr_justification :
+        if v in pj :
+            fn = _ (pjn)
+            raise Reject (_ ("You must edit %(fn)s") % locals ())
 # end def prjust
 
 def new_pr (db, cl, nodeid, new_values) :
@@ -117,6 +117,8 @@ def change_pr (db, cl, nodeid, new_values) :
     ost       = cl.get (nodeid, 'status')
     if 'status' in new_values and new_values ['status'] != ost :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
+            # check that pr_justification is given
+            prjust (db, cl, nodeid, new_values)
             tc = new_values.get \
                 ('time_project', cl.get (nodeid, 'time_project'))
             cc = new_values.get \
@@ -548,7 +550,6 @@ def init (db) :
         return
     db.purchase_type.audit      ("create", pt_check_roles)
     db.purchase_type.audit      ("set",    pt_check_roles)
-    db.purchase_request.audit   ("create", prjust,          priority = 40)
     db.purchase_request.audit   ("create", new_pr,          priority = 50)
     db.purchase_request.audit   ("set",    check_requester, priority = 50)
     db.purchase_request.audit   ("create", check_tp_rq,     priority = 80)
