@@ -70,6 +70,7 @@ Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
 Role "quality":
 Role "subcontract":
+Role "training-approval":
 Role "user":
   (Search for "pr_approval" only)
   (Search for "pr_offer_item" only)

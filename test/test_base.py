@@ -163,6 +163,7 @@ class _Test_Case (unittest.TestCase) :
         , 'subcontract'
         , 'summary_view'
         , 'supportadmin'
+        , 'training-approval'
         , 'type'
         , 'user'
         , 'user_view'
@@ -4415,7 +4416,8 @@ class Test_Case_PR (_Test_Case) :
         , 'hr-approval', 'it-approval', 'measurement-approval', 'nosy'
         , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
-        , 'project_view', 'quality', 'subcontract', 'user', 'user_view'
+        , 'project_view', 'quality', 'subcontract', 'training-approval'
+        , 'user', 'user_view'
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR

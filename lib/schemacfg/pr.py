@@ -235,6 +235,7 @@ def security (db, ** kw) :
         , ("Subcontract",          "Approvals for staff/subcontracting")
         , ("PR-View",              "See all Purchase Requests")
         , ("Measurement-Approval", "Responsible for Measurement-Equipment")
+        , ("Training-Approval",    "Approvals for Training")
         ]
 
     #     classname        allowed to view   /  edit
