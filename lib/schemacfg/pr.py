@@ -495,11 +495,17 @@ def security (db, ** kw) :
 
     def edit_pr_justification (db, userid, itemid) :
         """ User is allowed to edit PR Justification
-            if the PR has status open or approving
+            if the PR has appropriate status
             and the user is creator or owner of the PR or has one of the
             view roles.
         """
-        if not open_or_approving (db, userid, itemid) :
+        st_open      = db.pr_status.lookup ('open')
+        st_approving = db.pr_status.lookup ('approving')
+        st_rejected  = db.pr_status.lookup ('rejected')
+        st_approved  = db.pr_status.lookup ('approved')
+        stati        = (st_open, st_approving, st_rejected, st_approved)
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status not in stati :
             return False
         if own_pr (db, userid, itemid) :
             return True
