@@ -266,6 +266,9 @@ def next_yearly_vacation_date (db, user, ctype, date) :
     # Found a dyn user record too far in the future, can't determine
     # next yearly vacation date
     if dyn.valid_from > next_date :
+        # Hmmm, maybe started this year?
+        if not user_dynamic.prev_user_dynamic (db, dyn) :
+            return dyn.valid_from
         return None
     while dyn.valid_from <= next_date :
         if dyn.valid_to > next_date :
