@@ -293,7 +293,7 @@ class Leave_Display (object) :
         self.month = month_name (self.fdd)
         if common.start_of_month (fdd) != common.start_of_month (ldd) :
             self.ldd = ldd = common.end_of_month (fdd)
-            dt = commont.pretty_range (fdd, ldd)
+            dt = common.pretty_range (fdd, ldd)
         srt        = [('+', a) for a in ('lastname', 'firstname')]
         if user :
             self.users = users = db.user.filter (user, {}, sort = srt)
