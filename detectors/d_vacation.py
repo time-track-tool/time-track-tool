@@ -130,6 +130,9 @@ def check_dyn_user_params (db, user, first_day, last_day) :
     ctype = -1 # contract_type is either None or a string, can't be numeric
     while d <= last_day :
         dyn = user_dynamic.get_user_dynamic (db, user, d)
+        if not dyn :
+            ymd = common.ymd
+            raise Reject (_ ("No dynamic user data for %s") % d.pretty (ymd))
         if dyn.vacation_yearly is None :
             raise Reject (_ ("No yearly vacation for this user"))
         if dyn.vacation_day is None or dyn.vacation_month is None :
