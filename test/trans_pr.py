@@ -5,7 +5,8 @@ transprop_perms = \
         , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval'
         , 'procurement'
         , 'procurement-admin', 'project', 'project_view', 'quality'
-        , 'subcontract', 'training-approval', 'user', 'user_view'
+        , 'subcontract', 'subcontract-org', 'training-approval'
+        , 'user', 'user_view'
         ]
       )
     ]
