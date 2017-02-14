@@ -30,11 +30,10 @@ def prjust (db, cl, nodeid, new_values) :
     pjn = 'pr_justification'
     fn  = _ (pjn)
     pj  = new_values.get (pjn, cl.get (nodeid, pjn))
-    if pj is None :
-        raise Reject (_ ("Please fill in %(fn)s") % locals ())
-    for k, v in prlib.pr_justification :
-        if v in pj :
-            raise Reject (_ ("You must edit %(fn)s") % locals ())
+    if pj :
+        for k, v in prlib.pr_justification :
+            if v in pj :
+                raise Reject (_ ("You must edit %(fn)s") % locals ())
 # end def prjust
 
 def new_pr (db, cl, nodeid, new_values) :
