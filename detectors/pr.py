@@ -28,10 +28,12 @@ def prjust (db, cl, nodeid, new_values) :
     """ Field pr_justification must be edited when signing
     """
     pjn = 'pr_justification'
+    fn  = _ (pjn)
     pj  = new_values.get (pjn, cl.get (nodeid, pjn))
+    if pj is None :
+        raise Reject (_ ("Please fill in %(fn)s") % locals ())
     for k, v in prlib.pr_justification :
         if v in pj :
-            fn = _ (pjn)
             raise Reject (_ ("You must edit %(fn)s") % locals ())
 # end def prjust
 
