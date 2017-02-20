@@ -55,7 +55,7 @@ group.add_argument \
     , action  = "store_true"
     )
 parser.add_argument \
-    ( "-L", "--LDAP"
+    ( "-L", "--ldap"
     , dest    = "ldap"
     , help    = "Output LDAP attributes (currently only to csv)"
     , default = False
@@ -87,7 +87,10 @@ _ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
 if args.as_csv :
     writer = csv.writer (sys.stdout, delimiter = args.delimiter)
-    writer.writerow (('table', 'property', 'gui-name'))
+    l = ['table', 'property', 'gui-name']
+    if args.ldap :
+        l.extend (('ldap attribute', 'sync direction'))
+    writer.writerow (l)
 if args.as_list :
     print "properties = \\"
 lds = None
