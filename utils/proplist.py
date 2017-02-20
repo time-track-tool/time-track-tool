@@ -1,17 +1,54 @@
 #!/usr/bin/python
 import sys, os
-from argparse          import ArgumentParser
-from roundup           import date
-from roundup           import instance
+import csv
+from argparse import ArgumentParser
+from roundup  import date
+from roundup  import instance
+from roundup.cgi.TranslationService import get_translation
 
-tracker = instance.open (os.getcwd ())
-db      = tracker.open ('admin')
+def ldap_sync_type (to_ldap, frm_ldap) :
+    if to_ldap and frm_ldap :
+        return 'both'
+    if to_ldap :
+        return 'to ldap'
+    if frm_ldap :
+        return 'from ldap'
+    return ''
+# end def ldap_sync_type
 
 parser = ArgumentParser ()
-parser.add_argument \
-    ( "-l", "--as_list"
+group  = parser.add_mutually_exclusive_group ()
+
+group.add_argument \
+    ( "-c", "--csv"
+    , dest    = "as_csv"
+    , help    = "Output as CSV"
+    , default = False
+    , action  = "store_true"
+    )
+group.add_argument \
+    ( "-d", "--directory"
+    , dest    = "directory"
+    , help    = "Directory of Tracker"
+    , default = '.'
+    )
+group.add_argument \
+    ( "-D", "--delimiter"
+    , dest    = "delimiter"
+    , help    = "Delimiter for CSV"
+    , default = '\t'
+    )
+group.add_argument \
+    ( "-l", "--as-list"
     , dest    = "as_list"
     , help    = "Output as python list for use in regression test"
+    , default = False
+    , action  = "store_true"
+    )
+parser.add_argument \
+    ( "-L", "--LDAP"
+    , dest    = "ldap"
+    , help    = "Output LDAP attributes (currently only to csv)"
     , default = False
     , action  = "store_true"
     )
@@ -31,8 +68,22 @@ parser.add_argument \
     )
 args = parser.parse_args ()
 
+sys.path.insert (1, os.path.join (args.directory, 'lib'))
+sys.path.insert (1, os.path.join (args.directory, 'extensions'))
+from help      import combined_name
+from ldap_sync import LDAP_Roundup_Sync
+tracker = instance.open (args.directory)
+db      = tracker.open ('admin')
+_ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+
+if args.as_csv :
+    writer = csv.writer (sys.stdout, delimiter = args.delimiter)
+    writer.writerow (('table', 'property', 'gui-name'))
 if args.as_list :
     print "properties = \\"
+lds = None
+if args.ldap :
+    lds = LDAP_Roundup_Sync (db)
 for clcnt, cl in enumerate (sorted (db.getclasses ())) :
     klass = db.getclass (cl)
     if args.as_list :
@@ -40,6 +91,8 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
         if clcnt == 0 :
             o = '['
         print "    %s ( '%s'" % (o, cl)
+    elif args.as_csv :
+        writer.writerow ((cl, '', _ (cl)))
     else :
         print cl
     for n, p in enumerate (sorted (klass.properties.keys ())) :
@@ -51,6 +104,33 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
                 print "        , %s'%s'" % (rs, p)
             else :
                 print "      , [ %s'%s'" % (rs, p)
+        elif args.as_csv :
+            l = ['', p, _ (combined_name (cl, p))]
+            if args.ldap and cl in ('user', 'user_contact') :
+                assert cl in lds.attr_map
+                if cl == 'user' :
+                    amap = lds.attr_map ['user']
+                    if p in amap :
+                        l.append (amap [p][0])
+                        to_ldap = \
+                            (   bool (amap [p][1])
+                            and getattr
+                                (db.config.ext, 'LDAP_UPDATE_LDAP', None)
+                            )
+                        frm_ldap = \
+                            (   bool (amap [p][2])
+                            and getattr
+                                (db.config.ext, 'LDAP_UPDATE_ROUNDUP', None)
+                            )
+                        l.append (ldap_sync_type (to_ldap, frm_ldap))
+                elif p == 'contact' :
+                    l.append \
+                        ('by type: mail, telephoneNumber, mobile, pager')
+                    to_ldap = getattr (db.config.ext, 'LDAP_UPDATE_LDAP', None)
+                    frm_ldap = \
+                        getattr (db.config.ext, 'LDAP_UPDATE_ROUNDUP', None)
+                    l.append (ldap_sync_type (to_ldap, frm_ldap))
+            writer.writerow (l)
         else :
             if args.verbose :
                 prp = klass.properties [p]
