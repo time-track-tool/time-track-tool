@@ -16,6 +16,15 @@ def ldap_sync_type (to_ldap, frm_ldap) :
     return ''
 # end def ldap_sync_type
 
+def get_bool_cfg (db, name) :
+    cfgitem = getattr (db.config.ext, name, None)
+    if cfgitem :
+        if cfgitem.lower () in ('true', 'yes', '1') :
+            return True
+        return False
+    return None
+# end def get_bool_cfg
+
 parser = ArgumentParser ()
 group  = parser.add_mutually_exclusive_group ()
 
@@ -114,21 +123,18 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
                         l.append (amap [p][0])
                         to_ldap = \
                             (   bool (amap [p][1])
-                            and getattr
-                                (db.config.ext, 'LDAP_UPDATE_LDAP', None)
+                            and get_bool_cfg (db, 'LDAP_UPDATE_LDAP')
                             )
                         frm_ldap = \
                             (   bool (amap [p][2])
-                            and getattr
-                                (db.config.ext, 'LDAP_UPDATE_ROUNDUP', None)
+                            and get_bool_cfg (db, 'LDAP_UPDATE_ROUNDUP')
                             )
                         l.append (ldap_sync_type (to_ldap, frm_ldap))
                 elif p == 'contact' :
                     l.append \
                         ('by type: mail, telephoneNumber, mobile, pager')
-                    to_ldap = getattr (db.config.ext, 'LDAP_UPDATE_LDAP', None)
-                    frm_ldap = \
-                        getattr (db.config.ext, 'LDAP_UPDATE_ROUNDUP', None)
+                    to_ldap  = get_bool_cfg (db, 'LDAP_UPDATE_LDAP')
+                    frm_ldap = get_bool_cfg (db, 'LDAP_UPDATE_ROUNDUP')
                     l.append (ldap_sync_type (to_ldap, frm_ldap))
             writer.writerow (l)
         else :
