@@ -168,6 +168,14 @@ def init \
         )
     t_c.setkey ('name')
 
+    io = Class \
+        ( db, ''"internal_order"
+        , order_number          = String    ()
+        , name                  = String    ()
+        , valid                 = Boolean   ()
+        )
+    io.setkey ('order_number')
+
     class PR (Full_Issue_Class) :
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
@@ -195,6 +203,11 @@ def init \
                 , sap_reference         = String    ()
                 , purchasing_agents     = Multilink ("user")
                 , pr_justification      = String    ()
+                , internal_order        = Link
+                                          ( "internal_order"
+                                          , try_id_parsing = 'no'
+                                          , do_journal     = 'no'
+                                          )
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -261,6 +274,7 @@ def security (db, ** kw) :
         , ("user",               ["Procurement-Admin"], [])
         , ("purchase_request",   ["PR-View"],           [])
         , ("pr_offer_item",      ["PR-View"],           [])
+        , ("internal_order",     ["User"],              [])
         ]
 
     prop_perms = \
@@ -349,6 +363,7 @@ def security (db, ** kw) :
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
+            , 'internal_order'
             )
         )
     db.security.addPermissionToRole ('User', p)

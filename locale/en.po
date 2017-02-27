@@ -6621,3 +6621,6 @@ msgstr "Require Link"
 
 msgid "pr_justification"
 msgstr "PR Justification"
+
+msgid "internal_order"
+msgstr "Internal order"

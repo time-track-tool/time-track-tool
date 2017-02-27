@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+import os
+import re
+
+from csv      import DictReader
+from roundup  import instance
+from argparse import ArgumentParser
+
+def main () :
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( '-d', '--directory'
+        , dest    = 'dir'
+        , help    = 'Tracker instance directory (%(default)s)'
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( '-D', '--delimiter'
+        , dest    = 'delimiter'
+        , help    = 'CSV delimiter character (tab)'
+        , default = '\t'
+        )
+    cmd.add_argument \
+        ( '-E', '--encoding'
+        , dest    = 'encoding'
+        , help    = 'CSV encoding (%(default)s)'
+        , default = 'iso-8859-15'
+        )
+    cmd.add_argument \
+        ( "-u", "--user"
+        , help    = "User to open the tracker as (%(default)s)"
+        , default = 'admin'
+        )
+    cmd.add_argument \
+        ( "-U", "--update"
+        , help    = "Really update the database"
+        , action  = 'store_true'
+        , default = False
+        )
+    cmd.add_argument \
+        ( "-V", "--verbose"
+        , help    = "Verbose output"
+        , action  = 'store_true'
+        , default = False
+        )
+    cmd.add_argument \
+        ( "file"
+        , help    = "Name of the CSV export file"
+        )
+    args = cmd.parse_args ()
+    tracker = instance.open (args.dir)
+    db = tracker.open (args.user)
+    r = DictReader (open (args.file, 'r'), delimiter = args.delimiter)
+    for line in r :
+        assert line ['Auftragsart - Name'].startswith ('Innenauftrag')
+        if line ['Auftrag'] :
+            num  = line ['Auftrag'].decode  (args.encoding)
+            name = line ['Kurztext'].decode (args.encoding)
+
+            try :
+                id = db.internal_order.lookup (num.encode ('utf-8'))
+                io = db.internal_order.getnode (id)
+                d  = dict (valid = True)
+                if io.name != name and name :
+                    d ['name'] = name.encode ('utf-8')
+                if args.update :
+                    db.internal_order.set (id, **d)
+                if args.verbose :
+                    print ( "Updating internal_order%s (%s): %s"
+                          % (id, io.order_number, d)
+                          )
+            except KeyError :
+                if args.update :
+                    db.internal_order.create \
+                        ( order_number = num.encode ('utf-8')
+                        , name         = name.encode ('utf-8')
+                        , valid        = True
+                        )
+                if args.verbose :
+                    print ("Creating %s: %s" % (num, name))
+
+    if args.update :
+        db.commit ()
+# end def main
+
+if __name__ == '__main__' :
+    main ()

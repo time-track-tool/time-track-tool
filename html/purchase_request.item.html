@@ -66,10 +66,27 @@
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
       <td tal:content="structure python:context.sap_cc.menu (valid = True)"/>
      </tr>
-     <tr tal:define="prop python: context.sap_cc or context.time_project">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'internal_order')"/>
+      <td>
+       <span tal:content="structure python:context.internal_order.field ()"/>
+       <span tal:condition="context/internal_order/is_edit_ok"
+             tal:content="structure python:db.internal_order.classhelp
+                  ( 'order_number,name'
+                  , property='internal_order'
+                  , inputtype='radio'
+                  , width='800'
+                  , pagesize=1000
+                  , filter='valid=True'
+                  )"/>
+      </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'sap_reference')"/>
       <td tal:content="structure python:context.sap_reference.field ()"/>
+     <tr tal:define="prop python: context.sap_cc or context.time_project">
+      <th/>
+      <td/>
       <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
           (classname, 'purchasing_agents')"/>

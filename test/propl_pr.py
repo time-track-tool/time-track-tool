@@ -13,6 +13,12 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'internal_order'
+      , [ 'name'
+        , 'order_number'
+        , 'valid'
+        ]
+      )
     , ( 'location'
       , [ 'country'
         , 'name'
@@ -129,6 +135,7 @@ properties = \
         , 'frame_purchase'
         , 'frame_purchase_end'
         , 'intended_duration'
+        , 'internal_order'
         , 'messages'
         , 'nosy'
         , 'offer_items'
