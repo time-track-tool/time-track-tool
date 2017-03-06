@@ -123,7 +123,7 @@ def daily_record_viewable (db, userid, itemid) :
         depusers = dict.fromkeys \
             (db.user.filter (None, dict (department = deps)))
     return \
-        (  userid in depusers
+        (  dr.user in depusers
         or dr.user in supervised_users (db, userid)
         )
 # end def daily_record_viewable
