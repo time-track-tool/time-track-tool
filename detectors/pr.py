@@ -107,6 +107,28 @@ def reopen (db, cl, nodeid, new_values) :
         new_values ['status'] = db.pr_status.lookup ('open')
 # end def reopen
 
+def check_io (db, cl, nodeid, new_values) :
+    """ Check that internal_order isn't specified together with time
+        category, but only if the PR isn't in status open (not yet
+        submitted with sign&send).
+    """
+    st = new_values.get ('status', cl.get (nodeid, 'status'))
+    if st == db.pr_status.lookup ('open') :
+        return
+    if 'internal_order' in new_values :
+        io = new_values ['internal_order']
+        tc = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
+        if tc and io :
+            raise Reject \
+                (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+                % dict
+                    ( tp = _ ('time_project')
+                    , cc = _ ('sap_cc')
+                    , io = _ ('internal_order')
+                    )
+                )
+# end def check_io
+
 def change_pr (db, cl, nodeid, new_values) :
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
     approvals = db.pr_approval.filter (None, dict (purchase_request = nodeid))
@@ -120,6 +142,8 @@ def change_pr (db, cl, nodeid, new_values) :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
             # check that pr_justification is given
             prjust (db, cl, nodeid, new_values)
+            io = new_values.get \
+                ('internal_order', cl.get (nodeid, 'internal_order'))
             tc = new_values.get \
                 ('time_project', cl.get (nodeid, 'time_project'))
             cc = new_values.get \
@@ -133,6 +157,15 @@ def change_pr (db, cl, nodeid, new_values) :
                 raise Reject \
                     (_ ("Either specify %(tp)s or %(cc)s, not both")
                     % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
+                    )
+            if tc and io :
+                raise Reject \
+                    (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+                    % dict
+                        ( tp = _ ('time_project')
+                        , cc = _ ('sap_cc')
+                        , io = _ ('internal_order')
+                        )
                     )
             common.require_attributes \
                 ( _, cl, nodeid, new_values
@@ -564,6 +597,7 @@ def init (db) :
     db.purchase_request.audit   ("set",    set_agents,      priority = 150)
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
+    db.purchase_request.audit   ("set",    check_io)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.react        ("set",    approved_pr_approval)
