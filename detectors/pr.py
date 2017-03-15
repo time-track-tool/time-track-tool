@@ -212,6 +212,15 @@ def change_pr (db, cl, nodeid, new_values) :
                         (_ ("Either specify %(tp)s or %(cc)s, not both")
                         % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
                         )
+                if oitem.time_project and io :
+                    raise Reject \
+                        (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+                        % dict
+                            ( tp = _ ('time_project')
+                            , cc = _ ('sap_cc')
+                            , io = _ ('internal_order')
+                            )
+                        )
             # Check that approval of requester exists
             for ap in approvals :
                 if  (   ap.status == ap_appr
