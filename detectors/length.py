@@ -20,25 +20,61 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
+#
+# Check lenghts of several fields: The limits are mostly from Active
+# Directory -- we sync some fields to AD (see lib/ldap_sync.py)
 
 from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 import common
 
-def check_dept_name (db, cl, nodeid, new_values) :
-    if 'name' in new_values :
-        common.check_prop_len (_, new_values ['name'], limit = 64)
-# end def check_dept_name
+def check_proplen (db, cl, nodeid, new_values, limit = 64) :
+    pname = cl.getkey ()
+    if pname in new_values :
+        common.check_prop_len (_, new_values [pname], pname, limit = 64)
+# end def check_proplen
+
+def check_proplen_128 (db, cl, nodeid, new_values) :
+    return check_proplen (db, cl, nodeid, new_values, 128)
+# end def check_proplen_128
+
+def check_contact_len (db, cl, nodeid, new_values) :
+    mail = None
+    try :
+        mail = db.uc_type.lookup ('Email')
+    except KeyError :
+        pass
+    if 'contact' in new_values :
+        ct = new_values.get ('contact_type')
+        if not ct and nodeid :
+            ct = cl.get (nodeid, 'contact_type')
+        limit = 64
+        if ct and ct == mail :
+            limit = 256
+        common.check_prop_len \
+            (_, new_values ['contact'], 'contact', limit = limit)
+# end def check_contact_len
 
 def init (db) :
-    if 'department' not in db.classes :
-        return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.department.audit  ("create", check_dept_name)
-    db.department.audit  ("set",    check_dept_name)
+    if 'department' in db.classes :
+        db.department.audit   ("create", check_proplen)
+        db.department.audit   ("set",    check_proplen)
+    if 'org_location' in db.classes :
+        db.org_location.audit ("create", check_proplen)
+        db.org_location.audit ("set",    check_proplen)
+    if 'position' in db.classes :
+        db.position.audit ("create", check_proplen_128)
+        db.position.audit ("set",    check_proplen_128)
+    if 'room' in db.classes :
+        db.room.audit ("create", check_proplen_128)
+        db.room.audit ("set",    check_proplen_128)
+    if 'user_contact' in db.classes :
+        db.user_contact.audit ("create", check_contact_len)
+        db.user_contact.audit ("set",    check_contact_len)
 # end def init
 
 ### __END__ time_project

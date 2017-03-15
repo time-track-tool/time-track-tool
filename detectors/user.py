@@ -33,6 +33,13 @@ except ImportError :
     ldap_sync = None
 from user_dynamic                   import get_user_dynamic, last_user_dynamic
 
+maxlen = dict \
+    ( firstname = 64
+    , lastname  = 64
+    , nickname  = 6
+    , address   = 256
+    )
+
 def common_user_checks (db, cl, nodeid, new_values) :
     ''' Make sure user properties are valid.
         - email address has no spaces in it
@@ -111,6 +118,12 @@ def common_user_checks (db, cl, nodeid, new_values) :
         else :
             raise Reject, _ \
                 ("%(uidname)s specified but no samba domain configured")
+    for k in maxlen :
+        if k in new_values :
+            if len (new_values [k]) > maxlen [k] :
+                fn = _ (k)
+                l  = maxlen [k]
+                raise Reject (_ ('%(fn)s too long: > %(l)s' % locals ()))
 # end def common_user_checks
 
 def create_dynuser (db, cl, nodeid, old_values) :
