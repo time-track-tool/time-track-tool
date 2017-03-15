@@ -373,7 +373,7 @@ def check_ext_company (db, cl, nodeid, new_values) :
 # end def check_ext_company
 
 def check_user_status (db, cl, nodeid, new_values) :
-    if 'ldap_group' in new_values :
+    if 'ldap_group' in new_values and new_values ['ldap_group'] :
         common.check_unique \
             (_, cl, nodeid, ldap_group = new_values ['ldap_group'])
 # end def check_user_status
