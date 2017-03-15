@@ -280,7 +280,6 @@ class LDAP_Roundup_Sync (object) :
                 , self.cls_lookup
                     ( self.db.room
                     , 'name'
-                    , dict (location = self.db.location.lookup ('Wien'))
                     )
                 , False
                 )
