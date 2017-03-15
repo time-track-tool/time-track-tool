@@ -39,7 +39,7 @@ def check_time_project (db, cl, nodeid, new_values) :
     for i in 'wp_no', 'project' :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
-    common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
+    common.check_prop_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     if 'work_location' in cl.properties :
         wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
         if not wl :
@@ -63,7 +63,7 @@ def new_time_project (db, cl, nodeid, new_values) :
     for k, v in defaults :
         if k in cl.properties and k not in new_values :
             new_values [k] = v
-    common.check_name_len (_, new_values ['name'])
+    common.check_prop_len (_, new_values ['name'])
     if 'status' not in new_values :
         try :
             new_values ['status'] = db.time_project_status.lookup ('New')

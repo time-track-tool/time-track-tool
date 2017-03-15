@@ -55,9 +55,9 @@ def new_cust_supp (db, cl, nodeid, new_values) :
         )
 # end def new_cust_supp
 
-def check_name_len (db, cl, nodeid, new_values) :
+def check_name_lines (db, cl, nodeid, new_values) :
     return common.check_attribute_lines (_, new_values, 'name', 2)
-# end def check_name_len
+# end def check_name_lines
 
 def init (db) :
     if 'cust_supp' not in db.classes :
@@ -67,8 +67,8 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.cust_supp.audit ("set",    update_cust_supp)
     db.cust_supp.audit ("create", new_cust_supp)
-    db.cust_supp.audit ("create", check_name_len)
-    db.cust_supp.audit ("set",    check_name_len)
+    db.cust_supp.audit ("create", check_name_lines)
+    db.cust_supp.audit ("set",    check_name_lines)
     db.cust_supp.audit ("create", common.lookalike_computation)
     db.cust_supp.audit ("set",    common.lookalike_computation)
 

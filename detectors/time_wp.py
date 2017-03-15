@@ -54,7 +54,7 @@ def check_time_wp (db, cl, nodeid, new_values) :
         , 'project'
         , 'is_public'
         )
-    common.check_name_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
+    common.check_prop_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     opr  = cl.get (nodeid, 'project')
     oprj = db.time_project.getnode (opr)
     prid = new_values.get ('project', opr)

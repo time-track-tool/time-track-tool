@@ -109,11 +109,12 @@ def update_feature_status (db, cl, nodeid, new_values) :
             new_values ["status"] = db.feature_status.lookup (status)
 # end def update_feature_status
 
-def check_name_len (_, name) :
-    if len (name) > 25 :
+def check_prop_len (_, s, propname = 'name', limit = 25) :
+    if len (s) > limit :
+        pn = _ (propname)
         raise Reject, \
-            _ ('Name "%(name)s" too long (> 25 characters)') % locals ()
-# end def name_len
+            _ ('%(pn)s "%(s)s" too long (> %(limit)s characters)') % locals ()
+# end def check_prop_len
 
 def is_matching_result (cl, kw, search_result) :
     for k, v in kw.iteritems () :
