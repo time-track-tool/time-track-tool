@@ -426,7 +426,9 @@ class LDAP_Roundup_Sync (object) :
                 results.append (r)
             assert (len (results) == 1)
             r = results [0]
-            names = dict.fromkeys ((m.lower () for m in r.member), us_id)
+            names = {}
+            if getattr (r, 'member', None) :
+                names = dict.fromkeys ((m.lower () for m in r.member), us_id)
             self.members.update (names)
     # end def get_roundup_group
 
