@@ -553,6 +553,8 @@ _helptext          = \
           '''
       ]
     , ""'daily_record.user.id'        : [help_id]
+    , ""'daily_record.user.department.id'
+                                      : [help_id]
     , ""'daily_record.user.org_location.id'
                                       : [help_id]
     , ""'daily_record.status.id'      : [help_id]

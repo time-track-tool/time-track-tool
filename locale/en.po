@@ -459,6 +459,9 @@ msgstr "Organisation/Location"
 msgid "daily_record.user.org_location.id"
 msgstr "Organisation/Location Id"
 
+msgid "daily_record.user.department.id"
+msgstr "Department Id"
+
 #, python-format
 msgid "Duplicate %(olon)s %(polo)s in %(ip)s"
 msgstr ""
