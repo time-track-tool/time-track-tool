@@ -40,7 +40,7 @@ from schemacfg import schemadef
 # sub-schema definitins to include
 # Note: order matters, core is always last
 # -- except for modules that extend the standard permission scheme in
-# core (e.g. extuser)
+# core (e.g. extuser, rouser)
 schemas = \
     ( 'user'
     , 'nickname'
@@ -60,6 +60,7 @@ schemas = \
     , 'ldap'
     , 'core'
     , 'extuser'
+    , 'rouser'
     )
 
 importer = schemadef.Importer (globals (), schemas)

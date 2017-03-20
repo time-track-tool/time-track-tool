@@ -157,6 +157,7 @@ class _Test_Case (unittest.TestCase) :
         , 'project'
         , 'project_view'
         , 'quality'
+        , 'readonly-user'
         , 'sec-incident-nosy'
         , 'sec-incident-responsible'
         , 'staff-report'
@@ -370,6 +371,7 @@ class _Test_Case (unittest.TestCase) :
             ,  'ituser'
             ,  'logger'
             ,  'nosy'
+            ,  'readonly-user'
             ,  'staff-report'
             ,  'user'
             ))
@@ -2746,7 +2748,7 @@ class Test_Case_Tracker (_Test_Case) :
     roles = \
         [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
-        , 'sec-incident-nosy', 'sec-incident-responsible'
+        , 'readonly-user', 'sec-incident-nosy', 'sec-incident-responsible'
         , 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_track
