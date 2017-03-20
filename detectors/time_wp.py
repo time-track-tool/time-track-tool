@@ -112,7 +112,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
         raise Reject, ("You may only create WPs for active projects")
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
-    common.check_name_len (_, new_values ['name'])
+    common.check_prop_len (_, new_values ['name'])
     project = new_values  ['project']
     if 'wp_no' in new_values and not new_values ['wp_no'] :
         del new_values ['wp_no']
