@@ -179,29 +179,51 @@ def init \
     class PR (Full_Issue_Class) :
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( organisation          = Link      ("organisation")
-                , department            = Link      ("department")
-                , requester             = Link      ("user")
-                , purchase_type         = Link      ("purchase_type")
+                ( organisation          = Link      ( "organisation"
+                                                    , do_journal = 'no'
+                                                    )
+                , department            = Link      ( "department"
+                                                    , do_journal = 'no'
+                                                    )
+                , requester             = Link      ( "user"
+                                                    , do_journal = 'no'
+                                                    )
+                , purchase_type         = Link      ( "purchase_type"
+                                                    , do_journal = 'no'
+                                                    )
                 , safety_critical       = Boolean   ()
-                , time_project          = Link      ("time_project")
-                , part_of_budget        = Link      ("part_of_budget")
+                , time_project          = Link      ( "time_project"
+                                                    , do_journal = 'no'
+                                                    )
+                , part_of_budget        = Link      ( "part_of_budget"
+                                                    , do_journal = 'no'
+                                                    )
                 , frame_purchase        = Boolean   ()
                 , frame_purchase_end    = Date      ()
                 , continuous_obligation = Boolean   ()
                 , contract_term         = String    ()
                 , termination_date      = Date      ()
                 , intended_duration     = String    ()
-                , terms_conditions      = Link      ("terms_conditions")
+                , terms_conditions      = Link      ( "terms_conditions"
+                                                    , do_journal = 'no'
+                                                    )
                 , delivery_deadline     = Date      ()
                 , renegotiations        = Boolean   ()
                 , offer_items           = Multilink ("pr_offer_item")
-                , status                = Link      ("pr_status")
+                , status                = Link      ( "pr_status"
+                                                    , do_journal = 'no'
+                                                    )
                 , total_cost            = Number    ()
-                , pr_currency           = Link      ("pr_currency")
-                , sap_cc                = Link      ("sap_cc")
+                , pr_currency           = Link      ( "pr_currency"
+                                                    , do_journal = 'no'
+                                                    )
+                , sap_cc                = Link      ("sap_cc"
+                                                    , do_journal = 'no'
+                                                    )
                 , sap_reference         = String    ()
-                , purchasing_agents     = Multilink ("user")
+                , purchasing_agents     = Multilink ("user"
+                                                    , do_journal = 'no'
+                                                    )
                 , pr_justification      = String    ()
                 , internal_order        = Link
                                           ( "internal_order"
