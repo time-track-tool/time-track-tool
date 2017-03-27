@@ -120,6 +120,8 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 ("%(uidname)s specified but no samba domain configured")
     for k in maxlen :
         if k in new_values :
+            if new_values [k] is None :
+                continue
             if len (new_values [k]) > maxlen [k] :
                 fn = _ (k)
                 l  = maxlen [k]
