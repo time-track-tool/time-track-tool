@@ -63,7 +63,7 @@ def main () :
                 id = db.internal_order.lookup (num.encode ('utf-8'))
                 io = db.internal_order.getnode (id)
                 d  = dict (valid = True)
-                if io.name != name and name :
+                if name and io.name != name.encode ('utf-8') :
                     d ['name'] = name.encode ('utf-8')
                 if args.update :
                     db.internal_order.set (id, **d)
