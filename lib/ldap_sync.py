@@ -60,7 +60,7 @@ def get_name (user, attr) :
     """ Get name from roundup user class Link attr """
     cl = user.cl.db.classes [attr]
     return cl.get (user [attr], 'name')
-# end def get_department
+# end def get_name
 
 def get_position (user, attr) :
     """ Get position name from roundup user class """
