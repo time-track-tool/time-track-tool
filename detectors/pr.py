@@ -533,6 +533,21 @@ def check_supplier (db, cl, nodeid, new_values) :
             pass
 # end def check_supplier
 
+def check_pr_update (db, cl, nodeid, old_values) :
+    """ When changing an offer item check if the PR is in status
+        'rejected', if so, set it to 'open'. This will trigger some
+        actions including resetting the total_cost to None.
+    """
+    rej = db.pr_status.lookup ('rejected')
+    opn = db.pr_status.lookup ('open')
+    ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
+    assert len (ids) == 1
+    id  = ids [0]
+    pr  = db.purchase_request.getnode (id)
+    if pr.status == rej :
+        db.purchase_request.set (id, status = opn)
+# end def check_pr_update
+
 def check_currency (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'max_sum', 'order')
@@ -613,6 +628,7 @@ def init (db) :
     db.pr_offer_item.audit      ("create", new_pr_offer_item)
     db.pr_offer_item.audit      ("create", check_supplier)
     db.pr_offer_item.audit      ("set",    check_supplier)
+    db.pr_offer_item.react      ("set",    check_pr_update)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
