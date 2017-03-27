@@ -168,6 +168,7 @@ def init \
         , project_type          = Link      ("project_type")
         , sap_cc                = Link      ("sap_cc")
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
+        , show_obsolete         = Boolean   ()
         )
 
     reporting_group = Class \

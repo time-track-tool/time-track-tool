@@ -1889,6 +1889,8 @@ _helptext          = \
              only display small time-ranges with this option turned on.
           '''
       ]
+    , ""'show_obsolete'               :
+      [ ""'''Show users in report who left the company during the year.''' ]
     , ""'sid'                         :
       [ ""'''Samba unique ID but without the last part used for user id or
              group id information

@@ -3251,9 +3251,10 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close  ()
         self.db = self.tracker.open (self.username1)
-        fs = { 'user'         : [self.user1]
-             , 'date'         : '2008-09-01;2008-09-10'
-             , 'summary_type' : [2, 4]
+        fs = { 'user'          : [self.user1]
+             , 'date'          : '2008-09-01;2008-09-10'
+             , 'summary_type'  : [2, 4]
+             , 'show_obsolete' : 'yes'
              }
         class r : filterspec = fs
         summary.init (self.tracker)

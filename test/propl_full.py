@@ -557,6 +557,7 @@ properties = \
         , 'show_all_users'
         , 'show_empty'
         , 'show_missing'
+        , 'show_obsolete'
         , 'status'
         , 'summary'
         , 'summary_type'
