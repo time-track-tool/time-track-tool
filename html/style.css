@@ -141,7 +141,7 @@ td.content {
   width: 100%;
 }
 
-td.content div.prewrap {
+div.prewrap {
   font-family: monospace;
   white-space: pre-wrap;
   margin-top: 12px;

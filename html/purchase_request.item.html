@@ -183,8 +183,12 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'pr_justification')"/>
-      <td colspan="3" tal:content="structure python:
+      <td colspan="3" tal:condition="context/pr_justification/is_edit_ok"
+          tal:content="structure python:
           context.pr_justification.multiline (rows=6, cols=80)"/>
+      <td colspan="3" tal:condition="not:context/pr_justification/is_edit_ok">
+        <div class="prewrap" tal:content="context/pr_justification" />
+      </td>
      </tr>
      <tr>
       <th colspan="4">
