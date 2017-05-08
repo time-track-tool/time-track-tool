@@ -1353,13 +1353,11 @@ class Staff_Report (_Report) :
         all_in = filterspec.get ('all_in')
         if all_in is not None :
             all_in = all_in == 'yes'
-        show_obsolete = filterspec.get ('show_obsolete', None) == 'yes'
         for u in users.keys () :
             dyn = user_dynamic.get_user_dynamic (db, u, end)
             if  (  not dyn
                 or all_in is not None and all_in != bool (dyn.all_in)
                 or not self.staff_permission_ok (u, dyn)
-                or (not show_obsolete and self.is_obsolete (dyn, end))
                 ) :
                 del users [u]
         self.users = sorted \
@@ -1490,18 +1488,6 @@ class Staff_Report (_Report) :
 	container ['supp_per_period'] = ' '.join (cont)
         # db.commit () # commit cached daily_record values
     # end def fill_container
-
-    def is_obsolete (self, dyn, date) :
-        if not dyn.valid_to :
-            return False
-        if dyn.valid_to > date + common.day :
-            return False
-	bal = user_dynamic.compute_balance (self.db, dyn.user, date, True) [0]
-        # Only if the user is almost balanced, ignore
-        if bal < 0.05 :
-            return True
-        return False
-    # end def is_obsolete
 
     def staff_permission_ok (self, user, dynuser) :
         if user == self.uid :

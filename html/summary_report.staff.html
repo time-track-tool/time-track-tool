@@ -34,8 +34,6 @@
         , filter      = dict (is_staff = True)
         )
       , all_in            = utils.ExtProperty (utils, pdict ['all_in'])
-      , show_obsolete     = utils.ExtProperty
-        (utils, pdict ['show_obsolete'], bool_tristate = False)
       );
       sr   python: utils.Staff_Report (db, request, utils)
      "
@@ -46,7 +44,7 @@
         ; props python: [myprops [p] for p in sorted (fpkeys)]
         ; propkeys       python:
           ( 'date', 'user', 'department', 'org_location'
-          , 'supervisor', 'all_in', 'summary_type', 'show_obsolete'
+          , 'supervisor', 'all_in', 'summary_type'
           )
         ; sprops         python: [myprops [p] for p in propkeys]
         ; multi_props    python: [p for p in sprops if p.multiselect]

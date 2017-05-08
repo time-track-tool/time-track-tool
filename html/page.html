@@ -239,9 +239,8 @@
    , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
-                          '@filter=summary_type,date,user,show_obsolete'
-                          '&summary_type=2,4&show_obsolete=no'
-                          '&user=%s&date=%s%%3B.' %
+                          '@filter=summary_type,date,user&summary_type=2,4&'
+                          'user=%s&date=%s%%3B.' %
                           (uid, utils.monthstart_twoweeksago ())
    , ('summary_report', '')
                         : '@columns=user,time_wp,summary&'
