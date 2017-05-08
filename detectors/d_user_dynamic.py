@@ -227,6 +227,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         , 'valid_from'
         , 'org_location'
         , 'department'
+        , 'vacation_yearly'
         )
     user     = new_values.get ('user',         cl.get (nodeid, 'user'))
     old_from = cl.get (nodeid, 'valid_from')
@@ -297,6 +298,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         , 'valid_from'
         , 'org_location'
         , 'department'
+        , 'vacation_yearly'
         )
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
