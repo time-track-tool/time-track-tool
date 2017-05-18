@@ -194,6 +194,8 @@ class ExtProperty :
         helpname: Name used for looking up helptext, can be overridden
             in case the class uses shadowed attributes for searching
             (e.g. lookalike_city)
+        translate: Do translation of values for searching (in menu) and
+            retrieved values from the database
         url_template: A (transitive) property of our item that tells us
             how to format this property as a link
 
@@ -233,6 +235,7 @@ class ExtProperty :
         , help_sort     = None
         , bool_tristate = True
         , force_link    = False
+        , translate     = False
         , url_template  = None
         , additional    = []
         , menuheight    = 5
@@ -281,6 +284,7 @@ class ExtProperty :
         self.popcal        = popcal
         self.multi_add     = multi_add
         self.multi_selonly = multi_selonly
+        self.translate     = translate
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -516,7 +520,7 @@ class ExtProperty :
             p.setdefault ('height', self.menuheight)
             p.update (self.filter)
             return self.prop.menu \
-                ( translate  = False
+                ( translate  = self.translate
                 , additional = self.additional
                 , ** p
                 )
