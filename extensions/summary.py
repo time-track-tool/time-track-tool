@@ -1554,7 +1554,8 @@ class Staff_Report (_Report) :
 class Vacation_Report (_Report) :
     ''"Vacation Report" # for translation in web-interface
     fields = \
-        ( (""'yearly entitlement',   1)
+        ( (""'department',           0)
+        , (""'yearly entitlement',   1)
         , (""'yearly prorated',      2)
         , (""'carry forward',        3)
         , (""'entitlement total',    4)
@@ -1601,6 +1602,7 @@ class Vacation_Report (_Report) :
             , 'flexi_sub'
             , 'special_leave'
             , 'special_sub'
+            , 'department'
             )
         for k in opt :
             if k not in request.columns :
@@ -1715,12 +1717,18 @@ class Vacation_Report (_Report) :
                         lst.append (uname)
                         lst.append (lct)
                         container ['user'] = lst
+                    dep = {}
                     dyn = vacation.vac_get_user_dynamic (db, u, ctype, d)
                     ent = {}
                     while (dyn and dyn.valid_from < d) :
                         ent [dyn.vacation_yearly] = 1
+                        dep [dyn.department] = True
                         dyn = vacation.vac_next_user_dynamic (db, dyn)
                     v = list (sorted (ent.keys ()))
+                    if 'department' in self.fields :
+                        deps = \
+                            (db.department.get (d, 'name') for d in dep.keys ())
+                        container ['department'] = ', '.join (sorted (deps))
                     # Use '..' as separator to prevent excel from computing
                     # difference if exported to excel
                     if len (v) > 1 :
