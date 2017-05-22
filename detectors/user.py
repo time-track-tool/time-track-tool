@@ -138,10 +138,11 @@ def create_dynuser (db, cl, nodeid, old_values) :
     dyn = last_user_dynamic (db, nodeid)
     if nodeid > 2 and (not s or u.status == s) and not dyn and olo and dep :
 	db.user_dynamic.create \
-	    ( user         = nodeid
-	    , valid_from   = Date ('.')
-	    , org_location = olo
-	    , department   = dep
+	    ( user            = nodeid
+	    , valid_from      = Date ('.')
+	    , org_location    = olo
+	    , department      = dep
+            , vacation_yearly = 25
 	    )
 # end def create_dynuser
 
