@@ -3859,6 +3859,9 @@ msgstr "Shipping address"
 msgid "show_all_users"
 msgstr "show all users"
 
+msgid "show_obsolete"
+msgstr "show obsolete"
+
 msgid ""
 "If this option is selected, the result will also include\n"
 "             users that do not\n"

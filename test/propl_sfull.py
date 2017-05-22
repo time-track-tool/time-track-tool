@@ -861,6 +861,7 @@ properties = \
         , 'flexi_time'
         , 'org_location'
         , 'organisation'
+        , 'show_obsolete'
         , 'special_leave'
         , 'special_sub'
         , 'supervisor'

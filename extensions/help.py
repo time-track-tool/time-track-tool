@@ -1889,6 +1889,11 @@ _helptext          = \
              only display small time-ranges with this option turned on.
           '''
       ]
+    , ""'show_obsolete'               :
+      [ ""'''Show users who have a contract that ends in that year, even
+             if their balance is below 0.05.
+          '''
+      ]
     , ""'sid'                         :
       [ ""'''Samba unique ID but without the last part used for user id or
              group id information

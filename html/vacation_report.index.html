@@ -53,6 +53,11 @@
            , searchable = False
            , sortable = False
            )
+     , show_obsolete = utils.ExtProperty
+           ( utils, pdict ['show_obsolete']
+           , sortable      = False
+           , bool_tristate = False
+           )
      );
      vr python: utils.Vacation_Report (db, request, utils)
      "
@@ -71,7 +76,7 @@
        ; props python: [myprops [p] for p in sorted (fpkeys)]
        ; propkeys       python:
          ( 'date', 'user', 'department', 'supervisor', 'org_location'
-         , 'organisation'
+         , 'organisation', 'show_obsolete'
          )
        ; sprops         python: [myprops [p] for p in propkeys]
        ; multi_props    python: [p for p in sprops if p.multiselect]

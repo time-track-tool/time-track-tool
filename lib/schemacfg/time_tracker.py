@@ -407,6 +407,7 @@ def init \
         , flexi_sub             = String    ()
         , special_leave         = String    ()
         , special_sub           = String    ()
+        , show_obsolete         = Boolean   ()
         )
 
     absence_type = Class \

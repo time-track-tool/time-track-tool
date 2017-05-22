@@ -1595,6 +1595,12 @@ class Vacation_Report (_Report) :
         year         = now.get_tuple () [0]
         d = filterspec.get ('date')
         fields       = dict (self.fields)
+        # By default show obsolete users, users might have a time-limited
+        # contract, they would be confused if they can't see vacation
+        # report
+        self.show_obsolete = True
+        if 'show_obsolete' in filterspec :
+            self.show_obsolete = filterspec ['show_obsolete'] == 'yes'
         opt = \
             ( 'approved_submissions'
             , 'additional_submitted'
@@ -1708,6 +1714,7 @@ class Vacation_Report (_Report) :
                     if fd.year != d.year :
                         fd = fd + day
                     container = Day_Container (d)
+                    container ['is_obsolete'] = False
                     uname = self.linked_user (u)
                     if not ctype :
                         container ['user'] = uname
@@ -1720,10 +1727,13 @@ class Vacation_Report (_Report) :
                     dep = {}
                     dyn = vacation.vac_get_user_dynamic (db, u, ctype, d)
                     ent = {}
+                    lastdyn = dyn
                     while (dyn and dyn.valid_from < d) :
+                        lastdyn = dyn
                         ent [dyn.vacation_yearly] = 1
                         dep [dyn.department] = True
                         dyn = vacation.vac_next_user_dynamic (db, dyn)
+                    container ['is_obsolete'] = self.is_obsolete (dyn, d)
                     v = list (sorted (ent.keys ()))
                     if 'department' in self.fields :
                         deps = \
@@ -1835,6 +1845,18 @@ class Vacation_Report (_Report) :
                         d = nd - day
     # end def __init__
 
+    def is_obsolete (self, dyn, date) :
+        """ Check if user becomes obsolete during this reporting period.
+        """
+        if not dyn :
+            return True
+        if not dyn.valid_to :
+            return False
+        if dyn.valid_to > date + common.day :
+            return False
+        return True
+    # end def is_obsolete
+
     def permission_ok (self, user, dynuser) :
         if user == self.uid :
             return True
@@ -1870,6 +1892,11 @@ class Vacation_Report (_Report) :
                 if (u, ctype) not in self.values :
                     continue
                 for container in self.values [(u, ctype)] :
+                    if  (   container ['is_obsolete']
+                        and abs (container ['remaining vacation']) <= 0.05
+                        and not self.show_obsolete
+                        ) :
+                        continue
                     line  = []
                     line.append (item_formatter (container ['user']))
                     line.append (item_formatter (container))
