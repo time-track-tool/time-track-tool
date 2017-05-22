@@ -1355,6 +1355,16 @@ class Staff_Report (_Report) :
             all_in = all_in == 'yes'
         for u in users.keys () :
             dyn = user_dynamic.get_user_dynamic (db, u, end)
+            if not dyn :
+                dyn = user_dynamic.last_user_dynamic (db, u, end)
+                # Check if we have a valid dyn during reporting period
+                if  (   not dyn
+                    or  not dyn.valid_to
+                    or (   not (start <= dyn.valid_from     <= end)
+                       and not (start <= dyn.valid_to - day <= end)
+                       )
+                    ) :
+                    dyn = None
             if  (  not dyn
                 or all_in is not None and all_in != bool (dyn.all_in)
                 or not self.staff_permission_ok (u, dyn)
