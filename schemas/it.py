@@ -40,9 +40,9 @@ from schemacfg import schemadef
 schemas = \
     ( 'it_tracker'
     , 'msg_header'
-    , 'ituser'
     , 'user'
     , 'core'
+    , 'ituser'
     )
 
 importer = schemadef.Importer (globals (), schemas)

@@ -60,6 +60,7 @@ schemas = \
     , 'ldap'
     , 'core'
     , 'extuser'
+    , 'ituser'
     , 'rouser'
     )
 

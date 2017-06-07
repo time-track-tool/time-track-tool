@@ -107,17 +107,14 @@ def security (db, ** kw) :
 
     p = db.security.getPermission   ('Create', 'file')
     db.security.addPermissionToRole ('ITuser', p)
+    lk = dict \
+        ( file     = 'own files'
+        , msg      = 'own messages'
+        , query    = 'queries'
+        , it_issue = 'IT issues'
+        )
     for klass in ('file', 'it_issue', 'msg', 'query') :
-        try :
-            p = db.security.getPermission   ('Search', klass)
-        except ValueError :
-            p = db.security.addPermission \
-                ( name        = 'Search'
-                , klass       = klass
-                , description = 'User is allowed to search for %s' % klass
-                )
-        db.security.addPermissionToRole ('ITuser', p)
-    db.security.addPermissionToRole ('ITuser', p)
+        schemadef.add_search_permission (db, klass, 'ITuser')
     try :
         p = db.security.getPermission   ('View', 'file', check = core.view_file)
     except ValueError :
@@ -125,6 +122,7 @@ def security (db, ** kw) :
             ( name  = 'View'
             , klass = 'file'
             , check = core.view_file
+            , description = "User is allowed to view their own files"
             )
     db.security.addPermissionToRole ('ITuser', p)
 

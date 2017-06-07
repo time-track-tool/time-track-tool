@@ -2746,7 +2746,7 @@ class Test_Case_Tracker (_Test_Case) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
-        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it'
+        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it', 'ituser'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
         , 'readonly-user', 'sec-incident-nosy', 'sec-incident-responsible'
         , 'supportadmin', 'user', 'user_view'

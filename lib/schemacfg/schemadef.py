@@ -155,12 +155,15 @@ def own_user_record (db, userid, itemid) :
 # end def own_user_record
 
 def add_search_permission (db, klass, role, properties = None) :
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = klass
-        , description = "search %s" % klass
-        , properties  = properties
-        )
+    try :
+        p = db.security.getPermission ('Search', klass)
+    except ValueError :
+        p = db.security.addPermission \
+            ( name        = 'Search'
+            , klass       = klass
+            , description = "User is allowed to search %s" % klass
+            , properties  = properties
+            )
     db.security.addPermissionToRole (role, p)
 # end add_search_permission
 
