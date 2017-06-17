@@ -1,5 +1,5 @@
 #!/bin/sh
 
-mkdir -p /var/lib/tracker/backup/address
-rsync -a --delete /var/lib/tracker/address/ /var/lib/tracker/backup/address/address
-pg_dump -w -U tracker initiative > /var/lib/tracker/backup/address/address.dump
+mkdir -p /usr/local/lib/tracker/backup/address
+rsync -a --delete /usr/local/lib/tracker/address/ /usr/local/lib/tracker/backup/address/address
+pg_dump -w -U tracker initiative > /usr/local/lib/tracker/backup/address/address.dump

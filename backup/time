@@ -1,5 +1,5 @@
 #!/bin/sh
 
-mkdir -p /var/lib/tracker/backup/time
-rsync -a --delete /var/lib/tracker/time/ /var/lib/tracker/backup/time/time
-pg_dump -w -U tracker rsctime > /var/lib/tracker/backup/time/time.dump
+mkdir -p /usr/local/lib/tracker/backup/time
+rsync -a --delete /usr/local/lib/tracker/time/ /usr/local/lib/tracker/backup/time/time
+pg_dump -w -U tracker rsctime > /usr/local/lib/tracker/backup/time/time.dump

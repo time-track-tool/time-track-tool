@@ -1,5 +1,5 @@
 #!/bin/sh
 
-mkdir -p /var/lib/tracker/backup/todo
-rsync -a --delete /var/lib/tracker/todo/ /var/lib/tracker/backup/todo/todo
-pg_dump -w -U tracker todo > /var/lib/tracker/backup/todo/todo.dump
+mkdir -p /usr/local/lib/tracker/backup/todo
+rsync -a --delete /usr/local/lib/tracker/todo/ /usr/local/lib/tracker/backup/todo/todo
+pg_dump -w -U tracker todo > /usr/local/lib/tracker/backup/todo/todo.dump

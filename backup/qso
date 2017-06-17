@@ -1,5 +1,5 @@
 #!/bin/sh
 
-mkdir -p /var/lib/tracker/backup/hamlog
-rsync -a --delete /var/lib/tracker/hamlog/ /var/lib/tracker/backup/hamlog/hamlog
-pg_dump -w -U tracker qso > /var/lib/tracker/backup/hamlog/hamlog.dump
+mkdir -p /usr/local/lib/tracker/backup/hamlog
+rsync -a --delete /usr/local/lib/tracker/hamlog/ /usr/local/lib/tracker/backup/hamlog/hamlog
+pg_dump -w -U tracker qso > /usr/local/lib/tracker/backup/hamlog/hamlog.dump
