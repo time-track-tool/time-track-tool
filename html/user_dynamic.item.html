@@ -191,7 +191,15 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
-      <td tal:content="structure python:context.sap_cc.menu (valid=True)"/>
+      <td>
+       <span tal:replace="structure python:context.sap_cc.field ()"/>
+       <span tal:replace="structure python:db.sap_cc.classhelp
+         ( 'name,description,responsible,deputy'
+         , property  = 'sap_cc'
+         , inputtype = 'radio'
+         , width     = '600'
+         )"/>
+      </td>
      </tr>
     </tal:block>
    </tal:block>

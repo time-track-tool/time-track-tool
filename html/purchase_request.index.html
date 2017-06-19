@@ -26,7 +26,11 @@
         , searchname = 'time_project.description'
         , helpname   = 'time_project.description'
         )
-    , utils.ExtProperty (utils, pdict ['sap_cc'],           multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['sap_cc']
+        , filter     = dict (valid = True)
+        , help_props = ('name', 'description', 'responsible', 'deputy')
+        )
     , utils.ExtProperty
         ( utils, pdict ['internal_order']
         , help_props = ('name', )
