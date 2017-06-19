@@ -113,18 +113,18 @@ def last_user_dynamic (db, user, date = None) :
     return first_user_dynamic (db, user, direction = '-', date = date)
 # end def last_user_dynamic
 
-def find_user_dynamic (db, user, date, direction = '+') :
+def find_user_dynamic (db, user, date, direction = '+', ct = -1) :
     date = next_search_date (date, direction)
-    ids = db.user_dynamic.filter \
-        ( None, dict (user = user, valid_from = date)
-        , group = (direction, 'valid_from')
-        )
+    d    = dict (user = user, valid_from = date)
+    if ct != -1 :
+        d.update (contract_type = ct)
+    ids = db.user_dynamic.filter (None, d, group = (direction, 'valid_from'))
     if ids :
         return db.user_dynamic.getnode (ids [0])
     return None
 # end def find_user_dynamic
 
-def _next_user_dynamic (db, dynuser, direction = '+') :
+def _next_user_dynamic (db, dynuser, direction = '+', use_ct = False) :
     id = dynuser.user
     try :
         db = db._db
@@ -137,15 +137,18 @@ def _next_user_dynamic (db, dynuser, direction = '+') :
             vf = Date (dynuser.valid_from._value)
         except (ValueError, AttributeError) :
             return None
-    return find_user_dynamic (db, id, vf, direction = direction)
+    ct = -1
+    if use_ct :
+        ct = dynuser.contract_type
+    return find_user_dynamic (db, id, vf, direction = direction, ct = ct)
 # end def _find_user_dynamic
 
-def next_user_dynamic (db, dynuser) :
-    return _next_user_dynamic (db, dynuser)
+def next_user_dynamic (db, dynuser, use_ct = False) :
+    return _next_user_dynamic (db, dynuser, use_ct = use_ct)
 # end def next_user_dynamic
 
-def prev_user_dynamic (db, dynuser) :
-    return _next_user_dynamic (db, dynuser, direction = '-')
+def prev_user_dynamic (db, dynuser, use_ct = False) :
+    return _next_user_dynamic (db, dynuser, direction = '-', use_ct = use_ct)
 # end def prev_user_dynamic
 
 def act_or_latest_user_dynamic (db, user) :

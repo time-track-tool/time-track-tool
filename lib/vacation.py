@@ -256,6 +256,7 @@ def next_yearly_vacation_date (db, user, ctype, date) :
     d = date + common.day
     dyn = vac_get_user_dynamic (db, user, ctype, d)
     if not dyn or dyn.vacation_month is None or dyn.vacation_day is None :
+        assert 0
         return None
     y = int (d.get_tuple () [0])
     next_date = roundup.date.Date \
@@ -267,7 +268,8 @@ def next_yearly_vacation_date (db, user, ctype, date) :
     # next yearly vacation date
     if dyn.valid_from > next_date :
         # Hmmm, maybe started this year?
-        if not user_dynamic.prev_user_dynamic (db, dyn) :
+        prev = user_dynamic.prev_user_dynamic (db, dyn, use_ct = True)
+        if not prev :
             return dyn.valid_from
         return None
     while dyn.valid_from <= next_date :
