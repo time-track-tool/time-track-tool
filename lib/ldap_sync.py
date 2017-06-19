@@ -2,6 +2,7 @@
 # -*- coding: iso-8859-1 -*-
 import sys
 import ldap
+import user_dynamic
 
 from copy                import copy
 from traceback           import print_exc
@@ -179,13 +180,15 @@ class LDAP_Roundup_Sync (object) :
     def compute_attr_map (self) :
         """ Map roundup attributes to ldap attributes
             for 'user' we have a dict indexed by user attribute and
-            store a 3-tuple:
+            store a 4-tuple:
             - Name of ldap attribute
             - method or function to convert from roundup to ldap
               alternatively a value that evaluates to True or False,
               False means we don't sync to ldap, True means we use the
               roundup attribute without modification.
             - method or function to convert from ldap to roundup
+            - 4th arg indicates if updates coming from ldap may be
+              empty, currently used only for nickname (aka initials in ldap)
             for user_contact we have a dict indexed by uc_type name
             storing the primary ldap attribute and an optional secondary
             attribute of type list.
@@ -193,6 +196,9 @@ class LDAP_Roundup_Sync (object) :
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
         props    = self.db.user.properties
+        dynprops = {}
+        if 'user_dynamic' in self.db.classes :
+            dynprops = self.db.user_dynamic.properties
         # 1st arg is the name in ldap
         # 2nd arg is 0 for no change, 1 for change or a method for
         #         conversion from roundup to ldap when syncing 
@@ -310,6 +316,27 @@ class LDAP_Roundup_Sync (object) :
                 , set_guid
                 , get_guid
                 , False
+                )
+        if 'sap_cc' in dynprops :
+            # One entry for each sap_cc property to be synced to LDAP
+            # 1st item is the property name of the linked item (in our
+            #     case only sap_cc)
+            # 2nd item is the LDAP property
+            # 3rd item is the function to convert roundup->LDAP
+            # 4th item is the function to convert LDAP->roundup
+            #     this is currently unuserd, we don't sync to roundup
+            attr_map ['user_dynamic'] = {}
+            attr_map ['user_dynamic']['sap_cc'] = \
+                ( ( 'name'
+                  , 'extensionAttribute3'
+                  , self.set_sap_cc
+                  , None
+                  )
+                , ( 'description'
+                  , 'extensionAttribute4'
+                  , self.set_sap_cc
+                  , None
+                  )
                 )
         if self.contact_types :
             attr_map ['user_contact'] = \
@@ -861,6 +888,26 @@ class LDAP_Roundup_Sync (object) :
                         if rupattr is None :
                             op = ldap.MOD_DELETE
                         modlist.append ((op, lk, rupattr))
+        if 'user_dynamic' in self.attr_map :
+            udmap = self.attr_map ['user_dynamic']
+            for udprop, plist in udmap.iteritems () :
+                for prop, lk, method, x in plist :
+                    if callable (method) :
+                        if lk not in luser :
+                            ldattr = None
+                        else :
+                            ldattr = luser [lk][0]
+                        chg = method (user, udprop, prop, lk, ldattr)
+                        if chg :
+                            print "%s:  Updating: %s.%s/%s >%s/%s<" % \
+                                ( user.username
+                                , udprop
+                                , prop
+                                , lk
+                                , chg [2]
+                                , ldattr
+                                )
+                            modlist.append (chg)
         if self.contact_types :
             self.sync_contacts_to_ldap (user, luser, modlist)
         #print "Modlist:"
@@ -871,6 +918,20 @@ class LDAP_Roundup_Sync (object) :
         elif modlist :
             print "No ldap updates performed"
     # end def sync_user_to_ldap
+
+    def set_sap_cc (self, user, udprop, sap_cc_prop, lk, ldattr) :
+        """ Return a triple (ldap.MOD_ADD, lk, rupattr)
+            or None if nothing to sync
+        """
+        dyn = user_dynamic.get_user_dynamic (self.db, user.id, Date ('.'))
+        if not dyn :
+            return None
+        assert udprop == 'sap_cc'
+        sap_cc = self.db.sap_cc.getnode (dyn.sap_cc)
+        if sap_cc [sap_cc_prop] != ldattr :
+            return (ldap.MOD_ADD, lk, sap_cc [sap_cc_prop])
+        return None
+    # end def set_sap_cc
 
     def sync_all_users_from_ldap (self, update = None) :
         if update is not None :
