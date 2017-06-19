@@ -924,12 +924,16 @@ class LDAP_Roundup_Sync (object) :
             or None if nothing to sync
         """
         dyn = user_dynamic.get_user_dynamic (self.db, user.id, Date ('.'))
-        if not dyn :
-            return None
-        assert udprop == 'sap_cc'
-        sap_cc = self.db.sap_cc.getnode (dyn.sap_cc)
-        if sap_cc [sap_cc_prop] != ldattr :
-            return (ldap.MOD_ADD, lk, sap_cc [sap_cc_prop])
+        is_empty = True
+        if dyn :
+            assert udprop == 'sap_cc'
+            if dyn.sap_cc :
+                is_empty = False
+                sap_cc = self.db.sap_cc.getnode (dyn.sap_cc)
+                if sap_cc [sap_cc_prop] != ldattr :
+                    return (ldap.MOD_ADD, lk, sap_cc [sap_cc_prop])
+        if is_empty and ldattr != '' :
+            return (ldap.MOD_ADD, lk, '')
         return None
     # end def set_sap_cc
 

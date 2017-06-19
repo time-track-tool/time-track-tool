@@ -337,6 +337,12 @@ def sync_to_ldap (db, cl, nodeid, old_values) :
     ld.sync_user_to_ldap (user.username)
 # end def sync_to_ldap
 
+def sync_to_ldap_ud (db, cl, nodeid, old_values) :
+    ud = cl.getnode (nodeid)
+    if 'sap_cc' in old_values and old_values ['sap_cc'] != ud.sap_cc :
+        sync_to_ldap (db, db.user, ud.user, {})
+# end def sync_to_ldap_ud
+
 def check_pictures (db, cl, nodeid, new_values) :
     limit = common.Size_Limit (db, 'LIMIT_PICTURE_SIZE')
     if not limit :
@@ -414,6 +420,8 @@ def init (db) :
     # ldap sync only on set not create (!)
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
+        if 'user_dynamic' in db.classes :
+            db.user_dynamic.react ("set", sync_to_ldap_ud, priority = 200)
     if 'user_status' in db.classes :
         db.user_status.audit ("create", check_user_status)
         db.user_status.audit ("set",    check_user_status)
