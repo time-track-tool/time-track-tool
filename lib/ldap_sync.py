@@ -933,7 +933,11 @@ class LDAP_Roundup_Sync (object) :
                 if sap_cc [sap_cc_prop] != ldattr :
                     return (ldap.MOD_ADD, lk, sap_cc [sap_cc_prop])
         if is_empty and ldattr != '' :
-            return (ldap.MOD_ADD, lk, '')
+            if ldattr is None :
+                return None
+            else :
+                # untested
+                return (ldap.MOD_DELETE, lk, None)
         return None
     # end def set_sap_cc
 
