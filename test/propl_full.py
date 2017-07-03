@@ -745,6 +745,14 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'timesheet'
+      , [ 'department'
+        , 'first_day'
+        , 'last_day'
+        , 'supervisor'
+        , 'user'
+        ]
+      )
     , ( 'uc_type'
       , [ 'description'
         , 'name'

@@ -1819,6 +1819,24 @@ properties = \
           )
         ]
       )
+    , ( 'timesheet'
+      , [ ( 'department'
+          , ['admin']
+          )
+        , ( 'first_day'
+          , ['admin']
+          )
+        , ( 'last_day'
+          , ['admin']
+          )
+        , ( 'supervisor'
+          , ['admin']
+          )
+        , ( 'user'
+          , ['admin']
+          )
+        ]
+      )
     , ( 'user'
       , [ ( 'address'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']

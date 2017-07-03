@@ -775,6 +775,14 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'timesheet'
+      , [ 'department'
+        , 'first_day'
+        , 'last_day'
+        , 'supervisor'
+        , 'user'
+        ]
+      )
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'

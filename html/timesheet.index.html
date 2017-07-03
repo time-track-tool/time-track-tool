@@ -42,6 +42,28 @@
   </tal:block>
   <tal:block metal:fill-slot="content">
    <tal:block tal:replace="structure python:ld.format_leaves ()"/>
+   <tal:block tal:define=
+    "pdict python: dict ((x._name, x) for x in db.timesheet.properties ())
+    ;mprops python:
+      ( utils.ExtProperty (utils, pdict ['user'])
+      , utils.ExtProperty (utils, pdict ['supervisor'])
+      , utils.ExtProperty (utils, pdict ['first_day'])
+      , utils.ExtProperty (utils, pdict ['department'], multiselect = True)
+      )
+    ;sprops          python: []
+    ;multi_props     python: [mprops [3]]
+    ;nomulti_props   python: [mprops [0], mprops [1], mprops [2]]
+    ;sort_props      python: []
+    ;props           python: []
+    ;csv_link        python: None
+    ;do_fulltext     python: False
+    ;do_pagesize     python: False
+    ;do_query        python: True
+    ;terse           python: False
+    ;queryform_class python: 'unmapped'
+    ">
+    <tal:block metal:use-macro="templates/page/macros/search_form"/>
+   </tal:block>
   </tal:block>
  </tal:block>
 </tal:block>

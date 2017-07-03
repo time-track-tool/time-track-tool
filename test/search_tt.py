@@ -854,6 +854,24 @@ properties = \
           )
         ]
       )
+    , ( 'timesheet'
+      , [ ( 'department'
+          , ['admin']
+          )
+        , ( 'first_day'
+          , ['admin']
+          )
+        , ( 'last_day'
+          , ['admin']
+          )
+        , ( 'supervisor'
+          , ['admin']
+          )
+        , ( 'user'
+          , ['admin']
+          )
+        ]
+      )
     , ( 'uc_type'
       , [ ( 'description'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']

@@ -272,14 +272,22 @@ class Leave_Display (object) :
 
     def __init__ (self, db, request) :
         self.db = db = db._db
-        now  = Date ('.')
-        user = None
-        dt   = None
+        now        = Date ('.')
+        user       = None
+        dt         = None
+        department = None
+        supervisor = None
+        self.filterspec = request.filterspec
+        self.request    = request
         if request.filterspec :
             if 'first_day' in request.filterspec :
                 dt = request.filterspec ['first_day']
             if 'user' in request.filterspec :
                 user = request.filterspec ['user']
+            if 'supervisor' in request.filterspec :
+                supervisor = request.filterspec ['supervisor']
+            if 'department' in request.filterspec :
+                department = request.filterspec ['department']
         if not dt :
             som = common.start_of_month (now)
             eom = common.end_of_month (now)
@@ -295,11 +303,23 @@ class Leave_Display (object) :
             self.ldd = ldd = common.end_of_month (fdd)
             dt = common.pretty_range (fdd, ldd)
         srt        = [('+', a) for a in ('lastname', 'firstname')]
+        self.users = users = []
         if user :
             self.users = users = db.user.filter (user, {}, sort = srt)
-        else :
-            valid = db.user_status.lookup ('valid')
+        if supervisor :
+            u = db.user.filter \
+                (None, dict (supervisor = supervisor), sort = srt)
+            users.extend (u)
+        if department :
+            u = db.user.filter \
+                (None, dict (department = department), sort = srt)
+            users.extend (u)
+        valid = db.user_status.lookup ('valid')
+        if not self.users :
             users = db.user.filter (None, dict (status = valid), sort = srt)
+            self.users = users
+        else :
+            users = db.user.filter (users, dict (status = valid), sort = srt)
             self.users = users
         acc = db.leave_status.lookup ('accepted')
         flt = dict \
@@ -501,12 +521,8 @@ class Leave_Display (object) :
     # end def get_leave_entry
 
     def month_link (self, s, e, symbol) :
-        d   = \
-            { '@filter'   : 'first_day'
-            , 'first_day' : common.pretty_range (s, e)
-            , '@template' : 'timesheet'
-            }
-        url = 'leave_submission?' + urlencode (d)
+        url = self.request.indexargs_url \
+            ('timesheet', dict (first_day = common.pretty_range (s, e)))
         return '<a href="%s">%s</a>' % (url, symbol)
     # end def month_link
 

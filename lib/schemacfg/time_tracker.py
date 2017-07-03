@@ -428,6 +428,17 @@ def init \
         , user                  = Link      ("user")
         )
 
+    # Only for queries
+    timesheet = Class \
+        ( db
+        , ''"timesheet"
+        , first_day             = Date      (offset = 0)
+        , last_day              = Date      (offset = 0)
+        , user                  = Link      ("user")
+        , department            = Link      ("department")
+        , supervisor            = Link      ("user")
+        )
+
     work_location = Class \
         ( db
         , ''"work_location"
