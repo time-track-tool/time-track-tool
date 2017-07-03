@@ -54,6 +54,12 @@ def main () :
         , default = False
         , action  = 'store_true'
         )
+    parser.add_argument \
+        ( "-v", "--verbose"
+        , help    = "Verbose messages"
+        , default = False
+        , action  = 'store_true'
+        )
     args = parser.parse_args ()
 
     tracker = instance.open (args.database_directory)
@@ -103,9 +109,11 @@ def main () :
         param ['sap_cc'] = sap_cc
         if args.update :
             id = db.user_dynamic.create (** param)
-            #print "CREATED: %s" % id
+            if args.verbose :
+                print "CREATED: %s" % id
         else :
-            print "user_dynamic-create: %s" % param
+            if args.verbose :
+                print "user_dynamic-create: %s" % param
     if args.update :
         db.commit ()
 # end def main
