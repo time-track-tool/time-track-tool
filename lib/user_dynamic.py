@@ -934,4 +934,31 @@ def invalidate_tr_duration (db, uid, v_frm, v_to) :
         db.daily_record.set (dr, tr_duration_ok = None)
 # end def invalidate_tr_duration
 
+dynuser_copyfields = \
+     [ 'user'
+     , 'booking_allowed'
+     , 'durations_allowed'
+     , 'daily_worktime'
+     , 'weekend_allowed'
+     , 'travel_full'
+     , 'vacation_yearly'
+     , 'weekly_hours'
+     , 'supp_weekly_hours'
+     , 'supp_per_period'
+     , 'hours_mon'
+     , 'hours_tue'
+     , 'hours_wed'
+     , 'hours_thu'
+     , 'hours_fri'
+     , 'hours_sat'
+     , 'hours_sun'
+     , 'org_location'
+     , 'department'
+     , 'all_in'
+     , 'additional_hours'
+     , 'overtime_period'
+     , 'sap_cc'
+     , 'contract_type'
+     ]
+
 #END

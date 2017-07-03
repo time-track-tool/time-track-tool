@@ -537,33 +537,6 @@ def is_end_of_week (date) :
     return wday == 6
 # end def is_end_of_week
 
-dynuser_copyfields = \
-     [ 'user'
-     , 'booking_allowed'
-     , 'durations_allowed'
-     , 'daily_worktime'
-     , 'weekend_allowed'
-     , 'travel_full'
-     , 'vacation_yearly'
-     , 'weekly_hours'
-     , 'supp_weekly_hours'
-     , 'supp_per_period'
-     , 'hours_mon'
-     , 'hours_tue'
-     , 'hours_wed'
-     , 'hours_thu'
-     , 'hours_fri'
-     , 'hours_sat'
-     , 'hours_sun'
-     , 'org_location'
-     , 'department'
-     , 'all_in'
-     , 'additional_hours'
-     , 'overtime_period'
-     , 'sap_cc'
-     , 'contract_type'
-     ]
-
 def dynuser_copyurl (dyn) :
     try :
         dyn = dyn._klass.getnode (dyn._nodeid)
@@ -571,7 +544,7 @@ def dynuser_copyurl (dyn) :
         pass
     return 'user_dynamic?:template=item&' + '&'.join \
         ('%s=%s' % (n, urlquote (str (dyn [n] or '')))
-         for n in dynuser_copyfields
+         for n in user_dynamic.dynuser_copyfields
         )
 # end def dynuser_copyurl
 
@@ -711,7 +684,7 @@ class Split_Dynamic_User_Action (Action) :
         perm     = self.db.security.hasPermission
         if not common.user_has_role (self.db, self.db.getuid (), 'HR') :
             raise Reject, "Not allowed"
-        fields   = dynuser_copyfields + ['valid_to']
+        fields   = user_dynamic.dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)
         if dyn.valid_to :
             date = common.pretty_range \
