@@ -931,7 +931,10 @@ class LDAP_Roundup_Sync (object) :
                 is_empty = False
                 sap_cc = self.db.sap_cc.getnode (dyn.sap_cc)
                 if sap_cc [sap_cc_prop] != ldattr :
-                    return (ldap.MOD_ADD, lk, sap_cc [sap_cc_prop])
+                    if not ldattr :
+                        return (ldap.MOD_ADD, lk, sap_cc [sap_cc_prop])
+                    else :
+                        return (ldap.MOD_REPLACE, lk, sap_cc [sap_cc_prop])
         if is_empty and ldattr != '' :
             if ldattr is None :
                 return None
