@@ -177,6 +177,9 @@ def change_pr (db, cl, nodeid, new_values) :
             dep = new_values.get ('department', cl.get (nodeid, 'department'))
             if db.department.is_retired (dep) :
                 raise Reject (_ ("Department no longer valid"))
+            sapcc = new_values.get ('sap_cc', cl.get (nodeid, 'sap_cc'))
+            if db.sap_cc.is_retired (sapcc) :
+                raise Reject (_ ("SAP Cost-Center no longer valid"))
             fp = new_values.get \
                 ( 'frame_purchase'
                 , cl.get (nodeid, 'frame_purchase')

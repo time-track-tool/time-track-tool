@@ -1191,7 +1191,9 @@ def copy_url (context, attributes = None) :
             if context [a] :
                 val = ','.join (p.id for p in context [a])
         elif isinstance (context [a], LinkHTMLProperty) :
-            if context [a].id and not context [a].is_retired () :
+            if  ( context [a].id and str (context [a].id).isdigit ()
+                and not context [a].is_retired ()
+                ) :
                 val = context [a].id
         else :
             val = str (context [a])
