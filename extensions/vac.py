@@ -521,6 +521,11 @@ class Leave_Display (object) :
     # end def get_leave_entry
 
     def month_link (self, s, e, symbol) :
+        if 'filter' not in self.filterspec :
+            self.filterspec ['filter'] = 'first_day'
+        f = self.filterspec ['filter']
+        if 'first_day' not in f :
+            self.filterspec ['filter'] = 'first_day,' + f
         url = self.request.indexargs_url \
             ('timesheet', dict (first_day = common.pretty_range (s, e)))
         return '<a href="%s">%s</a>' % (url, symbol)
