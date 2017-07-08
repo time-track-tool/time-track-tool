@@ -16,13 +16,24 @@ class Reader (object) :
 
     def __iter__ (self) :
         for n, line in enumerate (self.file) :
-            if n == 0 :
-                continue
             self.lineno = n
             yield (line)
     # end def __iter__
 
 # end def Reader
+
+fieldmap = \
+    { 'sap_cc'     : 'Cost Center'
+    , 'department' : 'Department Feld in TimeTracker (for IT)'
+    }
+
+item_map = dict \
+    ( department =
+        { 'BU Off-Highway, Product Development' :
+              'Business Unit Off-Highway, Product Development'
+        }
+    )
+
 
 def main () :
     # most ldap info is now fetched from extensions/config.ini
@@ -42,6 +53,14 @@ def main () :
         , dest    = 'delimiter'
         , help    = 'CSV delimiter character (tab)'
         , default = '\t'
+        )
+    parser.add_argument \
+        ( "-f", "--field"
+        , dest    = "fields"
+        , help    = "Fields to update in dyn. user, e.g. sap_cc or department"
+                    " can be specified multiple times"
+        , action  = 'append'
+        , default = []
         )
     parser.add_argument \
         ( "-N", "--new"
@@ -78,14 +97,34 @@ def main () :
             print "Name empty: %(sn)s %(fn)s" % locals ()
             continue
         dt    = date.Date (args.new)
-        users = db.user.filter (None, dict (firstname = fn, lastname = sn))
+        st    = db.user_status.lookup ('valid')
+        users = db.user.filter \
+            (None, dict (firstname = fn, lastname = sn, status = st))
         if not users and ' ' in fn :
             fn = fn.split (' ', 1)[0]
-            users = db.user.filter (None, dict (firstname = fn, lastname = sn))
+            users = db.user.filter \
+                (None, dict (firstname = fn, lastname = sn, status = st))
         if not users :
             print "User not found: %(sn)s %(fn)s" % locals ()
             continue
+        if len (users) != 1 :
+            uu = []
+            for u in users :
+                user = db.user.getnode (u)
+                if  (  user.firstname.decode ('utf-8') != fn
+                    or user.lastname.decode ('utf-8')  != sn
+                    ) :
+                    continue
+                uu.append (u)
+            users = uu
+        if len (users) != 1 :
+            print users, fn, sn
         assert len (users) == 1
+        user = db.user.getnode (users [0])
+        if  (  user.firstname.decode ('utf-8') != fn
+            or user.lastname.decode ('utf-8')  != sn
+            ) :
+            print user.firstname, user.lastname, fn, sn
         # Get user dynamic record
         dyn = user_dynamic.get_user_dynamic (db, users [0], dt)
         if not dyn :
@@ -94,26 +133,50 @@ def main () :
         if dyn.valid_to :
             print "Dyn. user record limited: %(sn)s %(fn)s" % locals ()
             continue
-        if dyn.valid_from >= dt :
+        if dyn.valid_from > dt :
             print "Dyn. record starts after date: %(sn)s %(fn)s" % locals ()
             continue
-        cc = line ['Cost Center'].decode ('utf-8').strip ()
-        try :
-            sap_cc = db.sap_cc.lookup (cc)
-        except KeyError :
-            print "Cost-Center not found: %(cc)s: %(sn)s %(fn)s" % locals ()
+        if not dyn.vacation_yearly :
+            print "No yearly vacation: %(sn)s %(fn)s" % locals ()
             continue
-        fields = user_dynamic.dynuser_copyfields
-        param  = dict ((i, dyn [i]) for i in fields)
-        param ['valid_from'] = dt
-        param ['sap_cc'] = sap_cc
-        if args.update :
-            id = db.user_dynamic.create (** param)
-            if args.verbose :
-                print "CREATED: %s" % id
-        else :
-            if args.verbose :
-                print "user_dynamic-create: %s" % param
+        do_create = True
+        if dyn.valid_from == dt :
+            do_create = False
+        update = {}
+        try :
+            for f in fieldmap :
+                if f in args.fields :
+                    h    = fieldmap [f]
+                    key  = line [h].strip ()
+                    if f in item_map :
+                        key = item_map [f].get (key, key)
+                    cn   = dyn.cl.properties [f].classname
+                    cls  = db.getclass (cn)
+                    item = cls.lookup (key)
+                    if dyn [f] != item :
+                        update [f] = item
+        except KeyError :
+            print "%(f)s not found: %(key)s: %(sn)s %(fn)s" % locals ()
+            continue
+        if update :
+            if do_create :
+                fields = user_dynamic.dynuser_copyfields
+                param  = dict ((i, dyn [i]) for i in fields)
+                param ['valid_from'] = dt
+                param.update (update)
+                if args.update :
+                    id = db.user_dynamic.create (** param)
+                    if args.verbose :
+                        print "CREATED: %s" % id
+                else :
+                    if args.verbose :
+                        print "user_dynamic-create: %s" % param
+            else :
+                if args.update :
+                    db.user_dynamic.set (dyn.id, ** update)
+                else :
+                    if args.verbose :
+                        print "user_dynamic-update: %s %s %s" % (update, fn, sn)
     if args.update :
         db.commit ()
 # end def main
