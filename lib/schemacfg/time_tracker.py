@@ -548,6 +548,10 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
+        , ( "timesheet"
+          , ["User"]
+          , []
+          )
         , ( "leave_submission"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
