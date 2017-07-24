@@ -43,9 +43,10 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
         valid_to.hour   = valid_to.minute   = valid_to.second   = 0
     valid_from.hour     = valid_from.minute = valid_from.second = 0
     if valid_to and valid_from >= valid_to :
-        raise Reject, \
-            "valid_from (%(valid_from)s) must be > valid_to (%(valid_to)s)" \
+        raise Reject \
+            (_ ("valid_from (%(valid_from)s) must be > valid_to (%(valid_to)s)")
             % locals ()
+            )
     dynrecs    = cl.find (user = user)
     empty_seen = False
     for dr in dynrecs :
@@ -60,9 +61,10 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
                and valid_from <= rvalid_from
                and valid_to   >  rvalid_from
                ) or (not valid_to and valid_from <= rvalid_from) :
-                raise Reject, \
-                    ( "%(valid_from)s;%(valid_to)s overlaps with "
-                      "%(rvalid_from)s;"
+                raise Reject \
+                    (_ ("%(valid_from)s;%(valid_to)s overlaps with "
+                        "%(rvalid_from)s;"
+                       )
                     % locals ()
                     )
         else :
@@ -71,7 +73,7 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
                    ) :
                 # Don't display 'None':
                 valid_to = valid_to or ''
-                raise Reject, \
+                raise Reject \
                     ( _ ("%(valid_from)s;%(valid_to)s overlaps with "
                          "%(rvalid_from)s;%(rvalid_to)s"
                         )
@@ -80,14 +82,50 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     return valid_from, valid_to
 # end def check_ranges
 
-def check_vacation (attr, new_values) :
+def check_vacation (db, cl, nodeid, attr, new_values) :
+    vacation = None
     if attr in new_values :
         vacation = new_values [attr]
-        if vacation is None :
-            return
-        if vacation <= 0 :
-            raise Reject, \
-                _ ( "%(attr)s must be positive or empty") % locals ()
+    elif nodeid :
+        vacation = cl.get (nodeid, attr)
+
+    if vacation is None :
+        need_vacation = False
+        olo = new_values.get ('org_location', None)
+        if olo is None and nodeid :
+            olo = cl.get (nodeid, 'org_location')
+        if olo :
+            o = db.org_location.getnode (olo)
+            if o.do_leave_process :
+                need_vacation = True
+        user = new_values.get ('user', None)
+        if user is None and nodeid :
+            user = cl.get (nodeid, 'user')
+        assert user
+        if 'contract_type' in new_values :
+            ct = new_values ['contract_type']
+        elif nodeid :
+            ct = cl.get (nodeid, 'contract_type')
+        vcorr = db.vacation_correction.filter \
+            (None, dict (user = user, absolute = True, contract_type = ct))
+        if 'valid_to' in new_values :
+            vto = new_values ['valid_to']
+        elif nodeid :
+            vto = cl.get (nodeid, 'valid_to')
+        for vc in vcorr :
+            if not vto :
+                need_vacation = True
+                break
+            vac_corr = db.vacation_correction.getnode (vc)
+            if vac_corr.date < vto :
+                need_vacation = True
+                break
+        if need_vacation :
+            raise Reject \
+                (_ ( "%(attr)s is required") % locals ())
+    elif vacation <= 0 :
+        raise Reject \
+            (_ ( "%(attr)s must be positive or empty") % locals ())
 # end def check_vacation
 
 def hours_iter () :
@@ -141,13 +179,13 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
 
     if op and not op.months and X.supp_per_period is not None :
         spp = _ ("supp_per_period")
-        raise Reject, "%(spp)s must be empty for this %(ov)s" % locals ()
+        raise Reject (_ ("%(spp)s must be empty for this %(ov)s") % locals ())
     if op and not op.weekly and X.supp_weekly_hours is not None :
         swh = _ ("supp_weekly_hours")
-        raise Reject, "%(swh)s must be empty for this %(ov)s" % locals ()
+        raise Reject (_ ("%(swh)s must be empty for this %(ov)s") % locals ())
     if op and op.required_overtime and X.additional_hours is not None :
        ah = _ ("additional_hours")
-       raise Reject, "%(ah)s must be empty for this %(ov)s" % locals ()
+       raise Reject (_ ("%(ah)s must be empty for this %(ov)s") % locals ())
 
     for f in ov_req :
         # don't allow 0 for additional_hours
@@ -159,11 +197,12 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
                 )
             ) :
             fld = _ (f)
-            raise Reject, "%(fld)s must be specified if %(ov)s is set" \
-                % locals ()
+            raise Reject \
+                (_ ("%(fld)s must be specified if %(ov)s is set") % locals ())
     if op and op.weekly and not getattr (X, 'supp_weekly_hours', None) :
         sh = _ ('supp_weekly_hours')
-        raise Reject, "%(sh)s must be specified if %(ov)s is set" % locals ()
+        raise Reject \
+            (_ ("%(sh)s must be specified if %(ov)s is set") % locals ())
     daily = maybe_daily = False
     for f in hours_iter () :
         if f in new_values :
@@ -176,7 +215,7 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
             if X.weekly_hours % .25 :
                 wh = _ ("weekly_hours")
                 raise Reject \
-                    ("%(wh)s must be in whole quarter hours" % locals ())
+                    (_ ("%(wh)s must be in whole quarter hours") % locals ())
             h = X.weekly_hours
             for k, v in izip (hours_iter (), distribute_weekly_hours (h)) :
                 new_values [k] = v
@@ -192,7 +231,7 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
             if getattr (X, f) % .25 :
                 dh = _ (f)
                 raise Reject \
-                    ("%(dh)s must be in whole quarter hours" % locals ())
+                    (_ ("%(dh)s must be in whole quarter hours") % locals ())
             sum += getattr (X, f)
         new_values ['weekly_hours'] = sum
         setattr (X, 'weekly_hours', sum)
@@ -204,7 +243,8 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
         ) :
         ah = _ ('additional_hours')
         wh = _ ('weekly_hours')
-        raise Reject, "%(ah)s must equal %(wh)s for monthly balance" % locals ()
+        raise Reject \
+            (_ ("%(ah)s must equal %(wh)s for monthly balance") % locals ())
 # end def check_overtime_parameters
 
 def update_user_olo_dept (db, user, olo, dept) :
@@ -221,13 +261,12 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     old_ot = cl.get (nodeid, 'overtime_period')
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
-            raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s may not be changed") % {'attr' : _ (i)})
     common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'valid_from'
         , 'org_location'
         , 'department'
-        , 'vacation_yearly'
         )
     user     = new_values.get ('user',         cl.get (nodeid, 'user'))
     old_from = cl.get (nodeid, 'valid_from')
@@ -258,7 +297,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             )
         and not vac_fix
         ) :
-        raise Reject, _ ("Frozen: %(old_from)s") % locals ()
+        raise Reject (_ ("Frozen: %(old_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
     if  (   ('org_location' in new_values or 'department' in new_values)
         and (not val_to or last.id == nodeid or last.valid_from < val_from)
@@ -271,7 +310,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         val_to   = new_values ['valid_to']
     if not vac_fix :
         check_overtime_parameters (db, cl, nodeid, new_values)
-        check_vacation ('vacation_yearly', new_values)
+        check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from) :
             user_dynamic.invalidate_tr_duration (db, user, val_from, val_to)
         else :
@@ -298,7 +337,6 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         , 'valid_from'
         , 'org_location'
         , 'department'
-        , 'vacation_yearly'
         )
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
@@ -306,7 +344,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     olo        = new_values ['org_location']
     dept       = new_values ['department']
     if freeze.frozen (db, user, valid_from) :
-        raise Reject, _ ("Frozen: %(valid_from)s") % locals ()
+        raise Reject (_ ("Frozen: %(valid_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
     if not valid_to or not last or last.valid_from < valid_from :
         update_user_olo_dept (db, user, olo, dept)
@@ -338,7 +376,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
             new_values ['vacation_yearly'] = prev_dyn.vacation_yearly
         elif orgl.vacation_yearly :
             new_values ['vacation_yearly'] = orgl.vacation_yearly
-    check_vacation ('vacation_yearly', new_values)
+    check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
     check_weekly_hours (db, cl, nodeid, new_values)
 # end def new_user_dynamic
 
@@ -428,23 +466,26 @@ def overtime_check (db, cl, nodeid, new_values) :
     wname  = _ ("weekly")
     rname  = _ ("required_overtime")
     if same and (len (same) > 1 or same [0] != nodeid) :
-        raise Reject, _ \
-            ("No entries with same %(mname)s, %(wname)s, %(rname)s allowed") \
+        raise Reject \
+            (_ ("No entries with same %(mname)s, %(wname)s, %(rname)s allowed")
             % locals ()
+            )
     if not months and not weekly :
-        raise Reject, _ \
-            ("One of %(mname)s, %(wname)s must be specified") % locals ()
+        raise Reject \
+            (_ ("One of %(mname)s, %(wname)s must be specified") % locals ())
     if months < 0 or months and 12 % months :
-        raise Reject, _ \
-            ("Invalid number of %(mname)s, must be 0 or a divisor of 12") \
+        raise Reject \
+            (_ ("Invalid number of %(mname)s, must be 0 or a divisor of 12")
             % locals ()
+            )
     if rov and months != 1 :
-        raise Reject, _ \
-            ("Invalid number of %(mname)s, must be 1 if %(rname)s is given") \
+        raise Reject \
+            (_ ("Invalid number of %(mname)s, must be 1 if %(rname)s is given")
             % locals ()
+            )
     if rov and weekly :
-        raise Reject, _ \
-            ("Only one of %(rname)s, %(wname)s is allowed") % locals ()
+        raise Reject \
+            (_ ("Only one of %(rname)s, %(wname)s is allowed") % locals ())
 # end def overtime_check
 
 def vacation_check (db, cl, nodeid, new_values) :
