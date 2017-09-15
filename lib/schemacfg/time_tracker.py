@@ -949,7 +949,7 @@ def security (db, ** kw) :
         , description = fixdoc (is_project_owner_of_wp.__doc__)
         , properties  = \
             ( 'name', 'responsible', 'wp_no', 'cost_center'
-            , 'time_wp_summary_no'
+            , 'time_wp_summary_no', 'is_public'
             )
         )
     db.security.addPermissionToRole ('User', p)
