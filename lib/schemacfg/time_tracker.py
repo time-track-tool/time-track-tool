@@ -911,6 +911,14 @@ def security (db, ** kw) :
             (db, userid, ot.user, ot.date)
     # end def overtime_corr_visible_for_hr_olo
 
+    def overtime_corr_visible_for_user (db, userid, itemid) :
+        """User is allowed to view their own overtime information
+        """
+        ot = db.overtime_correction.getnode (itemid)
+        if ot.user == userid :
+            return True
+    # end def overtime_corr_visible_for_user
+
     def dr_freeze_visible_for_hr_olo (db, userid, itemid) :
         """User is allowed to view freeze information if he/she
            is in group HR-Org-Location and in the same Org-Location as
@@ -1171,6 +1179,13 @@ def security (db, ** kw) :
         , klass       = 'user_dynamic'
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'overtime_correction'
+        , check       = overtime_corr_visible_for_user
+        , description = fixdoc (overtime_corr_visible_for_user.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'overtime_correction'
