@@ -1056,7 +1056,7 @@ msgid "Add a new file for %(Classname)s"
 msgstr ""
 
 msgid "add_to_las"
-msgstr "Add to LAS?"
+msgstr "Not in LAS, Add?"
 
 msgid ""
 "Request to add this supplier to the list of approved\n"
