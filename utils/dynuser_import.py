@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
-import sys
-import os
-
+from __future__ import print_function
 from argparse import ArgumentParser
 from roundup  import instance, date
 from csv      import DictReader
+import sys
+import os
 
 class Reader (object) :
 
@@ -22,9 +22,14 @@ class Reader (object) :
 
 # end def Reader
 
+rename = \
+    { 'costcenter' : 'sap_cc'
+    }
+
 fieldmap = \
-    { 'sap_cc'     : 'Cost Center'
-    , 'department' : 'Department Feld in TimeTracker (for IT)'
+    { 'Cost Center'                             : 'sap_cc'
+    , 'Department Feld in TimeTracker (for IT)' : 'department' 
+    , 'costcenter'                              : 'sap_cc'
     }
 
 item_map = dict \
@@ -65,7 +70,7 @@ def main () :
     parser.add_argument \
         ( "-N", "--new"
         , help    = "Date of new dynamic user"
-        , default = '2017-07-01'
+        , default = '2017-10-01'
         )
     parser.add_argument \
         ( "-u", "--update"
@@ -91,63 +96,75 @@ def main () :
     d       = DictReader (r, delimiter = args.delimiter)
 
     for line in d :
-        sn = line ['Surname'].decode ('utf-8')
-        fn = line ['First name'].decode ('utf-8')
-        if not sn or not fn :
-            print "Name empty: %(sn)s %(fn)s" % locals ()
-            continue
-        dt    = date.Date (args.new)
-        st    = db.user_status.lookup ('valid')
-        users = db.user.filter \
-            (None, dict (firstname = fn, lastname = sn, status = st))
-        if not users and ' ' in fn :
-            fn = fn.split (' ', 1)[0]
+        if 'username' in line :
+            try :
+                user = db.user.getnode (db.user.lookup (line ['username']))
+            except KeyError :
+                print ("User not found: %s" % line ['username'])
+                continue
+            sn = user.lastname
+            fn = user.firstname
+            username = user.username
+        else :
+            sn = line ['Surname'].decode ('utf-8')
+            fn = line ['First name'].decode ('utf-8')
+            if not sn or not fn :
+                print ("Name empty: %(sn)s %(fn)s" % locals ())
+                continue
             users = db.user.filter \
                 (None, dict (firstname = fn, lastname = sn, status = st))
-        if not users :
-            print "User not found: %(sn)s %(fn)s" % locals ()
-            continue
-        if len (users) != 1 :
-            uu = []
-            for u in users :
-                user = db.user.getnode (u)
-                if  (  user.firstname.decode ('utf-8') != fn
-                    or user.lastname.decode ('utf-8')  != sn
-                    ) :
-                    continue
-                uu.append (u)
-            users = uu
-        if len (users) != 1 :
-            print users, fn, sn
-        assert len (users) == 1
-        user = db.user.getnode (users [0])
-        if  (  user.firstname.decode ('utf-8') != fn
-            or user.lastname.decode ('utf-8')  != sn
-            ) :
-            print user.firstname, user.lastname, fn, sn
+            if not users and ' ' in fn :
+                fn = fn.split (' ', 1)[0]
+                users = db.user.filter \
+                    (None, dict (firstname = fn, lastname = sn, status = st))
+            if not users :
+                print ("User not found: %(sn)s %(fn)s" % locals ())
+                continue
+            if len (users) != 1 :
+                uu = []
+                for u in users :
+                    user = db.user.getnode (u)
+                    if  (  user.firstname.decode ('utf-8') != fn
+                        or user.lastname.decode ('utf-8')  != sn
+                        ) :
+                        continue
+                    uu.append (u)
+                users = uu
+            if len (users) != 1 :
+                print (users, fn, sn)
+            assert len (users) == 1
+            user = db.user.getnode (users [0])
+            if  (  user.firstname.decode ('utf-8') != fn
+                or user.lastname.decode ('utf-8')  != sn
+                ) :
+                print (user.firstname, user.lastname, fn, sn)
+            username = user.username
+        dt    = date.Date (args.new)
+        st    = db.user_status.lookup ('valid')
         # Get user dynamic record
-        dyn = user_dynamic.get_user_dynamic (db, users [0], dt)
+        dyn = user_dynamic.get_user_dynamic (db, user.id, dt)
         if not dyn :
-            print "No dyn. user record: %(sn)s %(fn)s" % locals ()
+            print ("No dyn. user record: %(username)s" % locals ())
             continue
         if dyn.valid_to :
-            print "Dyn. user record limited: %(sn)s %(fn)s" % locals ()
+            print ("Dyn. user record limited: %(username)s" % locals ())
             continue
         if dyn.valid_from > dt :
-            print "Dyn. record starts after date: %(sn)s %(fn)s" % locals ()
+            print ("Dyn. record starts after date: %(username)s" % locals ())
             continue
         if not dyn.vacation_yearly :
-            print "No yearly vacation: %(sn)s %(fn)s" % locals ()
+            print ("No yearly vacation: %(username)s" % locals ())
             continue
         do_create = True
         if dyn.valid_from == dt :
             do_create = False
         update = {}
         try :
-            for f in fieldmap :
-                if f in args.fields :
-                    h    = fieldmap [f]
-                    key  = line [h].strip ()
+            key = ''
+            for k in fieldmap :
+                f = fieldmap [k]
+                if f in args.fields and k in line :
+                    key  = line [k].strip ()
                     if f in item_map :
                         key = item_map [f].get (key, key)
                     cn   = dyn.cl.properties [f].classname
@@ -156,7 +173,7 @@ def main () :
                     if dyn [f] != item :
                         update [f] = item
         except KeyError :
-            print "%(f)s not found: %(key)s: %(sn)s %(fn)s" % locals ()
+            print ("%(f)s not found: %(key)s: %(username)s" % locals ())
             continue
         if update :
             if do_create :
@@ -167,16 +184,19 @@ def main () :
                 if args.update :
                     id = db.user_dynamic.create (** param)
                     if args.verbose :
-                        print "CREATED: %s" % id
+                        print ("CREATED: %s" % id)
                 else :
                     if args.verbose :
-                        print "user_dynamic-create: %s" % param
+                        print ("user_dynamic-create: %s" % param)
             else :
                 if args.update :
                     db.user_dynamic.set (dyn.id, ** update)
                 else :
                     if args.verbose :
-                        print "user_dynamic-update: %s %s %s" % (update, fn, sn)
+                        print \
+                            ( "user_dynamic-update: %s %s %s"
+                            % (update, fn, sn)
+                            )
     if args.update :
         db.commit ()
 # end def main
