@@ -134,7 +134,7 @@ class Product_Sync (object) :
         self.pr_used   = {}
         for id in db.product.getnodeids (retired = False) :
             pr  = db.product.getnode (id)
-            key = normalize_name (pr.name.decode ('utf-8'))
+            key = normalize_name (pr.sap_material.decode ('utf-8'))
             self.pr_used  [key] = False
             self.products [key] = pr.id
         d_s = self.args.delimiter.encode ('utf-8')
@@ -348,6 +348,7 @@ class Product_Sync (object) :
                     if self.args.update :
                         cls.set (nodedict [k], ** d)
         else :
+            assert 'sap_material' in params or cls != self.db.product
             if 'sap_material' in params :
                 params ['name'] = params ['sap_material']
             if key2 :
