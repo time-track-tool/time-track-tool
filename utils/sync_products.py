@@ -6,7 +6,7 @@ import re
 
 from csv      import DictReader
 from roundup  import instance
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 splitre = re.compile (r'[ +_/&-]+')
 
@@ -117,22 +117,12 @@ class Product_Sync (object) :
         , 'Product Family'   : 3
         }
 
-    def __init__ (self, opt, args) :
-        self.opt      = opt
+    def __init__ (self, args) :
         self.args     = args
-        tracker       = instance.open (opt.dir)
+        tracker       = instance.open (args.dir)
         self.db       = db = tracker.open ('admin')
         self.prodcats = {}
         self.prodused = {}
-        # Retire some unused product categories:
-        #for n in 'HY-eVision\xb2 7.0', 'HY-TTC 200', 'HY-TTC 50' :
-        #    ps = db.prodcat.filter (None, dict (level = 3, name = n))
-        #    if not ps :
-        #        continue
-        #    assert len (ps) == 1
-        #    c = ps [0]
-        #    print ("Retire prodcat%s: %r" % (c, n))
-        #    db.prodcat.retire (c)
         for id in db.prodcat.getnodeids (retired = False) :
             pd  = db.prodcat.getnode (id)
             nn  = normalize_name (pd.name.decode ('utf-8'))
@@ -147,12 +137,9 @@ class Product_Sync (object) :
             key = normalize_name (pr.name.decode ('utf-8'))
             self.pr_used  [key] = False
             self.products [key] = pr.id
-        d_s = self.opt.delimiter.encode ('utf-8')
+        d_s = self.args.delimiter.encode ('utf-8')
         sap_dr = Unicode_DictReader \
             (self.fixer_sap (), delimiter = d_s)
-        d_r = self.opt.radix_delimiter.encode ('utf-8')
-        rad_dr = Unicode_DictReader \
-            (self.fixer_rad (), delimiter = d_r)
         self.debug ("SAP")
         self.sap_recs = []
         self.sap_ids  = {}
@@ -165,38 +152,10 @@ class Product_Sync (object) :
             self.sap_ids [id] = len (self.sap_recs)
             self.sap_recs.append (x)
             assert x is self.sap_recs [self.sap_ids [id]]
-        self.debug ("RADIX")
-        self.rad_recs = []
-        self.rad_ids  = {}
-        for x in rad_dr :
-            self.debug (repr (x))
-            id = self.get_material (x)
-            if id in self.rad_ids :
-                self.verbose ('Ignoring duplicate: %r' % x)
-                continue
-            self.rad_ids [id] = len (self.rad_recs)
-            self.rad_recs.append (x)
-            assert x is self.rad_recs [self.rad_ids [id]]
-        for id in self.rad_ids :
-            try :
-                id = int (id)
-            except ValueError :
-                self.warn ("Ignoring Radix ID: %s" % id)
-            if id > 11500 :
-                self.warn ("Ignoring Radix ID: %s" % id)
-            # Radix wins for IDs < 11500
-            if str (id) in self.sap_ids :
-                mat = self.get_material \
-                    (self.sap_recs [self.sap_ids [str (id)]])
-                assert (str (id) == mat)
-                self.warn ("Ignoring SAP ID: %s (also in Radix)" % id)
-                del self.sap_ids  [str (id)]
-        for id in self.sap_ids :
-            assert id not in self.rad_ids
     # end def __init__
 
     def debug (self, text) :
-        if self.opt.debug :
+        if self.args.debug :
             print (text)
     # end def debug
 
@@ -229,6 +188,9 @@ class Product_Sync (object) :
     # end def get_description
 
     def get_oldcode (self, rec) :
+        """ The old code is no longer available in newer exports.
+            We return an empty string in that case.
+        """
         for n in 'Alte Materialnr.', 'Alter Artikelkode' :
             try :
                 v = rec [n]
@@ -236,7 +198,7 @@ class Product_Sync (object) :
             except KeyError :
                 pass
         else :
-            raise
+            return ''
         try :
             v = str (int (v))
         except ValueError :
@@ -245,45 +207,34 @@ class Product_Sync (object) :
     # end def get_oldcode
 
     def fixer_sap (self) :
-        with codecs.open (self.args [0], 'r', self.opt.encoding) as f :
-            l = f.next ()
-            assert 'MM Report Material Stammdaten' in l
-            l = f.next ()
-            assert l.strip () == ''
-            l = f.next ()
-            assert l.startswith ('MM Report Material Stammdaten')
-            l = f.next ()
-            assert l.strip () == ''
-            l = f.next ()
-            delim = self.opt.delimiter
-            dd = delim * 2
-            assert ('%sMaterial' % delim) in l
-            n = 0
-            while dd in l :
-                l = l.replace (dd, '%sIgnore-me%s%s' % (delim, n, delim), 1)
-                n += 1
-            if l.startswith (delim) :
-                l = 'Ignore-me%s' % n + l
-                n += 1
-            if l.endswith (delim) :
-                l = l + 'Ignore-me%s' % n
-            yield l
+        with codecs.open (self.args.sapfile, 'r', self.args.encoding) as f :
+            #l = f.next ()
+            #assert 'MM Report Material Stammdaten' in l
+            #l = f.next ()
+            #assert l.strip () == ''
+            #l = f.next ()
+            #assert l.startswith ('MM Report Material Stammdaten')
+            #l = f.next ()
+            #assert l.strip () == ''
+            #l = f.next ()
+            #delim = self.args.delimiter
+            #dd = delim * 2
+            #assert ('%sMaterial' % delim) in l
+            #n = 0
+            #while dd in l :
+            #    l = l.replace (dd, '%sIgnore-me%s%s' % (delim, n, delim), 1)
+            #    n += 1
+            #if l.startswith (delim) :
+            #    l = 'Ignore-me%s' % n + l
+            #    n += 1
+            #if l.endswith (delim) :
+            #    l = l + 'Ignore-me%s' % n
+            #yield l
             for line in f :
                 yield (line)
     # end def fixer_sap
 
-    def fixer_rad (self) :
-        if len (self.args) < 2 :
-            raise StopIteration ()
-        with codecs.open (self.args [1], 'r', self.opt.radix_encoding) as f :
-            for line in f :
-                yield (line)
-    # end def fixer_rad
-
     def rec_iter (self) :
-        for id in sorted (self.rad_ids) :
-            idx = self.rad_ids [id]
-            yield self.rad_recs [idx]
         for id in sorted (self.sap_ids) :
             idx = self.sap_ids [id]
             yield self.sap_recs [idx]
@@ -361,7 +312,7 @@ class Product_Sync (object) :
                     )
         self.validity (self.db.prodcat,       self.prodcats, self.prodused)
         #self.validity (self.db.product,       self.products, self.pr_used)
-        if self.opt.update :
+        if self.args.update :
             self.db.commit()
     # end def sync
 
@@ -394,14 +345,14 @@ class Product_Sync (object) :
                         d [str (a)] = params [a]
                 if d :
                     self.verbose ("Update %s: %s: %s" % (cls.classname, k, d))
-                    if self.opt.update :
+                    if self.args.update :
                         cls.set (nodedict [k], ** d)
         else :
             if 'sap_material' in params :
                 params ['name'] = params ['sap_material']
             if key2 :
                 k = key2
-            if self.opt.update :
+            if self.args.update :
                 id = cls.create (** params)
             else :
                 id = str ('999999') # fake id
@@ -415,16 +366,16 @@ class Product_Sync (object) :
     def validity (self, cls, nodedict, usedict) :
         for k, v in usedict.iteritems () :
             id = nodedict [k]
-            if v or self.opt.invalidate :
+            if v or self.args.invalidate :
                 if not v :
                     self.verbose \
                         ("Invalidating %s%s: %s" % (cls.classname, id, k))
-                if self.opt.update :
+                if self.args.update :
                     cls.set (id, valid = v)
     # end def validity
 
     def verbose (self, text) :
-        if self.opt.verbose :
+        if self.args.verbose :
             print (text)
     # end def verbose
 
@@ -437,75 +388,58 @@ class Product_Sync (object) :
 def main () :
     dir     = os.getcwd ()
 
-    cmd = OptionParser ("Usage: %prog [options] sap-inputfile radix-inputfile")
-    cmd.add_option \
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( str ('sapfile')
+        , help    = 'SAP import file'
+        )
+    cmd.add_argument \
         ( str ('-d'), str ('--directory')
         , dest    = 'dir'
         , help    = 'Tracker instance directory'
         , default = dir
         )
-    cmd.add_option \
+    cmd.add_argument \
         ( str ('--debug')
         , dest    = 'debug'
         , help    = 'Debug output'
         , action  = 'store_true'
         )
-    default = '\t'
-    cmd.add_option \
+    cmd.add_argument \
         ( str ('-D'), str ('--sap-delimiter')
         , dest    = 'delimiter'
         , help    = 'CSV delimiter for SAP input-file,'
-                    ' default = %s' % repr (default).lstrip ('u')
-        , default = default
+                    ' default = TAB'
+        , default = '\t'
         )
-    default = '\t'
-    cmd.add_option \
-        ( str ('-R'), str ('--radix-delimiter')
-        , dest    = 'radix_delimiter'
-        , help    = 'CSV delimiter for Radix input-file,'
-                    ' default = %s' % repr (default).lstrip ('u')
-        , default = default
-        )
-    default = 'latin1'
-    cmd.add_option \
+    cmd.add_argument \
         ( str ('-E'), str ('--encoding')
         , dest    = 'encoding'
         , help    = 'CSV character encoding for SAP input-file,'
-                    ' default = %s' % default
-        , default = default
+                    ' default = "%(default)s"'
+        , default = 'latin1'
         )
-    default = 'utf-16'
-    cmd.add_option \
-        ( str ('-e'), str ('--radix-encoding')
-        , dest    = 'radix_encoding'
-        , help    = 'CSV character encoding for Radix input-file,'
-                    ' default = %s' % default
-        , default = default
-        )
-    cmd.add_option \
+    cmd.add_argument \
         ( str ('-i'), str ('--invalidate')
         , dest   = 'invalidate'
         , help   = 'Invalidate if not in import file'
         , action = 'store_true'
         )
-    cmd.add_option \
+    cmd.add_argument \
         ( str ('-u'), str ('--update')
         , dest   = 'update'
         , help   = 'Really do synchronisation'
         , action = 'store_true'
         )
-    cmd.add_option \
+    cmd.add_argument \
         ( str ('-v'), str ('--verbose')
         , dest   = 'verbose'
         , help   = 'Verbose output'
         , action = 'store_true'
         )
-    opt, args = cmd.parse_args ()
-    if not (1 <= len (args) <= 2) :
-        cmd.error ('Need one or two input files')
-        sys.exit  (23)
+    args = cmd.parse_args ()
 
-    ps = Product_Sync (opt, args)
+    ps = Product_Sync (args)
     ps.sync ()
 
 if __name__ == '__main__' :
