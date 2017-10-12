@@ -6630,3 +6630,13 @@ msgstr "PR Justification"
 
 msgid "internal_order"
 msgstr "Internal order"
+
+msgid "exchange_rate"
+msgstr "Exchange rate"
+
+msgid "key_currency"
+msgstr "Key currency"
+
+msgid "company_code"
+msgstr "Company code"
+

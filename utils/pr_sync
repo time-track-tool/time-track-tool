@@ -38,6 +38,7 @@ class PR_Sync (autosuper) :
          , ('sap_cc.deputy',                  'user')
          , ('sap_cc.responsible',             'user')
          , ('sap_cc.purchasing_agents',       'user')
+         , ('sap_cc.organisation',            'organisation')
          #, ('time_project.department',        'department')
          , ('time_project.deputy',            'user')
          , ('time_project.nosy',              'user')
@@ -170,7 +171,7 @@ class PR_Sync (autosuper) :
     def sync (self) :
         self.sync_class \
             ( 'organisation'
-            , ('name', 'description', 'may_purchase')
+            , ('name', 'description', 'may_purchase', 'company_code')
             , ('valid_to',)
             )
         self.sync_class ('location',     ('name', 'country'))
@@ -205,7 +206,7 @@ class PR_Sync (autosuper) :
         self.sync_class \
             ( 'sap_cc'
             , ( 'name', 'description', 'responsible', 'deputy'
-              , 'purchasing_agents', 'valid'
+              , 'purchasing_agents', 'valid', 'organisation'
               )
             , required = ('responsible',)
             )

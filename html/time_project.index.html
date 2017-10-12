@@ -19,6 +19,9 @@
     , ('organisation'
       , dict (searchname = 'organisation.id', searchable  = False)
       )
+    , ('organisation'
+      , dict (searchname = 'organisation.company_code')
+      )
     , ('department',         dict (multiselect = 1))
     , ('department'
       , dict (searchname = 'department.id', searchable  = False)

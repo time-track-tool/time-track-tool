@@ -6225,3 +6225,12 @@ msgstr "LDAP-Gruppe"
 
 msgid "is_nosy"
 msgstr ""
+
+msgid "exchange_rate"
+msgstr "Exchange rate"
+
+msgid "key_currency"
+msgstr "Key currency"
+
+msgid "company_code"
+msgstr "Buchungskreis"

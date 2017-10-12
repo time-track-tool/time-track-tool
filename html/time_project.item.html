@@ -93,6 +93,11 @@
          (classname, 'department')"/>
      <td tal:content="structure python:context.department.menu ()"/>
     </tr>
+    <tr tal:condition="python: context.id and context.organisation">
+     <th tal:content="structure python:utils.fieldname
+         ('organisation', 'company_code')"/>
+     <td tal:content="python:context.organisation.company_code.plain ()"/>
+    </tr>
     <tr>
      <tal:block tal:condition="python: 'planned_effort' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
