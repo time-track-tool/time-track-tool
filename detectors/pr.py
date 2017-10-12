@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2015-17 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -60,6 +60,13 @@ def check_tp_rq (db, cl, nodeid, new_values) :
             and db.organisation.get (tp.organisation, 'may_purchase')
             ) :
             new_values ['organisation'] = org = tp.organisation
+    if new_values.get ('sap_cc', None) :
+        sc  = db.sap_cc.getnode (new_values ['sap_cc'])
+        if  (   not org
+            and sc.organisation
+            and db.organisation.get (sc.organisation, 'may_purchase')
+            ) :
+            new_values ['organisation'] = org = sc.organisation
     if new_values.get ('requester', None) :
         rq = db.user.getnode (new_values ['requester'])
         # FIXME: At some point we want to re-enable department
@@ -128,6 +135,28 @@ def check_io (db, cl, nodeid, new_values) :
                     )
                 )
 # end def check_io
+
+def check_tp_cc_consistency (db, cl, nodeid, new_values) :
+    """ Check that the organisation in tp or cc is correct and
+        consistent with the organisation stored in the PR.
+    """
+    pr = cl.getnode (nodeid)
+    tc = new_values.get ('time_project', pr.time_project)
+    cc = new_values.get ('sap_cc', pr.sap_cc)
+    if tc :
+        node = db.time_project.getnode (tc)
+    else :
+        node = db.sap_cc.getnode (cc)
+    if node.organisation != pr.organisation :
+        o1 = db.organisation.get (pr.organisation, 'name')
+        if not node.organisation :
+            raise Reject (_ ("Organisation of CC/TC is empty"))
+        o2 = db.organisation.get (node.organisation, 'name')
+        raise Reject \
+            ( _("Organisation must be consistent with CC/TC: got %s expect %s")
+            % (o1, o2)
+            )
+# end def check_tp_cc_consistency
 
 def change_pr (db, cl, nodeid, new_values) :
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
@@ -239,6 +268,7 @@ def change_pr (db, cl, nodeid, new_values) :
             else :
                 raise Reject ( _ ("No approval by requester found"))
             new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
+            check_tp_cc_consistency (db, cl, nodeid, new_values)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
             for ap in approvals :
