@@ -316,8 +316,10 @@
           </tr>
           <tr>
            <td colspan="2"/>
-           <td tal:condition="python: not i.pr_supplier"
-               tal:content="structure python:i.add_to_las.field ()"/>
+           <td tal:condition="python: not i.pr_supplier">
+            <span i18n:translate="">Not in LAS, add?</span>
+            <span tal:content="structure python:i.add_to_las.field ()"/>
+           </td>
            <td tal:condition="python: i.pr_supplier"
                tal:content="structure python: utils.supplier_approved
                    (db, context, i.pr_supplier) "/>
