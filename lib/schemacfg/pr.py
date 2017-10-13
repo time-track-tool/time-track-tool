@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-17 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -30,6 +30,7 @@
 #
 
 import common
+import prlib
 from   schemacfg import schemadef
 from   roundup   import date
 
@@ -66,6 +67,8 @@ def init \
         , order                 = Number    ()
         , max_sum               = Number    ()
         , min_sum               = Number    ()
+        , exchange_rate         = Number    ()
+        , key_currency          = Boolean   ()
         )
     pr_currency.setkey ('name')
 
@@ -80,6 +83,7 @@ def init \
     pr_approval = Class \
         ( db, ''"pr_approval"
         , role                  = String    ()
+        , role_id               = Link      ("pr_approval_order")
         , user                  = Link      ("user")
         , deputy                = Link      ("user")
         , by                    = Link      ("user")
@@ -91,10 +95,19 @@ def init \
         , msg                   = Link      ("msg")
         )
 
+    pr_approval_config = Class \
+        ( db, ''"pr_approval_config"
+        , role                  = Link      ("pr_approval_order")
+        , amount                = Number    ()
+        , if_not_in_las         = Boolean   ()
+        , valid                 = Boolean   ()
+        )
+
     pr_approval_order = Class \
         ( db, ''"pr_approval_order"
         , role                  = String    ()
         , order                 = Number    ()
+        , users                 = Multilink ("user")
         )
     pr_approval_order.setkey ('role')
 
@@ -157,6 +170,10 @@ def init \
         , description           = String    ()
         , valid                 = Boolean   ()
         , confidential          = Boolean   ()
+        , pr_roles              = Multilink ("pr_approval_order")
+        , pr_forced_roles       = Multilink ("pr_approval_order")
+        , pr_view_roles         = Multilink ("pr_approval_order")
+        , nosy                  = Multilink ("user")
         )
     purchase_type.setkey ('name')
 
@@ -230,6 +247,7 @@ def init \
                                           , try_id_parsing = 'no'
                                           , do_journal     = 'no'
                                           )
+                , special_approval      = Multilink ("user", do_journal = 'no')
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -282,6 +300,7 @@ def security (db, ** kw) :
         , ("organisation",       ["User"],              [])
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
+        , ("pr_approval_config", ["Procurement"],       ["Procurement-Admin"])
         , ("pr_approval_order",  ["Procurement"],       ["Procurement-Admin"])
         , ("pr_approval",        ["Procurement","PR-View"], [])
         , ("pr_approval_status", ["User"],              [])
@@ -362,10 +381,10 @@ def security (db, ** kw) :
         pr = db.purchase_request.getnode (itemid)
         if not pr.purchase_type :
             return False
-        roles = db.purchase_type.get (pr.purchase_type, 'view_roles')
-        roles = common.role_list (roles)
-        if roles and common.user_has_role (db, userid, * roles) :
-            return True
+        roles = db.purchase_type.get (pr.purchase_type, 'pr_view_roles')
+        for r in roles :
+            if prlib.has_pr_role (db, userid, r) :
+                return True
         return False
     # end def view_role_pr
 
@@ -439,7 +458,8 @@ def security (db, ** kw) :
         for id in ap :
             a = db.pr_approval.getnode (id)
             # already signed by finance?
-            if a.status != un and a.role and a.role.lower () == 'finance' :
+            finance = db.pr_approval_order.lookup ('finance')
+            if a.status != un and a.role_id == finance :
                 return False
         return linked_pr (db, userid, itemid)
     # end def approver_non_finance
@@ -655,7 +675,7 @@ def security (db, ** kw) :
             a = db.pr_approval.getnode (id)
             if a.user == userid or a.deputy == userid :
                 return True
-            if a.role and common.user_has_role (db, userid, a.role) :
+            if a.role_id and prlib.has_pr_role (db, userid, a.role_id) :
                 return True
         return False
     # end def linked_pr
@@ -742,7 +762,7 @@ def security (db, ** kw) :
         if  (   ap.status == und
             and (  ap.user   == userid
                 or ap.deputy == userid
-                or (ap.role and common.user_has_role (db, userid, ap.role))
+                or (ap.role_id and prlib.has_pr_role (db, userid, ap.role_id))
                 )
             and pr.status in (st_open, st_approving)
             ) :

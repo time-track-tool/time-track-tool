@@ -59,19 +59,15 @@ def gen_pr_approval (db, do_create, ** values) :
         return values
 # end def gen_pr_approval
 
-def add_approval_with_role (db, do_create, prid, role) :
-    try :
-        oid = db.pr_approval_order.lookup (role.lower ())
-        ord = db.pr_approval_order.getnode (oid)
-        order = ord.order
-    except KeyError :
-        order = 50
+def add_approval_with_role (db, do_create, prid, appr_order_id) :
+    ord   = db.pr_approval_order.getnode (appr_order_id)
     return gen_pr_approval \
         ( db, do_create
-        , order            = order
+        , order            = ord.order
         , purchase_request = prid
-        , role             = role.lower ()
-        , description      = role
+        , role             = ord.role.lower ()
+        , role_id          = ord.id
+        , description      = ord.role
         )
 # end def add_approval_with_role
 
@@ -89,6 +85,26 @@ def supplier_is_approved (db, pr, sup_id) :
         return True
     return False
 # end def supplier_is_approved
+
+def in_las (db, pr) :
+    pr    = db.purchase_request.getnode (pr)
+    for id in pr.offer_items :
+        item  = db.pr_offer_item.getnode (id)
+        if not item.pr_supplier :
+            return False
+        d = dict (supplier = item.pr_supplier, organisation = pr.organisation)
+        r = db.pr_supplier_rating.filter (None, d)
+        if not r :
+            return False
+        assert len (r) == 1
+        try :
+            good = db.pr_rating_category.lookup ('good impression')
+        except KeyError :
+            good = 1
+        if db.pr_supplier_rating.get (r [0], 'rating') != good :
+            return False
+    return True
+# end def in_las
 
 def compute_approvals (db, pr, do_create) :
     """ Compute approvals for current PR settings
@@ -122,6 +138,28 @@ def compute_approvals (db, pr, do_create) :
             , description      = d
             )
         apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
+    for u in pr.special_approval :
+        apr = gen_pr_approval \
+            ( db, do_create
+            , order            = 15
+            , purchase_request = pr.id
+            , user             = u
+            , deputy           = u
+            , description      = _ ("Special approval")
+            )
+        apr_by_r_d [(u, u)] = apr
+
+    prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
+    if cur :
+        s  = pr_offer_item_sum (db, pr.id)
+        s  = s * cur.exchange_rate
+        for prcid in prc_ids :
+            prc = db.pr_approval_config.getnode (prcid)
+            if prc.if_not_in_las and in_las (db, pr.id) :
+                continue
+            if s > prc.amount :
+                apr_by_role [prc.role] = add_approval_with_role \
+                    (db, do_create, pr.id, prc.role)
     if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
         assert not do_create or pr.department
         if pr.department :
@@ -135,8 +173,9 @@ def compute_approvals (db, pr, do_create) :
                 , description      = "Department Head"
                 )
             apr_by_r_d [(dep.manager, dep.deputy)] = apr
-        apr_by_role ['finance'] = add_approval_with_role \
-            (db, do_create, pr.id, 'Finance')
+        finance = db.pr_approval_order.lookup ('finance')
+        apr_by_role [finance] = add_approval_with_role \
+            (db, do_create, pr.id, finance)
         # Loop over order items and check if any is not on the approved
         # suppliers list
         supplier_approved = True
@@ -145,8 +184,9 @@ def compute_approvals (db, pr, do_create) :
             if not supplier_is_approved (db, pr, oi.pr_supplier) :
                 supplier_approved = False
         if pr.safety_critical and not supplier_approved :
-            apr_by_role ['quality'] = add_approval_with_role \
-                (db, do_create, pr.id, 'Quality')
+            quality = db.pr_approval_order.lookup ('quality')
+            apr_by_role [quality] = add_approval_with_role \
+                (db, do_create, pr.id, quality)
         assert not do_create or pr.part_of_budget
         if pr.part_of_budget :
             pob = db.part_of_budget.getnode (pr.part_of_budget)
@@ -155,16 +195,17 @@ def compute_approvals (db, pr, do_create) :
         if  (  (pob and pob.name.lower () == 'no')
             or (cur and pr_offer_item_sum (db, pr.id) >= cur.max_sum)
             ) :
-            apr_by_role ['board'] = add_approval_with_role \
-                (db, do_create, pr.id, 'Board')
+            board = db.pr_approval_order.lookup ('board')
+            apr_by_role [board] = add_approval_with_role \
+                (db, do_create, pr.id, board)
         assert not do_create or pr.purchase_type
 
     if pr.purchase_type :
         pt    = db.purchase_type.getnode (pr.purchase_type)
         roles = []
         if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
-            roles.extend (common.role_list (pt.roles))
-        roles.extend (common.role_list (pt.forced_roles))
+            roles.extend (pt.pr_roles)
+        roles.extend (pt.pr_forced_roles)
         # Make them unique
         roles = dict.fromkeys (roles).keys ()
         for role in roles :
@@ -202,8 +243,8 @@ def compute_approvals (db, pr, do_create) :
             pt    = db.purchase_type.getnode (oi.purchase_type)
             roles = []
             if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
-                roles.extend (common.role_list (pt.roles))
-            roles.extend (common.role_list (pt.forced_roles))
+                roles.extend (pt.pr_roles)
+            roles.extend (pt.pr_forced_roles)
             for role in roles :
                 if role not in apr_by_role :
                     apr_by_role [role] = add_approval_with_role \
@@ -213,6 +254,13 @@ def compute_approvals (db, pr, do_create) :
         vals.sort (key = lambda x : x ['order'])
         return vals
 # end def compute_approvals
+
+def has_pr_role (db, uid, roleid) :
+    r = db.pr_approval_order.getnode (roleid)
+    if uid in r.users :
+        return True
+    return False
+# end def has_pr_role
 
 pr_justification = \
     ( ( 'Related item (in PES)'

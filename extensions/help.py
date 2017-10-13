@@ -776,6 +776,12 @@ _helptext          = \
           '''
       , green
       ]
+    , ""'exchange_rate'               :
+      [ ""'''Amount of this currency we can buy for 1 unit of the key
+             currency (e.g. if the key currency is Euro, how many $ do
+             we get for one Euro)
+          '''
+      ]
     , ""'ext_attributes'              :
       [""'''Attribute values from latest synchronisation with external
             tracker. Values are stored as JSON internally and displayed
@@ -1099,6 +1105,11 @@ _helptext          = \
       [superseder, multiple_allowed]
     , ""'it_project'                  :
       [""'''Optional IT Project to which this %(Classname)s belongs''']
+    , ""'key_currency'                :
+      [ ""'''The currency used to valuate all other currencies.
+             This flag can only be set for one currency.
+          '''
+      ]
     , ""'keyword'                     :
       [keywords]
     , ""'keywords'                    :
@@ -1454,6 +1465,12 @@ _helptext          = \
             be used for different items!
          '''
       ]
+    , ""'pr_forced_roles'              :
+      [ ""'''Roles which must approve purchase requests with this
+             %(Classname)s even if the sum is below the max cost
+             for simple approval.
+          '''
+      ]
     , ""'pr_offer_item++description'  :
       [""'''Describe item as detailed as possible. Please state product
             numbers (SAP material numbers or 3rd party product codes),
@@ -1463,6 +1480,11 @@ _helptext          = \
     , ""'pr_offer_item++time_project'  : [ optional_offer_prop ]
     , ""'pr_offer_item++sap_cc'        : [ optional_offer_prop ]
     , ""'pr_offer_item++purchase_type' : [ optional_offer_prop ]
+    , ""'pr_roles'                     :
+      [ ""'''Roles which must approve purchase requests with this
+             %(Classname)s.
+          '''
+      ]
     , ""'pr_supplier_rating++organisation' :
       [""'''%(Property)s for which supplier is rated''']
     , ""'pr_supplier_rating++supplier' :
@@ -1471,6 +1493,10 @@ _helptext          = \
       [""'''%(Property)s of products to which this rating applies''']
     , ""'pr_supplier_rating++rating' :
       [""'''%(Property)s for this supplier''']
+    , ""'pr_view_roles'               :
+      [ ""'''Roles that may view purchase requests of this %(Classname)s
+          '''
+      ]
     , ""'price_per_unit'              :
       [ ""'''Price per unit (net) in the format ###.##. Please use "." as
              decimal point (e.g.  100.00).

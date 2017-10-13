@@ -223,6 +223,12 @@
                           '@sort=-delivery_deadline&@filter=requester&'
                           '@pagesize=20&@startwith=0&'
                           'requester=%s' % uid
+   , ('purchase_type', '')
+                        : '@columns=id,order,name,pr_view_roles,pr_roles,'
+                          'pr_forced_roles&'
+                          '@sort=order&@filter=valid&'
+                          '@pagesize=20&@startwith=0&'
+                          'valid=1'
    , ('public_holiday', '')
                         : '@columns=id,name,description,date,locations,is_half&'
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
@@ -448,6 +454,8 @@
      , ('pharma_ref',          'Edit',   '?@template=item', 1)
      , ('pr_currency',         'Edit',   '?@template=item', 1)
      , ('position',            'Edit',   '?@template=item', 1)
+     , ('pr_approval_config',  'Edit',   '?@template=item', 1)
+     , ('pr_approval_order',   'Edit',   '?@template=item', 1)
      , ('pr_rating_category',  'Edit',   '?@template=item', 1)
      , ('pr_supplier',         'Edit',   '?@template=item', 1)
      , ('pr_supplier_rating',  'Edit',   '?@template=item', 1)
@@ -576,6 +584,7 @@
      , ('pr_supplier_rating',  'View', 1,               ('',''))
      , ('public_holiday',      'View', 1,               ('',''))
      , ('purchase_request',    'View', 1,               ('',''))
+     , ('purchase_type',       'View', 1,               ('',''))
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))

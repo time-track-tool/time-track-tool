@@ -9,8 +9,59 @@ dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
-for id in db.purchase_type.getnodeids (retired = False) :
-    pt = db.purchase_type.getnode (id)
-    if not pt.view_roles :
-        db.purchase_type.set (id, view_roles = 'Procurement')
+sys.path.insert (0, os.path.join (os.path.abspath (dir), 'lib'))
+
+import common
+
+# Loop over all pr_approvals and fix roles
+for id in db.pr_approval.getnodeids (retired = False) :
+    pra = db.pr_approval.getnode (id)
+    if pra.role and not pra.role_id :
+        role = db.pr_approval_order.lookup (pra.role.lower ())
+        db.pr_approval.set (id, role_id = role)
+
+# Fix users in pr_approval_order by finding users with given role
+for rid in db.pr_approval_order.getnodeids (retired = False) :
+    ao = db.pr_approval_order.getnode (rid)
+    if not ao.users :
+        uids = common.get_uids_with_role (db, ao.role)
+        db.pr_approval_order.set (rid, users = uids)
+
+# Fix roles in purchase_type
+for tid in db.purchase_type.getnodeids (retired = False) :
+    type = db.purchase_type.getnode (tid)
+    d    = {}
+    for old_r in ('roles', 'forced_roles', 'view_roles') :
+        new_r = 'pr_' + old_r
+        if type [old_r] and not type [new_r] :
+            rids = []
+            for r in common.role_list (type [old_r]) :
+                rids.append (db.pr_approval_order.lookup (r))
+            if rids :
+                d [new_r] = rids
+    if d :
+        db.purchase_type.set (tid, ** d)
+
+# Fix currency to include exchange_rate and mark Euro as the
+# key_currency
+keyc = db.pr_currency.filter (None, dict (key_currency = True))
+if len (keyc) == 0 :
+    keyc = db.pr_currency.lookup ('EUR')
+else :
+    assert len (keyc) == 1
+    keyc = keyc [0]
+keyc = db.pr_currency.getnode (keyc)
+for cid in db.pr_currency.getnodeids () :
+    curr = db.pr_currency.getnode (cid)
+    d    = {}
+    if curr.key_currency is None :
+        if curr.name == 'EUR' :
+            d ['key_currency'] = True
+        else :
+            d ['key_currency'] = False
+    if not curr.exchange_rate :
+        d ['exchange_rate'] = curr.max_sum / keyc.max_sum
+    if d :
+        db.pr_currency.set (cid, **d)
+
 db.commit()

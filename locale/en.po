@@ -3568,7 +3568,13 @@ msgstr "Title"
 msgid "purchase_type++roles"
 msgstr "Approval-Roles"
 
+msgid "pr_roles"
+msgstr "Approval-Roles"
+
 msgid "forced_roles"
+msgstr "Forced Approval-Roles"
+
+msgid "pr_forced_roles"
 msgstr "Forced Approval-Roles"
 
 msgid "pr_offer_item++description"
@@ -3587,6 +3593,9 @@ msgid "roles"
 msgstr "Roles"
 
 msgid "view_roles"
+msgstr "View-Roles"
+
+msgid "pr_view_roles"
 msgstr "View-Roles"
 
 msgid ""
@@ -6639,4 +6648,7 @@ msgstr "Key currency"
 
 msgid "company_code"
 msgstr "Company code"
+
+msgid "pr_approval_config"
+msgstr "Approval configuration"
 

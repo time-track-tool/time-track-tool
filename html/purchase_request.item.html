@@ -209,6 +209,18 @@
       </td>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'special_approval')"/>
+      <td>
+       <span tal:content="structure python: context.special_approval.field ()"/>
+       <span tal:content="structure python:db.user.classhelp
+        ( 'username,realname'
+        , property  = 'special_approval'
+        , width     = '600'
+        , pagesize  = '5000'
+        )"/>
+     </tr>
+     <tr>
       <th colspan="4">
        <table class="form">
         <tr>

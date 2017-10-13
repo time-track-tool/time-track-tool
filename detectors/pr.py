@@ -136,6 +136,22 @@ def check_io (db, cl, nodeid, new_values) :
                 )
 # end def check_io
 
+def check_input_len (db, cl, nodeid, new_values) :
+    """ Check that some fields don't become too long
+    """
+    if len (new_values.get ('description', '')) > 30 :
+        raise Reject (_ ("Description too long (max 30)"))
+    if len (new_values.get ('supplier', '')) > 55 :
+        raise Reject (_ ("Supplier too long (max 55)"))
+# end def check_input_len
+
+def namelen (db, cl, nodeid, new_values) :
+    """ Check that name field doesn't become too long
+    """
+    if len (new_values.get ('name', '')) > 55 :
+        raise Reject (_ ("Supplier name too long (max 55)"))
+# end def namelen
+
 def check_tp_cc_consistency (db, cl, nodeid, new_values) :
     """ Check that the organisation in tp or cc is correct and
         consistent with the organisation stored in the PR.
@@ -157,6 +173,16 @@ def check_tp_cc_consistency (db, cl, nodeid, new_values) :
             % (o1, o2)
             )
 # end def check_tp_cc_consistency
+
+def update_nosy (db, cl, nodeid, new_values) :
+    """ On sign&send of a PR we update the nosy list with the nosy list
+        from the purchase_type
+    """
+    nosy = set (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
+    pt   = new_values.get ('purchase_type', cl.get (nodeid, 'purchase_type'))
+    nosy.update (db.purchase_type.get (pt, 'nosy'))
+    new_values ['nosy'] = nosy
+# end def update_nosy
 
 def change_pr (db, cl, nodeid, new_values) :
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
@@ -269,6 +295,7 @@ def change_pr (db, cl, nodeid, new_values) :
                 raise Reject ( _ ("No approval by requester found"))
             new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
             check_tp_cc_consistency (db, cl, nodeid, new_values)
+            update_nosy (db, cl, nodeid, new_values)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
             for ap in approvals :
@@ -363,6 +390,8 @@ def new_pr_approval (db, cl, nodeid, new_values) :
         and not new_values.get ('role', None)
         ) :
         raise Reject (_ ("user or role required"))
+    if 'role' in new_values and 'role_id' not in new_values :
+        raise Reject (_ ("No role id"))
     new_values ['status'] = db.pr_approval_status.lookup ('undecided')
 # end def new_pr_approval
 
@@ -370,6 +399,10 @@ def change_pr_approval (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request', 'order')
     app = cl.getnode (nodeid)
+    rol = new_values.get ('role',    cl.get (nodeid, 'role'))
+    rid = new_values.get ('role_id', cl.get (nodeid, 'role_id'))
+    if rol and not rid :
+        new_values ['role_id'] = db.pr_approval_order.lookup (rol)
     if 'status' in new_values :
         pr_open      = db.pr_status.lookup ('open')
         pr_approving = db.pr_status.lookup ('approving')
@@ -383,6 +416,10 @@ def change_pr_approval (db, cl, nodeid, new_values) :
             new_values ['date'] = Date ('.')
             approvals = cl.filter (None, dict (purchase_request = pr.id))
             assert nodeid in approvals
+    elif new_values.keys () == ['role_id'] :
+        n = db.pr_approval_order.get (new_values ['role_id'], 'role')
+        if cl.get (nodeid, 'role') != n :
+            raise Reject ("Inconsistent role_id")
     elif app.status != db.pr_approval_status.lookup ('undecided') :
         raise Reject (_ ("May not change approval status parameters"))
     elif 'msg' in new_values and new_values ['msg'] is not None :
@@ -583,7 +620,13 @@ def check_pr_update (db, cl, nodeid, old_values) :
 
 def check_currency (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'max_sum', 'order')
+        (_, cl, nodeid, new_values, 'max_sum', 'order', 'exchange_rate')
+    if new_values.get ('key_currency') :
+        for id in db.pr_currency.getnodeids () :
+            if id == nodeid :
+                continue
+            if cl.get (id, 'key_currency') :
+                raise Reject (_ ("Duplicate key currency"))
 # end def check_currency
 
 def requester_chg (db, cl, nodeid, new_values) :
@@ -602,9 +645,9 @@ def pt_check_roles (db, cl, nodeid, new_values) :
 # end def pt_check_roles
 
 def pao_check_roles (db, cl, nodeid, new_values) :
-    common.check_roles (db, cl, nodeid, new_values, 'role')
+    """ Now allow the role-name to not be a roundup role anymore """
     if 'role' in new_values and ',' in new_values ['role'] :
-        raise Reject (_ ("Only a single role is allowed"))
+        raise Reject (_ ("No commas allowed in role name"))
 # end def pao_check_roles
 
 def check_supplier_rating (db, cl, nodeid, new_values) :
@@ -662,9 +705,13 @@ def init (db) :
     db.pr_offer_item.audit      ("create", check_supplier)
     db.pr_offer_item.audit      ("set",    check_supplier)
     db.pr_offer_item.react      ("set",    check_pr_update)
+    db.pr_offer_item.audit      ("create", check_input_len, priority = 150)
+    db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
     db.pr_approval_order.audit  ("set",    pao_check_roles)
     db.pr_supplier_rating.audit ("set",    check_supplier_rating)
+    db.pr_supplier.audit        ("create", namelen)
+    db.pr_supplier.audit        ("set",    namelen)
 # end def init
