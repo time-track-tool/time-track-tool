@@ -6652,3 +6652,6 @@ msgstr "Company code"
 msgid "pr_approval_config"
 msgstr "Approval configuration"
 
+msgid "special_approval"
+msgstr "Special approval"
+
