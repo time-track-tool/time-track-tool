@@ -5884,7 +5884,7 @@ msgid "pr_approval"
 msgstr "Purchase approval"
 
 msgid "pr_approval_order"
-msgstr "approval order"
+msgstr "Approval order"
 
 msgid "pr_offer_item"
 msgstr "Offer item"
