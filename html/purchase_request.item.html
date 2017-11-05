@@ -293,8 +293,15 @@
             (context.offer_items, key = lambda x : x.index)">
          <tbody>
           <tr>
-           <td tal:content="structure python:i.index.field (size=3)"/>
-           <td tal:content="structure python:i.description.field ()"/>
+           <td rowspan="3"
+            tal:content="structure python:i.index.field (size=3)"/>
+           <td rowspan="2">
+            <textarea wrap="soft" cols="30" rows="3"
+             tal:attributes=
+              " name python:'pr_offer_item%s@description' % i.id
+              ; readonly python:not i.is_edit_ok()
+              "
+             tal:content="python:i.description.plain () or ''"/>
            <td>
             <span tal:content="structure python:i.supplier.field ()"/>
             <span tal:condition="i/supplier/is_edit_ok"
@@ -327,7 +334,6 @@
            </td>
           </tr>
           <tr>
-           <td colspan="2"/>
            <td tal:condition="python: not i.pr_supplier">
             <span i18n:translate="">Not in LAS, add?</span>
             <span tal:content="structure python:i.add_to_las.field ()"/>
@@ -342,7 +348,6 @@
            <td tal:attributes="colspan python:3+cond"/>
           </tr>
           <tr>
-           <td/>
            <td>
             <tal:block tal:content="structure python:i.time_project.menu
                 ( sort_on = ('+', 'description')
@@ -370,11 +375,13 @@
          tal:repeat="idx python:range(1,offer_list_length + 1)">
          <tbody>
           <tr>
-           <td tal:content="structure python:utils.new_property
+           <td rowspan="3" tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
-           <td>
-            <span tal:content="structure python:utils.new_property
-               (context, db, 'pr_offer_item', -idx, 'description').field ()"/>
+           <td rowspan="2">
+            <textarea wrap="soft" cols="30" rows="3"
+             tal:attributes=
+              " name python:'pr_offer_item%s@description' % (-idx)
+              "></textarea>
             <input type="hidden" name="@link@offer_items"
                   tal:attributes="value python:'pr_offer_item-%s' % idx" />
            </td>
@@ -401,7 +408,7 @@
            <td tal:content="python:context.pr_currency.plain ()"/>
           </tr>
           <tr>
-           <td colspan="3"/>
+           <td/>
            <td
                tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'is_asset').field ()"/>
@@ -412,7 +419,6 @@
            <td tal:attributes="colspan python:5+cond"/>
           </tr>
           <tr>
-           <td/>
            <td>
             <tal:block tal:content="structure python:utils.new_property
              (context, db, 'pr_offer_item', -idx, 'time_project').menu
