@@ -322,8 +322,32 @@ def check_daily_record (db, cl, nodeid, new_values) :
                   and vs_cancelled
                   )
                ) :
+            msg = "Invalid Transition"
+            if old_status == 'open' :
+                if 'status' == 'submitted' :
+                    if not is_hr and user != uid :
+                        msg = _ ("Permission denied")
+                    elif not time_records_consistent (db, cl, nodeid) :
+                        msg = _ ("Inkonsistent time records")
+                    elif vs_has_valid :
+                        msg = _ ("Leave submission exists")
+                elif 'status' == 'leave' :
+                    msg = _ ("No accepted leave submission")
+            elif old_status == 'leave' :
+                msg = _ ("Leave submission not cancelled")
+            elif old_status == 'accepted' :
+                msg = _ ("Re-open only by HR")
+            elif old_status == 'submitted' :
+                if status == 'accepted' :
+                    if not is_hr and not may_give_clearance :
+                        msg = _ ("Permission denied")
+                    elif user == uid :
+                        msg = _ ("May not self-approve")
+                elif status == 'open' :
+                    if not is_hr and user != uid and not may_give_clearance :
+                        msg = _ ("Permission denied")
             raise Reject, \
-                ( _ ("Denied state change: %(old_status)s->%(status)s")
+                ( _ ("Denied state change: %(old_status)s->%(status)s: %(msg)s")
                 % locals ()
                 )
 # end def check_daily_record
