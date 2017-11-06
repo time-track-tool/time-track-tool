@@ -341,7 +341,7 @@ class LDAP_Roundup_Sync (object) :
         if self.contact_types :
             attr_map ['user_contact'] = \
                 { 'Email'          : ('mail',)
-                , 'internal Phone' : ('telephoneNumber', 'otherTelephone')
+                , 'internal Phone' : ('otherTelephone',)
                 , 'mobile Phone'   : ('mobile',          'otherMobile')
                 , 'Mobile short'   : ('pager',           'otherPager')
         #       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
@@ -794,22 +794,31 @@ class LDAP_Roundup_Sync (object) :
             ldn = self.attr_map ['user_contact'][ct]
             if len (ldn) != 2 :
                 assert (len (ldn) == 1)
-                assert (ct == 'Email')
-                p = ldn [0]
-                s = None
+                if ct == 'Email' :
+                    p = ldn [0]
+                    s = None
+                else :
+                    p = None
+                    s = ldn [0]
             else :
                 p, s = ldn
             if p not in luser :
-                print "%s: Inserting: %s (%s)" % (user.username, p, cs [0])
-                modlist.append ((ldap.MOD_ADD, p, cs [0]))
+                ins = cs [0]
+                if not s and ct != 'Email' :
+                    ins = cs
+                print "%s: Inserting: %s (%s)" % (user.username, p, ins)
+                modlist.append ((ldap.MOD_ADD, p, ins))
             elif len (luser [p]) != 1 :
                 print "%s: invalid length: %s" % (user.username, p)
             else :
                 ldattr = luser [p][0]
-                if ldattr != cs [0] :
+                ins = cs [0]
+                if not s and ct != 'Email' :
+                    ins = cs
+                if ldattr != ins :
                     print "%s:  Updating: %s/%s %s/%s" % \
-                        (user.username, ct, p, cs [0], ldattr)
-                    modlist.append ((ldap.MOD_REPLACE, p, cs [0]))
+                        (user.username, ct, p, ins, ldattr)
+                    modlist.append ((ldap.MOD_REPLACE, p, ins))
             if s :
                 if s not in luser :
                     if cs [1:] :
