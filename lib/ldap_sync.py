@@ -101,6 +101,9 @@ class LDAP_Roundup_Sync (object) :
     """ Sync users from LDAP to Roundup """
 
     page_size     = 50
+
+    single_ldap_attributes = dict.fromkeys \
+        ('Email', 'telephoneNumber')
     
     def __init__ (self, db, update_roundup = None, update_ldap = None) :
         self.db             = db
@@ -342,6 +345,7 @@ class LDAP_Roundup_Sync (object) :
             attr_map ['user_contact'] = \
                 { 'Email'          : ('mail',)
                 , 'internal Phone' : ('otherTelephone',)
+                , 'external Phone' : ('telephoneNumber',)
                 , 'mobile Phone'   : ('mobile',          'otherMobile')
                 , 'Mobile short'   : ('pager',           'otherPager')
         #       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
@@ -794,17 +798,13 @@ class LDAP_Roundup_Sync (object) :
             ldn = self.attr_map ['user_contact'][ct]
             if len (ldn) != 2 :
                 assert (len (ldn) == 1)
-                if ct == 'Email' :
-                    p = ldn [0]
-                    s = None
-                else :
-                    p = None
-                    s = ldn [0]
+                p = ldn [0]
+                s = None
             else :
                 p, s = ldn
             if p not in luser :
                 ins = cs [0]
-                if not s and ct != 'Email' :
+                if not s and ct not in self.single_ldap_attributes :
                     ins = cs
                 print "%s: Inserting: %s (%s)" % (user.username, p, ins)
                 modlist.append ((ldap.MOD_ADD, p, ins))
@@ -813,7 +813,7 @@ class LDAP_Roundup_Sync (object) :
             else :
                 ldattr = luser [p][0]
                 ins = cs [0]
-                if not s and ct != 'Email' :
+                if not s and ct not in self.single_ldap_attributes :
                     ins = cs
                 if ldattr != ins :
                     print "%s:  Updating: %s/%s %s/%s" % \
