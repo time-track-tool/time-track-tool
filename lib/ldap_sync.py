@@ -103,7 +103,7 @@ class LDAP_Roundup_Sync (object) :
     page_size     = 50
 
     single_ldap_attributes = dict.fromkeys \
-        ('Email', 'telephoneNumber')
+        (('email', 'telephonenumber'))
     
     def __init__ (self, db, update_roundup = None, update_ldap = None) :
         self.db             = db
@@ -804,7 +804,7 @@ class LDAP_Roundup_Sync (object) :
                 p, s = ldn
             if p not in luser :
                 ins = cs [0]
-                if not s and ct not in self.single_ldap_attributes :
+                if not s and ct.lower () not in self.single_ldap_attributes :
                     ins = cs
                 print "%s: Inserting: %s (%s)" % (user.username, p, ins)
                 modlist.append ((ldap.MOD_ADD, p, ins))
@@ -813,9 +813,9 @@ class LDAP_Roundup_Sync (object) :
             else :
                 ldattr = luser [p][0]
                 ins = cs [0]
-                if not s and ct not in self.single_ldap_attributes :
+                if not s and ct.lower () not in self.single_ldap_attributes :
                     ins = cs
-                if ldattr != ins :
+                if ldattr != ins and [ldattr] != ins :
                     print "%s:  Updating: %s/%s %s/%s" % \
                         (user.username, ct, p, ins, ldattr)
                     modlist.append ((ldap.MOD_REPLACE, p, ins))
