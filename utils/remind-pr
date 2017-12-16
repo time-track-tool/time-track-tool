@@ -81,8 +81,8 @@ class PR_Reminder (object) :
                     if ap.deputy :
                         users.append (db.user.getnode (ap.deputy))
                 else :
-                    uids  = common.get_uids_with_role (db, ap.role)
-                    users = [db.user.getnode (u) for u in uids]
+                    r = db.pr_approval_order.getnode (ap.role_id)
+                    users = [db.user.getnode (u) for u in r.users]
             else :
                 users = []
             users.extend (self.get_agents (pr))
