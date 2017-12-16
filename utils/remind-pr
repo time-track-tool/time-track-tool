@@ -31,40 +31,64 @@ class PR_Reminder (object) :
                 print "    purchase_request%s: Pending %s days" % (pr.id, pend)
     # end def print_reminder
 
+    def get_agents (self, pr) :
+        if pr.purchasing_agents :
+            return [self.db.user.getnode (u) for u in pr.purchasing_agents]
+        prop = None
+        if pr.sap_cc :
+            prop = self.db.sap_cc.getnode (pr.sap_cc)
+        elif pr.time_project :
+            prop = self.db.time_project.getnode (pr.time_project)
+        if prop :
+            return [self.db.user.getnode (u) for u in prop.purchasing_agents]
+        return []
+    # end def get_agents
+
     def remind (self) :
         db = self.db
         status_apv = db.pr_status.lookup ('approving')
+        status_opn = db.pr_status.lookup ('open')
+        status_apr = db.pr_status.lookup ('approved')
+        stati      = [status_opn, status_apr, status_apv]
         apr_st_app = db.pr_approval_status.lookup ('approved')
         apr_st_und = db.pr_approval_status.lookup ('undecided')
-        # get all approving PRs
-        prs = db.purchase_request.filter (None, dict (status = status_apv))
+        # get all PRs with one of stati
+        prs = db.purchase_request.filter (None, dict (status = stati))
         for prid in prs :
             pr = db.purchase_request.getnode (prid)
-            # get approvals in order
-            aps = db.pr_approval.filter \
-                (None, dict (purchase_request = prid), sort = ('+', 'order'))
             date = pr.creation
             if self.args.verbose > 3 :
                 print 'purchase_request%s' % pr.id
-            for apid in aps :
-                ap = db.pr_approval.getnode (apid)
-                assert ap.status in (apr_st_app, apr_st_und)
-                if ap.status == apr_st_app :
-                    if date < ap.date :
-                        date = ap.date
-                    if self.args.verbose > 3 :
-                        print "pr_approval%s: date=%s" % (ap.id, ap.date)
+            # get approvals in order
+            if pr.status == status_apv :
+                srt = ('+', 'order')
+                aps = db.pr_approval.filter \
+                    (None, dict (purchase_request = prid), sort = srt)
+                for apid in aps :
+                    ap = db.pr_approval.getnode (apid)
+                    assert ap.status in (apr_st_app, apr_st_und)
+                    if ap.status == apr_st_app :
+                        #if date < ap.date :
+                        #    date = ap.date
+                        if self.args.verbose > 3 :
+                            print "pr_approval%s: date=%s" % (ap.id, ap.date)
+                    else :
+                        break
                 else :
-                    break
+                    assert 0
+                if ap.user :
+                    users = [db.user.getnode (ap.user)]
+                    if ap.deputy :
+                        users.append (db.user.getnode (ap.deputy))
+                else :
+                    uids  = common.get_uids_with_role (db, ap.role)
+                    users = [db.user.getnode (u) for u in uids]
             else :
-                assert 0
-            if ap.user :
-                users = [db.user.getnode (ap.user)]
-                if ap.deputy :
-                    users.append (db.user.getnode (ap.deputy))
-            else :
-                uids  = common.get_uids_with_role (db, ap.role)
-                users = [db.user.getnode (u) for u in uids]
+                users = []
+            users.extend (self.get_agents (pr))
+            # Requester gets the reminder only if status != approved
+            if pr.status != status_apr :
+                users.append (db.user.getnode (pr.requester))
             pend = (self.now - date).day
             if self.args.verbose :
                 print "purchase_request%s Responsible:" % pr.id,
