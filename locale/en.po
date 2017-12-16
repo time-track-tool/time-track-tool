@@ -6655,3 +6655,6 @@ msgstr "Approval configuration"
 msgid "special_approval"
 msgstr "Special approval"
 
+msgid "pr_risks"
+msgstr "Special risks"
+

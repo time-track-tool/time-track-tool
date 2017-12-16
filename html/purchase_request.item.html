@@ -208,6 +208,17 @@
         <div class="prewrap" tal:content="context/pr_justification" />
       </td>
      </tr>
+     <tr tal:condition="python:
+         context.id and context.status != db._db.pr_status.lookup ('open')">
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'pr_risks')"/>
+      <td colspan="3" tal:condition="context/pr_risks/is_edit_ok"
+          tal:content="structure python:
+          context.pr_risks.multiline (rows=6, cols=80)"/>
+      <td colspan="3" tal:condition="not:context/pr_risks/is_edit_ok">
+        <div class="prewrap" tal:content="context/pr_risks" />
+      </td>
+     </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'special_approval')"/>

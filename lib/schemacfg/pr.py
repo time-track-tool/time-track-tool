@@ -242,6 +242,7 @@ def init \
                                                     , do_journal = 'no'
                                                     )
                 , pr_justification      = String    ()
+                , pr_risks              = String    ()
                 , internal_order        = Link
                                           ( "internal_order"
                                           , try_id_parsing = 'no'
@@ -945,5 +946,51 @@ def security (db, ** kw) :
         , description = fixdoc (user_on_nosy_offer.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+
+    def view_pr_risks (db, userid, itemid) :
+        """ User is allowed to view special risks
+            if the PR has appropriate status
+            and the user is creator or owner of the PR or has one of the
+            view roles.
+        """
+        st_open      = db.pr_status.lookup ('open')
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status == st_open :
+            return False
+        if own_pr (db, userid, itemid) :
+            return True
+        if view_role_pr (db, userid, itemid) :
+            return True
+        return False
+    # end def view_pr_risks
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'purchase_request'
+        , check = view_pr_risks
+        , description = fixdoc (view_pr_risks.__doc__)
+        , properties = ('pr_risks',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def edit_pr_risks (db, userid, itemid) :
+        """ User is allowed to edit special risks
+            if the PR has appropriate status.
+        """
+        st_open      = db.pr_status.lookup ('open')
+        pr           = db.purchase_request.getnode (itemid)
+        if pr.status == st_open :
+            return False
+        return True
+    # end def edit_pr_risks
+
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'purchase_request'
+        , check = edit_pr_risks
+        , description = fixdoc (edit_pr_risks.__doc__)
+        , properties = ('pr_risks',)
+        )
+    db.security.addPermissionToRole ('Procurement', p)
 
 # end def security
