@@ -102,10 +102,13 @@ def check_vacation (db, cl, nodeid, attr, new_values) :
         if user is None and nodeid :
             user = cl.get (nodeid, 'user')
         assert user
+        ct = None
         if 'contract_type' in new_values :
             ct = new_values ['contract_type']
         elif nodeid :
             ct = cl.get (nodeid, 'contract_type')
+        if ct is None :
+            ct = -1
         vcorr = db.vacation_correction.filter \
             (None, dict (user = user, absolute = True, contract_type = ct))
         if 'valid_to' in new_values :
