@@ -43,7 +43,8 @@ properties = \
         ]
       )
     , ( 'organisation'
-      , [ 'description'
+      , [ 'company_code'
+        , 'description'
         , 'may_purchase'
         , 'name'
         ]
@@ -63,13 +64,22 @@ properties = \
         , 'order'
         , 'purchase_request'
         , 'role'
+        , 'role_id'
         , 'status'
         , 'user'
+        ]
+      )
+    , ( 'pr_approval_config'
+      , [ 'amount'
+        , 'if_not_in_las'
+        , 'role'
+        , 'valid'
         ]
       )
     , ( 'pr_approval_order'
       , [ 'order'
         , 'role'
+        , 'users'
         ]
       )
     , ( 'pr_approval_status'
@@ -79,7 +89,9 @@ properties = \
         ]
       )
     , ( 'pr_currency'
-      , [ 'max_sum'
+      , [ 'exchange_rate'
+        , 'key_currency'
+        , 'max_sum'
         , 'min_sum'
         , 'name'
         , 'order'
@@ -143,6 +155,7 @@ properties = \
         , 'part_of_budget'
         , 'pr_currency'
         , 'pr_justification'
+        , 'pr_risks'
         , 'purchase_type'
         , 'purchasing_agents'
         , 'renegotiations'
@@ -151,6 +164,7 @@ properties = \
         , 'safety_critical'
         , 'sap_cc'
         , 'sap_reference'
+        , 'special_approval'
         , 'status'
         , 'termination_date'
         , 'terms_conditions'
@@ -164,7 +178,11 @@ properties = \
         , 'description'
         , 'forced_roles'
         , 'name'
+        , 'nosy'
         , 'order'
+        , 'pr_forced_roles'
+        , 'pr_roles'
+        , 'pr_view_roles'
         , 'roles'
         , 'valid'
         , 'view_roles'
@@ -182,6 +200,7 @@ properties = \
       , [ 'deputy'
         , 'description'
         , 'name'
+        , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
         , 'valid'

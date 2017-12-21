@@ -363,7 +363,10 @@ properties = \
         ]
       )
     , ( 'organisation'
-      , [ ( 'description'
+      , [ ( 'company_code'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
+          )
+        , ( 'description'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'mail_domain'
@@ -532,6 +535,9 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'name'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
+          )
+        , ( 'organisation'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'purchasing_agents'
@@ -856,19 +862,19 @@ properties = \
       )
     , ( 'timesheet'
       , [ ( 'department'
-          , ['admin']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'first_day'
-          , ['admin']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'last_day'
-          , ['admin']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'supervisor'
-          , ['admin']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'user'
-          , ['admin']
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         ]
       )

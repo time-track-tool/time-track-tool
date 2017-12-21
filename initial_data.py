@@ -629,10 +629,22 @@ if 'overtime_period' in db.classes :
 
 if 'currency' in db.classes :
     currency = db.getclass ('currency')
-    currency.create (name = 'CHF', description = 'Schweizer Franken')
-    currency.create (name = 'EUR', description = 'Euro')
-    currency.create (name = 'GBP', description = 'Britische Pfund')
-    currency.create (name = 'USD', description = 'US-Dollar')
+    currency.create \
+        ( name          = 'CHF'
+        , description   = 'Schweizer Franken'
+        )
+    currency.create\
+        ( name          = 'EUR'
+        , description   = 'Euro'
+        )
+    currency.create\
+        ( name          = 'GBP'
+        , description   = 'Britische Pfund'
+        )
+    currency.create\
+        ( name          = 'USD'
+        , description   = 'US-Dollar'
+        )
 
 if 'valid' in db.classes :
     valid = db.getclass ('valid')
@@ -1117,8 +1129,10 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = 'finance',     order = 60)
     db.pr_approval_order.create (role = 'board',       order = 70)
 if 'pr_currency' in db.classes :
-    db.pr_currency.create (name = '€', order = 10, max_sum = 10000)
-    db.pr_currency.create (name = '$', order = 20, max_sum = 10000)
+    db.pr_currency.create \
+        (name = '€', order = 10, max_sum = 10000, exchange_rate = 1)
+    db.pr_currency.create \
+        (name = '$', order = 20, max_sum = 10000, exchange_rate = 1.2)
 if 'it_request_type' in db.classes :
     db.it_request_type.create (name = 'Incident',       order = 1)
     db.it_request_type.create (name = 'Change Request', order = 2)

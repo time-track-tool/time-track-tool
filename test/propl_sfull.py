@@ -432,7 +432,8 @@ properties = \
         ]
       )
     , ( 'organisation'
-      , [ 'description'
+      , [ 'company_code'
+        , 'description'
         , 'mail_domain'
         , 'may_purchase'
         , 'messages'
@@ -540,6 +541,7 @@ properties = \
       , [ 'deputy'
         , 'description'
         , 'name'
+        , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
         , 'valid'

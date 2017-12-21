@@ -168,7 +168,13 @@ properties = \
         ]
       )
     , ( 'organisation'
-      , [ ( 'description'
+      , [ ( 'company_code'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'description'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
@@ -258,6 +264,10 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'role_id'
+          , [ 'admin', 'procurement'
+            ]
+          )
         , ( 'status'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -272,11 +282,29 @@ properties = \
           )
         ]
       )
+    , ( 'pr_approval_config'
+      , [ ( 'amount'
+          , ['admin', 'procurement']
+          )
+        , ( 'if_not_in_las'
+          , ['admin', 'procurement']
+          )
+        , ( 'role'
+          , ['admin', 'procurement']
+          )
+        , ( 'valid'
+          , ['admin', 'procurement']
+          )
+        ]
+      )
     , ( 'pr_approval_order'
       , [ ( 'order'
           , ['admin', 'procurement']
           )
         , ( 'role'
+          , ['admin', 'procurement']
+          )
+        , ( 'users'
           , ['admin', 'procurement']
           )
         ]
@@ -303,7 +331,19 @@ properties = \
         ]
       )
     , ( 'pr_currency'
-      , [ ( 'max_sum'
+      , [ ( 'exchange_rate'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'key_currency'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'max_sum'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
@@ -597,6 +637,12 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'pr_risks'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'purchase_type'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -640,6 +686,12 @@ properties = \
             ]
           )
         , ( 'sap_reference'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'special_approval'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
@@ -708,10 +760,28 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'nosy'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'order'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'pr_forced_roles'
+          , [ 'admin', 'procurement'
+            ]
+          )
+        , ( 'pr_roles'
+          , [ 'admin', 'procurement'
+            ]
+          )
+        , ( 'pr_view_roles'
+          , [ 'admin', 'procurement'
             ]
           )
         , ( 'roles'
@@ -781,6 +851,12 @@ properties = \
             ]
           )
         , ( 'name'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'organisation'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
