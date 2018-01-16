@@ -117,7 +117,7 @@ def init \
         , description           = String    ()
         , units                 = Number    ()
         , price_per_unit        = Number    ()
-        , pr_currency           = Link      ("pr_currency")
+        , pr_currency           = Link      ("pr_currency", do_journal = 'no')
         , supplier              = String    ()
         , add_to_las            = Boolean   ()
         , pr_supplier           = Link      ("pr_supplier")
