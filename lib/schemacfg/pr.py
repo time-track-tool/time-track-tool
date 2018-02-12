@@ -84,9 +84,9 @@ def init \
         ( db, ''"pr_approval"
         , role                  = String    ()
         , role_id               = Link      ("pr_approval_order")
-        , user                  = Link      ("user")
-        , deputy                = Link      ("user")
-        , by                    = Link      ("user")
+        , user                  = Link      ("user", do_journal = 'no')
+        , deputy                = Link      ("user", do_journal = 'no')
+        , by                    = Link      ("user", do_journal = 'no')
         , status                = Link      ("pr_approval_status")
         , date                  = Date      ()
         , purchase_request      = Link      ("purchase_request")
