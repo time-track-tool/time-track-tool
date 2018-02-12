@@ -563,7 +563,7 @@ class ExtProperty :
                             , inputtype='%s' % ('radio', 'checkbox')
                               [isinstance (self.prop, MultilinkHTMLProperty)]
                             , width='600'
-                            , pagesize=500
+                            , pagesize=1500
                             , filter='status=%s' % ','.join
                                (self.db.user_status.filter
                                   (None, dict (is_nosy = True))

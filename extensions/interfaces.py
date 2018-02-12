@@ -425,7 +425,7 @@ def user_classhelp \
         , filter    = 'roles=Nosy' + status
         , inputtype = inputtype
         , width     = '600'
-        , pagesize  = 1000
+        , pagesize  = 1500
         )
 # end def user_classhelp
 
