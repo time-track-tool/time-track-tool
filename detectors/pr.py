@@ -311,6 +311,8 @@ def change_pr (db, cl, nodeid, new_values) :
             # If setting status to open again we need to retire *all*
             # approvals and re-create the (pending) approval of the
             # requester
+            if ost != db.pr_status.lookup ('rejected') :
+                raise Reject ("Invalid status change to open")
             for ap in approvals :
                 db.pr_approval.retire (ap.id)
             create_pr_approval (db, cl, nodeid, {})
