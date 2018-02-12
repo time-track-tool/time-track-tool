@@ -1,0 +1,93 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:0
+    ; has_resp            python:0
+    ; required_attributes string:index,offer_number,supplier
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'user')"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.user.username
+        , item = context.user
+        ).formatlink ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'by')"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.by.username
+        , item = context.by
+        ).formatlink ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'deputy')"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.deputy.username
+        , item = context.deputy
+        ).formatlink ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'date')"/>
+      <td tal:content="structure python:context.date.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'description')"/>
+      <td tal:content="structure python:context.description.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'order')"/>
+      <td tal:content="structure python:context.order.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'purchase_request')"/>
+      <td tal:content="structure python:context.purchase_request.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'role')"/>
+      <td tal:content="structure python:context.role.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'role_id')"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.role_id.role
+        , item = context.role_id
+        ).formatlink ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'status')"/>
+      <td tal:content="structure python:context.status.plain ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
