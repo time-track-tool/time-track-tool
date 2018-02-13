@@ -640,17 +640,20 @@ class ExtProperty :
             ) :
             return idstring
         ids = idstring.split (',')
-        try :
-            ids = [self.lnkcls.lookup (i) for i in ids]
-        except KeyError :
-            pass
-        numeric = True
-        for i in ids :
+        if self.prop._prop.try_id_parsing :
             try :
-                x = int (i)
-            except ValueError :
-                numeric = False
-                break
+                ids = [self.lnkcls.lookup (i) for i in ids]
+            except KeyError :
+                pass
+        numeric = self.prop._prop.try_id_parsing
+        if numeric :
+            for i in ids :
+                try :
+                    x = int (i)
+                    z = self.lnkcls.get (i, self.key)
+                except (ValueError, IndexError) :
+                    numeric = False
+                    break
         if numeric :
             return ",".join ([self.lnkcls.get (i, self.key) for i in ids])
         return ','.join (ids)
