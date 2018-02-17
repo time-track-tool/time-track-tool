@@ -152,7 +152,7 @@ def compute_approvals (db, pr, do_create) :
     prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
     if cur :
         s  = pr_offer_item_sum (db, pr.id)
-        s  = s * cur.exchange_rate
+        s  = s * 1.0 / cur.exchange_rate
         for prcid in prc_ids :
             prc = db.pr_approval_config.getnode (prcid)
             if prc.if_not_in_las and in_las (db, pr.id) :
