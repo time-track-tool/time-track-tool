@@ -6616,6 +6616,9 @@ msgstr "Examples"
 msgid "hide_message_files"
 msgstr "Hide message files"
 
+msgid "want_no_messages"
+msgstr "Want no messages"
+
 msgid "safety_level"
 msgstr "Safety level"
 

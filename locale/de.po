@@ -6238,3 +6238,6 @@ msgstr "Buchungskreis"
 msgid "pr_risks"
 msgstr "Risikoanalyse"
 
+msgid "want_no_messages"
+msgstr "Keine Emails"
+

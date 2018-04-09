@@ -271,6 +271,11 @@
          ('user', 'hide_message_files')"/>
      <td tal:content="structure context/hide_message_files/field"/>
     </tr>
+    <tr tal:condition="python:'want_no_messages' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname
+         ('user', 'want_no_messages')"/>
+     <td tal:content="structure context/want_no_messages/field"/>
+    </tr>
     <tr tal:condition="python:'sip_device' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          ('user', 'sip_device')"/>

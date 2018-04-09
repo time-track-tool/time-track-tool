@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015-17 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2015-18 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -427,13 +427,18 @@ def change_pr_approval (db, cl, nodeid, new_values) :
         del new_values ['msg']
 # end def change_pr_approval
 
-def nosy_for_approval (db, app) :
+def nosy_for_approval (db, app, add = False) :
     nosy = {}
     if app.user :
         nosy [app.user] = 1
     # Don't add deputy to nosy
     if app.role :
-        nosy.update (dict.fromkeys (common.get_uids_with_role (db, app.role)))
+        nosy_dd = common.get_uids_with_role (db, app.role)
+        # If we're adding users, filter by unwanted messages
+        if add :
+            nosy_dd = dict.fromkeys \
+                (u for u in nosy_dd if not db.user.get (u, 'want_no_messages'))
+        nosy.update (dict.fromkeys (nosy_dd))
     return nosy
 # end def nosy_for_approval
 
@@ -515,7 +520,7 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                 ap = cl.getnode (a)
                 if ap.status != apr :
                     assert ap.status == und
-                    nosy.update (nosy_for_approval (db, ap))
+                    nosy.update (nosy_for_approval (db, ap, add = True))
                     uor = ''
                     update_pr \
                         (db, pr, ap, nosy, db.config.ext.MAIL_PR_APPROVAL_TEXT)
