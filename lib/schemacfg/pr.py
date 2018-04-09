@@ -390,14 +390,17 @@ def security (db, ** kw) :
 
     def view_role_pr (db, userid, itemid) :
         """ Users are allowed if they have one of the view roles
-            of the purchase type
+            of the purchase type or one of the (forced) approval roles.
         """
         if not itemid or itemid < 1 :
             return False
         pr = db.purchase_request.getnode (itemid)
         if not pr.purchase_type :
             return False
-        roles = db.purchase_type.get (pr.purchase_type, 'pr_view_roles')
+        pt = db.purchase_type.getnode (pr.purchase_type)
+        roles = set (pt.pr_view_roles)
+        roles.update (pt.pr_roles)
+        roles.update (pt.pr_forced_roles)
         for r in roles :
             if prlib.has_pr_role (db, userid, r) :
                 return True
@@ -425,31 +428,50 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
-    def view_role_pr_offer (db, userid, itemid) :
+    def view_role_offer_item (db, userid, itemid) :
         """ Users are allowed to view if they have one of the view roles
             of the purchase type
         """
-        pr  = get_pr (db, itemid)
+        pr  = get_pr_from_offer_item (db, itemid)
         if pr is None :
             return False
         return view_role_pr (db, userid, pr.id)
-    # end def view_role_pr_offer
+    # end def view_role_offer_item
 
     p = db.security.addPermission \
         ( name = 'View'
         , klass = 'pr_offer_item'
-        , check = view_role_pr_offer
-        , description = fixdoc (view_role_pr_offer.__doc__)
+        , check = view_role_offer_item
+        , description = fixdoc (view_role_offer_item.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'pr_offer_item'
-        , check = view_role_pr_offer
-        , description = fixdoc (view_role_pr_offer.__doc__)
+        , check = view_role_offer_item
+        , description = fixdoc (view_role_offer_item.__doc__)
         , properties =
             ( 'add_to_las', 'supplier', 'pr_supplier', 'is_asset')
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    def view_role_approval (db, userid, itemid) :
+        """ Users are allowed to view if they have one of the view roles
+            of the purchase type
+        """
+        sp = db.pr_approval.getnode (itemid)
+        pr = db.purchase_request.getnode (sp.purchase_request)
+        if pr is None :
+            return False
+        return view_role_pr (db, userid, pr.id)
+    # end def view_role_approval
+
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'pr_approval'
+        , check = view_role_approval
+        , description = fixdoc (view_role_approval.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -494,7 +516,7 @@ def security (db, ** kw) :
         """ Approvers are allowed if not finance and PR not yet approved
             by finance.
         """
-        pr  = get_pr (db, itemid)
+        pr  = get_pr_from_offer_item (db, itemid)
         if pr is None :
             return False
         return approver_non_finance (db, userid, pr.id)
@@ -795,13 +817,13 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
-    def get_pr (db, itemid) :
+    def get_pr_from_offer_item (db, itemid) :
         prs = db.purchase_request.filter (None, dict (offer_items = itemid))
         if len (prs) == 0 :
             return None
         assert len (prs) == 1
         return db.purchase_request.getnode (prs [0])
-    # end def get_pr
+    # end def get_pr_from_offer_item
 
     def linked_from_pr (db, userid, itemid) :
         """ Users are allowed to view if offer is linked from PR.
@@ -809,7 +831,7 @@ def security (db, ** kw) :
         if not itemid or itemid < 1 :
             return True
         off = db.pr_offer_item.getnode (itemid)
-        pr  = get_pr (db, itemid)
+        pr  = get_pr_from_offer_item (db, itemid)
         if pr is None :
             return False
         if own_pr (db, userid, pr.id) :
@@ -833,7 +855,7 @@ def security (db, ** kw) :
         if itemid is None :
             return False
         oi = db.pr_offer_item.getnode (itemid)
-        pr = get_pr (db, itemid)
+        pr = get_pr_from_offer_item (db, itemid)
         if pr is not None :
             return False
         if oi.add_to_las is None :
@@ -858,7 +880,7 @@ def security (db, ** kw) :
             return True
         if not linked_from_pr (db, userid, itemid) :
             return False
-        pr  = get_pr (db, itemid)
+        pr  = get_pr_from_offer_item (db, itemid)
         if pr is None :
             return False
         return own_pr_and_open_or_rej (db, userid, pr.id)
