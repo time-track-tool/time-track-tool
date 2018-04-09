@@ -6661,3 +6661,6 @@ msgstr "Special approval"
 msgid "pr_risks"
 msgstr "Special risks"
 
+msgid "if_not_in_las"
+msgstr "only if not in LAS"
+

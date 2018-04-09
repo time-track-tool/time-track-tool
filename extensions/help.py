@@ -931,6 +931,15 @@ _helptext          = \
     , ""'hours_fri'                   : [daily_hours]
     , ""'hours_sat'                   : [daily_hours]
     , ""'hours_sun'                   : [daily_hours]
+    , ""'if_not_in_las'               :
+      [""'''If this is set, the rule matches only for purchase requests
+            where the supplier ist not in the list of approved suppliers
+            (LAS). This allows to set additional approvals for
+            non-trusted suppliers. Note that if this flag is not set,
+            the rule applies to both, approved and non-approved
+            suppliers.
+         '''
+      ]
     , ""'id'                          : [help_id]
     , ""'index'                       :
       [""'''Optional. Please state numbers in the format #.# (e.g. 1.0)
