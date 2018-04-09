@@ -72,12 +72,15 @@ properties = \
     , ( 'pr_approval_config'
       , [ 'amount'
         , 'if_not_in_las'
+        , 'organisations'
         , 'role'
         , 'valid'
         ]
       )
     , ( 'pr_approval_order'
-      , [ 'order'
+      , [ 'is_board'
+        , 'is_finance'
+        , 'order'
         , 'role'
         , 'users'
         ]
@@ -91,7 +94,6 @@ properties = \
     , ( 'pr_currency'
       , [ 'exchange_rate'
         , 'key_currency'
-        , 'max_sum'
         , 'min_sum'
         , 'name'
         , 'order'
@@ -245,6 +247,7 @@ properties = \
         , 'supervisor'
         , 'timezone'
         , 'username'
+        , 'want_no_messages'
         ]
       )
     , ( 'user_status'

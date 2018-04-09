@@ -32,6 +32,7 @@
 
 import common
 from   roundup.cgi.TranslationService import get_translation
+from   roundup.exceptions             import Reject
 
 def pr_offer_item_sum (db, pr) :
     pr    = db.purchase_request.getnode (pr)
@@ -106,6 +107,20 @@ def in_las (db, pr) :
     return True
 # end def in_las
 
+def _app_cfgs (db, pr, ids) :
+    acs = []
+    for id in ids :
+        ac = db.pr_approval_config.getnode (id)
+        if ac.if_not_in_las :
+            continue
+        if  (   ac.organisations and pr.organisation
+            and pr.organisation not in ac.organisations
+            ) :
+            continue
+        acs.append (ac)
+    return acs
+# end def _app_cfgs
+
 def compute_approvals (db, pr, do_create) :
     """ Compute approvals for current PR settings
         do_create specifies if the approvals are created or just a
@@ -113,6 +128,26 @@ def compute_approvals (db, pr, do_create) :
     """
     _ = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    # Compute board and finance approval configs for this pr
+    board_roles   = db.pr_approval_order.filter (None, dict (is_board = True))
+    finance_roles = db.pr_approval_order.filter (None, dict (is_finance = True))
+    # Check if there are any pr_approval_config entries with board or
+    # finance roles
+    ids = db.pr_approval_config.filter (None, dict (role = board_roles))
+    bac = _app_cfgs (db, pr, ids)
+    board_roles = set (ac.role for ac in bac)
+
+    ids = db.pr_approval_config.filter (None, dict (role = finance_roles))
+    fac = _app_cfgs (db, pr, ids)
+    finance_roles = set (ac.role for ac in fac)
+
+    if do_create and not board_roles :
+        raise Reject (_ ("Configuration error: No board roles for this PR"))
+    if do_create and not finance_roles :
+        raise Reject (_ ("Configuration error: No finance roles for this PR"))
+    board_approval = False
+
+    assert not do_create or pr.organisation
     assert not do_create or pr.pr_currency
     cur = None
     if pr.pr_currency :
@@ -157,9 +192,18 @@ def compute_approvals (db, pr, do_create) :
             prc = db.pr_approval_config.getnode (prcid)
             if prc.if_not_in_las and in_las (db, pr.id) :
                 continue
+            if  (   prc.organisations and pr.organisation
+                and pr.organisation not in prc.organisations
+                ) :
+                continue
             if s > prc.amount :
                 apr_by_role [prc.role] = add_approval_with_role \
                     (db, do_create, pr.id, prc.role)
+                r = db.pr_approval_order.getnode (prc.role)
+                # prevent double board-approval if this is also not part
+                # of budget.
+                if r.is_board :
+                    board_approval = True
     if cur and pr_offer_item_sum (db, pr.id) > cur.min_sum :
         assert not do_create or pr.department
         if pr.department :
@@ -173,9 +217,6 @@ def compute_approvals (db, pr, do_create) :
                 , description      = "Department Head"
                 )
             apr_by_r_d [(dep.manager, dep.deputy)] = apr
-        finance = db.pr_approval_order.lookup ('finance')
-        apr_by_role [finance] = add_approval_with_role \
-            (db, do_create, pr.id, finance)
         # Loop over order items and check if any is not on the approved
         # suppliers list
         supplier_approved = True
@@ -192,12 +233,12 @@ def compute_approvals (db, pr, do_create) :
             pob = db.part_of_budget.getnode (pr.part_of_budget)
         else :
             pob = None
-        if  (  (pob and pob.name.lower () == 'no')
-            or (cur and pr_offer_item_sum (db, pr.id) >= cur.max_sum)
-            ) :
-            board = db.pr_approval_order.lookup ('board')
-            apr_by_role [board] = add_approval_with_role \
-                (db, do_create, pr.id, board)
+        # Board approval if not part of budget but only if we don't
+        # already *have* a board approval
+        if pob and pob.name.lower () == 'no' and not board_approval :
+            for board in board_roles :
+                apr_by_role [board] = add_approval_with_role \
+                    (db, do_create, pr.id, board)
         assert not do_create or pr.purchase_type
 
     if pr.purchase_type :

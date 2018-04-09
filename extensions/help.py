@@ -1042,6 +1042,10 @@ _helptext          = \
             automatically set to NO after saving the PR.
          '''
       ]
+    , ""'is_board'                    :
+      [""'''If this flag is set, the role is used for board approvals''']
+    , ""'is_finance'                  :
+      [""'''If this flag is set, the role is used for finance approvals''']
     , ""'is_valid'                    :
       [""'''%(Classname)s is valid''']
     , ""'is_app_sensor'               :
@@ -1228,11 +1232,6 @@ _helptext          = \
       ]
     , ""'max_lease_time'              :
       [""'''Maximum DHCP lease time for %(Classname)s''']
-    , ""'max_sum'                     :
-      [""'''Total cost for this %(Classname)s after which board approval
-            becomes necessary
-         '''
-      ]
     , ""'may_change_state_to'         :
       [ ""'''Allowed state changes for a given %(Classname)s: Usually
              you want to allow all states here but for some
@@ -1248,6 +1247,11 @@ _helptext          = \
       [""'''Message-ID if this message was received via email''']
     , ""'messages'                    :
       [ ""'''List of messages for %(Classname)s.''' ]
+    , ""'min_sum'                     :
+      [""'''Total cost for this %(Classname)s after which the simple
+            approval process is no longer allowed.
+         '''
+      ]
     , ""'mint'                        :
       [""'''Measurement interval for %(Classname)s''']
     , ""'msg'                         :
@@ -1374,6 +1378,16 @@ _helptext          = \
     , ""'order'                       : [order]
     , ""'organisation'                :
       [""'''Organisation in which the %(Classname)s is based.''']
+    , ""'organisations'                :
+      [""'''Organisations to which this %(Classname)s is limited:
+            If no organisation is given here, the rule applies to all
+            organisations. Otherwise the rule is limited to the given
+            organisations. Note that there must be a rule for every
+            organisation with a Board and a Finance role. At least one
+            rule that matches an organisation without the 'only if not
+            in LAS' flag set.
+         '''
+      ]
     , ""'org_location'                :
       [ ""'''Organisation and location of this %(Classname)s, cartesian
              product of organisation and location -- only the combinations

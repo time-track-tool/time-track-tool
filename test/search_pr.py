@@ -289,6 +289,9 @@ properties = \
         , ( 'if_not_in_las'
           , ['admin', 'procurement']
           )
+        , ( 'organisations'
+          , ['admin', 'procurement']
+          )
         , ( 'role'
           , ['admin', 'procurement']
           )
@@ -298,7 +301,13 @@ properties = \
         ]
       )
     , ( 'pr_approval_order'
-      , [ ( 'order'
+      , [ ( 'is_board'
+          , ['admin', 'procurement']
+          )
+        , ( 'is_finance'
+          , ['admin', 'procurement']
+          )
+        , ( 'order'
           , ['admin', 'procurement']
           )
         , ( 'role'
@@ -338,12 +347,6 @@ properties = \
             ]
           )
         , ( 'key_currency'
-          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
-            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
-            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
-            ]
-          )
-        , ( 'max_sum'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
@@ -1031,6 +1034,9 @@ properties = \
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
+          )
+        , ( 'want_no_messages'
+          , ['admin', 'procurement-admin', 'user_view']
           )
         ]
       )

@@ -625,7 +625,7 @@ def check_pr_update (db, cl, nodeid, old_values) :
 
 def check_currency (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'max_sum', 'order', 'exchange_rate')
+        (_, cl, nodeid, new_values, 'min_sum', 'order', 'exchange_rate')
     if new_values.get ('key_currency') :
         for id in db.pr_currency.getnodeids () :
             if id == nodeid :

@@ -65,7 +65,6 @@ def init \
         ( db, ''"pr_currency"
         , name                  = String    ()
         , order                 = Number    ()
-        , max_sum               = Number    ()
         , min_sum               = Number    ()
         , exchange_rate         = Number    ()
         , key_currency          = Boolean   ()
@@ -101,6 +100,7 @@ def init \
         , amount                = Number    ()
         , if_not_in_las         = Boolean   ()
         , valid                 = Boolean   ()
+        , organisations         = Multilink ("organisation")
         )
 
     pr_approval_order = Class \
@@ -108,6 +108,8 @@ def init \
         , role                  = String    ()
         , order                 = Number    ()
         , users                 = Multilink ("user")
+        , is_finance            = Boolean   ()
+        , is_board              = Boolean   ()
         )
     pr_approval_order.setkey ('role')
 
