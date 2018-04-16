@@ -112,9 +112,9 @@ class Unicode_DictReader (object) :
 class Product_Sync (object) :
 
     levels  = \
-        { 'Product Line'     : 1
-        , 'Product Use Case' : 2
-        , 'Product Family'   : 3
+        { ('Product Line', 'Product line')         : 1
+        , ('Product Use Case', 'Product use-case') : 2
+        , ('Product Family', 'Product family')     : 3
         }
 
     def __init__ (self, args) :
@@ -159,8 +159,35 @@ class Product_Sync (object) :
             print (text)
     # end def debug
 
+    def get_description (self, rec) :
+        for n in 'Materialkurztext', 'Bezeichnung', 'Description' :
+            try :
+                v = rec [n]
+                break
+            except KeyError :
+                pass
+        else :
+            raise
+        return v
+    # end def get_description
+
+    def get_family (self, rec) :
+        for keys in self.levels :
+            if 'Product Family' in keys :
+                break
+        for n in keys :
+            try :
+                v = rec [n]
+                break
+            except KeyError :
+                pass
+        else :
+            raise
+        return v
+    # end def get_family
+
     def get_material (self, rec) :
-        for n in 'Material', 'Artikelkode' :
+        for n in 'Material', 'Artikelkode', 'Material number' :
             try :
                 v = rec [n]
                 break
@@ -175,23 +202,11 @@ class Product_Sync (object) :
         return v
     # end def get_material
 
-    def get_description (self, rec) :
-        for n in 'Materialkurztext', 'Bezeichnung' :
-            try :
-                v = rec [n]
-                break
-            except KeyError :
-                pass
-        else :
-            raise
-        return v
-    # end def get_description
-
     def get_oldcode (self, rec) :
         """ The old code is no longer available in newer exports.
             We return an empty string in that case.
         """
-        for n in 'Alte Materialnr.', 'Alter Artikelkode' :
+        for n in 'Old material number', 'Alte Materialnr.', 'Alter Artikelkode':
             try :
                 v = rec [n]
                 break
@@ -243,12 +258,19 @@ class Product_Sync (object) :
     def sync (self) :
         skey = lambda x : x [1]
         for rec in self.rec_iter () :
-            if not rec ['Product Family'] :
+            if not self.get_family (rec).strip () :
                 self.warn ('Ignoring: %r' % rec)
                 continue
             pcats = []
-            for k, lvl in sorted (self.levels.iteritems (), key = skey) :
-                v = rec [k].strip ()
+            for keys, lvl in sorted (self.levels.iteritems (), key = skey) :
+                for k in keys :
+                    try :
+                        v = rec [k].strip ()
+                        break
+                    except KeyError :
+                        pass
+                else :
+                    raise
                 if not v or v == '0' or v == '1' :
                     self.warn ('Invalid record: %s=%s' % (k, v))
                     break
