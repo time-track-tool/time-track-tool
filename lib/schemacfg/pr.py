@@ -343,6 +343,9 @@ def security (db, ** kw) :
         , ( "user", "View", ["User"]
           , ("username", "id", "realname", "status")
           )
+        , ( "user", "Edit", ["Procurement-Admin"]
+          , ("want_no_messages",)
+          )
         ]
 
     schemadef.register_roles             (db, roles)
