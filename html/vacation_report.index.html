@@ -15,7 +15,10 @@
      , department        = utils.ExtProperty
        ( utils, pdict ['department']
        , multiselect = 1, multi_selonly = 1
-       , filter      = dict (valid_from = utils.until_now ())
+       , filter      = dict
+         ( valid_from = utils.until_now ()
+         , id         = utils.valid_departments (db)
+         )
        )
      , supervisor        = utils.ExtProperty
        (utils, pdict ['supervisor'])

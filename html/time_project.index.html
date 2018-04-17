@@ -22,7 +22,12 @@
     , ('organisation'
       , dict (searchname = 'organisation.company_code')
       )
-    , ('department',         dict (multiselect = 1))
+    , ( 'department'
+      , dict
+        ( multiselect = 1
+        , filter      = dict (id = utils.valid_departments (db))
+        )
+      )
     , ('department'
       , dict (searchname = 'department.id', searchable  = False)
       )

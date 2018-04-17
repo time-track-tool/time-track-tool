@@ -32,7 +32,11 @@
     , utils.ExtProperty (utils, pdict ['hours_sat'])
     , utils.ExtProperty (utils, pdict ['hours_sun'])
     , utils.ExtProperty (utils, pdict ['org_location'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['department'],      multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['department']
+        , multiselect = 1
+        , filter      = dict (id = utils.valid_departments (db))
+        )
     , utils.ExtProperty (utils, pdict ['overtime_period'], multiselect = 1)
     , utils.ExtProperty
         ( utils, pdict ['sap_cc']

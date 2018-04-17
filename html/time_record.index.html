@@ -26,6 +26,7 @@
         , searchname  = 'daily_record.user.department'
         , searchable  = True
         , multiselect = True
+        , filter      = dict (id = utils.valid_departments (db))
         )
     , utils.ExtProperty 
         ( utils, pdict ['daily_record']

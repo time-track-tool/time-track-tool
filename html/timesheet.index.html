@@ -48,7 +48,11 @@
       ( utils.ExtProperty (utils, pdict ['user'])
       , utils.ExtProperty (utils, pdict ['supervisor'])
       , utils.ExtProperty (utils, pdict ['first_day'])
-      , utils.ExtProperty (utils, pdict ['department'], multiselect = True)
+      , utils.ExtProperty
+        ( utils, pdict ['department']
+        , multiselect = True
+        , filter      = dict (id = utils.valid_departments (db))
+        )
       )
     ;sprops          python: []
     ;multi_props     python: [mprops [3]]

@@ -119,7 +119,8 @@
      <tr tal:condition="python:'department' in bclass.properties">
       <th tal:content="structure python:utils.fieldname('user', 'department')"/>
       <td tal:condition="not:context/id"
-       tal:content="structure context/department/menu"/>
+       tal:content="structure python:
+           context.department.menu (id = utils.valid_departments (db))"/>
       <td tal:condition="context/id"
        tal:content="structure python:utils.ExtProperty
         ( utils, context.department.name
