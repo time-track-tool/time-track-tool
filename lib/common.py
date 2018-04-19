@@ -480,6 +480,10 @@ def from_week_number (year, week_no) :
         ['Date 2010-01-04.00:00:00', 'Date 2010-01-10.00:00:00']
         >>> [d.pretty (f) for d in from_week_number (2010, 52)]
         ['Date 2010-12-27.00:00:00', 'Date 2011-01-02.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2017, 52)]
+        ['Date 2017-12-25.00:00:00', 'Date 2017-12-31.00:00:00']
+        >>> [d.pretty (f) for d in from_week_number (2018, 1)]
+        ['Date 2018-01-01.00:00:00', 'Date 2018-01-07.00:00:00']
     """
     date = first_thursday (year)
     date = date + Interval ('%dd' % ((week_no - 1) * 7))
