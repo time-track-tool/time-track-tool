@@ -681,6 +681,14 @@ def check_no_change (db, cl, nodeid, new_values) :
         raise Reject (_ ("%(classname)s may not be changed" % locals ()))
 # end def check_no_change
 
+def check_dd (db, cl, nodeid, new_values) :
+    if 'delivery_deadline' in new_values :
+        now = Date ('.')
+        if new_values ['delivery_deadline'] < now :
+            d = dict (deadline = _ ('delivery_deadline'))
+            raise Reject (_ ("%(deadline)s may not be in the past") % d)
+# end def check_dd
+
 def init (db) :
     global _
     _   = get_translation \
@@ -698,6 +706,8 @@ def init (db) :
     db.purchase_request.audit   ("set",    change_pr)
     db.purchase_request.audit   ("set",    fix_nosy)
     db.purchase_request.audit   ("set",    check_late_changes)
+    db.purchase_request.audit   ("create", check_dd)
+    db.purchase_request.audit   ("set",    check_dd)
     db.purchase_request.audit   ("create", set_agents,      priority = 150)
     db.purchase_request.audit   ("set",    set_agents,      priority = 150)
     db.purchase_request.react   ("set",    changed_pr)

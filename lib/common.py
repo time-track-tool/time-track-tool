@@ -43,6 +43,7 @@ from   roundup                import roundupdb, hyperdb
 from   roundup.exceptions     import Reject
 from   roundup.date           import Date, Interval, Range
 from   roundup.hyperdb        import String, Link, Multilink
+from   roundup.hyperdb        import Date as Hyperdb_Date
 from   roundup.cgi.templating import MultilinkHTMLProperty, LinkHTMLProperty
 from   rup_utils              import translate
 
@@ -1176,13 +1177,16 @@ default_attributes = dict \
          ' business_unit'
         ).split ()
     , purchase_request =
-        ('continuous_obligation contract_term delivery_deadline'
+        ('continuous_obligation contract_term'
          ' department frame_purchase organisation part_of_budget'
          ' purchase_type renegotiations requester safety_critical'
          ' sap_cc termination_date terms_conditions'
-         ' time_project title pr_currency'
+         ' time_project title pr_currency intended_duration'
         ).split ()
     )
+
+def stresc (x) :
+    return cgi.escape (str (x))
 
 def copy_url (context, attributes = None) :
     """ Create URL for copying (most attributes of) an item """
@@ -1200,9 +1204,24 @@ def copy_url (context, attributes = None) :
                 ) :
                 val = context [a].id
         else :
-            val = str (context [a])
+            val = stresc (context [a])
         url.append ('%s=%s' % (a, urlquote (val)))
     if cls == 'purchase_request' and atr == default_attributes [cls] :
+        if context.delivery_deadline :
+            try :
+                dd = context.delivery_deadline.plain ()
+            except AttributeError :
+                dd = context.delivery_deadline
+            try :
+                dd = Date (dd)
+                if dd > Date ('.') :
+                    url.append \
+                        ( 'delivery_deadline=%s'
+                        % stresc (context.delivery_deadline)
+                        )
+            except ValueError :
+                pass
+
         atrs = \
             ( 'index', 'supplier', 'description', 'offer_number'
             , 'units', 'price_per_unit', 'vat', 'sap_cc', 'time_project'
@@ -1219,7 +1238,7 @@ def copy_url (context, attributes = None) :
                     if ofr [a] and not ofr [a].is_retired () :
                         val = ofr [a].id
                 else :
-                    val = str (ofr [a])
+                    val = stresc (ofr [a])
                 if val is not None :
                     url.append \
                         ( 'pr_offer_item-%s@%s=%s'

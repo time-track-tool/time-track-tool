@@ -392,7 +392,10 @@
             <textarea wrap="soft" cols="30" rows="3"
              tal:attributes=
               " name python:'pr_offer_item%s@description' % (-idx)
-              "></textarea>
+              "
+             tal:content="python:
+                request.form.getvalue ('pr_offer_item%s@description' % (-idx))
+                or ''"></textarea>
             <input type="hidden" name="@link@offer_items"
                   tal:attributes="value python:'pr_offer_item-%s' % idx" />
            </td>
