@@ -45,6 +45,7 @@ Role "procurement":
 Role "procurement-admin":
   (Search for "user" only)
  User is allowed Edit on (Edit for "user": ('roles', 'password') only)
+ User is allowed Edit on (Edit for "user": ('want_no_messages',) only)
  User is allowed to access user (View for "user" only)
  User is allowed to cancel a PR if it is open (Edit for "purchase_request": ('messages', 'status') only)
  User is allowed to create department (Create for "department" only)
@@ -138,7 +139,7 @@ Role "user":
  User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
  Users are allowed if an approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed if an approval from them is linked to the PR (View for "purchase_request" only)
- Users are allowed if they have one of the view roles of the purchase type or one of the (forced) approval roles (Edit for "purchase_request": ('frame_purchase', 'frame_purchase_end', 'internal_order', 'messages', 'nosy', 'purchasing_agents', 'sap_reference', 'terms_conditions') only)
+ Users are allowed if they have one of the view roles of the purchase type or one of the (forced) approval roles (Edit for "purchase_request": ('frame_purchase', 'frame_purchase_end', 'internal_order', 'messages', 'nosy', 'purchasing_agents', 'sap_reference', 'special_approval', 'terms_conditions') only)
  Users are allowed if they have one of the view roles of the purchase type or one of the (forced) approval roles (View for "purchase_request" only)
  Users are allowed to edit if offer is linked from PR and PR is editable (Edit for "pr_offer_item" only)
  Users are allowed to edit message if a pending approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
