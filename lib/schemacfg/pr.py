@@ -428,7 +428,7 @@ def security (db, ** kw) :
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
-            , 'internal_order'
+            , 'internal_order', 'special_approval'
             )
         )
     db.security.addPermissionToRole ('User', p)

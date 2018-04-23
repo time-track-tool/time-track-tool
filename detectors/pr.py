@@ -356,6 +356,31 @@ def set_agents (db, cl, nodeid, new_values) :
         new_values ['nosy'] = nosy.keys ()
 # end def set_agents
 
+def approvalchange (db, cl, nodeid, new_values) :
+    if 'special_approval' not in new_values :
+        return
+    status = new_values.get ('status', cl.get (nodeid, 'status'))
+    # In state open we do nothing at this point, the special approvals
+    # will be processed later, in other states change of approvals is no
+    # longer possible.
+    if status == db.pr_status.lookup ('open') :
+        return
+    if status != db.pr_status.lookup ('approving') :
+        raise Reject (_ ("Approval change only in state open and approving"))
+    sa  = set (new_values ['special_approval'])
+    osa = set (cl.get (nodeid, 'special_approval'))
+    if osa - sa :
+        raise Reject (_ ("Cannot remove users from approval list"))
+    for uid in sa - osa :
+        prlib.gen_pr_approval \
+            ( db, True
+            , purchase_request = nodeid
+            , user             = uid
+            , order            = 15
+            , description      = _ ("Special approval")
+            )
+# end def approvalchange
+
 def check_late_changes (db, cl, nodeid, new_values) :
     """ Check that attributes changed late in the process are consistent
     """
@@ -710,6 +735,7 @@ def init (db) :
     db.purchase_request.audit   ("set",    check_dd)
     db.purchase_request.audit   ("create", set_agents,      priority = 150)
     db.purchase_request.audit   ("set",    set_agents,      priority = 150)
+    db.purchase_request.audit   ("set",    approvalchange)
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
     db.purchase_request.audit   ("set",    check_io)
