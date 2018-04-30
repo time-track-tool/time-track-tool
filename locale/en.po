@@ -6673,3 +6673,6 @@ msgstr "Board role"
 msgid "organisations"
 msgstr "Organisations"
 
+msgid "max_flexitime"
+msgstr "max. Flexi-Time"
+

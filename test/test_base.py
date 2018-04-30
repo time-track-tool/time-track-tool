@@ -158,6 +158,7 @@ class _Test_Case (unittest.TestCase) :
         , 'project_view'
         , 'quality'
         , 'readonly-user'
+        , 'room'
         , 'sec-incident-nosy'
         , 'sec-incident-responsible'
         , 'staff-report'
@@ -510,6 +511,7 @@ class _Test_Case_Summary (_Test_Case) :
             , hours_fri       = 7.5
             , vacation_month  = 9
             , vacation_day    = 1
+            , max_flexitime   = 5
             )
         self.db.user_dynamic.create \
             ( user              = self.user1
@@ -547,6 +549,7 @@ class _Test_Case_Summary (_Test_Case) :
             , hours_fri        = 7.5
             , supp_per_period  = 40
             , additional_hours = 40
+            , max_flexitime    = 5
             )
         ud = self.db.user_dynamic.filter (None, dict (user = self.user0))
         self.assertEqual (len (ud), 1)
@@ -760,7 +763,8 @@ class Test_Case_Support_Timetracker (_Test_Case) :
         , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit'
         , 'msgsync', 'nosy', 'office', 'procurement', 'project'
-        , 'project_view', 'sec-incident-nosy', 'sec-incident-responsible'
+        , 'project_view', 'room', 'sec-incident-nosy'
+        , 'sec-incident-responsible'
         , 'staff-report', 'summary_view', 'supportadmin', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
@@ -773,7 +777,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
-        , 'staff-report', 'summary_view', 'user', 'user_view'
+        , 'room', 'staff-report', 'summary_view', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
@@ -2751,8 +2755,8 @@ class Test_Case_Tracker (_Test_Case) :
     roles = \
         [ 'admin', 'anonymous', 'external', 'issue_admin', 'it', 'ituser'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
-        , 'readonly-user', 'sec-incident-nosy', 'sec-incident-responsible'
-        , 'supportadmin', 'user', 'user_view'
+        , 'readonly-user', 'sec-incident-nosy'
+        , 'sec-incident-responsible', 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
@@ -2765,7 +2769,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
-        , 'sec-incident-nosy', 'sec-incident-responsible'
+        , 'room', 'sec-incident-nosy', 'sec-incident-responsible'
         , 'staff-report', 'summary_view', 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
@@ -3128,6 +3132,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , hours_fri         = 7.5
             , overtime_period   = None
             , all_in            = True
+            , max_flexitime     = 5
             )
         self.db.overtime_correction.create \
             ( user    = self.user10
@@ -3200,6 +3205,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , daily_worktime    = 0.0
             , org_location      = self.olo
             , department        = self.dep
+            , max_flexitime     = 5
             )
         self.db.clearCache ()
         self.assertEqual (dr.tr_duration_ok, None)
@@ -3235,6 +3241,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , daily_worktime    = 0.0
             , org_location      = self.olo
             , department        = self.dep
+            , max_flexitime     = 5
             )
         self.db.user_dynamic.create \
             ( user              = self.user1
@@ -3250,6 +3257,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , daily_worktime    = 0.0
             , org_location      = self.olo
             , department        = self.dep
+            , max_flexitime     = 5
             )
         self.db.commit ()
         self.db.close  ()

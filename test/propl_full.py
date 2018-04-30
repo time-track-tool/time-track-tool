@@ -823,6 +823,7 @@ properties = \
         , 'hours_thu'
         , 'hours_tue'
         , 'hours_wed'
+        , 'max_flexitime'
         , 'org_location'
         , 'overtime_period'
         , 'sap_cc'

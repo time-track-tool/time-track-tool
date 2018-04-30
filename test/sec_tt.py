@@ -184,6 +184,10 @@ Role "project":
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
+Role "room":
+ User is allowed Edit on (Edit for "user": ('room',) only)
+ User is allowed to create room (Create for "room" only)
+ User is allowed to edit room (Edit for "room" only)
 Role "staff-report":
 Role "summary_view":
 Role "user":

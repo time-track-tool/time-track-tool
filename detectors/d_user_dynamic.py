@@ -282,12 +282,15 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     # can allow exactly the valid_to date.
     otw = common.overtime_period_week (db)
     nvk = list (sorted (new_values.keys ()))
+    old_flexmax = cl.get (nodeid, 'max_flexitime')
     vac_fix = \
         (   (  nvk == ['vacation_day', 'vacation_month']
             or nvk == ['vacation_day', 'vacation_month', 'vacation_yearly']
             )
         and db.getuid () == '1'
         )
+    flexi_fix = \
+        new_values.keys () == ['max_flexitime'] and old_flexmax is None
     if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
@@ -298,6 +301,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             or not otw
             or new_values != dict (overtime_period = otw.id)
             )
+        and (db.getuid () != '1' or not flexi_fix)
         and not vac_fix
         ) :
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
@@ -311,7 +315,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             check_ranges (cl, nodeid, user, val_from, val_to)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    if not vac_fix :
+    if not vac_fix and not flexi_fix :
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from) :
@@ -332,6 +336,21 @@ def set_otp_if_all_in (db, cl, nodeid, new_values) :
     if 'all_in' in new_values and new_values ['all_in'] :
         new_values ['overtime_period'] = None
 # end def set_otp_if_all_in
+
+def max_flexi (db, cl, nodeid, new_values) :
+    if 'all_in' in new_values or 'max_flexitime' in new_values :
+        ft = new_values.get ('max_flexitime')
+        if ft is None and nodeid :
+            ft = cl.get (nodeid, 'max_flexitime')
+        ai = new_values.get ('all_in')
+        if ai is None and nodeid :
+            ai = cl.get (nodeid, 'all_in')
+        if ai :
+            common.require_attributes \
+                (_, cl, nodeid, new_values, 'max_flexitime')
+        else :
+            new_values ['max_flexitime'] = None
+# end def max_flexi
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
     common.require_attributes \
@@ -536,6 +555,8 @@ def init (db) :
     db.user_dynamic.audit    ("set",    vacation_check, priority = 120)
     db.user_dynamic.audit    ("create", set_otp_if_all_in, priority = 20)
     db.user_dynamic.audit    ("set",    set_otp_if_all_in, priority = 20)
+    db.user_dynamic.audit    ("create", max_flexi)
+    db.user_dynamic.audit    ("set",    max_flexi)
     db.user_dynamic.react    ("create", close_existing)
     db.user_dynamic.react    ("create", user_dyn_react)
     db.user_dynamic.react    ("set",    user_dyn_react)

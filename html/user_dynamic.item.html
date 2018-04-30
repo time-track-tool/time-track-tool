@@ -155,10 +155,14 @@
       <td tal:content="structure python:context.supp_weekly_hours.field ()"/>
      </tr>
      <tr>
-      <th/><td/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'additional_hours')"/>
       <td tal:content="structure python:context.additional_hours.field ()"/>
+      <th tal:condition="python:context and context.all_in"
+          tal:content="structure python:utils.fieldname
+          (classname, 'max_flexitime')"/>
+      <td tal:condition="python:context and context.all_in"
+          tal:content="structure python:context.max_flexitime.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

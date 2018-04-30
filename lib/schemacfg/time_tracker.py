@@ -338,6 +338,7 @@ def init \
         , additional_hours      = Number    ()
         , overtime_period       = Link      ("overtime_period")
         , sap_cc                = Link      ("sap_cc")
+        , max_flexitime         = Number    ()
         )
 
     leave_status = Class \
