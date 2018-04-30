@@ -691,4 +691,67 @@ def vacation_params (db, user, date, vc, hv = False) :
     return yday, pd, carry, ltot
 # end def vacation_params
 
+def flexi_alliquot (db, user, date_in_year) :
+    """ Loop over all dyn records in this year and use only those with
+        all-in set. For those we count the days and compute the
+        year-alliquot number of max_flexitime days.
+    """
+    y     = common.start_of_year (date_in_year)
+    eoy   = common.end_of_year   (y)
+    flex  = 0.0
+    dsecs = 0.0
+    ds    = 24 * 60 * 60
+    for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
+        if not dyn.all_in :
+            continue
+        vf = dyn.valid_from
+        if vf < y :
+            vf = y
+        vt = dyn.valid_to
+        if not vt or vt > eoy + common.day :
+            vt = eoy + common.day
+        flex  += (vt - vf).as_seconds () * (dyn.max_flexitime or 0)
+        dsecs += (vt - vf).as_seconds ()
+    assert dsecs / ds <= 366
+    if not flex :
+        return 0.0
+    days  = float ((eoy + common.day - y).as_seconds () / ds)
+    flex /= ds
+    return ceil (flex / days)
+# end def flexi_alliquot
+
+def avg_hours_per_week_this_year (db, user, date_in_year) :
+    """ Loop over all dyn records in this year and use only those with
+        all-in set. For those we count the hours and compute the
+        average over all all-in days.
+    """
+    y     = common.start_of_year (date_in_year)
+    eoy   = common.end_of_year   (y)
+    hours = 0.0
+    dsecs = 0.0
+    ds    = 24 * 60 * 60
+    for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
+        if not dyn.all_in :
+            continue
+        vf = dyn.valid_from
+        if vf < y :
+            vf = y
+        vt = dyn.valid_to
+        if not vt or vt > eoy + common.day :
+            vt = eoy + common.day
+        dsecs += (vt - vf).as_seconds ()
+        drs = db.daily_record.filter \
+            (None, dict (date = common.pretty_range (y, eoy), user = user))
+        for drid in drs :
+            dr  = db.daily_record.getnode (drid)
+            dur = user_dynamic.update_tr_duration (db, dr)
+            hours += dur
+    days = dsecs / ds
+    assert days <= 366
+    if not days :
+        return 0
+    avgday = hours / float (days)
+    return avgday * 7
+# end def avg_hours_per_week_this_year
+
 ### __END__

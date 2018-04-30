@@ -58,6 +58,8 @@
       <th i18n:translate="">Days</th>
       <th i18n:translate="" tal:condition="do_remaining">
          Remaining vacation after approval</th>
+      <th i18n:translate="">Yearly max. Flexi-Time (all-in)</th>
+      <th i18n:translate="">Avg. hours per Week (all-in)</th>
       <th i18n:translate="">Action</th>
      </tr>
      <tal:block tal:repeat="i batch">
@@ -100,6 +102,10 @@
             (   do_remaining
             and mprops [4].prop.plain() not in ('submitted', 'cancel requested')
             )"/>
+        <td tal:content="python: utils.flexi_alliquot
+            (db._db, mprops [0].prop._value, mprops [1].prop._value)"/>
+        <td tal:content="python: utils.avg_hours_per_week_this_year
+            (db._db, mprops [0].prop._value, mprops [1].prop._value)"/>
         <td tal:content="structure python: buttons.generate (mprops [4])"/>
        </tal:block>
       </tr>

@@ -545,6 +545,13 @@ class Leave_Display (object) :
 
 # end class Leave_Display
 
+def avg_hours (db, user, dy) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    return "%2.2f" % vacation.avg_hours_per_week_this_year (db, user, dy)
+# end def avg_hours
 
 def init (instance) :
     reg = instance.registerUtil
@@ -568,6 +575,8 @@ def init (instance) :
     reg ('eoy_vacation',                 eoy_vacation)
     reg ('Leave_Display',                Leave_Display)
     reg ('month_name',                   month_name)
+    reg ('flexi_alliquot',               vacation.flexi_alliquot)
+    reg ('avg_hours_per_week_this_year', avg_hours)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)
 # end def init

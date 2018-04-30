@@ -781,6 +781,57 @@ def end_of_month (date) :
     assert (0)
 # end def end_of_month
 
+def end_of_year (date) :
+    """ Compute end of year relative to given date
+        >>> f = '%Y-%m-%d.%H:%M:%S'
+        >>> end_of_year (Date ('2006-01-31')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-01-30')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-02-28')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2007-02-28')).pretty (f)
+        '2007-12-31.00:00:00'
+        >>> end_of_year (Date ('2008-02-28')).pretty (f)
+        '2008-12-31.00:00:00'
+        >>> end_of_year (Date ('2008-02-29')).pretty (f)
+        '2008-12-31.00:00:00'
+        >>> end_of_year (Date ('2004-02-28')).pretty (f)
+        '2004-12-31.00:00:00'
+        >>> end_of_year (Date ('2004-02-29')).pretty (f)
+        '2004-12-31.00:00:00'
+        >>> end_of_year (Date ('2000-02-28')).pretty (f)
+        '2000-12-31.00:00:00'
+        >>> end_of_year (Date ('2000-02-29')).pretty (f)
+        '2000-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-12-31')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-12-30')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-03-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-04-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-05-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-06-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-07-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-08-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-09-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-10-01')).pretty (f)
+        '2006-12-31.00:00:00'
+        >>> end_of_year (Date ('2006-11-01')).pretty (f)
+        '2006-12-31.00:00:00'
+    """
+    date = Date (date)
+    date.month = 12
+    return end_of_month (date)
+# end def end_of_year
+
 def start_of_year (date) :
     """ Return date matching first of year for given date
         >>> f = '%Y-%m-%d.%H:%M:%S'

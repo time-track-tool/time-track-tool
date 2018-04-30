@@ -36,10 +36,10 @@ from operator     import add
 
 from roundup.date import Date
 
-from common       import ymd, next_search_date, end_of_period, freeze_date
-from common       import pretty_range, day, period_is_weekly, start_of_period
-from common       import week_from_date, user_has_role
-from freeze       import find_prev_dr_freeze, find_next_dr_freeze, frozen
+import freeze
+import common
+ymd = common.ymd
+day = common.day
 
 def get_user_dynamic (db, user, date) :
     """ Get a user_dynamic record by user and date.
@@ -114,7 +114,7 @@ def last_user_dynamic (db, user, date = None) :
 # end def last_user_dynamic
 
 def find_user_dynamic (db, user, date, direction = '+', ct = -1) :
-    date = next_search_date (date, direction)
+    date = common.next_search_date (date, direction)
     d    = dict (user = user, valid_from = date)
     if ct != -1 :
         d.update (contract_type = ct)
@@ -199,7 +199,7 @@ def use_work_hours (db, dynuser, period) :
         return False
     overtime   = dynuser.additional_hours
     period_id  = dynuser.overtime_period
-    if period_is_weekly (period) :
+    if common.period_is_weekly (period) :
         overtime = dynuser.supp_weekly_hours
     if period.required_overtime :
         overtime = True
@@ -329,7 +329,7 @@ def get_daily_record (db, user, date) :
         else :
             start = now
             end   = date
-        range = pretty_range (start, end)
+        range = common.pretty_range (start, end)
         drs = db.daily_record.filter \
             (None, dict (user = user, date = range), sort = ('+', 'date'))
         next = start
@@ -389,8 +389,8 @@ def required_overtime_in_period (db, user, date, period) :
         Return a tuple of overtime, workdays.
     """
     assert period.required_overtime
-    sop = start_of_period (date, period)
-    eop = end_of_period   (date, period)
+    sop = common.start_of_period (date, period)
+    eop = common.end_of_period   (date, period)
     key = (user, str (sop))
     if not getattr (db, 'cache_required_overtime_in_period', None) :
         def cache_required_overtime_in_period_clear (db) :
@@ -546,8 +546,8 @@ class Period_Data (object) :
         self.overtime_balance = 0.0
         self.start_balance    = start_balance
         self.period           = period
-        date                  = start_of_period (start, self.period)
-        eop                   = end_of_period   (end,   self.period)
+        date                  = common.start_of_period (start, self.period)
+        eop                   = common.end_of_period   (end,   self.period)
         try :
             s, e, p           = overtime_period (db, user, start, end, period)
         except TypeError :
@@ -600,7 +600,7 @@ class Period_Data (object) :
                 overtadd += dur.additional_hours * do_over
             required += req  * do_over
             worked   += work * do_over
-            eow       = week_from_date (date) [1]
+            eow       = common.week_from_date (date) [1]
             if  (   date == eow
                 and period.months
                 and (period.weekly or period.required_overtime)
@@ -689,8 +689,8 @@ def overtime_period (db, user, start, end, period) :
         data
     """
     periods = []
-    sop     = start_of_period (start, period)
-    eop     = end_of_period   (end,   period)
+    sop     = common.start_of_period (start, period)
+    eop     = common.end_of_period   (end,   period)
     otp     = overtime_periods (db, user, sop, eop)
     for s, e, p in otp :
         #print period.id, p.id, start, s, e, end
@@ -730,8 +730,8 @@ def compute_saved_balance (db, user, start, date, not_after = False) :
         period = db.overtime_period.getnode (dyn.overtime_period)
     eop = date
     if period and not not_after :
-        eop = end_of_period (date + day, period)
-    r = find_prev_dr_freeze (db, user, eop)
+        eop = common.end_of_period (date + day, period)
+    r = freeze.find_prev_dr_freeze (db, user, eop)
     if r :
         achieved = bool (date == r.validity_date) * r.achieved_hours
         return r.balance, r.validity_date, achieved
@@ -741,7 +741,7 @@ def compute_saved_balance (db, user, start, date, not_after = False) :
 def overtime_corr (db, user, start, end) :
     """ Return overtime corrections in given time range. """
     cids = db.overtime_correction.filter \
-        (None, dict (user = user, date = pretty_range (start, end)))
+        (None, dict (user = user, date = common.pretty_range (start, end)))
     corr = {}
     for c in cids :
         oc  = db.overtime_correction.getnode (c)
@@ -767,7 +767,7 @@ def compute_running_balance \
         searching for existing freeze records. This is used for
         freezing: we don't want to find records at the freeze date.
     """
-    c_end = end = freeze_date (date, period)
+    c_end = end = common.freeze_date (date, period)
     if sharp_end :
         c_end  = date
     p_date     = start
@@ -776,7 +776,7 @@ def compute_running_balance \
 
     corr = overtime_corr (db, user, p_date, c_end)
     while p_date <= end :
-        eop = end_of_period (p_date, period)
+        eop = common.end_of_period (p_date, period)
         #print >> sys.stderr, "OTB1: pd: %s d: %s e:%s eop:%s" \
         #    % ( p_date.pretty (ymd)
         #      , date.pretty   (ymd)
@@ -792,7 +792,7 @@ def compute_running_balance \
     #print "pdate: %(p_date)s, end: %(end)s, date: %(date)s" % locals ()
     #print "bal:", p_balance - start_balance
     assert (p_date <= date + day)
-    eop = end_of_period (date, period)
+    eop = common.end_of_period (date, period)
     #print >> sys.stderr, "before 2nd call", sharp_end, date, eop, p_date, end
     if sharp_end and date != eop and p_date <= date :
         #print >> sys.stderr, "OTB2: pd: %s d: %s e:%s eop:%s" \
@@ -866,7 +866,7 @@ def hr_olo_role_for_this_user_dyn (db, dbuid, userdyn) :
     """ Given db uid has role HR-Org-Location and the given dynamic user
         is in the same Org-Location as the uid.
     """
-    if not user_has_role (db, dbuid, 'HR-Org-Location') :
+    if not common.user_has_role (db, dbuid, 'HR-Org-Location') :
         return False
     dyn = get_user_dynamic (db, dbuid, Date ('.'))
     if not dyn :
@@ -915,10 +915,10 @@ def invalidate_tr_duration (db, uid, v_frm, v_to) :
     """
     otp = required_overtime (db, uid, v_frm)
     if otp :
-        start = start_of_period (v_frm, otp)
-        if frozen (db, uid, start) :
-            freeze = find_next_dr_freeze (db, uid, start)
-            start  = freeze.date
+        start = common.start_of_period (v_frm, otp)
+        if freeze.frozen (db, uid, start) :
+            frz    = freeze.find_next_dr_freeze (db, uid, start)
+            start  = frz.date
             assert (start <= v_frm)
         v_frm = start
 
@@ -927,12 +927,28 @@ def invalidate_tr_duration (db, uid, v_frm, v_to) :
     else :
         otp = required_overtime (db, uid, v_to)
         if otp  :
-            v_to = end_of_period (v_to, otp)
+            v_to = common.end_of_period (v_to, otp)
         pdate = ';'.join ((v_frm.pretty (ymd), v_to.pretty (ymd)))
     for dr in db.daily_record.filter (None, dict (date = pdate, user = uid)) :
         db.daily_record.set (dr, tr_duration_ok = 0)
         db.daily_record.set (dr, tr_duration_ok = None)
 # end def invalidate_tr_duration
+
+def user_dynamic_year_iter (db, user, date_in_year) :
+    y   = common.start_of_year (date_in_year)
+    eoy = common.end_of_year (y)
+    dyn = get_user_dynamic (db, user, y)
+    if not dyn :
+        dyn = first_user_dynamic (db, user, date = y)
+    if not dyn :
+        raise StopIteration ("No records found")
+    yield dyn
+    while dyn :
+        dyn = next_user_dynamic (db, dyn)
+        if not dyn or dyn.valid_from > eoy :
+            raise StopIteration ()
+        yield (dyn)
+# end def user_dynamic_year_iter
 
 dynuser_copyfields = \
      [ 'user'

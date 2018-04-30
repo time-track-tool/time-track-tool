@@ -406,6 +406,7 @@ def init \
         , approved_submissions  = String    ()
         , flexi_time            = String    ()
         , flexi_sub             = String    ()
+        , flexi_max             = String    ()
         , special_leave         = String    ()
         , special_sub           = String    ()
         , show_obsolete         = Boolean   ()
