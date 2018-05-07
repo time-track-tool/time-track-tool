@@ -1161,6 +1161,9 @@ properties = \
         , ( 'department'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'room', 'summary_view', 'user', 'user_view']
           )
+        , ( 'flexi_max'
+          , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'room', 'summary_view', 'user', 'user_view']
+          )
         , ( 'flexi_sub'
           , ['admin', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'room', 'summary_view', 'user', 'user_view']
           )
