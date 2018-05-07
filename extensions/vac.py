@@ -576,6 +576,7 @@ def init (instance) :
     reg ('Leave_Display',                Leave_Display)
     reg ('month_name',                   month_name)
     reg ('flexi_alliquot',               vacation.flexi_alliquot)
+    reg ('flexi_remain',                 vacation.flexi_remain)
     reg ('avg_hours_per_week_this_year', avg_hours)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)

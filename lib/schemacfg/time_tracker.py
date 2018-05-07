@@ -407,6 +407,7 @@ def init \
         , flexi_time            = String    ()
         , flexi_sub             = String    ()
         , flexi_max             = String    ()
+        , flexi_rem             = String    ()
         , special_leave         = String    ()
         , special_sub           = String    ()
         , show_obsolete         = Boolean   ()

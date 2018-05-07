@@ -869,6 +869,7 @@ properties = \
         , 'date'
         , 'department'
         , 'flexi_max'
+        , 'flexi_rem'
         , 'flexi_sub'
         , 'flexi_time'
         , 'org_location'

@@ -2050,6 +2050,9 @@ properties = \
         , ( 'flexi_max'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'room', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
           )
+        , ( 'flexi_rem'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'room', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
+          )
         , ( 'flexi_sub'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'room', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'user', 'user_view']
           )

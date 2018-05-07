@@ -754,4 +754,27 @@ def avg_hours_per_week_this_year (db, user, date_in_year) :
     return avgday * 7
 # end def avg_hours_per_week_this_year
 
+def get_all_in_ctypes (db, user, y) :
+    ctypes = set ()
+    for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
+        if not dyn.all_in :
+            continue
+        ctypes.add (dyn.contract_type)
+    return ctypes
+# end def get_all_in_ctypes
+
+def flexi_remain (db, user, date_in_year) :
+    y     = common.start_of_year (date_in_year)
+    eoy   = common.end_of_year   (y)
+    fa    = flexi_alliquot (db, user, date_in_year)
+    acpt  = db.leave_status.lookup ('accepted')
+    cnrq  = db.leave_status.lookup ('cancel requested')
+    if not fa :
+        return 0
+    sd = 0
+    for ct in get_all_in_ctypes (db, user, y) :
+        sd += flexitime_submission_days (db, user, ct, y, eoy, acpt, cnrq)
+    return fa - sd
+# end def flexi_remain
+
 ### __END__

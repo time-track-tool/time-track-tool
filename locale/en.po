@@ -4883,6 +4883,9 @@ msgstr "Flexi-Time (submitted)"
 msgid "flexi_max"
 msgstr "Yearly max. Flexi-Time (all in)"
 
+msgid "flexi_rem"
+msgstr "Unused yearly max. Flexi-Time (all in)"
+
 msgid "special_leave"
 msgstr "Special leave (approved)"
 
