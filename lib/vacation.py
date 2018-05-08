@@ -736,6 +736,9 @@ def avg_hours_per_week_this_year (db, user, date_in_year) :
     """
     y     = common.start_of_year (date_in_year)
     eoy   = common.end_of_year   (y)
+    now   = roundup.date.Date ('.')
+    if eoy > now :
+        eoy = now
     hours = 0.0
     dsecs = 0.0
     ds    = 24 * 60 * 60
@@ -750,7 +753,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year) :
             vt = eoy + common.day
         dsecs += (vt - vf).as_seconds ()
         drs = db.daily_record.filter \
-            (None, dict (date = common.pretty_range (y, eoy), user = user))
+            (None, dict (date = common.pretty_range (vf, vt), user = user))
         for drid in drs :
             dr  = db.daily_record.getnode (drid)
             dur = user_dynamic.update_tr_duration (db, dr)
