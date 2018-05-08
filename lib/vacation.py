@@ -649,10 +649,19 @@ def need_hr_approval \
     (db, tp, user, ctype, first_day, last_day, stname, booked = False) :
     if tp.approval_hr :
         return True
-    if not tp.is_vacation :
-        return False
     if stname != 'submitted' :
         return False
+    if not tp.is_vacation :
+        # Flexitime
+        if tp.no_overtime and tp.max_hours == 0 :
+            dyn = user_dynamic.get_user_dynamic (db, user, first_day)
+            if not dyn or not dyn.all_in :
+                return False
+            rem = flexi_remain (db, user, first_day)
+            dur = leave_days (db, user, first_day, last_day)
+            return rem - dur < 0
+        else :
+            return False
     day = common.day
     ed  = next_yearly_vacation_date (db, user, ctype, last_day) - day
     vac = remaining_vacation (db, user, ctype, ed)
