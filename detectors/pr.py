@@ -320,11 +320,24 @@ def change_pr (db, cl, nodeid, new_values) :
             new_values ['total_cost'] = None
 # end def change_pr
 
+def agent_in_approval_order_users (db, uid, ptid) :
+    pt = db.purchase_type.getnode (ptid)
+    for aoid in pt.pr_view_roles :
+        ao = db.pr_approval_order.getnode (aoid)
+        if uid in ao.users :
+            return True
+    return False
+# end def agent_in_approval_order_users
+
 def set_agents (db, cl, nodeid, new_values) :
     """ Set purchasing agents if agents empty (or would become empty)
         or the sap_cc or time_project changed
         *and* we can set the agent from the tc or cc.
         We also update the nosy list whenever purchasing_agents changes.
+        Note that we do a check that the agents in sap_cc or
+        time_project do have the necessary view roles of the
+        purchase_type. Only if this check succeeds are agents added to
+        purchasin_agents and nosy.
     """
     pr = None
     if nodeid :
@@ -332,6 +345,9 @@ def set_agents (db, cl, nodeid, new_values) :
     pa = new_values.get ('purchasing_agents', None)
     if pr and not pa :
         pa = pr.purchasing_agents
+    pt = new_values.get ('purchase_type')
+    if pr and not pt :
+        pt = pr.purchase_type
     if not pa or 'time_project' in new_values or 'sap_cc' in new_values :
         tc = new_values.get ('time_project')
         cc = new_values.get ('sap_cc')
@@ -343,9 +359,16 @@ def set_agents (db, cl, nodeid, new_values) :
         if cc :
             cc = db.sap_cc.getnode (cc)
         item = tc or cc
-        if item :
-            new_values ['purchasing_agents'] = item.purchasing_agents
-            # Add agent to nosy list
+        # Only put those agents into 'purchasing_agents' that have
+        # necessary role from the purchase_type pt
+        pa = set (new_values.get ('purchasing_agents') or [])
+        if item and pt :
+            for uid in item.purchasing_agents :
+                if agent_in_approval_order_users (db, uid, pt) :
+                    pa.add (uid)
+                    break
+            new_values ['purchasing_agents'] = list (pa)
+    # Add agents to nosy list
     if new_values.get ('purchasing_agents') :
         nosy = new_values.get ('nosy')
         if not nosy and pr :
