@@ -457,13 +457,17 @@ def nosy_for_approval (db, app, add = False) :
     if app.user :
         nosy [app.user] = 1
     # Don't add deputy to nosy
-    if app.role :
+    nosy_dd = {}
+    if app.role_id :
+        ao = db.pr_approval_order.getnode (app.role_id)
+        nosy_dd = ao.users
+    elif app.role :
         nosy_dd = common.get_uids_with_role (db, app.role)
         # If we're adding users, filter by unwanted messages
-        if add :
-            nosy_dd = dict.fromkeys \
-                (u for u in nosy_dd if not db.user.get (u, 'want_no_messages'))
-        nosy.update (dict.fromkeys (nosy_dd))
+    if add and nosy_dd :
+        nosy_dd = dict.fromkeys \
+            (u for u in nosy_dd if not db.user.get (u, 'want_no_messages'))
+    nosy.update (dict.fromkeys (nosy_dd))
     return nosy
 # end def nosy_for_approval
 
