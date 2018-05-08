@@ -100,6 +100,8 @@ class Unicode_DictReader (object) :
         for d in self.reader :
             r = []
             for k, v in d.iteritems () :
+                if k is None :
+                    import pdb; pdb.set_trace ()
                 k = k.decode ('utf-8')
                 if v is not None :
                     v = v.decode ('utf-8')
@@ -147,7 +149,7 @@ class Product_Sync (object) :
             self.debug (repr (x))
             id = self.get_material (x)
             if id in self.sap_ids :
-                self.verbose ('Ignoring duplicate: %r' % x)
+                self.debug ('Ignoring duplicate: %r' % x)
                 continue
             self.sap_ids [id] = len (self.sap_recs)
             self.sap_recs.append (x)
@@ -160,7 +162,13 @@ class Product_Sync (object) :
     # end def debug
 
     def get_description (self, rec) :
-        for n in 'Materialkurztext', 'Bezeichnung', 'Description' :
+        l = \
+            ( 'Material Description'
+            , 'Materialkurztext'
+            , 'Bezeichnung'
+            , 'Description'
+            )
+        for n in l :
             try :
                 v = rec [n]
                 break
