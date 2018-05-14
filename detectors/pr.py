@@ -366,7 +366,12 @@ def set_agents (db, cl, nodeid, new_values) :
             for uid in item.purchasing_agents :
                 if agent_in_approval_order_users (db, uid, pt) :
                     pa.add (uid)
-                    break
+            # Fallback: Use agent from purchase_type
+            if not pa :
+                ptype = db.purchase_type.getnode (pt)
+                for uid in ptype.purchasing_agents :
+                    if agent_in_approval_order_users (db, uid, pt) :
+                        pa.add (uid)
             new_values ['purchasing_agents'] = list (pa)
     # Add agents to nosy list
     if new_values.get ('purchasing_agents') :
@@ -699,6 +704,20 @@ def pt_check_roles (db, cl, nodeid, new_values) :
     common.check_roles (db, cl, nodeid, new_values)
     common.check_roles (db, cl, nodeid, new_values, 'view_roles')
     common.check_roles (db, cl, nodeid, new_values, 'forced_roles')
+    # Ensure that all purchasing_agents have one of the view roles
+    if 'purchasing_agents' in new_values :
+        if 'pr_view_roles' in new_values :
+            roles = new_values ['pr_view_roles']
+        elif nodeid :
+            roles = cl.get (nodeid, 'pr_view_roles')
+        users = set ()
+        for rid in roles :
+            role = db.pr_approval_order.getnode (rid)
+            users.update (role.users)
+        for id in new_values ['purchasing_agents'] :
+            if id not in users :
+                un = db.user.get (id, 'username')
+                raise Reject (_ ("User doesn't have a View-Role: %s") % un)
 # end def pt_check_roles
 
 def pao_check_roles (db, cl, nodeid, new_values) :

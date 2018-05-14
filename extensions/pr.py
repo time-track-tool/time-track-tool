@@ -169,6 +169,19 @@ def pr_justification () :
     return '?' + urlencode (q)
 # end def pr_justification
 
+def pr_type_valid_agents (db, pr_type_id) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    pt = db.purchase_type.getnode (pr_type_id)
+    users = set ()
+    for rid in pt.pr_view_roles :
+        r = db.pr_approval_order.getnode (rid)
+        users.update (r.users)
+    return list (users)
+# end def pr_type_valid_agents
+
 def init (instance) :
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -181,4 +194,5 @@ def init (instance) :
     reg ('pr_edit_button',               pr_edit_button)
     reg ('pr_filter_status_transitions', pr_filter_status_transitions)
     reg ('pr_justification',             pr_justification)
+    reg ('pr_type_valid_agents',         pr_type_valid_agents)
 # end def init
