@@ -33,10 +33,12 @@ def valid_departments (db) :
     ids = []
     for id in db.department.getnodeids (retired = False) :
         dept = db.department.getnode (id)
-        if dept.valid_to is None :
+        if 'valid_to' not in db.department.properties :
+            ids.append (id)
+        elif dept.valid_to is None :
             ids.append (id)
             continue
-        if dept.valid_to > now :
+        elif dept.valid_to > now :
             ids.append (id)
     return ids
 # end def valid_departments
