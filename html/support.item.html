@@ -87,7 +87,7 @@
       <tr class="top">
        <th tal:content="structure python:utils.fieldname
            (classname, 'category')"/>
-       <td tal:content="structure python:context.category.menu ()"/>
+       <td tal:content="structure python:context.category.menu (valid = True)"/>
        <th tal:content="structure python:utils.fieldname
            (classname, 'warranty')"/>
        <td tal:content="structure python:context.warranty.field ()"/>
