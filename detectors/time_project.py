@@ -85,7 +85,7 @@ def fix_wp (db, cl, nodeid, old_values) :
     now = Date ('.')
     for wp in db.time_wp.filter (None, dict (project = nodeid)) :
         d = {}
-        if ccn in old_values and old_values [ccn] == tp.cost_center :
+        if ccn in old_values and old_values [ccn] != tp.cost_center :
             d [ccn] = tp.cost_center
         if not act :
             te = db.time_wp.get (wp, 'time_end')

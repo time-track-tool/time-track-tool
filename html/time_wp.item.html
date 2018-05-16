@@ -24,24 +24,21 @@
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
-    <tr tal:define="cc_status python:db._db.cost_center_status.filter
-         (None, {'active':True})">
+    <tr tal:define="ccs python:db._db.cost_center_status.filter
+         (None, dict (active = True))">
      <th tal:content="structure python:utils.fieldname
          (classname, 'cost_center')"/>
-     <td tal:define="ccs python: db.cost_center_status.filter
-                     (None, dict (active = True))">
+     <td>
       <!-- maybe one day make this configurable
       <tal:block tal:replace="structure context/cost_center/field"/>
       <tal:block tal:condition="context/cost_center/is_edit_ok"
-          tal:define="ccs python: db.cost_center_status.filter
-                      (None, dict (active = True))"
           tal:replace="structure python:db.cost_center.classhelp
             ( 'id,name,description'
             , property='cost_center'
             , inputtype='radio'
             , width='600'
             , pagesize=5000
-            , filter='status=%s' % ','.join (i.id for i in ccs)
+            , filter='status=%s' % ','.join (ccs)
             )"/>
       -->
       <tal:block tal:replace="structure context/cost_center/plain"/>
