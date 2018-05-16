@@ -135,7 +135,8 @@ def check_unique (_, cl, id, ** kw) :
                 attr = _ (str (k))
                 val  =    cgi.escape (str (v))
                 r.append ("%(attr)s=%(val)s" % locals ())
-            raise Reject, _ ("Duplicate: %s") % ', '.join (r)
+            raise Reject \
+                (_ ("Duplicate: %s: %s%s") % (', '.join (r), cl.classname, s))
 # end def check_unique
 
 def sort_uniq (list) :
