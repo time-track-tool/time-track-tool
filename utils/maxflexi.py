@@ -65,7 +65,8 @@ class User_Dyn_Flexifixer (object) :
     # end def thaw
 
     def freeze (self, username) :
-        for frid in sorted (self.freez [username], key = lambda x: x ['date']) :
+        srt = lambda x : self.freez [username][x]['date']
+        for frid in sorted (self.freez [username], key = srt) :
             self.db.daily_record_freeze.set (frid, frozen = True)
             fr = self.db.daily_record_freeze.getnode (frid)
             for k in self.freez [username][frid] :
