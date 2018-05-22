@@ -66,6 +66,10 @@ Role "doc_admin":
  User is allowed to edit doc_status (Edit for "doc_status" only)
  User is allowed to edit product_type (Edit for "product_type" only)
  User is allowed to edit reference (Edit for "reference" only)
+Role "facility":
+ User is allowed Edit on (Edit for "user": ('room',) only)
+ User is allowed to create room (Create for "room" only)
+ User is allowed to edit room (Edit for "room" only)
 Role "hr":
   (Edit for "overtime_period": ('name', 'order') only)
  Create (Create for "user_contact" only)
@@ -184,10 +188,6 @@ Role "project":
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_wp (View for "time_wp" only)
-Role "room":
- User is allowed Edit on (Edit for "user": ('room',) only)
- User is allowed to create room (Create for "room" only)
- User is allowed to edit room (Edit for "room" only)
 Role "staff-report":
 Role "summary_view":
 Role "user":

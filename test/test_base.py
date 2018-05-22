@@ -126,6 +126,7 @@ class _Test_Case (unittest.TestCase) :
         , 'discount'
         , 'doc_admin'
         , 'external'
+        , 'facility'
         , 'finance'
         , 'guest'
         , 'hr'
@@ -158,7 +159,6 @@ class _Test_Case (unittest.TestCase) :
         , 'project_view'
         , 'quality'
         , 'readonly-user'
-        , 'room'
         , 'sec-incident-nosy'
         , 'sec-incident-responsible'
         , 'staff-report'
@@ -760,10 +760,10 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit'
         , 'msgsync', 'nosy', 'office', 'procurement', 'project'
-        , 'project_view', 'room', 'sec-incident-nosy'
+        , 'project_view', 'sec-incident-nosy'
         , 'sec-incident-responsible'
         , 'staff-report', 'summary_view', 'supportadmin', 'type', 'user'
         ]
@@ -774,10 +774,10 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
-        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'hr'
+        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'facility', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
-        , 'room', 'staff-report', 'summary_view', 'user', 'user_view'
+        , 'staff-report', 'summary_view', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
@@ -2765,11 +2765,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
-        , 'external', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'external', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
-        , 'room', 'sec-incident-nosy', 'sec-incident-responsible'
+        , 'sec-incident-nosy', 'sec-incident-responsible'
         , 'staff-report', 'summary_view', 'supportadmin', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
