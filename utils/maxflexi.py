@@ -70,7 +70,9 @@ class User_Dyn_Flexifixer (object) :
             self.db.daily_record_freeze.set (frid, frozen = True)
             fr = self.db.daily_record_freeze.getnode (frid)
             for k in self.freez [username][frid] :
-                assert self.freez [username][frid][k] == fr [k]
+                uf = self.freez [username][frid][k]
+                if uf != fr [k] :
+                    print "DIFFER: %s %s %s" % (k, uf, fr [k])
     # end def freeze
 
     def fix_flexitime (self) :
