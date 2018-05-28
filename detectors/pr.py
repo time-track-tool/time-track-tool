@@ -139,14 +139,14 @@ def check_io (db, cl, nodeid, new_values) :
 def check_input_len (db, cl, nodeid, new_values) :
     """ Check that some fields don't become too long
     """
-    if len (new_values.get ('supplier', '')) > 55 :
+    if len (new_values.get ('supplier', '') or '') > 55 :
         raise Reject (_ ("Supplier too long (max 55)"))
 # end def check_input_len
 
 def namelen (db, cl, nodeid, new_values) :
     """ Check that name field doesn't become too long
     """
-    if len (new_values.get ('name', '')) > 55 :
+    if len (new_values.get ('name', '') or '') > 55 :
         raise Reject (_ ("Supplier name too long (max 55)"))
 # end def namelen
 
