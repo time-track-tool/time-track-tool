@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-18 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -140,6 +140,16 @@ def check_expiration (db, cl, nodeid, new_values) :
             new_values ['has_expiration_date'] = False
 # end def check_expiration
 
+def check_name (db, cl, nodeid, new_values) :
+    """ Ensure that names do not contain certain characters """
+    forbidden = ',/"'
+    if 'name' in new_values :
+        name = new_values ['name']
+        for c in forbidden :
+            if c in name :
+                raise Reject (_ ("Name contains forbidden character %s") % c)
+# end def check_name
+
 def init (db) :
     if 'time_wp' not in db.classes :
         return
@@ -150,6 +160,11 @@ def init (db) :
     db.time_wp.audit  ("set",    check_time_wp)
     db.time_wp.audit  ("create", check_expiration, priority = 200)
     db.time_wp.audit  ("set",    check_expiration, priority = 200)
+    db.time_wp.audit  ("create", check_name)
+    db.time_wp.audit  ("set",    check_name)
+    # Name check for time_project too
+    db.time_project.audit  ("create", check_name)
+    db.time_project.audit  ("set",    check_name)
 # end def init
 
 ### __END__ time_wp
