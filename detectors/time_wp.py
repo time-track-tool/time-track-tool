@@ -150,6 +150,20 @@ def check_name (db, cl, nodeid, new_values) :
                 raise Reject (_ ("Name contains forbidden character %s") % c)
 # end def check_name
 
+def check_summary_no (db, cl, nodeid, new_values) :
+    """ Ensure that summary_no is filled in for wps that belong to a
+        time_project with 'project=yes'
+    """
+    prid = new_values.get ('project')
+    if not prid :
+        assert nodeid
+        prid = cl.get (nodeid, 'project')
+    prj = db.time_project.getnode (prid)
+    if prj.op_project :
+        common.require_attributes \
+            (_, cl, nodeid, new_values, 'time_wp_summary_no')
+# end def check_summary_no
+
 def init (db) :
     if 'time_wp' not in db.classes :
         return
@@ -162,6 +176,8 @@ def init (db) :
     db.time_wp.audit  ("set",    check_expiration, priority = 200)
     db.time_wp.audit  ("create", check_name)
     db.time_wp.audit  ("set",    check_name)
+    db.time_wp.audit  ("create", check_summary_no, priority = 250)
+    db.time_wp.audit  ("set",    check_summary_no, priority = 250)
     # Name check for time_project too
     db.time_project.audit  ("create", check_name)
     db.time_project.audit  ("set",    check_name)
