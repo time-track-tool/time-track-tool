@@ -657,8 +657,17 @@ def need_hr_approval \
             dyn = user_dynamic.get_user_dynamic (db, user, first_day)
             if not dyn or not dyn.all_in :
                 return False
-            rem = flexi_remain (db, user, first_day)
-            dur = leave_days (db, user, first_day, last_day)
+            fd = first_day
+            if first_day.year != last_day.year :
+                while fd.year != last_day.year :
+                    eoy = common.end_of_year (fd)
+                    rem = flexi_remain (db, user, fd)
+                    dur = leave_days (db, user, fd, eoy)
+                    if rem - dur < 0 :
+                        return True
+                    fd = eoy + common.day
+            rem = flexi_remain (db, user, fd)
+            dur = leave_days (db, user, fd, last_day)
             return rem - dur < 0
         else :
             return False
