@@ -52,12 +52,15 @@ def main () :
     args = cmd.parse_args ()
     tracker = instance.open (args.dir)
     db = tracker.open (args.user)
-    r = DictReader (open (args.file, 'r'), delimiter = args.delimiter)
+    r  = DictReader (open (args.file, 'r'), delimiter = args.delimiter)
+    st = 'Internal Order: Statistical orders'
+    
     for line in r :
-        assert line ['Auftragsart - Name'].startswith ('Innenauftrag')
-        if line ['Auftrag'] :
-            num  = line ['Auftrag'].decode  (args.encoding)
-            name = line ['Kurztext'].decode (args.encoding)
+        if line ['Type Name'].decode (args.encoding) != st :
+            continue
+        if line ['Order'] :
+            num  = str (int (line ['Order'].decode  (args.encoding)))
+            name = line ['Order Name'].decode (args.encoding)
 
             try :
                 id = db.internal_order.lookup (num.encode ('utf-8'))
