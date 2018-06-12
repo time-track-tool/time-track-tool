@@ -8,23 +8,31 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['confidential'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['nosy'])
-    , utils.ExtProperty (utils, pdict ['order'])
-    , utils.ExtProperty (utils, pdict ['pr_view_roles'],     multiselect=1)
-    , utils.ExtProperty (utils, pdict ['pr_roles'],          multiselect=1)
-    , utils.ExtProperty (utils, pdict ['pr_forced_roles'],   multiselect=1)
-    , utils.ExtProperty (utils, pdict ['purchasing_agents'], multiselect=1)
-    , utils.ExtProperty (utils, pdict ['valid'])
-    , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['creator'])
-    , utils.ExtProperty (utils, pdict ['activity'])
-    , utils.ExtProperty (utils, pdict ['actor'])
-    );
+   l python:
+    ( ('id',                {})
+    , ('name',              {})
+    , ('confidential',      {})
+    , ('description',       {})
+    , ('nosy',              {})
+    , ('order',             {})
+    , ('pr_view_roles',     dict (multiselect=1))
+    , ('pr_roles',          dict (multiselect=1))
+    , ('pr_forced_roles',   dict (multiselect=1))
+    , ('purchasing_agents', dict (multiselect=1))
+    , ('valid',             {})
+    , ('creation',          {})
+    , ('creator',           {})
+    , ('activity',          {})
+    , ('actor',             {})
+    )
+   ; props python:
+    [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
+     if  (   (k [0] in db._db.purchase_type.getprops () or k [0] == 'id')
+         and (  request.user.hasPermission ('Search', 'purchase_type', k [0])
+             or request.user.hasPermission ('View',   'purchase_type', k [0])
+             )
+         )
+    ]
    "
   tal:condition="context/is_view_ok">
 
