@@ -47,8 +47,11 @@ def max_load (db) :
     except AttributeError :
         pass
     v = getattr (db.config.ext, 'LIMIT_MAX_LOAD', None)
-    if not v :
-        return 3.0
+    if v :
+        v = float (v)
+    else :
+        v = 3.0
+    return v
 # end def max_load
 
 def init (instance) :
