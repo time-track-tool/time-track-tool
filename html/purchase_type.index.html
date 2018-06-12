@@ -27,11 +27,7 @@
     )
    ; props python:
     [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
-     if  (   (k [0] in db._db.purchase_type.getprops () or k [0] == 'id')
-         and (  request.user.hasPermission ('Search', 'purchase_type', k [0])
-             or request.user.hasPermission ('View',   'purchase_type', k [0])
-             )
-         )
+     if utils.search_allowed (db, request, 'purchase_type', k [0])
     ]
    "
   tal:condition="context/is_view_ok">

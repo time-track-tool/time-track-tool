@@ -738,6 +738,40 @@ def get_cssclass_from_status (context) :
     return context.status.name
 # end def get_cssclass_from_status
 
+def search_allowed (db, request, classname, propname) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    try :
+        cls = db.getclass (classname)
+    except KeyError :
+        return False
+    if propname in cls.getprops () or propname == 'id' :
+        allowed = False
+        for perm in ('Search', 'View') :
+            if request.user.hasPermission (perm, classname, propname) :
+                allowed = True
+                break
+        if not allowed :
+            return False
+        lnk = getattr (cls.getprops () [propname], 'classname', None)
+        if not lnk :
+            return True
+        lnkcls = db.getclass (lnk)
+        lbl = lnkcls.labelprop ()
+        for pr in lbl, 'id' :
+            allowed = False
+            for perm in ('Search', 'View') :
+                if request.user.hasPermission (perm, lnk, pr) :
+                    allowed = True
+                    break
+            if not allowed :
+                return False
+        return True
+    return False
+# end def search_allowed
+
 def init (instance) :
     global _
     _   = get_translation \
@@ -752,4 +786,5 @@ def init (instance) :
     instance.registerUtil ('get_cssclass',             get_cssclass)
     instance.registerUtil ('get_cssclass_from_status', get_cssclass_from_status)
     instance.registerUtil ('filtered_properties',      filtered_properties)
+    instance.registerUtil ('search_allowed',           search_allowed)
 # end def init
