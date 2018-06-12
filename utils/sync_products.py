@@ -176,6 +176,10 @@ class Product_Sync (object) :
                 pass
         else :
             raise
+        try :
+            v = str (int (v, 10))
+        except ValueError :
+            pass
         return v
     # end def get_description
 
