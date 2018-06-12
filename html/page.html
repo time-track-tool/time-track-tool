@@ -575,7 +575,11 @@
      , ('measurement',         'View', 1,               ('',''))
      , ('network_address',     'View', 1,               ('',''))
      , ('network_interface',   'View', 1,               ('',''))
-     , ('overtime_correction', 'View', 1,               ('',''))
+     , ('overtime_correction'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR', 'Controlling')
+       , ('','')
+       )
      , ('payment',             'View', 1,               ('',''))
      , ('person',              'View', 1,               ('',''))
      , ('prodcat',             'View', 1,               ('',''))
