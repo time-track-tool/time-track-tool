@@ -8,41 +8,47 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['wp_no'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty (utils, pdict ['responsible'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['project'],     multiselect = 1)
-    , utils.ExtProperty
-        (utils, pdict ['project']
-        , searchname  = 'project.status'
+   l python:
+    ( ('id',                  {})
+    , ('name',                {})
+    , ('wp_no',               {})
+    , ('description',         {})
+    , ('responsible',         dict (multiselect = 1))
+    , ('project',             dict (multiselect = 1))
+    , ('project', dict
+        ( searchname  = 'project.status'
         , multiselect = True
         , searchable  = True
         , sortable    = True
         )
-    , utils.ExtProperty
-        (utils, pdict ['project']
-        , searchname  = 'project.op_project'
+      )
+    , ('project', dict
+        ( searchname  = 'project.op_project'
         , searchable  = True
         , sortable    = True
         )
-    , utils.ExtProperty (utils, pdict ['time_wp_summary_no'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['time_start'])
-    , utils.ExtProperty (utils, pdict ['time_end'])
-    , utils.ExtProperty (utils, pdict ['planned_effort'])
-    , utils.ExtProperty
-        ( utils, pdict ['bookers']
-        , help_props  = ['firstname', 'lastname']
+      )
+    , ('time_wp_summary_no',  dict (multiselect = 1))
+    , ('time_start',          {})
+    , ('time_end',            {})
+    , ('planned_effort',      {})
+    , ('bookers', dict
+        ( help_props  = ['firstname', 'lastname']
         , help_filter = 'status=%s' % db._db.user_status.lookup ('valid')
         )
-    , utils.ExtProperty (utils, pdict ['cost_center'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['is_public'])
-    , utils.ExtProperty (utils, pdict ['durations_allowed'])
-    , utils.ExtProperty (utils, pdict ['travel'])
-    , utils.ExtProperty (utils, pdict ['has_expiration_date'])
-    );
+      )
+    , ('cost_center',         dict (multiselect = 1))
+    , ('is_public',           {})
+    , ('durations_allowed',   {})
+    , ('travel',              {})
+    , ('has_expiration_date', {})
+    )
+   ; props python:
+       [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
+        if k [0] in pdict and
+           utils.search_allowed (db, request, 'time_wp', k [0])
+       ]
+
    "
   tal:condition="context/is_view_ok">
 
