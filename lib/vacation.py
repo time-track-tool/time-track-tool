@@ -216,6 +216,8 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati) :
         first_day = vs.first_day
         last_day  = vs.last_day
         dyn = user_dynamic.get_user_dynamic (db, user, first_day)
+        if not dyn :
+            continue
         if dyn.contract_type != ctype :
             continue
         if first_day < start :
@@ -793,8 +795,22 @@ def flexi_remain (db, user, date_in_year) :
     if not fa :
         return 0
     sd = 0
-    for ct in get_all_in_ctypes (db, user, y) :
-        sd += flexitime_submission_days (db, user, ct, y, eoy, acpt, cnrq)
+    dyn = user_dynamic.get_user_dynamic (db, user, y)
+    if not dyn :
+        dyn = user_dynamic.first_user_dynamic (db, user, y)
+    while dyn :
+        b = dyn.valid_from
+        if b < y :
+            b = y
+        e = dyn.valid_to
+        if e > eoy or not e :
+            e = eoy
+        else :
+            e -= common.day
+        ct = dyn.contract_type
+        if dyn.all_in :
+            sd += flexitime_submission_days (db, user, ct, b, e, acpt, cnrq)
+        dyn = user_dynamic.next_user_dynamic (db, dyn)
     return fa - sd
 # end def flexi_remain
 
