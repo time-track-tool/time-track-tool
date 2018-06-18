@@ -65,15 +65,18 @@ def main () :
             try :
                 id = db.internal_order.lookup (num.encode ('utf-8'))
                 io = db.internal_order.getnode (id)
-                d  = dict (valid = True)
+                d  = {}
+                if not io.valid :
+                    d ['valid'] = True
                 if name and io.name != name.encode ('utf-8') :
                     d ['name'] = name.encode ('utf-8')
-                if args.update :
-                    db.internal_order.set (id, **d)
-                if args.verbose :
-                    print ( "Updating internal_order%s (%s): %s"
-                          % (id, io.order_number, d)
-                          )
+                if d :
+                    if args.update :
+                        db.internal_order.set (id, **d)
+                    if args.verbose :
+                        print ( "Updating internal_order%s (%s): %s"
+                              % (id, io.order_number, d)
+                              )
             except KeyError :
                 if args.update :
                     db.internal_order.create \
