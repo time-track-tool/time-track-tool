@@ -62,7 +62,7 @@
     );
    props python:
     [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
-     if utils.search_allowed (db, request, 'user', k [0])
+     if k [0] in pdict and utils.search_allowed (db, request, 'user', k [0])
     ]
    "
   tal:condition="context/is_view_ok">
