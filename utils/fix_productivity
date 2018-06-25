@@ -1,0 +1,24 @@
+#!/usr/bin/python
+import sys
+import os
+from roundup            import instance
+from roundup.exceptions import Reject
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+tps = db.time_project_status.filter (None, dict (active = True))
+for k in db.time_project.filter (None, dict (status = tps)) :
+    tp = db.time_project.getnode (k)
+    wps = db.time_wp.filter (None, dict (project = tp.id))
+    for wpid in wps :
+        wp = db.time_wp.getnode (wpid)
+        if wp.cost_center != tp.cost_center :
+            print tp.name, wp.name
+            try :
+                db.time_wp.set (wpid, cost_center = tp.cost_center)
+            except Reject as msg :
+                print (msg)
+
+db.commit ()
+
