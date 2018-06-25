@@ -88,8 +88,8 @@
                , mprops [1].prop._value
                , mprops [2].prop._value
                )
-          ; flexi python: utils.flexi_alliquot
-               (db._db, mprops [0].prop._value, mprops [1].prop._value)
+          ; ctype python: utils.get_current_ctype
+              (db._db, mprops [0].prop.id, mprops [1].prop._value)
           ">
         <td tal:content="leavedays"/>
         <td tal:condition="python:
@@ -107,9 +107,10 @@
             (   do_remaining
             and mprops [4].prop.plain() not in ('submitted', 'cancel requested')
             )"/>
-        <td tal:content="flexi"/>
+        <td tal:content="python: utils.flexi_alliquot
+            (db._db, mprops [0].prop._value, mprops [1].prop._value, ctype)"/>
         <td tal:content="python: utils.flexi_remain
-            (db._db, mprops [0].prop._value, mprops [1].prop._value)"/>
+            (db._db, mprops [0].prop._value, mprops [1].prop._value, ctype)"/>
         <td tal:content="python: utils.avg_hours_per_week_this_year
             (db._db, mprops [0].prop._value, mprops [1].prop._value)"/>
         <td tal:content="structure python: buttons.generate (mprops [4])"/>

@@ -663,12 +663,12 @@ def need_hr_approval \
             if first_day.year != last_day.year :
                 while fd.year != last_day.year :
                     eoy = common.end_of_year (fd)
-                    rem = flexi_remain (db, user, fd)
+                    rem = flexi_remain (db, user, fd, ctype)
                     dur = leave_days (db, user, fd, eoy)
                     if rem - dur < 0 :
                         return True
                     fd = eoy + common.day
-            rem = flexi_remain (db, user, fd)
+            rem = flexi_remain (db, user, fd, ctype)
             dur = leave_days (db, user, fd, last_day)
             return rem - dur < 0
         else :
@@ -711,7 +711,15 @@ def vacation_params (db, user, date, vc, hv = False) :
     return yday, pd, carry, ltot
 # end def vacation_params
 
-def flexi_alliquot (db, user, date_in_year) :
+def get_current_ctype (db, user, dt = None) :
+    if dt is None :
+        dt = roundup.date.Date ('.')
+    dyn   = user_dynamic.get_user_dynamic (db, user, dt)
+    ctype = dyn.contract_type
+    return ctype
+# end def get_current_ctype
+
+def flexi_alliquot (db, user, date_in_year, ctype) :
     """ Loop over all dyn records in this year and use only those with
         all-in set. For those we count the days and compute the
         year-alliquot number of max_flexitime days.
@@ -722,7 +730,7 @@ def flexi_alliquot (db, user, date_in_year) :
     dsecs = 0.0
     ds    = 24 * 60 * 60
     for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
-        if not dyn.all_in :
+        if not dyn.all_in or dyn.contract_type != ctype :
             continue
         vf = dyn.valid_from
         if vf < y :
@@ -786,10 +794,10 @@ def get_all_in_ctypes (db, user, y) :
     return ctypes
 # end def get_all_in_ctypes
 
-def flexi_remain (db, user, date_in_year) :
+def flexi_remain (db, user, date_in_year, ctype) :
     y     = common.start_of_year (date_in_year)
     eoy   = common.end_of_year   (y)
-    fa    = flexi_alliquot (db, user, date_in_year)
+    fa    = flexi_alliquot (db, user, date_in_year, ctype)
     acpt  = db.leave_status.lookup ('accepted')
     cnrq  = db.leave_status.lookup ('cancel requested')
     if not fa :
@@ -799,17 +807,18 @@ def flexi_remain (db, user, date_in_year) :
     if not dyn :
         dyn = user_dynamic.first_user_dynamic (db, user, y)
     while dyn :
-        b = dyn.valid_from
-        if b < y :
-            b = y
-        e = dyn.valid_to
-        if e > eoy or not e :
-            e = eoy
-        else :
-            e -= common.day
-        ct = dyn.contract_type
-        if dyn.all_in :
-            sd += flexitime_submission_days (db, user, ct, b, e, acpt, cnrq)
+        if dyn.contract_type == ctype :
+            b = dyn.valid_from
+            if b < y :
+                b = y
+            e = dyn.valid_to
+            if e > eoy or not e :
+                e = eoy
+            else :
+                e -= common.day
+            ct = dyn.contract_type
+            if dyn.all_in :
+                sd += flexitime_submission_days (db, user, ct, b, e, acpt, cnrq)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
     return fa - sd
 # end def flexi_remain

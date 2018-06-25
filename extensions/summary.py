@@ -1793,10 +1793,10 @@ class Vacation_Report (_Report) :
                                 (db, u, ctype, fd, d, st_subm)
                     if 'flexi_max' in self.fields :
                         container ['flexi_max'] = \
-                            vacation.flexi_alliquot (db, u, fd)
+                            vacation.flexi_alliquot (db, u, fd, ctype)
                     if 'flexi_rem' in self.fields :
                         container ['flexi_rem'] = \
-                            vacation.flexi_remain (db, u, fd) or ''
+                            vacation.flexi_remain (db, u, fd, ctype) or ''
                     if 'special_leave' in self.fields :
                         container ['special_leave'] = \
                             vacation.special_submission_days \

@@ -578,6 +578,7 @@ def init (instance) :
     reg ('flexi_alliquot',               vacation.flexi_alliquot)
     reg ('flexi_remain',                 vacation.flexi_remain)
     reg ('avg_hours_per_week_this_year', avg_hours)
+    reg ('get_current_ctype',            vacation.get_current_ctype)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)
 # end def init
