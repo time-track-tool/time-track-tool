@@ -298,8 +298,13 @@ def compute_approvals (db, pr, do_create) :
 
 def has_pr_role (db, uid, roleid) :
     r = db.pr_approval_order.getnode (roleid)
+    # For speed reasons check direct user
     if uid in r.users :
         return True
+    # Check including delegated and substituted approvals
+    for u in r.users :
+        if uid in common.approval_by (db, u) :
+            return True
     return False
 # end def has_pr_role
 

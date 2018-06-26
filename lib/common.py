@@ -299,37 +299,45 @@ def get_uids_with_role (db, role) :
 # end def get_uids_with_role
 
 def subst_active (db, user) :
-    if 'subst_until' in db.user.properties () :
+    if 'subst_until' in db.user.properties :
         if user.subst_until and user.subst_until > Date ('.') :
             return True
-    elif 'subst_active' in db.user.properties () :
+    elif 'subst_active' in db.user.properties :
         return bool (user.subst_active)
 # end def subst_active
 
-def approval_by (db, userid) :
+def approval_by (db, userid, add_original = True, only_subs = False) :
     """ We allow the userid, an id to which approvals are delegated or
         active substitutes of the two. If only_subs only substitutes are
-        checked.
+        checked. If add_original is specified, we add the original user
+        before clearance_by replacement.
     """
+    if only_subs :
+        add_original = False
+    if not userid :
+        return []
     ap = db.user.get (userid, 'clearance_by') or userid
     clearance = [ap]
-    if ap != userid :
+    if ap != userid and add_original :
         clearance.append (userid)
     subst = []
     for cl in clearance :
         user = db.user.getnode (cl)
         if user.substitute and subst_active (db, user) :
             subst.append (user.substitute)
-    clearance.extend (subst)
+    if only_subs :
+        clearance = subst
+    else :
+        clearance.extend (subst)
     return clearance
 # end def approval_by
 
-def tt_clearance_by (db, userid) :
+def tt_clearance_by (db, userid, add_original = True, only_subs = False) :
     assert (userid)
     sv = db.user.get (userid, 'supervisor')
     if not sv :
         return []
-    return approval_by (db, sv)
+    return approval_by (db, sv, add_original, only_subs)
 # end def tt_clearance_by
 
 def week_from_date (date) :

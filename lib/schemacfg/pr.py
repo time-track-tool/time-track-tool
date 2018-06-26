@@ -718,7 +718,10 @@ def security (db, ** kw) :
         ap = db.pr_approval.filter (None, dict (purchase_request = itemid))
         for id in ap :
             a = db.pr_approval.getnode (id)
-            if a.user == userid or a.deputy == userid :
+            # User or deputy or delegated?
+            if userid in common.approval_by (db, a.user) :
+                return True
+            if userid in common.approval_by (db, a.deputy) :
                 return True
             if a.role_id and prlib.has_pr_role (db, userid, a.role_id) :
                 return True
@@ -796,6 +799,8 @@ def security (db, ** kw) :
     def approval_undecided (db, userid, itemid) :
         """ User is allowed to change status of undecided approval if
             they are the owner/deputy or have appropriate role.
+            In addition this is allowed if they have a delegated
+            approval or are an active substitute.
         """
         if not itemid or itemid < 1 :
             return False
@@ -805,8 +810,8 @@ def security (db, ** kw) :
         st_open      = db.pr_status.lookup ('open')
         st_approving = db.pr_status.lookup ('approving')
         if  (   ap.status == und
-            and (  ap.user   == userid
-                or ap.deputy == userid
+            and (  userid in common.approval_by (db, ap.user)
+                or userid in common.approval_by (db, ap.deputy)
                 or (ap.role_id and prlib.has_pr_role (db, userid, ap.role_id))
                 )
             and pr.status in (st_open, st_approving)

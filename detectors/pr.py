@@ -483,15 +483,21 @@ def change_pr_approval (db, cl, nodeid, new_values) :
 def nosy_for_approval (db, app, add = False) :
     nosy = {}
     if app.user :
-        nosy [app.user] = 1
+        for k in common.approval_by (db, app.user, add_original = not add) :
+            nosy [k] = 1
     # Don't add deputy to nosy
     nosy_dd = {}
     if app.role_id :
         ao = db.pr_approval_order.getnode (app.role_id)
-        nosy_dd = ao.users
+        subst = []
+        for u in ao.users :
+            # Do not include user replaced by clearance_by (delegation)
+            # in the mailing list.
+            subst.extend (common.approval_by (db, u, add_original = not add))
+        nosy_dd = subst
     elif app.role :
         nosy_dd = common.get_uids_with_role (db, app.role)
-        # If we're adding users, filter by unwanted messages
+    # If we're adding users, filter by unwanted messages
     if add and nosy_dd :
         nosy_dd = dict.fromkeys \
             (u for u in nosy_dd if not db.user.get (u, 'want_no_messages'))
