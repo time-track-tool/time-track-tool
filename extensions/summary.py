@@ -628,7 +628,7 @@ class _Report (autosuper) :
     def supi_clearance (self, user) :
         supi = user
         while supi :
-            clr  = common.clearance_by (self.db, supi)
+            clr  = common.tt_clearance_by (self.db, supi)
             if self.uid in clr :
                 return True
             supi = self.db.user.get (supi, 'supervisor')

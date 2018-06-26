@@ -255,16 +255,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
     is_hr      = common.user_has_role (db, uid, 'hr')
     old_status = cl.get (nodeid, 'status')
     status     = new_values.get ('status', old_status)
-    supervisor = db.user.get (user, 'supervisor')
-    if supervisor : # if no supervisor nobody can do it
-        clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
-        clearers   = [db.user.get (clearance, 'substitute')]
-        if not db.user.get (clearance, 'subst_active') :
-            clearers = []
-        clearers.append (clearance)
-        may_give_clearance = uid in clearers
-    else :
-        may_give_clearance = False
+    may_give_clearance = uid in common.tt_clearance_by (db, user)
 
     vs_exists = False
     st_accp = db.leave_status.lookup ('accepted')
@@ -531,7 +522,7 @@ def leave_wp (db, dr, wp, start, end, duration) :
     vs = vs [0]
     if vs.status != db.leave_status.lookup ('accepted') :
         return False
-    clearer = common.clearance_by (db, dr.user)
+    clearer = common.tt_clearance_by (db, dr.user)
     uid     = db.getuid ()
     ld      = vacation.leave_duration (db, dr.user, dr.date)
     if tp.max_hours is not None :

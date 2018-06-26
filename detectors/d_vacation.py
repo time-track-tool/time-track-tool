@@ -211,7 +211,7 @@ def check_submission (db, cl, nodeid, new_values) :
                 if old_status == 'open' and new_status == 'cancelled' :
                     ok = True
             elif not ok :
-                clearer = common.clearance_by (db, user)
+                clearer = common.tt_clearance_by (db, user)
                 dyn     = user_dynamic.get_user_dynamic (db, user, first_day)
                 ctype   = dyn.contract_type
                 hr_only = vacation.need_hr_approval \
@@ -470,7 +470,7 @@ def handle_crq_or_submit (db, vs, now, conf_string, hr_only) :
     user    = db.user.getnode (vs.user)
     # always send to supervisor (and/or substitute), too.
     emails  = [db.user.get (x, 'address')
-               for x in common.clearance_by (db, vs.user)
+               for x in common.tt_clearance_by (db, vs.user)
               ]
     if hr_only :
         emails.extend \

@@ -155,7 +155,7 @@ class Leave_Buttons (object) :
                 ctype     = dyn.contract_type
                 need_hr   = vacation.need_hr_approval \
                     (db, tp, self.user, ctype, first_day, last_day, stname)
-                if  (   self.uid in common.clearance_by (self.db, self.user)
+                if  (   self.uid in common.tt_clearance_by (self.db, self.user)
                     and not need_hr
                     ) :
                     for b in self.approve_buttons [stname] :

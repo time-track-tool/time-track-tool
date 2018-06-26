@@ -298,20 +298,39 @@ def get_uids_with_role (db, role) :
     return users
 # end def get_uids_with_role
 
-def clearance_by (db, userid, only_subs = False) :
+def subst_active (db, user) :
+    if 'subst_until' in db.user.properties () :
+        if user.subst_until and user.subst_until > Date ('.') :
+            return True
+    elif 'subst_active' in db.user.properties () :
+        return bool (user.subst_active)
+# end def subst_active
+
+def approval_by (db, userid) :
+    """ We allow the userid, an id to which approvals are delegated or
+        active substitutes of the two. If only_subs only substitutes are
+        checked.
+    """
+    ap = db.user.get (userid, 'clearance_by') or userid
+    clearance = [ap]
+    if ap != userid :
+        clearance.append (userid)
+    subst = []
+    for cl in clearance :
+        user = db.user.getnode (cl)
+        if user.substitute and subst_active (db, user) :
+            subst.append (user.substitute)
+    clearance.extend (subst)
+    return clearance
+# end def approval_by
+
+def tt_clearance_by (db, userid) :
     assert (userid)
     sv = db.user.get (userid, 'supervisor')
     if not sv :
         return []
-    ap = db.user.get (sv, 'clearance_by') or sv
-    su = db.user.get (ap, 'substitute')
-    clearance = [ap]
-    if su and db.user.get (ap, 'subst_active') :
-        if only_subs :
-            return [su]
-        clearance.append (su)
-    return clearance
-# end def clearance_by
+    return approval_by (db, sv)
+# end def tt_clearance_by
 
 def week_from_date (date) :
     """ Return start and end of week from give date

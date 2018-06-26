@@ -481,7 +481,6 @@ def init (instance) :
     reg ("sorted",                       u_sorted)
     reg ("weekend_allowed",              weekend_allowed)
     reg ("approval_for",                 approval_for)
-    reg ("clearance_by",                 common.clearance_by)
     reg ("user_has_role",                common.user_has_role)
     reg ("welcome",                      welcome)
     reg ("monthstart_twoweeksago",       common.monthstart_twoweeksago)

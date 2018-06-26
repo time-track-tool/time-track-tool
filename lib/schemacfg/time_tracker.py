@@ -30,7 +30,7 @@
 #
 
 from roundup.hyperdb import Class
-from common          import clearance_by
+from common          import tt_clearance_by
 from freeze          import frozen
 from roundup.date    import Interval
 from schemacfg       import schemadef
@@ -682,7 +682,7 @@ def security (db, ** kw) :
         ownerid   = db.daily_record.get (itemid, 'user')
         if not ownerid :
             return False
-        clearance = clearance_by (db, ownerid)
+        clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
     # end def approver_daily_record
 
@@ -727,7 +727,7 @@ def security (db, ** kw) :
            approvals are delegated.
         """
         ownerid   = db.leave_submission.get (itemid, 'user')
-        clearance = clearance_by (db, ownerid)
+        clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
     # end def approval_for_time_record
 
@@ -815,7 +815,7 @@ def security (db, ** kw) :
         """
         dr        = db.time_record.get  (itemid, 'daily_record')
         ownerid   = db.daily_record.get (dr, 'user')
-        clearance = clearance_by (db, ownerid)
+        clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
     # end def approval_for_time_record
 
