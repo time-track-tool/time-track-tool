@@ -431,6 +431,8 @@ class _Test_Case_Summary (_Test_Case) :
             , vacation_yearly     = 25
             , do_leave_process    = True
             )
+        self.twsn = self.db.time_wp_summary_no.create \
+            ( name = "TWSN1", order = 1)
         self.dep = self.db.department.create \
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
@@ -702,13 +704,14 @@ class _Test_Case_Summary (_Test_Case) :
         self.wps = []
         for i in xrange (40) :
             wp = self.db.time_wp.create \
-                ( name           = 'Work Package %s' % i
-                , project        = self.normal_tp
-                , time_start     = date.Date ('2004-01-01')
-                , travel         = True
-                , responsible    = '1'
-                , bookers        = [self.user1, self.user2]
-                , cost_center    = self.cc
+                ( name               = 'Work Package %s' % i
+                , project            = self.normal_tp
+                , time_start         = date.Date ('2004-01-01')
+                , travel             = True
+                , responsible        = '1'
+                , bookers            = [self.user1, self.user2]
+                , cost_center        = self.cc
+                , time_wp_summary_no = self.twsn
                 )
             self.wps.append (wp)
         self.vacation_wp = self.db.time_wp.create \

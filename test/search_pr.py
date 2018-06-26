@@ -787,6 +787,12 @@ properties = \
           , [ 'admin', 'procurement'
             ]
           )
+        , ( 'purchasing_agents'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'roles'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -985,6 +991,9 @@ properties = \
         , ( 'alternate_addresses'
           , ['admin', 'procurement-admin', 'user_view']
           )
+        , ( 'clearance_by'
+          , ['admin', 'procurement-admin', 'user_view']
+          )
         , ( 'csv_delimiter'
           , ['admin', 'procurement-admin', 'user_view']
           )
@@ -1022,6 +1031,12 @@ properties = \
             , 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
+          )
+        , ( 'subst_until'
+          , ['admin', 'procurement-admin', 'user_view']
+          )
+        , ( 'substitute'
+          , ['admin', 'procurement-admin', 'user_view']
           )
         , ( 'supervisor'
           , ['admin', 'procurement-admin', 'user_view']
