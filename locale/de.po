@@ -3775,6 +3775,9 @@ msgstr "Vertretung von %(Classname)s zum Bestätigen von Zeitaufzeichnungen"
 msgid "subst_active"
 msgstr "Vertretung aktiv"
 
+msgid "subst_until"
+msgstr "Vertretung bis"
+
 msgid ""
 "This field is set to \"yes\" for enabling the field\n"
 "             \"Substitute\" for delegating time record approval.\n"

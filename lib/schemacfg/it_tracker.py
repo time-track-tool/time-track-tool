@@ -208,7 +208,8 @@ def security (db, ** kw) :
             , "firstname", "id", "job_description", "lastname"
             , "lunch_duration", "lunch_start", "nickname"
             , "pictures", "position", "queries", "realname", "room", "sex"
-            , "status", "subst_active", "substitute", "supervisor", "timezone"
+            , "status", "subst_active", "subst_until", "substitute"
+            , "supervisor", "timezone"
             , "title", "username", "home_directory", "login_shell"
             , "samba_home_drive", "samba_home_path"
             )

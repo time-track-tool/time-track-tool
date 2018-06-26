@@ -41,6 +41,8 @@ def init (db, Ext_Class, Link, Boolean, String, ** kw) :
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( supervisor             = Link      ("user")
+                , substitute             = Link      ("user")
+                , clearance_by           = Link      ("user")
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

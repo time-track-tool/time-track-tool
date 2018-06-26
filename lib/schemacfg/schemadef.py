@@ -181,6 +181,7 @@ def allow_user_details (db, role, permission, *additional_props) :
         , 'realname'
         , 'room'
         , 'subst_active'
+        , 'subst_until'
         , 'substitute'
         , 'timezone'
         , 'title'

@@ -278,6 +278,7 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( want_no_messages       = Boolean   ()
+                , subst_until            = Date      ()
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

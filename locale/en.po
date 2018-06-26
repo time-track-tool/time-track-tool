@@ -4000,6 +4000,9 @@ msgstr ""
 msgid "subst_active"
 msgstr "Substitute active"
 
+msgid "subst_until"
+msgstr "Substitute until"
+
 msgid ""
 "This field is set to \"yes\" for enabling the field\n"
 "             \"Substitute\" for delegating time record approval.\n"

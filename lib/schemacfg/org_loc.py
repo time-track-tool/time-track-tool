@@ -114,9 +114,7 @@ def init \
             self.update_properties \
                 ( firstname              = String    ()
                 , lastname               = String    ()
-                , substitute             = Link      ("user")
                 , subst_active           = Boolean   ()
-                , clearance_by           = Link      ("user")
                 , room                   = Link      ("room")
                 , title                  = String    ()
                 , position               = Link      ("position")

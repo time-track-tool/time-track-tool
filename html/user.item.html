@@ -104,7 +104,11 @@
      </td>
     </tr>
     <tal:block tal:condition="python:
-         'room' in bclass.properties and context.room.is_view_ok ()">
+         ('room' in bclass.properties and context.room.is_view_ok ())
+         or ('substitute' in bclass.properties
+            and context.substitute.is_view_ok ()
+            )
+         ">
      <tr tal:condition="python:'org_location' in bclass.properties">
       <th tal:content="structure python:
           utils.fieldname ('user', 'org_location')"/>
@@ -227,10 +231,16 @@
        </tal:block>
       </td>
      </tr>
-     <tr tal:condition="python:'subst_active' in bclass.properties">
+     <tr tal:condition="python:'subst_active' in    bclass.properties and
+                               'subst_until' not in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           ('user', 'subst_active')"/>
       <td tal:content="structure context/subst_active/field"/>
+     </tr>
+     <tr tal:condition="python:'subst_until' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'subst_until')"/>
+      <td tal:content="structure context/subst_until/field"/>
      </tr>
      <tr tal:condition="python:'clearance_by' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
