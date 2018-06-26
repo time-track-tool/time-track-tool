@@ -506,20 +506,23 @@ def nosy_for_approval (db, app, add = False) :
 # end def nosy_for_approval
 
 def fix_nosy (db, cl, nodeid, new_values) :
-    nosy = dict.fromkeys (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
-    rq   = new_values.get ('requester', cl.get (nodeid, 'requester'))
-    chg  = False
+    nosy  = dict.fromkeys (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
+    onosy = dict (nosy)
+    rq    = new_values.get ('requester', cl.get (nodeid, 'requester'))
     if rq not in nosy :
         nosy [rq] = 1
-        chg = True
     # Allow creator to remove her/himself after initial sign&send
     pr_approving = db.pr_status.lookup ('approving')
     if 'status' in new_values and new_values ['status'] == pr_approving :
         cr = cl.get (nodeid, 'creator')
         if cr not in nosy :
             nosy [cr] = 1
-            chg = True
-    if chg :
+    # Agent should always be kept on nosy list, might vanish due to
+    # removal by nosy_for_approval
+    pan = 'purchasing_agents'
+    agents = new_values.get (pan, cl.get (nodeid, pan))
+    nosy.update (dict.fromkeys (agents))
+    if onosy != nosy :
         new_values ['nosy'] = nosy.keys ()
 # end def fix_nosy
 
@@ -781,7 +784,6 @@ def init (db) :
     db.purchase_request.audit   ("set",    requester_chg,   priority = 70)
     db.purchase_request.audit   ("set",    reopen,          priority = 90)
     db.purchase_request.audit   ("set",    change_pr)
-    db.purchase_request.audit   ("set",    fix_nosy)
     db.purchase_request.audit   ("set",    check_late_changes)
     db.purchase_request.audit   ("create", check_dd)
     db.purchase_request.audit   ("set",    check_dd)
@@ -791,6 +793,7 @@ def init (db) :
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
     db.purchase_request.audit   ("set",    check_io)
+    db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.react        ("set",    approved_pr_approval)

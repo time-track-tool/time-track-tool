@@ -340,7 +340,7 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ( "user", "Edit", ["Procurement-Admin"]
-          , ("roles", "password")
+          , ("roles", "password", "substitute", "subst_until", "clearance_by")
           )
         , ( "user", "View", ["User"]
           , ("username", "id", "realname", "status")
@@ -1041,5 +1041,14 @@ def security (db, ** kw) :
         , properties = ('pr_risks',)
         )
     db.security.addPermissionToRole ('Procurement', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user'
+        , check       = schemadef.own_user_record
+        , description = "Users are allowed to view some of their details"
+        , properties  = ('supervisor', 'clearance_by', 'want_no_messages')
+        )
+    db.security.addPermissionToRole ('User', p)
 
 # end def security
