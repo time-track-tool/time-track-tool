@@ -4880,6 +4880,12 @@ msgstr "Flexi-Time (approved)"
 msgid "flexi_sub"
 msgstr "Flexi-Time (submitted)"
 
+msgid "flexi_max"
+msgstr "Yearly max. Flexi-Time (all in)"
+
+msgid "flexi_rem"
+msgstr "Unused yearly max. Flexi-Time (all in)"
+
 msgid "special_leave"
 msgstr "Special leave (approved)"
 
@@ -6672,4 +6678,7 @@ msgstr "Board role"
 
 msgid "organisations"
 msgstr "Organisations"
+
+msgid "max_flexitime"
+msgstr "max. Flexi-Time"
 

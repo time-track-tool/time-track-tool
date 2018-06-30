@@ -338,6 +338,7 @@ def init \
         , additional_hours      = Number    ()
         , overtime_period       = Link      ("overtime_period")
         , sap_cc                = Link      ("sap_cc")
+        , max_flexitime         = Number    ()
         )
 
     leave_status = Class \
@@ -405,6 +406,8 @@ def init \
         , approved_submissions  = String    ()
         , flexi_time            = String    ()
         , flexi_sub             = String    ()
+        , flexi_max             = String    ()
+        , flexi_rem             = String    ()
         , special_leave         = String    ()
         , special_sub           = String    ()
         , show_obsolete         = Boolean   ()

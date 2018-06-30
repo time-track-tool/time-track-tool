@@ -109,6 +109,10 @@ Role "external":
  Users are allowed to edit some of their details (Edit for "user": ('csv_delimiter', 'hide_message_files', 'password', 'timezone') only)
  Users are allowed to view some of their details (View for "user": ('activity', 'actor', 'creation', 'creator', 'firstname', 'lastname', 'realname', 'username') only)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
+Role "facility":
+ User is allowed Edit on (Edit for "user": ('room',) only)
+ User is allowed to create room (Create for "room" only)
+ User is allowed to edit room (Edit for "room" only)
 Role "hr":
   (Edit for "overtime_period": ('name', 'order') only)
  Create (Create for "user_contact" only)

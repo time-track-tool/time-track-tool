@@ -1566,8 +1566,10 @@ class Vacation_Report (_Report) :
         , (""'additional_submitted', 9)
         , (""'flexi_time',          10)
         , (""'flexi_sub',           11)
-        , (""'special_leave',       12)
-        , (""'special_sub',         13)
+        , (""'flexi_max',           12)
+        , (""'flexi_rem',           13)
+        , (""'special_leave',       14)
+        , (""'special_sub',         15)
         )
     header_classes = \
         { 'remaining vacation' : 'emphasized'
@@ -1606,6 +1608,8 @@ class Vacation_Report (_Report) :
             , 'additional_submitted'
             , 'flexi_time'
             , 'flexi_sub'
+            , 'flexi_max'
+            , 'flexi_rem'
             , 'special_leave'
             , 'special_sub'
             , 'department'
@@ -1787,6 +1791,12 @@ class Vacation_Report (_Report) :
                         container ['flexi_sub'] = \
                             vacation.flexitime_submission_days \
                                 (db, u, ctype, fd, d, st_subm)
+                    if 'flexi_max' in self.fields :
+                        container ['flexi_max'] = \
+                            vacation.flexi_alliquot (db, u, fd, ctype)
+                    if 'flexi_rem' in self.fields :
+                        container ['flexi_rem'] = \
+                            vacation.flexi_remain (db, u, fd, ctype) or ''
                     if 'special_leave' in self.fields :
                         container ['special_leave'] = \
                             vacation.special_submission_days \

@@ -216,6 +216,8 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati) :
         first_day = vs.first_day
         last_day  = vs.last_day
         dyn = user_dynamic.get_user_dynamic (db, user, first_day)
+        if not dyn :
+            continue
         if dyn.contract_type != ctype :
             continue
         if first_day < start :
@@ -649,10 +651,28 @@ def need_hr_approval \
     (db, tp, user, ctype, first_day, last_day, stname, booked = False) :
     if tp.approval_hr :
         return True
-    if not tp.is_vacation :
-        return False
     if stname != 'submitted' :
         return False
+    if not tp.is_vacation :
+        # Flexitime
+        if tp.no_overtime and tp.max_hours == 0 :
+            dyn = user_dynamic.get_user_dynamic (db, user, first_day)
+            if not dyn or not dyn.all_in :
+                return False
+            fd = first_day
+            if first_day.year != last_day.year :
+                while fd.year != last_day.year :
+                    eoy = common.end_of_year (fd)
+                    rem = flexi_remain (db, user, fd, ctype)
+                    dur = leave_days (db, user, fd, eoy)
+                    if rem - dur < 0 :
+                        return True
+                    fd = eoy + common.day
+            rem = flexi_remain (db, user, fd, ctype)
+            dur = leave_days (db, user, fd, last_day)
+            return rem - dur < 0
+        else :
+            return False
     day = common.day
     ed  = next_yearly_vacation_date (db, user, ctype, last_day) - day
     vac = remaining_vacation (db, user, ctype, ed)
@@ -690,5 +710,117 @@ def vacation_params (db, user, date, vc, hv = False) :
     ltot  = ltot  or 0.0
     return yday, pd, carry, ltot
 # end def vacation_params
+
+def get_current_ctype (db, user, dt = None) :
+    if dt is None :
+        dt = roundup.date.Date ('.')
+    dyn   = user_dynamic.get_user_dynamic (db, user, dt)
+    ctype = dyn.contract_type
+    return ctype
+# end def get_current_ctype
+
+def flexi_alliquot (db, user, date_in_year, ctype) :
+    """ Loop over all dyn records in this year and use only those with
+        all-in set. For those we count the days and compute the
+        year-alliquot number of max_flexitime days.
+    """
+    y     = common.start_of_year (date_in_year)
+    eoy   = common.end_of_year   (y)
+    flex  = 0.0
+    dsecs = 0.0
+    ds    = 24 * 60 * 60
+    for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
+        if not dyn.all_in or dyn.contract_type != ctype :
+            continue
+        vf = dyn.valid_from
+        if vf < y :
+            vf = y
+        vt = dyn.valid_to
+        if not vt or vt > eoy + common.day :
+            vt = eoy + common.day
+        flex  += (vt - vf).as_seconds () * (dyn.max_flexitime or 0)
+        dsecs += (vt - vf).as_seconds ()
+    assert dsecs / ds <= 366
+    if not flex :
+        return 0.0
+    days  = float ((eoy + common.day - y).as_seconds () / ds)
+    flex /= ds
+    return ceil (flex / days)
+# end def flexi_alliquot
+
+def avg_hours_per_week_this_year (db, user, date_in_year) :
+    """ Loop over all dyn records in this year and use only those with
+        all-in set. For those we count the hours and compute the
+        average over all all-in days.
+    """
+    y     = common.start_of_year (date_in_year)
+    eoy   = common.end_of_year   (y)
+    now   = roundup.date.Date ('.')
+    if eoy > now :
+        eoy = now
+    hours = 0.0
+    dsecs = 0.0
+    ds    = 24 * 60 * 60
+    for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
+        if not dyn.all_in :
+            continue
+        vf = dyn.valid_from
+        if vf < y :
+            vf = y
+        vt = dyn.valid_to
+        if not vt or vt > eoy + common.day :
+            vt = eoy + common.day
+        dsecs += (vt - vf).as_seconds ()
+        drs = db.daily_record.filter \
+            (None, dict (date = common.pretty_range (vf, vt), user = user))
+        for drid in drs :
+            dr  = db.daily_record.getnode (drid)
+            dur = user_dynamic.update_tr_duration (db, dr)
+            hours += dur
+    days = dsecs / ds
+    assert days <= 366
+    if not days :
+        return 0
+    avgday = hours / float (days)
+    return avgday * 7
+# end def avg_hours_per_week_this_year
+
+def get_all_in_ctypes (db, user, y) :
+    ctypes = set ()
+    for dyn in user_dynamic.user_dynamic_year_iter (db, user, y) :
+        if not dyn.all_in :
+            continue
+        ctypes.add (dyn.contract_type)
+    return ctypes
+# end def get_all_in_ctypes
+
+def flexi_remain (db, user, date_in_year, ctype) :
+    y     = common.start_of_year (date_in_year)
+    eoy   = common.end_of_year   (y)
+    fa    = flexi_alliquot (db, user, date_in_year, ctype)
+    acpt  = db.leave_status.lookup ('accepted')
+    cnrq  = db.leave_status.lookup ('cancel requested')
+    if not fa :
+        return 0
+    sd = 0
+    dyn = user_dynamic.get_user_dynamic (db, user, y)
+    if not dyn :
+        dyn = user_dynamic.first_user_dynamic (db, user, y)
+    while dyn :
+        if dyn.contract_type == ctype :
+            b = dyn.valid_from
+            if b < y :
+                b = y
+            e = dyn.valid_to
+            if e > eoy or not e :
+                e = eoy
+            else :
+                e -= common.day
+            ct = dyn.contract_type
+            if dyn.all_in :
+                sd += flexitime_submission_days (db, user, ct, b, e, acpt, cnrq)
+        dyn = user_dynamic.next_user_dynamic (db, dyn)
+    return fa - sd
+# end def flexi_remain
 
 ### __END__

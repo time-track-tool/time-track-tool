@@ -76,6 +76,10 @@ Role "doc_admin":
  User is allowed to edit doc_status (Edit for "doc_status" only)
  User is allowed to edit product_type (Edit for "product_type" only)
  User is allowed to edit reference (Edit for "reference" only)
+Role "facility":
+ User is allowed Edit on (Edit for "user": ('room',) only)
+ User is allowed to create room (Create for "room" only)
+ User is allowed to edit room (Edit for "room" only)
 Role "hr":
   (Edit for "overtime_period": ('name', 'order') only)
  User is allowed Edit on (Edit for "daily_record": ('required_overtime', 'weekend_allowed') only)

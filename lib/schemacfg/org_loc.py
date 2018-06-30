@@ -173,6 +173,7 @@ def security (db, ** kw) :
         , ("HR-Org-Location", "Human Resources team in this Org-Location")
         , ("Controlling",     "Controlling")
         , ("Office",          "Member of Office")
+        , ("Facility",        "Role to edit room assignments")
         ]
 
     #     classname        allowed to view   /  edit
@@ -183,13 +184,14 @@ def security (db, ** kw) :
         , ("organisation", ["User"],  ["HR", "Controlling"])
         , ("org_location", ["User"],  ["HR"])
         , ("position",     ["User"],  ["HR"])
-        , ("room",         ["User"],  ["HR", "Office"])
+        , ("room",         ["User"],  ["HR", "Office", "Facility"])
         , ("sex",          ["User"],  [])
     #   , ("user", See below -- individual fields)
         ]
 
     prop_perms = \
         [ ( "user", "View", ["Controlling"], ("roles",))
+        , ( "user", "Edit", ["Facility"],    ("room",))
         ]
 
     schemadef.register_roles             (db, roles)

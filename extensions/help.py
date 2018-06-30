@@ -1225,6 +1225,11 @@ _helptext          = \
           '''
       , maturity_index_table
       ]
+    , ""'max_flexitime'               :
+      [ ""'''Maximum %(Property)s must be set here if user has all in
+             flag set.
+          '''
+      ]
     , ""'max_hours'                   :
       [ ""'''If given for a %(Classname)s restricts the number of hours
              you can book on this %(Classname)s for a single day.

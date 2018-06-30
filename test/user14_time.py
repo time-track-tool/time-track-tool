@@ -25,6 +25,7 @@ def import_data_14 (db, user, dep, olo) :
          , org_location       = olo
          , overtime_period    = otp
          , user               = user
+         , max_flexitime      = 5
          )
      dr = db.daily_record.create \
          ( user = user
