@@ -196,6 +196,11 @@ class LDAP_Roundup_Sync (object) :
             storing the primary ldap attribute and an optional secondary
             attribute of type list.
         """
+        dontsync = getattr (self.cfg, 'LDAP_DO_NOT_SYNC', '')
+        if dontsync :
+            dontsync = dict.fromkeys (dontsync.split (','))
+        else :
+            dontsync = {}
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
         props    = self.db.user.properties
@@ -215,28 +220,28 @@ class LDAP_Roundup_Sync (object) :
             , None
             , False
             )
-        if 'department' in props :
+        if 'department' in props and 'department' not in dontsync :
             attr_u ['department'] = \
                 ( 'department'
                 , get_name
                 , self.cls_lookup (self.db.department)
                 , False
                 )
-        if 'firstname' in props :
+        if 'firstname' in props and 'firstname' not in dontsync :
             attr_u ['firstname'] = \
                 ( 'givenname'
                 , 0
                 , lambda x, y : x.get (y, [None])[0]
                 , False
                 )
-        if 'lastname' in props :
+        if 'lastname' in props and 'lastname' not in dontsync :
             attr_u ['lastname'] = \
                 ( 'sn'
                 , 0
                 , lambda x, y : x.get (y, [None])[0]
                 , False
                 )
-        if 'nickname' in props :
+        if 'nickname' in props and 'nickname' not in dontsync :
             attr_u ['nickname'] = \
                 ( 'initials'
                 , lambda x, y : x [y].upper ()
@@ -244,35 +249,35 @@ class LDAP_Roundup_Sync (object) :
                 , True
                 )
         # FIXME: Test this for user lookup via guid
-        if 'username' in props :
+        if 'username' in props and 'username' not in dontsync :
             attr_u ['username'] = \
                 ( 'uid'
                 , 0
                 , lambda x, y : x.get (y, [None])[0]
                 , False
                 )
-        if 'org_location' in props :
+        if 'org_location' in props and 'org_location' not in dontsync :
             attr_u ['org_location'] = \
                 ( 'company'
                 , get_name
                 , self.cls_lookup (self.db.org_location)
                 , False
                 )
-        if 'pictures' in props :
+        if 'pictures' in props and 'pictures' not in dontsync :
             attr_u ['pictures'] = \
                 ( 'thumbnailPhoto'
                 , get_picture
                 , self.ldap_picture
                 , False
                 )
-        if 'position' in props :
+        if 'position' in props and 'position' not in dontsync :
             attr_u ['position'] = \
                 ( 'title'
                 , get_position
                 , self.cls_lookup (self.db.position, 'position')
                 , False
                 )
-        if 'realname' in props :
+        if 'realname' in props and 'realname' not in dontsync :
             g = self.get_realname
             if 'firstname' in props :
                 g = None
@@ -282,7 +287,7 @@ class LDAP_Roundup_Sync (object) :
                 , g
                 , False
                 )
-        if 'room' in props :
+        if 'room' in props and 'room' not in dontsync :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
                 , get_name
@@ -292,28 +297,28 @@ class LDAP_Roundup_Sync (object) :
                     )
                 , False
                 )
-        if 'substitute' in props :
+        if 'substitute' in props and 'substitute' not in dontsync :
             attr_u ['substitute'] = \
                 ( 'secretary'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
                 , False
                 )
-        if 'supervisor' in props :
+        if 'supervisor' in props and 'supervisor' not in dontsync :
             attr_u ['supervisor'] = \
                 ( 'manager'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
                 , False
                 )
-        if 'title' in props :
+        if 'title' in props and 'title' not in dontsync :
             attr_u ['title'] = \
                 ( 'carLicense'
                 , 1
                 , lambda x, y : x.get (y, [None])[0]
                 , False
                 )
-        if 'guid' in props :
+        if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
                 ( 'objectGUID'
                 , set_guid
