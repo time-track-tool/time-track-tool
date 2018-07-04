@@ -240,7 +240,12 @@
      <tr tal:condition="python:'subst_until' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           ('user', 'subst_until')"/>
-      <td tal:content="structure context/subst_until/field"/>
+      <td>
+       <span tal:content="structure python:context.subst_until.field
+             (popcal = False)"/>
+       <span tal:content="structure python:context.subst_until.popcal
+             (form = 'user_form')"/>
+      </td>
      </tr>
      <tr tal:condition="python:'clearance_by' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
