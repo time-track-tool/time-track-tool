@@ -27,7 +27,8 @@ class PR_Reminder (object) :
         for uid in self.reminder_by_user :
             user = self.db.user.getnode (uid)
             print "User: %s" % formataddr ((user.realname, user.address))
-            for pr, pend in self.reminder_by_user [uid] :
+            for prid in self.reminder_by_user [uid] :
+                pr, pend = self.reminder_by_user [uid][prid]
                 print "    purchase_request%s: Pending %s days" % (pr.id, pend)
     # end def print_reminder
 
@@ -77,14 +78,21 @@ class PR_Reminder (object) :
                 else :
                     assert 0
                 if ap.user :
-                    users = [db.user.getnode (ap.user)]
+                    u1 = common.approval_by (db, ap.user, only_subs = True)
+                    u2 = []
                     if ap.deputy :
-                        users.append (db.user.getnode (ap.deputy))
+                        u2 = common.approval_by \
+                            (db, ap.deputy, only_subs = True)
+                    users = [db.user.getnode (u) for u in u1 + u2]
                 else :
                     r = db.pr_approval_order.getnode (ap.role_id)
-                    users = [db.user.getnode (u) for u in r.users]
+                    users = []
+                    for ru in r.users :
+                        u1 = common.approval_by (db, ru, only_subs = True)
+                        users.extend (db.user.getnode (u) for u in u1)
             else :
                 users = []
+            users = [u for u in users if not u.want_no_messages]
             users.extend (self.get_agents (pr))
             # Requester gets the reminder only if status != approved
             if pr.status != status_apr :
@@ -105,8 +113,8 @@ class PR_Reminder (object) :
                     ) :
                     for u in users :
                         if u.id not in self.reminder_by_user :
-                            self.reminder_by_user [u.id] = []
-                        self.reminder_by_user [u.id].append ([pr, pend])
+                            self.reminder_by_user [u.id] = {}
+                        self.reminder_by_user [u.id][pr.id] = (pr, pend)
         if self.args.mail :
             self.send_mail ()
         else :
@@ -133,7 +141,8 @@ class PR_Reminder (object) :
             user = self.db.user.getnode (uid)
             message ['To'] = to = formataddr ((user.realname, user.address))
             body = []
-            for pr, pend in self.reminder_by_user [uid] :
+            for prid in self.reminder_by_user [uid] :
+                pr, pend = self.reminder_by_user [uid][prid]
                 body.append \
                     ("purchase_request%s: Pending %s days" % (pr.id, pend))
                 body.append (pr.title)

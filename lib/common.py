@@ -326,7 +326,8 @@ def approval_by (db, userid, add_original = True, only_subs = False) :
         if user.substitute and subst_active (db, user) :
             subst.append (user.substitute)
     if only_subs :
-        clearance = subst
+        if subst :
+            clearance = subst
     else :
         clearance.extend (subst)
     return clearance
