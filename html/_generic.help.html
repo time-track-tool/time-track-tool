@@ -1,20 +1,47 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html tal:define="property request/form/property/value">
+<html tal:define=" property request/form/property/value
+                 ; vals python:
+                     [ 'form[field].value'
+                     , '\''
+                       + (request.form.getvalue ('text_preview') or '')
+                       + '\''
+                     ][request.form.getvalue ('text_preview') is not None]
+                 ; widgettype python: request.form ['type'].value
+                 ">
   <head>
       <link rel="stylesheet" type="text/css" href="@@file/style.css" />
       <meta http-equiv="Content-Type"
        tal:attributes="content string:text/html;; charset=${request/client/charset}" />
       <tal:block tal:condition="python:request.form.has_key('property')">
       <title i18n:translate=""><tal:x i18n:name="property"
-       tal:content="property" i18n:translate="" />
-        help -
-        <span i18n:name="tracker" tal:replace="config/TRACKER_NAME" />
-      </title>
+       tal:content="property" i18n:translate="" /> help - <span i18n:name="tracker"
+       tal:replace="config/TRACKER_NAME" /></title>
       <script language="Javascript" type="text/javascript"
           tal:content="structure string:
           // this is the name of the field in the original form that we're working on
           form  = window.opener.document.${request/form/form/value};
-          field  = '${request/form/property/value}';">
+          field  = '${request/form/property/value}';
+          type = '${widgettype}';
+          vals = ${vals}; ">
+      </script>
+      <script language="Javascript" type="text/javascript">
+        function do_link (item) {
+            location.href = item.href + '&text_preview='
+                 + document.frm_help.text_preview.value;
+            return false;
+        }
+        function mass_select (item) {
+            grps = item.id.split ('-');
+            grps.splice (0, 1);
+            grp = grps.join ('-');
+            console.log (grp);
+            sel = document.querySelectorAll ('[grp=grp-' + grp + ']');
+            console.log (item.checked);
+            for (var i = 0; i < sel.length; i++) {
+                sel [i].checked = item.checked;
+            }
+            updatePreview();
+        }
       </script>
       <script src="@@file/help_controls.js" type="text/javascript"><!--
       //--></script>
@@ -22,6 +49,7 @@
   </head>
  <body class="body" onload="resetList();">
  <form name="frm_help" tal:attributes="action request/base"
+       onsubmit="updateList(); window.close();"
        tal:define="batch request/batch;
                    props python:request.form['properties'].value.split(',')">
 
@@ -47,7 +75,8 @@
             'form': request.form['form'].value,
             'type': request.form['type'].value,
             '@startwith':prev.first, '@pagesize':prev.size})"
-           i18n:translate="" >&lt;&lt; previous</a>
+           i18n:translate=""
+           onclick="return do_link (this);">&lt;&lt; previous</a>
         &nbsp;
        </th>
        <th i18n:translate=""><span tal:replace="batch/start" i18n:name="start"
@@ -63,7 +92,7 @@
             'form': request.form['form'].value,
             'type': request.form['type'].value,
             '@startwith':next.first, '@pagesize':next.size})"
-           i18n:translate="" >next &gt;&gt;</a>
+           i18n:translate="" onclick="return do_link (this);">next &gt;&gt;</a>
         &nbsp;
        </th>
       </tr>
@@ -72,25 +101,49 @@
      <table class="classhelp">
        <tr>
            <th>&nbsp;<b>x</b></th>
-           <th tal:repeat="prop props"
-               tal:content="structure python: utils.fieldname
-                  (request.classname, prop)" i18n:translate=""></th>
+           <th tal:repeat="prop props" tal:content="prop" i18n:translate=""/>
        </tr>
-       <tr tal:repeat="item batch">
-         <tal:block tal:define="attr python:item[props[0]]" >
+       <tal:block tal:repeat="item batch">
+        <tal:block tal:define=" gids python:
+             [(item [g[1]].id or '') for g in request.group];">
+         <tr tal:condition="python:
+             request.group
+             and batch.propchanged (*(g[1] for g in request.group))">
+           <th tal:condition="python: widgettype == 'radio'">&nbsp;</th>
+           <th tal:condition="python: widgettype != 'radio'">
+             <input name="groupselect"
+                 onclick="mass_select(this);"
+                 tal:attributes="type python:request.form['type'].value;
+                                 id python: 'id_grp-%s' % '-'.join
+                                    (x for x in gids);
+                                 "/>
+           </th>
+           <th class="group" tal:attributes="colspan python:
+               len(request.form['properties'].value.split (','))">
+            <tal:block tal:repeat="gr request/group">
+             <tal:block tal:content="python:gr[1] + ': ' + str(item [gr[1]])"/>
+            </tal:block>
+           </th>
+         </tr>
+         <tr tal:define="attr python:item[props[0]];">
            <td>
              <input name="check"
                  onclick="updatePreview();"
                  tal:attributes="type python:request.form['type'].value;
-                                 value attr; id string:id_$attr" />
+                                 grp python: 'grp-%s' % '-'.join
+                                    (x for x in gids);
+                                 value attr;
+                                 id string:id_$attr;
+                                 "/>
              </td>
              <td tal:repeat="prop props">
                  <label class="classhelp-label"
                         tal:attributes="for string:id_$attr"
                         tal:content="python:item[prop]"></label>
              </td>
-           </tal:block>
-       </tr>
+         </tr>
+        </tal:block>
+       </tal:block>
        <tr>
            <th>&nbsp;<b>x</b></th>
            <th tal:repeat="prop props" tal:content="prop" i18n:translate=""></th>
