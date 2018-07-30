@@ -75,13 +75,14 @@
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
       <td>
         <span tal:replace="structure python:context.sap_cc.field ()"/>
-        <span tal:replace="structure python:db.sap_cc.classhelp
-          ( 'name,description,responsible,deputy'
-          , property  = 'sap_cc'
-          , inputtype = 'radio'
-          , width     = '600'
-          , filter    = cc_filt
-          )"/>
+        <span tal:condition="python: context.sap_cc.is_edit_ok ()"
+              tal:replace="structure python:db.sap_cc.classhelp
+              ( 'name,description,responsible,deputy'
+              , property  = 'sap_cc'
+              , inputtype = 'radio'
+              , width     = '600'
+              , filter    = cc_filt
+              )"/>
       </td>
      </tr>
      <tr>
