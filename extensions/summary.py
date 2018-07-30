@@ -451,9 +451,9 @@ class WP_Container (Comparable_Container, dict) :
         elif klass.classname == 'cost_center_group' :
             ccg = klass.getnode (id)
         elif klass.classname == 'reporting_group' :
-            rg  = klass.getnode (id)
+            rg  = [klass.getnode (id)]
         elif klass.classname == 'product_family' :
-            pf  = klass.getnode (id)
+            pf  = [klass.getnode (id)]
         elif klass.classname == 'project_type' :
             pt  = klass.getnode (id)
         if tp :
@@ -464,17 +464,27 @@ class WP_Container (Comparable_Container, dict) :
                 pt  = klass.db.project_type.getnode    (tp.project_type)
             if tp.organisation :
                 org = klass.db.organisation.getnode    (tp.organisation)
+            rg = [klass.db.reporting_group.getnode (x)
+                  for x in tp.reporting_group
+                 ]
+            pf = [klass.db.product_family.getnode (x)
+                  for x in tp.product_family
+                 ]
         if cc :
             self.cost_center_id = ('cost_center', cc.id)
             ccg = klass.db.cost_center_group.getnode (cc.cost_center_group)
         if ccg :
             self.cost_center_group_id  = ('cost_center_group', ccg.id)
         if rg :
-            self.reporting_group_id    = ('reporting_group', rg.id)
-            self.reporting_group       = ('reporting_group', rg.name)
+            self.reporting_group_id    = \
+                ('reporting_group', list (sorted (x.id   for x in rg)))
+            self.reporting_group       = \
+                ('reporting_group', list (sorted (x.name for x in rg)))
         if pf :
-            self.product_family_id     = ('product_family', pf.id)
-            self.product_family        = ('product_family', pf.name)
+            self.product_family_id     = \
+                ('product_family', list (sorted (x.id   for x in pf)))
+            self.product_family        = \
+                ('product_family', list (sorted (x.name for x in pf)))
         if pt :
             self.project_type_id       = ('project_type', pt.id)
             self.project_type          = ('project_type', pt.name)
@@ -551,6 +561,8 @@ class _Report (autosuper) :
             return ('  <td style="text-align:right;">%2.02f</td>' % item)
         if isinstance (item, str) :
             return ('  <td>%s</td>' % item)
+        if isinstance (item, list) :
+            return '   <td>%s</td>' % ', '.join (i.as_html () for i in item)
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
 
@@ -581,6 +593,8 @@ class _Report (autosuper) :
             return '%2.02f' % item
         if isinstance (item, type (0.0)) :
             return '%2.02f' % item
+        if isinstance (item, list) :
+            return ','.join (str (i) for i in item)
         return str (item)
     # end def csv_item
 
@@ -1166,12 +1180,24 @@ class Summary_Report (_Report) :
                 if col :
                     try :
                         cls = getattr (self.htmldb, col [0])
-                        itm = cls.getItem (col [1])
-                        col = self.utils.ExtProperty \
-                            ( self.utils
-                            , itm.name
-                            , item = itm
-                            )
+                        if isinstance (col [1], list) :
+                            cols = []
+                            for i in col [1] :
+                                itm = cls.getItem (i)
+                                c = self.utils.ExtProperty \
+                                    ( self.utils
+                                    , itm.name
+                                    , item = itm
+                                    )
+                                cols.append (c)
+                            col = cols
+                        else :
+                            itm = cls.getItem (col [1])
+                            col = self.utils.ExtProperty \
+                                ( self.utils
+                                , itm.name
+                                , item = itm
+                                )
                     except AttributeError :
                         col = col [1]
                 line.append (formatter (col))
@@ -1181,13 +1207,26 @@ class Summary_Report (_Report) :
                 if col :
                     try :
                         cls = getattr (self.htmldb, col [0])
-                        itm = cls.getItem (col [1])
-                        col = self.utils.ExtProperty \
-                            ( self.utils
-                            , itm.name
-                            , item = itm
-                            , displayprop = 'id'
-                            )
+                        if isinstance (col [1], list) :
+                            cols = []
+                            for i in col [1] :
+                                itm = cls.getItem (i)
+                                c   = self.utils.ExtProperty \
+                                    ( self.utils
+                                    , itm.name
+                                    , item = itm
+                                    , displayprop = 'id'
+                                    )
+                                cols.append (c)
+                            col = cols
+                        else :
+                            itm = cls.getItem (col [1])
+                            col = self.utils.ExtProperty \
+                                ( self.utils
+                                , itm.name
+                                , item = itm
+                                , displayprop = 'id'
+                                )
                     except AttributeError :
                         col = col [1]
                 line.append (formatter (col))
