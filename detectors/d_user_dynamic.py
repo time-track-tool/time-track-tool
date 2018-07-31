@@ -291,6 +291,9 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         )
     flexi_fix = \
         new_values.keys () == ['max_flexitime'] and old_flexmax is None
+    vac_aliq = cl.get (nodeid, 'vac_aliq')
+    vac_aliq_fix = \
+        new_values.keys () == ['vac_aliq'] and vac_aliq is None
     if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
@@ -302,6 +305,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             or new_values != dict (overtime_period = otw.id)
             )
         and (db.getuid () != '1' or not flexi_fix)
+        and (db.getuid () != '1' or not vac_aliq_fix)
         and not vac_fix
         ) :
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
@@ -315,7 +319,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             check_ranges (cl, nodeid, user, val_from, val_to)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    if not vac_fix and not flexi_fix :
+    if not vac_fix and not flexi_fix and not vac_aliq_fix :
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from) :
@@ -543,6 +547,15 @@ def vacation_check (db, cl, nodeid, new_values) :
     new_values ['vacation_day']    = vd
 # end def vacation_check
 
+def olo_check (db, cl, nodeid, new_values) :
+    """ Require vac_aliq if do_leave_process is turned on """
+    lp = new_values.get ('do_leave_process')
+    if lp is None and nodeid :
+        lp = cl.get (nodeid, 'do_leave_process')
+    if lp :
+        common.require_attributes (_, cl, nodeid, new_values, 'vac_aliq')
+# end def olo_check
+
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -562,6 +575,8 @@ def init (db) :
     db.user_dynamic.react    ("set",    user_dyn_react)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
+    db.org_location.audit    ("create", olo_check)
+    db.org_location.audit    ("set",    olo_check)
 # end def init
 
 ### __END__ user_dynamic

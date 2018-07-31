@@ -313,6 +313,13 @@ def init \
         )
     overtime_period.setkey ("name")
 
+    vac_aliq = Class \
+        ( db
+        , ''"vac_aliq"
+        , name                  = String    ()
+        )
+    vac_aliq.setkey ("name")
+
     ud = Class \
         ( db
         , ''"user_dynamic"
@@ -326,7 +333,7 @@ def init \
         , vacation_yearly       = Number    ()
         , vacation_month        = Number    ()
         , vacation_day          = Number    ()
-        , contract_type         = Link      ('contract_type')
+        , contract_type         = Link      ('contract_type', do_journal = "no")
         , daily_worktime        = Number    ()
         , weekly_hours          = Number    ()
         , supp_weekly_hours     = Number    ()
@@ -338,13 +345,16 @@ def init \
         , hours_fri             = Number    ()
         , hours_sat             = Number    ()
         , hours_sun             = Number    ()
-        , org_location          = Link      ("org_location")
-        , department            = Link      ("department")
+        , org_location          = Link      ("org_location", do_journal = "no")
+        , department            = Link      ("department",   do_journal = "no")
         , all_in                = Boolean   ()
         , additional_hours      = Number    ()
-        , overtime_period       = Link      ("overtime_period")
+        , overtime_period       = Link      ( "overtime_period"
+                                            , do_journal = "no"
+                                            )
         , sap_cc                = Link      ("sap_cc")
         , max_flexitime         = Number    ()
+        , vac_aliq              = Link      ("vac_aliq",     do_journal = "no")
         )
 
     leave_status = Class \
@@ -477,6 +487,7 @@ def init \
                 ( vacation_legal_year        = Boolean   ()
                 , vacation_yearly            = Number    ()
                 , do_leave_process           = Boolean   ()
+                , vac_aliq                   = Link      ("vac_aliq")
                 )
             ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -623,6 +634,10 @@ def security (db, ** kw) :
           )
         , ( "user_dynamic"
           , ["HR"]
+          , []
+          )
+        , ( "vac_aliq"
+          , ["User"]
           , []
           )
         , ( "vacation_correction"
