@@ -18,6 +18,7 @@
     , utils.ExtProperty (utils, pdict ['durations_allowed'])
     , utils.ExtProperty (utils, pdict ['weekend_allowed'])
     , utils.ExtProperty (utils, pdict ['vacation_yearly'])
+    , utils.ExtProperty (utils, pdict ['vac_aliq'])
     , utils.ExtProperty (utils, pdict ['daily_worktime'])
     , utils.ExtProperty (utils, pdict ['weekly_hours'])
     , utils.ExtProperty (utils, pdict ['all_in'])
@@ -44,6 +45,10 @@
         , help_props = ('name', 'description', 'responsible', 'deputy')
         , filter     = dict (valid = True)
         )
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty (utils, pdict ['activity'])
+    , utils.ExtProperty (utils, pdict ['actor'])
     );
    "
   tal:condition="context/is_view_ok">
