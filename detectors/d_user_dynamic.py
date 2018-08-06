@@ -129,6 +129,24 @@ def check_vacation (db, cl, nodeid, attr, new_values) :
     elif vacation <= 0 :
         raise Reject \
             (_ ( "%(attr)s must be positive or empty") % locals ())
+    if vacation :
+        vac_aliq = None
+        if 'vac_aliq' in new_values :
+            vac_aliq = new_values ['vac_aliq']
+        elif nodeid :
+            vac_aliq = cl.get (nodeid, 'vac_aliq')
+        if not vac_aliq :
+            # org_location is checked to exist
+            if 'org_location' in new_values :
+                olo = new_values ['org_location']
+            else :
+                olo = cl.get (nodeid, 'org_location')
+            olo = db.org_location.getnode (olo)
+            if olo.vac_aliq :
+                new_values ['vac_aliq'] = olo.vac_aliq
+            else :
+                # Take first value
+                new_values ['vac_aliq'] = '1'
 # end def check_vacation
 
 def hours_iter () :
@@ -283,17 +301,15 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     otw = common.overtime_period_week (db)
     nvk = list (sorted (new_values.keys ()))
     old_flexmax = cl.get (nodeid, 'max_flexitime')
-    vac_fix = \
-        (   (  nvk == ['vacation_day', 'vacation_month']
-            or nvk == ['vacation_day', 'vacation_month', 'vacation_yearly']
-            )
+    vac_all  = ('vacation_day', 'vacation_month', 'vacation_yearly', 'vac_aliq')
+    vac_aliq = cl.get (nodeid, 'vac_aliq')
+    vac_fix  = \
+        (   set (nvk) <= set (vac_all)
+        and 'vac_aliq' not in nvk or vac_aliq is None
         and db.getuid () == '1'
         )
     flexi_fix = \
         new_values.keys () == ['max_flexitime'] and old_flexmax is None
-    vac_aliq = cl.get (nodeid, 'vac_aliq')
-    vac_aliq_fix = \
-        new_values.keys () == ['vac_aliq'] and vac_aliq is None
     if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
@@ -305,7 +321,6 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             or new_values != dict (overtime_period = otw.id)
             )
         and (db.getuid () != '1' or not flexi_fix)
-        and (db.getuid () != '1' or not vac_aliq_fix)
         and not vac_fix
         ) :
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
@@ -319,7 +334,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             check_ranges (cl, nodeid, user, val_from, val_to)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    if not vac_fix and not flexi_fix and not vac_aliq_fix :
+    if not vac_fix and not flexi_fix :
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from) :
