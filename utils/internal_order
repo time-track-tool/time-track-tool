@@ -13,20 +13,20 @@ def main () :
     cmd.add_argument \
         ( '-d', '--directory'
         , dest    = 'dir'
-        , help    = 'Tracker instance directory (%(default)s)'
+        , help    = 'Tracker instance directory default: "%(default)s"'
         , default = '.'
         )
     cmd.add_argument \
         ( '-D', '--delimiter'
         , dest    = 'delimiter'
-        , help    = 'CSV delimiter character (tab)'
-        , default = '\t'
+        , help    = 'CSV delimiter character default: "%(default)s"'
+        , default = ';'
         )
     cmd.add_argument \
         ( '-E', '--encoding'
         , dest    = 'encoding'
-        , help    = 'CSV encoding (%(default)s)'
-        , default = 'iso-8859-15'
+        , help    = 'CSV encoding default: %(default)s'
+        , default = 'utf-8'
         )
     cmd.add_argument \
         ( "-u", "--user"
@@ -56,11 +56,11 @@ def main () :
     st = 'Internal Order: Statistical orders'
     
     for line in r :
-        if line ['Type Name'].decode (args.encoding) != st :
+        if line ['T003P~TXT'].decode (args.encoding) != st :
             continue
-        if line ['Order'] :
-            num  = str (int (line ['Order'].decode  (args.encoding)))
-            name = line ['Order Name'].decode (args.encoding)
+        if line ['AUFK~AUFNR'] :
+            num  = str (int (line ['AUFK~AUFNR'].decode  (args.encoding)))
+            name = line ['AUFK~KTEXT'].decode (args.encoding)
 
             try :
                 id = db.internal_order.lookup (num.encode ('utf-8'))
