@@ -133,6 +133,36 @@ class Vacation_Setup (object) :
                         , date     = self.startdate
                         , days     = days
                         )
+                wpfrm, wpto = self.args.rebook_wp.split (',')
+                wpfrm = db.time_wp.getnode (wpfrm)
+                wpto  = db.time_wp.getnode (wpto)
+                trid = db.time_record.filter \
+                    ( None
+                    , { 'daily_record.user' : uid
+                      , 'daily_record.date' : self.startdate.pretty 
+                                                ('%Y-%m-%d;')
+                      , 'wp' : wpfrm.id
+                      }
+                    )
+                if trid :
+                    print \
+                        ( "Rebooked %s timerecs for %s"
+                        % (len (trid), username)
+                        )
+                    self.db.sql \
+                        ( "update _time_record set _wp=%s where id in %s;"
+                        , args = (wpto.id, tuple (trid))
+                        )
+                # Finally remove the user from the old wp and add to new one
+                users = dict.fromkeys (wpfrm.bookers)
+                if uid in users :
+                    del users [uid]
+                    db.time_wp.set (wpfrm.id, bookers = users.keys ())
+                users = dict.fromkeys (wpto.bookers)
+                if uid not in users :
+                    users [uid] = 1
+                    db.time_wp.set (wpto.id, bookers = users.keys ())
+
                 self.freeze (uid)
         db.commit ()
     # end def modify_users
@@ -206,6 +236,12 @@ def main () :
         ( "-o", "--org-location"
         , help    = "Org/Location(s) to change, default: %s" % ','.join (olos)
         , action  = 'append'
+        )
+    cmd.add_argument \
+        ( "-r", "--rebook-wp"
+        , help    = 'Pair of WP-numbers, to re-book "from,to", '
+                    'default: %(default)s'
+        , default = '13234,8976'
         )
     cmd.add_argument \
         ( "-y", "--yearly-vacation"
