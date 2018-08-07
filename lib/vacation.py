@@ -525,28 +525,71 @@ def consolidated_vacation \
     if dyn is None :
         return None
     vac = float (vc.days)
+    msg = "vac_aliq None for user_dynamic%s" % dyn.id
+    assert dyn.vac_aliq, msg
+    va = db.vac_aliq.getnode (dyn.vac_aliq)
+    assert va.name in ('Daily', 'Monthly')
+    # Need to skip first period without a dyn user record
+    # sd is the current start date for german aliquotation
+    # We subtract 1 day to easily compare the day of the ending-date
+    # with the day of the start date
+    sd = d
+    if dyn.valid_from > d :
+        sd = d = dyn.valid_from
+        sd -= common.day
     while dyn and d < ed :
         if dyn.valid_from > d :
-            d = dyn.valid_from
+            # We want to check if the days that are lost here whenever a
+            # jump in dyn user records occurs are OK for monthly aliqotation
+            sd = d = dyn.valid_from
+            sd -= common.day
             continue
         assert not dyn.valid_to or dyn.valid_to > d
         eoy = roundup.date.Date ('%s-12-31' % d.year)
         msg = "vacation_yearly None for user_dynamic%s" % dyn.id
         assert dyn.vacation_yearly is not None, msg
+        msg = ( "vac_aliq changes w/o absolute vac_corr for user_dynamic%s"
+              % dyn.id
+              )
+        assert dyn.vac_aliq == va.id, msg
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to < eoy :
-            yd = float (common.ydays (dyn.valid_to))
-            vac += interval_days (dyn.valid_to - d) * dyn.vacation_yearly / yd
+            if va.name == 'Daily' :
+                yd = float (common.ydays (dyn.valid_to))
+                vac += interval_days \
+                    (dyn.valid_to - d) * dyn.vacation_yearly / yd
+            else :
+                m1  = sd.month
+                m2  = dyn.valid_to.month
+                if dyn.valid_to.day < sd.day :
+                    m2 -= 1
+                sd = dyn.valid_to - common.day
+                vac += dyn.vacation_yearly * (m2 - m1) / 12.0
             dyn = vac_next_user_dynamic (db, dyn)
         elif eoy < ed :
-            yd = float (common.ydays (eoy))
-            iv = eoy + common.day - d
-            vac += interval_days (iv) * dyn.vacation_yearly / yd
+            if va.name == 'Daily' :
+                yd = float (common.ydays (eoy))
+                iv = eoy + common.day - d
+                vac += interval_days (iv) * dyn.vacation_yearly / yd
+            else :
+                m1 = sd.month
+                m2 = eoy.month
+                assert eoy.day >= sd.day
+                sd = eoy - common.day
+                vac += dyn.vacation_yearly * (m2 - m1) / 12.0
             d  = eoy + common.day
             if dyn.valid_to == d :
                 dyn = vac_next_user_dynamic (db, dyn)
         else :
-            yd = float (common.ydays (ed - common.day))
-            vac += interval_days (ed - d) * dyn.vacation_yearly / yd
+            if va.name == 'Daily' :
+                yd = float (common.ydays (ed - common.day))
+                vac += interval_days (ed - d) * dyn.vacation_yearly / yd
+            else :
+                m1 = sd.month
+                m2 = ed.month
+                if ed.day < sd.day :
+                    m2 -= 1
+                sd = ed
+                vac += dyn.vacation_yearly * (m2 - m1) / 12.0
             d = ed
     return vac
 # end def consolidated_vacation

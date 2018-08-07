@@ -123,9 +123,10 @@ class Vacation_Setup (object) :
                         print "Modify: %s/user_dynamic%s" % (username, dyn.id)
                         db.user_dynamic.set (dyn.id, **d)
                     dyn = user_dynamic.next_user_dynamic (db, dyn)
-                vc = db.vacation_correction.filter \
-                    (None, dict (absolute = True, user = uid))
-                if not vc :
+                vc = vacation.get_vacation_correction \
+                    (db, uid, date = self.startdate)
+                if not vc or vc.date < self.startdate :
+                    print ("Creating vacation correction for %s" % username)
                     db.vacation_correction.create \
                         ( absolute = True
                         , user     = uid
@@ -182,7 +183,7 @@ def main () :
         )
     cmd.add_argument \
         ( "-C", "--charset"
-        , help    = "Character set of vacation file"
+        , help    = "Character set of vacation file, default: %(default)s"
         , default = 'utf-8'
         )
     cmd.add_argument \
@@ -197,7 +198,8 @@ def main () :
         )
     cmd.add_argument \
         ( "-s", "--startdate"
-        , help    = "Start date of vacation for given Org/Location"
+        , help    = "Start date of vacation for given Org/Location, "
+                    "default: %(default)s"
         , default = '2018-01-01'
         )
     cmd.add_argument \
@@ -221,11 +223,13 @@ def main () :
     sys.path.insert (1, os.path.join (args.dir, 'lib'))
     global user_dynamic
     import user_dynamic
+    global vacation
+    import vacation
 
     vs = Vacation_Setup (db, args)
     vs.create_vac_aliq ()
     vs.fix_olos ()
-    #vs.fix_old_dynuser_recs ()
+    vs.fix_old_dynuser_recs ()
     vs.modify_users ()
 # end def main
 
