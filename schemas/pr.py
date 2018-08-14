@@ -43,6 +43,7 @@ schemas = \
     ( 'company'
     , 'time_project'
     , 'org_min'
+    , 'sync_id'
     , 'user'
     , 'ldap'
     , 'pr'

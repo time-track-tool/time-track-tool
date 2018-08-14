@@ -50,6 +50,8 @@ def init \
     , Department_Class
     , Location_Class
     , Organisation_Class
+    , Time_Project_Status_Class
+    , SAP_CC_Class
     , ** kw
     ) :
     export = {}
@@ -242,6 +244,10 @@ def init \
         # end def __init__
     # end class Time_Project_Class
     Time_Project_Class (db, ''"time_project")
+
+    Time_Project_Status_Class (db, ''"time_project_status")
+
+    SAP_CC_Class (db, ''"sap_cc")
 
     time_record = Class \
         ( db

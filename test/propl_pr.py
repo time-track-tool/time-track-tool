@@ -22,6 +22,7 @@ properties = \
     , ( 'location'
       , [ 'country'
         , 'name'
+        , 'sync_id'
         ]
       )
     , ( 'msg'
@@ -40,6 +41,7 @@ properties = \
       , [ 'location'
         , 'name'
         , 'organisation'
+        , 'sync_id'
         ]
       )
     , ( 'organisation'
@@ -47,6 +49,7 @@ properties = \
         , 'description'
         , 'may_purchase'
         , 'name'
+        , 'sync_id'
         ]
       )
     , ( 'part_of_budget'
@@ -206,6 +209,7 @@ properties = \
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
+        , 'sync_id'
         , 'valid'
         ]
       )
@@ -224,12 +228,14 @@ properties = \
         , 'purchasing_agents'
         , 'responsible'
         , 'status'
+        , 'sync_id'
         ]
       )
     , ( 'time_project_status'
       , [ 'active'
         , 'description'
         , 'name'
+        , 'sync_id'
         ]
       )
     , ( 'user'

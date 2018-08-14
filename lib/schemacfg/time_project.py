@@ -70,27 +70,41 @@ def init \
     # end class Time_Project_Class
     export.update (dict (Time_Project_Class = Time_Project_Class))
 
-    time_project_status = Class \
-        ( db
-        , ''"time_project_status"
-        , name                  = String    ()
-        , description           = String    ()
-        , active                = Boolean   ()
-        )
-    time_project_status.setkey ("name")
+    class Time_Project_Status_Class (Ext_Class) :
+        """ Create a time_project_status class with some default properties
+        """
 
-    sap_cc = Class \
-        ( db
-        , ''"sap_cc"
-        , name                  = String    ()
-        , description           = String    ()
-        , responsible           = Link      ("user")
-        , deputy                = Link      ("user")
-        , purchasing_agents     = Multilink ("user")
-        , valid                 = Boolean   ()
-        , organisation          = Link      ("organisation")
-        )
-    sap_cc.setkey ("name")
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( name                  = String    ()
+                , description           = String    ()
+                , active                = Boolean   ()
+                )
+            Ext_Class.__init__ (self, db, classname, ** properties)
+            self.setkey ("name")
+        # end def __init__
+    # end class Time_Project_Status_Class
+    export.update (dict (Time_Project_Status_Class = Time_Project_Status_Class))
+
+    class SAP_CC_Class (Ext_Class) :
+        """ Create a sap_cc class with some default properties
+        """
+
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( name                  = String    ()
+                , description           = String    ()
+                , responsible           = Link      ("user")
+                , deputy                = Link      ("user")
+                , purchasing_agents     = Multilink ("user")
+                , valid                 = Boolean   ()
+                , organisation          = Link      ("organisation")
+                )
+            Ext_Class.__init__ (self, db, classname, ** properties)
+            self.setkey ("name")
+        # end def __init__
+    # end class SAP_CC_Class
+    export.update (dict (SAP_CC_Class = SAP_CC_Class))
 
     return export
 # end def init

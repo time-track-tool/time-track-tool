@@ -50,6 +50,8 @@ def init \
     , Organisation_Class
     , Org_Location_Class
     , Time_Project_Class
+    , Time_Project_Status_Class
+    , SAP_CC_Class
     , ** kw
     ) :
     export = {}
@@ -269,6 +271,10 @@ def init \
         Department_Class   (db, ''"department")
     if 'time_project' not in db.classes :
         Time_Project_Class (db, ''"time_project")
+    if 'time_project_status' not in db.classes :
+        Time_Project_Status_Class (db, ''"time_project_status")
+    if 'sap_cc' not in db.classes :
+        SAP_CC_Class (db, ''"sap_cc")
 
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)

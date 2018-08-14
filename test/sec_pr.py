@@ -44,7 +44,7 @@ Role "procurement":
  User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
 Role "procurement-admin":
   (Search for "user" only)
- User is allowed Edit on (Edit for "user": ('roles', 'password') only)
+ User is allowed Edit on (Edit for "user": ('clearance_by', 'password', 'roles', 'subst_until', 'substitute') only)
  User is allowed Edit on (Edit for "user": ('want_no_messages',) only)
  User is allowed to access user (View for "user" only)
  User is allowed to cancel a PR if it is open (Edit for "purchase_request": ('messages', 'status') only)
@@ -114,7 +114,7 @@ Role "user":
  User is allowed to access time_project_status (View for "time_project_status" only)
  User is allowed to access user_status (View for "user_status" only)
  User is allowed to cancel their own PR (Edit for "purchase_request": ('status', 'messages', 'nosy') only)
- User is allowed to change status of undecided approval if they are the owner/deputy or have appropriate role (Edit for "pr_approval": ('status', 'msg') only)
+ User is allowed to change status of undecided approval if they are the owner/deputy or have appropriate role. In addition this is allowed if they have a delegated approval or are an active substitute (Edit for "pr_approval": ('msg', 'status') only)
  User is allowed to create file (Create for "file" only)
  User is allowed to create msg (Create for "msg" only)
  User is allowed to create pr_offer_item (Create for "pr_offer_item" only)
@@ -148,6 +148,7 @@ Role "user":
  Users are allowed to view if they have one of the view roles of the purchase type (Edit for "pr_offer_item": ('add_to_las', 'is_asset', 'pr_supplier', 'supplier') only)
  Users are allowed to view if they have one of the view roles of the purchase type (View for "pr_approval" only)
  Users are allowed to view if they have one of the view roles of the purchase type (View for "pr_offer_item" only)
+ Users are allowed to view some of their details (View for "user": ('clearance_by', 'supervisor', 'want_no_messages') only)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
 Role "user_view":
  User is allowed to access user (View for "user" only)
