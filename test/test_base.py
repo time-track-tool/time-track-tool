@@ -1061,22 +1061,22 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [0][8], 'testuser11')
         self.assertEqual (lines [0][9], 'Sum')
         self.assertEqual (lines [1][0], 'Work package A Project/Work Package 0')
-        self.assertEqual (lines [1][1], '')
+        self.assertEqual (lines [1][1], 'Family test')
         self.assertEqual (lines [1][2], 'Further Development')
-        self.assertEqual (lines [1][3], '')
-        self.assertEqual (lines [1][4], '')
+        self.assertEqual (lines [1][3], 'RG test')
+        self.assertEqual (lines [1][4], '1')
         self.assertEqual (lines [1][5], '2')
-        self.assertEqual (lines [1][6], '')
+        self.assertEqual (lines [1][6], '1')
         self.assertEqual (lines [1][7], 'WW 23/2013')
         self.assertEqual (lines [1][8], '5.00')
         self.assertEqual (lines [1][9], '5.00')
         self.assertEqual (lines [2][0], 'Work package A Project/Work Package 0')
-        self.assertEqual (lines [2][1], '')
+        self.assertEqual (lines [2][1], 'Family test')
         self.assertEqual (lines [2][2], 'Further Development')
-        self.assertEqual (lines [2][3], '')
-        self.assertEqual (lines [2][4], '')
+        self.assertEqual (lines [2][3], 'RG test')
+        self.assertEqual (lines [2][4], '1')
         self.assertEqual (lines [2][5], '2')
-        self.assertEqual (lines [2][6], '')
+        self.assertEqual (lines [2][6], '1')
         self.assertEqual (lines [2][7], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][8], '5.00')
         self.assertEqual (lines [2][9], '5.00')
@@ -1101,22 +1101,22 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [4][8], '1.00')
         self.assertEqual (lines [4][9], '1.00')
         self.assertEqual (lines [5][0], 'Work package Travel/Travel')
-        self.assertEqual (lines [5][1], '')
+        self.assertEqual (lines [5][1], 'Family xyzzy')
         self.assertEqual (lines [5][2], 'Support')
-        self.assertEqual (lines [5][3], '')
-        self.assertEqual (lines [5][4], '')
+        self.assertEqual (lines [5][3], 'RG xyzzy')
+        self.assertEqual (lines [5][4], '2')
         self.assertEqual (lines [5][5], '4')
-        self.assertEqual (lines [5][6], '')
+        self.assertEqual (lines [5][6], '2')
         self.assertEqual (lines [5][7], 'WW 24/2013')
         self.assertEqual (lines [5][8], '2.00')
         self.assertEqual (lines [5][9], '2.00')
         self.assertEqual (lines [6][0], 'Work package Travel/Travel')
-        self.assertEqual (lines [6][1], '')
+        self.assertEqual (lines [6][1], 'Family xyzzy')
         self.assertEqual (lines [6][2], 'Support')
-        self.assertEqual (lines [6][3], '')
-        self.assertEqual (lines [6][4], '')
+        self.assertEqual (lines [6][3], 'RG xyzzy')
+        self.assertEqual (lines [6][4], '2')
         self.assertEqual (lines [6][5], '4')
-        self.assertEqual (lines [6][6], '')
+        self.assertEqual (lines [6][6], '2')
         self.assertEqual (lines [6][7], '2013-06-01;2013-06-30')
         self.assertEqual (lines [6][8], '2.00')
         self.assertEqual (lines [6][9], '2.00')
@@ -1151,6 +1151,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [9][8], '8.00')
         self.assertEqual (lines [9][9], '8.00')
 
+        # keep .id columns
+        #   [ 'product_family.id'
+        #   , 'project_type.id'
+        #   , 'reporting_group.id'
+        #   , 'time_wp'
+        #   , 'user'
+        #   , 'summary'
+        #   ]
         del cols [4]
         del cols [2]
         del cols [0]
@@ -1167,16 +1175,16 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [0][5], 'testuser11')
         self.assertEqual (lines [0][6], 'Sum')
         self.assertEqual (lines [1][0], 'Work package A Project/Work Package 0')
-        self.assertEqual (lines [1][1], '')
+        self.assertEqual (lines [1][1], '1')
         self.assertEqual (lines [1][2], '2')
-        self.assertEqual (lines [1][3], '')
+        self.assertEqual (lines [1][3], '1')
         self.assertEqual (lines [1][4], 'WW 23/2013')
         self.assertEqual (lines [1][5], '5.00')
         self.assertEqual (lines [1][6], '5.00')
         self.assertEqual (lines [2][0], 'Work package A Project/Work Package 0')
-        self.assertEqual (lines [2][1], '')
+        self.assertEqual (lines [2][1], '1')
         self.assertEqual (lines [2][2], '2')
-        self.assertEqual (lines [2][3], '')
+        self.assertEqual (lines [2][3], '1')
         self.assertEqual (lines [2][4], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][5], '5.00')
         self.assertEqual (lines [2][6], '5.00')
@@ -1195,16 +1203,16 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [4][5], '1.00')
         self.assertEqual (lines [4][6], '1.00')
         self.assertEqual (lines [5][0], 'Work package Travel/Travel')
-        self.assertEqual (lines [5][1], '')
+        self.assertEqual (lines [5][1], '2')
         self.assertEqual (lines [5][2], '4')
-        self.assertEqual (lines [5][3], '')
+        self.assertEqual (lines [5][3], '2')
         self.assertEqual (lines [5][4], 'WW 24/2013')
         self.assertEqual (lines [5][5], '2.00')
         self.assertEqual (lines [5][6], '2.00')
         self.assertEqual (lines [6][0], 'Work package Travel/Travel')
-        self.assertEqual (lines [6][1], '')
+        self.assertEqual (lines [6][1], '2')
         self.assertEqual (lines [6][2], '4')
-        self.assertEqual (lines [6][3], '')
+        self.assertEqual (lines [6][3], '2')
         self.assertEqual (lines [6][4], '2013-06-01;2013-06-30')
         self.assertEqual (lines [6][5], '2.00')
         self.assertEqual (lines [6][6], '2.00')
@@ -1230,6 +1238,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [9][5], '8.00')
         self.assertEqual (lines [9][6], '8.00')
 
+        # Only product_family column
+        #   [ 'product_family'
+        #   ]
         del cols [2]
         del cols [1:]
         cols [0] = 'product_family'
@@ -1253,6 +1264,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [0][2], 'Time Period')
         self.assertEqual (lines [0][3], 'Sum')
 
+        # Only reporting_group column
+        #   [ 'reporting_group'
+        #   ]
         cols [0] = 'reporting_group'
         sr = summary.Summary_Report \
             (self.db, r, templating.TemplatingUtils (None))
@@ -1272,9 +1286,19 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [2][2], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][3], '2.00')
 
+        # Only product_family column
+        #   [ 'product_family'
+        #   ]
         cols [0] = 'product_family'
         fs ['product_family'] = '1'
         del fs ['reporting_group']
+        self.assertEqual \
+            ( fs
+            , { 'date': '2013-06-01;2013-06-30'
+              , 'product_family': '1'
+              , 'summary_type': [2, 4]
+              }
+            )
         sr = summary.Summary_Report \
             (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
@@ -1293,9 +1317,19 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [2][2], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][3], '5.00')
 
+        # Only project_type column
+        #   [ 'project_type'
+        #   ]
         cols [0] = 'project_type'
         fs ['project_type'] = '4'
         del fs ['product_family']
+        self.assertEqual \
+            ( fs
+            , { 'date': '2013-06-01;2013-06-30'
+              , 'project_type': '4'
+              , 'summary_type': [2, 4]
+              }
+            )
         sr = summary.Summary_Report \
             (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
@@ -1314,6 +1348,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [2][2], '2013-06-01;2013-06-30')
         self.assertEqual (lines [2][3], '2.00')
 
+        #   [ 'project_type'
+        #   , 'organisation.id'
+        #   , 'time_wp.id'
+        #   , 'time_wp'
+        #   ]
         cols.append ('organisation.id')
         cols.append ('time_wp.id')
         cols.append ('time_wp')
@@ -1353,6 +1392,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines [4][4], '2013-06-01;2013-06-30')
         self.assertEqual (lines [4][5], '2.00')
 
+        #   [ 'project_type'
+        #   , 'organisation'
+        #   , 'time_wp.id'
+        #   , 'time_wp'
+        #   ]
         cols [1] = 'organisation'
         self.assertEqual \
             (cols, ['project_type', 'organisation', 'time_wp.id', 'time_wp'])
