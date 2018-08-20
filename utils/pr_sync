@@ -278,11 +278,22 @@ class PR_Sync (autosuper) :
             if fixer :
                 fixer (item, id)
             propsearch = getattr (self, 'search_' + classname, None)
-            try :
-                lid = cls.lookup (self.fix_prop (item [key]))
-            except KeyError :
-                if propsearch :
-                    lid = propsearch (item, id)
+            lid = None
+            if 'sync_id' in cls.properties :
+                lids = cls.stringFind (sync_id = id)
+                assert len (lids) <= 1
+                if lids :
+                    lid = lids [0]
+                    self.verbose \
+                        ( "Found via sync_id: %s%s->%s%s"
+                        % (classname, id, classname, lid), level = 3
+                        )
+            if lid is None :
+                try :
+                    lid = cls.lookup (self.fix_prop (item [key]))
+                except KeyError :
+                    if propsearch :
+                        lid = propsearch (item, id)
             if valid :
                 self.verbose \
                     ("Syncing: %s%s %s" % (classname, id, item), level = 3)
@@ -292,14 +303,16 @@ class PR_Sync (autosuper) :
                         ( (k, self.fix_prop (item [k]))
                           for k in nonmapped if item [k] is not None
                         )
+                    if 'sync_id' in cls.properties :
+                        params ['sync_id'] = id
                     for k in mapped :
                         try :
                             v = self.map_id (k, item [k])
                         except KeyError :
                             if k in item :
                                 print \
-                                    ( "WARN: Not in map: %s %s:%s"
-                                    % (classname, k, item [k])
+                                    ( "WARN: Not in map: %s%s %s:%s"
+                                    % (classname, id, k, item [k])
                                     )
                             else :
                                 print \
@@ -339,6 +352,8 @@ class PR_Sync (autosuper) :
                                 roles [r] = 1
                         if roles != roles_old :
                             d ['roles'] = ','.join (roles.keys ())
+                    if 'sync_id' in cls.properties and litem.sync_id != id :
+                        d ['sync_id'] = id
                     for p in nonmapped :
                         ritem = self.fix_prop (item [p])
                         if ritem != litem [p] :
@@ -348,8 +363,8 @@ class PR_Sync (autosuper) :
                             v = self.map_id (p, item [p])
                         except KeyError :
                             print \
-                                ( "WARN: Not in map: %s %s:%s"
-                                % (classname, p, item [p])
+                                ( "WARN: Not in map: %s%s %s:%s"
+                                % (classname, id, p, item [p])
                                 )
                             v = None
                         if v is None :
@@ -357,7 +372,10 @@ class PR_Sync (autosuper) :
                         if v != litem [p] :
                             d [p] = v
                     if (d) :
-                        self.verbose ("Set: %s%s %s" % (classname, lid, d))
+                        self.verbose \
+                            ( "Set: %s%s->%s%s %s"
+                            % (classname, id, classname, lid, d)
+                            )
                         if self.update and update :
                             cls.set (lid, ** d)
                 self.idmap [classname][id] = lid
