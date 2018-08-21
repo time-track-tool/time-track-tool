@@ -103,20 +103,13 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'sap_reference')"/>
       <td tal:content="structure python:context.sap_reference.field ()"/>
-     <tr tal:define="prop python: context.sap_cc or context.time_project">
+     <tr>
       <th/>
       <td/>
       <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
           (classname, 'purchasing_agents')"/>
-       <td tal:condition="python: not context.purchasing_agents and prop"
-           tal:content="structure python: utils.ExtProperty
-        ( utils, prop
-        , item = context
-        , searchname = '%s.purchasing_agents' % prop._prop.classname
-        ).deref ().formatted ()"/>
-       <td tal:condition="python:context.purchasing_agents"
-           tal:content="structure python:context.purchasing_agents.field ()"/>
+       <td tal:content="structure python:context.purchasing_agents.field ()"/>
       </tal:block>
      </tr>
      <tr>

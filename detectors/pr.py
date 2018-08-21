@@ -225,7 +225,7 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
-                , 'pr_currency'
+                , 'pr_currency', 'purchasing_agents'
                 )
             dep = new_values.get ('department', cl.get (nodeid, 'department'))
             if dep and db.department.is_retired (dep) :
@@ -337,51 +337,92 @@ def set_agents (db, cl, nodeid, new_values) :
         Note that we do a check that the agents in sap_cc or
         time_project do have the necessary view roles of the
         purchase_type. Only if this check succeeds are agents added to
-        purchasin_agents and nosy.
+        purchasing_agents and nosy.
     """
+    force = False
     pr = None
     if nodeid :
         pr = cl.getnode (nodeid)
-    pa = new_values.get ('purchasing_agents', None)
-    if pr and not pa :
-        pa = pr.purchasing_agents
+    pa = new_values.get ('purchasing_agents', [])
+    if pa == ['2'] :
+        pa = []
+        force = True
+    opa = set ()
+    if pr and 'purchasing_agents' not in new_values :
+        pa  = pr.purchasing_agents
+    if pr :
+        opa = set (pr.purchasing_agents)
     pt = new_values.get ('purchase_type')
-    if pr and not pt :
+    if pr and 'purchase_type' not in new_values :
         pt = pr.purchase_type
-    if not pa or 'time_project' in new_values or 'sap_cc' in new_values :
-        tc = new_values.get ('time_project')
-        cc = new_values.get ('sap_cc')
-        if not tc and not cc and pr :
+    pts = set ()
+    if pt :
+        pts.add (pt)
+    if force :
+        paset = set ()
+    else :
+        paset = set (new_values.get ('purchasing_agents', []))
+    # Loop over offer items and add pt if any, also add purchase agents
+    ois = new_values.get ('offer_items', [])
+    if pr and 'offer_items' not in new_values :
+        ois = pr.offer_items
+    for oid in ois :
+        oi = db.pr_offer_item.getnode (oid)
+        if oi.purchase_type :
+            pts.add   (oi.purchase_type)
+            pt = db.purchase_type.getnode (oi.purchase_type)
+            paset.update (pt.purchasing_agents)
+        for cn in 'sap_cc', 'time_project' :
+            a = getattr (oi, cn)
+            if a :
+                paset.update (db.getclass (cn).get (a, 'purchasing_agents'))
+    if  (  not pa
+        or force
+        or 'purchasing_agents' in new_values
+        or 'time_project'      in new_values
+        or 'sap_cc'            in new_values
+        or 'purchase_type'     in new_values
+        or 'offer_items'       in new_values
+        ) :
+        cc = tc = None
+        if 'time_project' in new_values :
+            tc = new_values ['time_project']
+        elif pr :
             tc = pr.time_project
+        if 'sap_cc' in new_values :
+            cc = new_values ['sap_cc']
+        elif pr :
             cc = pr.sap_cc
         if tc :
             tc = db.time_project.getnode (tc)
         if cc :
             cc = db.sap_cc.getnode (cc)
         item = tc or cc
+        if item :
+            paset.update (item.purchasing_agents)
         # Only put those agents into 'purchasing_agents' that have
-        # necessary role from the purchase_type pt
-        pa = set (new_values.get ('purchasing_agents') or [])
-        if item and pt :
-            for uid in item.purchasing_agents :
-                if agent_in_approval_order_users (db, uid, pt) :
-                    pa.add (uid)
-            # Fallback: Use agent from purchase_type
-            if not pa :
-                ptype = db.purchase_type.getnode (pt)
-                for uid in ptype.purchasing_agents :
-                    if agent_in_approval_order_users (db, uid, pt) :
-                        pa.add (uid)
-            new_values ['purchasing_agents'] = list (pa)
+        # necessary role from all the purchase_types in pts
+        pa = set ()
+        for uid in paset :
+            # Add only if allowed by *all* pts
+            for pt in pts :
+                if not agent_in_approval_order_users (db, uid, pt) :
+                    break
+            else :
+                pa.add (uid)
+        new_values ['purchasing_agents'] = list (pa)
     # Add agents to nosy list
-    if new_values.get ('purchasing_agents') :
-        nosy = new_values.get ('nosy')
+    if set (new_values.get ('purchasing_agents', [])) != opa :
+        nosy = new_values.get ('nosy', [])
         if not nosy and pr :
             nosy = pr.nosy
-        nosy = dict.fromkeys (nosy or [])
-        for i in new_values ['purchasing_agents'] :
-            nosy [i] = 1
-        new_values ['nosy'] = nosy.keys ()
+        nosy = set (nosy)
+        # Remove old agents from nosy
+        nosy.difference_update (opa)
+        # Add new agents
+        for i in new_values.get ('purchasing_agents', []) :
+            nosy.add (i)
+        new_values ['nosy'] = list (nosy)
 # end def set_agents
 
 def approvalchange (db, cl, nodeid, new_values) :
@@ -689,6 +730,19 @@ def check_pr_update (db, cl, nodeid, old_values) :
         db.purchase_request.set (id, status = opn)
 # end def check_pr_update
 
+def check_agent_change (db, cl, nodeid, old_values) :
+    do_check = False
+    for k in 'purchase_type', 'sap_cc', 'time_project' :
+        if cl.get (nodeid, k) != old_values.get (k, None) :
+            do_check = True
+            break
+    if do_check :
+        prs = db.purchase_request.filter (None, dict (offer_items = nodeid))
+        assert len (prs) == 1
+        # Setting the agent to 2 (anonymous) will force a recomputation
+        db.purchase_request.set (prs [0], purchasing_agents = ['2'])
+# end def check_agent_change
+
 def check_currency (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'min_sum', 'order', 'exchange_rate')
@@ -801,6 +855,7 @@ def init (db) :
     db.pr_offer_item.audit      ("create", check_supplier)
     db.pr_offer_item.audit      ("set",    check_supplier)
     db.pr_offer_item.react      ("set",    check_pr_update)
+    db.pr_offer_item.react      ("set",    check_agent_change)
     db.pr_offer_item.audit      ("create", check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
     db.pr_currency.audit        ("create", check_currency)

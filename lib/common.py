@@ -1048,10 +1048,16 @@ def require_attributes (_, cl, nodeid, new_values, * attributes) :
         if a not in cl.properties :
             continue
         attr = _ (a)
-        if not nodeid and (a not in new_values or new_values [a] is None) :
-            raise Reject, _ (''"%(attr)s must be specified") % locals ()
-        elif nodeid and new_values.get (a, cl.get (nodeid, a)) is None :
-            raise Reject, _ (''"%(attr)s must not be empty") % locals ()
+        if isinstance (cl.properties [a], Multilink) :
+            if not nodeid and (a not in new_values or not new_values [a]) :
+                raise Reject, _ (''"%(attr)s must be specified") % locals ()
+            elif nodeid and not new_values.get (a, cl.get (nodeid, a)) :
+                raise Reject, _ (''"%(attr)s must not be empty") % locals ()
+        else :
+            if not nodeid and (a not in new_values or new_values [a] is None) :
+                raise Reject, _ (''"%(attr)s must be specified") % locals ()
+            elif nodeid and new_values.get (a, cl.get (nodeid, a)) is None :
+                raise Reject, _ (''"%(attr)s must not be empty") % locals ()
 # end def require_attributes
 
 def check_attribute_lines (_, new_values, name, length) :
