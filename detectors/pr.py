@@ -108,7 +108,13 @@ def check_requester (db, cl, nodeid, new_values) :
 def reopen (db, cl, nodeid, new_values) :
     """ Must happen before change_pr below, to correctly retire old
         approvals.
+        Note that we ignore some attribute changes that do *not* cause a
+        reopen of an issue.
     """
+    changed   = set (new_values.keys ())
+    no_reopen = set (('messages', 'nosy'))
+    if not (changed - no_reopen) :
+        return
     ost = cl.get (nodeid, 'status')
     if ost == db.pr_status.lookup ('rejected') and 'status' not in new_values :
         new_values ['status'] = db.pr_status.lookup ('open')
