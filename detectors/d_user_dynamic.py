@@ -23,7 +23,7 @@
 #
 #++
 # Name
-#    user_dynamic
+#    d_user_dynamic
 #
 # Purpose
 #    Detectors for 'user_dynamic'
@@ -37,6 +37,7 @@ from roundup.cgi.TranslationService import get_translation
 import common
 import freeze
 import user_dynamic
+import vacation
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -371,6 +372,63 @@ def max_flexi (db, cl, nodeid, new_values) :
             new_values ['max_flexitime'] = None
 # end def max_flexi
 
+def check_avc (db, cl, nodeid, new_values) :
+    """ Check that an absolute vacation correction exists at the date of
+        the user_dynamic record if either the vac_aliq changed or the
+        vac_aliq is monthly and the vacation changed (compared to the
+        last user_dynamic record). We currently do not require a
+        vacation correction if one already exists *and* there is a gap
+        in user_dynamic record validity ranges.
+    """
+    # At least one of the following attributes must be in new_values
+    # otherwise we don't have anything to check.
+    attrs = ('vac_aliq', 'vacation_yearly', 'valid_from')
+    for a in attrs :
+        if a in new_values :
+            break
+    else :
+        return
+    va = new_values.get ('vac_aliq')
+    if not va and nodeid :
+        va = cl.get (nodeid, 'vac_aliq')
+    vy = new_values.get ('vacation_yearly')
+    if vy is None and nodeid :
+        vy = cl.get (nodeid, 'vacation_yearly')
+    # User must exist
+    user = new_values.get ('user')
+    if not user :
+        user = cl.get (nodeid, 'user')
+    # valid_from must exist
+    valid_from = new_values.get ('valid_from')
+    if not valid_from :
+        valid_from = cl.get (valid_from, 'user')
+    prev_dyn = user_dynamic.find_user_dynamic (db, user, valid_from, '-')
+    if not prev_dyn :
+        return
+    # Check if there is an absolute vacation correction for our
+    # valid_from, everything ok if there is:
+    dt  = valid_from.pretty (common.ymd)
+    vcs = db.vacation_correction.filter \
+        (None, dict (user = user, date = dt, absolute = True))
+    assert len (vcs) <= 1
+    if vcs :
+        assert db.vacation_correction.get (vcs [0], 'date') == valid_from
+        return
+    if prev_dyn.vac_aliq != va :
+        van = 'vac_aliq'
+        raise Reject \
+            ( _ ("Change of %(van)s without absolute vacation correction")
+            % locals ()
+            )
+    vyo = prev_dyn.vacation_yearly
+    if db.vac_aliq.get (va, 'name') == 'Monthly' and vy != vyo :
+        vyn = 'vacation_yearly'
+        raise Reject \
+            ( _ ("Change of %(vyn)s without absolute vacation correction")
+            % locals ()
+            )
+# end def check_avc
+
 def new_user_dynamic (db, cl, nodeid, new_values) :
     common.require_attributes \
         ( _, cl, nodeid, new_values
@@ -585,6 +643,8 @@ def init (db) :
     db.user_dynamic.audit    ("set",    set_otp_if_all_in, priority = 20)
     db.user_dynamic.audit    ("create", max_flexi)
     db.user_dynamic.audit    ("set",    max_flexi)
+    db.user_dynamic.audit    ("create", check_avc, priority = 150)
+    db.user_dynamic.audit    ("set",    check_avc, priority = 150)
     db.user_dynamic.react    ("create", close_existing)
     db.user_dynamic.react    ("create", user_dyn_react)
     db.user_dynamic.react    ("set",    user_dyn_react)
