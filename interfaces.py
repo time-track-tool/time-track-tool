@@ -35,7 +35,8 @@ class parsedMessage (roundup.mailgw.parsedMessage, autosuper) :
         self.__super.create_msg ()
         if  ('messages' in self.props and 'header' in self.db.msg.properties) :
             msgid = self.props ['messages'][-1]
-            self.db.msg.set (msgid, header = ''.join (self.message.headers))
+            h = self.message.as_string().split ('\n\n', 1) [0]
+            self.db.msg.set (msgid, header = h)
     # end def create_msg
 # end class parsedMessage
 
