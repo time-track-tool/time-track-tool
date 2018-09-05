@@ -109,7 +109,17 @@
       <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
           (classname, 'purchasing_agents')"/>
-       <td tal:content="structure python:context.purchasing_agents.field ()"/>
+       <td>
+         <span tal:content="structure
+                   python:context.purchasing_agents.field ()"/>
+         <span tal:condition="context/is_edit_ok"
+	       tal:replace="structure python:utils.user_classhelp
+		 ( db
+		 , property='purchasing_agents'
+		 , inputtype='checkbox'
+                 , ids = utils.pr_agents (db)
+		 )"/><br>
+       </td>
       </tal:block>
      </tr>
      <tr>

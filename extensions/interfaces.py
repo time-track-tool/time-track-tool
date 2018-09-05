@@ -411,7 +411,12 @@ def user_props (db) :
 # end def user_props
 
 def user_classhelp \
-    (db, property='responsible', inputtype = 'radio', user_status = None) :
+    ( db
+    , property='responsible'
+    , inputtype   = 'radio'
+    , user_status = None
+    , ids         = None
+    ) :
     if user_status :
         status = user_status
     else :
@@ -419,10 +424,13 @@ def user_classhelp \
             (db._db.user_status.filter (None, dict (is_nosy = True)))
     if status :
         status = ';status=' + status
+    idfilter = ''
+    if ids :
+        idfilter = ';id=' + ids
     return db.user.classhelp \
         ( user_props (db)
         , property  = property
-        , filter    = 'roles=Nosy' + status
+        , filter    = 'roles=Nosy' + status + idfilter
         , inputtype = inputtype
         , width     = '600'
         , pagesize  = 1500
@@ -465,6 +473,22 @@ def artefact_link_match (db, field) :
     return rgx.search (field)
 # end def artefact_link_match
 
+def pr_agents (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    vroles = set ()
+    for ptid in db.purchase_type.getnodeids (retired = False) :
+        pt = db.purchase_type.getnode (ptid)
+        vroles.update (pt.pr_view_roles)
+    users = set ()
+    for rid in vroles :
+        vr = db.pr_approval_order.getnode (rid)
+        users.update (vr.users)
+    return ','.join (users)
+# end def pr_agents
+
 def init (instance) :
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
@@ -501,3 +525,4 @@ def init (instance) :
     reg ("Size_Limit",                   common.Size_Limit)
     reg ("user_props",                   user_props)
     reg ("artefact_link_match",          artefact_link_match)
+    reg ("pr_agents",                    pr_agents)
