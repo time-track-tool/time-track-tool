@@ -335,6 +335,18 @@ def agent_in_approval_order_users (db, uid, ptid) :
     return False
 # end def agent_in_approval_order_users
 
+def compute_agents (db, paset, pts) :
+    pa = set ()
+    for uid in paset :
+        # Add only if allowed by *all* pts
+        for pt in pts :
+            if not agent_in_approval_order_users (db, uid, pt) :
+                break
+        else :
+            pa.add (uid)
+    return pa
+# end def compute_agents
+
 def set_agents (db, cl, nodeid, new_values) :
     """ Set purchasing agents if agents empty (or would become empty)
         or the sap_cc or time_project changed
@@ -382,9 +394,14 @@ def set_agents (db, cl, nodeid, new_values) :
             a = getattr (oi, cn)
             if a :
                 paset.update (db.getclass (cn).get (a, 'purchasing_agents'))
+    # If agents edited by user, check they all have necessary
+    # permissions and keep only the ones that do
+    # This also means that if the list gets empty here we will compute
+    # the default below.
+    if 'purchasing_agents' in new_values and not force :
+        pa = compute_agents (db, pa, pts)
     if  (  not pa
         or force
-        or 'purchasing_agents' in new_values
         or 'time_project'      in new_values
         or 'sap_cc'            in new_values
         or 'purchase_type'     in new_values
@@ -408,14 +425,7 @@ def set_agents (db, cl, nodeid, new_values) :
             paset.update (item.purchasing_agents)
         # Only put those agents into 'purchasing_agents' that have
         # necessary role from all the purchase_types in pts
-        pa = set ()
-        for uid in paset :
-            # Add only if allowed by *all* pts
-            for pt in pts :
-                if not agent_in_approval_order_users (db, uid, pt) :
-                    break
-            else :
-                pa.add (uid)
+        pa = compute_agents (db, paset, pts)
         new_values ['purchasing_agents'] = list (pa)
     # Add agents to nosy list
     if set (new_values.get ('purchasing_agents', [])) != opa :
