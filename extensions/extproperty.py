@@ -166,6 +166,7 @@ class ExtProperty :
         is_labelprop: Render this property as a link to item -- usually
             done for labelprop of item and for id
         editable: Render property as an editable property (e.g. field)
+        editparams: Parameters passed to field() in editfield
         add_hidden: Add a hidden attribute in addition to the link
         searchable: Usually a safe bet if this can be searched for, can
             be overridden when you know what you're doing.
@@ -242,6 +243,7 @@ class ExtProperty :
         , popcal        = True
         , multi_add     = ()
         , multi_selonly = False
+        , editparams    = {}
         ) :
         if not hasattr (prop._db, '_') :
             prop._db._ = _
@@ -285,6 +287,7 @@ class ExtProperty :
         self.multi_add     = multi_add
         self.multi_selonly = multi_selonly
         self.translate     = translate
+        self.editparams    = editparams
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -529,7 +532,7 @@ class ExtProperty :
 
     def editfield (self, item = None) :
         self._set_item (item)
-        parameters = {}
+        parameters = self.editparams or {}
         if not isinstance (self.prop, BooleanHTMLProperty) :
             parameters ['size'] = self.fieldwidth
         return "<span style='white-space:nowrap'>%s</span>" \

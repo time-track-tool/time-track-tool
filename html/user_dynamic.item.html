@@ -10,6 +10,19 @@
    <span tal:replace="Classname" i18n:name="Classname" />
   </tal:block>
  </title>
+ <tal:block metal:fill-slot="add-js">
+  <script type="text/javascript">
+   function deldays () {
+       var wd = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+       var l = wd.length;
+       for (var i=0; i<l; i++) {
+           console.log ('hours_' + wd [i]);
+           document.getElementById ('hours_' + wd [i]).value = '';
+       }
+   }
+  </script>
+ </tal:block>
+
   <tal:block metal:fill-slot="create_or_query">
     <tal:block 
      metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
@@ -149,7 +162,8 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'weekly_hours')"/>
-      <td tal:content="structure python:context.weekly_hours.field ()"/>
+      <td tal:content="structure python:
+          context.weekly_hours.field (onchange = 'deldays()')"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'supp_weekly_hours')"/>
       <td tal:content="structure python:context.supp_weekly_hours.field ()"/>
@@ -182,6 +196,7 @@
          , item       = context
          , editable   = 1
          , fieldwidth = 3
+         , editparams = dict (id = i._name)
          ).colonfield ()"/>
       </td>
      </tr>
