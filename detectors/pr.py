@@ -423,6 +423,8 @@ def set_agents (db, cl, nodeid, new_values) :
         item = tc or cc
         if item :
             paset.update (item.purchasing_agents)
+        if pt :
+            paset.update (db.purchase_type.get (pt, 'purchasing_agents'))
         # Only put those agents into 'purchasing_agents' that have
         # necessary role from all the purchase_types in pts
         pa = compute_agents (db, paset, pts)
