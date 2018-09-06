@@ -400,6 +400,8 @@ def set_agents (db, cl, nodeid, new_values) :
     # the default below.
     if 'purchasing_agents' in new_values and not force :
         pa = compute_agents (db, pa, pts)
+        if pa :
+            new_values ['purchasing_agents'] = list (pa)
     if  (  not pa
         or force
         or 'time_project'      in new_values
