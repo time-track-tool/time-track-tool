@@ -15,6 +15,19 @@ class Vacation_Setup (object) :
         self.vanew     = '2'
 	self.startdate = date.Date (self.args.startdate)
         self.freez     = {}
+        self.recs      = []
+        self.users     = {}
+        with open (self.args.vacfile, 'r') as f :
+            dr = DictReader (f, delimiter = self.args.delimiter)
+            cs = self.args.charset
+            uk = 'timetracker kennung'
+            for rec in dr :
+                username = rec [uk].decode (cs).encode ('utf-8').strip ()
+                if not username :
+                    continue
+                self.recs.append (rec)
+                uid = self.db.user.lookup (username)
+                self.users [uid] = username
     # end def __init__
 
     def create_vac_aliq (self) :
@@ -53,119 +66,150 @@ class Vacation_Setup (object) :
             set vac_aliq in respective user_dynamic records
         """
         db  = self.db
+        # There is a duplicate absolute vac correction 475, 479, need to
+        # retire one of them
+        db.vacation_correction.retire ('479')
         flt = db.vacation_correction.filter
         for id in flt (None, dict (absolute = True)) :
             vc  = db.vacation_correction.getnode (id)
             dyn = user_dynamic.first_user_dynamic (db, vc.user, date = vc.date)
             if not dyn :
                 print "WARN: No dyn user %s/%s" % (vc.user, vc.date)
+            # Get earliest user_dynamic for that user
+            ndyn = dyn
+            while ndyn :
+                dyn = ndyn
+                ndyn = user_dynamic.prev_user_dynamic (db, dyn)
             while dyn :
-                if dyn.vac_aliq is None :
-                    db.user_dynamic.set (dyn.id, vac_aliq = self.vaold)
-                dyn = user_dynamic.next_user_dynamic (db, dyn)
+                # correct another bug in the data:
+                if  (  dyn.id == '2389' and dyn.weekly_hours == 0
+                    and dyn.hours_mon == dyn.hours_tue == dyn.hours_wed
+                        == dyn.hours_thu == dyn.hours_fri == 8
+                    and dyn.hours_sun == dyn.hours_sat == 0
+                    ) :
+                    print "Fixing weekly_hours in user_dynamic%s" % 2389
+                    self.db.clearCache ()
+                    self.db.sql \
+                        ( "update _user_dynamic set _weekly_hours=40.0 "
+                          "where id = 2389;"
+                        )
 
+                if  (  dyn.valid_from < self.startdate
+                    or vc.user not in self.users
+                    ) :
+                    print \
+                        ( "Set vac_aliq user_dynamic%s to %s"
+                        % (dyn.id, self.vaold)
+                        )
+                    if dyn.vac_aliq is None :
+                        db.user_dynamic.set (dyn.id, vac_aliq = self.vaold)
+                dyn = user_dynamic.next_user_dynamic (db, dyn)
         db.commit ()
     # end def fix_old_dynuser_recs
 
     def modify_users (self) :
         """ Read file as CSV and modify users """
         db = self.db
-        with open (self.args.vacfile, 'r') as f :
-            dr = DictReader (f, delimiter = self.args.delimiter)
-            for line in dr :
-                cs = self.args.charset
-                uk = 'timetracker kennung'
-                vk = 'noch offene Urlaubstage 2017'
-                username = line [uk].decode (cs).encode ('utf-8')
-                days     = line [vk].decode (cs).encode ('utf-8')
-                if not username :
-                    continue
-                assert days, "Days is empty for %s" % username
-                days = float (days)
-                uid  = db.user.lookup (username)
-                user = db.user.getnode (uid)
-                dyn  = user_dynamic.first_user_dynamic \
-                    (db, uid, date = self.startdate)
-                assert dyn
-                self.thaw (uid)
-                # Need to create new dyn if valid_from is < startdate
-                if dyn.valid_from < self.startdate :
-                    d = dict \
-                        ((k, dyn [k]) for k in db.user_dynamic.properties
-                        if dyn [k] is not None
-                        )
-                    d ['valid_from']      = self.startdate
-                    d ['vacation_yearly'] = self.args.yearly_vacation
-                    d ['vac_aliq']        = self.vanew
-                    vd = d.get ('vacation_day') 
-                    vm = d.get ('vacation_month')
-                    if not vd or not vm :
-                        d ['vacation_month'] = d ['vacation_day'] = 1
-                    # If dyn.valid_to is None, valid_to is set for the
-                    # existing record, we need to set explicitly if
-                    # non-empty.
-                    if dyn.valid_to :
-                        db.user_dynamic.set \
-                            (dyn.id, valid_to = self.startdate)
-                    print ("Creating user_dynamic: %s %s-%s" % \
-                        (username, d ['valid_from'], d.get ('valid_to')))
-                    dyn = db.user_dynamic.create (**d)
-                    dyn = user_dynamic.next_user_dynamic (db, dyn)
-                while dyn :
-                    d = {}
-                    if dyn.vacation_yearly != self.args.yearly_vacation :
-                        d ['vacation_yearly'] = self.args.yearly_vacation
-                    if dyn.vac_aliq != self.vanew :
-                        d ['vac_aliq'] = self.vanew
-                    if not dyn.vacation_month or not dyn.vacation_day :
-                        d ['vacation_month'] = d ['vacation_day'] = 1
-                    if d :
-                        print "Modify: %s/user_dynamic%s" % (username, dyn.id)
-                        db.user_dynamic.set (dyn.id, **d)
-                    dyn = user_dynamic.next_user_dynamic (db, dyn)
-                vc = vacation.get_vacation_correction \
-                    (db, uid, date = self.startdate)
-                if not vc or vc.date < self.startdate :
-                    print ("Creating vacation correction for %s" % username)
-                    db.vacation_correction.create \
-                        ( absolute = True
-                        , user     = uid
-                        , date     = self.startdate
-                        , days     = days
-                        )
-                wpfrm, wpto = self.args.rebook_wp.split (',')
-                wpfrm = db.time_wp.getnode (wpfrm)
-                wpto  = db.time_wp.getnode (wpto)
-                trid = db.time_record.filter \
-                    ( None
-                    , { 'daily_record.user' : uid
-                      , 'daily_record.date' : self.startdate.pretty 
-                                                ('%Y-%m-%d;')
-                      , 'wp' : wpfrm.id
-                      }
+        for rec in self.recs :
+            cs = self.args.charset
+            uk = 'timetracker kennung'
+            vk = 'noch offene Urlaubstage 2017'
+            username = rec [uk].decode (cs).encode ('utf-8')
+            days     = rec [vk].decode (cs).encode ('utf-8')
+            if not username :
+                continue
+            assert days, "Days is empty for %s" % username
+            days = float (days)
+            uid  = db.user.lookup (username)
+            user = db.user.getnode (uid)
+            dyn  = user_dynamic.first_user_dynamic \
+                (db, uid, date = self.startdate)
+            assert dyn
+            self.thaw (uid)
+            # Add absolute vacation correction if non-existing
+            vc = vacation.get_vacation_correction \
+                (db, uid, date = self.startdate)
+            if not vc or vc.date < self.startdate :
+                print ("Creating vacation correction for %s" % username)
+                db.vacation_correction.create \
+                    ( absolute = True
+                    , user     = uid
+                    , date     = self.startdate
+                    , days     = days
                     )
-                if trid :
-                    print \
-                        ( "Rebooked %s timerecs for %s"
-                        % (len (trid), username)
-                        )
-                    self.db.sql \
-                        ( "update _time_record set _wp=%s where id in %s;"
-                        , args = (wpto.id, tuple (trid))
-                        )
-                # Finally remove the user from the old wp and add to new one
-                users = dict.fromkeys (wpfrm.bookers)
-                if uid in users :
-                    del users [uid]
-                    db.time_wp.set (wpfrm.id, bookers = users.keys ())
-                    print "User %s removed from WP %s" % (username, wpfrm.id)
-                users = dict.fromkeys (wpto.bookers)
-                if uid not in users :
-                    users [uid] = 1
-                    db.time_wp.set (wpto.id, bookers = users.keys ())
-                    print "User %s added to WP %s" % (username, wpto.id)
+            # Need to create new dyn if valid_from is < startdate
+            if dyn.valid_from < self.startdate :
+                d = dict \
+                    ((k, dyn [k]) for k in db.user_dynamic.properties
+                    if dyn [k] is not None
+                    )
+                d ['valid_from']      = self.startdate
+                d ['vacation_yearly'] = self.args.yearly_vacation
+                d ['vac_aliq']        = self.vanew
+                d ['vacation_day']    = 1
+                d ['vacation_month']  = 1
+                vd = d.get ('vacation_day') 
+                vm = d.get ('vacation_month')
+                if not vd or not vm :
+                    d ['vacation_month'] = d ['vacation_day'] = 1
+                # If dyn.valid_to is None, valid_to is set for the
+                # existing record, we need to set explicitly if
+                # non-empty.
+                if dyn.valid_to :
+                    db.user_dynamic.set \
+                        (dyn.id, valid_to = self.startdate)
+                print ("Creating user_dynamic: %s %s-%s" % \
+                    (username, d ['valid_from'], d.get ('valid_to')))
+                dyn = db.user_dynamic.create (**d)
+                dyn = user_dynamic.next_user_dynamic (db, dyn)
+            while dyn :
+                d = {}
+                if dyn.vacation_yearly != self.args.yearly_vacation :
+                    d ['vacation_yearly'] = self.args.yearly_vacation
+                if dyn.vac_aliq != self.vanew :
+                    d ['vac_aliq'] = self.vanew
+                if not dyn.vacation_month or not dyn.vacation_day :
+                    d ['vacation_month'] = d ['vacation_day'] = 1
+                if dyn.vacation_month != 1 or dyn.vacation_day != 1 :
+                    d ['vacation_month'] = d ['vacation_day'] = 1
+                d ['vacation_month']  = 1
+                if d :
+                    print "Modify: %s/user_dynamic%s" % (username, dyn.id)
+                    db.user_dynamic.set (dyn.id, **d)
+                dyn = user_dynamic.next_user_dynamic (db, dyn)
+            wpfrm, wpto = self.args.rebook_wp.split (',')
+            wpfrm = db.time_wp.getnode (wpfrm)
+            wpto  = db.time_wp.getnode (wpto)
+            trid = db.time_record.filter \
+                ( None
+                , { 'daily_record.user' : uid
+                  , 'daily_record.date' : self.startdate.pretty 
+                                            ('%Y-%m-%d;')
+                  , 'wp' : wpfrm.id
+                  }
+                )
+            if trid :
+                print \
+                    ( "Rebooked %s timerecs for %s"
+                    % (len (trid), username)
+                    )
+                self.db.sql \
+                    ( "update _time_record set _wp=%s where id in %s;"
+                    , args = (wpto.id, tuple (trid))
+                    )
+            # Finally remove the user from the old wp and add to new one
+            users = dict.fromkeys (wpfrm.bookers)
+            if uid in users :
+                del users [uid]
+                db.time_wp.set (wpfrm.id, bookers = users.keys ())
+                print "User %s removed from WP %s" % (username, wpfrm.id)
+            users = dict.fromkeys (wpto.bookers)
+            if uid not in users :
+                users [uid] = 1
+                db.time_wp.set (wpto.id, bookers = users.keys ())
+                print "User %s added to WP %s" % (username, wpto.id)
 
-                self.freeze (uid)
+            self.freeze (uid)
         db.commit ()
     # end def modify_users
 

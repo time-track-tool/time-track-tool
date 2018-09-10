@@ -401,7 +401,7 @@ def check_avc (db, cl, nodeid, new_values) :
     # valid_from must exist
     valid_from = new_values.get ('valid_from')
     if not valid_from :
-        valid_from = cl.get (valid_from, 'user')
+        valid_from = cl.get (nodeid, 'valid_from')
     prev_dyn = user_dynamic.find_user_dynamic (db, user, valid_from, '-')
     if not prev_dyn :
         return
@@ -494,7 +494,7 @@ def check_weekly_hours (db, cl, nodeid, new_values) :
         # weekly_hours must not be 0 in case we have overtime
         if not wh :
             msg = ''"Weekly hours must not be 0 when user has " \
-                  "supplementary hours (weeky or otherwise)"
+                  "supplementary hours (weekly or otherwise)"
             raise Reject (_ (msg))
 # end def check_weekly_hours
 
