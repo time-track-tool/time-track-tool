@@ -1679,7 +1679,8 @@ class Vacation_Report (_Report) :
             start = end = Date ('%s-12-31' % year)
         self.start       = start
         self.end         = end
-        users            = sum_common.get_users (db, filterspec, start, end)
+        soy              = common.start_of_year (end)
+        users            = sum_common.get_users (db, filterspec, soy, end)
         min_user_date    = {}
         max_user_date    = {}
         user_vc          = {}
