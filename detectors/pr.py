@@ -388,8 +388,8 @@ def set_agents (db, cl, nodeid, new_values) :
         oi = db.pr_offer_item.getnode (oid)
         if oi.purchase_type :
             pts.add   (oi.purchase_type)
-            pt = db.purchase_type.getnode (oi.purchase_type)
-            paset.update (pt.purchasing_agents)
+            ptyp = db.purchase_type.getnode (oi.purchase_type)
+            paset.update (ptyp.purchasing_agents)
         for cn in 'sap_cc', 'time_project' :
             a = getattr (oi, cn)
             if a :
