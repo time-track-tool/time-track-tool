@@ -5,27 +5,45 @@ import os
 from roundup           import date
 from roundup           import instance
 from roundup.hyperdb   import Link, Multilink, Date
-from optparse          import OptionParser
+from argparse          import ArgumentParser
 
 def main () :
     dir = os.getcwd ()
-    cmd = OptionParser ("Usage: %prog [options] user daterange")
-    cmd.add_option \
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'user'
+        , help    = 'User for whom data is exported'
+        )
+    cmd.add_argument \
+        ( 'daterange'
+        , help    = 'Date range for export'
+        )
+    cmd.add_argument \
+        ( '-c', '--vacation_correction'
+        , dest    = 'vcorr'
+        , help    = 'Export vacation corrections, too'
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
         ( '-d', '--directory'
         , dest    = 'dir'
-        , help    = 'Tracker instance directory'
-        , default = dir
+        , help    = 'Tracker instance directory, default=%(default)s'
+        , default = '.'
         )
-    cmd.add_option \
+    cmd.add_argument \
         ( '-D', '--dynuser'
         , dest    = 'dynuser'
         , help    = 'Export dynamic user data too for given range'
         , action  = 'store_true'
         )
-    opt, args = cmd.parse_args ()
-    if len (args) != 2 :
-        cmd.error ('Expect two arguments, user and daterange')
-        sys.exit (23)
+    cmd.add_argument \
+        ( '-t', '--no-timerecs'
+        , dest    = 'do_timerecs'
+        , help    = 'Do not export time records (and daily records)'
+        , action  = 'store_false'
+        , default = True
+        )
+    opt = cmd.parse_args ()
 
     sys.path.insert (0, os.path.join (opt.dir, 'lib'))
     from common       import ymd
@@ -33,9 +51,8 @@ def main () :
     tracker = instance.open (opt.dir)
     db      = tracker.open ('admin')
 
-    user    = args [0]
-    userid  = db.user.lookup (user)
-    sdate   = args [1]
+    userid  = db.user.lookup (opt.user)
+    sdate   = opt.daterange
     filter  = dict (user = userid, date = sdate)
 
     wpmax   = 3 # number of reserved time_wp ids
@@ -89,52 +106,64 @@ def main () :
             print ident, "    , org_location       = olo"
             print ident, "    , overtime_period    = otp"
             print ident, "    , user               = user"
+            print ident, "    , vac_aliq           = '%s'" % ud.vac_aliq
             print ident, "    )"
             ud = next_user_dynamic (db, ud)
             if ud and dend and ud.valid_from > dend :
                 break
-    for dri in db.daily_record.filter (None, filter) :
-        dr = db.daily_record.getnode (dri)
-        print ident, "dr = db.daily_record.create \\"
-        print ident, "    ( user = user"
-        print ident, "    , date = date.Date ('%s')" % dr.date.pretty (ymd)
-        print ident, "    , weekend_allowed   = %s"  % dr.weekend_allowed
-        print ident, "    , required_overtime = %s"  % dr.required_overtime
-        print ident, "    )"
-        for tri in dr.time_record :
-            tr = db.time_record.getnode (tri)
-            print ident, "db.time_record.create \\"
-            print ident, "    ( daily_record  = dr"
-            if tr.start :
-                print ident, "    , start         = '%s'" % tr.start
-                print ident, "    , end           = '%s'" % tr.end
-            else :
-                print ident, "    , duration      = %s" % tr.duration
-            if tr.time_activity :
-                print ident, "    , time_activity = '%s'" % tr.time_activity
-            print ident, "    , work_location = '%s'" % tr.work_location
-            if tr.wp in wpdict :
-                new_wpid = wpdict [tr.wp]
-            elif tr.wp is None :
-                new_wpid = None
-            else :
-                wp = db.time_wp.getnode (tr.wp)
-                tp = db.time_project.getnode (wp.project)
-                if wp.travel :
-                    new_wpid = 3
-                elif tp.is_public_holiday :
-                    new_wpid = 1
-                elif tp.is_vacation :
-                    new_wpid = 44
-                elif tp.no_overtime :
-                    new_wpid = 2
-                else :
-                    wpmax += 1
-                    new_wpid = wpmax
-                wpdict [tr.wp] = new_wpid
-            if new_wpid :
-                print ident, "    , wp            = '%s'" % new_wpid
+    if opt.vcorr :
+        for vcid in db.vacation_correction.filter (None, filter) :
+            vc = db.vacation_correction.getnode (vcid)
+            d  = vc.date.pretty (ymd)
+            print ident, "vcorr = db.vacation_correction.create \\"
+            print ident, "    ( user     = user"
+            print ident, "    , date     = date.Date ('%s')" % d
+            print ident, "    , absolute = %s" % vc.absolute
+            print ident, "    , days     = %s" % vc.days
             print ident, "    )"
+    if opt.do_timerecs :
+        for dri in db.daily_record.filter (None, filter) :
+            dr = db.daily_record.getnode (dri)
+            print ident, "dr = db.daily_record.create \\"
+            print ident, "    ( user = user"
+            print ident, "    , date = date.Date ('%s')" % dr.date.pretty (ymd)
+            print ident, "    , weekend_allowed   = %s"  % dr.weekend_allowed
+            print ident, "    , required_overtime = %s"  % dr.required_overtime
+            print ident, "    )"
+            for tri in dr.time_record :
+                tr = db.time_record.getnode (tri)
+                print ident, "db.time_record.create \\"
+                print ident, "    ( daily_record  = dr"
+                if tr.start :
+                    print ident, "    , start         = '%s'" % tr.start
+                    print ident, "    , end           = '%s'" % tr.end
+                else :
+                    print ident, "    , duration      = %s" % tr.duration
+                if tr.time_activity :
+                    print ident, "    , time_activity = '%s'" % tr.time_activity
+                print ident, "    , work_location = '%s'" % tr.work_location
+                if tr.wp in wpdict :
+                    new_wpid = wpdict [tr.wp]
+                elif tr.wp is None :
+                    new_wpid = None
+                else :
+                    wp = db.time_wp.getnode (tr.wp)
+                    tp = db.time_project.getnode (wp.project)
+                    if wp.travel :
+                        new_wpid = 3
+                    elif tp.is_public_holiday :
+                        new_wpid = 1
+                    elif tp.is_vacation :
+                        new_wpid = 44
+                    elif tp.no_overtime :
+                        new_wpid = 2
+                    else :
+                        wpmax += 1
+                        new_wpid = wpmax
+                    wpdict [tr.wp] = new_wpid
+                if new_wpid :
+                    print ident, "    , wp            = '%s'" % new_wpid
+                print ident, "    )"
     print ident, "db.commit ()"
     print "# end def import_data_%s" % userid
 
