@@ -1006,6 +1006,9 @@ properties = \
         , ( 'phone'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']
           )
+        , ( 'vac_aliq'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']
+          )
         , ( 'vacation_legal_year'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']
           )
@@ -1997,6 +2000,9 @@ properties = \
         , ( 'user'
           , ["admin", "hr"]
           )
+        , ( 'vac_aliq'
+          , ["admin", "hr"]
+          )
         , ( 'vacation_day'
           , ["admin", "hr", "hr-org-location"]
           )
@@ -2028,6 +2034,12 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']
           )
         , ( 'name'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']
+          )
+        ]
+      )
+    , ( 'vac_aliq'
+      , [ ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'type', 'user']
           )
         ]

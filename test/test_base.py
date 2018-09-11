@@ -431,6 +431,7 @@ class _Test_Case_Summary (_Test_Case) :
             , vacation_legal_year = False
             , vacation_yearly     = 25
             , do_leave_process    = True
+            , vac_aliq            = '1'
             )
         self.twsn = self.db.time_wp_summary_no.create \
             ( name = "TWSN1", order = 1)

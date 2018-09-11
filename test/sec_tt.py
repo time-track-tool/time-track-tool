@@ -235,6 +235,7 @@ Role "user":
  User is allowed to access timesheet (View for "timesheet" only)
  User is allowed to access uc_type (View for "uc_type" only)
  User is allowed to access user_status (View for "user_status" only)
+ User is allowed to access vac_aliq (View for "vac_aliq" only)
  User is allowed to access vacation_report (View for "vacation_report" only)
  User is allowed to access work_location (View for "work_location" only)
  User is allowed to create daily_record (Create for "daily_record" only)
