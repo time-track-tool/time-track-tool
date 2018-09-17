@@ -26,7 +26,7 @@
         [{}, dict (organisation = context.organisation.id)]
         [bool (context.organisation)]
     ; cc_filt             python:
-        ['', 'organisation=%s' % context.organisation.id]
+        ['valid=yes', 'valid=yes\x3borganisation=%s' % context.organisation.id]
         [bool (context.organisation)]
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
