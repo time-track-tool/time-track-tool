@@ -16,8 +16,7 @@
    </tal:block>
    <tal:block tal:condition="python:loadavg <= max_load">
     <tal:block tal:define=
-     "batch request/batch;
-      pdict python: utils.properties_dict (db, context);
+     "pdict python: utils.properties_dict (db, context);
       myprops python: dict
        ( date              = utils.ExtProperty 
          (utils, pdict ['date'])
@@ -34,9 +33,9 @@
        , supervisor        = utils.ExtProperty
          (utils, pdict ['supervisor'])
        , org_location      = utils.ExtProperty
-         (utils, pdict ['org_location'],      multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['org_location'], multiselect = 1, multi_selonly = 1)
        , organisation      = utils.ExtProperty
-         (utils, pdict ['organisation'],      multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['organisation'], multiselect = 1, multi_selonly = 1)
        , organisation_id  = utils.ExtProperty
          ( utils, pdict ['organisation']
          , searchable = False
@@ -58,42 +57,48 @@
          , searchname = 'time_wp.wp_no'
          )
        , time_project      = utils.ExtProperty
-         (utils, pdict ['time_project'],      multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['time_project'])
        , time_project_id   = utils.ExtProperty
          ( utils, pdict ['time_project']
          , searchable = False
          , searchname = 'time_project.id'
          )
        , time_wp_group     = utils.ExtProperty
-         (utils, pdict ['time_wp_group'],     multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['time_wp_group'], multiselect = 1, multi_selonly = 1)
        , time_wp_group_id  = utils.ExtProperty
          ( utils, pdict ['time_wp_group']
          , searchable = False
          , searchname = 'time_wp_group.id'
          )
        , time_wp_summary_no = utils.ExtProperty
-         (utils, pdict ['time_wp_summary_no'], multiselect = 1, multi_selonly = 1)
+         ( utils, pdict ['time_wp_summary_no']
+         , multiselect = 1
+         , multi_selonly = 1
+         )
        , time_wp_summary_no_id = utils.ExtProperty
          ( utils, pdict ['time_wp_summary_no']
          , searchable = False
          , searchname = 'time_wp_summary_no.id'
          )
        , cost_center       = utils.ExtProperty
-         (utils, pdict ['cost_center'],       multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['cost_center'], multiselect = 1, multi_selonly = 1)
        , cost_center_id    = utils.ExtProperty
          ( utils, pdict ['cost_center']
          , searchable = False
          , searchname = 'cost_center.id'
          )
        , cost_center_group = utils.ExtProperty 
-         (utils, pdict ['cost_center_group'], multiselect = 1, multi_selonly = 1)
+         ( utils, pdict ['cost_center_group']
+         , multiselect = 1
+         , multi_selonly = 1
+         )
        , cost_center_group_id = utils.ExtProperty
          ( utils, pdict ['cost_center_group']
          , searchable = False
          , searchname = 'cost_center_group.id'
          )
        , summary_type      = utils.ExtProperty
-         (utils, pdict ['summary_type'],      multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['summary_type'], multiselect = 1, multi_selonly = 1)
        , summary           = utils.ExtProperty
          (utils, pdict ['summary'])
        , show_all_users    = utils.ExtProperty
@@ -103,7 +108,7 @@
        , show_missing      = utils.ExtProperty
          (utils, pdict ['show_missing'],   bool_tristate = False)
        , status            = utils.ExtProperty
-         (utils, pdict ['status'],            multiselect = 1, multi_selonly = 1)
+         (utils, pdict ['status'], multiselect = 1, multi_selonly = 1)
        , planned_effort    = utils.ExtProperty
          (utils, pdict ['planned_effort'])
        , op_project        = utils.ExtProperty
@@ -137,10 +142,14 @@
            ('name', 'description', 'valid', 'responsible', 'deputy')
          )
        );
-       sr   python: utils.Summary_Report (db, request, utils)
       "
      tal:condition="context/is_view_ok">
-     <tal:block tal:replace="structure python:sr.as_html ()"/>
+     <tal:block tal:condition="python: '@dontshowquery' not in request.form">
+      <tal:block tal:define="sr python:
+           utils.Summary_Report (db, request, utils)">
+       <tal:block tal:replace="structure python:sr.as_html ()"/>
+      </tal:block>
+     </tal:block>
      <tal:block tal:define=
          " fpkeys python:
            [ 'user', 'time_wp', 'time_wp_id', 'time_wp_no', 'time_project'
@@ -153,17 +162,20 @@
            , 'product_family', 'product_family_id', 'project_type'
            , 'project_type_id', 'organisation', 'organisation_id', 'sap_cc'
            ]
-         ; props python: [myprops [p] for p in sorted (fpkeys, key = i18n.gettext)]
+         ; props python:
+           [myprops [p] for p in sorted (fpkeys, key = i18n.gettext)
+            if p in myprops]
          ; propkeys       python:
-           ( 'date', 'user', 'department', 'supervisor', 'org_location', 'time_wp'
-           , 'time_project', 'time_wp_group', 'time_wp_summary_no', 'cost_center'
+           ( 'date', 'user', 'department', 'supervisor', 'org_location'
+           , 'time_wp', 'time_project', 'time_wp_group'
+           , 'time_wp_summary_no', 'cost_center'
            , 'cost_center_group'
            , 'op_project', 'reporting_group', 'product_family', 'project_type'
            , 'sap_cc'
            , 'summary_type', 'status', 'show_all_users', 'show_empty'
            , 'show_missing'
            )
-         ; sprops         python: [myprops [p] for p in propkeys]
+         ; sprops python: [myprops [p] for p in propkeys if p in myprops]
          ; multi_props    python: [p for p in sprops if p.multiselect]
          ; sort_props     python: []
          ; nomulti_props  python: [p for p in sprops
