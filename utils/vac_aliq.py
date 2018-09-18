@@ -65,7 +65,7 @@ class Vacation_Setup (object) :
         """ Loop over all existing absolute vacation corrections and
             set vac_aliq in respective user_dynamic records
         """
-        db  = self.db
+        db = self.db
         # There is a duplicate absolute vac correction 475, 479, need to
         # retire one of them
         db.vacation_correction.retire ('479')
@@ -97,15 +97,43 @@ class Vacation_Setup (object) :
                 if  (  dyn.valid_from < self.startdate
                     or vc.user not in self.users
                     ) :
-                    print \
-                        ( "Set vac_aliq user_dynamic%s to %s"
-                        % (dyn.id, self.vaold)
-                        )
                     if dyn.vac_aliq is None :
+                        print \
+                            ( "Set user_dynamic%s vac_aliq=%s"
+                            % (dyn.id, self.vaold)
+                            )
                         db.user_dynamic.set (dyn.id, vac_aliq = self.vaold)
                 dyn = user_dynamic.next_user_dynamic (db, dyn)
+        print ("committing")
         db.commit ()
     # end def fix_old_dynuser_recs
+
+    def fix_new_dynuser_recs (self) :
+        """ Fix vacation data, otherwise creation of vacation
+            correction for this user fails later on
+        """
+        db = self.db
+        dt = date.Date ('2014-01-01')
+        for u in self.users :
+            dyn = user_dynamic.first_user_dynamic (db, u, date = dt)
+            # Get earliest user_dynamic for that user
+            ndyn = dyn
+            while ndyn :
+                dyn = ndyn
+                ndyn = user_dynamic.prev_user_dynamic (db, dyn)
+            while dyn :
+                d = {}
+                if dyn.vacation_month is None or dyn.vacation_day is None :
+                    d ['vacation_month'] = d ['vacation_day'] = 1
+                if dyn.vacation_yearly is None :
+                    d ['vacation_yearly'] = self.args.yearly_vacation
+                if dyn.vac_aliq is None :
+                    d ['vac_aliq'] = self.vaold
+                if d :
+                    print ("Set user_dynamic%s: %s" % (dyn.id, d))
+                    db.user_dynamic.set (dyn.id, **d)
+                dyn = user_dynamic.next_user_dynamic (db, dyn)
+    # end def fix_new_dynuser_recs
 
     def modify_users (self) :
         """ Read file as CSV and modify users """
@@ -172,9 +200,11 @@ class Vacation_Setup (object) :
                     d ['vacation_month'] = d ['vacation_day'] = 1
                 if dyn.vacation_month != 1 or dyn.vacation_day != 1 :
                     d ['vacation_month'] = d ['vacation_day'] = 1
-                d ['vacation_month']  = 1
                 if d :
-                    print "Modify: %s/user_dynamic%s" % (username, dyn.id)
+                    print \
+                        ( "Modify: %s/user_dynamic%s: %s"
+                        % (username, dyn.id, d)
+                        )
                     db.user_dynamic.set (dyn.id, **d)
                 dyn = user_dynamic.next_user_dynamic (db, dyn)
             wpfrm, wpto = self.args.rebook_wp.split (',')
@@ -312,6 +342,7 @@ def main () :
     vs.create_vac_aliq ()
     vs.fix_olos ()
     vs.fix_old_dynuser_recs ()
+    vs.fix_new_dynuser_recs ()
     vs.modify_users ()
 # end def main
 
