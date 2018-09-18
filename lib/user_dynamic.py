@@ -976,6 +976,7 @@ dynuser_copyfields = \
      , 'sap_cc'
      , 'contract_type'
      , 'vac_aliq'
+     , 'max_flexitime'
      ]
 
 #END
