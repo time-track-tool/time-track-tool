@@ -180,8 +180,9 @@
          ; sort_props     python: []
          ; nomulti_props  python: [p for p in sprops
                                    if not p.multiselect and p.searchable]
+         ; csv_action     python: 'csv_summary_report'
          ; csv_link       python:request.indexargs_url
-                (classname, {'@action':'csv_summary_report'})
+                (classname, {'@action':csv_action})
          ; do_fulltext    python: False
          ; do_pagesize    python: False
          ; do_query       python: True
