@@ -594,7 +594,7 @@ class _Report (autosuper) :
         if isinstance (item, type (0.0)) :
             return '%2.02f' % item
         if isinstance (item, list) :
-            return ','.join (str (i) for i in item)
+            return '/'.join (str (i) for i in item)
         return str (item)
     # end def csv_item
 
