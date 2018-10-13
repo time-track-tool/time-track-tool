@@ -594,7 +594,7 @@ class _Report (autosuper) :
         if isinstance (item, type (0.0)) :
             return '%2.02f' % item
         if isinstance (item, list) :
-            return ','.join (str (i) for i in item)
+            return '/'.join (str (i) for i in item)
         return str (item)
     # end def csv_item
 
@@ -1679,7 +1679,8 @@ class Vacation_Report (_Report) :
             start = end = Date ('%s-12-31' % year)
         self.start       = start
         self.end         = end
-        users            = sum_common.get_users (db, filterspec, start, end)
+        soy              = common.start_of_year (end)
+        users            = sum_common.get_users (db, filterspec, soy, end)
         min_user_date    = {}
         max_user_date    = {}
         user_vc          = {}

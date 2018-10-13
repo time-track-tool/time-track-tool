@@ -28,7 +28,7 @@ class User_Dyn_Flexifixer (object) :
             dyn = db.user_dynamic.getnode (udid)
             if not dyn.all_in :
                 continue
-            if dyn.max_flexitime :
+            if dyn.max_flexitime is not None :
                 continue
             if dyn.valid_to and dyn.valid_to <= self.year :
                 continue

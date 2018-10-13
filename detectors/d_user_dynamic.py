@@ -23,7 +23,7 @@
 #
 #++
 # Name
-#    user_dynamic
+#    d_user_dynamic
 #
 # Purpose
 #    Detectors for 'user_dynamic'
@@ -37,6 +37,7 @@ from roundup.cgi.TranslationService import get_translation
 import common
 import freeze
 import user_dynamic
+import vacation
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to) :
     if valid_to :
@@ -129,6 +130,24 @@ def check_vacation (db, cl, nodeid, attr, new_values) :
     elif vacation <= 0 :
         raise Reject \
             (_ ( "%(attr)s must be positive or empty") % locals ())
+    if vacation :
+        vac_aliq = None
+        if 'vac_aliq' in new_values :
+            vac_aliq = new_values ['vac_aliq']
+        elif nodeid :
+            vac_aliq = cl.get (nodeid, 'vac_aliq')
+        if not vac_aliq :
+            # org_location is checked to exist
+            if 'org_location' in new_values :
+                olo = new_values ['org_location']
+            else :
+                olo = cl.get (nodeid, 'org_location')
+            olo = db.org_location.getnode (olo)
+            if olo.vac_aliq :
+                new_values ['vac_aliq'] = olo.vac_aliq
+            else :
+                # Take first value
+                new_values ['vac_aliq'] = '1'
 # end def check_vacation
 
 def hours_iter () :
@@ -283,10 +302,11 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     otw = common.overtime_period_week (db)
     nvk = list (sorted (new_values.keys ()))
     old_flexmax = cl.get (nodeid, 'max_flexitime')
-    vac_fix = \
-        (   (  nvk == ['vacation_day', 'vacation_month']
-            or nvk == ['vacation_day', 'vacation_month', 'vacation_yearly']
-            )
+    vac_all  = ('vacation_day', 'vacation_month', 'vacation_yearly', 'vac_aliq')
+    vac_aliq = cl.get (nodeid, 'vac_aliq')
+    vac_fix  = \
+        (   set (nvk) <= set (vac_all)
+        and 'vac_aliq' not in nvk or vac_aliq is None
         and db.getuid () == '1'
         )
     flexi_fix = \
@@ -351,6 +371,63 @@ def max_flexi (db, cl, nodeid, new_values) :
         else :
             new_values ['max_flexitime'] = None
 # end def max_flexi
+
+def check_avc (db, cl, nodeid, new_values) :
+    """ Check that an absolute vacation correction exists at the date of
+        the user_dynamic record if either the vac_aliq changed or the
+        vac_aliq is monthly and the vacation changed (compared to the
+        last user_dynamic record). We currently do not require a
+        vacation correction if one already exists *and* there is a gap
+        in user_dynamic record validity ranges.
+    """
+    # At least one of the following attributes must be in new_values
+    # otherwise we don't have anything to check.
+    attrs = ('vac_aliq', 'vacation_yearly', 'valid_from')
+    for a in attrs :
+        if a in new_values :
+            break
+    else :
+        return
+    va = new_values.get ('vac_aliq')
+    if not va and nodeid :
+        va = cl.get (nodeid, 'vac_aliq')
+    vy = new_values.get ('vacation_yearly')
+    if vy is None and nodeid :
+        vy = cl.get (nodeid, 'vacation_yearly')
+    # User must exist
+    user = new_values.get ('user')
+    if not user :
+        user = cl.get (nodeid, 'user')
+    # valid_from must exist
+    valid_from = new_values.get ('valid_from')
+    if not valid_from :
+        valid_from = cl.get (nodeid, 'valid_from')
+    prev_dyn = user_dynamic.find_user_dynamic (db, user, valid_from, '-')
+    if not prev_dyn :
+        return
+    # Check if there is an absolute vacation correction for our
+    # valid_from, everything ok if there is:
+    dt  = valid_from.pretty (common.ymd)
+    vcs = db.vacation_correction.filter \
+        (None, dict (user = user, date = dt, absolute = True))
+    assert len (vcs) <= 1
+    if vcs :
+        assert db.vacation_correction.get (vcs [0], 'date') == valid_from
+        return
+    if prev_dyn.vac_aliq != va :
+        van = 'vac_aliq'
+        raise Reject \
+            ( _ ("Change of %(van)s without absolute vacation correction")
+            % locals ()
+            )
+    vyo = prev_dyn.vacation_yearly
+    if db.vac_aliq.get (va, 'name') == 'Monthly' and vy != vyo :
+        vyn = 'vacation_yearly'
+        raise Reject \
+            ( _ ("Change of %(vyn)s without absolute vacation correction")
+            % locals ()
+            )
+# end def check_avc
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
     common.require_attributes \
@@ -417,7 +494,7 @@ def check_weekly_hours (db, cl, nodeid, new_values) :
         # weekly_hours must not be 0 in case we have overtime
         if not wh :
             msg = ''"Weekly hours must not be 0 when user has " \
-                  "supplementary hours (weeky or otherwise)"
+                  "supplementary hours (weekly or otherwise)"
             raise Reject (_ (msg))
 # end def check_weekly_hours
 
@@ -543,6 +620,15 @@ def vacation_check (db, cl, nodeid, new_values) :
     new_values ['vacation_day']    = vd
 # end def vacation_check
 
+def olo_check (db, cl, nodeid, new_values) :
+    """ Require vac_aliq if do_leave_process is turned on """
+    lp = new_values.get ('do_leave_process')
+    if lp is None and nodeid :
+        lp = cl.get (nodeid, 'do_leave_process')
+    if lp :
+        common.require_attributes (_, cl, nodeid, new_values, 'vac_aliq')
+# end def olo_check
+
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -557,11 +643,15 @@ def init (db) :
     db.user_dynamic.audit    ("set",    set_otp_if_all_in, priority = 20)
     db.user_dynamic.audit    ("create", max_flexi)
     db.user_dynamic.audit    ("set",    max_flexi)
+    db.user_dynamic.audit    ("create", check_avc, priority = 150)
+    db.user_dynamic.audit    ("set",    check_avc, priority = 150)
     db.user_dynamic.react    ("create", close_existing)
     db.user_dynamic.react    ("create", user_dyn_react)
     db.user_dynamic.react    ("set",    user_dyn_react)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
+    db.org_location.audit    ("create", olo_check)
+    db.org_location.audit    ("set",    olo_check)
 # end def init
 
 ### __END__ user_dynamic

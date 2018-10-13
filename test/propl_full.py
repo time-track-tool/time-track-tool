@@ -396,6 +396,7 @@ properties = \
         , 'name'
         , 'organisation'
         , 'phone'
+        , 'vac_aliq'
         , 'vacation_legal_year'
         , 'vacation_yearly'
         ]
@@ -831,6 +832,7 @@ properties = \
         , 'supp_weekly_hours'
         , 'travel_full'
         , 'user'
+        , 'vac_aliq'
         , 'vacation_day'
         , 'vacation_month'
         , 'vacation_yearly'
@@ -846,6 +848,10 @@ properties = \
         , 'ldap_group'
         , 'name'
         , 'roles'
+        ]
+      )
+    , ( 'vac_aliq'
+      , [ 'name'
         ]
       )
     , ( 'vacation_correction'

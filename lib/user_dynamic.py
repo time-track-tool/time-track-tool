@@ -141,7 +141,7 @@ def _next_user_dynamic (db, dynuser, direction = '+', use_ct = False) :
     if use_ct :
         ct = dynuser.contract_type
     return find_user_dynamic (db, id, vf, direction = direction, ct = ct)
-# end def _find_user_dynamic
+# end def _next_user_dynamic
 
 def next_user_dynamic (db, dynuser, use_ct = False) :
     return _next_user_dynamic (db, dynuser, use_ct = use_ct)
@@ -975,6 +975,8 @@ dynuser_copyfields = \
      , 'overtime_period'
      , 'sap_cc'
      , 'contract_type'
+     , 'vac_aliq'
+     , 'max_flexitime'
      ]
 
 #END

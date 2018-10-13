@@ -395,6 +395,7 @@ Role "user":
  User is allowed to access time_wp_summary_no (View for "time_wp_summary_no" only)
  User is allowed to access timesheet (View for "timesheet" only)
  User is allowed to access user_status (View for "user_status" only)
+ User is allowed to access vac_aliq (View for "vac_aliq" only)
  User is allowed to access vacation_report (View for "vacation_report" only)
  User is allowed to access valid (View for "valid" only)
  User is allowed to access work_location (View for "work_location" only)

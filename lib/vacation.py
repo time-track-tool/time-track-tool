@@ -31,7 +31,7 @@
 
 from math import ceil
 
-import roundup.date
+from roundup.date import Date, Interval
 import common
 import user_dynamic
 
@@ -261,10 +261,10 @@ def next_yearly_vacation_date (db, user, ctype, date) :
         assert 0
         return None
     y = int (d.get_tuple () [0])
-    next_date = roundup.date.Date \
+    next_date = Date \
         ('%04d-%02d-%02d' % (y, dyn.vacation_month, dyn.vacation_day))
     if next_date < d :
-        next_date = roundup.date.Date \
+        next_date = Date \
             ('%04d-%02d-%02d' % (y + 1, dyn.vacation_month, dyn.vacation_day))
     # Found a dyn user record too far in the future, can't determine
     # next yearly vacation date
@@ -290,10 +290,9 @@ def next_yearly_vacation_date (db, user, ctype, date) :
         ymon = dyn.vacation_month
         if yday is None or ymon is None :
             return next_date
-        next_date = roundup.date.Date ('%04d-%02d-%02d' % (y, ymon, yday))
+        next_date = Date ('%04d-%02d-%02d' % (y, ymon, yday))
         if next_date < d :
-            next_date = roundup.date.Date \
-                ('%04d-%02d-%02d' % (y + 1, ymon, yday))
+            next_date = Date ('%04d-%02d-%02d' % (y + 1, ymon, yday))
 # end def next_yearly_vacation_date
 
 def prev_yearly_vacation_date (db, user, ctype, date) :
@@ -306,10 +305,10 @@ def prev_yearly_vacation_date (db, user, ctype, date) :
         ) :
         return None
     y = int (d.get_tuple () [0])
-    prev_date = roundup.date.Date \
+    prev_date = Date \
         ('%04d-%02d-%02d' % (y, dyn.vacation_month, dyn.vacation_day))
     if prev_date >= date :
-        prev_date = roundup.date.Date \
+        prev_date = Date \
             ('%04d-%02d-%02d' % (y - 1, dyn.vacation_month, dyn.vacation_day))
     assert prev_date < date
     while dyn.valid_from > prev_date :
@@ -320,18 +319,17 @@ def prev_yearly_vacation_date (db, user, ctype, date) :
         ymon = dyn.vacation_month
         if yday is None or ymon is None :
             return prev_date
-        prev_date = roundup.date.Date ('%04d-%02d-%02d' % (y, ymon, yday))
+        prev_date = Date ('%04d-%02d-%02d' % (y, ymon, yday))
         if prev_date >= date :
-            prev_date = roundup.date.Date \
-                ('%04d-%02d-%02d' % (y - 1, ymon, yday))
+            prev_date = Date ('%04d-%02d-%02d' % (y - 1, ymon, yday))
     return prev_date
 # end def prev_yearly_vacation_date
 
 def interval_days (iv) :
     """ Compute number of days in a roundup.date Interval. The
         difference should be computed from two dates (without time)
-        >>> D = roundup.date.Date
-        >>> I = roundup.date.Interval
+        >>> D = Date
+        >>> I = Interval
         >>> interval_days (D ('2014-01-07') - D ('2013-01-07'))
         365
         >>> interval_days (D ('2014-01-07') - D ('2012-01-07'))
@@ -358,7 +356,7 @@ def get_vacation_correction (db, user, ctype = -1, date = None) :
         empty link....
     """
     if date is None :
-        date = roundup.date.Date ('.')
+        date = Date ('.')
     dt = ";%s" % date.pretty (common.ymd)
     d = dict \
         ( user          = user
@@ -422,7 +420,7 @@ def vacation_time_sum (db, user, ctype, start, end) :
         (None, dict (daily_record = dr, wp = vwp), sort = dtt)
     vac = 0.0
     if ctype == -1 :
-        ctype = _get_ctype (db, user, roundup.date.Date ('.'))
+        ctype = _get_ctype (db, user, Date ('.'))
     by_dr = {}
     for tid in trs :
         tr  = db.time_record.getnode  (tid)
@@ -457,7 +455,7 @@ def remaining_vacation \
     """ Compute remaining vacation on the given date
     """
     if date is None :
-        date = roundup.date.Date ('.')
+        date = Date ('.')
     pdate = date.pretty (common.ymd)
     if ctype == -1 :
         ctype = _get_ctype (db, user, date)
@@ -502,12 +500,28 @@ def remaining_vacation \
     return vac
 # end def remaining_vacation
 
+def month_diff (d1, d2) :
+    """ Difference of two month which may be in suceeding years
+    >>> month_diff (Date ('2018-01-02'), Date ('2018-12-01'))
+    11
+    >>> month_diff (Date ('2018-12-01'), Date ('2019-01-01'))
+    1
+    >>> month_diff (Date ('2018-12-12'), Date ('2019-12-11'))
+    12
+    >>> month_diff (Date ('2018-12-12'), Date ('2019-12-12'))
+    12
+    """
+    yd = d2.year  - d1.year
+    md = d2.month - d1.month
+    return md + 12 * yd
+# end def month_diff
+
 def consolidated_vacation \
     (db, user, ctype = -1, date = None, vc = None, to_eoy = True) :
     """ Compute remaining vacation on the given date
     """
     if date is None :
-        date = roundup.date.Date ('.')
+        date = Date ('.')
     if ctype == -1 :
         ctype = _get_ctype (db, user, date)
     if ctype == -1 :
@@ -525,28 +539,96 @@ def consolidated_vacation \
     if dyn is None :
         return None
     vac = float (vc.days)
+    msg = "vac_aliq None for user_dynamic%s" % dyn.id
+    assert dyn.vac_aliq, msg
+    va = db.vac_aliq.getnode (dyn.vac_aliq)
+    assert va.name in ('Daily', 'Monthly')
+    # Need to skip first period without a dyn user record
+    # sd is the current start date for german aliquotation
+    # We subtract 1 day to easily compare the day of the ending-date
+    # with the day of the start date
+    sd = d
+    # This is used for corrections if the start day lies beyond 28 -- in
+    # that case there are months that simply don't have that date. So we
+    # must correct for this in months with less days.
+    sd_day = 0
+    if dyn.valid_from > d :
+        sd = d = dyn.valid_from
     while dyn and d < ed :
         if dyn.valid_from > d :
-            d = dyn.valid_from
+            # We want to check if the days that are lost here whenever a
+            # jump in dyn user records occurs are OK for monthly aliqotation
+            sd = d = dyn.valid_from
             continue
         assert not dyn.valid_to or dyn.valid_to > d
-        eoy = roundup.date.Date ('%s-12-31' % d.year)
+        eoy = Date ('%s-12-31' % d.year)
         msg = "vacation_yearly None for user_dynamic%s" % dyn.id
         assert dyn.vacation_yearly is not None, msg
+        msg = ( "vac_aliq changes w/o absolute vac_corr for user_dynamic%s"
+              % dyn.id
+              )
+        assert dyn.vac_aliq == va.id, msg
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to < eoy :
-            yd = float (common.ydays (dyn.valid_to))
-            vac += interval_days (dyn.valid_to - d) * dyn.vacation_yearly / yd
+            if va.name == 'Daily' :
+                yd = float (common.ydays (dyn.valid_to))
+                vac += interval_days \
+                    (dyn.valid_to - d) * dyn.vacation_yearly / yd
+            else :
+                md  = month_diff (sd, dyn.valid_to)
+                dy  = sd_day or sd.day
+                if dyn.valid_to.day < dy :
+                    md -= 1
+                    # Example: sd = 2018-04-03 valid_to = 2018-06-01
+                    # Need to set sd=2018-05-03, i.e. the next start
+                    # day before valid_to
+                    # Even more complex is the case where e.g.
+                    # sd = 2018-03-31 valid_to = 2018-05-01
+                    # We set sd=2018-04-30 and sd_day=31
+                    # Get last day of last month
+                    lm = dyn.valid_to - Interval ('%sd' % dyn.valid_to.day)
+                    em = common.end_of_month (lm)
+                    if dy > em.day :
+                        sd_day = sd.day
+                        sd = em
+                    else :
+                        sd = Date (lm.pretty ("%%Y-%%m-%s" % sd.day))
+                        sd_day = 0
+                else :
+                    sd = Date (dyn.valid_to.pretty ("%%Y-%%m-%s" % sd.day))
+                    sd_day = 0
+                d = dyn.valid_to
+                vac += dyn.vacation_yearly * md / 12.0
             dyn = vac_next_user_dynamic (db, dyn)
         elif eoy < ed :
-            yd = float (common.ydays (eoy))
-            iv = eoy + common.day - d
-            vac += interval_days (iv) * dyn.vacation_yearly / yd
+            if va.name == 'Daily' :
+                yd = float (common.ydays (eoy))
+                iv = eoy + common.day - d
+                vac += interval_days (iv) * dyn.vacation_yearly / yd
+            else :
+                md  = month_diff (sd, eoy)
+                dy  = sd_day or sd.day
+                assert eoy.day >= dy
+                if dy == 1 :
+                    md += 1
+                    sd = eoy + common.day
+                else :
+                    sd = Date (eoy.pretty ("%%Y-%%m-%s" % sd.day))
+                sd_day = 0
+                vac += dyn.vacation_yearly * md / 12.0
             d  = eoy + common.day
             if dyn.valid_to == d :
                 dyn = vac_next_user_dynamic (db, dyn)
         else :
-            yd = float (common.ydays (ed - common.day))
-            vac += interval_days (ed - d) * dyn.vacation_yearly / yd
+            if va.name == 'Daily' :
+                yd = float (common.ydays (ed - common.day))
+                vac += interval_days (ed - d) * dyn.vacation_yearly / yd
+            else :
+                md = month_diff (sd, ed)
+                dy  = sd_day or sd.day
+                if ed.day < dy :
+                    md -= 1
+                sd = ed
+                vac += dyn.vacation_yearly * md / 12.0
             d = ed
     return vac
 # end def consolidated_vacation
@@ -554,7 +636,7 @@ def consolidated_vacation \
 def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     srt  = srt or [('+', 'id')]
     wps  = {}
-    date = date or roundup.date.Date ('.')
+    date = date or Date ('.')
     dt   = (date + common.day).pretty (common.ymd)
     d    = dict (time_start = ';%s' % date.pretty (common.ymd))
     d.update (filter)
@@ -713,7 +795,7 @@ def vacation_params (db, user, date, vc, hv = False) :
 
 def get_current_ctype (db, user, dt = None) :
     if dt is None :
-        dt = roundup.date.Date ('.')
+        dt = Date ('.')
     dyn   = user_dynamic.get_user_dynamic (db, user, dt)
     ctype = dyn.contract_type
     return ctype
@@ -755,7 +837,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year) :
     """
     y     = common.start_of_year (date_in_year)
     eoy   = common.end_of_year   (y)
-    now   = roundup.date.Date ('.')
+    now   = Date ('.')
     if eoy > now :
         eoy = now
     hours = 0.0

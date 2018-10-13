@@ -1225,3 +1225,6 @@ if 'daily_record' in db.classes and hasattr (db, 'sql') :
         ( 'alter table _daily_record add constraint '
           'daily_record_user_date unique (_user, _date, __retired__);'
         )
+if 'vac_aliq' in db.classes :
+    db.vac_aliq.create (name  = 'Daily')
+    db.vac_aliq.create (name  = 'Monthly')

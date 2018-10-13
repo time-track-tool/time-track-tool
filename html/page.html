@@ -176,7 +176,7 @@
                         : '@columns=id,name,network_address,machine_name,'
                           'dns_record_type,do_reverse_mapping&@sort=name&'
                           '@pagesize=20&@startwith=0'
-   , ('measurement', ' (CSV)') 
+   , ('measurement', ' (CSV)')
                         : '@sort=date&@filter=date,sensor.is_app_sensor,'
                           'sensor.do_logging&date=.-1w%3B&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
@@ -248,7 +248,7 @@
                           'user=%s&date=%s%%3B.' %
                           (uid, utils.monthstart_twoweeksago ())
    , ('summary_report', '')
-                        : '@columns=user,time_wp,summary&'
+                        : '@dontshowquery=1&@columns=user,time_wp,summary&'
                           '@filter=user,summary_type,status,date,show_empty,'
                           'show_all_users,show_missing&'
                           '@pagesize=50&@startwith=0&status=6,3,1,2&'
@@ -1454,8 +1454,9 @@
                                and utils.may_search
                                 (db._db, uid, classname, p.searchname)
                               ]
+     ; csv_action     python: 'export_csv_names'
      ; csv_link       python:request.indexargs_url
-            (classname, {'@action':'export_csv_names'})
+            (classname, {'@action':csv_action})
      ; do_fulltext    python: not terse
      ; do_pagesize    python: True
      ; do_query       python: True
@@ -1712,6 +1713,19 @@
                   document.forms ['query'].elements ['new_query'].value = '';
                   document.forms ['query'].elements ['queryid'].value = '';"
          tal:condition="terse">
+        <input type="submit" i18n:attributes="value" value="Show as CSV"
+         tal:attributes = "onClick python:
+         '\x3b'.join
+          ('document.forms [\x22query\x22].elements '
+           '[\x22%s\x22].value = \x22%s\x22'
+          % k for k in
+            ( ('@queryname', '')
+            , ('new_query', '')
+            , ('queryid', '')
+            , (':action', csv_action)
+            , ('@action', csv_action)
+            )
+          )" tal:condition="csv_action">
        </td>
       </tr>
       <tr tal:define="

@@ -354,6 +354,9 @@ properties = \
         , ( 'phone'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
+        , ( 'vac_aliq'
+          , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
+          )
         , ( 'vacation_legal_year'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
@@ -1086,6 +1089,9 @@ properties = \
         , ( 'user'
           , ["admin", "hr"]
           )
+        , ( 'vac_aliq'
+          , ["admin", "hr"]
+          )
         , ( 'vacation_day'
           , ["admin", "hr", "hr-org-location"]
           )
@@ -1123,6 +1129,12 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         , ( 'roles'
+          , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
+          )
+        ]
+      )
+    , ( 'vac_aliq'
+      , [ ( 'name'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'user', 'user_view']
           )
         ]
