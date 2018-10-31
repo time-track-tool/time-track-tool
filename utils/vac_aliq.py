@@ -68,13 +68,15 @@ class Vacation_Setup (object) :
         db = self.db
         # There is a duplicate absolute vac correction 475, 479, need to
         # retire one of them
-        db.vacation_correction.retire ('479')
-        flt = db.vacation_correction.filter
-        for id in flt (None, dict (absolute = True)) :
-            vc  = db.vacation_correction.getnode (id)
-            dyn = user_dynamic.first_user_dynamic (db, vc.user, date = vc.date)
+        if not db.vacation_correction.is_retired ('479') :
+            db.vacation_correction.retire ('479')
+            print "Retired: vacation_correction479"
+        valid = db.user_status.lookup ('valid')
+        for uid in db.user.filter (None, dict (status = valid)) :
+            dyn = user_dynamic.first_user_dynamic \
+                (db, uid, date = self.startdate)
             if not dyn :
-                print "WARN: No dyn user %s/%s" % (vc.user, vc.date)
+                print "WARN: No dyn user %s/%s" % (uid, self.startdate)
             # Get earliest user_dynamic for that user
             ndyn = dyn
             while ndyn :
@@ -95,7 +97,7 @@ class Vacation_Setup (object) :
                         )
 
                 if  (  dyn.valid_from < self.startdate
-                    or vc.user not in self.users
+                    or uid not in self.users
                     ) :
                     if dyn.vac_aliq is None :
                         print \
