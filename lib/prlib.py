@@ -192,6 +192,12 @@ def compute_approvals (db, pr, do_create) :
             prc = db.pr_approval_config.getnode (prcid)
             if prc.if_not_in_las and in_las (db, pr.id) :
                 continue
+            if prc.purchase_type and pr.purchase_type not in prc.purchase_type :
+                continue
+            if  (   prc.pr_ext_resource
+                and pr.pr_ext_resource != prc.pr_ext_resource
+                ) :
+                continue
             if  (   prc.organisations and pr.organisation
                 and pr.organisation not in prc.organisations
                 ) :

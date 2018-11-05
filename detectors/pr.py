@@ -231,7 +231,7 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
-                , 'pr_currency', 'purchasing_agents'
+                , 'pr_currency', 'purchasing_agents', 'pr_ext_resource'
                 )
             dep = new_values.get ('department', cl.get (nodeid, 'department'))
             if dep and db.department.is_retired (dep) :

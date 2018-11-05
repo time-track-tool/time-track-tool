@@ -103,6 +103,8 @@ def init \
         , if_not_in_las         = Boolean   ()
         , valid                 = Boolean   ()
         , organisations         = Multilink ("organisation")
+        , pr_ext_resource       = Link      ("pr_ext_resource")
+        , purchase_type         = Multilink ("purchase_type")
         )
 
     pr_approval_order = Class \
@@ -114,6 +116,12 @@ def init \
         , is_board              = Boolean   ()
         )
     pr_approval_order.setkey ('role')
+
+    pr_ext_resource = Class \
+        ( db, ''"pr_ext_resource"
+        , name                  = String    ()
+        )
+    pr_ext_resource.setkey ('name')
 
     pr_offer_item = Class \
         ( db, ''"pr_offer_item"
@@ -254,6 +262,7 @@ def init \
                                           , do_journal     = 'no'
                                           )
                 , special_approval      = Multilink ("user", do_journal = 'no')
+                , pr_ext_resource       = Link      ("pr_ext_resource")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -342,6 +351,7 @@ def security (db, ** kw) :
         , ("purchase_request",   ["PR-View"],           [])
         , ("pr_offer_item",      ["PR-View"],           [])
         , ("internal_order",     ["User"],              [])
+        , ("pr_ext_resource",    ["User"],              [])
         ]
 
     prop_perms = \

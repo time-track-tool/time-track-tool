@@ -6682,3 +6682,9 @@ msgstr "Organisations"
 msgid "max_flexitime"
 msgstr "max. Flexi-Time"
 
+msgid "pr_ext_resource"
+msgstr "External resources"
+
+msgid "pr_approval_config++pr_ext_resource"
+msgstr "External resources"
+

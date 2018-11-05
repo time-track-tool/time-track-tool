@@ -1228,3 +1228,6 @@ if 'daily_record' in db.classes and hasattr (db, 'sql') :
 if 'vac_aliq' in db.classes :
     db.vac_aliq.create (name  = 'Daily')
     db.vac_aliq.create (name  = 'Monthly')
+if 'pr_ext_resource' in db.classes :
+    db.pr_ext_resource.create (name  = 'yes')
+    db.pr_ext_resource.create (name  = 'no')

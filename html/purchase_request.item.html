@@ -154,6 +154,9 @@
       </td>
       <td tal:condition="not:context/terms_conditions/is_edit_ok"
           tal:content="context/terms_conditions/plain" />
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'pr_ext_resource')"/>
+      <td tal:content="structure python:context.pr_ext_resource.menu ()"/>
      </tr>
      <tr>
       <th rowspan = "2"

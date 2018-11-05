@@ -1485,6 +1485,11 @@ _helptext          = \
       [""'''%(Property)s in the company''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
+    , ""'pr_approval_config++pr_ext_resource' :
+      [ ""'''If set, this approval will only apply to PRs with the given
+             setting of %(Property)s.
+          '''
+      ]
     , ""'pr_currency'                 :
       [""'''Select currency from drop down menu. In case currencies are
             missing please contact purchasing department.
@@ -1492,6 +1497,11 @@ _helptext          = \
             Please note: Within one PR issue only the same currency may
             be used for different items!
          '''
+      ]
+    , ""'pr_ext_resource'              :
+      [ ""'''External resources (e.g. subcontracting) needed?
+             This will add an additional approval.
+          '''
       ]
     , ""'pr_forced_roles'              :
       [ ""'''Roles which must approve purchase requests with this
