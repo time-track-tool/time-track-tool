@@ -797,6 +797,8 @@ def get_current_ctype (db, user, dt = None) :
     if dt is None :
         dt = Date ('.')
     dyn   = user_dynamic.get_user_dynamic (db, user, dt)
+    if not dyn :
+        return None
     ctype = dyn.contract_type
     return ctype
 # end def get_current_ctype
