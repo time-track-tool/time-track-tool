@@ -75,7 +75,9 @@ def try_create_public_holiday (db, daily_record, date, user) :
         loc = db.org_location.get (dyn.org_location, 'location')
         hol = db.public_holiday.filter \
             ( None
-            , {'date' : common.pretty_range (date, date), 'locations' : loc}
+            , { 'date'      : common.pretty_range (date, date)
+              , 'locations' : loc
+              }
             )
         if hol and wh :
             holiday = db.public_holiday.getnode (hol [0])
@@ -90,7 +92,8 @@ def try_create_public_holiday (db, daily_record, date, user) :
                 tr = db.time_record.getnode (trid)
                 if tr.wp is None :
                     continue
-                tp = db.time_project.getnode (db.time_wp.get (tr.wp, 'project'))
+                tp = db.time_project.getnode \
+                    (db.time_wp.get (tr.wp, 'project'))
                 if tp.is_public_holiday :
                     d = {}
                     if tr.duration != wh :
@@ -174,6 +177,7 @@ def leave_duration (db, user, date) :
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
     assert len (dr) == 1
     try_create_public_holiday (db, dr [0], date, user)
+    db.commit ()
     trs = db.time_record.filter (None, dict (daily_record = dr [0]))
     bk  = 0.0
     for trid in trs :

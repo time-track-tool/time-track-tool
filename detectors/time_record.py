@@ -508,9 +508,9 @@ def leave_wp (db, dr, wp, start, end, duration) :
     if not tp.approval_required :
         return False
     # Only search for non-cancelled non-retired non-declined
-    st  = [] 
+    st  = []
     unwanted = ('cancelled', 'retired', 'declined')
-    for stid in db.leave_status.getnodeids (retired = False) : 
+    for stid in db.leave_status.getnodeids (retired = False) :
         if db.leave_status.get (stid, 'name') in unwanted :
             continue
         st.append (stid)
@@ -540,6 +540,16 @@ def leave_wp (db, dr, wp, start, end, duration) :
     return False
 # end def leave_wp
 
+def vacation_wp (db, wpid) :
+    """ Allow creation of vacation wp for other user
+    """
+    wp = db.time_wp.getnode (wpid)
+    tp = db.time_project.getnode (wp.project)
+    if tp.is_public_holiday :
+        return True
+    return False
+# end def vacation_wp
+
 def new_time_record (db, cl, nodeid, new_values) :
     """ auditor on time_record
     """
@@ -558,9 +568,11 @@ def new_time_record (db, cl, nodeid, new_values) :
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
+    wpid     = new_values.get ('wp')
     if  (   uid != dr.user
         and not common.user_has_role (db, uid, 'controlling', 'admin')
-        and not leave_wp (db, dr, new_values.get ('wp'), start, end, duration) 
+        and not leave_wp (db, dr, wpid, start, end, duration)
+        and not vacation_wp (db, wpid)
         ) :
         raise Reject, _ \
             ( ("Only %(uname)s and Controlling may create time records")
