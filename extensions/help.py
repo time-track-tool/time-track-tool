@@ -1499,8 +1499,10 @@ _helptext          = \
          '''
       ]
     , ""'pr_ext_resource'              :
-      [ ""'''External resources (e.g. subcontracting) needed?
-             This will add an additional approval.
+      [ ""'''Yes: Requirement to access company systems, tools, buildings
+             (access-card) or premises for delivering the services for
+             which this PR was raised. If yes, please ensure that the
+             requirements for an external start are met in due time.
           '''
       ]
     , ""'pr_forced_roles'              :
