@@ -679,11 +679,31 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
 # end def approved_pr_approval
 
 def new_pr_offer_item (db, cl, nodeid, new_values) :
-    if 'units' not in new_values :
+    if 'units' not in new_values or new_values ['units'] == 0 :
         new_values ['units'] = 1
     if 'vat' not in new_values :
         new_values ['vat'] = 0
 # end def new_pr_offer_item
+
+def check_pr_offer_item (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'units', 'price_per_unit')
+    units = new_values.get ('units', None)
+    price = new_values.get ('price_per_unit', None)
+    oi    = None
+    if nodeid :
+        oi = cl.getnode (nodeid)
+    if units is None :
+        assert oi
+        units = oi.units
+    if price is None :
+        assert oi
+        price = oi.price_per_unit
+    if units == 0 :
+        raise Reject ("Units must not be 0")
+    if price == 0 :
+        raise Reject ("Price must not be 0")
+# end def check_pr_offer_item
 
 def fix_pr_offer_item (db, cl, nodeid, new_values) :
     """ Fix missing info of offer_item from previous lines
@@ -872,6 +892,8 @@ def init (db) :
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.react        ("set",    approved_pr_approval)
     db.pr_offer_item.audit      ("create", new_pr_offer_item)
+    db.pr_offer_item.audit      ("create", check_pr_offer_item, priority = 110)
+    db.pr_offer_item.audit      ("set",    check_pr_offer_item, priority = 110)
     db.pr_offer_item.audit      ("create", check_supplier)
     db.pr_offer_item.audit      ("set",    check_supplier)
     db.pr_offer_item.react      ("set",    check_pr_update)
