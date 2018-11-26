@@ -679,7 +679,7 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
 # end def approved_pr_approval
 
 def new_pr_offer_item (db, cl, nodeid, new_values) :
-    if 'units' not in new_values or new_values ['units'] == 0 :
+    if 'units' not in new_values or new_values ['units'] <= 0 :
         new_values ['units'] = 1
     if 'vat' not in new_values :
         new_values ['vat'] = 0
@@ -699,10 +699,10 @@ def check_pr_offer_item (db, cl, nodeid, new_values) :
     if price is None :
         assert oi
         price = oi.price_per_unit
-    if units == 0 :
-        raise Reject ("Units must not be 0")
-    if price == 0 :
-        raise Reject ("Price must not be 0")
+    if units <= 0 :
+        raise Reject ("Units must not be <= 0")
+    if price <= 0 :
+        raise Reject ("Price must not be <= 0")
 # end def check_pr_offer_item
 
 def fix_pr_offer_item (db, cl, nodeid, new_values) :
