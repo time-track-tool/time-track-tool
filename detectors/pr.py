@@ -763,6 +763,9 @@ def check_pr_update (db, cl, nodeid, old_values) :
     rej = db.pr_status.lookup ('rejected')
     opn = db.pr_status.lookup ('open')
     ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
+    # Happens on retire or unlink
+    if len (ids) < 1 :
+        return
     assert len (ids) == 1
     id  = ids [0]
     pr  = db.purchase_request.getnode (id)
