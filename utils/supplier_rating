@@ -1,0 +1,108 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+
+""" Import supplier ratings from excel list """
+import sys
+import os
+from csv               import DictReader
+from roundup           import instance
+from argparse          import ArgumentParser
+
+agent_cache = {}
+
+def main () :
+    dir = os.getcwd ()
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'file'
+        , help    = 'CSV file to import'
+        )
+    cmd.add_argument \
+        ( '-d', '--directory'
+        , dest    = 'dir'
+        , help    = 'Tracker instance directory, default=%(default)s'
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( '-D', '--delimiter'
+        , help    = 'Delimiter for CSV file, default=%(default)s'
+        , default = ';'
+        )
+    cmd.add_argument \
+        ( '-C', '--charset'
+        , help    = 'Character set of CSV, default= %(default)s'
+        , default = 'utf-8'
+        )
+    cmd.add_argument \
+        ( '-o', '--organisation'
+        , help    = 'Organisation id to set supplier ratings for, '
+                    'default=%(default)s'
+        , default = '40'
+        )
+    cmd.add_argument \
+        ( '-t', '--template-organisation'
+        , dest    = 'template'
+        , help    = 'Organisation id to get example rating/scope '
+                    'default=%(default)s'
+        , default = '19'
+        )
+    opt = cmd.parse_args ()
+
+    tracker = instance.open (opt.dir)
+    db      = tracker.open ('admin')
+    org     = db.organisation.getnode (opt.organisation)
+    tpl     = db.organisation.getnode (opt.template)
+    with open (opt.file, 'r') as f :
+        dr  = DictReader (f, delimiter = opt.delimiter)
+        for line in dr :
+            snm = line ['Name'].decode (opt.charset).encode ('utf-8')
+            kn  = line ['Kreditor#'].decode (opt.charset).encode ('utf-8')
+            try :
+                sid = db.pr_supplier.lookup (snm)
+            except KeyError :
+                print ("Not found by name: %s" % snm)
+                sids = db.pr_supplier.filter (None, dict (sap_ref = kn))
+                if len (sids) != 1 :
+                    print \
+                        ( "Not found by kn: %s name: %s, sids = %s"
+                        % (kn, snm, sids)
+                        )
+                    continue
+                sid  = sids [0]
+            supplier = db.pr_supplier.getnode (sid)
+            # Assert that the found supplier has same Kreditor#
+            assert supplier.sap_ref == kn
+            # Check if we already have a rating for this combination
+            d = dict (supplier = sid, organisation = org.id)
+            r = db.pr_supplier_rating.filter (None, d)
+            assert len (r) <= 1
+            if len (r) :
+                print \
+                    ("Already existing for %s/%s"
+                    % supplier.name, organisation.name
+                    )
+                continue
+            # Get rating for example org
+            d ['organisation'] = tpl.id
+            r = db.pr_supplier_rating.filter (None, d)
+            if len (r) != 1 :
+                print \
+                    ( "No template rating, got %s from %s %s/%s"
+                    % (r, d, tpl.name, supplier.name)
+                    )
+                continue
+            r = db.pr_supplier_rating.getnode (r [0])
+            d = dict \
+                ( supplier     = sid
+                , organisation = org.id
+                , rating       = r.rating
+                , scope        = r.scope
+                )
+            print "creating: %s" % d
+            db.pr_supplier_rating.create (** d)
+    db.commit ()
+# end def main
+
+
+if __name__ == '__main__' :
+    main ()
