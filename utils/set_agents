@@ -1,0 +1,60 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+
+""" Import purchasing agents from excel list """
+import sys
+import os
+from csv               import DictReader
+from roundup           import instance
+from argparse          import ArgumentParser
+
+agent_cache = {}
+
+def lookup_agent (db, username) :
+    if username not in agent_cache :
+        agent_cache [username] = db.user.lookup (username)
+    return agent_cache [username]
+# end def lookup_agent
+
+def main () :
+    dir = os.getcwd ()
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'file'
+        , help    = 'CSV file to import'
+        )
+    cmd.add_argument \
+        ( '-d', '--directory'
+        , dest    = 'dir'
+        , help    = 'Tracker instance directory, default=%(default)s'
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( '-D', '--delimiter'
+        , help    = 'Delimiter for CSV file, default=%(default)s'
+        , default = ';'
+        )
+    cmd.add_argument \
+        ( '-C', '--charset'
+        , help    = 'Character set of CSV, default= %(default)s'
+        , default = 'utf-8'
+        )
+    opt = cmd.parse_args ()
+
+    tracker = instance.open (opt.dir)
+    db      = tracker.open ('admin')
+    with open (opt.file, 'r') as f :
+        dr = DictReader (f, delimiter = opt.delimiter)
+        for line in dr :
+            pa     = 'Purchasing agents'
+            agents = (x.strip () for x in line [pa].split (','))
+            agents = list (lookup_agent (db, x) for x in agents)
+            tcn = line ['Name'].decode (opt.charset).encode ('utf-8')
+            tc = db.time_project.lookup (tcn)
+            db.time_project.set (tc, purchasing_agents = agents)
+    db.commit ()
+# end def main
+
+
+if __name__ == '__main__' :
+    main ()
