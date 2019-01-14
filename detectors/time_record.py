@@ -560,7 +560,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     check_generated (new_values)
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     uname    = db.user.get (dr.user, 'username')
-    if (dr.status != db.daily_record_status.lookup ('open') and uid != '1') :
+    if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
     if frozen (db, dr.user, dr.date) :
         date = dr.date
@@ -645,9 +645,19 @@ def check_time_record (db, cl, nodeid, new_values) :
         uname = db.user.get (user, 'username')
         raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
+    leave    = db.daily_record_status.lookup ('leave')
+    allow    = False
+    if dr.status == leave :
+        du = vacation.leave_duration (db, user, date)
+        if  (   new_values.keys () == ['duration']
+            and new_values ['duration'] == du
+            and cl.get (nodeid, 'duration') != du
+            ) :
+            allow = True
+    allow    = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
         and new_values.keys () != ['tr_duration']
-        and db.getuid () != '1'
+        and not allow
         ) :
         raise Reject, _ ('Editing of time records only for status "open"')
     # allow empty duration to delete record

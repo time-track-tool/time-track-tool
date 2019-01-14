@@ -1,0 +1,22 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+""" Fix vacation for a user where the dyn. user record has been changed
+    *after* the user already booked vacation
+"""
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+sys.path.insert (1, os.path.join (dir, 'lib'))
+import common
+import vacation
+
+user = sys.argv [1]
+uid  = db.user.lookup (user)
+
+vacation.fix_vacation (db, uid)
+db.commit()

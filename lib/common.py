@@ -384,8 +384,21 @@ def date_range (db, filterspec) :
     return start, end
 # end def date_range
 
-def pretty_range (start, end) :
-    return ';'.join ([x.pretty (ymd) for x in (start, end)])
+def pretty_range (start, end = None) :
+    """ Print a range of dates with either one being None for searching
+    >>> s = Date ('2018-01-01')
+    >>> e = Date ('2018-10-31')
+    >>> pretty_range (s, e)
+    '2018-01-01;2018-10-31'
+    >>> pretty_range (s)
+    '2018-01-01;'
+    >>> pretty_range (s, None)
+    '2018-01-01;'
+    >>> pretty_range (None, e)
+    ';2018-10-31'
+    """
+    start, end = ((x and x.pretty (ymd)) or '' for x in (start, end))
+    return ';'.join ([x for x in (start, end)])
 # end def pretty_range
 
 def first_thursday (year) :
