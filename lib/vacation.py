@@ -911,4 +911,35 @@ def flexi_remain (db, user, date_in_year, ctype) :
     return fa - sd
 # end def flexi_remain
 
+def fix_vacation (db, uid, date_from = None, date_to = None) :
+    """ Fix vacation for a user where the dyn. user record has been
+        changed *after* the user already booked vacation.
+        We search for all time-records with a daily-record in state
+        'leave' since the last frozen time or date_from if given.
+    """
+    #print ("fix_vacation: %s %s %s" % (uid, date_from, date_to))
+    if date_from is None :
+        frozen = db.daily_record_freeze.filter \
+            (None, dict (user = uid, frozen = True), sort = ('-', 'date'))
+        frozen = db.daily_record_freeze.getnode (frozen [0])
+        date_from = frozen.date + common.day
+    leave = db.daily_record_status.lookup ('leave')
+    d = dict ()
+    d ['daily_record.user']   = uid
+    d ['daily_record.date']   = common.pretty_range (date_from, date_to)
+    d ['daily_record.status'] = leave
+    trs = db.time_record.filter (None, d)
+    for trid in trs :
+	tr = db.time_record.getnode  (trid)
+	dr = db.daily_record.getnode (tr.daily_record)
+	wp = db.time_wp.getnode      (tr.wp)
+	tp = db.time_project.getnode (wp.project)
+	if not tp.is_vacation :
+	    continue
+	du = leave_duration (db, uid, dr.date)
+	if tr.duration != du :
+	    #print "Wrong: time_record%s: %s->%s" % (trid, tr.duration, du)
+	    db.time_record.set (trid, duration = du)
+# end def fix_vacation
+
 ### __END__

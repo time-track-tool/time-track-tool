@@ -523,6 +523,28 @@ def user_dyn_react (db, cl, nodeid, old_values) :
                 (user = dyn.user, date = date, absolute = True, days = 0)
 # end def user_dyn_react
 
+def try_fix_vacation (db, cl, nodeid, old_values) :
+    """ If the working time per day is changed for a user we need to
+        correct the already-booked vacations in that time-range.
+    """
+    days  = 'mon tue wed thu fri sat sun'.split ()
+    props = list ('hours_' + x for x in days)
+    props.append ('weekly_hours')
+    props.append ('valid_from')
+    props.append ('valid_to')
+    item = cl.getnode (nodeid)
+    if old_values is not None :
+        for p in props :
+            if p in old_values and item [p] != old_values [p] :
+                break
+        else :
+            return
+    to = item.valid_to
+    if to :
+        to = to - common.day
+    vacation.fix_vacation (db, item.user, item.valid_from, to)
+# end def try_fix_vacation
+
 def close_existing (db, cl, nodeid, old_values) :
     """ Check if there is already a user_dynamic record with no valid_to
         date. If there is one and the current record created also has no
@@ -648,6 +670,8 @@ def init (db) :
     db.user_dynamic.react    ("create", close_existing)
     db.user_dynamic.react    ("create", user_dyn_react)
     db.user_dynamic.react    ("set",    user_dyn_react)
+    db.user_dynamic.react    ("set",    try_fix_vacation)
+    db.user_dynamic.react    ("create", try_fix_vacation)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
     db.org_location.audit    ("create", olo_check)
