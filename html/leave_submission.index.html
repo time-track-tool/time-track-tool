@@ -11,6 +11,24 @@
     pdict python: utils.properties_dict (db, context);
     props python:
      ( utils.ExtProperty (utils, pdict ['user'])
+     , utils.ExtProperty
+        ( utils, pdict ['user']
+        , searchable  = False
+        , sortable    = False
+        , searchname  = 'user.realname'
+        )
+     , utils.ExtProperty
+        ( utils, pdict ['user']
+        , searchable  = False
+        , sortable    = False
+        , searchname  = 'user.firstname'
+        )
+     , utils.ExtProperty
+        ( utils, pdict ['user']
+        , searchable  = False
+        , sortable    = False
+        , searchname  = 'user.lastname'
+        )
      , utils.ExtProperty (utils, pdict ['first_day'], is_labelprop = True)
      , utils.ExtProperty (utils, pdict ['last_day'],  is_labelprop = True)
      , utils.ExtProperty
