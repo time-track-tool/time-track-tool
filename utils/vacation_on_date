@@ -1,0 +1,51 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+from csv               import DictWriter
+
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+sys.path.insert (1, os.path.join (dir, 'lib'))
+from common import pretty_range, ymd
+
+dt = date.Date (sys.argv [1])
+
+y1 = dt.year - 1
+y2 = dt.year + 1
+
+d1 = date.Date ('%s-01-01' % y1)
+d2 = date.Date ('%s-12-31' % y2)
+
+f  = 'username realname start end status tc wp link'.split()
+dw = DictWriter (sys.stdout, f)
+dw.writeheader ()
+
+ls = db.leave_submission.filter \
+    (None, dict (first_day='%s-01-01;%s-12-31' % (y1, y2)))
+cancelled = db.leave_status.lookup ('cancelled')
+url = db.config.TRACKER_WEB
+for id in ls :
+    lv = db.leave_submission.getnode (id)
+    if lv.first_day <= dt and lv.last_day >= dt :
+        if lv.status == cancelled :
+            continue
+        user = db.user.getnode (lv.user)
+        stat = db.leave_status.getnode (lv.status)
+        wp   = db.time_wp.getnode (lv.time_wp)
+        tc   = db.time_project.getnode (wp.project)
+        d = dict \
+            ( username = user.username
+            , realname = user.realname
+            , start = lv.first_day.pretty (ymd)
+            , end = lv.last_day.pretty (ymd)
+            , status = stat.name
+            , wp = wp.name
+            , tc = tc.name
+            , link = '%sleave_submission%s' % (url, id)
+            )
+        dw.writerow (d)
