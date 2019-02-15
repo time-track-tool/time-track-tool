@@ -111,6 +111,9 @@
      <th tal:content="structure python:utils.fieldname
          (classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'epic_key')"/>
+     <td tal:content="structure python:context.epic_key.field ()"/>
     </tr>
     <tr tal:condition="python: context.id or db._db.security.hasPermission
            ('Edit', db._db.getuid(), 'time_wp', 'travel')">

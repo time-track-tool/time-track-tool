@@ -6688,3 +6688,6 @@ msgstr "External resources"
 msgid "pr_approval_config++pr_ext_resource"
 msgstr "External resources"
 
+msgid "epic_key"
+msgstr "Epic Key"
+

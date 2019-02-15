@@ -284,6 +284,7 @@ def init \
         , is_public             = Boolean   ()
         , has_expiration_date   = Boolean   ()
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
+        , epic_key              = String    ()
         )
 
     time_wp_summary_no = Class \
