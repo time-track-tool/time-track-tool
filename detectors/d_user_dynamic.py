@@ -411,8 +411,21 @@ def check_avc (db, cl, nodeid, new_values) :
     vcs = db.vacation_correction.filter \
         (None, dict (user = user, date = dt, absolute = True))
     assert len (vcs) <= 1
+    if not vcs :
+        # Find the next vc backwards and check if it is at the end of
+        # employment
+        vcs = db.vacation_correction.filter \
+            ( None
+            , dict (user = user, date = ';%s' % dt, absolute = True)
+            , sort = ('+', 'date')
+            )
+        if vcs :
+            vc = db.vacation_correction.getnode (vcs [0])
+            vcdyn = user_dynamic.last_user_dynamic (db, user, valid_from)
+            if not vcdyn.valid_to or vcdyn.valid_to > vc.date :
+                vcs = []
     if vcs :
-        assert db.vacation_correction.get (vcs [0], 'date') == valid_from
+        assert db.vacation_correction.get (vcs [0], 'date') <= valid_from
         return
     if prev_dyn.vac_aliq != va :
         van = 'vac_aliq'
