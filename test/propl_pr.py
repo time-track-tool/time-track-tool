@@ -76,6 +76,8 @@ properties = \
       , [ 'amount'
         , 'if_not_in_las'
         , 'organisations'
+        , 'pr_ext_resource'
+        , 'purchase_type'
         , 'role'
         , 'valid'
         ]
@@ -100,6 +102,10 @@ properties = \
         , 'min_sum'
         , 'name'
         , 'order'
+        ]
+      )
+    , ( 'pr_ext_resource'
+      , [ 'name'
         ]
       )
     , ( 'pr_offer_item'
@@ -159,6 +165,7 @@ properties = \
         , 'organisation'
         , 'part_of_budget'
         , 'pr_currency'
+        , 'pr_ext_resource'
         , 'pr_justification'
         , 'pr_risks'
         , 'purchase_type'

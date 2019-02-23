@@ -103,6 +103,7 @@ Role "user":
  User is allowed to access part_of_budget (View for "part_of_budget" only)
  User is allowed to access pr_approval_status (View for "pr_approval_status" only)
  User is allowed to access pr_currency (View for "pr_currency" only)
+ User is allowed to access pr_ext_resource (View for "pr_ext_resource" only)
  User is allowed to access pr_rating_category (View for "pr_rating_category" only)
  User is allowed to access pr_status (View for "pr_status" only)
  User is allowed to access pr_supplier (View for "pr_supplier" only)
