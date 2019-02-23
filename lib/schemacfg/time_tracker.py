@@ -962,7 +962,7 @@ def security (db, ** kw) :
         , properties  = \
             ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
-            , 'time_wp_summary_no'
+            , 'time_wp_summary_no', 'epic_key'
             )
         )
     db.security.addPermissionToRole ('User', p)
@@ -1115,7 +1115,7 @@ def security (db, ** kw) :
         ( 'name', 'wp_no', 'description', 'responsible', 'project'
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
-        , 'has_expiration_date', 'time_wp_summary_no'
+        , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
         )
     p = db.security.addPermission \
         ( name        = 'View'

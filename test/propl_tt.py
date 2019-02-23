@@ -347,6 +347,7 @@ properties = \
         , 'cost_center'
         , 'description'
         , 'durations_allowed'
+        , 'epic_key'
         , 'has_expiration_date'
         , 'is_public'
         , 'name'
