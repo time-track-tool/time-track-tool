@@ -1748,6 +1748,20 @@ class Vacation_Report (_Report) :
                     ld = pd
                 # Round up to next multiple of 0.5 days
                 while d and d <= end :
+                    # Find latest vacation correction at or before d
+                    dts = common.pretty_range (None, d)
+                    srt = [('-', 'date')]
+                    vcd = dict \
+                        ( user          = u
+                        , absolute      = True
+                        , contract_type = ctype
+                        , date          = dts
+                        )
+                    vci = db.vacation_correction.filter (None, vcd, sort = srt)
+                    if vci [0] != vc.id :
+                        vc = db.vacation_correction.getnode (vci [0])
+                        yday, pd, carry, ltot = vacation.vacation_params \
+                            (db, u, min_user_date [(u, ctype)], vc, hv)
                     rcarry = carry
                     if not hv :
                         rcarry = ceil (carry)
@@ -1853,7 +1867,7 @@ class Vacation_Report (_Report) :
                                 (db, u, ctype, fd, d, st_accp, st_cnrq)
 
                     vd = common.pretty_range (fd, d)
-                    vc = db.vacation_correction.filter \
+                    vcids = db.vacation_correction.filter \
                         ( None
                         , dict 
                             ( user          = u
@@ -1864,7 +1878,7 @@ class Vacation_Report (_Report) :
                         )
                     try :
                         vcs = HTML_List ()
-                        for x in vc :
+                        for x in vcids :
                             item  = self.htmldb.vacation_correction.getItem (x)
                             days  = item.days
                             ep    = self.utils.ExtProperty
@@ -1879,7 +1893,7 @@ class Vacation_Report (_Report) :
                     except AttributeError :
                         container ['vacation corrections'] = ' + '.join \
                             (str (db.vacation_correction.get (i, 'days'))
-                             for i in vc
+                             for i in vcids
                             )
                     if (u, ctype) not in self.values :
                         self.values [(u, ctype)] = []
