@@ -899,6 +899,8 @@ def flexi_remain (db, user, date_in_year, ctype) :
             b = dyn.valid_from
             if b < y :
                 b = y
+            if b > eoy :
+                break
             e = dyn.valid_to
             if e > eoy or not e :
                 e = eoy
