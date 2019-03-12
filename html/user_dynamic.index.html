@@ -1,6 +1,6 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 <tal:block metal:fill-slot="create_or_query">
- <tal:block 
+ <tal:block
   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
 </tal:block>
 
@@ -8,50 +8,56 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['user'],            multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['valid_from'])
-    , utils.ExtProperty (utils, pdict ['valid_to'])
-    , utils.ExtProperty (utils, pdict ['booking_allowed'])
-    , utils.ExtProperty (utils, pdict ['travel_full'])
-    , utils.ExtProperty (utils, pdict ['durations_allowed'])
-    , utils.ExtProperty (utils, pdict ['weekend_allowed'])
-    , utils.ExtProperty (utils, pdict ['vacation_yearly'])
-    , utils.ExtProperty (utils, pdict ['vacation_month'])
-    , utils.ExtProperty (utils, pdict ['vacation_day'])
-    , utils.ExtProperty (utils, pdict ['vac_aliq'])
-    , utils.ExtProperty (utils, pdict ['daily_worktime'])
-    , utils.ExtProperty (utils, pdict ['weekly_hours'])
-    , utils.ExtProperty (utils, pdict ['all_in'])
-    , utils.ExtProperty (utils, pdict ['additional_hours'])
-    , utils.ExtProperty (utils, pdict ['supp_weekly_hours'])
-    , utils.ExtProperty (utils, pdict ['supp_per_period'])
-    , utils.ExtProperty (utils, pdict ['max_flexitime'])
-    , utils.ExtProperty (utils, pdict ['hours_mon'])
-    , utils.ExtProperty (utils, pdict ['hours_tue'])
-    , utils.ExtProperty (utils, pdict ['hours_wed'])
-    , utils.ExtProperty (utils, pdict ['hours_thu'])
-    , utils.ExtProperty (utils, pdict ['hours_fri'])
-    , utils.ExtProperty (utils, pdict ['hours_sat'])
-    , utils.ExtProperty (utils, pdict ['hours_sun'])
-    , utils.ExtProperty (utils, pdict ['org_location'],    multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['department']
-        , multiselect = 1
+   prp python:
+    ( ('id',                {})
+    , ('user',              dict (multiselect = 1))
+    , ('valid_from',        {})
+    , ('valid_to',          {})
+    , ('booking_allowed',   {})
+    , ('travel_full',       {})
+    , ('durations_allowed', {})
+    , ('weekend_allowed',   {})
+    , ('vacation_yearly',   {})
+    , ('vacation_month',    {})
+    , ('vacation_day',      {})
+    , ('vac_aliq',          {})
+    , ('daily_worktime',    {})
+    , ('weekly_hours',      {})
+    , ('all_in',            {})
+    , ('additional_hours',  {})
+    , ('supp_weekly_hours', {})
+    , ('supp_per_period',   {})
+    , ('max_flexitime',     {})
+    , ('hours_mon',         {})
+    , ('hours_tue',         {})
+    , ('hours_wed',         {})
+    , ('hours_thu',         {})
+    , ('hours_fri',         {})
+    , ('hours_sat',         {})
+    , ('hours_sun',         {})
+    , ('org_location',      dict (multiselect = 1))
+    , ('department'
+      , dict
+        ( multiselect = 1
         , filter      = dict (id = utils.valid_departments (db))
         )
-    , utils.ExtProperty (utils, pdict ['overtime_period'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['sap_cc']
-        , help_props = ('name', 'description', 'responsible', 'deputy')
+      )
+    , ('overtime_period', dict (multiselect = 1))
+    , ('sap_cc'
+      , dict
+        ( help_props = ('name', 'description', 'responsible', 'deputy')
         , filter     = dict (valid = True)
         )
-    , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['creator'])
-    , utils.ExtProperty (utils, pdict ['activity'])
-    , utils.ExtProperty (utils, pdict ['actor'])
+      )
+    , ('creation', {})
+    , ('creator',  {})
+    , ('activity', {})
+    , ('actor',    {})
     );
+    props python:
+        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+          for p in prp if p [0] in pdict
+        ]
    "
   tal:condition="context/is_view_ok">
 

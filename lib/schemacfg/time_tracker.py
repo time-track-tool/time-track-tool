@@ -680,6 +680,9 @@ def security (db, ** kw) :
         , ( "time_wp",      "Edit", ["Controlling"]
           , ( "project",)
           )
+        , ( "user_dynamic", "View", ["Controlling"]
+          , ( "id", "sap_cc", "user", "valid_from", "valid_to")
+          )
         ]
 
     schemadef.register_roles             (db, roles)
