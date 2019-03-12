@@ -776,6 +776,12 @@ _helptext          = \
           '''
       , green
       ]
+    , ""'epic_key'                    :
+      [ ""'''Unique identifier of the corresponding Epic Issue in Jira
+             that is to be synced with the Work Package. It consists of
+             a unique Project Key Prefix and a continuous Issue Counter.
+          '''
+      ]
     , ""'exchange_rate'               :
       [ ""'''Amount of this currency we can buy for 1 unit of the key
              currency (e.g. if the key currency is Euro, how many $ do
