@@ -1856,6 +1856,9 @@ _helptext          = \
       ]
     , ""'sap_cc'                      :
       [""'''For selecting %(Classname)s information via the %(Property)s''']
+    , ""'sap_cc.id'                   : [help_id]
+    , ""'sap_cc.description'          :
+      [""'''Verbose description of %(Classname)s''']
     , ""'sap_reference'               :
       [""'''Reference number to purchase order (e.g. SAP order number).
             The field may also be used to insert other references (e.g.

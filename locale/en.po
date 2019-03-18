@@ -6691,3 +6691,8 @@ msgstr "External resources"
 msgid "epic_key"
 msgstr "Epic Key"
 
+msgid "sap_cc.id"
+msgstr "SAP Cost center Id"
+
+msgid "sap_cc.description"
+msgstr "SAP Cost center Desc"
