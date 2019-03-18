@@ -1078,7 +1078,7 @@ properties = \
           , ["admin", "hr"]
           )
         , ( 'sap_cc'
-          , ["admin", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'supp_per_period'
           , ["admin", "hr", "hr-org-location"]
@@ -1090,7 +1090,7 @@ properties = \
           , ["admin", "hr", "hr-org-location"]
           )
         , ( 'user'
-          , ["admin", "hr"]
+          , ["admin", "controlling", "hr"]
           )
         , ( 'vac_aliq'
           , ["admin", "hr"]
@@ -1105,10 +1105,10 @@ properties = \
           , ["admin", "hr", "hr-org-location"]
           )
         , ( 'valid_from'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'valid_to'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "controlling", "hr", "hr-org-location"]
           )
         , ( 'weekend_allowed'
           , ["admin", "hr", "hr-org-location"]

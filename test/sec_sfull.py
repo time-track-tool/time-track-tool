@@ -26,6 +26,7 @@ Role "controlling":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed Edit on (Edit for "time_wp": ('project',) only)
  User is allowed View on (View for "user": ('roles',) only)
+ User is allowed View on (View for "user_dynamic": ('id', 'sap_cc', 'user', 'valid_from', 'valid_to') only)
  User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access daily_record (View for "daily_record" only)
  User is allowed to access daily_record_freeze (View for "daily_record_freeze" only)
