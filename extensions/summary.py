@@ -1802,8 +1802,10 @@ class Vacation_Report (_Report) :
                     if len (v) > 1 :
                         container ['yearly entitlement'] = \
                             '%s .. %s' % (v [0], v [-1])
-                    else :
+                    elif len (v) == 1 :
                         container ['yearly entitlement'] = v [0]
+                    else :
+                        container ['yearly entitlement'] = 0.0
                     container ['carry forward'] = rcarry
                     cons = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
