@@ -177,7 +177,6 @@ def leave_duration (db, user, date) :
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
     assert len (dr) == 1
     try_create_public_holiday (db, dr [0], date, user)
-    db.commit ()
     trs = db.time_record.filter (None, dict (daily_record = dr [0]))
     bk  = 0.0
     for trid in trs :
