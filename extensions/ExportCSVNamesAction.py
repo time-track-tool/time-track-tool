@@ -362,6 +362,33 @@ class Export_CSV_Names (Action, autosuper) :
         self.represent ['birthdate'] = Repr_Birthdate (self.klass)
     # end def build_repr
 
+    def hasTransitivePermission (self, perm, itemid, classname, property) :
+        if '.' in property :
+            cls = self.db.getclass (classname)
+            for pn in property.split ('.') :
+                prop = cls.getprops () [pn]
+                if not self.hasPermission \
+                    ( perm
+                    , itemid    = itemid
+                    , classname = cls.classname
+                    , property  = pn
+                    ) :
+                    return False
+                cls = None
+                try :
+                    cls = self.db.getclass (prop.classname)
+                except AttributeError :
+                    pass
+            return True
+        else :
+            return self.hasPermission \
+                ( perm
+                , itemid    = itemid
+                , classname = classname
+                , property  = property
+                )
+    # end def hasTransitivePermission
+
     def handle (self, outfile = None) :
         ''' Export the specified search query as CSV. '''
         self._setup_request ()
@@ -400,7 +427,7 @@ class Export_CSV_Names (Action, autosuper) :
             self.client._socket_op \
                 ( writer.writerow 
                 , ([['', self.represent [col] (itemid, col)]
-                    [self.hasPermission
+                    [self.hasTransitivePermission
                         ( 'View'
                         , itemid    = itemid
                         , classname = self.request.classname
