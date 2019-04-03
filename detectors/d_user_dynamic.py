@@ -421,23 +421,25 @@ def check_avc (db, cl, nodeid, new_values) :
             )
         if vcs :
             vc = db.vacation_correction.getnode (vcs [0])
-            vcdyn = user_dynamic.last_user_dynamic (db, user, valid_from)
+            day = common.day
+            # - day because we don't want to find the currently-change dyn
+            vcdyn = user_dynamic.last_user_dynamic (db, user, valid_from - day)
             if not vcdyn.valid_to or vcdyn.valid_to > vc.date :
                 vcs = []
     if vcs :
         assert db.vacation_correction.get (vcs [0], 'date') <= valid_from
         return
     if prev_dyn.vac_aliq != va :
-        van = 'vac_aliq'
+        van = _ ('vac_aliq')
         raise Reject \
-            ( _ ("Change of %(van)s without absolute vacation correction")
+            ( _ ('Change of "%(van)s" without absolute vacation correction')
             % locals ()
             )
     vyo = prev_dyn.vacation_yearly
     if db.vac_aliq.get (va, 'name') == 'Monthly' and vy != vyo :
-        vyn = 'vacation_yearly'
+        vyn = _ ('vacation_yearly')
         raise Reject \
-            ( _ ("Change of %(vyn)s without absolute vacation correction")
+            ( _ ('Change of "%(vyn)s" without absolute vacation correction')
             % locals ()
             )
 # end def check_avc
