@@ -374,6 +374,7 @@ class Export_CSV_Names (Action, autosuper) :
                     , property  = pn
                     ) :
                     return False
+                itemid = cls.get (itemid, pn)
                 cls = None
                 try :
                     cls = self.db.getclass (prop.classname)

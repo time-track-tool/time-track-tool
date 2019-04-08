@@ -1797,6 +1797,136 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
     # end def setup_user14
 
+    def test_user14_dyn_csv (self) :
+        """  Test csv export for dynamic user data
+        """
+
+        class FakeRequest (object) :
+            rfile = None
+            def start_response (self, a, b) :
+                pass
+        # end class FakeRequest
+        self.log.debug ('test_user14_dyn_csv')
+        self.setup_db ()
+        self.setup_user14 ()
+        sapcc = self.db.sap_cc.create (name = 'SAP-CC', description = 'TEST')
+        self.db.user_dynamic.set ('3', sap_cc = sapcc)
+        # Allow user0
+        rl = self.db.user.get (self.user0, 'roles')
+        rl = ','.join ((rl, 'controlling'))
+        self.db.user.set (self.user0, roles = rl)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        req = FakeRequest ()
+        q = []
+        q.append \
+            (':columns=id,user,valid_from,valid_to,sap_cc,sap_cc.id,'
+             'sap_cc.description'
+            )
+        q.append ('@sort=user')
+        q.append (':filter=user')
+        q.append ('user=testuser2')
+        env = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
+        env ['QUERY_STRING'] = '&'.join (q)
+        cli = self.tracker.Client (self.tracker, req, env, None)
+        cli.db = self.db
+        cli.language = 'en'
+        cli.userid = self.db.getuid ()
+        cli.classname = 'user_dynamic'
+        cls = self.tracker.cgi_actions ['export_csv_names']
+        exp = cls (cli)
+        io = StringIO ()
+        exp.handle (outfile = io)
+        lines = tuple (csv.reader (StringIO (io.getvalue()), delimiter = '\t'))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 7)
+        self.assertEqual (lines  [0] [0], 'id')
+        self.assertEqual (lines  [0] [1], 'user')
+        self.assertEqual (lines  [0] [2], 'valid_from')
+        self.assertEqual (lines  [0] [3], 'valid_to')
+        self.assertEqual (lines  [0] [4], 'sap_cc')
+        self.assertEqual (lines  [0] [5], 'sap_cc.id')
+        self.assertEqual (lines  [0] [6], 'sap_cc.description')
+        self.assertEqual (lines  [1] [0], '3')
+        self.assertEqual (lines  [1] [1], 'testuser2')
+        self.assertEqual (lines  [1] [2], '2008-11-03')
+        self.assertEqual (lines  [1] [3], '')
+        self.assertEqual (lines  [1] [4], 'SAP-CC')
+        self.assertEqual (lines  [1] [5], '1')
+        self.assertEqual (lines  [1] [6], 'TEST')
+    # end def test_user14_dyn_csv
+
+    def test_user14_tr_csv (self) :
+        """  Test csv export for time_record
+        """
+
+        class FakeRequest (object) :
+            rfile = None
+            def start_response (self, a, b) :
+                pass
+        # end class FakeRequest
+        self.log.debug ('test_user14_tr_csv')
+        self.setup_db ()
+        self.setup_user14 ()
+        # Allow user0
+        rl = self.db.user.get (self.user0, 'roles')
+        rl = ','.join ((rl, 'controlling'))
+        self.db.user.set (self.user0, roles = rl)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username14)
+        user14_time.import_data_14 (self.db, self.user14, self.dep, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        req = FakeRequest ()
+        q = []
+        q.append \
+            (':columns=daily_record.user,daily_record.date,'
+             'daily_record.status,wp.project,wp,time_activity,'
+             'work_location,duration,tr_duration,comment'
+            )
+        q.append (':sort=daily_record.user,daily_record.date,wp.project,wp')
+        q.append (':filter=daily_record.user,daily_record.date')
+        q.append ('daily_record.user=testuser14')
+        q.append ('daily_record.date=2015-01-01')
+        env = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
+        env ['QUERY_STRING'] = '&'.join (q)
+        cli = self.tracker.Client (self.tracker, req, env, None)
+        cli.db = self.db
+        cli.language = 'en'
+        cli.userid = self.db.getuid ()
+        cli.classname = 'time_record'
+        cls = self.tracker.cgi_actions ['export_csv_names']
+        exp = cls (cli)
+        io = StringIO ()
+        exp.handle (outfile = io)
+        lines = tuple (csv.reader (StringIO (io.getvalue()), delimiter = '\t'))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 10)
+        self.assertEqual (lines  [0] [0], 'daily_record.user')
+        self.assertEqual (lines  [0] [1], 'daily_record.date')
+        self.assertEqual (lines  [0] [2], 'daily_record.status')
+        self.assertEqual (lines  [0] [3], 'wp.project')
+        self.assertEqual (lines  [0] [4], 'wp')
+        self.assertEqual (lines  [0] [5], 'time_activity')
+        self.assertEqual (lines  [0] [6], 'work_location')
+        self.assertEqual (lines  [0] [7], 'duration')
+        self.assertEqual (lines  [0] [8], 'tr_duration')
+        self.assertEqual (lines  [0] [9], 'comment')
+        self.assertEqual (lines  [1] [0], 'testuser14')
+        self.assertEqual (lines  [1] [1], '2015-01-01')
+        self.assertEqual (lines  [1] [2], 'open')
+        self.assertEqual (lines  [1] [3], 'Public Holiday')
+        self.assertEqual (lines  [1] [4], 'Holiday')
+        self.assertEqual (lines  [1] [5], '')
+        self.assertEqual (lines  [1] [6], 'off')
+        self.assertEqual (lines  [1] [7], '7.75')
+        self.assertEqual (lines  [1] [8], '')
+        self.assertEqual (lines  [1] [9], '')
+    # end def test_user14_tr_csv
+
     def test_user14_vacation (self) :
         self.log.debug ('test_user14')
         self.setup_db ()
