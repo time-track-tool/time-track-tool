@@ -34,6 +34,7 @@ from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
 
 import common
+import re
 
 def check_duplicate_field_value (cl, project, field, value) :
     ids     = cl.filter (None, {field : value, 'project' : project})
@@ -164,6 +165,17 @@ def check_summary_no (db, cl, nodeid, new_values) :
             (_, cl, nodeid, new_values, 'time_wp_summary_no')
 # end def check_summary_no
 
+def check_epic_key (db, cl, nodeid, new_values) :
+    """ Ensure that the epic_key matches the format of keys in Jira
+    """
+    if 'epic_key' in new_values :
+        r = re.compile (r'^[A-Z][0-9A-Z_]+[0-9A-Z]-[0-9]+$')
+        k = new_values ['epic_key']
+        if not r.search (k) :
+            epickey = _ ('epic_key')
+            raise Reject (_ ("Not a valid %(epickey)s: %(k)s") % locals ())
+# end def check_epic_key
+
 def init (db) :
     if 'time_wp' not in db.classes :
         return
@@ -178,6 +190,8 @@ def init (db) :
     db.time_wp.audit  ("set",    check_name)
     db.time_wp.audit  ("create", check_summary_no, priority = 250)
     db.time_wp.audit  ("set",    check_summary_no, priority = 250)
+    db.time_wp.audit  ("create", check_epic_key)
+    db.time_wp.audit  ("set",    check_epic_key)
     # Name check for time_project too
     db.time_project.audit  ("create", check_name)
     db.time_project.audit  ("set",    check_name)
