@@ -366,6 +366,8 @@ class Export_CSV_Names (Action, autosuper) :
         if '.' in property :
             cls = self.db.getclass (classname)
             for pn in property.split ('.') :
+                if itemid is None :
+                    return True
                 prop = cls.getprops () [pn]
                 if not self.hasPermission \
                     ( perm
