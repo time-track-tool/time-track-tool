@@ -1,0 +1,18 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
+import sys
+import os
+from roundup           import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+sys.path.insert (1, os.path.join (dir, 'lib'))
+
+import ldap_sync
+
+lds = ldap_sync.LDAP_Roundup_Sync (db)
+
+print (lds.get_ldap_user_by_username (sys.argv [1]))
+
+# Or perform other actions here
