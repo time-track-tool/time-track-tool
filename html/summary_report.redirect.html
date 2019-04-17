@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Summary-Report redirect</title>
+    <meta http-equiv="refresh"
+     tal:attributes = "content python:
+        ( '0'
+        + chr (59)
+        + 'URL='
+        + chr (39)
+        + db._db.config.ext.TTT_SUMMARY_REPORT_REDIRECT
+        + chr (39)
+        )"/>
+  </head>
+  <body>
+    <p>This page has moved
+      <a tal:attributes =
+        "href python:db._db.config.ext.TTT_SUMMARY_REPORT_REDIRECT" />
+    </p>
+  </body>
+</html>

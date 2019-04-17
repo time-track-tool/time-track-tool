@@ -514,7 +514,7 @@
        , utils.user_has_role (db._db, db._db.getuid (), 'HR-vacation')
        )
      )
-   , ( ('abo',                 'View', 1,               ('',''))
+   , [ ('abo',                 'View', 1,               ('',''))
      , ('abo_type',            'View', 1,               ('',''))
      , ('abo_price',           'View', 1,               ('',''))
      , ('address'
@@ -595,7 +595,6 @@
      , ('reference',           'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))
      , ('smb_machine',         'View', 1,               ('',''))
-     , ('summary_report',      'View', 1,               ('',''))
      , ('summary_report',     'View', 1, ('Staff Report','staff'))
      , ('support',             'View', 1,               ('',''))
      , ('time_project',        'View', 1,               ('',''))
@@ -625,7 +624,7 @@
        )
      , ('vacation_report',     'View', 1,               ('',''))
      , ('valid',               'View', 1,               ('',''))
-     )
+     ] + utils.summary_report_links (db._db)
    )
  ; menu_type     python:
     dict ([(k [0],menu_tracker) for k in menu_tracker [0]])

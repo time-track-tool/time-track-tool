@@ -42,6 +42,7 @@ from roundup.date                   import Date, Interval
 from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
+from roundup.configuration          import InvalidOptionError
 from rsclib.autosuper               import autosuper
 from rsclib.PM_Value                import PM_Value
 
@@ -2009,16 +2010,39 @@ class CSV_Vacation_Report (CSV_Report) :
     report_class = Vacation_Report
 # end class CSV_Vacation_Report
 
+def summary_report_links (db) :
+    """ Returns a list of summary-report links: We look up the config
+        value summary_report_redirect in section ttt. If we find an
+        entry we add a link to the redirect page with subject "Summary
+        Report" and the original summary report with the text "Summary
+        Report (old)". If not found we only return the normal summary
+        report link as the only item. To be used in page.html for the
+        menu.
+    """
+    orig = ('summary_report', 'View', 1, ('',''))
+    old  = ('summary_report', 'View', 1, (_('Summary Report (old)'),''))
+    red  = ('summary_report', 'View', 1, ('','redirect'))
+
+    try :
+        redir = db.config.ext.TTT_SUMMARY_REPORT_REDIRECT
+    except InvalidOptionError :
+        redir = None
+    if redir :
+        return [old, red]
+    return [orig]
+# end def summary_report_links
+
 def init (instance) :
     global _
     _   = get_translation \
         (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     util   = instance.registerUtil
-    util   ('Summary_Report',      Summary_Report)
-    util   ('Staff_Report',        Staff_Report)
-    util   ('Vacation_Report',     Vacation_Report)
+    util   ('Summary_Report',       Summary_Report)
+    util   ('Staff_Report',         Staff_Report)
+    util   ('Vacation_Report',      Vacation_Report)
+    util   ('summary_report_links', summary_report_links)
     action = instance.registerAction
-    action ('csv_summary_report',  CSV_Summary_Report)
-    action ('csv_staff_report',    CSV_Staff_Report)
-    action ('csv_vacation_report', CSV_Vacation_Report)
+    action ('csv_summary_report',   CSV_Summary_Report)
+    action ('csv_staff_report',     CSV_Staff_Report)
+    action ('csv_vacation_report',  CSV_Vacation_Report)
 # end def init
