@@ -625,20 +625,27 @@ def overtime_check (db, cl, nodeid, new_values) :
 # end def overtime_check
 
 def vacation_check (db, cl, nodeid, new_values) :
+    """Check correctness of vacation_day/month/yearly entires"""
     mlist = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    # if nothing changed, return
     if  (   new_values.get ('vacation_day') is None
         and new_values.get ('vacation_month') is None
         and new_values.get ('vacation_yearly') is None
         ) :
         return
     # if one attribute is defined, all need to be
+    # create error if not all attributes are set
     common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'vacation_month', 'vacation_day', 'vacation_yearly'
         )
+    # if we have all attributes, check them
+    # handle set and create method
+    # for create and set if values changed
     vm = new_values.get ('vacation_month')
     vd = new_values.get ('vacation_day')
     vy = new_values.get ('vacation_yearly')
+    # value did not change
     if vm is None and nodeid :
         vm = cl.get (nodeid, 'vacation_month')
     if vd is None and nodeid :
