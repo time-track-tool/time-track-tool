@@ -673,6 +673,89 @@ def olo_check (db, cl, nodeid, new_values) :
         common.require_attributes (_, cl, nodeid, new_values, 'vac_aliq')
 # end def olo_check
 
+def find_existing_leave (db, cl, nodeid, new_values) :
+    """ Search for existing leave requests when start/end date changes.
+        Reject if valid records are found.
+    """
+    stati = ('open', 'submitted', 'accepted', 'cancel requested')
+    stati = (db.leave_status.lookup (x) for x in stati)
+    if 'valid_to' not in new_values and 'valid_from' not in new_values :
+        return
+    dyn = cl.getnode (nodeid)
+    if 'valid_to' in new_values :
+        # check if another dynamic user record exists
+        valid_to = new_values ['valid_to']
+        if valid_to is not None :
+            next = user_dynamic.next_user_dynamic (db, dyn)
+            if not next or next.valid_from > valid_to :
+                leaves = db.leave_submission.filter \
+                    ( None
+                    , dict
+                        ( user     = dyn.user
+                        , last_day = common.pretty_range (valid_to)
+                        , status   = stati
+                        )
+                    )
+                if next :
+                    new_leaves = []
+                    for id in leaves :
+                        leave = db.leave_submission.getnode (id)
+                        if valid_to <= leave.first_day < next.valid_from :
+                            new_leaves.append (id)
+                            continue
+                        if valid_to <= leave.last_day < next.valid_from :
+                            new_leaves.append (id)
+                            continue
+                        if  (   leave.first_day < valid_to
+                            and leave.last_day >= next.valid_from
+                            ) :
+                            new_leaves.append (id)
+                            continue
+                    leaves = new_leaves
+                if leaves :
+                    raise Reject \
+                        (_ ("There are open leave requests after %s"
+                           % valid_to.pretty (common.ymd)
+                           )
+                        )
+
+    if 'valid_from' in new_values :
+        # check if another dynamic user record exists
+        valid_from = new_values ['valid_from']
+        prev = user_dynamic.prev_user_dynamic (db, dyn)
+        if not prev or prev.valid_to < valid_from :
+            leaves = db.leave_submission.filter \
+                ( None
+                , dict
+                    ( user      = dyn.user
+                    , first_day = common.pretty_range (None, valid_from - common.day)
+                    , status    = stati
+                    )
+                )
+            if prev :
+                new_leaves = []
+                for id in leaves :
+                    leave = db.leave_submission.getnode (id)
+                    if prev.valid_to <= leave.first_day < valid_from :
+                        new_leaves.append (id)
+                        continue
+                    if prev.valid_to <= leave.last_day < valid_from :
+                        new_leaves.append (id)
+                        continue
+                    if  (   leave.first_day < prev.valid_to
+                        and leave.last_day >= valid_from
+                        ) :
+                        new_leaves.append (id)
+                        continue
+                leaves = new_leaves
+            if leaves :
+                raise Reject \
+                    (_ ("There are open leave requests before %s"
+                        % valid_from.pretty (common.ymd)
+                        )
+                    )
+# end def find_existing_leave
+
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -694,6 +777,7 @@ def init (db) :
     db.user_dynamic.react    ("set",    user_dyn_react)
     db.user_dynamic.react    ("set",    try_fix_vacation)
     db.user_dynamic.react    ("create", try_fix_vacation)
+    db.user_dynamic.audit    ("set",    find_existing_leave)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
     db.org_location.audit    ("create", olo_check)
