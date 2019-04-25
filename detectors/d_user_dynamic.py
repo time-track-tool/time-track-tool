@@ -678,7 +678,7 @@ def find_existing_leave (db, cl, nodeid, new_values) :
         Reject if valid records are found.
     """
     stati = ('open', 'submitted', 'accepted', 'cancel requested')
-    stati = (db.leave_status.lookup (x) for x in stati)
+    stati = list (db.leave_status.lookup (x) for x in stati)
     if 'valid_to' not in new_values and 'valid_from' not in new_values :
         return
     dyn = cl.getnode (nodeid)
