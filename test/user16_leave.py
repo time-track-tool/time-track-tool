@@ -12,7 +12,7 @@ def import_data_16 (db, user, dep, olo) :
          , hours_wed          = 8.0
          , vacation_yearly    = 30.0
          , all_in             = 0
-         , valid_from         = date.Date ("2018-10-01.00:00:00")
+         , valid_from         = date.Date ("2018-10-01")
          , durations_allowed  = 0
          , hours_tue          = 8.0
          , weekly_hours       = 40.0
@@ -21,7 +21,7 @@ def import_data_16 (db, user, dep, olo) :
          , vacation_day       = 1.0
          , booking_allowed    = 1
          , supp_weekly_hours  = 40.0
-         , valid_to           = date.Date ("2019-01-01.00:00:00")
+         , valid_to           = date.Date ("2019-01-31")
          , weekend_allowed    = 0
          , travel_full        = 1
          , vacation_month     = 1.0

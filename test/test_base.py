@@ -3156,13 +3156,24 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         # allow user16 to book on wp 44
         self.db.time_wp.set (self.vacation_wp, bookers = [self.user16])
         self.db.commit ()
-    # end def setup_user14
+    # end def setup_user16
 
     def test_edit_dynuser_leave (self) :
         self.log.debug ('test_edit_dynuser_leave')
         self.setup_db ()
         self.setup_user16 ()
         user16_leave.import_data_16 (self.db, self.user16, self.dep, self.olo)
+        id = self.db.user_dynamic.filter (None, dict (user = self.user16)) [0]
+        dyn = self.db.user_dynamic.getnode (id)
+        self.db.user_dynamic.set (id, valid_from = date.Date ('2018-11-30'))
+        self.db.user_dynamic.set (id, valid_to = date.Date ('2019-01-01'))
+        try :
+            self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-31'))
+        except Reject as err :
+           self.assertEqual \
+               ( str (err)
+               , "There are open leave requests after 2018-12-31"
+               )
     # end def test_edit_dynuser_leave
 
 # end class Test_Case_Timetracker
