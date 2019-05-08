@@ -1026,6 +1026,7 @@ if 'sup_execution' in db.classes :
 if 'prodcat' in db.classes :
     db.sql ('ALTER TABLE _prodcat ADD UNIQUE (_name, _level);')
 if 'leave_status' in db.classes :
+    v7 = db.leave_status.create (name = 'leave',            order = 7)
     v1 = db.leave_status.create (name = 'open',             order = 1)
     v2 = db.leave_status.create (name = 'submitted',        order = 2)
     v3 = db.leave_status.create (name = 'accepted',         order = 3)
@@ -1036,6 +1037,7 @@ if 'leave_status' in db.classes :
     db.leave_status.set (v2, transitions = [v1, v3, v4])
     db.leave_status.set (v3, transitions = [v5])
     db.leave_status.set (v5, transitions = [v3, v6])
+    db.leave_status.retire (v7)
 if 'purchase_type' in db.classes :
     db.purchase_type.create \
         ( name       = 'Service'
