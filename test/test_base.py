@@ -29,7 +29,7 @@ import re
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
 import user7_time, user8_time, user10_time, user11_time, user12_time
-import user13_time, user14_time, user15_19_vac
+import user13_time, user14_time, user15_19_vac, user16_leave
 
 from operator     import mul
 from StringIO     import StringIO
@@ -185,6 +185,8 @@ class _Test_Case (unittest.TestCase) :
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptestttt"
         config.RDBMS_HOST     = "localhost"
+        if 'RDBMS_HOST' in os.environ :
+            config.RDBMS_HOST     = os.environ ['RDBMS_HOST']
         config.RDBMS_USER     = "rounduptest"
         if 'RDBMS_USER' in os.environ :
             config.RDBMS_USER = os.environ ['RDBMS_USER']
@@ -3138,6 +3140,30 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
     # end def test_vacation
+
+    def setup_user16 (self) :
+        self.username16 = 'testuser16'
+        self.user16 = self.db.user.create \
+            ( username     = self.username16
+            , firstname    = 'Nummer16'
+            , lastname     = 'User16'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.retire (ud [0])
+        # allow user16 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user16])
+        self.db.commit ()
+    # end def setup_user14
+
+    def test_edit_dynuser_leave (self) :
+        self.log.debug ('test_edit_dynuser_leave')
+        self.setup_db ()
+        self.setup_user16 ()
+        user16_leave.import_data_16 (self.db, self.user16, self.dep, self.olo)
+    # end def test_edit_dynuser_leave
 
 # end class Test_Case_Timetracker
 
