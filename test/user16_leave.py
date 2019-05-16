@@ -34,37 +34,7 @@ def import_data_16 (db, user, dep, olo) :
          )
      dr = db.daily_record.create \
          ( user = user
-         , date = date.Date ('2018-12-22')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-23')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-24')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 4.0
-         , work_location = '5'
-         , wp            = '1'
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 4.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-25')
+         , date = date.Date ('2018-10-26')
          , weekend_allowed   = 0
          , required_overtime = 0
          )
@@ -76,153 +46,16 @@ def import_data_16 (db, user, dep, olo) :
          )
      dr = db.daily_record.create \
          ( user = user
-         , date = date.Date ('2018-12-26')
+         , date = date.Date ('2018-11-29')
          , weekend_allowed   = 0
          , required_overtime = 0
          )
      db.time_record.create \
          ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '1'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-27')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-28')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-14')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-15')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-16')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-17')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-18')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-19')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-20')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-21')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 8.0
-         , work_location = '5'
-         , wp            = '44'
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-29')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-30')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     dr = db.daily_record.create \
-         ( user = user
-         , date = date.Date ('2018-12-31')
-         , weekend_allowed   = 0
-         , required_overtime = 0
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 4.0
-         , work_location = '5'
-         , wp            = '1'
-         )
-     db.time_record.create \
-         ( daily_record  = dr
-         , duration      = 4.0
-         , work_location = '5'
-         , wp            = '44'
+         , start         = '12:30'
+         , end           = '18:00'
+         , work_location = '1'
+         , wp            = '4'
          )
      dr = db.daily_record.create \
          ( user = user
@@ -462,6 +295,237 @@ def import_data_16 (db, user, dep, olo) :
          , weekend_allowed   = 0
          , required_overtime = 0
          )
+     drs = []
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-14')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-15')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-16')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-17')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-18')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-19')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-20')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-21')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-22')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-23')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-24')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 4.0
+         , work_location = '5'
+         , wp            = '1'
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 4.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-25')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '1'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-26')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '1'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-27')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-28')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 8.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-29')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-30')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-12-31')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 4.0
+         , work_location = '5'
+         , wp            = '1'
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 4.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     dr = db.daily_record.create \
+         ( user = user
+         , date = date.Date ('2018-10-02')
+         , weekend_allowed   = 0
+         , required_overtime = 0
+         )
+     db.time_record.create \
+         ( daily_record  = dr
+         , duration      = 4.0
+         , work_location = '5'
+         , wp            = '44'
+         )
+     drs.append (dr)
+     ls = db.leave_submission.create \
+         ( user      = user
+         , first_day = date.Date ('2018-10-02')
+         , last_day  = date.Date ('2018-10-02')
+         , status    = '4'
+         , time_wp   = '44'
+         )
      ls = db.leave_submission.create \
          ( user      = user
          , first_day = date.Date ('2018-12-07')
@@ -476,5 +540,8 @@ def import_data_16 (db, user, dep, olo) :
          , status    = '4'
          , time_wp   = '44'
          )
+     leave = db.daily_record_status.lookup ('leave')
+     for dr in drs :
+          db.daily_record.set (dr, status = leave)
      db.commit ()
 # end def import_data_16
