@@ -771,7 +771,7 @@ def find_time_records (db, cl, nodeid, new_values) :
     frm = prev and (prev.valid_to)
     ranges = dict \
         ( valid_to   = common.pretty_range (valid_to, to)
-        , valid_from = common.pretty_range (frm, valid_from)
+        , valid_from = common.pretty_range (frm, valid_from - common.day)
         )
     gaps = dict \
         ( valid_to   = not next or next.valid_from > valid_to
