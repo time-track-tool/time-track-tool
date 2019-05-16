@@ -714,7 +714,7 @@ def find_existing_leave (db, cl, nodeid, new_values) :
                     leaves = new_leaves
                 if leaves :
                     raise Reject \
-                        (_ ("There are open leave requests after %s"
+                        (_ ("There are open leave requests at or after %s"
                            % valid_to.pretty (common.ymd)
                            )
                         )
@@ -780,7 +780,7 @@ def find_time_records (db, cl, nodeid, new_values) :
     msgs = dict \
         ( valid_to   = _
             ( "There are (non public holiday) "
-              "time records after %s"
+              "time records at or after %s"
             )
         , valid_from = _
             ( "There are (non public holiday) "
