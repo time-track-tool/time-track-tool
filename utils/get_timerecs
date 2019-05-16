@@ -12,7 +12,7 @@ def main () :
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( 'user'
-        , help    = 'User for whom data is exported'
+        , help    = 'Username for whom data is exported'
         )
     cmd.add_argument \
         ( 'daterange'
@@ -34,6 +34,11 @@ def main () :
         ( '-D', '--dynuser'
         , dest    = 'dynuser'
         , help    = 'Export dynamic user data too for given range'
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( '-L', '--leaves'
+        , help    = 'Export leave requests for given range'
         , action  = 'store_true'
         )
     cmd.add_argument \
@@ -120,6 +125,18 @@ def main () :
             print ident, "    , date     = date.Date ('%s')" % d
             print ident, "    , absolute = %s" % vc.absolute
             print ident, "    , days     = %s" % vc.days
+            print ident, "    )"
+    if opt.leaves :
+        leave_filter = dict (user = userid, first_day = sdate)
+        l_ids = db.leave_submission.filter (None, leave_filter)
+        for lid in l_ids :
+            l = db.leave_submission.getnode(lid)
+            print ident, "ls = db.leave_submission.create \\"
+            print ident, "    ( user      = user"
+            print ident, "    , first_day = date.Date ('%s')" % l.first_day.pretty (ymd)
+            print ident, "    , last_day  = date.Date ('%s')" % l.last_day.pretty (ymd)
+            print ident, "    , status    = '%s'"               % l.status
+            print ident, "    , time_wp   = '44'"
             print ident, "    )"
     if opt.do_timerecs :
         for dri in db.daily_record.filter (None, filter) :

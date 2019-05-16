@@ -111,11 +111,14 @@ def new_submission (db, cl, nodeid, new_values) :
     comment = new_values.get ('comment')
     check_range (db, None, user, first_day, last_day)
     check_wp (db, new_values ['time_wp'], user, first_day, last_day, comment)
-    if 'status' in new_values and new_values ['status'] != st_subm :
+    is_admin = (uid == '1')
+    if 'status' in new_values and new_values ['status'] != st_subm and not is_admin :
         raise Reject (_ ('Initial status must be "submitted"'))
     if 'status' not in new_values :
         new_values ['status'] = st_subm
-    if user != uid and not common.user_has_role (db, uid, 'HR-vacation') :
+    if  (   user != uid
+        and not (is_admin or common.user_has_role (db, uid, 'HR-vacation'))
+        ) :
         raise Reject \
             (_ ("Only special role may create submission for other user"))
     vacation.create_daily_recs (db, user, first_day, last_day)

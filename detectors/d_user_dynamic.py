@@ -625,20 +625,27 @@ def overtime_check (db, cl, nodeid, new_values) :
 # end def overtime_check
 
 def vacation_check (db, cl, nodeid, new_values) :
+    """Check correctness of vacation_day/month/yearly entires"""
     mlist = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    # if nothing changed, return
     if  (   new_values.get ('vacation_day') is None
         and new_values.get ('vacation_month') is None
         and new_values.get ('vacation_yearly') is None
         ) :
         return
     # if one attribute is defined, all need to be
+    # create error if not all attributes are set
     common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'vacation_month', 'vacation_day', 'vacation_yearly'
         )
+    # if we have all attributes, check them
+    # handle set and create method
+    # for create and set if values changed
     vm = new_values.get ('vacation_month')
     vd = new_values.get ('vacation_day')
     vy = new_values.get ('vacation_yearly')
+    # value did not change
     if vm is None and nodeid :
         vm = cl.get (nodeid, 'vacation_month')
     if vd is None and nodeid :
@@ -666,6 +673,150 @@ def olo_check (db, cl, nodeid, new_values) :
         common.require_attributes (_, cl, nodeid, new_values, 'vac_aliq')
 # end def olo_check
 
+def find_existing_leave (db, cl, nodeid, new_values) :
+    """ Search for existing leave requests when start/end date changes.
+        Reject if valid records are found.
+    """
+    stati = ('open', 'submitted', 'accepted', 'cancel requested')
+    stati = list (db.leave_status.lookup (x) for x in stati)
+    if 'valid_to' not in new_values and 'valid_from' not in new_values :
+        return
+    dyn = cl.getnode (nodeid)
+    if 'valid_to' in new_values :
+        # check if another dynamic user record exists
+        valid_to = new_values ['valid_to']
+        if valid_to is not None :
+            next = user_dynamic.next_user_dynamic (db, dyn)
+            if not next or next.valid_from > valid_to :
+                leaves = db.leave_submission.filter \
+                    ( None
+                    , dict
+                        ( user     = dyn.user
+                        , last_day = common.pretty_range (valid_to)
+                        , status   = stati
+                        )
+                    )
+                if next :
+                    new_leaves = []
+                    for id in leaves :
+                        leave = db.leave_submission.getnode (id)
+                        if valid_to <= leave.first_day < next.valid_from :
+                            new_leaves.append (id)
+                            continue
+                        if valid_to <= leave.last_day < next.valid_from :
+                            new_leaves.append (id)
+                            continue
+                        if  (   leave.first_day < valid_to
+                            and leave.last_day >= next.valid_from
+                            ) :
+                            new_leaves.append (id)
+                            continue
+                    leaves = new_leaves
+                if leaves :
+                    raise Reject \
+                        (_ ("There are open leave requests at or after %s"
+                           % valid_to.pretty (common.ymd)
+                           )
+                        )
+
+    if 'valid_from' in new_values :
+        # check if another dynamic user record exists
+        valid_from = new_values ['valid_from']
+        prev = user_dynamic.prev_user_dynamic (db, dyn)
+        if not prev or prev.valid_to < valid_from :
+            leaves = db.leave_submission.filter \
+                ( None
+                , dict
+                    ( user      = dyn.user
+                    , first_day = common.pretty_range (None, valid_from - common.day)
+                    , status    = stati
+                    )
+                )
+            if prev :
+                new_leaves = []
+                for id in leaves :
+                    leave = db.leave_submission.getnode (id)
+                    if prev.valid_to <= leave.first_day < valid_from :
+                        new_leaves.append (id)
+                        continue
+                    if prev.valid_to <= leave.last_day < valid_from :
+                        new_leaves.append (id)
+                        continue
+                    if  (   leave.first_day < prev.valid_to
+                        and leave.last_day >= valid_from
+                        ) :
+                        new_leaves.append (id)
+                        continue
+                leaves = new_leaves
+            if leaves :
+                raise Reject \
+                    (_ ("There are open leave requests before %s"
+                        % valid_from.pretty (common.ymd)
+                        )
+                    )
+# end def find_existing_leave
+
+def find_time_records (db, cl, nodeid, new_values) :
+    """ Search for existing time records when start/end date changes.
+        Reject if valid records other than public holidays are found.
+    """
+    if 'valid_to' not in new_values and 'valid_from' not in new_values :
+        return
+    dyn = cl.getnode (nodeid)
+    valid_to   = new_values.get ('valid_to')
+    valid_from = new_values.get ('valid_from')
+    next = user_dynamic.next_user_dynamic (db, dyn)
+    prev = user_dynamic.prev_user_dynamic (db, dyn)
+    to = next and (next.valid_from - common.day)
+    frm = prev and (prev.valid_to)
+    ranges = dict \
+        ( valid_to   = common.pretty_range (valid_to, to)
+        , valid_from = common.pretty_range (frm, valid_from - common.day)
+        )
+    gaps = dict \
+        ( valid_to   = not next or next.valid_from > valid_to
+        , valid_from = not prev or prev.valid_to   < valid_from
+        )
+    msgs = dict \
+        ( valid_to   = _
+            ( "There are (non public holiday) "
+              "time records at or after %s"
+            )
+        , valid_from = _
+            ( "There are (non public holiday) "
+              "time records before %s"
+            )
+        )
+    for k in ('valid_to', 'valid_from') :
+        value = new_values.get (k)
+        if value is not None and gaps [k] :
+            trs = db.time_record.filter \
+                ( None
+                , { 'daily_record.user': dyn.user
+                  , 'daily_record.date': ranges [k]
+                  }
+                )
+            # loop for checking if time recs are public holiday
+            for id in trs :
+                tr = db.time_record.getnode (id)
+                # case where no wp was entered yet
+                if tr.wp is None :
+                    raise Reject (msgs [k] % value.pretty (common.ymd))
+                # case where wp was set
+                wp = db.time_wp.getnode (tr.wp)
+                tc = db.time_project.getnode (wp.project)
+                if not tc.is_public_holiday :
+                    raise Reject (msgs [k] % value.pretty (common.ymd))
+            # loop entirely for retiring public holidys
+            for id in trs :
+                tr = db.time_record.getnode (id)
+                assert tr.wp
+                wp = db.time_wp.getnode (tr.wp)
+                tc = db.time_project.getnode (wp.project)
+                assert tc.is_public_holiday
+                db.time_record.retire (id)
+# end def find_time_records
+
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -687,6 +838,8 @@ def init (db) :
     db.user_dynamic.react    ("set",    user_dyn_react)
     db.user_dynamic.react    ("set",    try_fix_vacation)
     db.user_dynamic.react    ("create", try_fix_vacation)
+    db.user_dynamic.audit    ("set",    find_existing_leave)
+    db.user_dynamic.audit    ("set",    find_time_records, priority = 120)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
     db.org_location.audit    ("create", olo_check)

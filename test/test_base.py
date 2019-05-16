@@ -29,7 +29,7 @@ import re
 
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
 import user7_time, user8_time, user10_time, user11_time, user12_time
-import user13_time, user14_time, user15_19_vac
+import user13_time, user14_time, user15_19_vac, user16_leave
 
 from operator     import mul
 from StringIO     import StringIO
@@ -185,6 +185,8 @@ class _Test_Case (unittest.TestCase) :
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptestttt"
         config.RDBMS_HOST     = "localhost"
+        if 'RDBMS_HOST' in os.environ :
+            config.RDBMS_HOST     = os.environ ['RDBMS_HOST']
         config.RDBMS_USER     = "rounduptest"
         if 'RDBMS_USER' in os.environ :
             config.RDBMS_USER = os.environ ['RDBMS_USER']
@@ -3138,6 +3140,171 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
         self.db.close ()
     # end def test_vacation
+
+    def setup_user16 (self) :
+        self.username16 = 'testuser16'
+        self.user16 = self.db.user.create \
+            ( username     = self.username16
+            , firstname    = 'Nummer16'
+            , lastname     = 'User16'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.retire (ud [0])
+        # allow user16 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user16])
+        self.db.commit ()
+    # end def setup_user16
+
+    def test_edit_dynuser_leave (self) :
+        self.log.debug ('test_edit_dynuser_leave')
+        self.setup_db ()
+        self.setup_user16 ()
+        # import user 16, dyn user start at 2018-10-01 and ends at 2019-01-31
+        user16_leave.import_data_16 (self.db, self.user16, self.dep, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username16)
+        # get id from single user dynamic record
+        id = self.db.user_dynamic.filter (None, dict (user = self.user16)) [0]
+        dyn = self.db.user_dynamic.getnode (id)
+
+        # simulate edit of valid from from 2018-10-01 to 2018-10-02 in user dynamic
+        # should succeed
+        self.db.user_dynamic.set (id, valid_from = date.Date ('2018-10-02'))
+
+        # simulate edit of valid from from 2018-10-02 to 2018-10-03 in user dynamic
+        # should fail, because there is a leave request on 2018-10-02
+        try :
+            self.db.user_dynamic.set (id, valid_from = date.Date ('2018-10-03'))
+        except Reject as err :
+           self.assertEqual \
+               ( str (err)
+               , "There are open leave requests before 2018-10-03"
+               )
+
+        # Simulate that user requests and HR cancels the leave request
+        # (2018-10-02)
+        # find this leave request
+        leave_ids = self.db.leave_submission.filter \
+            ( None
+            , dict
+                ( user     = dyn.user
+                , last_day = '2018-10-02'
+                )
+            )
+        # check that request was found
+        self.assertEqual (1, len (leave_ids))
+        # user cancels request
+        cr = self.db.leave_status.lookup ('cancel requested')
+        self.db.leave_submission.set \
+            (leave_ids [0], status=cr, comment_cancel = ' ')
+        self.db.commit ()
+
+        # User with HR-leave-approvel approves
+        self.db1 = self.tracker.open (self.username0)
+        self.db1.user.set (self.user0, roles = 'user,nosy,hr-leave-approval')
+        cd = self.db1.leave_status.lookup ('cancelled')
+        self.db1.leave_submission.set (leave_ids [0], status=cd)
+        self.db1.commit ()
+        self.db1.close ()
+
+        # Now we can set the start-date
+        self.db.user_dynamic.set (id, valid_from = date.Date ('2018-10-03'))
+
+        # Find public holiday on 2018-10-26
+        trs = self.db.time_record.filter \
+            ( None
+            , { 'daily_record.user': dyn.user
+              , 'daily_record.date': '2018-10-26'
+              }
+            )
+        # check that only one time_record is found
+        self.assertEqual (1, len (trs))
+        # check that time record is not retired
+        self.assertEqual (False, self.db.time_record.is_retired (trs [0]))
+        # simulate edit of valid from from 2018-10-01 to 2018-11-29 in user dynamic
+        # should succeed, and 2019-10-26 should be automatically retired
+        self.db.user_dynamic.set (id, valid_from = date.Date ('2018-11-29'))
+        # check that time record is retired now
+        self.assertEqual (True, self.db.time_record.is_retired (trs [0]))
+
+        # simulate edit of valid from from 2018-11-29 to 2018-11-30 in user dynamic
+        # should fail, because there is a time record on 2019-11-29
+        try :
+            self.db.user_dynamic.set (id, valid_from = date.Date ('2018-11-30'))
+        except Reject as err :
+           self.assertEqual \
+               ( str (err)
+               , "There are (non public holiday) time records before 2018-11-30"
+               )
+
+        # simulate edit of valid from from 2019-01-31 to 2019-01-01 in user dynamic
+        # should succeed
+        self.db.user_dynamic.set (id, valid_to = date.Date ('2019-01-01'))
+
+        # simulate edit of valid from from 2019-01-01 to 2018-12-31 (open
+        # interval, the valid_to date is *not* included in the validity span of
+        # the dyn_user) in user dynamic should fail, because there are leave
+        # requests after 2018-12-31
+        try :
+            self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-31'))
+        except Reject as err :
+           self.assertEqual \
+               ( str (err)
+               , "There are open leave requests at or after 2018-12-31"
+               )
+
+        # Simulate that user requests and HR cancels the leave request
+        # (2018-12-14 - 2018-12-31)
+        # find this leave request
+        leave_ids = self.db.leave_submission.filter \
+            ( None
+            , dict
+                ( user     = dyn.user
+                , last_day = '2018-12-31'
+                )
+            )
+        # check that request was found
+        self.assertEqual (1, len (leave_ids))
+        # user cancels request
+        cr = self.db.leave_status.lookup ('cancel requested')
+        self.db.leave_submission.set \
+            (leave_ids [0], status=cr, comment_cancel = ' ')
+        self.db.commit ()
+
+        # User with HR-leave-approvel approves
+        self.db1 = self.tracker.open (self.username0)
+        cd = self.db1.leave_status.lookup ('cancelled')
+        self.db1.leave_submission.set (leave_ids [0], status=cd)
+        self.db1.commit ()
+        self.db1.close ()
+
+        # now settings the end date is possible
+        self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-31'))
+
+        try :
+            self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-13'))
+        except Reject as err :
+           self.assertEqual \
+               ( str (err)
+               , "There are (non public holiday) time records at or after 2018-12-13"
+               )
+
+        trs = self.db.time_record.filter \
+            ( None
+            , { 'daily_record.user': dyn.user
+              , 'daily_record.date': '2018-12-13'
+              }
+            )
+        # check that only one time_record is found
+        self.assertEqual (2, len (trs))
+        for tr in trs :
+            self.db.time_record.retire (tr)
+        self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-13'))
+    # end def test_edit_dynuser_leave
 
 # end class Test_Case_Timetracker
 
