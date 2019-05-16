@@ -171,7 +171,7 @@ def check_epic_key (db, cl, nodeid, new_values) :
     if 'epic_key' in new_values :
         r = re.compile (r'^[A-Z][0-9A-Z_]+[0-9A-Z]-[0-9]+$')
         k = new_values ['epic_key']
-        if not r.search (k) :
+        if k is not None and not r.search (k) :
             epickey = _ ('epic_key')
             raise Reject (_ ("Not a valid %(epickey)s: %(k)s") % locals ())
 # end def check_epic_key
