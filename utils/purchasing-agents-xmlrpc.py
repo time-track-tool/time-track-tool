@@ -17,26 +17,28 @@ except ImportError :
     from urlparse import urlunparse
     from urllib   import quote
 
-class Timecat_Updater (object) :
+class Updater (object) :
 
     def __init__ (self, args) :
         self.args  = args
         self._url  = None
+        print (self.url)
         self.srv   = ServerProxy (self.url, allow_none=True)
         self.udict = {}
     # end def __init__
 
     def process_csv (self, csv_file) :
         print ("Syncing: %s" % csv_file)
+        cls = self.args.cls
         with open (csv_file, 'rb') as f :
             dr = csv.DictReader (f, delimiter = self.args.delimiter)
             for line in dr :
                 id = line ['Id'].decode (self.args.encoding)
-                tc = self.srv.display ('time_project%s' % id)
+                tc = self.srv.display (cls + id)
                 name = line ['Name'].decode (self.args.encoding)
                 if name != tc ['name'] :
                     raise ValueError \
-                        ('Inconsistent Name %s for time_project%s' % (name, id))
+                        ('Inconsistent Name %s for %s%s' % (name, cls, id))
                 pa = line ['Purchasing agents'].decode (self.args.encoding)
                 pa = [x.strip () for x in pa.split (',')]
                 pa = [x for x in pa if x]
@@ -47,8 +49,8 @@ class Timecat_Updater (object) :
                     users.append (self.udict [u])
                 if set (users) != set (tc ['purchasing_agents']) :
                     arg = 'purchasing_agents=%s' % ','.join (users)
-                    self.srv.set ('time_project%s' % id, arg)
-                    print ("Updated time_project%s: %s" % (id, arg))
+                    self.srv.set (cls + id, arg)
+                    print ("Updated %s%s: %s" % (cls, id, arg))
     # end def process_csv
 
     @property
@@ -86,7 +88,7 @@ class Timecat_Updater (object) :
         return self._url
     # end def url
 
-# end class Timecat_Updater
+# end class Updater
 
 def main () :
     cmd = ArgumentParser ()
@@ -94,6 +96,12 @@ def main () :
         ( "file"
         , help    = 'CSV file to import'
         , nargs   = '+'
+        )
+    cmd.add_argument \
+        ( '-C', '--class'
+        , dest    = 'cls'
+        , help    = 'Class to change: "%(default)s"'
+        , default = 'time_project'
         )
     cmd.add_argument \
         ( '-D', '--delimiter'
@@ -131,7 +139,7 @@ def main () :
         , default = 'admin'
         )
     args = cmd.parse_args ()
-    tu = Timecat_Updater (args)
+    tu = Updater (args)
     for csv in args.file :
         tu.process_csv (csv)
 # end def main
