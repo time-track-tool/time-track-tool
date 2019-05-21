@@ -18,6 +18,11 @@ effort       = 8
 [ttt]
 freeze_days = 0
 
+[link]
+minid = 6
+maxid = 6
+issue_url_template = https://issue-tracker.vie.at.tttech.ttt/ttt/issue%s
+
 [mail]
 # name and address of sender of outgoing emails
 sender_name = Do not reply

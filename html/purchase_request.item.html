@@ -28,6 +28,8 @@
     ; cc_filt             python:
         ['valid=yes', 'valid=yes\x3borganisation=%s' % context.organisation.id]
         [bool (context.organisation)]
+    ; url_template      python: 
+         getattr (db.config.ext, 'LINK_ISSUE_URL_TEMPLATE', None)
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
@@ -104,9 +106,14 @@
           (classname, 'sap_reference')"/>
       <td tal:content="structure python:context.sap_reference.field ()"/>
      <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'issue_ids')"/>
-      <td tal:content="structure python:context.issue_ids.field ()"/>
+      <tal:block tal:condition="url_template">
+        <th tal:content="structure python:utils.fieldname
+            (classname, 'issue_ids')"/>
+        <td tal:content="structure python:context.issue_ids.field ()"/>
+      </tal:block>
+      <tal:block tal:condition="python:not url_template">
+       <th/><td/>
+      </tal:block>
       <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
           (classname, 'purchasing_agents')"/>
@@ -123,19 +130,16 @@
        </td>
       </tal:block>
      </tr>
-     <tal:block tal:define="url_template python:
-         getattr (db._db.config.ext, 'LINK_ISSUE_URL_TEMPLATE', None)">
-       <tr tal:condition="python: url_template">
-         <th/>
-         <td>
-          <tal:block tal:repeat="id python:
-                     str (context.issue_ids).split (',')">
-            <a tal:content="id"
-               tal:attributes="href python: url_template % id.strip ()"/>
-          </tal:block>
-         </td>
-       </tr>
-     </tal:block>
+     <tr tal:condition="python: url_template">
+       <th/>
+       <td>
+        <tal:block tal:repeat="id python:
+                   str (context.issue_ids).split (',')">
+          <a tal:content="id"
+             tal:attributes="href python: url_template % id.strip ()"/>
+        </tal:block>
+       </td>
+     </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
           (classname, 'part_of_budget')"/>
