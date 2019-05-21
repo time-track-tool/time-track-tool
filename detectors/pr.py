@@ -164,6 +164,9 @@ def check_tp_cc_consistency (db, cl, nodeid, new_values, org = None) :
     pr  = cl.getnode (nodeid)
     tc  = new_values.get ('time_project', pr.time_project)
     cc  = new_values.get ('sap_cc', pr.sap_cc)
+    # Can happen only for order item:
+    if not tc and not cc :
+        return
     org = org or pr.organisation
     if tc :
         node = db.time_project.getnode (tc)
