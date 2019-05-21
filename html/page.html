@@ -242,6 +242,9 @@
    , ('qso', '')        : '@columns=call,band,qso_start,qso_end,rst_rcvd,'
                           'mode,owner&'
                           '@sort=-qso_end&@pagesize=20&@startwith=0'
+   , ('sap_cc', '')     : '@columns=deputy,description,id,name,'
+                          'organisation,responsible,'
+                          'valid,sync_id'
    , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
@@ -593,6 +596,11 @@
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
+     , ( 'sap_cc'
+       , 'View'
+       , not request.user.hasPermission ('Edit', 'sap_cc')
+       , ('', '')
+       )
      , ('sensor',              'View', 1,               ('',''))
      , ('smb_machine',         'View', 1,               ('',''))
      , ('summary_report',     'View', 1, ('Staff Report','staff'))

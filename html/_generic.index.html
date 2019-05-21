@@ -48,9 +48,12 @@
    </tal:block>
   </tal:block>
  </tr>
- <tr tal:condition="python:request.user.hasPermission('Edit', classname)">
+ <tr tal:condition="python:
+        request.user.hasPermission('View', classname)
+     or request.user.hasPermission('Edit', classname)">
   <td tal:attributes="colspan n" style="border-top: 1px solid gray">
-   <p i18n:translate="">
+   <p i18n:translate=""
+      tal:condition="python:request.user.hasPermission('Edit', classname)">
       To edit <span tal:replace="Classname" i18n:name="Classname" />
       click on the field under
       &quot;<span tal:replace="python:i18n.gettext (labelprop)"
