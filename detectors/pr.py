@@ -156,19 +156,31 @@ def namelen (db, cl, nodeid, new_values) :
         raise Reject (_ ("Supplier name too long (max 55)"))
 # end def namelen
 
-def check_tp_cc_consistency (db, cl, nodeid, new_values) :
+def check_tp_cc_consistency (db, cl, nodeid, new_values, org = None) :
     """ Check that the organisation in tp or cc is correct and
         consistent with the organisation stored in the PR.
+        Also check that the tp or cc is valid.
     """
-    pr = cl.getnode (nodeid)
-    tc = new_values.get ('time_project', pr.time_project)
-    cc = new_values.get ('sap_cc', pr.sap_cc)
+    pr  = cl.getnode (nodeid)
+    tc  = new_values.get ('time_project', pr.time_project)
+    cc  = new_values.get ('sap_cc', pr.sap_cc)
+    org = org or pr.organisation
     if tc :
         node = db.time_project.getnode (tc)
+        st   = db.time_project_status.getnode (node.status)
+        if not st.active :
+            time_project = _ ('time_project')
+            name = node.name + ' ' + node.description
+            raise Reject \
+                (_ ("Non-active %(time_project)s: %(name)s") % locals ())
     else :
         node = db.sap_cc.getnode (cc)
-    if node.organisation != pr.organisation :
-        o1 = db.organisation.get (pr.organisation, 'name')
+        if not node.valid :
+            sap_cc = _ ('sap_cc')
+            name   = node.name
+            raise Reject (_ ("Invalid %(sap_cc)s: %(name)s") % locals ())
+    if node.organisation != org :
+        o1 = db.organisation.get (org, 'name')
         if not node.organisation :
             raise Reject (_ ("Organisation of CC/TC is empty"))
         o2 = db.organisation.get (node.organisation, 'name')
@@ -233,6 +245,8 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
                 , 'pr_currency', 'purchasing_agents', 'pr_ext_resource'
                 )
+            org = new_values.get \
+                ('organisation', cl.get (nodeid, 'organisation'))
             dep = new_values.get ('department', cl.get (nodeid, 'department'))
             if dep and db.department.is_retired (dep) :
                 raise Reject (_ ("Department no longer valid"))
@@ -283,6 +297,9 @@ def change_pr (db, cl, nodeid, new_values) :
                             , io = _ ('internal_order')
                             )
                         )
+                nv = dict \
+                    (time_project = oitem.time_project, sap_cc = oitem.sap_cc)
+                check_tp_cc_consistency (db, db.pr_offer_item, oi, nv, org)
             # Check that approval of requester exists
             for ap in approvals :
                 if  (   ap.status == ap_appr
