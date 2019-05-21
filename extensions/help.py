@@ -1108,7 +1108,13 @@ _helptext          = \
              letters in lowercase, except names and references.
           '''
       ]
-    , ""'it_int_prio'                     :
+    , ""'issue_ids'                   :
+      [ ""'''Optionally give the issue-numbers where PES assignment is
+             traced. Only the numeric issue-numbers (comma separated)
+             should be given.
+          '''
+      ]
+    , ""'it_int_prio'                 :
       [ ""'''Internal priority set by the IT-Department
           '''
       ]

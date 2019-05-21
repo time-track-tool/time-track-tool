@@ -886,6 +886,19 @@ def check_dd (db, cl, nodeid, new_values) :
             raise Reject (_ ("%(deadline)s may not be in the past") % d)
 # end def check_dd
 
+def check_issue_nums (db, cl, nodeid, new_values) :
+    issue_ids = new_values.get ('issue_ids', None)
+    # Allow empty value, also exits if not changed
+    if issue_ids is None :
+        return
+    minl = int (getattr (db.config.ext, 'LINK_MINID', 0))
+    maxl = int (getattr (db.config.ext, 'LINK_MAXID', 100))
+    ids  = [x.strip () for x in issue_ids.split (',')]
+    for id in ids :
+        if not (minl <= len (id) <= maxl) or not id.isdigit () :
+            raise Reject (_ ("Invalid Issue-Number: %s") % id)
+# end def check_issue_nums
+
 def init (db) :
     global _
     _   = get_translation \
@@ -911,6 +924,8 @@ def init (db) :
     db.purchase_request.react   ("create", create_pr_approval)
     db.purchase_request.audit   ("set",    check_io)
     db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
+    db.purchase_request.audit   ("create", check_issue_nums)
+    db.purchase_request.audit   ("set",    check_issue_nums)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.react        ("set",    approved_pr_approval)

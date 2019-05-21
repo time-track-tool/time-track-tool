@@ -6696,3 +6696,6 @@ msgstr "SAP Cost center Id"
 
 msgid "sap_cc.description"
 msgstr "SAP Cost center Desc"
+
+msgid "issue_ids"
+msgstr "PES Issue-Numbers"

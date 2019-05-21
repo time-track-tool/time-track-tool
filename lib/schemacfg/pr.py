@@ -263,6 +263,7 @@ def init \
                                           )
                 , special_approval      = Multilink ("user", do_journal = 'no')
                 , pr_ext_resource       = Link      ("pr_ext_resource")
+                , issue_ids             = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
