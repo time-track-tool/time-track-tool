@@ -1,0 +1,157 @@
+#!/usr/bin/python3
+# -*- coding: iso-8859-1 -*-
+
+import sys
+import os
+from csv           import DictReader, DictWriter
+from netrc         import netrc
+from getpass       import getpass
+from argparse      import ArgumentParser
+from xmlrpc.client import ServerProxy, Fault
+from urllib.parse  import urlunparse, quote
+
+""" Read users from a CSV file and determine all dynamic user records.
+    Output dyn user records with username, start, end
+"""
+
+class DynUser (object) :
+
+    def __init__ (self, args) :
+        self.args  = args
+        self._url  = None
+        self.srv   = ServerProxy (self.url, allow_none=True)
+        self.users = set ()
+        self.parse ()
+    # end def __init__
+
+    def parse (self) :
+        cs   = self.args.charset
+        fn   = self.args.fieldname
+        with open (self.args.csvfile, 'r', encoding = cs) as f :
+            dr = DictReader (f, delimiter = self.args.delimiter)
+            for rec in dr :
+                username = rec [fn].strip ()
+                self.users.add (username)
+    # end def parse
+
+    def write_csv (self, f) :
+        # get uids
+        self.uidmap = {}
+        self.uids = []
+        for un in self.users :
+            try :
+                uid = self.srv.lookup ('user', un)
+                self.uids.append (uid)
+                self.uidmap [uid] = un
+            except Fault as err :
+                if 'KeyError' not in err.faultString :
+                    raise
+
+        # Query dyn users
+        dynids = self.srv.filter ('user_dynamic', None, dict (user = self.uids))
+        recs = []
+        for d in dynids :
+            dyn = self.srv.display ('user_dynamic' + d)
+            un  = self.uidmap [dyn ['user']]
+            frm = dyn ['valid_from'].split (' ') [1].split ('.') [0]
+            to  = dyn ['valid_to'].split   (' ') [1].split ('.') [0]
+            recs.append ((un, frm, to))
+        fields = ('username', 'valid_from', 'valid_to')
+        dw = DictWriter (sys.stdout, fields, delimiter = ';')
+        dw.writeheader ()
+        for name, frm, to in sorted (recs) :
+            v = dict (username = name, valid_from = frm, valid_to = to)
+            dw.writerow (v)
+    # end def write_csv
+
+    @property
+    def url (self) :
+        if self._url :
+            return self._url
+        username = self.args.username
+        password = None
+        try :
+            n = netrc ()
+        except IOError :
+            pass
+        if n :
+            a = n.authenticators (self.args.hostname)
+        if a :
+            un, d, pw = a
+            username = un
+            password = pw
+        if not password :
+            password = getpass ('Password: ')
+        un = [username]
+        un.append (':')
+        un.append (quote (password))
+        un.append ('@')
+        un.append (self.args.hostname)
+        un = ''.join (un)
+        netloc = []
+        netloc.append (un)
+        if self.args.port :
+            netloc.append (':')
+            netloc.append (self.args.port)
+        netloc = ''.join (netloc)
+        self._url = urlunparse \
+            ((self.args.scheme, netloc, self.args.path, '', '', ''))
+        return self._url
+    # end def url
+
+# end class DynUser
+
+def main () :
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'csvfile'
+        , help   = 'CSV file containing usernames'
+        )
+    cmd.add_argument \
+        ( "-C", "--charset"
+        , help    = "Character set of CSV file, default: %(default)s"
+        , default = 'utf-8-sig'
+        )
+    cmd.add_argument \
+        ( "-D", "--delimiter"
+        , help    = "CSV Delimiter, default: %(default)s"
+        , default = ';'
+        )
+    cmd.add_argument \
+        ( "-f", "--fieldname"
+        , help    = "Name of CSV column heading containing usernames, "
+                    "default: %(default)s"
+        , default = 'samAccountName'
+        )
+    cmd.add_argument \
+        ( '-H', '--hostname'
+        , help    = 'Tracker hostname, default: "%(default)s"'
+        , default = 'example.com'
+        )
+    cmd.add_argument \
+        ( '-P', '--port'
+        , help    = 'Tracker port, default: empty'
+        , default = ''
+        )
+    cmd.add_argument \
+        ( '-p', '--path'
+        , help    = 'URL path for retrieving file, default=%(default)s"'
+        , default = 'xmlrpc'
+        )
+    cmd.add_argument \
+        ( '-s', '--scheme'
+        , help    = 'URL scheme for retrieving file, default=%(default)s"'
+        , default = 'https'
+        )
+    cmd.add_argument \
+        ( '-u', '--username'
+        , help    = 'User name to access tracker, default: "%(default)s"'
+        , default = 'admin'
+        )
+    args = cmd.parse_args ()
+    du = DynUser (args)
+    du.write_csv (sys.stdout)
+# end def mail
+
+if __name__ == '__main__' :
+    main ()
