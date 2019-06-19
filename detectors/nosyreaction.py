@@ -31,13 +31,12 @@ try :
     from email          import Encoders
     from email.utils    import getaddresses
     from email.parser   import Parser
-    from email.MIMEBase import MIMEBase
-    from email.MIMEText import MIMEText
+    from email.mime.nonmultipart import MIMENonMultipart
 except ImportError :
     pass
 
 from roundup import roundupdb, hyperdb
-from roundup.mailer import Mailer, MessageSendError, encode_quopri
+from roundup.mailer import Mailer, MessageSendError
 
 fromprops_by_type = \
     { 'Support Issue'      : 'fromaddress'
@@ -87,42 +86,28 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, cc = [], bcc = []) :
     if msg.inreplyto :
         message ['In-Reply-To'] = msg.inreplyto
     if msg.files :
-        part = MIMEText (body)
-        part.set_charset (charset)
-        encode_quopri (part)
+        part = mailer.get_text_message ()
+        part.set_payload (body, charset)
         message.attach (part)
-        for f in msg.files :
-            file = db.file.getnode (f)
-            if file.type == 'text/plain' :
-                part = MIMEText (file.content)
-                try :
-                    file.content.decode ('ascii')
-                except UnicodeError :
-                    encode_quopri (part)
-                else :
-                    part ['Content-Transfer-Encoding'] = '7bit'
-            elif file.type == 'message/rfc822' :
-                main, sub = file.type.split ('/')
-                p = FeedParser ()
-                p.feed (file.content)
-                part = MIMEBase (main, sub)
-                part.set_payload ([p.close ()])
-            else :
-                type = file.type
-                if not type :
-                    type = mimetypes.guess_type (file.name) [0]
-                if type is None :
-                    type = 'application/octet-stream'
-                main, sub = type.split ('/')
-                part = MIMEBase (main, sub)
-                part.set_payload (file.content)
-                Encoders.encode_base64 (part)
-            cd = 'Content-Disposition'
-            part [cd] = 'attachment;\n filename="%s"' % file.name
-            message.attach (part)
     else :
-        message.set_payload (body)
-        encode_quopri (message)
+        message.set_payload (body, charset)
+    for f in msg.files :
+        file = db.file.getnode (f)
+        if file.type == 'text/plain' :
+            part = mailer.get_text_message ()
+            part.set_payload (file.content)
+        else :
+            type = file.type
+            if not type :
+                type = mimetypes.guess_type (file.name) [0]
+            if type is None :
+                type = 'application/octet-stream'
+            main, sub = type.split ('/')
+            part = MIMENonMultipart (main, sub)
+            part.set_payload (file.content)
+        cd = 'Content-Disposition'
+        part [cd] = 'attachment;\n filename="%s"' % file.name
+        message.attach (part)
     mailer.smtp_send (sendto + cc + bcc, message.as_string ())
 # end def send_non_roundup_mail
 

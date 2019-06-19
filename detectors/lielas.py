@@ -17,17 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
-# Dual License:
-# If you need a proprietary license that permits you to add your own
-# software without the need to publish your source-code under the GNU
-# General Public License above, contact
-# Reder, Christian Reder, A-2560 Berndorf, Austria, christian@reder.eu
 
 import os
 from roundup.exceptions             import Reject
 from roundup.roundupdb              import DetectorError
 from roundup.date                   import Date, Interval
-from roundup.mailer                 import Mailer, encode_quopri
+from roundup.mailer                 import Mailer
 from roundup.mailer                 import MessageSendError
 from roundup.cgi.TranslationService import get_translation
 from roundup.i18n                   import get_translation as mail_translation
