@@ -41,7 +41,7 @@ def update_tr_cache (db, dr) :
         except :
             db.rollback ()
     else :
-        raise ()
+        raise
     return ret
 # end def update_tr_cache
 
