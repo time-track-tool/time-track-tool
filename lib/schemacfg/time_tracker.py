@@ -788,15 +788,15 @@ def security (db, ** kw) :
         return False
     # end def may_see_daily_record
 
-    def is_project_owner_of_wp (db, userid, itemid) :
+    def is_project_owner_or_deputy (db, userid, itemid) :
         """User is allowed to edit workpackage if he is time category
-           owner.
+           owner or deputy.
         """
         if int (itemid) < 0 :
             return False
         prid    = db.time_wp.get (itemid, 'project')
         project = db.time_project.getnode (prid)
-        return userid == project.responsible
+        return userid == project.responsible or userid == project.deputy
     # end def is_project_owner_of_wp
 
     def ok_work_package (db, userid, itemid) :
@@ -981,8 +981,8 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'time_wp'
-        , check       = is_project_owner_of_wp
-        , description = fixdoc (is_project_owner_of_wp.__doc__)
+        , check       = is_project_owner_or_deputy
+        , description = fixdoc (is_project_owner_or_deputy.__doc__)
         , properties  = \
             ( 'name', 'responsible', 'wp_no', 'cost_center'
             , 'time_wp_summary_no', 'is_public'
@@ -1246,3 +1246,4 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 # end def security
+#SHA: 8b9a3aaff292edc4437238e9b4c602bd6b615ebd
