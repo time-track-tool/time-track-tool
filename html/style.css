@@ -860,3 +860,36 @@ table.timesheet td a[href]              { color: black; }
 a[href]:link.back-to-top {
     color: #FFFF99;
 }
+
+/* jquery pluging select2 to make select input seachable
+   overwrite some select2 css styles to apapt to current Time Tracker style */
+.select2-container .select2-selection--single {
+  height: 20px !important;
+  font-size: 10pt !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #000 !important;
+  line-height: 18px !important;
+}
+
+.select2-container--default .select2-selection--single {
+  border-radius: 0px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 17px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #000 transparent transparent transparent !important;
+}
+
+.select2-results__option {
+  padding: 1px !important;
+  font-size: 10pt !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+	padding: 1px !important;
+}
