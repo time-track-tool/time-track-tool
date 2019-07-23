@@ -230,7 +230,7 @@
              </span>
             </td>
             <td colspan="2" tal:define="name python:'time_record%s@wp'%r.id">
-             <select tal:condition="editable" tal:attributes="name name">
+             <select class="dropdown-wp" tal:condition="editable" tal:attributes="name name">
               <tal:block tal:content="structure wpsopt"/>
              </select>
              <tal:block tal:condition="editable" tal:content="structure python:
@@ -282,7 +282,7 @@
               (context, db, 'time_record', -n, 'duration').field (size=5)"/>
             <td/>
             <td colspan="2">
-             <select tal:attributes="name python:'time_record-%d@wp'%n">
+             <select class="dropdown-wp" tal:attributes="name python:'time_record-%d@wp'%n">
               <tal:block tal:content="structure wpsopt"/>
              </select>
             </td>
